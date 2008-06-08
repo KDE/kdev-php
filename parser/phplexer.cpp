@@ -32,7 +32,7 @@
 
 #include <iostream>
 
-namespace PhpParser
+namespace Php
 {
 
 Lexer::Lexer( Parser* _parser, const QString& content ):

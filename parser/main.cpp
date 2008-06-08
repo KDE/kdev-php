@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301, USA.
  */
+#include "phpdriver.h"
 #include "phplexer.h"
 #include "phpparser.h"
 #include "phpdebugvisitor.h"
@@ -28,7 +29,7 @@
 #include <iostream>
 #include <QTextCodec>
 
-using namespace PhpParser;
+using namespace Php;
 using namespace std;
 
 void printToken(int token, const Lexer& lexer, const QString& content);
@@ -68,49 +69,35 @@ int main(int argc, char* argv[])
     }
 
     foreach (QString fileName, files) {
-        QFile file(fileName);
-        if (!file.open(QFile::ReadOnly)) {
+        Php::Driver d;
+        if( !d.readFile( fileName, "utf-8" ) ) {
             qerr << "Can't open file " << fileName << endl;
-            return 1;
+            return 255;
         }
-        QString content = QString::fromUtf8(file.readAll());
-        file.close();
-
+        d.setDebug( debug );
         qout << "Parsing file " << fileName << endl;
 
         if (printTokens) {
-            Lexer lexer(0, content);
+            Lexer lexer(0, d.content());
             int token;
             while ((token = lexer.nextTokenKind())) {
-                printToken(token, lexer, content);
+                printToken(token, lexer, d.content());
             }
-            printToken(token, lexer, content);
+            printToken(token, lexer, d.content());
         }
 
-        KDevPG::TokenStream tokenStream;
-        Parser::memoryPoolType memoryPool;
-
-        // 0) setup
-        Parser factParser;
-        factParser.setTokenStream(&tokenStream);
-        factParser.setMemoryPool(&memoryPool);
-        factParser.setDebug(debug);
-
-        // 1) tokenize
-        factParser.tokenize(content);
-
-        // 2) parse
-        StartAst *ast = 0;
-        bool matched = factParser.parseStart(&ast);
-        if (matched) {
-            qout << "successfully parsed" << endl;
-            if (debug) {
-                DebugVisitor d(&tokenStream, content);
-                d.visitNode(ast);
-            }
-        } else {
-            qerr << "parse error in file " << fileName << endl;
+        Php::StartAst* ast = 0;
+        if ( !d.parse( &ast ) ) {
+            exit( EXIT_FAILURE );
+            qerr << "parse error" << endl;
             return 255;
+        } else {
+            if( debug )
+            {
+                Php::DebugVisitor debugVisitor( d.tokenStream(), d.content() );
+                debugVisitor.visitStart(ast);
+            }
+            qout << "successfully parsed" << endl;
         }
     }
     return 0;

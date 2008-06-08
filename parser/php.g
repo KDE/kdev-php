@@ -25,7 +25,7 @@
 #include <QtCore/QString>
 #include <kdebug.h>
 
-namespace PhpParser
+namespace Php
 {
     class Lexer;
     enum NumericType  {
@@ -625,8 +625,8 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 -> encapsVarOffset ;;
 
 
-    LNUMBER [: (*yynode)->numType = PhpParser::LongNumber;      :]
-  | DNUMBER [: (*yynode)->numType = PhpParser::DoubleNumber;      :]
+    LNUMBER [: (*yynode)->numType = Php::LongNumber;      :]
+  | DNUMBER [: (*yynode)->numType = Php::DoubleNumber;      :]
   | CONSTANT_ENCAPSED_STRING
   | LINE
   | FILE
@@ -634,7 +634,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
   | METHOD_C
   | FUNC_C
 -> commonScalar [
-    member variable numType: PhpParser::NumericType; ] ;;
+    member variable numType: Php::NumericType; ] ;;
 
     FUNCTION (BIT_AND | 0) STRING
     LPAREN params=parameterList RPAREN LBRACE statements=innerStatementList RBRACE
@@ -713,7 +713,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 #include "phplexer.h"
 #include <QtCore/QDebug>
 
-namespace PhpParser
+namespace Php
 {
 
 void Parser::tokenize( const QString& contents )
@@ -805,7 +805,7 @@ void Parser::restoreState( Parser::ParserState* state)
     m_state.varExpressionIsVariable = state->varExpressionIsVariable;
 }
 
-} // end of namespace PhpParser
+} // end of namespace Php
 
 :]
 

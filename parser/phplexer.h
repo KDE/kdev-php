@@ -28,7 +28,7 @@
 
 class QString;
 
-namespace PhpParser
+namespace Php
 {
 class Parser;
 
