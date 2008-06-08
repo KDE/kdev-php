@@ -427,7 +427,16 @@ void DefaultVisitor::visitFunctionCall(FunctionCallAst *node)
 
 void DefaultVisitor::visitFunctionCallParameterList(FunctionCallParameterListAst *node)
 {
-    visitNode(node->parameter);
+    if (node->parametersSequence)
+    {
+        const KDevPG::ListNode<FunctionCallParameterListElementAst*> *__it = node->parametersSequence->front(), *__end = __it;
+        do
+        {
+            visitNode(__it->element);
+            __it = __it->next;
+        }
+        while (__it != __end);
+    }
 }
 
 void DefaultVisitor::visitFunctionCallParameterListElement(FunctionCallParameterListElementAst *node)

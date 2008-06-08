@@ -640,7 +640,7 @@ struct KDEVPHPPARSER_EXPORT FunctionCallParameterListAst: public AstNode
 {
     enum { KIND = FunctionCallParameterListKind };
 
-    FunctionCallParameterListElementAst *parameter;
+    const KDevPG::ListNode<FunctionCallParameterListElementAst *> *parametersSequence;
 };
 
 struct KDEVPHPPARSER_EXPORT FunctionCallParameterListElementAst: public AstNode

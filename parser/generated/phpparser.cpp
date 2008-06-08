@@ -89,15 +89,15 @@ void Parser::setDebug( bool debug )
 Parser::ParserState *Parser::copyCurrentState()
 {
     ParserState *state = new ParserState();
-    state->varExpressionState = m_varExpressionState;
-    state->varExpressionIsVariable = m_varExpressionIsVariable;
+    state->varExpressionState = m_state.varExpressionState;
+    state->varExpressionIsVariable = m_state.varExpressionIsVariable;
     return state;
 }
 
 void Parser::restoreState( Parser::ParserState* state)
 {
-    m_varExpressionState = state->varExpressionState;
-    m_varExpressionIsVariable = state->varExpressionIsVariable;
+    m_state.varExpressionState = state->varExpressionState;
+    m_state.varExpressionIsVariable = state->varExpressionIsVariable;
 }
 
 } // end of namespace PhpParser
@@ -567,7 +567,7 @@ bool Parser::parseAssignmentExpression(AssignmentExpressionAst **yynode)
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C)
     {
-        m_varExpressionIsVariable = false;
+        m_state.varExpressionIsVariable = false;
         ConditionalExpressionAst *__node_7 = 0;
         if (!parseConditionalExpression(&__node_7))
         {
@@ -579,7 +579,7 @@ bool Parser::parseAssignmentExpression(AssignmentExpressionAst **yynode)
         }
         (*yynode)->conditionalExpression = __node_7;
 
-        if (yytoken == Token_EQUAL)
+        if (yytoken == Token_ASSIGN)
         {
             AssignmentExpressionEqualAst *__node_8 = 0;
             if (!parseAssignmentExpressionEqual(&__node_8))
@@ -593,155 +593,155 @@ bool Parser::parseAssignmentExpression(AssignmentExpressionAst **yynode)
             (*yynode)->assignmentAxpressionEqual = __node_8;
 
         }
-        else if (yytoken == Token_SL_EQUAL
-                 || yytoken == Token_MUL_EQUAL
-                 || yytoken == Token_MOD_EQUAL
-                 || yytoken == Token_XOR_EQUAL
-                 || yytoken == Token_MINUS_EQUAL
-                 || yytoken == Token_CONCAT_EQUAL
-                 || yytoken == Token_OR_EQUAL
-                 || yytoken == Token_PLUS_EQUAL
-                 || yytoken == Token_SR_EQUAL
-                 || yytoken == Token_DIV_EQUAL
-                 || yytoken == Token_AND_EQUAL)
+        else if (yytoken == Token_SL_ASSIGN
+                 || yytoken == Token_MUL_ASSIGN
+                 || yytoken == Token_MOD_ASSIGN
+                 || yytoken == Token_XOR_ASSIGN
+                 || yytoken == Token_MINUS_ASSIGN
+                 || yytoken == Token_CONCAT_ASSIGN
+                 || yytoken == Token_OR_ASSIGN
+                 || yytoken == Token_PLUS_ASSIGN
+                 || yytoken == Token_SR_ASSIGN
+                 || yytoken == Token_DIV_ASSIGN
+                 || yytoken == Token_AND_ASSIGN)
         {
-            if (yytoken == Token_PLUS_EQUAL)
+            if (yytoken == Token_PLUS_ASSIGN)
             {
-                if (yytoken != Token_PLUS_EQUAL)
+                if (yytoken != Token_PLUS_ASSIGN)
                 {
                     if (!mBlockErrors)
                     {
-                        expectedToken(yytoken, Token_PLUS_EQUAL, "+=");
+                        expectedToken(yytoken, Token_PLUS_ASSIGN, "+=");
                     }
                     return false;
                 }
                 yylex();
 
             }
-            else if (yytoken == Token_MINUS_EQUAL)
+            else if (yytoken == Token_MINUS_ASSIGN)
             {
-                if (yytoken != Token_MINUS_EQUAL)
+                if (yytoken != Token_MINUS_ASSIGN)
                 {
                     if (!mBlockErrors)
                     {
-                        expectedToken(yytoken, Token_MINUS_EQUAL, "-=");
+                        expectedToken(yytoken, Token_MINUS_ASSIGN, "-=");
                     }
                     return false;
                 }
                 yylex();
 
             }
-            else if (yytoken == Token_MUL_EQUAL)
+            else if (yytoken == Token_MUL_ASSIGN)
             {
-                if (yytoken != Token_MUL_EQUAL)
+                if (yytoken != Token_MUL_ASSIGN)
                 {
                     if (!mBlockErrors)
                     {
-                        expectedToken(yytoken, Token_MUL_EQUAL, "*=");
+                        expectedToken(yytoken, Token_MUL_ASSIGN, "*=");
                     }
                     return false;
                 }
                 yylex();
 
             }
-            else if (yytoken == Token_DIV_EQUAL)
+            else if (yytoken == Token_DIV_ASSIGN)
             {
-                if (yytoken != Token_DIV_EQUAL)
+                if (yytoken != Token_DIV_ASSIGN)
                 {
                     if (!mBlockErrors)
                     {
-                        expectedToken(yytoken, Token_DIV_EQUAL, "/=");
+                        expectedToken(yytoken, Token_DIV_ASSIGN, "/=");
                     }
                     return false;
                 }
                 yylex();
 
             }
-            else if (yytoken == Token_CONCAT_EQUAL)
+            else if (yytoken == Token_CONCAT_ASSIGN)
             {
-                if (yytoken != Token_CONCAT_EQUAL)
+                if (yytoken != Token_CONCAT_ASSIGN)
                 {
                     if (!mBlockErrors)
                     {
-                        expectedToken(yytoken, Token_CONCAT_EQUAL, ".=");
+                        expectedToken(yytoken, Token_CONCAT_ASSIGN, ".=");
                     }
                     return false;
                 }
                 yylex();
 
             }
-            else if (yytoken == Token_MOD_EQUAL)
+            else if (yytoken == Token_MOD_ASSIGN)
             {
-                if (yytoken != Token_MOD_EQUAL)
+                if (yytoken != Token_MOD_ASSIGN)
                 {
                     if (!mBlockErrors)
                     {
-                        expectedToken(yytoken, Token_MOD_EQUAL, "%=");
+                        expectedToken(yytoken, Token_MOD_ASSIGN, "%=");
                     }
                     return false;
                 }
                 yylex();
 
             }
-            else if (yytoken == Token_AND_EQUAL)
+            else if (yytoken == Token_AND_ASSIGN)
             {
-                if (yytoken != Token_AND_EQUAL)
+                if (yytoken != Token_AND_ASSIGN)
                 {
                     if (!mBlockErrors)
                     {
-                        expectedToken(yytoken, Token_AND_EQUAL, "&=");
+                        expectedToken(yytoken, Token_AND_ASSIGN, "&=");
                     }
                     return false;
                 }
                 yylex();
 
             }
-            else if (yytoken == Token_OR_EQUAL)
+            else if (yytoken == Token_OR_ASSIGN)
             {
-                if (yytoken != Token_OR_EQUAL)
+                if (yytoken != Token_OR_ASSIGN)
                 {
                     if (!mBlockErrors)
                     {
-                        expectedToken(yytoken, Token_OR_EQUAL, "|=");
+                        expectedToken(yytoken, Token_OR_ASSIGN, "|=");
                     }
                     return false;
                 }
                 yylex();
 
             }
-            else if (yytoken == Token_XOR_EQUAL)
+            else if (yytoken == Token_XOR_ASSIGN)
             {
-                if (yytoken != Token_XOR_EQUAL)
+                if (yytoken != Token_XOR_ASSIGN)
                 {
                     if (!mBlockErrors)
                     {
-                        expectedToken(yytoken, Token_XOR_EQUAL, "^=");
+                        expectedToken(yytoken, Token_XOR_ASSIGN, "^=");
                     }
                     return false;
                 }
                 yylex();
 
             }
-            else if (yytoken == Token_SL_EQUAL)
+            else if (yytoken == Token_SL_ASSIGN)
             {
-                if (yytoken != Token_SL_EQUAL)
+                if (yytoken != Token_SL_ASSIGN)
                 {
                     if (!mBlockErrors)
                     {
-                        expectedToken(yytoken, Token_SL_EQUAL, "<<=");
+                        expectedToken(yytoken, Token_SL_ASSIGN, "<<=");
                     }
                     return false;
                 }
                 yylex();
 
             }
-            else if (yytoken == Token_SR_EQUAL)
+            else if (yytoken == Token_SR_ASSIGN)
             {
-                if (yytoken != Token_SR_EQUAL)
+                if (yytoken != Token_SR_ASSIGN)
                 {
                     if (!mBlockErrors)
                     {
-                        expectedToken(yytoken, Token_SR_EQUAL, ">>=");
+                        expectedToken(yytoken, Token_SR_ASSIGN, ">>=");
                     }
                     return false;
                 }
@@ -843,7 +843,7 @@ bool Parser::parseAssignmentExpressionCheckIfVariable(AssignmentExpressionCheckI
         || yytoken == Token_METHOD_C)
     {
 
-        if (!m_varExpressionIsVariable)
+        if (!m_state.varExpressionIsVariable)
         {
             reportProblem(Error, "Left side is not a variable");
             return false;
@@ -865,13 +865,13 @@ bool Parser::parseAssignmentExpressionEqual(AssignmentExpressionEqualAst **yynod
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_EQUAL)
+    if (yytoken == Token_ASSIGN)
     {
-        if (yytoken != Token_EQUAL)
+        if (yytoken != Token_ASSIGN)
         {
             if (!mBlockErrors)
             {
-                expectedToken(yytoken, Token_EQUAL, "=");
+                expectedToken(yytoken, Token_ASSIGN, "=");
             }
             return false;
         }
@@ -901,11 +901,11 @@ bool Parser::parseAssignmentExpressionEqual(AssignmentExpressionEqualAst **yynod
             if (yytoken == Token_NEW)
             {
                 reportProblem(Warning, "=& new foo() is deprecated");
-                m_varExpressionState = OnlyNewObject;
+                m_state.varExpressionState = OnlyNewObject;
             }
             else
             {
-                m_varExpressionState = OnlyVariable;
+                m_state.varExpressionState = OnlyVariable;
             }
         }
         else if (true /*epsilon*/)
@@ -926,7 +926,7 @@ bool Parser::parseAssignmentExpressionEqual(AssignmentExpressionEqualAst **yynod
         }
         (*yynode)->assignmentExpression = __node_12;
 
-        m_varExpressionState = Normal;
+        m_state.varExpressionState = Normal;
     }
     else
     {
@@ -1995,11 +1995,11 @@ bool Parser::parseClassConstantDeclaration(ClassConstantDeclarationAst **yynode)
         }
         yylex();
 
-        if (yytoken != Token_EQUAL)
+        if (yytoken != Token_ASSIGN)
         {
             if (!mBlockErrors)
             {
-                expectedToken(yytoken, Token_EQUAL, "=");
+                expectedToken(yytoken, Token_ASSIGN, "=");
             }
             return false;
         }
@@ -2706,13 +2706,13 @@ bool Parser::parseClassVariable(ClassVariableAst **yynode)
         (*yynode)->var = tokenStream->index() - 1;
         yylex();
 
-        if (yytoken == Token_EQUAL)
+        if (yytoken == Token_ASSIGN)
         {
-            if (yytoken != Token_EQUAL)
+            if (yytoken != Token_ASSIGN)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_EQUAL, "=");
+                    expectedToken(yytoken, Token_ASSIGN, "=");
                 }
                 return false;
             }
@@ -3279,54 +3279,54 @@ bool Parser::parseCtorArguments(CtorArgumentsAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_LPAREN || yytoken == Token_PLUS_EQUAL
+    if (yytoken == Token_LPAREN || yytoken == Token_PLUS_ASSIGN
         || yytoken == Token_IS_EQUAL
-        || yytoken == Token_AND_EQUAL
+        || yytoken == Token_AND_ASSIGN
         || yytoken == Token_IS_SMALLER_OR_EQUAL
         || yytoken == Token_SL
         || yytoken == Token_INSTANCEOF
         || yytoken == Token_PLUS
-        || yytoken == Token_MINUS_EQUAL
+        || yytoken == Token_MINUS_ASSIGN
         || yytoken == Token_IS_NOT_EQUAL
         || yytoken == Token_QUESTION
         || yytoken == Token_DOUBLE_ARROW
         || yytoken == Token_RPAREN
-        || yytoken == Token_OR_EQUAL
+        || yytoken == Token_OR_ASSIGN
         || yytoken == Token_IS_GREATER_OR_EQUAL
         || yytoken == Token_SR
         || yytoken == Token_MINUS
         || yytoken == Token_SEMICOLON
-        || yytoken == Token_MUL_EQUAL
+        || yytoken == Token_MUL_ASSIGN
         || yytoken == Token_LOGICAL_OR
         || yytoken == Token_IS_IDENTICAL
         || yytoken == Token_COLON
-        || yytoken == Token_XOR_EQUAL
+        || yytoken == Token_XOR_ASSIGN
         || yytoken == Token_AS
         || yytoken == Token_BOOLEAN_OR
         || yytoken == Token_MUL
         || yytoken == Token_CONCAT
-        || yytoken == Token_DIV_EQUAL
+        || yytoken == Token_DIV_ASSIGN
         || yytoken == Token_LOGICAL_AND
         || yytoken == Token_IS_NOT_IDENTICAL
         || yytoken == Token_BIT_AND
         || yytoken == Token_RBRACE
-        || yytoken == Token_SL_EQUAL
+        || yytoken == Token_SL_ASSIGN
         || yytoken == Token_EOF
         || yytoken == Token_BOOLEAN_AND
         || yytoken == Token_DIV
         || yytoken == Token_INC
-        || yytoken == Token_CONCAT_EQUAL
+        || yytoken == Token_CONCAT_ASSIGN
         || yytoken == Token_LOGICAL_XOR
         || yytoken == Token_IS_SMALLER
         || yytoken == Token_BIT_OR
         || yytoken == Token_COMMA
-        || yytoken == Token_SR_EQUAL
-        || yytoken == Token_EQUAL
+        || yytoken == Token_SR_ASSIGN
+        || yytoken == Token_ASSIGN
         || yytoken == Token_MOD
         || yytoken == Token_DEC
         || yytoken == Token_CLOSE_TAG
         || yytoken == Token_RBRACKET
-        || yytoken == Token_MOD_EQUAL
+        || yytoken == Token_MOD_ASSIGN
         || yytoken == Token_IS_GREATER
         || yytoken == Token_BIT_XOR)
     {
@@ -3400,11 +3400,11 @@ bool Parser::parseDeclareItem(DeclareItemAst **yynode)
         }
         yylex();
 
-        if (yytoken != Token_EQUAL)
+        if (yytoken != Token_ASSIGN)
         {
             if (!mBlockErrors)
             {
-                expectedToken(yytoken, Token_EQUAL, "=");
+                expectedToken(yytoken, Token_ASSIGN, "=");
             }
             return false;
         }
@@ -3938,55 +3938,55 @@ bool Parser::parseDynamicClassNameVariableProperties(DynamicClassNameVariablePro
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_OBJECT_OPERATOR || yytoken == Token_PLUS_EQUAL
+    if (yytoken == Token_OBJECT_OPERATOR || yytoken == Token_PLUS_ASSIGN
         || yytoken == Token_IS_EQUAL
         || yytoken == Token_LPAREN
-        || yytoken == Token_AND_EQUAL
+        || yytoken == Token_AND_ASSIGN
         || yytoken == Token_IS_SMALLER_OR_EQUAL
         || yytoken == Token_SL
         || yytoken == Token_INSTANCEOF
         || yytoken == Token_PLUS
-        || yytoken == Token_MINUS_EQUAL
+        || yytoken == Token_MINUS_ASSIGN
         || yytoken == Token_IS_NOT_EQUAL
         || yytoken == Token_QUESTION
         || yytoken == Token_DOUBLE_ARROW
         || yytoken == Token_RPAREN
-        || yytoken == Token_OR_EQUAL
+        || yytoken == Token_OR_ASSIGN
         || yytoken == Token_IS_GREATER_OR_EQUAL
         || yytoken == Token_SR
         || yytoken == Token_MINUS
         || yytoken == Token_SEMICOLON
-        || yytoken == Token_MUL_EQUAL
+        || yytoken == Token_MUL_ASSIGN
         || yytoken == Token_LOGICAL_OR
         || yytoken == Token_IS_IDENTICAL
         || yytoken == Token_COLON
-        || yytoken == Token_XOR_EQUAL
+        || yytoken == Token_XOR_ASSIGN
         || yytoken == Token_AS
         || yytoken == Token_BOOLEAN_OR
         || yytoken == Token_MUL
         || yytoken == Token_CONCAT
-        || yytoken == Token_DIV_EQUAL
+        || yytoken == Token_DIV_ASSIGN
         || yytoken == Token_LOGICAL_AND
         || yytoken == Token_IS_NOT_IDENTICAL
         || yytoken == Token_BIT_AND
         || yytoken == Token_RBRACE
-        || yytoken == Token_SL_EQUAL
+        || yytoken == Token_SL_ASSIGN
         || yytoken == Token_EOF
         || yytoken == Token_BOOLEAN_AND
         || yytoken == Token_DIV
         || yytoken == Token_INC
-        || yytoken == Token_CONCAT_EQUAL
+        || yytoken == Token_CONCAT_ASSIGN
         || yytoken == Token_LOGICAL_XOR
         || yytoken == Token_IS_SMALLER
         || yytoken == Token_BIT_OR
         || yytoken == Token_COMMA
-        || yytoken == Token_SR_EQUAL
-        || yytoken == Token_EQUAL
+        || yytoken == Token_SR_ASSIGN
+        || yytoken == Token_ASSIGN
         || yytoken == Token_MOD
         || yytoken == Token_DEC
         || yytoken == Token_CLOSE_TAG
         || yytoken == Token_RBRACKET
-        || yytoken == Token_MOD_EQUAL
+        || yytoken == Token_MOD_ASSIGN
         || yytoken == Token_IS_GREATER
         || yytoken == Token_BIT_XOR)
     {
@@ -6082,7 +6082,7 @@ bool Parser::parseFunctionCallParameterList(FunctionCallParameterListAst **yynod
                 }
                 return false;
             }
-            (*yynode)->parameter = __node_100;
+            (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_100, memoryPool);
 
             while (yytoken == Token_COMMA)
             {
@@ -6105,7 +6105,7 @@ bool Parser::parseFunctionCallParameterList(FunctionCallParameterListAst **yynod
                     }
                     return false;
                 }
-                (*yynode)->parameter = __node_101;
+                (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_101, memoryPool);
 
             }
         }
@@ -7664,13 +7664,13 @@ bool Parser::parseParameter(ParameterAst **yynode)
         }
         yylex();
 
-        if (yytoken == Token_EQUAL)
+        if (yytoken == Token_ASSIGN)
         {
-            if (yytoken != Token_EQUAL)
+            if (yytoken != Token_ASSIGN)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_EQUAL, "=");
+                    expectedToken(yytoken, Token_ASSIGN, "=");
                 }
                 return false;
             }
@@ -10559,13 +10559,13 @@ bool Parser::parseStaticVar(StaticVarAst **yynode)
         }
         yylex();
 
-        if (yytoken == Token_EQUAL)
+        if (yytoken == Token_ASSIGN)
         {
-            if (yytoken != Token_EQUAL)
+            if (yytoken != Token_ASSIGN)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_EQUAL, "=");
+                    expectedToken(yytoken, Token_ASSIGN, "=");
                 }
                 return false;
             }
@@ -11367,11 +11367,11 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             }
             yylex();
 
-            if (yytoken != Token_EQUAL)
+            if (yytoken != Token_ASSIGN)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_EQUAL, "=");
+                    expectedToken(yytoken, Token_ASSIGN, "=");
                 }
                 return false;
             }
@@ -11798,9 +11798,9 @@ bool Parser::parseVarExpression(VarExpressionAst **yynode)
     {
         if ((yytoken == Token_VARIABLE
              || yytoken == Token_DOLLAR
-             || yytoken == Token_STRING) && ( m_varExpressionState == OnlyVariable ))
+             || yytoken == Token_STRING) && ( m_state.varExpressionState == OnlyVariable ))
         {
-            m_varExpressionState = Normal;
+            m_state.varExpressionState = Normal;
             VariableAst *__node_236 = 0;
             if (!parseVariable(&__node_236))
             {
@@ -11813,9 +11813,9 @@ bool Parser::parseVarExpression(VarExpressionAst **yynode)
             (*yynode)->variable = __node_236;
 
         }
-        else if ((yytoken == Token_NEW) && ( m_varExpressionState == OnlyNewObject ))
+        else if ((yytoken == Token_NEW) && ( m_state.varExpressionState == OnlyNewObject ))
         {
-            m_varExpressionState = Normal;
+            m_state.varExpressionState = Normal;
             VarExpressionNewObjectAst *__node_237 = 0;
             if (!parseVarExpressionNewObject(&__node_237))
             {
@@ -12050,7 +12050,7 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
                 }
                 (*yynode)->variable = __node_243;
 
-                m_varExpressionIsVariable = true;
+                m_state.varExpressionIsVariable = true;
             }
             blockErrors(blockErrors_3);
             if (try_startState_3)
