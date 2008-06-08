@@ -17,7 +17,7 @@
 --  - encapsVar: STRING_VARNAME LBRACKET vs. expr (expr allows STRING_VARNAME too - but not LBRACKET)
 --    resolved by LA()
 -- 1 first/follow conflicts:
---  - elseifList: dangling-else conflict i guess (is this a problem?)
+--  - elseifList: dangling-else conflict - should be ok
 
 
 [:
@@ -75,20 +75,18 @@ namespace PhpParser
     };
     QString m_contents;
     bool m_debug;
-    VarExpressionState m_varExpressionState;
-    bool m_varExpressionIsVariable;
 
     struct ParserState {
         VarExpressionState varExpressionState;
         bool varExpressionIsVariable;
     };
-    ParserState _MState;
+    ParserState m_state;
 :]
 
 %parserclass (constructor)
 [:
-    m_varExpressionState = Normal;
-    m_varExpressionIsVariable = false;
+    m_state.varExpressionState = Normal;
+    m_state.varExpressionIsVariable = false;
 :]
 
 -----------------------------------------------------------
@@ -141,10 +139,10 @@ namespace PhpParser
 %token IS_EQUAL ("=="), IS_NOT_EQUAL ("!="), IS_IDENTICAL ("==="),
        IS_NOT_IDENTICAL ("!=="), IS_SMALLER ("<"), IS_GREATER (">"),
        IS_SMALLER_OR_EQUAL ("<="), IS_GREATER_OR_EQUAL (">="),
-       BOOLEAN_OR ("||"), BOOLEAN_AND ("&&"), EQUAL ("="),
-       PLUS_EQUAL ("+="), MINUS_EQUAL ("-="), MUL_EQUAL ("*="), DIV_EQUAL ("/="),
-       CONCAT_EQUAL (".="), MOD_EQUAL ("%="), AND_EQUAL ("&="), OR_EQUAL ("|="),
-       XOR_EQUAL ("^="), SL_EQUAL ("<<="), SR_EQUAL (">>="), OBJECT_OPERATOR ("->"),
+       BOOLEAN_OR ("||"), BOOLEAN_AND ("&&"), ASSIGN ("="),
+       PLUS_ASSIGN ("+="), MINUS_ASSIGN ("-="), MUL_ASSIGN ("*="), DIV_ASSIGN ("/="),
+       CONCAT_ASSIGN (".="), MOD_ASSIGN ("%="), AND_ASSIGN ("&="), OR_ASSIGN ("|="),
+       XOR_ASSIGN ("^="), SL_ASSIGN ("<<="), SR_ASSIGN (">>="), OBJECT_OPERATOR ("->"),
        PLUS ("+"), MINUS("-"), CONCAT("."),
        INC ("++"), DEC ("--"), BANG ("!"), QUESTION ("?"), COLON (":"),
        BIT_AND ("&"), BIT_OR("|"), BIT_XOR ("^"),
@@ -222,13 +220,13 @@ statements=innerStatementList
 -- leftside must me a variable, we check afterwards if it was a variable and
 -- if not we report an error
 0 --needed for line below
-[: m_varExpressionIsVariable = false; :] --reset flag
+[: m_state.varExpressionIsVariable = false; :] --reset flag
 conditionalExpression=conditionalExpression
 (
   assignmentAxpressionEqual=assignmentExpressionEqual | (
-     (PLUS_EQUAL | MINUS_EQUAL | MUL_EQUAL | DIV_EQUAL
-      | CONCAT_EQUAL | MOD_EQUAL | AND_EQUAL | OR_EQUAL
-      | XOR_EQUAL | SL_EQUAL | SR_EQUAL)
+     (PLUS_ASSIGN | MINUS_ASSIGN | MUL_ASSIGN | DIV_ASSIGN
+      | CONCAT_ASSIGN | MOD_ASSIGN | AND_ASSIGN | OR_ASSIGN
+      | XOR_ASSIGN | SL_ASSIGN | SR_ASSIGN)
      assignmentExpressionCheckIfVariable
      assignmentExpression=assignmentExpression)
    | 0)
@@ -237,26 +235,26 @@ conditionalExpression=conditionalExpression
 --=& is special:
   -- $foo =& $var; is allowed but not $foo =& 'static';
   -- $foo =& new bar(); is allowed too but deprecated and reports a warning
-  --we set a flag (m_varExpressionState) with that var_expression accepts only valid parts
+  --we set a flag (varExpressionState) with that var_expression accepts only valid parts
   --this is done in such a strage way because we need the full expression to allow
   --things like $foo =& $bar || e();
-EQUAL
+ASSIGN
     assignmentExpressionCheckIfVariable --as in assignmentExpression
     (BIT_AND [: if (yytoken == Token_NEW) {
                 reportProblem(Warning, "=& new foo() is deprecated");
-                m_varExpressionState = OnlyNewObject;
+                m_state.varExpressionState = OnlyNewObject;
               } else {
-                m_varExpressionState = OnlyVariable;
+                m_state.varExpressionState = OnlyVariable;
               }:]
-     | 0) assignmentExpression=assignmentExpression [: m_varExpressionState = Normal; :]
+     | 0) assignmentExpression=assignmentExpression [: m_state.varExpressionState = Normal; :]
 -> assignmentExpressionEqual ;;
 
 
 -- check if var_expression was a variable, if not report an error
--- m_varExpressionIsVariable is set in var_expression
+-- varExpressionIsVariable is set in var_expression
 0 --to allow cpp-code
 [:
-    if (!m_varExpressionIsVariable) {
+    if (!m_state.varExpressionIsVariable) {
         reportProblem(Error, "Left side is not a variable");
         return false;
     }
@@ -346,7 +344,7 @@ expression=booleanOrExpression
   | BOOL_CAST unaryExpression=unaryExpression
   | UNSET_CAST unaryExpression=unaryExpression
   | AT unaryExpression=unaryExpression
-  | LIST LPAREN assignmentList=assignmentList RPAREN EQUAL unaryExpression=unaryExpression
+  | LIST LPAREN assignmentList=assignmentList RPAREN ASSIGN unaryExpression=unaryExpression
   | EXIT (LPAREN (expression=expr | 0) RPAREN | 0)
   | EVAL LPAREN expression=expr RPAREN
   | INCLUDE unaryExpression=unaryExpression
@@ -367,16 +365,16 @@ expression=booleanOrExpression
 -> postprefixOperator ;;
 
 --first/first conflict - no problem because of ifs
-    ?[: m_varExpressionState == OnlyVariable :] 0 [: m_varExpressionState = Normal; :] variable=variable
-  | ?[: m_varExpressionState == OnlyNewObject :] 0 [: m_varExpressionState = Normal; :] newObject=varExpressionNewObject
+    ?[: m_state.varExpressionState == OnlyVariable :] 0 [: m_state.varExpressionState = Normal; :] variable=variable
+  | ?[: m_state.varExpressionState == OnlyNewObject :] 0 [: m_state.varExpressionState = Normal; :] newObject=varExpressionNewObject
   | varExpressionNormal=varExpressionNormal
 -> varExpression ;;
 
     LPAREN expression=expr RPAREN
   | BACKTICK encapsList=encapsList BACKTICK
   --try/rollback resolves conflict scalar vs. staticMember (foo::bar vs. foo::$bar)
-  --m_varExpressionIsVariable flag is needed for assignmentExpression
-  | try/rollback (variable=variable [: m_varExpressionIsVariable = true; :])
+  --varExpressionIsVariable flag is needed for assignmentExpression
+  | try/rollback (variable=variable [: m_state.varExpressionIsVariable = true; :])
     catch (scalar=scalar)
   | ARRAY LPAREN
         (#arrayValues=arrayPairValue
@@ -396,7 +394,7 @@ expression=booleanOrExpression
   | 0
 -> ctorArguments ;;
 
-    parameter=functionCallParameterListElement @ COMMA | 0
+    #parameters=functionCallParameterListElement @ COMMA | 0
 -> functionCallParameterList ;;
 
 
@@ -517,7 +515,7 @@ expression=booleanOrExpression
   | COLON statements=innerStatementList ENDDECLARE semicolonOrCloseTag
 -> declareStatement ;;
 
-    STRING EQUAL scalar=staticScalar
+    STRING ASSIGN scalar=staticScalar
 -> declareItem ;;
 
     DOUBLE_ARROW foreachVariable=foreachVariable | 0
@@ -530,7 +528,7 @@ expression=booleanOrExpression
   | COLON statements=innerStatementList ENDFOREACH semicolonOrCloseTag
 -> foreachStatement ;;
 
-  VARIABLE (EQUAL staticScalar=staticScalar | 0)
+  VARIABLE (ASSIGN staticScalar=staticScalar | 0)
 -> staticVar ;;
 
     var=VARIABLE
@@ -645,7 +643,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
     #params=parameter @ COMMA | 0
 -> parameterList ;;
 
-(STRING | ARRAY | 0) (BIT_AND | 0) VARIABLE (EQUAL defaultValue=staticScalar | 0)
+(STRING | ARRAY | 0) (BIT_AND | 0) VARIABLE (ASSIGN defaultValue=staticScalar | 0)
 -> parameter ;;
 
     value=commonScalar
@@ -684,13 +682,13 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
  |  LBRACE statements=innerStatementList RBRACE
 -> methodBody ;;
 
-    STRING EQUAL scalar=staticScalar
+    STRING ASSIGN scalar=staticScalar
 -> classConstantDeclaration ;;
 
    vars=classVariable @ COMMA
 -> classVariableDeclaration ;;
 
-    var=VARIABLE (EQUAL value=staticScalar | 0)
+    var=VARIABLE (ASSIGN value=staticScalar | 0)
 -> classVariable ;;
 
     PUBLIC
@@ -796,15 +794,15 @@ void Parser::setDebug( bool debug )
 Parser::ParserState *Parser::copyCurrentState()
 {
     ParserState *state = new ParserState();
-    state->varExpressionState = m_varExpressionState;
-    state->varExpressionIsVariable = m_varExpressionIsVariable;
+    state->varExpressionState = m_state.varExpressionState;
+    state->varExpressionIsVariable = m_state.varExpressionIsVariable;
     return state;
 }
 
 void Parser::restoreState( Parser::ParserState* state)
 {
-    m_varExpressionState = state->varExpressionState;
-    m_varExpressionIsVariable = state->varExpressionIsVariable;
+    m_state.varExpressionState = state->varExpressionState;
+    m_state.varExpressionIsVariable = state->varExpressionIsVariable;
 }
 
 } // end of namespace PhpParser

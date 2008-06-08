@@ -371,7 +371,7 @@ int Lexer::nextTokenKind()
                         if ((it+2)->unicode() == '=')
                         {
                             m_curpos++;
-                            token = Parser::Token_SL_EQUAL;
+                            token = Parser::Token_SL_ASSIGN;
                         }
                         else
                         {
@@ -402,7 +402,7 @@ int Lexer::nextTokenKind()
                     if ((it+2)->unicode() == '=')
                     {
                         m_curpos++;
-                        token = Parser::Token_SR_EQUAL;
+                        token = Parser::Token_SR_ASSIGN;
                     }
                     else
                     {
@@ -459,7 +459,7 @@ int Lexer::nextTokenKind()
             {
                 if ((it+1)->unicode() == '=') {
                     m_curpos++;
-                    token = Parser::Token_MOD_EQUAL;
+                    token = Parser::Token_MOD_ASSIGN;
                 } else {
                     token = Parser::Token_MOD;
                 }
@@ -469,7 +469,7 @@ int Lexer::nextTokenKind()
                 if ((it+1)->unicode() == '=')
                 {
                     m_curpos++;
-                    token = Parser::Token_DIV_EQUAL;
+                    token = Parser::Token_DIV_ASSIGN;
                 }
                 else if ((it+1)->unicode() == '/')
                 {
@@ -519,7 +519,7 @@ int Lexer::nextTokenKind()
             {
                 if ((it+1)->unicode() == '=') {
                     m_curpos++;
-                    token = Parser::Token_XOR_EQUAL;
+                    token = Parser::Token_XOR_ASSIGN;
                 } else {
                     token = Parser::Token_BIT_XOR;
                 }
@@ -528,7 +528,7 @@ int Lexer::nextTokenKind()
             {
                 if ((it+1)->unicode() == '=') {
                     m_curpos++;
-                    token = Parser::Token_MUL_EQUAL;
+                    token = Parser::Token_MUL_ASSIGN;
                 } else {
                     token = Parser::Token_MUL;
                 }
@@ -540,7 +540,7 @@ int Lexer::nextTokenKind()
                     token = Parser::Token_BOOLEAN_OR;
                 } else if ((it+1)->unicode() == '=') {
                     m_curpos++;
-                    token = Parser::Token_OR_EQUAL;
+                    token = Parser::Token_OR_ASSIGN;
                 } else {
                     token = Parser::Token_BIT_OR;
                 }
@@ -552,7 +552,7 @@ int Lexer::nextTokenKind()
                     token = Parser::Token_BOOLEAN_AND;
                 } else if ((it+1)->unicode() == '=') {
                     m_curpos++;
-                    token = Parser::Token_AND_EQUAL;
+                    token = Parser::Token_AND_ASSIGN;
                 } else {
                     token = Parser::Token_BIT_AND;
                 }
@@ -564,7 +564,7 @@ int Lexer::nextTokenKind()
                     token = Parser::Token_INC;
                 } else if ((it+1)->unicode() == '=') {
                     m_curpos++;
-                    token = Parser::Token_PLUS_EQUAL;
+                    token = Parser::Token_PLUS_ASSIGN;
                 } else {
                     token = Parser::Token_PLUS;
                 }
@@ -576,7 +576,7 @@ int Lexer::nextTokenKind()
                     token = Parser::Token_DEC;
                 } else if ((it+1)->unicode() == '=') {
                     m_curpos++;
-                    token = Parser::Token_MINUS_EQUAL;
+                    token = Parser::Token_MINUS_ASSIGN;
                 } else {
                     token = Parser::Token_MINUS;
                 }
@@ -585,7 +585,7 @@ int Lexer::nextTokenKind()
             {
                 if ((it+1)->unicode() == '=') {
                     m_curpos++;
-                    token = Parser::Token_CONCAT_EQUAL;
+                    token = Parser::Token_CONCAT_ASSIGN;
                 } else {
                     token = Parser::Token_CONCAT;
                 }
@@ -662,7 +662,7 @@ int Lexer::nextTokenKind()
                 }
                 else
                 {
-                    token = Parser::Token_EQUAL;
+                    token = Parser::Token_ASSIGN;
                 }
             }
             else if (isValidVariableIdentifier(it) && !it->isDigit())

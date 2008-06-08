@@ -123,7 +123,10 @@ void showUsage(char** argv)
     qout << "--print-tokens Print all found tokens" << endl;
     qout << "--debug        Print AST" << endl;
 }
-
+/**
+ * print the token with the same text as php tokens - so they can be compared with
+ * the result of get_token_all (see test-tokenize.php)
+ **/
 void printToken(int token, const Lexer& lexer, const QString& content)
 {
     int begin = lexer.tokenBegin();
@@ -159,7 +162,7 @@ void printToken(int token, const Lexer& lexer, const QString& content)
         qout << tokenText << " T_NUM_STRING" << endl;
     } else if (token == Parser::Token_STRING) {
         qout << tokenText << " T_STRING" << endl;
-    } else if (token == Parser::Token_EQUAL) {
+    } else if (token == Parser::Token_ASSIGN) {
         qout << tokenText << " =" << endl;
     } else if (token == Parser::Token_DNUMBER) {
         qout << tokenText << " T_DNUMBER" << endl;
@@ -195,27 +198,27 @@ void printToken(int token, const Lexer& lexer, const QString& content)
         qout << tokenText << " T_BOOLEAN_OR" << endl;
     } else if (token == Parser::Token_BOOLEAN_AND) {
         qout << tokenText << " T_BOOLEAN_AND" << endl;
-    } else if (token == Parser::Token_PLUS_EQUAL) {
+    } else if (token == Parser::Token_PLUS_ASSIGN) {
         qout << tokenText << " T_PLUS_EQUAL" << endl;
-    } else if (token == Parser::Token_MINUS_EQUAL) {
+    } else if (token == Parser::Token_MINUS_ASSIGN) {
         qout << tokenText << " T_MINUS_EQUAL" << endl;
-    } else if (token == Parser::Token_MUL_EQUAL) {
+    } else if (token == Parser::Token_MUL_ASSIGN) {
         qout << tokenText << " T_MUL_EQUAL" << endl;
-    } else if (token == Parser::Token_DIV_EQUAL) {
+    } else if (token == Parser::Token_DIV_ASSIGN) {
         qout << tokenText << " T_DIV_EQUAL" << endl;
-    } else if (token == Parser::Token_CONCAT_EQUAL) {
+    } else if (token == Parser::Token_CONCAT_ASSIGN) {
         qout << tokenText << " T_CONCAT_EQUAL" << endl;
-    } else if (token == Parser::Token_MOD_EQUAL) {
+    } else if (token == Parser::Token_MOD_ASSIGN) {
         qout << tokenText << " T_MOD_EQUAL" << endl;
-    } else if (token == Parser::Token_AND_EQUAL) {
+    } else if (token == Parser::Token_AND_ASSIGN) {
         qout << tokenText << " T_AND_EQUAL" << endl;
-    } else if (token == Parser::Token_OR_EQUAL) {
+    } else if (token == Parser::Token_OR_ASSIGN) {
         qout << tokenText << " T_OR_EQUAL" << endl;
-    } else if (token == Parser::Token_XOR_EQUAL) {
+    } else if (token == Parser::Token_XOR_ASSIGN) {
         qout << tokenText << " T_XOR_EQUAL" << endl;
-    } else if (token == Parser::Token_SL_EQUAL) {
+    } else if (token == Parser::Token_SL_ASSIGN) {
         qout << tokenText << " T_SL_EQUAL" << endl;
-    } else if (token == Parser::Token_SR_EQUAL) {
+    } else if (token == Parser::Token_SR_ASSIGN) {
         qout << tokenText << " T_SR_EQUAL" << endl;
     } else if (token == Parser::Token_BANG) {
         qout << tokenText << " !" << endl;
