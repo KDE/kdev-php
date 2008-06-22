@@ -102,7 +102,7 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
 
         DUContext* parameters = 0;
         if (node->parameters) {
-            parameters = openContext(node, DUContext::Function, node->methodName);
+            parameters = openContext(node->parameters, DUContext::Function, node->methodName);
             id = currentContext()->localScopeIdentifier();
             visitNode(node->parameters);
             closeContext();
