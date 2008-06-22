@@ -1,6 +1,22 @@
 -------------------------------------------------------------------------------
 -- Copyright (c) 2008 Niko Sams <niko.sams@gmail.com>
--------------------------------------------------------------------------------
+--
+-- This grammar is free software; you can redistribute it and/or
+-- modify it under the terms of the GNU Library General Public
+-- License as published by the Free Software Foundation; either
+-- version 2 of the License, or (at your option) any later version.
+--
+-- This grammar is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-- Lesser General Public License for more details.
+--
+-- You should have received a copy of the GNU Library General Public License
+-- along with this library; see the file COPYING.LIB.  If not, write to
+-- the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+-- Boston, MA 02110-1301, USA.
+-----------------------------------------------------------
+
 
 -----------------------------------------------------------
 -- Grammar for PHP 5.2
@@ -25,13 +41,9 @@
 #include <QtCore/QString>
 #include <kdebug.h>
 
-namespace Php
+namespace KDevelop
 {
-    class Lexer;
-    enum NumericType  {
-        LongNumber,
-        DoubleNumber,
-    };
+    class DUContext;
 }
 :]
 
@@ -41,6 +53,37 @@ namespace Php
 ------------------------------------------------------------
 %export_macro "KDEVPHPPARSER_EXPORT"
 %export_macro_header "parserexport.h"
+
+
+------------------------------------------------------------
+-- Enumeration types for additional AST members,
+-- in the global "Php" namespace
+------------------------------------------------------------
+%namespace
+[:
+    class Lexer;
+    enum NumericType  {
+        LongNumber,
+        DoubleNumber,
+    };
+
+    enum ModifierFlags {
+        ModifierPrivate      = 1,
+        ModifierPublic       = 1 << 1,
+        ModifierProtected    = 1 << 2,
+        ModifierStatic       = 1 << 3,
+        ModifierFinal        = 1 << 4,
+        ModifierAbstract     = 1 << 5,
+    };
+:]
+
+------------------------------------------------------------
+-- Ast Node class members
+------------------------------------------------------------
+%ast_extra_members
+[:
+  KDevelop::DUContext* ducontext;
+:]
 
 ------------------------------------------------------------
 -- Parser class members
@@ -390,7 +433,7 @@ expression=booleanOrExpression
     NEW className=classNameReference ctor=ctorArguments
 -> varExpressionNewObject ;;
 
-    LPAREN parameterList=functionCallParameterList RPAREN
+    LPAREN (parameterList=functionCallParameterList | 0) RPAREN
   | 0
 -> ctorArguments ;;
 
@@ -417,7 +460,7 @@ expression=booleanOrExpression
 -> variable ;;
 
     OBJECT_OPERATOR objectProperty=objectProperty
-        (LPAREN parameterList=functionCallParameterList RPAREN | 0)
+        (LPAREN (parameterList=functionCallParameterList | 0) RPAREN | 0)
 -> variableProperty ;;
 
    --Conflict
@@ -636,14 +679,15 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 -> commonScalar [
     member variable numType: Php::NumericType; ] ;;
 
-    FUNCTION (BIT_AND | 0) STRING
-    LPAREN params=parameterList RPAREN LBRACE statements=innerStatementList RBRACE
+    FUNCTION (BIT_AND | 0) functionName=identifier
+    LPAREN (parameters=parameterList | 0) RPAREN LBRACE functionBody=innerStatementList RBRACE
 -> functionDeclarationStatement ;;
 
-    #params=parameter @ COMMA | 0
+    #parameters=parameter @ COMMA
 -> parameterList ;;
 
-(STRING | ARRAY | 0) (BIT_AND | 0) VARIABLE (ASSIGN defaultValue=staticScalar | 0)
+(parameterType=STRING | arrayType=ARRAY | 0) (BIT_AND | 0)
+    variableName=VARIABLE (ASSIGN defaultValue=staticScalar | 0)
 -> parameter ;;
 
     value=commonScalar
@@ -660,21 +704,24 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
     #val1=staticScalar (DOUBLE_ARROW #val2=staticScalar | 0)
 -> staticArrayPairValue ;;
 
-    (classType=ABSTRACT | classType=FINAL | 0) CLASS name=STRING
-        (EXTENDS extends=STRING | 0)
-        (IMPLEMENTS #implments=STRING @ COMMA | 0)
-    LBRACE #statements=classStatement* RBRACE
-  | INTERFACE name=STRING (EXTENDS #implments=STRING @ COMMA | 0)
-    LBRACE #statements=classStatement* RBRACE
+   ident=STRING
+-> identifier ;;
+
+    (ABSTRACT | FINAL | 0) CLASS className=identifier
+        (EXTENDS extends=identifier | 0)
+        (IMPLEMENTS #implements=identifier @ COMMA | 0)
+    LBRACE #classStatements=classStatement* RBRACE
+  | INTERFACE interfaceName=identifier (EXTENDS #implements=identifier @ COMMA | 0)
+    LBRACE #classStatements=classStatement* RBRACE
 -> classDeclarationStatement ;;
 
 
     CONST consts=classConstantDeclaration @ COMMA SEMICOLON
   | VAR classVariableDeclaration SEMICOLON
-  | modifiers=memberModifier*
-    ( classVariableDeclaration SEMICOLON
-      | FUNCTION (BIT_AND | 0) STRING LPAREN params=parameterList RPAREN
-        body=methodBody
+  | modifiers=optionalModifiers
+    ( variable=classVariableDeclaration SEMICOLON
+      | FUNCTION (BIT_AND | 0) methodName=identifier LPAREN (parameters=parameterList | 0) RPAREN
+        methodBody=methodBody
     )
 -> classStatement ;;
 
@@ -682,22 +729,27 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
  |  LBRACE statements=innerStatementList RBRACE
 -> methodBody ;;
 
-    STRING ASSIGN scalar=staticScalar
+    identifier ASSIGN scalar=staticScalar
 -> classConstantDeclaration ;;
 
-   vars=classVariable @ COMMA
+#vars=classVariable @ COMMA
 -> classVariableDeclaration ;;
 
     var=VARIABLE (ASSIGN value=staticScalar | 0)
 -> classVariable ;;
 
-    PUBLIC
-  | PROTECTED
-  | PRIVATE
-  | STATIC
-  | ABSTRACT
-  | FINAL
--> memberModifier ;;
+  (
+    PUBLIC     [: (*yynode)->modifiers |= ModifierPublic;      :]
+  | PROTECTED  [: (*yynode)->modifiers |= ModifierProtected;      :]
+  | PRIVATE    [: (*yynode)->modifiers |= ModifierPrivate;      :]
+  | STATIC     [: (*yynode)->modifiers |= ModifierStatic;      :]
+  | ABSTRACT   [: (*yynode)->modifiers |= ModifierAbstract;      :]
+  | FINAL      [: (*yynode)->modifiers |= ModifierFinal;      :]
+  | 0
+  )*
+-> optionalModifiers[
+     member variable modifiers: unsigned int;
+] ;;
 
 
 
@@ -719,7 +771,7 @@ namespace Php
 void Parser::tokenize( const QString& contents )
 {
     m_contents = contents;
-    Lexer lexer( this, contents );
+    Lexer lexer( tokenStream, contents );
     int kind = Parser::Token_EOF;
 
     do

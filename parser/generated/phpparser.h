@@ -10,7 +10,7 @@
 #include <kdev-pg-token-stream.h>
 
 #include <parserexport.h>
-namespace PhpParser
+namespace Php
 {
 
 class KDEVPHPPARSER_EXPORT Parser
@@ -344,11 +344,11 @@ public:
     bool parseFunctionCallParameterListElement(FunctionCallParameterListElementAst **yynode);
     bool parseFunctionDeclarationStatement(FunctionDeclarationStatementAst **yynode);
     bool parseGlobalVar(GlobalVarAst **yynode);
+    bool parseIdentifier(IdentifierAst **yynode);
     bool parseInnerStatementList(InnerStatementListAst **yynode);
     bool parseLogicalAndExpression(LogicalAndExpressionAst **yynode);
     bool parseLogicalOrExpression(LogicalOrExpressionAst **yynode);
     bool parseLogicalXorExpression(LogicalXorExpressionAst **yynode);
-    bool parseMemberModifier(MemberModifierAst **yynode);
     bool parseMethodBody(MethodBodyAst **yynode);
     bool parseMultiplicativeExpression(MultiplicativeExpressionAst **yynode);
     bool parseMultiplicativeExpression_rest(MultiplicativeExpression_restAst **yynode);
@@ -357,6 +357,7 @@ public:
     bool parseNewelseifListItem(NewelseifListItemAst **yynode);
     bool parseObjectDimList(ObjectDimListAst **yynode);
     bool parseObjectProperty(ObjectPropertyAst **yynode);
+    bool parseOptionalModifiers(OptionalModifiersAst **yynode);
     bool parseParameter(ParameterAst **yynode);
     bool parseParameterList(ParameterListAst **yynode);
     bool parsePostprefixOperator(PostprefixOperatorAst **yynode);
@@ -387,7 +388,7 @@ public:
     bool parseWhileStatement(WhileStatementAst **yynode);
 };
 
-} // end of namespace PhpParser
+} // end of namespace Php
 
 #endif
 

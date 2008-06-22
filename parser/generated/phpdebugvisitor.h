@@ -11,7 +11,7 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QDebug>
 
-namespace PhpParser
+namespace Php
 {
 
 class KDEVPHPPARSER_EXPORT DebugVisitor: public DefaultVisitor
@@ -1867,6 +1867,39 @@ public:
         m_indent--;
     }
 
+    virtual void visitIdentifier(IdentifierAst *node)
+    {
+        qint64 beginLine,endLine,beginCol,endCol;
+        m_str->startPosition(node->startToken, &beginLine, &beginCol);
+        m_str->endPosition(node->endToken, &endLine, &endCol);
+        QString tokenString;
+        if (!m_content.isEmpty())
+        {
+            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
+            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            int begin = startToken.begin;
+            int end = endToken.end;
+            if (end-begin > 30)
+            {
+                tokenString = m_content.mid(begin, 10);
+                tokenString += " ...";
+                tokenString += QString("%1 more").arg(end-begin-20);
+                tokenString += "... ";
+                tokenString += m_content.mid(end-10, 10);
+            }
+            else
+            {
+                tokenString = m_content.mid(begin, end-begin+1);
+            }
+            tokenString = tokenString.replace('\n', "\\n");
+            tokenString = tokenString.replace('\r', "\\r");
+        }
+        qDebug() << QString().fill(' ', m_indent) << "identifier[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
+        m_indent++;
+        DefaultVisitor::visitIdentifier(node);
+        m_indent--;
+    }
+
     virtual void visitInnerStatementList(InnerStatementListAst *node)
     {
         qint64 beginLine,endLine,beginCol,endCol;
@@ -1996,39 +2029,6 @@ public:
         qDebug() << QString().fill(' ', m_indent) << "logicalXorExpression[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
         m_indent++;
         DefaultVisitor::visitLogicalXorExpression(node);
-        m_indent--;
-    }
-
-    virtual void visitMemberModifier(MemberModifierAst *node)
-    {
-        qint64 beginLine,endLine,beginCol,endCol;
-        m_str->startPosition(node->startToken, &beginLine, &beginCol);
-        m_str->endPosition(node->endToken, &endLine, &endCol);
-        QString tokenString;
-        if (!m_content.isEmpty())
-        {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
-            int begin = startToken.begin;
-            int end = endToken.end;
-            if (end-begin > 30)
-            {
-                tokenString = m_content.mid(begin, 10);
-                tokenString += " ...";
-                tokenString += QString("%1 more").arg(end-begin-20);
-                tokenString += "... ";
-                tokenString += m_content.mid(end-10, 10);
-            }
-            else
-            {
-                tokenString = m_content.mid(begin, end-begin+1);
-            }
-            tokenString = tokenString.replace('\n', "\\n");
-            tokenString = tokenString.replace('\r', "\\r");
-        }
-        qDebug() << QString().fill(' ', m_indent) << "memberModifier[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
-        m_indent++;
-        DefaultVisitor::visitMemberModifier(node);
         m_indent--;
     }
 
@@ -2293,6 +2293,39 @@ public:
         qDebug() << QString().fill(' ', m_indent) << "objectProperty[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
         m_indent++;
         DefaultVisitor::visitObjectProperty(node);
+        m_indent--;
+    }
+
+    virtual void visitOptionalModifiers(OptionalModifiersAst *node)
+    {
+        qint64 beginLine,endLine,beginCol,endCol;
+        m_str->startPosition(node->startToken, &beginLine, &beginCol);
+        m_str->endPosition(node->endToken, &endLine, &endCol);
+        QString tokenString;
+        if (!m_content.isEmpty())
+        {
+            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
+            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            int begin = startToken.begin;
+            int end = endToken.end;
+            if (end-begin > 30)
+            {
+                tokenString = m_content.mid(begin, 10);
+                tokenString += " ...";
+                tokenString += QString("%1 more").arg(end-begin-20);
+                tokenString += "... ";
+                tokenString += m_content.mid(end-10, 10);
+            }
+            else
+            {
+                tokenString = m_content.mid(begin, end-begin+1);
+            }
+            tokenString = tokenString.replace('\n', "\\n");
+            tokenString = tokenString.replace('\r', "\\r");
+        }
+        qDebug() << QString().fill(' ', m_indent) << "optionalModifiers[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
+        m_indent++;
+        DefaultVisitor::visitOptionalModifiers(node);
         m_indent--;
     }
 
@@ -3226,7 +3259,7 @@ private:
     QString m_content;
 };
 
-} // end of namespace PhpParser
+} // end of namespace Php
 
 #endif
 

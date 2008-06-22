@@ -1,22 +1,22 @@
-/* KDevelop PHP Support
- *
- * Copyright 2008 Niko Sams <niko.sams@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- */
+/***************************************************************************
+ *   This file is part of KDevelop                                         *
+ *   Copyright 2008 Niko Sams <niko.sams@gmail.com>                        *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
+ ***************************************************************************/
 
 #include "phplexer.h"
 
@@ -35,8 +35,8 @@
 namespace Php
 {
 
-Lexer::Lexer( Parser* _parser, const QString& content ):
-        m_content( content ), m_parser( _parser ),
+Lexer::Lexer( KDevPG::TokenStream* tokenStream, const QString& content ):
+        m_content( content ), m_tokenStream( tokenStream ),
         m_curpos( 0 ), m_contentSize( m_content.size() ),
         m_tokenBegin( 0 ), m_tokenEnd( 0 ), m_haltCompiler( 0 )
 {
@@ -1067,8 +1067,7 @@ bool Lexer::isValidVariableIdentifier(QChar* it)
 
 void Lexer::createNewline( int pos )
 {
-    if( m_parser )
-        m_parser->tokenStream->locationTable()->newline( pos );
+    if( m_tokenStream ) m_tokenStream->locationTable()->newline( pos );
 }
 
 }

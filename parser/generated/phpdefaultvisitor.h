@@ -7,7 +7,7 @@
 #include "phpvisitor.h"
 
 #include <parserexport.h>
-namespace PhpParser
+namespace Php
 {
 
 class KDEVPHPPARSER_EXPORT DefaultVisitor: public Visitor
@@ -69,11 +69,11 @@ public:
     virtual void visitFunctionCallParameterListElement(FunctionCallParameterListElementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitGlobalVar(GlobalVarAst *node);
+    virtual void visitIdentifier(IdentifierAst *node);
     virtual void visitInnerStatementList(InnerStatementListAst *node);
     virtual void visitLogicalAndExpression(LogicalAndExpressionAst *node);
     virtual void visitLogicalOrExpression(LogicalOrExpressionAst *node);
     virtual void visitLogicalXorExpression(LogicalXorExpressionAst *node);
-    virtual void visitMemberModifier(MemberModifierAst *node);
     virtual void visitMethodBody(MethodBodyAst *node);
     virtual void visitMultiplicativeExpression(MultiplicativeExpressionAst *node);
     virtual void visitMultiplicativeExpression_rest(MultiplicativeExpression_restAst *node);
@@ -82,6 +82,7 @@ public:
     virtual void visitNewelseifListItem(NewelseifListItemAst *node);
     virtual void visitObjectDimList(ObjectDimListAst *node);
     virtual void visitObjectProperty(ObjectPropertyAst *node);
+    virtual void visitOptionalModifiers(OptionalModifiersAst *node);
     virtual void visitParameter(ParameterAst *node);
     virtual void visitParameterList(ParameterListAst *node);
     virtual void visitPostprefixOperator(PostprefixOperatorAst *node);
@@ -112,7 +113,7 @@ public:
     virtual void visitWhileStatement(WhileStatementAst *node);
 };
 
-} // end of namespace PhpParser
+} // end of namespace Php
 
 #endif
 

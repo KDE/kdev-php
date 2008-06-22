@@ -24,16 +24,27 @@
  *****************************************************************************/
 #include "parsesession.h"
 
-#include "phpdriver.h"
+#include "phpparser.h"
+
+#include "kdev-pg-memory-pool.h"
+#include "kdev-pg-token-stream.h"
+
+#include <QFile>
+#include <QTextCodec>
 
 namespace Php
 {
 
 ParseSession::ParseSession()
+    :   m_debug(false),
+        m_pool(new KDevPG::MemoryPool()),
+        m_tokenStream(new KDevPG::TokenStream())
 {
 }
 ParseSession::~ParseSession()
 {
+    delete m_pool;
+    delete m_tokenStream;
 }
 
 QString ParseSession::contents() const
@@ -46,11 +57,64 @@ void ParseSession::setContents( const QString& contents )
     m_contents = contents;
 }
 
+bool ParseSession::readFile( const QString& filename, const char* codec )
+{
+    QFile f(filename);
+    if( !f.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+        kDebug() << "Couldn't open project file:" << filename;
+        return false;
+    }
+    QTextStream s(&f);
+    if( codec )
+        s.setCodec( QTextCodec::codecForName(codec) );
+    m_contents = s.readAll();
+    return true;
+}
+void ParseSession::setDebug( bool debug )
+{
+    m_debug = debug;
+}
+
+KDevPG::TokenStream* ParseSession::tokenStream() const
+{
+    return m_tokenStream;
+}
+
 bool ParseSession::parse( Php::StartAst** ast )
 {
-    Php::Driver d;
-    d.setContent( m_contents );
-    return d.parse( ast );
+    Parser parser;
+    parser.setTokenStream( m_tokenStream );
+    parser.setMemoryPool( m_pool );
+    parser.setDebug( m_debug );
+
+    parser.tokenize(m_contents);
+    StartAst* phpAst;
+    bool matched = parser.parseStart(&phpAst);
+    if( matched )
+    {
+        kDebug() << "Sucessfully parsed";
+        *ast = phpAst;
+    }else
+    {
+        *ast = 0;
+        parser.expectedSymbol(AstNode::StartKind, "start");
+        kDebug() << "Couldn't parse content";
+    }
+    return matched;
+}
+
+KDevelop::SimpleCursor ParseSession::positionAt( qint64 offset ) const
+{
+    qint64 line, column;
+    m_tokenStream->locationTable()->positionAt( offset, &line, &column );
+    return KDevelop::SimpleCursor(line, column);
+}
+
+QString ParseSession::symbol( qint64 token ) const
+{
+    const KDevPG::TokenStream::Token& tok = m_tokenStream->token( token );
+    return m_contents.mid(tok.begin, tok.end - tok.begin + 1);
 }
 
 }

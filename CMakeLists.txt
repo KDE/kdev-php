@@ -11,6 +11,7 @@ find_package(KDevPlatform REQUIRED)
 
 include_directories(
     ${KDEVPLATFORM_INCLUDE_DIR}
+    ${KDEVPLATFORM_INCLUDE_DIR}/language
     ${KDE4_INCLUDES}
     ${KDE4_INCLUDE_DIR}/threadweaver
     ${CMAKE_CURRENT_BINARY_DIR}
@@ -18,7 +19,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/parser
 )
 
-#add_definitions( -DKDE_DEFAULT_DEBUG_AREA=9011 )
+add_definitions( -DKDE_DEFAULT_DEBUG_AREA=9043 )
 
 #Don't error out if the FindXXX are missing for these two
 find_package(KDevelop-PG-Qt QUIET)
@@ -37,4 +38,27 @@ endif(KDEVPGQT_FOUND)
 
 
 add_subdirectory(parser)
+add_subdirectory(duchain)
+
+set(kdevphplanguagesupport_PART_SRCS
+    phplanguagesupport.cpp
+    phpparsejob.cpp
+    #phphighlighting.cpp
+)
+
+kde4_add_plugin(kdevphplanguagesupport ${kdevphplanguagesupport_PART_SRCS})
+
+target_link_libraries(kdevphplanguagesupport
+    ${KDE4_KDEUI_LIBS}
+    ${KDEVPLATFORM_INTERFACES_LIBRARY}
+    ${KDEVPLATFORM_LANGUAGE_LIBRARY}
+    ${KDE4_THREADWEAVER_LIBRARIES}
+    ${KDE4_KTEXTEDITOR_LIBS}
+    kdev4phpduchain
+    kdev4phpparser
+)
+
+install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR})
+
+install(FILES kdevphpsupport.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 

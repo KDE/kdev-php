@@ -1,7 +1,6 @@
 /*****************************************************************************
  * Copyright (c) 2007 Andreas Pakulat <apaku@gmx.de>                         *
  * Copyright (c) 2007 Piyush verma <piyush.verma@gmail.com>                  *
- * Copyright (c) 2008 Niko Sams <niko.sams@gmail.com>                        *
  *                                                                           *
  * Permission is hereby granted, free of charge, to any person obtaining     *
  * a copy of this software and associated documentation files (the           *
@@ -22,59 +21,58 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION     *
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.           *
  *****************************************************************************/
-#ifndef PHP_PARSESESSION_H
-#define PHP_PARSESESSION_H
 
-#include <QtCore/QString>
-#include <editor/simplecursor.h>
-#include "parserexport.h"
+#ifndef KDEVPHPLANGUAGESUPPORT_H
+#define KDEVPHPLANGUAGESUPPORT_H
 
-namespace KDevPG
-{
-    class TokenStream;
-    class MemoryPool;
-}
+#include <interfaces/iplugin.h>
+#include <language/interfaces/ilanguagesupport.h>
+#include <QtCore/QVariant>
+
 namespace KDevelop
 {
-    class SimpleCursor;
+
+class ParseJob;
+
+class IDocument;
+
+class ICodeHighlighting;
 }
+
+
 namespace Php
 {
-    class StartAst;
 
-class KDEVPHPPARSER_EXPORT ParseSession
+class Highlighting;
+
+class LanguageSupport : public KDevelop::IPlugin, public KDevelop::ILanguageSupport
 {
+    Q_OBJECT
+    Q_INTERFACES( KDevelop::ILanguageSupport )
+
 public:
-    ParseSession();
-    ~ParseSession();
+    LanguageSupport( QObject *parent, const QVariantList& args = QVariantList() );
+    virtual ~LanguageSupport();
+    /*Name Of the Language*/
+    QString name() const;
+    /*Parsejob used by background parser to parse given Url*/
+    KDevelop::ParseJob *createParseJob( const KUrl &url );
+    /*the actual language object*/
+    KDevelop::ILanguage *language();
+    /*the code highlighter*/
+//    KDevelop::ICodeHighlighting* codeHighlighting() const;
 
-    void setContents( const QString& contents );
-    bool readFile( const QString& filename, const char* charset = 0 );
-    void setDebug( bool );
-    KDevPG::TokenStream* tokenStream() const;
-    QString contents() const;
-
-    bool parse( Php::StartAst** );
-
-    QString symbol(qint64 token) const;
-
-  /**
-   * Return the position (\a line%, \a column%) of the \a offset in the file.
-   *
-   * \note the line starts from 0.
-   */
-    KDevelop::SimpleCursor positionAt( qint64 offset ) const;
+private slots:
+    void documentChanged( KDevelop::IDocument* );
+    void documentLoaded( KDevelop::IDocument* );
+    void documentClosed( KDevelop::IDocument* );
+    void documentActivated( KDevelop::IDocument* );
 
 private:
-    QString m_contents;
-    bool m_debug;
-    KDevPG::MemoryPool* m_pool;
-    KDevPG::TokenStream* m_tokenStream;
-
+    Highlighting* m_highlighting;
 };
 
 }
 
 #endif
 
-// kate: space-indent on; indent-width 4; tab-width 4; replace-tabs on; auto-insert-doxygen on

@@ -4,7 +4,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
 
 set(parser_STAT_SRCS
     phplexer.cpp
-    phpdriver.cpp
     parsesession.cpp
      )
 
@@ -25,7 +24,6 @@ else(KDEVPGQT_FOUND)
 
 endif(KDEVPGQT_FOUND)
 
-#add_subdirectory(tests)
 
 kde4_add_library( kdev4phpparser SHARED ${parser_SRCS} ${parser_STAT_SRCS} )
 target_link_libraries( kdev4phpparser ${KDE4_KDECORE_LIBS} )

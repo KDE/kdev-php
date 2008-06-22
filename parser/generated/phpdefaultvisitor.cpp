@@ -3,7 +3,7 @@
 
 #include "phpdefaultvisitor.h"
 
-namespace PhpParser
+namespace Php
 {
 
 void DefaultVisitor::visitAdditiveExpression(AdditiveExpressionAst *node)
@@ -194,9 +194,11 @@ void DefaultVisitor::visitClassConstantDeclaration(ClassConstantDeclarationAst *
 
 void DefaultVisitor::visitClassDeclarationStatement(ClassDeclarationStatementAst *node)
 {
-    if (node->statementsSequence)
+    visitNode(node->className);
+    visitNode(node->extends);
+    if (node->implementsSequence)
     {
-        const KDevPG::ListNode<ClassStatementAst*> *__it = node->statementsSequence->front(), *__end = __it;
+        const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
         do
         {
             visitNode(__it->element);
@@ -204,6 +206,17 @@ void DefaultVisitor::visitClassDeclarationStatement(ClassDeclarationStatementAst
         }
         while (__it != __end);
     }
+    if (node->classStatementsSequence)
+    {
+        const KDevPG::ListNode<ClassStatementAst*> *__it = node->classStatementsSequence->front(), *__end = __it;
+        do
+        {
+            visitNode(__it->element);
+            __it = __it->next;
+        }
+        while (__it != __end);
+    }
+    visitNode(node->interfaceName);
 }
 
 void DefaultVisitor::visitClassNameReference(ClassNameReferenceAst *node)
@@ -215,8 +228,10 @@ void DefaultVisitor::visitClassStatement(ClassStatementAst *node)
 {
     visitNode(node->consts);
     visitNode(node->modifiers);
-    visitNode(node->params);
-    visitNode(node->body);
+    visitNode(node->variable);
+    visitNode(node->methodName);
+    visitNode(node->parameters);
+    visitNode(node->methodBody);
 }
 
 void DefaultVisitor::visitClassVariable(ClassVariableAst *node)
@@ -226,7 +241,16 @@ void DefaultVisitor::visitClassVariable(ClassVariableAst *node)
 
 void DefaultVisitor::visitClassVariableDeclaration(ClassVariableDeclarationAst *node)
 {
-    visitNode(node->vars);
+    if (node->varsSequence)
+    {
+        const KDevPG::ListNode<ClassVariableAst*> *__it = node->varsSequence->front(), *__end = __it;
+        do
+        {
+            visitNode(__it->element);
+            __it = __it->next;
+        }
+        while (__it != __end);
+    }
 }
 
 void DefaultVisitor::visitCommonScalar(CommonScalarAst *)
@@ -447,14 +471,19 @@ void DefaultVisitor::visitFunctionCallParameterListElement(FunctionCallParameter
 
 void DefaultVisitor::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node)
 {
-    visitNode(node->params);
-    visitNode(node->statements);
+    visitNode(node->functionName);
+    visitNode(node->parameters);
+    visitNode(node->functionBody);
 }
 
 void DefaultVisitor::visitGlobalVar(GlobalVarAst *node)
 {
     visitNode(node->dollarVar);
     visitNode(node->expr);
+}
+
+void DefaultVisitor::visitIdentifier(IdentifierAst *)
+{
 }
 
 void DefaultVisitor::visitInnerStatementList(InnerStatementListAst *node)
@@ -511,10 +540,6 @@ void DefaultVisitor::visitLogicalXorExpression(LogicalXorExpressionAst *node)
         }
         while (__it != __end);
     }
-}
-
-void DefaultVisitor::visitMemberModifier(MemberModifierAst *)
-{
 }
 
 void DefaultVisitor::visitMethodBody(MethodBodyAst *node)
@@ -588,6 +613,10 @@ void DefaultVisitor::visitObjectProperty(ObjectPropertyAst *node)
     visitNode(node->variableWithoutObjects);
 }
 
+void DefaultVisitor::visitOptionalModifiers(OptionalModifiersAst *)
+{
+}
+
 void DefaultVisitor::visitParameter(ParameterAst *node)
 {
     visitNode(node->defaultValue);
@@ -595,9 +624,9 @@ void DefaultVisitor::visitParameter(ParameterAst *node)
 
 void DefaultVisitor::visitParameterList(ParameterListAst *node)
 {
-    if (node->paramsSequence)
+    if (node->parametersSequence)
     {
-        const KDevPG::ListNode<ParameterAst*> *__it = node->paramsSequence->front(), *__end = __it;
+        const KDevPG::ListNode<ParameterAst*> *__it = node->parametersSequence->front(), *__end = __it;
         do
         {
             visitNode(__it->element);
@@ -941,5 +970,5 @@ void DefaultVisitor::visitWhileStatement(WhileStatementAst *node)
 }
 
 
-} // end of namespace PhpParser
+} // end of namespace Php
 

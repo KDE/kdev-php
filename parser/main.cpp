@@ -1,23 +1,24 @@
-/* KDevelop PHP Support
- *
- * Copyright 2008 Niko Sams <niko.sams@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- */
-#include "phpdriver.h"
+/***************************************************************************
+ *   This file is part of KDevelop                                         *
+ *   Copyright 2008 Niko Sams <niko.sams@gmail.com>                        *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
+ ***************************************************************************/
+
+#include "parsesession.h"
 #include "phplexer.h"
 #include "phpparser.h"
 #include "phpdebugvisitor.h"
@@ -69,32 +70,32 @@ int main(int argc, char* argv[])
     }
 
     foreach (QString fileName, files) {
-        Php::Driver d;
-        if( !d.readFile( fileName, "utf-8" ) ) {
+        Php::ParseSession session;
+        if( !session.readFile( fileName, "utf-8" ) ) {
             qerr << "Can't open file " << fileName << endl;
             return 255;
         }
-        d.setDebug( debug );
+        session.setDebug( debug );
         qout << "Parsing file " << fileName << endl;
 
         if (printTokens) {
-            Lexer lexer(0, d.content());
+            Lexer lexer(0, session.contents());
             int token;
             while ((token = lexer.nextTokenKind())) {
-                printToken(token, lexer, d.content());
+                printToken(token, lexer, session.contents());
             }
-            printToken(token, lexer, d.content());
+            printToken(token, lexer, session.contents());
         }
 
         Php::StartAst* ast = 0;
-        if ( !d.parse( &ast ) ) {
+        if ( !session.parse( &ast ) ) {
             exit( EXIT_FAILURE );
             qerr << "parse error" << endl;
             return 255;
         } else {
             if( debug )
             {
-                Php::DebugVisitor debugVisitor( d.tokenStream(), d.content() );
+                Php::DebugVisitor debugVisitor( session.tokenStream(), session.contents() );
                 debugVisitor.visitStart(ast);
             }
             qout << "successfully parsed" << endl;

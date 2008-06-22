@@ -7,7 +7,7 @@
 #include "phpast.h"
 
 #include <parserexport.h>
-namespace PhpParser
+namespace Php
 {
 
 class KDEVPHPPARSER_EXPORT Visitor
@@ -77,11 +77,11 @@ public:
     virtual void visitFunctionCallParameterListElement(FunctionCallParameterListElementAst *) {}
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *) {}
     virtual void visitGlobalVar(GlobalVarAst *) {}
+    virtual void visitIdentifier(IdentifierAst *) {}
     virtual void visitInnerStatementList(InnerStatementListAst *) {}
     virtual void visitLogicalAndExpression(LogicalAndExpressionAst *) {}
     virtual void visitLogicalOrExpression(LogicalOrExpressionAst *) {}
     virtual void visitLogicalXorExpression(LogicalXorExpressionAst *) {}
-    virtual void visitMemberModifier(MemberModifierAst *) {}
     virtual void visitMethodBody(MethodBodyAst *) {}
     virtual void visitMultiplicativeExpression(MultiplicativeExpressionAst *) {}
     virtual void visitMultiplicativeExpression_rest(MultiplicativeExpression_restAst *) {}
@@ -90,6 +90,7 @@ public:
     virtual void visitNewelseifListItem(NewelseifListItemAst *) {}
     virtual void visitObjectDimList(ObjectDimListAst *) {}
     virtual void visitObjectProperty(ObjectPropertyAst *) {}
+    virtual void visitOptionalModifiers(OptionalModifiersAst *) {}
     virtual void visitParameter(ParameterAst *) {}
     virtual void visitParameterList(ParameterListAst *) {}
     virtual void visitPostprefixOperator(PostprefixOperatorAst *) {}
@@ -120,7 +121,7 @@ public:
     virtual void visitWhileStatement(WhileStatementAst *) {}
 };
 
-} // end of namespace PhpParser
+} // end of namespace Php
 
 #endif
 

@@ -1,7 +1,6 @@
 /*****************************************************************************
  * Copyright (c) 2007 Andreas Pakulat <apaku@gmx.de>                         *
  * Copyright (c) 2007 Piyush verma <piyush.verma@gmail.com>                  *
- * Copyright (c) 2008 Niko Sams <niko.sams@gmail.com>                        *
  *                                                                           *
  * Permission is hereby granted, free of charge, to any person obtaining     *
  * a copy of this software and associated documentation files (the           *
@@ -22,59 +21,68 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION     *
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.           *
  *****************************************************************************/
-#ifndef PHP_PARSESESSION_H
-#define PHP_PARSESESSION_H
+#ifndef PARSEJOB_H
+#define PARSEJOB_H
 
-#include <QtCore/QString>
-#include <editor/simplecursor.h>
-#include "parserexport.h"
+#include <language/backgroundparser/parsejob.h>
 
-namespace KDevPG
-{
-    class TokenStream;
-    class MemoryPool;
-}
+// from the parser subdirectory
+#include <phpast.h>
+
+#include <QStringList>
+
+#include <ksharedptr.h>
+#include <ktexteditor/range.h>
+
+#include <language/duchain/duchainpointer.h>
+
+
 namespace KDevelop
 {
-    class SimpleCursor;
+
+class TopDUContext;
 }
+
 namespace Php
 {
-    class StartAst;
 
-class KDEVPHPPARSER_EXPORT ParseSession
+class LanguageSupport;
+
+class ParseSession;
+
+class ParseJob : public KDevelop::ParseJob
 {
+    Q_OBJECT
+
 public:
-    ParseSession();
-    ~ParseSession();
+    ParseJob( const KUrl &url, LanguageSupport* parent );
+    virtual ~ParseJob();
 
-    void setContents( const QString& contents );
-    bool readFile( const QString& filename, const char* charset = 0 );
-    void setDebug( bool );
-    KDevPG::TokenStream* tokenStream() const;
-    QString contents() const;
+    void setAST( StartAst* ast );
+    virtual StartAst *ast() const;
 
-    bool parse( Php::StartAst** );
+    void setDUChain( KDevelop::TopDUContext* duChain );
+    virtual KDevelop::TopDUContext* duChain() const;
 
-    QString symbol(qint64 token) const;
+    const KTextEditor::Range& textRangeToParse() const;
 
-  /**
-   * Return the position (\a line%, \a column%) of the \a offset in the file.
-   *
-   * \note the line starts from 0.
-   */
-    KDevelop::SimpleCursor positionAt( qint64 offset ) const;
+    LanguageSupport* php() const;
+    ParseSession* parseSession() const;
+    bool wasReadFromDisk() const;
+
+protected:
+    virtual void run();
 
 private:
-    QString m_contents;
-    bool m_debug;
-    KDevPG::MemoryPool* m_pool;
-    KDevPG::TokenStream* m_tokenStream;
-
+    ParseSession *m_session;
+    StartAst *m_ast;
+    bool m_readFromDisk;
+    KDevelop::TopDUContext* m_duContext;
+    KUrl m_url;
+    KTextEditor::Range m_textRangeToParse;
 };
 
 }
 
 #endif
-
 // kate: space-indent on; indent-width 4; tab-width 4; replace-tabs on; auto-insert-doxygen on

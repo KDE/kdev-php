@@ -3,7 +3,7 @@
 
 #include "phpvisitor.h"
 
-namespace PhpParser
+namespace Php
 {
 
 Visitor::ParserFuncType Visitor::sParserTable[] =
@@ -64,11 +64,11 @@ Visitor::ParserFuncType Visitor::sParserTable[] =
     reinterpret_cast<ParserFuncType>(&Visitor::visitFunctionCallParameterListElement),
     reinterpret_cast<ParserFuncType>(&Visitor::visitFunctionDeclarationStatement),
     reinterpret_cast<ParserFuncType>(&Visitor::visitGlobalVar),
+    reinterpret_cast<ParserFuncType>(&Visitor::visitIdentifier),
     reinterpret_cast<ParserFuncType>(&Visitor::visitInnerStatementList),
     reinterpret_cast<ParserFuncType>(&Visitor::visitLogicalAndExpression),
     reinterpret_cast<ParserFuncType>(&Visitor::visitLogicalOrExpression),
     reinterpret_cast<ParserFuncType>(&Visitor::visitLogicalXorExpression),
-    reinterpret_cast<ParserFuncType>(&Visitor::visitMemberModifier),
     reinterpret_cast<ParserFuncType>(&Visitor::visitMethodBody),
     reinterpret_cast<ParserFuncType>(&Visitor::visitMultiplicativeExpression),
     reinterpret_cast<ParserFuncType>(&Visitor::visitMultiplicativeExpression_rest),
@@ -77,6 +77,7 @@ Visitor::ParserFuncType Visitor::sParserTable[] =
     reinterpret_cast<ParserFuncType>(&Visitor::visitNewelseifListItem),
     reinterpret_cast<ParserFuncType>(&Visitor::visitObjectDimList),
     reinterpret_cast<ParserFuncType>(&Visitor::visitObjectProperty),
+    reinterpret_cast<ParserFuncType>(&Visitor::visitOptionalModifiers),
     reinterpret_cast<ParserFuncType>(&Visitor::visitParameter),
     reinterpret_cast<ParserFuncType>(&Visitor::visitParameterList),
     reinterpret_cast<ParserFuncType>(&Visitor::visitPostprefixOperator),
@@ -107,5 +108,5 @@ Visitor::ParserFuncType Visitor::sParserTable[] =
     reinterpret_cast<ParserFuncType>(&Visitor::visitWhileStatement)
 }; // sParserTable[]
 
-} // end of namespace PhpParser
+} // end of namespace Php
 

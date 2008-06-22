@@ -13,17 +13,12 @@
 #include <QtCore/QString>
 #include <kdebug.h>
 
-namespace PhpParser
+namespace KDevelop
 {
-class Lexer;
-enum NumericType
-{
-    LongNumber,
-    DoubleNumber,
-};
+class DUContext;
 }
 
-namespace PhpParser
+namespace Php
 {
 
 struct AdditiveExpressionAst;
@@ -82,11 +77,11 @@ struct FunctionCallParameterListAst;
 struct FunctionCallParameterListElementAst;
 struct FunctionDeclarationStatementAst;
 struct GlobalVarAst;
+struct IdentifierAst;
 struct InnerStatementListAst;
 struct LogicalAndExpressionAst;
 struct LogicalOrExpressionAst;
 struct LogicalXorExpressionAst;
-struct MemberModifierAst;
 struct MethodBodyAst;
 struct MultiplicativeExpressionAst;
 struct MultiplicativeExpression_restAst;
@@ -95,6 +90,7 @@ struct NewElseifListAst;
 struct NewelseifListItemAst;
 struct ObjectDimListAst;
 struct ObjectPropertyAst;
+struct OptionalModifiersAst;
 struct ParameterAst;
 struct ParameterListAst;
 struct PostprefixOperatorAst;
@@ -124,6 +120,23 @@ struct VariablePropertyAst;
 struct VariableWithoutObjectsAst;
 struct WhileStatementAst;
 
+
+class Lexer;
+enum NumericType
+{
+    LongNumber,
+    DoubleNumber,
+};
+
+enum ModifierFlags
+{
+    ModifierPrivate      = 1,
+    ModifierPublic       = 1 << 1,
+    ModifierProtected    = 1 << 2,
+    ModifierStatic       = 1 << 3,
+    ModifierFinal        = 1 << 4,
+    ModifierAbstract     = 1 << 5,
+};
 
 struct KDEVPHPPARSER_EXPORT AstNode
 {
@@ -185,11 +198,11 @@ struct KDEVPHPPARSER_EXPORT AstNode
         FunctionCallParameterListElementKind = 1053,
         FunctionDeclarationStatementKind = 1054,
         GlobalVarKind = 1055,
-        InnerStatementListKind = 1056,
-        LogicalAndExpressionKind = 1057,
-        LogicalOrExpressionKind = 1058,
-        LogicalXorExpressionKind = 1059,
-        MemberModifierKind = 1060,
+        IdentifierKind = 1056,
+        InnerStatementListKind = 1057,
+        LogicalAndExpressionKind = 1058,
+        LogicalOrExpressionKind = 1059,
+        LogicalXorExpressionKind = 1060,
         MethodBodyKind = 1061,
         MultiplicativeExpressionKind = 1062,
         MultiplicativeExpression_restKind = 1063,
@@ -198,40 +211,43 @@ struct KDEVPHPPARSER_EXPORT AstNode
         NewelseifListItemKind = 1066,
         ObjectDimListKind = 1067,
         ObjectPropertyKind = 1068,
-        ParameterKind = 1069,
-        ParameterListKind = 1070,
-        PostprefixOperatorKind = 1071,
-        PrintExpressionKind = 1072,
-        RelationalExpressionKind = 1073,
-        RelationalExpressionRestKind = 1074,
-        ScalarKind = 1075,
-        SemicolonOrCloseTagKind = 1076,
-        ShiftExpressionKind = 1077,
-        ShiftExpressionRestKind = 1078,
-        StartKind = 1079,
-        StatementKind = 1080,
-        StaticArrayPairValueKind = 1081,
-        StaticMemberKind = 1082,
-        StaticScalarKind = 1083,
-        StaticVarKind = 1084,
-        SwitchCaseListKind = 1085,
-        TopStatementKind = 1086,
-        UnaryExpressionKind = 1087,
-        UnaryExpression_not_plusminusKind = 1088,
-        VarExpressionKind = 1089,
-        VarExpressionNewObjectKind = 1090,
-        VarExpressionNormalKind = 1091,
-        VariableKind = 1092,
-        VariableNameKind = 1093,
-        VariablePropertyKind = 1094,
-        VariableWithoutObjectsKind = 1095,
-        WhileStatementKind = 1096,
+        OptionalModifiersKind = 1069,
+        ParameterKind = 1070,
+        ParameterListKind = 1071,
+        PostprefixOperatorKind = 1072,
+        PrintExpressionKind = 1073,
+        RelationalExpressionKind = 1074,
+        RelationalExpressionRestKind = 1075,
+        ScalarKind = 1076,
+        SemicolonOrCloseTagKind = 1077,
+        ShiftExpressionKind = 1078,
+        ShiftExpressionRestKind = 1079,
+        StartKind = 1080,
+        StatementKind = 1081,
+        StaticArrayPairValueKind = 1082,
+        StaticMemberKind = 1083,
+        StaticScalarKind = 1084,
+        StaticVarKind = 1085,
+        SwitchCaseListKind = 1086,
+        TopStatementKind = 1087,
+        UnaryExpressionKind = 1088,
+        UnaryExpression_not_plusminusKind = 1089,
+        VarExpressionKind = 1090,
+        VarExpressionNewObjectKind = 1091,
+        VarExpressionNormalKind = 1092,
+        VariableKind = 1093,
+        VariableNameKind = 1094,
+        VariablePropertyKind = 1095,
+        VariableWithoutObjectsKind = 1096,
+        WhileStatementKind = 1097,
         AST_NODE_KIND_COUNT
     };
 
     int kind;
     qint64 startToken;
     qint64 endToken;
+
+    KDevelop::DUContext* ducontext;
 
 };
 
@@ -384,11 +400,11 @@ struct KDEVPHPPARSER_EXPORT ClassDeclarationStatementAst: public AstNode
 {
     enum { KIND = ClassDeclarationStatementKind };
 
-    qint64 classType;
-    qint64 name;
-    qint64 extends;
-    const KDevPG::ListNode<qint64 > *implmentsSequence;
-    const KDevPG::ListNode<ClassStatementAst *> *statementsSequence;
+    IdentifierAst *className;
+    IdentifierAst *extends;
+    const KDevPG::ListNode<IdentifierAst *> *implementsSequence;
+    const KDevPG::ListNode<ClassStatementAst *> *classStatementsSequence;
+    IdentifierAst *interfaceName;
 };
 
 struct KDEVPHPPARSER_EXPORT ClassNameReferenceAst: public AstNode
@@ -403,9 +419,11 @@ struct KDEVPHPPARSER_EXPORT ClassStatementAst: public AstNode
     enum { KIND = ClassStatementKind };
 
     ClassConstantDeclarationAst *consts;
-    MemberModifierAst *modifiers;
-    ParameterListAst *params;
-    MethodBodyAst *body;
+    OptionalModifiersAst *modifiers;
+    ClassVariableDeclarationAst *variable;
+    IdentifierAst *methodName;
+    ParameterListAst *parameters;
+    MethodBodyAst *methodBody;
 };
 
 struct KDEVPHPPARSER_EXPORT ClassVariableAst: public AstNode
@@ -420,14 +438,14 @@ struct KDEVPHPPARSER_EXPORT ClassVariableDeclarationAst: public AstNode
 {
     enum { KIND = ClassVariableDeclarationKind };
 
-    ClassVariableAst *vars;
+    const KDevPG::ListNode<ClassVariableAst *> *varsSequence;
 };
 
 struct KDEVPHPPARSER_EXPORT CommonScalarAst: public AstNode
 {
     enum { KIND = CommonScalarKind };
 
-    PhpParser::NumericType numType;
+    Php::NumericType numType;
 };
 
 struct KDEVPHPPARSER_EXPORT CompoundVariableAst: public AstNode
@@ -655,8 +673,9 @@ struct KDEVPHPPARSER_EXPORT FunctionDeclarationStatementAst: public AstNode
 {
     enum { KIND = FunctionDeclarationStatementKind };
 
-    ParameterListAst *params;
-    InnerStatementListAst *statements;
+    IdentifierAst *functionName;
+    ParameterListAst *parameters;
+    InnerStatementListAst *functionBody;
 };
 
 struct KDEVPHPPARSER_EXPORT GlobalVarAst: public AstNode
@@ -666,6 +685,13 @@ struct KDEVPHPPARSER_EXPORT GlobalVarAst: public AstNode
     qint64 var;
     VariableAst *dollarVar;
     ExprAst *expr;
+};
+
+struct KDEVPHPPARSER_EXPORT IdentifierAst: public AstNode
+{
+    enum { KIND = IdentifierKind };
+
+    qint64 ident;
 };
 
 struct KDEVPHPPARSER_EXPORT InnerStatementListAst: public AstNode
@@ -694,12 +720,6 @@ struct KDEVPHPPARSER_EXPORT LogicalXorExpressionAst: public AstNode
     enum { KIND = LogicalXorExpressionKind };
 
     const KDevPG::ListNode<LogicalAndExpressionAst *> *expressionSequence;
-};
-
-struct KDEVPHPPARSER_EXPORT MemberModifierAst: public AstNode
-{
-    enum { KIND = MemberModifierKind };
-
 };
 
 struct KDEVPHPPARSER_EXPORT MethodBodyAst: public AstNode
@@ -762,10 +782,20 @@ struct KDEVPHPPARSER_EXPORT ObjectPropertyAst: public AstNode
     VariableWithoutObjectsAst *variableWithoutObjects;
 };
 
+struct KDEVPHPPARSER_EXPORT OptionalModifiersAst: public AstNode
+{
+    enum { KIND = OptionalModifiersKind };
+
+    unsigned int modifiers;
+};
+
 struct KDEVPHPPARSER_EXPORT ParameterAst: public AstNode
 {
     enum { KIND = ParameterKind };
 
+    qint64 parameterType;
+    qint64 arrayType;
+    qint64 variableName;
     StaticScalarAst *defaultValue;
 };
 
@@ -773,7 +803,7 @@ struct KDEVPHPPARSER_EXPORT ParameterListAst: public AstNode
 {
     enum { KIND = ParameterListKind };
 
-    const KDevPG::ListNode<ParameterAst *> *paramsSequence;
+    const KDevPG::ListNode<ParameterAst *> *parametersSequence;
 };
 
 struct KDEVPHPPARSER_EXPORT PostprefixOperatorAst: public AstNode
@@ -1026,7 +1056,7 @@ struct KDEVPHPPARSER_EXPORT WhileStatementAst: public AstNode
 
 
 
-} // end of namespace PhpParser
+} // end of namespace Php
 
 #endif
 
