@@ -99,8 +99,6 @@ public:
 
   virtual QString toString() const;
 
-  virtual QString mangled() const;
-
   virtual AbstractType* clone() const;
 
   virtual bool equals(const AbstractType* rhs) const;
@@ -127,8 +125,6 @@ public:
   virtual QString toString() const;
 
   virtual uint hash() const;
-
-//   virtual QString mangled() const;
 
   virtual AbstractType* clone() const;
 

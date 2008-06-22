@@ -203,11 +203,6 @@ QString ModifierType::toString() const
 }
 
 
-QString ClassType::mangled() const
-{
-  return idMangled();
-}
-
 TypeModifiers ModifierType::modifiers() const
 {
   return m_mod;
