@@ -62,12 +62,6 @@ public:
     /*the code highlighter*/
 //    KDevelop::ICodeHighlighting* codeHighlighting() const;
 
-private slots:
-    void documentChanged( KDevelop::IDocument* );
-    void documentLoaded( KDevelop::IDocument* );
-    void documentClosed( KDevelop::IDocument* );
-    void documentActivated( KDevelop::IDocument* );
-
 private:
     Highlighting* m_highlighting;
 };

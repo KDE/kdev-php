@@ -102,7 +102,24 @@ void ParseJob::run()
 
         if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
         {
-            m_errorMessage = i18n( "Could not open file '%1'", document().str() );
+            KDevelop::ProblemPointer p(new KDevelop::Problem());
+            p->setSource(KDevelop::Problem::Disk);
+            p->setDescription(i18n( "Could not open file '%1'", document().str() ));
+            switch (file.error()) {
+              case QFile::ReadError:
+                  p->setExplanation(i18n("File could not be read from."));
+                  break;
+              case QFile::OpenError:
+                  p->setExplanation(i18n("File could not be opened."));
+                  break;
+              case QFile::PermissionsError:
+                  p->setExplanation(i18n("File permissions prevent opening for read."));
+                  break;
+              default:
+                  break;
+            }
+            p->setFinalLocation(KDevelop::DocumentRange(document().str(), KTextEditor::Cursor(0,0), KTextEditor::Cursor(0,0)));
+            // TODO addProblem(p);
             kWarning() << "Could not open file" << document().str()
             << "(path" << document().str() << ")";
             return ;
