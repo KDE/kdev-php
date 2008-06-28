@@ -8,8 +8,7 @@ set(duchain_SRCS
     declarationbuilder.cpp
     contextbuilder.cpp
     editorintegrator.cpp
-#     usebuilder.cpp
-    dumpchain.cpp
+    usebuilder.cpp
     typebuilder.cpp
     types.cpp
     typerepository.cpp

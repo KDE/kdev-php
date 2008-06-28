@@ -39,8 +39,11 @@ struct BooleanOrExpressionAst;
 struct CaseListAst;
 struct Case_itemAst;
 struct Catch_itemAst;
+struct ClassBodyAst;
 struct ClassConstantDeclarationAst;
 struct ClassDeclarationStatementAst;
+struct ClassExtendsAst;
+struct ClassImplementsAst;
 struct ClassNameReferenceAst;
 struct ClassStatementAst;
 struct ClassVariableAst;
@@ -79,6 +82,7 @@ struct FunctionDeclarationStatementAst;
 struct GlobalVarAst;
 struct IdentifierAst;
 struct InnerStatementListAst;
+struct InterfaceDeclarationStatementAst;
 struct LogicalAndExpressionAst;
 struct LogicalOrExpressionAst;
 struct LogicalXorExpressionAst;
@@ -115,6 +119,7 @@ struct VarExpressionAst;
 struct VarExpressionNewObjectAst;
 struct VarExpressionNormalAst;
 struct VariableAst;
+struct VariableIdentifierAst;
 struct VariableNameAst;
 struct VariablePropertyAst;
 struct VariableWithoutObjectsAst;
@@ -125,7 +130,7 @@ class Lexer;
 enum NumericType
 {
     LongNumber,
-    DoubleNumber,
+    DoubleNumber
 };
 
 enum ModifierFlags
@@ -135,7 +140,13 @@ enum ModifierFlags
     ModifierProtected    = 1 << 2,
     ModifierStatic       = 1 << 3,
     ModifierFinal        = 1 << 4,
-    ModifierAbstract     = 1 << 5,
+    ModifierAbstract     = 1 << 5
+};
+
+enum IdentifierType
+{
+    IdentifierString,
+    IdentifierVariable
 };
 
 struct KDEVPHPPARSER_EXPORT AstNode
@@ -160,86 +171,91 @@ struct KDEVPHPPARSER_EXPORT AstNode
         CaseListKind = 1015,
         Case_itemKind = 1016,
         Catch_itemKind = 1017,
-        ClassConstantDeclarationKind = 1018,
-        ClassDeclarationStatementKind = 1019,
-        ClassNameReferenceKind = 1020,
-        ClassStatementKind = 1021,
-        ClassVariableKind = 1022,
-        ClassVariableDeclarationKind = 1023,
-        CommonScalarKind = 1024,
-        CompoundVariableKind = 1025,
-        CompoundVariableWithSimpleIndirectReferenceKind = 1026,
-        ConditionalExpressionKind = 1027,
-        CtorArgumentsKind = 1028,
-        DeclareItemKind = 1029,
-        DeclareStatementKind = 1030,
-        DimListItemKind = 1031,
-        DimOffsetKind = 1032,
-        DynamicClassNameReferenceKind = 1033,
-        DynamicClassNameVariablePropertiesKind = 1034,
-        DynamicClassNameVariablePropertyKind = 1035,
-        ElseSingleKind = 1036,
-        ElseifListKind = 1037,
-        ElseifListItemKind = 1038,
-        EncapsKind = 1039,
-        EncapsListKind = 1040,
-        EncapsVarKind = 1041,
-        EncapsVarOffsetKind = 1042,
-        EqualityExpressionKind = 1043,
-        EqualityExpressionRestKind = 1044,
-        ExprKind = 1045,
-        ForExprKind = 1046,
-        ForStatementKind = 1047,
-        ForeachOptionalArgKind = 1048,
-        ForeachStatementKind = 1049,
-        ForeachVariableKind = 1050,
-        FunctionCallKind = 1051,
-        FunctionCallParameterListKind = 1052,
-        FunctionCallParameterListElementKind = 1053,
-        FunctionDeclarationStatementKind = 1054,
-        GlobalVarKind = 1055,
-        IdentifierKind = 1056,
-        InnerStatementListKind = 1057,
-        LogicalAndExpressionKind = 1058,
-        LogicalOrExpressionKind = 1059,
-        LogicalXorExpressionKind = 1060,
-        MethodBodyKind = 1061,
-        MultiplicativeExpressionKind = 1062,
-        MultiplicativeExpression_restKind = 1063,
-        NewElseSingleKind = 1064,
-        NewElseifListKind = 1065,
-        NewelseifListItemKind = 1066,
-        ObjectDimListKind = 1067,
-        ObjectPropertyKind = 1068,
-        OptionalModifiersKind = 1069,
-        ParameterKind = 1070,
-        ParameterListKind = 1071,
-        PostprefixOperatorKind = 1072,
-        PrintExpressionKind = 1073,
-        RelationalExpressionKind = 1074,
-        RelationalExpressionRestKind = 1075,
-        ScalarKind = 1076,
-        SemicolonOrCloseTagKind = 1077,
-        ShiftExpressionKind = 1078,
-        ShiftExpressionRestKind = 1079,
-        StartKind = 1080,
-        StatementKind = 1081,
-        StaticArrayPairValueKind = 1082,
-        StaticMemberKind = 1083,
-        StaticScalarKind = 1084,
-        StaticVarKind = 1085,
-        SwitchCaseListKind = 1086,
-        TopStatementKind = 1087,
-        UnaryExpressionKind = 1088,
-        UnaryExpression_not_plusminusKind = 1089,
-        VarExpressionKind = 1090,
-        VarExpressionNewObjectKind = 1091,
-        VarExpressionNormalKind = 1092,
-        VariableKind = 1093,
-        VariableNameKind = 1094,
-        VariablePropertyKind = 1095,
-        VariableWithoutObjectsKind = 1096,
-        WhileStatementKind = 1097,
+        ClassBodyKind = 1018,
+        ClassConstantDeclarationKind = 1019,
+        ClassDeclarationStatementKind = 1020,
+        ClassExtendsKind = 1021,
+        ClassImplementsKind = 1022,
+        ClassNameReferenceKind = 1023,
+        ClassStatementKind = 1024,
+        ClassVariableKind = 1025,
+        ClassVariableDeclarationKind = 1026,
+        CommonScalarKind = 1027,
+        CompoundVariableKind = 1028,
+        CompoundVariableWithSimpleIndirectReferenceKind = 1029,
+        ConditionalExpressionKind = 1030,
+        CtorArgumentsKind = 1031,
+        DeclareItemKind = 1032,
+        DeclareStatementKind = 1033,
+        DimListItemKind = 1034,
+        DimOffsetKind = 1035,
+        DynamicClassNameReferenceKind = 1036,
+        DynamicClassNameVariablePropertiesKind = 1037,
+        DynamicClassNameVariablePropertyKind = 1038,
+        ElseSingleKind = 1039,
+        ElseifListKind = 1040,
+        ElseifListItemKind = 1041,
+        EncapsKind = 1042,
+        EncapsListKind = 1043,
+        EncapsVarKind = 1044,
+        EncapsVarOffsetKind = 1045,
+        EqualityExpressionKind = 1046,
+        EqualityExpressionRestKind = 1047,
+        ExprKind = 1048,
+        ForExprKind = 1049,
+        ForStatementKind = 1050,
+        ForeachOptionalArgKind = 1051,
+        ForeachStatementKind = 1052,
+        ForeachVariableKind = 1053,
+        FunctionCallKind = 1054,
+        FunctionCallParameterListKind = 1055,
+        FunctionCallParameterListElementKind = 1056,
+        FunctionDeclarationStatementKind = 1057,
+        GlobalVarKind = 1058,
+        IdentifierKind = 1059,
+        InnerStatementListKind = 1060,
+        InterfaceDeclarationStatementKind = 1061,
+        LogicalAndExpressionKind = 1062,
+        LogicalOrExpressionKind = 1063,
+        LogicalXorExpressionKind = 1064,
+        MethodBodyKind = 1065,
+        MultiplicativeExpressionKind = 1066,
+        MultiplicativeExpression_restKind = 1067,
+        NewElseSingleKind = 1068,
+        NewElseifListKind = 1069,
+        NewelseifListItemKind = 1070,
+        ObjectDimListKind = 1071,
+        ObjectPropertyKind = 1072,
+        OptionalModifiersKind = 1073,
+        ParameterKind = 1074,
+        ParameterListKind = 1075,
+        PostprefixOperatorKind = 1076,
+        PrintExpressionKind = 1077,
+        RelationalExpressionKind = 1078,
+        RelationalExpressionRestKind = 1079,
+        ScalarKind = 1080,
+        SemicolonOrCloseTagKind = 1081,
+        ShiftExpressionKind = 1082,
+        ShiftExpressionRestKind = 1083,
+        StartKind = 1084,
+        StatementKind = 1085,
+        StaticArrayPairValueKind = 1086,
+        StaticMemberKind = 1087,
+        StaticScalarKind = 1088,
+        StaticVarKind = 1089,
+        SwitchCaseListKind = 1090,
+        TopStatementKind = 1091,
+        UnaryExpressionKind = 1092,
+        UnaryExpression_not_plusminusKind = 1093,
+        VarExpressionKind = 1094,
+        VarExpressionNewObjectKind = 1095,
+        VarExpressionNormalKind = 1096,
+        VariableKind = 1097,
+        VariableIdentifierKind = 1098,
+        VariableNameKind = 1099,
+        VariablePropertyKind = 1100,
+        VariableWithoutObjectsKind = 1101,
+        WhileStatementKind = 1102,
         AST_NODE_KIND_COUNT
     };
 
@@ -389,6 +405,13 @@ struct KDEVPHPPARSER_EXPORT Catch_itemAst: public AstNode
     InnerStatementListAst *statements;
 };
 
+struct KDEVPHPPARSER_EXPORT ClassBodyAst: public AstNode
+{
+    enum { KIND = ClassBodyKind };
+
+    const KDevPG::ListNode<ClassStatementAst *> *classStatementsSequence;
+};
+
 struct KDEVPHPPARSER_EXPORT ClassConstantDeclarationAst: public AstNode
 {
     enum { KIND = ClassConstantDeclarationKind };
@@ -401,10 +424,23 @@ struct KDEVPHPPARSER_EXPORT ClassDeclarationStatementAst: public AstNode
     enum { KIND = ClassDeclarationStatementKind };
 
     IdentifierAst *className;
-    IdentifierAst *extends;
+    ClassExtendsAst *extends;
+    ClassImplementsAst *implements;
+    ClassBodyAst *body;
+};
+
+struct KDEVPHPPARSER_EXPORT ClassExtendsAst: public AstNode
+{
+    enum { KIND = ClassExtendsKind };
+
+    IdentifierAst *identifier;
+};
+
+struct KDEVPHPPARSER_EXPORT ClassImplementsAst: public AstNode
+{
+    enum { KIND = ClassImplementsKind };
+
     const KDevPG::ListNode<IdentifierAst *> *implementsSequence;
-    const KDevPG::ListNode<ClassStatementAst *> *classStatementsSequence;
-    IdentifierAst *interfaceName;
 };
 
 struct KDEVPHPPARSER_EXPORT ClassNameReferenceAst: public AstNode
@@ -430,7 +466,7 @@ struct KDEVPHPPARSER_EXPORT ClassVariableAst: public AstNode
 {
     enum { KIND = ClassVariableKind };
 
-    qint64 var;
+    VariableIdentifierAst *var;
     StaticScalarAst *value;
 };
 
@@ -452,7 +488,7 @@ struct KDEVPHPPARSER_EXPORT CompoundVariableAst: public AstNode
 {
     enum { KIND = CompoundVariableKind };
 
-    qint64 variable;
+    VariableIdentifierAst *variable;
     ExprAst *expr;
 };
 
@@ -460,7 +496,7 @@ struct KDEVPHPPARSER_EXPORT CompoundVariableWithSimpleIndirectReferenceAst: publ
 {
     enum { KIND = CompoundVariableWithSimpleIndirectReferenceKind };
 
-    qint64 var;
+    VariableIdentifierAst *var;
     ExprAst *expr;
 };
 
@@ -682,7 +718,7 @@ struct KDEVPHPPARSER_EXPORT GlobalVarAst: public AstNode
 {
     enum { KIND = GlobalVarKind };
 
-    qint64 var;
+    VariableIdentifierAst *var;
     VariableAst *dollarVar;
     ExprAst *expr;
 };
@@ -691,7 +727,7 @@ struct KDEVPHPPARSER_EXPORT IdentifierAst: public AstNode
 {
     enum { KIND = IdentifierKind };
 
-    qint64 ident;
+    qint64 string;
 };
 
 struct KDEVPHPPARSER_EXPORT InnerStatementListAst: public AstNode
@@ -699,6 +735,15 @@ struct KDEVPHPPARSER_EXPORT InnerStatementListAst: public AstNode
     enum { KIND = InnerStatementListKind };
 
     const KDevPG::ListNode<TopStatementAst *> *statementsSequence;
+};
+
+struct KDEVPHPPARSER_EXPORT InterfaceDeclarationStatementAst: public AstNode
+{
+    enum { KIND = InterfaceDeclarationStatementKind };
+
+    IdentifierAst *interfaceName;
+    ClassImplementsAst *extends;
+    ClassBodyAst *body;
 };
 
 struct KDEVPHPPARSER_EXPORT LogicalAndExpressionAst: public AstNode
@@ -793,9 +838,9 @@ struct KDEVPHPPARSER_EXPORT ParameterAst: public AstNode
 {
     enum { KIND = ParameterKind };
 
-    qint64 parameterType;
+    IdentifierAst *parameterType;
     qint64 arrayType;
-    qint64 variableName;
+    VariableIdentifierAst *variable;
     StaticScalarAst *defaultValue;
 };
 
@@ -961,6 +1006,7 @@ struct KDEVPHPPARSER_EXPORT TopStatementAst: public AstNode
     StatementAst *statement;
     FunctionDeclarationStatementAst *functionDeclaration;
     ClassDeclarationStatementAst *classDeclaration;
+    InterfaceDeclarationStatementAst *interfaceDeclaration;
 };
 
 struct KDEVPHPPARSER_EXPORT UnaryExpressionAst: public AstNode
@@ -1020,6 +1066,13 @@ struct KDEVPHPPARSER_EXPORT VariableAst: public AstNode
 
     BaseVariableWithFunctionCallsAst *var;
     const KDevPG::ListNode<VariablePropertyAst *> *variablePropertiesSequence;
+};
+
+struct KDEVPHPPARSER_EXPORT VariableIdentifierAst: public AstNode
+{
+    enum { KIND = VariableIdentifierKind };
+
+    qint64 variable;
 };
 
 struct KDEVPHPPARSER_EXPORT VariableNameAst: public AstNode

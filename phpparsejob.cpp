@@ -33,11 +33,10 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/duchain.h>
 #include <language/duchain/topducontext.h>
-#include <language/duchain/dumpdotgraph.h>
+#include <language/duchain/dumpchain.h>
 
 // #include "phphighlighting.h"
 #include "editorintegrator.h"
-#include "dumpchain.h"
 #include "parsesession.h"
 #include "phplanguagesupport.h"
 #include "phpdebugvisitor.h"

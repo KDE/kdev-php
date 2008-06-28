@@ -18,34 +18,50 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef DECLARATIONBUILDER_H
-#define DECLARATIONBUILDER_H
+#include "usebuilder.h"
 
-#include "typebuilder.h"
-#include <language/duchain/abstractdeclarationbuilder.h>
+#include "editorintegrator.h"
+
+using namespace KTextEditor;
+using namespace KDevelop;
 
 namespace Php {
-class ParseSession;
-class EditorIntegrator;
 
-typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, Php::TypeBuilder> DeclarationBuilderBase;
-
-class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase {
-public:
-    DeclarationBuilder(ParseSession* session);
-    DeclarationBuilder(EditorIntegrator* editor);
-protected:
-    virtual void closeDeclaration();
-    void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
-    void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
-    void visitClassStatement(ClassStatementAst *node);
-    void visitParameter(ParameterAst *node);
-    void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
-
-    void classTypeOpened(KDevelop::AbstractType::Ptr type);
-};
-
+UseBuilder::UseBuilder (ParseSession* session)
+{
+    setEditor(session);
 }
 
-#endif // DECLARATIONBUILDER_H
+UseBuilder::UseBuilder (EditorIntegrator* editor)
+{
+    setEditor(editor);
+}
 
+void UseBuilder::visitParameter(ParameterAst *node)
+{
+    UseBuilderBase::visitParameter(node);
+
+    if (node->parameterType) {
+        newUse(node->parameterType);
+    }
+}
+
+void UseBuilder::visitClassImplements(ClassImplementsAst *node)
+{
+    UseBuilderBase::visitClassImplements(node);
+
+    const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
+    do
+    {
+        newUse(__it->element);
+    }
+    while (__it != __end);
+}
+
+void UseBuilder::visitClassExtends(ClassExtendsAst *node)
+{
+    UseBuilderBase::visitClassExtends(node);
+    newUse(node->identifier);
+}
+
+}

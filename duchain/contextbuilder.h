@@ -26,6 +26,7 @@
 
 #include "phpduchainexport.h"
 #include "editorintegrator.h"
+#include "types.h"
 
 namespace Php
 {
@@ -53,10 +54,15 @@ protected:
     virtual KTextEditor::Range editorFindRange( AstNode* fromRange, AstNode* toRange );
 
     virtual KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
+    KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
 
     virtual void visitClassDeclarationStatement( ClassDeclarationStatementAst* );
+    virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
     virtual void visitClassStatement(ClassStatementAst *node);
     virtual void visitFunctionDeclarationStatement( FunctionDeclarationStatementAst* node );
+
+    virtual void addBaseType(const ClassType::Ptr& base, bool implementsInterface);
+
 };
 
 }

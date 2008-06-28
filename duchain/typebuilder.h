@@ -28,7 +28,6 @@
 #include <language/duchain/typesystem.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/identifier.h>
-#include "types.h"
 #include "typerepository.h"
 
 namespace Php {
@@ -50,13 +49,18 @@ class KDEVPHPDUCHAIN_EXPORT TypeBuilder: public TypeBuilderBase
 protected:
   virtual TypeRepository* typeRepository() const;
 
-  void visitClassDeclarationStatement( ClassDeclarationStatementAst* node );
-  void visitClassStatement(ClassStatementAst *node);
+  virtual void visitClassDeclarationStatement( ClassDeclarationStatementAst* node );
+  virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
+  virtual void visitClassStatement(ClassStatementAst *node);
+  virtual void visitParameter(ParameterAst *node);
+  virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
+  virtual void visitClassImplements(ClassImplementsAst *node);
+  virtual void visitClassExtends(ClassExtendsAst *node);
+
+  virtual void addBaseType(const ClassType::Ptr& base, bool implementsInterface);
 
 private:
   bool nodeValid(AstNode* node) const;
-
-  ClassType* openClass(bool interface);
 
   TypeModifiers parseModifiers(OptionalModifiersAst* node) const;
 };

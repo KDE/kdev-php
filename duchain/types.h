@@ -27,6 +27,8 @@
 #include <duchain/declaration.h>
 #include <duchain/identifiedtype.h>
 
+#include "phpduchainexport.h"
+
 namespace Php {
 
 enum TypeModifiers {
@@ -54,14 +56,14 @@ public:
     bool equals(const ModifierType* rhs) const;
 
     QString toString() const;
-//     QString modMangled() const;
+
     uint modHash(uint input) const { return input; }
 
 private:
     TypeModifiers m_mod;
 };
 
-class ClassType : public KDevelop::StructureType, public KDevelop::IdentifiedType/*, public JavaType*/
+class KDEVPHPDUCHAIN_EXPORT ClassType : public KDevelop::StructureType, public KDevelop::IdentifiedType
 {
 public:
   typedef KSharedPtr<ClassType> Ptr;
@@ -81,19 +83,16 @@ public:
     Class,
     Interface
   };
-
   void setClassType(Type type);
   Type classType() const;
 
-  /// Java classes are closed types, once they are defined, they can't be changed.
+
+  /// Php classes are closed types, once they are defined, they can't be changed.
   bool isClosed() const { return m_closed; }
   void close() { m_closed = true; }
 
   ///After clearing, a class-type is open again.
   void clear();
-
-  /// Error if the type is closed.
-  virtual void addElement(KDevelop::AbstractType::Ptr element);
 
   virtual uint hash() const;
 
@@ -113,13 +112,14 @@ private:
   bool m_closed;
 };
 
-class FunctionType : public KDevelop::FunctionType, public KDevelop::IdentifiedType, public ModifierType
+class KDEVPHPDUCHAIN_EXPORT FunctionType : public KDevelop::FunctionType, public KDevelop::IdentifiedType, public ModifierType
 {
 public:
   typedef KSharedPtr<FunctionType> Ptr;
 
   FunctionType(TypeModifiers modifiers = NoModifier);
 
+  
   ///Declarations of this class(@see KDevelop::IdentifiedType::declaration()) are guaranteed to be based on AbstractFunctionDeclaration
 
   virtual QString toString() const;

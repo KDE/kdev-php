@@ -27,35 +27,51 @@
 using namespace KDevelop;
 namespace Php {
 
-AbstractType* FunctionType::clone() const {
-  return new FunctionType(*this);
+
+bool ModifierType::equals(const ModifierType* rhs) const {
+  return m_mod == rhs->m_mod;
+}
+void ModifierType::clear() {
+  m_mod = NoModifier;
+}
+
+ModifierType::ModifierType(TypeModifiers modifiers)
+  : m_mod(modifiers)
+{
+}
+QString ModifierType::toString() const
+{
+    QStringList mods;
+    if (m_mod & PrivateModifier)   mods << "private";
+    if (m_mod & PublicModifier)    mods << "public";
+    if (m_mod & ProtectedModifier) mods << "protected";
+    if (m_mod & StaticModifier)    mods << "static";
+    if (m_mod & FinalModifier)     mods << "final";
+    if (m_mod & AbstractModifier)  mods << "abstract";
+    return mods.join(" ");
+}
+
+TypeModifiers ModifierType::modifiers() const
+{
+  return m_mod;
+}
+
+
+
+
+ClassType::ClassType()
+  : m_classType(Class)
+  , m_closed(false)
+{
 }
 
 AbstractType* ClassType::clone() const {
   return new ClassType(*this);
 }
 
-bool ModifierType::equals(const ModifierType* rhs) const {
-  return m_mod == rhs->m_mod;
-}
-
-bool FunctionType::equals(const AbstractType* _rhs) const
-{
-  if( !fastCast<const FunctionType*>(_rhs))
-    return false;
-  const FunctionType* rhs = static_cast<const FunctionType*>(_rhs);
-
-  if( this == rhs )
-    return true;
-
-  //Ignore IdentifiedType here, because we do not want to respect that while comparing function-types.
-
-  return ModifierType::equals(rhs) && FunctionType::equals(rhs);
-}
-
 bool ClassType::equals(const AbstractType* _rhs) const
 {
-  if( !fastCast<const ClassType*>(_rhs) /*&& !fastCast<const ForwardDeclarationType*>(_rhs)*/)
+  if( !fastCast<const ClassType*>(_rhs))
     return false;
   const IdentifiedType* rhs = fastCast<const IdentifiedType*>(_rhs);
 
@@ -69,10 +85,6 @@ bool ClassType::equals(const AbstractType* _rhs) const
   return decl->equalQualifiedIdentifier(rhsDecl);
 }
 
-QString FunctionType::toString() const
-{
-  return QString("%1 %2").arg(KDevelop::FunctionType::toString()).arg(ModifierType::toString());
-}
 
 void ClassType::accept0 (TypeVisitor *v) const
 {
@@ -103,7 +115,6 @@ const QList<ClassType::Ptr>& ClassType::extendsClasses() const
   return m_extendsClasses;
 }
 
-
 void ClassType::addExtendsClass(const ClassType::Ptr& extendsClass)
 {
   m_extendsClasses.append(extendsClass);
@@ -114,7 +125,24 @@ void ClassType::clearExtendsClasses()
   m_extendsClasses.clear();
 }
 
-void ClassType::setClassType(Type type)
+const QList< ClassType::Ptr > & ClassType::implementsInterfaces() const
+{
+  return m_implementsInterfaces;
+}
+
+void ClassType::addImplementsInterface(const ClassType::Ptr & interface)
+{
+  Q_ASSERT(interface->classType() == Interface);
+  m_implementsInterfaces.append(interface);
+}
+
+void ClassType::clearImplementsInterfaces()
+{
+  m_implementsInterfaces.clear();
+}
+
+
+void ClassType::setClassType(ClassType::Type type)
 {
   m_classType = type;
 }
@@ -124,34 +152,9 @@ ClassType::Type ClassType::classType() const
   return m_classType;
 }
 
-FunctionType::FunctionType(TypeModifiers modifiers)
-  : ModifierType(modifiers)
-{
-}
-
-ClassType::ClassType()
-  : m_classType(Class)
-  , m_closed(false)
-{
-}
-
-uint FunctionType::hash() const
-{
-    return modHash(KDevelop::FunctionType::hash()) + 31 * identifier().hash();
-}
-
 uint ClassType::hash() const
 {
   return identifier().hash();
-}
-
-
-void ClassType::addElement(AbstractType::Ptr element)
-{
-  if (isClosed())
-    kWarning() << "Tried to add type" << element->toString() << "to closed class!" ;
-  else
-    StructureType::addElement(element);
 }
 
 void ClassType::clear() {
@@ -161,15 +164,6 @@ void ClassType::clear() {
   m_implementsInterfaces.clear();
   m_classType = Class;
   m_closed = false;
-}
-
-void ModifierType::clear() {
-  m_mod = NoModifier;
-}
-
-ModifierType::ModifierType(TypeModifiers modifiers)
-  : m_mod(modifiers)
-{
 }
 
 QString ClassType::toString() const
@@ -190,39 +184,39 @@ QString ClassType::toString() const
   return QString("<%1>").arg(type);
 }
 
-QString ModifierType::toString() const
+
+
+FunctionType::FunctionType(TypeModifiers modifiers)
+  : ModifierType(modifiers)
 {
-    QStringList mods;
-    if (m_mod & PrivateModifier)   mods << "private";
-    if (m_mod & PublicModifier)    mods << "public";
-    if (m_mod & ProtectedModifier) mods << "protected";
-    if (m_mod & StaticModifier)    mods << "static";
-    if (m_mod & FinalModifier)     mods << "final";
-    if (m_mod & AbstractModifier)  mods << "abstract";
-    return mods.join(" ");
 }
 
-
-TypeModifiers ModifierType::modifiers() const
-{
-  return m_mod;
+AbstractType* FunctionType::clone() const {
+  return new FunctionType(*this);
 }
 
-const QList< ClassType::Ptr > & ClassType::implementsInterfaces() const
+bool FunctionType::equals(const AbstractType* _rhs) const
 {
-  return m_implementsInterfaces;
+  if( !fastCast<const FunctionType*>(_rhs))
+    return false;
+  const FunctionType* rhs = static_cast<const FunctionType*>(_rhs);
+
+  if( this == rhs )
+    return true;
+
+  //Ignore IdentifiedType here, because we do not want to respect that while comparing function-types.
+
+  return ModifierType::equals(rhs) && FunctionType::equals(rhs);
 }
 
-
-void ClassType::addImplementsInterface(const ClassType::Ptr & interface)
+QString FunctionType::toString() const
 {
-  Q_ASSERT(interface->classType() == Interface);
-  m_implementsInterfaces.append(interface);
+  return QString("%1 %2").arg(KDevelop::FunctionType::toString()).arg(ModifierType::toString());
 }
 
-void ClassType::clearImplementsInterfaces()
+uint FunctionType::hash() const
 {
-  m_implementsInterfaces.clear();
+    return modHash(KDevelop::FunctionType::hash()) + 31 * identifier().hash();
 }
 
 

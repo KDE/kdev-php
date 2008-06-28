@@ -12,5 +12,5 @@ set(duchaintest_SRCS test_duchain.cpp)
 
 
 kde4_add_unit_test(duchaintest ${duchaintest_SRCS})
-target_link_libraries(duchaintest ${KDE4_KDECORE_LIBS} ${KDE4_TEXTEDITOR_LIBS} ${QT_QTTEST_LIBRARY}
-    kdev4phpparser kdev4phpduchain ${KDEVPLATFORM_LANGUAGE_LIBRARY})
+target_link_libraries(duchaintest kdev4phpduchain ${QT_QTTEST_LIBRARY})
+

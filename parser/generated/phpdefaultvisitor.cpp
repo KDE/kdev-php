@@ -187,25 +187,8 @@ void DefaultVisitor::visitCatch_item(Catch_itemAst *node)
     visitNode(node->statements);
 }
 
-void DefaultVisitor::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
+void DefaultVisitor::visitClassBody(ClassBodyAst *node)
 {
-    visitNode(node->scalar);
-}
-
-void DefaultVisitor::visitClassDeclarationStatement(ClassDeclarationStatementAst *node)
-{
-    visitNode(node->className);
-    visitNode(node->extends);
-    if (node->implementsSequence)
-    {
-        const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
-        do
-        {
-            visitNode(__it->element);
-            __it = __it->next;
-        }
-        while (__it != __end);
-    }
     if (node->classStatementsSequence)
     {
         const KDevPG::ListNode<ClassStatementAst*> *__it = node->classStatementsSequence->front(), *__end = __it;
@@ -216,7 +199,38 @@ void DefaultVisitor::visitClassDeclarationStatement(ClassDeclarationStatementAst
         }
         while (__it != __end);
     }
-    visitNode(node->interfaceName);
+}
+
+void DefaultVisitor::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
+{
+    visitNode(node->scalar);
+}
+
+void DefaultVisitor::visitClassDeclarationStatement(ClassDeclarationStatementAst *node)
+{
+    visitNode(node->className);
+    visitNode(node->extends);
+    visitNode(node->implements);
+    visitNode(node->body);
+}
+
+void DefaultVisitor::visitClassExtends(ClassExtendsAst *node)
+{
+    visitNode(node->identifier);
+}
+
+void DefaultVisitor::visitClassImplements(ClassImplementsAst *node)
+{
+    if (node->implementsSequence)
+    {
+        const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
+        do
+        {
+            visitNode(__it->element);
+            __it = __it->next;
+        }
+        while (__it != __end);
+    }
 }
 
 void DefaultVisitor::visitClassNameReference(ClassNameReferenceAst *node)
@@ -236,6 +250,7 @@ void DefaultVisitor::visitClassStatement(ClassStatementAst *node)
 
 void DefaultVisitor::visitClassVariable(ClassVariableAst *node)
 {
+    visitNode(node->var);
     visitNode(node->value);
 }
 
@@ -259,11 +274,13 @@ void DefaultVisitor::visitCommonScalar(CommonScalarAst *)
 
 void DefaultVisitor::visitCompoundVariable(CompoundVariableAst *node)
 {
+    visitNode(node->variable);
     visitNode(node->expr);
 }
 
 void DefaultVisitor::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
 {
+    visitNode(node->var);
     visitNode(node->expr);
 }
 
@@ -478,6 +495,7 @@ void DefaultVisitor::visitFunctionDeclarationStatement(FunctionDeclarationStatem
 
 void DefaultVisitor::visitGlobalVar(GlobalVarAst *node)
 {
+    visitNode(node->var);
     visitNode(node->dollarVar);
     visitNode(node->expr);
 }
@@ -498,6 +516,13 @@ void DefaultVisitor::visitInnerStatementList(InnerStatementListAst *node)
         }
         while (__it != __end);
     }
+}
+
+void DefaultVisitor::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
+{
+    visitNode(node->interfaceName);
+    visitNode(node->extends);
+    visitNode(node->body);
 }
 
 void DefaultVisitor::visitLogicalAndExpression(LogicalAndExpressionAst *node)
@@ -619,6 +644,8 @@ void DefaultVisitor::visitOptionalModifiers(OptionalModifiersAst *)
 
 void DefaultVisitor::visitParameter(ParameterAst *node)
 {
+    visitNode(node->parameterType);
+    visitNode(node->variable);
     visitNode(node->defaultValue);
 }
 
@@ -843,6 +870,7 @@ void DefaultVisitor::visitTopStatement(TopStatementAst *node)
     visitNode(node->statement);
     visitNode(node->functionDeclaration);
     visitNode(node->classDeclaration);
+    visitNode(node->interfaceDeclaration);
 }
 
 void DefaultVisitor::visitUnaryExpression(UnaryExpressionAst *node)
@@ -935,6 +963,10 @@ void DefaultVisitor::visitVariable(VariableAst *node)
         }
         while (__it != __end);
     }
+}
+
+void DefaultVisitor::visitVariableIdentifier(VariableIdentifierAst *)
+{
 }
 
 void DefaultVisitor::visitVariableName(VariableNameAst *node)

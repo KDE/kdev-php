@@ -306,8 +306,11 @@ public:
     bool parseCaseList(CaseListAst **yynode);
     bool parseCase_item(Case_itemAst **yynode);
     bool parseCatch_item(Catch_itemAst **yynode);
+    bool parseClassBody(ClassBodyAst **yynode);
     bool parseClassConstantDeclaration(ClassConstantDeclarationAst **yynode);
     bool parseClassDeclarationStatement(ClassDeclarationStatementAst **yynode);
+    bool parseClassExtends(ClassExtendsAst **yynode);
+    bool parseClassImplements(ClassImplementsAst **yynode);
     bool parseClassNameReference(ClassNameReferenceAst **yynode);
     bool parseClassStatement(ClassStatementAst **yynode);
     bool parseClassVariable(ClassVariableAst **yynode);
@@ -346,6 +349,7 @@ public:
     bool parseGlobalVar(GlobalVarAst **yynode);
     bool parseIdentifier(IdentifierAst **yynode);
     bool parseInnerStatementList(InnerStatementListAst **yynode);
+    bool parseInterfaceDeclarationStatement(InterfaceDeclarationStatementAst **yynode);
     bool parseLogicalAndExpression(LogicalAndExpressionAst **yynode);
     bool parseLogicalOrExpression(LogicalOrExpressionAst **yynode);
     bool parseLogicalXorExpression(LogicalXorExpressionAst **yynode);
@@ -382,6 +386,7 @@ public:
     bool parseVarExpressionNewObject(VarExpressionNewObjectAst **yynode);
     bool parseVarExpressionNormal(VarExpressionNormalAst **yynode);
     bool parseVariable(VariableAst **yynode);
+    bool parseVariableIdentifier(VariableIdentifierAst **yynode);
     bool parseVariableName(VariableNameAst **yynode);
     bool parseVariableProperty(VariablePropertyAst **yynode);
     bool parseVariableWithoutObjects(VariableWithoutObjectsAst **yynode);

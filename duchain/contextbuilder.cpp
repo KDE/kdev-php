@@ -36,6 +36,7 @@ namespace Php
 ContextBuilder::ContextBuilder()
 {
 }
+
 void ContextBuilder::setEditor(EditorIntegrator* editor)
 {
     ContextBuilderBase::setEditor(editor, false);
@@ -81,13 +82,28 @@ QualifiedIdentifier ContextBuilder::identifierForNode(IdentifierAst* id)
     if( !id )
         return QualifiedIdentifier();
 
-    return QualifiedIdentifier(editor()->parseSession()->symbol(id->ident));
+    return QualifiedIdentifier(editor()->parseSession()->symbol(id->string));
+}
+QualifiedIdentifier ContextBuilder::identifierForNode(VariableIdentifierAst* id)
+{
+    if( !id )
+        return QualifiedIdentifier();
+
+    return QualifiedIdentifier(editor()->parseSession()->symbol(id->variable));
 }
 
 void ContextBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst* node)
 {
     openContext(node, DUContext::Class, node->className);
     DefaultVisitor::visitClassDeclarationStatement(node);
+    closeContext();
+}
+
+void ContextBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node)
+{
+    visitNode(node->extends);
+    openContext(node, DUContext::Class, node->interfaceName);
+    visitNode(node->body);
     closeContext();
 }
 
@@ -109,6 +125,7 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
         }
 
         DUContext* body = openContext(node->methodBody, DUContext::Function, id);
+
         if (parameters) {
             DUChainWriteLocker lock(DUChain::lock());
             body->addImportedParentContext(parameters);
@@ -126,19 +143,29 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     QualifiedIdentifier id;
     DUContext* parameters = 0;
     if (node->parameters) {
-        parameters = openContext(node, DUContext::Function, node->functionName);
+        parameters = openContext(node->parameters, DUContext::Function, node->functionName);
         id = currentContext()->localScopeIdentifier();
         visitNode(node->parameters);
         closeContext();
     }
 
     DUContext* body = openContext(node->functionBody, DUContext::Function, id);
-    {
+    if (parameters) {
         DUChainWriteLocker lock(DUChain::lock());
         body->addImportedParentContext(parameters);
     }
     visitNode(node->functionBody);
     closeContext();
+}
+
+void ContextBuilder::addBaseType(const ClassType::Ptr& base, bool implementsInterface)
+{
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Q_ASSERT(currentContext()->type() == DUContext::Class);
+    if (base->declaration() && base->declaration()->logicalInternalContext(0)) {
+        currentContext()->addImportedParentContext( base->declaration()->logicalInternalContext(0) );
+    }
 }
 
 }

@@ -39,8 +39,11 @@ public:
     virtual void visitCaseList(CaseListAst *) {}
     virtual void visitCase_item(Case_itemAst *) {}
     virtual void visitCatch_item(Catch_itemAst *) {}
+    virtual void visitClassBody(ClassBodyAst *) {}
     virtual void visitClassConstantDeclaration(ClassConstantDeclarationAst *) {}
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *) {}
+    virtual void visitClassExtends(ClassExtendsAst *) {}
+    virtual void visitClassImplements(ClassImplementsAst *) {}
     virtual void visitClassNameReference(ClassNameReferenceAst *) {}
     virtual void visitClassStatement(ClassStatementAst *) {}
     virtual void visitClassVariable(ClassVariableAst *) {}
@@ -79,6 +82,7 @@ public:
     virtual void visitGlobalVar(GlobalVarAst *) {}
     virtual void visitIdentifier(IdentifierAst *) {}
     virtual void visitInnerStatementList(InnerStatementListAst *) {}
+    virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *) {}
     virtual void visitLogicalAndExpression(LogicalAndExpressionAst *) {}
     virtual void visitLogicalOrExpression(LogicalOrExpressionAst *) {}
     virtual void visitLogicalXorExpression(LogicalXorExpressionAst *) {}
@@ -115,6 +119,7 @@ public:
     virtual void visitVarExpressionNewObject(VarExpressionNewObjectAst *) {}
     virtual void visitVarExpressionNormal(VarExpressionNormalAst *) {}
     virtual void visitVariable(VariableAst *) {}
+    virtual void visitVariableIdentifier(VariableIdentifierAst *) {}
     virtual void visitVariableName(VariableNameAst *) {}
     virtual void visitVariableProperty(VariablePropertyAst *) {}
     virtual void visitVariableWithoutObjects(VariableWithoutObjectsAst *) {}

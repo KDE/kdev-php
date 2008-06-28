@@ -54,8 +54,6 @@ void DeclarationBuilder::closeDeclaration()
 
   eventuallyAssignInternalContext();
 
-  //kDebug() << "Mangled declaration:" << currentDeclaration()->mangledIdentifier();
-
   DeclarationBuilderBase::closeDeclaration();
 }
 
@@ -69,6 +67,18 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
 
     closeDeclaration();
 }
+
+void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
+{
+    openDefinition(node->interfaceName, node, false);
+
+    currentDeclaration()->setKind(KDevelop::Declaration::Type);
+
+    DeclarationBuilderBase::visitInterfaceDeclarationStatement(node);
+
+    closeDeclaration();
+}
+
 
 void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 {
@@ -105,12 +115,26 @@ void DeclarationBuilder::classTypeOpened(AbstractType::Ptr type)
 
 void DeclarationBuilder::visitParameter(ParameterAst *node)
 {
-  //openDefinition(node->variableName, node, false);
+    {
+        DUChainWriteLocker lock(DUChain::lock());
+        SimpleRange newRange = editorFindRange(node->variable, node->variable);
+        openDefinition(identifierForNode(node->variable), newRange, false);
+    }
 
-  DeclarationBuilderBase::visitParameter(node);
-
-  //closeDeclaration();
+    currentDeclaration()->setKind(Declaration::Instance);
+    DeclarationBuilderBase::visitParameter(node);
+    closeDeclaration();
 }
 
+void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
+{
+    openDefinition(node->functionName, node, true);
+
+    currentDeclaration()->setKind(Declaration::Type);
+
+    DeclarationBuilderBase::visitFunctionDeclarationStatement(node);
+
+    closeDeclaration();
+}
 
 }

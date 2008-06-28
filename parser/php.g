@@ -64,7 +64,7 @@ namespace KDevelop
     class Lexer;
     enum NumericType  {
         LongNumber,
-        DoubleNumber,
+        DoubleNumber
     };
 
     enum ModifierFlags {
@@ -73,7 +73,12 @@ namespace KDevelop
         ModifierProtected    = 1 << 2,
         ModifierStatic       = 1 << 3,
         ModifierFinal        = 1 << 4,
-        ModifierAbstract     = 1 << 5,
+        ModifierAbstract     = 1 << 5
+    };
+
+    enum IdentifierType {
+        IdentifierString,
+        IdentifierVariable
     };
 :]
 
@@ -217,6 +222,7 @@ statements=innerStatementList
     statement=statement
   | functionDeclaration=functionDeclarationStatement
   | classDeclaration=classDeclarationStatement
+  | interfaceDeclaration=interfaceDeclarationStatement
   | HALT_COMPILER LPAREN RPAREN SEMICOLON -- Lexer stops allready
 -> topStatement ;;
 
@@ -485,11 +491,11 @@ expression=booleanOrExpression
   | staticMember=staticMember
 -> baseVariable ;;
 
-    variable=VARIABLE
+    variable=variableIdentifier
   | DOLLAR LBRACE expr=expr RBRACE
 -> compoundVariable ;;
 
-  ( DOLLAR ( DOLLAR+ | 0 ) ( var=VARIABLE | LBRACE expr=expr RBRACE ) | var=VARIABLE )
+  ( DOLLAR ( DOLLAR+ | 0 ) ( var=variableIdentifier | LBRACE expr=expr RBRACE ) | var=variableIdentifier )
 -> compoundVariableWithSimpleIndirectReference ;;
 
     expr=expr | 0
@@ -550,7 +556,7 @@ expression=booleanOrExpression
   | def=DEFAULT (COLON | SEMICOLON) statements=innerStatementList
 -> case_item ;;
 
-    CATCH LPAREN catchClass=STRING VARIABLE RPAREN
+    CATCH LPAREN catchClass=STRING variableIdentifier RPAREN
     LBRACE statements=innerStatementList RBRACE
 -> catch_item ;;
 
@@ -571,10 +577,10 @@ expression=booleanOrExpression
   | COLON statements=innerStatementList ENDFOREACH semicolonOrCloseTag
 -> foreachStatement ;;
 
-  VARIABLE (ASSIGN staticScalar=staticScalar | 0)
+  variableIdentifier (ASSIGN staticScalar=staticScalar | 0)
 -> staticVar ;;
 
-    var=VARIABLE
+    var=variableIdentifier
   | DOLLAR (dollarVar=variable | LBRACE expr=expr RBRACE)
 -> globalVar ;;
 
@@ -658,13 +664,13 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
      --(expr allows STRING_VARNAME too - but without [expr])
     DOLLAR_OPEN_CURLY_BRACES ( ?[: LA(2).kind == Token_LBRACKET:] STRING_VARNAME LBRACKET expr=expr RBRACKET RBRACE
       | expr=expr RBRACE )
-  | VARIABLE (OBJECT_OPERATOR STRING | LBRACKET offset=encapsVarOffset RBRACKET | 0)
+  | variableIdentifier (OBJECT_OPERATOR STRING | LBRACKET offset=encapsVarOffset RBRACKET | 0)
   | CURLY_OPEN expr=expr RBRACE
 -> encapsVar ;;
 
     STRING
   | NUM_STRING
-  | VARIABLE
+  | variableIdentifier
 -> encapsVarOffset ;;
 
 
@@ -686,8 +692,8 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
     #parameters=parameter @ COMMA
 -> parameterList ;;
 
-(parameterType=STRING | arrayType=ARRAY | 0) (BIT_AND | 0)
-    variableName=VARIABLE (ASSIGN defaultValue=staticScalar | 0)
+(parameterType=identifier | arrayType=ARRAY | 0) (BIT_AND | 0)
+    variable=variableIdentifier (ASSIGN defaultValue=staticScalar | 0)
 -> parameter ;;
 
     value=commonScalar
@@ -704,17 +710,30 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
     #val1=staticScalar (DOUBLE_ARROW #val2=staticScalar | 0)
 -> staticArrayPairValue ;;
 
-   ident=STRING
+     string=STRING
 -> identifier ;;
 
+     variable=VARIABLE
+-> variableIdentifier ;;
+
+    INTERFACE interfaceName=identifier (EXTENDS extends=classImplements | 0)
+    LBRACE body=classBody RBRACE
+-> interfaceDeclarationStatement ;;
+
     (ABSTRACT | FINAL | 0) CLASS className=identifier
-        (EXTENDS extends=identifier | 0)
-        (IMPLEMENTS #implements=identifier @ COMMA | 0)
-    LBRACE #classStatements=classStatement* RBRACE
-  | INTERFACE interfaceName=identifier (EXTENDS #implements=identifier @ COMMA | 0)
-    LBRACE #classStatements=classStatement* RBRACE
+        (EXTENDS extends=classExtends | 0)
+        (IMPLEMENTS implements=classImplements | 0)
+    LBRACE body=classBody RBRACE
 -> classDeclarationStatement ;;
 
+identifier=identifier
+-> classExtends ;;
+
+#implements=identifier @ COMMA
+-> classImplements ;;
+
+#classStatements=classStatement*
+-> classBody ;;
 
     CONST consts=classConstantDeclaration @ COMMA SEMICOLON
   | VAR classVariableDeclaration SEMICOLON
@@ -735,7 +754,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 #vars=classVariable @ COMMA
 -> classVariableDeclaration ;;
 
-    var=VARIABLE (ASSIGN value=staticScalar | 0)
+    var=variableIdentifier (ASSIGN value=staticScalar | 0)
 -> classVariable ;;
 
   (

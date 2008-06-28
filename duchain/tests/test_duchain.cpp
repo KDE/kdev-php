@@ -31,6 +31,8 @@
 #include "parsesession.h"
 #include "phpdebugvisitor.h"
 #include "declarationbuilder.h"
+#include "usebuilder.h"
+#include "types.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -125,20 +127,43 @@ void TestDUChain::testDeclareFunction()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? function foo($i) {}");
+    QByteArray method("<? function foo() {}");
+    DUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 1);
+    QCOMPARE(top->localDeclarations().count(), 1);
+
+    release(top);
+}
+
+void TestDUChain::testDeclareTypehintFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A {} function foo(A $i) {}");
 
     DUContext* top = parse(method, DumpAll);
 
     DUChainWriteLocker lock(DUChain::lock());
 
-
     QVERIFY(!top->parentContext());
-    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->childContexts().count(), 3);
+    QCOMPARE(top->localDeclarations().count(), 2);
 
-    DUContext* contextFunctionFoo = top->childContexts().first();
+    Declaration* dec = top->localDeclarations().at(0);
+    QCOMPARE(dec->internalContext(), top->childContexts().at(0));
+    QCOMPARE(dec->uses().count(), 1);
+    QCOMPARE(dec->uses().begin()->count(), 1);
+
+    QCOMPARE(top->childContexts().at(0)->localScopeIdentifier(), QualifiedIdentifier("A"));
+    QCOMPARE(top->childContexts().at(0)->childContexts().count(), 0);
+    
+    DUContext* contextFunctionFoo = top->childContexts().at(1);
     QCOMPARE(contextFunctionFoo->localScopeIdentifier(), QualifiedIdentifier("foo"));
 
-    DUContext* contextFunctionBodyFoo = top->childContexts().at(1);
+    DUContext* contextFunctionBodyFoo = top->childContexts().at(2);
     QCOMPARE(contextFunctionBodyFoo->localScopeIdentifier(), QualifiedIdentifier("foo"));
     QCOMPARE(contextFunctionBodyFoo->importedParentContexts().count(), 1);
     QCOMPARE(contextFunctionBodyFoo->childContexts().count(), 0);
@@ -149,20 +174,117 @@ void TestDUChain::testDeclareFunction()
     release(top);
 }
 
-void TestDUChain::testDeclareClass2()
+void TestDUChain::testClassImplementsInterface()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A { function foo(A $a) {} }");
+    QByteArray method("<? interface I { } class A implements I { }");
 
     DUContext* top = parse(method, DumpAll);
 
     DUChainWriteLocker lock(DUChain::lock());
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->localDeclarations().count(), 2);
 
+    //interface I
+    Declaration* dec = top->localDeclarations().at(0);
+    QVERIFY(dec->isDefinition());
+    QCOMPARE(dec->identifier(), Identifier("I"));
+    ClassType::Ptr typeI = dec->type<ClassType>();
+    QCOMPARE(typeI->identifier(), QualifiedIdentifier("I"));
+    QCOMPARE(typeI->classType(), ClassType::Interface);
+    QVERIFY(typeI->declaration() == dec);
+    QCOMPARE(typeI->extendsClasses().count(), 0);
+    QCOMPARE(typeI->implementsInterfaces().count(), 0);
+
+    QCOMPARE(dec->internalContext(), top->childContexts().at(0));
+    QCOMPARE(dec->internalContext()->childContexts().count(), 0);
+    QCOMPARE(dec->internalContext()->importedParentContexts().count(), 0);
+    QCOMPARE(dec->internalContext()->localScopeIdentifier(), QualifiedIdentifier("I"));
+
+    QCOMPARE(dec->uses().count(), 1);
+    QCOMPARE(dec->uses().begin()->count(), 1);
+
+
+    //class A
+    dec = top->localDeclarations().at(1);
+    QVERIFY(dec->isDefinition());
+    QCOMPARE(dec->identifier(), Identifier("A"));
+    ClassType::Ptr typeA = dec->type<ClassType>();
+    QCOMPARE(typeA->identifier(), QualifiedIdentifier("A"));
+    QCOMPARE(typeA->classType(), ClassType::Class);
+    QVERIFY(typeA->declaration() == dec);
+    QCOMPARE(typeA->extendsClasses().count(), 0);
+    QCOMPARE(typeA->implementsInterfaces().count(), 1);
+    QVERIFY(typeA->implementsInterfaces().at(0).data() == typeI.data());
+
+    QCOMPARE(dec->internalContext(), top->childContexts().at(1));
+    QCOMPARE(dec->internalContext()->childContexts().count(), 0);
+    QCOMPARE(dec->internalContext()->localScopeIdentifier(), QualifiedIdentifier("A"));
+    //class A imports interface I context
+    QCOMPARE(dec->internalContext()->importedParentContexts().count(), 1);
+    QVERIFY(dec->internalContext()->importedParentContexts().at(0).data() == top->childContexts().at(0));
+
+    QCOMPARE(dec->uses().count(), 0);
 
     release(top);
 }
 
+void TestDUChain::testClassExtends()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { } class B extends A { } ");
+
+    DUContext* top = parse(method, DumpAll);
+
+    DUChainWriteLocker lock(DUChain::lock());
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->localDeclarations().count(), 2);
+
+    //class A
+    Declaration* dec = top->localDeclarations().at(0);
+    QVERIFY(dec->isDefinition());
+    QCOMPARE(dec->identifier(), Identifier("A"));
+    ClassType::Ptr typeA = dec->type<ClassType>();
+    QCOMPARE(typeA->identifier(), QualifiedIdentifier("A"));
+    QCOMPARE(typeA->classType(), ClassType::Class);
+    QVERIFY(typeA->declaration() == dec);
+    QCOMPARE(typeA->extendsClasses().count(), 0);
+    QCOMPARE(typeA->implementsInterfaces().count(), 0);
+
+    QCOMPARE(dec->internalContext(), top->childContexts().at(0));
+    QCOMPARE(dec->internalContext()->childContexts().count(), 0);
+    QCOMPARE(dec->internalContext()->importedParentContexts().count(), 0);
+    QCOMPARE(dec->internalContext()->localScopeIdentifier(), QualifiedIdentifier("A"));
+
+    QCOMPARE(dec->uses().count(), 1);
+    QCOMPARE(dec->uses().begin()->count(), 1);
+
+
+    //class B
+    dec = top->localDeclarations().at(1);
+    QVERIFY(dec->isDefinition());
+    QCOMPARE(dec->identifier(), Identifier("B"));
+    ClassType::Ptr typeB = dec->type<ClassType>();
+    QCOMPARE(typeB->identifier(), QualifiedIdentifier("B"));
+    QCOMPARE(typeB->classType(), ClassType::Class);
+    QVERIFY(typeB->declaration() == dec);
+    QCOMPARE(typeB->implementsInterfaces().count(), 0);
+    QCOMPARE(typeB->extendsClasses().count(), 1);
+    QVERIFY(typeB->extendsClasses().at(0).data() == typeA.data());
+
+    QCOMPARE(dec->internalContext(), top->childContexts().at(1));
+    QCOMPARE(dec->internalContext()->childContexts().count(), 0);
+    QCOMPARE(dec->internalContext()->localScopeIdentifier(), QualifiedIdentifier("B"));
+    //class B imports class A context
+    QCOMPARE(dec->internalContext()->importedParentContexts().count(), 1);
+    QVERIFY(dec->internalContext()->importedParentContexts().at(0).data() == top->childContexts().at(0));
+
+    QCOMPARE(dec->uses().count(), 0);
+
+    release(top);
+}
 void TestDUChain::release(DUContext* top)
 {
   //KDevelop::EditorIntegrator::releaseTopRange(top->textRangePtr());
@@ -196,8 +318,8 @@ TopDUContext* TestDUChain::parse(const QByteArray& unit, DumpAreas dump)
     DeclarationBuilder declarationBuilder(session);
     TopDUContext* top = declarationBuilder.build(IndexedString(url), ast);
 
-//     UseBuilder useBuilder(session);
-//     useBuilder.buildUses(ast);
+    UseBuilder useBuilder(session);
+    useBuilder.buildUses(ast);
   
     if (dump & DumpDUChain) {
         kDebug(9007) << "===== DUChain:";

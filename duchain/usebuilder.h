@@ -18,34 +18,39 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef DECLARATIONBUILDER_H
-#define DECLARATIONBUILDER_H
 
-#include "typebuilder.h"
-#include <language/duchain/abstractdeclarationbuilder.h>
+#ifndef USEBUILDER_H
+#define USEBUILDER_H
+
+#include "contextbuilder.h"
+
+#include <language/duchain/abstractusebuilder.h>
+
+#include "phpduchainexport.h"
 
 namespace Php {
+
 class ParseSession;
-class EditorIntegrator;
 
-typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, Php::TypeBuilder> DeclarationBuilderBase;
+typedef KDevelop::AbstractUseBuilder<AstNode, IdentifierAst, ContextBuilder> UseBuilderBase;
 
-class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase {
+/**
+ * A class which iterates the AST to extract uses of definitions.
+ */
+class KDEVPHPDUCHAIN_EXPORT UseBuilder: public UseBuilderBase
+{
 public:
-    DeclarationBuilder(ParseSession* session);
-    DeclarationBuilder(EditorIntegrator* editor);
-protected:
-    virtual void closeDeclaration();
-    void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
-    void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
-    void visitClassStatement(ClassStatementAst *node);
-    void visitParameter(ParameterAst *node);
-    void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
+    UseBuilder(ParseSession* session);
+    UseBuilder(EditorIntegrator* editor);
 
-    void classTypeOpened(KDevelop::AbstractType::Ptr type);
+protected:
+    virtual void visitParameter(ParameterAst *node);
+    virtual void visitClassImplements(ClassImplementsAst *node);
+    virtual void visitClassExtends(ClassExtendsAst *node);
+
 };
 
 }
 
-#endif // DECLARATIONBUILDER_H
+#endif // USEBUILDER_H
 

@@ -22,9 +22,9 @@
 
 #include <QObject>
 #include <QByteArray>
+#include <dumpchain.h>
 
 #include "phpparser.h"
-#include "dumpchain.h"
 namespace KDevelop {
     class TopDUContext;
 }
@@ -41,8 +41,10 @@ private slots:
   void initTestCase();
   void cleanupTestCase();
   void testDeclareClass();
+  void testDeclareTypehintFunction();
   void testDeclareFunction();
-  void testDeclareClass2();
+  void testClassImplementsInterface();
+  void testClassExtends();
 
 public:
   enum DumpArea {
@@ -59,7 +61,7 @@ private:
 
   void release(KDevelop::DUContext* top);
 
-  DumpChain dumper;
+  KDevelop::DumpChain dumper;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(TestDUChain::DumpAreas)

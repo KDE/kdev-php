@@ -613,6 +613,39 @@ public:
         m_indent--;
     }
 
+    virtual void visitClassBody(ClassBodyAst *node)
+    {
+        qint64 beginLine,endLine,beginCol,endCol;
+        m_str->startPosition(node->startToken, &beginLine, &beginCol);
+        m_str->endPosition(node->endToken, &endLine, &endCol);
+        QString tokenString;
+        if (!m_content.isEmpty())
+        {
+            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
+            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            int begin = startToken.begin;
+            int end = endToken.end;
+            if (end-begin > 30)
+            {
+                tokenString = m_content.mid(begin, 10);
+                tokenString += " ...";
+                tokenString += QString("%1 more").arg(end-begin-20);
+                tokenString += "... ";
+                tokenString += m_content.mid(end-10, 10);
+            }
+            else
+            {
+                tokenString = m_content.mid(begin, end-begin+1);
+            }
+            tokenString = tokenString.replace('\n', "\\n");
+            tokenString = tokenString.replace('\r', "\\r");
+        }
+        qDebug() << QString().fill(' ', m_indent) << "classBody[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
+        m_indent++;
+        DefaultVisitor::visitClassBody(node);
+        m_indent--;
+    }
+
     virtual void visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
     {
         qint64 beginLine,endLine,beginCol,endCol;
@@ -676,6 +709,72 @@ public:
         qDebug() << QString().fill(' ', m_indent) << "classDeclarationStatement[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
         m_indent++;
         DefaultVisitor::visitClassDeclarationStatement(node);
+        m_indent--;
+    }
+
+    virtual void visitClassExtends(ClassExtendsAst *node)
+    {
+        qint64 beginLine,endLine,beginCol,endCol;
+        m_str->startPosition(node->startToken, &beginLine, &beginCol);
+        m_str->endPosition(node->endToken, &endLine, &endCol);
+        QString tokenString;
+        if (!m_content.isEmpty())
+        {
+            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
+            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            int begin = startToken.begin;
+            int end = endToken.end;
+            if (end-begin > 30)
+            {
+                tokenString = m_content.mid(begin, 10);
+                tokenString += " ...";
+                tokenString += QString("%1 more").arg(end-begin-20);
+                tokenString += "... ";
+                tokenString += m_content.mid(end-10, 10);
+            }
+            else
+            {
+                tokenString = m_content.mid(begin, end-begin+1);
+            }
+            tokenString = tokenString.replace('\n', "\\n");
+            tokenString = tokenString.replace('\r', "\\r");
+        }
+        qDebug() << QString().fill(' ', m_indent) << "classExtends[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
+        m_indent++;
+        DefaultVisitor::visitClassExtends(node);
+        m_indent--;
+    }
+
+    virtual void visitClassImplements(ClassImplementsAst *node)
+    {
+        qint64 beginLine,endLine,beginCol,endCol;
+        m_str->startPosition(node->startToken, &beginLine, &beginCol);
+        m_str->endPosition(node->endToken, &endLine, &endCol);
+        QString tokenString;
+        if (!m_content.isEmpty())
+        {
+            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
+            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            int begin = startToken.begin;
+            int end = endToken.end;
+            if (end-begin > 30)
+            {
+                tokenString = m_content.mid(begin, 10);
+                tokenString += " ...";
+                tokenString += QString("%1 more").arg(end-begin-20);
+                tokenString += "... ";
+                tokenString += m_content.mid(end-10, 10);
+            }
+            else
+            {
+                tokenString = m_content.mid(begin, end-begin+1);
+            }
+            tokenString = tokenString.replace('\n', "\\n");
+            tokenString = tokenString.replace('\r', "\\r");
+        }
+        qDebug() << QString().fill(' ', m_indent) << "classImplements[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
+        m_indent++;
+        DefaultVisitor::visitClassImplements(node);
         m_indent--;
     }
 
@@ -1933,6 +2032,39 @@ public:
         m_indent--;
     }
 
+    virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
+    {
+        qint64 beginLine,endLine,beginCol,endCol;
+        m_str->startPosition(node->startToken, &beginLine, &beginCol);
+        m_str->endPosition(node->endToken, &endLine, &endCol);
+        QString tokenString;
+        if (!m_content.isEmpty())
+        {
+            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
+            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            int begin = startToken.begin;
+            int end = endToken.end;
+            if (end-begin > 30)
+            {
+                tokenString = m_content.mid(begin, 10);
+                tokenString += " ...";
+                tokenString += QString("%1 more").arg(end-begin-20);
+                tokenString += "... ";
+                tokenString += m_content.mid(end-10, 10);
+            }
+            else
+            {
+                tokenString = m_content.mid(begin, end-begin+1);
+            }
+            tokenString = tokenString.replace('\n', "\\n");
+            tokenString = tokenString.replace('\r', "\\r");
+        }
+        qDebug() << QString().fill(' ', m_indent) << "interfaceDeclarationStatement[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
+        m_indent++;
+        DefaultVisitor::visitInterfaceDeclarationStatement(node);
+        m_indent--;
+    }
+
     virtual void visitLogicalAndExpression(LogicalAndExpressionAst *node)
     {
         qint64 beginLine,endLine,beginCol,endCol;
@@ -3118,6 +3250,39 @@ public:
         qDebug() << QString().fill(' ', m_indent) << "variable[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
         m_indent++;
         DefaultVisitor::visitVariable(node);
+        m_indent--;
+    }
+
+    virtual void visitVariableIdentifier(VariableIdentifierAst *node)
+    {
+        qint64 beginLine,endLine,beginCol,endCol;
+        m_str->startPosition(node->startToken, &beginLine, &beginCol);
+        m_str->endPosition(node->endToken, &endLine, &endCol);
+        QString tokenString;
+        if (!m_content.isEmpty())
+        {
+            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
+            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            int begin = startToken.begin;
+            int end = endToken.end;
+            if (end-begin > 30)
+            {
+                tokenString = m_content.mid(begin, 10);
+                tokenString += " ...";
+                tokenString += QString("%1 more").arg(end-begin-20);
+                tokenString += "... ";
+                tokenString += m_content.mid(end-10, 10);
+            }
+            else
+            {
+                tokenString = m_content.mid(begin, end-begin+1);
+            }
+            tokenString = tokenString.replace('\n', "\\n");
+            tokenString = tokenString.replace('\r', "\\r");
+        }
+        qDebug() << QString().fill(' ', m_indent) << "variableIdentifier[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
+        m_indent++;
+        DefaultVisitor::visitVariableIdentifier(node);
         m_indent--;
     }
 
