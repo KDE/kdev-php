@@ -38,11 +38,11 @@ public:
   TestDUChain();
 
 private slots:
-  void initTestCase();
-  void cleanupTestCase();
+  void testDeclareVar();
   void testDeclareClass();
+  void testClassMemberVar();
   void testDeclareTypehintFunction();
-  void testDeclareFunction();
+  void testVariableDeclaration();
   void testClassImplementsInterface();
   void testClassExtends();
 

@@ -81,19 +81,67 @@ TestDUChain::TestDUChain()
 {
 }
 
-void TestDUChain::initTestCase()
-{
-}
 
-void TestDUChain::cleanupTestCase()
+void TestDUChain::testDeclareVar()
 {
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A {} class B {} $i = new A(); $j = new B(); $i = new B(); $i = 'foo';");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->localDeclarations().count(), 6);
+
+    //class A
+    Declaration* dec = top->localDeclarations().at(0);
+    QCOMPARE(dec->uses().count(), 1);
+    QCOMPARE(dec->uses().begin()->count(), 1);
+
+    //$i
+    Declaration* decVar = top->localDeclarations().at(2);
+    QCOMPARE(decVar->identifier(), Identifier("$i"));
+    ClassType::Ptr type = decVar->type<ClassType>();
+    QVERIFY(type);
+    QCOMPARE(type->identifier(), QualifiedIdentifier("A"));
+    QCOMPARE(type, dec->type<ClassType>());
+
+    //class B
+    dec = top->localDeclarations().at(1);
+    QCOMPARE(dec->uses().count(), 1);
+    QCOMPARE(dec->uses().begin()->count(), 2);
+
+    //$j
+    decVar = top->localDeclarations().at(3);
+    QCOMPARE(decVar->identifier(), Identifier("$j"));
+    type = decVar->type<ClassType>();
+    QVERIFY(type);
+    QCOMPARE(type->identifier(), QualifiedIdentifier("B"));
+    QCOMPARE(type, dec->type<ClassType>());
+
+    //$i (2nd)
+    decVar = top->localDeclarations().at(4);
+    QCOMPARE(decVar->identifier(), Identifier("$i"));
+    type = decVar->type<ClassType>();
+    QVERIFY(type);
+    QCOMPARE(type->identifier(), QualifiedIdentifier("B"));
+    QCOMPARE(type, dec->type<ClassType>());
+
+    //$i (3rd)
+    decVar = top->localDeclarations().at(5);
+    QCOMPARE(decVar->identifier(), Identifier("$i"));
+    QVERIFY(decVar->type<IntegralType>());
+
+    release(top);
 }
 
 void TestDUChain::testDeclareClass()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A { function foo($i) {} }");
+    QByteArray method("<? class A { public function foo($i) {} }");
 
     TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
@@ -123,17 +171,57 @@ void TestDUChain::testDeclareClass()
     release(top);
 }
 
-void TestDUChain::testDeclareFunction()
+void TestDUChain::testClassMemberVar()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? function foo() {}");
-    DUContext* top = parse(method, DumpAll);
+    QByteArray method("<? class A { public $foo; }");
+
+    TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
 
     QVERIFY(!top->parentContext());
     QCOMPARE(top->childContexts().count(), 1);
+
+    DUContext* contextClassA = top->childContexts().first();
+
     QCOMPARE(top->localDeclarations().count(), 1);
+    Declaration* dec = top->localDeclarations().first();
+    QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QCOMPARE(dec->isDefinition(), true);
+    QCOMPARE(dec->logicalInternalContext(top), contextClassA);
+
+    QCOMPARE(contextClassA->localScopeIdentifier(), QualifiedIdentifier("A"));
+    QCOMPARE(contextClassA->childContexts().count(), 0);
+
+    QCOMPARE(contextClassA->localDeclarations().count(), 1);
+    Declaration* foo = contextClassA->localDeclarations().first();
+    QCOMPARE(foo->identifier(), Identifier("$foo"));
+
+    release(top);
+}
+
+void TestDUChain::testVariableDeclaration()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A {} $i = new A();");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 1);
+    QCOMPARE(top->localDeclarations().count(), 2);
+
+    Declaration* dec = top->localDeclarations().at(0);
+    QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QCOMPARE(dec->logicalInternalContext(top), top->childContexts().at(0));
+    QCOMPARE(dec->uses().count(), 1);
+    QCOMPARE(dec->uses().begin()->count(), 1);
+    QCOMPARE(top->localDeclarations().at(1)->identifier(), Identifier("$i"));
+    ClassType::Ptr type = top->localDeclarations().at(1)->type<ClassType>();
+    QCOMPARE(type->identifier(), QualifiedIdentifier("A"));
 
     release(top);
 }

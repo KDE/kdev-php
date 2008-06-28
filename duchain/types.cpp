@@ -23,6 +23,7 @@
 
 #include <duchain/classfunctiondeclaration.h>
 #include <duchain/abstractfunctiondeclaration.h>
+#include <duchain/indexedstring.h>
 
 using namespace KDevelop;
 namespace Php {
@@ -219,6 +220,30 @@ uint FunctionType::hash() const
     return modHash(KDevelop::FunctionType::hash()) + 31 * identifier().hash();
 }
 
+
+IntegralType::IntegralType()
+{
+  setName(IndexedString("<mixed>"));
+}
+
+AbstractType* IntegralType::clone() const {
+  return new IntegralType(*this);
+}
+
+bool IntegralType::equals(const AbstractType* _rhs) const
+{
+  return KDevelop::IntegralType::equals(_rhs);
+}
+
+QString IntegralType::toString() const
+{
+  return KDevelop::IntegralType::toString();
+}
+
+uint IntegralType::hash() const
+{
+  return KDevelop::IntegralType::hash();
+}
 
 }
 

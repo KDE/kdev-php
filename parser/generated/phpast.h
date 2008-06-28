@@ -447,6 +447,7 @@ struct KDEVPHPPARSER_EXPORT ClassNameReferenceAst: public AstNode
 {
     enum { KIND = ClassNameReferenceKind };
 
+    IdentifierAst *identifier;
     DynamicClassNameReferenceAst *dynamicClassNameReference;
 };
 
@@ -455,8 +456,8 @@ struct KDEVPHPPARSER_EXPORT ClassStatementAst: public AstNode
     enum { KIND = ClassStatementKind };
 
     ClassConstantDeclarationAst *consts;
-    OptionalModifiersAst *modifiers;
     ClassVariableDeclarationAst *variable;
+    OptionalModifiersAst *modifiers;
     IdentifierAst *methodName;
     ParameterListAst *parameters;
     MethodBodyAst *methodBody;
@@ -466,7 +467,7 @@ struct KDEVPHPPARSER_EXPORT ClassVariableAst: public AstNode
 {
     enum { KIND = ClassVariableKind };
 
-    VariableIdentifierAst *var;
+    VariableIdentifierAst *variable;
     StaticScalarAst *value;
 };
 
@@ -496,8 +497,9 @@ struct KDEVPHPPARSER_EXPORT CompoundVariableWithSimpleIndirectReferenceAst: publ
 {
     enum { KIND = CompoundVariableWithSimpleIndirectReferenceKind };
 
-    VariableIdentifierAst *var;
+    VariableIdentifierAst *indirectVariable;
     ExprAst *expr;
+    VariableIdentifierAst *variable;
 };
 
 struct KDEVPHPPARSER_EXPORT ConditionalExpressionAst: public AstNode

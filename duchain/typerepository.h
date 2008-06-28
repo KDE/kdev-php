@@ -32,10 +32,12 @@ namespace KDevelop {
 
 namespace Php {
 
-class TypeRepository : public KDevelop::ITypeRepository
+class KDEVPHPDUCHAIN_EXPORT TypeRepository : public KDevelop::ITypeRepository
 {
 public:
   static TypeRepository* self();
+
+  IntegralType::Ptr integral() const;
 
   ///@todo The type-repository holds shared-pointers to types, and may keep AbstractType's alive that come from already deleted du-chains. AbstractType's with no declarations should be cleaned away on a regular basis.
 
@@ -48,6 +50,13 @@ public:
 
 private:
   TypeRepository();
+
+  KDevelop::AbstractType::Ptr registerFunction(FunctionType::Ptr input);
+
+  // Inbuilt integral type
+  IntegralType::Ptr m_integral;
+
+  QMultiHash<int, FunctionType::Ptr> m_functions;
 
   mutable QMutex m_mutex;
 };

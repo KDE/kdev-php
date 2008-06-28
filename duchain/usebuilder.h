@@ -47,6 +47,7 @@ protected:
     virtual void visitParameter(ParameterAst *node);
     virtual void visitClassImplements(ClassImplementsAst *node);
     virtual void visitClassExtends(ClassExtendsAst *node);
+    virtual void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
 
 };
 

@@ -131,6 +131,25 @@ public:
   virtual bool equals(const AbstractType* rhs) const;
 };
 
+class KDEVPHPDUCHAIN_EXPORT IntegralType : public KDevelop::IntegralType
+{
+  friend class TypeRepository;
+
+public:
+  typedef KSharedPtr<IntegralType> Ptr;
+
+  virtual QString toString() const;
+
+  virtual uint hash() const;
+
+  virtual AbstractType* clone() const;
+
+  virtual bool equals(const AbstractType* rhs) const;
+protected:
+  IntegralType();
+
+};
+
 }
 
 #endif

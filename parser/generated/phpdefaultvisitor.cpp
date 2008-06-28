@@ -235,14 +235,15 @@ void DefaultVisitor::visitClassImplements(ClassImplementsAst *node)
 
 void DefaultVisitor::visitClassNameReference(ClassNameReferenceAst *node)
 {
+    visitNode(node->identifier);
     visitNode(node->dynamicClassNameReference);
 }
 
 void DefaultVisitor::visitClassStatement(ClassStatementAst *node)
 {
     visitNode(node->consts);
-    visitNode(node->modifiers);
     visitNode(node->variable);
+    visitNode(node->modifiers);
     visitNode(node->methodName);
     visitNode(node->parameters);
     visitNode(node->methodBody);
@@ -250,7 +251,7 @@ void DefaultVisitor::visitClassStatement(ClassStatementAst *node)
 
 void DefaultVisitor::visitClassVariable(ClassVariableAst *node)
 {
-    visitNode(node->var);
+    visitNode(node->variable);
     visitNode(node->value);
 }
 
@@ -280,8 +281,9 @@ void DefaultVisitor::visitCompoundVariable(CompoundVariableAst *node)
 
 void DefaultVisitor::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
 {
-    visitNode(node->var);
+    visitNode(node->indirectVariable);
     visitNode(node->expr);
+    visitNode(node->variable);
 }
 
 void DefaultVisitor::visitConditionalExpression(ConditionalExpressionAst *node)

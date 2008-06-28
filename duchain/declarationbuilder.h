@@ -23,7 +23,9 @@
 
 #include "typebuilder.h"
 #include <language/duchain/abstractdeclarationbuilder.h>
-
+namespace KDvelop {
+    class Declaration;
+}
 namespace Php {
 class ParseSession;
 class EditorIntegrator;
@@ -36,13 +38,22 @@ public:
     DeclarationBuilder(EditorIntegrator* editor);
 protected:
     virtual void closeDeclaration();
-    void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
-    void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
-    void visitClassStatement(ClassStatementAst *node);
-    void visitParameter(ParameterAst *node);
-    void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
+    virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
+    virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
+    virtual void visitClassStatement(ClassStatementAst *node);
+    virtual void visitParameter(ParameterAst *node);
+    virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
+    virtual void visitClassVariable(ClassVariableAst *node);
+    virtual void visitExpr(ExprAst *node);
+    virtual void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
+    virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
+    virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
 
     void classTypeOpened(KDevelop::AbstractType::Ptr type);
+
+private:
+    KDevelop::Declaration* m_lastVariableDeclaration;
+    VariableIdentifierAst* m_lastVariableIdentifier;
 };
 
 }

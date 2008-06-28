@@ -495,7 +495,7 @@ expression=booleanOrExpression
   | DOLLAR LBRACE expr=expr RBRACE
 -> compoundVariable ;;
 
-  ( DOLLAR ( DOLLAR+ | 0 ) ( var=variableIdentifier | LBRACE expr=expr RBRACE ) | var=variableIdentifier )
+  ( DOLLAR ( DOLLAR+ | 0 ) ( indirectVariable=variableIdentifier | LBRACE expr=expr RBRACE ) | variable=variableIdentifier )
 -> compoundVariableWithSimpleIndirectReference ;;
 
     expr=expr | 0
@@ -616,7 +616,7 @@ expression=booleanOrExpression
 
     --resolve STRING vs. staticMember conflict
     ?[: LA(2).kind != Token_PAAMAYIM_NEKUDOTAYIM :]
-    STRING
+    identifier=identifier
   | dynamicClassNameReference=dynamicClassNameReference
 -> classNameReference ;;
 
@@ -736,7 +736,7 @@ identifier=identifier
 -> classBody ;;
 
     CONST consts=classConstantDeclaration @ COMMA SEMICOLON
-  | VAR classVariableDeclaration SEMICOLON
+  | VAR variable=classVariableDeclaration SEMICOLON
   | modifiers=optionalModifiers
     ( variable=classVariableDeclaration SEMICOLON
       | FUNCTION (BIT_AND | 0) methodName=identifier LPAREN (parameters=parameterList | 0) RPAREN
@@ -754,7 +754,7 @@ identifier=identifier
 #vars=classVariable @ COMMA
 -> classVariableDeclaration ;;
 
-    var=variableIdentifier (ASSIGN value=staticScalar | 0)
+    variable=variableIdentifier (ASSIGN value=staticScalar | 0)
 -> classVariable ;;
 
   (

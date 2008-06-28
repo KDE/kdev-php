@@ -64,4 +64,12 @@ void UseBuilder::visitClassExtends(ClassExtendsAst *node)
     newUse(node->identifier);
 }
 
+void UseBuilder::visitVarExpressionNewObject(VarExpressionNewObjectAst *node)
+{
+    UseBuilderBase::visitVarExpressionNewObject(node);
+    if (node->className->identifier) {
+        newUse(node->className->identifier);
+    }
+}
+
 }

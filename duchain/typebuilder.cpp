@@ -30,6 +30,7 @@
 #include "editorintegrator.h"
 #include "parsesession.h"
 #include "typerepository.h"
+#include "phpdebugvisitor.h"
 
 using namespace KDevelop;
 namespace Php {
@@ -115,7 +116,6 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
 {
     if (node->methodName) {
         //method declaration
-
         FunctionType::Ptr functionType = FunctionType::Ptr(new FunctionType(parseModifiers(node->modifiers)));
 
         openType(functionType);
@@ -173,7 +173,6 @@ void TypeBuilder::addBaseType(const ClassType::Ptr& base, bool implementsInterfa
     }
     TypeBuilderBase::addBaseType(base, implementsInterface);
 }
-
 
 }
 

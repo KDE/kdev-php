@@ -35,22 +35,23 @@ using namespace KDevelop;
 namespace Php {
 
 DeclarationBuilder::DeclarationBuilder (ParseSession* session)
+    : m_lastVariableDeclaration(0), m_lastVariableIdentifier(0)
 {
   setEditor(session);
 }
 
 DeclarationBuilder::DeclarationBuilder (EditorIntegrator* editor)
+    : m_lastVariableDeclaration(0), m_lastVariableIdentifier(0)
 {
   setEditor(editor);
 }
 
 void DeclarationBuilder::closeDeclaration()
 {
-  if (currentDeclaration()) {
-    DUChainWriteLocker lock(DUChain::lock());
-
-    currentDeclaration()->setType(lastType());
-  }
+    if (currentDeclaration()) {
+        DUChainWriteLocker lock(DUChain::lock());
+        currentDeclaration()->setType(lastType());
+    }
 
   eventuallyAssignInternalContext();
 
@@ -60,7 +61,6 @@ void DeclarationBuilder::closeDeclaration()
 void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
 {
     openDefinition(node->className, node, false);
-
     currentDeclaration()->setKind(KDevelop::Declaration::Type);
 
     DeclarationBuilderBase::visitClassDeclarationStatement(node);
@@ -71,7 +71,6 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
 void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
 {
     openDefinition(node->interfaceName, node, false);
-
     currentDeclaration()->setKind(KDevelop::Declaration::Type);
 
     DeclarationBuilderBase::visitInterfaceDeclarationStatement(node);
@@ -92,13 +91,22 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
         DeclarationBuilderBase::visitClassStatement(node);
 
         closeDeclaration();
-
     } else {
-        //member-variable
         DeclarationBuilderBase::visitClassStatement(node);
     }
 }
 
+void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
+{
+    {
+        DUChainWriteLocker lock(DUChain::lock());
+        SimpleRange newRange = editorFindRange(node->variable, node->variable);
+        openDefinition(identifierForNode(node->variable), newRange, false);
+    }
+    currentDeclaration()->setKind(Declaration::Instance);
+    DeclarationBuilderBase::visitClassVariable(node);
+    closeDeclaration();
+}
 
 void DeclarationBuilder::classTypeOpened(AbstractType::Ptr type)
 {
@@ -135,6 +143,48 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
     DeclarationBuilderBase::visitFunctionDeclarationStatement(node);
 
     closeDeclaration();
+}
+
+void DeclarationBuilder::visitExpr(ExprAst *node)
+{
+    m_lastVariableDeclaration = 0;
+    m_lastVariableIdentifier = 0;
+    DeclarationBuilderBase::visitExpr(node);
+}
+void DeclarationBuilder::visitVarExpressionNewObject(VarExpressionNewObjectAst *node)
+{
+    DeclarationBuilderBase::visitVarExpressionNewObject(node);
+    if (node->className->identifier && m_lastVariableDeclaration) {
+        if(openTypeFromName(node->className->identifier, true)) {
+            closeType();
+            DUChainWriteLocker lock(DUChain::lock());
+            m_lastVariableDeclaration->setType(lastType());
+            m_lastVariableDeclaration = 0;
+            m_lastVariableIdentifier = 0;
+        }
+    }
+}
+
+void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node)
+{
+    //create new declaration for every assignment
+    //TODO: don't create the same twice
+    if (m_lastVariableIdentifier) {
+        DUChainWriteLocker lock(DUChain::lock());
+        SimpleRange newRange = editorFindRange(m_lastVariableIdentifier, m_lastVariableIdentifier);
+        openDefinition(identifierForNode(m_lastVariableIdentifier), newRange, false);
+        m_lastVariableDeclaration = currentDeclaration();
+        currentDeclaration()->setKind(Declaration::Instance);
+        closeDeclaration();
+        m_lastVariableDeclaration ->setType(typeRepository()->integral());
+    }
+    DeclarationBuilderBase::visitAssignmentExpressionEqual(node);
+}
+
+void DeclarationBuilder::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
+{
+    m_lastVariableIdentifier = node->variable;
+    DeclarationBuilderBase::visitCompoundVariableWithSimpleIndirectReference(node);
 }
 
 }
