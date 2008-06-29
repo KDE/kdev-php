@@ -47,7 +47,7 @@ KDevelop::SimpleCursor EditorIntegrator::findPosition( const KDevPG::TokenStream
   if(edge == BackEdge)
     return m_session->positionAt(token.end + 1);
   else
-    return m_session->positionAt(token.begin + 1);
+    return m_session->positionAt(token.begin);
 }
 
 KDevelop::SimpleRange EditorIntegrator::findRange( AstNode * node, RangeEdge edge )
