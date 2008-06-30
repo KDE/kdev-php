@@ -373,12 +373,12 @@ expression=booleanOrExpression
 
 
    expression=unaryExpression
-   (#additionalExpression=multiplicativeExpression_rest)*
+   (#additionalExpression=multiplicativeExpressionRest)*
 -> multiplicativeExpression ;;
 
    ( MUL | DIV | MOD )
    expression=unaryExpression
--> multiplicativeExpression_rest ;;
+-> multiplicativeExpressionRest ;;
 
  (
     MINUS unaryExpression=unaryExpression
@@ -401,14 +401,14 @@ expression=booleanOrExpression
   | REQUIRE unaryExpression=unaryExpression
   | REQUIRE_ONCE unaryExpression=unaryExpression
 
-  | unaryExpressionNotPlusminus=unaryExpression_not_plusminus
+  | unaryExpressionNotPlusminus=unaryExpressionNotPlusminus
  )
 -> unaryExpression ;;
 
     (#prefixOperator=postprefixOperator)*
     varExpression=varExpression
     (#postfixOperator=postprefixOperator)*
--> unaryExpression_not_plusminus ;;
+-> unaryExpressionNotPlusminus ;;
 
    op=INC | op=DEC
 -> postprefixOperator ;;
@@ -476,11 +476,11 @@ expression=booleanOrExpression
    catch (baseVariable=baseVariable)
 -> baseVariableWithFunctionCalls ;;
 
-    stringFunctionNameOrClass=STRING (
+    stringFunctionNameOrClass=identifier (
         LPAREN stringParameterList=functionCallParameterList RPAREN
       | PAAMAYIM_NEKUDOTAYIM
         (
-            stringFunctionName=STRING LPAREN stringParameterList=functionCallParameterList RPAREN
+            stringFunctionName=identifier LPAREN stringParameterList=functionCallParameterList RPAREN
             | varFunctionName=variableWithoutObjects LPAREN stringParameterList=functionCallParameterList RPAREN
         )
     )

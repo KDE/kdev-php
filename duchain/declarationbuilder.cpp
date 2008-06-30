@@ -35,13 +35,13 @@ using namespace KDevelop;
 namespace Php {
 
 DeclarationBuilder::DeclarationBuilder (ParseSession* session)
-    : m_lastVariableDeclaration(0), m_lastVariableIdentifier(0)
+    : m_lastVariableIdentifier(0)
 {
   setEditor(session);
 }
 
 DeclarationBuilder::DeclarationBuilder (EditorIntegrator* editor)
-    : m_lastVariableDeclaration(0), m_lastVariableIdentifier(0)
+    : m_lastVariableIdentifier(0)
 {
   setEditor(editor);
 }
@@ -147,42 +147,31 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
 
 void DeclarationBuilder::visitExpr(ExprAst *node)
 {
-    m_lastVariableDeclaration = 0;
     m_lastVariableIdentifier = 0;
     DeclarationBuilderBase::visitExpr(node);
-}
-void DeclarationBuilder::visitVarExpressionNewObject(VarExpressionNewObjectAst *node)
-{
-    DeclarationBuilderBase::visitVarExpressionNewObject(node);
-    if (node->className->identifier && m_lastVariableDeclaration) {
-        if(openTypeFromName(node->className->identifier, true)) {
-            closeType();
-            DUChainWriteLocker lock(DUChain::lock());
-            m_lastVariableDeclaration->setType(lastType());
-            m_lastVariableDeclaration = 0;
-            m_lastVariableIdentifier = 0;
-        }
-    }
 }
 
 void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node)
 {
-    //create new declaration for every assignment
-    //TODO: don't create the same twice
-    if (m_lastVariableIdentifier) {
+    DeclarationBuilderBase::visitAssignmentExpressionEqual(node);
+    if (m_lastVariableIdentifier && m_expressionType) {
+        //create new declaration for every assignment
+        //TODO: don't create the same twice
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(m_lastVariableIdentifier, m_lastVariableIdentifier);
         openDefinition(identifierForNode(m_lastVariableIdentifier), newRange, false);
-        m_lastVariableDeclaration = currentDeclaration();
         currentDeclaration()->setKind(Declaration::Instance);
-        closeDeclaration();
-        m_lastVariableDeclaration ->setType(typeRepository()->integral());
+
+        //own closeDeclaration() that uses expressionType instead of lastType()
+        currentDeclaration()->setType(m_expressionType);
+        eventuallyAssignInternalContext();
+        DeclarationBuilderBase::closeDeclaration();
     }
-    DeclarationBuilderBase::visitAssignmentExpressionEqual(node);
 }
 
 void DeclarationBuilder::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
 {
+    //needed in assignmentExpressionEqual
     m_lastVariableIdentifier = node->variable;
     DeclarationBuilderBase::visitCompoundVariableWithSimpleIndirectReference(node);
 }

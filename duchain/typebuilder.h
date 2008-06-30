@@ -29,6 +29,7 @@
 #include <language/duchain/declaration.h>
 #include <language/duchain/identifier.h>
 #include "typerepository.h"
+#include "types.h"
 
 namespace Php {
 
@@ -57,7 +58,16 @@ protected:
   virtual void visitClassImplements(ClassImplementsAst *node);
   virtual void visitClassExtends(ClassExtendsAst *node);
 
+  virtual void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
+  virtual void visitStatement(StatementAst* node);
+  virtual void visitExpr(ExprAst *node);
+  virtual void visitScalar(ScalarAst *node);
+  virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
+  virtual void visitFunctionCall(FunctionCallAst* node);
   virtual void addBaseType(const ClassType::Ptr& base, bool implementsInterface);
+
+  KDevelop::AbstractType::Ptr m_expressionType;
+  FunctionType::Ptr m_currentFunctionType;
 
 private:
   bool nodeValid(AstNode* node) const;

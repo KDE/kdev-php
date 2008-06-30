@@ -66,7 +66,7 @@ void TypeBuilder::visitClassExtends(ClassExtendsAst *node)
 {
     if (openTypeFromName(node->identifier, true)) {
         closeType();
-        ClassType::Ptr extends = KSharedPtr<ClassType>::dynamicCast(lastType());
+        ClassType::Ptr extends = ClassType::Ptr::dynamicCast(lastType());
         if (extends) {
             addBaseType(extends, false);
         }
@@ -150,13 +150,19 @@ void TypeBuilder::visitParameter(ParameterAst *node)
 
 void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
+
     FunctionType::Ptr functionType = FunctionType::Ptr(new FunctionType(NoModifier));
 
     openType(functionType);
 
+    m_currentFunctionType = functionType;
+
     TypeBuilderBase::visitFunctionDeclarationStatement(node);
 
+    m_currentFunctionType = 0;
+
     closeType();
+
 }
 
 void TypeBuilder::addBaseType(const ClassType::Ptr& base, bool implementsInterface)
@@ -172,6 +178,60 @@ void TypeBuilder::addBaseType(const ClassType::Ptr& base, bool implementsInterfa
         }
     }
     TypeBuilderBase::addBaseType(base, implementsInterface);
+}
+
+void TypeBuilder::visitExpr(ExprAst *node)
+{
+    m_expressionType = 0;
+    TypeBuilderBase::visitExpr(node);
+}
+
+void TypeBuilder::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
+{
+    if(openTypeFromName(identifierForNode(node->variable), node, true)) {
+        closeType();
+        m_expressionType = lastType();
+    }
+    TypeBuilderBase::visitCompoundVariableWithSimpleIndirectReference(node);
+}
+
+void TypeBuilder::visitFunctionCall(FunctionCallAst* node)
+{
+    TypeBuilderBase::visitFunctionCall(node);
+    {
+        //TODO: stringFunctionNameOrClass::stringFunctionName (static calls)
+        DUChainReadLocker lock(DUChain::lock());
+        QList<Declaration*> declarations = currentContext()->findDeclarations(identifierForNode(node->stringFunctionNameOrClass));
+        if (!declarations.isEmpty()) {
+            FunctionType::Ptr function = declarations.last()->type<FunctionType>();
+            if (function) {
+                m_expressionType = function->returnType();
+            }
+        }
+    }
+}
+
+void TypeBuilder::visitVarExpressionNewObject(VarExpressionNewObjectAst *node)
+{
+    TypeBuilderBase::visitVarExpressionNewObject(node);
+    if (node->className->identifier) {
+        if(openTypeFromName(node->className->identifier, true)) {
+            closeType();
+            m_expressionType = lastType();
+        }
+    }
+}
+void TypeBuilder::visitScalar(ScalarAst *node)
+{
+    TypeBuilderBase::visitScalar(node);
+    m_expressionType = AbstractType::Ptr::staticCast(typeRepository()->integral());
+}
+void TypeBuilder::visitStatement(StatementAst* node)
+{
+    TypeBuilderBase::visitStatement(node);
+    if (node->returnExpr && m_expressionType && m_currentFunctionType) {
+        m_currentFunctionType->setReturnType(m_expressionType);
+    }
 }
 
 }

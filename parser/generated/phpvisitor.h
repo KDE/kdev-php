@@ -88,7 +88,7 @@ public:
     virtual void visitLogicalXorExpression(LogicalXorExpressionAst *) {}
     virtual void visitMethodBody(MethodBodyAst *) {}
     virtual void visitMultiplicativeExpression(MultiplicativeExpressionAst *) {}
-    virtual void visitMultiplicativeExpression_rest(MultiplicativeExpression_restAst *) {}
+    virtual void visitMultiplicativeExpressionRest(MultiplicativeExpressionRestAst *) {}
     virtual void visitNewElseSingle(NewElseSingleAst *) {}
     virtual void visitNewElseifList(NewElseifListAst *) {}
     virtual void visitNewelseifListItem(NewelseifListItemAst *) {}
@@ -114,7 +114,7 @@ public:
     virtual void visitSwitchCaseList(SwitchCaseListAst *) {}
     virtual void visitTopStatement(TopStatementAst *) {}
     virtual void visitUnaryExpression(UnaryExpressionAst *) {}
-    virtual void visitUnaryExpression_not_plusminus(UnaryExpression_not_plusminusAst *) {}
+    virtual void visitUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst *) {}
     virtual void visitVarExpression(VarExpressionAst *) {}
     virtual void visitVarExpressionNewObject(VarExpressionNewObjectAst *) {}
     virtual void visitVarExpressionNormal(VarExpressionNormalAst *) {}

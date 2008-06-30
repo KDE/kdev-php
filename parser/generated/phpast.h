@@ -88,7 +88,7 @@ struct LogicalOrExpressionAst;
 struct LogicalXorExpressionAst;
 struct MethodBodyAst;
 struct MultiplicativeExpressionAst;
-struct MultiplicativeExpression_restAst;
+struct MultiplicativeExpressionRestAst;
 struct NewElseSingleAst;
 struct NewElseifListAst;
 struct NewelseifListItemAst;
@@ -114,7 +114,7 @@ struct StaticVarAst;
 struct SwitchCaseListAst;
 struct TopStatementAst;
 struct UnaryExpressionAst;
-struct UnaryExpression_not_plusminusAst;
+struct UnaryExpressionNotPlusminusAst;
 struct VarExpressionAst;
 struct VarExpressionNewObjectAst;
 struct VarExpressionNormalAst;
@@ -220,7 +220,7 @@ struct KDEVPHPPARSER_EXPORT AstNode
         LogicalXorExpressionKind = 1064,
         MethodBodyKind = 1065,
         MultiplicativeExpressionKind = 1066,
-        MultiplicativeExpression_restKind = 1067,
+        MultiplicativeExpressionRestKind = 1067,
         NewElseSingleKind = 1068,
         NewElseifListKind = 1069,
         NewelseifListItemKind = 1070,
@@ -246,7 +246,7 @@ struct KDEVPHPPARSER_EXPORT AstNode
         SwitchCaseListKind = 1090,
         TopStatementKind = 1091,
         UnaryExpressionKind = 1092,
-        UnaryExpression_not_plusminusKind = 1093,
+        UnaryExpressionNotPlusminusKind = 1093,
         VarExpressionKind = 1094,
         VarExpressionNewObjectKind = 1095,
         VarExpressionNormalKind = 1096,
@@ -685,9 +685,9 @@ struct KDEVPHPPARSER_EXPORT FunctionCallAst: public AstNode
 {
     enum { KIND = FunctionCallKind };
 
-    qint64 stringFunctionNameOrClass;
+    IdentifierAst *stringFunctionNameOrClass;
     FunctionCallParameterListAst *stringParameterList;
-    qint64 stringFunctionName;
+    IdentifierAst *stringFunctionName;
     VariableWithoutObjectsAst *varFunctionName;
     FunctionCallParameterListAst *varParameterList;
 };
@@ -781,12 +781,12 @@ struct KDEVPHPPARSER_EXPORT MultiplicativeExpressionAst: public AstNode
     enum { KIND = MultiplicativeExpressionKind };
 
     UnaryExpressionAst *expression;
-    const KDevPG::ListNode<MultiplicativeExpression_restAst *> *additionalExpressionSequence;
+    const KDevPG::ListNode<MultiplicativeExpressionRestAst *> *additionalExpressionSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT MultiplicativeExpression_restAst: public AstNode
+struct KDEVPHPPARSER_EXPORT MultiplicativeExpressionRestAst: public AstNode
 {
-    enum { KIND = MultiplicativeExpression_restKind };
+    enum { KIND = MultiplicativeExpressionRestKind };
 
     UnaryExpressionAst *expression;
 };
@@ -1018,12 +1018,12 @@ struct KDEVPHPPARSER_EXPORT UnaryExpressionAst: public AstNode
     UnaryExpressionAst *unaryExpression;
     AssignmentListAst *assignmentList;
     ExprAst *expression;
-    UnaryExpression_not_plusminusAst *unaryExpressionNotPlusminus;
+    UnaryExpressionNotPlusminusAst *unaryExpressionNotPlusminus;
 };
 
-struct KDEVPHPPARSER_EXPORT UnaryExpression_not_plusminusAst: public AstNode
+struct KDEVPHPPARSER_EXPORT UnaryExpressionNotPlusminusAst: public AstNode
 {
-    enum { KIND = UnaryExpression_not_plusminusKind };
+    enum { KIND = UnaryExpressionNotPlusminusKind };
 
     const KDevPG::ListNode<PostprefixOperatorAst *> *prefixOperatorSequence;
     VarExpressionAst *varExpression;

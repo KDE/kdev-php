@@ -66,7 +66,7 @@ private:
 class KDEVPHPDUCHAIN_EXPORT ClassType : public KDevelop::StructureType, public KDevelop::IdentifiedType
 {
 public:
-  typedef KSharedPtr<ClassType> Ptr;
+  typedef TypePtr<ClassType> Ptr;
 
   ClassType();
 
@@ -115,7 +115,7 @@ private:
 class KDEVPHPDUCHAIN_EXPORT FunctionType : public KDevelop::FunctionType, public KDevelop::IdentifiedType, public ModifierType
 {
 public:
-  typedef KSharedPtr<FunctionType> Ptr;
+  typedef TypePtr<FunctionType> Ptr;
 
   FunctionType(TypeModifiers modifiers = NoModifier);
 
@@ -136,7 +136,7 @@ class KDEVPHPDUCHAIN_EXPORT IntegralType : public KDevelop::IntegralType
   friend class TypeRepository;
 
 public:
-  typedef KSharedPtr<IntegralType> Ptr;
+  typedef TypePtr<IntegralType> Ptr;
 
   virtual QString toString() const;
 

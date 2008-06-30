@@ -463,7 +463,9 @@ void DefaultVisitor::visitForeachVariable(ForeachVariableAst *node)
 
 void DefaultVisitor::visitFunctionCall(FunctionCallAst *node)
 {
+    visitNode(node->stringFunctionNameOrClass);
     visitNode(node->stringParameterList);
+    visitNode(node->stringFunctionName);
     visitNode(node->varFunctionName);
     visitNode(node->varParameterList);
 }
@@ -579,7 +581,7 @@ void DefaultVisitor::visitMultiplicativeExpression(MultiplicativeExpressionAst *
     visitNode(node->expression);
     if (node->additionalExpressionSequence)
     {
-        const KDevPG::ListNode<MultiplicativeExpression_restAst*> *__it = node->additionalExpressionSequence->front(), *__end = __it;
+        const KDevPG::ListNode<MultiplicativeExpressionRestAst*> *__it = node->additionalExpressionSequence->front(), *__end = __it;
         do
         {
             visitNode(__it->element);
@@ -589,7 +591,7 @@ void DefaultVisitor::visitMultiplicativeExpression(MultiplicativeExpressionAst *
     }
 }
 
-void DefaultVisitor::visitMultiplicativeExpression_rest(MultiplicativeExpression_restAst *node)
+void DefaultVisitor::visitMultiplicativeExpressionRest(MultiplicativeExpressionRestAst *node)
 {
     visitNode(node->expression);
 }
@@ -883,7 +885,7 @@ void DefaultVisitor::visitUnaryExpression(UnaryExpressionAst *node)
     visitNode(node->unaryExpressionNotPlusminus);
 }
 
-void DefaultVisitor::visitUnaryExpression_not_plusminus(UnaryExpression_not_plusminusAst *node)
+void DefaultVisitor::visitUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst *node)
 {
     if (node->prefixOperatorSequence)
     {

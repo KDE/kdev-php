@@ -45,14 +45,12 @@ protected:
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst *node);
     virtual void visitExpr(ExprAst *node);
-    virtual void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
     virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
     virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
 
     void classTypeOpened(KDevelop::AbstractType::Ptr type);
 
 private:
-    KDevelop::Declaration* m_lastVariableDeclaration;
     VariableIdentifierAst* m_lastVariableIdentifier;
 };
 

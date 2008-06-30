@@ -42,7 +42,8 @@ private slots:
   void testDeclareClass();
   void testClassMemberVar();
   void testDeclareTypehintFunction();
-  void testVariableDeclaration();
+  void testReturnTypeClass();
+  void testDeclarationReturnType();
   void testClassImplementsInterface();
   void testClassExtends();
 

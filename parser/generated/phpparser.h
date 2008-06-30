@@ -355,7 +355,7 @@ public:
     bool parseLogicalXorExpression(LogicalXorExpressionAst **yynode);
     bool parseMethodBody(MethodBodyAst **yynode);
     bool parseMultiplicativeExpression(MultiplicativeExpressionAst **yynode);
-    bool parseMultiplicativeExpression_rest(MultiplicativeExpression_restAst **yynode);
+    bool parseMultiplicativeExpressionRest(MultiplicativeExpressionRestAst **yynode);
     bool parseNewElseSingle(NewElseSingleAst **yynode);
     bool parseNewElseifList(NewElseifListAst **yynode);
     bool parseNewelseifListItem(NewelseifListItemAst **yynode);
@@ -381,7 +381,7 @@ public:
     bool parseSwitchCaseList(SwitchCaseListAst **yynode);
     bool parseTopStatement(TopStatementAst **yynode);
     bool parseUnaryExpression(UnaryExpressionAst **yynode);
-    bool parseUnaryExpression_not_plusminus(UnaryExpression_not_plusminusAst **yynode);
+    bool parseUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst **yynode);
     bool parseVarExpression(VarExpressionAst **yynode);
     bool parseVarExpressionNewObject(VarExpressionNewObjectAst **yynode);
     bool parseVarExpressionNormal(VarExpressionNormalAst **yynode);

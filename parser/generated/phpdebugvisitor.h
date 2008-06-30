@@ -2230,7 +2230,7 @@ public:
         m_indent--;
     }
 
-    virtual void visitMultiplicativeExpression_rest(MultiplicativeExpression_restAst *node)
+    virtual void visitMultiplicativeExpressionRest(MultiplicativeExpressionRestAst *node)
     {
         qint64 beginLine,endLine,beginCol,endCol;
         m_str->startPosition(node->startToken, &beginLine, &beginCol);
@@ -2257,9 +2257,9 @@ public:
             tokenString = tokenString.replace('\n', "\\n");
             tokenString = tokenString.replace('\r', "\\r");
         }
-        qDebug() << QString().fill(' ', m_indent) << "multiplicativeExpression_rest[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
+        qDebug() << QString().fill(' ', m_indent) << "multiplicativeExpressionRest[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
         m_indent++;
-        DefaultVisitor::visitMultiplicativeExpression_rest(node);
+        DefaultVisitor::visitMultiplicativeExpressionRest(node);
         m_indent--;
     }
 
@@ -3088,7 +3088,7 @@ public:
         m_indent--;
     }
 
-    virtual void visitUnaryExpression_not_plusminus(UnaryExpression_not_plusminusAst *node)
+    virtual void visitUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst *node)
     {
         qint64 beginLine,endLine,beginCol,endCol;
         m_str->startPosition(node->startToken, &beginLine, &beginCol);
@@ -3115,9 +3115,9 @@ public:
             tokenString = tokenString.replace('\n', "\\n");
             tokenString = tokenString.replace('\r', "\\r");
         }
-        qDebug() << QString().fill(' ', m_indent) << "unaryExpression_not_plusminus[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
+        qDebug() << QString().fill(' ', m_indent) << "unaryExpressionNotPlusminus[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
         m_indent++;
-        DefaultVisitor::visitUnaryExpression_not_plusminus(node);
+        DefaultVisitor::visitUnaryExpressionNotPlusminus(node);
         m_indent--;
     }
 
