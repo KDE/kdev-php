@@ -96,7 +96,7 @@ public:
     virtual void exchangeTypes(KDevelop::TypeExchanger*);
 
     enum {
-        Identity = 18
+        Identity = 24
     };
 
     typedef ClassTypeData Data;
@@ -137,7 +137,7 @@ public:
     virtual bool equals(const AbstractType* rhs) const;
 
     enum {
-        Identity = 15
+        Identity = 25
     };
 
     typedef FunctionTypeData Data;
@@ -174,7 +174,7 @@ public:
     typedef IntegralTypeData Data;
 
     enum {
-        Identity = 13
+        Identity = 26
     };
 
 protected:
