@@ -60,7 +60,7 @@ public:
 private:
   KDevelop::TopDUContext* parse(const QByteArray& unit, DumpAreas dump = static_cast<DumpAreas>(DumpAST | DumpDUChain | DumpType));
 
-  void release(KDevelop::DUContext* top);
+  void release(KDevelop::TopDUContext* top);
 
   KDevelop::DumpChain dumper;
 };

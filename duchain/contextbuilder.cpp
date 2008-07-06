@@ -163,8 +163,9 @@ void ContextBuilder::addBaseType(const ClassType::Ptr& base, bool implementsInte
     DUChainWriteLocker lock(DUChain::lock());
 
     Q_ASSERT(currentContext()->type() == DUContext::Class);
-    if (base->declaration() && base->declaration()->logicalInternalContext(0)) {
-        currentContext()->addImportedParentContext( base->declaration()->logicalInternalContext(0) );
+    if (base->declaration(currentContext()->topContext())
+        && base->declaration(currentContext()->topContext())->logicalInternalContext(0)) {
+        currentContext()->addImportedParentContext( base->declaration(currentContext()->topContext())->logicalInternalContext(0) );
     }
 }
 

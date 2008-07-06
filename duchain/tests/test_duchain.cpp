@@ -105,8 +105,8 @@ void TestDUChain::testDeclareVar()
     QCOMPARE(decVar->identifier(), Identifier("$i"));
     ClassType::Ptr type = decVar->type<ClassType>();
     QVERIFY(type);
-    QCOMPARE(type->identifier(), QualifiedIdentifier("A"));
-    QCOMPARE(type, dec->type<ClassType>());
+    QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QVERIFY(type->equals(dec->abstractType().unsafeData()));
 
     //class B
     dec = top->localDeclarations().at(1);
@@ -118,16 +118,16 @@ void TestDUChain::testDeclareVar()
     QCOMPARE(decVar->identifier(), Identifier("$j"));
     type = decVar->type<ClassType>();
     QVERIFY(type);
-    QCOMPARE(type->identifier(), QualifiedIdentifier("B"));
-    QCOMPARE(type, dec->type<ClassType>());
+    QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("B"));
+    QVERIFY(type->equals(dec->abstractType().unsafeData()));
 
     //$i (2nd)
     decVar = top->localDeclarations().at(4);
     QCOMPARE(decVar->identifier(), Identifier("$i"));
     type = decVar->type<ClassType>();
     QVERIFY(type);
-    QCOMPARE(type->identifier(), QualifiedIdentifier("B"));
-    QCOMPARE(type, dec->type<ClassType>());
+    QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("B"));
+    QVERIFY(type->equals(dec->abstractType().unsafeData()));
 
     //$i (3rd)
     decVar = top->localDeclarations().at(5);
@@ -168,6 +168,7 @@ void TestDUChain::testDeclareClass()
     QCOMPARE(contextMethodBodyFoo->childContexts().count(), 0);
     QVERIFY(contextMethodBodyFoo->importedParentContexts().first().data() ==
                     contextClassA->childContexts().first());
+
     release(top);
 }
 
@@ -220,7 +221,7 @@ void TestDUChain::testReturnTypeClass()
     QVERIFY(functionType);
     ClassType::Ptr retType = ClassType::Ptr::dynamicCast(functionType->returnType());
     QVERIFY(retType);
-    QCOMPARE(retType->identifier(), QualifiedIdentifier("A"));
+    QCOMPARE(retType->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
     dec = top->localDeclarations().at(2);
     QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("bar"));
@@ -228,7 +229,7 @@ void TestDUChain::testReturnTypeClass()
     QVERIFY(functionType);
     retType = ClassType::Ptr::dynamicCast(functionType->returnType());
     QVERIFY(retType);
-    QCOMPARE(retType->identifier(), QualifiedIdentifier("A"));
+    QCOMPARE(retType->qualifiedIdentifier(), QualifiedIdentifier("A"));
     
     release(top);
 }
@@ -250,7 +251,7 @@ void TestDUChain::testDeclarationReturnType()
     QCOMPARE(dec->identifier(), Identifier("$i"));
     ClassType::Ptr type = dec->type<ClassType>();
     QVERIFY(type);
-    QCOMPARE(type->identifier(), QualifiedIdentifier("A"));
+    QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("A"));
     
     release(top);
 }
@@ -261,7 +262,7 @@ void TestDUChain::testDeclareTypehintFunction()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A {} function foo(A $i) {}");
 
-    DUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpAll);
 
     DUChainWriteLocker lock(DUChain::lock());
 
@@ -297,7 +298,7 @@ void TestDUChain::testClassImplementsInterface()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? interface I { } class A implements I { }");
 
-    DUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpAll);
 
     DUChainWriteLocker lock(DUChain::lock());
     QCOMPARE(top->childContexts().count(), 2);
@@ -308,11 +309,9 @@ void TestDUChain::testClassImplementsInterface()
     QVERIFY(dec->isDefinition());
     QCOMPARE(dec->identifier(), Identifier("I"));
     ClassType::Ptr typeI = dec->type<ClassType>();
-    QCOMPARE(typeI->identifier(), QualifiedIdentifier("I"));
-    QCOMPARE(typeI->classType(), ClassType::Interface);
-    QVERIFY(typeI->declaration() == dec);
-    QCOMPARE(typeI->extendsClasses().count(), 0);
-    QCOMPARE(typeI->implementsInterfaces().count(), 0);
+    QCOMPARE(typeI->qualifiedIdentifier(), QualifiedIdentifier("I"));
+    QCOMPARE(typeI->classType(), Interface);
+    QVERIFY(typeI->declaration(top) == dec);
 
     QCOMPARE(dec->internalContext(), top->childContexts().at(0));
     QCOMPARE(dec->internalContext()->childContexts().count(), 0);
@@ -328,12 +327,9 @@ void TestDUChain::testClassImplementsInterface()
     QVERIFY(dec->isDefinition());
     QCOMPARE(dec->identifier(), Identifier("A"));
     ClassType::Ptr typeA = dec->type<ClassType>();
-    QCOMPARE(typeA->identifier(), QualifiedIdentifier("A"));
-    QCOMPARE(typeA->classType(), ClassType::Class);
-    QVERIFY(typeA->declaration() == dec);
-    QCOMPARE(typeA->extendsClasses().count(), 0);
-    QCOMPARE(typeA->implementsInterfaces().count(), 1);
-    QVERIFY(typeA->implementsInterfaces().at(0).data() == typeI.data());
+    QCOMPARE(typeA->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QCOMPARE(typeA->classType(), Class);
+    QVERIFY(typeA->declaration(top) == dec);
 
     QCOMPARE(dec->internalContext(), top->childContexts().at(1));
     QCOMPARE(dec->internalContext()->childContexts().count(), 0);
@@ -353,7 +349,7 @@ void TestDUChain::testClassExtends()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { } class B extends A { } ");
 
-    DUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpAll);
 
     DUChainWriteLocker lock(DUChain::lock());
     QCOMPARE(top->childContexts().count(), 2);
@@ -364,11 +360,9 @@ void TestDUChain::testClassExtends()
     QVERIFY(dec->isDefinition());
     QCOMPARE(dec->identifier(), Identifier("A"));
     ClassType::Ptr typeA = dec->type<ClassType>();
-    QCOMPARE(typeA->identifier(), QualifiedIdentifier("A"));
-    QCOMPARE(typeA->classType(), ClassType::Class);
-    QVERIFY(typeA->declaration() == dec);
-    QCOMPARE(typeA->extendsClasses().count(), 0);
-    QCOMPARE(typeA->implementsInterfaces().count(), 0);
+    QCOMPARE(typeA->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QCOMPARE(typeA->classType(), Class);
+    QVERIFY(typeA->declaration(top) == dec);
 
     QCOMPARE(dec->internalContext(), top->childContexts().at(0));
     QCOMPARE(dec->internalContext()->childContexts().count(), 0);
@@ -384,12 +378,9 @@ void TestDUChain::testClassExtends()
     QVERIFY(dec->isDefinition());
     QCOMPARE(dec->identifier(), Identifier("B"));
     ClassType::Ptr typeB = dec->type<ClassType>();
-    QCOMPARE(typeB->identifier(), QualifiedIdentifier("B"));
-    QCOMPARE(typeB->classType(), ClassType::Class);
-    QVERIFY(typeB->declaration() == dec);
-    QCOMPARE(typeB->implementsInterfaces().count(), 0);
-    QCOMPARE(typeB->extendsClasses().count(), 1);
-    QVERIFY(typeB->extendsClasses().at(0).data() == typeA.data());
+    QCOMPARE(typeB->qualifiedIdentifier(), QualifiedIdentifier("B"));
+    QCOMPARE(typeB->classType(), Class);
+    QVERIFY(typeB->declaration(top) == dec);
 
     QCOMPARE(dec->internalContext(), top->childContexts().at(1));
     QCOMPARE(dec->internalContext()->childContexts().count(), 0);
@@ -402,12 +393,13 @@ void TestDUChain::testClassExtends()
 
     release(top);
 }
-void TestDUChain::release(DUContext* top)
+void TestDUChain::release(TopDUContext* top)
 {
   //KDevelop::EditorIntegrator::releaseTopRange(top->textRangePtr());
-  if(dynamic_cast<TopDUContext*>(top))
-    DUChain::self()->removeDocumentChain(static_cast<TopDUContext*>(top)->identity());
-  delete top;
+
+  TopDUContextPointer tp(top);
+  DUChain::self()->removeDocumentChain(static_cast<TopDUContext*>(top)->identity());
+  Q_ASSERT(!tp);
 }
 
 TopDUContext* TestDUChain::parse(const QByteArray& unit, DumpAreas dump)
@@ -450,7 +442,7 @@ TopDUContext* TestDUChain::parse(const QByteArray& unit, DumpAreas dump)
         DUChainWriteLocker lock(DUChain::lock());
         DumpTypes dt;
         foreach (const AbstractType::Ptr& type, declarationBuilder.topTypes())
-            dt.dump(type.data());
+            dt.dump(type.unsafeData());
     }
 
     if (dump)

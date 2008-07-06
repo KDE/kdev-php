@@ -11,7 +11,6 @@ set(duchain_SRCS
     usebuilder.cpp
     typebuilder.cpp
     types.cpp
-    typerepository.cpp
     dumptypes.cpp
     )
 

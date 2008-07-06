@@ -24,46 +24,18 @@
 #include <duchain/classfunctiondeclaration.h>
 #include <duchain/abstractfunctiondeclaration.h>
 #include <duchain/indexedstring.h>
+#include <duchain/typeregister.h>
 
 using namespace KDevelop;
 namespace Php {
 
+REGISTER_TYPE(ClassType);
+REGISTER_TYPE(FunctionType);
+REGISTER_TYPE(IntegralType);
 
-bool ModifierType::equals(const ModifierType* rhs) const {
-  return m_mod == rhs->m_mod;
-}
-void ModifierType::clear() {
-  m_mod = NoModifier;
-}
-
-ModifierType::ModifierType(TypeModifiers modifiers)
-  : m_mod(modifiers)
+ClassType::ClassType() : ClassTypeBase(createData<ClassTypeData>())
 {
-}
-QString ModifierType::toString() const
-{
-    QStringList mods;
-    if (m_mod & PrivateModifier)   mods << "private";
-    if (m_mod & PublicModifier)    mods << "public";
-    if (m_mod & ProtectedModifier) mods << "protected";
-    if (m_mod & StaticModifier)    mods << "static";
-    if (m_mod & FinalModifier)     mods << "final";
-    if (m_mod & AbstractModifier)  mods << "abstract";
-    return mods.join(" ");
-}
-
-TypeModifiers ModifierType::modifiers() const
-{
-  return m_mod;
-}
-
-
-
-
-ClassType::ClassType()
-  : m_classType(Class)
-  , m_closed(false)
-{
+    d_func_dynamic()->setTypeClassId<ClassType>();
 }
 
 AbstractType* ClassType::clone() const {
@@ -72,104 +44,51 @@ AbstractType* ClassType::clone() const {
 
 bool ClassType::equals(const AbstractType* _rhs) const
 {
-  if( !fastCast<const ClassType*>(_rhs))
-    return false;
-  const IdentifiedType* rhs = fastCast<const IdentifiedType*>(_rhs);
+    if( !fastCast<const ClassType*>(_rhs))
+        return false;
+    const ClassType* rhs = fastCast<const ClassType*>(_rhs);
 
-  Declaration* decl = declaration();
-  Declaration* rhsDecl = rhs->declaration();
-
-  if(!decl || !rhsDecl)
-    return false;
-
-  ///We cannot use here IdentifiedType::equals, because else we get problems with forward declarations
-  return decl->equalQualifiedIdentifier(rhsDecl);
+    return IdentifiedType::equals(rhs) && StructureType::equals(rhs);
 }
+
 
 
 void ClassType::accept0 (TypeVisitor *v) const
 {
-  if (v->visit (this))
-    {
-      foreach(const ClassType::Ptr& base, m_extendsClasses)
-        acceptType (AbstractType::Ptr::staticCast(base), v);
-      foreach(const ClassType::Ptr& base, m_implementsInterfaces)
-        acceptType (AbstractType::Ptr::staticCast(base), v);
-    }
-
-  v->endVisit (this);
+    v->visit (this);
+    v->endVisit (this);
 }
 
 
-void ClassType::exchangeTypes(TypeExchanger *e)
+void ClassType::exchangeTypes(TypeExchanger */*e*/)
 {
-  // TODO understand better...
-  foreach (ClassType::Ptr base, m_extendsClasses)
-    base = ClassType::Ptr::dynamicCast(AbstractType::Ptr(e->exchange(base.data())));
-  foreach (ClassType::Ptr base, m_implementsInterfaces)
-    base = ClassType::Ptr::dynamicCast(AbstractType::Ptr(e->exchange(base.data())));
 }
 
-// ---------------------------------------------------------------------------
-const QList<ClassType::Ptr>& ClassType::extendsClasses() const
+void ClassType::setClassType(ClassTypeType type)
 {
-  return m_extendsClasses;
+    d_func_dynamic()->m_classType = type;
 }
 
-void ClassType::addExtendsClass(const ClassType::Ptr& extendsClass)
+ClassTypeType ClassType::classType() const
 {
-  m_extendsClasses.append(extendsClass);
-}
-
-void ClassType::clearExtendsClasses()
-{
-  m_extendsClasses.clear();
-}
-
-const QList< ClassType::Ptr > & ClassType::implementsInterfaces() const
-{
-  return m_implementsInterfaces;
-}
-
-void ClassType::addImplementsInterface(const ClassType::Ptr & interface)
-{
-  Q_ASSERT(interface->classType() == Interface);
-  m_implementsInterfaces.append(interface);
-}
-
-void ClassType::clearImplementsInterfaces()
-{
-  m_implementsInterfaces.clear();
-}
-
-
-void ClassType::setClassType(ClassType::Type type)
-{
-  m_classType = type;
-}
-
-ClassType::Type ClassType::classType() const
-{
-  return m_classType;
+    return d_func()->m_classType;
 }
 
 uint ClassType::hash() const
 {
-  return identifier().hash();
+  return IdentifiedType::hash() + 19*StructureType::hash();
 }
 
 void ClassType::clear() {
-  StructureType::clear();
-  IdentifiedType::clear();
-  m_extendsClasses.clear();
-  m_implementsInterfaces.clear();
-  m_classType = Class;
-  m_closed = false;
+    //StructureType::clear(); commented out as in c++ (why?)
+    IdentifiedType::clear();
+    d_func_dynamic()->m_classType = Class;
+    d_func_dynamic()->m_closed = false;
 }
 
 QString ClassType::toString() const
 {
-  QualifiedIdentifier id = identifier();
+  QualifiedIdentifier id = qualifiedIdentifier();
   if (!id.isEmpty())
     return id.top().toString();
 
@@ -187,10 +106,6 @@ QString ClassType::toString() const
 
 
 
-FunctionType::FunctionType(TypeModifiers modifiers)
-  : ModifierType(modifiers)
-{
-}
 
 AbstractType* FunctionType::clone() const {
   return new FunctionType(*this);
@@ -198,51 +113,51 @@ AbstractType* FunctionType::clone() const {
 
 bool FunctionType::equals(const AbstractType* _rhs) const
 {
-  if( !fastCast<const FunctionType*>(_rhs))
-    return false;
-  const FunctionType* rhs = static_cast<const FunctionType*>(_rhs);
+    if( !fastCast<const FunctionType*>(_rhs))
+        return false;
+    const FunctionType* rhs = static_cast<const FunctionType*>(_rhs);
 
-  if( this == rhs )
-    return true;
+    if( this == rhs )
+        return true;
+    
+    //Ignore IdentifiedType here, because we do not want to respect that while comparing function-types.
 
-  //Ignore IdentifiedType here, because we do not want to respect that while comparing function-types.
-
-  return ModifierType::equals(rhs) && FunctionType::equals(rhs);
+    return FunctionTypeBase::equals(rhs);
 }
 
 QString FunctionType::toString() const
 {
-  return QString("%1 %2").arg(KDevelop::FunctionType::toString()).arg(ModifierType::toString());
+  return FunctionTypeBase::toString();
 }
 
 uint FunctionType::hash() const
 {
-    return modHash(KDevelop::FunctionType::hash()) + 31 * identifier().hash();
+    return FunctionTypeBase::hash();
 }
 
 
-IntegralType::IntegralType()
-{
-  setName(IndexedString("<mixed>"));
+IntegralType::IntegralType() : IntegralTypeBase(createData<IntegralTypeData>()) {
+    d_func_dynamic()->setTypeClassId<IntegralType>();
+    setName(IndexedString("<mixed>"));
 }
 
 AbstractType* IntegralType::clone() const {
-  return new IntegralType(*this);
+    return new IntegralType(*this);
 }
 
 bool IntegralType::equals(const AbstractType* _rhs) const
 {
-  return KDevelop::IntegralType::equals(_rhs);
+    return IntegralTypeBase::equals(_rhs);
 }
 
 QString IntegralType::toString() const
 {
-  return KDevelop::IntegralType::toString();
+    return IntegralTypeBase::toString();
 }
 
 uint IntegralType::hash() const
 {
-  return KDevelop::IntegralType::hash();
+    return IntegralTypeBase::hash();
 }
 
 }

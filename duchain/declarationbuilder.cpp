@@ -84,17 +84,71 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
     if (node->methodName) {
         //method declaration
 
-        openDefinition(node->methodName, node, true);
+        ClassFunctionDeclaration* dec = dynamic_cast<ClassFunctionDeclaration*>(openDefinition(node->methodName, node, true));
+        Q_ASSERT(dec);
 
-        currentDeclaration()->setKind(Declaration::Type);
+        dec->setKind(Declaration::Type);
+        if (node->modifiers->modifiers & ModifierPublic) {
+            dec->setAccessPolicy(Declaration::Public);
+        } else if (node->modifiers->modifiers & ModifierProtected) {
+            dec->setAccessPolicy(Declaration::Protected);
+        } else if (node->modifiers->modifiers & ModifierPrivate) {
+            dec->setAccessPolicy(Declaration::Private);
+        }
+        if (node->modifiers->modifiers & ModifierStatic) {
+            dec->setStatic(true);
+        }
+        if (node->modifiers->modifiers & ModifierFinal) {
+            //TODO
+        }
+        if (node->modifiers->modifiers & ModifierAbstract) {
+            //TODO
+        }
 
         DeclarationBuilderBase::visitClassStatement(node);
 
         closeDeclaration();
     } else {
+
+        //TODO
+
         DeclarationBuilderBase::visitClassStatement(node);
     }
 }
+
+void DeclarationBuilder::visitClassExtends(ClassExtendsAst *node)
+{
+    if (openTypeFromName(node->identifier, true)) {
+        closeType();
+        ClassType::Ptr extends = ClassType::Ptr::dynamicCast(lastType());
+        if (extends) {
+            addBaseType(extends, false);
+        }
+    }
+}
+
+
+void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
+{
+    const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
+    do
+    {
+        if (openTypeFromName(__it->element, true)) {
+            closeType();
+            ClassType::Ptr interface = ClassType::Ptr::dynamicCast(lastType());
+            if (interface) {
+                if (interface->classType() == Interface) {
+                    addBaseType(interface, true);
+                } else {
+                    //TODO report error
+                }
+            }
+        }
+    }
+    while (__it != __end);
+    DeclarationBuilderBase::visitClassImplements(node);
+}
+
 
 void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
 {
@@ -108,14 +162,15 @@ void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
     closeDeclaration();
 }
 
+//copied from cpp
 void DeclarationBuilder::classTypeOpened(AbstractType::Ptr type)
 {
     //We override this so we can get the class-declaration into a usable state(with filled type) earlier
     DUChainWriteLocker lock(DUChain::lock());
 
-    IdentifiedType* idType = dynamic_cast<IdentifiedType*>(type.data());
+    IdentifiedType* idType = dynamic_cast<IdentifiedType*>(type.unsafeData());
 
-    if( idType && idType->declaration() == 0 ) //When the given type has no declaration yet, assume we are declaring it now
+    if( idType && !idType->declarationId().isValid() ) //When the given type has no declaration yet, assume we are declaring it now
         idType->setDeclaration( currentDeclaration() );
 
     currentDeclaration()->setType(type);

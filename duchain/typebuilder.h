@@ -28,7 +28,6 @@
 #include <language/duchain/typesystem.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/identifier.h>
-#include "typerepository.h"
 #include "types.h"
 
 namespace Php {
@@ -48,15 +47,11 @@ typedef KDevelop::AbstractTypeBuilder<AstNode, IdentifierAst, ContextBuilder> Ty
 class KDEVPHPDUCHAIN_EXPORT TypeBuilder: public TypeBuilderBase
 {
 protected:
-  virtual TypeRepository* typeRepository() const;
-
   virtual void visitClassDeclarationStatement( ClassDeclarationStatementAst* node );
   virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
   virtual void visitClassStatement(ClassStatementAst *node);
   virtual void visitParameter(ParameterAst *node);
   virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
-  virtual void visitClassImplements(ClassImplementsAst *node);
-  virtual void visitClassExtends(ClassExtendsAst *node);
 
   virtual void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
   virtual void visitStatement(StatementAst* node);
@@ -64,7 +59,6 @@ protected:
   virtual void visitScalar(ScalarAst *node);
   virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
   virtual void visitFunctionCall(FunctionCallAst* node);
-  virtual void addBaseType(const ClassType::Ptr& base, bool implementsInterface);
 
   KDevelop::AbstractType::Ptr m_expressionType;
   FunctionType::Ptr m_currentFunctionType;
@@ -72,7 +66,6 @@ protected:
 private:
   bool nodeValid(AstNode* node) const;
 
-  TypeModifiers parseModifiers(OptionalModifiersAst* node) const;
 };
 
 }

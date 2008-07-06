@@ -23,6 +23,7 @@
 #define PHP_TYPES_H
 
 #include <duchain/identifier.h>
+#include <duchain/typesystemdata.h>
 #include <duchain/typesystem.h>
 #include <duchain/declaration.h>
 #include <duchain/identifiedtype.h>
@@ -31,123 +32,153 @@
 
 namespace Php {
 
-enum TypeModifiers {
-    NoModifier           = 0,
-    PrivateModifier      = 1,
-    PublicModifier       = 1 << 1,
-    ProtectedModifier    = 1 << 2,
-    StaticModifier       = 1 << 3,
-    FinalModifier        = 1 << 4,
-    AbstractModifier     = 1 << 5,
-};
-
-class ModifierType
+typedef KDevelop::MergeIdentifiedType<KDevelop::StructureType> ClassTypeBase;
+enum ClassTypeType
 {
-    friend class TypeRepository;
-    friend class TypeBuilder;
-
-public:
-    ModifierType(TypeModifiers modifiers = NoModifier);
-
-    TypeModifiers modifiers() const;
-
-    void clear();
-
-    bool equals(const ModifierType* rhs) const;
-
-    QString toString() const;
-
-    uint modHash(uint input) const { return input; }
-
-private:
-    TypeModifiers m_mod;
-};
-
-class KDEVPHPDUCHAIN_EXPORT ClassType : public KDevelop::StructureType, public KDevelop::IdentifiedType
-{
-public:
-  typedef TypePtr<ClassType> Ptr;
-
-  ClassType();
-
-  const QList<ClassType::Ptr>& extendsClasses() const;
-  void addExtendsClass(const ClassType::Ptr& baseClass);
-  void clearExtendsClasses();
-
-  const QList<ClassType::Ptr>& implementsInterfaces() const;
-  void addImplementsInterface(const ClassType::Ptr& baseClass);
-  void clearImplementsInterfaces();
-
-  enum Type
-  {
     Class,
     Interface
-  };
-  void setClassType(Type type);
-  Type classType() const;
-
-
-  /// Php classes are closed types, once they are defined, they can't be changed.
-  bool isClosed() const { return m_closed; }
-  void close() { m_closed = true; }
-
-  ///After clearing, a class-type is open again.
-  void clear();
-
-  virtual uint hash() const;
-
-  virtual QString toString() const;
-
-  virtual AbstractType* clone() const;
-
-  virtual bool equals(const AbstractType* rhs) const;
-
-  virtual void accept0 (KDevelop::TypeVisitor *v) const;
-
-  virtual void exchangeTypes(KDevelop::TypeExchanger*);
-
-private:
-  QList<ClassType::Ptr> m_extendsClasses, m_implementsInterfaces;
-  Type m_classType;
-  bool m_closed;
 };
 
-class KDEVPHPDUCHAIN_EXPORT FunctionType : public KDevelop::FunctionType, public KDevelop::IdentifiedType, public ModifierType
+struct ClassTypeData : public ClassTypeBase::Data {
+    ClassTypeType m_classType;
+    bool m_closed;
+    ClassTypeData() {
+        m_classType = Class;
+        m_closed = false;
+    }
+
+    ClassTypeData(const ClassTypeData& rhs) :ClassTypeBase::Data(rhs), m_classType(rhs.m_classType), m_closed(rhs.m_closed)  {
+    }
+
+    ~ClassTypeData() {
+    }
+
+private:
+    ClassTypeData& operator=(const ClassTypeData&) {
+        return *this;
+    }
+};
+
+class KDEVPHPDUCHAIN_EXPORT ClassType : public ClassTypeBase
 {
 public:
-  typedef TypePtr<FunctionType> Ptr;
+    ClassType(const ClassType& rhs) : ClassTypeBase(copyData<ClassTypeData>(*rhs.d_func())) {
+    }
 
-  FunctionType(TypeModifiers modifiers = NoModifier);
+    ClassType(ClassTypeData& data) : ClassTypeBase(data) {
+    }
 
-  
-  ///Declarations of this class(@see KDevelop::IdentifiedType::declaration()) are guaranteed to be based on AbstractFunctionDeclaration
+    typedef TypePtr<ClassType> Ptr;
 
-  virtual QString toString() const;
+    ClassType();
 
-  virtual uint hash() const;
+    void setClassType(ClassTypeType type);
+    ClassTypeType classType() const;
 
-  virtual AbstractType* clone() const;
 
-  virtual bool equals(const AbstractType* rhs) const;
+    /// Php classes are closed types, once they are defined, they can't be changed.
+    bool isClosed() const { return d_func()->m_closed; }
+    void close() { d_func_dynamic()->m_closed = true; }
+
+    ///After clearing, a class-type is open again.
+    void clear();
+
+    virtual uint hash() const;
+
+    virtual QString toString() const;
+
+    virtual AbstractType* clone() const;
+
+    virtual bool equals(const AbstractType* rhs) const;
+
+    virtual void accept0 (KDevelop::TypeVisitor *v) const;
+
+    virtual void exchangeTypes(KDevelop::TypeExchanger*);
+
+    enum {
+        Identity = 18
+    };
+
+    typedef ClassTypeData Data;
+
+protected:
+    TYPE_DECLARE_DATA(ClassType);
+};
+
+
+typedef KDevelop::FunctionType FunctionTypeBase;
+
+struct FunctionTypeData : public FunctionTypeBase::Data {
+};
+
+class KDEVPHPDUCHAIN_EXPORT FunctionType : public FunctionTypeBase
+{
+public:
+    FunctionType(const FunctionType& rhs) : FunctionTypeBase(copyData<FunctionTypeData>(*rhs.d_func())) {
+    }
+
+    FunctionType(FunctionTypeData& data) : FunctionTypeBase(data) {
+    }
+
+    FunctionType() : FunctionTypeBase(createData<FunctionTypeData>()) {
+        d_func_dynamic()->setTypeClassId<FunctionType>();
+    }
+
+    typedef TypePtr<FunctionType> Ptr;
+
+    ///Declarations of this class(@see KDevelop::IdentifiedType::declaration()) are guaranteed to be based on AbstractFunctionDeclaration
+
+    virtual QString toString() const;
+
+    virtual uint hash() const;
+
+    virtual AbstractType* clone() const;
+
+    virtual bool equals(const AbstractType* rhs) const;
+
+    enum {
+        Identity = 15
+    };
+
+    typedef FunctionTypeData Data;
+
+protected:
+    TYPE_DECLARE_DATA(FunctionType);
+};
+
+
+typedef KDevelop::IntegralType IntegralTypeBase;
+
+struct IntegralTypeData : IntegralTypeBase::Data {
 };
 
 class KDEVPHPDUCHAIN_EXPORT IntegralType : public KDevelop::IntegralType
 {
-  friend class TypeRepository;
-
 public:
-  typedef TypePtr<IntegralType> Ptr;
+    IntegralType();
+    IntegralType(const IntegralType& rhs) : IntegralTypeBase(copyData<IntegralTypeData>(*rhs.d_func())) {
+    }
+    IntegralType(IntegralTypeData& data) : IntegralTypeBase(data) {
+    }
 
-  virtual QString toString() const;
+    typedef TypePtr<IntegralType> Ptr;
 
-  virtual uint hash() const;
+    virtual QString toString() const;
 
-  virtual AbstractType* clone() const;
+    virtual uint hash() const;
 
-  virtual bool equals(const AbstractType* rhs) const;
+    virtual AbstractType* clone() const;
+
+    virtual bool equals(const AbstractType* rhs) const;
+
+    typedef IntegralTypeData Data;
+
+    enum {
+        Identity = 13
+    };
+
 protected:
-  IntegralType();
-
+  TYPE_DECLARE_DATA(IntegralType);
 };
 
 }
