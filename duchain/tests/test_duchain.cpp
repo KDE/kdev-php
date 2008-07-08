@@ -166,7 +166,7 @@ void TestDUChain::testDeclareClass()
     QCOMPARE(contextMethodBodyFoo->localScopeIdentifier(), QualifiedIdentifier("foo"));
     QCOMPARE(contextMethodBodyFoo->importedParentContexts().count(), 1);
     QCOMPARE(contextMethodBodyFoo->childContexts().count(), 0);
-    QVERIFY(contextMethodBodyFoo->importedParentContexts().first().data() ==
+    QVERIFY(contextMethodBodyFoo->importedParentContexts().first().context.data() ==
                     contextClassA->childContexts().first());
 
     release(top);
@@ -286,7 +286,7 @@ void TestDUChain::testDeclareTypehintFunction()
     QCOMPARE(contextFunctionBodyFoo->importedParentContexts().count(), 1);
     QCOMPARE(contextFunctionBodyFoo->childContexts().count(), 0);
 
-    QVERIFY(contextFunctionBodyFoo->importedParentContexts().first().data() ==
+    QVERIFY(contextFunctionBodyFoo->importedParentContexts().first().context.data() ==
                     contextFunctionFoo);
 
     release(top);
@@ -336,7 +336,7 @@ void TestDUChain::testClassImplementsInterface()
     QCOMPARE(dec->internalContext()->localScopeIdentifier(), QualifiedIdentifier("A"));
     //class A imports interface I context
     QCOMPARE(dec->internalContext()->importedParentContexts().count(), 1);
-    QVERIFY(dec->internalContext()->importedParentContexts().at(0).data() == top->childContexts().at(0));
+    QVERIFY(dec->internalContext()->importedParentContexts().at(0).context.data() == top->childContexts().at(0));
 
     QCOMPARE(dec->uses().count(), 0);
 
@@ -387,7 +387,7 @@ void TestDUChain::testClassExtends()
     QCOMPARE(dec->internalContext()->localScopeIdentifier(), QualifiedIdentifier("B"));
     //class B imports class A context
     QCOMPARE(dec->internalContext()->importedParentContexts().count(), 1);
-    QVERIFY(dec->internalContext()->importedParentContexts().at(0).data() == top->childContexts().at(0));
+    QVERIFY(dec->internalContext()->importedParentContexts().at(0).context.data() == top->childContexts().at(0));
 
     QCOMPARE(dec->uses().count(), 0);
 
