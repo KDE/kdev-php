@@ -22,7 +22,7 @@
 #define CONTEXTBUILDER_H
 
 #include "phpdefaultvisitor.h"
-#include <language/duchain/abstractcontextbuilder.h>
+#include <language/duchain/builders/abstractcontextbuilder.h>
 
 #include "phpduchainexport.h"
 #include "editorintegrator.h"

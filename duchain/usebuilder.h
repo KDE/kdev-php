@@ -24,7 +24,7 @@
 
 #include "contextbuilder.h"
 
-#include <language/duchain/abstractusebuilder.h>
+#include <language/duchain/builders/abstractusebuilder.h>
 
 #include "phpduchainexport.h"
 

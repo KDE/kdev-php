@@ -22,7 +22,7 @@
 #define DECLARATIONBUILDER_H
 
 #include "typebuilder.h"
-#include <language/duchain/abstractdeclarationbuilder.h>
+#include <language/duchain/builders/abstractdeclarationbuilder.h>
 namespace KDvelop {
     class Declaration;
 }
