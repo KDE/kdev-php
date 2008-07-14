@@ -20,7 +20,6 @@
 #define DUMPTYPES_H
 
 #include <duchain/types/typesystem.h>
-#include <duchain/types/alltypes.h>
 #include "phpduchainexport.h"
 
 namespace Php

@@ -18,10 +18,12 @@
 
 #include "dumptypes.h"
 
+#include <duchain/types/alltypes.h>
+
 using namespace KDevelop;
 namespace Php
 {
-    
+
 DumpTypes::DumpTypes()
   : indent(0)
 {
