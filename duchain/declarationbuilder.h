@@ -54,6 +54,7 @@ protected:
 
 private:
     VariableIdentifierAst* m_lastVariableIdentifier;
+    unsigned int m_currentModifers;
 };
 
 }

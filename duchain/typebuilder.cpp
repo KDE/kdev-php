@@ -34,15 +34,43 @@
 using namespace KDevelop;
 namespace Php {
 
-bool TypeBuilder::nodeValid(AstNode* node) const
+ClassType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& docCommentName)
 {
-  return node && node->startToken <= node->endToken;
+    QString docComment = editor()->parseSession()->docComment(node->startToken);
+    if (!docComment.isEmpty()) {
+        QRegExp rx("\\* +@"+QRegExp::escape(docCommentName)+" ([^ ]*)");
+        if (rx.indexIn(docComment) != -1) {
+            if(openTypeFromName(QualifiedIdentifier(rx.cap(1)), node, true)) {
+                closeType();
+                return ClassType::Ptr::dynamicCast(lastType());
+            }
+        }
+    }
+    return ClassType::Ptr();
+}
+
+FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
+{
+    FunctionType::Ptr functionType = FunctionType::Ptr(new FunctionType());
+
+    openType(functionType);
+
+    m_currentFunctionType = functionType;
+
+    ClassType::Ptr returnType = parseDocComment(node, "return");
+    if (returnType) {
+        functionType->setReturnType(AbstractType::Ptr::staticCast(returnType));
+    }
+
+    return functionType;
 }
 
 void TypeBuilder::visitClassDeclarationStatement( ClassDeclarationStatementAst* node )
 {
     ClassType::Ptr classType = ClassType::Ptr(new ClassType());
     classType->setClassType(Class);
+    m_currentClass = classType;
+
 
     openType(classType);
 
@@ -54,6 +82,8 @@ void TypeBuilder::visitClassDeclarationStatement( ClassDeclarationStatementAst* 
     classType->close();
 
     closeType();
+
+    m_currentClass = 0;
 }
 
 void TypeBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node)
@@ -78,20 +108,22 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
 {
     if (node->methodName) {
         //method declaration
-        FunctionType::Ptr functionType = FunctionType::Ptr(new FunctionType());
-
-        openType(functionType);
-
+        openFunctionType(node);
         TypeBuilderBase::visitClassStatement(node);
-
+        m_currentFunctionType = 0;
         closeType();
-
     } else {
         //member-variable
+        parseDocComment(node, "var"); //sets lastType(), used openDefinition
         TypeBuilderBase::visitClassStatement(node);
+        clearLastType();
     }
 }
 
+void TypeBuilder::visitClassVariable(ClassVariableAst *node)
+{
+    TypeBuilderBase::visitClassVariable(node);
+}
 
 void TypeBuilder::visitParameter(ParameterAst *node)
 {
@@ -108,19 +140,10 @@ void TypeBuilder::visitParameter(ParameterAst *node)
 
 void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
-
-    FunctionType::Ptr functionType = FunctionType::Ptr(new FunctionType());
-
-    openType(functionType);
-
-    m_currentFunctionType = functionType;
-
+    openFunctionType(node);
     TypeBuilderBase::visitFunctionDeclarationStatement(node);
-
     m_currentFunctionType = 0;
-
     closeType();
-
 }
 
 void TypeBuilder::visitExpr(ExprAst *node)
@@ -131,7 +154,12 @@ void TypeBuilder::visitExpr(ExprAst *node)
 
 void TypeBuilder::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
 {
-    if(openTypeFromName(identifierForNode(node->variable), node, true)) {
+    QualifiedIdentifier identifier = identifierForNode(node->variable);
+    if (identifier == QualifiedIdentifier("$this")) {
+        if (m_currentClass) {
+            m_expressionType = AbstractType::Ptr::staticCast(m_currentClass);
+        }
+    } else if(openTypeFromName(identifier, node, true)) {
         closeType();
         m_expressionType = lastType();
     }
@@ -141,14 +169,32 @@ void TypeBuilder::visitCompoundVariableWithSimpleIndirectReference(CompoundVaria
 void TypeBuilder::visitFunctionCall(FunctionCallAst* node)
 {
     TypeBuilderBase::visitFunctionCall(node);
-    {
-        //TODO: stringFunctionNameOrClass::stringFunctionName (static calls)
-        DUChainReadLocker lock(DUChain::lock());
-        QList<Declaration*> declarations = currentContext()->findDeclarations(identifierForNode(node->stringFunctionNameOrClass));
-        if (!declarations.isEmpty()) {
-            FunctionType::Ptr function = declarations.last()->type<FunctionType>();
-            if (function) {
-                m_expressionType = function->returnType();
+    if (node->stringFunctionNameOrClass) {
+        if (node->stringFunctionName) {
+            //static function call foo::bar()
+            DUChainReadLocker lock(DUChain::lock());
+            QString ident;
+            ident = editor()->parseSession()->symbol(node->stringFunctionNameOrClass->string);
+            ident += "::";
+            ident += editor()->parseSession()->symbol(node->stringFunctionName->string);
+            QList<Declaration*> declarations = currentContext()->findDeclarations(QualifiedIdentifier(ident));
+            if (!declarations.isEmpty()) {
+                FunctionType::Ptr function = declarations.last()->type<FunctionType>();
+                if (function) {
+                    m_expressionType = function->returnType();
+                }
+            }
+        } else if (node->varFunctionName) {
+            //static function call foo::$bar()
+        } else {
+            //global function call foo();
+            DUChainReadLocker lock(DUChain::lock());
+            QList<Declaration*> declarations = currentContext()->findDeclarations(identifierForNode(node->stringFunctionNameOrClass));
+            if (!declarations.isEmpty()) {
+                FunctionType::Ptr function = declarations.last()->type<FunctionType>();
+                if (function) {
+                    m_expressionType = function->returnType();
+                }
             }
         }
     }
@@ -172,10 +218,14 @@ void TypeBuilder::visitScalar(ScalarAst *node)
     IntegralType::Ptr integral(new IntegralType());
     m_expressionType = AbstractType::Ptr::staticCast(integral);
 }
+
 void TypeBuilder::visitStatement(StatementAst* node)
 {
     TypeBuilderBase::visitStatement(node);
-    if (node->returnExpr && m_expressionType && m_currentFunctionType) {
+    if (node->returnExpr && m_expressionType && m_currentFunctionType
+            && (!m_currentFunctionType->returnType()
+                || IntegralType::Ptr::dynamicCast(m_currentFunctionType->returnType())))
+    {
         m_currentFunctionType->setReturnType(m_expressionType);
     }
 }

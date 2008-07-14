@@ -12,11 +12,13 @@
 
 #include <QtCore/QString>
 #include <kdebug.h>
+#include <tokenstream.h>
 
 namespace KDevelop
 {
 class DUContext;
 }
+
 
 namespace Php
 {
@@ -127,6 +129,7 @@ struct WhileStatementAst;
 
 
 class Lexer;
+
 enum NumericType
 {
     LongNumber,

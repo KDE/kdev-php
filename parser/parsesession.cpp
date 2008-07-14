@@ -38,7 +38,7 @@ namespace Php
 ParseSession::ParseSession()
     :   m_debug(false),
         m_pool(new KDevPG::MemoryPool()),
-        m_tokenStream(new KDevPG::TokenStream())
+        m_tokenStream(new TokenStream())
 {
 }
 ParseSession::~ParseSession()
@@ -76,7 +76,7 @@ void ParseSession::setDebug( bool debug )
     m_debug = debug;
 }
 
-KDevPG::TokenStream* ParseSession::tokenStream() const
+TokenStream* ParseSession::tokenStream() const
 {
     return m_tokenStream;
 }
@@ -113,8 +113,15 @@ KDevelop::SimpleCursor ParseSession::positionAt( qint64 offset ) const
 
 QString ParseSession::symbol( qint64 token ) const
 {
-    const KDevPG::TokenStream::Token& tok = m_tokenStream->token( token );
+    const TokenStream::Token& tok = m_tokenStream->token( token );
     return m_contents.mid(tok.begin, tok.end - tok.begin + 1);
+}
+
+QString ParseSession::docComment( qint64 token ) const
+{
+    const TokenStream::Token& tok = m_tokenStream->token( token );
+    if (!tok.docCommentEnd) return QString();
+    return m_contents.mid(tok.docCommentBegin, tok.docCommentEnd - tok.docCommentBegin + 1);
 }
 
 }

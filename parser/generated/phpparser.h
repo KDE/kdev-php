@@ -7,7 +7,6 @@
 #include "phpast.h"
 #include <kdev-pg-memory-pool.h>
 #include <kdev-pg-allocator.h>
-#include <kdev-pg-token-stream.h>
 
 #include <parserexport.h>
 namespace Php
@@ -16,8 +15,8 @@ namespace Php
 class KDEVPHPPARSER_EXPORT Parser
 {
 public:
-    typedef KDevPG::TokenStream::Token Token;
-    KDevPG::TokenStream *tokenStream;
+    typedef TokenStream::Token Token;
+    TokenStream *tokenStream;
     int yytoken;
 
     inline Token LA(qint64 k = 1) const
@@ -35,7 +34,7 @@ public:
     }
 
 // token stream
-    void setTokenStream(KDevPG::TokenStream *s)
+    void setTokenStream(TokenStream *s)
     {
         tokenStream = s;
     }

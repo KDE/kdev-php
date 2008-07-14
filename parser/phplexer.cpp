@@ -21,9 +21,7 @@
 #include "phplexer.h"
 
 #include "phpparser.h"
-
-#include <kdev-pg-location-table.h>
-#include <kdev-pg-token-stream.h>
+#include "tokenstream.h"
 
 #include <QtCore/QString>
 #include <QtCore/QStringList>
@@ -35,7 +33,7 @@
 namespace Php
 {
 
-Lexer::Lexer( KDevPG::TokenStream* tokenStream, const QString& content ):
+Lexer::Lexer( TokenStream* tokenStream, const QString& content ):
         m_content( content ), m_tokenStream( tokenStream ),
         m_curpos( 0 ), m_contentSize( m_content.size() ),
         m_tokenBegin( 0 ), m_tokenEnd( 0 ), m_haltCompiler( 0 )

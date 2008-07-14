@@ -40,11 +40,13 @@
 
 #include <QtCore/QString>
 #include <kdebug.h>
+#include <tokenstream.h>
 
 namespace KDevelop
 {
     class DUContext;
 }
+
 :]
 
 
@@ -62,6 +64,7 @@ namespace KDevelop
 %namespace
 [:
     class Lexer;
+
     enum NumericType  {
         LongNumber,
         DoubleNumber
@@ -137,16 +140,12 @@ namespace KDevelop
     m_state.varExpressionIsVariable = false;
 :]
 
+
+%token_stream TokenStream ;;
+
 -----------------------------------------------------------
 -- List of defined tokens
 -----------------------------------------------------------
-
-
-
-
-
-
-
 
 -- keywords:
 %token ABSTRACT ("abstract"), BREAK ("break"), CASE ("case"), CATCH ("catch"),
@@ -792,11 +791,19 @@ void Parser::tokenize( const QString& contents )
     m_contents = contents;
     Lexer lexer( tokenStream, contents );
     int kind = Parser::Token_EOF;
+    int lastDocCommentBegin;
+    int lastDocCommentEnd;
 
     do
     {
+        lastDocCommentBegin = 0;
+        lastDocCommentEnd = 0;
         kind = lexer.nextTokenKind();
         while (kind == Parser::Token_WHITESPACE || kind == Parser::Token_COMMENT || kind == Parser::Token_DOC_COMMENT) {
+            if (kind == Parser::Token_DOC_COMMENT) {
+                lastDocCommentBegin = lexer.tokenBegin();
+                lastDocCommentEnd = lexer.tokenEnd();
+            }
             kind = lexer.nextTokenKind();
         }
         if ( !kind ) // when the lexer returns 0, the end of file is reached
@@ -807,6 +814,8 @@ void Parser::tokenize( const QString& contents )
         t.begin = lexer.tokenBegin();
         t.end = lexer.tokenEnd();
         t.kind = kind;
+        t.docCommentBegin = lastDocCommentBegin;
+        t.docCommentEnd = lastDocCommentEnd;
         //if ( m_debug ) qDebug() << kind << tokenText(t.begin,t.end) << t.begin << t.end;
     }
     while ( kind != Parser::Token_EOF );

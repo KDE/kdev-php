@@ -44,8 +44,12 @@ private slots:
   void testDeclareTypehintFunction();
   void testReturnTypeClass();
   void testDeclarationReturnType();
+  void testDeclarationMultipleReturnTypes();
+  void testDeclarationReturnTypeDocBlock();
   void testClassImplementsInterface();
   void testClassExtends();
+  void testStaticMethod();
+  void testThis();
 
 public:
   enum DumpArea {

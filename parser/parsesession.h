@@ -31,7 +31,6 @@
 
 namespace KDevPG
 {
-    class TokenStream;
     class MemoryPool;
 }
 namespace KDevelop
@@ -40,6 +39,7 @@ namespace KDevelop
 }
 namespace Php
 {
+    class TokenStream;
     class StartAst;
 
 class KDEVPHPPARSER_EXPORT ParseSession
@@ -51,12 +51,17 @@ public:
     void setContents( const QString& contents );
     bool readFile( const QString& filename, const char* charset = 0 );
     void setDebug( bool );
-    KDevPG::TokenStream* tokenStream() const;
+    TokenStream* tokenStream() const;
     QString contents() const;
 
     bool parse( Php::StartAst** );
 
     QString symbol(qint64 token) const;
+
+   /**
+    * Return the DocBlock before this token, if any
+    */
+    QString docComment(qint64 token) const;
 
   /**
    * Return the position (\a line%, \a column%) of the \a offset in the file.
@@ -69,7 +74,7 @@ private:
     QString m_contents;
     bool m_debug;
     KDevPG::MemoryPool* m_pool;
-    KDevPG::TokenStream* m_tokenStream;
+    TokenStream* m_tokenStream;
 
 };
 

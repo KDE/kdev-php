@@ -32,9 +32,6 @@
 
 namespace Php {
 
-class ClassType;
-class FunctionType;
-
 typedef KDevelop::AbstractTypeBuilder<AstNode, IdentifierAst, ContextBuilder> TypeBuilderBase;
 
 /**
@@ -50,6 +47,7 @@ protected:
   virtual void visitClassDeclarationStatement( ClassDeclarationStatementAst* node );
   virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
   virtual void visitClassStatement(ClassStatementAst *node);
+  virtual void visitClassVariable(ClassVariableAst *node);
   virtual void visitParameter(ParameterAst *node);
   virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
 
@@ -64,8 +62,9 @@ protected:
   FunctionType::Ptr m_currentFunctionType;
 
 private:
-  bool nodeValid(AstNode* node) const;
-
+    FunctionType::Ptr openFunctionType(AstNode* node);
+    ClassType::Ptr parseDocComment(AstNode* node, const QString& docCommentName);
+    ClassType::Ptr m_currentClass;
 };
 
 }

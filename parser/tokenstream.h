@@ -18,67 +18,24 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "usebuilder.h"
+#ifndef PHPTOKENSTREAM_H
+#define PHPTOKENSTREAM_H
 
-#include "editorintegrator.h"
+#include <kdev-pg-token-stream.h>
 
-using namespace KTextEditor;
-using namespace KDevelop;
-
-namespace Php {
-
-UseBuilder::UseBuilder (ParseSession* session)
+namespace Php
 {
-    setEditor(session);
-}
 
-UseBuilder::UseBuilder (EditorIntegrator* editor)
+class Token : public KDevPG::Token
 {
-    setEditor(editor);
-}
+public:
+    qint64 docCommentBegin;
+    qint64 docCommentEnd;
+};
 
-void UseBuilder::visitParameter(ParameterAst *node)
+class TokenStream : public KDevPG::TokenStreamBase<Token>
 {
-    UseBuilderBase::visitParameter(node);
-
-    if (node->parameterType) {
-        newUse(node->parameterType);
-    }
-}
-
-void UseBuilder::visitClassImplements(ClassImplementsAst *node)
-{
-    UseBuilderBase::visitClassImplements(node);
-
-    const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
-    do
-    {
-        newUse(__it->element);
-    }
-    while (__it != __end);
-}
-
-void UseBuilder::visitClassExtends(ClassExtendsAst *node)
-{
-    UseBuilderBase::visitClassExtends(node);
-    newUse(node->identifier);
-}
-
-void UseBuilder::visitVarExpressionNewObject(VarExpressionNewObjectAst *node)
-{
-    UseBuilderBase::visitVarExpressionNewObject(node);
-    if (node->className->identifier) {
-        newUse(node->className->identifier);
-    }
-}
-
-void UseBuilder::visitFunctionCall(FunctionCallAst* node)
-{
-    UseBuilderBase::visitFunctionCall(node);
-    if (node->stringFunctionNameOrClass) {
-        //TODO: stringFunctionNameOrClass::stringFunctionName (static calls)
-        newUse(node->stringFunctionNameOrClass);
-    }
-}
+};
 
 }
+#endif

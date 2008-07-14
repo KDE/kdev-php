@@ -35,6 +35,7 @@ namespace KDevPG
 
 namespace Php
 {
+class TokenStream;
 
 /**
  * Hand-written Lexer that generates the same tokens as php uses.
@@ -45,7 +46,7 @@ namespace Php
  **/
 class KDEVPHPPARSER_EXPORT Lexer {
 public:
-    Lexer(KDevPG::TokenStream *tokenStream, const QString& contents);
+    Lexer(TokenStream *tokenStream, const QString& contents);
 
     int nextTokenKind();
     qint64 tokenBegin() const;
@@ -53,7 +54,7 @@ public:
 
 private:
     QString m_content;
-    KDevPG::TokenStream* m_tokenStream;
+    TokenStream* m_tokenStream;
     int m_curpos;
     int m_contentSize;
     qint64 m_tokenBegin;

@@ -17,7 +17,7 @@ namespace Php
 class KDEVPHPPARSER_EXPORT DebugVisitor: public DefaultVisitor
 {
 public:
-    DebugVisitor(KDevPG::TokenStream *str, const QString& content = QString())
+    DebugVisitor(TokenStream *str, const QString& content = QString())
             : m_str(str), m_indent(0), m_content(content) {}
     virtual void visitAdditiveExpression(AdditiveExpressionAst *node)
     {
@@ -27,8 +27,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -60,8 +60,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -93,8 +93,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -126,8 +126,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -159,8 +159,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -192,8 +192,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -225,8 +225,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -258,8 +258,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -291,8 +291,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -324,8 +324,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -357,8 +357,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -390,8 +390,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -423,8 +423,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -456,8 +456,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -489,8 +489,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -522,8 +522,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -555,8 +555,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -588,8 +588,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -621,8 +621,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -654,8 +654,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -687,8 +687,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -720,8 +720,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -753,8 +753,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -786,8 +786,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -819,8 +819,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -852,8 +852,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -885,8 +885,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -918,8 +918,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -951,8 +951,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -984,8 +984,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1017,8 +1017,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1050,8 +1050,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1083,8 +1083,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1116,8 +1116,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1149,8 +1149,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1182,8 +1182,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1215,8 +1215,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1248,8 +1248,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1281,8 +1281,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1314,8 +1314,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1347,8 +1347,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1380,8 +1380,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1413,8 +1413,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1446,8 +1446,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1479,8 +1479,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1512,8 +1512,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1545,8 +1545,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1578,8 +1578,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1611,8 +1611,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1644,8 +1644,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1677,8 +1677,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1710,8 +1710,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1743,8 +1743,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1776,8 +1776,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1809,8 +1809,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1842,8 +1842,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1875,8 +1875,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1908,8 +1908,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1941,8 +1941,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -1974,8 +1974,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2007,8 +2007,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2040,8 +2040,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2073,8 +2073,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2106,8 +2106,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2139,8 +2139,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2172,8 +2172,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2205,8 +2205,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2238,8 +2238,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2271,8 +2271,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2304,8 +2304,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2337,8 +2337,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2370,8 +2370,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2403,8 +2403,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2436,8 +2436,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2469,8 +2469,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2502,8 +2502,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2535,8 +2535,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2568,8 +2568,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2601,8 +2601,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2634,8 +2634,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2667,8 +2667,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2700,8 +2700,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2733,8 +2733,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2766,8 +2766,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2799,8 +2799,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2832,8 +2832,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2865,8 +2865,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2898,8 +2898,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2931,8 +2931,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2964,8 +2964,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -2997,8 +2997,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -3030,8 +3030,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -3063,8 +3063,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -3096,8 +3096,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -3129,8 +3129,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -3162,8 +3162,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -3195,8 +3195,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -3228,8 +3228,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -3261,8 +3261,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -3294,8 +3294,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -3327,8 +3327,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -3360,8 +3360,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -3393,8 +3393,8 @@ public:
         QString tokenString;
         if (!m_content.isEmpty())
         {
-            KDevPG::TokenStream::Token startToken = m_str->token(node->startToken);
-            KDevPG::TokenStream::Token endToken = m_str->token(node->endToken);
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
             int begin = startToken.begin;
             int end = endToken.end;
             if (end-begin > 30)
@@ -3419,7 +3419,7 @@ public:
     }
 
 private:
-    KDevPG::TokenStream *m_str;
+    TokenStream *m_str;
     int m_indent;
     QString m_content;
 };

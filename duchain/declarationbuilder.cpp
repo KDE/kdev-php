@@ -84,35 +84,45 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
     if (node->methodName) {
         //method declaration
 
-        ClassFunctionDeclaration* dec = dynamic_cast<ClassFunctionDeclaration*>(openDefinition(node->methodName, node, true));
+        openDefinition(node->methodName, node, true);
+        ClassFunctionDeclaration* dec = dynamic_cast<ClassFunctionDeclaration*>(currentDeclaration());
         Q_ASSERT(dec);
-
-        dec->setKind(Declaration::Type);
-        if (node->modifiers->modifiers & ModifierPublic) {
-            dec->setAccessPolicy(Declaration::Public);
-        } else if (node->modifiers->modifiers & ModifierProtected) {
-            dec->setAccessPolicy(Declaration::Protected);
-        } else if (node->modifiers->modifiers & ModifierPrivate) {
-            dec->setAccessPolicy(Declaration::Private);
-        }
-        if (node->modifiers->modifiers & ModifierStatic) {
-            dec->setStatic(true);
-        }
-        if (node->modifiers->modifiers & ModifierFinal) {
-            //TODO
-        }
-        if (node->modifiers->modifiers & ModifierAbstract) {
-            //TODO
+        {
+            DUChainWriteLocker lock(DUChain::lock());
+            dec->setKind(Declaration::Type);
+            if (node->modifiers->modifiers & ModifierPublic) {
+                dec->setAccessPolicy(Declaration::Public);
+            } else if (node->modifiers->modifiers & ModifierProtected) {
+                dec->setAccessPolicy(Declaration::Protected);
+            } else if (node->modifiers->modifiers & ModifierPrivate) {
+                dec->setAccessPolicy(Declaration::Private);
+            }
+            if (node->modifiers->modifiers & ModifierStatic) {
+                dec->setStatic(true);
+            }
+            if (node->modifiers->modifiers & ModifierFinal) {
+                //TODO: store this somewhere
+            }
+            if (node->modifiers->modifiers & ModifierAbstract) {
+                //TODO: check if class is abstract
+                //TODO: check if no methodBody exists
+                //TODO: check if parent is not an interface
+                //TODO: store somewhere that this function is abstract (?)
+            }
+            //TODO: if class is interface check if no methodBody exists
         }
 
         DeclarationBuilderBase::visitClassStatement(node);
 
         closeDeclaration();
     } else {
-
-        //TODO
-
+        if (node->modifiers) {
+            m_currentModifers = node->modifiers->modifiers;
+        } else {
+            m_currentModifers = 0;
+        }
         DeclarationBuilderBase::visitClassStatement(node);
+        m_currentModifers = 0;
     }
 }
 
@@ -156,8 +166,28 @@ void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(node->variable, node->variable);
         openDefinition(identifierForNode(node->variable), newRange, false);
+
+        ClassMemberDeclaration* dec = dynamic_cast<ClassMemberDeclaration*>(currentDeclaration());
+        Q_ASSERT(dec);
+        if (m_currentModifers & ModifierPublic) {
+            dec->setAccessPolicy(Declaration::Public);
+        } else if (m_currentModifers & ModifierProtected) {
+            dec->setAccessPolicy(Declaration::Protected);
+        } else if (m_currentModifers & ModifierPrivate) {
+            dec->setAccessPolicy(Declaration::Private);
+        }
+        if (m_currentModifers & ModifierStatic) {
+            dec->setStatic(true);
+        }
+        if (m_currentModifers & ModifierFinal) {
+            //TODO report error
+        }
+        if (m_currentModifers & ModifierAbstract) {
+            //TODO report error
+        }
+        dec->setKind(Declaration::Instance);
     }
-    currentDeclaration()->setKind(Declaration::Instance);
+
     DeclarationBuilderBase::visitClassVariable(node);
     closeDeclaration();
 }

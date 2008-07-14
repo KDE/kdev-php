@@ -5,7 +5,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
 set(parser_STAT_SRCS
     phplexer.cpp
     parsesession.cpp
-     )
+    )
 
 if(KDEVPGQT_FOUND)
      kdevpgqt_generate(_kdevpgList php NAMESPACE Php DEBUG_VISITOR
