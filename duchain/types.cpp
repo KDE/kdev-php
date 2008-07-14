@@ -24,7 +24,8 @@
 #include <duchain/classfunctiondeclaration.h>
 #include <duchain/abstractfunctiondeclaration.h>
 #include <duchain/indexedstring.h>
-#include <duchain/typeregister.h>
+#include <duchain/types/typeregister.h>
+#include <duchain/types/typesystem.h>
 
 using namespace KDevelop;
 namespace Php {
@@ -119,7 +120,7 @@ bool FunctionType::equals(const AbstractType* _rhs) const
 
     if( this == rhs )
         return true;
-    
+
     //Ignore IdentifiedType here, because we do not want to respect that while comparing function-types.
 
     return FunctionTypeBase::equals(rhs);

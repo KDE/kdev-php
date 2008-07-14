@@ -23,10 +23,10 @@
 #define PHP_TYPES_H
 
 #include <duchain/identifier.h>
-#include <duchain/typesystemdata.h>
-#include <duchain/typesystem.h>
+#include <duchain/types/typesystemdata.h>
+#include <duchain/types/alltypes.h>
 #include <duchain/declaration.h>
-#include <duchain/identifiedtype.h>
+#include <duchain/types/identifiedtype.h>
 
 #include "phpduchainexport.h"
 

@@ -19,7 +19,8 @@
 #ifndef DUMPTYPES_H
 #define DUMPTYPES_H
 
-#include <duchain/typesystem.h>
+#include <duchain/types/typesystem.h>
+#include <duchain/types/alltypes.h>
 #include "phpduchainexport.h"
 
 namespace Php
@@ -40,7 +41,7 @@ protected:
   virtual void visit (const KDevelop::IntegralType *);
 
   virtual bool visit (const KDevelop::AbstractType *);
-  
+
   virtual bool visit (const KDevelop::PointerType * type);
   virtual void endVisit (const KDevelop::PointerType *);
 

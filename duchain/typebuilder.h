@@ -23,9 +23,9 @@
 
 #include "contextbuilder.h"
 
-#include <language/duchain/abstracttypebuilder.h>
+#include <language/duchain/builders/abstracttypebuilder.h>
 
-#include <language/duchain/typesystem.h>
+#include <language/duchain/types/functiontype.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/identifier.h>
 #include "types.h"
