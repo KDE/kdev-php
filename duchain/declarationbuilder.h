@@ -49,12 +49,14 @@ protected:
     virtual void visitExpr(ExprAst *node);
     virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
     virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
+    virtual void visitVariableProperty(VariablePropertyAst *node);
 
     void classTypeOpened(KDevelop::AbstractType::Ptr type);
 
 private:
     VariableIdentifierAst* m_lastVariableIdentifier;
     unsigned int m_currentModifers;
+    KDevelop::Declaration* m_currentClassDeclaration;
 };
 
 }

@@ -465,7 +465,7 @@ expression=booleanOrExpression
 -> variable ;;
 
     OBJECT_OPERATOR objectProperty=objectProperty
-        (LPAREN (parameterList=functionCallParameterList | 0) RPAREN | 0)
+        (isFunctionCall=LPAREN (parameterList=functionCallParameterList | 0) RPAREN | 0)
 -> variableProperty ;;
 
    --Conflict
@@ -642,7 +642,7 @@ expression=booleanOrExpression
 LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 -> dimListItem ;;
 
-    name=STRING
+    name=identifier
   | LBRACE expr=expr RBRACE
 -> variableName ;;
 

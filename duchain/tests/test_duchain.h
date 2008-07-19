@@ -50,6 +50,10 @@ private slots:
   void testClassExtends();
   void testStaticMethod();
   void testThis();
+  void testObjectFunctionCall();
+  void testObjectFunctionCall2();
+  void testObjectFunctionCall3();
+  void testObjectVariable();
 
 public:
   enum DumpArea {

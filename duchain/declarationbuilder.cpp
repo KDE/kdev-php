@@ -35,13 +35,13 @@ using namespace KDevelop;
 namespace Php {
 
 DeclarationBuilder::DeclarationBuilder (ParseSession* session)
-    : m_lastVariableIdentifier(0)
+    : m_lastVariableIdentifier(0), m_currentClassDeclaration(0)
 {
   setEditor(session);
 }
 
 DeclarationBuilder::DeclarationBuilder (EditorIntegrator* editor)
-    : m_lastVariableIdentifier(0)
+    : m_lastVariableIdentifier(0), m_currentClassDeclaration(0)
 {
   setEditor(editor);
 }
@@ -62,9 +62,10 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
 {
     openDefinition(node->className, node, false);
     currentDeclaration()->setKind(KDevelop::Declaration::Type);
+    m_currentClassDeclaration = currentDeclaration();
 
     DeclarationBuilderBase::visitClassDeclarationStatement(node);
-
+    m_currentClassDeclaration = 0;
     closeDeclaration();
 }
 
@@ -238,13 +239,14 @@ void DeclarationBuilder::visitExpr(ExprAst *node)
 
 void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node)
 {
+    VariableIdentifierAst* leftSideVariableIdentifier = m_lastVariableIdentifier;
     DeclarationBuilderBase::visitAssignmentExpressionEqual(node);
-    if (m_lastVariableIdentifier && m_expressionType) {
+    if (leftSideVariableIdentifier && m_expressionType) {
         //create new declaration for every assignment
         //TODO: don't create the same twice
         DUChainWriteLocker lock(DUChain::lock());
-        SimpleRange newRange = editorFindRange(m_lastVariableIdentifier, m_lastVariableIdentifier);
-        openDefinition(identifierForNode(m_lastVariableIdentifier), newRange, false);
+        SimpleRange newRange = editorFindRange(leftSideVariableIdentifier, leftSideVariableIdentifier);
+        openDefinition(identifierForNode(leftSideVariableIdentifier), newRange, false);
         currentDeclaration()->setKind(Declaration::Instance);
 
         //own closeDeclaration() that uses expressionType instead of lastType()
@@ -259,6 +261,58 @@ void DeclarationBuilder::visitCompoundVariableWithSimpleIndirectReference(Compou
     //needed in assignmentExpressionEqual
     m_lastVariableIdentifier = node->variable;
     DeclarationBuilderBase::visitCompoundVariableWithSimpleIndirectReference(node);
+}
+
+//TODO: move probably to typebuilder?
+void DeclarationBuilder::visitVariableProperty(VariablePropertyAst *node)
+{
+    if (node->objectProperty->objectDimList) {
+        //handle $foo->bar() and $foo->baz, $foo is m_expressionType
+        if (m_expressionType) {
+            if (ClassType::Ptr::dynamicCast(m_expressionType)) {
+                DUChainReadLocker lock(DUChain::lock());
+                QualifiedIdentifier id = ClassType::Ptr::staticCast(m_expressionType)->qualifiedIdentifier();
+                QList<Declaration*> variableDecs = currentContext()->findDeclarations(id);
+                if (!variableDecs.isEmpty()) {
+                    DUContext* context = 0;
+                    if (variableDecs.first() == m_currentClassDeclaration) {
+                        //in current class we don't have internalContext assigned yet
+                        //TODO better solution?
+                        context = currentContext()->parentContext();
+                    } else {
+                        context = variableDecs.first()->internalContext();
+                    }
+                    QualifiedIdentifier propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
+                    if (node->isFunctionCall != -1) {
+                        //function call $foo->bar()
+                        QList<Declaration*> propertyDeclarations = context->findDeclarations(propertyId);
+                        FunctionType::Ptr functionType;
+                        if (!propertyDeclarations.isEmpty()) {
+                            functionType = propertyDeclarations.first()->type<FunctionType>();
+                        }
+                        if (functionType) {
+                            m_expressionType = functionType->returnType();
+                        } else {
+                            m_expressionType = 0;
+                        }
+                    } else {
+                        //member variable $foo->bar
+                        //TODO: better solution for adding the $
+                        QualifiedIdentifier varId = QualifiedIdentifier(QString("$") + propertyId.toString());
+                        QList<Declaration*> propertyDeclarations = context->findDeclarations(varId);
+                        if (!propertyDeclarations.isEmpty()) {
+                            m_expressionType = propertyDeclarations.first()->abstractType();
+                        } else {
+                            m_expressionType = 0;
+                        }
+                    }
+                } else {
+                    m_expressionType = 0;
+                }
+            }
+        }
+    }
+    DeclarationBuilderBase::visitVariableProperty(node);
 }
 
 }
