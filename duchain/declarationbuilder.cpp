@@ -295,7 +295,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
             visitor.visitNode(node->stringParameterList->parametersSequence->at(0)->element);
             if (visitor.node() && visitor.node()->string != -1) {
                 QString constant = editor()->parseSession()->symbol(visitor.node()->string);
-                constant = constant.mid(1, constant.length()-2); //TODO: handle "FO\"O"
+                constant = constant.mid(1, constant.length()-2);
                 SimpleRange newRange = editorFindRange(visitor.node(), visitor.node());
                 DUChainWriteLocker lock(DUChain::lock());
                 injectContext(currentContext()->topContext()); //constants are always global
