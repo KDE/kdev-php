@@ -109,7 +109,6 @@ void ContextBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStat
 
 void ContextBuilder::visitClassStatement(ClassStatementAst *node)
 {
-    //TODO: visitNode(node->consts);
     visitNode(node->modifiers);
     if (node->methodName) {
         //method declaration
@@ -133,8 +132,8 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
         visitNode(node->methodBody);
         closeContext();
     } else {
-        //member-variable
-        visitNode(node->variable);
+        //member-variable or const
+        DefaultVisitor::visitClassStatement(node);
     }
 }
 

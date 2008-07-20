@@ -46,6 +46,7 @@ protected:
     virtual void visitParameter(ParameterAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst *node);
+    virtual void visitClassConstantDeclaration(ClassConstantDeclarationAst *node);
     virtual void visitExpr(ExprAst *node);
     virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
     virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);

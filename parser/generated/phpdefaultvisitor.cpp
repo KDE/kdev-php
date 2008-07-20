@@ -203,6 +203,7 @@ void DefaultVisitor::visitClassBody(ClassBodyAst *node)
 
 void DefaultVisitor::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
 {
+    visitNode(node->identifier);
     visitNode(node->scalar);
 }
 

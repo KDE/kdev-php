@@ -191,6 +191,18 @@ void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
     closeDeclaration();
 }
 
+void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
+{
+    openDefinition(node->identifier, node->identifier, false);
+    ClassMemberDeclaration* dec = dynamic_cast<ClassMemberDeclaration*>(currentDeclaration());
+    Q_ASSERT(dec);
+    dec->setAccessPolicy(Declaration::Public);
+    dec->setStatic(true);
+    dec->setKind(Declaration::Instance);
+    DeclarationBuilderBase::visitClassConstantDeclaration(node);
+    closeDeclaration();
+}
+
 //copied from cpp
 void DeclarationBuilder::classTypeOpened(AbstractType::Ptr type)
 {

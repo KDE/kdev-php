@@ -747,7 +747,7 @@ identifier=identifier
  |  LBRACE statements=innerStatementList RBRACE
 -> methodBody ;;
 
-    identifier ASSIGN scalar=staticScalar
+    identifier=identifier ASSIGN scalar=staticScalar
 -> classConstantDeclaration ;;
 
 #vars=classVariable @ COMMA

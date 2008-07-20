@@ -419,6 +419,7 @@ struct KDEVPHPPARSER_EXPORT ClassConstantDeclarationAst: public AstNode
 {
     enum { KIND = ClassConstantDeclarationKind };
 
+    IdentifierAst *identifier;
     StaticScalarAst *scalar;
 };
 
