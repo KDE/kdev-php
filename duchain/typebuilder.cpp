@@ -174,8 +174,10 @@ void TypeBuilder::visitFunctionCall(FunctionCallAst* node)
             //static function call foo::bar()
             DUChainReadLocker lock(DUChain::lock());
             QString ident;
-            ident = editor()->parseSession()->symbol(node->stringFunctionNameOrClass->string);
-            ident += "::";
+            if (identifierForNode(node->stringFunctionNameOrClass) != QualifiedIdentifier("self")) {
+                ident += editor()->parseSession()->symbol(node->stringFunctionNameOrClass->string);
+                ident += "::";
+            }
             ident += editor()->parseSession()->symbol(node->stringFunctionName->string);
             QList<Declaration*> declarations = currentContext()->findDeclarations(QualifiedIdentifier(ident));
             if (!declarations.isEmpty()) {

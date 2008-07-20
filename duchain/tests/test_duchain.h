@@ -49,6 +49,7 @@ private slots:
   void testClassImplementsInterface();
   void testClassExtends();
   void testStaticMethod();
+  void testOwnStaticMethod();
   void testThis();
   void testObjectFunctionCall();
   void testObjectFunctionCall2();
