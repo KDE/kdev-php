@@ -500,7 +500,7 @@ expression=booleanOrExpression
     expr=expr | 0
 -> dimOffset ;;
 
-    className=STRING PAAMAYIM_NEKUDOTAYIM variable=variableWithoutObjects
+    className=identifier PAAMAYIM_NEKUDOTAYIM variable=variableWithoutObjects
 -> staticMember ;;
 
     LBRACE statements=innerStatementList RBRACE

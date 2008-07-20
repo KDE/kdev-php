@@ -57,6 +57,8 @@ protected:
   virtual void visitScalar(ScalarAst *node);
   virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
   virtual void visitFunctionCall(FunctionCallAst* node);
+  virtual void visitVariableProperty(VariablePropertyAst *node);
+  virtual void visitStaticMember(StaticMemberAst* node);
 
   KDevelop::AbstractType::Ptr m_expressionType;
   FunctionType::Ptr m_currentFunctionType;

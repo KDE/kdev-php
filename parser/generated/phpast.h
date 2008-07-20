@@ -976,7 +976,7 @@ struct KDEVPHPPARSER_EXPORT StaticMemberAst: public AstNode
 {
     enum { KIND = StaticMemberKind };
 
-    qint64 className;
+    IdentifierAst *className;
     VariableWithoutObjectsAst *variable;
 };
 
@@ -1084,7 +1084,7 @@ struct KDEVPHPPARSER_EXPORT VariableNameAst: public AstNode
 {
     enum { KIND = VariableNameKind };
 
-    qint64 name;
+    IdentifierAst *name;
     ExprAst *expr;
 };
 
@@ -1093,6 +1093,7 @@ struct KDEVPHPPARSER_EXPORT VariablePropertyAst: public AstNode
     enum { KIND = VariablePropertyKind };
 
     ObjectPropertyAst *objectProperty;
+    qint64 isFunctionCall;
     FunctionCallParameterListAst *parameterList;
 };
 

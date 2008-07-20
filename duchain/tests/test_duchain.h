@@ -54,6 +54,8 @@ private slots:
   void testObjectFunctionCall2();
   void testObjectFunctionCall3();
   void testObjectVariable();
+  void testStaticMemberVariable();
+  void testOwnStaticMemberVariable();
 
 public:
   enum DumpArea {

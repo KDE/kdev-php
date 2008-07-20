@@ -839,6 +839,7 @@ void DefaultVisitor::visitStaticArrayPairValue(StaticArrayPairValueAst *node)
 
 void DefaultVisitor::visitStaticMember(StaticMemberAst *node)
 {
+    visitNode(node->className);
     visitNode(node->variable);
 }
 
@@ -975,6 +976,7 @@ void DefaultVisitor::visitVariableIdentifier(VariableIdentifierAst *)
 
 void DefaultVisitor::visitVariableName(VariableNameAst *node)
 {
+    visitNode(node->name);
     visitNode(node->expr);
 }
 

@@ -123,12 +123,7 @@ bool Parser::parseAdditiveExpression(AdditiveExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -138,12 +133,12 @@ bool Parser::parseAdditiveExpression(AdditiveExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -164,7 +159,12 @@ bool Parser::parseAdditiveExpression(AdditiveExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         MultiplicativeExpressionAst *__node_0 = 0;
         if (!parseMultiplicativeExpression(&__node_0))
@@ -285,13 +285,7 @@ bool Parser::parseArrayPairValue(ArrayPairValueAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_BIT_AND
@@ -302,12 +296,12 @@ bool Parser::parseArrayPairValue(ArrayPairValueAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -328,15 +322,15 @@ bool Parser::parseArrayPairValue(ArrayPairValueAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
-        if (yytoken == Token_STRING_CAST
-            || yytoken == Token_VARIABLE
-            || yytoken == Token_PRINT
-            || yytoken == Token_FILE
-            || yytoken == Token_START_HEREDOC
-            || yytoken == Token_NEW
-            || yytoken == Token_STRING_VARNAME
+        if (yytoken == Token_STRING_VARNAME
             || yytoken == Token_DOUBLE_QUOTE
             || yytoken == Token_EVAL
             || yytoken == Token_ARRAY
@@ -346,17 +340,17 @@ bool Parser::parseArrayPairValue(ArrayPairValueAst **yynode)
             || yytoken == Token_ISSET
             || yytoken == Token_REQUIRE
             || yytoken == Token_CLASS_C
-            || yytoken == Token_OBJECT_CAST
             || yytoken == Token_DNUMBER
+            || yytoken == Token_OBJECT_CAST
             || yytoken == Token_EXIT
             || yytoken == Token_BACKTICK
-            || yytoken == Token_EMPTY
             || yytoken == Token_DEC
+            || yytoken == Token_EMPTY
             || yytoken == Token_REQUIRE_ONCE
             || yytoken == Token_METHOD_C
             || yytoken == Token_AT
-            || yytoken == Token_BOOL_CAST
             || yytoken == Token_LNUMBER
+            || yytoken == Token_BOOL_CAST
             || yytoken == Token_TILDE
             || yytoken == Token_BANG
             || yytoken == Token_LPAREN
@@ -372,7 +366,13 @@ bool Parser::parseArrayPairValue(ArrayPairValueAst **yynode)
             || yytoken == Token_MINUS
             || yytoken == Token_STRING
             || yytoken == Token_INCLUDE_ONCE
-            || yytoken == Token_LIST)
+            || yytoken == Token_LIST
+            || yytoken == Token_STRING_CAST
+            || yytoken == Token_VARIABLE
+            || yytoken == Token_PRINT
+            || yytoken == Token_FILE
+            || yytoken == Token_START_HEREDOC
+            || yytoken == Token_NEW)
         {
             ExprAst *__node_3 = 0;
             if (!parseExpr(&__node_3))
@@ -397,13 +397,7 @@ bool Parser::parseArrayPairValue(ArrayPairValueAst **yynode)
                 }
                 yylex();
 
-                if (yytoken == Token_STRING_CAST
-                    || yytoken == Token_VARIABLE
-                    || yytoken == Token_PRINT
-                    || yytoken == Token_FILE
-                    || yytoken == Token_START_HEREDOC
-                    || yytoken == Token_NEW
-                    || yytoken == Token_STRING_VARNAME
+                if (yytoken == Token_STRING_VARNAME
                     || yytoken == Token_DOUBLE_QUOTE
                     || yytoken == Token_EVAL
                     || yytoken == Token_ARRAY
@@ -413,17 +407,17 @@ bool Parser::parseArrayPairValue(ArrayPairValueAst **yynode)
                     || yytoken == Token_ISSET
                     || yytoken == Token_REQUIRE
                     || yytoken == Token_CLASS_C
-                    || yytoken == Token_OBJECT_CAST
                     || yytoken == Token_DNUMBER
+                    || yytoken == Token_OBJECT_CAST
                     || yytoken == Token_EXIT
                     || yytoken == Token_BACKTICK
-                    || yytoken == Token_EMPTY
                     || yytoken == Token_DEC
+                    || yytoken == Token_EMPTY
                     || yytoken == Token_REQUIRE_ONCE
                     || yytoken == Token_METHOD_C
                     || yytoken == Token_AT
-                    || yytoken == Token_BOOL_CAST
                     || yytoken == Token_LNUMBER
+                    || yytoken == Token_BOOL_CAST
                     || yytoken == Token_TILDE
                     || yytoken == Token_BANG
                     || yytoken == Token_LPAREN
@@ -439,7 +433,13 @@ bool Parser::parseArrayPairValue(ArrayPairValueAst **yynode)
                     || yytoken == Token_MINUS
                     || yytoken == Token_STRING
                     || yytoken == Token_INCLUDE_ONCE
-                    || yytoken == Token_LIST)
+                    || yytoken == Token_LIST
+                    || yytoken == Token_STRING_CAST
+                    || yytoken == Token_VARIABLE
+                    || yytoken == Token_PRINT
+                    || yytoken == Token_FILE
+                    || yytoken == Token_START_HEREDOC
+                    || yytoken == Token_NEW)
                 {
                     ExprAst *__node_4 = 0;
                     if (!parseExpr(&__node_4))
@@ -535,12 +535,7 @@ bool Parser::parseAssignmentExpression(AssignmentExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -550,12 +545,12 @@ bool Parser::parseAssignmentExpression(AssignmentExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -576,7 +571,12 @@ bool Parser::parseAssignmentExpression(AssignmentExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         m_state.varExpressionIsVariable = false;
         ConditionalExpressionAst *__node_7 = 0;
@@ -604,8 +604,7 @@ bool Parser::parseAssignmentExpression(AssignmentExpressionAst **yynode)
             (*yynode)->assignmentAxpressionEqual = __node_8;
 
         }
-        else if (yytoken == Token_SL_ASSIGN
-                 || yytoken == Token_MUL_ASSIGN
+        else if (yytoken == Token_MUL_ASSIGN
                  || yytoken == Token_MOD_ASSIGN
                  || yytoken == Token_XOR_ASSIGN
                  || yytoken == Token_MINUS_ASSIGN
@@ -614,7 +613,8 @@ bool Parser::parseAssignmentExpression(AssignmentExpressionAst **yynode)
                  || yytoken == Token_PLUS_ASSIGN
                  || yytoken == Token_SR_ASSIGN
                  || yytoken == Token_DIV_ASSIGN
-                 || yytoken == Token_AND_ASSIGN)
+                 || yytoken == Token_AND_ASSIGN
+                 || yytoken == Token_SL_ASSIGN)
         {
             if (yytoken == Token_PLUS_ASSIGN)
             {
@@ -808,12 +808,7 @@ bool Parser::parseAssignmentExpressionCheckIfVariable(AssignmentExpressionCheckI
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (true /*epsilon*/ || yytoken == Token_VARIABLE
-        || yytoken == Token_STRING_CAST
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (true /*epsilon*/ || yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -824,19 +819,19 @@ bool Parser::parseAssignmentExpressionCheckIfVariable(AssignmentExpressionCheckI
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
-        || yytoken == Token_EOF
         || yytoken == Token_LNUMBER
         || yytoken == Token_BOOL_CAST
         || yytoken == Token_TILDE
+        || yytoken == Token_EOF
         || yytoken == Token_BANG
         || yytoken == Token_LPAREN
         || yytoken == Token_INT_CAST
@@ -845,13 +840,18 @@ bool Parser::parseAssignmentExpressionCheckIfVariable(AssignmentExpressionCheckI
         || yytoken == Token_UNSET_CAST
         || yytoken == Token_DOLLAR
         || yytoken == Token_INCLUDE
-        || yytoken == Token_DOUBLE_CAST
         || yytoken == Token_CONSTANT_ENCAPSED_STRING
+        || yytoken == Token_DOUBLE_CAST
         || yytoken == Token_LINE
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
 
         if (!m_state.varExpressionIsVariable)
@@ -959,8 +959,8 @@ bool Parser::parseAssignmentList(AssignmentListAst **yynode)
         || yytoken == Token_DOLLAR
         || yytoken == Token_STRING
         || yytoken == Token_LIST
-        || yytoken == Token_COMMA || yytoken == Token_RPAREN
-        || yytoken == Token_EOF)
+        || yytoken == Token_COMMA || yytoken == Token_EOF
+        || yytoken == Token_RPAREN)
     {
         AssignmentListElementAst *__node_13 = 0;
         if (!parseAssignmentListElement(&__node_13))
@@ -1017,9 +1017,9 @@ bool Parser::parseAssignmentListElement(AssignmentListElementAst **yynode)
     if (yytoken == Token_VARIABLE
         || yytoken == Token_DOLLAR
         || yytoken == Token_STRING
-        || yytoken == Token_LIST || yytoken == Token_RPAREN
-        || yytoken == Token_COMMA
-        || yytoken == Token_EOF)
+        || yytoken == Token_LIST || yytoken == Token_EOF
+        || yytoken == Token_RPAREN
+        || yytoken == Token_COMMA)
     {
         if (yytoken == Token_VARIABLE
             || yytoken == Token_DOLLAR
@@ -1235,12 +1235,7 @@ bool Parser::parseBitAndExpression(BitAndExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -1250,12 +1245,12 @@ bool Parser::parseBitAndExpression(BitAndExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -1276,7 +1271,12 @@ bool Parser::parseBitAndExpression(BitAndExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         EqualityExpressionAst *__node_22 = 0;
         if (!parseEqualityExpression(&__node_22))
@@ -1330,12 +1330,7 @@ bool Parser::parseBitOrExpression(BitOrExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -1345,12 +1340,12 @@ bool Parser::parseBitOrExpression(BitOrExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -1371,7 +1366,12 @@ bool Parser::parseBitOrExpression(BitOrExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         BitXorExpressionAst *__node_24 = 0;
         if (!parseBitXorExpression(&__node_24))
@@ -1425,12 +1425,7 @@ bool Parser::parseBitXorExpression(BitXorExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -1440,12 +1435,12 @@ bool Parser::parseBitXorExpression(BitXorExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -1466,7 +1461,12 @@ bool Parser::parseBitXorExpression(BitXorExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         BitAndExpressionAst *__node_26 = 0;
         if (!parseBitAndExpression(&__node_26))
@@ -1520,12 +1520,7 @@ bool Parser::parseBooleanAndExpression(BooleanAndExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -1535,12 +1530,12 @@ bool Parser::parseBooleanAndExpression(BooleanAndExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -1561,7 +1556,12 @@ bool Parser::parseBooleanAndExpression(BooleanAndExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         BitOrExpressionAst *__node_28 = 0;
         if (!parseBitOrExpression(&__node_28))
@@ -1615,12 +1615,7 @@ bool Parser::parseBooleanOrExpression(BooleanOrExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -1630,12 +1625,12 @@ bool Parser::parseBooleanOrExpression(BooleanOrExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -1656,7 +1651,12 @@ bool Parser::parseBooleanOrExpression(BooleanOrExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         BooleanAndExpressionAst *__node_30 = 0;
         if (!parseBooleanAndExpression(&__node_30))
@@ -1711,9 +1711,9 @@ bool Parser::parseCaseList(CaseListAst **yynode)
     (*yynode)->startToken = tokenStream->index() - 1;
 
     if (yytoken == Token_DEFAULT
-        || yytoken == Token_CASE || yytoken == Token_RBRACE
-        || yytoken == Token_ENDSWITCH
-        || yytoken == Token_EOF)
+        || yytoken == Token_CASE || yytoken == Token_EOF
+        || yytoken == Token_RBRACE
+        || yytoken == Token_ENDSWITCH)
     {
         while (yytoken == Token_DEFAULT
                || yytoken == Token_CASE)
@@ -1993,28 +1993,28 @@ bool Parser::parseClassBody(ClassBodyAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_CONST
-        || yytoken == Token_STATIC
-        || yytoken == Token_VARIABLE
+    if (yytoken == Token_VARIABLE
         || yytoken == Token_PRIVATE
         || yytoken == Token_FINAL
         || yytoken == Token_FUNCTION
         || yytoken == Token_ABSTRACT
         || yytoken == Token_VAR
         || yytoken == Token_PUBLIC
-        || yytoken == Token_PROTECTED || yytoken == Token_RBRACE
-        || yytoken == Token_EOF)
+        || yytoken == Token_PROTECTED
+        || yytoken == Token_CONST
+        || yytoken == Token_STATIC || yytoken == Token_EOF
+        || yytoken == Token_RBRACE)
     {
-        while (yytoken == Token_CONST
-               || yytoken == Token_STATIC
-               || yytoken == Token_VARIABLE
+        while (yytoken == Token_VARIABLE
                || yytoken == Token_PRIVATE
                || yytoken == Token_FINAL
                || yytoken == Token_FUNCTION
                || yytoken == Token_ABSTRACT
                || yytoken == Token_VAR
                || yytoken == Token_PUBLIC
-               || yytoken == Token_PROTECTED)
+               || yytoken == Token_PROTECTED
+               || yytoken == Token_CONST
+               || yytoken == Token_STATIC)
         {
             ClassStatementAst *__node_38 = 0;
             if (!parseClassStatement(&__node_38))
@@ -2401,16 +2401,16 @@ bool Parser::parseClassStatement(ClassStatementAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_CONST
-        || yytoken == Token_STATIC
-        || yytoken == Token_VARIABLE
+    if (yytoken == Token_VARIABLE
         || yytoken == Token_PRIVATE
         || yytoken == Token_FINAL
         || yytoken == Token_FUNCTION
         || yytoken == Token_ABSTRACT
         || yytoken == Token_VAR
         || yytoken == Token_PUBLIC
-        || yytoken == Token_PROTECTED)
+        || yytoken == Token_PROTECTED
+        || yytoken == Token_CONST
+        || yytoken == Token_STATIC)
     {
         if (yytoken == Token_CONST)
         {
@@ -2504,14 +2504,14 @@ bool Parser::parseClassStatement(ClassStatementAst **yynode)
             yylex();
 
         }
-        else if (yytoken == Token_STATIC
-                 || yytoken == Token_VARIABLE
+        else if (yytoken == Token_VARIABLE
                  || yytoken == Token_PRIVATE
                  || yytoken == Token_FINAL
                  || yytoken == Token_FUNCTION
                  || yytoken == Token_ABSTRACT
                  || yytoken == Token_PUBLIC
-                 || yytoken == Token_PROTECTED)
+                 || yytoken == Token_PROTECTED
+                 || yytoken == Token_STATIC)
         {
             OptionalModifiersAst *__node_53 = 0;
             if (!parseOptionalModifiers(&__node_53))
@@ -2788,14 +2788,14 @@ bool Parser::parseCommonScalar(CommonScalarAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_FILE
-        || yytoken == Token_LNUMBER
+    if (yytoken == Token_LNUMBER
         || yytoken == Token_CLASS_C
         || yytoken == Token_LINE
         || yytoken == Token_CONSTANT_ENCAPSED_STRING
         || yytoken == Token_DNUMBER
         || yytoken == Token_FUNC_C
-        || yytoken == Token_METHOD_C)
+        || yytoken == Token_METHOD_C
+        || yytoken == Token_FILE)
     {
         if (yytoken == Token_LNUMBER)
         {
@@ -3133,12 +3133,7 @@ bool Parser::parseConditionalExpression(ConditionalExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -3148,12 +3143,12 @@ bool Parser::parseConditionalExpression(ConditionalExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -3174,7 +3169,12 @@ bool Parser::parseConditionalExpression(ConditionalExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         BooleanOrExpressionAst *__node_67 = 0;
         if (!parseBooleanOrExpression(&__node_67))
@@ -3256,9 +3256,7 @@ bool Parser::parseCtorArguments(CtorArgumentsAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_LPAREN || yytoken == Token_BOOLEAN_OR
-        || yytoken == Token_MUL
-        || yytoken == Token_CONCAT
+    if (yytoken == Token_LPAREN || yytoken == Token_CONCAT
         || yytoken == Token_DIV_ASSIGN
         || yytoken == Token_LOGICAL_AND
         || yytoken == Token_IS_NOT_IDENTICAL
@@ -3277,14 +3275,14 @@ bool Parser::parseCtorArguments(CtorArgumentsAst **yynode)
         || yytoken == Token_ASSIGN
         || yytoken == Token_MOD
         || yytoken == Token_DEC
-        || yytoken == Token_RBRACKET
         || yytoken == Token_CLOSE_TAG
+        || yytoken == Token_RBRACKET
         || yytoken == Token_MOD_ASSIGN
         || yytoken == Token_IS_GREATER
         || yytoken == Token_BIT_XOR
-        || yytoken == Token_EOF
         || yytoken == Token_PLUS_ASSIGN
         || yytoken == Token_IS_EQUAL
+        || yytoken == Token_EOF
         || yytoken == Token_AND_ASSIGN
         || yytoken == Token_IS_SMALLER_OR_EQUAL
         || yytoken == Token_SL
@@ -3305,7 +3303,9 @@ bool Parser::parseCtorArguments(CtorArgumentsAst **yynode)
         || yytoken == Token_IS_IDENTICAL
         || yytoken == Token_COLON
         || yytoken == Token_XOR_ASSIGN
-        || yytoken == Token_AS)
+        || yytoken == Token_AS
+        || yytoken == Token_BOOLEAN_OR
+        || yytoken == Token_MUL)
     {
         if (yytoken == Token_LPAREN)
         {
@@ -3319,13 +3319,7 @@ bool Parser::parseCtorArguments(CtorArgumentsAst **yynode)
             }
             yylex();
 
-            if (yytoken == Token_STRING_CAST
-                || yytoken == Token_VARIABLE
-                || yytoken == Token_PRINT
-                || yytoken == Token_FILE
-                || yytoken == Token_START_HEREDOC
-                || yytoken == Token_NEW
-                || yytoken == Token_STRING_VARNAME
+            if (yytoken == Token_STRING_VARNAME
                 || yytoken == Token_DOUBLE_QUOTE
                 || yytoken == Token_EVAL
                 || yytoken == Token_BIT_AND
@@ -3336,12 +3330,12 @@ bool Parser::parseCtorArguments(CtorArgumentsAst **yynode)
                 || yytoken == Token_ISSET
                 || yytoken == Token_REQUIRE
                 || yytoken == Token_CLASS_C
-                || yytoken == Token_OBJECT_CAST
                 || yytoken == Token_DNUMBER
+                || yytoken == Token_OBJECT_CAST
                 || yytoken == Token_EXIT
                 || yytoken == Token_BACKTICK
-                || yytoken == Token_EMPTY
                 || yytoken == Token_DEC
+                || yytoken == Token_EMPTY
                 || yytoken == Token_REQUIRE_ONCE
                 || yytoken == Token_METHOD_C
                 || yytoken == Token_AT
@@ -3362,7 +3356,13 @@ bool Parser::parseCtorArguments(CtorArgumentsAst **yynode)
                 || yytoken == Token_MINUS
                 || yytoken == Token_STRING
                 || yytoken == Token_INCLUDE_ONCE
-                || yytoken == Token_LIST)
+                || yytoken == Token_LIST
+                || yytoken == Token_STRING_CAST
+                || yytoken == Token_VARIABLE
+                || yytoken == Token_PRINT
+                || yytoken == Token_FILE
+                || yytoken == Token_START_HEREDOC
+                || yytoken == Token_NEW)
             {
                 FunctionCallParameterListAst *__node_70 = 0;
                 if (!parseFunctionCallParameterList(&__node_70))
@@ -3468,13 +3468,7 @@ bool Parser::parseDeclareStatement(DeclareStatementAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_NEW
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_UNSET
+    if (yytoken == Token_UNSET
         || yytoken == Token_CONTINUE
         || yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
@@ -3482,8 +3476,8 @@ bool Parser::parseDeclareStatement(DeclareStatementAst **yynode)
         || yytoken == Token_SWITCH
         || yytoken == Token_ARRAY
         || yytoken == Token_FOR
-        || yytoken == Token_BREAK
         || yytoken == Token_ARRAY_CAST
+        || yytoken == Token_BREAK
         || yytoken == Token_CLONE
         || yytoken == Token_INC
         || yytoken == Token_ISSET
@@ -3499,8 +3493,8 @@ bool Parser::parseDeclareStatement(DeclareStatementAst **yynode)
         || yytoken == Token_BACKTICK
         || yytoken == Token_DEC
         || yytoken == Token_EMPTY
-        || yytoken == Token_DO
         || yytoken == Token_CLOSE_TAG
+        || yytoken == Token_DO
         || yytoken == Token_INLINE_HTML
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_TRY
@@ -3516,8 +3510,8 @@ bool Parser::parseDeclareStatement(DeclareStatementAst **yynode)
         || yytoken == Token_INT_CAST
         || yytoken == Token_WHILE
         || yytoken == Token_FUNC_C
-        || yytoken == Token_PLUS
         || yytoken == Token_GLOBAL
+        || yytoken == Token_PLUS
         || yytoken == Token_UNSET_CAST
         || yytoken == Token_INCLUDE
         || yytoken == Token_DOLLAR
@@ -3533,15 +3527,15 @@ bool Parser::parseDeclareStatement(DeclareStatementAst **yynode)
         || yytoken == Token_STATIC
         || yytoken == Token_COLON
         || yytoken == Token_LIST
-        || yytoken == Token_LBRACE)
+        || yytoken == Token_LBRACE
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_NEW
+        || yytoken == Token_START_HEREDOC)
     {
-        if (yytoken == Token_STRING_CAST
-            || yytoken == Token_VARIABLE
-            || yytoken == Token_PRINT
-            || yytoken == Token_FILE
-            || yytoken == Token_NEW
-            || yytoken == Token_START_HEREDOC
-            || yytoken == Token_UNSET
+        if (yytoken == Token_UNSET
             || yytoken == Token_CONTINUE
             || yytoken == Token_STRING_VARNAME
             || yytoken == Token_DOUBLE_QUOTE
@@ -3549,8 +3543,8 @@ bool Parser::parseDeclareStatement(DeclareStatementAst **yynode)
             || yytoken == Token_SWITCH
             || yytoken == Token_ARRAY
             || yytoken == Token_FOR
-            || yytoken == Token_BREAK
             || yytoken == Token_ARRAY_CAST
+            || yytoken == Token_BREAK
             || yytoken == Token_CLONE
             || yytoken == Token_INC
             || yytoken == Token_ISSET
@@ -3566,8 +3560,8 @@ bool Parser::parseDeclareStatement(DeclareStatementAst **yynode)
             || yytoken == Token_BACKTICK
             || yytoken == Token_DEC
             || yytoken == Token_EMPTY
-            || yytoken == Token_DO
             || yytoken == Token_CLOSE_TAG
+            || yytoken == Token_DO
             || yytoken == Token_INLINE_HTML
             || yytoken == Token_REQUIRE_ONCE
             || yytoken == Token_TRY
@@ -3583,8 +3577,8 @@ bool Parser::parseDeclareStatement(DeclareStatementAst **yynode)
             || yytoken == Token_INT_CAST
             || yytoken == Token_WHILE
             || yytoken == Token_FUNC_C
-            || yytoken == Token_PLUS
             || yytoken == Token_GLOBAL
+            || yytoken == Token_PLUS
             || yytoken == Token_UNSET_CAST
             || yytoken == Token_INCLUDE
             || yytoken == Token_DOLLAR
@@ -3599,7 +3593,13 @@ bool Parser::parseDeclareStatement(DeclareStatementAst **yynode)
             || yytoken == Token_INCLUDE_ONCE
             || yytoken == Token_STATIC
             || yytoken == Token_LIST
-            || yytoken == Token_LBRACE)
+            || yytoken == Token_LBRACE
+            || yytoken == Token_STRING_CAST
+            || yytoken == Token_VARIABLE
+            || yytoken == Token_PRINT
+            || yytoken == Token_FILE
+            || yytoken == Token_NEW
+            || yytoken == Token_START_HEREDOC)
         {
             StatementAst *__node_72 = 0;
             if (!parseStatement(&__node_72))
@@ -3769,13 +3769,7 @@ bool Parser::parseDimOffset(DimOffsetAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -3785,12 +3779,12 @@ bool Parser::parseDimOffset(DimOffsetAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -3811,16 +3805,16 @@ bool Parser::parseDimOffset(DimOffsetAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST || yytoken == Token_RBRACKET
-        || yytoken == Token_EOF)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW || yytoken == Token_EOF
+        || yytoken == Token_RBRACKET)
     {
-        if (yytoken == Token_STRING_CAST
-            || yytoken == Token_VARIABLE
-            || yytoken == Token_PRINT
-            || yytoken == Token_FILE
-            || yytoken == Token_START_HEREDOC
-            || yytoken == Token_NEW
-            || yytoken == Token_STRING_VARNAME
+        if (yytoken == Token_STRING_VARNAME
             || yytoken == Token_DOUBLE_QUOTE
             || yytoken == Token_EVAL
             || yytoken == Token_ARRAY
@@ -3830,17 +3824,17 @@ bool Parser::parseDimOffset(DimOffsetAst **yynode)
             || yytoken == Token_ISSET
             || yytoken == Token_REQUIRE
             || yytoken == Token_CLASS_C
-            || yytoken == Token_OBJECT_CAST
             || yytoken == Token_DNUMBER
+            || yytoken == Token_OBJECT_CAST
             || yytoken == Token_EXIT
             || yytoken == Token_BACKTICK
-            || yytoken == Token_EMPTY
             || yytoken == Token_DEC
+            || yytoken == Token_EMPTY
             || yytoken == Token_REQUIRE_ONCE
             || yytoken == Token_METHOD_C
             || yytoken == Token_AT
-            || yytoken == Token_BOOL_CAST
             || yytoken == Token_LNUMBER
+            || yytoken == Token_BOOL_CAST
             || yytoken == Token_TILDE
             || yytoken == Token_BANG
             || yytoken == Token_LPAREN
@@ -3856,7 +3850,13 @@ bool Parser::parseDimOffset(DimOffsetAst **yynode)
             || yytoken == Token_MINUS
             || yytoken == Token_STRING
             || yytoken == Token_INCLUDE_ONCE
-            || yytoken == Token_LIST)
+            || yytoken == Token_LIST
+            || yytoken == Token_STRING_CAST
+            || yytoken == Token_VARIABLE
+            || yytoken == Token_PRINT
+            || yytoken == Token_FILE
+            || yytoken == Token_START_HEREDOC
+            || yytoken == Token_NEW)
         {
             ExprAst *__node_77 = 0;
             if (!parseExpr(&__node_77))
@@ -3968,9 +3968,7 @@ bool Parser::parseDynamicClassNameVariableProperties(DynamicClassNameVariablePro
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_OBJECT_OPERATOR || yytoken == Token_BOOLEAN_OR
-        || yytoken == Token_MUL
-        || yytoken == Token_CONCAT
+    if (yytoken == Token_OBJECT_OPERATOR || yytoken == Token_CONCAT
         || yytoken == Token_DIV_ASSIGN
         || yytoken == Token_LOGICAL_AND
         || yytoken == Token_IS_NOT_IDENTICAL
@@ -3989,14 +3987,14 @@ bool Parser::parseDynamicClassNameVariableProperties(DynamicClassNameVariablePro
         || yytoken == Token_ASSIGN
         || yytoken == Token_MOD
         || yytoken == Token_DEC
-        || yytoken == Token_RBRACKET
         || yytoken == Token_CLOSE_TAG
+        || yytoken == Token_RBRACKET
         || yytoken == Token_MOD_ASSIGN
         || yytoken == Token_IS_GREATER
         || yytoken == Token_BIT_XOR
-        || yytoken == Token_EOF
         || yytoken == Token_PLUS_ASSIGN
         || yytoken == Token_IS_EQUAL
+        || yytoken == Token_EOF
         || yytoken == Token_LPAREN
         || yytoken == Token_AND_ASSIGN
         || yytoken == Token_IS_SMALLER_OR_EQUAL
@@ -4018,7 +4016,9 @@ bool Parser::parseDynamicClassNameVariableProperties(DynamicClassNameVariablePro
         || yytoken == Token_IS_IDENTICAL
         || yytoken == Token_COLON
         || yytoken == Token_XOR_ASSIGN
-        || yytoken == Token_AS)
+        || yytoken == Token_AS
+        || yytoken == Token_BOOLEAN_OR
+        || yytoken == Token_MUL)
     {
         while (yytoken == Token_OBJECT_OPERATOR)
         {
@@ -4091,27 +4091,13 @@ bool Parser::parseElseSingle(ElseSingleAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_ELSE || yytoken == Token_LINE
-        || yytoken == Token_DOUBLE_CAST
-        || yytoken == Token_PLUS
-        || yytoken == Token_BREAK
-        || yytoken == Token_FOR
-        || yytoken == Token_OPEN_TAG_WITH_ECHO
-        || yytoken == Token_SWITCH
-        || yytoken == Token_ENDFOR
-        || yytoken == Token_UNSET
-        || yytoken == Token_FILE
-        || yytoken == Token_STRING_CAST
-        || yytoken == Token_LBRACE
-        || yytoken == Token_MINUS
-        || yytoken == Token_CONSTANT_ENCAPSED_STRING
+    if (yytoken == Token_ELSE || yytoken == Token_CONSTANT_ENCAPSED_STRING
         || yytoken == Token_CASE
         || yytoken == Token_IF
         || yytoken == Token_THROW
         || yytoken == Token_FOREACH
         || yytoken == Token_ISSET
         || yytoken == Token_ARRAY_CAST
-        || yytoken == Token_EOF
         || yytoken == Token_RBRACE
         || yytoken == Token_VARIABLE
         || yytoken == Token_TRY
@@ -4155,6 +4141,7 @@ bool Parser::parseElseSingle(ElseSingleAst **yynode)
         || yytoken == Token_FUNCTION
         || yytoken == Token_CLASS_C
         || yytoken == Token_REQUIRE
+        || yytoken == Token_EOF
         || yytoken == Token_STRING_VARNAME
         || yytoken == Token_ELSE
         || yytoken == Token_ELSEIF
@@ -4168,12 +4155,25 @@ bool Parser::parseElseSingle(ElseSingleAst **yynode)
         || yytoken == Token_FUNC_C
         || yytoken == Token_INT_CAST
         || yytoken == Token_LPAREN
-        || yytoken == Token_ABSTRACT
         || yytoken == Token_INLINE_HTML
+        || yytoken == Token_ABSTRACT
         || yytoken == Token_CLOSE_TAG
         || yytoken == Token_FINAL
         || yytoken == Token_STATIC
-        || yytoken == Token_ENDWHILE)
+        || yytoken == Token_ENDWHILE
+        || yytoken == Token_LINE
+        || yytoken == Token_DOUBLE_CAST
+        || yytoken == Token_PLUS
+        || yytoken == Token_BREAK
+        || yytoken == Token_FOR
+        || yytoken == Token_OPEN_TAG_WITH_ECHO
+        || yytoken == Token_SWITCH
+        || yytoken == Token_ENDFOR
+        || yytoken == Token_UNSET
+        || yytoken == Token_FILE
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_LBRACE
+        || yytoken == Token_MINUS)
     {
         if (yytoken == Token_ELSE)
         {
@@ -4223,27 +4223,13 @@ bool Parser::parseElseifList(ElseifListAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_ELSEIF || yytoken == Token_LINE
-        || yytoken == Token_DOUBLE_CAST
-        || yytoken == Token_PLUS
-        || yytoken == Token_BREAK
-        || yytoken == Token_FOR
-        || yytoken == Token_OPEN_TAG_WITH_ECHO
-        || yytoken == Token_SWITCH
-        || yytoken == Token_ENDFOR
-        || yytoken == Token_UNSET
-        || yytoken == Token_FILE
-        || yytoken == Token_STRING_CAST
-        || yytoken == Token_LBRACE
-        || yytoken == Token_MINUS
-        || yytoken == Token_CONSTANT_ENCAPSED_STRING
+    if (yytoken == Token_ELSEIF || yytoken == Token_CONSTANT_ENCAPSED_STRING
         || yytoken == Token_CASE
         || yytoken == Token_IF
         || yytoken == Token_THROW
         || yytoken == Token_FOREACH
         || yytoken == Token_ISSET
         || yytoken == Token_ARRAY_CAST
-        || yytoken == Token_EOF
         || yytoken == Token_RBRACE
         || yytoken == Token_VARIABLE
         || yytoken == Token_TRY
@@ -4287,6 +4273,7 @@ bool Parser::parseElseifList(ElseifListAst **yynode)
         || yytoken == Token_FUNCTION
         || yytoken == Token_CLASS_C
         || yytoken == Token_REQUIRE
+        || yytoken == Token_EOF
         || yytoken == Token_STRING_VARNAME
         || yytoken == Token_ELSE
         || yytoken == Token_ELSEIF
@@ -4300,12 +4287,25 @@ bool Parser::parseElseifList(ElseifListAst **yynode)
         || yytoken == Token_FUNC_C
         || yytoken == Token_INT_CAST
         || yytoken == Token_LPAREN
-        || yytoken == Token_ABSTRACT
         || yytoken == Token_INLINE_HTML
+        || yytoken == Token_ABSTRACT
         || yytoken == Token_CLOSE_TAG
         || yytoken == Token_FINAL
         || yytoken == Token_STATIC
-        || yytoken == Token_ENDWHILE)
+        || yytoken == Token_ENDWHILE
+        || yytoken == Token_LINE
+        || yytoken == Token_DOUBLE_CAST
+        || yytoken == Token_PLUS
+        || yytoken == Token_BREAK
+        || yytoken == Token_FOR
+        || yytoken == Token_OPEN_TAG_WITH_ECHO
+        || yytoken == Token_SWITCH
+        || yytoken == Token_ENDFOR
+        || yytoken == Token_UNSET
+        || yytoken == Token_FILE
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_LBRACE
+        || yytoken == Token_MINUS)
     {
         while (yytoken == Token_ELSEIF)
         {
@@ -4469,10 +4469,10 @@ bool Parser::parseEncapsList(EncapsListAst **yynode)
     if (yytoken == Token_DOLLAR_OPEN_CURLY_BRACES
         || yytoken == Token_VARIABLE
         || yytoken == Token_CURLY_OPEN
-        || yytoken == Token_ENCAPSED_AND_WHITESPACE || yytoken == Token_DOUBLE_QUOTE
-        || yytoken == Token_BACKTICK
+        || yytoken == Token_ENCAPSED_AND_WHITESPACE || yytoken == Token_BACKTICK
+        || yytoken == Token_EOF
         || yytoken == Token_END_HEREDOC
-        || yytoken == Token_EOF)
+        || yytoken == Token_DOUBLE_QUOTE)
     {
         while (yytoken == Token_DOLLAR_OPEN_CURLY_BRACES
                || yytoken == Token_VARIABLE
@@ -4578,13 +4578,7 @@ bool Parser::parseEncapsVar(EncapsVarAst **yynode)
                 yylex();
 
             }
-            else if (yytoken == Token_STRING_CAST
-                     || yytoken == Token_VARIABLE
-                     || yytoken == Token_PRINT
-                     || yytoken == Token_FILE
-                     || yytoken == Token_START_HEREDOC
-                     || yytoken == Token_NEW
-                     || yytoken == Token_STRING_VARNAME
+            else if (yytoken == Token_STRING_VARNAME
                      || yytoken == Token_DOUBLE_QUOTE
                      || yytoken == Token_EVAL
                      || yytoken == Token_ARRAY
@@ -4594,17 +4588,17 @@ bool Parser::parseEncapsVar(EncapsVarAst **yynode)
                      || yytoken == Token_ISSET
                      || yytoken == Token_REQUIRE
                      || yytoken == Token_CLASS_C
-                     || yytoken == Token_OBJECT_CAST
                      || yytoken == Token_DNUMBER
+                     || yytoken == Token_OBJECT_CAST
                      || yytoken == Token_EXIT
                      || yytoken == Token_BACKTICK
-                     || yytoken == Token_EMPTY
                      || yytoken == Token_DEC
+                     || yytoken == Token_EMPTY
                      || yytoken == Token_REQUIRE_ONCE
                      || yytoken == Token_METHOD_C
                      || yytoken == Token_AT
-                     || yytoken == Token_BOOL_CAST
                      || yytoken == Token_LNUMBER
+                     || yytoken == Token_BOOL_CAST
                      || yytoken == Token_TILDE
                      || yytoken == Token_BANG
                      || yytoken == Token_LPAREN
@@ -4620,7 +4614,13 @@ bool Parser::parseEncapsVar(EncapsVarAst **yynode)
                      || yytoken == Token_MINUS
                      || yytoken == Token_STRING
                      || yytoken == Token_INCLUDE_ONCE
-                     || yytoken == Token_LIST)
+                     || yytoken == Token_LIST
+                     || yytoken == Token_STRING_CAST
+                     || yytoken == Token_VARIABLE
+                     || yytoken == Token_PRINT
+                     || yytoken == Token_FILE
+                     || yytoken == Token_START_HEREDOC
+                     || yytoken == Token_NEW)
             {
                 ExprAst *__node_90 = 0;
                 if (!parseExpr(&__node_90))
@@ -4843,12 +4843,7 @@ bool Parser::parseEqualityExpression(EqualityExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -4858,12 +4853,12 @@ bool Parser::parseEqualityExpression(EqualityExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -4884,7 +4879,12 @@ bool Parser::parseEqualityExpression(EqualityExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         RelationalExpressionAst *__node_95 = 0;
         if (!parseRelationalExpression(&__node_95))
@@ -4897,10 +4897,10 @@ bool Parser::parseEqualityExpression(EqualityExpressionAst **yynode)
         }
         (*yynode)->expression = __node_95;
 
-        while (yytoken == Token_IS_NOT_IDENTICAL
-               || yytoken == Token_IS_IDENTICAL
+        while (yytoken == Token_IS_IDENTICAL
                || yytoken == Token_IS_NOT_EQUAL
-               || yytoken == Token_IS_EQUAL)
+               || yytoken == Token_IS_EQUAL
+               || yytoken == Token_IS_NOT_IDENTICAL)
         {
             EqualityExpressionRestAst *__node_96 = 0;
             if (!parseEqualityExpressionRest(&__node_96))
@@ -4931,10 +4931,10 @@ bool Parser::parseEqualityExpressionRest(EqualityExpressionRestAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_IS_NOT_IDENTICAL
-        || yytoken == Token_IS_IDENTICAL
+    if (yytoken == Token_IS_IDENTICAL
         || yytoken == Token_IS_NOT_EQUAL
-        || yytoken == Token_IS_EQUAL)
+        || yytoken == Token_IS_EQUAL
+        || yytoken == Token_IS_NOT_IDENTICAL)
     {
         if (yytoken == Token_IS_EQUAL)
         {
@@ -5020,13 +5020,7 @@ bool Parser::parseExpr(ExprAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -5036,17 +5030,17 @@ bool Parser::parseExpr(ExprAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
-        || yytoken == Token_BOOL_CAST
         || yytoken == Token_LNUMBER
+        || yytoken == Token_BOOL_CAST
         || yytoken == Token_TILDE
         || yytoken == Token_BANG
         || yytoken == Token_LPAREN
@@ -5062,7 +5056,13 @@ bool Parser::parseExpr(ExprAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         LogicalOrExpressionAst *__node_98 = 0;
         if (!parseLogicalOrExpression(&__node_98))
@@ -5092,13 +5092,7 @@ bool Parser::parseForExpr(ForExprAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -5108,12 +5102,12 @@ bool Parser::parseForExpr(ForExprAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -5134,17 +5128,17 @@ bool Parser::parseForExpr(ForExprAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST || yytoken == Token_SEMICOLON
-        || yytoken == Token_RPAREN
-        || yytoken == Token_EOF)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW || yytoken == Token_EOF
+        || yytoken == Token_SEMICOLON
+        || yytoken == Token_RPAREN)
     {
-        if (yytoken == Token_STRING_CAST
-            || yytoken == Token_VARIABLE
-            || yytoken == Token_PRINT
-            || yytoken == Token_FILE
-            || yytoken == Token_START_HEREDOC
-            || yytoken == Token_NEW
-            || yytoken == Token_STRING_VARNAME
+        if (yytoken == Token_STRING_VARNAME
             || yytoken == Token_DOUBLE_QUOTE
             || yytoken == Token_EVAL
             || yytoken == Token_ARRAY
@@ -5154,17 +5148,17 @@ bool Parser::parseForExpr(ForExprAst **yynode)
             || yytoken == Token_ISSET
             || yytoken == Token_REQUIRE
             || yytoken == Token_CLASS_C
-            || yytoken == Token_OBJECT_CAST
             || yytoken == Token_DNUMBER
+            || yytoken == Token_OBJECT_CAST
             || yytoken == Token_EXIT
             || yytoken == Token_BACKTICK
-            || yytoken == Token_EMPTY
             || yytoken == Token_DEC
+            || yytoken == Token_EMPTY
             || yytoken == Token_REQUIRE_ONCE
             || yytoken == Token_METHOD_C
             || yytoken == Token_AT
-            || yytoken == Token_BOOL_CAST
             || yytoken == Token_LNUMBER
+            || yytoken == Token_BOOL_CAST
             || yytoken == Token_TILDE
             || yytoken == Token_BANG
             || yytoken == Token_LPAREN
@@ -5180,7 +5174,13 @@ bool Parser::parseForExpr(ForExprAst **yynode)
             || yytoken == Token_MINUS
             || yytoken == Token_STRING
             || yytoken == Token_INCLUDE_ONCE
-            || yytoken == Token_LIST)
+            || yytoken == Token_LIST
+            || yytoken == Token_STRING_CAST
+            || yytoken == Token_VARIABLE
+            || yytoken == Token_PRINT
+            || yytoken == Token_FILE
+            || yytoken == Token_START_HEREDOC
+            || yytoken == Token_NEW)
         {
             ExprAst *__node_99 = 0;
             if (!parseExpr(&__node_99))
@@ -5242,13 +5242,7 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_NEW
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_UNSET
+    if (yytoken == Token_UNSET
         || yytoken == Token_CONTINUE
         || yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
@@ -5256,8 +5250,8 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
         || yytoken == Token_SWITCH
         || yytoken == Token_ARRAY
         || yytoken == Token_FOR
-        || yytoken == Token_BREAK
         || yytoken == Token_ARRAY_CAST
+        || yytoken == Token_BREAK
         || yytoken == Token_CLONE
         || yytoken == Token_INC
         || yytoken == Token_ISSET
@@ -5273,8 +5267,8 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
         || yytoken == Token_BACKTICK
         || yytoken == Token_DEC
         || yytoken == Token_EMPTY
-        || yytoken == Token_DO
         || yytoken == Token_CLOSE_TAG
+        || yytoken == Token_DO
         || yytoken == Token_INLINE_HTML
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_TRY
@@ -5290,8 +5284,8 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
         || yytoken == Token_INT_CAST
         || yytoken == Token_WHILE
         || yytoken == Token_FUNC_C
-        || yytoken == Token_PLUS
         || yytoken == Token_GLOBAL
+        || yytoken == Token_PLUS
         || yytoken == Token_UNSET_CAST
         || yytoken == Token_INCLUDE
         || yytoken == Token_DOLLAR
@@ -5307,15 +5301,15 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
         || yytoken == Token_STATIC
         || yytoken == Token_COLON
         || yytoken == Token_LIST
-        || yytoken == Token_LBRACE)
+        || yytoken == Token_LBRACE
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_NEW
+        || yytoken == Token_START_HEREDOC)
     {
-        if (yytoken == Token_STRING_CAST
-            || yytoken == Token_VARIABLE
-            || yytoken == Token_PRINT
-            || yytoken == Token_FILE
-            || yytoken == Token_NEW
-            || yytoken == Token_START_HEREDOC
-            || yytoken == Token_UNSET
+        if (yytoken == Token_UNSET
             || yytoken == Token_CONTINUE
             || yytoken == Token_STRING_VARNAME
             || yytoken == Token_DOUBLE_QUOTE
@@ -5323,8 +5317,8 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
             || yytoken == Token_SWITCH
             || yytoken == Token_ARRAY
             || yytoken == Token_FOR
-            || yytoken == Token_BREAK
             || yytoken == Token_ARRAY_CAST
+            || yytoken == Token_BREAK
             || yytoken == Token_CLONE
             || yytoken == Token_INC
             || yytoken == Token_ISSET
@@ -5340,8 +5334,8 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
             || yytoken == Token_BACKTICK
             || yytoken == Token_DEC
             || yytoken == Token_EMPTY
-            || yytoken == Token_DO
             || yytoken == Token_CLOSE_TAG
+            || yytoken == Token_DO
             || yytoken == Token_INLINE_HTML
             || yytoken == Token_REQUIRE_ONCE
             || yytoken == Token_TRY
@@ -5357,8 +5351,8 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
             || yytoken == Token_INT_CAST
             || yytoken == Token_WHILE
             || yytoken == Token_FUNC_C
-            || yytoken == Token_PLUS
             || yytoken == Token_GLOBAL
+            || yytoken == Token_PLUS
             || yytoken == Token_UNSET_CAST
             || yytoken == Token_INCLUDE
             || yytoken == Token_DOLLAR
@@ -5373,7 +5367,13 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
             || yytoken == Token_INCLUDE_ONCE
             || yytoken == Token_STATIC
             || yytoken == Token_LIST
-            || yytoken == Token_LBRACE)
+            || yytoken == Token_LBRACE
+            || yytoken == Token_STRING_CAST
+            || yytoken == Token_VARIABLE
+            || yytoken == Token_PRINT
+            || yytoken == Token_FILE
+            || yytoken == Token_NEW
+            || yytoken == Token_START_HEREDOC)
         {
             StatementAst *__node_101 = 0;
             if (!parseStatement(&__node_101))
@@ -5451,8 +5451,8 @@ bool Parser::parseForeachOptionalArg(ForeachOptionalArgAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_DOUBLE_ARROW || yytoken == Token_RPAREN
-        || yytoken == Token_EOF)
+    if (yytoken == Token_DOUBLE_ARROW || yytoken == Token_EOF
+        || yytoken == Token_RPAREN)
     {
         if (yytoken == Token_DOUBLE_ARROW)
         {
@@ -5502,13 +5502,7 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_NEW
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_UNSET
+    if (yytoken == Token_UNSET
         || yytoken == Token_CONTINUE
         || yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
@@ -5516,8 +5510,8 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
         || yytoken == Token_SWITCH
         || yytoken == Token_ARRAY
         || yytoken == Token_FOR
-        || yytoken == Token_BREAK
         || yytoken == Token_ARRAY_CAST
+        || yytoken == Token_BREAK
         || yytoken == Token_CLONE
         || yytoken == Token_INC
         || yytoken == Token_ISSET
@@ -5533,8 +5527,8 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
         || yytoken == Token_BACKTICK
         || yytoken == Token_DEC
         || yytoken == Token_EMPTY
-        || yytoken == Token_DO
         || yytoken == Token_CLOSE_TAG
+        || yytoken == Token_DO
         || yytoken == Token_INLINE_HTML
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_TRY
@@ -5550,8 +5544,8 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
         || yytoken == Token_INT_CAST
         || yytoken == Token_WHILE
         || yytoken == Token_FUNC_C
-        || yytoken == Token_PLUS
         || yytoken == Token_GLOBAL
+        || yytoken == Token_PLUS
         || yytoken == Token_UNSET_CAST
         || yytoken == Token_INCLUDE
         || yytoken == Token_DOLLAR
@@ -5567,15 +5561,15 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
         || yytoken == Token_STATIC
         || yytoken == Token_COLON
         || yytoken == Token_LIST
-        || yytoken == Token_LBRACE)
+        || yytoken == Token_LBRACE
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_NEW
+        || yytoken == Token_START_HEREDOC)
     {
-        if (yytoken == Token_STRING_CAST
-            || yytoken == Token_VARIABLE
-            || yytoken == Token_PRINT
-            || yytoken == Token_FILE
-            || yytoken == Token_NEW
-            || yytoken == Token_START_HEREDOC
-            || yytoken == Token_UNSET
+        if (yytoken == Token_UNSET
             || yytoken == Token_CONTINUE
             || yytoken == Token_STRING_VARNAME
             || yytoken == Token_DOUBLE_QUOTE
@@ -5583,8 +5577,8 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
             || yytoken == Token_SWITCH
             || yytoken == Token_ARRAY
             || yytoken == Token_FOR
-            || yytoken == Token_BREAK
             || yytoken == Token_ARRAY_CAST
+            || yytoken == Token_BREAK
             || yytoken == Token_CLONE
             || yytoken == Token_INC
             || yytoken == Token_ISSET
@@ -5600,8 +5594,8 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
             || yytoken == Token_BACKTICK
             || yytoken == Token_DEC
             || yytoken == Token_EMPTY
-            || yytoken == Token_DO
             || yytoken == Token_CLOSE_TAG
+            || yytoken == Token_DO
             || yytoken == Token_INLINE_HTML
             || yytoken == Token_REQUIRE_ONCE
             || yytoken == Token_TRY
@@ -5617,8 +5611,8 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
             || yytoken == Token_INT_CAST
             || yytoken == Token_WHILE
             || yytoken == Token_FUNC_C
-            || yytoken == Token_PLUS
             || yytoken == Token_GLOBAL
+            || yytoken == Token_PLUS
             || yytoken == Token_UNSET_CAST
             || yytoken == Token_INCLUDE
             || yytoken == Token_DOLLAR
@@ -5633,7 +5627,13 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
             || yytoken == Token_INCLUDE_ONCE
             || yytoken == Token_STATIC
             || yytoken == Token_LIST
-            || yytoken == Token_LBRACE)
+            || yytoken == Token_LBRACE
+            || yytoken == Token_STRING_CAST
+            || yytoken == Token_VARIABLE
+            || yytoken == Token_PRINT
+            || yytoken == Token_FILE
+            || yytoken == Token_NEW
+            || yytoken == Token_START_HEREDOC)
         {
             StatementAst *__node_105 = 0;
             if (!parseStatement(&__node_105))
@@ -6008,13 +6008,7 @@ bool Parser::parseFunctionCallParameterList(FunctionCallParameterListAst **yynod
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_BIT_AND
@@ -6025,12 +6019,12 @@ bool Parser::parseFunctionCallParameterList(FunctionCallParameterListAst **yynod
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -6051,16 +6045,16 @@ bool Parser::parseFunctionCallParameterList(FunctionCallParameterListAst **yynod
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST || yytoken == Token_RPAREN
-        || yytoken == Token_EOF)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW || yytoken == Token_EOF
+        || yytoken == Token_RPAREN)
     {
-        if (yytoken == Token_STRING_CAST
-            || yytoken == Token_VARIABLE
-            || yytoken == Token_PRINT
-            || yytoken == Token_FILE
-            || yytoken == Token_START_HEREDOC
-            || yytoken == Token_NEW
-            || yytoken == Token_STRING_VARNAME
+        if (yytoken == Token_STRING_VARNAME
             || yytoken == Token_DOUBLE_QUOTE
             || yytoken == Token_EVAL
             || yytoken == Token_BIT_AND
@@ -6071,12 +6065,12 @@ bool Parser::parseFunctionCallParameterList(FunctionCallParameterListAst **yynod
             || yytoken == Token_ISSET
             || yytoken == Token_REQUIRE
             || yytoken == Token_CLASS_C
-            || yytoken == Token_OBJECT_CAST
             || yytoken == Token_DNUMBER
+            || yytoken == Token_OBJECT_CAST
             || yytoken == Token_EXIT
             || yytoken == Token_BACKTICK
-            || yytoken == Token_EMPTY
             || yytoken == Token_DEC
+            || yytoken == Token_EMPTY
             || yytoken == Token_REQUIRE_ONCE
             || yytoken == Token_METHOD_C
             || yytoken == Token_AT
@@ -6097,7 +6091,13 @@ bool Parser::parseFunctionCallParameterList(FunctionCallParameterListAst **yynod
             || yytoken == Token_MINUS
             || yytoken == Token_STRING
             || yytoken == Token_INCLUDE_ONCE
-            || yytoken == Token_LIST)
+            || yytoken == Token_LIST
+            || yytoken == Token_STRING_CAST
+            || yytoken == Token_VARIABLE
+            || yytoken == Token_PRINT
+            || yytoken == Token_FILE
+            || yytoken == Token_START_HEREDOC
+            || yytoken == Token_NEW)
         {
             FunctionCallParameterListElementAst *__node_118 = 0;
             if (!parseFunctionCallParameterListElement(&__node_118))
@@ -6159,13 +6159,7 @@ bool Parser::parseFunctionCallParameterListElement(FunctionCallParameterListElem
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_BIT_AND
@@ -6176,12 +6170,12 @@ bool Parser::parseFunctionCallParameterListElement(FunctionCallParameterListElem
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -6202,7 +6196,13 @@ bool Parser::parseFunctionCallParameterListElement(FunctionCallParameterListElem
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         if (yytoken == Token_BIT_AND)
         {
@@ -6228,13 +6228,7 @@ bool Parser::parseFunctionCallParameterListElement(FunctionCallParameterListElem
             (*yynode)->variable = __node_120;
 
         }
-        else if (yytoken == Token_STRING_CAST
-                 || yytoken == Token_VARIABLE
-                 || yytoken == Token_PRINT
-                 || yytoken == Token_FILE
-                 || yytoken == Token_START_HEREDOC
-                 || yytoken == Token_NEW
-                 || yytoken == Token_STRING_VARNAME
+        else if (yytoken == Token_STRING_VARNAME
                  || yytoken == Token_DOUBLE_QUOTE
                  || yytoken == Token_EVAL
                  || yytoken == Token_ARRAY
@@ -6244,17 +6238,17 @@ bool Parser::parseFunctionCallParameterListElement(FunctionCallParameterListElem
                  || yytoken == Token_ISSET
                  || yytoken == Token_REQUIRE
                  || yytoken == Token_CLASS_C
-                 || yytoken == Token_OBJECT_CAST
                  || yytoken == Token_DNUMBER
+                 || yytoken == Token_OBJECT_CAST
                  || yytoken == Token_EXIT
                  || yytoken == Token_BACKTICK
-                 || yytoken == Token_EMPTY
                  || yytoken == Token_DEC
+                 || yytoken == Token_EMPTY
                  || yytoken == Token_REQUIRE_ONCE
                  || yytoken == Token_METHOD_C
                  || yytoken == Token_AT
-                 || yytoken == Token_BOOL_CAST
                  || yytoken == Token_LNUMBER
+                 || yytoken == Token_BOOL_CAST
                  || yytoken == Token_TILDE
                  || yytoken == Token_BANG
                  || yytoken == Token_LPAREN
@@ -6270,7 +6264,13 @@ bool Parser::parseFunctionCallParameterListElement(FunctionCallParameterListElem
                  || yytoken == Token_MINUS
                  || yytoken == Token_STRING
                  || yytoken == Token_INCLUDE_ONCE
-                 || yytoken == Token_LIST)
+                 || yytoken == Token_LIST
+                 || yytoken == Token_STRING_CAST
+                 || yytoken == Token_VARIABLE
+                 || yytoken == Token_PRINT
+                 || yytoken == Token_FILE
+                 || yytoken == Token_START_HEREDOC
+                 || yytoken == Token_NEW)
         {
             ExprAst *__node_121 = 0;
             if (!parseExpr(&__node_121))
@@ -6576,19 +6576,7 @@ bool Parser::parseInnerStatementList(InnerStatementListAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_LINE
-        || yytoken == Token_DOUBLE_CAST
-        || yytoken == Token_PLUS
-        || yytoken == Token_BREAK
-        || yytoken == Token_FOR
-        || yytoken == Token_OPEN_TAG_WITH_ECHO
-        || yytoken == Token_SWITCH
-        || yytoken == Token_UNSET
-        || yytoken == Token_FILE
-        || yytoken == Token_STRING_CAST
-        || yytoken == Token_LBRACE
-        || yytoken == Token_MINUS
-        || yytoken == Token_CONSTANT_ENCAPSED_STRING
+    if (yytoken == Token_CONSTANT_ENCAPSED_STRING
         || yytoken == Token_IF
         || yytoken == Token_THROW
         || yytoken == Token_FOREACH
@@ -6642,11 +6630,24 @@ bool Parser::parseInnerStatementList(InnerStatementListAst **yynode)
         || yytoken == Token_FUNC_C
         || yytoken == Token_INT_CAST
         || yytoken == Token_LPAREN
-        || yytoken == Token_ABSTRACT
         || yytoken == Token_INLINE_HTML
+        || yytoken == Token_ABSTRACT
         || yytoken == Token_CLOSE_TAG
         || yytoken == Token_FINAL
-        || yytoken == Token_STATIC || yytoken == Token_ENDIF
+        || yytoken == Token_STATIC
+        || yytoken == Token_LINE
+        || yytoken == Token_DOUBLE_CAST
+        || yytoken == Token_PLUS
+        || yytoken == Token_BREAK
+        || yytoken == Token_FOR
+        || yytoken == Token_OPEN_TAG_WITH_ECHO
+        || yytoken == Token_SWITCH
+        || yytoken == Token_UNSET
+        || yytoken == Token_FILE
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_LBRACE
+        || yytoken == Token_MINUS || yytoken == Token_ENDIF
+        || yytoken == Token_EOF
         || yytoken == Token_RBRACE
         || yytoken == Token_ENDDECLARE
         || yytoken == Token_ELSEIF
@@ -6656,22 +6657,9 @@ bool Parser::parseInnerStatementList(InnerStatementListAst **yynode)
         || yytoken == Token_ENDWHILE
         || yytoken == Token_ELSE
         || yytoken == Token_CASE
-        || yytoken == Token_ENDFOREACH
-        || yytoken == Token_EOF)
+        || yytoken == Token_ENDFOREACH)
     {
-        while (yytoken == Token_LINE
-               || yytoken == Token_DOUBLE_CAST
-               || yytoken == Token_PLUS
-               || yytoken == Token_BREAK
-               || yytoken == Token_FOR
-               || yytoken == Token_OPEN_TAG_WITH_ECHO
-               || yytoken == Token_SWITCH
-               || yytoken == Token_UNSET
-               || yytoken == Token_FILE
-               || yytoken == Token_STRING_CAST
-               || yytoken == Token_LBRACE
-               || yytoken == Token_MINUS
-               || yytoken == Token_CONSTANT_ENCAPSED_STRING
+        while (yytoken == Token_CONSTANT_ENCAPSED_STRING
                || yytoken == Token_IF
                || yytoken == Token_THROW
                || yytoken == Token_FOREACH
@@ -6725,11 +6713,23 @@ bool Parser::parseInnerStatementList(InnerStatementListAst **yynode)
                || yytoken == Token_FUNC_C
                || yytoken == Token_INT_CAST
                || yytoken == Token_LPAREN
-               || yytoken == Token_ABSTRACT
                || yytoken == Token_INLINE_HTML
+               || yytoken == Token_ABSTRACT
                || yytoken == Token_CLOSE_TAG
                || yytoken == Token_FINAL
-               || yytoken == Token_STATIC)
+               || yytoken == Token_STATIC
+               || yytoken == Token_LINE
+               || yytoken == Token_DOUBLE_CAST
+               || yytoken == Token_PLUS
+               || yytoken == Token_BREAK
+               || yytoken == Token_FOR
+               || yytoken == Token_OPEN_TAG_WITH_ECHO
+               || yytoken == Token_SWITCH
+               || yytoken == Token_UNSET
+               || yytoken == Token_FILE
+               || yytoken == Token_STRING_CAST
+               || yytoken == Token_LBRACE
+               || yytoken == Token_MINUS)
         {
             TopStatementAst *__node_128 = 0;
             if (!parseTopStatement(&__node_128))
@@ -6862,13 +6862,7 @@ bool Parser::parseLogicalAndExpression(LogicalAndExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -6878,17 +6872,17 @@ bool Parser::parseLogicalAndExpression(LogicalAndExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
-        || yytoken == Token_BOOL_CAST
         || yytoken == Token_LNUMBER
+        || yytoken == Token_BOOL_CAST
         || yytoken == Token_TILDE
         || yytoken == Token_BANG
         || yytoken == Token_LPAREN
@@ -6904,7 +6898,13 @@ bool Parser::parseLogicalAndExpression(LogicalAndExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         PrintExpressionAst *__node_132 = 0;
         if (!parsePrintExpression(&__node_132))
@@ -6958,13 +6958,7 @@ bool Parser::parseLogicalOrExpression(LogicalOrExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -6974,17 +6968,17 @@ bool Parser::parseLogicalOrExpression(LogicalOrExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
-        || yytoken == Token_BOOL_CAST
         || yytoken == Token_LNUMBER
+        || yytoken == Token_BOOL_CAST
         || yytoken == Token_TILDE
         || yytoken == Token_BANG
         || yytoken == Token_LPAREN
@@ -7000,7 +6994,13 @@ bool Parser::parseLogicalOrExpression(LogicalOrExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         LogicalXorExpressionAst *__node_134 = 0;
         if (!parseLogicalXorExpression(&__node_134))
@@ -7054,13 +7054,7 @@ bool Parser::parseLogicalXorExpression(LogicalXorExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -7070,17 +7064,17 @@ bool Parser::parseLogicalXorExpression(LogicalXorExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
-        || yytoken == Token_BOOL_CAST
         || yytoken == Token_LNUMBER
+        || yytoken == Token_BOOL_CAST
         || yytoken == Token_TILDE
         || yytoken == Token_BANG
         || yytoken == Token_LPAREN
@@ -7096,7 +7090,13 @@ bool Parser::parseLogicalXorExpression(LogicalXorExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         LogicalAndExpressionAst *__node_136 = 0;
         if (!parseLogicalAndExpression(&__node_136))
@@ -7221,12 +7221,7 @@ bool Parser::parseMultiplicativeExpression(MultiplicativeExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -7236,12 +7231,12 @@ bool Parser::parseMultiplicativeExpression(MultiplicativeExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -7262,7 +7257,12 @@ bool Parser::parseMultiplicativeExpression(MultiplicativeExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         UnaryExpressionAst *__node_139 = 0;
         if (!parseUnaryExpression(&__node_139))
@@ -7275,9 +7275,9 @@ bool Parser::parseMultiplicativeExpression(MultiplicativeExpressionAst **yynode)
         }
         (*yynode)->expression = __node_139;
 
-        while (yytoken == Token_DIV
-               || yytoken == Token_MUL
-               || yytoken == Token_MOD)
+        while (yytoken == Token_MUL
+               || yytoken == Token_MOD
+               || yytoken == Token_DIV)
         {
             MultiplicativeExpressionRestAst *__node_140 = 0;
             if (!parseMultiplicativeExpressionRest(&__node_140))
@@ -7308,9 +7308,9 @@ bool Parser::parseMultiplicativeExpressionRest(MultiplicativeExpressionRestAst *
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_DIV
-        || yytoken == Token_MUL
-        || yytoken == Token_MOD)
+    if (yytoken == Token_MUL
+        || yytoken == Token_MOD
+        || yytoken == Token_DIV)
     {
         if (yytoken == Token_MUL)
         {
@@ -7445,8 +7445,8 @@ bool Parser::parseNewElseifList(NewElseifListAst **yynode)
     (*yynode)->startToken = tokenStream->index() - 1;
 
     if (yytoken == Token_ELSEIF || yytoken == Token_ENDIF
-        || yytoken == Token_ELSE
-        || yytoken == Token_EOF)
+        || yytoken == Token_EOF
+        || yytoken == Token_ELSE)
     {
         while (yytoken == Token_ELSEIF)
         {
@@ -7662,21 +7662,21 @@ bool Parser::parseOptionalModifiers(OptionalModifiersAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STATIC
-        || yytoken == Token_PRIVATE
+    if (yytoken == Token_PRIVATE
         || yytoken == Token_FINAL
         || yytoken == Token_ABSTRACT
         || yytoken == Token_PUBLIC
-        || yytoken == Token_PROTECTED || yytoken == Token_VARIABLE
-        || yytoken == Token_FUNCTION
-        || yytoken == Token_EOF)
+        || yytoken == Token_PROTECTED
+        || yytoken == Token_STATIC || yytoken == Token_VARIABLE
+        || yytoken == Token_EOF
+        || yytoken == Token_FUNCTION)
     {
-        while (yytoken == Token_STATIC
-               || yytoken == Token_PRIVATE
+        while (yytoken == Token_PRIVATE
                || yytoken == Token_FINAL
                || yytoken == Token_ABSTRACT
                || yytoken == Token_PUBLIC
-               || yytoken == Token_PROTECTED)
+               || yytoken == Token_PROTECTED
+               || yytoken == Token_STATIC)
         {
             if (yytoken == Token_PUBLIC)
             {
@@ -8019,13 +8019,7 @@ bool Parser::parsePrintExpression(PrintExpressionAst **yynode)
     (*yynode)->startToken = tokenStream->index() - 1;
     (*yynode)->print = -1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -8035,17 +8029,17 @@ bool Parser::parsePrintExpression(PrintExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
-        || yytoken == Token_BOOL_CAST
         || yytoken == Token_LNUMBER
+        || yytoken == Token_BOOL_CAST
         || yytoken == Token_TILDE
         || yytoken == Token_BANG
         || yytoken == Token_LPAREN
@@ -8061,7 +8055,13 @@ bool Parser::parsePrintExpression(PrintExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         while (yytoken == Token_PRINT)
         {
@@ -8105,12 +8105,7 @@ bool Parser::parseRelationalExpression(RelationalExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -8120,12 +8115,12 @@ bool Parser::parseRelationalExpression(RelationalExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -8146,7 +8141,12 @@ bool Parser::parseRelationalExpression(RelationalExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         ShiftExpressionAst *__node_156 = 0;
         if (!parseShiftExpression(&__node_156))
@@ -8323,9 +8323,7 @@ bool Parser::parseScalar(ScalarAst **yynode)
     (*yynode)->constname = -1;
     (*yynode)->varname = -1;
 
-    if (yytoken == Token_DOUBLE_QUOTE
-        || yytoken == Token_FILE
-        || yytoken == Token_LNUMBER
+    if (yytoken == Token_LNUMBER
         || yytoken == Token_CLASS_C
         || yytoken == Token_STRING_VARNAME
         || yytoken == Token_LINE
@@ -8334,16 +8332,18 @@ bool Parser::parseScalar(ScalarAst **yynode)
         || yytoken == Token_STRING
         || yytoken == Token_FUNC_C
         || yytoken == Token_START_HEREDOC
-        || yytoken == Token_METHOD_C)
+        || yytoken == Token_METHOD_C
+        || yytoken == Token_DOUBLE_QUOTE
+        || yytoken == Token_FILE)
     {
-        if (yytoken == Token_FILE
-            || yytoken == Token_LNUMBER
+        if (yytoken == Token_LNUMBER
             || yytoken == Token_CLASS_C
             || yytoken == Token_LINE
             || yytoken == Token_CONSTANT_ENCAPSED_STRING
             || yytoken == Token_DNUMBER
             || yytoken == Token_FUNC_C
-            || yytoken == Token_METHOD_C)
+            || yytoken == Token_METHOD_C
+            || yytoken == Token_FILE)
         {
             CommonScalarAst *__node_160 = 0;
             if (!parseCommonScalar(&__node_160))
@@ -8555,12 +8555,7 @@ bool Parser::parseShiftExpression(ShiftExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -8570,12 +8565,12 @@ bool Parser::parseShiftExpression(ShiftExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -8596,7 +8591,12 @@ bool Parser::parseShiftExpression(ShiftExpressionAst **yynode)
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         AdditiveExpressionAst *__node_163 = 0;
         if (!parseAdditiveExpression(&__node_163))
@@ -8702,19 +8702,7 @@ bool Parser::parseStart(StartAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_LINE
-        || yytoken == Token_DOUBLE_CAST
-        || yytoken == Token_PLUS
-        || yytoken == Token_BREAK
-        || yytoken == Token_FOR
-        || yytoken == Token_OPEN_TAG_WITH_ECHO
-        || yytoken == Token_SWITCH
-        || yytoken == Token_UNSET
-        || yytoken == Token_FILE
-        || yytoken == Token_STRING_CAST
-        || yytoken == Token_LBRACE
-        || yytoken == Token_MINUS
-        || yytoken == Token_CONSTANT_ENCAPSED_STRING
+    if (yytoken == Token_CONSTANT_ENCAPSED_STRING
         || yytoken == Token_IF
         || yytoken == Token_THROW
         || yytoken == Token_FOREACH
@@ -8768,11 +8756,23 @@ bool Parser::parseStart(StartAst **yynode)
         || yytoken == Token_FUNC_C
         || yytoken == Token_INT_CAST
         || yytoken == Token_LPAREN
-        || yytoken == Token_ABSTRACT
         || yytoken == Token_INLINE_HTML
+        || yytoken == Token_ABSTRACT
         || yytoken == Token_CLOSE_TAG
         || yytoken == Token_FINAL
-        || yytoken == Token_STATIC || yytoken == Token_EOF)
+        || yytoken == Token_STATIC
+        || yytoken == Token_LINE
+        || yytoken == Token_DOUBLE_CAST
+        || yytoken == Token_PLUS
+        || yytoken == Token_BREAK
+        || yytoken == Token_FOR
+        || yytoken == Token_OPEN_TAG_WITH_ECHO
+        || yytoken == Token_SWITCH
+        || yytoken == Token_UNSET
+        || yytoken == Token_FILE
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_LBRACE
+        || yytoken == Token_MINUS || yytoken == Token_EOF)
     {
         InnerStatementListAst *__node_166 = 0;
         if (!parseInnerStatementList(&__node_166))
@@ -8806,13 +8806,7 @@ bool Parser::parseStatement(StatementAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_NEW
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_UNSET
+    if (yytoken == Token_UNSET
         || yytoken == Token_CONTINUE
         || yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
@@ -8820,8 +8814,8 @@ bool Parser::parseStatement(StatementAst **yynode)
         || yytoken == Token_SWITCH
         || yytoken == Token_ARRAY
         || yytoken == Token_FOR
-        || yytoken == Token_BREAK
         || yytoken == Token_ARRAY_CAST
+        || yytoken == Token_BREAK
         || yytoken == Token_CLONE
         || yytoken == Token_INC
         || yytoken == Token_ISSET
@@ -8837,8 +8831,8 @@ bool Parser::parseStatement(StatementAst **yynode)
         || yytoken == Token_BACKTICK
         || yytoken == Token_DEC
         || yytoken == Token_EMPTY
-        || yytoken == Token_DO
         || yytoken == Token_CLOSE_TAG
+        || yytoken == Token_DO
         || yytoken == Token_INLINE_HTML
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_TRY
@@ -8854,8 +8848,8 @@ bool Parser::parseStatement(StatementAst **yynode)
         || yytoken == Token_INT_CAST
         || yytoken == Token_WHILE
         || yytoken == Token_FUNC_C
-        || yytoken == Token_PLUS
         || yytoken == Token_GLOBAL
+        || yytoken == Token_PLUS
         || yytoken == Token_UNSET_CAST
         || yytoken == Token_INCLUDE
         || yytoken == Token_DOLLAR
@@ -8870,7 +8864,13 @@ bool Parser::parseStatement(StatementAst **yynode)
         || yytoken == Token_INCLUDE_ONCE
         || yytoken == Token_STATIC
         || yytoken == Token_LIST
-        || yytoken == Token_LBRACE)
+        || yytoken == Token_LBRACE
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_NEW
+        || yytoken == Token_START_HEREDOC)
     {
         if (yytoken == Token_LBRACE)
         {
@@ -9010,13 +9010,7 @@ bool Parser::parseStatement(StatementAst **yynode)
                     return false;
                 }
             }
-            else if (yytoken == Token_STRING_CAST
-                     || yytoken == Token_VARIABLE
-                     || yytoken == Token_PRINT
-                     || yytoken == Token_FILE
-                     || yytoken == Token_NEW
-                     || yytoken == Token_START_HEREDOC
-                     || yytoken == Token_UNSET
+            else if (yytoken == Token_UNSET
                      || yytoken == Token_CONTINUE
                      || yytoken == Token_STRING_VARNAME
                      || yytoken == Token_DOUBLE_QUOTE
@@ -9024,8 +9018,8 @@ bool Parser::parseStatement(StatementAst **yynode)
                      || yytoken == Token_SWITCH
                      || yytoken == Token_ARRAY
                      || yytoken == Token_FOR
-                     || yytoken == Token_BREAK
                      || yytoken == Token_ARRAY_CAST
+                     || yytoken == Token_BREAK
                      || yytoken == Token_CLONE
                      || yytoken == Token_INC
                      || yytoken == Token_ISSET
@@ -9041,8 +9035,8 @@ bool Parser::parseStatement(StatementAst **yynode)
                      || yytoken == Token_BACKTICK
                      || yytoken == Token_DEC
                      || yytoken == Token_EMPTY
-                     || yytoken == Token_DO
                      || yytoken == Token_CLOSE_TAG
+                     || yytoken == Token_DO
                      || yytoken == Token_INLINE_HTML
                      || yytoken == Token_REQUIRE_ONCE
                      || yytoken == Token_TRY
@@ -9058,8 +9052,8 @@ bool Parser::parseStatement(StatementAst **yynode)
                      || yytoken == Token_INT_CAST
                      || yytoken == Token_WHILE
                      || yytoken == Token_FUNC_C
-                     || yytoken == Token_PLUS
                      || yytoken == Token_GLOBAL
+                     || yytoken == Token_PLUS
                      || yytoken == Token_UNSET_CAST
                      || yytoken == Token_INCLUDE
                      || yytoken == Token_DOLLAR
@@ -9074,7 +9068,13 @@ bool Parser::parseStatement(StatementAst **yynode)
                      || yytoken == Token_INCLUDE_ONCE
                      || yytoken == Token_STATIC
                      || yytoken == Token_LIST
-                     || yytoken == Token_LBRACE)
+                     || yytoken == Token_LBRACE
+                     || yytoken == Token_STRING_CAST
+                     || yytoken == Token_VARIABLE
+                     || yytoken == Token_PRINT
+                     || yytoken == Token_FILE
+                     || yytoken == Token_NEW
+                     || yytoken == Token_START_HEREDOC)
             {
                 StatementAst *__node_173 = 0;
                 if (!parseStatement(&__node_173))
@@ -9674,13 +9674,7 @@ __catch_2:
                 return false;
             }
         }
-        else if (yytoken == Token_STRING_CAST
-                 || yytoken == Token_VARIABLE
-                 || yytoken == Token_PRINT
-                 || yytoken == Token_FILE
-                 || yytoken == Token_START_HEREDOC
-                 || yytoken == Token_NEW
-                 || yytoken == Token_STRING_VARNAME
+        else if (yytoken == Token_STRING_VARNAME
                  || yytoken == Token_DOUBLE_QUOTE
                  || yytoken == Token_EVAL
                  || yytoken == Token_ARRAY
@@ -9690,17 +9684,17 @@ __catch_2:
                  || yytoken == Token_ISSET
                  || yytoken == Token_REQUIRE
                  || yytoken == Token_CLASS_C
-                 || yytoken == Token_OBJECT_CAST
                  || yytoken == Token_DNUMBER
+                 || yytoken == Token_OBJECT_CAST
                  || yytoken == Token_EXIT
                  || yytoken == Token_BACKTICK
-                 || yytoken == Token_EMPTY
                  || yytoken == Token_DEC
+                 || yytoken == Token_EMPTY
                  || yytoken == Token_REQUIRE_ONCE
                  || yytoken == Token_METHOD_C
                  || yytoken == Token_AT
-                 || yytoken == Token_BOOL_CAST
                  || yytoken == Token_LNUMBER
+                 || yytoken == Token_BOOL_CAST
                  || yytoken == Token_TILDE
                  || yytoken == Token_BANG
                  || yytoken == Token_LPAREN
@@ -9716,7 +9710,13 @@ __catch_2:
                  || yytoken == Token_MINUS
                  || yytoken == Token_STRING
                  || yytoken == Token_INCLUDE_ONCE
-                 || yytoken == Token_LIST)
+                 || yytoken == Token_LIST
+                 || yytoken == Token_STRING_CAST
+                 || yytoken == Token_VARIABLE
+                 || yytoken == Token_PRINT
+                 || yytoken == Token_FILE
+                 || yytoken == Token_START_HEREDOC
+                 || yytoken == Token_NEW)
         {
             ExprAst *__node_198 = 0;
             if (!parseExpr(&__node_198))
@@ -9825,13 +9825,7 @@ __catch_2:
             }
             yylex();
 
-            if (yytoken == Token_STRING_CAST
-                || yytoken == Token_VARIABLE
-                || yytoken == Token_PRINT
-                || yytoken == Token_FILE
-                || yytoken == Token_START_HEREDOC
-                || yytoken == Token_NEW
-                || yytoken == Token_STRING_VARNAME
+            if (yytoken == Token_STRING_VARNAME
                 || yytoken == Token_DOUBLE_QUOTE
                 || yytoken == Token_EVAL
                 || yytoken == Token_ARRAY
@@ -9841,17 +9835,17 @@ __catch_2:
                 || yytoken == Token_ISSET
                 || yytoken == Token_REQUIRE
                 || yytoken == Token_CLASS_C
-                || yytoken == Token_OBJECT_CAST
                 || yytoken == Token_DNUMBER
+                || yytoken == Token_OBJECT_CAST
                 || yytoken == Token_EXIT
                 || yytoken == Token_BACKTICK
-                || yytoken == Token_EMPTY
                 || yytoken == Token_DEC
+                || yytoken == Token_EMPTY
                 || yytoken == Token_REQUIRE_ONCE
                 || yytoken == Token_METHOD_C
                 || yytoken == Token_AT
-                || yytoken == Token_BOOL_CAST
                 || yytoken == Token_LNUMBER
+                || yytoken == Token_BOOL_CAST
                 || yytoken == Token_TILDE
                 || yytoken == Token_BANG
                 || yytoken == Token_LPAREN
@@ -9867,7 +9861,13 @@ __catch_2:
                 || yytoken == Token_MINUS
                 || yytoken == Token_STRING
                 || yytoken == Token_INCLUDE_ONCE
-                || yytoken == Token_LIST)
+                || yytoken == Token_LIST
+                || yytoken == Token_STRING_CAST
+                || yytoken == Token_VARIABLE
+                || yytoken == Token_PRINT
+                || yytoken == Token_FILE
+                || yytoken == Token_START_HEREDOC
+                || yytoken == Token_NEW)
             {
                 ExprAst *__node_203 = 0;
                 if (!parseExpr(&__node_203))
@@ -9910,13 +9910,7 @@ __catch_2:
             }
             yylex();
 
-            if (yytoken == Token_STRING_CAST
-                || yytoken == Token_VARIABLE
-                || yytoken == Token_PRINT
-                || yytoken == Token_FILE
-                || yytoken == Token_START_HEREDOC
-                || yytoken == Token_NEW
-                || yytoken == Token_STRING_VARNAME
+            if (yytoken == Token_STRING_VARNAME
                 || yytoken == Token_DOUBLE_QUOTE
                 || yytoken == Token_EVAL
                 || yytoken == Token_ARRAY
@@ -9926,17 +9920,17 @@ __catch_2:
                 || yytoken == Token_ISSET
                 || yytoken == Token_REQUIRE
                 || yytoken == Token_CLASS_C
-                || yytoken == Token_OBJECT_CAST
                 || yytoken == Token_DNUMBER
+                || yytoken == Token_OBJECT_CAST
                 || yytoken == Token_EXIT
                 || yytoken == Token_BACKTICK
-                || yytoken == Token_EMPTY
                 || yytoken == Token_DEC
+                || yytoken == Token_EMPTY
                 || yytoken == Token_REQUIRE_ONCE
                 || yytoken == Token_METHOD_C
                 || yytoken == Token_AT
-                || yytoken == Token_BOOL_CAST
                 || yytoken == Token_LNUMBER
+                || yytoken == Token_BOOL_CAST
                 || yytoken == Token_TILDE
                 || yytoken == Token_BANG
                 || yytoken == Token_LPAREN
@@ -9952,7 +9946,13 @@ __catch_2:
                 || yytoken == Token_MINUS
                 || yytoken == Token_STRING
                 || yytoken == Token_INCLUDE_ONCE
-                || yytoken == Token_LIST)
+                || yytoken == Token_LIST
+                || yytoken == Token_STRING_CAST
+                || yytoken == Token_VARIABLE
+                || yytoken == Token_PRINT
+                || yytoken == Token_FILE
+                || yytoken == Token_START_HEREDOC
+                || yytoken == Token_NEW)
             {
                 ExprAst *__node_205 = 0;
                 if (!parseExpr(&__node_205))
@@ -9995,13 +9995,7 @@ __catch_2:
             }
             yylex();
 
-            if (yytoken == Token_STRING_CAST
-                || yytoken == Token_VARIABLE
-                || yytoken == Token_PRINT
-                || yytoken == Token_FILE
-                || yytoken == Token_START_HEREDOC
-                || yytoken == Token_NEW
-                || yytoken == Token_STRING_VARNAME
+            if (yytoken == Token_STRING_VARNAME
                 || yytoken == Token_DOUBLE_QUOTE
                 || yytoken == Token_EVAL
                 || yytoken == Token_ARRAY
@@ -10011,17 +10005,17 @@ __catch_2:
                 || yytoken == Token_ISSET
                 || yytoken == Token_REQUIRE
                 || yytoken == Token_CLASS_C
-                || yytoken == Token_OBJECT_CAST
                 || yytoken == Token_DNUMBER
+                || yytoken == Token_OBJECT_CAST
                 || yytoken == Token_EXIT
                 || yytoken == Token_BACKTICK
-                || yytoken == Token_EMPTY
                 || yytoken == Token_DEC
+                || yytoken == Token_EMPTY
                 || yytoken == Token_REQUIRE_ONCE
                 || yytoken == Token_METHOD_C
                 || yytoken == Token_AT
-                || yytoken == Token_BOOL_CAST
                 || yytoken == Token_LNUMBER
+                || yytoken == Token_BOOL_CAST
                 || yytoken == Token_TILDE
                 || yytoken == Token_BANG
                 || yytoken == Token_LPAREN
@@ -10037,7 +10031,13 @@ __catch_2:
                 || yytoken == Token_MINUS
                 || yytoken == Token_STRING
                 || yytoken == Token_INCLUDE_ONCE
-                || yytoken == Token_LIST)
+                || yytoken == Token_LIST
+                || yytoken == Token_STRING_CAST
+                || yytoken == Token_VARIABLE
+                || yytoken == Token_PRINT
+                || yytoken == Token_FILE
+                || yytoken == Token_START_HEREDOC
+                || yytoken == Token_NEW)
             {
                 ExprAst *__node_207 = 0;
                 if (!parseExpr(&__node_207))
@@ -10365,8 +10365,7 @@ bool Parser::parseStaticArrayPairValue(StaticArrayPairValueAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_FILE
-        || yytoken == Token_PLUS
+    if (yytoken == Token_PLUS
         || yytoken == Token_LNUMBER
         || yytoken == Token_CLASS_C
         || yytoken == Token_LINE
@@ -10376,7 +10375,8 @@ bool Parser::parseStaticArrayPairValue(StaticArrayPairValueAst **yynode)
         || yytoken == Token_FUNC_C
         || yytoken == Token_STRING
         || yytoken == Token_MINUS
-        || yytoken == Token_METHOD_C)
+        || yytoken == Token_METHOD_C
+        || yytoken == Token_FILE)
     {
         StaticScalarAst *__node_222 = 0;
         if (!parseStaticScalar(&__node_222))
@@ -10436,20 +10436,19 @@ bool Parser::parseStaticMember(StaticMemberAst **yynode)
     *yynode = create<StaticMemberAst>();
 
     (*yynode)->startToken = tokenStream->index() - 1;
-    (*yynode)->className = -1;
 
     if (yytoken == Token_STRING)
     {
-        if (yytoken != Token_STRING)
+        IdentifierAst *__node_224 = 0;
+        if (!parseIdentifier(&__node_224))
         {
             if (!mBlockErrors)
             {
-                expectedToken(yytoken, Token_STRING, "string");
+                expectedSymbol(AstNode::IdentifierKind, "identifier");
             }
             return false;
         }
-        (*yynode)->className = tokenStream->index() - 1;
-        yylex();
+        (*yynode)->className = __node_224;
 
         if (yytoken != Token_PAAMAYIM_NEKUDOTAYIM)
         {
@@ -10461,8 +10460,8 @@ bool Parser::parseStaticMember(StaticMemberAst **yynode)
         }
         yylex();
 
-        VariableWithoutObjectsAst *__node_224 = 0;
-        if (!parseVariableWithoutObjects(&__node_224))
+        VariableWithoutObjectsAst *__node_225 = 0;
+        if (!parseVariableWithoutObjects(&__node_225))
         {
             if (!mBlockErrors)
             {
@@ -10470,7 +10469,7 @@ bool Parser::parseStaticMember(StaticMemberAst **yynode)
             }
             return false;
         }
-        (*yynode)->variable = __node_224;
+        (*yynode)->variable = __node_225;
 
     }
     else
@@ -10489,8 +10488,7 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_FILE
-        || yytoken == Token_PLUS
+    if (yytoken == Token_PLUS
         || yytoken == Token_LNUMBER
         || yytoken == Token_CLASS_C
         || yytoken == Token_LINE
@@ -10500,19 +10498,20 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
         || yytoken == Token_FUNC_C
         || yytoken == Token_STRING
         || yytoken == Token_MINUS
-        || yytoken == Token_METHOD_C)
+        || yytoken == Token_METHOD_C
+        || yytoken == Token_FILE)
     {
-        if (yytoken == Token_FILE
-            || yytoken == Token_LNUMBER
+        if (yytoken == Token_LNUMBER
             || yytoken == Token_CLASS_C
             || yytoken == Token_LINE
             || yytoken == Token_CONSTANT_ENCAPSED_STRING
             || yytoken == Token_DNUMBER
             || yytoken == Token_FUNC_C
-            || yytoken == Token_METHOD_C)
+            || yytoken == Token_METHOD_C
+            || yytoken == Token_FILE)
         {
-            CommonScalarAst *__node_225 = 0;
-            if (!parseCommonScalar(&__node_225))
+            CommonScalarAst *__node_226 = 0;
+            if (!parseCommonScalar(&__node_226))
             {
                 if (!mBlockErrors)
                 {
@@ -10520,7 +10519,7 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->value = __node_225;
+            (*yynode)->value = __node_226;
 
         }
         else if (yytoken == Token_STRING)
@@ -10578,8 +10577,8 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
             }
             yylex();
 
-            StaticScalarAst *__node_226 = 0;
-            if (!parseStaticScalar(&__node_226))
+            StaticScalarAst *__node_227 = 0;
+            if (!parseStaticScalar(&__node_227))
             {
                 if (!mBlockErrors)
                 {
@@ -10587,7 +10586,7 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->plusValue = __node_226;
+            (*yynode)->plusValue = __node_227;
 
         }
         else if (yytoken == Token_MINUS)
@@ -10602,8 +10601,8 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
             }
             yylex();
 
-            StaticScalarAst *__node_227 = 0;
-            if (!parseStaticScalar(&__node_227))
+            StaticScalarAst *__node_228 = 0;
+            if (!parseStaticScalar(&__node_228))
             {
                 if (!mBlockErrors)
                 {
@@ -10611,7 +10610,7 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->minusValue = __node_227;
+            (*yynode)->minusValue = __node_228;
 
         }
         else if (yytoken == Token_ARRAY)
@@ -10636,8 +10635,7 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
             }
             yylex();
 
-            if (yytoken == Token_FILE
-                || yytoken == Token_PLUS
+            if (yytoken == Token_PLUS
                 || yytoken == Token_LNUMBER
                 || yytoken == Token_CLASS_C
                 || yytoken == Token_LINE
@@ -10647,10 +10645,11 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                 || yytoken == Token_FUNC_C
                 || yytoken == Token_STRING
                 || yytoken == Token_MINUS
-                || yytoken == Token_METHOD_C)
+                || yytoken == Token_METHOD_C
+                || yytoken == Token_FILE)
             {
-                StaticArrayPairValueAst *__node_228 = 0;
-                if (!parseStaticArrayPairValue(&__node_228))
+                StaticArrayPairValueAst *__node_229 = 0;
+                if (!parseStaticArrayPairValue(&__node_229))
                 {
                     if (!mBlockErrors)
                     {
@@ -10658,7 +10657,7 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_228, memoryPool);
+                (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_229, memoryPool);
 
                 while (yytoken == Token_COMMA)
                 {
@@ -10676,8 +10675,8 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                     {
                         break;
                     }
-                    StaticArrayPairValueAst *__node_229 = 0;
-                    if (!parseStaticArrayPairValue(&__node_229))
+                    StaticArrayPairValueAst *__node_230 = 0;
+                    if (!parseStaticArrayPairValue(&__node_230))
                     {
                         if (!mBlockErrors)
                         {
@@ -10685,7 +10684,7 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                         }
                         return false;
                     }
-                    (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_229, memoryPool);
+                    (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_230, memoryPool);
 
                 }
             }
@@ -10730,8 +10729,8 @@ bool Parser::parseStaticVar(StaticVarAst **yynode)
 
     if (yytoken == Token_VARIABLE)
     {
-        VariableIdentifierAst *__node_230 = 0;
-        if (!parseVariableIdentifier(&__node_230))
+        VariableIdentifierAst *__node_231 = 0;
+        if (!parseVariableIdentifier(&__node_231))
         {
             if (!mBlockErrors)
             {
@@ -10751,8 +10750,8 @@ bool Parser::parseStaticVar(StaticVarAst **yynode)
             }
             yylex();
 
-            StaticScalarAst *__node_231 = 0;
-            if (!parseStaticScalar(&__node_231))
+            StaticScalarAst *__node_232 = 0;
+            if (!parseStaticScalar(&__node_232))
             {
                 if (!mBlockErrors)
                 {
@@ -10760,7 +10759,7 @@ bool Parser::parseStaticVar(StaticVarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->staticScalar = __node_231;
+            (*yynode)->staticScalar = __node_232;
 
         }
         else if (true /*epsilon*/)
@@ -10822,8 +10821,8 @@ bool Parser::parseSwitchCaseList(SwitchCaseListAst **yynode)
             {
                 return false;
             }
-            CaseListAst *__node_232 = 0;
-            if (!parseCaseList(&__node_232))
+            CaseListAst *__node_233 = 0;
+            if (!parseCaseList(&__node_233))
             {
                 if (!mBlockErrors)
                 {
@@ -10831,7 +10830,7 @@ bool Parser::parseSwitchCaseList(SwitchCaseListAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->caseList = __node_232;
+            (*yynode)->caseList = __node_233;
 
             if (yytoken != Token_RBRACE)
             {
@@ -10876,8 +10875,8 @@ bool Parser::parseSwitchCaseList(SwitchCaseListAst **yynode)
             {
                 return false;
             }
-            CaseListAst *__node_233 = 0;
-            if (!parseCaseList(&__node_233))
+            CaseListAst *__node_234 = 0;
+            if (!parseCaseList(&__node_234))
             {
                 if (!mBlockErrors)
                 {
@@ -10885,7 +10884,7 @@ bool Parser::parseSwitchCaseList(SwitchCaseListAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->caseList = __node_233;
+            (*yynode)->caseList = __node_234;
 
             if (yytoken != Token_ENDSWITCH)
             {
@@ -10897,8 +10896,8 @@ bool Parser::parseSwitchCaseList(SwitchCaseListAst **yynode)
             }
             yylex();
 
-            SemicolonOrCloseTagAst *__node_234 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_234))
+            SemicolonOrCloseTagAst *__node_235 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_235))
             {
                 if (!mBlockErrors)
                 {
@@ -10928,19 +10927,7 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_LINE
-        || yytoken == Token_DOUBLE_CAST
-        || yytoken == Token_PLUS
-        || yytoken == Token_BREAK
-        || yytoken == Token_FOR
-        || yytoken == Token_OPEN_TAG_WITH_ECHO
-        || yytoken == Token_SWITCH
-        || yytoken == Token_UNSET
-        || yytoken == Token_FILE
-        || yytoken == Token_STRING_CAST
-        || yytoken == Token_LBRACE
-        || yytoken == Token_MINUS
-        || yytoken == Token_CONSTANT_ENCAPSED_STRING
+    if (yytoken == Token_CONSTANT_ENCAPSED_STRING
         || yytoken == Token_IF
         || yytoken == Token_THROW
         || yytoken == Token_FOREACH
@@ -10994,19 +10981,25 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
         || yytoken == Token_FUNC_C
         || yytoken == Token_INT_CAST
         || yytoken == Token_LPAREN
-        || yytoken == Token_ABSTRACT
         || yytoken == Token_INLINE_HTML
+        || yytoken == Token_ABSTRACT
         || yytoken == Token_CLOSE_TAG
         || yytoken == Token_FINAL
-        || yytoken == Token_STATIC)
+        || yytoken == Token_STATIC
+        || yytoken == Token_LINE
+        || yytoken == Token_DOUBLE_CAST
+        || yytoken == Token_PLUS
+        || yytoken == Token_BREAK
+        || yytoken == Token_FOR
+        || yytoken == Token_OPEN_TAG_WITH_ECHO
+        || yytoken == Token_SWITCH
+        || yytoken == Token_UNSET
+        || yytoken == Token_FILE
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_LBRACE
+        || yytoken == Token_MINUS)
     {
-        if (yytoken == Token_STRING_CAST
-            || yytoken == Token_VARIABLE
-            || yytoken == Token_PRINT
-            || yytoken == Token_FILE
-            || yytoken == Token_NEW
-            || yytoken == Token_START_HEREDOC
-            || yytoken == Token_UNSET
+        if (yytoken == Token_UNSET
             || yytoken == Token_CONTINUE
             || yytoken == Token_STRING_VARNAME
             || yytoken == Token_DOUBLE_QUOTE
@@ -11014,8 +11007,8 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
             || yytoken == Token_SWITCH
             || yytoken == Token_ARRAY
             || yytoken == Token_FOR
-            || yytoken == Token_BREAK
             || yytoken == Token_ARRAY_CAST
+            || yytoken == Token_BREAK
             || yytoken == Token_CLONE
             || yytoken == Token_INC
             || yytoken == Token_ISSET
@@ -11031,8 +11024,8 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
             || yytoken == Token_BACKTICK
             || yytoken == Token_DEC
             || yytoken == Token_EMPTY
-            || yytoken == Token_DO
             || yytoken == Token_CLOSE_TAG
+            || yytoken == Token_DO
             || yytoken == Token_INLINE_HTML
             || yytoken == Token_REQUIRE_ONCE
             || yytoken == Token_TRY
@@ -11048,8 +11041,8 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
             || yytoken == Token_INT_CAST
             || yytoken == Token_WHILE
             || yytoken == Token_FUNC_C
-            || yytoken == Token_PLUS
             || yytoken == Token_GLOBAL
+            || yytoken == Token_PLUS
             || yytoken == Token_UNSET_CAST
             || yytoken == Token_INCLUDE
             || yytoken == Token_DOLLAR
@@ -11064,10 +11057,16 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
             || yytoken == Token_INCLUDE_ONCE
             || yytoken == Token_STATIC
             || yytoken == Token_LIST
-            || yytoken == Token_LBRACE)
+            || yytoken == Token_LBRACE
+            || yytoken == Token_STRING_CAST
+            || yytoken == Token_VARIABLE
+            || yytoken == Token_PRINT
+            || yytoken == Token_FILE
+            || yytoken == Token_NEW
+            || yytoken == Token_START_HEREDOC)
         {
-            StatementAst *__node_235 = 0;
-            if (!parseStatement(&__node_235))
+            StatementAst *__node_236 = 0;
+            if (!parseStatement(&__node_236))
             {
                 if (!mBlockErrors)
                 {
@@ -11075,13 +11074,13 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statement = __node_235;
+            (*yynode)->statement = __node_236;
 
         }
         else if (yytoken == Token_FUNCTION)
         {
-            FunctionDeclarationStatementAst *__node_236 = 0;
-            if (!parseFunctionDeclarationStatement(&__node_236))
+            FunctionDeclarationStatementAst *__node_237 = 0;
+            if (!parseFunctionDeclarationStatement(&__node_237))
             {
                 if (!mBlockErrors)
                 {
@@ -11089,15 +11088,15 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->functionDeclaration = __node_236;
+            (*yynode)->functionDeclaration = __node_237;
 
         }
         else if (yytoken == Token_FINAL
                  || yytoken == Token_CLASS
                  || yytoken == Token_ABSTRACT)
         {
-            ClassDeclarationStatementAst *__node_237 = 0;
-            if (!parseClassDeclarationStatement(&__node_237))
+            ClassDeclarationStatementAst *__node_238 = 0;
+            if (!parseClassDeclarationStatement(&__node_238))
             {
                 if (!mBlockErrors)
                 {
@@ -11105,13 +11104,13 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->classDeclaration = __node_237;
+            (*yynode)->classDeclaration = __node_238;
 
         }
         else if (yytoken == Token_INTERFACE)
         {
-            InterfaceDeclarationStatementAst *__node_238 = 0;
-            if (!parseInterfaceDeclarationStatement(&__node_238))
+            InterfaceDeclarationStatementAst *__node_239 = 0;
+            if (!parseInterfaceDeclarationStatement(&__node_239))
             {
                 if (!mBlockErrors)
                 {
@@ -11119,7 +11118,7 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->interfaceDeclaration = __node_238;
+            (*yynode)->interfaceDeclaration = __node_239;
 
         }
         else if (yytoken == Token_HALT_COMPILER)
@@ -11186,12 +11185,7 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_FILE
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_NEW
-        || yytoken == Token_STRING_VARNAME
+    if (yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_EVAL
         || yytoken == Token_ARRAY
@@ -11201,12 +11195,12 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
-        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_DNUMBER
+        || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EMPTY
         || yytoken == Token_DEC
+        || yytoken == Token_EMPTY
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
@@ -11221,13 +11215,18 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
         || yytoken == Token_UNSET_CAST
         || yytoken == Token_INCLUDE
         || yytoken == Token_DOLLAR
-        || yytoken == Token_DOUBLE_CAST
         || yytoken == Token_CONSTANT_ENCAPSED_STRING
+        || yytoken == Token_DOUBLE_CAST
         || yytoken == Token_LINE
         || yytoken == Token_MINUS
         || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
-        || yytoken == Token_LIST)
+        || yytoken == Token_LIST
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_FILE
+        || yytoken == Token_START_HEREDOC
+        || yytoken == Token_NEW)
     {
         if (yytoken == Token_MINUS)
         {
@@ -11236,30 +11235,6 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                 if (!mBlockErrors)
                 {
                     expectedToken(yytoken, Token_MINUS, "-");
-                }
-                return false;
-            }
-            yylex();
-
-            UnaryExpressionAst *__node_239 = 0;
-            if (!parseUnaryExpression(&__node_239))
-            {
-                if (!mBlockErrors)
-                {
-                    expectedSymbol(AstNode::UnaryExpressionKind, "unaryExpression");
-                }
-                return false;
-            }
-            (*yynode)->unaryExpression = __node_239;
-
-        }
-        else if (yytoken == Token_PLUS)
-        {
-            if (yytoken != Token_PLUS)
-            {
-                if (!mBlockErrors)
-                {
-                    expectedToken(yytoken, Token_PLUS, "+");
                 }
                 return false;
             }
@@ -11277,13 +11252,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_240;
 
         }
-        else if (yytoken == Token_BANG)
+        else if (yytoken == Token_PLUS)
         {
-            if (yytoken != Token_BANG)
+            if (yytoken != Token_PLUS)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_BANG, "!");
+                    expectedToken(yytoken, Token_PLUS, "+");
                 }
                 return false;
             }
@@ -11301,13 +11276,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_241;
 
         }
-        else if (yytoken == Token_TILDE)
+        else if (yytoken == Token_BANG)
         {
-            if (yytoken != Token_TILDE)
+            if (yytoken != Token_BANG)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_TILDE, "~");
+                    expectedToken(yytoken, Token_BANG, "!");
                 }
                 return false;
             }
@@ -11325,13 +11300,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_242;
 
         }
-        else if (yytoken == Token_INT_CAST)
+        else if (yytoken == Token_TILDE)
         {
-            if (yytoken != Token_INT_CAST)
+            if (yytoken != Token_TILDE)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_INT_CAST, "int cast");
+                    expectedToken(yytoken, Token_TILDE, "~");
                 }
                 return false;
             }
@@ -11349,13 +11324,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_243;
 
         }
-        else if (yytoken == Token_DOUBLE_CAST)
+        else if (yytoken == Token_INT_CAST)
         {
-            if (yytoken != Token_DOUBLE_CAST)
+            if (yytoken != Token_INT_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_DOUBLE_CAST, "double cast");
+                    expectedToken(yytoken, Token_INT_CAST, "int cast");
                 }
                 return false;
             }
@@ -11373,13 +11348,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_244;
 
         }
-        else if (yytoken == Token_STRING_CAST)
+        else if (yytoken == Token_DOUBLE_CAST)
         {
-            if (yytoken != Token_STRING_CAST)
+            if (yytoken != Token_DOUBLE_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_STRING_CAST, "string cast");
+                    expectedToken(yytoken, Token_DOUBLE_CAST, "double cast");
                 }
                 return false;
             }
@@ -11397,13 +11372,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_245;
 
         }
-        else if (yytoken == Token_ARRAY_CAST)
+        else if (yytoken == Token_STRING_CAST)
         {
-            if (yytoken != Token_ARRAY_CAST)
+            if (yytoken != Token_STRING_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_ARRAY_CAST, "array cast");
+                    expectedToken(yytoken, Token_STRING_CAST, "string cast");
                 }
                 return false;
             }
@@ -11421,13 +11396,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_246;
 
         }
-        else if (yytoken == Token_OBJECT_CAST)
+        else if (yytoken == Token_ARRAY_CAST)
         {
-            if (yytoken != Token_OBJECT_CAST)
+            if (yytoken != Token_ARRAY_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_OBJECT_CAST, "object cast");
+                    expectedToken(yytoken, Token_ARRAY_CAST, "array cast");
                 }
                 return false;
             }
@@ -11445,13 +11420,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_247;
 
         }
-        else if (yytoken == Token_BOOL_CAST)
+        else if (yytoken == Token_OBJECT_CAST)
         {
-            if (yytoken != Token_BOOL_CAST)
+            if (yytoken != Token_OBJECT_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_BOOL_CAST, "bool cast");
+                    expectedToken(yytoken, Token_OBJECT_CAST, "object cast");
                 }
                 return false;
             }
@@ -11469,13 +11444,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_248;
 
         }
-        else if (yytoken == Token_UNSET_CAST)
+        else if (yytoken == Token_BOOL_CAST)
         {
-            if (yytoken != Token_UNSET_CAST)
+            if (yytoken != Token_BOOL_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_UNSET_CAST, "unset cast");
+                    expectedToken(yytoken, Token_BOOL_CAST, "bool cast");
                 }
                 return false;
             }
@@ -11493,13 +11468,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_249;
 
         }
-        else if (yytoken == Token_AT)
+        else if (yytoken == Token_UNSET_CAST)
         {
-            if (yytoken != Token_AT)
+            if (yytoken != Token_UNSET_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_AT, "@");
+                    expectedToken(yytoken, Token_UNSET_CAST, "unset cast");
                 }
                 return false;
             }
@@ -11515,6 +11490,30 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                 return false;
             }
             (*yynode)->unaryExpression = __node_250;
+
+        }
+        else if (yytoken == Token_AT)
+        {
+            if (yytoken != Token_AT)
+            {
+                if (!mBlockErrors)
+                {
+                    expectedToken(yytoken, Token_AT, "@");
+                }
+                return false;
+            }
+            yylex();
+
+            UnaryExpressionAst *__node_251 = 0;
+            if (!parseUnaryExpression(&__node_251))
+            {
+                if (!mBlockErrors)
+                {
+                    expectedSymbol(AstNode::UnaryExpressionKind, "unaryExpression");
+                }
+                return false;
+            }
+            (*yynode)->unaryExpression = __node_251;
 
         }
         else if (yytoken == Token_LIST)
@@ -11539,8 +11538,8 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             }
             yylex();
 
-            AssignmentListAst *__node_251 = 0;
-            if (!parseAssignmentList(&__node_251))
+            AssignmentListAst *__node_252 = 0;
+            if (!parseAssignmentList(&__node_252))
             {
                 if (!mBlockErrors)
                 {
@@ -11548,7 +11547,7 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->assignmentList = __node_251;
+            (*yynode)->assignmentList = __node_252;
 
             if (yytoken != Token_RPAREN)
             {
@@ -11570,8 +11569,8 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             }
             yylex();
 
-            UnaryExpressionAst *__node_252 = 0;
-            if (!parseUnaryExpression(&__node_252))
+            UnaryExpressionAst *__node_253 = 0;
+            if (!parseUnaryExpression(&__node_253))
             {
                 if (!mBlockErrors)
                 {
@@ -11579,7 +11578,7 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->unaryExpression = __node_252;
+            (*yynode)->unaryExpression = __node_253;
 
         }
         else if (yytoken == Token_EXIT)
@@ -11606,13 +11605,7 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                 }
                 yylex();
 
-                if (yytoken == Token_STRING_CAST
-                    || yytoken == Token_VARIABLE
-                    || yytoken == Token_PRINT
-                    || yytoken == Token_FILE
-                    || yytoken == Token_START_HEREDOC
-                    || yytoken == Token_NEW
-                    || yytoken == Token_STRING_VARNAME
+                if (yytoken == Token_STRING_VARNAME
                     || yytoken == Token_DOUBLE_QUOTE
                     || yytoken == Token_EVAL
                     || yytoken == Token_ARRAY
@@ -11622,17 +11615,17 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                     || yytoken == Token_ISSET
                     || yytoken == Token_REQUIRE
                     || yytoken == Token_CLASS_C
-                    || yytoken == Token_OBJECT_CAST
                     || yytoken == Token_DNUMBER
+                    || yytoken == Token_OBJECT_CAST
                     || yytoken == Token_EXIT
                     || yytoken == Token_BACKTICK
-                    || yytoken == Token_EMPTY
                     || yytoken == Token_DEC
+                    || yytoken == Token_EMPTY
                     || yytoken == Token_REQUIRE_ONCE
                     || yytoken == Token_METHOD_C
                     || yytoken == Token_AT
-                    || yytoken == Token_BOOL_CAST
                     || yytoken == Token_LNUMBER
+                    || yytoken == Token_BOOL_CAST
                     || yytoken == Token_TILDE
                     || yytoken == Token_BANG
                     || yytoken == Token_LPAREN
@@ -11648,10 +11641,16 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                     || yytoken == Token_MINUS
                     || yytoken == Token_STRING
                     || yytoken == Token_INCLUDE_ONCE
-                    || yytoken == Token_LIST)
+                    || yytoken == Token_LIST
+                    || yytoken == Token_STRING_CAST
+                    || yytoken == Token_VARIABLE
+                    || yytoken == Token_PRINT
+                    || yytoken == Token_FILE
+                    || yytoken == Token_START_HEREDOC
+                    || yytoken == Token_NEW)
                 {
-                    ExprAst *__node_253 = 0;
-                    if (!parseExpr(&__node_253))
+                    ExprAst *__node_254 = 0;
+                    if (!parseExpr(&__node_254))
                     {
                         if (!mBlockErrors)
                         {
@@ -11659,7 +11658,7 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                         }
                         return false;
                     }
-                    (*yynode)->expression = __node_253;
+                    (*yynode)->expression = __node_254;
 
                 }
                 else if (true /*epsilon*/)
@@ -11710,8 +11709,8 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             }
             yylex();
 
-            ExprAst *__node_254 = 0;
-            if (!parseExpr(&__node_254))
+            ExprAst *__node_255 = 0;
+            if (!parseExpr(&__node_255))
             {
                 if (!mBlockErrors)
                 {
@@ -11719,7 +11718,7 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->expression = __node_254;
+            (*yynode)->expression = __node_255;
 
             if (yytoken != Token_RPAREN)
             {
@@ -11744,30 +11743,6 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             }
             yylex();
 
-            UnaryExpressionAst *__node_255 = 0;
-            if (!parseUnaryExpression(&__node_255))
-            {
-                if (!mBlockErrors)
-                {
-                    expectedSymbol(AstNode::UnaryExpressionKind, "unaryExpression");
-                }
-                return false;
-            }
-            (*yynode)->unaryExpression = __node_255;
-
-        }
-        else if (yytoken == Token_INCLUDE_ONCE)
-        {
-            if (yytoken != Token_INCLUDE_ONCE)
-            {
-                if (!mBlockErrors)
-                {
-                    expectedToken(yytoken, Token_INCLUDE_ONCE, "include_once");
-                }
-                return false;
-            }
-            yylex();
-
             UnaryExpressionAst *__node_256 = 0;
             if (!parseUnaryExpression(&__node_256))
             {
@@ -11780,13 +11755,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_256;
 
         }
-        else if (yytoken == Token_REQUIRE)
+        else if (yytoken == Token_INCLUDE_ONCE)
         {
-            if (yytoken != Token_REQUIRE)
+            if (yytoken != Token_INCLUDE_ONCE)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_REQUIRE, "require");
+                    expectedToken(yytoken, Token_INCLUDE_ONCE, "include_once");
                 }
                 return false;
             }
@@ -11804,13 +11779,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_257;
 
         }
-        else if (yytoken == Token_REQUIRE_ONCE)
+        else if (yytoken == Token_REQUIRE)
         {
-            if (yytoken != Token_REQUIRE_ONCE)
+            if (yytoken != Token_REQUIRE)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_REQUIRE_ONCE, "require_once");
+                    expectedToken(yytoken, Token_REQUIRE, "require");
                 }
                 return false;
             }
@@ -11828,7 +11803,35 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_258;
 
         }
-        else if (yytoken == Token_FILE
+        else if (yytoken == Token_REQUIRE_ONCE)
+        {
+            if (yytoken != Token_REQUIRE_ONCE)
+            {
+                if (!mBlockErrors)
+                {
+                    expectedToken(yytoken, Token_REQUIRE_ONCE, "require_once");
+                }
+                return false;
+            }
+            yylex();
+
+            UnaryExpressionAst *__node_259 = 0;
+            if (!parseUnaryExpression(&__node_259))
+            {
+                if (!mBlockErrors)
+                {
+                    expectedSymbol(AstNode::UnaryExpressionKind, "unaryExpression");
+                }
+                return false;
+            }
+            (*yynode)->unaryExpression = __node_259;
+
+        }
+        else if (yytoken == Token_DEC
+                 || yytoken == Token_STRING
+                 || yytoken == Token_DNUMBER
+                 || yytoken == Token_CONSTANT_ENCAPSED_STRING
+                 || yytoken == Token_FILE
                  || yytoken == Token_METHOD_C
                  || yytoken == Token_DOLLAR
                  || yytoken == Token_EMPTY
@@ -11846,14 +11849,10 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                  || yytoken == Token_LINE
                  || yytoken == Token_CLASS_C
                  || yytoken == Token_BACKTICK
-                 || yytoken == Token_ISSET
-                 || yytoken == Token_DEC
-                 || yytoken == Token_STRING
-                 || yytoken == Token_DNUMBER
-                 || yytoken == Token_CONSTANT_ENCAPSED_STRING)
+                 || yytoken == Token_ISSET)
         {
-            UnaryExpressionNotPlusminusAst *__node_259 = 0;
-            if (!parseUnaryExpressionNotPlusminus(&__node_259))
+            UnaryExpressionNotPlusminusAst *__node_260 = 0;
+            if (!parseUnaryExpressionNotPlusminus(&__node_260))
             {
                 if (!mBlockErrors)
                 {
@@ -11861,7 +11860,7 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->unaryExpressionNotPlusminus = __node_259;
+            (*yynode)->unaryExpressionNotPlusminus = __node_260;
 
         }
         else
@@ -11885,7 +11884,11 @@ bool Parser::parseUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst **y
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_FILE
+    if (yytoken == Token_DEC
+        || yytoken == Token_STRING
+        || yytoken == Token_DNUMBER
+        || yytoken == Token_CONSTANT_ENCAPSED_STRING
+        || yytoken == Token_FILE
         || yytoken == Token_METHOD_C
         || yytoken == Token_DOLLAR
         || yytoken == Token_EMPTY
@@ -11903,17 +11906,13 @@ bool Parser::parseUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst **y
         || yytoken == Token_LINE
         || yytoken == Token_CLASS_C
         || yytoken == Token_BACKTICK
-        || yytoken == Token_ISSET
-        || yytoken == Token_DEC
-        || yytoken == Token_STRING
-        || yytoken == Token_DNUMBER
-        || yytoken == Token_CONSTANT_ENCAPSED_STRING)
+        || yytoken == Token_ISSET)
     {
         while (yytoken == Token_INC
                || yytoken == Token_DEC)
         {
-            PostprefixOperatorAst *__node_260 = 0;
-            if (!parsePostprefixOperator(&__node_260))
+            PostprefixOperatorAst *__node_261 = 0;
+            if (!parsePostprefixOperator(&__node_261))
             {
                 if (!mBlockErrors)
                 {
@@ -11921,11 +11920,11 @@ bool Parser::parseUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst **y
                 }
                 return false;
             }
-            (*yynode)->prefixOperatorSequence = snoc((*yynode)->prefixOperatorSequence, __node_260, memoryPool);
+            (*yynode)->prefixOperatorSequence = snoc((*yynode)->prefixOperatorSequence, __node_261, memoryPool);
 
         }
-        VarExpressionAst *__node_261 = 0;
-        if (!parseVarExpression(&__node_261))
+        VarExpressionAst *__node_262 = 0;
+        if (!parseVarExpression(&__node_262))
         {
             if (!mBlockErrors)
             {
@@ -11933,13 +11932,13 @@ bool Parser::parseUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst **y
             }
             return false;
         }
-        (*yynode)->varExpression = __node_261;
+        (*yynode)->varExpression = __node_262;
 
         while (yytoken == Token_INC
                || yytoken == Token_DEC)
         {
-            PostprefixOperatorAst *__node_262 = 0;
-            if (!parsePostprefixOperator(&__node_262))
+            PostprefixOperatorAst *__node_263 = 0;
+            if (!parsePostprefixOperator(&__node_263))
             {
                 if (!mBlockErrors)
                 {
@@ -11947,7 +11946,7 @@ bool Parser::parseUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst **y
                 }
                 return false;
             }
-            (*yynode)->postfixOperatorSequence = snoc((*yynode)->postfixOperatorSequence, __node_262, memoryPool);
+            (*yynode)->postfixOperatorSequence = snoc((*yynode)->postfixOperatorSequence, __node_263, memoryPool);
 
         }
     }
@@ -11967,7 +11966,10 @@ bool Parser::parseVarExpression(VarExpressionAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_FILE
+    if (yytoken == Token_STRING
+        || yytoken == Token_DNUMBER
+        || yytoken == Token_CONSTANT_ENCAPSED_STRING
+        || yytoken == Token_FILE
         || yytoken == Token_METHOD_C
         || yytoken == Token_DOLLAR
         || yytoken == Token_EMPTY
@@ -11984,18 +11986,15 @@ bool Parser::parseVarExpression(VarExpressionAst **yynode)
         || yytoken == Token_LINE
         || yytoken == Token_CLASS_C
         || yytoken == Token_BACKTICK
-        || yytoken == Token_ISSET
-        || yytoken == Token_STRING
-        || yytoken == Token_DNUMBER
-        || yytoken == Token_CONSTANT_ENCAPSED_STRING)
+        || yytoken == Token_ISSET)
     {
         if ((yytoken == Token_VARIABLE
              || yytoken == Token_DOLLAR
              || yytoken == Token_STRING) && ( m_state.varExpressionState == OnlyVariable ))
         {
             m_state.varExpressionState = Normal;
-            VariableAst *__node_263 = 0;
-            if (!parseVariable(&__node_263))
+            VariableAst *__node_264 = 0;
+            if (!parseVariable(&__node_264))
             {
                 if (!mBlockErrors)
                 {
@@ -12003,14 +12002,14 @@ bool Parser::parseVarExpression(VarExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->variable = __node_263;
+            (*yynode)->variable = __node_264;
 
         }
         else if ((yytoken == Token_NEW) && ( m_state.varExpressionState == OnlyNewObject ))
         {
             m_state.varExpressionState = Normal;
-            VarExpressionNewObjectAst *__node_264 = 0;
-            if (!parseVarExpressionNewObject(&__node_264))
+            VarExpressionNewObjectAst *__node_265 = 0;
+            if (!parseVarExpressionNewObject(&__node_265))
             {
                 if (!mBlockErrors)
                 {
@@ -12018,10 +12017,13 @@ bool Parser::parseVarExpression(VarExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->newObject = __node_264;
+            (*yynode)->newObject = __node_265;
 
         }
-        else if (yytoken == Token_FILE
+        else if (yytoken == Token_STRING
+                 || yytoken == Token_DNUMBER
+                 || yytoken == Token_CONSTANT_ENCAPSED_STRING
+                 || yytoken == Token_FILE
                  || yytoken == Token_METHOD_C
                  || yytoken == Token_DOLLAR
                  || yytoken == Token_EMPTY
@@ -12038,13 +12040,10 @@ bool Parser::parseVarExpression(VarExpressionAst **yynode)
                  || yytoken == Token_LINE
                  || yytoken == Token_CLASS_C
                  || yytoken == Token_BACKTICK
-                 || yytoken == Token_ISSET
-                 || yytoken == Token_STRING
-                 || yytoken == Token_DNUMBER
-                 || yytoken == Token_CONSTANT_ENCAPSED_STRING)
+                 || yytoken == Token_ISSET)
         {
-            VarExpressionNormalAst *__node_265 = 0;
-            if (!parseVarExpressionNormal(&__node_265))
+            VarExpressionNormalAst *__node_266 = 0;
+            if (!parseVarExpressionNormal(&__node_266))
             {
                 if (!mBlockErrors)
                 {
@@ -12052,7 +12051,7 @@ bool Parser::parseVarExpression(VarExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->varExpressionNormal = __node_265;
+            (*yynode)->varExpressionNormal = __node_266;
 
         }
         else
@@ -12088,8 +12087,8 @@ bool Parser::parseVarExpressionNewObject(VarExpressionNewObjectAst **yynode)
         }
         yylex();
 
-        ClassNameReferenceAst *__node_266 = 0;
-        if (!parseClassNameReference(&__node_266))
+        ClassNameReferenceAst *__node_267 = 0;
+        if (!parseClassNameReference(&__node_267))
         {
             if (!mBlockErrors)
             {
@@ -12097,10 +12096,10 @@ bool Parser::parseVarExpressionNewObject(VarExpressionNewObjectAst **yynode)
             }
             return false;
         }
-        (*yynode)->className = __node_266;
+        (*yynode)->className = __node_267;
 
-        CtorArgumentsAst *__node_267 = 0;
-        if (!parseCtorArguments(&__node_267))
+        CtorArgumentsAst *__node_268 = 0;
+        if (!parseCtorArguments(&__node_268))
         {
             if (!mBlockErrors)
             {
@@ -12108,7 +12107,7 @@ bool Parser::parseVarExpressionNewObject(VarExpressionNewObjectAst **yynode)
             }
             return false;
         }
-        (*yynode)->ctor = __node_267;
+        (*yynode)->ctor = __node_268;
 
     }
     else
@@ -12127,7 +12126,10 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_FILE
+    if (yytoken == Token_STRING
+        || yytoken == Token_DNUMBER
+        || yytoken == Token_CONSTANT_ENCAPSED_STRING
+        || yytoken == Token_FILE
         || yytoken == Token_METHOD_C
         || yytoken == Token_DOLLAR
         || yytoken == Token_EMPTY
@@ -12144,10 +12146,7 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
         || yytoken == Token_LINE
         || yytoken == Token_CLASS_C
         || yytoken == Token_BACKTICK
-        || yytoken == Token_ISSET
-        || yytoken == Token_STRING
-        || yytoken == Token_DNUMBER
-        || yytoken == Token_CONSTANT_ENCAPSED_STRING)
+        || yytoken == Token_ISSET)
     {
         if (yytoken == Token_LPAREN)
         {
@@ -12161,8 +12160,8 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
             }
             yylex();
 
-            ExprAst *__node_268 = 0;
-            if (!parseExpr(&__node_268))
+            ExprAst *__node_269 = 0;
+            if (!parseExpr(&__node_269))
             {
                 if (!mBlockErrors)
                 {
@@ -12170,7 +12169,7 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->expression = __node_268;
+            (*yynode)->expression = __node_269;
 
             if (yytoken != Token_RPAREN)
             {
@@ -12195,8 +12194,8 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
             }
             yylex();
 
-            EncapsListAst *__node_269 = 0;
-            if (!parseEncapsList(&__node_269))
+            EncapsListAst *__node_270 = 0;
+            if (!parseEncapsList(&__node_270))
             {
                 if (!mBlockErrors)
                 {
@@ -12204,7 +12203,7 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->encapsList = __node_269;
+            (*yynode)->encapsList = __node_270;
 
             if (yytoken != Token_BACKTICK)
             {
@@ -12217,9 +12216,7 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
             yylex();
 
         }
-        else if (yytoken == Token_DOUBLE_QUOTE
-                 || yytoken == Token_FILE
-                 || yytoken == Token_VARIABLE
+        else if (yytoken == Token_VARIABLE
                  || yytoken == Token_DOLLAR
                  || yytoken == Token_LNUMBER
                  || yytoken == Token_CLASS_C
@@ -12230,18 +12227,20 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
                  || yytoken == Token_STRING
                  || yytoken == Token_FUNC_C
                  || yytoken == Token_START_HEREDOC
-                 || yytoken == Token_METHOD_C)
+                 || yytoken == Token_METHOD_C
+                 || yytoken == Token_DOUBLE_QUOTE
+                 || yytoken == Token_FILE)
         {
             bool blockErrors_3 = blockErrors(true);
             qint64 try_startToken_3 = tokenStream->index() - 1;
             ParserState *try_startState_3 = copyCurrentState();
             {
-                VariableAst *__node_270 = 0;
-                if (!parseVariable(&__node_270))
+                VariableAst *__node_271 = 0;
+                if (!parseVariable(&__node_271))
                 {
                     goto __catch_3;
                 }
-                (*yynode)->variable = __node_270;
+                (*yynode)->variable = __node_271;
 
                 m_state.varExpressionIsVariable = true;
             }
@@ -12260,8 +12259,8 @@ __catch_3:
                 blockErrors(blockErrors_3);
                 rewind(try_startToken_3);
 
-                ScalarAst *__node_271 = 0;
-                if (!parseScalar(&__node_271))
+                ScalarAst *__node_272 = 0;
+                if (!parseScalar(&__node_272))
                 {
                     if (!mBlockErrors)
                     {
@@ -12269,7 +12268,7 @@ __catch_3:
                     }
                     return false;
                 }
-                (*yynode)->scalar = __node_271;
+                (*yynode)->scalar = __node_272;
 
             }
 
@@ -12296,13 +12295,7 @@ __catch_3:
             }
             yylex();
 
-            if (yytoken == Token_STRING_CAST
-                || yytoken == Token_VARIABLE
-                || yytoken == Token_PRINT
-                || yytoken == Token_FILE
-                || yytoken == Token_START_HEREDOC
-                || yytoken == Token_NEW
-                || yytoken == Token_STRING_VARNAME
+            if (yytoken == Token_STRING_VARNAME
                 || yytoken == Token_DOUBLE_QUOTE
                 || yytoken == Token_EVAL
                 || yytoken == Token_BIT_AND
@@ -12313,12 +12306,12 @@ __catch_3:
                 || yytoken == Token_ISSET
                 || yytoken == Token_REQUIRE
                 || yytoken == Token_CLASS_C
-                || yytoken == Token_OBJECT_CAST
                 || yytoken == Token_DNUMBER
+                || yytoken == Token_OBJECT_CAST
                 || yytoken == Token_EXIT
                 || yytoken == Token_BACKTICK
-                || yytoken == Token_EMPTY
                 || yytoken == Token_DEC
+                || yytoken == Token_EMPTY
                 || yytoken == Token_REQUIRE_ONCE
                 || yytoken == Token_METHOD_C
                 || yytoken == Token_AT
@@ -12339,10 +12332,16 @@ __catch_3:
                 || yytoken == Token_MINUS
                 || yytoken == Token_STRING
                 || yytoken == Token_INCLUDE_ONCE
-                || yytoken == Token_LIST)
+                || yytoken == Token_LIST
+                || yytoken == Token_STRING_CAST
+                || yytoken == Token_VARIABLE
+                || yytoken == Token_PRINT
+                || yytoken == Token_FILE
+                || yytoken == Token_START_HEREDOC
+                || yytoken == Token_NEW)
             {
-                ArrayPairValueAst *__node_272 = 0;
-                if (!parseArrayPairValue(&__node_272))
+                ArrayPairValueAst *__node_273 = 0;
+                if (!parseArrayPairValue(&__node_273))
                 {
                     if (!mBlockErrors)
                     {
@@ -12350,7 +12349,7 @@ __catch_3:
                     }
                     return false;
                 }
-                (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_272, memoryPool);
+                (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_273, memoryPool);
 
                 while (yytoken == Token_COMMA)
                 {
@@ -12368,8 +12367,8 @@ __catch_3:
                     {
                         break;
                     }
-                    ArrayPairValueAst *__node_273 = 0;
-                    if (!parseArrayPairValue(&__node_273))
+                    ArrayPairValueAst *__node_274 = 0;
+                    if (!parseArrayPairValue(&__node_274))
                     {
                         if (!mBlockErrors)
                         {
@@ -12377,7 +12376,7 @@ __catch_3:
                         }
                         return false;
                     }
-                    (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_273, memoryPool);
+                    (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_274, memoryPool);
 
                 }
             }
@@ -12421,8 +12420,8 @@ __catch_3:
             }
             yylex();
 
-            VariableAst *__node_274 = 0;
-            if (!parseVariable(&__node_274))
+            VariableAst *__node_275 = 0;
+            if (!parseVariable(&__node_275))
             {
                 if (!mBlockErrors)
                 {
@@ -12430,7 +12429,7 @@ __catch_3:
                 }
                 return false;
             }
-            (*yynode)->issetVariableSequence = snoc((*yynode)->issetVariableSequence, __node_274, memoryPool);
+            (*yynode)->issetVariableSequence = snoc((*yynode)->issetVariableSequence, __node_275, memoryPool);
 
             while (yytoken == Token_COMMA)
             {
@@ -12444,8 +12443,8 @@ __catch_3:
                 }
                 yylex();
 
-                VariableAst *__node_275 = 0;
-                if (!parseVariable(&__node_275))
+                VariableAst *__node_276 = 0;
+                if (!parseVariable(&__node_276))
                 {
                     if (!mBlockErrors)
                     {
@@ -12453,7 +12452,7 @@ __catch_3:
                     }
                     return false;
                 }
-                (*yynode)->issetVariableSequence = snoc((*yynode)->issetVariableSequence, __node_275, memoryPool);
+                (*yynode)->issetVariableSequence = snoc((*yynode)->issetVariableSequence, __node_276, memoryPool);
 
             }
             if (yytoken != Token_RPAREN)
@@ -12489,8 +12488,8 @@ __catch_3:
             }
             yylex();
 
-            VariableAst *__node_276 = 0;
-            if (!parseVariable(&__node_276))
+            VariableAst *__node_277 = 0;
+            if (!parseVariable(&__node_277))
             {
                 if (!mBlockErrors)
                 {
@@ -12498,7 +12497,7 @@ __catch_3:
                 }
                 return false;
             }
-            (*yynode)->emptyVarialbe = __node_276;
+            (*yynode)->emptyVarialbe = __node_277;
 
             if (yytoken != Token_RPAREN)
             {
@@ -12513,8 +12512,8 @@ __catch_3:
         }
         else if (yytoken == Token_NEW)
         {
-            VarExpressionNewObjectAst *__node_277 = 0;
-            if (!parseVarExpressionNewObject(&__node_277))
+            VarExpressionNewObjectAst *__node_278 = 0;
+            if (!parseVarExpressionNewObject(&__node_278))
             {
                 if (!mBlockErrors)
                 {
@@ -12522,7 +12521,7 @@ __catch_3:
                 }
                 return false;
             }
-            (*yynode)->newObject = __node_277;
+            (*yynode)->newObject = __node_278;
 
         }
         else if (yytoken == Token_CLONE)
@@ -12537,8 +12536,8 @@ __catch_3:
             }
             yylex();
 
-            VarExpressionNormalAst *__node_278 = 0;
-            if (!parseVarExpressionNormal(&__node_278))
+            VarExpressionNormalAst *__node_279 = 0;
+            if (!parseVarExpressionNormal(&__node_279))
             {
                 if (!mBlockErrors)
                 {
@@ -12546,7 +12545,7 @@ __catch_3:
                 }
                 return false;
             }
-            (*yynode)->cloneCar = __node_278;
+            (*yynode)->cloneCar = __node_279;
 
         }
         else
@@ -12574,8 +12573,8 @@ bool Parser::parseVariable(VariableAst **yynode)
         || yytoken == Token_DOLLAR
         || yytoken == Token_STRING)
     {
-        BaseVariableWithFunctionCallsAst *__node_279 = 0;
-        if (!parseBaseVariableWithFunctionCalls(&__node_279))
+        BaseVariableWithFunctionCallsAst *__node_280 = 0;
+        if (!parseBaseVariableWithFunctionCalls(&__node_280))
         {
             if (!mBlockErrors)
             {
@@ -12583,12 +12582,12 @@ bool Parser::parseVariable(VariableAst **yynode)
             }
             return false;
         }
-        (*yynode)->var = __node_279;
+        (*yynode)->var = __node_280;
 
         while (yytoken == Token_OBJECT_OPERATOR)
         {
-            VariablePropertyAst *__node_280 = 0;
-            if (!parseVariableProperty(&__node_280))
+            VariablePropertyAst *__node_281 = 0;
+            if (!parseVariableProperty(&__node_281))
             {
                 if (!mBlockErrors)
                 {
@@ -12596,7 +12595,7 @@ bool Parser::parseVariable(VariableAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->variablePropertiesSequence = snoc((*yynode)->variablePropertiesSequence, __node_280, memoryPool);
+            (*yynode)->variablePropertiesSequence = snoc((*yynode)->variablePropertiesSequence, __node_281, memoryPool);
 
         }
     }
@@ -12646,23 +12645,22 @@ bool Parser::parseVariableName(VariableNameAst **yynode)
     *yynode = create<VariableNameAst>();
 
     (*yynode)->startToken = tokenStream->index() - 1;
-    (*yynode)->name = -1;
 
     if (yytoken == Token_LBRACE
         || yytoken == Token_STRING)
     {
         if (yytoken == Token_STRING)
         {
-            if (yytoken != Token_STRING)
+            IdentifierAst *__node_282 = 0;
+            if (!parseIdentifier(&__node_282))
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_STRING, "string");
+                    expectedSymbol(AstNode::IdentifierKind, "identifier");
                 }
                 return false;
             }
-            (*yynode)->name = tokenStream->index() - 1;
-            yylex();
+            (*yynode)->name = __node_282;
 
         }
         else if (yytoken == Token_LBRACE)
@@ -12677,8 +12675,8 @@ bool Parser::parseVariableName(VariableNameAst **yynode)
             }
             yylex();
 
-            ExprAst *__node_281 = 0;
-            if (!parseExpr(&__node_281))
+            ExprAst *__node_283 = 0;
+            if (!parseExpr(&__node_283))
             {
                 if (!mBlockErrors)
                 {
@@ -12686,7 +12684,7 @@ bool Parser::parseVariableName(VariableNameAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->expr = __node_281;
+            (*yynode)->expr = __node_283;
 
             if (yytoken != Token_RBRACE)
             {
@@ -12719,6 +12717,7 @@ bool Parser::parseVariableProperty(VariablePropertyAst **yynode)
     *yynode = create<VariablePropertyAst>();
 
     (*yynode)->startToken = tokenStream->index() - 1;
+    (*yynode)->isFunctionCall = -1;
 
     if (yytoken == Token_OBJECT_OPERATOR)
     {
@@ -12732,8 +12731,8 @@ bool Parser::parseVariableProperty(VariablePropertyAst **yynode)
         }
         yylex();
 
-        ObjectPropertyAst *__node_282 = 0;
-        if (!parseObjectProperty(&__node_282))
+        ObjectPropertyAst *__node_284 = 0;
+        if (!parseObjectProperty(&__node_284))
         {
             if (!mBlockErrors)
             {
@@ -12741,7 +12740,7 @@ bool Parser::parseVariableProperty(VariablePropertyAst **yynode)
             }
             return false;
         }
-        (*yynode)->objectProperty = __node_282;
+        (*yynode)->objectProperty = __node_284;
 
         if (yytoken == Token_LPAREN)
         {
@@ -12753,15 +12752,10 @@ bool Parser::parseVariableProperty(VariablePropertyAst **yynode)
                 }
                 return false;
             }
+            (*yynode)->isFunctionCall = tokenStream->index() - 1;
             yylex();
 
-            if (yytoken == Token_STRING_CAST
-                || yytoken == Token_VARIABLE
-                || yytoken == Token_PRINT
-                || yytoken == Token_FILE
-                || yytoken == Token_START_HEREDOC
-                || yytoken == Token_NEW
-                || yytoken == Token_STRING_VARNAME
+            if (yytoken == Token_STRING_VARNAME
                 || yytoken == Token_DOUBLE_QUOTE
                 || yytoken == Token_EVAL
                 || yytoken == Token_BIT_AND
@@ -12772,12 +12766,12 @@ bool Parser::parseVariableProperty(VariablePropertyAst **yynode)
                 || yytoken == Token_ISSET
                 || yytoken == Token_REQUIRE
                 || yytoken == Token_CLASS_C
-                || yytoken == Token_OBJECT_CAST
                 || yytoken == Token_DNUMBER
+                || yytoken == Token_OBJECT_CAST
                 || yytoken == Token_EXIT
                 || yytoken == Token_BACKTICK
-                || yytoken == Token_EMPTY
                 || yytoken == Token_DEC
+                || yytoken == Token_EMPTY
                 || yytoken == Token_REQUIRE_ONCE
                 || yytoken == Token_METHOD_C
                 || yytoken == Token_AT
@@ -12798,10 +12792,16 @@ bool Parser::parseVariableProperty(VariablePropertyAst **yynode)
                 || yytoken == Token_MINUS
                 || yytoken == Token_STRING
                 || yytoken == Token_INCLUDE_ONCE
-                || yytoken == Token_LIST)
+                || yytoken == Token_LIST
+                || yytoken == Token_STRING_CAST
+                || yytoken == Token_VARIABLE
+                || yytoken == Token_PRINT
+                || yytoken == Token_FILE
+                || yytoken == Token_START_HEREDOC
+                || yytoken == Token_NEW)
             {
-                FunctionCallParameterListAst *__node_283 = 0;
-                if (!parseFunctionCallParameterList(&__node_283))
+                FunctionCallParameterListAst *__node_285 = 0;
+                if (!parseFunctionCallParameterList(&__node_285))
                 {
                     if (!mBlockErrors)
                     {
@@ -12809,7 +12809,7 @@ bool Parser::parseVariableProperty(VariablePropertyAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->parameterList = __node_283;
+                (*yynode)->parameterList = __node_285;
 
             }
             else if (true /*epsilon*/)
@@ -12857,8 +12857,8 @@ bool Parser::parseVariableWithoutObjects(VariableWithoutObjectsAst **yynode)
     if (yytoken == Token_VARIABLE
         || yytoken == Token_DOLLAR)
     {
-        CompoundVariableWithSimpleIndirectReferenceAst *__node_284 = 0;
-        if (!parseCompoundVariableWithSimpleIndirectReference(&__node_284))
+        CompoundVariableWithSimpleIndirectReferenceAst *__node_286 = 0;
+        if (!parseCompoundVariableWithSimpleIndirectReference(&__node_286))
         {
             if (!mBlockErrors)
             {
@@ -12866,13 +12866,13 @@ bool Parser::parseVariableWithoutObjects(VariableWithoutObjectsAst **yynode)
             }
             return false;
         }
-        (*yynode)->variable = __node_284;
+        (*yynode)->variable = __node_286;
 
         while (yytoken == Token_LBRACE
                || yytoken == Token_LBRACKET)
         {
-            DimListItemAst *__node_285 = 0;
-            if (!parseDimListItem(&__node_285))
+            DimListItemAst *__node_287 = 0;
+            if (!parseDimListItem(&__node_287))
             {
                 if (!mBlockErrors)
                 {
@@ -12880,7 +12880,7 @@ bool Parser::parseVariableWithoutObjects(VariableWithoutObjectsAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->offsetItemsSequence = snoc((*yynode)->offsetItemsSequence, __node_285, memoryPool);
+            (*yynode)->offsetItemsSequence = snoc((*yynode)->offsetItemsSequence, __node_287, memoryPool);
 
         }
     }
@@ -12900,13 +12900,7 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_STRING_CAST
-        || yytoken == Token_VARIABLE
-        || yytoken == Token_PRINT
-        || yytoken == Token_FILE
-        || yytoken == Token_NEW
-        || yytoken == Token_START_HEREDOC
-        || yytoken == Token_UNSET
+    if (yytoken == Token_UNSET
         || yytoken == Token_CONTINUE
         || yytoken == Token_STRING_VARNAME
         || yytoken == Token_DOUBLE_QUOTE
@@ -12914,8 +12908,8 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
         || yytoken == Token_SWITCH
         || yytoken == Token_ARRAY
         || yytoken == Token_FOR
-        || yytoken == Token_BREAK
         || yytoken == Token_ARRAY_CAST
+        || yytoken == Token_BREAK
         || yytoken == Token_CLONE
         || yytoken == Token_INC
         || yytoken == Token_ISSET
@@ -12931,8 +12925,8 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
         || yytoken == Token_BACKTICK
         || yytoken == Token_DEC
         || yytoken == Token_EMPTY
-        || yytoken == Token_DO
         || yytoken == Token_CLOSE_TAG
+        || yytoken == Token_DO
         || yytoken == Token_INLINE_HTML
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_TRY
@@ -12948,8 +12942,8 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
         || yytoken == Token_INT_CAST
         || yytoken == Token_WHILE
         || yytoken == Token_FUNC_C
-        || yytoken == Token_PLUS
         || yytoken == Token_GLOBAL
+        || yytoken == Token_PLUS
         || yytoken == Token_UNSET_CAST
         || yytoken == Token_INCLUDE
         || yytoken == Token_DOLLAR
@@ -12965,15 +12959,15 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
         || yytoken == Token_STATIC
         || yytoken == Token_COLON
         || yytoken == Token_LIST
-        || yytoken == Token_LBRACE)
+        || yytoken == Token_LBRACE
+        || yytoken == Token_STRING_CAST
+        || yytoken == Token_VARIABLE
+        || yytoken == Token_PRINT
+        || yytoken == Token_FILE
+        || yytoken == Token_NEW
+        || yytoken == Token_START_HEREDOC)
     {
-        if (yytoken == Token_STRING_CAST
-            || yytoken == Token_VARIABLE
-            || yytoken == Token_PRINT
-            || yytoken == Token_FILE
-            || yytoken == Token_NEW
-            || yytoken == Token_START_HEREDOC
-            || yytoken == Token_UNSET
+        if (yytoken == Token_UNSET
             || yytoken == Token_CONTINUE
             || yytoken == Token_STRING_VARNAME
             || yytoken == Token_DOUBLE_QUOTE
@@ -12981,8 +12975,8 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
             || yytoken == Token_SWITCH
             || yytoken == Token_ARRAY
             || yytoken == Token_FOR
-            || yytoken == Token_BREAK
             || yytoken == Token_ARRAY_CAST
+            || yytoken == Token_BREAK
             || yytoken == Token_CLONE
             || yytoken == Token_INC
             || yytoken == Token_ISSET
@@ -12998,8 +12992,8 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
             || yytoken == Token_BACKTICK
             || yytoken == Token_DEC
             || yytoken == Token_EMPTY
-            || yytoken == Token_DO
             || yytoken == Token_CLOSE_TAG
+            || yytoken == Token_DO
             || yytoken == Token_INLINE_HTML
             || yytoken == Token_REQUIRE_ONCE
             || yytoken == Token_TRY
@@ -13015,8 +13009,8 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
             || yytoken == Token_INT_CAST
             || yytoken == Token_WHILE
             || yytoken == Token_FUNC_C
-            || yytoken == Token_PLUS
             || yytoken == Token_GLOBAL
+            || yytoken == Token_PLUS
             || yytoken == Token_UNSET_CAST
             || yytoken == Token_INCLUDE
             || yytoken == Token_DOLLAR
@@ -13031,10 +13025,16 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
             || yytoken == Token_INCLUDE_ONCE
             || yytoken == Token_STATIC
             || yytoken == Token_LIST
-            || yytoken == Token_LBRACE)
+            || yytoken == Token_LBRACE
+            || yytoken == Token_STRING_CAST
+            || yytoken == Token_VARIABLE
+            || yytoken == Token_PRINT
+            || yytoken == Token_FILE
+            || yytoken == Token_NEW
+            || yytoken == Token_START_HEREDOC)
         {
-            StatementAst *__node_286 = 0;
-            if (!parseStatement(&__node_286))
+            StatementAst *__node_288 = 0;
+            if (!parseStatement(&__node_288))
             {
                 if (!mBlockErrors)
                 {
@@ -13042,7 +13042,7 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statement = __node_286;
+            (*yynode)->statement = __node_288;
 
         }
         else if (yytoken == Token_COLON)
@@ -13057,8 +13057,8 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
             }
             yylex();
 
-            InnerStatementListAst *__node_287 = 0;
-            if (!parseInnerStatementList(&__node_287))
+            InnerStatementListAst *__node_289 = 0;
+            if (!parseInnerStatementList(&__node_289))
             {
                 if (!mBlockErrors)
                 {
@@ -13066,7 +13066,7 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statements = __node_287;
+            (*yynode)->statements = __node_289;
 
             if (yytoken != Token_ENDWHILE)
             {
@@ -13078,8 +13078,8 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
             }
             yylex();
 
-            SemicolonOrCloseTagAst *__node_288 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_288))
+            SemicolonOrCloseTagAst *__node_290 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_290))
             {
                 if (!mBlockErrors)
                 {
