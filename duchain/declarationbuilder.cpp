@@ -34,6 +34,18 @@ using namespace KDevelop;
 
 namespace Php {
 
+class ScalarExpressionVisitor : public DefaultVisitor
+{
+public:
+    ScalarExpressionVisitor() : m_node(0) {}
+    CommonScalarAst* node() const { return m_node; }
+private:
+    virtual void visitCommonScalar(CommonScalarAst* node) {
+        m_node = node;
+    }
+    CommonScalarAst* m_node;
+};
+
 DeclarationBuilder::DeclarationBuilder (ParseSession* session)
     : m_lastVariableIdentifier(0)
 {
@@ -272,4 +284,28 @@ void DeclarationBuilder::visitCompoundVariableWithSimpleIndirectReference(Compou
     m_lastVariableIdentifier = node->variable;
     DeclarationBuilderBase::visitCompoundVariableWithSimpleIndirectReference(node);
 }
+
+void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
+{
+    DeclarationBuilderBase::visitFunctionCall(node);
+    if (node->stringFunctionNameOrClass && !node->stringFunctionName && !node->varFunctionName) {
+        if (identifierForNode(node->stringFunctionNameOrClass) == QualifiedIdentifier("define")
+            && node->stringParameterList->parametersSequence->count() > 0) {
+            ScalarExpressionVisitor visitor;
+            visitor.visitNode(node->stringParameterList->parametersSequence->at(0)->element);
+            if (visitor.node() && visitor.node()->string != -1) {
+                QString constant = editor()->parseSession()->symbol(visitor.node()->string);
+                constant = constant.mid(1, constant.length()-2); //TODO: handle "FO\"O"
+                SimpleRange newRange = editorFindRange(visitor.node(), visitor.node());
+                DUChainWriteLocker lock(DUChain::lock());
+                injectContext(currentContext()->topContext()); //constants are always global
+                openDefinition(QualifiedIdentifier(constant), newRange, false);
+                currentDeclaration()->setKind(Declaration::Instance);
+                closeDeclaration();
+                closeInjectedContext();
+            }
+        }
+    }
+}
+
 }

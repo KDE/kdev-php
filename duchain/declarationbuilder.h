@@ -50,6 +50,7 @@ protected:
     virtual void visitExpr(ExprAst *node);
     virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
     virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
+    virtual void visitFunctionCall(FunctionCallAst* node);
 
     void classTypeOpened(KDevelop::AbstractType::Ptr type);
 

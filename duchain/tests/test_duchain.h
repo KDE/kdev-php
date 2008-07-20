@@ -58,6 +58,7 @@ private slots:
   void testStaticMemberVariable();
   void testOwnStaticMemberVariable();
   void testClassConst();
+  void testDefine();
 
 public:
   enum DumpArea {

@@ -93,7 +93,7 @@ bool ParseSession::parse( Php::StartAst** ast )
     bool matched = parser.parseStart(&phpAst);
     if( matched )
     {
-        kDebug() << "Sucessfully parsed";
+        kDebug() << "Successfully parsed";
         *ast = phpAst;
     }else
     {

@@ -699,7 +699,24 @@ void TestDUChain::testClassConst()
     release(top);
 }
 
+void TestDUChain::testDefine()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? define('FOO', 'foo'); function x() { define('BAR', 'bar'); } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("FOO")).count(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("BAR")).count(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("FOO")).first()->context(), top);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("BAR")).first()->context(), top);
+
+    release(top);
+}
 void TestDUChain::release(TopDUContext* top)
+
 {
   //KDevelop::EditorIntegrator::releaseTopRange(top->textRangePtr());
 

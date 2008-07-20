@@ -130,12 +130,6 @@ struct WhileStatementAst;
 
 class Lexer;
 
-enum NumericType
-{
-    LongNumber,
-    DoubleNumber
-};
-
 enum ModifierFlags
 {
     ModifierPrivate      = 1,
@@ -299,7 +293,7 @@ struct KDEVPHPPARSER_EXPORT AssignmentExpressionAst: public AstNode
 {
     enum { KIND = AssignmentExpressionKind };
 
-    ConditionalExpressionAst *conditionalExpression;
+    ConditionalExpressionAst *expression;
     AssignmentExpressionEqualAst *assignmentAxpressionEqual;
     AssignmentExpressionAst *assignmentExpression;
 };
@@ -486,7 +480,7 @@ struct KDEVPHPPARSER_EXPORT CommonScalarAst: public AstNode
 {
     enum { KIND = CommonScalarKind };
 
-    Php::NumericType numType;
+    qint64 string;
 };
 
 struct KDEVPHPPARSER_EXPORT CompoundVariableAst: public AstNode

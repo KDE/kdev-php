@@ -65,11 +65,6 @@ namespace KDevelop
 [:
     class Lexer;
 
-    enum NumericType  {
-        LongNumber,
-        DoubleNumber
-    };
-
     enum ModifierFlags {
         ModifierPrivate      = 1,
         ModifierPublic       = 1 << 1,
@@ -269,7 +264,7 @@ statements=innerStatementList
 -- if not we report an error
 0 --needed for line below
 [: m_state.varExpressionIsVariable = false; :] --reset flag
-conditionalExpression=conditionalExpression
+expression=conditionalExpression
 (
   assignmentAxpressionEqual=assignmentExpressionEqual | (
      (PLUS_ASSIGN | MINUS_ASSIGN | MUL_ASSIGN | DIV_ASSIGN
@@ -673,16 +668,15 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 -> encapsVarOffset ;;
 
 
-    LNUMBER [: (*yynode)->numType = Php::LongNumber;      :]
-  | DNUMBER [: (*yynode)->numType = Php::DoubleNumber;      :]
-  | CONSTANT_ENCAPSED_STRING
+    LNUMBER
+  | DNUMBER
+  | string=CONSTANT_ENCAPSED_STRING
   | LINE
   | FILE
   | CLASS_C
   | METHOD_C
   | FUNC_C
--> commonScalar [
-    member variable numType: Php::NumericType; ] ;;
+-> commonScalar ;;
 
     FUNCTION (BIT_AND | 0) functionName=identifier
     LPAREN (parameters=parameterList | 0) RPAREN LBRACE functionBody=innerStatementList RBRACE
