@@ -81,16 +81,22 @@ TokenStream* ParseSession::tokenStream() const
     return m_tokenStream;
 }
 
+
+Parser* ParseSession::createParser()
+{
+    Parser* parser = new Parser;
+    parser->setTokenStream( m_tokenStream );
+    parser->setMemoryPool( m_pool );
+    parser->setDebug( m_debug );
+    parser->tokenize(m_contents);
+    return parser;
+}
+
 bool ParseSession::parse( Php::StartAst** ast )
 {
-    Parser parser;
-    parser.setTokenStream( m_tokenStream );
-    parser.setMemoryPool( m_pool );
-    parser.setDebug( m_debug );
-
-    parser.tokenize(m_contents);
+    Parser* parser = createParser();
     StartAst* phpAst;
-    bool matched = parser.parseStart(&phpAst);
+    bool matched = parser->parseStart(&phpAst);
     if( matched )
     {
         kDebug() << "Successfully parsed";
@@ -98,9 +104,10 @@ bool ParseSession::parse( Php::StartAst** ast )
     }else
     {
         *ast = 0;
-        parser.expectedSymbol(AstNode::StartKind, "start");
+        parser->expectedSymbol(AstNode::StartKind, "start");
         kDebug() << "Couldn't parse content";
     }
+    delete parser;
     return matched;
 }
 

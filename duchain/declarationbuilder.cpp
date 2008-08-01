@@ -79,6 +79,12 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
     closeDeclaration();
 }
 
+void DeclarationBuilder::classContextOpened(KDevelop::DUContext* context)
+{
+    DUChainWriteLocker lock(DUChain::lock());
+    currentDeclaration()->setInternalContext(context);
+}
+
 void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
 {
     openDefinition(node->interfaceName, node, false);
@@ -262,7 +268,13 @@ void DeclarationBuilder::visitExpr(ExprAst *node)
 void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node)
 {
     VariableIdentifierAst* leftSideVariableIdentifier = m_lastVariableIdentifier;
+qDebug() << "before visitAssignmentExprEq " << identifierForNode(leftSideVariableIdentifier).toString();
     DeclarationBuilderBase::visitAssignmentExpressionEqual(node);
+qDebug() << "after visitAssignmentExprEq " << identifierForNode(leftSideVariableIdentifier).toString();
+if (m_expressionType) {
+    DUChainReadLocker lock(DUChain::lock());
+    qDebug() << "type-> " << m_expressionType->toString();
+}
     if (leftSideVariableIdentifier && m_expressionType) {
         //create new declaration for every assignment
         //TODO: don't create the same twice

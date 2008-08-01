@@ -1,5 +1,6 @@
 /***************************************************************************
  *   This file is part of KDevelop                                         *
+ *   Copyright 2007 David Nolden <david.nolden.kdevelop@art-master.de>     *
  *   Copyright 2008 Niko Sams <niko.sams@gmail.com>                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,52 +18,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+#ifndef EXPRESSIONPARSER_H
+#define EXPRESSIONPARSER_H
 
-#ifndef TYPEBUILDER_H
-#define TYPEBUILDER_H
-
-#include "contextbuilder.h"
-
-#include <language/duchain/builders/abstracttypebuilder.h>
-
-#include <language/duchain/types/functiontype.h>
-#include <language/duchain/declaration.h>
-#include <language/duchain/identifier.h>
-#include "types.h"
+#include "phpduchainexport.h"
+#include <duchain/duchainpointer.h>
+#include <duchain/types/abstracttype.h>
 
 namespace Php {
+    class AstNode;
+    class ParseSession;
 
-typedef KDevelop::AbstractTypeBuilder<AstNode, IdentifierAst, ContextBuilder> TypeBuilderBase;
-
-/**
- * Create types from an AstNode tree.
- *
- * \note This builder overrides visitDeclarator, in order to support
- * array types; parent classes will not have
- * their visitDeclarator function called.
- */
-class KDEVPHPDUCHAIN_EXPORT TypeBuilder: public TypeBuilderBase
+class KDEVPHPDUCHAIN_EXPORT ExpressionParser
 {
-protected:
-  virtual void visitClassDeclarationStatement( ClassDeclarationStatementAst* node );
-  virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
-  virtual void visitClassStatement(ClassStatementAst *node);
-  virtual void visitClassVariable(ClassVariableAst *node);
-  virtual void visitParameter(ParameterAst *node);
-  virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
+public:
+     /**
+     * @param strict When this is false, the expression-visitor tries to recover from problems. For example when it cannot find a matching function, it returns the first of the candidates.
+     * @param debug Enables additional output
+     * */
+    explicit ExpressionParser( bool strict = false, bool debug = false );
 
-  virtual void visitStatement(StatementAst* node);
-  virtual void visitExpr(ExprAst *node);
-
-  KDevelop::AbstractType::Ptr m_expressionType;
-  FunctionType::Ptr m_currentFunctionType;
-
+    KDevelop::AbstractType::Ptr evaluateType( const QByteArray& expression, KDevelop::DUContextPointer context, const KDevelop::TopDUContext* source = 0 );
+    KDevelop::AbstractType::Ptr evaluateType( AstNode* ast, ParseSession* session, const KDevelop::TopDUContext* source = 0 );
 private:
-    FunctionType::Ptr openFunctionType(AstNode* node);
-    ClassType::Ptr parseDocComment(AstNode* node, const QString& docCommentName);
+    bool m_strict;
+    bool m_debug;
 };
 
+
 }
-
-#endif // TYPEBUILDER_H
-
+#endif

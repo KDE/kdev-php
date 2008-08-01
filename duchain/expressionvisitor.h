@@ -17,52 +17,47 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+#ifndef EXPRESSIONVISITOR_H
+#define EXPRESSIONVISITOR_H
 
-#ifndef TYPEBUILDER_H
-#define TYPEBUILDER_H
+#include "phpdefaultvisitor.h"
+#include "phpduchainexport.h"
+#include <duchain/types/abstracttype.h>
+#include <duchain/identifier.h>
 
-#include "contextbuilder.h"
-
-#include <language/duchain/builders/abstracttypebuilder.h>
-
-#include <language/duchain/types/functiontype.h>
-#include <language/duchain/declaration.h>
-#include <language/duchain/identifier.h>
-#include "types.h"
+namespace KDevelop {
+    class TopDUContext;
+}
 
 namespace Php {
+class ParseSession;
 
-typedef KDevelop::AbstractTypeBuilder<AstNode, IdentifierAst, ContextBuilder> TypeBuilderBase;
-
-/**
- * Create types from an AstNode tree.
- *
- * \note This builder overrides visitDeclarator, in order to support
- * array types; parent classes will not have
- * their visitDeclarator function called.
- */
-class KDEVPHPDUCHAIN_EXPORT TypeBuilder: public TypeBuilderBase
+class KDEVPHPDUCHAIN_EXPORT ExpressionVisitor : public DefaultVisitor
 {
+public:
+    ExpressionVisitor(ParseSession* session, const KDevelop::TopDUContext* source, bool strict);
+    KDevelop::AbstractType::Ptr lastType();
+
 protected:
-  virtual void visitClassDeclarationStatement( ClassDeclarationStatementAst* node );
-  virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
-  virtual void visitClassStatement(ClassStatementAst *node);
-  virtual void visitClassVariable(ClassVariableAst *node);
-  virtual void visitParameter(ParameterAst *node);
-  virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
+    void visitExpr(ExprAst *node);
+    void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
+    void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
+    void visitFunctionCall(FunctionCallAst* node);
+    void visitScalar(ScalarAst *node);
+    void visitVariableProperty(VariablePropertyAst *node);
+    void visitStaticMember(StaticMemberAst* node);
 
-  virtual void visitStatement(StatementAst* node);
-  virtual void visitExpr(ExprAst *node);
+    KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
+    KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
 
-  KDevelop::AbstractType::Ptr m_expressionType;
-  FunctionType::Ptr m_currentFunctionType;
 
 private:
-    FunctionType::Ptr openFunctionType(AstNode* node);
-    ClassType::Ptr parseDocComment(AstNode* node, const QString& docCommentName);
+    ParseSession* m_session;
+    const KDevelop::TopDUContext* m_source;
+    bool m_strict;
+    KDevelop::DUContext* m_currentContext;
+    KDevelop::AbstractType::Ptr m_lastType;
 };
 
 }
-
-#endif // TYPEBUILDER_H
-
+#endif

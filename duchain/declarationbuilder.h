@@ -53,6 +53,8 @@ protected:
     virtual void visitFunctionCall(FunctionCallAst* node);
 
     void classTypeOpened(KDevelop::AbstractType::Ptr type);
+    void classContextOpened(KDevelop::DUContext* context);
+
 
 private:
     VariableIdentifierAst* m_lastVariableIdentifier;

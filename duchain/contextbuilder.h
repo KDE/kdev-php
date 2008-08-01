@@ -63,6 +63,7 @@ protected:
 
     virtual void addBaseType(const ClassType::Ptr& base, bool implementsInterface);
 
+    virtual void classContextOpened(KDevelop::DUContext* context);
 };
 
 }

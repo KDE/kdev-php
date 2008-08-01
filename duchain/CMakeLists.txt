@@ -12,6 +12,8 @@ set(duchain_SRCS
     typebuilder.cpp
     types.cpp
     dumptypes.cpp
+    expressionvisitor.cpp
+    expressionparser.cpp
     )
 
 

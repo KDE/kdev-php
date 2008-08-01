@@ -30,6 +30,7 @@
 #include "editorintegrator.h"
 #include "parsesession.h"
 #include "phpdebugvisitor.h"
+#include "expressionparser.h"
 
 using namespace KDevelop;
 namespace Php {
@@ -69,8 +70,6 @@ void TypeBuilder::visitClassDeclarationStatement( ClassDeclarationStatementAst* 
 {
     ClassType::Ptr classType = ClassType::Ptr(new ClassType());
     classType->setClassType(Class);
-    m_currentClass = classType;
-
 
     openType(classType);
 
@@ -82,8 +81,6 @@ void TypeBuilder::visitClassDeclarationStatement( ClassDeclarationStatementAst* 
     classType->close();
 
     closeType();
-
-    m_currentClass = 0;
 }
 
 void TypeBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node)
@@ -149,76 +146,10 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
 void TypeBuilder::visitExpr(ExprAst *node)
 {
     m_expressionType = 0;
+    node->ducontext = currentContext();
+    ExpressionParser ep(false, false);
+    m_expressionType = ep.evaluateType(node, editor()->parseSession()/*, currentContext()->topContext*/);
     TypeBuilderBase::visitExpr(node);
-}
-
-void TypeBuilder::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
-{
-    QualifiedIdentifier identifier = identifierForNode(node->variable);
-    if (identifier == QualifiedIdentifier("$this")) {
-        if (m_currentClass) {
-            m_expressionType = AbstractType::Ptr::staticCast(m_currentClass);
-        }
-    } else if(openTypeFromName(identifier, node, true)) {
-        closeType();
-        m_expressionType = lastType();
-    }
-    TypeBuilderBase::visitCompoundVariableWithSimpleIndirectReference(node);
-}
-
-void TypeBuilder::visitFunctionCall(FunctionCallAst* node)
-{
-    TypeBuilderBase::visitFunctionCall(node);
-    if (node->stringFunctionNameOrClass) {
-        if (node->stringFunctionName) {
-            //static function call foo::bar()
-            DUChainReadLocker lock(DUChain::lock());
-            QString ident;
-            if (identifierForNode(node->stringFunctionNameOrClass) != QualifiedIdentifier("self")) {
-                ident += editor()->parseSession()->symbol(node->stringFunctionNameOrClass->string);
-                ident += "::";
-            }
-            ident += editor()->parseSession()->symbol(node->stringFunctionName->string);
-            QList<Declaration*> declarations = currentContext()->findDeclarations(QualifiedIdentifier(ident));
-            if (!declarations.isEmpty()) {
-                FunctionType::Ptr function = declarations.last()->type<FunctionType>();
-                if (function) {
-                    m_expressionType = function->returnType();
-                }
-            }
-        } else if (node->varFunctionName) {
-            //static function call foo::$bar()
-        } else {
-            //global function call foo();
-            DUChainReadLocker lock(DUChain::lock());
-            QList<Declaration*> declarations = currentContext()->findDeclarations(identifierForNode(node->stringFunctionNameOrClass));
-            if (!declarations.isEmpty()) {
-                FunctionType::Ptr function = declarations.last()->type<FunctionType>();
-                if (function) {
-                    m_expressionType = function->returnType();
-                }
-            }
-        }
-    }
-}
-
-void TypeBuilder::visitVarExpressionNewObject(VarExpressionNewObjectAst *node)
-{
-    TypeBuilderBase::visitVarExpressionNewObject(node);
-    if (node->className->identifier) {
-        if(openTypeFromName(node->className->identifier, true)) {
-            closeType();
-            m_expressionType = lastType();
-        }
-    }
-}
-void TypeBuilder::visitScalar(ScalarAst *node)
-{
-    TypeBuilderBase::visitScalar(node);
-
-    //TODO: is this correct?
-    IntegralType::Ptr integral(new IntegralType());
-    m_expressionType = AbstractType::Ptr::staticCast(integral);
 }
 
 void TypeBuilder::visitStatement(StatementAst* node)
@@ -232,85 +163,6 @@ void TypeBuilder::visitStatement(StatementAst* node)
     }
 }
 
-void TypeBuilder::visitVariableProperty(VariablePropertyAst *node)
-{
-    if (node->objectProperty->objectDimList) {
-        //handle $foo->bar() and $foo->baz, $foo is m_expressionType
-        if (m_expressionType) {
-            if (ClassType::Ptr::dynamicCast(m_expressionType)) {
-                DUChainReadLocker lock(DUChain::lock());
-                QualifiedIdentifier id = ClassType::Ptr::staticCast(m_expressionType)->qualifiedIdentifier();
-                QList<Declaration*> variableDecs = currentContext()->findDeclarations(id);
-                if (!variableDecs.isEmpty()) {
-                    DUContext* context = variableDecs.first()->internalContext();
-                    if (!context && currentContext()->parentContext()->localScopeIdentifier() == variableDecs.first()->qualifiedIdentifier()) {
-                        //class is currentClass (internalContext is not yet set)
-                        context = currentContext()->parentContext();
-                    }
-                    QualifiedIdentifier propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
-                    if (node->isFunctionCall != -1) {
-                        //function call $foo->bar()
-                        QList<Declaration*> propertyDeclarations = context->findDeclarations(propertyId);
-                        FunctionType::Ptr functionType;
-                        if (!propertyDeclarations.isEmpty()) {
-                            functionType = propertyDeclarations.first()->type<FunctionType>();
-                        }
-                        if (functionType) {
-                            m_expressionType = functionType->returnType();
-                        } else {
-                            m_expressionType = 0;
-                        }
-                    } else {
-                        //member variable $foo->bar
-                        //TODO: better solution for adding the $
-                        QualifiedIdentifier varId = QualifiedIdentifier(QString("$") + propertyId.toString());
-                        QList<Declaration*> propertyDeclarations = context->findDeclarations(varId);
-                        if (!propertyDeclarations.isEmpty()) {
-                            m_expressionType = propertyDeclarations.first()->abstractType();
-                        } else {
-                            m_expressionType = 0;
-                        }
-                    }
-                } else {
-                    m_expressionType = 0;
-                }
-            }
-        }
-    }
-    TypeBuilderBase::visitVariableProperty(node);
-}
-
-void TypeBuilder::visitStaticMember(StaticMemberAst* node)
-{
-    TypeBuilderBase::visitStaticMember(node);
-    if (node->variable->variable->variable) {
-        DUContext* context = 0;
-        if (identifierForNode(node->className) == QualifiedIdentifier("self")) {
-            context = currentContext()->parentContext();
-        } else {
-            DUChainReadLocker lock(DUChain::lock());
-            QList<Declaration*> decs = currentContext()->findDeclarations(identifierForNode(node->className));
-            if (!decs.isEmpty()) {
-                context = decs.first()->internalContext();
-                if (!context && currentContext()->parentContext()->localScopeIdentifier() == decs.first()->qualifiedIdentifier()) {
-                    //className is currentClass (internalContext is not yet set)
-                    context = currentContext()->parentContext();
-                }
-            }
-        }
-        if (context) {
-            DUChainReadLocker lock(DUChain::lock());
-            QList<Declaration*> decs = context->findDeclarations(identifierForNode(node->variable->variable->variable));
-            if (!decs.isEmpty()) {
-                m_expressionType = decs.first()->abstractType();
-            } else {
-                m_expressionType = 0;
-            }
-        } else {
-            m_expressionType = 0;
-        }
-    }
-}
 
 }
 

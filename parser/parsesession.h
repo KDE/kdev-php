@@ -41,6 +41,7 @@ namespace Php
 {
     class TokenStream;
     class StartAst;
+    class Parser;
 
 class KDEVPHPPARSER_EXPORT ParseSession
 {
@@ -55,6 +56,7 @@ public:
     QString contents() const;
 
     bool parse( Php::StartAst** );
+    Parser* createParser();
 
     QString symbol(qint64 token) const;
 

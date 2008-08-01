@@ -95,8 +95,13 @@ QualifiedIdentifier ContextBuilder::identifierForNode(VariableIdentifierAst* id)
 void ContextBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst* node)
 {
     openContext(node, DUContext::Class, node->className);
+    classContextOpened(currentContext()); //This callback is needed, so we can set the internal context and so find the declaration for the context (before closeDeclaration())
     DefaultVisitor::visitClassDeclarationStatement(node);
     closeContext();
+}
+
+void ContextBuilder::classContextOpened(KDevelop::DUContext* context)
+{
 }
 
 void ContextBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node)

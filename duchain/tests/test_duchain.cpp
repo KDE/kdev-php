@@ -689,7 +689,7 @@ void TestDUChain::testClassConst()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { const FOO = 0; } ");
 
-    TopDUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("A::FOO")).count(), 1);
@@ -705,7 +705,7 @@ void TestDUChain::testDefine()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? define('FOO', 'foo'); function x() { define('BAR', 'bar'); } ");
 
-    TopDUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("FOO")).count(), 1);
