@@ -1,7 +1,3 @@
-include_directories(${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    )
-
 set(parser_STAT_SRCS
     phplexer.cpp
     parsesession.cpp

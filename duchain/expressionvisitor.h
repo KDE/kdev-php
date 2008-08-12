@@ -27,6 +27,7 @@
 
 namespace KDevelop {
     class TopDUContext;
+    class Declaration;
 }
 
 namespace Php {
@@ -37,6 +38,7 @@ class KDEVPHPDUCHAIN_EXPORT ExpressionVisitor : public DefaultVisitor
 public:
     ExpressionVisitor(ParseSession* session, const KDevelop::TopDUContext* source, bool strict);
     KDevelop::AbstractType::Ptr lastType();
+    QList<KDevelop::Declaration*> lastDeclarations();
 
 protected:
     void visitExpr(ExprAst *node);
@@ -57,6 +59,7 @@ private:
     bool m_strict;
     KDevelop::DUContext* m_currentContext;
     KDevelop::AbstractType::Ptr m_lastType;
+    QList<KDevelop::Declaration*> m_lastDeclarations;
 };
 
 }

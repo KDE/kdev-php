@@ -26,6 +26,8 @@
 #include "expressionvisitor.h"
 
 #include <duchain/ducontext.h>
+#include <duchain/duchainlock.h>
+#include <duchain/duchain.h>
 
 #include <kdebug.h>
 using namespace KDevelop;
@@ -36,31 +38,31 @@ ExpressionParser::ExpressionParser( bool strict, bool debug ) : m_strict(strict)
 {
 }
 
-AbstractType::Ptr ExpressionParser::evaluateType( const QByteArray& expression, DUContextPointer context, const KDevelop::TopDUContext* source)
+ExpressionEvaluationResult ExpressionParser::evaluateType( const QByteArray& expression, DUContextPointer context, const KDevelop::TopDUContext* source)
 {
     if( m_debug )
         kDebug() << "==== .Evaluating ..:" << endl << expression;
 
     ParseSession* session = new ParseSession();
     session->setContents(expression);
-    Parser* parser = session->createParser();
+    Parser* parser = session->createParser(Parser::DefaultState);
     ExprAst* ast = 0;
     if (!parser->parseExpr(&ast)) {
         kDebug() << "Failed to parse \"" << expression << "\"";
         delete session;
         delete parser;
-        return AbstractType::Ptr(0);
+        return ExpressionEvaluationResult();
     }
     ast->ducontext = dynamic_cast<DUContext*>(context.data());
 
-    AbstractType::Ptr ret = evaluateType( ast, session, source );
+    ExpressionEvaluationResult ret = evaluateType( ast, session, source );
     delete session;
     delete parser;
 
     return ret;
 }
 
-AbstractType::Ptr ExpressionParser::evaluateType( AstNode* ast, ParseSession* session, const KDevelop::TopDUContext* source)
+ExpressionEvaluationResult ExpressionParser::evaluateType( AstNode* ast, ParseSession* session, const KDevelop::TopDUContext* source)
 {
     if (m_debug) {
         kDebug() << "===== AST:";
@@ -69,9 +71,15 @@ AbstractType::Ptr ExpressionParser::evaluateType( AstNode* ast, ParseSession* se
     }
 
     ExpressionVisitor v(session, source, m_strict);
-    v.visitNode( ast );
+    v.visitNode( ast );	
 
-    return v.lastType();
+    ExpressionEvaluationResult ret; 
+    ret.type = v.lastType();
+    DUChainReadLocker lock(DUChain::lock());
+    foreach(Declaration* dec, v.lastDeclarations()) {
+        ret.allDeclarations << dec->id();
+    }
+    return ret;
 }
 
 }

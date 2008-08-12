@@ -1,5 +1,4 @@
 /* This file is part of KDevelop
-    Copyright 2006 Hamish Rodda <rodda@kde.org>
     Copyright 2008 Niko Sams <niko.sams@gmail.com>
 
    This library is free software; you can redistribute it and/or
@@ -21,58 +20,18 @@
 
 #include <QtTest/QtTest>
 
-#include <parsingenvironment.h>
-#include <duchain.h>
-#include <duchainlock.h>
-#include <topducontext.h>
-#include <dumptypes.h>
+#include <language/duchain/parsingenvironment.h>
+#include <language/duchain/duchain.h>
+#include <language/duchain/duchainlock.h>
+#include <language/duchain/topducontext.h>
+#include <language/duchain/classfunctiondeclaration.h>
 
-
-#include "parsesession.h"
-#include "phpdebugvisitor.h"
-#include "declarationbuilder.h"
-#include "usebuilder.h"
 #include "types.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
 
 QTEST_MAIN(Php::TestDUChain)
-
-namespace QTest {
-  template<>
-  char* toString(const Cursor& cursor)
-  {
-    QByteArray ba = "Cursor(";
-    ba += QByteArray::number(cursor.line()) + ", " + QByteArray::number(cursor.column());
-    ba += ')';
-    return qstrdup(ba.data());
-  }
-  template<>
-  char* toString(const QualifiedIdentifier& id)
-  {
-    QByteArray arr = id.toString().toLatin1();
-    return qstrdup(arr.data());
-  }
-  template<>
-  char* toString(const Identifier& id)
-  {
-    QByteArray arr = id.toString().toLatin1();
-    return qstrdup(arr.data());
-  }
-  template<>
-  char* toString(const Declaration& def)
-  {
-    QString s = QString("Declaration %1 (%2): %3").arg(def.identifier().toString()).arg(def.qualifiedIdentifier().toString()).arg(reinterpret_cast<long>(&def));
-    return qstrdup(s.toLatin1().constData());
-  }
-  template<>
-  char* toString(const TypePtr<AbstractType>& type)
-  {
-    QString s = QString("Type: %1").arg(type ? type->toString() : QString("<null>"));
-    return qstrdup(s.toLatin1().constData());
-  }
-}
 
 namespace Php
 {
@@ -88,7 +47,7 @@ void TestDUChain::testDeclareVar()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A {} class B {} $i = new A(); $j = new B(); $i = new B(); $i = 'foo';");
 
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
 
     QVERIFY(!top->parentContext());
@@ -102,7 +61,7 @@ void TestDUChain::testDeclareVar()
 
     //$i
     Declaration* decVar = top->localDeclarations().at(2);
-    QCOMPARE(decVar->identifier(), Identifier("$i"));
+    QCOMPARE(decVar->identifier(), Identifier("i"));
     ClassType::Ptr type = decVar->type<ClassType>();
     QVERIFY(type);
     QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("A"));
@@ -115,7 +74,7 @@ void TestDUChain::testDeclareVar()
 
     //$j
     decVar = top->localDeclarations().at(3);
-    QCOMPARE(decVar->identifier(), Identifier("$j"));
+    QCOMPARE(decVar->identifier(), Identifier("j"));
     type = decVar->type<ClassType>();
     QVERIFY(type);
     QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("B"));
@@ -123,7 +82,7 @@ void TestDUChain::testDeclareVar()
 
     //$i (2nd)
     decVar = top->localDeclarations().at(4);
-    QCOMPARE(decVar->identifier(), Identifier("$i"));
+    QCOMPARE(decVar->identifier(), Identifier("i"));
     type = decVar->type<ClassType>();
     QVERIFY(type);
     QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("B"));
@@ -131,7 +90,7 @@ void TestDUChain::testDeclareVar()
 
     //$i (3rd)
     decVar = top->localDeclarations().at(5);
-    QCOMPARE(decVar->identifier(), Identifier("$i"));
+    QCOMPARE(decVar->identifier(), Identifier("i"));
     QVERIFY(decVar->type<IntegralType>());
 
     release(top);
@@ -230,7 +189,7 @@ void TestDUChain::testClassMemberVar()
     //$foo
     ClassMemberDeclaration* var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().first());
     QVERIFY(var);
-    QCOMPARE(var->identifier(), Identifier("$foo"));
+    QCOMPARE(var->identifier(), Identifier("foo"));
     QCOMPARE(var->accessPolicy(), Declaration::Public);
     QCOMPARE(var->isStatic(), false);
     QVERIFY(!var->abstractType());
@@ -238,7 +197,7 @@ void TestDUChain::testClassMemberVar()
     //$bar
     var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().at(1));
     QVERIFY(var);
-    QCOMPARE(var->identifier(), Identifier("$bar"));
+    QCOMPARE(var->identifier(), Identifier("bar"));
     QCOMPARE(var->accessPolicy(), Declaration::Protected);
     QCOMPARE(var->isStatic(), false);
     ClassType::Ptr type = var->type<ClassType>();
@@ -248,7 +207,7 @@ void TestDUChain::testClassMemberVar()
     //$baz
     var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().at(2));
     QVERIFY(var);
-    QCOMPARE(var->identifier(), Identifier("$baz"));
+    QCOMPARE(var->identifier(), Identifier("baz"));
     QCOMPARE(var->accessPolicy(), Declaration::Private);
     QCOMPARE(var->isStatic(), true);
     QVERIFY(!var->abstractType());
@@ -256,7 +215,7 @@ void TestDUChain::testClassMemberVar()
     //$boo
     var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().at(3));
     QVERIFY(var);
-    QCOMPARE(var->identifier(), Identifier("$boo"));
+    QCOMPARE(var->identifier(), Identifier("boo"));
     QCOMPARE(var->accessPolicy(), Declaration::Public);
     QCOMPARE(var->isStatic(), false);
     QVERIFY(!var->abstractType());
@@ -316,7 +275,7 @@ void TestDUChain::testDeclarationReturnType()
     QCOMPARE(ClassType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
     dec = top->localDeclarations().at(2);
-    QCOMPARE(dec->identifier(), Identifier("$i"));
+    QCOMPARE(dec->identifier(), Identifier("i"));
     ClassType::Ptr type = dec->type<ClassType>();
     QVERIFY(type);
     QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("A"));
@@ -626,13 +585,13 @@ void TestDUChain::testObjectFunctionCall3()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class B {} class A { function b() { return new B(); } } $i = new A(); $j = $i->b();");
 
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse(method, DumpAll);
 
     DUChainWriteLocker lock(DUChain::lock());
 
-    QCOMPARE(top->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("$i"));
+    QCOMPARE(top->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("i"));
     QCOMPARE(top->localDeclarations().at(2)->type<ClassType>()->qualifiedIdentifier(), QualifiedIdentifier("A"));;
-    QCOMPARE(top->localDeclarations().at(3)->qualifiedIdentifier(), QualifiedIdentifier("$j"));
+    QCOMPARE(top->localDeclarations().at(3)->qualifiedIdentifier(), QualifiedIdentifier("j"));
     QCOMPARE(top->localDeclarations().at(3)->type<ClassType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));;
 
     release(top);
@@ -647,7 +606,7 @@ void TestDUChain::testObjectVariable()
     TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QCOMPARE(top->localDeclarations().at(3)->qualifiedIdentifier(), QualifiedIdentifier("$i"));
+    QCOMPARE(top->localDeclarations().at(3)->qualifiedIdentifier(), QualifiedIdentifier("i"));
     QCOMPARE(top->localDeclarations().at(3)->type<ClassType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));;
 
     release(top);
@@ -662,7 +621,7 @@ void TestDUChain::testStaticMemberVariable()
     TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QCOMPARE(top->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("$i"));
+    QCOMPARE(top->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("i"));
     QCOMPARE(top->localDeclarations().at(2)->type<ClassType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));;
 
     release(top);
@@ -715,65 +674,23 @@ void TestDUChain::testDefine()
 
     release(top);
 }
-void TestDUChain::release(TopDUContext* top)
-
+void TestDUChain::testDefaultFunctionParam()
 {
-  //KDevelop::EditorIntegrator::releaseTopRange(top->textRangePtr());
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo($a, $b = false, $c = null) {} ");
 
-  TopDUContextPointer tp(top);
-  DUChain::self()->removeDocumentChain(static_cast<TopDUContext*>(top));
-  Q_ASSERT(!tp);
-}
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+    
+    AbstractFunctionDeclaration* fun = dynamic_cast<AbstractFunctionDeclaration*>(top->localDeclarations().first());
+    QVERIFY(fun);
+    
+    QCOMPARE(fun->defaultParametersSize(), 2);
+    QCOMPARE(fun->defaultParameters()[0].str(), QString("false"));
+    QCOMPARE(fun->defaultParameters()[1].str(), QString("null"));
 
-TopDUContext* TestDUChain::parse(const QByteArray& unit, DumpAreas dump)
-{
-    if (dump)
-        kDebug(9007) << "==== Beginning new test case...:" << endl << unit;
-
-    ParseSession* session = new ParseSession();
-    session->setContents(unit);
-    StartAst* ast = 0;
-    if (!session->parse(&ast)) {
-        kDebug() << "Parse failed";
-        return 0;
-    }
-
-    if (dump & DumpAST) {
-        kDebug(9007) << "===== AST:";
-        DebugVisitor debugVisitor(session->tokenStream(), session->contents());
-        debugVisitor.visitNode(ast);
-    }
-
-    static int testNumber = 0;
-    QString url(QString("file:///internal/%1").arg(testNumber++));
-
-    DeclarationBuilder declarationBuilder(session);
-    TopDUContext* top = declarationBuilder.build(IndexedString(url), ast);
-
-    UseBuilder useBuilder(session);
-    useBuilder.buildUses(ast);
-  
-    if (dump & DumpDUChain) {
-        kDebug(9007) << "===== DUChain:";
-
-        DUChainWriteLocker lock(DUChain::lock());
-        dumper.dump(top);
-    }
-
-    if (dump & DumpType) {
-        kDebug(9007) << "===== Types:";
-        DUChainWriteLocker lock(DUChain::lock());
-        DumpTypes dt;
-        foreach (const AbstractType::Ptr& type, declarationBuilder.topTypes())
-            dt.dump(type.unsafeData());
-    }
-
-    if (dump)
-        kDebug(9007) << "===== Finished test case.";
-
-    delete session;
-
-    return top;
+    release(top);
 }
 }
 

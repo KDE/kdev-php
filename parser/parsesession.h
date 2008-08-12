@@ -27,6 +27,7 @@
 
 #include <QtCore/QString>
 #include <editor/simplecursor.h>
+#include "phpparser.h"
 #include "parserexport.h"
 
 namespace KDevPG
@@ -41,7 +42,6 @@ namespace Php
 {
     class TokenStream;
     class StartAst;
-    class Parser;
 
 class KDEVPHPPARSER_EXPORT ParseSession
 {
@@ -56,9 +56,10 @@ public:
     QString contents() const;
 
     bool parse( Php::StartAst** );
-    Parser* createParser();
+    Parser* createParser(int initialState = Parser::HtmlState);
 
     QString symbol(qint64 token) const;
+    QString symbol( AstNode* node ) const;
 
    /**
     * Return the DocBlock before this token, if any

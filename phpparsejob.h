@@ -35,13 +35,8 @@
 #include <ktexteditor/range.h>
 
 #include <language/duchain/duchainpointer.h>
+#include <language/duchain/topducontext.h>
 
-
-namespace KDevelop
-{
-
-class TopDUContext;
-}
 
 namespace Php
 {
@@ -61,8 +56,8 @@ public:
     void setAST( StartAst* ast );
     virtual StartAst *ast() const;
 
-    void setDUChain( KDevelop::TopDUContext* duChain );
-    virtual KDevelop::TopDUContext* duChain() const;
+    void setDUChain( KDevelop::ReferencedTopDUContext duChain );
+    virtual KDevelop::ReferencedTopDUContext duChain() const;
 
     const KTextEditor::Range& textRangeToParse() const;
 
@@ -77,7 +72,7 @@ private:
     ParseSession *m_session;
     StartAst *m_ast;
     bool m_readFromDisk;
-    KDevelop::TopDUContext* m_duContext;
+    KDevelop::ReferencedTopDUContext m_duContext;
     KUrl m_url;
     KTextEditor::Range m_textRangeToParse;
 };

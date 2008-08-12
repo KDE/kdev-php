@@ -8,13 +8,13 @@ PROJECT(php)
 find_package(KDE4 REQUIRED)
 
 find_package(KDevPlatform REQUIRED)
-
 include_directories(
     ${KDEVPLATFORM_INCLUDE_DIR}
     ${KDEVPLATFORM_INCLUDE_DIR}/language
     ${KDE4_INCLUDES}
     ${KDE4_INCLUDE_DIR}/threadweaver
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/duchain
     ${CMAKE_SOURCE_DIR}/parser
 )
@@ -39,6 +39,7 @@ endif(KDEVPGQT_FOUND)
 
 add_subdirectory(parser)
 add_subdirectory(duchain)
+add_subdirectory(completion)
 
 set(kdevphplanguagesupport_PART_SRCS
     phplanguagesupport.cpp
@@ -56,6 +57,7 @@ target_link_libraries(kdevphplanguagesupport
     ${KDE4_KTEXTEDITOR_LIBS}
     kdev4phpduchain
     kdev4phpparser
+    kdev4phpcompletion
 )
 
 install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR})

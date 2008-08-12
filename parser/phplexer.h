@@ -46,7 +46,7 @@ class TokenStream;
  **/
 class KDEVPHPPARSER_EXPORT Lexer {
 public:
-    Lexer(TokenStream *tokenStream, const QString& contents);
+    Lexer(TokenStream *tokenStream, const QString& contents, int initialState = HtmlState);
 
     int nextTokenKind();
     qint64 tokenBegin() const;
@@ -72,6 +72,11 @@ private:
     bool isHeredocEnd(QChar* it);
 
     QStack<int> m_state;
+
+    QString m_heredocIdentifier;
+    int m_haltCompiler;
+
+public:
     enum State
     {
         ErrorState = -1,
@@ -86,8 +91,6 @@ private:
         StringHeredoc = 8,
         StringBacktick = 9
     };
-    QString m_heredocIdentifier;
-    int m_haltCompiler;
 };
 
 }

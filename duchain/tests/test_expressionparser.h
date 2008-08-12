@@ -16,43 +16,26 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef TESTDUCHAIN_H
-#define TESTDUCHAIN_H
+#ifndef TESTEXPRESSIONPARSER_H
+#define TESTEXPRESSIONPARSER_H
 
 #include "duchain/tests/duchaintestbase.h"
 
 namespace Php
 {
-class TestDUChain : public DUChainTestBase
+class TestExpressionParser : public DUChainTestBase
 {
   Q_OBJECT
 
 public:
-  TestDUChain();
+  TestExpressionParser();
 
 private slots:
-  void testDeclareVar();
-  void testDeclareClass();
-  void testClassMemberVar();
-  void testDeclareTypehintFunction();
-  void testReturnTypeClass();
-  void testDeclarationReturnType();
-  void testDeclarationMultipleReturnTypes();
-  void testDeclarationReturnTypeDocBlock();
-  void testClassImplementsInterface();
-  void testClassExtends();
-  void testStaticMethod();
-  void testOwnStaticMethod();
-  void testThis();
-  void testObjectFunctionCall();
-  void testObjectFunctionCall2();
-  void testObjectFunctionCall3();
-  void testObjectVariable();
-  void testStaticMemberVariable();
-  void testOwnStaticMemberVariable();
-  void testClassConst();
-  void testDefine();
-  void testDefaultFunctionParam();
+  void newClass();
+  void memberVariable();
+  void memberFunction();
+  void globalFunction();
+
 };
 
 }

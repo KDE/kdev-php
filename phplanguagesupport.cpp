@@ -39,6 +39,7 @@
 #include <interfaces/iplugincontroller.h>
 #include <interfaces/ilanguage.h>
 #include <interfaces/idocument.h>
+#include <interfaces/iproject.h>
 #include <editor/editorintegrator.h>
 #include <language/backgroundparser/backgroundparser.h>
 #include <language/duchain/duchain.h>
@@ -46,6 +47,11 @@
 
 #include "phpparsejob.h"
 //#include "phphighlighting.h"
+
+#include <codecompletion/codecompletion.h>
+#include <codecompletion/codecompletionmodel.h>
+#include "completion/model.h"
+#include "completion/worker.h"
 
 using namespace KDevelop;
 
@@ -60,8 +66,21 @@ LanguageSupport::LanguageSupport( QObject* parent, const QVariantList& /*args*/ 
         KDevelop::ILanguageSupport()
 {
     KDEV_USE_EXTENSION_INTERFACE( KDevelop::ILanguageSupport )
-//     core()->pluginController()->loadPlugin( "kdevduchainview" );
+
 //    m_highlighting = new Highlighting( this );
+
+    CodeCompletionModel* ccModel = new CodeCompletionModel(this);
+    ccModel->setCompletionWorker(new CodeCompletionWorker(ccModel));
+    new KDevelop::CodeCompletion( this, ccModel, name() );
+/*
+    //TODO: enable this
+    connect( core()->projectController(),
+             SIGNAL( projectOpened(KDevelop::IProject*) ),
+             this, SLOT( projectOpened(KDevelop::IProject*) ) );
+    connect( core()->projectController(),
+             SIGNAL( projectClosed() ),
+             this, SLOT( projectClosed() ) );
+*/
 }
 
 LanguageSupport::~LanguageSupport()
@@ -74,6 +93,22 @@ LanguageSupport::~LanguageSupport()
 KDevelop::ParseJob *LanguageSupport::createParseJob( const KUrl &url )
 {
     return new ParseJob( url, this );
+}
+
+void LanguageSupport::projectOpened(KDevelop::IProject *project)
+{
+    foreach(KDevelop::IDocument* doc, core()->documentController()->openDocuments()) {
+        if (project->inProject(doc->url())) {
+            QString path = doc->url().path();
+
+            core()->languageController()->backgroundParser()->addDocument(doc->url());
+        }
+    }
+}
+
+void LanguageSupport::projectClosed()
+{
+    // FIXME This should remove the project files from the backgroundparser
 }
 
 QString LanguageSupport::name() const

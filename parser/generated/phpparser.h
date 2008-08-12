@@ -7,6 +7,7 @@
 #include "phpast.h"
 #include <kdev-pg-memory-pool.h>
 #include <kdev-pg-allocator.h>
+#include "phplexer.h"
 
 #include <parserexport.h>
 namespace Php
@@ -226,7 +227,7 @@ public:
      * When this method returns, the parser's token stream has been filled
      * and any parse*() method can be called.
      */
-    void tokenize( const QString& contents );
+    void tokenize(const QString& contents, int initialState = HtmlState);
 
     enum ProblemType
     {
@@ -238,6 +239,10 @@ public:
     QString tokenText(qint64 begin, qint64 end);
     void setDebug(bool debug);
 
+    enum InitialLexerState {
+        HtmlState = 0,
+        DefaultState = 1
+    };
 
 private:
 

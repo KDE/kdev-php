@@ -33,13 +33,13 @@
 namespace Php
 {
 
-Lexer::Lexer( TokenStream* tokenStream, const QString& content ):
-        m_content( content ), m_tokenStream( tokenStream ),
-        m_curpos( 0 ), m_contentSize( m_content.size() ),
-        m_tokenBegin( 0 ), m_tokenEnd( 0 ), m_haltCompiler( 0 )
+Lexer::Lexer(TokenStream* tokenStream, const QString& content, int initialState):
+        m_content(content), m_tokenStream(tokenStream),
+        m_curpos(0), m_contentSize(m_content.size()),
+        m_tokenBegin(0), m_tokenEnd(0), m_haltCompiler(0)
 {
-    pushState( ErrorState );
-    pushState( HtmlState );
+    pushState(ErrorState);
+    pushState(initialState);
 }
 
 int Lexer::state(int deepness) const

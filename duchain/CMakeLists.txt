@@ -14,6 +14,8 @@ set(duchain_SRCS
     dumptypes.cpp
     expressionvisitor.cpp
     expressionparser.cpp
+    expressionevaluationresult.cpp
+    tests/duchaintestbase.cpp
     )
 
 

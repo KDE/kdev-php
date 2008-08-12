@@ -41,6 +41,7 @@
 #include <QtCore/QString>
 #include <kdebug.h>
 #include <tokenstream.h>
+#include "phplexer.h"
 
 namespace KDevelop
 {
@@ -99,7 +100,7 @@ namespace KDevelop
    * When this method returns, the parser's token stream has been filled
    * and any parse*() method can be called.
    */
-  void tokenize( const QString& contents );
+  void tokenize(const QString& contents, int initialState = Lexer::HtmlState);
 
   enum ProblemType {
       Error,
@@ -109,6 +110,11 @@ namespace KDevelop
   void reportProblem( Parser::ProblemType type, const QString& message );
   QString tokenText(qint64 begin, qint64 end);
   void setDebug(bool debug);
+
+    enum InitialLexerState {
+        HtmlState = 0,
+        DefaultState = 1
+    };
 
 :]
 
@@ -774,16 +780,16 @@ identifier=identifier
 -----------------------------------------------------------------
 
 [:
-#include "phplexer.h"
+
 #include <QtCore/QDebug>
 
 namespace Php
 {
 
-void Parser::tokenize( const QString& contents )
+void Parser::tokenize(const QString& contents, int initialState)
 {
     m_contents = contents;
-    Lexer lexer( tokenStream, contents );
+    Lexer lexer(tokenStream, contents, initialState);
     int kind = Parser::Token_EOF;
     int lastDocCommentBegin;
     int lastDocCommentEnd;

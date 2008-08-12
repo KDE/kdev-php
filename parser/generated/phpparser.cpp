@@ -10,10 +10,10 @@
 namespace Php
 {
 
-void Parser::tokenize( const QString& contents )
+void Parser::tokenize(const QString& contents, int initialState)
 {
     m_contents = contents;
-    Lexer lexer( tokenStream, contents );
+    Lexer lexer(tokenStream, contents, initialState);
     int kind = Parser::Token_EOF;
     int lastDocCommentBegin;
     int lastDocCommentEnd;

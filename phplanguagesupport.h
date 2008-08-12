@@ -29,14 +29,12 @@
 #include <language/interfaces/ilanguagesupport.h>
 #include <QtCore/QVariant>
 
-namespace KDevelop
-{
-
-class ParseJob;
-
-class IDocument;
-
-class ICodeHighlighting;
+namespace Php {
+    class Highlighting;
+}
+namespace KDevelop {
+    class IDocument;
+    class IProject;
 }
 
 
@@ -61,6 +59,10 @@ public:
     KDevelop::ILanguage *language();
     /*the code highlighter*/
 //    KDevelop::ICodeHighlighting* codeHighlighting() const;
+
+private slots:
+    void projectOpened(KDevelop::IProject *project);
+    void projectClosed();
 
 private:
     Highlighting* m_highlighting;

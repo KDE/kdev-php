@@ -88,8 +88,9 @@ QualifiedIdentifier ContextBuilder::identifierForNode(VariableIdentifierAst* id)
 {
     if( !id )
         return QualifiedIdentifier();
-
-    return QualifiedIdentifier(editor()->parseSession()->symbol(id->variable));
+    QString ret(editor()->parseSession()->symbol(id->variable));
+    ret = ret.mid(1); //cut off $
+    return QualifiedIdentifier(ret);
 }
 
 void ContextBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst* node)
@@ -128,7 +129,7 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
             closeContext();
         }
 
-        DUContext* body = openContext(node->methodBody, DUContext::Function, id);
+        DUContext* body = openContext(node->methodBody, DUContext::Other, id);
 
         if (parameters) {
             DUChainWriteLocker lock(DUChain::lock());
@@ -153,7 +154,7 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
         closeContext();
     }
 
-    DUContext* body = openContext(node->functionBody, DUContext::Function, id);
+    DUContext* body = openContext(node->functionBody, DUContext::Other, id);
     if (parameters) {
         DUChainWriteLocker lock(DUChain::lock());
         body->addImportedParentContext(parameters);

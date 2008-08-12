@@ -22,9 +22,7 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION     *
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.           *
  *****************************************************************************/
-#include "parsesession.h"
-
-#include "phpparser.h"
+#include "parser/parsesession.h"
 
 #include "kdev-pg-memory-pool.h"
 #include "kdev-pg-token-stream.h"
@@ -82,13 +80,14 @@ TokenStream* ParseSession::tokenStream() const
 }
 
 
-Parser* ParseSession::createParser()
+Parser* ParseSession::createParser(int initialState)
 {
     Parser* parser = new Parser;
     parser->setTokenStream( m_tokenStream );
     parser->setMemoryPool( m_pool );
     parser->setDebug( m_debug );
-    parser->tokenize(m_contents);
+
+    parser->tokenize(m_contents, initialState);
     return parser;
 }
 
@@ -122,6 +121,13 @@ QString ParseSession::symbol( qint64 token ) const
 {
     const TokenStream::Token& tok = m_tokenStream->token( token );
     return m_contents.mid(tok.begin, tok.end - tok.begin + 1);
+}
+
+QString ParseSession::symbol( AstNode* node ) const
+{
+    const TokenStream::Token& startTok = m_tokenStream->token(node->startToken);
+    const TokenStream::Token& endTok = m_tokenStream->token(node->endToken);
+    return m_contents.mid(startTok.begin, endTok.end - startTok.begin + 1);
 }
 
 QString ParseSession::docComment( qint64 token ) const

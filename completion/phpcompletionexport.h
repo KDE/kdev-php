@@ -1,7 +1,8 @@
 /***************************************************************************
  *   This file is part of KDevelop                                         *
- *   Copyright 2007 David Nolden <david.nolden.kdevelop@art-master.de>     *
- *   Copyright 2008 Niko Sams <niko.sams@gmail.com>                        *
+ *   Copyright 2007 Andreas Pakulat <apaku@gmx.de>                         *
+ *   Copyright 2006 Matt Rogers <mattr@kde.org>                            *
+ *   Copyright 2004 Jaroslaw Staniek <js@iidea.pl>                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU Library General Public License as       *
@@ -18,34 +19,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-#ifndef EXPRESSIONPARSER_H
-#define EXPRESSIONPARSER_H
 
-#include <duchain/duchainpointer.h>
+#ifndef PHPCOMPLETIONEXPORT_H
+#define PHPCOMPLETIONEXPORT_H
 
-#include "phpduchainexport.h"
-#include "expressionevaluationresult.h"
-
-namespace Php {
-    class AstNode;
-    class ParseSession;
-
-class KDEVPHPDUCHAIN_EXPORT ExpressionParser
-{
-public:
-     /**
-     * @param strict When this is false, the expression-visitor tries to recover from problems. For example when it cannot find a matching function, it returns the first of the candidates.
-     * @param debug Enables additional output
-     * */
-    explicit ExpressionParser( bool strict = false, bool debug = false );
-
-    ExpressionEvaluationResult evaluateType( const QByteArray& expression, KDevelop::DUContextPointer context, const KDevelop::TopDUContext* source = 0 );
-    ExpressionEvaluationResult evaluateType( AstNode* ast, ParseSession* session, const KDevelop::TopDUContext* source = 0 );
-private:
-    bool m_strict;
-    bool m_debug;
-};
+/* needed for KDE_EXPORT macros */
+#include <kdemacros.h>
 
 
-}
+#ifndef KDEVPHPCOMPLETION_EXPORT
+# ifdef MAKE_KDEV4PHPCOMPLETION_LIB
+#  define KDEVPHPCOMPLETION_EXPORT KDE_EXPORT
+# else
+#  define KDEVPHPCOMPLETION_EXPORT KDE_IMPORT
+# endif
 #endif
+
+#endif
+
+//kate: space-indent on; indent-width 4; replace-tabs on; auto-insert-doxygen on; indent-mode cstyle;

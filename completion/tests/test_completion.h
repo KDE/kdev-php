@@ -23,36 +23,20 @@
 
 namespace Php
 {
-class TestDUChain : public DUChainTestBase
+class TestCompletion : public DUChainTestBase
 {
   Q_OBJECT
 
 public:
-  TestDUChain();
+    TestCompletion();
 
 private slots:
-  void testDeclareVar();
-  void testDeclareClass();
-  void testClassMemberVar();
-  void testDeclareTypehintFunction();
-  void testReturnTypeClass();
-  void testDeclarationReturnType();
-  void testDeclarationMultipleReturnTypes();
-  void testDeclarationReturnTypeDocBlock();
-  void testClassImplementsInterface();
-  void testClassExtends();
-  void testStaticMethod();
-  void testOwnStaticMethod();
-  void testThis();
-  void testObjectFunctionCall();
-  void testObjectFunctionCall2();
-  void testObjectFunctionCall3();
-  void testObjectVariable();
-  void testStaticMemberVariable();
-  void testOwnStaticMemberVariable();
-  void testClassConst();
-  void testDefine();
-  void testDefaultFunctionParam();
+    void objectCompletion();
+    void staticMembers();
+    void functionCall();
+    void functionCall2();
+    void functionCall3();
+    void testExpressionAt();
 };
 
 }

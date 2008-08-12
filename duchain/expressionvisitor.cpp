@@ -38,7 +38,10 @@ AbstractType::Ptr ExpressionVisitor::lastType()
 {
     return m_lastType;
 }
-
+QList<Declaration*> ExpressionVisitor::lastDeclarations()
+{
+    return m_lastDeclarations;
+}
 void ExpressionVisitor::visitExpr(ExprAst *node)
 {
     if (node->ducontext) {
@@ -46,12 +49,12 @@ void ExpressionVisitor::visitExpr(ExprAst *node)
     }
     Q_ASSERT(m_currentContext);
     DefaultVisitor::visitExpr(node);
+    DUChainReadLocker lock(DUChain::lock());
 }
 void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
 {
-    //QualifiedIdentifier identifier = identifierForNode(node->variable);
-    QualifiedIdentifier identifier(m_session->symbol(node->variable->variable));
-    if (identifier == QualifiedIdentifier("$this")) {
+    QualifiedIdentifier identifier = identifierForNode(node->variable);
+    if (identifier == QualifiedIdentifier("this")) {
         DUChainReadLocker lock(DUChain::lock());
         if (m_currentContext->parentContext()
             && m_currentContext->parentContext()->type() == DUContext::Class
@@ -61,9 +64,9 @@ void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(Compoun
         }
     } else {
         DUChainReadLocker lock(DUChain::lock());
-        QList<Declaration*> declarations = m_currentContext->findDeclarations(identifier);
-        if (!declarations.isEmpty()) {
-            m_lastType = declarations.first()->abstractType();
+        m_lastDeclarations = m_currentContext->findDeclarations(identifier);
+        if (!m_lastDeclarations.isEmpty()) {
+            m_lastType = m_lastDeclarations.first()->abstractType();
         }
     }
     DefaultVisitor::visitCompoundVariableWithSimpleIndirectReference(node);
@@ -74,11 +77,10 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
     DefaultVisitor::visitVarExpressionNewObject(node);
     if (node->className->identifier) {
         DUChainReadLocker lock(DUChain::lock());
-        //TODO: add identifierForNode method somewhere
-        QualifiedIdentifier id(m_session->symbol(node->className->identifier->string));
-        QList<Declaration*> declarations = m_currentContext->findDeclarations(id);
-        if (!declarations.isEmpty()) {
-            m_lastType = declarations.first()->abstractType();
+        QualifiedIdentifier id = identifierForNode(node->className->identifier);
+        m_lastDeclarations = m_currentContext->findDeclarations(id);
+        if (!m_lastDeclarations.isEmpty()) {
+            m_lastType = m_lastDeclarations.first()->abstractType();
         }
     }
 }
@@ -96,9 +98,9 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
                 ident += "::";
             }
             ident += m_session->symbol(node->stringFunctionName->string);
-            QList<Declaration*> declarations = m_currentContext->findDeclarations(QualifiedIdentifier(ident));
-            if (!declarations.isEmpty()) {
-                FunctionType::Ptr function = declarations.last()->type<FunctionType>();
+            m_lastDeclarations = m_currentContext->findDeclarations(QualifiedIdentifier(ident));
+            if (!m_lastDeclarations.isEmpty()) {
+                FunctionType::Ptr function = m_lastDeclarations.last()->type<FunctionType>();
                 if (function) {
                     m_lastType = function->returnType();
                 }
@@ -109,9 +111,9 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
             //global function call foo();
             DUChainReadLocker lock(DUChain::lock());
             QualifiedIdentifier functionIdentifier(m_session->symbol(node->stringFunctionNameOrClass->string));
-            QList<Declaration*> declarations = m_currentContext->findDeclarations(functionIdentifier);
-            if (!declarations.isEmpty()) {
-                FunctionType::Ptr function = declarations.last()->type<FunctionType>();
+            m_lastDeclarations = m_currentContext->findDeclarations(functionIdentifier);
+            if (!m_lastDeclarations.isEmpty()) {
+                FunctionType::Ptr function = m_lastDeclarations.last()->type<FunctionType>();
                 if (function) {
                     m_lastType = function->returnType();
                 }
@@ -124,7 +126,18 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
 void ExpressionVisitor::visitScalar(ScalarAst *node)
 {
     DefaultVisitor::visitScalar(node);
-
+    if (node->string != -1 && node->constname == -1) {
+        //it could be a global function call, without ()
+        DUChainReadLocker lock(DUChain::lock());
+        QualifiedIdentifier functionIdentifier(m_session->symbol(node->string));
+        m_lastDeclarations = m_currentContext->findDeclarations(functionIdentifier);
+        if (!m_lastDeclarations.isEmpty()) {
+            if (m_lastDeclarations.last()->type<FunctionType>()) {
+                m_lastType = m_lastDeclarations.last()->abstractType();
+                return;
+            }
+        }
+    }
     //TODO: is this correct?
     IntegralType::Ptr integral(new IntegralType());
     m_lastType = AbstractType::Ptr::staticCast(integral);
@@ -138,36 +151,24 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
             if (ClassType::Ptr::dynamicCast(m_lastType)) {
                 DUChainReadLocker lock(DUChain::lock());
                 QualifiedIdentifier id = ClassType::Ptr::staticCast(m_lastType)->qualifiedIdentifier();
-                QList<Declaration*> variableDecs = m_currentContext->findDeclarations(id);
-                if (!variableDecs.isEmpty()) {
-                    DUContext* context = variableDecs.first()->internalContext();
-                    if (!context && m_currentContext->parentContext()->localScopeIdentifier() == variableDecs.first()->qualifiedIdentifier()) {
+                m_lastDeclarations = m_currentContext->findDeclarations(id);
+                if (!m_lastDeclarations.isEmpty()) {
+                    DUContext* context = m_lastDeclarations.first()->internalContext();
+                    if (!context && m_currentContext->parentContext()->localScopeIdentifier() == m_lastDeclarations.first()->qualifiedIdentifier()) {
                         //class is currentClass (internalContext is not yet set)
                         context = m_currentContext->parentContext();
                     }
                     QualifiedIdentifier propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
-                    if (node->isFunctionCall != -1) {
-                        //function call $foo->bar()
-                        QList<Declaration*> propertyDeclarations = context->findDeclarations(propertyId);
-                        FunctionType::Ptr functionType;
-                        if (!propertyDeclarations.isEmpty()) {
-                            functionType = propertyDeclarations.first()->type<FunctionType>();
-                        }
-                        if (functionType) {
-                            m_lastType = functionType->returnType();
+                    m_lastDeclarations = context->findDeclarations(propertyId);
+                    m_lastType = 0;
+                    if (!m_lastDeclarations.isEmpty()) {
+                        if (node->isFunctionCall!=-1 && m_lastDeclarations.first()->type<FunctionType>()) {
+                            m_lastType = m_lastDeclarations.first()->type<FunctionType>()->returnType();
                         } else {
-                            m_lastType = 0;
+                            m_lastType = m_lastDeclarations.first()->abstractType();
                         }
                     } else {
-                        //member variable $foo->bar
-                        //TODO: better solution for adding the $
-                        QualifiedIdentifier varId = QualifiedIdentifier(QString("$") + propertyId.toString());
-                        QList<Declaration*> propertyDeclarations = context->findDeclarations(varId);
-                        if (!propertyDeclarations.isEmpty()) {
-                            m_lastType = propertyDeclarations.first()->abstractType();
-                        } else {
-                            m_lastType = 0;
-                        }
+                        m_lastType = 0;
                     }
                 } else {
                     m_lastType = 0;
@@ -187,10 +188,10 @@ void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
             context = m_currentContext->parentContext();
         } else {
             DUChainReadLocker lock(DUChain::lock());
-            QList<Declaration*> decs = m_currentContext->findDeclarations(identifierForNode(node->className));
-            if (!decs.isEmpty()) {
-                context = decs.first()->internalContext();
-                if (!context && m_currentContext->parentContext()->localScopeIdentifier() == decs.first()->qualifiedIdentifier()) {
+            m_lastDeclarations = m_currentContext->findDeclarations(identifierForNode(node->className));
+            if (!m_lastDeclarations.isEmpty()) {
+                context = m_lastDeclarations.first()->internalContext();
+                if (!context && m_currentContext->parentContext()->localScopeIdentifier() == m_lastDeclarations.first()->qualifiedIdentifier()) {
                     //className is currentClass (internalContext is not yet set)
                     context = m_currentContext->parentContext();
                 }
@@ -198,9 +199,9 @@ void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
         }
         if (context) {
             DUChainReadLocker lock(DUChain::lock());
-            QList<Declaration*> decs = context->findDeclarations(identifierForNode(node->variable->variable->variable));
-            if (!decs.isEmpty()) {
-                m_lastType = decs.first()->abstractType();
+            m_lastDeclarations = context->findDeclarations(identifierForNode(node->variable->variable->variable));
+            if (!m_lastDeclarations.isEmpty()) {
+                m_lastType = m_lastDeclarations.first()->abstractType();
             } else {
                 m_lastType = 0;
             }
@@ -221,8 +222,9 @@ QualifiedIdentifier ExpressionVisitor::identifierForNode(VariableIdentifierAst* 
 {
     if( !id )
         return QualifiedIdentifier();
-
-    return QualifiedIdentifier(m_session->symbol(id->variable));
+    QString ret(m_session->symbol(id->variable));
+    ret = ret.mid(1); //cut off $
+    return QualifiedIdentifier(ret);
 }
 
 }

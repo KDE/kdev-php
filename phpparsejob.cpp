@@ -53,7 +53,6 @@ ParseJob::ParseJob( const KUrl &url, LanguageSupport *parent )
         , m_session( new ParseSession )
         , m_ast( 0 )
         , m_readFromDisk( false )
-        , m_duContext( 0 )
         , m_url( url )
 {
 }
@@ -74,7 +73,7 @@ StartAst *ParseJob::ast() const
     return m_ast;
 }
 
-TopDUContext* ParseJob::duChain() const
+ReferencedTopDUContext ParseJob::duChain() const
 {
     return m_duContext;
 }
@@ -84,7 +83,7 @@ bool ParseJob::wasReadFromDisk() const
     return m_readFromDisk;
 }
 
-void ParseJob::setDUChain( TopDUContext * duChain )
+void ParseJob::setDUChain( ReferencedTopDUContext duChain )
 {
     m_duContext = duChain;
 }
@@ -150,7 +149,7 @@ void ParseJob::run()
         editor.setCurrentUrl(document());
 
         DeclarationBuilder builder(&editor);
-        KDevelop::TopDUContext* chain = builder.build(document(), m_ast);
+        KDevelop::ReferencedTopDUContext chain = builder.build(document(), m_ast);
         setDuChain(chain);
     }
     else
