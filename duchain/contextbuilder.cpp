@@ -23,6 +23,7 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/topducontext.h>
 #include <language/duchain/duchainlock.h>
+#include <language/duchain/duchain.h>
 
 #include "parsesession.h"
 #include "editorintegrator.h"
@@ -35,6 +36,14 @@ namespace Php
 
 ContextBuilder::ContextBuilder()
 {
+}
+ReferencedTopDUContext ContextBuilder::build( const IndexedString& url, AstNode* node,
+                            ReferencedTopDUContext updateContext )
+{
+    ReferencedTopDUContext ret = ContextBuilderBase::build(url, node, updateContext);
+    DUChainWriteLocker lock(DUChain::lock());
+    ret->addImportedParentContext(DUChain::self()->chainForDocument(IndexedString("internalfunctions")));
+    return ret;
 }
 
 void ContextBuilder::setEditor(EditorIntegrator* editor)

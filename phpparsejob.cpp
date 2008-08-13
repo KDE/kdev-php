@@ -29,6 +29,7 @@
 
 #include <kdebug.h>
 #include <klocale.h>
+#include <kstandarddirs.h>
 
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/duchain.h>
@@ -90,12 +91,22 @@ void ParseJob::setDUChain( ReferencedTopDUContext duChain )
 
 void ParseJob::run()
 {
+    if (document() != IndexedString("internalfunctions")
+        && !DUChain::self()->chainForDocument(IndexedString("internalfunctions"))
+    ) {
+        ParseJob job(KUrl("internalfunctions"), php());
+        job.run();
+    }
 
     m_readFromDisk = !contentsAvailableFromEditor();
 
     if ( m_readFromDisk )
     {
-        QFile file( document().str() );
+        QString fileName = document().str();
+        if (fileName == "internalfunctions") {
+            fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
+        }
+        QFile file(fileName);
         //TODO: Read the first lines to determine encoding using Php encoding and use that for the text stream
 
         if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )

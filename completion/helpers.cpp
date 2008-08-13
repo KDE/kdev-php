@@ -1,5 +1,5 @@
 /*
- * KDevelop C++ Code Completion Support
+ * KDevelop Php Code Completion Support
  *
  * Copyright 2007-2008 David Nolden <david.nolden.kdevelop@art-master.de>
  * Copyright 2008 Niko Sams <niko.sams@gmail.com>

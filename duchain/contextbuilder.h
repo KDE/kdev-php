@@ -45,6 +45,8 @@ public:
     void setEditor(EditorIntegrator* editor);
     void setEditor(ParseSession* session);
 
+    virtual KDevelop::ReferencedTopDUContext build( const KDevelop::IndexedString& url, AstNode* node,
+                              KDevelop::ReferencedTopDUContext updateContext = KDevelop::ReferencedTopDUContext() );
 protected:
     EditorIntegrator* editor() const;
 

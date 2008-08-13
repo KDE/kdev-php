@@ -36,6 +36,7 @@ class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase {
 public:
     DeclarationBuilder(ParseSession* session);
     DeclarationBuilder(EditorIntegrator* editor);
+
 protected:
     virtual void closeDeclaration();
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
