@@ -88,8 +88,13 @@ public:
   };
   Q_DECLARE_FLAGS(DumpAreas, DumpArea)
 
+public slots:
+  void initTestCase();
+  
 protected:
   KDevelop::TopDUContext* parse(const QByteArray& unit, DumpAreas dump = static_cast<DumpAreas>(DumpAST | DumpDUChain | DumpType));
+  
+  KDevelop::TopDUContext* parseAdditionalFile(KDevelop::IndexedString fileName, QByteArray contents);
 
   void release(KDevelop::TopDUContext* top);
 

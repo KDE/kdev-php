@@ -24,8 +24,9 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/topducontext.h>
+#include <language/duchain/types/functiontype.h>
+#include <language/duchain/types/structuretype.h>
 
-#include "types.h"
 #include "expressionparser.h"
 
 using namespace KTextEditor;
@@ -53,7 +54,7 @@ void TestExpressionParser::newClass()
     ExpressionParser p(false, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i"), DUContextPointer(top));
     QVERIFY(res.type);
-    QCOMPARE(ClassType::Ptr::staticCast(res.type)->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QCOMPARE(StructureType::Ptr::staticCast(res.type)->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
 
     release(top);
@@ -72,7 +73,7 @@ void TestExpressionParser::memberVariable()
     QVERIFY(res.type);
     QCOMPARE(res.allDeclarations.count(), 1);
     QCOMPARE(res.allDeclarations.first().getDeclaration(top), top->childContexts().first()->localDeclarations().first());
-    QCOMPARE(ClassType::Ptr::staticCast(res.type)->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QCOMPARE(StructureType::Ptr::staticCast(res.type)->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
     release(top);
 }

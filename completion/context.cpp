@@ -31,18 +31,13 @@
 #include <language/duchain/classfunctiondeclaration.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/stringhelpers.h>
-#include "duchain/types.h"
+#include <language/duchain/types/identifiedtype.h>
 #include <interfaces/iproblem.h>
 #include <util/pushvalue.h>
 
 #define LOCKDUCHAIN     DUChainReadLocker lock(DUChain::lock())
 
 #define ifDebug(x) x
-
-//Whether the list of argument-hints should contain all overloaded versions of operators.
-//Disabled for now, because there is usually a huge list of overloaded operators.
-const int maxOverloadedOperatorArgumentHints = 5;
-const int maxOverloadedArgumentHints = 5;
 
 using namespace KDevelop;
 
@@ -286,26 +281,31 @@ CodeCompletionContext* CodeCompletionContext::parentContext() {
   return static_cast<CodeCompletionContext*>(KDevelop::CodeCompletionContext::parentContext());
 }
 
-QList<DUContext*> CodeCompletionContext::memberAccessContainers() const {
-  QList<DUContext*> ret;
-  
-  if(m_expressionResult.type) {
-    AbstractType::Ptr expressionTarget = m_expressionResult.type;
-    const IdentifiedType* idType = dynamic_cast<const IdentifiedType*>( expressionTarget.unsafeData() );
-      Declaration* idDecl = 0;
-    if( idType && (idDecl = idType->declaration(m_duContext->topContext())) ) {
-      DUContext* ctx = idDecl->logicalInternalContext(m_duContext->topContext());
-      if( ctx ){
-        ret << ctx;
-      }else {
-        //Print some debug-output
-        kDebug() << "Could not get internal context from" << m_expressionResult.type->toString();
-        kDebug() << "Declaration" << idDecl->toString() << idDecl->isForwardDeclaration();
-      }
+QList<DUContext*> CodeCompletionContext::memberAccessContainers() const
+{
+    QList<DUContext*> ret;
+    foreach (DeclarationId declarationId, m_expressionResult.allDeclarations) {
+        AbstractType::Ptr expressionTarget = declarationId.getDeclaration(m_duContext->topContext())->abstractType();
+        const IdentifiedType* idType = dynamic_cast<const IdentifiedType*>(expressionTarget.unsafeData());
+        Declaration* declaration = 0;
+        if (idType) {
+            declaration = idType->declaration(m_duContext->topContext());
+        }
+        DUContext* ctx = 0;
+        if (declaration) {
+            ctx = declaration->logicalInternalContext(m_duContext->topContext());
+        }
+        if (ctx) {
+            ret << ctx;
+        } else if (declaration) {
+            //Print some debug-output
+            kDebug() << "Could not get internal context from" << declaration->toString();
+        } else {
+            //Print some debug-output
+            kDebug() << "Could not get declaration";
+        }
     }
-  }
-  
-  return ret;
+    return ret;
 }
 
 QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KDevelop::SimpleCursor& position, bool& abort)

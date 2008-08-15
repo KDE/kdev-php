@@ -27,9 +27,9 @@
 #include <language/duchain/declaration.h>
 #include <language/duchain/abstractfunctiondeclaration.h>
 #include <language/duchain/ducontext.h>
+#include <language/duchain/types/functiontype.h>
 #include <QTextFormat>
 #include <QStringList>
-#include "types.h"
 
 using namespace KDevelop;
 namespace Php {
@@ -58,7 +58,7 @@ void createArgumentList(const NormalDeclarationCompletionItem& item, QString& re
   QTextFormat highlightFormat; //highlightFormat is invalid, so kate uses the match-quality dependent color.
 
   AbstractFunctionDeclaration* decl = dynamic_cast<AbstractFunctionDeclaration*>(dec);
-  Php::FunctionType::Ptr functionType = dec->type<Php::FunctionType>();
+  FunctionType::Ptr functionType = dec->type<FunctionType>();
 
   if (functionType && decl) {
 

@@ -28,12 +28,14 @@
 #include <ktexteditor/range.h>
 #include <ktexteditor/view.h>
 #include <ktexteditor/document.h>
-#include "duchain/types.h"
 #include <codecompletion/codecompletionmodel.h>
-#include <duchain/declaration.h>
-#include <duchain/classfunctiondeclaration.h>
-#include <duchain/namespacealiasdeclaration.h>
+#include <language/duchain/declaration.h>
+#include <language/duchain/classfunctiondeclaration.h>
+#include <language/duchain/namespacealiasdeclaration.h>
 #include <language/duchain/duchainutils.h>
+#include <language/duchain/types/functiontype.h>
+#include <language/duchain/types/structuretype.h>
+
 #include "completion/helpers.h"
 
 using namespace KDevelop;
@@ -200,11 +202,11 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
             indentation += "typedef ";
 
           if( dec->kind() == Declaration::Type && !dec->type<FunctionType>() && !dec->isTypeAlias() ) {
-            if (ClassType::Ptr classType =  dec->type<ClassType>())
+            if (StructureType::Ptr classType =  dec->type<StructureType>())
               switch (classType->classType()) {
-                case Class:
+                case StructureType::Class:
                   return indentation + "class";
-                case Interface:
+                case StructureType::Interface:
                   return indentation + "interface";
               }
             return QVariant();
@@ -320,12 +322,12 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
 //             }
             break;
           case AbstractType::TypeStructure:
-            if (ClassType::Ptr classType =  dec->type<ClassType>())
+            if (StructureType::Ptr classType =  dec->type<StructureType>())
               switch (classType->classType()) {
-                case Class:
+                case StructureType::Class:
                   p |= CodeCompletionModel::Class;
                   break;
-                case Interface:
+                case StructureType::Interface:
                   // FIXME remove
                   p |= CodeCompletionModel::Class;
                   // Remove class bit set in DUChainUtils

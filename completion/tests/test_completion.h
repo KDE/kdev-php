@@ -36,7 +36,7 @@ private slots:
     void functionCall();
     void functionCall2();
     void functionCall3();
-    void testExpressionAt();
+    void newObjectFromOtherFile();
 };
 
 }

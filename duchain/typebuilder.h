@@ -28,7 +28,6 @@
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/identifier.h>
-#include "types.h"
 
 namespace Php {
 
@@ -55,11 +54,11 @@ protected:
   virtual void visitExpr(ExprAst *node);
 
   KDevelop::AbstractType::Ptr m_expressionType;
-  FunctionType::Ptr m_currentFunctionType;
+  KDevelop::FunctionType::Ptr m_currentFunctionType;
 
 private:
-    FunctionType::Ptr openFunctionType(AstNode* node);
-    ClassType::Ptr parseDocComment(AstNode* node, const QString& docCommentName);
+    KDevelop::FunctionType::Ptr openFunctionType(AstNode* node);
+    KDevelop::StructureType::Ptr parseDocComment(AstNode* node, const QString& docCommentName);
 };
 
 }

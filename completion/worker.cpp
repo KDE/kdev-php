@@ -35,7 +35,6 @@
 #include <language/duchain/duchainbase.h>
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/duchain.h>
-#include "duchain/types.h"
 #include "model.h"
 
 using namespace KDevelop;
@@ -54,7 +53,6 @@ CodeCompletionModel* CodeCompletionWorker::model() const
 
 void CodeCompletionWorker::computeCompletions(KDevelop::DUContextPointer context, const KTextEditor::Cursor& position, KTextEditor::View* view, const KTextEditor::Range& contextRange, const QString& contextText)
 {
-qDebug() << "<<<<<<<<<<<<<<<CREATING CodeCompletionContext>>>>>>>>>>>>>>>>>>>>>>>" << contextText;
   CodeCompletionContext::Ptr completionContext( new CodeCompletionContext( context, contextText ) );
   if (CodeCompletionModel* m = model())
     m->setCompletionContext(KDevelop::CodeCompletionContext::Ptr::staticCast(completionContext));

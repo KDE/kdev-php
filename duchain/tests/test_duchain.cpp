@@ -25,8 +25,12 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/topducontext.h>
 #include <language/duchain/classfunctiondeclaration.h>
+#include <language/duchain/types/functiontype.h>
+#include <language/duchain/types/structuretype.h>
+#include <language/duchain/types/integraltype.h>
 
-#include "types.h"
+#include "phpparsejob.h"
+
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -62,7 +66,7 @@ void TestDUChain::testDeclareVar()
     //$i
     Declaration* decVar = top->localDeclarations().at(2);
     QCOMPARE(decVar->identifier(), Identifier("i"));
-    ClassType::Ptr type = decVar->type<ClassType>();
+    StructureType::Ptr type = decVar->type<StructureType>();
     QVERIFY(type);
     QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("A"));
     QVERIFY(type->equals(dec->abstractType().unsafeData()));
@@ -75,7 +79,7 @@ void TestDUChain::testDeclareVar()
     //$j
     decVar = top->localDeclarations().at(3);
     QCOMPARE(decVar->identifier(), Identifier("j"));
-    type = decVar->type<ClassType>();
+    type = decVar->type<StructureType>();
     QVERIFY(type);
     QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("B"));
     QVERIFY(type->equals(dec->abstractType().unsafeData()));
@@ -83,7 +87,7 @@ void TestDUChain::testDeclareVar()
     //$i (2nd)
     decVar = top->localDeclarations().at(4);
     QCOMPARE(decVar->identifier(), Identifier("i"));
-    type = decVar->type<ClassType>();
+    type = decVar->type<StructureType>();
     QVERIFY(type);
     QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("B"));
     QVERIFY(type->equals(dec->abstractType().unsafeData()));
@@ -200,7 +204,7 @@ void TestDUChain::testClassMemberVar()
     QCOMPARE(var->identifier(), Identifier("bar"));
     QCOMPARE(var->accessPolicy(), Declaration::Protected);
     QCOMPARE(var->isStatic(), false);
-    ClassType::Ptr type = var->type<ClassType>();
+    StructureType::Ptr type = var->type<StructureType>();
     QVERIFY(type);
     QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
@@ -240,7 +244,7 @@ void TestDUChain::testReturnTypeClass()
     QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("foo"));
     FunctionType::Ptr functionType = dec->type<FunctionType>();
     QVERIFY(functionType);
-    ClassType::Ptr retType = ClassType::Ptr::dynamicCast(functionType->returnType());
+    StructureType::Ptr retType = StructureType::Ptr::dynamicCast(functionType->returnType());
     QVERIFY(retType);
     QCOMPARE(retType->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
@@ -248,7 +252,7 @@ void TestDUChain::testReturnTypeClass()
     QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("bar"));
     functionType = dec->type<FunctionType>();
     QVERIFY(functionType);
-    retType = ClassType::Ptr::dynamicCast(functionType->returnType());
+    retType = StructureType::Ptr::dynamicCast(functionType->returnType());
     QVERIFY(retType);
     QCOMPARE(retType->qualifiedIdentifier(), QualifiedIdentifier("A"));
     
@@ -271,12 +275,12 @@ void TestDUChain::testDeclarationReturnType()
     Declaration* dec = top->localDeclarations().at(1);
     FunctionType::Ptr fType = dec->type<FunctionType>();
     QVERIFY(fType);
-    QVERIFY(ClassType::Ptr::dynamicCast(fType->returnType()));
-    QCOMPARE(ClassType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
+    QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
     dec = top->localDeclarations().at(2);
     QCOMPARE(dec->identifier(), Identifier("i"));
-    ClassType::Ptr type = dec->type<ClassType>();
+    StructureType::Ptr type = dec->type<StructureType>();
     QVERIFY(type);
     QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("A"));
     
@@ -298,8 +302,8 @@ void TestDUChain::testDeclarationMultipleReturnTypes()
 
     FunctionType::Ptr fType = top->localDeclarations().at(1)->type<FunctionType>();
     QVERIFY(fType);
-    QVERIFY(ClassType::Ptr::dynamicCast(fType->returnType()));
-    QCOMPARE(ClassType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
+    QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
     release(top);
 }
@@ -321,15 +325,15 @@ void TestDUChain::testDeclarationReturnTypeDocBlock()
     Declaration* dec = top->childContexts().at(0)->localDeclarations().at(0);
     FunctionType::Ptr fType = dec->type<FunctionType>();
     QVERIFY(fType);
-    QVERIFY(ClassType::Ptr::dynamicCast(fType->returnType()));
-    QCOMPARE(ClassType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
+    QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
     //function foo
     dec = top->localDeclarations().at(2);
     fType = dec->type<FunctionType>();
     QVERIFY(fType);
-    QVERIFY(ClassType::Ptr::dynamicCast(fType->returnType()));
-    QCOMPARE(ClassType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
+    QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
     release(top);
 }
@@ -369,8 +373,8 @@ void TestDUChain::testDeclareTypehintFunction()
 
     FunctionType::Ptr fType = top->localDeclarations().at(1)->type<FunctionType>();
     QVERIFY(fType);
-    QVERIFY(ClassType::Ptr::dynamicCast(fType->returnType()));
-    QCOMPARE(ClassType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
+    QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
     release(top);
 }
@@ -391,9 +395,9 @@ void TestDUChain::testClassImplementsInterface()
     Declaration* dec = top->localDeclarations().at(0);
     QVERIFY(dec->isDefinition());
     QCOMPARE(dec->identifier(), Identifier("I"));
-    ClassType::Ptr typeI = dec->type<ClassType>();
+    StructureType::Ptr typeI = dec->type<StructureType>();
     QCOMPARE(typeI->qualifiedIdentifier(), QualifiedIdentifier("I"));
-    QCOMPARE(typeI->classType(), Interface);
+    QCOMPARE(typeI->classType(), static_cast<uint>(StructureType::Interface));
     QVERIFY(typeI->declaration(top) == dec);
 
     QCOMPARE(dec->internalContext(), top->childContexts().at(0));
@@ -409,9 +413,9 @@ void TestDUChain::testClassImplementsInterface()
     dec = top->localDeclarations().at(1);
     QVERIFY(dec->isDefinition());
     QCOMPARE(dec->identifier(), Identifier("A"));
-    ClassType::Ptr typeA = dec->type<ClassType>();
+    StructureType::Ptr typeA = dec->type<StructureType>();
     QCOMPARE(typeA->qualifiedIdentifier(), QualifiedIdentifier("A"));
-    QCOMPARE(typeA->classType(), Class);
+    QCOMPARE(typeA->classType(), static_cast<uint>(StructureType::Class));
     QVERIFY(typeA->declaration(top) == dec);
 
     QCOMPARE(dec->internalContext(), top->childContexts().at(1));
@@ -442,9 +446,9 @@ void TestDUChain::testClassExtends()
     Declaration* dec = top->localDeclarations().at(0);
     QVERIFY(dec->isDefinition());
     QCOMPARE(dec->identifier(), Identifier("A"));
-    ClassType::Ptr typeA = dec->type<ClassType>();
+    StructureType::Ptr typeA = dec->type<StructureType>();
     QCOMPARE(typeA->qualifiedIdentifier(), QualifiedIdentifier("A"));
-    QCOMPARE(typeA->classType(), Class);
+    QCOMPARE(typeA->classType(), static_cast<uint>(StructureType::Class));
     QVERIFY(typeA->declaration(top) == dec);
 
     QCOMPARE(dec->internalContext(), top->childContexts().at(0));
@@ -460,9 +464,9 @@ void TestDUChain::testClassExtends()
     dec = top->localDeclarations().at(1);
     QVERIFY(dec->isDefinition());
     QCOMPARE(dec->identifier(), Identifier("B"));
-    ClassType::Ptr typeB = dec->type<ClassType>();
+    StructureType::Ptr typeB = dec->type<StructureType>();
     QCOMPARE(typeB->qualifiedIdentifier(), QualifiedIdentifier("B"));
-    QCOMPARE(typeB->classType(), Class);
+    QCOMPARE(typeB->classType(), static_cast<uint>(StructureType::Class));
     QVERIFY(typeB->declaration(top) == dec);
 
     QCOMPARE(dec->internalContext(), top->childContexts().at(1));
@@ -488,7 +492,7 @@ void TestDUChain::testStaticMethod()
 
     DUChainWriteLocker lock(DUChain::lock());
 
-    QCOMPARE(top->localDeclarations().at(2)->type<ClassType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
+    QCOMPARE(top->localDeclarations().at(2)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
 
     release(top);
 }
@@ -504,9 +508,9 @@ void TestDUChain::testOwnStaticMethod()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->childContexts().at(1)->childContexts().at(1)->localDeclarations().at(0)
-                ->type<ClassType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
+                ->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
     QCOMPARE(top->childContexts().at(1)->childContexts().at(1)->localDeclarations().at(1)
-                ->type<ClassType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
+                ->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
 
     release(top);
 }
@@ -522,13 +526,13 @@ void TestDUChain::testThis()
 
     FunctionType::Ptr fn = top->childContexts().at(0)->localDeclarations().at(0)->type<FunctionType>();
     QVERIFY(fn);
-    ClassType::Ptr cls = ClassType::Ptr::dynamicCast(fn->returnType());
+    StructureType::Ptr cls = StructureType::Ptr::dynamicCast(fn->returnType());
     QVERIFY(cls);
     QCOMPARE(cls->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
     fn = top->childContexts().at(0)->localDeclarations().at(1)->type<FunctionType>();
     QVERIFY(fn);
-    cls = ClassType::Ptr::dynamicCast(fn->returnType());
+    cls = StructureType::Ptr::dynamicCast(fn->returnType());
     QVERIFY(cls);
     QCOMPARE(cls->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
@@ -547,13 +551,13 @@ void TestDUChain::testObjectFunctionCall()
 
     FunctionType::Ptr fn = top->childContexts().at(1)->localDeclarations().at(0)->type<FunctionType>();
     QVERIFY(fn);
-    ClassType::Ptr cls = ClassType::Ptr::dynamicCast(fn->returnType());
+    StructureType::Ptr cls = StructureType::Ptr::dynamicCast(fn->returnType());
     QVERIFY(cls);
     QCOMPARE(cls->qualifiedIdentifier(), QualifiedIdentifier("B"));
 
     fn = top->childContexts().at(1)->localDeclarations().at(1)->type<FunctionType>();
     QVERIFY(fn);
-    cls = ClassType::Ptr::dynamicCast(fn->returnType());
+    cls = StructureType::Ptr::dynamicCast(fn->returnType());
     QVERIFY(cls);
     QCOMPARE(cls->qualifiedIdentifier(), QualifiedIdentifier("B"));
 
@@ -572,7 +576,7 @@ void TestDUChain::testObjectFunctionCall2()
 
     FunctionType::Ptr fn = top->childContexts().at(2)->localDeclarations().at(1)->type<FunctionType>();
     QVERIFY(fn);
-    ClassType::Ptr cls = ClassType::Ptr::dynamicCast(fn->returnType());
+    StructureType::Ptr cls = StructureType::Ptr::dynamicCast(fn->returnType());
     QVERIFY(cls);
     QCOMPARE(cls->qualifiedIdentifier(), QualifiedIdentifier("C"));
 
@@ -590,9 +594,9 @@ void TestDUChain::testObjectFunctionCall3()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("i"));
-    QCOMPARE(top->localDeclarations().at(2)->type<ClassType>()->qualifiedIdentifier(), QualifiedIdentifier("A"));;
+    QCOMPARE(top->localDeclarations().at(2)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("A"));;
     QCOMPARE(top->localDeclarations().at(3)->qualifiedIdentifier(), QualifiedIdentifier("j"));
-    QCOMPARE(top->localDeclarations().at(3)->type<ClassType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));;
+    QCOMPARE(top->localDeclarations().at(3)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));;
 
     release(top);
 }
@@ -607,7 +611,7 @@ void TestDUChain::testObjectVariable()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().at(3)->qualifiedIdentifier(), QualifiedIdentifier("i"));
-    QCOMPARE(top->localDeclarations().at(3)->type<ClassType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));;
+    QCOMPARE(top->localDeclarations().at(3)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));;
 
     release(top);
 }
@@ -622,7 +626,7 @@ void TestDUChain::testStaticMemberVariable()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("i"));
-    QCOMPARE(top->localDeclarations().at(2)->type<ClassType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));;
+    QCOMPARE(top->localDeclarations().at(2)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));;
 
     release(top);
 }
@@ -636,8 +640,8 @@ void TestDUChain::testOwnStaticMemberVariable()
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* barContext = top->childContexts().at(1)->childContexts().at(0);
-    QCOMPARE(barContext->localDeclarations().at(0)->type<ClassType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
-    QCOMPARE(barContext->localDeclarations().at(1)->type<ClassType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
+    QCOMPARE(barContext->localDeclarations().at(0)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
+    QCOMPARE(barContext->localDeclarations().at(1)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
 
     release(top);
 }
@@ -690,6 +694,52 @@ void TestDUChain::testDefaultFunctionParam()
     QCOMPARE(fun->defaultParameters()[0].str(), QString("false"));
     QCOMPARE(fun->defaultParameters()[1].str(), QString("null"));
 
+    release(top);
+}
+
+void TestDUChain::testGlobalFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? substr(); ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+    
+    QCOMPARE(top->importedParentContexts().count(), 1);
+    QVERIFY(DUChain::self()->chainForDocument(IndexedString("internalfunctions")));
+    QCOMPARE(DUChain::self()->chainForDocument(IndexedString("internalfunctions")), top->importedParentContexts().first().context());
+
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("substr")).count(), 1);
+
+    release(top);
+}
+
+void TestDUChain::testNewObjectFromOtherFile()
+{
+
+    TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo.php"), "<?php class Foo { } ");
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $a = new Foo(); ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+    
+    QCOMPARE(top->importedParentContexts().count(), 2);
+    bool found = false;
+    foreach (DUContext::Import import, top->importedParentContexts()) {
+        if (import.context() == addTop) {
+            found = true;
+            break;
+        }
+    }
+    QVERIFY(found);
+    
+    QCOMPARE(top->localDeclarations().first()->type<StructureType>()->declaration(top),
+                addTop->localDeclarations().first());
+
+    release(addTop);
     release(top);
 }
 }

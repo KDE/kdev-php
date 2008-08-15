@@ -24,13 +24,15 @@
 #include <language/duchain/parsingenvironment.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/topducontext.h>
+#include <language/duchain/indexedstring.h>
+#include <kstandarddirs.h>
+#include <kcomponentdata.h>
 
 #include "dumptypes.h"
 #include "parsesession.h"
 #include "phpdebugvisitor.h"
 #include "declarationbuilder.h"
 #include "usebuilder.h"
-#include "types.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -41,8 +43,27 @@ namespace Php
 
 DUChainTestBase::DUChainTestBase()
 {
+    KComponentData kd("kdevphpsupport");
 }
 
+void DUChainTestBase::initTestCase()
+{
+    if (!DUChain::self()->chainForDocument(IndexedString("internalfunctions"))) {
+        QString fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
+        ParseSession* session = new ParseSession();
+        session->readFile(fileName);
+        StartAst* ast = 0;
+        if (!session->parse(&ast)) qFatal("can't parse internalfunctions");
+
+        DeclarationBuilder declarationBuilder(session);
+        declarationBuilder.build(IndexedString("internalfunctions"), ast);
+        
+        UseBuilder useBuilder(session);
+        useBuilder.buildUses(ast);
+        
+        delete session;
+    }
+}
 void DUChainTestBase::release(TopDUContext* top)
 
 {
@@ -51,6 +72,24 @@ void DUChainTestBase::release(TopDUContext* top)
   TopDUContextPointer tp(top);
   DUChain::self()->removeDocumentChain(static_cast<TopDUContext*>(top));
   Q_ASSERT(!tp);
+}
+
+TopDUContext* DUChainTestBase::parseAdditionalFile(IndexedString fileName, QByteArray contents)
+{
+    ParseSession* session = new ParseSession();
+    session->setContents(contents);
+    StartAst* ast = 0;
+    if (!session->parse(&ast)) qFatal("can't parse");
+
+    DeclarationBuilder declarationBuilder(session);
+    TopDUContext* top = declarationBuilder.build(fileName, ast);
+    
+    UseBuilder useBuilder(session);
+    useBuilder.buildUses(ast);
+    
+    delete session;
+    
+    return top;
 }
 
 TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump)
@@ -106,3 +145,4 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump)
 }
 
 #include "duchaintestbase.moc"
+

@@ -147,7 +147,7 @@ void DeclarationBuilder::visitClassExtends(ClassExtendsAst *node)
 {
     if (openTypeFromName(node->identifier, true)) {
         closeType();
-        ClassType::Ptr extends = ClassType::Ptr::dynamicCast(lastType());
+        StructureType::Ptr extends = StructureType::Ptr::dynamicCast(lastType());
         if (extends) {
             addBaseType(extends, false);
         }
@@ -162,9 +162,9 @@ void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
     {
         if (openTypeFromName(__it->element, true)) {
             closeType();
-            ClassType::Ptr interface = ClassType::Ptr::dynamicCast(lastType());
+            StructureType::Ptr interface = StructureType::Ptr::dynamicCast(lastType());
             if (interface) {
-                if (interface->classType() == Interface) {
+                if (interface->classType() == StructureType::Interface) {
                     addBaseType(interface, true);
                 } else {
                     //TODO report error

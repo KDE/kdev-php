@@ -23,6 +23,7 @@
 #include <duchain/topducontext.h>
 #include <duchain/duchain.h>
 #include <duchain/duchainlock.h>
+#include <duchain/persistentsymboltable.h>
 #include "types.h"
 
 using namespace KDevelop;
@@ -79,8 +80,25 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
         DUChainReadLocker lock(DUChain::lock());
         QualifiedIdentifier id = identifierForNode(node->className->identifier);
         m_lastDeclarations = m_currentContext->findDeclarations(id);
+        if (m_lastDeclarations.isEmpty()) {
+            kDebug() << "findDeclarations was empty, trying through PersistentSymbolTable";
+            uint nr;
+            const IndexedDeclaration* declarations = 0;
+            PersistentSymbolTable::self().declarations(id, nr, declarations);
+            kDebug() << "found declarations: " << nr;
+            m_lastDeclarations.clear();
+            lock.unlock();
+            DUChainWriteLocker wlock(DUChain::lock());
+            for (uint i=0; i<nr; ++i) {
+                //todo: use only classes
+                m_currentContext->topContext()->addImportedParentContext(declarations[i].declaration()->context()->topContext());
+                m_lastDeclarations << declarations[i].declaration();
+            }
+        }
         if (!m_lastDeclarations.isEmpty()) {
             m_lastType = m_lastDeclarations.first()->abstractType();
+        } else {
+            m_lastType = 0;
         }
     }
 }
@@ -148,9 +166,9 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
     if (node->objectProperty->objectDimList) {
         //handle $foo->bar() and $foo->baz, $foo is m_lastType
         if (m_lastType) {
-            if (ClassType::Ptr::dynamicCast(m_lastType)) {
+            if (StructureType::Ptr::dynamicCast(m_lastType)) {
                 DUChainReadLocker lock(DUChain::lock());
-                QualifiedIdentifier id = ClassType::Ptr::staticCast(m_lastType)->qualifiedIdentifier();
+                QualifiedIdentifier id = StructureType::Ptr::staticCast(m_lastType)->qualifiedIdentifier();
                 m_lastDeclarations = m_currentContext->findDeclarations(id);
                 if (!m_lastDeclarations.isEmpty()) {
                     DUContext* context = m_lastDeclarations.first()->internalContext();

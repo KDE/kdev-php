@@ -10,7 +10,6 @@ set(duchain_SRCS
     editorintegrator.cpp
     usebuilder.cpp
     typebuilder.cpp
-    types.cpp
     dumptypes.cpp
     expressionvisitor.cpp
     expressionparser.cpp

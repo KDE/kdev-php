@@ -53,6 +53,8 @@ private slots:
   void testClassConst();
   void testDefine();
   void testDefaultFunctionParam();
+  void testGlobalFunction();
+  void testNewObjectFromOtherFile();
 };
 
 }

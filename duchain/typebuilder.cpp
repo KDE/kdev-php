@@ -27,6 +27,8 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/ducontext.h>
 #include <language/duchain/declaration.h>
+#include <language/duchain/types/integraltype.h>
+
 #include "editorintegrator.h"
 #include "parsesession.h"
 #include "phpdebugvisitor.h"
@@ -35,7 +37,7 @@
 using namespace KDevelop;
 namespace Php {
 
-ClassType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& docCommentName)
+StructureType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& docCommentName)
 {
     QString docComment = editor()->parseSession()->docComment(node->startToken);
     if (!docComment.isEmpty()) {
@@ -43,11 +45,11 @@ ClassType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& docCom
         if (rx.indexIn(docComment) != -1) {
             if(openTypeFromName(QualifiedIdentifier(rx.cap(1)), node, true)) {
                 closeType();
-                return ClassType::Ptr::dynamicCast(lastType());
+                return StructureType::Ptr::dynamicCast(lastType());
             }
         }
     }
-    return ClassType::Ptr();
+    return StructureType::Ptr();
 }
 
 FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
@@ -58,7 +60,7 @@ FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
 
     m_currentFunctionType = functionType;
 
-    ClassType::Ptr returnType = parseDocComment(node, "return");
+    StructureType::Ptr returnType = parseDocComment(node, "return");
     if (returnType) {
         functionType->setReturnType(AbstractType::Ptr::staticCast(returnType));
     }
@@ -68,8 +70,8 @@ FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
 
 void TypeBuilder::visitClassDeclarationStatement( ClassDeclarationStatementAst* node )
 {
-    ClassType::Ptr classType = ClassType::Ptr(new ClassType());
-    classType->setClassType(Class);
+    StructureType::Ptr classType = StructureType::Ptr(new StructureType());
+    classType->setClassType(StructureType::Class);
 
     openType(classType);
 
@@ -85,8 +87,8 @@ void TypeBuilder::visitClassDeclarationStatement( ClassDeclarationStatementAst* 
 
 void TypeBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node)
 {
-    ClassType::Ptr classType = ClassType::Ptr(new ClassType());
-    classType->setClassType(Interface);
+    StructureType::Ptr classType = StructureType::Ptr(new StructureType());
+    classType->setClassType(StructureType::Interface);
 
     openType(classType);
 

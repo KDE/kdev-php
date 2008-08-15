@@ -23,10 +23,10 @@
 
 #include "phpdefaultvisitor.h"
 #include <language/duchain/builders/abstractcontextbuilder.h>
+#include <language/duchain/types/structuretype.h>
 
 #include "phpduchainexport.h"
 #include "editorintegrator.h"
-#include "types.h"
 
 namespace Php
 {
@@ -45,8 +45,7 @@ public:
     void setEditor(EditorIntegrator* editor);
     void setEditor(ParseSession* session);
 
-    virtual KDevelop::ReferencedTopDUContext build( const KDevelop::IndexedString& url, AstNode* node,
-                              KDevelop::ReferencedTopDUContext updateContext = KDevelop::ReferencedTopDUContext() );
+    virtual KDevelop::ReferencedTopDUContext build( const KDevelop::IndexedString& url, AstNode* node);
 protected:
     EditorIntegrator* editor() const;
 
@@ -63,7 +62,7 @@ protected:
     virtual void visitClassStatement(ClassStatementAst *node);
     virtual void visitFunctionDeclarationStatement( FunctionDeclarationStatementAst* node );
 
-    virtual void addBaseType(const ClassType::Ptr& base, bool implementsInterface);
+    virtual void addBaseType(const KDevelop::StructureType::Ptr& base, bool implementsInterface);
 
     virtual void classContextOpened(KDevelop::DUContext* context);
 };

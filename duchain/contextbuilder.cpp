@@ -37,12 +37,23 @@ namespace Php
 ContextBuilder::ContextBuilder()
 {
 }
-ReferencedTopDUContext ContextBuilder::build( const IndexedString& url, AstNode* node,
-                            ReferencedTopDUContext updateContext )
+ReferencedTopDUContext ContextBuilder::build( const IndexedString& url, AstNode* node)
 {
+    ReferencedTopDUContext updateContext;
+    {
+        DUChainReadLocker lock(DUChain::lock());
+        updateContext = DUChain::self()->chainForDocument(url);
+    }
+    if (updateContext) {
+        DUChainWriteLocker lock(DUChain::lock());
+        updateContext->clearImportedParentContexts();
+    }
     ReferencedTopDUContext ret = ContextBuilderBase::build(url, node, updateContext);
+    
     DUChainWriteLocker lock(DUChain::lock());
-    ret->addImportedParentContext(DUChain::self()->chainForDocument(IndexedString("internalfunctions")));
+    if (url != IndexedString("internalfunctions")) {
+        ret->addImportedParentContext(DUChain::self()->chainForDocument(IndexedString("internalfunctions")));
+    }
     return ret;
 }
 
@@ -172,7 +183,7 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     closeContext();
 }
 
-void ContextBuilder::addBaseType(const ClassType::Ptr& base, bool implementsInterface)
+void ContextBuilder::addBaseType(const StructureType::Ptr& base, bool implementsInterface)
 {
     DUChainWriteLocker lock(DUChain::lock());
 

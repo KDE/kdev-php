@@ -26,8 +26,8 @@
 #include <language/duchain/topducontext.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/duchainpointer.h>
+#include <language/duchain/types/structuretype.h>
 
-#include "types.h"
 #include "completion/context.h"
 #include "completion/items.h"
 #include "completion/helpers.h"
@@ -131,17 +131,13 @@ void TestCompletion::functionCall2()
 
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $i->foo(new A(), "));
     QVERIFY(cptr->parentContext());
+    QVERIFY(!cptr->parentContext()->parentContext());
+
     bool abort = false;
-    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+    QList<CompletionTreeItemPointer> itemList = cptr->parentContext()->completionItems(SimpleCursor(), abort);
     QCOMPARE(itemList.count(), 1);
     QCOMPARE(itemList.first()->declaration().data(), top->childContexts().at(0)->localDeclarations().at(0));
-    QVERIFY(cptr->parentContext());
-    QVERIFY(!cptr->parentContext()->parentContext());
-    
-    itemList = cptr->parentContext()->completionItems(SimpleCursor(), abort);
-    qDebug() << itemList.count();
-    
-// itemList.swap(1, 
+
     release(top);
 }
 
@@ -153,43 +149,47 @@ void TestCompletion::functionCall3()
 
     TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
-
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; foo("));
     QVERIFY(cptr->parentContext());
+
+    QVERIFY(cptr->parentContext());
+    QVERIFY(!cptr->parentContext()->parentContext());
+    QCOMPARE(cptr->parentContext()->memberAccessOperation(), CodeCompletionContext::FunctionCallAccess);
+
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+
+    bool found = false;
+    foreach (CompletionTreeItemPointer item, itemList) {
+        if (item->declaration().data() == top->localDeclarations().at(1)) {
+            found = true;
+        }
+    }
+    QVERIFY(found);
+    
+    release(top);
+}
+
+void TestCompletion::newObjectFromOtherFile()
+{
+
+    TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo.php"), "<?php class Foo { function bar() {} } ");
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $a = new Foo(); ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $a->"));
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
     QCOMPARE(itemList.count(), 1);
-    QCOMPARE(itemList.first()->declaration().data(), top->localDeclarations().at(1));
-    QVERIFY(cptr->parentContext());
-    QVERIFY(!cptr->parentContext()->parentContext());
-    
-    itemList = cptr->parentContext()->completionItems(SimpleCursor(), abort);
-    qDebug() << itemList.count();
-    
-// itemList.swap(1, 
+    QCOMPARE(itemList.first()->declaration().data(), addTop->childContexts().first()->localDeclarations().first());
+
+    release(addTop);
     release(top);
 }
-void TestCompletion::testExpressionAt()
-{
-//     QString expr("bar(); foo->");
-//     int startExpr = expressionAt(expr, expr.length());
-//     QCOMPARE(expr.mid(startExpr).trimmed(), QString("foo->"));
-    
-//     QString expr = "bar(); foo(";
-//     int startExpr = expressionAt(expr, expr.length());
-//     qDebug() << "RESULT: " << startExpr << expr.mid(startExpr);
-//     QCOMPARE(expr.mid(startExpr).trimmed(), QString("foo(0,"));
-//     
-//     expr = "bar(); foo->bar(";
-//     startExpr = expressionAt(expr, expr.length());
-//     QCOMPARE(expr.mid(startExpr).trimmed(), QString("foo->bar("));
-// 
-//     expr = "bar(); foo->bar(0, ";
-//     startExpr = expressionAt(expr, expr.length());
-//     QCOMPARE(expr.mid(startExpr).trimmed(), QString("foo->bar(0,"));
-//     expr.split(1, 
-}
-
 }
 
 #include "test_completion.moc"
