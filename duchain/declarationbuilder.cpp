@@ -28,6 +28,7 @@
 #include <language/duchain/functiondeclaration.h>
 #include "phpast.h"
 #include "parsesession.h"
+#include "helper.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -65,9 +66,9 @@ void DeclarationBuilder::closeDeclaration()
         currentDeclaration()->setType(lastType());
     }
 
-  eventuallyAssignInternalContext();
-
-  DeclarationBuilderBase::closeDeclaration();
+    eventuallyAssignInternalContext();
+  
+    DeclarationBuilderBase::closeDeclaration();
 }
 
 void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
@@ -145,9 +146,9 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 
 void DeclarationBuilder::visitClassExtends(ClassExtendsAst *node)
 {
-    if (openTypeFromName(node->identifier, true)) {
-        closeType();
-        StructureType::Ptr extends = StructureType::Ptr::dynamicCast(lastType());
+    Declaration* dec = findClassDeclaration(currentContext(), identifierForNode(node->identifier));
+    if (dec) {
+        StructureType::Ptr extends = StructureType::Ptr::dynamicCast(dec->abstractType());
         if (extends) {
             addBaseType(extends, false);
         }

@@ -53,8 +53,8 @@ void TestExpressionParser::newClass()
 
     ExpressionParser p(false, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i"), DUContextPointer(top));
-    QVERIFY(res.type);
-    QCOMPARE(StructureType::Ptr::staticCast(res.type)->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QVERIFY(res.type());
+    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
 
     release(top);
@@ -70,10 +70,10 @@ void TestExpressionParser::memberVariable()
     
     ExpressionParser p(false, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i->foo"), DUContextPointer(top));
-    QVERIFY(res.type);
-    QCOMPARE(res.allDeclarations.count(), 1);
-    QCOMPARE(res.allDeclarations.first().getDeclaration(top), top->childContexts().first()->localDeclarations().first());
-    QCOMPARE(StructureType::Ptr::staticCast(res.type)->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QVERIFY(res.type());
+    QCOMPARE(res.allDeclarations().count(), 1);
+    QCOMPARE(res.allDeclarations().first(), top->childContexts().first()->localDeclarations().first());
+    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
     release(top);
 }
@@ -88,9 +88,9 @@ void TestExpressionParser::memberFunction()
 
     ExpressionParser p(false, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i->foo"), DUContextPointer(top));
-    QVERIFY(res.type);
-    QVERIFY(FunctionType::Ptr::dynamicCast(res.type));
-    QCOMPARE(res.allDeclarations.first().getDeclaration(top), top->childContexts().first()->localDeclarations().first());
+    QVERIFY(res.type());
+    QVERIFY(FunctionType::Ptr::dynamicCast(res.type()));
+    QCOMPARE(res.allDeclarations().first(), top->childContexts().first()->localDeclarations().first());
     
     release(top);
 }
@@ -105,13 +105,39 @@ void TestExpressionParser::globalFunction()
 
     ExpressionParser p(false, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("foo"), DUContextPointer(top));
-    QVERIFY(res.type);    
-    QVERIFY(FunctionType::Ptr::dynamicCast(res.type));
-    QCOMPARE(res.allDeclarations.count(), 1);
-    QCOMPARE(res.allDeclarations.first().getDeclaration(top), top->localDeclarations().first());
+    QVERIFY(res.type());    
+    QVERIFY(FunctionType::Ptr::dynamicCast(res.type()));
+    QCOMPARE(res.allDeclarations().count(), 1);
+    QCOMPARE(res.allDeclarations().first(), top->localDeclarations().first());
     
     release(top);
 }
+
+void TestExpressionParser::chainCall()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { function foo() { return $this; } } $a = new A();");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fn = top->childContexts().first()->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fn);
+    qDebug() << fn->returnType()->toString();
+    qDebug() << top->localDeclarations().first()->abstractType()->toString();
+    QVERIFY(fn->returnType()->equals(top->localDeclarations().first()->abstractType().unsafeData()));
+
+    ExpressionParser p(false, true);
+    ExpressionEvaluationResult res = p.evaluateType(QByteArray("$a->foo()"), DUContextPointer(top));
+    QVERIFY(res.type()->equals(top->localDeclarations().first()->abstractType().unsafeData()));
+    
+    res = p.evaluateType(QByteArray("$a->foo()->foo()->foo()"), DUContextPointer(top));
+    QVERIFY(res.type()->equals(top->localDeclarations().first()->abstractType().unsafeData()));
+
+    release(top);
+}
+
 }
 
 #include "test_expressionparser.moc"

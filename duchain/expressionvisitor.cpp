@@ -19,12 +19,15 @@
  ***************************************************************************/
 #include "expressionvisitor.h"
 #include "parsesession.h"
+#include "helper.h"
 
-#include <duchain/topducontext.h>
-#include <duchain/duchain.h>
-#include <duchain/duchainlock.h>
-#include <duchain/persistentsymboltable.h>
-#include "types.h"
+#include <language/duchain/topducontext.h>
+#include <language/duchain/duchain.h>
+#include <language/duchain/duchainlock.h>
+#include <language/duchain/persistentsymboltable.h>
+#include <language/duchain/types/functiontype.h>
+#include <language/duchain/types/integraltype.h>
+#include <language/duchain/types/structuretype.h>
 
 using namespace KDevelop;
 
@@ -35,14 +38,6 @@ ExpressionVisitor::ExpressionVisitor(ParseSession* session, const TopDUContext* 
 {
 }
 
-AbstractType::Ptr ExpressionVisitor::lastType()
-{
-    return m_lastType;
-}
-QList<Declaration*> ExpressionVisitor::lastDeclarations()
-{
-    return m_lastDeclarations;
-}
 void ExpressionVisitor::visitExpr(ExprAst *node)
 {
     if (node->ducontext) {
@@ -61,14 +56,11 @@ void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(Compoun
             && m_currentContext->parentContext()->type() == DUContext::Class
             && m_currentContext->parentContext()->owner())
         {
-            m_lastType = m_currentContext->parentContext()->owner()->abstractType();
+            m_result.setType(m_currentContext->parentContext()->owner()->abstractType());
         }
     } else {
         DUChainReadLocker lock(DUChain::lock());
-        m_lastDeclarations = m_currentContext->findDeclarations(identifier);
-        if (!m_lastDeclarations.isEmpty()) {
-            m_lastType = m_lastDeclarations.first()->abstractType();
-        }
+        m_result.setDeclarations(m_currentContext->findDeclarations(identifier));
     }
     DefaultVisitor::visitCompoundVariableWithSimpleIndirectReference(node);
 }
@@ -77,29 +69,10 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
 {
     DefaultVisitor::visitVarExpressionNewObject(node);
     if (node->className->identifier) {
-        DUChainReadLocker lock(DUChain::lock());
         QualifiedIdentifier id = identifierForNode(node->className->identifier);
-        m_lastDeclarations = m_currentContext->findDeclarations(id);
-        if (m_lastDeclarations.isEmpty()) {
-            kDebug() << "findDeclarations was empty, trying through PersistentSymbolTable";
-            uint nr;
-            const IndexedDeclaration* declarations = 0;
-            PersistentSymbolTable::self().declarations(id, nr, declarations);
-            kDebug() << "found declarations: " << nr;
-            m_lastDeclarations.clear();
-            lock.unlock();
-            DUChainWriteLocker wlock(DUChain::lock());
-            for (uint i=0; i<nr; ++i) {
-                //todo: use only classes
-                m_currentContext->topContext()->addImportedParentContext(declarations[i].declaration()->context()->topContext());
-                m_lastDeclarations << declarations[i].declaration();
-            }
-        }
-        if (!m_lastDeclarations.isEmpty()) {
-            m_lastType = m_lastDeclarations.first()->abstractType();
-        } else {
-            m_lastType = 0;
-        }
+        Declaration* dec = findClassDeclaration(m_currentContext, id);
+        DUChainReadLocker lock(DUChain::lock());
+        m_result.setDeclaration(dec);
     }
 }
 
@@ -116,11 +89,13 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
                 ident += "::";
             }
             ident += m_session->symbol(node->stringFunctionName->string);
-            m_lastDeclarations = m_currentContext->findDeclarations(QualifiedIdentifier(ident));
-            if (!m_lastDeclarations.isEmpty()) {
-                FunctionType::Ptr function = m_lastDeclarations.last()->type<FunctionType>();
+            m_result.setDeclarations(m_currentContext->findDeclarations(QualifiedIdentifier(ident)));
+            if (!m_result.allDeclarations().isEmpty()) {
+                FunctionType::Ptr function = m_result.allDeclarations().last()->type<FunctionType>();
                 if (function) {
-                    m_lastType = function->returnType();
+                    m_result.setType(function->returnType());
+                } else {
+                    m_result.setType(AbstractType::Ptr());
                 }
             }
         } else if (node->varFunctionName) {
@@ -129,11 +104,13 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
             //global function call foo();
             DUChainReadLocker lock(DUChain::lock());
             QualifiedIdentifier functionIdentifier(m_session->symbol(node->stringFunctionNameOrClass->string));
-            m_lastDeclarations = m_currentContext->findDeclarations(functionIdentifier);
-            if (!m_lastDeclarations.isEmpty()) {
-                FunctionType::Ptr function = m_lastDeclarations.last()->type<FunctionType>();
+            m_result.setDeclarations(m_currentContext->findDeclarations(functionIdentifier));
+            if (!m_result.allDeclarations().isEmpty()) {
+                FunctionType::Ptr function = m_result.allDeclarations().last()->type<FunctionType>();
                 if (function) {
-                    m_lastType = function->returnType();
+                    m_result.setType(function->returnType());
+                } else {
+                    m_result.setType(AbstractType::Ptr());
                 }
             }
         }
@@ -148,49 +125,45 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
         //it could be a global function call, without ()
         DUChainReadLocker lock(DUChain::lock());
         QualifiedIdentifier functionIdentifier(m_session->symbol(node->string));
-        m_lastDeclarations = m_currentContext->findDeclarations(functionIdentifier);
-        if (!m_lastDeclarations.isEmpty()) {
-            if (m_lastDeclarations.last()->type<FunctionType>()) {
-                m_lastType = m_lastDeclarations.last()->abstractType();
-                return;
-            }
-        }
+        QList<Declaration*> declarations = m_currentContext->findDeclarations(functionIdentifier);
+        m_result.setDeclarations(declarations);
+    } else {
+        //TODO: is this correct?
+        IntegralType::Ptr integral(new IntegralType());
+        m_result.setType(AbstractType::Ptr::staticCast(integral));
     }
-    //TODO: is this correct?
-    IntegralType::Ptr integral(new IntegralType());
-    m_lastType = AbstractType::Ptr::staticCast(integral);
 }
 
 void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
 {
     if (node->objectProperty->objectDimList) {
-        //handle $foo->bar() and $foo->baz, $foo is m_lastType
-        if (m_lastType) {
-            if (StructureType::Ptr::dynamicCast(m_lastType)) {
-                DUChainReadLocker lock(DUChain::lock());
-                QualifiedIdentifier id = StructureType::Ptr::staticCast(m_lastType)->qualifiedIdentifier();
-                m_lastDeclarations = m_currentContext->findDeclarations(id);
-                if (!m_lastDeclarations.isEmpty()) {
-                    DUContext* context = m_lastDeclarations.first()->internalContext();
-                    if (!context && m_currentContext->parentContext()->localScopeIdentifier() == m_lastDeclarations.first()->qualifiedIdentifier()) {
-                        //class is currentClass (internalContext is not yet set)
-                        context = m_currentContext->parentContext();
-                    }
-                    QualifiedIdentifier propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
-                    m_lastDeclarations = context->findDeclarations(propertyId);
-                    m_lastType = 0;
-                    if (!m_lastDeclarations.isEmpty()) {
-                        if (node->isFunctionCall!=-1 && m_lastDeclarations.first()->type<FunctionType>()) {
-                            m_lastType = m_lastDeclarations.first()->type<FunctionType>()->returnType();
+        //handle $foo->bar() and $foo->baz, $foo is m_result.type()
+        if (m_result.type() && StructureType::Ptr::dynamicCast(m_result.type())) {
+            DUChainReadLocker lock(DUChain::lock());
+            QualifiedIdentifier id = StructureType::Ptr::staticCast(m_result.type())->qualifiedIdentifier();
+            QList<Declaration*> declarations = m_currentContext->findDeclarations(id);
+            if (!declarations.isEmpty()) {
+                DUContext* context = declarations.first()->internalContext();
+                if (!context && m_currentContext->parentContext()->localScopeIdentifier() == declarations.first()->qualifiedIdentifier()) {
+                    //class is currentClass (internalContext is not yet set)
+                    context = m_currentContext->parentContext();
+                }
+                QualifiedIdentifier propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
+                m_result.setDeclarations(context->findDeclarations(propertyId));
+                if (!m_result.allDeclarations().isEmpty()) {
+                    if (node->isFunctionCall!=-1) {
+                        FunctionType::Ptr function = m_result.allDeclarations().last()->type<FunctionType>();
+                        if (function) {
+                            m_result.setType(function->returnType());
                         } else {
-                            m_lastType = m_lastDeclarations.first()->abstractType();
+                            m_result.setType(AbstractType::Ptr());
                         }
-                    } else {
-                        m_lastType = 0;
                     }
                 } else {
-                    m_lastType = 0;
+                    m_result.setType(AbstractType::Ptr());
                 }
+            } else {
+                m_result.setType(AbstractType::Ptr());
             }
         }
     }
@@ -206,10 +179,10 @@ void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
             context = m_currentContext->parentContext();
         } else {
             DUChainReadLocker lock(DUChain::lock());
-            m_lastDeclarations = m_currentContext->findDeclarations(identifierForNode(node->className));
-            if (!m_lastDeclarations.isEmpty()) {
-                context = m_lastDeclarations.first()->internalContext();
-                if (!context && m_currentContext->parentContext()->localScopeIdentifier() == m_lastDeclarations.first()->qualifiedIdentifier()) {
+            QList<Declaration*> declarations = m_currentContext->findDeclarations(identifierForNode(node->className));
+            if (!declarations.isEmpty()) {
+                context = declarations.first()->internalContext();
+                if (!context && m_currentContext->parentContext()->localScopeIdentifier() == declarations.first()->qualifiedIdentifier()) {
                     //className is currentClass (internalContext is not yet set)
                     context = m_currentContext->parentContext();
                 }
@@ -217,14 +190,9 @@ void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
         }
         if (context) {
             DUChainReadLocker lock(DUChain::lock());
-            m_lastDeclarations = context->findDeclarations(identifierForNode(node->variable->variable->variable));
-            if (!m_lastDeclarations.isEmpty()) {
-                m_lastType = m_lastDeclarations.first()->abstractType();
-            } else {
-                m_lastType = 0;
-            }
+            m_result.setDeclarations(context->findDeclarations(identifierForNode(node->variable->variable->variable)));
         } else {
-            m_lastType = 0;
+            m_result.setType(AbstractType::Ptr());
         }
     }
 }

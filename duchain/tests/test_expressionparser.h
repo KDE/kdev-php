@@ -35,7 +35,7 @@ private slots:
   void memberVariable();
   void memberFunction();
   void globalFunction();
-
+  void chainCall();
 };
 
 }

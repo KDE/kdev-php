@@ -26,7 +26,7 @@
 #define PHP_PARSESESSION_H
 
 #include <QtCore/QString>
-#include <editor/simplecursor.h>
+#include <language/editor/simplecursor.h>
 #include "phpparser.h"
 #include "parserexport.h"
 

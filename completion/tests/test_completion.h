@@ -33,10 +33,14 @@ public:
 private slots:
     void objectCompletion();
     void staticMembers();
+    void methodCall();
     void functionCall();
-    void functionCall2();
-    void functionCall3();
     void newObjectFromOtherFile();
+    void baseClass();
+    void extendsFromOtherFile();
+    void globalClassFromOtherFile();
+    void codeModel();
+    void projectFileClass();
 };
 
 }

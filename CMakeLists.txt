@@ -10,7 +10,6 @@ find_package(KDE4 REQUIRED)
 find_package(KDevPlatform REQUIRED)
 include_directories(
     ${KDEVPLATFORM_INCLUDE_DIR}
-    ${KDEVPLATFORM_INCLUDE_DIR}/language
     ${KDE4_INCLUDES}
     ${KDE4_INCLUDE_DIR}/threadweaver
     ${CMAKE_CURRENT_BINARY_DIR}

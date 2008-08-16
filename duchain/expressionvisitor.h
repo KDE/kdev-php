@@ -22,8 +22,10 @@
 
 #include "phpdefaultvisitor.h"
 #include "phpduchainexport.h"
-#include <duchain/types/abstracttype.h>
-#include <duchain/identifier.h>
+#include "expressionevaluationresult.h"
+
+#include <language/duchain/types/abstracttype.h>
+#include <language/duchain/identifier.h>
 
 namespace KDevelop {
     class TopDUContext;
@@ -37,8 +39,7 @@ class KDEVPHPDUCHAIN_EXPORT ExpressionVisitor : public DefaultVisitor
 {
 public:
     ExpressionVisitor(ParseSession* session, const KDevelop::TopDUContext* source, bool strict);
-    KDevelop::AbstractType::Ptr lastType();
-    QList<KDevelop::Declaration*> lastDeclarations();
+    ExpressionEvaluationResult result() { return m_result; }
 
 protected:
     void visitExpr(ExprAst *node);
@@ -58,8 +59,8 @@ private:
     const KDevelop::TopDUContext* m_source;
     bool m_strict;
     KDevelop::DUContext* m_currentContext;
-    KDevelop::AbstractType::Ptr m_lastType;
-    QList<KDevelop::Declaration*> m_lastDeclarations;
+    
+    ExpressionEvaluationResult m_result;
 };
 
 }

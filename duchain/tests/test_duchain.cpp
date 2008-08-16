@@ -117,6 +117,7 @@ void TestDUChain::testDeclareClass()
 
     QCOMPARE(top->localDeclarations().count(), 1);
     Declaration* dec = top->localDeclarations().first();
+    QCOMPARE(dec->kind(), Declaration::Type);
     QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("A"));
     QCOMPARE(dec->isDefinition(), true);
     QCOMPARE(dec->logicalInternalContext(top), contextClassA);
@@ -136,6 +137,7 @@ void TestDUChain::testDeclareClass()
     dec = contextClassA->localDeclarations().at(0);
     ClassFunctionDeclaration* funDec = dynamic_cast<ClassFunctionDeclaration*>(dec);
     QVERIFY(funDec);
+    QCOMPARE(funDec->kind(), Declaration::Type);
     QCOMPARE(funDec->identifier(), Identifier("foo"));
     QCOMPARE(funDec->accessPolicy(), Declaration::Public);
     QCOMPARE(funDec->isStatic(), false);
@@ -722,9 +724,9 @@ void TestDUChain::testNewObjectFromOtherFile()
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? $a = new Foo(); ");
-
-    TopDUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
+// qDebug() << addTop;
     
     QCOMPARE(top->importedParentContexts().count(), 2);
     bool found = false;

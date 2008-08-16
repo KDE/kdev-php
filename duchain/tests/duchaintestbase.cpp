@@ -64,6 +64,17 @@ void DUChainTestBase::initTestCase()
         delete session;
     }
 }
+
+CompletionTreeItemPointer DUChainTestBase::searchDeclaration(QList<CompletionTreeItemPointer> items, Declaration* declaration)
+{
+    foreach (CompletionTreeItemPointer item, items) {
+        if (item->declaration().data() == declaration) {
+            return item;
+        }
+    }
+    return CompletionTreeItemPointer();
+}
+
 void DUChainTestBase::release(TopDUContext* top)
 
 {
@@ -92,7 +103,7 @@ TopDUContext* DUChainTestBase::parseAdditionalFile(IndexedString fileName, QByte
     return top;
 }
 
-TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump)
+TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QString url)
 {
     if (dump)
         kDebug(9007) << "==== Beginning new test case...:" << endl << unit;
@@ -112,7 +123,8 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump)
     }
 
     static int testNumber = 0;
-    QString url(QString("file:///internal/%1").arg(testNumber++));
+    if (url.isEmpty()) url = QString("file:///internal/%1").arg(testNumber++);
+    
 
     DeclarationBuilder declarationBuilder(session);
     TopDUContext* top = declarationBuilder.build(IndexedString(url), ast);

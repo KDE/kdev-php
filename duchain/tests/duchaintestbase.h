@@ -28,8 +28,9 @@
 
 #include "phpduchainexport.h"
 
-
+#include "completion/items.h"
 #include "phpparser.h"
+
 namespace KDevelop {
     class TopDUContext;
 }
@@ -92,13 +93,15 @@ public slots:
   void initTestCase();
   
 protected:
-  KDevelop::TopDUContext* parse(const QByteArray& unit, DumpAreas dump = static_cast<DumpAreas>(DumpAST | DumpDUChain | DumpType));
+  KDevelop::TopDUContext* parse(const QByteArray& unit, DumpAreas dump = static_cast<DumpAreas>(DumpAST | DumpDUChain | DumpType), QString fileName = QString());
   
   KDevelop::TopDUContext* parseAdditionalFile(KDevelop::IndexedString fileName, QByteArray contents);
 
   void release(KDevelop::TopDUContext* top);
 
   KDevelop::DumpChain dumper;
+  
+  KDevelop::CompletionTreeItemPointer searchDeclaration(QList<KDevelop::CompletionTreeItemPointer> items, KDevelop::Declaration* declaration);  
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(DUChainTestBase::DumpAreas)

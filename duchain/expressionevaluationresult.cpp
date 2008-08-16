@@ -24,14 +24,61 @@
 #include <language/duchain/repositories/itemrepository.h>
 #include <language/duchain/duchain.h>
 #include <language/duchain/types/identifiedtype.h>
-#include <language/duchain/types/delayedtype.h>
+#include <language/duchain/declaration.h>
 
+using namespace KDevelop;
 namespace Php {
 
 ExpressionEvaluationResult::~ExpressionEvaluationResult() {
 }
 
 ExpressionEvaluationResult::ExpressionEvaluationResult()/* : isInstance(false)*/ {
+}
+
+void ExpressionEvaluationResult::setDeclaration(Declaration* declaration)
+{
+    QList<Declaration*> decs;
+    if (declaration) {
+        decs << declaration;
+    }
+    setDeclarations(decs);
+}
+
+void ExpressionEvaluationResult::setDeclarations(QList<Declaration*> declarations)
+{
+    m_allDeclarations = declarations;
+    if (!m_allDeclarations.isEmpty()) {
+        m_type = m_allDeclarations.last()->abstractType();
+    } else {
+        m_type = AbstractType::Ptr();
+    }
+    m_allDeclarationIds.clear();
+    DUChainReadLocker lock(DUChain::lock());
+    foreach(Declaration* dec, m_allDeclarations) {
+        m_allDeclarationIds << dec->id();
+    }
+
+}
+
+AbstractType::Ptr ExpressionEvaluationResult::type() const
+{
+    return m_type;
+    
+}
+
+QList<Declaration*> ExpressionEvaluationResult::allDeclarations() const
+{
+    return m_allDeclarations;
+}
+
+QList<DeclarationId> ExpressionEvaluationResult::allDeclarationIds() const
+{
+    return m_allDeclarationIds;
+}
+
+void ExpressionEvaluationResult::setType(AbstractType::Ptr type)
+{
+    m_type = type;
 }
 
 }

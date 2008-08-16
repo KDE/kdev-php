@@ -1,6 +1,5 @@
 /***************************************************************************
  *   This file is part of KDevelop                                         *
- *   Copyright 2007 David Nolden <david.nolden.kdevelop@art-master.de>     *
  *   Copyright 2008 Niko Sams <niko.sams@gmail.com>                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,34 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-#ifndef EXPRESSIONPARSER_H
-#define EXPRESSIONPARSER_H
-
-#include <language/duchain/duchainpointer.h>
+#ifndef PHPDUCHAINHELPER_H
+#define PHPDUCHAINHELPER_H
 
 #include "phpduchainexport.h"
-#include "expressionevaluationresult.h"
 
+#include <language/duchain/identifier.h>
+
+namespace KDevelop {
+    class Declaration;
+    class DUContext;
+}
 namespace Php {
-    class AstNode;
-    class ParseSession;
-
-class KDEVPHPDUCHAIN_EXPORT ExpressionParser
-{
-public:
-     /**
-     * @param strict When this is false, the expression-visitor tries to recover from problems. For example when it cannot find a matching function, it returns the first of the candidates.
-     * @param debug Enables additional output
-     * */
-    explicit ExpressionParser( bool strict = false, bool debug = false );
-
-    ExpressionEvaluationResult evaluateType( const QByteArray& expression, KDevelop::DUContextPointer context, const KDevelop::TopDUContext* source = 0 );
-    ExpressionEvaluationResult evaluateType( AstNode* ast, ParseSession* session, const KDevelop::TopDUContext* source = 0 );
-private:
-    bool m_strict;
-    bool m_debug;
-};
-
+    KDevelop::Declaration* findClassDeclaration(KDevelop::DUContext* currentContext, KDevelop::QualifiedIdentifier id);
 
 }
 #endif

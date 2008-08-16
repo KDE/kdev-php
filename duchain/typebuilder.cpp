@@ -151,7 +151,7 @@ void TypeBuilder::visitExpr(ExprAst *node)
     node->ducontext = currentContext();
     ExpressionParser ep(false, false);
     ExpressionEvaluationResult res = ep.evaluateType(node, editor()->parseSession()/*, currentContext()->topContext*/);
-    m_expressionType = res.type;
+    m_expressionType = res.type();
     TypeBuilderBase::visitExpr(node);
 }
 

@@ -19,8 +19,8 @@
 #ifndef PHPEDITORINTEGRATOR_H
 #define PHPEDITORINTEGRATOR_H
 
-#include <editor/editorintegrator.h>
-#include <editor/simplerange.h>
+#include <language/editor/editorintegrator.h>
+#include <language/editor/simplerange.h>
 
 #include "phpduchainexport.h"
 

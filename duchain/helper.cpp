@@ -1,6 +1,5 @@
 /***************************************************************************
  *   This file is part of KDevelop                                         *
- *   Copyright 2007 David Nolden <david.nolden.kdevelop@art-master.de>     *
  *   Copyright 2008 Niko Sams <niko.sams@gmail.com>                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,34 +17,42 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-#ifndef EXPRESSIONPARSER_H
-#define EXPRESSIONPARSER_H
+#include "helper.h"
+#include <language/duchain/ducontext.h>
+#include <language/duchain/duchainlock.h>
+#include <language/duchain/persistentsymboltable.h>
+#include <language/duchain/duchain.h>
 
-#include <language/duchain/duchainpointer.h>
-
-#include "phpduchainexport.h"
-#include "expressionevaluationresult.h"
+using namespace KDevelop;
 
 namespace Php {
-    class AstNode;
-    class ParseSession;
 
-class KDEVPHPDUCHAIN_EXPORT ExpressionParser
+Declaration* findClassDeclaration(DUContext* currentContext, QualifiedIdentifier id)
 {
-public:
-     /**
-     * @param strict When this is false, the expression-visitor tries to recover from problems. For example when it cannot find a matching function, it returns the first of the candidates.
-     * @param debug Enables additional output
-     * */
-    explicit ExpressionParser( bool strict = false, bool debug = false );
-
-    ExpressionEvaluationResult evaluateType( const QByteArray& expression, KDevelop::DUContextPointer context, const KDevelop::TopDUContext* source = 0 );
-    ExpressionEvaluationResult evaluateType( AstNode* ast, ParseSession* session, const KDevelop::TopDUContext* source = 0 );
-private:
-    bool m_strict;
-    bool m_debug;
-};
-
+    QList<Declaration*> foundDeclarations;
+    DUChainReadLocker lock(DUChain::lock());
+    foundDeclarations = currentContext->findDeclarations(id);
+    if (!foundDeclarations.isEmpty()) {
+        return foundDeclarations.first();
+    }
+    kDebug() << "findDeclarations was empty, trying through PersistentSymbolTable";
+    uint nr;
+    const IndexedDeclaration* declarations = 0;
+    PersistentSymbolTable::self().declarations(id, nr, declarations);
+    kDebug() << "found declarations: " << nr;
+    lock.unlock();
+    DUChainWriteLocker wlock(DUChain::lock());
+    for (uint i=0; i<nr; ++i) {
+        if (declarations[i].declaration()->internalContext()
+            && declarations[i].declaration()->internalContext()->type() == DUContext::Class) {
+            //check if context is in any loaded project
+            currentContext->topContext()->addImportedParentContext(declarations[i].declaration()->context()->topContext());
+            return declarations[i].declaration();
+        } else {
+            kDebug() << "skipping declaration, no class-type context";
+        }
+    }
+    return 0;
+}
 
 }
-#endif

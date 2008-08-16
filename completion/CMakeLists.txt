@@ -19,6 +19,7 @@ target_link_libraries(kdev4phpcompletion
     ${KDEVPLATFORM_LANGUAGE_LIBRARY}
     ${KDE4_KTEXTEDITOR_LIBS}
     ${KDEVPLATFORM_INTERFACES_LIBRARY}
+    ${KDEVPLATFORM_PROJECT_LIBRARY}
     kdev4phpduchain
  )
 

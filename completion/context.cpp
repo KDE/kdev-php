@@ -32,8 +32,14 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/types/identifiedtype.h>
-#include <interfaces/iproblem.h>
+#include <language/interfaces/iproblem.h>
 #include <util/pushvalue.h>
+#include <language/duchain/codemodel.h>
+
+#include <interfaces/icore.h>
+#include <interfaces/iprojectcontroller.h>
+#include <interfaces/iproject.h>
+#include <project/projectmodel.h>
 
 #define LOCKDUCHAIN     DUChainReadLocker lock(DUChain::lock())
 
@@ -196,10 +202,9 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
     if (m_memberAccessOperation == StaticMemberChoose) {
         QualifiedIdentifier id(expr);
         LOCKDUCHAIN;
-        QList<Declaration*> declarations = m_duContext->findDeclarations(id);
-        if (!declarations.isEmpty()) {
-            m_expressionResult.type = declarations.first()->abstractType();
-            ifDebug( kDebug() << "expression type: " << m_expressionResult.type->toString(); )
+        m_expressionResult.setDeclarations(m_duContext->findDeclarations(id));
+        if (m_expressionResult.type()) {
+            ifDebug( kDebug() << "expression type: " << m_expressionResult.type()->toString(); )
         } else {
             log( QString("expression \"%1\" could not be evaluated").arg(expr) );
             m_valid = false;
@@ -211,10 +216,9 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
     
         if( !expr.trimmed().isEmpty() ) {
             m_expressionResult = expressionParser.evaluateType( expr.toUtf8(), m_duContext );
-            if (m_expressionResult.type) {
+            if (m_expressionResult.type()) {
                 LOCKDUCHAIN;
-                qDebug() << m_expressionResult.allDeclarations.count();
-                ifDebug( kDebug() << "expression type: " << m_expressionResult.type->toString(); )
+                ifDebug( kDebug() << "expression type: " << m_expressionResult.type()->toString(); )
             } else {
                 log( QString("expression \"%1\" could not be evaluated").arg(expr) );
                 m_valid = false;
@@ -284,8 +288,8 @@ CodeCompletionContext* CodeCompletionContext::parentContext() {
 QList<DUContext*> CodeCompletionContext::memberAccessContainers() const
 {
     QList<DUContext*> ret;
-    foreach (DeclarationId declarationId, m_expressionResult.allDeclarations) {
-        AbstractType::Ptr expressionTarget = declarationId.getDeclaration(m_duContext->topContext())->abstractType();
+    foreach (DeclarationId declarationId, m_expressionResult.allDeclarationIds()) {
+        AbstractType::Ptr expressionTarget = m_expressionResult.type();
         const IdentifiedType* idType = dynamic_cast<const IdentifiedType*>(expressionTarget.unsafeData());
         Declaration* declaration = 0;
         if (idType) {
@@ -324,8 +328,9 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
   
   } else {
 
-    if ( m_expressionResult.type ) {
+    if ( m_expressionResult.type() ) {
       QList<DUContext*> containers = memberAccessContainers();
+      kDebug() << "containers: " << containers.count();
       if( !containers.isEmpty() ) {
         foreach(DUContext* ctx, containers) {
           if (abort)
@@ -368,6 +373,23 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
           return items;
         items << CompletionTreeItemPointer( new NormalDeclarationCompletionItem(DeclarationPointer(decl.first), CodeCompletionContext::Ptr(this), decl.second ) );
       }
+      uint count = 0;
+      const CodeModelItem* foundItems = 0;
+      foreach (IndexedString url, completionFiles()) {
+        CodeModel::self().items(url, count, foundItems);
+        for (uint i=0; i < count; ++i) {
+            if (foundItems[i].kind == CodeModelItem::Class) {
+                TopDUContext* top = DUChain::self()->chainsForDocument(url).first(); //TODO: first?
+                if (m_duContext->imports(top)) continue;
+                QList<Declaration*> decls = top->findDeclarations(foundItems[i].id);
+                foreach (Declaration* decl, decls) {
+                    if (abort) return items;
+                    items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), CodeCompletionContext::Ptr(this)));
+                }
+            }
+        }
+      }
+      
 
       kDebug() << "setContext: using all declarations visible:" << decls.size();
     }
@@ -382,8 +404,8 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
     parentContext = parentContext->parentContext();
     if( parentContext ) {
       if( parentContext->memberAccessOperation() == CodeCompletionContext::FunctionCallAccess ) {
-        if (!parentContext->memberAccessContainer().allDeclarations.isEmpty()) {
-            Declaration* decl = parentContext->memberAccessContainer().allDeclarations.first().getDeclaration(m_duContext->topContext());
+        if (!parentContext->memberAccessContainer().allDeclarationIds().isEmpty()) {
+            Declaration* decl = parentContext->memberAccessContainer().allDeclarationIds().first().getDeclaration(m_duContext->topContext());
             items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), parentContext));
         }
       } else {
@@ -393,6 +415,19 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
   } while( parentContext );
 
   return items;
+}
+
+QList<IndexedString> CodeCompletionContext::completionFiles()
+{
+    QList<IndexedString> ret;
+    if (ICore::self()) {
+        foreach (IProject* project, ICore::self()->projectController()->projects()) {
+            foreach (ProjectFileItem* item, project->files()) {
+                ret << IndexedString(item->url().pathOrUrl());
+            }
+        }
+    }
+    return ret;
 }
 
 }

@@ -23,8 +23,8 @@
 
 #include <ksharedptr.h>
 
-#include <codecompletion/codecompletioncontext.h>
-#include <duchain/types/abstracttype.h>
+#include <language/codecompletion/codecompletioncontext.h>
+#include <language/duchain/types/abstracttype.h>
 
 #include "phpcompletionexport.h"
 #include "items.h"
@@ -95,6 +95,9 @@ namespace Php {
       const QList<KDevelop::AbstractFunctionDeclaration*>& functions() const;
       
       virtual CodeCompletionContext* parentContext();
+
+    protected:
+      virtual QList<KDevelop::IndexedString> completionFiles();
 
     private:
       MemberAccessOperation m_memberAccessOperation;

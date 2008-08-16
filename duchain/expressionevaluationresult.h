@@ -25,9 +25,12 @@
 #include <language/duchain/types/referencetype.h>
 #include <language/duchain/types/indexedtype.h>
 
+#include <QList>
+
 namespace KDevelop {
   class IndexedType;
   class TypeIdentifier;
+  class Declaration;
 }
 
 class QString;
@@ -35,16 +38,28 @@ class QString;
 namespace Php {
 
 class KDEVPHPDUCHAIN_EXPORT ExpressionEvaluationResult {
-  public:
+public:
     ExpressionEvaluationResult();
     ~ExpressionEvaluationResult();
 
-    KDevelop::AbstractType::Ptr type; ///Type the expression evaluated to, may be zero when the expression failed to evaluate
+    void setDeclaration(KDevelop::Declaration* declaration);
+    void setDeclarations(QList<KDevelop::Declaration*> declarations);
+    void setType(KDevelop::AbstractType::Ptr type);
+
+    KDevelop::AbstractType::Ptr type() const;
+    QList<KDevelop::DeclarationId> allDeclarationIds() const;
+    QList<KDevelop::Declaration*> allDeclarations() const;
+
+
+
+private:
+    QList<KDevelop::Declaration*> m_allDeclarations;
+    QList<KDevelop::DeclarationId> m_allDeclarationIds;
+    KDevelop::AbstractType::Ptr m_type; ///Type the expression evaluated to, may be zero when the expression failed to evaluate
 
     //bool isInstance; ///Whether the result of this expression is an instance(as it normally should be)
     //KDevelop::DeclarationId instanceDeclaration; ///If this expression is an instance of some type, this either contains the declaration of the instance, or the type
 
-    QList<KDevelop::DeclarationId> allDeclarations;
 };
 
 }

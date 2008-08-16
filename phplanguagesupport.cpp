@@ -40,7 +40,7 @@
 #include <interfaces/ilanguage.h>
 #include <interfaces/idocument.h>
 #include <interfaces/iproject.h>
-#include <editor/editorintegrator.h>
+#include <language/editor/editorintegrator.h>
 #include <language/backgroundparser/backgroundparser.h>
 #include <language/duchain/duchain.h>
 #include <interfaces/idocumentcontroller.h>
@@ -48,8 +48,8 @@
 #include "phpparsejob.h"
 //#include "phphighlighting.h"
 
-#include <codecompletion/codecompletion.h>
-#include <codecompletion/codecompletionmodel.h>
+#include <language/codecompletion/codecompletion.h>
+#include <language/codecompletion/codecompletionmodel.h>
 #include "completion/model.h"
 #include "completion/worker.h"
 

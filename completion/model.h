@@ -27,7 +27,7 @@
 #include <QPair>
 #include <QMap>
 #include <QPointer>
-#include <codecompletion/codecompletionmodel.h>
+#include <language/codecompletion/codecompletionmodel.h>
 #include <ksharedptr.h>
 #include <language/duchain/duchainpointer.h>
 #include "context.h"

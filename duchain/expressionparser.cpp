@@ -25,9 +25,9 @@
 #include "phpdebugvisitor.h"
 #include "expressionvisitor.h"
 
-#include <duchain/ducontext.h>
-#include <duchain/duchainlock.h>
-#include <duchain/duchain.h>
+#include <language/duchain/ducontext.h>
+#include <language/duchain/duchainlock.h>
+#include <language/duchain/duchain.h>
 
 #include <kdebug.h>
 using namespace KDevelop;
@@ -73,13 +73,7 @@ ExpressionEvaluationResult ExpressionParser::evaluateType( AstNode* ast, ParseSe
     ExpressionVisitor v(session, source, m_strict);
     v.visitNode( ast );	
 
-    ExpressionEvaluationResult ret; 
-    ret.type = v.lastType();
-    DUChainReadLocker lock(DUChain::lock());
-    foreach(Declaration* dec, v.lastDeclarations()) {
-        ret.allDeclarations << dec->id();
-    }
-    return ret;
+    return v.result();
 }
 
 }
