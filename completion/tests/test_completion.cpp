@@ -249,7 +249,9 @@ void TestCompletion::codeModel()
     const CodeModelItem* items;
     CodeModel::self().items(IndexedString("file:///internal/projecttest0"), count, items);
     bool found = false;
+    qDebug() << "found items: " << count;
     for(uint i =0;i<count;++i) {
+        qDebug() << "item identifier: " << items[0].id.identifier().toString();
         if (items[0].id.identifier() == QualifiedIdentifier("B")) {
             found = true;
             QCOMPARE(items[i].kind, CodeModelItem::Class);

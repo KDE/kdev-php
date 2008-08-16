@@ -49,19 +49,7 @@ DUChainTestBase::DUChainTestBase()
 void DUChainTestBase::initTestCase()
 {
     if (!DUChain::self()->chainForDocument(IndexedString("internalfunctions"))) {
-        QString fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
-        ParseSession* session = new ParseSession();
-        session->readFile(fileName);
-        StartAst* ast = 0;
-        if (!session->parse(&ast)) qFatal("can't parse internalfunctions");
-
-        DeclarationBuilder declarationBuilder(session);
-        declarationBuilder.build(IndexedString("internalfunctions"), ast);
-        
-        UseBuilder useBuilder(session);
-        useBuilder.buildUses(ast);
-        
-        delete session;
+        parseAdditionalFile(IndexedString("internalfunctions"), "<?php function substr() {} ");
     }
 }
 
