@@ -245,6 +245,7 @@ void TestCompletion::codeModel()
 {
     TopDUContext* addTop = parseAdditionalFile(IndexedString("file:///internal/projecttest0"), "<? class B {} ");
     
+    DUChainWriteLocker lock(DUChain::lock());
     uint count;
     const CodeModelItem* items;
     CodeModel::self().items(IndexedString("file:///internal/projecttest0"), count, items);
