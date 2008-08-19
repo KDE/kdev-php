@@ -243,24 +243,23 @@ void TestCompletion::globalClassFromOtherFile()
 
 void TestCompletion::codeModel()
 {
-    TopDUContext* addTop = parseAdditionalFile(IndexedString("file:///internal/projecttest0"), "<? class B {} ");
-    
     DUChainWriteLocker lock(DUChain::lock());
     uint count;
     const CodeModelItem* items;
-    CodeModel::self().items(IndexedString("file:///internal/projecttest0"), count, items);
+
+    CodeModel::self().addItem(IndexedString("file:///foo"), QualifiedIdentifier("identifier"), CodeModelItem::Class);
+
+    CodeModel::self().items(IndexedString("file:///foo"), count, items);
     bool found = false;
     qDebug() << "found items: " << count;
     for(uint i =0;i<count;++i) {
         qDebug() << "item identifier: " << items[0].id.identifier().toString();
-        if (items[0].id.identifier() == QualifiedIdentifier("B")) {
+        if (items[0].id.identifier() == QualifiedIdentifier("identifier")) {
             found = true;
             QCOMPARE(items[i].kind, CodeModelItem::Class);
         }
     }
     QVERIFY(found);
-    
-    release(addTop);
 }
 
 class TestCodeCompletionContext : public CodeCompletionContext {
