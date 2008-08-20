@@ -56,7 +56,7 @@ void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(Compoun
             && m_currentContext->parentContext()->type() == DUContext::Class
             && m_currentContext->parentContext()->owner())
         {
-            m_result.setType(m_currentContext->parentContext()->owner()->abstractType());
+            m_result.setDeclaration(m_currentContext->parentContext()->owner());
         }
     } else {
         DUChainReadLocker lock(DUChain::lock());

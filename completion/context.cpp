@@ -375,16 +375,19 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
       }
       uint count = 0;
       const CodeModelItem* foundItems = 0;
-      foreach (IndexedString url, completionFiles()) {
-        CodeModel::self().items(url, count, foundItems);
-        for (uint i=0; i < count; ++i) {
-            if (foundItems[i].kind == CodeModelItem::Class) {
-                TopDUContext* top = DUChain::self()->chainsForDocument(url).first(); //TODO: first?
-                if (m_duContext->imports(top)) continue;
-                QList<Declaration*> decls = top->findDeclarations(foundItems[i].id);
-                foreach (Declaration* decl, decls) {
-                    if (abort) return items;
-                    items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), CodeCompletionContext::Ptr(this)));
+      foreach (QSet<IndexedString> urlSets, completionFiles()) {
+        foreach (IndexedString url, urlSets) {
+            CodeModel::self().items(url, count, foundItems);
+            for (uint i=0; i < count; ++i) {
+                if (foundItems[i].kind == CodeModelItem::Class) {
+                    foreach(TopDUContext* top, DUChain::self()->chainsForDocument(url)) {
+                        if (m_duContext->imports(top)) continue;
+                        QList<Declaration*> decls = top->findDeclarations(foundItems[i].id);
+                        foreach (Declaration* decl, decls) {
+                            if (abort) return items;
+                            items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), CodeCompletionContext::Ptr(this)));
+                        }
+                    }
                 }
             }
         }
@@ -417,14 +420,12 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
   return items;
 }
 
-QList<IndexedString> CodeCompletionContext::completionFiles()
+QList<QSet<IndexedString> > CodeCompletionContext::completionFiles()
 {
-    QList<IndexedString> ret;
+    QList<QSet<IndexedString> > ret;
     if (ICore::self()) {
         foreach (IProject* project, ICore::self()->projectController()->projects()) {
-            foreach (ProjectFileItem* item, project->files()) {
-                ret << IndexedString(item->url().pathOrUrl());
-            }
+            ret << project->fileSet();
         }
     }
     return ret;

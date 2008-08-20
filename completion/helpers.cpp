@@ -244,7 +244,7 @@ int expressionAt( const QString& text, int index ) {
 
   ///If we're at the first item, the above algorithm cannot be used safely,
   ///so just determine whether the sign is valid for the beginning of an expression, if it isn't reject it.
-  if ( index == 0 && start > index && !( text[ index ].isLetterOrNumber() || text[ index ] == '_' || text[ index ] == ':' ) ) {
+  if ( index == 0 && start > index && !( text[ index ].isLetterOrNumber() || text[ index ] == '_' || text[ index ] == ':' || text[ index ] == '$') ) {
     ++index;
   }
 

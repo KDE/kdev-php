@@ -97,7 +97,7 @@ namespace Php {
       virtual CodeCompletionContext* parentContext();
 
     protected:
-      virtual QList<KDevelop::IndexedString> completionFiles();
+      virtual QList<QSet<KDevelop::IndexedString> > completionFiles();
 
     private:
       MemberAccessOperation m_memberAccessOperation;

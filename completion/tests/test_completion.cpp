@@ -268,10 +268,12 @@ public:
         : CodeCompletionContext(context, text, depth)
     { }
 protected:
-    QList<IndexedString> completionFiles() {
-        QList<IndexedString> ret;
-        ret << IndexedString("file:///internal/projecttest0");
-        ret << IndexedString("file:///internal/projecttest1");
+    QList<QSet<IndexedString> > completionFiles() {
+        QList<QSet<IndexedString> > ret;
+        QSet<IndexedString> set;
+        set << IndexedString("file:///internal/projecttest0");
+        set << IndexedString("file:///internal/projecttest1");
+        ret << set;
         return ret;
     }
 };
@@ -293,6 +295,29 @@ void TestCompletion::projectFileClass()
     QVERIFY(searchDeclaration(itemList, addTop->localDeclarations().first()));
 
     release(addTop);
+    release(top);
+}
+
+void TestCompletion::thisCompletion()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { public function foo() {} public $bar; }");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "$this->"));
+
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::MemberAccess);
+
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+    QCOMPARE(itemList.count(), 2);
+    QCOMPARE(itemList.first()->declaration().data(), top->childContexts().at(0)->localDeclarations().at(0));
+    QCOMPARE(itemList.at(1)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(1));
+
     release(top);
 }
 

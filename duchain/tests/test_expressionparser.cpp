@@ -83,7 +83,7 @@ void TestExpressionParser::memberFunction()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { public function foo() {} } $i = new A();");
 
-    TopDUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
     ExpressionParser p(false, true);
@@ -100,7 +100,7 @@ void TestExpressionParser::globalFunction()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? function foo() {}");
 
-    TopDUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
     ExpressionParser p(false, true);
@@ -119,7 +119,7 @@ void TestExpressionParser::chainCall()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { function foo() { return $this; } } $a = new A();");
 
-    TopDUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
     FunctionType::Ptr fn = top->childContexts().first()->localDeclarations().first()->type<FunctionType>();
@@ -137,7 +137,26 @@ void TestExpressionParser::chainCall()
 
     release(top);
 }
+void TestExpressionParser::thisObject()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { public function foo() {} }");
 
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
+    ExpressionParser p(false, true);
+    ExpressionEvaluationResult res = p.evaluateType(QByteArray("$this"), DUContextPointer(funContext));
+    QCOMPARE(res.allDeclarations().count(), 1);
+    QCOMPARE(res.allDeclarations().first(), top->localDeclarations().first());
+    QVERIFY(res.type());
+    QVERIFY(StructureType::Ptr::dynamicCast(res.type()));
+    QCOMPARE(StructureType::Ptr::dynamicCast(res.type())->declaration(top), top->localDeclarations().first());
+
+    release(top);
+}
 }
 
 #include "test_expressionparser.moc"

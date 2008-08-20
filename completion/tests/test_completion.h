@@ -41,6 +41,7 @@ private slots:
     void globalClassFromOtherFile();
     void codeModel();
     void projectFileClass();
+    void thisCompletion();
 };
 
 }
