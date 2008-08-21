@@ -67,13 +67,13 @@ void DeclarationBuilder::closeDeclaration()
     }
 
     eventuallyAssignInternalContext();
-  
+
     DeclarationBuilderBase::closeDeclaration();
 }
 
 void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
 {
-    openDefinition(node->className, node, false);
+    openDefinition<Declaration>(node->className, node);
     currentDeclaration()->setKind(KDevelop::Declaration::Type);
 
     DeclarationBuilderBase::visitClassDeclarationStatement(node);
@@ -88,7 +88,7 @@ void DeclarationBuilder::classContextOpened(KDevelop::DUContext* context)
 
 void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
 {
-    openDefinition(node->interfaceName, node, false);
+    openDefinition<Declaration>(node->interfaceName, node);
     currentDeclaration()->setKind(KDevelop::Declaration::Type);
 
     DeclarationBuilderBase::visitInterfaceDeclarationStatement(node);
@@ -102,7 +102,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
     if (node->methodName) {
         //method declaration
 
-        openDefinition(node->methodName, node, true);
+        openDefinition<ClassFunctionDeclaration>(node->methodName, node);
         ClassFunctionDeclaration* dec = dynamic_cast<ClassFunctionDeclaration*>(currentDeclaration());
         Q_ASSERT(dec);
         {
@@ -183,7 +183,7 @@ void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
     {
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(node->variable, node->variable);
-        openDefinition(identifierForNode(node->variable), newRange, false);
+        openDefinition<ClassMemberDeclaration>(identifierForNode(node->variable), newRange);
 
         ClassMemberDeclaration* dec = dynamic_cast<ClassMemberDeclaration*>(currentDeclaration());
         Q_ASSERT(dec);
@@ -212,7 +212,7 @@ void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
 
 void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
 {
-    openDefinition(node->identifier, node->identifier, false);
+    openDefinition<ClassMemberDeclaration>(node->identifier, node->identifier);
     ClassMemberDeclaration* dec = dynamic_cast<ClassMemberDeclaration*>(currentDeclaration());
     Q_ASSERT(dec);
     dec->setAccessPolicy(Declaration::Public);
@@ -247,7 +247,7 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
     {
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(node->variable, node->variable);
-        openDefinition(identifierForNode(node->variable), newRange, false);
+        openDefinition<Declaration>(identifierForNode(node->variable), newRange);
     }
 
     currentDeclaration()->setKind(Declaration::Instance);
@@ -257,7 +257,7 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
 
 void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
-    openDefinition(node->functionName, node, true);
+    openDefinition<FunctionDeclaration>(node->functionName, node);
 
     currentDeclaration()->setKind(Declaration::Type);
 
@@ -283,7 +283,7 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
         //TODO: don't create the same twice
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(leftSideVariableIdentifier, leftSideVariableIdentifier);
-        openDefinition(identifierForNode(leftSideVariableIdentifier), newRange, false);
+        openDefinition<Declaration>(identifierForNode(leftSideVariableIdentifier), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
 
         //own closeDeclaration() that uses expressionType instead of lastType()
@@ -313,11 +313,12 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                 constant = constant.mid(1, constant.length()-2);
                 SimpleRange newRange = editorFindRange(visitor.node(), visitor.node());
                 DUChainWriteLocker lock(DUChain::lock());
-                injectContext(currentContext()->topContext()); //constants are always global
-                openDefinition(QualifiedIdentifier(constant), newRange, false);
+                LockedSmartInterface iface = editor()->smart();
+                injectContext(iface, currentContext()->topContext()); //constants are always global
+                openDefinition<Declaration>(QualifiedIdentifier(constant), newRange);
                 currentDeclaration()->setKind(Declaration::Instance);
                 closeDeclaration();
-                closeInjectedContext();
+                closeInjectedContext(iface);
             }
         }
     }
