@@ -21,11 +21,27 @@
 #include "usebuilder.h"
 
 #include "editorintegrator.h"
-
+#include "expressionvisitor.h"
+#include "parsesession.h"
 using namespace KTextEditor;
 using namespace KDevelop;
 
 namespace Php {
+
+class UseExpressionVisitor : public ExpressionVisitor {
+public:
+    UseExpressionVisitor(ParseSession* session, const TopDUContext* source, UseBuilder* useBuilder)
+        : ExpressionVisitor(session, source, false), m_builder(useBuilder) {
+    }
+
+protected:
+    virtual void usingDeclaration(AstNode* node, KDevelop::Declaration* decl) {
+        m_builder->newUse(node, decl);
+    }
+
+private:
+    UseBuilder* m_builder;
+};
 
 UseBuilder::UseBuilder (ParseSession* session)
 {
@@ -79,6 +95,14 @@ void UseBuilder::visitFunctionCall(FunctionCallAst* node)
         //TODO: stringFunctionNameOrClass::stringFunctionName (static calls)
         newUse(node->stringFunctionNameOrClass);
     }
+}
+
+void UseBuilder::visitExpr(ExprAst* node)
+{
+    UseExpressionVisitor v(editor()->parseSession(), currentContext()->topContext(), this);
+    qDebug() << "UseBuilder::visitExpr";
+    v.visitNode(node);
+    UseBuilderBase::visitExpr(node);
 }
 
 }

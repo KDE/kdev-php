@@ -321,6 +321,28 @@ void TestCompletion::thisCompletion()
     release(top);
 }
 
+
+void TestCompletion::variable()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A {  } $a = new A();");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), ""));
+
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
+
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+    qDebug() << itemList.first()->declaration()->toString();
+    QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(1)));
+
+    release(top);
+}
+
 }
 
 #include "test_completion.moc"

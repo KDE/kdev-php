@@ -43,12 +43,15 @@ public:
     UseBuilder(ParseSession* session);
     UseBuilder(EditorIntegrator* editor);
 
+    using UseBuilderBase::newUse;
+
 protected:
     virtual void visitParameter(ParameterAst *node);
     virtual void visitClassImplements(ClassImplementsAst *node);
     virtual void visitClassExtends(ClassExtendsAst *node);
     virtual void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
     virtual void visitFunctionCall(FunctionCallAst* node);
+    virtual void visitExpr(ExprAst* node);
 
 };
 

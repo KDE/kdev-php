@@ -53,9 +53,14 @@ protected:
     KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
 
+    virtual void usingDeclaration(AstNode* node, KDevelop::Declaration* decl) {
+        Q_UNUSED(node) Q_UNUSED(decl)
+    }
+
+protected:
+    ParseSession* m_session;
 
 private:
-    ParseSession* m_session;
     const KDevelop::TopDUContext* m_source;
     bool m_strict;
     KDevelop::DUContext* m_currentContext;

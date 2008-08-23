@@ -16,33 +16,25 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef TESTDUCHAIN_H
-#define TESTDUCHAIN_H
+#ifndef TESTUSES_H
+#define TESTUSES_H
 
 #include "duchain/tests/duchaintestbase.h"
 
 namespace Php
 {
-class TestCompletion : public DUChainTestBase
+class TestUses : public DUChainTestBase
 {
   Q_OBJECT
 
 public:
-    TestCompletion();
+  TestUses();
 
 private slots:
-    void objectCompletion();
-    void staticMembers();
-    void methodCall();
-    void functionCall();
-    void newObjectFromOtherFile();
-    void baseClass();
-    void extendsFromOtherFile();
-    void globalClassFromOtherFile();
-    void codeModel();
-    void projectFileClass();
-    void thisCompletion();
-    void variable();
+  void newObject();
+  void functionCall();
+  void memberFunctionCall();
+  void memberVariable();
 };
 
 }

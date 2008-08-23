@@ -726,7 +726,6 @@ void TestDUChain::testNewObjectFromOtherFile()
     QByteArray method("<? $a = new Foo(); ");
     TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
-// qDebug() << addTop;
     
     QCOMPARE(top->importedParentContexts().count(), 2);
     bool found = false;
@@ -744,6 +743,8 @@ void TestDUChain::testNewObjectFromOtherFile()
     release(addTop);
     release(top);
 }
+
+
 }
 
 #include "test_duchain.moc"

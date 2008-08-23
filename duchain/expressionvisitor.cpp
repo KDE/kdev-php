@@ -150,7 +150,9 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
                 }
                 QualifiedIdentifier propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
                 m_result.setDeclarations(context->findDeclarations(propertyId));
+                lock.unlock();
                 if (!m_result.allDeclarations().isEmpty()) {
+                    usingDeclaration(node->objectProperty->objectDimList->variableName, m_result.allDeclarations().last());
                     if (node->isFunctionCall!=-1) {
                         FunctionType::Ptr function = m_result.allDeclarations().last()->type<FunctionType>();
                         if (function) {

@@ -14,3 +14,7 @@ target_link_libraries(duchaintest kdev4phpduchain ${QT_QTTEST_LIBRARY})
 set(expressionparsertest_SRCS test_expressionparser.cpp)
 kde4_add_unit_test(expressionparsertest ${expressionparsertest_SRCS})
 target_link_libraries(expressionparsertest kdev4phpduchain ${QT_QTTEST_LIBRARY})
+
+set(usestest_SRCS test_uses.cpp)
+kde4_add_unit_test(usestest ${usestest_SRCS})
+target_link_libraries(usestest kdev4phpduchain ${QT_QTTEST_LIBRARY})
