@@ -41,7 +41,8 @@
 #include "parsesession.h"
 #include "phplanguagesupport.h"
 #include "phpdebugvisitor.h"
-#include "declarationbuilder.h"
+#include "duchain/declarationbuilder.h"
+#include "duchain/usebuilder.h"
 
 using namespace KDevelop;
 
@@ -162,6 +163,9 @@ void ParseJob::run()
         DeclarationBuilder builder(&editor);
         KDevelop::ReferencedTopDUContext chain = builder.build(document(), m_ast);
         setDuChain(chain);
+
+        UseBuilder useBuilder(&editor);
+        useBuilder.buildUses(m_ast);
     }
     else
     {
