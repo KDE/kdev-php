@@ -90,6 +90,7 @@ int Lexer::nextTokenKind()
     {
         m_tokenBegin = -1;
         m_tokenEnd = -1;
+        createNewline(m_curpos);
         return 0;
     }
     QChar* it = m_content.data();
@@ -112,6 +113,7 @@ int Lexer::nextTokenKind()
                     && (it+5)->isSpace())
                 {
                     m_curpos += 4;
+                    if ((it+5)->unicode() == '\n') createNewline(m_curpos+1);
                 }
                 m_curpos++;
                 pushState(DefaultState);
