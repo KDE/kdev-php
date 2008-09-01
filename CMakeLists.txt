@@ -1,5 +1,6 @@
 PROJECT(php)
 
+enable_testing()
 
 #To properly find kdevelop-pg add -DKDEVPG_DATA_DIR=<kdevpg-install-path>/share to the
 #cmake run if you installed it in a different directory than this plugin
