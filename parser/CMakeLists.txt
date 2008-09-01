@@ -1,3 +1,5 @@
+add_subdirectory(test)
+
 set(parser_STAT_SRCS
     phplexer.cpp
     parsesession.cpp

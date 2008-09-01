@@ -481,6 +481,9 @@ int Lexer::nextTokenKind()
                         it++;
                         m_curpos++;
                     }
+                    if (it->unicode() == '\n') {
+                        createNewline(m_curpos);
+                    }
                 }
                 else if ((it+1)->unicode() == '*')
                 {
@@ -499,6 +502,9 @@ int Lexer::nextTokenKind()
                     {
                         it++;
                         m_curpos++;
+                        if (it->unicode() == '\n') {
+                            createNewline(m_curpos);
+                        }
                     }
                     m_curpos++;
                 } else {
@@ -968,7 +974,7 @@ int Lexer::nextTokenKind()
             token = Parser::Token_INVALID;
             break;
     }
-    if ( m_curpos >= m_contentSize )
+    if ( m_curpos > m_contentSize )
     {
         m_tokenBegin = -1;
         m_tokenEnd = -1;
