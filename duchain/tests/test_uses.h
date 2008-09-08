@@ -35,6 +35,8 @@ private slots:
   void functionCall();
   void memberFunctionCall();
   void memberVariable();
+  void variable();
+  void variableTwoDeclarations();
 };
 
 }

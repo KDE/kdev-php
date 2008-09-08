@@ -28,7 +28,7 @@
 
 namespace Php {
     class AstNode;
-    class ParseSession;
+    class EditorIntegrator;
 
 class KDEVPHPDUCHAIN_EXPORT ExpressionParser
 {
@@ -40,7 +40,7 @@ public:
     explicit ExpressionParser( bool strict = false, bool debug = false );
 
     ExpressionEvaluationResult evaluateType( const QByteArray& expression, KDevelop::DUContextPointer context, const KDevelop::TopDUContext* source = 0 );
-    ExpressionEvaluationResult evaluateType( AstNode* ast, ParseSession* session, const KDevelop::TopDUContext* source = 0 );
+    ExpressionEvaluationResult evaluateType( AstNode* ast, EditorIntegrator* editor, const KDevelop::TopDUContext* source = 0 );
 private:
     bool m_strict;
     bool m_debug;

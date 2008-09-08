@@ -20,6 +20,7 @@
  ***************************************************************************/
 #include "expressionparser.h"
 #include "parsesession.h"
+#include "editorintegrator.h"
 #include "phpast.h"
 #include "phpparser.h"
 #include "phpdebugvisitor.h"
@@ -55,22 +56,24 @@ ExpressionEvaluationResult ExpressionParser::evaluateType( const QByteArray& exp
     }
     ast->ducontext = dynamic_cast<DUContext*>(context.data());
 
-    ExpressionEvaluationResult ret = evaluateType( ast, session, source );
+    EditorIntegrator* editor = new EditorIntegrator(session);
+    ExpressionEvaluationResult ret = evaluateType( ast, editor, source );
+    delete editor;
     delete session;
     delete parser;
 
     return ret;
 }
 
-ExpressionEvaluationResult ExpressionParser::evaluateType( AstNode* ast, ParseSession* session, const KDevelop::TopDUContext* source)
+ExpressionEvaluationResult ExpressionParser::evaluateType( AstNode* ast, EditorIntegrator* editor, const KDevelop::TopDUContext* source)
 {
     if (m_debug) {
         kDebug() << "===== AST:";
-        DebugVisitor debugVisitor(session->tokenStream(), session->contents());
+        DebugVisitor debugVisitor(editor->parseSession()->tokenStream(), editor->parseSession()->contents());
         debugVisitor.visitNode(ast);
     }
 
-    ExpressionVisitor v(session, source, m_strict);
+    ExpressionVisitor v(editor, source, m_strict);
     v.visitNode( ast );	
 
     return v.result();

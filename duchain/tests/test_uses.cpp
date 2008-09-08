@@ -94,20 +94,60 @@ void TestUses::memberVariable()
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { public $foo; } $a = new A(); $a->foo; ");
-    TopDUContext* top = parse(method, DumpAll, "/usestest/memberFunctionCall.php");
+    TopDUContext* top = parse(method, DumpNone, "/usestest/memberVariable.php");
     DUChainWriteLocker lock(DUChain::lock());
     Declaration* var = top->childContexts().first()->localDeclarations().first();
     QCOMPARE(var->uses().keys().count(), 1);
     QCOMPARE(var->uses().values().count(), 1);
     QCOMPARE(var->uses().values().first().count(), 1);
-    QCOMPARE(var->uses().keys().first(), IndexedString("/usestest/memberFunctionCall.php"));
+    QCOMPARE(var->uses().keys().first(), IndexedString("/usestest/memberVariable.php"));
     QCOMPARE(var->uses().values().first().first(), SimpleRange(0, 46, 0, 49));
+    release(top);
+}
+void TestUses::variable()
+{
+
+    //                        0         1         2         3         4         5         6         7
+    //                        01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<?php\nclass A { public $foo; } $a = new A(); $a; $a->foo; foo($a); ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+    Declaration* var = top->localDeclarations().at(1);
+    QCOMPARE(var->uses().keys().count(), 1);
+    QCOMPARE(var->uses().values().count(), 1);
+    QCOMPARE(var->uses().values().first().count(), 3);
+    QCOMPARE(var->uses().values().first().at(0), SimpleRange(1, 42-3, 1, 44-3));
+    QCOMPARE(var->uses().values().first().at(1), SimpleRange(1, 46-3, 1, 48-3));
+    QCOMPARE(var->uses().values().first().at(2), SimpleRange(1, 59-3, 1, 61-3));
+    release(top);
+}
+
+void TestUses::variableTwoDeclarations()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { } $a = new A(); $a; $a = 0; $a; ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+//currently broken
+return;
+    Declaration* var = top->localDeclarations().at(1);
+    QCOMPARE(var->uses().keys().count(), 1);
+    QCOMPARE(var->uses().values().count(), 1);
+    QCOMPARE(var->uses().values().first().count(), 1);
+    QCOMPARE(var->uses().values().first().at(0), SimpleRange(0, 29, 0, 31));
+
+    var = top->localDeclarations().at(2);
+    QCOMPARE(var->uses().keys().count(), 1);
+    QCOMPARE(var->uses().values().count(), 1);
+    QCOMPARE(var->uses().values().first().count(), 1);
+    QCOMPARE(var->uses().values().first().at(0), SimpleRange(0, 41, 0, 43));
     release(top);
 }
 /*
 TODO:
+- move function-call usage to expressionvisitor
 - static function call
-- variable
 - static member variable
 - constant
 - parent::?

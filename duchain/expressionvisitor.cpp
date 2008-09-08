@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "expressionvisitor.h"
 #include "parsesession.h"
+#include "editorintegrator.h"
 #include "helper.h"
 
 #include <language/duchain/topducontext.h>
@@ -33,8 +34,8 @@ using namespace KDevelop;
 
 namespace Php {
 
-ExpressionVisitor::ExpressionVisitor(ParseSession* session, const TopDUContext* source, bool strict)
-    : m_session(session), m_source(source), m_strict(strict)
+ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor, const TopDUContext* source, bool strict)
+    : m_editor(editor), m_source(source), m_strict(strict), m_isAssignmentEqual(false)
 {
 }
 
@@ -45,8 +46,22 @@ void ExpressionVisitor::visitExpr(ExprAst *node)
     }
     Q_ASSERT(m_currentContext);
     DefaultVisitor::visitExpr(node);
-    DUChainReadLocker lock(DUChain::lock());
 }
+
+void ExpressionVisitor::visitAssignmentExpression(AssignmentExpressionAst *node)
+{
+    if (node->assignmentAxpressionEqual) {
+        m_isAssignmentEqual = true; //so we don't build uses for declarations (AssignmentExpressionEqual are declarations)
+    }
+    DefaultVisitor::visitAssignmentExpression(node);
+}
+
+void ExpressionVisitor::visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node)
+{
+    DefaultVisitor::visitAssignmentExpressionEqual(node);
+    m_isAssignmentEqual = false;
+}
+
 void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
 {
     QualifiedIdentifier identifier = identifierForNode(node->variable);
@@ -60,7 +75,39 @@ void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(Compoun
         }
     } else {
         DUChainReadLocker lock(DUChain::lock());
+        /*
+        SimpleRange varRange(m_editor->findRange(node->variable));
+        Declaration* nearestDeclaration = 0;
+        qDebug() << "found: " << m_currentContext->findDeclarations(identifier).count();
+        foreach (Declaration* declaration, m_currentContext->findDeclarations(identifier)) {
+            qDebug() << "declaration: " << declaration->range().textRange()
+                     << "var: " << varRange.textRange()
+                     << declaration;
+            qDebug() << declaration->context() << m_currentContext;
+            if (declaration->context() == m_currentContext) {
+                if (declaration->range() < varRange) {
+                    qDebug() << "isSmaller";
+                    if (nearestDeclaration) {
+                        qDebug() << nearestDeclaration->range().end.column;
+                    }
+                    if (!nearestDeclaration || nearestDeclaration->range() < declaration->range()) {
+                        qDebug() << "using " << declaration;
+                        nearestDeclaration = declaration;
+                    }
+                }
+            } else {
+                qDebug() << "using " << declaration;
+                nearestDeclaration = declaration;
+                break;
+            }
+        }
+        qDebug() << "nearest" << nearestDeclaration;
+        m_result.setDeclaration(nearestDeclaration);
+        */
         m_result.setDeclarations(m_currentContext->findDeclarations(identifier));
+    }
+    if (!m_isAssignmentEqual && !m_result.allDeclarations().isEmpty()) {
+        usingDeclaration(node->variable, m_result.allDeclarations().last());
     }
     DefaultVisitor::visitCompoundVariableWithSimpleIndirectReference(node);
 }
@@ -84,11 +131,11 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
             //static function call foo::bar()
             DUChainReadLocker lock(DUChain::lock());
             QString ident;
-            if (m_session->symbol(node->stringFunctionNameOrClass->string) != "self") {
-                ident += m_session->symbol(node->stringFunctionNameOrClass->string);
+            if (m_editor->parseSession()->symbol(node->stringFunctionNameOrClass->string) != "self") {
+                ident += m_editor->parseSession()->symbol(node->stringFunctionNameOrClass->string);
                 ident += "::";
             }
-            ident += m_session->symbol(node->stringFunctionName->string);
+            ident += m_editor->parseSession()->symbol(node->stringFunctionName->string);
             m_result.setDeclarations(m_currentContext->findDeclarations(QualifiedIdentifier(ident)));
             if (!m_result.allDeclarations().isEmpty()) {
                 FunctionType::Ptr function = m_result.allDeclarations().last()->type<FunctionType>();
@@ -103,7 +150,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
         } else {
             //global function call foo();
             DUChainReadLocker lock(DUChain::lock());
-            QualifiedIdentifier functionIdentifier(m_session->symbol(node->stringFunctionNameOrClass->string));
+            QualifiedIdentifier functionIdentifier(m_editor->parseSession()->symbol(node->stringFunctionNameOrClass->string));
             m_result.setDeclarations(m_currentContext->findDeclarations(functionIdentifier));
             if (!m_result.allDeclarations().isEmpty()) {
                 FunctionType::Ptr function = m_result.allDeclarations().last()->type<FunctionType>();
@@ -124,7 +171,7 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
     if (node->string != -1 && node->constname == -1) {
         //it could be a global function call, without ()
         DUChainReadLocker lock(DUChain::lock());
-        QualifiedIdentifier functionIdentifier(m_session->symbol(node->string));
+        QualifiedIdentifier functionIdentifier(m_editor->parseSession()->symbol(node->string));
         QList<Declaration*> declarations = m_currentContext->findDeclarations(functionIdentifier);
         m_result.setDeclarations(declarations);
     } else {
@@ -138,6 +185,7 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
 {
     if (node->objectProperty->objectDimList) {
         //handle $foo->bar() and $foo->baz, $foo is m_result.type()
+
         if (m_result.type() && StructureType::Ptr::dynamicCast(m_result.type())) {
             DUChainReadLocker lock(DUChain::lock());
             QualifiedIdentifier id = StructureType::Ptr::staticCast(m_result.type())->qualifiedIdentifier();
@@ -204,13 +252,13 @@ QualifiedIdentifier ExpressionVisitor::identifierForNode(IdentifierAst* id)
     if( !id )
         return QualifiedIdentifier();
 
-    return QualifiedIdentifier(m_session->symbol(id->string));
+    return QualifiedIdentifier(m_editor->parseSession()->symbol(id->string));
 }
 QualifiedIdentifier ExpressionVisitor::identifierForNode(VariableIdentifierAst* id)
 {
     if( !id )
         return QualifiedIdentifier();
-    QString ret(m_session->symbol(id->variable));
+    QString ret(m_editor->parseSession()->symbol(id->variable));
     ret = ret.mid(1); //cut off $
     return QualifiedIdentifier(ret);
 }

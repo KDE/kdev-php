@@ -109,6 +109,9 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
         //method declaration
         openFunctionType(node);
         TypeBuilderBase::visitClassStatement(node);
+        if (!m_currentFunctionType->returnType()) {
+            m_currentFunctionType->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
+        }
         m_currentFunctionType = 0;
         closeType();
     } else {
@@ -141,6 +144,9 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
 {
     openFunctionType(node);
     TypeBuilderBase::visitFunctionDeclarationStatement(node);
+    if (!m_currentFunctionType->returnType()) {
+        m_currentFunctionType->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
+    }
     m_currentFunctionType = 0;
     closeType();
 }
@@ -150,7 +156,7 @@ void TypeBuilder::visitExpr(ExprAst *node)
     m_expressionType = 0;
     node->ducontext = currentContext();
     ExpressionParser ep(false, false);
-    ExpressionEvaluationResult res = ep.evaluateType(node, editor()->parseSession()/*, currentContext()->topContext*/);
+    ExpressionEvaluationResult res = ep.evaluateType(node, editor(), currentContext()->topContext());
     m_expressionType = res.type();
     TypeBuilderBase::visitExpr(node);
 }

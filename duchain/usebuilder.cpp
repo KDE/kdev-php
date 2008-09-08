@@ -30,8 +30,8 @@ namespace Php {
 
 class UseExpressionVisitor : public ExpressionVisitor {
 public:
-    UseExpressionVisitor(ParseSession* session, const TopDUContext* source, UseBuilder* useBuilder)
-        : ExpressionVisitor(session, source, false), m_builder(useBuilder) {
+    UseExpressionVisitor(EditorIntegrator* editor, const TopDUContext* source, UseBuilder* useBuilder)
+        : ExpressionVisitor(editor, source, false), m_builder(useBuilder) {
     }
 
 protected:
@@ -99,8 +99,7 @@ void UseBuilder::visitFunctionCall(FunctionCallAst* node)
 
 void UseBuilder::visitExpr(ExprAst* node)
 {
-    UseExpressionVisitor v(editor()->parseSession(), currentContext()->topContext(), this);
-    qDebug() << "UseBuilder::visitExpr";
+    UseExpressionVisitor v(editor(), currentContext()->topContext(), this);
     v.visitNode(node);
     UseBuilderBase::visitExpr(node);
 }

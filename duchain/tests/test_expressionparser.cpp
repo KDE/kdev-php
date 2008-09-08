@@ -83,7 +83,7 @@ void TestExpressionParser::memberFunction()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { public function foo() {} } $i = new A();");
 
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
 
     ExpressionParser p(false, true);
@@ -119,20 +119,20 @@ void TestExpressionParser::chainCall()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { function foo() { return $this; } } $a = new A();");
 
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
 
     FunctionType::Ptr fn = top->childContexts().first()->localDeclarations().first()->type<FunctionType>();
     QVERIFY(fn);
-    qDebug() << fn->returnType()->toString();
-    qDebug() << top->localDeclarations().first()->abstractType()->toString();
     QVERIFY(fn->returnType()->equals(top->localDeclarations().first()->abstractType().unsafeData()));
 
     ExpressionParser p(false, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$a->foo()"), DUContextPointer(top));
+    QVERIFY(res.type());
     QVERIFY(res.type()->equals(top->localDeclarations().first()->abstractType().unsafeData()));
-    
+
     res = p.evaluateType(QByteArray("$a->foo()->foo()->foo()"), DUContextPointer(top));
+    QVERIFY(res.type());
     QVERIFY(res.type()->equals(top->localDeclarations().first()->abstractType().unsafeData()));
 
     release(top);

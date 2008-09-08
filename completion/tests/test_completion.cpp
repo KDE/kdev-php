@@ -304,7 +304,7 @@ void TestCompletion::thisCompletion()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { public function foo() {} public $bar; }");
 
-    TopDUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
@@ -328,7 +328,7 @@ void TestCompletion::variable()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A {  } $a = new A();");
 
-    TopDUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), ""));
@@ -336,8 +336,7 @@ void TestCompletion::variable()
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
 
     bool abort = false;
-    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
-    qDebug() << itemList.first()->declaration()->toString();
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(0, 29), abort);
     QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(1)));
 
     release(top);

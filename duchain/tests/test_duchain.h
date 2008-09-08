@@ -55,6 +55,7 @@ private slots:
   void testDefaultFunctionParam();
   void testGlobalFunction();
   void testNewObjectFromOtherFile();
+  void testUnknownReturnType();
 };
 
 }

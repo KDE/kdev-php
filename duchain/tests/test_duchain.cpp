@@ -744,6 +744,24 @@ void TestDUChain::testNewObjectFromOtherFile()
     release(top);
 }
 
+void TestDUChain::testUnknownReturnType()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo() {} $a = foo();");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    //function bar
+    Declaration* dec = top->localDeclarations().at(0);
+    FunctionType::Ptr fType = dec->type<FunctionType>();
+    QVERIFY(fType);
+    QVERIFY(IntegralType::Ptr::dynamicCast(fType->returnType()));
+    QVERIFY(IntegralType::Ptr::staticCast(fType->returnType())->dataType() == IntegralType::TypeVoid);
+
+    release(top);
+}
 
 }
 

@@ -33,16 +33,18 @@ namespace KDevelop {
 }
 
 namespace Php {
-class ParseSession;
+class EditorIntegrator;
 
 class KDEVPHPDUCHAIN_EXPORT ExpressionVisitor : public DefaultVisitor
 {
 public:
-    ExpressionVisitor(ParseSession* session, const KDevelop::TopDUContext* source, bool strict);
+    ExpressionVisitor(EditorIntegrator* editor, const KDevelop::TopDUContext* source, bool strict);
     ExpressionEvaluationResult result() { return m_result; }
 
 protected:
     void visitExpr(ExprAst *node);
+    void visitAssignmentExpression(AssignmentExpressionAst *node);
+    void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
     void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
     void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
     void visitFunctionCall(FunctionCallAst* node);
@@ -58,14 +60,16 @@ protected:
     }
 
 protected:
-    ParseSession* m_session;
+    EditorIntegrator* m_editor;
 
 private:
     const KDevelop::TopDUContext* m_source;
     bool m_strict;
     KDevelop::DUContext* m_currentContext;
-    
+
     ExpressionEvaluationResult m_result;
+
+    bool m_isAssignmentEqual;
 };
 
 }
