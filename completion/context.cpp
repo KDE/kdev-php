@@ -212,7 +212,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
         }
     } else {
 
-        ExpressionParser expressionParser/*(false, true)*/;
+        ExpressionParser expressionParser(false);
     
         if( !expr.trimmed().isEmpty() ) {
             m_expressionResult = expressionParser.evaluateType( expr.toUtf8(), m_duContext );

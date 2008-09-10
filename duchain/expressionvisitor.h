@@ -38,7 +38,7 @@ class EditorIntegrator;
 class KDEVPHPDUCHAIN_EXPORT ExpressionVisitor : public DefaultVisitor
 {
 public:
-    ExpressionVisitor(EditorIntegrator* editor, const KDevelop::TopDUContext* source, bool strict);
+    ExpressionVisitor(EditorIntegrator* editor, bool useCursor);
     ExpressionEvaluationResult result() { return m_result; }
 
 protected:
@@ -63,13 +63,10 @@ protected:
     EditorIntegrator* m_editor;
 
 private:
-    const KDevelop::TopDUContext* m_source;
-    bool m_strict;
+    bool m_useCursor;
     KDevelop::DUContext* m_currentContext;
 
     ExpressionEvaluationResult m_result;
-
-    bool m_isAssignmentEqual;
 };
 
 }

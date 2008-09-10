@@ -129,19 +129,23 @@ void TestUses::variableTwoDeclarations()
     QByteArray method("<? class A { } $a = new A(); $a; $a = 0; $a; ");
     TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
-//currently broken
-return;
+
     Declaration* var = top->localDeclarations().at(1);
     QCOMPARE(var->uses().keys().count(), 1);
     QCOMPARE(var->uses().values().count(), 1);
-    QCOMPARE(var->uses().values().first().count(), 1);
+    QCOMPARE(var->uses().values().first().count(), 3);
     QCOMPARE(var->uses().values().first().at(0), SimpleRange(0, 29, 0, 31));
+    QCOMPARE(var->uses().values().first().at(1), SimpleRange(0, 33, 0, 35));
+    QCOMPARE(var->uses().values().first().at(2), SimpleRange(0, 41, 0, 43));
 
     var = top->localDeclarations().at(2);
     QCOMPARE(var->uses().keys().count(), 1);
     QCOMPARE(var->uses().values().count(), 1);
-    QCOMPARE(var->uses().values().first().count(), 1);
-    QCOMPARE(var->uses().values().first().at(0), SimpleRange(0, 41, 0, 43));
+    QCOMPARE(var->uses().values().first().count(), 3);
+    QCOMPARE(var->uses().values().first().at(0), SimpleRange(0, 29, 0, 31));
+    QCOMPARE(var->uses().values().first().at(1), SimpleRange(0, 33, 0, 35));
+    QCOMPARE(var->uses().values().first().at(2), SimpleRange(0, 41, 0, 43));
+
     release(top);
 }
 /*
@@ -151,6 +155,7 @@ TODO:
 - static member variable
 - constant
 - parent::?
+- implements Interface
 */
 }
 

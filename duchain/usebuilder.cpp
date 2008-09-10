@@ -30,8 +30,8 @@ namespace Php {
 
 class UseExpressionVisitor : public ExpressionVisitor {
 public:
-    UseExpressionVisitor(EditorIntegrator* editor, const TopDUContext* source, UseBuilder* useBuilder)
-        : ExpressionVisitor(editor, source, false), m_builder(useBuilder) {
+    UseExpressionVisitor(EditorIntegrator* editor, bool useCursor, UseBuilder* useBuilder)
+        : ExpressionVisitor(editor, useCursor), m_builder(useBuilder) {
     }
 
 protected:

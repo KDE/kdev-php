@@ -37,12 +37,12 @@ public:
      * @param strict When this is false, the expression-visitor tries to recover from problems. For example when it cannot find a matching function, it returns the first of the candidates.
      * @param debug Enables additional output
      * */
-    explicit ExpressionParser( bool strict = false, bool debug = false );
+    explicit ExpressionParser(bool useCursor, bool debug = false);
 
-    ExpressionEvaluationResult evaluateType( const QByteArray& expression, KDevelop::DUContextPointer context, const KDevelop::TopDUContext* source = 0 );
-    ExpressionEvaluationResult evaluateType( AstNode* ast, EditorIntegrator* editor, const KDevelop::TopDUContext* source = 0 );
+    ExpressionEvaluationResult evaluateType( const QByteArray& expression, KDevelop::DUContextPointer context);
+    ExpressionEvaluationResult evaluateType( AstNode* ast, EditorIntegrator* editor);
 private:
-    bool m_strict;
+    bool m_useCursor;
     bool m_debug;
 };
 

@@ -35,11 +35,12 @@ using namespace KDevelop;
 
 namespace Php {
 
-ExpressionParser::ExpressionParser( bool strict, bool debug ) : m_strict(strict), m_debug(debug)
+ExpressionParser::ExpressionParser(bool useCursor, bool debug)
+    : m_useCursor(useCursor), m_debug(debug)
 {
 }
 
-ExpressionEvaluationResult ExpressionParser::evaluateType( const QByteArray& expression, DUContextPointer context, const KDevelop::TopDUContext* source)
+ExpressionEvaluationResult ExpressionParser::evaluateType( const QByteArray& expression, DUContextPointer context)
 {
     if( m_debug )
         kDebug() << "==== .Evaluating ..:" << endl << expression;
@@ -57,7 +58,7 @@ ExpressionEvaluationResult ExpressionParser::evaluateType( const QByteArray& exp
     ast->ducontext = dynamic_cast<DUContext*>(context.data());
 
     EditorIntegrator* editor = new EditorIntegrator(session);
-    ExpressionEvaluationResult ret = evaluateType( ast, editor, source );
+    ExpressionEvaluationResult ret = evaluateType( ast, editor );
     delete editor;
     delete session;
     delete parser;
@@ -65,7 +66,7 @@ ExpressionEvaluationResult ExpressionParser::evaluateType( const QByteArray& exp
     return ret;
 }
 
-ExpressionEvaluationResult ExpressionParser::evaluateType( AstNode* ast, EditorIntegrator* editor, const KDevelop::TopDUContext* source)
+ExpressionEvaluationResult ExpressionParser::evaluateType( AstNode* ast, EditorIntegrator* editor)
 {
     if (m_debug) {
         kDebug() << "===== AST:";
@@ -73,7 +74,7 @@ ExpressionEvaluationResult ExpressionParser::evaluateType( AstNode* ast, EditorI
         debugVisitor.visitNode(ast);
     }
 
-    ExpressionVisitor v(editor, source, m_strict);
+    ExpressionVisitor v(editor, m_useCursor);
     v.visitNode( ast );	
 
     return v.result();

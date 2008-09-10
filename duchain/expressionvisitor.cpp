@@ -34,8 +34,8 @@ using namespace KDevelop;
 
 namespace Php {
 
-ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor, const TopDUContext* source, bool strict)
-    : m_editor(editor), m_source(source), m_strict(strict), m_isAssignmentEqual(false)
+ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor, bool useCursor)
+    : m_editor(editor), m_useCursor(useCursor)
 {
 }
 
@@ -50,16 +50,12 @@ void ExpressionVisitor::visitExpr(ExprAst *node)
 
 void ExpressionVisitor::visitAssignmentExpression(AssignmentExpressionAst *node)
 {
-    if (node->assignmentAxpressionEqual) {
-        m_isAssignmentEqual = true; //so we don't build uses for declarations (AssignmentExpressionEqual are declarations)
-    }
     DefaultVisitor::visitAssignmentExpression(node);
 }
 
 void ExpressionVisitor::visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node)
 {
     DefaultVisitor::visitAssignmentExpressionEqual(node);
-    m_isAssignmentEqual = false;
 }
 
 void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
@@ -75,38 +71,13 @@ void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(Compoun
         }
     } else {
         DUChainReadLocker lock(DUChain::lock());
-        /*
-        SimpleRange varRange(m_editor->findRange(node->variable));
-        Declaration* nearestDeclaration = 0;
-        qDebug() << "found: " << m_currentContext->findDeclarations(identifier).count();
-        foreach (Declaration* declaration, m_currentContext->findDeclarations(identifier)) {
-            qDebug() << "declaration: " << declaration->range().textRange()
-                     << "var: " << varRange.textRange()
-                     << declaration;
-            qDebug() << declaration->context() << m_currentContext;
-            if (declaration->context() == m_currentContext) {
-                if (declaration->range() < varRange) {
-                    qDebug() << "isSmaller";
-                    if (nearestDeclaration) {
-                        qDebug() << nearestDeclaration->range().end.column;
-                    }
-                    if (!nearestDeclaration || nearestDeclaration->range() < declaration->range()) {
-                        qDebug() << "using " << declaration;
-                        nearestDeclaration = declaration;
-                    }
-                }
-            } else {
-                qDebug() << "using " << declaration;
-                nearestDeclaration = declaration;
-                break;
-            }
+        SimpleCursor position = SimpleCursor::invalid();
+        if (m_useCursor) {
+            position = m_editor->findPosition(node->variable->variable, EditorIntegrator::FrontEdge);
         }
-        qDebug() << "nearest" << nearestDeclaration;
-        m_result.setDeclaration(nearestDeclaration);
-        */
-        m_result.setDeclarations(m_currentContext->findDeclarations(identifier));
+        m_result.setDeclarations(m_currentContext->findDeclarations(identifier, position));
     }
-    if (!m_isAssignmentEqual && !m_result.allDeclarations().isEmpty()) {
+    if (!m_result.allDeclarations().isEmpty()) {
         usingDeclaration(node->variable, m_result.allDeclarations().last());
     }
     DefaultVisitor::visitCompoundVariableWithSimpleIndirectReference(node);
