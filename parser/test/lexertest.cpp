@@ -141,6 +141,33 @@ void LexerTest::testCommentMultiLine()
     delete ts;
 }
 
+void LexerTest::testCommentMultiLine2()
+{
+    TokenStream* ts = tokenize("<?php\n/*\nment*/\nfoo;", true);
+    QVERIFY(ts->size() == 5);
+
+    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
+    compareStartPosition(ts, 0, 0, 0);
+    compareEndPosition  (ts, 0, 0, 5);
+
+    QVERIFY(ts->token(1).kind == Parser::Token_COMMENT);
+    compareStartPosition(ts, 1, 1, 0);
+    compareEndPosition  (ts, 1, 2, 5);
+
+    QVERIFY(ts->token(2).kind == Parser::Token_WHITESPACE);
+    compareStartPosition(ts, 2, 2, 6);
+    compareEndPosition  (ts, 2, 2, 6);
+
+    QVERIFY(ts->token(3).kind == Parser::Token_STRING);
+    compareStartPosition(ts, 3, 3, 0);
+    compareEndPosition  (ts, 3, 3, 2);
+
+    QVERIFY(ts->token(4).kind == Parser::Token_SEMICOLON);
+    compareStartPosition(ts, 4, 3, 3);
+    compareEndPosition  (ts, 4, 3, 3);
+    delete ts;
+}
+
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug)
 {
     TokenStream* tokenStream = new TokenStream;
@@ -162,7 +189,7 @@ TokenStream* LexerTest::tokenize(const QString& unit, bool debug)
             qint64 endColumn;
             tokenStream->endPosition(i, &endLine, &endColumn);
             kDebug() << tokenText(t.kind)
-                     << unit.mid(t.begin, t.end - t.begin + 1)
+                     << unit.mid(t.begin, t.end - t.begin + 1).replace('\n', "\\n")
                      << QString("[%0-%1] - [%2-%3]").arg(beginLine).arg(beginColumn).arg(endLine).arg(endColumn);
         }
     }

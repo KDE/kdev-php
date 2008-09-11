@@ -43,6 +43,7 @@ private slots:
     void testOpenTagWithSpace();
     void testCommentOneLine();
     void testCommentMultiLine();
+    void testCommentMultiLine2();
 
 protected:
     TokenStream* tokenize(const QString& unit, bool debug = false);

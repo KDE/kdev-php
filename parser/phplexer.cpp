@@ -500,11 +500,11 @@ int Lexer::nextTokenKind()
                     m_curpos += 2;
                     while (m_curpos < m_contentSize && !(it->unicode() == '*' && (it+1)->unicode() == '/'))
                     {
-                        it++;
-                        m_curpos++;
                         if (it->unicode() == '\n') {
                             createNewline(m_curpos);
                         }
+                        it++;
+                        m_curpos++;
                     }
                     m_curpos++;
                 } else {
