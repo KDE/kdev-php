@@ -37,6 +37,11 @@ private slots:
   void memberVariable();
   void variable();
   void variableTwoDeclarations();
+  void classExtends();
+  void classImplements();
+  void classImplementsMultiple();
+  void interfaceExtends();
+  void interfaceExtendsMultiple();
 };
 
 }

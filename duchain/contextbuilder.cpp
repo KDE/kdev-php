@@ -127,9 +127,9 @@ void ContextBuilder::classContextOpened(KDevelop::DUContext* context)
 
 void ContextBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node)
 {
-    visitNode(node->extends);
     openContext(node, DUContext::Class, node->interfaceName);
-    visitNode(node->body);
+    classContextOpened(currentContext()); //This callback is needed, so we can set the internal context and so find the declaration for the context (before closeDeclaration())
+    DefaultVisitor::visitInterfaceDeclarationStatement(node);
     closeContext();
 }
 

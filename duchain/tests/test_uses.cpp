@@ -148,14 +148,106 @@ void TestUses::variableTwoDeclarations()
 
     release(top);
 }
+
+void TestUses::classExtends()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { } class B extends A { } ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* a = top->localDeclarations().at(0);
+    QCOMPARE(a->uses().keys().count(), 1);
+    QCOMPARE(a->uses().values().count(), 1);
+    QCOMPARE(a->uses().values().first().count(), 1);
+    QCOMPARE(a->uses().values().first().at(0), SimpleRange(0, 31, 0, 32));
+
+    release(top);
+}
+void TestUses::classImplements()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? interface A { } class B implements A { } ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* a = top->localDeclarations().at(0);
+    QCOMPARE(a->uses().keys().count(), 1);
+    QCOMPARE(a->uses().values().count(), 1);
+    QCOMPARE(a->uses().values().first().count(), 1);
+    QCOMPARE(a->uses().values().first().at(0), SimpleRange(0, 38, 0, 39));
+
+    release(top);
+}
+void TestUses::classImplementsMultiple()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? interface A { } interface B { } class C implements A, B { } ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* a = top->localDeclarations().at(0);
+    QCOMPARE(a->uses().keys().count(), 1);
+    QCOMPARE(a->uses().values().count(), 1);
+    QCOMPARE(a->uses().values().first().count(), 1);
+    QCOMPARE(a->uses().values().first().at(0), SimpleRange(0, 54, 0, 55));
+
+    Declaration* b = top->localDeclarations().at(1);
+    QCOMPARE(b->uses().keys().count(), 1);
+    QCOMPARE(b->uses().values().count(), 1);
+    QCOMPARE(b->uses().values().first().count(), 1);
+    QCOMPARE(b->uses().values().first().at(0), SimpleRange(0, 57, 0, 58));
+
+    release(top);
+}
+void TestUses::interfaceExtends()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? interface A { } interface B extends A { }");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* a = top->localDeclarations().at(0);
+    QCOMPARE(a->uses().keys().count(), 1);
+    QCOMPARE(a->uses().values().count(), 1);
+    QCOMPARE(a->uses().values().first().count(), 1);
+    QCOMPARE(a->uses().values().first().at(0), SimpleRange(0, 39, 0, 40));
+
+    release(top);
+}
+void TestUses::interfaceExtendsMultiple()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? interface A { } interface B { } interface C extends A, B { }");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* a = top->localDeclarations().at(0);
+    QCOMPARE(a->uses().keys().count(), 1);
+    QCOMPARE(a->uses().values().count(), 1);
+    QCOMPARE(a->uses().values().first().count(), 1);
+    QCOMPARE(a->uses().values().first().at(0), SimpleRange(0, 55, 0, 56));
+
+    Declaration* b = top->localDeclarations().at(1);
+    QCOMPARE(b->uses().keys().count(), 1);
+    QCOMPARE(b->uses().values().count(), 1);
+    QCOMPARE(b->uses().values().first().count(), 1);
+    QCOMPARE(b->uses().values().first().at(0), SimpleRange(0, 58, 0, 59));
+
+    release(top);
+}
 /*
 TODO:
-- move function-call usage to expressionvisitor
 - static function call
 - static member variable
 - constant
 - parent::?
-- implements Interface
+- self::
 */
 }
 

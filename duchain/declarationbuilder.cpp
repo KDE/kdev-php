@@ -159,19 +159,17 @@ void DeclarationBuilder::visitClassExtends(ClassExtendsAst *node)
 void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
 {
     const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
-    do
-    {
-        if (openTypeFromName(__it->element, true)) {
-            closeType();
-            StructureType::Ptr interface = StructureType::Ptr::dynamicCast(lastType());
-            if (interface) {
-                if (interface->classType() == StructureType::Interface) {
-                    addBaseType(interface, true);
-                } else {
-                    //TODO report error
-                }
+    do {
+        Declaration* dec = findClassDeclaration(currentContext(), identifierForNode(__it->element));
+        if (dec) {
+            StructureType::Ptr interface = StructureType::Ptr::dynamicCast(dec->abstractType());
+            if (interface && interface->classType() == StructureType::Interface) {
+                addBaseType(interface, true);
+            } else {
+                //TODO report error
             }
         }
+        __it = __it->next;
     }
     while (__it != __end);
     DeclarationBuilderBase::visitClassImplements(node);

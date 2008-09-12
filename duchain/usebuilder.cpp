@@ -65,13 +65,13 @@ void UseBuilder::visitParameter(ParameterAst *node)
 void UseBuilder::visitClassImplements(ClassImplementsAst *node)
 {
     UseBuilderBase::visitClassImplements(node);
-
-    const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
-    do
-    {
-        newUse(__it->element);
+    if (node->implementsSequence) {
+        const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
+        do {
+            newUse(__it->element);
+            __it = __it->next;
+        } while (__it != __end);
     }
-    while (__it != __end);
 }
 
 void UseBuilder::visitClassExtends(ClassExtendsAst *node)
