@@ -241,10 +241,50 @@ void TestUses::interfaceExtendsMultiple()
 
     release(top);
 }
+void TestUses::staticMemberFunctionCall()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { public static function foo() {} } A::foo(); ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* cls = top->localDeclarations().first();
+    QCOMPARE(cls->uses().keys().count(), 1);
+    QCOMPARE(cls->uses().values().count(), 1);
+    QCOMPARE(cls->uses().values().first().count(), 1);
+    QCOMPARE(cls->uses().values().first().first(), SimpleRange(0, 47, 0, 48));
+
+    Declaration* fun = top->childContexts().first()->localDeclarations().first();
+    QCOMPARE(fun->uses().keys().count(), 1);
+    QCOMPARE(fun->uses().values().count(), 1);
+    QCOMPARE(fun->uses().values().first().count(), 1);
+    QCOMPARE(fun->uses().values().first().first(), SimpleRange(0, 50, 0, 53));
+    release(top);
+}
+void TestUses::staticMemberVariable()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { public static $foo; } A::$foo; ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* cls = top->localDeclarations().first();
+    QCOMPARE(cls->uses().keys().count(), 1);
+    QCOMPARE(cls->uses().values().count(), 1);
+    QCOMPARE(cls->uses().values().first().count(), 1);
+    QCOMPARE(cls->uses().values().first().first(), SimpleRange(0, 35, 0, 36));
+
+    Declaration* var = top->childContexts().first()->localDeclarations().first();
+    QCOMPARE(var->uses().keys().count(), 1);
+    QCOMPARE(var->uses().values().count(), 1);
+    QCOMPARE(var->uses().values().first().count(), 1);
+    QCOMPARE(var->uses().values().first().first(), SimpleRange(0, 38, 0, 42));
+    release(top);
+}
 /*
 TODO:
-- static function call
-- static member variable
 - constant
 - parent::?
 - self::

@@ -42,6 +42,8 @@ private slots:
   void classImplementsMultiple();
   void interfaceExtends();
   void interfaceExtendsMultiple();
+  void staticMemberFunctionCall();
+  void staticMemberVariable();
 };
 
 }
