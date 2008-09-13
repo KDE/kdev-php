@@ -195,7 +195,8 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
 
 void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
 {
-    DefaultVisitor::visitStaticMember(node);
+    //don't call DefaultVisitor::visitStaticMember(node);
+    //because we would end up in visitCompoundVariableWithSimpleIndirectReference
     if (node->variable->variable->variable) {
         DUContext* context = 0;
         if (identifierForNode(node->className) == QualifiedIdentifier("self")) {
