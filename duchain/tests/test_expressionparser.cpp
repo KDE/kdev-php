@@ -26,6 +26,7 @@
 #include <language/duchain/topducontext.h>
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/structuretype.h>
+#include <language/duchain/types/integraltype.h>
 
 #include "expressionparser.h"
 
@@ -157,6 +158,36 @@ void TestExpressionParser::thisObject()
 
     release(top);
 }
+
+void TestExpressionParser::integralTypes()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $foo=1;");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    ExpressionParser p(false, true);
+    ExpressionEvaluationResult res = p.evaluateType(QByteArray("123"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeInt));
+
+    res = p.evaluateType(QByteArray("\"asdf\""), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeString));
+
+    res = p.evaluateType(QByteArray("\"as $foo df\""), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeString));
+
+    res = p.evaluateType(QByteArray("'asdf'"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeString));
+
+    release(top);
+}
+
 }
 
 #include "test_expressionparser.moc"

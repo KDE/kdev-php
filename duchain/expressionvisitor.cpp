@@ -175,8 +175,7 @@ DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
 }
 void ExpressionVisitor::visitScalar(ScalarAst *node)
 {
-    DefaultVisitor::visitScalar(node);
-
+    //don't call parent, we handle everything here DefaultVisitor::visitScalar(node);
     if (node->className) {
         DUContext* context = findClassContext(node->className);
         if (context) {
@@ -197,9 +196,24 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
         if (!m_result.allDeclarations().isEmpty()) {
             usingDeclaration(node->constant, m_result.allDeclarations().last());
         }
-    } else {
-        //TODO: different IntegralTypes
-        IntegralType::Ptr integral(new IntegralType());
+    } else if (node->commonScalar) {
+        uint type;
+        switch (node->commonScalar->scalarType) {
+            case ScalarTypeNumber:
+                type = IntegralType::TypeInt;
+                break;
+            case ScalarTypeString:
+                type = IntegralType::TypeString;
+                break;
+        }
+        IntegralType::Ptr integral(new IntegralType(type));
+        m_result.setType(AbstractType::Ptr::staticCast(integral));
+    } else if (node->varname != -1) {
+        //STRING_VARNAME-Token, probably the type of varname should be used
+        IntegralType::Ptr integral(new IntegralType(IntegralType::TypeString));
+        m_result.setType(AbstractType::Ptr::staticCast(integral));
+    } else if (node->encapsList) {
+        IntegralType::Ptr integral(new IntegralType(IntegralType::TypeString));
         m_result.setType(AbstractType::Ptr::staticCast(integral));
     }
 }

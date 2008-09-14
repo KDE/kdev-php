@@ -37,6 +37,7 @@ private slots:
   void globalFunction();
   void chainCall();
   void thisObject();
+  void integralTypes();
 };
 
 }

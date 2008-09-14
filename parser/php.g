@@ -77,6 +77,10 @@ namespace KDevelop
         ModifierAbstract     = 1 << 5
     };
 
+    enum ScalarTypes {
+        ScalarTypeNumber,
+        ScalarTypeString
+    };
 :]
 
 ------------------------------------------------------------
@@ -673,15 +677,17 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 -> encapsVarOffset ;;
 
 
-    LNUMBER
-  | DNUMBER
-  | string=CONSTANT_ENCAPSED_STRING
-  | LINE
-  | FILE
-  | CLASS_C
-  | METHOD_C
-  | FUNC_C
--> commonScalar ;;
+    LNUMBER                  [: (*yynode)->scalarType = ScalarTypeNumber; :]
+  | DNUMBER                  [: (*yynode)->scalarType = ScalarTypeNumber; :]
+  | string=CONSTANT_ENCAPSED_STRING [: (*yynode)->scalarType = ScalarTypeString; :]
+  | LINE                     [: (*yynode)->scalarType = ScalarTypeNumber; :]
+  | FILE                     [: (*yynode)->scalarType = ScalarTypeString; :]
+  | CLASS_C                  [: (*yynode)->scalarType = ScalarTypeString; :]
+  | METHOD_C                 [: (*yynode)->scalarType = ScalarTypeString; :]
+  | FUNC_C                   [: (*yynode)->scalarType = ScalarTypeString; :]
+-> commonScalar [
+     member variable scalarType: ScalarTypes;
+] ;;
 
     FUNCTION (BIT_AND | 0) functionName=identifier
     LPAREN (parameters=parameterList | 0) RPAREN LBRACE functionBody=innerStatementList RBRACE

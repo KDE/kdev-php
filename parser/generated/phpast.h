@@ -141,10 +141,10 @@ enum ModifierFlags
     ModifierAbstract     = 1 << 5
 };
 
-enum IdentifierType
+enum ScalarTypes
 {
-    IdentifierString,
-    IdentifierVariable
+    ScalarTypeNumber,
+    ScalarTypeString
 };
 
 struct KDEVPHPPARSER_EXPORT AstNode
@@ -481,6 +481,7 @@ struct KDEVPHPPARSER_EXPORT CommonScalarAst: public AstNode
 {
     enum { KIND = CommonScalarKind };
 
+    ScalarTypes scalarType;
     qint64 string;
 };
 

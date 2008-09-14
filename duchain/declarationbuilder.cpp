@@ -35,6 +35,8 @@ using namespace KDevelop;
 
 namespace Php {
 
+//Helper visitor to extract a commonScalar node
+//used to get the value of an function call argument
 class ScalarExpressionVisitor : public DefaultVisitor
 {
 public:
@@ -304,7 +306,9 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
     if (node->stringFunctionNameOrClass && !node->stringFunctionName && !node->varFunctionName) {
         if (identifierForNode(node->stringFunctionNameOrClass) == QualifiedIdentifier("define")
             && node->stringParameterList->parametersSequence->count() > 0) {
+            //constant, defined through define-function
             ScalarExpressionVisitor visitor;
+            //find name of the constant (first argument of the function call)
             visitor.visitNode(node->stringParameterList->parametersSequence->at(0)->element);
             if (visitor.node() && visitor.node()->string != -1) {
                 QString constant = editor()->parseSession()->symbol(visitor.node()->string);
