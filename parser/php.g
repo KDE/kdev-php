@@ -77,10 +77,6 @@ namespace KDevelop
         ModifierAbstract     = 1 << 5
     };
 
-    enum IdentifierType {
-        IdentifierString,
-        IdentifierVariable
-    };
 :]
 
 ------------------------------------------------------------
