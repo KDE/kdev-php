@@ -290,12 +290,93 @@ void TestUses::staticMemberVariable()
 
     release(top);
 }
-/*
-TODO:
-- constant
-- parent::?
-- self::
-*/
+void TestUses::constant()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? define('A', 'foo'); echo A;");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* cnst = top->localDeclarations().first();
+    QCOMPARE(cnst->uses().keys().count(), 1);
+    QCOMPARE(cnst->uses().values().count(), 1);
+    QCOMPARE(cnst->uses().values().first().count(), 1);
+    QCOMPARE(cnst->uses().values().first().first(), SimpleRange(0, 28, 0, 29));
+
+    release(top);
+}
+
+void TestUses::classConstant()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { const FOO = 'abc'; } echo A::FOO;");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* cls = top->localDeclarations().first();
+    QCOMPARE(cls->uses().keys().count(), 1);
+    QCOMPARE(cls->uses().values().count(), 1);
+    QCOMPARE(cls->uses().values().first().count(), 1);
+    QCOMPARE(cls->uses().values().first().first(), SimpleRange(0, 39, 0, 40));
+
+    Declaration* cnst = top->childContexts().first()->localDeclarations().first();
+    QCOMPARE(cnst->uses().keys().count(), 1);
+    QCOMPARE(cnst->uses().values().count(), 1);
+    QCOMPARE(cnst->uses().values().first().count(), 1);
+    QCOMPARE(cnst->uses().values().first().first(), SimpleRange(0, 42, 0, 45));
+
+    release(top);
+}
+
+void TestUses::classParent()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { function x() {} } class B extends A { function x() { parent::x(); }} ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* cls = top->localDeclarations().first();
+    QCOMPARE(cls->uses().keys().count(), 1);
+    QCOMPARE(cls->uses().values().count(), 1);
+    QCOMPARE(cls->uses().values().first().count(), 2);
+    QCOMPARE(cls->uses().values().first().first(), SimpleRange(0, 47, 0, 48));
+    QCOMPARE(cls->uses().values().first().at(1), SimpleRange(0, 66, 0, 72));
+
+    Declaration* fun = top->childContexts().first()->localDeclarations().first();
+    QCOMPARE(fun->uses().keys().count(), 1);
+    QCOMPARE(fun->uses().values().count(), 1);
+    QCOMPARE(fun->uses().values().first().count(), 1);
+    QCOMPARE(fun->uses().values().first().first(), SimpleRange(0, 74, 0, 75));
+
+    release(top);
+}
+
+void TestUses::classSelf()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { function x() { self::x(); } } ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* cls = top->localDeclarations().first();
+    QCOMPARE(cls->uses().keys().count(), 1);
+    QCOMPARE(cls->uses().values().count(), 1);
+    QCOMPARE(cls->uses().values().first().count(), 1);
+    QCOMPARE(cls->uses().values().first().first(), SimpleRange(0, 28, 0, 32));
+
+    Declaration* fun = top->childContexts().first()->localDeclarations().first();
+    QCOMPARE(fun->uses().keys().count(), 1);
+    QCOMPARE(fun->uses().values().count(), 1);
+    QCOMPARE(fun->uses().values().first().count(), 1);
+    QCOMPARE(fun->uses().values().first().first(), SimpleRange(0, 34, 0, 35));
+
+    release(top);
+}
+
 }
 
 #include "test_uses.moc"

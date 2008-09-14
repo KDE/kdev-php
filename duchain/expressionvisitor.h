@@ -63,6 +63,8 @@ protected:
     EditorIntegrator* m_editor;
 
 private:
+    KDevelop::DUContext* findClassContext(IdentifierAst* className);
+
     bool m_useCursor;
     KDevelop::DUContext* m_currentContext;
 

@@ -13,6 +13,7 @@
 #include <QtCore/QString>
 #include <kdebug.h>
 #include <tokenstream.h>
+#include "phplexer.h"
 
 namespace KDevelop
 {
@@ -887,8 +888,8 @@ struct KDEVPHPPARSER_EXPORT ScalarAst: public AstNode
     enum { KIND = ScalarKind };
 
     CommonScalarAst *commonScalar;
-    qint64 string;
-    qint64 constname;
+    IdentifierAst *className;
+    IdentifierAst *constant;
     qint64 varname;
     EncapsListAst *encapsList;
 };

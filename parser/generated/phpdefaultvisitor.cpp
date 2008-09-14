@@ -701,6 +701,8 @@ void DefaultVisitor::visitRelationalExpressionRest(RelationalExpressionRestAst *
 void DefaultVisitor::visitScalar(ScalarAst *node)
 {
     visitNode(node->commonScalar);
+    visitNode(node->className);
+    visitNode(node->constant);
     visitNode(node->encapsList);
 }
 

@@ -25,13 +25,15 @@
 -- and parts taken from KDevelop Java Grammar
 -----------------------------------------------------------
 
--- 3 first/first conflicts:
+-- 4 first/first conflicts:
 --  - var_expression: variable vs. varExpressionNormal
 --    no problem because of ifs that allow always just one rule
 --  - classNameReference: STRING vs. staticMember (foo vs. foo::$bar)
 --    resolved by LA()
 --  - encapsVar: STRING_VARNAME LBRACKET vs. expr (expr allows STRING_VARNAME too - but not LBRACKET)
 --    resolved by LA()
+--  - scalar: constant vs. class constant (FOO v.s Cls::FOO)
+--    resolved by LA() (could be avoided, but the Ast is much cleaner that way)
 -- 1 first/follow conflicts:
 --  - elseifList: dangling-else conflict - should be ok
 
@@ -648,7 +650,8 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 -> variableName ;;
 
     commonScalar=commonScalar
-  | string=STRING (PAAMAYIM_NEKUDOTAYIM constname=STRING | 0)
+  | ?[: LA(2).kind == Token_PAAMAYIM_NEKUDOTAYIM :] className=identifier PAAMAYIM_NEKUDOTAYIM constant=identifier
+  | constant=identifier
   | varname=STRING_VARNAME
   | DOUBLE_QUOTE encapsList=encapsList DOUBLE_QUOTE
   | START_HEREDOC encapsList=encapsList END_HEREDOC
