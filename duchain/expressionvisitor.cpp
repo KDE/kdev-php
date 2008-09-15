@@ -105,12 +105,14 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
                 DUChainReadLocker lock(DUChain::lock());
                 m_result.setDeclarations(context->findDeclarations(identifierForNode(node->stringFunctionName)));
                 lock.unlock();
-                usingDeclaration(node->stringFunctionName, m_result.allDeclarations().last());
-                FunctionType::Ptr function = m_result.allDeclarations().last()->type<FunctionType>();
-                if (function) {
-                    m_result.setType(function->returnType());
-                } else {
-                    m_result.setType(AbstractType::Ptr());
+                if (!m_result.allDeclarations().isEmpty()) {
+                    usingDeclaration(node->stringFunctionName, m_result.allDeclarations().last());
+                    FunctionType::Ptr function = m_result.allDeclarations().last()->type<FunctionType>();
+                    if (function) {
+                        m_result.setType(function->returnType());
+                    } else {
+                        m_result.setType(AbstractType::Ptr());
+                    }
                 }
             } else {
                 m_result.setType(AbstractType::Ptr());
@@ -182,7 +184,9 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
             DUChainReadLocker lock(DUChain::lock());
             m_result.setDeclarations(context->findDeclarations(identifierForNode(node->constant)));
             lock.unlock();
-            usingDeclaration(node->constant, m_result.allDeclarations().last());
+            if (!m_result.allDeclarations().isEmpty()) {
+                usingDeclaration(node->constant, m_result.allDeclarations().last());
+            }
         } else {
             m_result.setType(AbstractType::Ptr());
         }
@@ -267,7 +271,9 @@ void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
             DUChainReadLocker lock(DUChain::lock());
             m_result.setDeclarations(context->findDeclarations(identifierForNode(node->variable->variable->variable)));
             lock.unlock();
-            usingDeclaration(node->variable->variable->variable, m_result.allDeclarations().last());
+            if (!m_result.allDeclarations().isEmpty()) {
+                usingDeclaration(node->variable->variable->variable, m_result.allDeclarations().last());
+            }
         } else {
             m_result.setType(AbstractType::Ptr());
         }
