@@ -109,7 +109,7 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
         //method declaration
         openFunctionType(node);
         TypeBuilderBase::visitClassStatement(node);
-        if (!m_currentFunctionType->returnType()) {
+        if (m_currentFunctionType && !m_currentFunctionType->returnType()) {
             m_currentFunctionType->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
         }
         m_currentFunctionType = 0;
