@@ -60,22 +60,24 @@ void ExpressionVisitor::visitAssignmentExpressionEqual(AssignmentExpressionEqual
 
 void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
 {
-    QualifiedIdentifier identifier = identifierForNode(node->variable);
-    if (identifier == QualifiedIdentifier("this")) {
-        DUChainReadLocker lock(DUChain::lock());
-        if (m_currentContext->parentContext()
-            && m_currentContext->parentContext()->type() == DUContext::Class
-            && m_currentContext->parentContext()->owner())
-        {
-            m_result.setDeclaration(m_currentContext->parentContext()->owner());
+    if (node->variable) {
+        QualifiedIdentifier identifier = identifierForNode(node->variable);
+        if (identifier == QualifiedIdentifier("this")) {
+            DUChainReadLocker lock(DUChain::lock());
+            if (m_currentContext->parentContext()
+                && m_currentContext->parentContext()->type() == DUContext::Class
+                && m_currentContext->parentContext()->owner())
+            {
+                m_result.setDeclaration(m_currentContext->parentContext()->owner());
+            }
+        } else {
+            DUChainReadLocker lock(DUChain::lock());
+            SimpleCursor position = SimpleCursor::invalid();
+            if (m_useCursor) {
+                position = m_editor->findPosition(node->variable->variable, EditorIntegrator::FrontEdge);
+            }
+            m_result.setDeclarations(m_currentContext->findDeclarations(identifier, position));
         }
-    } else {
-        DUChainReadLocker lock(DUChain::lock());
-        SimpleCursor position = SimpleCursor::invalid();
-        if (m_useCursor) {
-            position = m_editor->findPosition(node->variable->variable, EditorIntegrator::FrontEdge);
-        }
-        m_result.setDeclarations(m_currentContext->findDeclarations(identifier, position));
     }
     if (!m_result.allDeclarations().isEmpty()) {
         usingDeclaration(node->variable, m_result.allDeclarations().last());
