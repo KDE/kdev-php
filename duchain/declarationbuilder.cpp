@@ -26,6 +26,8 @@
 #include <ktexteditor/smartinterface.h>
 
 #include <language/duchain/functiondeclaration.h>
+#include <language/duchain/stringhelpers.h>
+
 #include "phpast.h"
 #include "parsesession.h"
 #include "helper.h"
@@ -75,6 +77,8 @@ void DeclarationBuilder::closeDeclaration()
 
 void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
 {
+    setComment(formatComment(node, editor()));
+
     openDefinition<Declaration>(node->className, node);
     currentDeclaration()->setKind(KDevelop::Declaration::Type);
 
@@ -90,6 +94,8 @@ void DeclarationBuilder::classContextOpened(KDevelop::DUContext* context)
 
 void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
 {
+    setComment(formatComment(node, editor()));
+
     openDefinition<Declaration>(node->interfaceName, node);
     currentDeclaration()->setKind(KDevelop::Declaration::Type);
 
@@ -101,9 +107,9 @@ void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclaration
 
 void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 {
+    setComment(formatComment(node, editor()));
     if (node->methodName) {
         //method declaration
-
         openDefinition<ClassFunctionDeclaration>(node->methodName, node);
         ClassFunctionDeclaration* dec = dynamic_cast<ClassFunctionDeclaration*>(currentDeclaration());
         Q_ASSERT(dec);
@@ -257,8 +263,9 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
 
 void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
-    openDefinition<FunctionDeclaration>(node->functionName, node);
+    setComment(formatComment(node, editor()));
 
+    openDefinition<FunctionDeclaration>(node->functionName, node);
     currentDeclaration()->setKind(Declaration::Type);
 
     DeclarationBuilderBase::visitFunctionDeclarationStatement(node);

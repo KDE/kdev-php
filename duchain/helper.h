@@ -31,6 +31,9 @@ namespace KDevelop {
     class DUContext;
 }
 namespace Php {
+    class AstNode;
+    class EditorIntegrator;
+
     enum DeclarationType {
         ClassDeclarationType,
         FunctionDeclarationType,
@@ -39,6 +42,8 @@ namespace Php {
     KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext,
                                         KDevelop::QualifiedIdentifier id,
                                         DeclarationType declarationType);
+
+    QString formatComment(AstNode* node, EditorIntegrator* editor);
 
 
     static const uint internalFunctionFilesCount = 2;

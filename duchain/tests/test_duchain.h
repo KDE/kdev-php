@@ -65,6 +65,7 @@ private slots:
   void testInternalFunctions();
   void testTrueFalse();
   void testNull();
+  void testFunctionDocBlock();
 };
 
 }

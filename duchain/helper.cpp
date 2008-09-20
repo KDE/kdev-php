@@ -23,6 +23,11 @@
 #include <language/duchain/persistentsymboltable.h>
 #include <language/duchain/duchain.h>
 #include <language/duchain/functiondeclaration.h>
+#include <language/duchain/stringhelpers.h>
+
+#include "editorintegrator.h"
+#include "../parser/parsesession.h"
+#include "phpast.h"
 
 using namespace KDevelop;
 
@@ -81,6 +86,11 @@ Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifie
         }
     }
     return 0;
+}
+
+QString formatComment(AstNode* node, EditorIntegrator* editor)
+{
+    return KDevelop::formatComment(editor->parseSession()->docComment(node->startToken));
 }
 
 }
