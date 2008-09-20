@@ -30,12 +30,16 @@ if (!isset($_SERVER['argv'][1])) {
     exit(-1);
 }
 
+$dirs = array("reference", "appendices");
+
 $functions = array();
 $constants = array();
 $existingFunctions = array();
-$dir = new RecursiveIteratorIterator( new RecursiveDirectoryIterator($_SERVER['argv'][1]));
-foreach ($dir as $file) {
-    if (substr($file->getFilename(), -4) == '.xml' && substr($file->getFilename(), 0, 9) != 'entities.') {
+foreach ($dirs as $dir) {
+    $dirIt = new RecursiveIteratorIterator( new RecursiveDirectoryIterator($_SERVER['argv'][1].'/'.$dir));
+    foreach ($dirIt as $file) {
+        if (substr($file->getFilename(), -4) != '.xml') continue;
+        if (substr($file->getFilename(), 0, 9) == 'entities.') continue;
         $string = file_get_contents($file->getPathname());
         $string = preg_replace('#<!\\[CDATA\\[.*?\\]\\]>#s', '', $string);
         $string = preg_replace('#&[A-Za-z\\.0-9-_]+;#', '', $string);
@@ -84,7 +88,7 @@ foreach ($dir as $file) {
             if ($function == 'isset') continue;
             if ($function == 'unset') continue;
             if ($function == 'empty') continue;
-            
+
             if (strpos($function, '-')) continue;
         }
         if ($function == 'isSet') continue; //todo: bug in lexer
@@ -93,7 +97,7 @@ foreach ($dir as $file) {
         $class = trim($class);
         if (in_array($class.'::'.$function, $existingFunctions)) continue;
         $existingFunctions[] = $class.'::'.$function;
-        
+
         $params = array();
         foreach ($xml->refsect1->methodsynopsis->methodparam as $param) {
             $paramName = $param->parameter;
@@ -112,7 +116,6 @@ foreach ($dir as $file) {
             'name' => $function,
             'params' => $params
         );
-        
     }
 }
 

@@ -2,733 +2,6 @@
 // THIS FILE IS GENERATED
 // WARNING! All changes made in this file will be lost!
 
-function ts_allocate_id($rsrc_id, $size, $ctor, $dtor) {}
-function ts_free_id($id) {}
-function ts_free_thread($void) {}
-function ts_resource($id) {}
-function ts_resource_ex($id, $th_id) {}
-function tsrm_error($level, $format) {}
-function tsrm_error_set($level, $debug_filename) {}
-function tsrm_free_interpreter_context($context) {}
-function tsrm_mutex_alloc($void) {}
-function tsrm_mutex_free($mutexp) {}
-function tsrm_mutex_lock($mutexp) {}
-function tsrm_mutex_unlock($mutexp) {}
-function tsrm_new_interpreter_context($void) {}
-function tsrm_set_interpreter_context($new_ctx) {}
-function tsrm_set_new_thread_begin_handler($new_thread_begin_handler) {}
-function tsrm_set_new_thread_end_handler($new_thread_end_handler) {}
-function tsrm_shutdown($void) {}
-function tsrm_startup($expected_threads, $expected_resources, $debug_level, $debug_filename) {}
-function tsrm_thread_id($void) {}
-function virtual_access($pathname, $mode, $TSRMLS_DC) {}
-function virtual_chdir($path, $TSRMLS_DC) {}
-function virtual_chdir_file($path, $chdir_func, $TSRMLS_DC) {}
-function virtual_chmod($filename, $mode, $TSRMLS_DC) {}
-function virtual_chown($filename, $owner, $group, $link, $TSRMLS_DC) {}
-function virtual_creat($path, $mode, $TSRMLS_DC) {}
-function virtual_cwd_shutdown($void) {}
-function virtual_cwd_startup($void) {}
-function virtual_file_ex($state, $path, $verify_path, $use_realpath) {}
-function virtual_filepath($path, $filepath, $TSRMLS_DC) {}
-function virtual_filepath_ex($path, $filepath, $verify_path, $TSRMLS_DC) {}
-function virtual_fopen($path, $mode, $TSRMLS_DC) {}
-function virtual_getcwd($buf, $size, $TSRMLS_DC) {}
-function virtual_getcwd_ex($length, $TSRMLS_DC) {}
-function virtual_lstat($path, $buf, $TSRMLS_DC) {}
-function virtual_mkdir($pathname, $mode, $TSRMLS_DC) {}
-function virtual_open($path, $TSRMLS_DC, $flags) {}
-function virtual_opendir($pathname, $TSRMLS_DC) {}
-function virtual_popen($command, $type, $TSRMLS_DC) {}
-function virtual_realpath($path, $real_path, $TSRMLS_DC) {}
-function virtual_rename($oldname, $newname, $TSRMLS_DC) {}
-function virtual_rmdir($pathname, $TSRMLS_DC) {}
-function virtual_stat($path, $buf, $TSRMLS_DC) {}
-function virtual_unlink($path, $TSRMLS_DC) {}
-function virtual_utime($filename, $buf, $TSRMLS_DC) {}
-function VCWD_ACCESS($pathname, $mode) {}
-function VCWD_CHDIR($path) {}
-function VCWD_CHDIR_FILE($path) {}
-function VCWD_CHMOD($path, $mode) {}
-function VCWD_CHOWN($path, $owner, $group) {}
-function VCWD_CREAT($path, $mode) {}
-function VCWD_FOPEN($path, $mode) {}
-function VCWD_GETCWD($buff, $size) {}
-function VCWD_GETWD($buf) {}
-function VCWD_LCHOWN($path, $owner, $group) {}
-function VCWD_LSTAT($path, $buff) {}
-function VCWD_MKDIR($pathname, $mode) {}
-function VCWD_OPEN($path, $flags) {}
-function VCWD_OPEN_MODE($path, $flags, $mode) {}
-function VCWD_OPENDIR($pathname) {}
-function VCWD_POPEN($command, $type) {}
-function VCWD_REALPATH($path, $real_path) {}
-function VCWD_RENAME($oldname, $newname) {}
-function VCWD_RMDIR($pathname) {}
-function VCWD_STAT($path, $buff) {}
-function VCWD_UNLINK($path) {}
-function VCWD_UTIME($path, $time) {}
-function add_assoc_bool($arg, $key, $b) {}
-function add_assoc_bool_ex($arg, $key, $key_len, $b) {}
-function add_assoc_double($arg, $key, $d) {}
-function add_assoc_double_ex($arg, $key, $key_len, $d) {}
-function add_assoc_function($arg, $key, $(*function_ptr)(INTERNAL_FUNCTION_PARAMETERS)) {}
-function add_assoc_long($arg, $key, $n) {}
-function add_assoc_long_ex($arg, $key, $key_len, $n) {}
-function add_assoc_null($arg, $key) {}
-function add_assoc_null_ex($arg, $key, $key_len) {}
-function add_assoc_resource($arg, $key, $r) {}
-function add_assoc_resource_ex($arg, $key, $key_len, $r) {}
-function add_assoc_string($arg, $key, $str, $duplicate) {}
-function add_assoc_string_ex($arg, $key, $key_len, $str, $duplicate) {}
-function add_assoc_stringl($arg, $key, $str, $length, $duplicate) {}
-function add_assoc_stringl_ex($arg, $key, $key_len, $str, $length, $duplicate) {}
-function add_assoc_unicode($arg, $key, $str, $duplicate) {}
-function add_assoc_unicode_ex($arg, $key, $key_len, $str, $duplicate) {}
-function add_assoc_unicodel($arg, $key, $str, $length, $duplicate) {}
-function add_assoc_unicodel_ex($arg, $key, $key_len, $str, $length, $duplicate) {}
-function add_assoc_unset($arg, $key) {}
-function add_assoc_zval($arg, $key, $value) {}
-function add_assoc_zval_ex($arg, $key, $key_len, $value) {}
-function add_get_assoc_string($arg, $key, $str, $dest, $duplicate) {}
-function add_get_assoc_string_ex($arg, $key, $key_len, $str, $dest, $duplicate) {}
-function add_get_assoc_stringl($arg, $key, $str, $length, $dest, $duplicate) {}
-function add_get_assoc_stringl_ex($arg, $key, $key_len, $str, $length, $dest, $duplicate) {}
-function add_get_index_binary($arg, $idx, $str, $dest, $duplicate) {}
-function add_get_index_binaryl($arg, $idx, $str, $length, $dest, $duplicate) {}
-function add_get_index_double($arg, $idx, $d, $dest) {}
-function add_get_index_long($arg, $idx, $l, $dest) {}
-function add_get_index_string($arg, $idx, $str, $dest, $duplicate) {}
-function add_get_index_stringl($arg, $idx, $str, $length, $dest, $duplicate) {}
-function add_get_index_unicode($arg, $idx, $str, $dest, $duplicate) {}
-function add_get_index_unicodel($arg, $idx, $str, $length, $dest, $duplicate) {}
-function add_index_binary($arg, $idx, $str, $duplicate, $TSRMLS_DC) {}
-function add_index_binaryl($arg, $idx, $str, $length, $duplicate, $TSRMLS_DC) {}
-function add_index_bool($arg, $idx, $b) {}
-function add_index_double($arg, $idx, $d) {}
-function add_index_long($arg, $idx, $n) {}
-function add_index_null($arg, $idx) {}
-function add_index_resource($arg, $idx, $r) {}
-function add_index_string($arg, $idx, $str, $duplicate) {}
-function add_index_stringl($arg, $idx, $str, $length, $duplicate) {}
-function add_index_unicode($arg, $idx, $str, $duplicate) {}
-function add_index_unicodel($arg, $idx, $str, $length, $duplicate) {}
-function add_index_unset($arg, $key) {}
-function add_index_zval($arg, $index, $value) {}
-function add_method($arg, $key, $method) {}
-function add_next_index_binary($arg, $str, $duplicate) {}
-function add_next_index_binaryl($arg, $str, $length, $duplicate) {}
-function add_next_index_bool($arg, $b) {}
-function add_next_index_double($arg, $d) {}
-function add_next_index_long($arg, $n) {}
-function add_next_index_null($arg) {}
-function add_next_index_resource($arg, $r) {}
-function add_next_index_string($arg, $str, $duplicate) {}
-function add_next_index_stringl($arg, $str, $length, $duplicate) {}
-function add_next_index_unicode($arg, $str, $duplicate) {}
-function add_next_index_unicodel($arg, $str, $length, $duplicate) {}
-function add_next_index_unset($arg) {}
-function add_next_index_zval($arg, $value) {}
-function add_property_ascii_string($arg, $key, $str, $duplicate) {}
-function add_property_ascii_string_ex($arg, $key, $key_len, $str, $duplicate, $TSRMLS_DC) {}
-function add_property_ascii_stringl($arg, $key, $str, $length, $duplicate) {}
-function add_property_ascii_stringl_ex($arg, $key, $key_len, $str, $length, $duplicate, $TSRMLS_DC) {}
-function add_property_bool($arg, $key, $b) {}
-function add_property_bool_ex($arg, $key, $key_len, $b, $TSRMLS_DC) {}
-function add_property_double($arg, $key, $d) {}
-function add_property_double_ex($arg, $key, $key_len, $d, $TSRMLS_DC) {}
-function add_property_long($arg, $key, $n) {}
-function add_property_long_ex($arg, $key, $key_len, $l, $TSRMLS_DC) {}
-function add_property_null($arg, $key) {}
-function add_property_null_ex($arg, $key, $key_len, $TSRMLS_DC) {}
-function add_property_resource($arg, $key, $r) {}
-function add_property_resource_ex($arg, $key, $key_len, $r, $TSRMLS_DC) {}
-function add_property_rt_string($arg, $key, $str, $duplicate) {}
-function add_property_rt_string_ex($arg, $key, $key_len, $str, $duplicate, $TSRMLS_DC) {}
-function add_property_rt_stringl($arg, $key, $str, $length, $duplicate) {}
-function add_property_rt_stringl_ex($arg, $key, $key_len, $str, $length, $duplicate, $TSRMLS_DC) {}
-function add_property_string($arg, $key, $str, $duplicate) {}
-function add_property_string_ex($arg, $key, $key_len, $str, $duplicate, $TSRMLS_DC) {}
-function add_property_stringl($arg, $key, $str, $length, $duplicate) {}
-function add_property_stringl_ex($arg, $key, $key_len, $str, $length, $duplicate, $TSRMLS_DC) {}
-function add_property_unicode($arg, $key, $str, $duplicate) {}
-function add_property_unicode_ex($arg, $key, $key_len, $str, $duplicate, $TSRMLS_DC) {}
-function add_property_unicodel($arg, $key, $str, $length, $duplicate) {}
-function add_property_unicodel_ex($arg, $key, $key_len, $str, $length, $duplicate, $TSRMLS_DC) {}
-function add_property_unset($arg, $key) {}
-function add_property_zval($arg, $key, $value) {}
-function add_property_zval_ex($arg, $key, $key_len, $value, $TSRMLS_DC) {}
-function add_u_assoc_zval($arg, $type, $key, $value) {}
-function add_u_assoc_zval_ex($arg, $type, $key, $key_len, $value) {}
-function array_init($arg) {}
-function call_user_function($function_table, $object_pp, $function_name, $retval_ptr, $param_count, $params[], $TSRMLS_DC) {}
-function call_user_function_ex($function_table, $object_pp, $function_name, $retval_ptr_ptr, $param_count, $params[], $no_separation, $symbol_table, $TSRMLS_DC) {}
-function compile_file($file_handle, $type, $TSRMLS_DC) {}
-function compile_filename($type, $filename, $TSRMLS_DC) {}
-function compile_string($source_string, $filename, $TSRMLS_DC) {}
-function destroy_op_array($op_array, $TSRMLS_DC) {}
-function destroy_zend_class($pce) {}
-function destroy_zend_function($function, $TSRMLS_DC) {}
-function display_ini_entries($module) {}
-function do_bind_class($opline, $class_table, $compile_time, $TSRMLS_DC) {}
-function do_bind_function($opline, $function_table, $compile_time) {}
-function do_bind_inherited_class($opline, $class_table, $parent_ce, $compile_time, $TSRMLS_DC) {}
-function estrndup($s, $length) {}
-function estrndup_rel($s, $length) {}
-function eustrdup($s) {}
-function eustrndup($s, $length) {}
-function eustrndup_rel($s, $length) {}
-function execute($op_array, $TSRMLS_DC) {}
-function execute_internal($execute_data_ptr, $return_value_used, $TSRMLS_DC) {}
-function free_estring($str_p) {}
-function full_mem_check($silent) {}
-function function_add_ref($function, $TSRMLS_DC) {}
-function get_active_class_name($space, $TSRMLS_DC) {}
-function get_active_function_name($TSRMLS_D) {}
-function get_binary_op($opcode) {}
-function get_unary_op($opcode) {}
-function get_zend_version($void) {}
-function highlight_file($filename, $syntax_highlighter_ini, $TSRMLS_DC) {}
-function highlight_string($str, $syntax_highlighter_ini, $str_name, $TSRMLS_DC) {}
-function init_op_array($op_array, $type, $initial_ops_size, $TSRMLS_DC) {}
-function lex_scan($zendlval, $TSRMLS_DC) {}
-function mem_block_check($ptr, $silent) {}
-function object_and_properties_init($arg, $ce, $properties) {}
-function object_init($arg) {}
-function object_init_ex($arg, $ce) {}
-function open_file_for_scanning($file_handle, $TSRMLS_DC) {}
-function register_list_destructors($ld, $pld) {}
-function shutdown_memory_manager($silent, $full_shutdown, $TSRMLS_DC) {}
-function start_memory_manager($TSRMLS_D) {}
-function zend_alter_ini_entry($name, $name_length, $new_value, $new_value_length, $modify_type, $stage) {}
-function zend_auto_global_disable_jit($varname, $varname_length, $TSRMLS_DC) {}
-function zend_bailout() {}
-function zend_call_function($fci, $fci_cache, $TSRMLS_DC) {}
-function zend_call_method($object_pp, $obj_ce, $fn_proxy, $function_name, $function_name_len, $retval_ptr_ptr, $param_count, $arg1, $arg2, $TSRMLS_DC) {}
-function zend_call_method_with_0_params($obj, $obj_ce, $fn_proxy, $function_name, $retval) {}
-function zend_call_method_with_1_params($obj, $obj_ce, $fn_proxy, $function_name, $retval, $arg1) {}
-function zend_call_method_with_2_params($obj, $obj_ce, $fn_proxy, $function_name, $retval, $arg1, $arg2) {}
-function zend_case_fold_string($dest, $dest_len, $src, $src_len, $options, $status) {}
-function zend_check_magic_method_implementation($ce, $fptr, $error_type, $TSRMLS_DC) {}
-function zend_check_private($fbc, $ce, $function_name_strval, $function_name_strlen, $TSRMLS_DC) {}
-function zend_check_property_access($zobj, $utype, $prop_info_name, $TSRMLS_DC) {}
-function zend_check_protected($ce, $scope) {}
-function zend_class_implements($class_entry, $TSRMLS_DC, $num_interfaces) {}
-function zend_cleanup_class_data($pce, $TSRMLS_DC) {}
-function zend_cleanup_function_data($function, $TSRMLS_DC) {}
-function zend_clear_exception($TSRMLS_D) {}
-function zend_cmp_unicode_and_literal($ustr, $ulen, $str, $slen) {}
-function zend_cmp_unicode_and_string($ustr, $str, $len) {}
-function zend_convert_encodings($target_conv, $source_conv, $target, $target_len, $source, $source_len, $status) {}
-function zend_convert_from_unicode($conv, $target, $target_len, $source, $source_len, $status) {}
-function zend_convert_scanner_output($target, $target_len, $source, $source_len, $status, $TSRMLS_DC) {}
-function zend_convert_to_unicode($conv, $target, $target_len, $source, $source_len, $status) {}
-function zend_copy_ini_directives($TSRMLS_D) {}
-function zend_copy_parameters_array($param_count, $argument_array, $TSRMLS_DC) {}
-function zend_declare_class_constant($ce, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_declare_class_constant_bool($ce, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_declare_class_constant_double($ce, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_declare_class_constant_long($ce, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_declare_class_constant_string($ce, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_declare_class_constant_stringl($ce, $name, $name_length, $value, $value_length, $TSRMLS_DC) {}
-function zend_declare_property($ce, $name, $name_length, $property, $access_type, $TSRMLS_DC) {}
-function zend_declare_property_bool($ce, $name, $name_length, $value, $access_type, $TSRMLS_DC) {}
-function zend_declare_property_double($ce, $name, $name_length, $value, $access_type, $TSRMLS_DC) {}
-function zend_declare_property_ex($ce, $name, $name_length, $property, $access_type, $doc_comment, $doc_comment_len, $TSRMLS_DC) {}
-function zend_declare_property_long($ce, $name, $name_length, $value, $access_type, $TSRMLS_DC) {}
-function zend_declare_property_null($ce, $name, $name_length, $access_type, $TSRMLS_DC) {}
-function zend_declare_property_string($ce, $name, $name_length, $value, $access_type, $TSRMLS_DC) {}
-function zend_declare_property_stringl($ce, $name, $name_length, $value, $value_len, $access_type, $TSRMLS_DC) {}
-function zend_delete_global_variable($name, $name_len, $TSRMLS_DC) {}
-function zend_destroy_file_handle($file_handle, $TSRMLS_DC) {}
-function zend_disable_class($class_name, $class_name_length, $TSRMLS_DC) {}
-function zend_disable_function($function_name, $function_name_length, $TSRMLS_DC) {}
-function zend_do_fcall($ZEND_OPCODE_HANDLER_ARGS) {}
-function zend_do_implement_interface($ce, $iface, $TSRMLS_DC) {}
-function zend_do_inherit_interfaces($ce, $iface, $TSRMLS_DC) {}
-function zend_do_inheritance($ce, $parent_ce, $TSRMLS_DC) {}
-function zend_error($type, $format) {}
-function zend_eval_string($str, $retval_ptr, $string_name, $TSRMLS_DC) {}
-function zend_eval_string_ex($str, $retval_ptr, $string_name, $handle_exceptions, $TSRMLS_DC) {}
-function zend_exception_error($exception, $TSRMLS_DC) {}
-function zend_exception_get_default($TSRMLS_D) {}
-function zend_execute_scripts($type, $TSRMLS_DC, $retval, $file_count) {}
-function zend_fetch_class($class_name, $class_name_len, $fetch_type, $TSRMLS_DC) {}
-function zend_fetch_debug_backtrace($return_value, $skip_last, $provide_object, $TSRMLS_DC) {}
-function zend_fetch_list_dtor_id($type_name) {}
-function zend_fetch_resource($passed_id, $TSRMLS_DC, $default_id, $resource_type_name, $found_resource_type, $num_resource_types) {}
-function zend_file_handle_dtor($fh) {}
-function zend_function_dtor($function) {}
-function zend_get_class_entry($zobject, $TSRMLS_DC) {}
-function zend_get_compiled_filename($TSRMLS_D) {}
-function zend_get_compiled_lineno($TSRMLS_D) {}
-function zend_get_compiled_script_encoding($TSRMLS_D) {}
-function zend_get_compiled_variable_name($op_array, $var, $name_len) {}
-function zend_get_compiled_variable_value($execute_data_ptr, $var) {}
-function zend_get_configuration_directive($name, $name_length, $contents) {}
-function zend_get_constant($name, $name_len, $result, $TSRMLS_DC) {}
-function zend_get_error_exception($TSRMLS_D) {}
-function zend_get_executed_filename($TSRMLS_D) {}
-function zend_get_executed_lineno($TSRMLS_D) {}
-function zend_get_hash_value($arKey, $nKeyLength) {}
-function zend_get_module_started($module_name) {}
-function zend_get_module_version($module_name) {}
-function zend_get_object_classname($object, $class_name, $class_name_len, $TSRMLS_DC) {}
-function zend_get_parameters($ht, $param_count) {}
-function zend_get_parameters_array($ht, $param_count, $argument_array) {}
-function zend_get_parameters_array_ex($param_count, $argument_array) {}
-function zend_get_parameters_ex($param_count) {}
-function zend_get_scanned_file_offset($TSRMLS_D) {}
-function zend_get_std_object_handlers() {}
-function zend_get_unified_string_type($num_args, $TSRMLS_DC) {}
-function zend_get_user_opcode_handler($opcode) {}
-function zend_get_zval_ptr($node, $Ts, $should_free, $type, $TSRMLS_DC) {}
-function zend_get_zval_ptr_ptr($node, $Ts, $should_free, $type, $TSRMLS_DC) {}
-function zend_hash_add($ht, $arKey, $nKeyLength, $pData, $nDataSize, $pDest) {}
-function zend_hash_add_empty_element($ht, $arKey, $nKeyLength) {}
-function zend_hash_apply($ht, $apply_func, $TSRMLS_DC) {}
-function zend_hash_apply_with_argument($ht, $apply_func, $TSRMLS_DC) {}
-function zend_hash_apply_with_arguments($ht, $apply_func, $int) {}
-function zend_hash_clean($ht) {}
-function zend_hash_compare($ht1, $ht2, $compar, $ordered, $TSRMLS_DC) {}
-function zend_hash_copy($target, $source, $pCopyConstructor, $tmp, $size) {}
-function zend_hash_del($ht, $arKey, $nKeyLength) {}
-function zend_hash_del_key_or_index($ht, $arKey, $nKeyLength, $h, $flag) {}
-function zend_hash_destroy($ht) {}
-function zend_hash_exists($ht, $arKey, $nKeyLength) {}
-function zend_hash_find($ht, $arKey, $nKeyLength, $pData) {}
-function zend_hash_func($arKey, $nKeyLength) {}
-function zend_hash_get_current_data($ht, $pData) {}
-function zend_hash_get_current_data_ex($ht, $pData, $pos) {}
-function zend_hash_get_current_key($ht, $str_index, $num_index, $duplicate) {}
-function zend_hash_get_current_key_ex($ht, $str_index, $str_length, $num_index, $duplicate, $pos) {}
-function zend_hash_get_current_key_type($ht) {}
-function zend_hash_get_current_key_type_ex($ht, $pos) {}
-function zend_hash_graceful_destroy($ht) {}
-function zend_is_true($op) {}
-function zend_hash_graceful_reverse_destroy($ht) {}
-function zend_hash_index_del($ht, $h) {}
-function zend_hash_index_exists($ht, $h) {}
-function zend_hash_index_find($ht, $h, $pData) {}
-function zend_hash_index_update($ht, $h, $pData, $nDataSize, $pDest) {}
-function zend_hash_init($ht, $nSize, $pHashFunction, $pDestructor, $persistent) {}
-function zend_hash_init_ex($ht, $nSize, $pHashFunction, $pDestructor, $persistent, $bApplyProtection) {}
-function zend_hash_internal_pointer_end($ht) {}
-function zend_hash_internal_pointer_end_ex($ht, $pos) {}
-function zend_hash_internal_pointer_reset($ht) {}
-function zend_hash_internal_pointer_reset_ex($ht, $pos) {}
-function zend_hash_merge($target, $source, $pCopyConstructor, $tmp, $size, $overwrite) {}
-function zend_hash_merge_ex($target, $source, $pCopyConstructor, $size, $pMergeSource, $pParam) {}
-function zend_hash_minmax($ht, $compar, $flag, $pData, $TSRMLS_DC) {}
-function zend_hash_move_backwards($ht) {}
-function zend_hash_move_backwards_ex($ht, $pos) {}
-function zend_hash_move_forward($ht) {}
-function zend_hash_move_forward_ex($ht, $pos) {}
-function zend_hash_next_free_element($ht) {}
-function zend_hash_next_index_insert($ht, $pData, $nDataSize, $pDest) {}
-function zend_hash_num_elements($ht) {}
-function zend_hash_quick_add($ht, $arKey, $nKeyLength, $h, $pData, $nDataSize, $pDest) {}
-function zend_hash_quick_exists($ht, $arKey, $nKeyLength, $h) {}
-function zend_hash_quick_find($ht, $arKey, $nKeyLength, $h, $pData) {}
-function zend_hash_quick_update($ht, $arKey, $nKeyLength, $h, $pData, $nDataSize, $pDest) {}
-function zend_hash_rehash($ht) {}
-function zend_hash_reverse_apply($ht, $apply_func, $TSRMLS_DC) {}
-function zend_hash_sort($ht, $sort_func, $compare_func, $renumber, $TSRMLS_DC) {}
-function zend_hash_update($ht, $arKey, $nKeyLength, $pData, $nDataSize, $pDest) {}
-function zend_hash_update_current_key($ht, $key_type, $str_index, $str_length, $num_index) {}
-function zend_hash_update_current_key_ex($ht, $key_type, $str_index, $str_length, $num_index, $pos) {}
-function zend_highlight($syntax_highlighter_ini, $TSRMLS_DC) {}
-function zend_html_putc($c) {}
-function zend_html_puts($s, $len, $TSRMLS_DC) {}
-function zend_ini_deactivate($TSRMLS_D) {}
-function zend_ini_double($name, $name_length, $orig) {}
-function zend_ini_global_shutdown($TSRMLS_D) {}
-function zend_ini_long($name, $name_length, $orig) {}
-function zend_ini_refresh_caches($stage, $TSRMLS_DC) {}
-function zend_ini_register_displayer($name, $name_length, $(*displayer) {}
-function zend_ini_shutdown($TSRMLS_D) {}
-function zend_ini_sort_entries($TSRMLS_D) {}
-function zend_ini_startup($TSRMLS_D) {}
-function zend_ini_string($name, $name_length, $orig) {}
-function zend_initialize_class_data($ce, $nullify_handlers, $TSRMLS_DC) {}
-function zend_is_auto_global($name, $name_len, $TSRMLS_DC) {}
-function zend_is_callable($callable, $check_flags, $callable_name) {}
-function zend_is_callable_ex($callable, $check_flags, $callable_name, $ce_ptr, $fptr_ptr, $zobj_ptr_ptr, $TSRMLS_DC) {}
-function zend_is_compiling($TSRMLS_D) {}
-function zend_is_executing($TSRMLS_D) {}
-function zend_is_valid_identifier($ident, $ident_len) {}
-function zend_list_addref($id) {}
-function zend_list_delete($id) {}
-function zend_list_find($id, $type) {}
-function zend_list_insert($ptr, $type) {}
-function zend_lookup_class($name, $name_length, $ce, $TSRMLS_DC) {}
-function zend_make_callable($callable, $callable_name, $TSRMLS_DC) {}
-function zend_make_compiled_string_description($name, $TSRMLS_DC) {}
-function zend_make_printable_zval($expr, $expr_copy, $use_copy) {}
-function zend_make_string_zval($expr, $expr_copy, $use_copy) {}
-function zend_make_unicode_zval($expr, $expr_copy, $use_copy) {}
-function zend_mangle_property_name($dest, $dest_length, $src1, $src1_length, $src2, $src2_length, $internal) {}
-function zend_merge_properties($obj, $properties, $destroy_ht, $TSRMLS_DC) {}
-function zend_message_dispatcher($message, $data) {}
-function zend_normalize_identifier($dest, $dest_len, $ident, $ident_len, $fold_case) {}
-function zend_object_create_proxy($object, $member, $TSRMLS_DC) {}
-function zend_object_store_ctor_failed($zobject, $TSRMLS_DC) {}
-function zend_object_store_get_object($object, $TSRMLS_DC) {}
-function zend_object_store_set_object($zobject, $object, $TSRMLS_DC) {}
-function zend_objects_clone_members($new_object, $new_obj_val, $old_object, $handle, $TSRMLS_DC) {}
-function zend_objects_clone_obj($object, $TSRMLS_DC) {}
-function zend_objects_destroy_object($object, $handle, $TSRMLS_DC) {}
-function zend_objects_free_object_storage($object, $TSRMLS_DC) {}
-function zend_objects_get_address($object, $TSRMLS_DC) {}
-function zend_objects_new($object, $class_type, $TSRMLS_DC) {}
-function zend_objects_store_add_ref($object, $TSRMLS_DC) {}
-function zend_objects_store_call_destructors($objects, $TSRMLS_DC) {}
-function zend_objects_store_clone_obj($object, $TSRMLS_DC) {}
-function zend_objects_store_del_ref($object, $TSRMLS_DC) {}
-function zend_objects_store_destroy($objects) {}
-function zend_objects_store_free_object_storage($objects, $TSRMLS_DC) {}
-function zend_objects_store_init($objects, $init_size) {}
-function zend_objects_store_mark_destructed($objects, $TSRMLS_DC) {}
-function zend_objects_store_put($object, $dtor, $storage, $clone, $TSRMLS_DC) {}
-function zend_output_debug_string($trigger_break, $format) {}
-function zend_parse_ini_file($fh, $unbuffered_errors, $ini_parser_cb, $arg) {}
-function zend_parse_method_parameters($num_args, $TSRMLS_DC, $this_ptr, $type_spec) {}
-function zend_parse_method_parameters_ex($flags, $num_args, $TSRMLS_DC, $this_ptr, $type_spec) {}
-function zend_parse_parameters($num_args, $TSRMLS_DC, $type_spec) {}
-function zend_parse_parameters_ex($flags, $num_args, $TSRMLS_DC, $type_spec) {}
-function zend_prepare_scanner_converters($onetime_encoding, $run_time, $TSRMLS_DC) {}
-function zend_print_flat_zval_r($expr, $TSRMLS_DC) {}
-function zend_print_variable($var) {}
-function zend_print_zval($expr, $indent) {}
-function zend_print_zval_ex($write_func, $expr, $indent) {}
-function zend_print_zval_r($expr, $indent, $TSRMLS_DC) {}
-function zend_print_zval_r_ex($write_func, $expr, $indent, $TSRMLS_DC) {}
-function zend_qsort($base, $nmemb, $siz, $compare, $TSRMLS_DC) {}
-function zend_read_property($scope, $object, $name, $name_length, $silent, $TSRMLS_DC) {}
-function zend_read_static_property($scope, $name, $name_length, $silent, $TSRMLS_DC) {}
-function zend_register_auto_global($name, $name_len, $auto_global_callback, $TSRMLS_DC) {}
-function zend_register_constant($c, $TSRMLS_DC) {}
-function zend_register_default_classes($TSRMLS_D) {}
-function zend_register_double_constant($name, $name_len, $dval, $flags, $module_number, $TSRMLS_DC) {}
-function zend_register_functions($scope, $functions, $function_table, $type, $TSRMLS_DC) {}
-function zend_register_ini_entries($ini_entry, $module_number, $TSRMLS_DC) {}
-function zend_register_interfaces($TSRMLS_D) {}
-function zend_register_internal_class($class_entry, $TSRMLS_DC) {}
-function zend_register_internal_class_ex($class_entry, $parent_ce, $parent_name, $TSRMLS_DC) {}
-function zend_register_internal_interface($orig_class_entry, $TSRMLS_DC) {}
-function zend_register_internal_module($module_entry, $TSRMLS_DC) {}
-function zend_register_list_destructors($), $), $module_number) {}
-function zend_register_module($module_entry) {}
-function zend_register_list_destructors_ex($ld, $pld, $type_name, $module_number) {}
-function zend_register_long_constant($name, $name_len, $lval, $flags, $module_number, $TSRMLS_DC) {}
-function zend_register_module_ex($module, $TSRMLS_DC) {}
-function zend_register_resource($rsrc_result, $rsrc_pointer, $rsrc_type) {}
-function zend_register_string_constant($name, $name_len, $strval, $flags, $module_number, $TSRMLS_DC) {}
-function zend_register_stringl_constant($name, $name_len, $strval, $strlen, $flags, $module_number, $TSRMLS_DC) {}
-function zend_reset_all_cv($symbol_table, $TSRMLS_DC) {}
-function zend_reset_locale_deps($TSRMLS_D) {}
-function zend_restore_compiled_filename($original_compiled_filename, $TSRMLS_DC) {}
-function zend_restore_compiled_script_encoding($original_script_enc, $TSRMLS_DC) {}
-function zend_restore_ini_entry($name, $name_length, $stage) {}
-function zend_rsrc_list_get_rsrc_type($resource, $TSRMLS_DC) {}
-function zend_set_compiled_filename($new_compiled_filename, $TSRMLS_DC) {}
-function zend_set_compiled_script_encoding($new_script_enc, $TSRMLS_DC) {}
-function zend_set_memory_limit($memory_limit) {}
-function zend_set_timeout($seconds) {}
-function zend_set_user_opcode_handler($opcode, $handler) {}
-function zend_startup_module($module_entry) {}
-function zend_startup_module_ex($module, $TSRMLS_DC) {}
-function zend_startup_modules($TSRMLS_D) {}
-function zend_std_call_user_call($INTERNAL_FUNCTION_PARAMETERS) {}
-function zend_std_cast_object_tostring($readobj, $writeobj, $type, $TSRMLS_DC) {}
-function zend_std_get_static_property($ce, $type, $property_name, $property_name_len, $silent, $TSRMLS_DC) {}
-function zend_std_unset_static_property($ce, $type, $property_name, $property_name_len, $TSRMLS_DC) {}
-function zend_stream_close($handle) {}
-function zend_stream_ferror($file_handle, $TSRMLS_DC) {}
-function zend_stream_fixup($file_handle, $TSRMLS_DC) {}
-function zend_stream_ftell($file_handle, $TSRMLS_DC) {}
-function zend_stream_getc($file_handle, $TSRMLS_DC) {}
-function zend_stream_open($filename, $handle, $TSRMLS_DC) {}
-function zend_stream_read($file_handle, $buf, $len, $TSRMLS_DC) {}
-function zend_strip($TSRMLS_D) {}
-function zend_strndup($s, $length) {}
-function zend_strtod($s00, $se) {}
-function zend_symtable_del($ht, $arKey, $nKeyLength) {}
-function zend_symtable_exists($ht, $arKey, $nKeyLength) {}
-function zend_symtable_find($ht, $arKey, $nKeyLength, $pData) {}
-function zend_symtable_update($ht, $arKey, $nKeyLength, $pData, $nDataSize, $pDest) {}
-function zend_symtable_update_current_key($ht, $arKey, $nKeyLength) {}
-function zend_throw_exception_object($exception, $TSRMLS_DC) {}
-function zend_timeout($dummy) {}
-function zend_u_declare_property($ce, $type, $name, $name_length, $property, $access_type, $TSRMLS_DC) {}
-function zend_u_declare_property_ex($ce, $type, $name, $name_length, $property, $access_type, $doc_comment, $doc_comment_len, $TSRMLS_DC) {}
-function zend_u_delete_global_variable($type, $name, $name_len, $TSRMLS_DC) {}
-function zend_u_eval_string($type, $str, $retval_ptr, $string_name, $TSRMLS_DC) {}
-function zend_u_eval_string_ex($type, $str, $retval_ptr, $string_name, $handle_exceptions, $TSRMLS_DC) {}
-function zend_u_fetch_class($type, $class_name, $class_name_len, $fetch_type, $TSRMLS_DC) {}
-function zend_u_get_constant($type, $name, $name_len, $result, $TSRMLS_DC) {}
-function zend_u_get_hash_value($type, $arKey, $nKeyLength) {}
-function zend_u_hash_add($ht, $type, $arKey, $nKeyLength, $pData, $nDataSize, $pDest) {}
-function zend_u_hash_add_empty_element($ht, $type, $arKey, $nKeyLength) {}
-function zend_u_hash_del($ht, $type, $arKey, $nKeyLength) {}
-function zend_u_hash_del_key_or_index($ht, $type, $arKey, $nKeyLength, $h, $flag) {}
-function zend_u_hash_exists($ht, $type, $arKey, $nKeyLength) {}
-function zend_u_hash_find($ht, $type, $arKey, $nKeyLength, $pData) {}
-function zend_u_hash_func($type, $arKey, $nKeyLength) {}
-function zend_u_hash_init($ht, $nSize, $pHashFunction, $pDestructor, $persistent, $unicode) {}
-function zend_u_hash_init_ex($ht, $nSize, $pHashFunction, $pDestructor, $persistent, $unicode, $bApplyProtection) {}
-function zend_u_hash_quick_add($ht, $type, $arKey, $nKeyLength, $h, $pData, $nDataSize, $pDest) {}
-function zend_u_hash_quick_exists($ht, $type, $arKey, $nKeyLength, $h) {}
-function zend_u_hash_quick_find($ht, $type, $arKey, $nKeyLength, $h, $pData) {}
-function zend_u_hash_quick_update($ht, $type, $arKey, $nKeyLength, $h, $pData, $nDataSize, $pDest) {}
-function zend_u_hash_update($ht, $type, $arKey, $nKeyLength, $pData, $nDataSize, $pDest) {}
-function zend_u_is_auto_global($type, $name, $name_len, $TSRMLS_DC) {}
-function zend_u_lookup_class($type, $name, $name_length, $ce, $TSRMLS_DC) {}
-function zend_u_lookup_class_ex($type, $name, $name_length, $use_autoload, $ce, $TSRMLS_DC) {}
-function zend_u_mangle_property_name($dest, $dest_length, $type, $src1, $src1_length, $src2, $src2_length, $internal) {}
-function zend_u_register_constant($type, $c, $TSRMLS_DC) {}
-function zend_u_symtable_del($ht, $type, $arKey, $nKeyLength) {}
-function zend_u_symtable_exists($ht, $type, $arKey, $nKeyLength) {}
-function zend_u_symtable_find($ht, $type, $arKey, $nKeyLength, $pData) {}
-function zend_u_symtable_update($ht, $type, $arKey, $nKeyLength, $pData, $nDataSize, $pDest) {}
-function zend_u_symtable_update_current_key($ht, $type, $arKey, $nKeyLength) {}
-function zend_u_unmangle_property_name($type, $mangled_property, $prop_name, $class_name) {}
-function zend_unmangle_property_name($mangled_property, $prop_name, $class_name) {}
-function zend_unregister_functions($functions, $count, $function_table, $TSRMLS_DC) {}
-function zend_unregister_ini_entries($module_number, $TSRMLS_DC) {}
-function zend_unset_timeout($TSRMLS_D) {}
-function zend_update_class_constants($class_type, $TSRMLS_DC) {}
-function zend_update_property($scope, $object, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_property_ascii_string($scope, $object, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_property_ascii_stringl($scope, $object, $name, $name_length, $value, $value_length, $TSRMLS_DC) {}
-function zend_update_property_bool($scope, $object, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_property_double($scope, $object, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_property_long($scope, $object, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_property_null($scope, $object, $name, $name_length, $TSRMLS_DC) {}
-function zend_update_property_rt_string($scope, $object, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_property_rt_stringl($scope, $object, $name, $name_length, $value, $value_length, $TSRMLS_DC) {}
-function zend_update_property_string($scope, $object, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_property_stringl($scope, $object, $name, $name_length, $value, $value_length, $TSRMLS_DC) {}
-function zend_update_property_unicode($scope, $object, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_property_unicodel($scope, $object, $name, $name_length, $value, $value_length, $TSRMLS_DC) {}
-function zend_update_static_property($scope, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_static_property_ascii_string($scope, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_static_property_ascii_stringl($scope, $name, $name_length, $value, $value_length, $TSRMLS_DC) {}
-function zend_update_static_property_bool($scope, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_static_property_double($scope, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_static_property_long($scope, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_static_property_null($scope, $name, $name_length, $TSRMLS_DC) {}
-function zend_update_static_property_rt_string($scope, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_static_property_rt_stringl($scope, $name, $name_length, $value, $value_length, $TSRMLS_DC) {}
-function zend_update_static_property_string($scope, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_static_property_stringl($scope, $name, $name_length, $value, $value_length, $TSRMLS_DC) {}
-function zend_update_static_property_unicode($scope, $name, $name_length, $value, $TSRMLS_DC) {}
-function zend_update_static_property_unicodel($scope, $name, $name_length, $value, $value_length, $TSRMLS_DC) {}
-function zend_ustrndup($s, $length) {}
-function zend_wrong_param_count($TSRMLS_D) {}
-function zend_zval_type_name($arg) {}
-function zval_add_ref($p) {}
-function zval_internal_dtor($zvalue) {}
-function zval_internal_ptr_dtor($zvalue) {}
-function zval_ptr_dtor($zval_ptr) {}
-function zval_string_to_unicode($string, $TSRMLS_DC) {}
-function zval_string_to_unicode_ex($string, $conv) {}
-function zval_unicode_to_string($string, $conv, $TSRMLS_DC) {}
-function zval_update_constant($pp, $arg, $TSRMLS_DC) {}
-function DISPLAY_INI_ENTRIES() {}
-function INI_BOOL($name) ((zend_bool) {}
-function INI_FLT($name) {}
-function INI_INT($name) {}
-function INI_ORIG_BOOL($name) ((zend_bool) {}
-function INI_ORIG_FLT($name) {}
-function INI_ORIG_INT($name) {}
-function INI_ORIG_STR($name) {}
-function INI_STR($name) {}
-function REGISTER_DOUBLE_CONSTANT($name, $dval, $flags) {}
-function REGISTER_INI_BOOLEAN($name) {}
-function REGISTER_INI_DISPLAYER($name, $displayer) {}
-function REGISTER_INI_ENTRIES() {}
-function REGISTER_LONG_CONSTANT($name, $lval, $flags) {}
-function REGISTER_MAIN_DOUBLE_CONSTANT($name, $dval, $flags) {}
-function REGISTER_MAIN_LONG_CONSTANT($name, $lval, $flags) {}
-function REGISTER_MAIN_STRING_CONSTANT($name, $str, $flags) {}
-function REGISTER_MAIN_STRINGL_CONSTANT($name, $str, $len, $flags) {}
-function REGISTER_STRING_CONSTANT($name, $str, $flags) {}
-function REGISTER_STRINGL_CONSTANT($name, $str, $len, $flags) {}
-function RETURN_ASCII_STRING($t, $duplicate) {}
-function RETURN_ASCII_STRINGL($t, $l, $duplicate) {}
-function RETURN_BINARY($s, $duplicate) {}
-function RETURN_BINARYL($s, $l, $duplicate) {}
-function RETURN_BOOL($b) {}
-function RETURN_DOUBLE($d) {}
-function RETURN_EMPTY_BINARY() {}
-function RETURN_EMPTY_STRING() {}
-function RETURN_EMPTY_UNICODE() {}
-function RETURN_LONG($l) {}
-function RETURN_NULL() {}
-function RETURN_RESOURCE($r) {}
-function RETURN_RT_STRING($t, $duplicate) {}
-function RETURN_RT_STRINGL($t, $l, $duplicate) {}
-function RETURN_STRING($s, $duplicate) {}
-function RETURN_STRINGL($s, $l, $duplicate) {}
-function RETURN_TEXT($t, $duplicate) {}
-function RETURN_TEXTL($t, $l, $duplicate) {}
-function RETURN_U_STRING($conv, $t, $duplicate) {}
-function RETURN_U_STRINGL($conv, $t, $l, $duplicate) {}
-function RETURN_UNICODE($u, $duplicate) {}
-function RETURN_UNICODEL($u, $l, $duplicate) {}
-function RETURN_ZVAL($zv, $copy, $dtor) {}
-function UNREGISTER_INI_ENTRIES() {}
-function Z_ARRVAL($zval) {}
-function Z_ARRVAL_P($zval_p) {}
-function Z_ARRVAL_PP($zval_pp) {}
-function Z_BINLEN($zval) {}
-function Z_BINLEN_P($zval) {}
-function Z_BINLEN_PP($zval) {}
-function Z_BINVAL($zval) {}
-function Z_BINVAL_P($zval) {}
-function Z_BINVAL_PP($zval) {}
-function Z_BVAL($zv) {}
-function Z_BVAL_P($zval_p) {}
-function Z_BVAL_PP($zval_pp) {}
-function Z_DBG($expr) {}
-function Z_DVAL($zval) {}
-function Z_DVAL_P($zval_p) {}
-function Z_DVAL_PP($zval_pp) {}
-function Z_LVAL($zval) {}
-function Z_LVAL_P($zval_p) {}
-function Z_LVAL_PP($zval_pp) {}
-function Z_OBJ_CLASS_NAME_P($zval) {}
-function Z_OBJ_HANDLE($zval) {}
-function Z_OBJ_HANDLE_P($zval_p) {}
-function Z_OBJ_HANDLE_PP($zval_p) {}
-function Z_OBJ_HANDLER($zval, $hf) {}
-function Z_OBJ_HANDLER_P($zval_p, $h) {}
-function Z_OBJ_HANDLER_PP($zval_p, $h) {}
-function Z_OBJ_HT($zval) {}
-function Z_OBJ_HT_P($zval_p) {}
-function Z_OBJ_HT_PP($zval_p) {}
-function Z_OBJCE($zval) {}
-function Z_OBJCE_P($zval_p) {}
-function Z_OBJCE_PP($zval_pp) {}
-function Z_OBJPROP($zval) {}
-function Z_OBJPROP_P($zval_p) {}
-function Z_OBJPROP_PP($zval_pp) {}
-function Z_OBJVAL($zval) {}
-function Z_OBJVAL_P($zval_p) {}
-function Z_OBJVAL_PP($zval_pp) {}
-function Z_RESVAL($zval) {}
-function Z_RESVAL_P($zval_p) {}
-function Z_RESVAL_PP($zval_pp) {}
-function Z_STRLEN($zval) {}
-function Z_STRLEN_P($zval_p) {}
-function Z_STRLEN_PP($zval_pp) {}
-function Z_STRVAL($zval) {}
-function Z_STRVAL_P($zval_p) {}
-function Z_STRVAL_PP($zval_pp) {}
-function Z_TYPE($zv) {}
-function Z_TYPE_P($zval_p) {}
-function Z_TYPE_PP($zval_pp) {}
-function Z_UNILEN($zval) {}
-function Z_UNILEN_P($zval_p) {}
-function Z_UNILEN_PP($zval_pp) {}
-function Z_UNIVAL($zval) {}
-function Z_UNIVAL_P($zval_p) {}
-function Z_UNIVAL_PP($zval_pp) {}
-function Z_USTRCPLEN($zval) {}
-function Z_USTRCPLEN_P($zval_p) {}
-function Z_USTRCPLEN_PP($zval_pp) {}
-function Z_USTRLEN($zval) {}
-function Z_USTRLEN_P($zval_p) {}
-function Z_USTRLEN_PP($zval_pp) {}
-function Z_USTRVAL($zval) {}
-function Z_USTRVAL_P($zval_p) {}
-function Z_USTRVAL_PP($zval_pp) {}
-function ZEND_ABSTRACT_ME($classname, $name, $arg_info) {}
-function ZEND_ARG_ARRAY_INFO($pass_by_ref, $name, $allow_null) {}
-function ZEND_ARG_INFO($pass_by_ref, $name) {}
-function ZEND_ARG_OBJ_INFO($pass_by_ref, $name, $classname, $allow_null) {}
-function ZEND_ARG_PASS_INFO($pass_by_ref) {}
-function ZEND_BEGIN_ARG_INFO($name, $pass_rest_by_reference) {}
-function ZEND_BEGIN_ARG_INFO_EX($name, $pass_rest_by_reference, $return_reference, $required_num_args) {}
-function ZEND_BEGIN_MODULE_GLOBALS($module_name) {}
-function ZEND_COLL_RESULT($n) {}
-function ZEND_DECLARE_MODULE_GLOBALS($module_name) {}
-function ZEND_DEFINE_PROPERTY($class_ptr, $name, $value, $mask) {}
-function ZEND_END_ARG_INFO() {}
-function ZEND_END_MODULE_GLOBALS($module_name) {}
-function ZEND_EXTERN_MODULE_GLOBALS($module_name) {}
-function ZEND_FALIAS($name, $alias, $arg_info) {}
-function ZEND_FE($name, $arg_info) {}
-function ZEND_FENTRY($zend_name, $name, $arg_info, $flags) {}
-function ZEND_FETCH_RESOURCE($rsrc, $rsrc_type, $passed_id, $default_id, $resource_type_name, $resource_type) {}
-function ZEND_FETCH_RESOURCE2($rsrc, $rsrc_type, $passed_id, $default_id, $resource_type_name, $resource_type1, $resource_type2) {}
-function ZEND_FN($name) {}
-function ZEND_FN_SCOPE_NAME($function) {}
-function ZEND_FUNCTION($name) {}
-function ZEND_GET_MODULE($name) {}
-function ZEND_GET_RESOURCE_TYPE_ID($le_id, $le_type_name) {}
-function ZEND_INI_BEGIN() {}
-function ZEND_INI_DISP($name) {}
-function ZEND_INI_END() {}
-function ZEND_INI_ENTRY($name, $default_value, $modifiable, $on_modify) {}
-function ZEND_INI_ENTRY1($name, $default_value, $modifiable, $on_modify, $arg1) {}
-function ZEND_INI_ENTRY1_EX($name, $default_value, $modifiable, $on_modify, $arg1, $displayer) {}
-function ZEND_INI_ENTRY2($name, $default_value, $modifiable, $on_modify, $arg1, $arg2) {}
-function ZEND_INI_ENTRY2_EX($name, $default_value, $modifiable, $on_modify, $arg1, $arg2, $displayer) {}
-function ZEND_INI_ENTRY3($name, $default_value, $modifiable, $on_modify, $arg1, $arg2, $arg3) {}
-function ZEND_INI_ENTRY3_EX($name, $default_value, $modifiable, $on_modify, $arg1, $arg2, $arg3, $displayer) {}
-function ZEND_INI_ENTRY_EX($name, $default_value, $modifiable, $on_modify, $displayer) {}
-function ZEND_INI_MH($name) {}
-function ZEND_INIT_MODULE_GLOBALS($module_name, $globals_ctor, $globals_dtor) {}
-function ZEND_INIT_SYMTABLE($ht) {}
-function ZEND_INIT_SYMTABLE_EX($ht, $n, $persistent) {}
-function ZEND_LOG_XOR($a, $b) {}
-function ZEND_MALIAS($classname, $name, $alias, $arg_info, $flags) {}
-function ZEND_ME($classname, $name, $arg_info, $flags) {}
-function ZEND_ME_MAPPING($name, $func_name, $arg_types) {}
-function ZEND_METHOD($classname, $name) {}
-function ZEND_MOD_CONFLICTS($name) {}
-function ZEND_MOD_CONFLICTS_EX($name, $rel, $ver) {}
-function ZEND_MOD_OPTIONAL($name) {}
-function ZEND_MOD_OPTIONAL_EX($name, $rel, $ver) {}
-function ZEND_MOD_REQUIRED($ext_name) {}
-function ZEND_MOD_REQUIRED_EX($name, $rel, $ver) {}
-function ZEND_MODULE_ACTIVATE_D($module) {}
-function ZEND_MODULE_ACTIVATE_N($module) {}
-function ZEND_MODULE_DEACTIVATE_D($module) {}
-function ZEND_MODULE_DEACTIVATE_N($module) {}
-function ZEND_MODULE_INFO_D($module) {}
-function ZEND_MODULE_INFO_N($module) {}
-function ZEND_MODULE_POST_ZEND_DEACTIVATE_D($module) {}
-function ZEND_MODULE_POST_ZEND_DEACTIVATE_N($module) {}
-function ZEND_MODULE_SHUTDOWN_D($module) {}
-function ZEND_MODULE_SHUTDOWN_N($module) {}
-function ZEND_MODULE_STARTUP_D($module) {}
-function ZEND_MODULE_STARTUP_N($module) {}
-function ZEND_NAMED_FE($zend_name, $name, $arg_info) {}
-function ZEND_NAMED_FUNCTION($name) {}
-function ZEND_NORMALIZE_BOOL($n) {}
-function ZEND_NUM_ARGS() {}
-function ZEND_PUTC($c) {}
-function ZEND_PUTS($str) {}
-function ZEND_REGISTER_RESOURCE($rsrc_result, $rsrc_pointer, $rsrc_type) {}
-function ZEND_RSRC_DTOR_FUNC($name) {}
-function ZEND_SET_GLOBAL_VAR($name, $var) {}
-function ZEND_SET_GLOBAL_VAR_WITH_LENGTH($name, $name_length, $var, $_refcount, $_is_ref) {}
-function ZEND_SET_SYMBOL($symtable, $name, $var) {}
-function ZEND_SET_SYMBOL_WITH_LENGTH($symtable, $name, $name_length, $var, $_refcount, $_is_ref) {}
-function ZEND_STRL($str) {}
-function ZEND_STRS($str) {}
-function ZEND_TRUTH($x) {}
-function ZEND_U_CONVERTER($c) {}
-function ZEND_U_EQUAL($type, $ustr, $ulen, $str, $slen) {}
-function ZEND_U_SET_SYMBOL_WITH_LENGTH($symtable, $type, $name, $name_length, $var, $_refcount, $_is_ref) {}
-function ZEND_UV($name) {}
-function ZEND_VERIFY_RESOURCE($rsrc) {}
-function ZEND_WRITE($str, $str_len) {}
-function ZEND_WRONG_PARAM_COUNT() {}
-function ZEND_WRONG_PARAM_COUNT_WITH_RETVAL($return_value) {}
 function apache_child_terminate() {}
 function apache_get_modules() {}
 function apache_get_version() {}
@@ -2436,6 +1709,8 @@ function constant($name) {}
 function define($name, $value, $case_insensitive) {}
 function defined($name) {}
 function get_browser($user_agent, $return_array) {}
+function highlight_file($filename, $return) {}
+function highlight_string($str, $return) {}
 function ignore_user_abort($setting) {}
 function pack($format, $args) {}
 function php_check_syntax($filename, $error_message) {}
@@ -4510,19 +3785,6 @@ function gzuncompress($data, $length) {}
 function gzwrite($zp, $string, $length) {}
 function readgzfile($filename, $use_include_path) {}
 function zlib_get_coding_type() {}
-class ErrorException {
-    function getSeverity() {}
-}
-class Exception {
-    function __clone() {}
-    function getCode() {}
-    function getFile() {}
-    function getLine() {}
-    function getMessage() {}
-    function getTrace() {}
-    function getTraceAsString() {}
-    function __toString() {}
-}
 class DomAttr {
     function __construct($name, $value) {}
     function isId() {}
@@ -6319,49 +5581,8 @@ class ZIPARCHIVE {
     const ER_REMOVE = 0;
     const ER_DELETED = 0;
 }
-define('PHP_VERSION', '');
-define('PHP_MAJOR_VERSION', 0);
-define('PHP_MINOR_VERSION', 0);
-define('PHP_RELEASE_VERSION', 0);
-define('PHP_VERSION_ID', 0);
-define('PHP_EXTRA_VERSION', '');
-define('PHP_ZTS', 0);
-define('PHP_DEBUG', 0);
-define('PHP_OS', '');
-define('PHP_SAPI', '');
-define('PHP_EOL', '');
-define('PHP_INT_MAX', 0);
-define('PHP_INT_SIZE', 0);
-define('DEFAULT_INCLUDE_PATH', '');
-define('PEAR_INSTALL_DIR', '');
-define('PEAR_EXTENSION_DIR', '');
-define('PHP_EXTENSION_DIR', '');
-define('PHP_PREFIX', '');
-define('PHP_BINDIR', '');
-define('PHP_LIBDIR', '');
-define('PHP_DATADIR', '');
-define('PHP_SYSCONFDIR', '');
-define('PHP_LOCALSTATEDIR', '');
-define('PHP_CONFIG_FILE_PATH', '');
-define('PHP_CONFIG_FILE_SCAN_DIR', '');
-define('PHP_SHLIB_SUFFIX', '');
-define('PHP_OUTPUT_HANDLER_START', 0);
-define('PHP_OUTPUT_HANDLER_CONT', 0);
-define('PHP_OUTPUT_HANDLER_END', 0);
-define('E_ERROR', 0);
-define('E_WARNING', 0);
-define('E_PARSE', 0);
-define('E_NOTICE', 0);
-define('E_CORE_ERROR', 0);
-define('E_CORE_WARNING', 0);
-define('E_COMPILE_ERROR', 0);
-define('E_COMPILE_WARNING', 0);
-define('E_USER_ERROR', 0);
-define('E_USER_WARNING', 0);
-define('E_USER_NOTICE', 0);
-define('E_ALL', 0);
-define('E_STRICT', 0);
-define('__COMPILER_HALT_OFFSET__', 0);
+define('COUNT_NORMAL', 0);
+define('COUNT_RECURSIVE', 0);
 define('EXTR_OVERWRITE', 0);
 define('EXTR_SKIP', 0);
 define('EXTR_PREFIX_SAME', 0);
@@ -6369,198 +5590,6 @@ define('EXTR_PREFIX_ALL', 0);
 define('EXTR_PREFIX_INVALID', 0);
 define('EXTR_PREFIX_IF_EXISTS', 0);
 define('EXTR_IF_EXISTS', 0);
-define('SORT_ASC', 0);
-define('SORT_DESC', 0);
-define('SORT_REGULAR', 0);
-define('SORT_NUMERIC', 0);
-define('SORT_STRING', 0);
-define('CASE_LOWER', 0);
-define('CASE_UPPER', 0);
-define('COUNT_NORMAL', 0);
-define('COUNT_RECURSIVE', 0);
-define('ASSERT_ACTIVE', 0);
-define('ASSERT_CALLBACK', 0);
-define('ASSERT_BAIL', 0);
-define('ASSERT_WARNING', 0);
-define('ASSERT_QUIET_EVAL', 0);
-define('CONNECTION_ABORTED', 0);
-define('CONNECTION_NORMAL', 0);
-define('CONNECTION_TIMEOUT', 0);
-define('INI_USER', 0);
-define('INI_PERDIR', 0);
-define('INI_SYSTEM', 0);
-define('INI_ALL', 0);
-define('M_E', 0.0);
-define('M_LOG2E', 0.0);
-define('M_LOG10E', 0.0);
-define('M_LN2', 0.0);
-define('M_LN10', 0.0);
-define('M_PI', 0.0);
-define('M_PI_2', 0.0);
-define('M_PI_4', 0.0);
-define('M_1_PI', 0.0);
-define('M_2_PI', 0.0);
-define('M_2_SQRTPI', 0.0);
-define('M_SQRT2', 0.0);
-define('M_SQRT1_2', 0.0);
-define('CRYPT_SALT_LENGTH', 0);
-define('CRYPT_STD_DES', 0);
-define('CRYPT_EXT_DES', 0);
-define('CRYPT_MD5', 0);
-define('CRYPT_BLOWFISH', 0);
-define('DIRECTORY_SEPARATOR', '');
-define('SEEK_SET', 0);
-define('SEEK_CUR', 0);
-define('SEEK_END', 0);
-define('LOCK_SH', 0);
-define('LOCK_EX', 0);
-define('LOCK_UN', 0);
-define('LOCK_NB', 0);
-define('HTML_SPECIALCHARS', 0);
-define('HTML_ENTITIES', 0);
-define('ENT_COMPAT', 0);
-define('ENT_QUOTES', 0);
-define('ENT_NOQUOTES', 0);
-define('INFO_GENERAL', 0);
-define('INFO_CREDITS', 0);
-define('INFO_CONFIGURATION', 0);
-define('INFO_MODULES', 0);
-define('INFO_ENVIRONMENT', 0);
-define('INFO_VARIABLES', 0);
-define('INFO_LICENSE', 0);
-define('INFO_ALL', 0);
-define('CREDITS_GROUP', 0);
-define('CREDITS_GENERAL', 0);
-define('CREDITS_SAPI', 0);
-define('CREDITS_MODULES', 0);
-define('CREDITS_DOCS', 0);
-define('CREDITS_FULLPAGE', 0);
-define('CREDITS_QA', 0);
-define('CREDITS_ALL', 0);
-define('STR_PAD_LEFT', 0);
-define('STR_PAD_RIGHT', 0);
-define('STR_PAD_BOTH', 0);
-define('PATHINFO_DIRNAME', 0);
-define('PATHINFO_BASENAME', 0);
-define('PATHINFO_EXTENSION', 0);
-define('PATH_SEPARATOR', '');
-define('CHAR_MAX', 0);
-define('LC_CTYPE', 0);
-define('LC_NUMERIC', 0);
-define('LC_TIME', 0);
-define('LC_COLLATE', 0);
-define('LC_MONETARY', 0);
-define('LC_ALL', 0);
-define('LC_MESSAGES', 0);
-define('ABDAY_1', 0);
-define('ABDAY_2', 0);
-define('ABDAY_3', 0);
-define('ABDAY_4', 0);
-define('ABDAY_5', 0);
-define('ABDAY_6', 0);
-define('ABDAY_7', 0);
-define('DAY_1', 0);
-define('DAY_2', 0);
-define('DAY_3', 0);
-define('DAY_4', 0);
-define('DAY_5', 0);
-define('DAY_6', 0);
-define('DAY_7', 0);
-define('ABMON_1', 0);
-define('ABMON_2', 0);
-define('ABMON_3', 0);
-define('ABMON_4', 0);
-define('ABMON_5', 0);
-define('ABMON_6', 0);
-define('ABMON_7', 0);
-define('ABMON_8', 0);
-define('ABMON_9', 0);
-define('ABMON_10', 0);
-define('ABMON_11', 0);
-define('ABMON_12', 0);
-define('MON_1', 0);
-define('MON_2', 0);
-define('MON_3', 0);
-define('MON_4', 0);
-define('MON_5', 0);
-define('MON_6', 0);
-define('MON_7', 0);
-define('MON_8', 0);
-define('MON_9', 0);
-define('MON_10', 0);
-define('MON_11', 0);
-define('MON_12', 0);
-define('AM_STR', 0);
-define('PM_STR', 0);
-define('D_T_FMT', 0);
-define('D_FMT', 0);
-define('T_FMT', 0);
-define('T_FMT_AMPM', 0);
-define('ERA', 0);
-define('ERA_YEAR', 0);
-define('ERA_D_T_FMT', 0);
-define('ERA_D_FMT', 0);
-define('ERA_T_FMT', 0);
-define('ALT_DIGITS', 0);
-define('INT_CURR_SYMBOL', 0);
-define('CURRENCY_SYMBOL', 0);
-define('CRNCYSTR', 0);
-define('MON_DECIMAL_POINT', 0);
-define('MON_THOUSANDS_SEP', 0);
-define('MON_GROUPING', 0);
-define('POSITIVE_SIGN', 0);
-define('NEGATIVE_SIGN', 0);
-define('INT_FRAC_DIGITS', 0);
-define('FRAC_DIGITS', 0);
-define('P_CS_PRECEDES', 0);
-define('P_SEP_BY_SPACE', 0);
-define('N_CS_PRECEDES', 0);
-define('N_SEP_BY_SPACE', 0);
-define('P_SIGN_POSN', 0);
-define('N_SIGN_POSN', 0);
-define('DECIMAL_POINT', 0);
-define('RADIXCHAR', 0);
-define('THOUSANDS_SEP', 0);
-define('THOUSEP', 0);
-define('GROUPING', 0);
-define('YESEXPR', 0);
-define('NOEXPR', 0);
-define('YESSTR', 0);
-define('NOSTR', 0);
-define('CODESET', 0);
-define('LOG_EMERG', 0);
-define('LOG_ALERT', 0);
-define('LOG_CRIT', 0);
-define('LOG_ERR', 0);
-define('LOG_WARNING', 0);
-define('LOG_NOTICE', 0);
-define('LOG_INFO', 0);
-define('LOG_DEBUG', 0);
-define('LOG_KERN', 0);
-define('LOG_USER', 0);
-define('LOG_MAIL', 0);
-define('LOG_DAEMON', 0);
-define('LOG_AUTH', 0);
-define('LOG_SYSLOG', 0);
-define('LOG_LPR', 0);
-define('LOG_NEWS', 0);
-define('LOG_UUCP', 0);
-define('LOG_CRON', 0);
-define('LOG_AUTHPRIV', 0);
-define('LOG_LOCAL0', 0);
-define('LOG_LOCAL1', 0);
-define('LOG_LOCAL2', 0);
-define('LOG_LOCAL3', 0);
-define('LOG_LOCAL4', 0);
-define('LOG_LOCAL5', 0);
-define('LOG_LOCAL6', 0);
-define('LOG_LOCAL7', 0);
-define('LOG_PID', 0);
-define('LOG_CONS', 0);
-define('LOG_ODELAY', 0);
-define('LOG_NDELAY', 0);
-define('LOG_NOWAIT', 0);
-define('LOG_PERROR', 0);
 define('EXTR_REFS', 0);
 define('BBCODE_TYPE_NOARG', 0);
 define('BBCODE_TYPE_SINGLE', 0);
@@ -6726,6 +5755,8 @@ define('S_IWUSR', 0);
 define('S_IXGRP', 0);
 define('S_IXOTH', 0);
 define('S_IXUSR', 0);
+define('DIRECTORY_SEPARATOR', '');
+define('PATH_SEPARATOR', '');
 define('EXP_GLOB', 0);
 define('EXP_EXACT', 0);
 define('EXP_REGEXP', 0);
@@ -6792,6 +5823,9 @@ define('GLOB_MARK', 0);
 define('GLOB_NOSORT', 0);
 define('GLOB_NOCHECK', 0);
 define('GLOB_NOESCAPE', 0);
+define('PATHINFO_DIRNAME', 0);
+define('PATHINFO_BASENAME', 0);
+define('PATHINFO_EXTENSION', 0);
 define('PATHINFO_FILENAME', 0);
 define('FILE_USE_INCLUDE_PATH', 0);
 define('FILE_APPEND', 0);
@@ -7080,6 +6114,11 @@ define('LATT_REFERRAL', 0);
 define('LATT_HASCHILDREN', 0);
 define('LATT_HASNOCHILDREN', 0);
 define('TYPEMODEL', 0);
+define('ASSERT_ACTIVE', 0);
+define('ASSERT_CALLBACK', 0);
+define('ASSERT_BAIL', 0);
+define('ASSERT_WARNING', 0);
+define('ASSERT_QUIET_EVAL', 0);
 define('INGRES_ASSOC', 0);
 define('INGRES_NUM', 0);
 define('INGRES_BOTH', 0);
@@ -7199,6 +6238,10 @@ define('SWFACTION_MOUSEUP', 0);
 define('SWFACTION_KEYDOWN', 0);
 define('SWFACTION_KEYUP', 0);
 define('SWFACTION_DATA', 0);
+define('CONNECTION_ABORTED', 0);
+define('CONNECTION_NORMAL', 0);
+define('CONNECTION_TIMEOUT', 0);
+define('__COMPILER_HALT_OFFSET__', 0);
 define('UDM_FIELD_URLID', 0);
 define('UDM_FIELD_URL', 0);
 define('UDM_FIELD_CONTENT', 0);
@@ -7760,6 +6803,27 @@ define('SSH2_DEFAULT_TERM_UNIT', 0);
 define('SSH2_STREAM_STDIO', 0);
 define('SSH2_STREAM_STDERR', 0);
 define('SSH2_DEFAULT_TERMINAL', '');
+define('CRYPT_SALT_LENGTH', 0);
+define('CRYPT_STD_DES', 0);
+define('CRYPT_EXT_DES', 0);
+define('CRYPT_MD5', 0);
+define('CRYPT_BLOWFISH', 0);
+define('HTML_SPECIALCHARS', 0);
+define('HTML_ENTITIES', 0);
+define('ENT_COMPAT', 0);
+define('ENT_QUOTES', 0);
+define('ENT_NOQUOTES', 0);
+define('CHAR_MAX', 0);
+define('LC_CTYPE', 0);
+define('LC_NUMERIC', 0);
+define('LC_TIME', 0);
+define('LC_COLLATE', 0);
+define('LC_MONETARY', 0);
+define('LC_ALL', 0);
+define('LC_MESSAGES', 0);
+define('STR_PAD_LEFT', 0);
+define('STR_PAD_RIGHT', 0);
+define('STR_PAD_BOTH', 0);
 define('SVN_REVISON_HEAD', 0);
 define('MOD_COLOR', 0);
 define('MOD_MATRIX', 0);
@@ -7929,3 +6993,201 @@ define('XSLT_SABOPT_FILES_TO_HANDLER', 0);
 define('XSLT_ERR_UNSUPPORTED_SCHEME', 0);
 define('FORCE_GZIP', 0);
 define('FORCE_DEFLATE', 0);
+define('PHP_VERSION', '');
+define('PHP_MAJOR_VERSION', 0);
+define('PHP_MINOR_VERSION', 0);
+define('PHP_RELEASE_VERSION', 0);
+define('PHP_VERSION_ID', 0);
+define('PHP_EXTRA_VERSION', '');
+define('PHP_ZTS', 0);
+define('PHP_DEBUG', 0);
+define('PHP_OS', '');
+define('PHP_SAPI', '');
+define('PHP_EOL', '');
+define('PHP_INT_MAX', 0);
+define('PHP_INT_SIZE', 0);
+define('DEFAULT_INCLUDE_PATH', '');
+define('PEAR_INSTALL_DIR', '');
+define('PEAR_EXTENSION_DIR', '');
+define('PHP_EXTENSION_DIR', '');
+define('PHP_PREFIX', '');
+define('PHP_BINDIR', '');
+define('PHP_LIBDIR', '');
+define('PHP_DATADIR', '');
+define('PHP_SYSCONFDIR', '');
+define('PHP_LOCALSTATEDIR', '');
+define('PHP_CONFIG_FILE_PATH', '');
+define('PHP_CONFIG_FILE_SCAN_DIR', '');
+define('PHP_SHLIB_SUFFIX', '');
+define('PHP_OUTPUT_HANDLER_START', 0);
+define('PHP_OUTPUT_HANDLER_CONT', 0);
+define('PHP_OUTPUT_HANDLER_END', 0);
+define('E_ERROR', 0);
+define('E_WARNING', 0);
+define('E_PARSE', 0);
+define('E_NOTICE', 0);
+define('E_CORE_ERROR', 0);
+define('E_CORE_WARNING', 0);
+define('E_COMPILE_ERROR', 0);
+define('E_COMPILE_WARNING', 0);
+define('E_USER_ERROR', 0);
+define('E_USER_WARNING', 0);
+define('E_USER_NOTICE', 0);
+define('E_ALL', 0);
+define('E_STRICT', 0);
+define('SORT_ASC', 0);
+define('SORT_DESC', 0);
+define('SORT_REGULAR', 0);
+define('SORT_NUMERIC', 0);
+define('SORT_STRING', 0);
+define('CASE_LOWER', 0);
+define('CASE_UPPER', 0);
+define('INI_USER', 0);
+define('INI_PERDIR', 0);
+define('INI_SYSTEM', 0);
+define('INI_ALL', 0);
+define('M_E', 0.0);
+define('M_LOG2E', 0.0);
+define('M_LOG10E', 0.0);
+define('M_LN2', 0.0);
+define('M_LN10', 0.0);
+define('M_PI', 0.0);
+define('M_PI_2', 0.0);
+define('M_PI_4', 0.0);
+define('M_1_PI', 0.0);
+define('M_2_PI', 0.0);
+define('M_2_SQRTPI', 0.0);
+define('M_SQRT2', 0.0);
+define('M_SQRT1_2', 0.0);
+define('SEEK_SET', 0);
+define('SEEK_CUR', 0);
+define('SEEK_END', 0);
+define('LOCK_SH', 0);
+define('LOCK_EX', 0);
+define('LOCK_UN', 0);
+define('LOCK_NB', 0);
+define('INFO_GENERAL', 0);
+define('INFO_CREDITS', 0);
+define('INFO_CONFIGURATION', 0);
+define('INFO_MODULES', 0);
+define('INFO_ENVIRONMENT', 0);
+define('INFO_VARIABLES', 0);
+define('INFO_LICENSE', 0);
+define('INFO_ALL', 0);
+define('CREDITS_GROUP', 0);
+define('CREDITS_GENERAL', 0);
+define('CREDITS_SAPI', 0);
+define('CREDITS_MODULES', 0);
+define('CREDITS_DOCS', 0);
+define('CREDITS_FULLPAGE', 0);
+define('CREDITS_QA', 0);
+define('CREDITS_ALL', 0);
+define('ABDAY_1', 0);
+define('ABDAY_2', 0);
+define('ABDAY_3', 0);
+define('ABDAY_4', 0);
+define('ABDAY_5', 0);
+define('ABDAY_6', 0);
+define('ABDAY_7', 0);
+define('DAY_1', 0);
+define('DAY_2', 0);
+define('DAY_3', 0);
+define('DAY_4', 0);
+define('DAY_5', 0);
+define('DAY_6', 0);
+define('DAY_7', 0);
+define('ABMON_1', 0);
+define('ABMON_2', 0);
+define('ABMON_3', 0);
+define('ABMON_4', 0);
+define('ABMON_5', 0);
+define('ABMON_6', 0);
+define('ABMON_7', 0);
+define('ABMON_8', 0);
+define('ABMON_9', 0);
+define('ABMON_10', 0);
+define('ABMON_11', 0);
+define('ABMON_12', 0);
+define('MON_1', 0);
+define('MON_2', 0);
+define('MON_3', 0);
+define('MON_4', 0);
+define('MON_5', 0);
+define('MON_6', 0);
+define('MON_7', 0);
+define('MON_8', 0);
+define('MON_9', 0);
+define('MON_10', 0);
+define('MON_11', 0);
+define('MON_12', 0);
+define('AM_STR', 0);
+define('PM_STR', 0);
+define('D_T_FMT', 0);
+define('D_FMT', 0);
+define('T_FMT', 0);
+define('T_FMT_AMPM', 0);
+define('ERA', 0);
+define('ERA_YEAR', 0);
+define('ERA_D_T_FMT', 0);
+define('ERA_D_FMT', 0);
+define('ERA_T_FMT', 0);
+define('ALT_DIGITS', 0);
+define('INT_CURR_SYMBOL', 0);
+define('CURRENCY_SYMBOL', 0);
+define('CRNCYSTR', 0);
+define('MON_DECIMAL_POINT', 0);
+define('MON_THOUSANDS_SEP', 0);
+define('MON_GROUPING', 0);
+define('POSITIVE_SIGN', 0);
+define('NEGATIVE_SIGN', 0);
+define('INT_FRAC_DIGITS', 0);
+define('FRAC_DIGITS', 0);
+define('P_CS_PRECEDES', 0);
+define('P_SEP_BY_SPACE', 0);
+define('N_CS_PRECEDES', 0);
+define('N_SEP_BY_SPACE', 0);
+define('P_SIGN_POSN', 0);
+define('N_SIGN_POSN', 0);
+define('DECIMAL_POINT', 0);
+define('RADIXCHAR', 0);
+define('THOUSANDS_SEP', 0);
+define('THOUSEP', 0);
+define('GROUPING', 0);
+define('YESEXPR', 0);
+define('NOEXPR', 0);
+define('YESSTR', 0);
+define('NOSTR', 0);
+define('CODESET', 0);
+define('LOG_EMERG', 0);
+define('LOG_ALERT', 0);
+define('LOG_CRIT', 0);
+define('LOG_ERR', 0);
+define('LOG_WARNING', 0);
+define('LOG_NOTICE', 0);
+define('LOG_INFO', 0);
+define('LOG_DEBUG', 0);
+define('LOG_KERN', 0);
+define('LOG_USER', 0);
+define('LOG_MAIL', 0);
+define('LOG_DAEMON', 0);
+define('LOG_AUTH', 0);
+define('LOG_SYSLOG', 0);
+define('LOG_LPR', 0);
+define('LOG_NEWS', 0);
+define('LOG_UUCP', 0);
+define('LOG_CRON', 0);
+define('LOG_AUTHPRIV', 0);
+define('LOG_LOCAL0', 0);
+define('LOG_LOCAL1', 0);
+define('LOG_LOCAL2', 0);
+define('LOG_LOCAL3', 0);
+define('LOG_LOCAL4', 0);
+define('LOG_LOCAL5', 0);
+define('LOG_LOCAL6', 0);
+define('LOG_LOCAL7', 0);
+define('LOG_PID', 0);
+define('LOG_CONS', 0);
+define('LOG_ODELAY', 0);
+define('LOG_NDELAY', 0);
+define('LOG_NOWAIT', 0);
+define('LOG_PERROR', 0);
