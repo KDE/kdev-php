@@ -17406,7 +17406,6 @@ function udm_set_agent_param($agent, $var, $val) {}
  * @param resource
  * @param resource
  * @param resource
- * @return 
  **/
 function mqseries_back($hconn, $compCode, $reason) {}
 
@@ -17420,7 +17419,6 @@ function mqseries_back($hconn, $compCode, $reason) {}
  * @param array
  * @param resource
  * @param resource
- * @return 
  **/
 function mqseries_begin($hconn, $beginOptions, $compCode, $reason) {}
 
@@ -17435,7 +17433,6 @@ function mqseries_begin($hconn, $beginOptions, $compCode, $reason) {}
  * @param resource
  * @param resource
  * @param resource
- * @return 
  **/
 function mqseries_close($hconn, $hobj, $compCode, $reason) {}
 
@@ -17451,7 +17448,6 @@ function mqseries_close($hconn, $hobj, $compCode, $reason) {}
  * @param resource
  * @param resource
  * @param resource
- * @return 
  **/
 function mqseries_cmit($hconn, $compCode, $reason) {}
 
@@ -17466,7 +17462,6 @@ function mqseries_cmit($hconn, $compCode, $reason) {}
  * @param resource
  * @param resource
  * @param resource
- * @return 
  **/
 function mqseries_conn($qManagerName, $hconn, $compCode, $reason) {}
 
@@ -17482,7 +17477,6 @@ function mqseries_conn($qManagerName, $hconn, $compCode, $reason) {}
  * @param resource
  * @param resource
  * @param resource
- * @return 
  **/
 function mqseries_connx($qManagerName, $connOptions, $hconn, $compCode, $reason) {}
 
@@ -17499,7 +17493,6 @@ function mqseries_connx($qManagerName, $connOptions, $hconn, $compCode, $reason)
  * @param resource
  * @param resource
  * @param resource
- * @return 
  **/
 function mqseries_disc($hconn, $compCode, $reason) {}
 
@@ -17520,7 +17513,6 @@ function mqseries_disc($hconn, $compCode, $reason) {}
  * @param int
  * @param resource
  * @param resource
- * @return 
  **/
 function mqseries_get($hConn, $hObj, $md, $gmo, $bufferLength, $msg, $data_length, $compCode, $reason) {}
 
@@ -17540,7 +17532,6 @@ function mqseries_get($hConn, $hObj, $md, $gmo, $bufferLength, $msg, $data_lengt
  * @param resource
  * @param resource
  * @param resource
- * @return 
  **/
 function mqseries_inq($hconn, $hobj, $selectorCount, $selectors, $intAttrCount, $intAttr, $charAttrLength, $charAttr, $compCode, $reason) {}
 
@@ -17555,7 +17546,6 @@ function mqseries_inq($hconn, $hobj, $selectorCount, $selectors, $intAttrCount, 
  * @param resource
  * @param resource
  * @param resource
- * @return 
  **/
 function mqseries_open($hconn, $objDesc, $option, $hobj, $compCode, $reason) {}
 
@@ -17572,7 +17562,6 @@ function mqseries_open($hconn, $objDesc, $option, $hobj, $compCode, $reason) {}
  * @param string
  * @param resource
  * @param resource
- * @return 
  **/
 function mqseries_put($hConn, $hObj, $md, $pmo, $message, $compCode, $reason) {}
 
@@ -17588,7 +17577,6 @@ function mqseries_put($hConn, $hObj, $md, $pmo, $message, $compCode, $reason) {}
  * @param string
  * @param resource
  * @param resource
- * @return 
  **/
 function mqseries_put1($hconn, $objDesc, $msgDesc, $pmo, $buffer, $compCode, $reason) {}
 
@@ -17600,7 +17588,6 @@ function mqseries_put1($hconn, $objDesc, $msgDesc, $pmo, $buffer, $compCode, $re
  * @param resource
  * @param resource
  * @param resource
- * @return 
  **/
 function mqseries_set($hconn, $compCode, $reason) {}
 
@@ -37302,6 +37289,22 @@ function readgzfile($filename, $use_include_path) {}
  **/
 function zlib_get_coding_type() {}
 
+class Directory {
+    /**
+     * A pseudo-object oriented mechanism for reading a directory. The
+     * given directory is opened. Two properties
+     * are available once the directory has been opened. The handle
+     * property can be used with other directory functions such as
+     * readdir, rewinddir and
+     * closedir. The path property is set to path
+     * the directory that was opened. Three methods are available:
+     * read, rewind and close.
+     *
+     * @return string
+     **/
+    function read() {}
+
+}
 class DomAttr {
     /**
      * Creates a new DOMAttr object. This object is read only. 
@@ -37311,7 +37314,6 @@ class DomAttr {
      *
      * @param string
      * @param string
-     * @return 
      **/
     function __construct($name, $value) {}
 
@@ -37372,13 +37374,24 @@ class DomCharacterData {
     function substringData($offset, $count) {}
 
 }
+class DomComment {
+    /**
+     * Creates a new DOMComment object. This object is read only. 
+     * It may be appended to a document, but additional nodes may not be appended to this node until 
+     * the node is associated with a document. To create a writeable node, use 
+     * .
+     *
+     * @param string
+     **/
+    function __construct($value) {}
+
+}
 class DomDocument {
     /**
      * Creates a new DOMDocument object.
      *
      * @param string
      * @param string
-     * @return 
      **/
     function __construct($version, $encoding) {}
 
@@ -37844,6 +37857,19 @@ class DomDocumentFragment {
 }
 class DomElement {
     /**
+     * Creates a new DOMElement object. This object is read only. 
+     * It may be appended to a document, but additional nodes may not be appended to this node until 
+     * the node is associated with a document. To create a writeable node, use 
+     * or 
+     * .
+     *
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function __construct($name, $value, $namespaceURI) {}
+
+    /**
      * Gets the value of the attribute with name name 
      * for the current node.
      *
@@ -38015,8 +38041,91 @@ class DomElement {
      **/
     function setIdAttributeNS($namespaceURI, $localName, $isId) {}
 
+    /**
+     * Returns the node of the given attribute in the current element.
+     *
+     * @param string
+     * @return DomAttribute
+     **/
+    function get_attribute_node($name) {}
+
+    /**
+     * Returns the value of the given attribute in the current element.
+     *
+     * @param string
+     * @return string
+     **/
+    function get_attribute($name) {}
+
+    /**
+     * Gets all the sub elements with the specific name
+     * within the current element.
+     *
+     * @param string
+     * @return array
+     **/
+    function get_elements_by_tagname($name) {}
+
+    /**
+     * This functions checks to see if an attribute named
+     * name exists in the current node.
+     *
+     * @param string
+     * @return bool
+     **/
+    function has_attribute($name) {}
+
+    /**
+     * Removes an attribute from the current DomElement
+     * node.
+     *
+     * @param string
+     * @return bool
+     **/
+    function remove_attribute($name) {}
+
+    /**
+     * @param DomNode
+     * @return DomNode
+     **/
+    function set_attribute_node($attr) {}
+
+    /**
+     * Sets an attribute with name name to the given
+     * value.
+     *
+     * @param string
+     * @param string
+     * @return DomAttribute
+     **/
+    function set_attribute($name, $value) {}
+
+    /**
+     * Returns the name of the current node. Calling this function is the same
+     * as accessing the tagname property, or calling
+     * on the current node.
+     *
+     * @return string
+     **/
+    function tagname() {}
+
+}
+class DomEntityReference {
+    /**
+     * Creates a new DOMEntityReference object.
+     *
+     * @param string
+     **/
+    function __construct($name) {}
+
 }
 class DomImplementation {
+    /**
+     * Creates a new DOMImplementation object.
+     *
+     **/
+    function __construct() {}
+
     /**
      * Creates a DOMDocument object of the specified type
      * with its document element.
@@ -38195,6 +38304,24 @@ class DomNode {
      * @return DOMNode
      **/
     function replaceChild($newnode, $oldnode) {}
+
+    /**
+     * This method adds a namespace declaration to a node.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function add_namespace($uri, $prefix) {}
+
+    /**
+     * This functions appends a child to an existing list of children or creates
+     * a new list of children.
+     *
+     * @param DOMNode
+     * @return DOMNode
+     **/
+    function append_child($newnode) {}
 
     /**
      * This functions appends a sibling to an existing node.
@@ -38545,7 +38672,41 @@ class DomNodelist {
     function item($index) {}
 
 }
+class DomProcessingInstruction {
+    /**
+     * Creates a new DOMProcessingInstruction object. This object is read only. 
+     * It may be appended to a document, but additional nodes may not be appended to this node until 
+     * the node is associated with a document. To create a writeable node, use 
+     * .
+     *
+     * @param string
+     * @param string
+     **/
+    function __construct($name, $value) {}
+
+    /**
+     * This method gets the data of the ProcessingInstruction node.
+     *
+     * @return string
+     **/
+    function data() {}
+
+    /**
+     * This method gets the target of the ProcessingInstruction node.
+     *
+     * @return string
+     **/
+    function target() {}
+
+}
 class DomText {
+    /**
+     * Creates a new DOMText object.
+     *
+     * @param string
+     **/
+    function __construct($value) {}
+
     /**
      * Indicates whether this text node contains whitespace. The text node is 
      * determined to contain whitespace in element content during the load of the 
@@ -38566,6 +38727,13 @@ class DomText {
 
 }
 class DomXPath {
+    /**
+     * Creates a new DOMXPath object.
+     *
+     * @param DOMDocument
+     **/
+    function __construct($doc) {}
+
     /**
      * Executes the given XPath expression and returns
      * a typed result if possible.
@@ -38594,6 +38762,113 @@ class DomXPath {
      * @return bool
      **/
     function registerNamespace($prefix, $namespaceURI) {}
+
+}
+class DomAttribute {
+    /**
+     * Gets the name of the attribute.
+     *
+     * @return string
+     **/
+    function name() {}
+
+    /**
+     * This function sets the value of an attribute.
+     *
+     * @param string
+     * @return bool
+     **/
+    function set_value($content) {}
+
+    /**
+     * Checks if the attribute was explicitly given a value in the original
+     * document.
+     *
+     * @return bool
+     **/
+    function specified() {}
+
+    /**
+     * This function returns the value of the attribute.
+     *
+     * @return string
+     **/
+    function value() {}
+
+}
+class DomDocumentType {
+    /**
+     * @return array
+     **/
+    function entities() {}
+
+    /**
+     * @return bool
+     **/
+    function internal_subset() {}
+
+    /**
+     * This function returns the name of the document type.
+     *
+     * @return string
+     **/
+    function name() {}
+
+    /**
+     * @return array
+     **/
+    function notations() {}
+
+    /**
+     * This function returns the public id of the document type.
+     *
+     * @return string
+     **/
+    function public_id() {}
+
+    /**
+     * Returns the system id of the document type.
+     *
+     * @return string
+     **/
+    function system_id() {}
+
+}
+class DomXsltStylesheet {
+    /**
+     * Applies an XSLT Transformation on the given 
+     * DomDocument object.
+     *
+     * @param DomDocument
+     * @param array
+     * @param bool
+     * @param string
+     * @return DomDocument
+     **/
+    function process($xml_doc, $xslt_params, $is_xpath_param, $profile_filename) {}
+
+    /**
+     * Since always returns a 
+     * well-formed XML DomDocument, no matter what output method was declared in 
+     * and similar attributes/elements, it's of not much use, 
+     * if you want to output HTML 4 or text data.
+     *
+     * @param DomDocument
+     * @param string
+     * @return string
+     **/
+    function result_dump_file($xmldoc, $filename) {}
+
+    /**
+     * Since always returns
+     * a well-formed XML DomDocument, no matter what output method was declared 
+     * in and similar attributes/elements, it's of not 
+     * much use, if you want to output HTML 4 or text data.
+     *
+     * @param DomDocument
+     * @return string
+     **/
+    function result_dump_mem($xmldoc) {}
 
 }
 class HaruAnnotation {
@@ -41141,6 +41416,488 @@ class HttpResponse {
      * @return bool
      **/
     function status($status) {}
+
+}
+class hw_api_attribute {
+    /**
+     * Returns the name of the attribute.
+     *
+     * @return string
+     **/
+    function key() {}
+
+    /**
+     * Returns the value in the given language of the attribute.
+     *
+     * @param string
+     * @return string
+     **/
+    function langdepvalue($language) {}
+
+    /**
+     * Gets the value of the attribute.
+     *
+     * @return string
+     **/
+    function value() {}
+
+    /**
+     * Gets all values of the attribute.
+     *
+     * @return array
+     **/
+    function values() {}
+
+}
+class hw_api {
+    /**
+     * This function checks in an object or a whole hierarchy of objects.
+     * The parameters array contains the required element
+     * 'objectIdentifier' and the optional element 'version', 'comment', 'mode'
+     * and
+     * 'objectQuery'. 'version' sets the version of the object. It consists of
+     * the major and minor version separated by a period. If the version is not
+     * set, the minor version is incremented. 'mode' can be one of the following
+     * values:
+     * 
+     * 
+     * HW_API_CHECKIN_NORMAL
+     * 
+     * 
+     * Checks in and commits the object. The object must be a document.
+     * 
+     * 
+     * 
+     * 
+     * HW_API_CHECKIN_RECURSIVE
+     * 
+     * 
+     * If the object to check in is a collection, all children will be
+     * checked in recursively if they are documents. Trying to check in
+     * a collection would result in an error.
+     * 
+     * 
+     * 
+     * 
+     * HW_API_CHECKIN_FORCE_VERSION_CONTROL
+     * 
+     * 
+     * Checks in an object even if it is not under version control.
+     * 
+     * 
+     * 
+     * 
+     * HW_API_CHECKIN_REVERT_IF_NOT_CHANGED
+     * 
+     * 
+     * Check if the new version is different from the last version. Unless
+     * this is the case the object will be checked in.
+     * 
+     * 
+     * 
+     * 
+     * HW_API_CHECKIN_KEEP_TIME_MODIFIED
+     * 
+     * 
+     * Keeps the time modified from the most recent object.
+     * 
+     * 
+     * 
+     * 
+     * HW_API_CHECKIN_NO_AUTO_COMMIT
+     * 
+     * 
+     * The object is not automatically committed on check-in.
+     *
+     * @param array
+     * @return bool
+     **/
+    function checkin($parameter) {}
+
+    /**
+     * This function checks out an object or a whole hierarchy of objects.
+     *
+     * @param array
+     * @return bool
+     **/
+    function checkout($parameter) {}
+
+    /**
+     * Retrieves the children of a collection or the attributes of a document.
+     * The children can be further filtered by specifying an object query.
+     *
+     * @param array
+     * @return array
+     **/
+    function children($parameter) {}
+
+    /**
+     * This function returns the content of a document as an object of type
+     * hw_api_content.
+     *
+     * @param array
+     * @return HW_API_Content
+     **/
+    function content($parameter) {}
+
+    /**
+     * This function will make a physical copy including the content if it
+     * exists and returns the new object or an error object.
+     *
+     * @param array
+     * @return hw_api_content
+     **/
+    function copy($parameter) {}
+
+    /**
+     * Returns statistics about database server.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function dbstat($parameter) {}
+
+    /**
+     * Returns statistics about document cache server.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function dcstat($parameter) {}
+
+    /**
+     * Retrieves all destination anchors of an object.
+     *
+     * @param array
+     * @return array
+     **/
+    function dstanchors($parameter) {}
+
+    /**
+     * Retrieves the destination object pointed by the specified source anchors.
+     * The destination object can either be a destination anchor or a whole
+     * document.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function dstofsrcanchor($parameter) {}
+
+    /**
+     * This functions searches for objects either by executing a key or/and full
+     * text query. The found objects can further be filtered by an optional
+     * object query. They are sorted by their importance. The second search
+     * operation is relatively slow and its result can be limited to a certain
+     * number of hits. This allows to perform an incremental search, each
+     * returning just a subset of all found documents, starting at a given
+     * index.
+     *
+     * @param array
+     * @return array
+     **/
+    function find($parameter) {}
+
+    /**
+     * Returns statistics about fulltext server.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function ftstat($parameter) {}
+
+    /**
+     * Returns statistics about Hyperwave server.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function hwstat($parameter) {}
+
+    /**
+     * Logs into the Hyperwave Server.
+     *
+     * @param array
+     * @return bool
+     **/
+    function identify($parameter) {}
+
+    /**
+     * Returns information about server configuration.
+     *
+     * @param array
+     * @return array
+     **/
+    function info($parameter) {}
+
+    /**
+     * Insert a new object. The object type can be user, group, document or
+     * anchor. Depending on the type other object attributes has to be set.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function insert($parameter) {}
+
+    /**
+     * This function is a shortcut for hwapi_insert. It
+     * inserts an object of type anchor and sets some of the attributes
+     * required for an anchor.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function insertanchor($parameter) {}
+
+    /**
+     * This function is a shortcut for hwapi_insert. It
+     * inserts an object of type collection and sets some of the attributes
+     * required for a collection.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function insertcollection($parameter) {}
+
+    /**
+     * This function is a shortcut for hwapi_insert. It
+     * inserts an object with content and sets some of the attributes required
+     * for a document.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function insertdocument($parameter) {}
+
+    /**
+     * Creates a link to an object. Accessing this link is like accessing the
+     * object to links points to.
+     *
+     * @param array
+     * @return bool
+     **/
+    function link($parameter) {}
+
+    /**
+     * Locks an object for exclusive editing by the user calling this function.
+     * The object can be only unlocked by this user or the system user.
+     *
+     * @param array
+     * @return bool
+     **/
+    function lock($parameter) {}
+
+    /**
+     * Moves object between collections.
+     *
+     * @param array
+     * @return bool
+     **/
+    function move($parameter) {}
+
+    /**
+     * This function retrieves the attribute information of an object of any
+     * version. It will not return the document content.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function object($parameter) {}
+
+    /**
+     * This function retrieves an object the specified anchor belongs to.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function objectbyanchor($parameter) {}
+
+    /**
+     * Retrieves the parents of an object. The parents can be further filtered by
+     * specifying an object query.
+     *
+     * @param array
+     * @return array
+     **/
+    function parents($parameter) {}
+
+    /**
+     * Removes an object from the specified parent. Collections
+     * will be removed recursively.
+     *
+     * @param array
+     * @return bool
+     **/
+    function remove($parameter) {}
+
+    /**
+     * Replaces the attributes and the content of an object.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function replace($parameter) {}
+
+    /**
+     * Commits a version of a document. The committed version is the one which is
+     * visible to users with read access. By default the last version is the
+     * committed version.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function setcommittedversion($parameter) {}
+
+    /**
+     * Retrieves all source anchors of an object.
+     *
+     * @param array
+     * @return array
+     **/
+    function srcanchors($parameter) {}
+
+    /**
+     * Retrieves all the source anchors pointing to the specified destination.
+     * The destination object can either be a destination anchor or a whole
+     * document.
+     *
+     * @param array
+     * @return array
+     **/
+    function srcsofdst($parameter) {}
+
+    /**
+     * Unlocks a locked object. Only the user who has locked the object and the
+     * system user may unlock an object.
+     *
+     * @param array
+     * @return bool
+     **/
+    function unlock($parameter) {}
+
+    /**
+     * Returns the own user object.
+     *
+     * @param array
+     * @return hw_api_object
+     **/
+    function user($parameter) {}
+
+    /**
+     * Returns a list of all logged in users.
+     *
+     * @param array
+     * @return array
+     **/
+    function userlist($parameter) {}
+
+}
+class hw_api_content {
+    /**
+     * Returns the mimetype of the content.
+     *
+     * @return string
+     **/
+    function mimetype() {}
+
+    /**
+     * Reads len bytes from the content into the given
+     * buffer.
+     *
+     * @param string
+     * @param int
+     * @return string
+     **/
+    function read($buffer, $len) {}
+
+}
+class hw_api_error {
+    /**
+     * Returns the number of error reasons.
+     *
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Returns the first error reason.
+     *
+     * @return HW_API_Reason
+     **/
+    function reason() {}
+
+}
+class hw_api_object {
+    /**
+     * Clones the attributes of an object.
+     *
+     * @param array
+     * @return bool
+     **/
+    function assign($parameter) {}
+
+    /**
+     * Checks whether an attribute is editable.
+     *
+     * @param array
+     * @return bool
+     **/
+    function attreditable($parameter) {}
+
+    /**
+     * Returns the number of attributes.
+     *
+     * @param array
+     * @return int
+     **/
+    function count($parameter) {}
+
+    /**
+     * Adds an attribute to the object.
+     *
+     * @param HW_API_Attribute
+     * @return bool
+     **/
+    function insert($attribute) {}
+
+    /**
+     * Removes the attribute with the given name.
+     *
+     * @param string
+     * @return bool
+     **/
+    function remove($name) {}
+
+    /**
+     * Returns the title attribute.
+     *
+     * @param array
+     * @return string
+     **/
+    function title($parameter) {}
+
+    /**
+     * Returns value of an attribute.
+     *
+     * @param string
+     * @return string
+     **/
+    function value($name) {}
+
+}
+class hw_api_reason {
+    /**
+     * Returns the description of a reason
+     *
+     * @return string
+     **/
+    function description() {}
+
+    /**
+     * Returns the type of a reason.
+     *
+     * @return HW_API_Reason
+     **/
+    function type() {}
 
 }
 class Imagick {
@@ -45894,1679 +46651,1166 @@ class Memcache {
     function setServerParams($host, $port, $timeout, $retry_interval, $status, $failure_callback) {}
 
 }
-class mysqli {
+class SWFAction {
     /**
-     * Object oriented style (method)
-     *
-     * @param bool
-     * @return bool
-     **/
-    function autocommit($mode) {}
-
-    /**
-     * Object oriented style (method):
+     * Creates a new SWFAction and compiles the given script
+     * in it.
      *
      * @param string
-     * @param string
-     * @param string
-     * @return bool
+     * @return SWFAction
      **/
-    function change_user($user, $password, $database) {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @return string
-     **/
-    function character_set_name() {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @return bool
-     **/
-    function close() {}
-
-    /**
-     * Object oriented style (method)
-     *
-     * @return bool
-     **/
-    function commit() {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @param string
-     * @return bool
-     **/
-    function debug($message) {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @return bool
-     **/
-    function dump_debug_info() {}
-
-    /**
-     * Returns a character set object providing several properties 
-     * of the current active characer set.
-     *
-     * @return object
-     **/
-    function get_charset() {}
-
-    /**
-     * The mysqli_get_client_info function is used to
-     * return a string representing the client version being used in the
-     * MySQLi extension.
-     *
-     * @return string
-     **/
-    function get_client_info() {}
-
-    /**
-     * Returns client version number as an integer.
-     *
-     * @return int
-     **/
-    function get_client_version() {}
-
-    /**
-     * @return object
-     **/
-    function get_warnings() {}
-
-    /**
-     * Object oriented style (method)
-     *
-     * @param int
-     * @return bool
-     **/
-    function kill($processid) {}
-
-    /**
-     * Indicates if one or more result sets are available from a previous call to
-     * mysqli_multi_query.
-     *
-     * @return bool
-     **/
-    function more_results() {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @param string
-     * @return bool
-     **/
-    function multi_query($query) {}
-
-    /**
-     * Prepares next result set from a previous call to 
-     * mysqli_multi_query which can be retrieved by
-     * mysqli_store_result or
-     * mysqli_use_result.
-     *
-     * @return bool
-     **/
-    function next_result() {}
-
-    /**
-     * Object oriented style (method)
-     *
-     * @param int
-     * @param mixed
-     * @return bool
-     **/
-    function options($option, $value) {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @return bool
-     **/
-    function ping() {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @param string
-     * @param int
-     * @return mixed
-     **/
-    function query($query, $resultmode) {}
-
-    /**
-     * Object oriented style (method)
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param int
-     * @param string
-     * @param int
-     * @return bool
-     **/
-    function real_connect($host, $username, $passwd, $dbname, $port, $socket, $flags) {}
-
-    /**
-     * Object oriented style (both methods are equivalent):
-     *
-     * @param string
-     * @return string
-     **/
-    function escape_string($escapestr) {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @return bool
-     **/
-    function rollback() {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @param string
-     * @return bool
-     **/
-    function select_db($dbname) {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @param string
-     * @return bool
-     **/
-    function set_charset($charset) {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function ssl_set($key, $cert, $ca, $capath, $cipher) {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @return string
-     **/
-    function stat() {}
+    function __construct($script) {}
 
 }
-class mysqli_driver {
+class SWFBitmap {
     /**
-     * @return void
+     * Creates the new SWFBitmap object from the given
+     * file.
+     *
+     * @param mixed
+     * @param mixed
+     * @return SWFBitmap
      **/
-    function embedded_server_end() {}
+    function __construct($file, $alphafile) {}
 
     /**
-     * @param bool
-     * @param array
-     * @param array
-     * @return bool
+     * Returns the bitmap's height.
+     *
+     * @return float
      **/
-    function embedded_server_start($start, $arguments, $groups) {}
+    function getHeight() {}
+
+    /**
+     * Returns the bitmap's width.
+     *
+     * @return float
+     **/
+    function getWidth() {}
 
 }
-class mysqli_result {
+class SWFButton {
     /**
-     * Object oriented style (method):
+     * Adds the given action to the button for the given
+     * conditions.
      *
+     * @param SWFAction
      * @param int
-     * @return bool
-     **/
-    function data_seek($offset) {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @param int
-     * @return mixed
-     **/
-    function fetch_array($resulttype) {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @return array
-     **/
-    function fetch_assoc() {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @param int
-     * @return object
-     **/
-    function fetch_field_direct($fieldnr) {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @return object
-     **/
-    function fetch_field() {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @return array
-     **/
-    function fetch_fields() {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @param string
-     * @param array
-     * @return object
-     **/
-    function fetch_object($class_name, $params) {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @return mixed
-     **/
-    function fetch_row() {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @param int
-     * @return bool
-     **/
-    function field_seek($fieldnr) {}
-
-    /**
-     * Object oriented style (all methods are equivalent):
-     *
      * @return void
      **/
-    function free() {}
+    function addAction($action, $flags) {}
+
+    /**
+     * @param SWFSound
+     * @param int
+     * @return SWFSoundInstance
+     **/
+    function addASound($sound, $flags) {}
+
+    /**
+     * Adds the given shape to the button.
+     *
+     * @param SWFShape
+     * @param int
+     * @return void
+     **/
+    function addShape($shape, $flags) {}
+
+    /**
+     * Creates a new Button.
+     *
+     * @return SWFButton
+     **/
+    function __construct() {}
+
+    /**
+     * Sets the action to be performed when the button is clicked.
+     *
+     * @param SWFAction
+     * @return void
+     **/
+    function setAction($action) {}
+
+    /**
+     * swfbutton-&gt;setdown alias for addShape(shape, SWFBUTTON_DOWN).
+     *
+     * @param SWFShape
+     * @return void
+     **/
+    function setDown($shape) {}
+
+    /**
+     * swfbutton-&gt;sethit alias for addShape(shape, SWFBUTTON_HIT).
+     *
+     * @param SWFShape
+     * @return void
+     **/
+    function setHit($shape) {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function setMenu($flag) {}
+
+    /**
+     * swfbutton-&gt;setover alias for addShape(shape, SWFBUTTON_OVER).
+     *
+     * @param SWFShape
+     * @return void
+     **/
+    function setOver($shape) {}
+
+    /**
+     * swfbutton-&gt;setup alias for addShape(shape, SWFBUTTON_UP).
+     *
+     * @param SWFShape
+     * @return void
+     **/
+    function setUp($shape) {}
 
 }
-class mysqli_stmt {
+class SWFDisplayItem {
     /**
-     * Object oriented style (method):
-     *
-     * @param string
-     * @param mixed
-     * @return bool
-     **/
-    function bind_param($types, $var1) {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @param mixed
-     * @return bool
-     **/
-    function bind_result($var1) {}
-
-    /**
-     * Object oriented style (method):
-     *
-     * @return bool
-     **/
-    function close() {}
-
-    /**
-     * Object oriented style (method):
-     *
+     * @param SWFAction
      * @param int
      * @return void
      **/
-    function data_seek($offset) {}
+    function addAction($action, $flags) {}
 
     /**
-     * Object oriented style (method):
+     * swfdisplayitem-&gt;addcolor adds the color to 
+     * this item's color transform. The color is given in its RGB form.
      *
-     * @return bool
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
      **/
-    function execute() {}
+    function addColor($red, $green, $blue, $a) {}
 
     /**
-     * Object oriented style (method):
+     * @return void
+     **/
+    function endMask() {}
+
+    /**
+     * @return float
+     **/
+    function getRot() {}
+
+    /**
+     * @return float
+     **/
+    function getX() {}
+
+    /**
+     * @return float
+     **/
+    function getXScale() {}
+
+    /**
+     * @return float
+     **/
+    function getXSkew() {}
+
+    /**
+     * @return float
+     **/
+    function getY() {}
+
+    /**
+     * @return float
+     **/
+    function getYScale() {}
+
+    /**
+     * @return float
+     **/
+    function getYSkew() {}
+
+    /**
+     * swfdisplayitem-&gt;move moves the current object by 
+     * (dx,dy) from its
+     * current position.
      *
-     * @return bool
+     * @param int
+     * @param int
+     * @return void
      **/
-    function fetch() {}
+    function move($dx, $dy) {}
 
     /**
-     * Object oriented style (method):
+     * swfdisplayitem-&gt;moveto moves the current object to 
+     * (x,y) in global coordinates.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function moveTo($x, $y) {}
+
+    /**
+     * swfdisplayitem-&gt;multcolor multiplies the item's 
+     * color transform by the given values.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function multColor($red, $green, $blue, $a) {}
+
+    /**
+     * swfdisplayitem-&gt;remove removes this object from
+     * the movie's display list.
      *
      * @return void
      **/
-    function free_result() {}
+    function remove() {}
 
     /**
-     * @param mysqli_stmt
-     * @return object
-     **/
-    function get_warnings($stmt) {}
-
-    /**
-     * Object oriented style (method)
+     * swfdisplayitem-&gt;rotate rotates the current object
+     * by angle degrees from its current rotation.
      *
-     * @param string
-     * @return mixed
+     * @param float
+     * @return void
      **/
-    function prepare($query) {}
+    function rotate($angle) {}
 
     /**
-     * Object oriented style (method):
+     * swfdisplayitem-&gt;rotateto set the current object
+     * rotation to angle degrees in global coordinates.
      *
-     * @return bool
+     * @param float
+     * @return void
      **/
-    function reset() {}
+    function rotateTo($angle) {}
 
     /**
-     * Object oriented style (method):
-     *
-     * @return mysqli_result
-     **/
-    function result_metadata() {}
-
-    /**
-     * Object oriented style (method)
+     * swfdisplayitem-&gt;scale scales the current object by 
+     * (dx,dy) from its
+     * current size.
      *
      * @param int
-     * @param string
-     * @return bool
+     * @param int
+     * @return void
      **/
-    function send_long_data($param_nr, $data) {}
+    function scale($dx, $dy) {}
 
     /**
-     * Object oriented style (method):
+     * swfdisplayitem-&gt;scaleto scales the current object to 
+     * (x,y) in global coordinates.
      *
-     * @return bool
+     * @param int
+     * @param int
+     * @return void
      **/
-    function store_result() {}
+    function scaleTo($x, $y) {}
+
+    /**
+     * swfdisplayitem-&gt;setdepth sets the object's
+     * z-order to depth. Depth defaults to the 
+     * order in which instances are created (by adding a shape/text to 
+     * a movie)- newer ones are on top of older ones. If two objects are 
+     * given the same depth, only the later-defined one can be moved.
+     *
+     * @param float
+     * @return void
+     **/
+    function setDepth($depth) {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function setMaskLevel($level) {}
+
+    /**
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setMatrix($a, $b, $c, $d, $x, $y) {}
+
+    /**
+     * swfdisplayitem-&gt;setname sets the object's name to 
+     * name, for targetting with action script. 
+     * Only useful on sprites.
+     *
+     * @param string
+     * @return void
+     **/
+    function setName($name) {}
+
+    /**
+     * swfdisplayitem-&gt;setratio sets the object's ratio
+     * to ratio. Obviously only useful for morphs.
+     *
+     * @param float
+     * @return void
+     **/
+    function setRatio($ratio) {}
+
+    /**
+     * swfdisplayitem-&gt;skewx adds ddegrees
+     * to current x-skew.
+     *
+     * @param float
+     * @return void
+     **/
+    function skewX($ddegrees) {}
+
+    /**
+     * swfdisplayitem-&gt;skewxto sets the
+     * x-skew to degrees. For degrees
+     * is 1.0, it means a 45-degree forward slant. More is more forward, 
+     * less is more backward.
+     *
+     * @param float
+     * @return void
+     **/
+    function skewXTo($degrees) {}
+
+    /**
+     * swfdisplayitem-&gt;skewy adds ddegrees
+     * to current y-skew.
+     *
+     * @param float
+     * @return void
+     **/
+    function skewY($ddegrees) {}
+
+    /**
+     * swfdisplayitem-&gt;skewyto sets the
+     * y-skew to degrees. For degrees
+     * is 1.0, it means a 45-degree forward slant. More is more upward, 
+     * less is more downward.
+     *
+     * @param float
+     * @return void
+     **/
+    function skewYTo($degrees) {}
 
 }
-class PDO {
-    const PARAM_BOOL = 0;
-    const PARAM_NULL = 0;
-    const PARAM_INT = 0;
-    const PARAM_STR = 0;
-    const PARAM_LOB = 0;
-    const PARAM_STMT = 0;
-    const PARAM_INPUT_OUTPUT = 0;
-    const FETCH_LAZY = 0;
-    const FETCH_ASSOC = 0;
-    const FETCH_NAMED = 0;
-    const FETCH_NUM = 0;
-    const FETCH_BOTH = 0;
-    const FETCH_OBJ = 0;
-    const FETCH_BOUND = 0;
-    const FETCH_COLUMN = 0;
-    const FETCH_CLASS = 0;
-    const FETCH_INTO = 0;
-    const FETCH_FUNC = 0;
-    const FETCH_GROUP = 0;
-    const FETCH_UNIQUE = 0;
-    const FETCH_KEY_PAIR = 0;
-    const FETCH_CLASSTYPE = 0;
-    const FETCH_SERIALIZE = 0;
-    const FETCH_PROPS_LATE = 0;
-    const ATTR_AUTOCOMMIT = 0;
-    const ATTR_PREFETCH = 0;
-    const ATTR_TIMEOUT = 0;
-    const ATTR_ERRMODE = 0;
-    const ATTR_SERVER_VERSION = 0;
-    const ATTR_CLIENT_VERSION = 0;
-    const ATTR_SERVER_INFO = 0;
-    const ATTR_CONNECTION_STATUS = 0;
-    const ATTR_CASE = 0;
-    const ATTR_CURSOR_NAME = 0;
-    const ATTR_CURSOR = 0;
-    const ATTR_DRIVER_NAME = '';
-    const ATTR_ORACLE_NULLS = 0;
-    const ATTR_PERSISTENT = 0;
-    const ATTR_STATEMENT_CLASS = 0;
-    const ATTR_FETCH_CATALOG_NAMES = 0;
-    const ATTR_FETCH_TABLE_NAMES = 0;
-    const ATTR_STRINGIFY_FETCHES = 0;
-    const ATTR_MAX_COLUMN_LEN = 0;
-    const ATTR_DEFAULT_FETCH_MODE = 0;
-    const ATTR_EMULATE_PREPARES = 0;
-    const ERRMODE_SILENT = 0;
-    const ERRMODE_WARNING = 0;
-    const ERRMODE_EXCEPTION = 0;
-    const CASE_NATURAL = 0;
-    const CASE_LOWER = 0;
-    const CASE_UPPER = 0;
-    const NULL_NATURAL = 0;
-    const NULL_EMPTY_STRING = 0;
-    const NULL_TO_STRING = 0;
-    const FETCH_ORI_NEXT = 0;
-    const FETCH_ORI_PRIOR = 0;
-    const FETCH_ORI_FIRST = 0;
-    const FETCH_ORI_LAST = 0;
-    const FETCH_ORI_ABS = 0;
-    const FETCH_ORI_REL = 0;
-    const CURSOR_FWDONLY = 0;
-    const CURSOR_SCROLL = 0;
-    const ERR_NONE = '';
-    const PARAM_EVT_ALLOC = 0;
-    const PARAM_EVT_FREE = 0;
-    const PARAM_EVT_EXEC_PRE = 0;
-    const PARAM_EVT_EXEC_POST = 0;
-    const PARAM_EVT_FETCH_PRE = 0;
-    const PARAM_EVT_FETCH_POST = 0;
-    const PARAM_EVT_NORMALIZE = 0;
-    const MYSQL_ATTR_USE_BUFFERED_QUERY = 0;
-    const MYSQL_ATTR_LOCAL_INFILE = 0;
-    const MYSQL_ATTR_INIT_COMMAND = 0;
-    const MYSQL_ATTR_READ_DEFAULT_FILE = 0;
-    const MYSQL_ATTR_READ_DEFAULT_GROUP = 0;
-    const MYSQL_ATTR_MAX_BUFFER_SIZE = 0;
-    const MYSQL_ATTR_DIRECT_QUERY = 0;
+class SWFFill {
     /**
-     * Turns off autocommit mode. While autocommit mode is turned off, changes
-     * made to the database via the PDO object instance are not committed until
-     * you end the transaction by calling PDO::commit.
-     * Calling PDO::rollBack will roll back all changes to
-     * the database and return the connection to autocommit mode.
-     *
-     * @return bool
-     **/
-    function beginTransaction() {}
-
-    /**
-     * Commits a transaction, returning the database connection to autocommit
-     * mode until the next call to PDO::beginTransaction
-     * starts a new transaction.
-     *
-     * @return bool
-     **/
-    function commit() {}
-
-    /**
-     * @return string
-     **/
-    function errorCode() {}
-
-    /**
-     * @return array
-     **/
-    function errorInfo() {}
-
-    /**
-     * PDO::exec executes an SQL statement in
-     * a single function call, returning the number of rows affected by the
-     * statement.
-     *
-     * @param string
-     * @return int
-     **/
-    function exec($statement) {}
-
-    /**
-     * This function returns the value of a database connection attribute. To
-     * retrieve PDOStatement attributes, refer to
-     * PDOStatement::getAttribute.
+     * Moves the fill origin to the given global coordinates.
      *
      * @param int
-     * @return mixed
-     **/
-    function getAttribute($attribute) {}
-
-    /**
-     * This function returns all currently available PDO drivers which can be used
-     * in DSN parameter of
-     * PDO::__construct. This is a static method.
-     *
-     * @return array
-     **/
-    function getAvailableDrivers() {}
-
-    /**
-     * Returns the ID of the last inserted row, or the last value from a
-     * sequence object, depending on the underlying driver. For example,
-     * PDO_PGSQL requires you to specify the name of
-     * a sequence object for the name parameter.
-     *
-     * @param string
-     * @return string
-     **/
-    function lastInsertId($name) {}
-
-    /**
-     * Prepares an SQL statement to be executed by the
-     * PDOStatement::execute method. The SQL statement can
-     * contain zero or more named (:name) or question mark (?) parameter markers
-     * for which real values will be substituted when the statement is executed.
-     * You cannot use both named and question mark parameter markers within the same
-     * SQL statement; pick one or the other parameter style.
-     *
-     * @param string
-     * @param array
-     * @return PDOStatement
-     **/
-    function prepare($statement, $driver_options) {}
-
-    /**
-     * PDO::query executes an SQL statement in
-     * a single function call, returning the result set (if any) returned by the
-     * statement as a PDOStatement object.
-     *
-     * @param string
-     * @return PDOStatement
-     **/
-    function query($statement) {}
-
-    /**
-     * PDO::quote places quotes around the input string (if
-     * required) and escapes special characters within the input string, using a
-     * quoting style appropriate to the underlying driver.
-     *
-     * @param string
      * @param int
-     * @return string
+     * @return void
      **/
-    function quote($string, $parameter_type) {}
+    function moveTo($x, $y) {}
 
     /**
-     * Rolls back the current transaction, as initiated by
-     * PDO::beginTransaction. It is an error to call this
-     * method if no transaction is active.
+     * Sets the fill rotation to the given angle.
      *
-     * @return bool
+     * @param float
+     * @return void
      **/
-    function rollBack() {}
+    function rotateTo($angle) {}
 
     /**
-     * Sets an attribute on the database handle. Some of the available generic
-     * attributes are listed below; some drivers may make use of
-     * additional driver specific attributes.
-     * 
-     * 
-     * PDO::ATTR_CASE: Force column names to a specific case.
-     * 
-     * 
-     * PDO::CASE_LOWER: Force column names to lower case.
-     * 
-     * 
-     * PDO::CASE_NATURAL: Leave column names as returned by
-     * the database driver.
-     * 
-     * 
-     * PDO::CASE_UPPER: Force column names to upper case.
-     * 
-     * 
-     * 
-     * PDO::ATTR_ERRMODE: Error reporting.
-     * 
-     * PDO::ERRMODE_SILENT:
-     * Just set error codes.
-     * PDO::ERRMODE_WARNING:
-     * Raise E_WARNING.
-     * PDO::ERRMODE_EXCEPTION:
-     * Throw exceptions.
-     * 
-     * 
-     * PDO::ATTR_ORACLE_NULLS
-     * (available with all drivers, not just Oracle):
-     * Conversion of NULL and empty strings.
-     * 
-     * PDO::NULL_NATURAL:
-     * No conversion.
-     * PDO::NULL_EMPTY_STRING:
-     * Empty string is converted to .
-     * PDO::NULL_TO_STRING:
-     * NULL is converted to an empty string.
-     * 
-     * 
-     * PDO::ATTR_STRINGIFY_FETCHES:
-     * Convert numeric values to strings when fetching.
-     * Requires bool.
-     * 
-     * PDO::ATTR_STATEMENT_CLASS:
-     * Set user-supplied statement class derived from PDOStatement.
-     * Cannot be used with persistent PDO instances.
-     * Requires array(string classname, array(mixed constructor_args)).
-     * 
-     * PDO::ATTR_AUTOCOMMIT
-     * (available in OCI, Firebird and MySQL):
-     * Whether to autocommit every single statement.
-     * 
-     * PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
-     * (available in MySQL):
-     * Use buffered queries.
+     * Sets the fill scale to the given coordinates.
      *
      * @param int
-     * @param mixed
-     * @return bool
+     * @param int
+     * @return void
      **/
-    function setAttribute($attribute, $value) {}
+    function scaleTo($x, $y) {}
 
     /**
-     * PDO::pgsqlLOBCreate creates a large object and
-     * returns the OID of that object. You may then open a stream on the object
-     * using PDO::pgsqlLOBOpen to read or write data to
-     * it. The OID can be stored in columns of type OID and be used to reference
-     * the large object, without causing the row to grow arbitrarily large.
-     * The large object will continue to live in the database until it
-     * is removed by calling PDO::pgsqlLOBUnlink.
+     * Sets the fill x-skew to x.
      *
-     * @return string
+     * @param float
+     * @return void
      **/
-    function pgsqlLOBCreate() {}
+    function skewXTo($x) {}
 
     /**
-     * PDO::pgsqlLOBOpen opens a stream to access the data
-     * referenced by oid. If mode
-     * is r, the stream is opened for reading, if
-     * mode is w, then the stream will
-     * be opened for writing. You can use all the usual filesystem functions,
-     * such as fread, fwrite and
-     * fgets to manipulate the contents of the stream.
+     * Sets the fill y-skew to y.
      *
-     * @param string
-     * @param string
-     * @return resource
+     * @param float
+     * @return void
      **/
-    function pgsqlLOBOpen($oid, $mode) {}
-
-    /**
-     * Deletes a large object from the database identified by OID.
-     *
-     * @param string
-     * @return bool
-     **/
-    function pgsqlLOBUnlink($oid) {}
+    function skewYTo($y) {}
 
 }
-class PDOStatement {
+class SWFFont {
     /**
-     * PDOStatement::bindColumn arranges to have a
-     * particular variable bound to a given column in the result-set from a
-     * query. Each call to PDOStatement::fetch or
-     * PDOStatement::fetchAll will update all the variables
-     * that are bound to columns.
-     *
-     * @param mixed
-     * @param mixed
-     * @param int
-     * @param int
-     * @param mixed
-     * @return bool
-     **/
-    function bindColumn($column, $param, $type, $maxlen, $driverdata) {}
-
-    /**
-     * Binds a PHP variable to a corresponding named or question mark placeholder
-     * in the SQL statement that was use to prepare the statement. Unlike
-     * PDOStatement::bindValue, the variable is bound as a
-     * reference and will only be evaluated at the time that
-     * PDOStatement::execute is called.
-     *
-     * @param mixed
-     * @param mixed
-     * @param int
-     * @param int
-     * @param mixed
-     * @return bool
-     **/
-    function bindParam($parameter, $variable, $data_type, $length, $driver_options) {}
-
-    /**
-     * Binds a value to a corresponding named or question mark placeholder
-     * in the SQL statement that was use to prepare the statement.
-     *
-     * @param mixed
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function bindValue($parameter, $value, $data_type) {}
-
-    /**
-     * PDOStatement::closeCursor frees up the connection
-     * to the server so that other SQL statements may be issued, but leaves the
-     * statement in a state that enables it to be executed again.
-     *
-     * @return bool
-     **/
-    function closeCursor() {}
-
-    /**
-     * Use PDOStatement::columnCount to return the number
-     * of columns in the result set represented by the PDOStatement object.
-     *
-     * @return int
-     **/
-    function columnCount() {}
-
-    /**
-     * @return string
-     **/
-    function errorCode() {}
-
-    /**
-     * @return array
-     **/
-    function errorInfo() {}
-
-    /**
-     * Execute the prepared statement. If the prepared statement included
-     * parameter markers, you must either:
-     * 
-     * call PDOStatement::bindParam to bind PHP variables
-     * to the parameter markers: bound variables pass their value as input and receive the
-     * output value, if any, of their associated parameter markers
-     * or pass an array of input-only parameter values
-     *
-     * @param array
-     * @return bool
-     **/
-    function execute($input_parameters) {}
-
-    /**
-     * Fetches a row from a result set associated with a PDOStatement object. The
-     * fetch_style parameter determines how PDO returns
-     * the row.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @return mixed
-     **/
-    function fetch($fetch_style, $cursor_orientation, $cursor_offset) {}
-
-    /**
-     * @param int
-     * @param int
-     * @param array
-     * @return array
-     **/
-    function fetchAll($fetch_style, $column_index, $ctor_args) {}
-
-    /**
-     * Returns a single column from the next row of a result set or if
-     * there are no more rows.
-     *
-     * @param int
-     * @return string
-     **/
-    function fetchColumn($column_number) {}
-
-    /**
-     * Fetches the next row and returns it as an object. This function is an
-     * alternative to PDOStatement::fetch with
-     * PDO::FETCH_CLASS or
-     * PDO::FETCH_OBJ style.
+     * If filename is the name of an FDB file 
+     * (i.e., it ends in ".fdb"), load the font definition found in said 
+     * file. Otherwise, create a browser-defined font reference.
      *
      * @param string
-     * @param array
-     * @return mixed
+     * @return SWFFont
      **/
-    function fetchObject($class_name, $ctor_args) {}
+    function __construct($filename) {}
 
     /**
-     * Gets an attribute of the statement. Currently, no generic attributes exist but only driver specific:
-     * 
-     * PDO::ATTR_CURSOR_NAME
-     * (Firebird and ODBC specific):
-     * Get the name of cursor for UPDATE ... WHERE CURRENT OF.
-     *
-     * @param int
-     * @return mixed
+     * @return float
      **/
-    function getAttribute($attribute) {}
+    function getAscent() {}
 
     /**
-     * Retrieves the metadata for a 0-indexed column in a result set as an
-     * associative array.
-     *
-     * @param int
-     * @return array
+     * @return float
      **/
-    function getColumnMeta($column) {}
+    function getDescent() {}
 
     /**
-     * Some database servers support stored procedures that return more than one
-     * rowset (also known as a result set).
-     * PDOStatement::nextRowset enables you to access the
-     * second and subsequent rowsets associated with a PDOStatement object. Each
-     * rowset can have a different set of columns from the preceding rowset.
-     *
-     * @return bool
+     * @return float
      **/
-    function nextRowset() {}
-
-    /**
-     * PDOStatement::rowCount returns the number of
-     * rows affected by the last DELETE, INSERT, or UPDATE statement
-     * executed by the corresponding PDOStatement object.
-     *
-     * @return int
-     **/
-    function rowCount() {}
-
-    /**
-     * Sets an attribute on the statement. Currently, no generic attributes are set but only driver specific:
-     * 
-     * PDO::ATTR_CURSOR_NAME
-     * (Firebird and ODBC specific):
-     * Set the name of cursor for UPDATE ... WHERE CURRENT OF.
-     *
-     * @param int
-     * @param mixed
-     * @return bool
-     **/
-    function setAttribute($attribute, $value) {}
+    function getLeading() {}
 
     /**
      * @param int
-     * @return bool
+     * @return string
      **/
-    function setFetchMode($mode) {}
+    function getShape($code) {}
+
+    /**
+     * @param string
+     * @return float
+     **/
+    function getUTF8Width($string) {}
+
+    /**
+     * swffont-&gt;getwidth returns the string 
+     * string's width, using font's default scaling. 
+     * You'll probably want to use the swftext version of this method which
+     * uses the text object's scale.
+     *
+     * @param string
+     * @return float
+     **/
+    function getWidth($string) {}
 
 }
-class Phar {
+class SWFFontChar {
     /**
-     * With this method, an empty directory is created with path dirname.
-     * This method is similar to ZipArchive::addEmptyDir.
-     *
-     * @param string
-     * @return bool
-     **/
-    function addEmptyDir($dirname) {}
-
-    /**
-     * With this method, any file or URL can be added to the phar archive. If
-     * the optional second parameter localname is specified,
-     * the file will be stored in the archive with that name, otherwise the
-     * file parameter is used as the path to store within
-     * the archive. URLs must have a localname or an exception is thrown.
-     * This method is similar to ZipArchive::addFile.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function addFile($file, $localname) {}
-
-    /**
-     * With this method, any string can be added to the phar archive.
-     * The file will be stored in the archive with localname as its
-     * path. This method is similar to ZipArchive::addFromString.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function addFromString($localname, $contents) {}
-
-    /**
-     * Return the API version of the phar file format that will be
-     * used when creating phars. The Phar extension supports reading API
-     * version 1.0.0 or newer. API version 1.1.0 is required for SHA-256 and SHA-512
-     * hash, and API version 1.1.1 is required to store empty directories.
-     *
-     * @return string
-     **/
-    function apiVersion() {}
-
-    /**
-     * Populate a phar archive from directory contents. The optional second
-     * parameter is a regular expression (pcre) that is used to exclude files.
-     * Any filename that matches the regular expression will be included, all others will be
-     * excluded. For more fine-grained control, use Phar::buildFromIterator.
-     *
-     * @param string
-     * @param string
-     * @return array
-     **/
-    function buildFromDirectory($base_dir, $regex) {}
-
-    /**
-     * Populate a phar archive from an iterator. Two styles of iterators are supported,
-     * iterators that map the filename within the phar to the name of a file on disk,
-     * and iterators like DirectoryIterator that return
-     * SplFileInfo objects. For iterators that return SplFileInfo objects, the second
-     * parameter is required.
-     *
-     * @param Iterator
-     * @param string
-     * @return array
-     **/
-    function buildFromIterator($iter, $base_directory) {}
-
-    /**
-     * This should be used to test whether compression is possible prior to
-     * loading a phar archive containing compressed files.
-     *
-     * @param int
-     * @return bool
-     **/
-    function canCompress($type) {}
-
-    /**
-     * This static method determines whether write access has been disabled in
-     * the system php.ini via the phar.readonly
-     * ini variable.
-     *
-     * @return bool
-     **/
-    function canWrite() {}
-
-    /**
-     * For tar-based and phar-based phar archives, this method compresses the entire archive using
-     * gzip compression or bzip2 compression. The resulting file can be processed with the
-     * gunzip command/bunzip command, or accessed directly and transparently with the Phar
-     * extension.
-     *
-     * @param int
-     * @param string
-     * @return object
-     **/
-    function compress($compression, $extension) {}
-
-    /**
-     * This method compresses all files in the Phar archive using bzip2 compression.
-     * The bzip2 extension must be enabled to take
-     * advantage of this feature. In addition, if any files are already compressed using
-     * gzip compression, the zlib extension must be enabled in order
-     * to decompress the files prior to re-compressing with bzip2 compression.
-     * As with all functionality that modifies the contents of
-     * a phar, the phar.readonly INI variable
-     * must be off in order to succeed.
-     *
-     * @return bool
-     **/
-    function compressAllFilesBZIP2() {}
-
-    /**
-     * For tar-based phar archives, this method compresses the entire archive using
-     * gzip compression. The resulting file can be processed with the gunzip command, or
-     * accessed directly and transparently with the Phar extension.
-     *
-     * @return bool
-     **/
-    function compressAllFilesGZ() {}
-
-    /**
-     * For tar-based phar archives, this method throws a
-     * BadMethodCallException, as compression of individual
-     * files within a tar archive is not supported by the file format. Use
-     * Phar::compress to compress an entire tar-based phar archive.
-     *
-     * @param int
-     * @return bool
-     **/
-    function compressFiles($compression) {}
-
-    /**
-     * @param string
-     * @param int
      * @param string
      * @return void
      **/
-    function __construct($fname, $flags, $alias) {}
+    function addChars($char) {}
 
     /**
-     * This method is used to convert an executable phar archive to either a
-     * tar or zip file. To make the tar or zip non-executable, the phar
-     * stub and phar alias files are removed from the newly created archive.
-     *
-     * @param int
-     * @param int
-     * @param string
-     * @return PharData
-     **/
-    function convertToData($format, $compression, $extension) {}
-
-    /**
-     * This method is used to convert a phar archive to another file format. For instance,
-     * it can be used to create a tar-based executable phar archive from a zip-based
-     * executable phar archive, or from an executable phar archive in the phar file format. In
-     * addition, it can be used to apply whole-archive compression to a tar or phar-based
-     * archive.
-     *
-     * @param int
-     * @param int
-     * @param string
-     * @return Phar
-     **/
-    function convertToExecutable($format, $compression, $extension) {}
-
-    /**
-     * Copy a file internal to the phar archive to another new file within the phar.
-     * This is an object-oriented alternative to using copy with
-     * the phar stream wrapper.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function copy($oldfile, $newfile) {}
-
-    /**
-     * @return int
-     **/
-    function count() {}
-
-    /**
-     * This method is intended for creation of phar-file format-specific stubs, and is
-     * not intended for use with tar- or zip-based phar archives.
-     *
-     * @return string
-     **/
-    function createDefaultStub() {}
-
-    /**
-     * For tar-based and phar-based phar archives, this method decompresses the entire archive.
-     *
-     * @param string
-     * @return object
-     **/
-    function decompress($extension) {}
-
-    /**
-     * For tar-based phar archives, this method throws a
-     * BadMethodCallException, as compression of individual
-     * files within a tar archive is not supported by the file format. Use
-     * Phar::compress to compress an entire tar-based phar archive.
-     *
-     * @return bool
-     **/
-    function decompressFiles() {}
-
-    /**
-     * Deletes the global metadata of the phar
-     *
-     * @return int
-     **/
-    function delMetadata() {}
-
-    /**
-     * Delete a file within an archive. This is the functional equivalent of
-     * calling unlink on the stream wrapper equivalent,
-     * as shown in the example below.
-     *
-     * @param string
-     * @return int
-     **/
-    function delete($entry) {}
-
-    /**
-     * Extract all files within a phar archive to disk. Extracted files and directories preserve
-     * permissions as stored in the archive. The optional parameters allow optional control over
-     * which files are extracted, and whether existing files on disk can be overwritten.
-     * The second parameter files can be either the name of a file or
-     * directory to extract, or an array of names of files and directories to extract. By
-     * default, this method will not overwrite existing files, the third parameter can be
-     * set to true to enable overwriting of files.
-     * This method is similar to ZipArchive::extractTo.
-     *
-     * @param string
-     * @param string|array
-     * @param bool
-     * @return int
-     **/
-    function extractTo($pathto, $files, $overwrite) {}
-
-    /**
-     * Retrieve archive meta-data. Meta-data can be any PHP variable that can be serialized.
-     *
-     * @return int
-     **/
-    function getMetaData() {}
-
-    /**
-     * This method can be used to determine whether a phar has either
-     * had an internal file deleted, or contents of a file changed in
-     * some way.
-     *
-     * @return bool
-     **/
-    function getModified() {}
-
-    /**
-     * Returns the verification signature of a phar archive in a hexadecimal string.
-     *
-     * @return array
-     **/
-    function getSignature() {}
-
-    /**
-     * Phar archives contain a bootstrap loader, or stub
-     * written in PHP that is executed when the archive is executed in PHP either via
-     * include:
-     * 
-     * 
-     * 
-     * or by simple execution:
-     *
-     * @return string
-     **/
-    function getStub() {}
-
-    /**
-     * @return array
-     **/
-    function getSupportedCompression() {}
-
-    /**
-     * Return array of supported signature types
-     *
-     * @return array
-     **/
-    function getSupportedSignatures() {}
-
-    /**
-     * Returns the API version of an opened Phar archive.
-     *
-     * @return string
-     **/
-    function getVersion() {}
-
-    /**
-     * Returns whether phar has global meta-data set.
-     *
-     * @return int
-     **/
-    function hasMetadata() {}
-
-    /**
-     * instructs phar to intercept fopen, readfile,
-     * file_get_contents, opendir, and all of
-     * the stat-related functions. If any of these functions is called from within
-     * a phar archive with a relative path, the call is modified to access a file
-     * within the phar archive. Absolute paths are assumed to be attempts to load
-     * external files from the filesystem.
-     *
-     * @return void
-     **/
-    function interceptFileFuncs() {}
-
-    /**
-     * This method can be used to determine whether a Phar will save changes
-     * to disk immediately, or whether a call to Phar-stopBuffering
-     * is needed to enable saving changes.
-     *
-     * @return bool
-     **/
-    function isBuffering() {}
-
-    /**
-     * Returns Phar::GZ or PHAR::BZ2 if the entire phar archive is compressed
-     * (.tar.gz/tar.bz and so on). Zip-based phar archives cannot be compressed as a
-     * file, and so this method will always return if a zip-based phar archive is queried.
-     *
-     * @return mixed
-     **/
-    function isCompressed() {}
-
-    /**
-     * @param int
-     * @return bool
-     **/
-    function isFileFormat($format) {}
-
-    /**
-     * Returns whether the given filename is a valid phar filename that will be recognized
-     * as a phar archive by the phar extension. This can be used to test a name without
-     * having to instantiate a phar archive and catch the inevitable Exception that will be
-     * thrown if an invalid name is specified.
-     *
-     * @param string
-     * @param bool
-     * @return bool
-     **/
-    function isValidPharFilename($filename, $executable) {}
-
-    /**
-     * This method returns if phar.readonly is 0,
-     * and the actual phar archive on disk is not read-only.
-     *
-     * @return bool
-     **/
-    function isWritable() {}
-
-    /**
-     * This can be used to read the contents of an external Phar archive. This
-     * is most useful for assigning an alias to a phar so that subsequent references
-     * to the phar can use the shorter alias, or for loading Phar archives that
-     * only contain data and are not intended for execution/inclusion in PHP scripts.
-     *
-     * @param string
-     * @param string
-     * @return mixed
-     **/
-    function loadPhar($filename, $alias) {}
-
-    /**
-     * This static method can only be used inside a Phar archive's loader stub
-     * in order to initialize the phar when it is directly executed, or when
-     * it is included in another script.
-     *
-     * @param string
-     * @param int
-     * @return mixed
-     **/
-    function mapPhar($alias, $dataoffset) {}
-
-    /**
-     * Much like the unix file system concept of mounting external devices to paths within the
-     * directory tree, Phar::mount allows referring to external files
-     * and directories as if they were inside of an archive. This allows powerful
-     * abstraction such as referring to external configuration files as if they were
-     * inside the archive.
-     *
-     * @param string
      * @param string
      * @return void
      **/
-    function mount($pharpath, $externalpath) {}
-
-    /**
-     * Phar::mungServer should only be called within the
-     * stub of a phar archive.
-     *
-     * @param array
-     * @return void
-     **/
-    function mungServer($munglist) {}
-
-    /**
-     * This is an implementation of the ArrayAccess interface allowing
-     * direct manipulation of the contents of a Phar archive using
-     * array access brackets.
-     *
-     * @param string
-     * @return bool
-     **/
-    function offsetExists($offset) {}
-
-    /**
-     * This is an implementation of the ArrayAccess interface allowing
-     * direct manipulation of the contents of a Phar archive using
-     * array access brackets. offsetGet is used for retrieving files from
-     * a Phar archive.
-     *
-     * @param string
-     * @return int
-     **/
-    function offsetGet($offset) {}
-
-    /**
-     * This is an implementation of the ArrayAccess interface allowing
-     * direct manipulation of the contents of a Phar archive using
-     * array access brackets. offsetSet is used for modifying an
-     * existing file, or adding a new file to a Phar archive.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function offsetSet($offset, $value) {}
-
-    /**
-     * This is an implementation of the ArrayAccess interface allowing
-     * direct manipulation of the contents of a Phar archive using
-     * array access brackets. offsetUnset is used for deleting an
-     * existing file, and is called by the unset
-     * language construct.
-     *
-     * @param string
-     * @return bool
-     **/
-    function offsetUnset($offset) {}
-
-    /**
-     * Returns the full path to the running phar archive. This is intended for use much
-     * like the __FILE__ magic constant, and only has effect inside
-     * an executing phar archive.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function running($retphar) {}
-
-    /**
-     * Set the alias for the Phar archive, and write it as the permanent alias
-     * for this phar archive. An alias can be used internally to a phar archive to
-     * ensure that use of the phar stream wrapper to access internal
-     * files always works regardless of the location of the phar archive on the
-     * filesystem. Another alternative is to rely upon Phar's interception of
-     * include or to use Phar::interceptFileFuncs
-     * and use relative paths.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setAlias($alias) {}
-
-    /**
-     * This method is a convenience method that combines the functionality of
-     * Phar::createDefaultStub and Phar::setStub.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function setDefaultStub($index, $webindex) {}
-
-    /**
-     * Phar::setMetadata should be used to store customized data
-     * that describes something about the phar archive as a complete entity.
-     * PharFileInfo::setMetadata should be used for file-specific meta-data.
-     * Meta-data can slow down the performance of loading a phar archive if the data is large.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function setMetadata($metadata) {}
-
-    /**
-     * set the signature algorithm for a phar and apply it. The
-     * signature algorithm must be one of Phar::MD5,
-     * Phar::SHA1, Phar::SHA256,
-     * Phar::SHA512, or Phar::OPENSSL.
-     *
-     * @param int
-     * @param string
-     * @return array
-     **/
-    function setSignatureAlgorithm($sigtype, $privatekey) {}
-
-    /**
-     * This method is used to add a PHP bootstrap loader stub to a new Phar archive, or
-     * to replace the loader stub in an existing Phar archive.
-     *
-     * @param string
-     * @return void
-     **/
-    function setStub($stub) {}
-
-    /**
-     * Although technically unnecessary, the startBuffering method
-     * can provide a significant performance boost when creating or modifying a
-     * Phar archive with a large number of files. Ordinarily, every time a file
-     * within a Phar archive is created or modified in any way, the entire Phar
-     * archive will be recreated with the changes. In this way, the archive will
-     * be up-to-date with the activity performed on it.
-     *
-     * @return void
-     **/
-    function startBuffering() {}
-
-    /**
-     * stopBuffering is used in conjunction with the
-     * startBuffering method. startBuffering
-     * can provide a significant performance boost when creating or modifying a
-     * Phar archive with a large number of files. Ordinarily, every time a file
-     * within a Phar archive is created or modified in any way, the entire Phar
-     * archive will be recreated with the changes. In this way, the archive will
-     * be up-to-date with the activity performed on it.
-     *
-     * @return void
-     **/
-    function stopBuffering() {}
-
-    /**
-     * This method decompresses all files in the Phar archive.
-     * If any files are already compressed using
-     * gzip compression, the zlib extension must be enabled in order
-     * to decompress the files, and any files compressed using bzip2 compression
-     * require the bzip2 extension to decompress the files.
-     * As with all functionality that modifies the contents of
-     * a phar, the phar.readonly INI variable
-     * must be off in order to succeed.
-     *
-     * @return bool
-     **/
-    function uncompressAllFiles() {}
-
-    /**
-     * @param string
-     * @return bool
-     **/
-    function unlinkArchive($archive) {}
-
-    /**
-     * Phar::mapPhar for web-based phars. This method parses
-     * $_SERVER['REQUEST_URI'] and routes a request from a web
-     * browser to an internal file within the phar archive. In essence, it simulates
-     * a web server, routing requests to the correct file, echoing the correct headers
-     * and parsing PHP files as needed. This powerful method is part of what makes it easy
-     * to convert an existing PHP application into a phar archive. Combined with
-     * Phar::mungServer and Phar::interceptFileFuncs,
-     * any web application can be used unmodified from a phar archive.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @param array
-     * @param array
-     * @return void
-     **/
-    function webPhar($alias, $index, $f404, $mimetypes, $rewrites) {}
+    function addUTF8Chars($char) {}
 
 }
-class PharData {
+class SWFGradient {
     /**
-     * With this method, an empty directory is created with path dirname.
-     * This method is similar to ZipArchive::addEmptyDir.
+     * swfgradient-&gt;addentry adds an entry to the gradient list. 
+     * ratio is a number between 0 and 1 indicating where in 
+     * the gradient this color appears. Thou shalt add entries in order of increasing ratio.
      *
-     * @param string
-     * @return bool
-     **/
-    function addEmptyDir($dirname) {}
-
-    /**
-     * With this method, any string can be added to the tar/zip archive.
-     * The file will be stored in the archive with localname as its
-     * path. This method is similar to ZipArchive::addFromString.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function addFromString($localname, $contents) {}
-
-    /**
-     * Populate a tar or zip archive from an iterator. Two styles of iterators are supported,
-     * iterators that map the filename within the tar/zip to the name of a file on disk,
-     * and iterators like DirectoryIterator that return
-     * SplFileInfo objects. For iterators that return SplFileInfo objects, the second
-     * parameter is required.
-     *
-     * @param Iterator
-     * @param string
-     * @return array
-     **/
-    function buildFromIterator($iter, $base_directory) {}
-
-    /**
-     * For tar archives, this method compresses the entire archive using
-     * gzip compression or bzip2 compression. The resulting file can be processed with the
-     * gunzip command/bunzip command, or accessed directly and transparently with the Phar
-     * extension.
-     *
+     * @param float
      * @param int
-     * @param string
-     * @return object
-     **/
-    function compress($compression, $extension) {}
-
-    /**
-     * For tar-based archives, this method throws a
-     * BadMethodCallException, as compression of individual
-     * files within a tar archive is not supported by the file format. Use
-     * PharData::compress to compress an entire tar-based archive.
-     *
      * @param int
-     * @return bool
-     **/
-    function compressFiles($compression) {}
-
-    /**
-     * @param string
+     * @param int
      * @param int
      * @return void
      **/
-    function __construct($fname, $flags) {}
+    function addEntry($ratio, $red, $green, $blue, $a) {}
 
     /**
-     * This method is used to convert a non-executable tar or zip archive to another
-     * non-executable format.
+     * swfgradient creates a new SWFGradient object.
+     *
+     * @return SWFGradient
+     **/
+    function __construct() {}
+
+}
+class SWFMorph {
+    /**
+     * Creates a new SWFMorph object.
+     *
+     * @return SWFMorph
+     **/
+    function __construct() {}
+
+    /**
+     * Gets the morph's starting shape.
+     *
+     * @return SWFShape
+     **/
+    function getShape1() {}
+
+    /**
+     * Gets the morph's ending shape.
+     *
+     * @return SWFShape
+     **/
+    function getShape2() {}
+
+}
+class SWFMovie {
+    /**
+     * @param SWFFont
+     * @return mixed
+     **/
+    function addFont($font) {}
+
+    /**
+     * Adds an SWF object instance to the current movie.
+     *
+     * @param object
+     * @return mixed
+     **/
+    function add($instance) {}
+
+    /**
+     * @param SWFCharacter
+     * @param string
+     * @return void
+     **/
+    function addExport($char, $name) {}
+
+    /**
+     * Creates a new movie object, representing an SWF movie.
      *
      * @param int
-     * @param int
-     * @param string
-     * @return PharData
+     * @return SWFMovie
      **/
-    function convertToData($format, $compression, $extension) {}
+    function __construct($version) {}
 
     /**
-     * This method is used to convert a non-executable tar or zip archive to an
-     * executable phar archive. Any of the three executable file formats
-     * (phar, tar or zip) can be used, and whole-archive compression can also be performed.
+     * @param string
+     * @param string
+     * @return SWFSprite
+     **/
+    function importChar($libswf, $name) {}
+
+    /**
+     * @param string
+     * @param string
+     * @return SWFFontChar
+     **/
+    function importFont($libswf, $name) {}
+
+    /**
+     * @param string
+     * @return void
+     **/
+    function labelFrame($label) {}
+
+    /**
+     * Moves to the next frame of the animation.
+     *
+     * @return void
+     **/
+    function nextFrame() {}
+
+    /**
+     * Dumps the SWFMovie.
      *
      * @param int
-     * @param int
-     * @param string
-     * @return Phar
-     **/
-    function convertToExecutable($format, $compression, $extension) {}
-
-    /**
-     * Copy a file internal to the tar/zip archive to another new file within the same archive.
-     * This is an object-oriented alternative to using copy with
-     * the phar stream wrapper.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function copy($oldfile, $newfile) {}
-
-    /**
-     * For tar-based archives, this method decompresses the entire archive.
-     *
-     * @param string
-     * @return object
-     **/
-    function decompress($extension) {}
-
-    /**
-     * For tar-based archives, this method throws a
-     * BadMethodCallException, as compression of individual
-     * files within a tar archive is not supported by the file format. Use
-     * PharData::compress to compress an entire tar-based archive.
-     *
-     * @return bool
-     **/
-    function decompressFiles() {}
-
-    /**
-     * Deletes the global metadata of the zip archive
-     *
      * @return int
      **/
-    function delMetadata() {}
+    function output($compression) {}
 
     /**
-     * Delete a file within an archive. This is the functional equivalent of
-     * calling unlink on the stream wrapper equivalent,
-     * as shown in the example below.
+     * Removes the given object instance from the display
+     * list.
+     *
+     * @param object
+     * @return void
+     **/
+    function remove($instance) {}
+
+    /**
+     * Saves the SWF movie to the specified filename.
      *
      * @param string
+     * @param int
      * @return int
      **/
-    function delete($entry) {}
+    function save($filename, $compression) {}
 
     /**
-     * Extract all files within a tar/zip archive to disk. Extracted files and directories preserve
-     * permissions as stored in the archive. The optional parameters allow optional control over
-     * which files are extracted, and whether existing files on disk can be overwritten.
-     * The second parameter files can be either the name of a file or
-     * directory to extract, or an array of names of files and directories to extract. By
-     * default, this method will not overwrite existing files, the third parameter can be
-     * set to true to enable overwriting of files.
-     * This method is similar to ZipArchive::extractTo.
-     *
-     * @param string
-     * @param string|array
-     * @param bool
+     * @param stream
+     * @param int
      * @return int
      **/
-    function extractTo($pathto, $files, $overwrite) {}
+    function saveToFile($x, $compression) {}
 
     /**
-     * This method returns if the tar/zip archive on disk is not read-only.
-     * Unlike Phar::isWritable, data-only tar/zip archives
-     * can be modified even if phar.readonly is set to 1.
+     * Sets the background color.
      *
-     * @return bool
+     * @param int
+     * @param int
+     * @param int
+     * @return void
      **/
-    function isWritable() {}
+    function setbackground($red, $green, $blue) {}
 
     /**
-     * This is an implementation of the ArrayAccess interface allowing
-     * direct manipulation of the contents of a tar/zip archive using
-     * array access brackets. offsetSet is used for modifying an
-     * existing file, or adding a new file to a tar/zip archive.
+     * Sets the movie's dimension to the specified width
+     * and height.
      *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setDimension($width, $height) {}
+
+    /**
+     * Sets the total number of frames in the animation to the given 
+     * number.
+     *
+     * @param int
+     * @return void
+     **/
+    function setFrames($number) {}
+
+    /**
+     * Sets the frame rate to the specified rate.
+     *
+     * @param int
+     * @return void
+     **/
+    function setRate($rate) {}
+
+    /**
+     * @param SWFSound
+     * @return SWFSoundInstance
+     **/
+    function startSound($sound) {}
+
+    /**
+     * @param SWFSound
+     * @return void
+     **/
+    function stopSound($sound) {}
+
+    /**
+     * Streams the given MP3 file mp3file.
+     *
+     * @param mixed
+     * @param float
+     * @return int
+     **/
+    function streamMP3($mp3file, $skip) {}
+
+    /**
+     * @return void
+     **/
+    function writeExports() {}
+
+}
+class SWFPrebuiltClip {
+    /**
      * @param string
+     * @return SWFPrebuiltClip
+     **/
+    function __construct($file) {}
+
+}
+class SWFShape {
+    /**
+     * SWFShape-&gt;addFill adds a solid fill to the shape's list 
+     * of fill styles. SWFShape-&gt;addFill accepts three different
+     * types of arguments.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return SWFFill
+     **/
+    function addFill($red, $green, $blue, $a) {}
+
+    /**
+     * Created a new SWFShape object.
+     *
+     * @return SWFShape
+     **/
+    function __construct() {}
+
+    /**
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function drawArc($r, $startAngle, $endAngle) {}
+
+    /**
+     * @param float
+     * @return void
+     **/
+    function drawCircle($r) {}
+
+    /**
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return int
+     **/
+    function drawCubic($bx, $by, $cx, $cy, $dx, $dy) {}
+
+    /**
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return int
+     **/
+    function drawCubicTo($bx, $by, $cx, $cy, $dx, $dy) {}
+
+    /**
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return int
+     **/
+    function drawCurve($controldx, $controldy, $anchordx, $anchordy, $targetdx, $targetdy) {}
+
+    /**
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return int
+     **/
+    function drawCurveTo($controlx, $controly, $anchorx, $anchory, $targetx, $targety) {}
+
+    /**
+     * @param SWFFont
+     * @param string
+     * @param int
+     * @return void
+     **/
+    function drawGlyph($font, $character, $size) {}
+
+    /**
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function drawLine($dx, $dy) {}
+
+    /**
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function drawLineTo($x, $y) {}
+
+    /**
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function movePen($dx, $dy) {}
+
+    /**
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function movePenTo($x, $y) {}
+
+    /**
+     * What this nonsense is about is, every edge segment borders at most two fills. 
+     * When rasterizing the object, it's pretty handy to know what those fills are 
+     * ahead of time, so the swf format requires these to be specified.
+     *
+     * @param SWFGradient
+     * @return void
+     **/
+    function setLeftFill($fill) {}
+
+    /**
+     * swfshape-&gt;setline sets the shape's line style. 
+     * width is the line's width. If width
+     * is 0, the line's style is removed (then, all other arguments are ignored).
+     * If width &gt; 0, then line's color is set to
+     * red, green, blue.
+     * Last parameter a is optional.
+     *
+     * @param SWFShape
+     * @return void
+     **/
+    function setLine($shape) {}
+
+    /**
+     * @param SWFGradient
+     * @return void
+     **/
+    function setRightFill($fill) {}
+
+}
+class SWFSound {
+    /**
+     * @param string
+     * @param int
+     * @return SWFSound
+     **/
+    function __construct($filename, $flags) {}
+
+}
+class SWFSoundInstance {
+    /**
+     * @param int
+     * @return void
+     **/
+    function loopCount($point) {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function loopInPoint($point) {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function loopOutPoint($point) {}
+
+    /**
+     * @return void
+     **/
+    function noMultiple() {}
+
+}
+class SWFSprite {
+    /**
+     * swfsprite-&gt;remove remove a swfshape, a 
+     * swfbutton, a swftext, 
+     * a swfaction or a swfsprite object
+     * from the sprite.
+     *
+     * @param object
+     * @return void
+     **/
+    function remove($object) {}
+
+    /**
+     * swfsprite-&gt;add adds a swfshape, a 
+     * swfbutton, a swftext, 
+     * a swfaction or a swfsprite object.
+     *
+     * @param object
+     * @return void
+     **/
+    function add($object) {}
+
+    /**
+     * Creates a new SWFSprite object.
+     *
+     * @return SWFSprite
+     **/
+    function __construct() {}
+
+    /**
      * @param string
      * @return void
      **/
-    function offsetSet($offset, $value) {}
+    function labelFrame($label) {}
 
     /**
-     * This is an implementation of the ArrayAccess interface allowing
-     * direct manipulation of the contents of a tar/zip archive using
-     * array access brackets. offsetUnset is used for deleting an
-     * existing file, and is called by the unset
-     * language construct.
+     * swfsprite-&gt;setframes moves to the next frame of 
+     * the animation.
      *
-     * @param string
-     * @return bool
+     * @return void
      **/
-    function offsetUnset($offset) {}
+    function nextFrame() {}
 
     /**
-     * Non-executable tar/zip archives cannot have an alias, so this method simply
-     * throws an exception.
+     * swfsprite-&gt;setframes sets the total number of frames 
+     * in the animation to numberofframes.
      *
-     * @param string
-     * @return bool
+     * @param int
+     * @return void
      **/
-    function setAlias($alias) {}
+    function setFrames($number) {}
 
     /**
-     * Non-executable tar/zip archives cannot have a stub, so this method simply
-     * throws an exception.
+     * @param SWFSound
+     * @return SWFSoundInstance
+     **/
+    function startSound($sount) {}
+
+    /**
+     * @param SWFSound
+     * @return void
+     **/
+    function stopSound($sount) {}
+
+}
+class SWFText {
+    /**
+     * swftext-&gt;addstring draws the string string
+     * at the current pen (cursor) location. Pen is at the baseline of the text; 
+     * i.e., ascending text is in the -y direction.
      *
-     * @param string
      * @param string
      * @return void
      **/
-    function setDefaultStub($index, $webindex) {}
+    function addString($string) {}
 
     /**
-     * Non-executable tar/zip archives cannot have a stub, so this method simply
-     * throws an exception.
+     * @param string
+     * @return void
+     **/
+    function addUTF8String($text) {}
+
+    /**
+     * Creates a new SWFText object, fresh for 
+     * manipulating.
+     *
+     * @return void
+     **/
+    function __construct() {}
+
+    /**
+     * @return float
+     **/
+    function getAscent() {}
+
+    /**
+     * @return float
+     **/
+    function getDescent() {}
+
+    /**
+     * @return float
+     **/
+    function getLeading() {}
+
+    /**
+     * @param string
+     * @return float
+     **/
+    function getUTF8Width($string) {}
+
+    /**
+     * Returns the rendered width of the string at the
+     * text object's current font, scale, and spacing settings.
+     *
+     * @param string
+     * @return float
+     **/
+    function getWidth($string) {}
+
+    /**
+     * swftext-&gt;moveto moves the pen (or cursor, if 
+     * that makes more sense) to (x,y)
+     * in text object's coordinate space. If either is zero, though, value 
+     * in that dimension stays the same. Annoying, should be fixed.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function moveTo($x, $y) {}
+
+    /**
+     * Changes the current text color.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setColor($red, $green, $blue, $a) {}
+
+    /**
+     * swftext-&gt;setfont sets the current font to 
+     * font.
      *
      * @param string
      * @return void
      **/
-    function setStub($stub) {}
+    function setFont($font) {}
+
+    /**
+     * swftext-&gt;setheight sets the current font height to 
+     * height. Default is 240.
+     *
+     * @param int
+     * @return void
+     **/
+    function setHeight($height) {}
+
+    /**
+     * swftext-&gt;setspacing sets the current font spacing to 
+     * spacing. Default is 1.0. 
+     * 0 is all of the letters written at the same point. This doesn't really work 
+     * that well because it inflates the advance across the letter, doesn't add 
+     * the same amount of spacing between the letters. I should try and explain 
+     * that better, prolly. Or just fix the damn thing to do constant spacing. 
+     * This was really just a way to figure out how letter advances work, 
+     * anyway.. So nyah.
+     *
+     * @param float
+     * @return void
+     **/
+    function setSpacing($spacing) {}
+
+}
+class SWFTextField {
+    /**
+     * @param string
+     * @return void
+     **/
+    function addChars($chars) {}
+
+    /**
+     * swftextfield-&gt;setname concatenates the string
+     * string to the text field.
+     *
+     * @param string
+     * @return void
+     **/
+    function addString($string) {}
+
+    /**
+     * swftextfield-&gt;align sets the text field alignment
+     * to alignement. Valid values for 
+     * alignement are : SWFTEXTFIELD_ALIGN_LEFT, 
+     * SWFTEXTFIELD_ALIGN_RIGHT, SWFTEXTFIELD_ALIGN_CENTER and 
+     * SWFTEXTFIELD_ALIGN_JUSTIFY.
+     *
+     * @param int
+     * @return void
+     **/
+    function align($alignement) {}
+
+    /**
+     * swftextfield creates a new text field object. 
+     * Text Fields are less flexible than swftext objects- 
+     * they can't be rotated, scaled non-proportionally, or skewed, but they can
+     * be used as form entries, and they can use browser-defined fonts.
+     *
+     * @param int
+     * @return SWFTextField
+     **/
+    function __construct($flags) {}
+
+    /**
+     * swftextfield-&gt;setbounds sets the text field width 
+     * to width and height to height.
+     * If you don't set the bounds yourself, Ming makes a poor guess at what 
+     * the bounds are.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setBounds($width, $height) {}
+
+    /**
+     * swftextfield-&gt;setcolor sets the color of the text field. 
+     * Default is fully opaque black. Color is represented using RGB system.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setColor($red, $green, $blue, $a) {}
+
+    /**
+     * swftextfield-&gt;setfont sets the text field font to 
+     * the [browser-defined?] font font.
+     *
+     * @param string
+     * @return void
+     **/
+    function setFont($font) {}
+
+    /**
+     * swftextfield-&gt;setheight sets the font height of this text field
+     * font to the given height height. Default is 240.
+     *
+     * @param int
+     * @return void
+     **/
+    function setHeight($height) {}
+
+    /**
+     * swftextfield-&gt;setindentation sets the indentation of 
+     * the first line in the text field, to width.
+     *
+     * @param int
+     * @return void
+     **/
+    function setIndentation($width) {}
+
+    /**
+     * swftextfield-&gt;setleftmargin sets the left margin width
+     * of the text field to width. Default is 0.
+     *
+     * @param int
+     * @return void
+     **/
+    function setLeftMargin($width) {}
+
+    /**
+     * swftextfield-&gt;setlinespacing sets the line spacing
+     * of the text field to the height of height. Default is 40.
+     *
+     * @param int
+     * @return void
+     **/
+    function setLineSpacing($height) {}
+
+    /**
+     * swftextfield-&gt;setmargins set both margins at once, 
+     * for the man on the go.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setMargins($left, $right) {}
+
+    /**
+     * swftextfield-&gt;setname sets the variable name of this
+     * text field to name, for form posting and action 
+     * scripting purposes.
+     *
+     * @param string
+     * @return void
+     **/
+    function setName($name) {}
+
+    /**
+     * @param float
+     * @return void
+     **/
+    function setPadding($padding) {}
+
+    /**
+     * swftextfield-&gt;setrightmargin sets the right margin width
+     * of the text field to width. Default is 0.
+     *
+     * @param int
+     * @return void
+     **/
+    function setRightMargin($width) {}
 
 }

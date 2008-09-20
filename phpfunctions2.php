@@ -2,6 +2,1970 @@
 // THIS FILE IS GENERATED
 // WARNING! All changes made in this file will be lost!
 
+class SWFVideoStream {
+    /**
+     * @param string
+     * @return SWFVideoStream
+     **/
+    function __construct($file) {}
+
+    /**
+     * This function returns the number of video-frames of a SWFVideoStream.
+     *
+     * @return int
+     **/
+    function getNumFrames() {}
+
+    /**
+     * Sets the width and height for streamed videos.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setDimension($x, $y) {}
+
+}
+class mysqli {
+    /**
+     * Object oriented style (method)
+     *
+     * @param bool
+     * @return bool
+     **/
+    function autocommit($mode) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function change_user($user, $password, $database) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return string
+     **/
+    function character_set_name() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * Object oriented style (method)
+     *
+     * @return bool
+     **/
+    function commit() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param string
+     * @return bool
+     **/
+    function debug($message) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return bool
+     **/
+    function dump_debug_info() {}
+
+    /**
+     * Returns a character set object providing several properties 
+     * of the current active characer set.
+     *
+     * @return object
+     **/
+    function get_charset() {}
+
+    /**
+     * The mysqli_get_client_info function is used to
+     * return a string representing the client version being used in the
+     * MySQLi extension.
+     *
+     * @return string
+     **/
+    function get_client_info() {}
+
+    /**
+     * Returns client version number as an integer.
+     *
+     * @return int
+     **/
+    function get_client_version() {}
+
+    /**
+     * @return object
+     **/
+    function get_warnings() {}
+
+    /**
+     * Object oriented style (method)
+     *
+     * @param int
+     * @return bool
+     **/
+    function kill($processid) {}
+
+    /**
+     * Indicates if one or more result sets are available from a previous call to
+     * mysqli_multi_query.
+     *
+     * @return bool
+     **/
+    function more_results() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param string
+     * @return bool
+     **/
+    function multi_query($query) {}
+
+    /**
+     * Prepares next result set from a previous call to 
+     * mysqli_multi_query which can be retrieved by
+     * mysqli_store_result or
+     * mysqli_use_result.
+     *
+     * @return bool
+     **/
+    function next_result() {}
+
+    /**
+     * Object oriented style (method)
+     *
+     * @param int
+     * @param mixed
+     * @return bool
+     **/
+    function options($option, $value) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return bool
+     **/
+    function ping() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param string
+     * @param int
+     * @return mixed
+     **/
+    function query($query, $resultmode) {}
+
+    /**
+     * Object oriented style (method)
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param int
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function real_connect($host, $username, $passwd, $dbname, $port, $socket, $flags) {}
+
+    /**
+     * Object oriented style (both methods are equivalent):
+     *
+     * @param string
+     * @return string
+     **/
+    function escape_string($escapestr) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return bool
+     **/
+    function rollback() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param string
+     * @return bool
+     **/
+    function select_db($dbname) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param string
+     * @return bool
+     **/
+    function set_charset($charset) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function ssl_set($key, $cert, $ca, $capath, $cipher) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return string
+     **/
+    function stat() {}
+
+}
+class mysqli_driver {
+    /**
+     * @return void
+     **/
+    function embedded_server_end() {}
+
+    /**
+     * @param bool
+     * @param array
+     * @param array
+     * @return bool
+     **/
+    function embedded_server_start($start, $arguments, $groups) {}
+
+}
+class mysqli_result {
+    /**
+     * Object oriented style (method):
+     *
+     * @param int
+     * @return bool
+     **/
+    function data_seek($offset) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param int
+     * @return mixed
+     **/
+    function fetch_array($resulttype) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return array
+     **/
+    function fetch_assoc() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param int
+     * @return object
+     **/
+    function fetch_field_direct($fieldnr) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return object
+     **/
+    function fetch_field() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return array
+     **/
+    function fetch_fields() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param string
+     * @param array
+     * @return object
+     **/
+    function fetch_object($class_name, $params) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return mixed
+     **/
+    function fetch_row() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param int
+     * @return bool
+     **/
+    function field_seek($fieldnr) {}
+
+    /**
+     * Object oriented style (all methods are equivalent):
+     *
+     * @return void
+     **/
+    function free() {}
+
+}
+class mysqli_stmt {
+    /**
+     * Object oriented style (method):
+     *
+     * @param string
+     * @param mixed
+     * @return bool
+     **/
+    function bind_param($types, $var1) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function bind_result($var1) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param int
+     * @return void
+     **/
+    function data_seek($offset) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return bool
+     **/
+    function execute() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return bool
+     **/
+    function fetch() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return void
+     **/
+    function free_result() {}
+
+    /**
+     * @param mysqli_stmt
+     * @return object
+     **/
+    function get_warnings($stmt) {}
+
+    /**
+     * Object oriented style (method)
+     *
+     * @param string
+     * @return mixed
+     **/
+    function prepare($query) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return bool
+     **/
+    function reset() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return mysqli_result
+     **/
+    function result_metadata() {}
+
+    /**
+     * Object oriented style (method)
+     *
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function send_long_data($param_nr, $data) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return bool
+     **/
+    function store_result() {}
+
+}
+class OCI-Collection {
+    /**
+     * Appends element to the end of the collection.
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function append($value) {}
+
+    /**
+     * Assigns a value to the collection from another, previously created
+     * collection. Both collections must be created with 
+     * oci_new_collection prior to using them.
+     *
+     * @param OCI-Collection
+     * @return bool
+     **/
+    function assign($from) {}
+
+    /**
+     * Assigns a value to the element with index index.
+     *
+     * @param int
+     * @param mixed
+     * @return bool
+     **/
+    function assignElem($index, $value) {}
+
+    /**
+     * Frees the resources associated with the collection object.
+     *
+     * @return bool
+     **/
+    function free() {}
+
+    /**
+     * Returns element's value with the index index (1-based).
+     *
+     * @param int
+     * @return mixed
+     **/
+    function getElem($index) {}
+
+    /**
+     * Returns the maximum number of elements in the collection.
+     *
+     * @return int
+     **/
+    function max() {}
+
+    /**
+     * Returns the size of the collection.
+     *
+     * @return int
+     **/
+    function size() {}
+
+    /**
+     * Trims num of elements from the end of the
+     * collection.
+     *
+     * @param int
+     * @return bool
+     **/
+    function trim($num) {}
+
+}
+class OCI-Lob {
+    /**
+     * Appends data from the large object to the end of another large object.
+     *
+     * @param OCI-Lob
+     * @return bool
+     **/
+    function append($lob_from) {}
+
+    /**
+     * Closes descriptor of LOB or FILE. This function should be used only with
+     * .
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * Tells whether the internal pointer of large object is at the end of LOB.
+     *
+     * @return bool
+     **/
+    function eof() {}
+
+    /**
+     * Erases a specified portion of the internal LOB data starting at a
+     * specified offset. If called without parameters, it
+     * erases all LOB data.
+     *
+     * @param int
+     * @param int
+     * @return int
+     **/
+    function erase($offset, $length) {}
+
+    /**
+     * Exports LOB contents to a file.
+     *
+     * @param string
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function export($filename, $start, $length) {}
+
+    /**
+     * OCI-Lob-&gt;flush actually writes data to the server.
+     *
+     * @param int
+     * @return bool
+     **/
+    function flush($flag) {}
+
+    /**
+     * Frees resources associated with the descriptor, previously allocated with 
+     * oci_new_descriptor.
+     *
+     * @return bool
+     **/
+    function free() {}
+
+    /**
+     * Tells whether the buffering for the large object is on or off.
+     *
+     * @return bool
+     **/
+    function getBuffering() {}
+
+    /**
+     * Writes data from the filename in to the current
+     * position of large object.
+     *
+     * @param string
+     * @return bool
+     **/
+    function import($filename) {}
+
+    /**
+     * Returns large object's contents. As script execution is terminated
+     * when the memory_limit is reached,
+     * ensure that the LOB does not exceed this limit. In most cases it's
+     * recommended to use instead.
+     *
+     * @return string
+     **/
+    function load() {}
+
+    /**
+     * Reads length bytes from the current position of
+     * LOB's internal pointer.
+     *
+     * @param int
+     * @return string
+     **/
+    function read($length) {}
+
+    /**
+     * Sets the internal pointer to the beginning of the large object.
+     *
+     * @return bool
+     **/
+    function rewind() {}
+
+    /**
+     * Saves data to the large object.
+     *
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function save($data, $offset) {}
+
+    /**
+     * Sets the internal pointer of the large object.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function seek($offset, $whence) {}
+
+    /**
+     * Sets the buffering for the large object, depending on the value of the
+     * on_off parameter.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function setBuffering($on_off) {}
+
+    /**
+     * Gets the size of the large object.
+     *
+     * @return int
+     **/
+    function size() {}
+
+    /**
+     * Gets the current position of a LOB's internal pointer.
+     *
+     * @return int
+     **/
+    function tell() {}
+
+    /**
+     * Truncates the LOB.
+     *
+     * @param int
+     * @return bool
+     **/
+    function truncate($length) {}
+
+    /**
+     * Writes data from the parameter data into the
+     * current position of LOB's internal pointer.
+     *
+     * @param string
+     * @param int
+     * @return int
+     **/
+    function write($data, $length) {}
+
+    /**
+     * Creates a temporary large object and writes data
+     * to it.
+     *
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function writeTemporary($data, $lob_type) {}
+
+}
+class PDO {
+    const PARAM_BOOL = 0;
+    const PARAM_NULL = 0;
+    const PARAM_INT = 0;
+    const PARAM_STR = 0;
+    const PARAM_LOB = 0;
+    const PARAM_STMT = 0;
+    const PARAM_INPUT_OUTPUT = 0;
+    const FETCH_LAZY = 0;
+    const FETCH_ASSOC = 0;
+    const FETCH_NAMED = 0;
+    const FETCH_NUM = 0;
+    const FETCH_BOTH = 0;
+    const FETCH_OBJ = 0;
+    const FETCH_BOUND = 0;
+    const FETCH_COLUMN = 0;
+    const FETCH_CLASS = 0;
+    const FETCH_INTO = 0;
+    const FETCH_FUNC = 0;
+    const FETCH_GROUP = 0;
+    const FETCH_UNIQUE = 0;
+    const FETCH_KEY_PAIR = 0;
+    const FETCH_CLASSTYPE = 0;
+    const FETCH_SERIALIZE = 0;
+    const FETCH_PROPS_LATE = 0;
+    const ATTR_AUTOCOMMIT = 0;
+    const ATTR_PREFETCH = 0;
+    const ATTR_TIMEOUT = 0;
+    const ATTR_ERRMODE = 0;
+    const ATTR_SERVER_VERSION = 0;
+    const ATTR_CLIENT_VERSION = 0;
+    const ATTR_SERVER_INFO = 0;
+    const ATTR_CONNECTION_STATUS = 0;
+    const ATTR_CASE = 0;
+    const ATTR_CURSOR_NAME = 0;
+    const ATTR_CURSOR = 0;
+    const ATTR_DRIVER_NAME = '';
+    const ATTR_ORACLE_NULLS = 0;
+    const ATTR_PERSISTENT = 0;
+    const ATTR_STATEMENT_CLASS = 0;
+    const ATTR_FETCH_CATALOG_NAMES = 0;
+    const ATTR_FETCH_TABLE_NAMES = 0;
+    const ATTR_STRINGIFY_FETCHES = 0;
+    const ATTR_MAX_COLUMN_LEN = 0;
+    const ATTR_DEFAULT_FETCH_MODE = 0;
+    const ATTR_EMULATE_PREPARES = 0;
+    const ERRMODE_SILENT = 0;
+    const ERRMODE_WARNING = 0;
+    const ERRMODE_EXCEPTION = 0;
+    const CASE_NATURAL = 0;
+    const CASE_LOWER = 0;
+    const CASE_UPPER = 0;
+    const NULL_NATURAL = 0;
+    const NULL_EMPTY_STRING = 0;
+    const NULL_TO_STRING = 0;
+    const FETCH_ORI_NEXT = 0;
+    const FETCH_ORI_PRIOR = 0;
+    const FETCH_ORI_FIRST = 0;
+    const FETCH_ORI_LAST = 0;
+    const FETCH_ORI_ABS = 0;
+    const FETCH_ORI_REL = 0;
+    const CURSOR_FWDONLY = 0;
+    const CURSOR_SCROLL = 0;
+    const ERR_NONE = '';
+    const PARAM_EVT_ALLOC = 0;
+    const PARAM_EVT_FREE = 0;
+    const PARAM_EVT_EXEC_PRE = 0;
+    const PARAM_EVT_EXEC_POST = 0;
+    const PARAM_EVT_FETCH_PRE = 0;
+    const PARAM_EVT_FETCH_POST = 0;
+    const PARAM_EVT_NORMALIZE = 0;
+    const MYSQL_ATTR_USE_BUFFERED_QUERY = 0;
+    const MYSQL_ATTR_LOCAL_INFILE = 0;
+    const MYSQL_ATTR_INIT_COMMAND = 0;
+    const MYSQL_ATTR_READ_DEFAULT_FILE = 0;
+    const MYSQL_ATTR_READ_DEFAULT_GROUP = 0;
+    const MYSQL_ATTR_MAX_BUFFER_SIZE = 0;
+    const MYSQL_ATTR_DIRECT_QUERY = 0;
+    /**
+     * Turns off autocommit mode. While autocommit mode is turned off, changes
+     * made to the database via the PDO object instance are not committed until
+     * you end the transaction by calling PDO::commit.
+     * Calling PDO::rollBack will roll back all changes to
+     * the database and return the connection to autocommit mode.
+     *
+     * @return bool
+     **/
+    function beginTransaction() {}
+
+    /**
+     * Commits a transaction, returning the database connection to autocommit
+     * mode until the next call to PDO::beginTransaction
+     * starts a new transaction.
+     *
+     * @return bool
+     **/
+    function commit() {}
+
+    /**
+     * @return string
+     **/
+    function errorCode() {}
+
+    /**
+     * @return array
+     **/
+    function errorInfo() {}
+
+    /**
+     * PDO::exec executes an SQL statement in
+     * a single function call, returning the number of rows affected by the
+     * statement.
+     *
+     * @param string
+     * @return int
+     **/
+    function exec($statement) {}
+
+    /**
+     * This function returns the value of a database connection attribute. To
+     * retrieve PDOStatement attributes, refer to
+     * PDOStatement::getAttribute.
+     *
+     * @param int
+     * @return mixed
+     **/
+    function getAttribute($attribute) {}
+
+    /**
+     * This function returns all currently available PDO drivers which can be used
+     * in DSN parameter of
+     * PDO::__construct. This is a static method.
+     *
+     * @return array
+     **/
+    function getAvailableDrivers() {}
+
+    /**
+     * Returns the ID of the last inserted row, or the last value from a
+     * sequence object, depending on the underlying driver. For example,
+     * PDO_PGSQL requires you to specify the name of
+     * a sequence object for the name parameter.
+     *
+     * @param string
+     * @return string
+     **/
+    function lastInsertId($name) {}
+
+    /**
+     * Prepares an SQL statement to be executed by the
+     * PDOStatement::execute method. The SQL statement can
+     * contain zero or more named (:name) or question mark (?) parameter markers
+     * for which real values will be substituted when the statement is executed.
+     * You cannot use both named and question mark parameter markers within the same
+     * SQL statement; pick one or the other parameter style.
+     *
+     * @param string
+     * @param array
+     * @return PDOStatement
+     **/
+    function prepare($statement, $driver_options) {}
+
+    /**
+     * PDO::query executes an SQL statement in
+     * a single function call, returning the result set (if any) returned by the
+     * statement as a PDOStatement object.
+     *
+     * @param string
+     * @return PDOStatement
+     **/
+    function query($statement) {}
+
+    /**
+     * PDO::quote places quotes around the input string (if
+     * required) and escapes special characters within the input string, using a
+     * quoting style appropriate to the underlying driver.
+     *
+     * @param string
+     * @param int
+     * @return string
+     **/
+    function quote($string, $parameter_type) {}
+
+    /**
+     * Rolls back the current transaction, as initiated by
+     * PDO::beginTransaction. It is an error to call this
+     * method if no transaction is active.
+     *
+     * @return bool
+     **/
+    function rollBack() {}
+
+    /**
+     * Sets an attribute on the database handle. Some of the available generic
+     * attributes are listed below; some drivers may make use of
+     * additional driver specific attributes.
+     * 
+     * 
+     * PDO::ATTR_CASE: Force column names to a specific case.
+     * 
+     * 
+     * PDO::CASE_LOWER: Force column names to lower case.
+     * 
+     * 
+     * PDO::CASE_NATURAL: Leave column names as returned by
+     * the database driver.
+     * 
+     * 
+     * PDO::CASE_UPPER: Force column names to upper case.
+     * 
+     * 
+     * 
+     * PDO::ATTR_ERRMODE: Error reporting.
+     * 
+     * PDO::ERRMODE_SILENT:
+     * Just set error codes.
+     * PDO::ERRMODE_WARNING:
+     * Raise E_WARNING.
+     * PDO::ERRMODE_EXCEPTION:
+     * Throw exceptions.
+     * 
+     * 
+     * PDO::ATTR_ORACLE_NULLS
+     * (available with all drivers, not just Oracle):
+     * Conversion of NULL and empty strings.
+     * 
+     * PDO::NULL_NATURAL:
+     * No conversion.
+     * PDO::NULL_EMPTY_STRING:
+     * Empty string is converted to .
+     * PDO::NULL_TO_STRING:
+     * NULL is converted to an empty string.
+     * 
+     * 
+     * PDO::ATTR_STRINGIFY_FETCHES:
+     * Convert numeric values to strings when fetching.
+     * Requires bool.
+     * 
+     * PDO::ATTR_STATEMENT_CLASS:
+     * Set user-supplied statement class derived from PDOStatement.
+     * Cannot be used with persistent PDO instances.
+     * Requires array(string classname, array(mixed constructor_args)).
+     * 
+     * PDO::ATTR_AUTOCOMMIT
+     * (available in OCI, Firebird and MySQL):
+     * Whether to autocommit every single statement.
+     * 
+     * PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
+     * (available in MySQL):
+     * Use buffered queries.
+     *
+     * @param int
+     * @param mixed
+     * @return bool
+     **/
+    function setAttribute($attribute, $value) {}
+
+    /**
+     * PDO::pgsqlLOBCreate creates a large object and
+     * returns the OID of that object. You may then open a stream on the object
+     * using PDO::pgsqlLOBOpen to read or write data to
+     * it. The OID can be stored in columns of type OID and be used to reference
+     * the large object, without causing the row to grow arbitrarily large.
+     * The large object will continue to live in the database until it
+     * is removed by calling PDO::pgsqlLOBUnlink.
+     *
+     * @return string
+     **/
+    function pgsqlLOBCreate() {}
+
+    /**
+     * PDO::pgsqlLOBOpen opens a stream to access the data
+     * referenced by oid. If mode
+     * is r, the stream is opened for reading, if
+     * mode is w, then the stream will
+     * be opened for writing. You can use all the usual filesystem functions,
+     * such as fread, fwrite and
+     * fgets to manipulate the contents of the stream.
+     *
+     * @param string
+     * @param string
+     * @return resource
+     **/
+    function pgsqlLOBOpen($oid, $mode) {}
+
+    /**
+     * Deletes a large object from the database identified by OID.
+     *
+     * @param string
+     * @return bool
+     **/
+    function pgsqlLOBUnlink($oid) {}
+
+    /**
+     * This method is similar to except that it registers functions that can be used to calculate a
+     * result aggregated across all the rows of a query.
+     *
+     * @param string
+     * @param callback
+     * @param callback
+     * @param int
+     * @return bool
+     **/
+    function sqliteCreateAggregate($function_name, $step_func, $finalize_func, $num_args) {}
+
+    /**
+     * This method allows you to register a PHP function with SQLite as an 
+     * UDF (User Defined Function), so that it can be called
+     * from within your SQL statements.
+     *
+     * @param string
+     * @param callback
+     * @param int
+     * @return bool
+     **/
+    function sqliteCreateFunction($function_name, $callback, $num_args) {}
+
+}
+class PDOStatement {
+    /**
+     * PDOStatement::bindColumn arranges to have a
+     * particular variable bound to a given column in the result-set from a
+     * query. Each call to PDOStatement::fetch or
+     * PDOStatement::fetchAll will update all the variables
+     * that are bound to columns.
+     *
+     * @param mixed
+     * @param mixed
+     * @param int
+     * @param int
+     * @param mixed
+     * @return bool
+     **/
+    function bindColumn($column, $param, $type, $maxlen, $driverdata) {}
+
+    /**
+     * Binds a PHP variable to a corresponding named or question mark placeholder
+     * in the SQL statement that was use to prepare the statement. Unlike
+     * PDOStatement::bindValue, the variable is bound as a
+     * reference and will only be evaluated at the time that
+     * PDOStatement::execute is called.
+     *
+     * @param mixed
+     * @param mixed
+     * @param int
+     * @param int
+     * @param mixed
+     * @return bool
+     **/
+    function bindParam($parameter, $variable, $data_type, $length, $driver_options) {}
+
+    /**
+     * Binds a value to a corresponding named or question mark placeholder
+     * in the SQL statement that was use to prepare the statement.
+     *
+     * @param mixed
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function bindValue($parameter, $value, $data_type) {}
+
+    /**
+     * PDOStatement::closeCursor frees up the connection
+     * to the server so that other SQL statements may be issued, but leaves the
+     * statement in a state that enables it to be executed again.
+     *
+     * @return bool
+     **/
+    function closeCursor() {}
+
+    /**
+     * Use PDOStatement::columnCount to return the number
+     * of columns in the result set represented by the PDOStatement object.
+     *
+     * @return int
+     **/
+    function columnCount() {}
+
+    /**
+     * @return string
+     **/
+    function errorCode() {}
+
+    /**
+     * @return array
+     **/
+    function errorInfo() {}
+
+    /**
+     * Execute the prepared statement. If the prepared statement included
+     * parameter markers, you must either:
+     * 
+     * call PDOStatement::bindParam to bind PHP variables
+     * to the parameter markers: bound variables pass their value as input and receive the
+     * output value, if any, of their associated parameter markers
+     * or pass an array of input-only parameter values
+     *
+     * @param array
+     * @return bool
+     **/
+    function execute($input_parameters) {}
+
+    /**
+     * Fetches a row from a result set associated with a PDOStatement object. The
+     * fetch_style parameter determines how PDO returns
+     * the row.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @return mixed
+     **/
+    function fetch($fetch_style, $cursor_orientation, $cursor_offset) {}
+
+    /**
+     * @param int
+     * @param int
+     * @param array
+     * @return array
+     **/
+    function fetchAll($fetch_style, $column_index, $ctor_args) {}
+
+    /**
+     * Returns a single column from the next row of a result set or if
+     * there are no more rows.
+     *
+     * @param int
+     * @return string
+     **/
+    function fetchColumn($column_number) {}
+
+    /**
+     * Fetches the next row and returns it as an object. This function is an
+     * alternative to PDOStatement::fetch with
+     * PDO::FETCH_CLASS or
+     * PDO::FETCH_OBJ style.
+     *
+     * @param string
+     * @param array
+     * @return mixed
+     **/
+    function fetchObject($class_name, $ctor_args) {}
+
+    /**
+     * Gets an attribute of the statement. Currently, no generic attributes exist but only driver specific:
+     * 
+     * PDO::ATTR_CURSOR_NAME
+     * (Firebird and ODBC specific):
+     * Get the name of cursor for UPDATE ... WHERE CURRENT OF.
+     *
+     * @param int
+     * @return mixed
+     **/
+    function getAttribute($attribute) {}
+
+    /**
+     * Retrieves the metadata for a 0-indexed column in a result set as an
+     * associative array.
+     *
+     * @param int
+     * @return array
+     **/
+    function getColumnMeta($column) {}
+
+    /**
+     * Some database servers support stored procedures that return more than one
+     * rowset (also known as a result set).
+     * PDOStatement::nextRowset enables you to access the
+     * second and subsequent rowsets associated with a PDOStatement object. Each
+     * rowset can have a different set of columns from the preceding rowset.
+     *
+     * @return bool
+     **/
+    function nextRowset() {}
+
+    /**
+     * PDOStatement::rowCount returns the number of
+     * rows affected by the last DELETE, INSERT, or UPDATE statement
+     * executed by the corresponding PDOStatement object.
+     *
+     * @return int
+     **/
+    function rowCount() {}
+
+    /**
+     * Sets an attribute on the statement. Currently, no generic attributes are set but only driver specific:
+     * 
+     * PDO::ATTR_CURSOR_NAME
+     * (Firebird and ODBC specific):
+     * Set the name of cursor for UPDATE ... WHERE CURRENT OF.
+     *
+     * @param int
+     * @param mixed
+     * @return bool
+     **/
+    function setAttribute($attribute, $value) {}
+
+    /**
+     * @param int
+     * @return bool
+     **/
+    function setFetchMode($mode) {}
+
+}
+class Phar {
+    /**
+     * With this method, an empty directory is created with path dirname.
+     * This method is similar to ZipArchive::addEmptyDir.
+     *
+     * @param string
+     * @return bool
+     **/
+    function addEmptyDir($dirname) {}
+
+    /**
+     * With this method, any file or URL can be added to the phar archive. If
+     * the optional second parameter localname is specified,
+     * the file will be stored in the archive with that name, otherwise the
+     * file parameter is used as the path to store within
+     * the archive. URLs must have a localname or an exception is thrown.
+     * This method is similar to ZipArchive::addFile.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function addFile($file, $localname) {}
+
+    /**
+     * With this method, any string can be added to the phar archive.
+     * The file will be stored in the archive with localname as its
+     * path. This method is similar to ZipArchive::addFromString.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function addFromString($localname, $contents) {}
+
+    /**
+     * Return the API version of the phar file format that will be
+     * used when creating phars. The Phar extension supports reading API
+     * version 1.0.0 or newer. API version 1.1.0 is required for SHA-256 and SHA-512
+     * hash, and API version 1.1.1 is required to store empty directories.
+     *
+     * @return string
+     **/
+    function apiVersion() {}
+
+    /**
+     * Populate a phar archive from directory contents. The optional second
+     * parameter is a regular expression (pcre) that is used to exclude files.
+     * Any filename that matches the regular expression will be included, all others will be
+     * excluded. For more fine-grained control, use Phar::buildFromIterator.
+     *
+     * @param string
+     * @param string
+     * @return array
+     **/
+    function buildFromDirectory($base_dir, $regex) {}
+
+    /**
+     * Populate a phar archive from an iterator. Two styles of iterators are supported,
+     * iterators that map the filename within the phar to the name of a file on disk,
+     * and iterators like DirectoryIterator that return
+     * SplFileInfo objects. For iterators that return SplFileInfo objects, the second
+     * parameter is required.
+     *
+     * @param Iterator
+     * @param string
+     * @return array
+     **/
+    function buildFromIterator($iter, $base_directory) {}
+
+    /**
+     * This should be used to test whether compression is possible prior to
+     * loading a phar archive containing compressed files.
+     *
+     * @param int
+     * @return bool
+     **/
+    function canCompress($type) {}
+
+    /**
+     * This static method determines whether write access has been disabled in
+     * the system php.ini via the phar.readonly
+     * ini variable.
+     *
+     * @return bool
+     **/
+    function canWrite() {}
+
+    /**
+     * For tar-based and phar-based phar archives, this method compresses the entire archive using
+     * gzip compression or bzip2 compression. The resulting file can be processed with the
+     * gunzip command/bunzip command, or accessed directly and transparently with the Phar
+     * extension.
+     *
+     * @param int
+     * @param string
+     * @return object
+     **/
+    function compress($compression, $extension) {}
+
+    /**
+     * This method compresses all files in the Phar archive using bzip2 compression.
+     * The bzip2 extension must be enabled to take
+     * advantage of this feature. In addition, if any files are already compressed using
+     * gzip compression, the zlib extension must be enabled in order
+     * to decompress the files prior to re-compressing with bzip2 compression.
+     * As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed.
+     *
+     * @return bool
+     **/
+    function compressAllFilesBZIP2() {}
+
+    /**
+     * For tar-based phar archives, this method compresses the entire archive using
+     * gzip compression. The resulting file can be processed with the gunzip command, or
+     * accessed directly and transparently with the Phar extension.
+     *
+     * @return bool
+     **/
+    function compressAllFilesGZ() {}
+
+    /**
+     * For tar-based phar archives, this method throws a
+     * BadMethodCallException, as compression of individual
+     * files within a tar archive is not supported by the file format. Use
+     * Phar::compress to compress an entire tar-based phar archive.
+     *
+     * @param int
+     * @return bool
+     **/
+    function compressFiles($compression) {}
+
+    /**
+     * @param string
+     * @param int
+     * @param string
+     * @return void
+     **/
+    function __construct($fname, $flags, $alias) {}
+
+    /**
+     * This method is used to convert an executable phar archive to either a
+     * tar or zip file. To make the tar or zip non-executable, the phar
+     * stub and phar alias files are removed from the newly created archive.
+     *
+     * @param int
+     * @param int
+     * @param string
+     * @return PharData
+     **/
+    function convertToData($format, $compression, $extension) {}
+
+    /**
+     * This method is used to convert a phar archive to another file format. For instance,
+     * it can be used to create a tar-based executable phar archive from a zip-based
+     * executable phar archive, or from an executable phar archive in the phar file format. In
+     * addition, it can be used to apply whole-archive compression to a tar or phar-based
+     * archive.
+     *
+     * @param int
+     * @param int
+     * @param string
+     * @return Phar
+     **/
+    function convertToExecutable($format, $compression, $extension) {}
+
+    /**
+     * Copy a file internal to the phar archive to another new file within the phar.
+     * This is an object-oriented alternative to using copy with
+     * the phar stream wrapper.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function copy($oldfile, $newfile) {}
+
+    /**
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * This method is intended for creation of phar-file format-specific stubs, and is
+     * not intended for use with tar- or zip-based phar archives.
+     *
+     * @return string
+     **/
+    function createDefaultStub() {}
+
+    /**
+     * For tar-based and phar-based phar archives, this method decompresses the entire archive.
+     *
+     * @param string
+     * @return object
+     **/
+    function decompress($extension) {}
+
+    /**
+     * For tar-based phar archives, this method throws a
+     * BadMethodCallException, as compression of individual
+     * files within a tar archive is not supported by the file format. Use
+     * Phar::compress to compress an entire tar-based phar archive.
+     *
+     * @return bool
+     **/
+    function decompressFiles() {}
+
+    /**
+     * Deletes the global metadata of the phar
+     *
+     * @return int
+     **/
+    function delMetadata() {}
+
+    /**
+     * Delete a file within an archive. This is the functional equivalent of
+     * calling unlink on the stream wrapper equivalent,
+     * as shown in the example below.
+     *
+     * @param string
+     * @return int
+     **/
+    function delete($entry) {}
+
+    /**
+     * Extract all files within a phar archive to disk. Extracted files and directories preserve
+     * permissions as stored in the archive. The optional parameters allow optional control over
+     * which files are extracted, and whether existing files on disk can be overwritten.
+     * The second parameter files can be either the name of a file or
+     * directory to extract, or an array of names of files and directories to extract. By
+     * default, this method will not overwrite existing files, the third parameter can be
+     * set to true to enable overwriting of files.
+     * This method is similar to ZipArchive::extractTo.
+     *
+     * @param string
+     * @param string|array
+     * @param bool
+     * @return int
+     **/
+    function extractTo($pathto, $files, $overwrite) {}
+
+    /**
+     * Retrieve archive meta-data. Meta-data can be any PHP variable that can be serialized.
+     *
+     * @return int
+     **/
+    function getMetaData() {}
+
+    /**
+     * This method can be used to determine whether a phar has either
+     * had an internal file deleted, or contents of a file changed in
+     * some way.
+     *
+     * @return bool
+     **/
+    function getModified() {}
+
+    /**
+     * Returns the verification signature of a phar archive in a hexadecimal string.
+     *
+     * @return array
+     **/
+    function getSignature() {}
+
+    /**
+     * Phar archives contain a bootstrap loader, or stub
+     * written in PHP that is executed when the archive is executed in PHP either via
+     * include:
+     * 
+     * 
+     * 
+     * or by simple execution:
+     *
+     * @return string
+     **/
+    function getStub() {}
+
+    /**
+     * @return array
+     **/
+    function getSupportedCompression() {}
+
+    /**
+     * Return array of supported signature types
+     *
+     * @return array
+     **/
+    function getSupportedSignatures() {}
+
+    /**
+     * Returns the API version of an opened Phar archive.
+     *
+     * @return string
+     **/
+    function getVersion() {}
+
+    /**
+     * Returns whether phar has global meta-data set.
+     *
+     * @return int
+     **/
+    function hasMetadata() {}
+
+    /**
+     * instructs phar to intercept fopen, readfile,
+     * file_get_contents, opendir, and all of
+     * the stat-related functions. If any of these functions is called from within
+     * a phar archive with a relative path, the call is modified to access a file
+     * within the phar archive. Absolute paths are assumed to be attempts to load
+     * external files from the filesystem.
+     *
+     * @return void
+     **/
+    function interceptFileFuncs() {}
+
+    /**
+     * This method can be used to determine whether a Phar will save changes
+     * to disk immediately, or whether a call to Phar-stopBuffering
+     * is needed to enable saving changes.
+     *
+     * @return bool
+     **/
+    function isBuffering() {}
+
+    /**
+     * Returns Phar::GZ or PHAR::BZ2 if the entire phar archive is compressed
+     * (.tar.gz/tar.bz and so on). Zip-based phar archives cannot be compressed as a
+     * file, and so this method will always return if a zip-based phar archive is queried.
+     *
+     * @return mixed
+     **/
+    function isCompressed() {}
+
+    /**
+     * @param int
+     * @return bool
+     **/
+    function isFileFormat($format) {}
+
+    /**
+     * Returns whether the given filename is a valid phar filename that will be recognized
+     * as a phar archive by the phar extension. This can be used to test a name without
+     * having to instantiate a phar archive and catch the inevitable Exception that will be
+     * thrown if an invalid name is specified.
+     *
+     * @param string
+     * @param bool
+     * @return bool
+     **/
+    function isValidPharFilename($filename, $executable) {}
+
+    /**
+     * This method returns if phar.readonly is 0,
+     * and the actual phar archive on disk is not read-only.
+     *
+     * @return bool
+     **/
+    function isWritable() {}
+
+    /**
+     * This can be used to read the contents of an external Phar archive. This
+     * is most useful for assigning an alias to a phar so that subsequent references
+     * to the phar can use the shorter alias, or for loading Phar archives that
+     * only contain data and are not intended for execution/inclusion in PHP scripts.
+     *
+     * @param string
+     * @param string
+     * @return mixed
+     **/
+    function loadPhar($filename, $alias) {}
+
+    /**
+     * This static method can only be used inside a Phar archive's loader stub
+     * in order to initialize the phar when it is directly executed, or when
+     * it is included in another script.
+     *
+     * @param string
+     * @param int
+     * @return mixed
+     **/
+    function mapPhar($alias, $dataoffset) {}
+
+    /**
+     * Much like the unix file system concept of mounting external devices to paths within the
+     * directory tree, Phar::mount allows referring to external files
+     * and directories as if they were inside of an archive. This allows powerful
+     * abstraction such as referring to external configuration files as if they were
+     * inside the archive.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function mount($pharpath, $externalpath) {}
+
+    /**
+     * Phar::mungServer should only be called within the
+     * stub of a phar archive.
+     *
+     * @param array
+     * @return void
+     **/
+    function mungServer($munglist) {}
+
+    /**
+     * This is an implementation of the ArrayAccess interface allowing
+     * direct manipulation of the contents of a Phar archive using
+     * array access brackets.
+     *
+     * @param string
+     * @return bool
+     **/
+    function offsetExists($offset) {}
+
+    /**
+     * This is an implementation of the ArrayAccess interface allowing
+     * direct manipulation of the contents of a Phar archive using
+     * array access brackets. offsetGet is used for retrieving files from
+     * a Phar archive.
+     *
+     * @param string
+     * @return int
+     **/
+    function offsetGet($offset) {}
+
+    /**
+     * This is an implementation of the ArrayAccess interface allowing
+     * direct manipulation of the contents of a Phar archive using
+     * array access brackets. offsetSet is used for modifying an
+     * existing file, or adding a new file to a Phar archive.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function offsetSet($offset, $value) {}
+
+    /**
+     * This is an implementation of the ArrayAccess interface allowing
+     * direct manipulation of the contents of a Phar archive using
+     * array access brackets. offsetUnset is used for deleting an
+     * existing file, and is called by the unset
+     * language construct.
+     *
+     * @param string
+     * @return bool
+     **/
+    function offsetUnset($offset) {}
+
+    /**
+     * Returns the full path to the running phar archive. This is intended for use much
+     * like the __FILE__ magic constant, and only has effect inside
+     * an executing phar archive.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function running($retphar) {}
+
+    /**
+     * Set the alias for the Phar archive, and write it as the permanent alias
+     * for this phar archive. An alias can be used internally to a phar archive to
+     * ensure that use of the phar stream wrapper to access internal
+     * files always works regardless of the location of the phar archive on the
+     * filesystem. Another alternative is to rely upon Phar's interception of
+     * include or to use Phar::interceptFileFuncs
+     * and use relative paths.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setAlias($alias) {}
+
+    /**
+     * This method is a convenience method that combines the functionality of
+     * Phar::createDefaultStub and Phar::setStub.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setDefaultStub($index, $webindex) {}
+
+    /**
+     * Phar::setMetadata should be used to store customized data
+     * that describes something about the phar archive as a complete entity.
+     * PharFileInfo::setMetadata should be used for file-specific meta-data.
+     * Meta-data can slow down the performance of loading a phar archive if the data is large.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function setMetadata($metadata) {}
+
+    /**
+     * set the signature algorithm for a phar and apply it. The
+     * signature algorithm must be one of Phar::MD5,
+     * Phar::SHA1, Phar::SHA256,
+     * Phar::SHA512, or Phar::OPENSSL.
+     *
+     * @param int
+     * @param string
+     * @return array
+     **/
+    function setSignatureAlgorithm($sigtype, $privatekey) {}
+
+    /**
+     * This method is used to add a PHP bootstrap loader stub to a new Phar archive, or
+     * to replace the loader stub in an existing Phar archive.
+     *
+     * @param string
+     * @return void
+     **/
+    function setStub($stub) {}
+
+    /**
+     * Although technically unnecessary, the startBuffering method
+     * can provide a significant performance boost when creating or modifying a
+     * Phar archive with a large number of files. Ordinarily, every time a file
+     * within a Phar archive is created or modified in any way, the entire Phar
+     * archive will be recreated with the changes. In this way, the archive will
+     * be up-to-date with the activity performed on it.
+     *
+     * @return void
+     **/
+    function startBuffering() {}
+
+    /**
+     * stopBuffering is used in conjunction with the
+     * startBuffering method. startBuffering
+     * can provide a significant performance boost when creating or modifying a
+     * Phar archive with a large number of files. Ordinarily, every time a file
+     * within a Phar archive is created or modified in any way, the entire Phar
+     * archive will be recreated with the changes. In this way, the archive will
+     * be up-to-date with the activity performed on it.
+     *
+     * @return void
+     **/
+    function stopBuffering() {}
+
+    /**
+     * This method decompresses all files in the Phar archive.
+     * If any files are already compressed using
+     * gzip compression, the zlib extension must be enabled in order
+     * to decompress the files, and any files compressed using bzip2 compression
+     * require the bzip2 extension to decompress the files.
+     * As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed.
+     *
+     * @return bool
+     **/
+    function uncompressAllFiles() {}
+
+    /**
+     * @param string
+     * @return bool
+     **/
+    function unlinkArchive($archive) {}
+
+    /**
+     * Phar::mapPhar for web-based phars. This method parses
+     * $_SERVER['REQUEST_URI'] and routes a request from a web
+     * browser to an internal file within the phar archive. In essence, it simulates
+     * a web server, routing requests to the correct file, echoing the correct headers
+     * and parsing PHP files as needed. This powerful method is part of what makes it easy
+     * to convert an existing PHP application into a phar archive. Combined with
+     * Phar::mungServer and Phar::interceptFileFuncs,
+     * any web application can be used unmodified from a phar archive.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param array
+     * @param array
+     * @return void
+     **/
+    function webPhar($alias, $index, $f404, $mimetypes, $rewrites) {}
+
+}
+class PharData {
+    /**
+     * With this method, an empty directory is created with path dirname.
+     * This method is similar to ZipArchive::addEmptyDir.
+     *
+     * @param string
+     * @return bool
+     **/
+    function addEmptyDir($dirname) {}
+
+    /**
+     * With this method, any string can be added to the tar/zip archive.
+     * The file will be stored in the archive with localname as its
+     * path. This method is similar to ZipArchive::addFromString.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function addFromString($localname, $contents) {}
+
+    /**
+     * Populate a tar or zip archive from an iterator. Two styles of iterators are supported,
+     * iterators that map the filename within the tar/zip to the name of a file on disk,
+     * and iterators like DirectoryIterator that return
+     * SplFileInfo objects. For iterators that return SplFileInfo objects, the second
+     * parameter is required.
+     *
+     * @param Iterator
+     * @param string
+     * @return array
+     **/
+    function buildFromIterator($iter, $base_directory) {}
+
+    /**
+     * For tar archives, this method compresses the entire archive using
+     * gzip compression or bzip2 compression. The resulting file can be processed with the
+     * gunzip command/bunzip command, or accessed directly and transparently with the Phar
+     * extension.
+     *
+     * @param int
+     * @param string
+     * @return object
+     **/
+    function compress($compression, $extension) {}
+
+    /**
+     * For tar-based archives, this method throws a
+     * BadMethodCallException, as compression of individual
+     * files within a tar archive is not supported by the file format. Use
+     * PharData::compress to compress an entire tar-based archive.
+     *
+     * @param int
+     * @return bool
+     **/
+    function compressFiles($compression) {}
+
+    /**
+     * @param string
+     * @param int
+     * @return void
+     **/
+    function __construct($fname, $flags) {}
+
+    /**
+     * This method is used to convert a non-executable tar or zip archive to another
+     * non-executable format.
+     *
+     * @param int
+     * @param int
+     * @param string
+     * @return PharData
+     **/
+    function convertToData($format, $compression, $extension) {}
+
+    /**
+     * This method is used to convert a non-executable tar or zip archive to an
+     * executable phar archive. Any of the three executable file formats
+     * (phar, tar or zip) can be used, and whole-archive compression can also be performed.
+     *
+     * @param int
+     * @param int
+     * @param string
+     * @return Phar
+     **/
+    function convertToExecutable($format, $compression, $extension) {}
+
+    /**
+     * Copy a file internal to the tar/zip archive to another new file within the same archive.
+     * This is an object-oriented alternative to using copy with
+     * the phar stream wrapper.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function copy($oldfile, $newfile) {}
+
+    /**
+     * For tar-based archives, this method decompresses the entire archive.
+     *
+     * @param string
+     * @return object
+     **/
+    function decompress($extension) {}
+
+    /**
+     * For tar-based archives, this method throws a
+     * BadMethodCallException, as compression of individual
+     * files within a tar archive is not supported by the file format. Use
+     * PharData::compress to compress an entire tar-based archive.
+     *
+     * @return bool
+     **/
+    function decompressFiles() {}
+
+    /**
+     * Deletes the global metadata of the zip archive
+     *
+     * @return int
+     **/
+    function delMetadata() {}
+
+    /**
+     * Delete a file within an archive. This is the functional equivalent of
+     * calling unlink on the stream wrapper equivalent,
+     * as shown in the example below.
+     *
+     * @param string
+     * @return int
+     **/
+    function delete($entry) {}
+
+    /**
+     * Extract all files within a tar/zip archive to disk. Extracted files and directories preserve
+     * permissions as stored in the archive. The optional parameters allow optional control over
+     * which files are extracted, and whether existing files on disk can be overwritten.
+     * The second parameter files can be either the name of a file or
+     * directory to extract, or an array of names of files and directories to extract. By
+     * default, this method will not overwrite existing files, the third parameter can be
+     * set to true to enable overwriting of files.
+     * This method is similar to ZipArchive::extractTo.
+     *
+     * @param string
+     * @param string|array
+     * @param bool
+     * @return int
+     **/
+    function extractTo($pathto, $files, $overwrite) {}
+
+    /**
+     * This method returns if the tar/zip archive on disk is not read-only.
+     * Unlike Phar::isWritable, data-only tar/zip archives
+     * can be modified even if phar.readonly is set to 1.
+     *
+     * @return bool
+     **/
+    function isWritable() {}
+
+    /**
+     * This is an implementation of the ArrayAccess interface allowing
+     * direct manipulation of the contents of a tar/zip archive using
+     * array access brackets. offsetSet is used for modifying an
+     * existing file, or adding a new file to a tar/zip archive.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function offsetSet($offset, $value) {}
+
+    /**
+     * This is an implementation of the ArrayAccess interface allowing
+     * direct manipulation of the contents of a tar/zip archive using
+     * array access brackets. offsetUnset is used for deleting an
+     * existing file, and is called by the unset
+     * language construct.
+     *
+     * @param string
+     * @return bool
+     **/
+    function offsetUnset($offset) {}
+
+    /**
+     * Non-executable tar/zip archives cannot have an alias, so this method simply
+     * throws an exception.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setAlias($alias) {}
+
+    /**
+     * Non-executable tar/zip archives cannot have a stub, so this method simply
+     * throws an exception.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setDefaultStub($index, $webindex) {}
+
+    /**
+     * Non-executable tar/zip archives cannot have a stub, so this method simply
+     * throws an exception.
+     *
+     * @param string
+     * @return void
+     **/
+    function setStub($stub) {}
+
+}
 class PharFileInfo {
     /**
      * PharFileInfo::chmod allows setting of the executable
@@ -195,6 +2159,85 @@ class PharFileInfo {
     function setUncompressed() {}
 
 }
+class Rar {
+    /**
+     * Rar::extract extracts entry's data to the
+     * dir. It will create new file in the specified
+     * dir with the name identical to the entry's name.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function extract($dir, $filepath) {}
+
+    /**
+     * Rar::getAttr returns attributes of the archive
+     * entry.
+     *
+     * @return int
+     **/
+    function getAttr() {}
+
+    /**
+     * Rar::getCrc returns CRC of the archive entry.
+     *
+     * @return int
+     **/
+    function getCrc() {}
+
+    /**
+     * Gets entry last modification time.
+     *
+     * @return string
+     **/
+    function getFileTime() {}
+
+    /**
+     * Rar::getHostOs return code of the host OS of the
+     * archive entry.
+     *
+     * @return int
+     **/
+    function getHostOs() {}
+
+    /**
+     * Rar::getMethod returns number of the method used when adding
+     * current archive entry.
+     *
+     * @return int
+     **/
+    function getMethod() {}
+
+    /**
+     * Rar::getName returns full name of the archive entry.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Get packed size of the archive entry.
+     *
+     * @return int
+     **/
+    function getPackedSize() {}
+
+    /**
+     * Get unpacked size of the archive entry.
+     *
+     * @return int
+     **/
+    function getUnpackedSize() {}
+
+    /**
+     * Get version of the archiver used to add the archive entry.
+     *
+     * @return int
+     **/
+    function getVersion() {}
+
+}
 class Runkit_Sandbox_Parent {
     /**
      * Instantiating the Runkit_Sandbox_Parent
@@ -205,6 +2248,114 @@ class Runkit_Sandbox_Parent {
      * @return void
      **/
     function __construct() {}
+
+}
+class SAMConnection {
+    /**
+     * Calling the "commit" method on a Connection object commits (completes) all
+     * in-flight transactions that are part of the current unit of work.
+     *
+     * @return bool
+     **/
+    function commit() {}
+
+    /**
+     * Calling the "connect" method on a SAMConnection object connects the PHP
+     * script to a messaging server. No messages can be sent or received until a
+     * connection is made.
+     *
+     * @param string
+     * @param array
+     * @return bool
+     **/
+    function connect($protocol, $properties) {}
+
+    /**
+     * Calling the "disconnect" method on a SAMConnection object disconnects the
+     * PHP script from a messaging server. No messages can be sent or received
+     * after a connection has been disconnected.
+     *
+     * @return bool
+     **/
+    function disconnect() {}
+
+    /**
+     * Calling the "isConnected" method on a Connection object will check whether
+     * the PHP script is connected to a messaging server. No messages can be sent
+     * or received unless a connection has been established with a Messaging
+     * server.
+     *
+     * @return bool
+     **/
+    function isConnected() {}
+
+    /**
+     * @param string
+     * @param array
+     * @return SAMMessage
+     **/
+    function peek($target, $properties) {}
+
+    /**
+     * @param string
+     * @param array
+     * @return array
+     **/
+    function peekAll($target, $properties) {}
+
+    /**
+     * @param string
+     * @param array
+     * @return SAMMessage
+     **/
+    function receive($target, $properties) {}
+
+    /**
+     * Removes a message from a queue.
+     *
+     * @param string
+     * @param array
+     * @return SAMMessage
+     **/
+    function remove($target, $properties) {}
+
+    /**
+     * Rolls back an in-flight unit of work.
+     *
+     * @return bool
+     **/
+    function rollback() {}
+
+    /**
+     * The "send" method is used to send a message to a specific queue or to
+     * publish to a specific topic. The method returns a correlation id that can
+     * be used as a selector to identify reply or response messages when these
+     * are requested.
+     *
+     * @param string
+     * @param SAMMessage
+     * @param array
+     * @return string
+     **/
+    function send($target, $msg, $properties) {}
+
+    /**
+     * The "subscribe" method is used to create a new subscription to a specified topic.
+     *
+     * @param string
+     * @return string
+     **/
+    function subscribe($targetTopic) {}
+
+    /**
+     * The "unsubscribe" method is used to delete an existing subscription to a
+     * specified topic.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function unsubscribe($subscriptionId, $targetTopic) {}
 
 }
 class SCA_LocalProxy {
@@ -988,6 +3139,245 @@ class SDO_DAS_Relational {
     function executeQuery($database_handle, $SQL_statement, $column_specifier) {}
 
 }
+class SimpleXMLElement {
+    /**
+     * Adds an attribute to the SimpleXML element.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function addAttribute($name, $value, $namespace) {}
+
+    /**
+     * Adds a child element to the node and returns a SimpleXMLElement of the child.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return SimpleXMLElement
+     **/
+    function addChild($name, $value, $namespace) {}
+
+    /**
+     * The asXML method formats the parent object's data
+     * in XML version 1.0.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function asXML($filename) {}
+
+    /**
+     * This function provides the attributes and values defined within an xml tag.
+     *
+     * @param string
+     * @param bool
+     * @return SimpleXMLElement
+     **/
+    function attributes($ns, $is_prefix) {}
+
+    /**
+     * This method finds the children of the element of which it is a member. The result
+     * follows normal iteration rules.
+     *
+     * @param string
+     * @param bool
+     * @return SimpleXMLElement
+     **/
+    function children($ns, $is_prefix) {}
+
+    /**
+     * Returns namespaces declared in document
+     *
+     * @param bool
+     * @return array
+     **/
+    function getDocNamespaces($recursive) {}
+
+    /**
+     * Gets the name of the XML element.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Returns namespaces used in document
+     *
+     * @param bool
+     * @return array
+     **/
+    function getNamespaces($recursive) {}
+
+    /**
+     * Creates a prefix/ns context for the next XPath query. In particular, this is
+     * helpful if the provider of the given XML document alters the namespace
+     * prefixes. registerXPathNamespace will create a prefix for
+     * the associated namespace, allowing one to access nodes in that namespace 
+     * without the need to change code to allow for the new prefixes dictated by the
+     * provider.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function registerXPathNamespace($prefix, $ns) {}
+
+    /**
+     * The xpath method searches the SimpleXML node for
+     * children matching the XPath path.
+     *
+     * @param string
+     * @return array
+     **/
+    function xpath($path) {}
+
+}
+class SoapClient {
+    /**
+     * This method is deprecated. Use instead of it.
+     *
+     * @param string
+     * @param array
+     * @param array
+     * @param array
+     * @param array
+     * @return mixed
+     **/
+    function __call($function_name, $arguments, $options, $input_headers, $output_headers) {}
+
+    /**
+     * Performs SOAP request over HTTP.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param int
+     * @param int
+     * @return string
+     **/
+    function __doRequest($request, $location, $action, $version, $one_way) {}
+
+    /**
+     * Returns the list of SOAP functions.
+     *
+     * @return array
+     **/
+    function __getFunctions() {}
+
+    /**
+     * @return string
+     **/
+    function __getLastRequest() {}
+
+    /**
+     * @return string
+     **/
+    function __getLastRequestHeaders() {}
+
+    /**
+     * @return string
+     **/
+    function __getLastResponse() {}
+
+    /**
+     * @return string
+     **/
+    function __getLastResponseHeaders() {}
+
+    /**
+     * This function works only in WSDL mode.
+     *
+     * @return array
+     **/
+    function __getTypes() {}
+
+    /**
+     * Defines a cookie to be sent along with the SOAP requests.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function __setCookie($name, $value) {}
+
+    /**
+     * This is a low level API function that is used to make a SOAP call. Usually,
+     * in WSDL mode,
+     * you can simply call SOAP functions as SoapClient 
+     * methods. This method useful in non-WSDL mode when soapaction 
+     * is unknown, uri differs from the default or when sending
+     * and/or receiving SOAP Headers.
+     *
+     * @param string
+     * @param array
+     * @param array
+     * @param mixed
+     * @param array
+     * @return mixed
+     **/
+    function __soapCall($function_name, $arguments, $options, $input_headers, $output_headers) {}
+
+}
+class SoapServer {
+    /**
+     * Exports one or more functions for remote clients.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function addFunction($functions) {}
+
+    /**
+     * @param string
+     * @param string
+     * @param string
+     * @param mixed
+     * @param string
+     * @return void
+     **/
+    function fault($code, $string, $actor, $details, $name) {}
+
+    /**
+     * This method returns the list of all functions added by 
+     * or 
+     * .
+     *
+     * @return array
+     **/
+    function getFunctions() {}
+
+    /**
+     * Processes a SOAP request, calls necessary functions, and sends a response 
+     * back.
+     *
+     * @param string
+     * @return void
+     **/
+    function handle($soap_request) {}
+
+    /**
+     * Exports all methods from specified class.
+     *
+     * @param string
+     * @param mixed
+     * @return void
+     **/
+    function setClass($class_name, $args) {}
+
+    /**
+     * This function allows saving data between requests in a PHP session. It works only
+     * with a server that exports functions from a class with
+     * .
+     *
+     * @param int
+     * @return void
+     **/
+    function setPersistence($mode) {}
+
+}
 class SphinxClient {
     /**
      * Adds query with the current settings to multi-query batch. This method
@@ -1027,7 +3417,6 @@ class SphinxClient {
     /**
      * Creates a new SphinxClient object.
      *
-     * @return 
      **/
     function __construct() {}
 
@@ -2299,7 +4688,6 @@ class SQLite3 {
      * @param string
      * @param int
      * @param string
-     * @return 
      **/
     function __construct($filename, $flags, $encryption_key) {}
 
@@ -2851,6 +5239,94 @@ class XMLReader {
      * @return bool
      **/
     function xml($source, $encoding, $options) {}
+
+}
+class XSLTProcessor {
+    /**
+     * Gets a parameter if previously set by
+     * XSLTProcessor::setParameter.
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function getParameter($namespaceURI, $localName) {}
+
+    /**
+     * This method determine if PHP was built with the EXSLT library.
+     *
+     * @return bool
+     **/
+    function hasExsltSupport() {}
+
+    /**
+     * This method import the stylesheet into the 
+     * XSLTProcessor for transformations.
+     *
+     * @param DOMDocument
+     * @return void
+     **/
+    function importStylesheet($stylesheet) {}
+
+    /**
+     * This method enables the ability to use PHP functions as XSLT functions
+     * within XSL stylesheets.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function registerPHPFunctions($restrict) {}
+
+    /**
+     * Removes a parameter, if set. This will make the processor use the
+     * default value for the parameter as specified in the stylesheet.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function removeParameter($namespaceURI, $localName) {}
+
+    /**
+     * Sets the value of one or more parameters to be used in subsequent 
+     * transformations with XSLTProcessor. If the 
+     * parameter doesn't exist in the stylesheet it will be ignored.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function setParameter($namespace, $name, $value) {}
+
+    /**
+     * Transforms the source node to a DOMDocument applying
+     * the stylesheet given by the
+     * XSLTProcessor::importStylesheet method.
+     *
+     * @param DOMNode
+     * @return DOMDocument
+     **/
+    function transformToDoc($doc) {}
+
+    /**
+     * Transforms the source node to an URI applying the stylesheet given by the
+     * XSLTProcessor::importStylesheet method.
+     *
+     * @param DOMDocument
+     * @param string
+     * @return int
+     **/
+    function transformToURI($doc, $uri) {}
+
+    /**
+     * Transforms the source node to a string applying the stylesheet given by
+     * the xsltprocessor::importStylesheet method.
+     *
+     * @param DOMDocument
+     * @return string
+     **/
+    function transformToXML($doc) {}
 
 }
 class ZipArchive {

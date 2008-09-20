@@ -67,8 +67,17 @@ foreach ($dirs as $dir) {
             }
         }
         if (!isset($xml->refsect1)) continue;
-        if (!$xml->refsect1->methodsynopsis->methodname) continue;
-        $function = $xml->refsect1->methodsynopsis->methodname;
+        if (isset($xml->refsect1->methodsynopsis)) {
+            $methodsynopsis = $xml->refsect1->methodsynopsis;
+            $function = (string)$methodsynopsis->methodname;
+            $class = 'global';
+        } else if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->methodsynopsis)) {
+            $methodsynopsis = $xml->refsect1->classsynopsis->methodsynopsis;
+            $class = (string)$xml->refsect1->classsynopsis->ooclass->classname;
+            $function = (string)$methodsynopsis->methodname;
+        } else {
+            continue;
+        }
         if (strpos($function, '::')) {
             $class = substr($function, 0, strpos($function, '::'));
             $function = substr($function, strpos($function, '::')+2);
@@ -76,7 +85,6 @@ foreach ($dirs as $dir) {
             $class = substr($function, 0, strpos($function, '->'));
             $function = substr($function, strpos($function, '->')+2);
         } else {
-            $class = 'global';
             if ($function == '__halt_compiler') continue;
             if ($function == 'exit') continue;
             if ($function == 'die') continue;
@@ -99,7 +107,7 @@ foreach ($dirs as $dir) {
         $existingFunctions[] = $class.'::'.$function;
 
         $params = array();
-        foreach ($xml->refsect1->methodsynopsis->methodparam as $param) {
+        foreach ($methodsynopsis->methodparam as $param) {
             $paramName = $param->parameter;
             if (trim($paramName) == '...') continue;
             if (!trim($paramName)) continue;
@@ -119,7 +127,7 @@ foreach ($dirs as $dir) {
         $functions[$class][] = array(
             'name' => $function,
             'params' => $params,
-            'type' => (string)$xml->refsect1->methodsynopsis->type,
+            'type' => (string)$methodsynopsis->type,
             'desc' => $desc
         );
     }
@@ -183,7 +191,7 @@ foreach ($functions as $class => $i) {
         foreach ($f['params'] as $pi=>$param) {
             $out .= "$indent * @param $param[type]\n";
         }
-        $out .= "$indent * @return $f[type]\n";
+        if ($f['type']) $out .= "$indent * @return $f[type]\n";
         $out .= "$indent **/\n";
         $out .= "{$indent}function ".$f['name'];
         $out .= "(";
