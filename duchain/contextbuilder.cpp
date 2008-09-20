@@ -48,13 +48,7 @@ ReferencedTopDUContext ContextBuilder::build( const IndexedString& url, AstNode*
         DUChainWriteLocker lock(DUChain::lock());
         updateContext->clearImportedParentContexts();
     }
-    ReferencedTopDUContext ret = ContextBuilderBase::build(url, node, updateContext);
-    
-    DUChainWriteLocker lock(DUChain::lock());
-    if (url != IndexedString("internalfunctions")) {
-        ret->addImportedParentContext(DUChain::self()->chainForDocument(IndexedString("internalfunctions")));
-    }
-    return ret;
+    return ContextBuilderBase::build(url, node, updateContext);
 }
 
 void ContextBuilder::setEditor(EditorIntegrator* editor)
@@ -74,6 +68,17 @@ ContextBuilder::~ContextBuilder()
 
 void ContextBuilder::startVisiting(AstNode* node)
 {
+    TopDUContext* top = dynamic_cast<TopDUContext*>(currentContext());
+    Q_ASSERT(top);
+    bool hasImports;
+    {
+        DUChainReadLocker lock(DUChain::lock());
+        hasImports = top->importedParentContexts().isEmpty();
+    }
+    if (hasImports &&  top->url() != IndexedString("internalfunctions")) {
+        DUChainWriteLocker lock(DUChain::lock());
+        top->addImportedParentContext(DUChain::self()->chainForDocument(IndexedString("internalfunctions")));
+    }
     visitNode(node);
 }
 
@@ -123,6 +128,7 @@ void ContextBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst
 
 void ContextBuilder::classContextOpened(KDevelop::DUContext* context)
 {
+    Q_UNUSED(context);
 }
 
 void ContextBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node)
@@ -138,20 +144,12 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
     visitNode(node->modifiers);
     if (node->methodName) {
         //method declaration
+        DUContext* parameters = openContext(node->parameters, DUContext::Function, node->methodName);
+        visitNode(node->parameters);
+        closeContext();
 
-        QualifiedIdentifier id;
-
-        DUContext* parameters = 0;
-        if (node->parameters) {
-            parameters = openContext(node->parameters, DUContext::Function, node->methodName);
-            id = currentContext()->localScopeIdentifier();
-            visitNode(node->parameters);
-            closeContext();
-        }
-
-        DUContext* body = openContext(node->methodBody, DUContext::Other, id);
-
-        if (parameters) {
+        DUContext* body = openContext(node->methodBody, DUContext::Other, node->methodName);
+        {
             DUChainWriteLocker lock(DUChain::lock());
             body->addImportedParentContext(parameters);
         }
@@ -163,19 +161,22 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
     }
 }
 
+
+void ContextBuilder::visitTopStatement(TopStatementAst* node)
+{
+    DefaultVisitor::visitTopStatement(node);
+}
+
 void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
-    QualifiedIdentifier id;
-    DUContext* parameters = 0;
-    if (node->parameters) {
-        parameters = openContext(node->parameters, DUContext::Function, node->functionName);
-        id = currentContext()->localScopeIdentifier();
-        visitNode(node->parameters);
-        closeContext();
-    }
+    visitNode(node->functionName);
 
-    DUContext* body = openContext(node->functionBody, DUContext::Other, id);
-    if (parameters) {
+    DUContext* parameters = openContext(node->parameters, DUContext::Function, node->functionName);
+    visitNode(node->parameters);
+    closeContext();
+
+    DUContext* body = openContext(node->functionBody, DUContext::Other, node->functionName);
+    {
         DUChainWriteLocker lock(DUChain::lock());
         body->addImportedParentContext(parameters);
     }

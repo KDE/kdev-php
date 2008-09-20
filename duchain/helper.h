@@ -23,13 +23,15 @@
 #include "phpduchainexport.h"
 
 #include <language/duchain/identifier.h>
-
+#include <language/duchain/ducontext.h>
 namespace KDevelop {
     class Declaration;
     class DUContext;
 }
 namespace Php {
-    KDevelop::Declaration* findClassDeclaration(KDevelop::DUContext* currentContext, KDevelop::QualifiedIdentifier id);
+    KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext,
+                                        KDevelop::QualifiedIdentifier id,
+                                        KDevelop::DUContext::ContextType contextType);
 
 }
 #endif

@@ -441,7 +441,7 @@ expression=booleanOrExpression
     NEW className=classNameReference ctor=ctorArguments
 -> varExpressionNewObject ;;
 
-    LPAREN (parameterList=functionCallParameterList | 0) RPAREN
+    LPAREN parameterList=functionCallParameterList RPAREN
   | 0
 -> ctorArguments ;;
 
@@ -468,7 +468,7 @@ expression=booleanOrExpression
 -> variable ;;
 
     OBJECT_OPERATOR objectProperty=objectProperty
-        (isFunctionCall=LPAREN (parameterList=functionCallParameterList | 0) RPAREN | 0)
+        (isFunctionCall=LPAREN parameterList=functionCallParameterList RPAREN | 0)
 -> variableProperty ;;
 
    --Conflict
@@ -690,10 +690,10 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 ] ;;
 
     FUNCTION (BIT_AND | 0) functionName=identifier
-    LPAREN (parameters=parameterList | 0) RPAREN LBRACE functionBody=innerStatementList RBRACE
+    LPAREN parameters=parameterList RPAREN LBRACE functionBody=innerStatementList RBRACE
 -> functionDeclarationStatement ;;
 
-    #parameters=parameter @ COMMA
+    (#parameters=parameter @ COMMA) | 0
 -> parameterList ;;
 
 (parameterType=identifier | arrayType=ARRAY | 0) (BIT_AND | 0)
@@ -743,7 +743,7 @@ identifier=identifier
   | VAR variable=classVariableDeclaration SEMICOLON
   | modifiers=optionalModifiers
     ( variable=classVariableDeclaration SEMICOLON
-      | FUNCTION (BIT_AND | 0) methodName=identifier LPAREN (parameters=parameterList | 0) RPAREN
+      | FUNCTION (BIT_AND | 0) methodName=identifier LPAREN parameters=parameterList RPAREN
         methodBody=methodBody
     )
 -> classStatement ;;

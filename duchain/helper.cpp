@@ -22,34 +22,58 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/persistentsymboltable.h>
 #include <language/duchain/duchain.h>
+#include <language/duchain/functiondeclaration.h>
 
 using namespace KDevelop;
 
 namespace Php {
 
-Declaration* findClassDeclaration(DUContext* currentContext, QualifiedIdentifier id)
+Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifier id, DUContext::ContextType contextType)
 {
-    QList<Declaration*> foundDeclarations;
-    DUChainReadLocker lock(DUChain::lock());
-    foundDeclarations = currentContext->findDeclarations(id);
-    if (!foundDeclarations.isEmpty()) {
-        return foundDeclarations.first();
-    }
-    kDebug() << "findDeclarations was empty, trying through PersistentSymbolTable";
-    uint nr;
-    const IndexedDeclaration* declarations = 0;
-    PersistentSymbolTable::self().declarations(id, nr, declarations);
-    kDebug() << "found declarations: " << nr;
-    lock.unlock();
-    DUChainWriteLocker wlock(DUChain::lock());
-    for (uint i=0; i<nr; ++i) {
-        if (declarations[i].declaration()->internalContext()
-            && declarations[i].declaration()->internalContext()->type() == DUContext::Class) {
-            //check if context is in any loaded project
-            currentContext->topContext()->addImportedParentContext(declarations[i].declaration()->context()->topContext());
-            return declarations[i].declaration();
-        } else {
-            kDebug() << "skipping declaration, no class-type context";
+    if (contextType == DUContext::Class && id == QualifiedIdentifier("self")) {
+        DUChainReadLocker lock(DUChain::lock());
+        if (currentContext->parentContext()) {
+            Declaration* declaration = currentContext->parentContext()->owner();
+            return declaration;
+        }
+    } else if (contextType == DUContext::Class && id == QualifiedIdentifier("parent")) {
+        //there can be just one Class-Context imported
+        DUChainReadLocker lock(DUChain::lock());
+        if (currentContext->parentContext()) {
+            foreach (DUContext::Import i, currentContext->parentContext()->importedParentContexts()) {
+                if (i.context()->type() == DUContext::Class) {
+                    return i.context()->owner();
+                }
+            }
+        }
+    } else {
+        QList<Declaration*> foundDeclarations;
+        DUChainReadLocker lock(DUChain::lock());
+        foundDeclarations = currentContext->findDeclarations(id);
+
+        if (!foundDeclarations.isEmpty()) {
+            return foundDeclarations.first();
+        }
+        kDebug() << "findDeclarations was empty, trying through PersistentSymbolTable" << id.toString();
+        uint nr;
+        const IndexedDeclaration* declarations = 0;
+        PersistentSymbolTable::self().declarations(id, nr, declarations);
+        kDebug() << "found declarations: " << nr;
+        lock.unlock();
+        DUChainWriteLocker wlock(DUChain::lock());
+        for (uint i=0; i<nr; ++i) {
+            if (contextType == DUContext::Class && declarations[i].declaration()->internalContext()
+                && declarations[i].declaration()->internalContext()->type() == DUContext::Class) {
+                //TODO check if context is in any loaded project
+                currentContext->topContext()->addImportedParentContext(declarations[i].declaration()->context()->topContext());
+                return declarations[i].declaration();
+            } else if(contextType == DUContext::Function
+                && dynamic_cast<FunctionDeclaration*>(declarations[i].declaration())) {
+                currentContext->topContext()->addImportedParentContext(declarations[i].declaration()->context()->topContext());
+                return declarations[i].declaration();
+            } else {
+                kDebug() << "skipping declaration, invalid contextType";
+            }
         }
     }
     return 0;

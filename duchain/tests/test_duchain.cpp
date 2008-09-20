@@ -44,6 +44,28 @@ TestDUChain::TestDUChain()
 {
 }
 
+void TestDUChain::testDeclareFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo() {}");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->localDeclarations().count(), 1);
+
+    Declaration* dec = top->localDeclarations().at(0);
+    QVERIFY(dec);
+    QCOMPARE(dec->context(), top);
+    QCOMPARE(dec->internalContext(), top->childContexts().at(1));
+
+    QCOMPARE(top->childContexts().at(0)->type(), DUContext::Function);
+    QCOMPARE(top->childContexts().at(1)->type(), DUContext::Other);
+
+    release(top);
+}
 
 void TestDUChain::testDeclareVar()
 {
@@ -51,7 +73,7 @@ void TestDUChain::testDeclareVar()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A {} class B {} $i = new A(); $j = new B(); $i = new B(); $i = 'foo';");
 
-    TopDUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
     QVERIFY(!top->parentContext());
@@ -123,7 +145,7 @@ void TestDUChain::testDeclareClass()
     QCOMPARE(dec->logicalInternalContext(top), contextClassA);
 
     QCOMPARE(contextClassA->localScopeIdentifier(), QualifiedIdentifier("A"));
-    QCOMPARE(contextClassA->childContexts().count(), 5);
+    QCOMPARE(contextClassA->childContexts().count(), 8);
     QCOMPARE(contextClassA->childContexts().first()->localScopeIdentifier(), QualifiedIdentifier("foo"));
 
     DUContext* contextMethodBodyFoo = contextClassA->childContexts().at(1);
@@ -239,7 +261,7 @@ void TestDUChain::testReturnTypeClass()
     DUChainWriteLocker lock(DUChain::lock());
 
     QVERIFY(!top->parentContext());
-    QCOMPARE(top->childContexts().count(), 3);
+    QCOMPARE(top->childContexts().count(), 5);
     QCOMPARE(top->localDeclarations().count(), 3);
 
     Declaration* dec = top->localDeclarations().at(1);
@@ -271,7 +293,7 @@ void TestDUChain::testDeclarationReturnType()
     DUChainWriteLocker lock(DUChain::lock());
 
     QVERIFY(!top->parentContext());
-    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->childContexts().count(), 3);
     QCOMPARE(top->localDeclarations().count(), 3);
 
     Declaration* dec = top->localDeclarations().at(1);
@@ -298,10 +320,6 @@ void TestDUChain::testDeclarationMultipleReturnTypes()
     TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QVERIFY(!top->parentContext());
-    QCOMPARE(top->childContexts().count(), 2);
-    QCOMPARE(top->localDeclarations().count(), 2);
-
     FunctionType::Ptr fType = top->localDeclarations().at(1)->type<FunctionType>();
     QVERIFY(fType);
     QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
@@ -318,10 +336,6 @@ void TestDUChain::testDeclarationReturnTypeDocBlock()
 
     TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
-
-    QVERIFY(!top->parentContext());
-    QCOMPARE(top->childContexts().count(), 3);
-    QCOMPARE(top->localDeclarations().count(), 3);
 
     //function bar
     Declaration* dec = top->childContexts().at(0)->localDeclarations().at(0);
@@ -508,10 +522,9 @@ void TestDUChain::testOwnStaticMethod()
     TopDUContext* top = parse(method, DumpNone);
 
     DUChainWriteLocker lock(DUChain::lock());
-
-    QCOMPARE(top->childContexts().at(1)->childContexts().at(1)->localDeclarations().at(0)
+    QCOMPARE(top->childContexts().at(1)->childContexts().at(1+2)->localDeclarations().at(0)
                 ->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
-    QCOMPARE(top->childContexts().at(1)->childContexts().at(1)->localDeclarations().at(1)
+    QCOMPARE(top->childContexts().at(1)->childContexts().at(1+2)->localDeclarations().at(1)
                 ->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
 
     release(top);
@@ -591,7 +604,7 @@ void TestDUChain::testObjectFunctionCall3()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class B {} class A { function b() { return new B(); } } $i = new A(); $j = $i->b();");
 
-    TopDUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpNone);
 
     DUChainWriteLocker lock(DUChain::lock());
 
@@ -641,7 +654,7 @@ void TestDUChain::testOwnStaticMemberVariable()
     TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
-    DUContext* barContext = top->childContexts().at(1)->childContexts().at(0);
+    DUContext* barContext = top->childContexts().at(1)->childContexts().at(1);
     QCOMPARE(barContext->localDeclarations().at(0)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
     QCOMPARE(barContext->localDeclarations().at(1)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
 
@@ -686,7 +699,7 @@ void TestDUChain::testDefaultFunctionParam()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? function foo($a, $b = false, $c = null) {} ");
 
-    TopDUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
     
     AbstractFunctionDeclaration* fun = dynamic_cast<AbstractFunctionDeclaration*>(top->localDeclarations().first());
@@ -707,7 +720,7 @@ void TestDUChain::testGlobalFunction()
 
     TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
-    
+
     QCOMPARE(top->importedParentContexts().count(), 1);
     QVERIFY(DUChain::self()->chainForDocument(IndexedString("internalfunctions")));
     QCOMPARE(DUChain::self()->chainForDocument(IndexedString("internalfunctions")), top->importedParentContexts().first().context());
@@ -726,17 +739,9 @@ void TestDUChain::testNewObjectFromOtherFile()
     QByteArray method("<? $a = new Foo(); ");
     TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
-    
-    QCOMPARE(top->importedParentContexts().count(), 2);
-    bool found = false;
-    foreach (DUContext::Import import, top->importedParentContexts()) {
-        if (import.context() == addTop) {
-            found = true;
-            break;
-        }
-    }
-    QVERIFY(found);
-    
+
+    QVERIFY(hasImportedParentContext(top, addTop));
+
     QCOMPARE(top->localDeclarations().first()->type<StructureType>()->declaration(top),
                 addTop->localDeclarations().first());
 
@@ -750,7 +755,7 @@ void TestDUChain::testUnknownReturnType()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? function foo() {} $a = foo();");
 
-    TopDUContext* top = parse(method, DumpAll);
+    TopDUContext* top = parse(method, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
     //function bar
@@ -763,6 +768,53 @@ void TestDUChain::testUnknownReturnType()
     release(top);
 }
 
+void TestDUChain::testStaticFunctionCallFromOtherFile()
+{
+
+    TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo2.php"), "<?php class Foo { public static function a() {} } ");
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? Foo::a(); ");
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(hasImportedParentContext(top, addTop));
+
+    release(top);
+}
+
+void TestDUChain::testGlobalFunctionCallFromOtherFile()
+{
+
+    TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo3.php"), "<?php function a() {} ");
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? a(); ");
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(hasImportedParentContext(top, addTop));
+
+    release(top);
+}
+
+void TestDUChain::testSingleton()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { public static function self() { static $i; if(!$i) $i = new self(); return $i; }}");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->childContexts().first()->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    StructureType::Ptr ret = StructureType::Ptr::dynamicCast(fun->returnType());
+    QVERIFY(ret);
+    QCOMPARE(ret->declaration(top), top->localDeclarations().first());
+
+    release(top);
+}
 }
 
 #include "test_duchain.moc"

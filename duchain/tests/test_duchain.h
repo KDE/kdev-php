@@ -31,6 +31,7 @@ public:
   TestDUChain();
 
 private slots:
+  void testDeclareFunction();
   void testDeclareVar();
   void testDeclareClass();
   void testClassMemberVar();
@@ -56,6 +57,9 @@ private slots:
   void testGlobalFunction();
   void testNewObjectFromOtherFile();
   void testUnknownReturnType();
+  void testStaticFunctionCallFromOtherFile();
+  void testGlobalFunctionCallFromOtherFile();
+  void testSingleton();
 };
 
 }

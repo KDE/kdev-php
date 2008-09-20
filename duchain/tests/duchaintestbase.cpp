@@ -63,6 +63,16 @@ CompletionTreeItemPointer DUChainTestBase::searchDeclaration(QList<CompletionTre
     return CompletionTreeItemPointer();
 }
 
+bool DUChainTestBase::hasImportedParentContext(TopDUContext* top, DUContext* lookingFor)
+{
+    foreach (DUContext::Import import, top->importedParentContexts()) {
+        if (import.context() == lookingFor) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void DUChainTestBase::release(TopDUContext* top)
 
 {
@@ -85,7 +95,7 @@ TopDUContext* DUChainTestBase::parseAdditionalFile(IndexedString fileName, QByte
     
     UseBuilder useBuilder(session);
     useBuilder.buildUses(ast);
-    
+
     delete session;
     
     return top;

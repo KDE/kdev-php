@@ -101,7 +101,8 @@ protected:
 
   KDevelop::DumpChain dumper;
   
-  KDevelop::CompletionTreeItemPointer searchDeclaration(QList<KDevelop::CompletionTreeItemPointer> items, KDevelop::Declaration* declaration);  
+  KDevelop::CompletionTreeItemPointer searchDeclaration(QList<KDevelop::CompletionTreeItemPointer> items, KDevelop::Declaration* declaration);
+  bool hasImportedParentContext(KDevelop::TopDUContext* top, KDevelop::DUContext* lookingFor);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(DUChainTestBase::DumpAreas)

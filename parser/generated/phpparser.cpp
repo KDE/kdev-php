@@ -811,6 +811,7 @@ bool Parser::parseAssignmentExpressionCheckIfVariable(AssignmentExpressionCheckI
     if (true /*epsilon*/ || yytoken == Token_STRING
         || yytoken == Token_INCLUDE_ONCE
         || yytoken == Token_LIST
+        || yytoken == Token_EOF
         || yytoken == Token_VARIABLE
         || yytoken == Token_STRING_CAST
         || yytoken == Token_FILE
@@ -836,7 +837,6 @@ bool Parser::parseAssignmentExpressionCheckIfVariable(AssignmentExpressionCheckI
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_METHOD_C
         || yytoken == Token_AT
-        || yytoken == Token_EOF
         || yytoken == Token_LNUMBER
         || yytoken == Token_BOOL_CAST
         || yytoken == Token_TILDE
@@ -1712,8 +1712,8 @@ bool Parser::parseCaseList(CaseListAst **yynode)
 
     if (yytoken == Token_CASE
         || yytoken == Token_DEFAULT || yytoken == Token_RBRACE
-        || yytoken == Token_ENDSWITCH
-        || yytoken == Token_EOF)
+        || yytoken == Token_EOF
+        || yytoken == Token_ENDSWITCH)
     {
         while (yytoken == Token_CASE
                || yytoken == Token_DEFAULT)
@@ -2603,30 +2603,17 @@ bool Parser::parseClassStatement(ClassStatementAst **yynode)
                 }
                 yylex();
 
-                if (yytoken == Token_VARIABLE
-                    || yytoken == Token_ARRAY
-                    || yytoken == Token_STRING
-                    || yytoken == Token_BIT_AND)
+                ParameterListAst *__node_56 = 0;
+                if (!parseParameterList(&__node_56))
                 {
-                    ParameterListAst *__node_56 = 0;
-                    if (!parseParameterList(&__node_56))
+                    if (!mBlockErrors)
                     {
-                        if (!mBlockErrors)
-                        {
-                            expectedSymbol(AstNode::ParameterListKind, "parameterList");
-                        }
-                        return false;
+                        expectedSymbol(AstNode::ParameterListKind, "parameterList");
                     }
-                    (*yynode)->parameters = __node_56;
-
-                }
-                else if (true /*epsilon*/)
-                {
-                }
-                else
-                {
                     return false;
                 }
+                (*yynode)->parameters = __node_56;
+
                 if (yytoken != Token_RPAREN)
                 {
                     if (!mBlockErrors)
@@ -3272,6 +3259,7 @@ bool Parser::parseCtorArguments(CtorArgumentsAst **yynode)
         || yytoken == Token_IS_IDENTICAL
         || yytoken == Token_COLON
         || yytoken == Token_XOR_ASSIGN
+        || yytoken == Token_EOF
         || yytoken == Token_AS
         || yytoken == Token_BOOLEAN_OR
         || yytoken == Token_MUL
@@ -3299,7 +3287,6 @@ bool Parser::parseCtorArguments(CtorArgumentsAst **yynode)
         || yytoken == Token_MOD_ASSIGN
         || yytoken == Token_IS_GREATER
         || yytoken == Token_BIT_XOR
-        || yytoken == Token_EOF
         || yytoken == Token_PLUS_ASSIGN
         || yytoken == Token_IS_EQUAL
         || yytoken == Token_AND_ASSIGN
@@ -3329,70 +3316,17 @@ bool Parser::parseCtorArguments(CtorArgumentsAst **yynode)
             }
             yylex();
 
-            if (yytoken == Token_STRING
-                || yytoken == Token_INCLUDE_ONCE
-                || yytoken == Token_LIST
-                || yytoken == Token_STRING_CAST
-                || yytoken == Token_VARIABLE
-                || yytoken == Token_PRINT
-                || yytoken == Token_FILE
-                || yytoken == Token_START_HEREDOC
-                || yytoken == Token_NEW
-                || yytoken == Token_STRING_VARNAME
-                || yytoken == Token_DOUBLE_QUOTE
-                || yytoken == Token_EVAL
-                || yytoken == Token_BIT_AND
-                || yytoken == Token_ARRAY
-                || yytoken == Token_ARRAY_CAST
-                || yytoken == Token_CLONE
-                || yytoken == Token_INC
-                || yytoken == Token_ISSET
-                || yytoken == Token_REQUIRE
-                || yytoken == Token_CLASS_C
-                || yytoken == Token_DNUMBER
-                || yytoken == Token_OBJECT_CAST
-                || yytoken == Token_EXIT
-                || yytoken == Token_BACKTICK
-                || yytoken == Token_DEC
-                || yytoken == Token_EMPTY
-                || yytoken == Token_REQUIRE_ONCE
-                || yytoken == Token_METHOD_C
-                || yytoken == Token_AT
-                || yytoken == Token_BOOL_CAST
-                || yytoken == Token_LNUMBER
-                || yytoken == Token_TILDE
-                || yytoken == Token_BANG
-                || yytoken == Token_LPAREN
-                || yytoken == Token_INT_CAST
-                || yytoken == Token_FUNC_C
-                || yytoken == Token_PLUS
-                || yytoken == Token_UNSET_CAST
-                || yytoken == Token_INCLUDE
-                || yytoken == Token_DOLLAR
-                || yytoken == Token_DOUBLE_CAST
-                || yytoken == Token_CONSTANT_ENCAPSED_STRING
-                || yytoken == Token_LINE
-                || yytoken == Token_MINUS)
+            FunctionCallParameterListAst *__node_70 = 0;
+            if (!parseFunctionCallParameterList(&__node_70))
             {
-                FunctionCallParameterListAst *__node_70 = 0;
-                if (!parseFunctionCallParameterList(&__node_70))
+                if (!mBlockErrors)
                 {
-                    if (!mBlockErrors)
-                    {
-                        expectedSymbol(AstNode::FunctionCallParameterListKind, "functionCallParameterList");
-                    }
-                    return false;
+                    expectedSymbol(AstNode::FunctionCallParameterListKind, "functionCallParameterList");
                 }
-                (*yynode)->parameterList = __node_70;
-
-            }
-            else if (true /*epsilon*/)
-            {
-            }
-            else
-            {
                 return false;
             }
+            (*yynode)->parameterList = __node_70;
+
             if (yytoken != Token_RPAREN)
             {
                 if (!mBlockErrors)
@@ -3984,6 +3918,7 @@ bool Parser::parseDynamicClassNameVariableProperties(DynamicClassNameVariablePro
         || yytoken == Token_IS_IDENTICAL
         || yytoken == Token_COLON
         || yytoken == Token_XOR_ASSIGN
+        || yytoken == Token_EOF
         || yytoken == Token_AS
         || yytoken == Token_BOOLEAN_OR
         || yytoken == Token_MUL
@@ -4011,7 +3946,6 @@ bool Parser::parseDynamicClassNameVariableProperties(DynamicClassNameVariablePro
         || yytoken == Token_MOD_ASSIGN
         || yytoken == Token_IS_GREATER
         || yytoken == Token_BIT_XOR
-        || yytoken == Token_EOF
         || yytoken == Token_PLUS_ASSIGN
         || yytoken == Token_IS_EQUAL
         || yytoken == Token_LPAREN
@@ -4107,7 +4041,6 @@ bool Parser::parseElseSingle(ElseSingleAst **yynode)
         || yytoken == Token_FUNCTION
         || yytoken == Token_CLASS_C
         || yytoken == Token_REQUIRE
-        || yytoken == Token_EOF
         || yytoken == Token_STRING_VARNAME
         || yytoken == Token_ELSE
         || yytoken == Token_ELSEIF
@@ -4167,6 +4100,7 @@ bool Parser::parseElseSingle(ElseSingleAst **yynode)
         || yytoken == Token_ENDDECLARE
         || yytoken == Token_INCLUDE
         || yytoken == Token_UNSET_CAST
+        || yytoken == Token_EOF
         || yytoken == Token_BANG
         || yytoken == Token_TILDE
         || yytoken == Token_CONTINUE
@@ -4239,7 +4173,6 @@ bool Parser::parseElseifList(ElseifListAst **yynode)
         || yytoken == Token_FUNCTION
         || yytoken == Token_CLASS_C
         || yytoken == Token_REQUIRE
-        || yytoken == Token_EOF
         || yytoken == Token_STRING_VARNAME
         || yytoken == Token_ELSE
         || yytoken == Token_ELSEIF
@@ -4299,6 +4232,7 @@ bool Parser::parseElseifList(ElseifListAst **yynode)
         || yytoken == Token_ENDDECLARE
         || yytoken == Token_INCLUDE
         || yytoken == Token_UNSET_CAST
+        || yytoken == Token_EOF
         || yytoken == Token_BANG
         || yytoken == Token_TILDE
         || yytoken == Token_CONTINUE
@@ -6368,30 +6302,17 @@ bool Parser::parseFunctionDeclarationStatement(FunctionDeclarationStatementAst *
         }
         yylex();
 
-        if (yytoken == Token_VARIABLE
-            || yytoken == Token_ARRAY
-            || yytoken == Token_STRING
-            || yytoken == Token_BIT_AND)
+        ParameterListAst *__node_123 = 0;
+        if (!parseParameterList(&__node_123))
         {
-            ParameterListAst *__node_123 = 0;
-            if (!parseParameterList(&__node_123))
+            if (!mBlockErrors)
             {
-                if (!mBlockErrors)
-                {
-                    expectedSymbol(AstNode::ParameterListKind, "parameterList");
-                }
-                return false;
+                expectedSymbol(AstNode::ParameterListKind, "parameterList");
             }
-            (*yynode)->parameters = __node_123;
-
-        }
-        else if (true /*epsilon*/)
-        {
-        }
-        else
-        {
             return false;
         }
+        (*yynode)->parameters = __node_123;
+
         if (yytoken != Token_RPAREN)
         {
             if (!mBlockErrors)
@@ -7920,33 +7841,16 @@ bool Parser::parseParameterList(ParameterListAst **yynode)
     if (yytoken == Token_VARIABLE
         || yytoken == Token_ARRAY
         || yytoken == Token_STRING
-        || yytoken == Token_BIT_AND)
+        || yytoken == Token_BIT_AND || yytoken == Token_EOF
+        || yytoken == Token_RPAREN)
     {
-        ParameterAst *__node_153 = 0;
-        if (!parseParameter(&__node_153))
+        if (yytoken == Token_VARIABLE
+            || yytoken == Token_ARRAY
+            || yytoken == Token_STRING
+            || yytoken == Token_BIT_AND)
         {
-            if (!mBlockErrors)
-            {
-                expectedSymbol(AstNode::ParameterKind, "parameter");
-            }
-            return false;
-        }
-        (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_153, memoryPool);
-
-        while (yytoken == Token_COMMA)
-        {
-            if (yytoken != Token_COMMA)
-            {
-                if (!mBlockErrors)
-                {
-                    expectedToken(yytoken, Token_COMMA, ",");
-                }
-                return false;
-            }
-            yylex();
-
-            ParameterAst *__node_154 = 0;
-            if (!parseParameter(&__node_154))
+            ParameterAst *__node_153 = 0;
+            if (!parseParameter(&__node_153))
             {
                 if (!mBlockErrors)
                 {
@@ -7954,8 +7858,39 @@ bool Parser::parseParameterList(ParameterListAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_154, memoryPool);
+            (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_153, memoryPool);
 
+            while (yytoken == Token_COMMA)
+            {
+                if (yytoken != Token_COMMA)
+                {
+                    if (!mBlockErrors)
+                    {
+                        expectedToken(yytoken, Token_COMMA, ",");
+                    }
+                    return false;
+                }
+                yylex();
+
+                ParameterAst *__node_154 = 0;
+                if (!parseParameter(&__node_154))
+                {
+                    if (!mBlockErrors)
+                    {
+                        expectedSymbol(AstNode::ParameterKind, "parameter");
+                    }
+                    return false;
+                }
+                (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_154, memoryPool);
+
+            }
+        }
+        else if (true /*epsilon*/)
+        {
+        }
+        else
+        {
+            return false;
         }
     }
     else
@@ -12767,70 +12702,17 @@ bool Parser::parseVariableProperty(VariablePropertyAst **yynode)
             (*yynode)->isFunctionCall = tokenStream->index() - 1;
             yylex();
 
-            if (yytoken == Token_STRING
-                || yytoken == Token_INCLUDE_ONCE
-                || yytoken == Token_LIST
-                || yytoken == Token_STRING_CAST
-                || yytoken == Token_VARIABLE
-                || yytoken == Token_PRINT
-                || yytoken == Token_FILE
-                || yytoken == Token_START_HEREDOC
-                || yytoken == Token_NEW
-                || yytoken == Token_STRING_VARNAME
-                || yytoken == Token_DOUBLE_QUOTE
-                || yytoken == Token_EVAL
-                || yytoken == Token_BIT_AND
-                || yytoken == Token_ARRAY
-                || yytoken == Token_ARRAY_CAST
-                || yytoken == Token_CLONE
-                || yytoken == Token_INC
-                || yytoken == Token_ISSET
-                || yytoken == Token_REQUIRE
-                || yytoken == Token_CLASS_C
-                || yytoken == Token_DNUMBER
-                || yytoken == Token_OBJECT_CAST
-                || yytoken == Token_EXIT
-                || yytoken == Token_BACKTICK
-                || yytoken == Token_DEC
-                || yytoken == Token_EMPTY
-                || yytoken == Token_REQUIRE_ONCE
-                || yytoken == Token_METHOD_C
-                || yytoken == Token_AT
-                || yytoken == Token_BOOL_CAST
-                || yytoken == Token_LNUMBER
-                || yytoken == Token_TILDE
-                || yytoken == Token_BANG
-                || yytoken == Token_LPAREN
-                || yytoken == Token_INT_CAST
-                || yytoken == Token_FUNC_C
-                || yytoken == Token_PLUS
-                || yytoken == Token_UNSET_CAST
-                || yytoken == Token_INCLUDE
-                || yytoken == Token_DOLLAR
-                || yytoken == Token_DOUBLE_CAST
-                || yytoken == Token_CONSTANT_ENCAPSED_STRING
-                || yytoken == Token_LINE
-                || yytoken == Token_MINUS)
+            FunctionCallParameterListAst *__node_288 = 0;
+            if (!parseFunctionCallParameterList(&__node_288))
             {
-                FunctionCallParameterListAst *__node_288 = 0;
-                if (!parseFunctionCallParameterList(&__node_288))
+                if (!mBlockErrors)
                 {
-                    if (!mBlockErrors)
-                    {
-                        expectedSymbol(AstNode::FunctionCallParameterListKind, "functionCallParameterList");
-                    }
-                    return false;
+                    expectedSymbol(AstNode::FunctionCallParameterListKind, "functionCallParameterList");
                 }
-                (*yynode)->parameterList = __node_288;
-
-            }
-            else if (true /*epsilon*/)
-            {
-            }
-            else
-            {
                 return false;
             }
+            (*yynode)->parameterList = __node_288;
+
             if (yytoken != Token_RPAREN)
             {
                 if (!mBlockErrors)

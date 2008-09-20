@@ -90,7 +90,7 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
     DefaultVisitor::visitVarExpressionNewObject(node);
     if (node->className->identifier) {
         QualifiedIdentifier id = identifierForNode(node->className->identifier);
-        Declaration* dec = findClassDeclaration(m_currentContext, id);
+        Declaration* dec = findDeclarationImport(m_currentContext, id, DUContext::Class);
         DUChainReadLocker lock(DUChain::lock());
         m_result.setDeclaration(dec);
     }
@@ -123,11 +123,11 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
             //static function call foo::$bar()
         } else {
             //global function call foo();
-            DUChainReadLocker lock(DUChain::lock());
             QualifiedIdentifier functionIdentifier(m_editor->parseSession()->symbol(node->stringFunctionNameOrClass->string));
-            m_result.setDeclarations(m_currentContext->findDeclarations(functionIdentifier));
-            if (!m_result.allDeclarations().isEmpty()) {
-                FunctionType::Ptr function = m_result.allDeclarations().last()->type<FunctionType>();
+            Declaration* dec = findDeclarationImport(m_currentContext, functionIdentifier, DUContext::Function);
+            m_result.setDeclaration(dec);
+            if (dec) {
+                FunctionType::Ptr function = dec->type<FunctionType>();
                 if (function) {
                     m_result.setType(function->returnType());
                 } else {
@@ -140,40 +140,17 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
 DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
 {
     DUContext* context = 0;
-    if (identifierForNode(className) == QualifiedIdentifier("self")) {
-        DUChainReadLocker lock(DUChain::lock());
-        context = m_currentContext->parentContext();
-        if (context) {
-            Declaration* declaration = context->owner();
-            lock.unlock();
-            usingDeclaration(className, declaration);
+    Declaration* declaration = findDeclarationImport(m_currentContext, identifierForNode(className), DUContext::Class);
+    if (declaration) {
+        {
+            DUChainReadLocker lock(DUChain::lock());
+            context = declaration->internalContext();
         }
-    } else if (identifierForNode(className) == QualifiedIdentifier("parent")) {
-        //there can be just one Class-Context imported
-        DUChainReadLocker lock(DUChain::lock());
-        if (m_currentContext->parentContext()) {
-            foreach (DUContext::Import i, m_currentContext->parentContext()->importedParentContexts()) {
-                if (i.context()->type() == DUContext::Class) {
-                    context = i.context();
-                    Declaration* declaration = context->owner();
-                    lock.unlock();
-                    usingDeclaration(className, declaration);
-                    break;
-                }
-            }
+        if (!context && m_currentContext->parentContext()->localScopeIdentifier() == declaration->qualifiedIdentifier()) {
+            //className is currentClass (internalContext is not yet set)
+            context = m_currentContext->parentContext();
         }
-    } else {
-        DUChainReadLocker lock(DUChain::lock());
-        QList<Declaration*> declarations = m_currentContext->findDeclarations(identifierForNode(className));
-        if (!declarations.isEmpty()) {
-            context = declarations.first()->internalContext();
-            lock.unlock();
-            if (!context && m_currentContext->parentContext()->localScopeIdentifier() == declarations.first()->qualifiedIdentifier()) {
-                //className is currentClass (internalContext is not yet set)
-                context = m_currentContext->parentContext();
-            }
-            usingDeclaration(className, declarations.last());
-        }
+        usingDeclaration(className, declaration);
     }
     return context;
 }
