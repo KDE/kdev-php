@@ -143,7 +143,8 @@ enum ModifierFlags
 
 enum ScalarTypes
 {
-    ScalarTypeNumber,
+    ScalarTypeInt,
+    ScalarTypeFloat,
     ScalarTypeString
 };
 

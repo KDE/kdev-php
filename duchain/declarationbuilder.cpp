@@ -212,7 +212,6 @@ void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
 
 void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
 {
-qDebug() << identifierForNode(node->identifier).toString();
     openDefinition<ClassMemberDeclaration>(node->identifier, node->identifier);
     ClassMemberDeclaration* dec = dynamic_cast<ClassMemberDeclaration*>(currentDeclaration());
     Q_ASSERT(dec);

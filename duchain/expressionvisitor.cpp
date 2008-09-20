@@ -176,6 +176,8 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
             IntegralType::Ptr integral(new IntegralType(IntegralType::TypeBoolean));
             m_result.setType(AbstractType::Ptr::staticCast(integral));
         } else if (id == QualifiedIdentifier("null")) {
+            IntegralType::Ptr integral(new IntegralType(IntegralType::TypeNull));
+            m_result.setType(AbstractType::Ptr::staticCast(integral));
         } else {
             //constant (created with declare('foo', 'bar'))
             //it could also be a global function call, without ()
@@ -189,8 +191,11 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
     } else if (node->commonScalar) {
         uint type;
         switch (node->commonScalar->scalarType) {
-            case ScalarTypeNumber:
+            case ScalarTypeInt:
                 type = IntegralType::TypeInt;
+                break;
+            case ScalarTypeFloat:
+                type = IntegralType::TypeFloat;
                 break;
             case ScalarTypeString:
                 type = IntegralType::TypeString;

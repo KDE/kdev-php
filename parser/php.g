@@ -78,7 +78,8 @@ namespace KDevelop
     };
 
     enum ScalarTypes {
-        ScalarTypeNumber,
+        ScalarTypeInt,
+        ScalarTypeFloat,
         ScalarTypeString
     };
 :]
@@ -677,10 +678,10 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 -> encapsVarOffset ;;
 
 
-    LNUMBER                  [: (*yynode)->scalarType = ScalarTypeNumber; :]
-  | DNUMBER                  [: (*yynode)->scalarType = ScalarTypeNumber; :]
+    LNUMBER                  [: (*yynode)->scalarType = ScalarTypeInt; :]
+  | DNUMBER                  [: (*yynode)->scalarType = ScalarTypeFloat; :]
   | string=CONSTANT_ENCAPSED_STRING [: (*yynode)->scalarType = ScalarTypeString; :]
-  | LINE                     [: (*yynode)->scalarType = ScalarTypeNumber; :]
+  | LINE                     [: (*yynode)->scalarType = ScalarTypeInt; :]
   | FILE                     [: (*yynode)->scalarType = ScalarTypeString; :]
   | CLASS_C                  [: (*yynode)->scalarType = ScalarTypeString; :]
   | METHOD_C                 [: (*yynode)->scalarType = ScalarTypeString; :]

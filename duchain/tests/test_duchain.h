@@ -63,6 +63,8 @@ private slots:
   void testConstantFromOtherFile();
   void testSingleton();
   void testInternalFunctions();
+  void testTrueFalse();
+  void testNull();
 };
 
 }

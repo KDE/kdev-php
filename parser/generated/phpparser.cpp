@@ -2799,7 +2799,7 @@ bool Parser::parseCommonScalar(CommonScalarAst **yynode)
             }
             yylex();
 
-            (*yynode)->scalarType = ScalarTypeNumber;
+            (*yynode)->scalarType = ScalarTypeInt;
         }
         else if (yytoken == Token_DNUMBER)
         {
@@ -2813,7 +2813,7 @@ bool Parser::parseCommonScalar(CommonScalarAst **yynode)
             }
             yylex();
 
-            (*yynode)->scalarType = ScalarTypeNumber;
+            (*yynode)->scalarType = ScalarTypeFloat;
         }
         else if (yytoken == Token_CONSTANT_ENCAPSED_STRING)
         {
@@ -2842,7 +2842,7 @@ bool Parser::parseCommonScalar(CommonScalarAst **yynode)
             }
             yylex();
 
-            (*yynode)->scalarType = ScalarTypeNumber;
+            (*yynode)->scalarType = ScalarTypeInt;
         }
         else if (yytoken == Token_FILE)
         {
