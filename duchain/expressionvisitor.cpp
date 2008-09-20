@@ -90,7 +90,7 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
     DefaultVisitor::visitVarExpressionNewObject(node);
     if (node->className->identifier) {
         QualifiedIdentifier id = identifierForNode(node->className->identifier);
-        Declaration* dec = findDeclarationImport(m_currentContext, id, DUContext::Class);
+        Declaration* dec = findDeclarationImport(m_currentContext, id, ClassDeclarationType);
         DUChainReadLocker lock(DUChain::lock());
         m_result.setDeclaration(dec);
     }
@@ -124,7 +124,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
         } else {
             //global function call foo();
             QualifiedIdentifier functionIdentifier(m_editor->parseSession()->symbol(node->stringFunctionNameOrClass->string));
-            Declaration* dec = findDeclarationImport(m_currentContext, functionIdentifier, DUContext::Function);
+            Declaration* dec = findDeclarationImport(m_currentContext, functionIdentifier, FunctionDeclarationType);
             m_result.setDeclaration(dec);
             if (dec) {
                 FunctionType::Ptr function = dec->type<FunctionType>();
@@ -140,7 +140,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
 DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
 {
     DUContext* context = 0;
-    Declaration* declaration = findDeclarationImport(m_currentContext, identifierForNode(className), DUContext::Class);
+    Declaration* declaration = findDeclarationImport(m_currentContext, identifierForNode(className), ClassDeclarationType);
     if (declaration) {
         {
             DUChainReadLocker lock(DUChain::lock());
@@ -158,6 +158,7 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
 {
     //don't call parent, we handle everything here DefaultVisitor::visitScalar(node);
     if (node->className) {
+        //class constant Foo::BAR
         DUContext* context = findClassContext(node->className);
         if (context) {
             DUChainReadLocker lock(DUChain::lock());
@@ -170,14 +171,20 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
             m_result.setType(AbstractType::Ptr());
         }
     } else if (node->constant) {
-        //constant (created with declare('foo', 'bar'))
-        //it could also be a global function call, without ()
-        //TODO: prefer constant over function
-        DUChainReadLocker lock(DUChain::lock());
-        m_result.setDeclarations(m_currentContext->findDeclarations(identifierForNode(node->constant)));
-        lock.unlock();
-        if (!m_result.allDeclarations().isEmpty()) {
-            usingDeclaration(node->constant, m_result.allDeclarations().last());
+        QualifiedIdentifier id(identifierForNode(node->constant));
+        if (id == QualifiedIdentifier("true") || id == QualifiedIdentifier("false")) {
+            IntegralType::Ptr integral(new IntegralType(IntegralType::TypeBoolean));
+            m_result.setType(AbstractType::Ptr::staticCast(integral));
+        } else if (id == QualifiedIdentifier("null")) {
+        } else {
+            //constant (created with declare('foo', 'bar'))
+            //it could also be a global function call, without ()
+            //TODO: prefer constant over function
+            Declaration* declaration = findDeclarationImport(m_currentContext, id, ConstantDeclarationType);
+            m_result.setDeclaration(declaration);
+            if (declaration) {
+                usingDeclaration(node->constant, declaration);
+            }
         }
     } else if (node->commonScalar) {
         uint type;

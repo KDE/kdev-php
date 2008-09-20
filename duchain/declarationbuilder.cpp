@@ -148,7 +148,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 
 void DeclarationBuilder::visitClassExtends(ClassExtendsAst *node)
 {
-    Declaration* dec = findDeclarationImport(currentContext(), identifierForNode(node->identifier), DUContext::Class);
+    Declaration* dec = findDeclarationImport(currentContext(), identifierForNode(node->identifier), ClassDeclarationType);
     if (dec) {
         StructureType::Ptr extends = StructureType::Ptr::dynamicCast(dec->abstractType());
         if (extends) {
@@ -162,7 +162,7 @@ void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
 {
     const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
     do {
-        Declaration* dec = findDeclarationImport(currentContext(), identifierForNode(__it->element), DUContext::Class);
+        Declaration* dec = findDeclarationImport(currentContext(), identifierForNode(__it->element), ClassDeclarationType);
         if (dec) {
             StructureType::Ptr interface = StructureType::Ptr::dynamicCast(dec->abstractType());
             if (interface && interface->classType() == StructureType::Interface) {

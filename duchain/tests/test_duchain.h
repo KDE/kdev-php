@@ -58,8 +58,11 @@ private slots:
   void testNewObjectFromOtherFile();
   void testUnknownReturnType();
   void testStaticFunctionCallFromOtherFile();
+  void testClassConstantFromOtherFile();
   void testGlobalFunctionCallFromOtherFile();
+  void testConstantFromOtherFile();
   void testSingleton();
+  void testInternalFunctions();
 };
 
 }

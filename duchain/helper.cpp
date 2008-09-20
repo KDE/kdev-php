@@ -28,15 +28,15 @@ using namespace KDevelop;
 
 namespace Php {
 
-Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifier id, DUContext::ContextType contextType)
+Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifier id, DeclarationType declarationType)
 {
-    if (contextType == DUContext::Class && id == QualifiedIdentifier("self")) {
+    if (declarationType == ClassDeclarationType && id == QualifiedIdentifier("self")) {
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->parentContext()) {
             Declaration* declaration = currentContext->parentContext()->owner();
             return declaration;
         }
-    } else if (contextType == DUContext::Class && id == QualifiedIdentifier("parent")) {
+    } else if (declarationType == ClassDeclarationType && id == QualifiedIdentifier("parent")) {
         //there can be just one Class-Context imported
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->parentContext()) {
@@ -62,13 +62,17 @@ Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifie
         lock.unlock();
         DUChainWriteLocker wlock(DUChain::lock());
         for (uint i=0; i<nr; ++i) {
-            if (contextType == DUContext::Class && declarations[i].declaration()->internalContext()
+            if (declarationType == ClassDeclarationType && declarations[i].declaration()->internalContext()
                 && declarations[i].declaration()->internalContext()->type() == DUContext::Class) {
                 //TODO check if context is in any loaded project
                 currentContext->topContext()->addImportedParentContext(declarations[i].declaration()->context()->topContext());
                 return declarations[i].declaration();
-            } else if(contextType == DUContext::Function
+            } else if(declarationType == FunctionDeclarationType
                 && dynamic_cast<FunctionDeclaration*>(declarations[i].declaration())) {
+                currentContext->topContext()->addImportedParentContext(declarations[i].declaration()->context()->topContext());
+                return declarations[i].declaration();
+            } else if(declarationType == ConstantDeclarationType
+                && declarations[i].declaration()->kind() == Declaration::Instance) {
                 currentContext->topContext()->addImportedParentContext(declarations[i].declaration()->context()->topContext());
                 return declarations[i].declaration();
             } else {

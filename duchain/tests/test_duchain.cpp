@@ -29,6 +29,8 @@
 #include <language/duchain/types/structuretype.h>
 #include <language/duchain/types/integraltype.h>
 
+#include <kstandarddirs.h>
+
 #include "phpparsejob.h"
 
 
@@ -772,14 +774,19 @@ void TestDUChain::testStaticFunctionCallFromOtherFile()
 {
 
     TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo2.php"), "<?php class Foo { public static function a() {} } ");
-    //                 0         1         2         3         4         5         6         7
-    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? Foo::a(); ");
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse("<? Foo::a(); ", DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
-
     QVERIFY(hasImportedParentContext(top, addTop));
+    release(top);
+}
 
+void TestDUChain::testClassConstantFromOtherFile()
+{
+
+    TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo2.php"), "<?php class Foo { const BAR = 0; } ");
+    TopDUContext* top = parse("<? Foo::BAR; ", DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+    QVERIFY(hasImportedParentContext(top, addTop));
     release(top);
 }
 
@@ -787,14 +794,19 @@ void TestDUChain::testGlobalFunctionCallFromOtherFile()
 {
 
     TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo3.php"), "<?php function a() {} ");
-    //                 0         1         2         3         4         5         6         7
-    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? a(); ");
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse("<? a(); ", DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
-
     QVERIFY(hasImportedParentContext(top, addTop));
+    release(top);
+}
 
+void TestDUChain::testConstantFromOtherFile()
+{
+
+    TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo3.php"), "<?php define('A', 0); ");
+    TopDUContext* top = parse("<? define('B', 0); A; ", DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+    QVERIFY(hasImportedParentContext(top, addTop));
     release(top);
 }
 
@@ -815,6 +827,18 @@ void TestDUChain::testSingleton()
 
     release(top);
 }
+
+void TestDUChain::testInternalFunctions()
+{
+    QString fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    TopDUContext* top = parse(file.readAll(), DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    release(top);
+}
+
 }
 
 #include "test_duchain.moc"

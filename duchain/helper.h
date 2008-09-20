@@ -29,9 +29,14 @@ namespace KDevelop {
     class DUContext;
 }
 namespace Php {
+    enum DeclarationType {
+        ClassDeclarationType,
+        FunctionDeclarationType,
+        ConstantDeclarationType
+    };
     KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext,
                                         KDevelop::QualifiedIdentifier id,
-                                        KDevelop::DUContext::ContextType contextType);
+                                        DeclarationType declarationType);
 
 }
 #endif
