@@ -23,12 +23,15 @@
  *****************************************************************************/
 
 if (!isset($_SERVER['argv'][1])) {
-    $msg = "Usage:\n".$_SERVER['argv'][0]." [path to phpdoc/en/reference]\n";
+    $msg = "Usage:\n".$_SERVER['argv'][0]." [path to phpdoc/en]\n";
+    $msg .= "you may checkout from the php csv server using this command:\n";
+    $msg .= "cvs -d :pserver:cvsread@cvs.php.net:/repository checkout phpdoc\n";
     file_put_contents('php://stderr', $msg);
     exit(-1);
 }
 
 $functions = array();
+$constants = array();
 $existingFunctions = array();
 $dir = new RecursiveIteratorIterator( new RecursiveDirectoryIterator($_SERVER['argv'][1]));
 foreach ($dir as $file) {
@@ -43,6 +46,19 @@ foreach ($dir as $file) {
             $string = preg_replace('#'.preg_quote('<section xml:id="'.$i.'">').'.*?</section>#s', '', $string);
         }
         $xml = new SimpleXMLElement($string);
+        if (isset($xml->variablelist)) {
+            foreach ($xml->variablelist->varlistentry as $i=>$varlistentry) {
+                if ($c = (string)$varlistentry->term->constant) {
+                    if (!isset($constants[$c])) {
+                        $ctype = $varlistentry->term->type;
+                        if (!$ctype) {
+                            $ctype = $varlistentry->term->link;
+                        }
+                        $constants[$c] = (string)$ctype;
+                    }
+                }
+            }
+        }
         if (!isset($xml->refsect1)) continue;
         if (!$xml->refsect1->methodsynopsis->methodname) continue;
         $function = $xml->refsect1->methodsynopsis->methodname;
@@ -97,12 +113,43 @@ foreach ($dir as $file) {
     }
 }
 
-// DomElement
+foreach (array_keys($constants) as $c) {
+    if ($pos = strpos($c, '::')) {
+        if (!isset($functions[substr($c, 0, $pos)])) {
+            $functions[substr($c, 0, $pos)] = array();
+        }
+    }
+}
+function constTypeValue($ctype) {
+    if ($ctype == 'integer' || $ctype == 'int') {
+        return "0";
+    } else if ($ctype == 'string') {
+        return "''";
+    } else if ($ctype == 'bool') {
+        return "false";
+    } else if ($ctype == 'float') {
+        return "0.0";
+    } else {
+        die("unknown constType: $ctype");
+    }
+}
 echo "<?php\n";
+echo "// THIS FILE IS GENERATED\n";
+echo "// WARNING! All changes made in this file will be lost!\n\n";
 foreach ($functions as $class => $i) {
     if ($class != 'global') {
         echo "class $class {\n";
+        foreach ($constants as $c=>$ctype) {
+            if ($pos = strpos($c, '::')) {
+                if (substr($c, 0, $pos) == $class) {
+                    unset($constants[$c]);
+                    $c = substr($c, $pos+2);
+                    echo "    const $c = ".constTypeValue($ctype).";\n";
+                }
+            }
+        }
     }
+
     foreach ($i as $f) {
         if ($class != 'global') echo '    ';
         echo "function ".$f['name'];
@@ -110,5 +157,9 @@ foreach ($functions as $class => $i) {
         echo implode(', ', $f['params']);
         echo ") {}\n";
     }
+
     if ($class != 'global') echo "}\n";
+}
+foreach ($constants as $c=>$ctype) {
+    echo "define('$c', ".constTypeValue($ctype).");\n";
 }
