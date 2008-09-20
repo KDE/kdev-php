@@ -50,6 +50,9 @@ foreach ($dir as $file) {
             foreach ($xml->variablelist->varlistentry as $i=>$varlistentry) {
                 if ($c = (string)$varlistentry->term->constant) {
                     if (!isset($constants[$c])) {
+                        if (strpos($c, '=')) {
+                            $c = substr($c, 0, strpos($c, '='));
+                        }
                         $ctype = $varlistentry->term->type;
                         if (!$ctype) {
                             $ctype = $varlistentry->term->link;

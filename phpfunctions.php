@@ -5825,10 +5825,10 @@ class SCA {
     function getService($target, $binding, $config) {}
 }
 class SDO_DAS_ChangeSummary {
-    const NONE=0 = 0;
-    const MODIFICATION=1 = 0;
-    const ADDITION=2 = 0;
-    const DELETION=3 = 0;
+    const NONE = 0;
+    const MODIFICATION = 0;
+    const ADDITION = 0;
+    const DELETION = 0;
     function beginLogging() {}
     function endLogging() {}
     function getChangeType($dataObject) {}
