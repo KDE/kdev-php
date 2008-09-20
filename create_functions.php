@@ -97,8 +97,9 @@ foreach ($dirs as $dir) {
             if ($function == 'unset') continue;
             if ($function == 'empty') continue;
 
-            if (strpos($function, '-')) continue;
         }
+        if (strpos($function, '-')) continue;
+        if (strpos($class, '-')) continue;
         if ($function == 'isSet') continue; //todo: bug in lexer
         if ($function == 'clone') continue; //todo: bug in lexer
         if (substr($class, 0, 3) == 'DOM') $class = 'Dom'.substr($class, 3);
