@@ -43,6 +43,7 @@
 #include "phpdebugvisitor.h"
 #include "duchain/declarationbuilder.h"
 #include "duchain/usebuilder.h"
+#include "duchain/helper.h"
 
 using namespace KDevelop;
 
@@ -92,20 +93,23 @@ void ParseJob::setDUChain( ReferencedTopDUContext duChain )
 
 void ParseJob::run()
 {
-    if (document() != IndexedString("internalfunctions")
-        && !DUChain::self()->chainForDocument(IndexedString("internalfunctions"))
-    ) {
-        ParseJob job(KUrl("internalfunctions"), php());
-        job.run();
-    }
+    kDebug() << "parsing" << document().str();
 
+    for (uint i=0; i < internalFunctionFilesCount; i++) {
+        if (document() == internalFunctionFiles[i]) break;
+        if (!DUChain::self()->chainForDocument(internalFunctionFiles[i])) {
+            ParseJob job(KUrl(internalFunctionFiles[i].str()), php());
+            job.run();
+        }
+    }
     m_readFromDisk = !contentsAvailableFromEditor();
 
     if ( m_readFromDisk )
     {
         QString fileName = document().str();
-        if (fileName == "internalfunctions") {
-            fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
+        if (fileName.startsWith("internalfunctions")) {
+            QString fileNumber = fileName.mid(17);
+            fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions"+fileNumber+".php");
         }
         QFile file(fileName);
         //TODO: Read the first lines to determine encoding using Php encoding and use that for the text stream
@@ -169,7 +173,7 @@ void ParseJob::run()
     }
     else
     {
-        kDebug() << "===Failed===";
+        kDebug() << "===Failed===" << document().str();
         return;
     }
 }

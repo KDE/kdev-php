@@ -33,6 +33,7 @@
 #include "phpdebugvisitor.h"
 #include "declarationbuilder.h"
 #include "usebuilder.h"
+#include "../helper.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -48,8 +49,14 @@ DUChainTestBase::DUChainTestBase()
 
 void DUChainTestBase::initTestCase()
 {
-    if (!DUChain::self()->chainForDocument(IndexedString("internalfunctions"))) {
-        parseAdditionalFile(IndexedString("internalfunctions"), "<?php function substr() {} ");
+    for (uint i=0; i < internalFunctionFilesCount; i++) {
+        if (!DUChain::self()->chainForDocument(internalFunctionFiles[i])) {
+            QByteArray content("<?php ");
+            if (i==0) {
+                content += "function substr() {} ";
+            }
+            parseAdditionalFile(internalFunctionFiles[i], content);
+        }
     }
 }
 

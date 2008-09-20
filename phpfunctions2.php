@@ -1,0 +1,4758 @@
+<?php
+// THIS FILE IS GENERATED
+// WARNING! All changes made in this file will be lost!
+
+class PharFileInfo {
+    /**
+     * PharFileInfo::chmod allows setting of the executable
+     * file permissions bit, as well as read-only bits. Writeable bits are
+     * ignored, and set at runtime based on the
+     * phar.readonly INI variable.
+     * As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed if the file is within a Phar
+     * archive. Files within PharData archives do not have
+     * this restriction.
+     *
+     * @param int
+     * @return void
+     **/
+    function chmod($permissions) {}
+
+    /**
+     * This method compresses the file inside the Phar archive using either bzip2 compression
+     * or zlib compression.
+     * The bzip2 or zlib
+     * extension must be enabled to take
+     * advantage of this feature. In addition, if the file is already compressed,
+     * the respective extension must be enabled in order
+     * to decompress the file. As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed if the file is within a Phar
+     * archive. Files within PharData archives do not have
+     * this restriction.
+     *
+     * @param int
+     * @return bool
+     **/
+    function compress($compression) {}
+
+    /**
+     * This should not be called directly. Instead, a PharFileInfo object
+     * is initialized by calling Phar::offsetGet
+     * through array access.
+     *
+     * @param string
+     * @return void
+     **/
+    function __construct($entry) {}
+
+    /**
+     * This method decompresses the file inside the Phar archive.
+     * Depending on how the file is compressed, the bzip2
+     * or zlib extensions must be enabled to take
+     * advantage of this feature. As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed if the file is within a Phar
+     * archive. Files within PharData archives do not have
+     * this restriction.
+     *
+     * @return bool
+     **/
+    function decompress() {}
+
+    /**
+     * Deletes the metadata of the entry, if any.
+     *
+     * @return bool
+     **/
+    function delMetadata() {}
+
+    /**
+     * This returns the crc32 checksum of the file
+     * within the Phar archive.
+     *
+     * @return int
+     **/
+    function getCRC32() {}
+
+    /**
+     * This returns the size of the file within the Phar archive. Uncompressed files will return
+     * the same value for getCompressedSize as they will with filesize
+     *
+     * @return int
+     **/
+    function getCompressedSize() {}
+
+    /**
+     * Return meta-data that was saved in the Phar archive's manifest for this file.
+     *
+     * @return int
+     **/
+    function getMetaData() {}
+
+    /**
+     * This returns the flags set in the manifest for a Phar. This will always
+     * return 0 in the current implementation.
+     *
+     * @return int
+     **/
+    function getPharFlags() {}
+
+    /**
+     * Returns the metadata of a file within a phar archive.
+     *
+     * @return int
+     **/
+    function hasMetadata() {}
+
+    /**
+     * This returns whether a file within a Phar archive
+     * has had its CRC verified.
+     *
+     * @return bool
+     **/
+    function isCRCChecked() {}
+
+    /**
+     * This returns whether a file is compressed within a Phar archive
+     * with either Gzip or Bzip2 compression.
+     *
+     * @return bool
+     **/
+    function isCompressed() {}
+
+    /**
+     * This returns whether a file is compressed within a Phar archive
+     * with Bzip2 compression.
+     *
+     * @return bool
+     **/
+    function isCompressedBZIP2() {}
+
+    /**
+     * This returns whether a file is compressed within a Phar archive
+     * with Gzip compression.
+     *
+     * @return bool
+     **/
+    function isCompressedGZ() {}
+
+    /**
+     * This method compresses the file inside the Phar archive using bzip2 compression.
+     * The bzip2 extension must be enabled to take
+     * advantage of this feature. In addition, if the file is already compressed using
+     * gzip compression, the zlib extension must be enabled in order
+     * to decompress the file. As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed.
+     *
+     * @return bool
+     **/
+    function setCompressedBZIP2() {}
+
+    /**
+     * This method compresses the file inside the Phar archive using gzip compression.
+     * The zlib extension must be enabled to take
+     * advantage of this feature. In addition, if the file is already compressed using
+     * bzip2 compression, the bzip2 extension must be enabled in order
+     * to decompress the file. As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed.
+     *
+     * @return bool
+     **/
+    function setCompressedGZ() {}
+
+    /**
+     * setMetaData should only be used to store customized data in a file
+     * that cannot be represented with existing information stored with a file.
+     * Meta-data can significantly slow down the performance of loading a phar
+     * archive if the data is large, or if there are many files containing meta-data.
+     * It is important to note that file permissions are natively supported inside a
+     * phar; it is possible to set them with the
+     * PharFileInfo::chmod method. As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed if the file is within a Phar
+     * archive. Files within PharData archives do not have
+     * this restriction.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function setMetaData($metadata) {}
+
+    /**
+     * This method decompresses the file inside the Phar archive.
+     * Depending on how the file is compressed, the bzip2
+     * or zlib extensions must be enabled to take
+     * advantage of this feature. As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed.
+     *
+     * @return bool
+     **/
+    function setUncompressed() {}
+
+}
+class Runkit_Sandbox_Parent {
+    /**
+     * Instantiating the Runkit_Sandbox_Parent
+     * class from within a sandbox environment created from the
+     * Runkit_Sandbox class provides some
+     * (controlled) means for a sandbox child to access its parent.
+     *
+     * @return void
+     **/
+    function __construct() {}
+
+}
+class SCA_LocalProxy {
+    /**
+     * This method is used inside either an ordinary PHP script or an SCA
+     * component that needs to create an SDO to pass to a local service. The
+     * parameters are the desired SDO's namespace URI and type name. The
+     * namespace and type must be defined in the interface of the component
+     * that is to be called, so the namespace and type must be defined in one of
+     * the schema files which are specfied on the @types annotation within
+     * the component for which the SCA_LocalProxy object is a proxy.
+     *
+     * @param string
+     * @param string
+     * @return SDO_DataObject
+     **/
+    function createDataObject($type_namespace_uri, $type_name) {}
+
+}
+class SCA_SoapProxy {
+    /**
+     * This method is used inside either an ordinary PHP script or an SCA
+     * component that needs to create an SDO to pass to a web service. The
+     * parameters are the desired SDO's namespace URI and type name. The
+     * namespace and type must be defined in the interface of the component
+     * that is to be called, so the namespace and type must be defined within
+     * the WSDL for the web service. If the web service is also an SCA component
+     * then the types will have been defined within one of the schema files
+     * which are specfied on the @types annotation within the component for
+     * which the SCA_SoapProxy object is a proxy.
+     *
+     * @param string
+     * @param string
+     * @return SDO_DataObject
+     **/
+    function createDataObject($type_namespace_uri, $type_name) {}
+
+}
+class SCA {
+    /**
+     * This method is used inside an SCA component that needs to create
+     * an SDO to return. The parameters are the desired SDO's namespace URI
+     * and type name. The namespace and type must be defined in one of the
+     * schema files which are specfied on the @types annotation within the
+     * component.
+     *
+     * @param string
+     * @param string
+     * @return SDO_DataObject
+     **/
+    function createDataObject($type_namespace_uri, $type_name) {}
+
+    /**
+     * Examine the target and initialise and return a proxy of the appropriate 
+     * sort. If the target is for a local PHP component the returned proxy will be an 
+     * SCA_LocalProxy. If the target is for a WSDL file, the returned proxy will be a 
+     * SCA_SoapProxy.
+     *
+     * @param string
+     * @param string
+     * @param array
+     * @return mixed
+     **/
+    function getService($target, $binding, $config) {}
+
+}
+class SDO_DAS_ChangeSummary {
+    const NONE = 0;
+    const MODIFICATION = 0;
+    const ADDITION = 0;
+    const DELETION = 0;
+    /**
+     * Begin logging changes made to the SDO_DataObject.
+     *
+     * @return void
+     **/
+    function beginLogging() {}
+
+    /**
+     * End logging changes made to an SDO_DataObject.
+     *
+     * @return void
+     **/
+    function endLogging() {}
+
+    /**
+     * Get the type of change which has been made to the supplied SDO_DataObject.
+     *
+     * @param SDO_DataObject
+     * @return int
+     **/
+    function getChangeType($dataObject) {}
+
+    /**
+     * Get an SDO_List of the SDO_DataObjects which have been changed.
+     * These data objects can then be used to identify the types 
+     * of change made to each, along with the old values.
+     *
+     * @return SDO_List
+     **/
+    function getChangedDataObjects() {}
+
+    /**
+     * Get the old container (SDO_DataObject) for a deleted SDO_DataObject.
+     *
+     * @param SDO_DataObject
+     * @return SDO_DataObject
+     **/
+    function getOldContainer($data_object) {}
+
+    /**
+     * Get a list of the old values for a given changed SDO_DataObject.
+     * Returns a list of SDO_DAS_Settings describing the old values for 
+     * the changed properties of the SDO_DataObject.
+     *
+     * @param SDO_DataObject
+     * @return SDO_List
+     **/
+    function getOldValues($data_object) {}
+
+    /**
+     * Test to see whether change logging is switched on.
+     *
+     * @return bool
+     **/
+    function isLogging() {}
+
+}
+class SDO_DAS_DataFactory {
+    /**
+     * Adds a property to a type. The type must already be known to the
+     * SDO_DAS_DataFactory (i.e. have been added using addType()). The property
+     * becomes a property of the type. This is how the graph model for the
+     * structure of an SDO_DataObject is built.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param array
+     * @return void
+     **/
+    function addPropertyToType($parent_type_namespace_uri, $parent_type_name, $property_name, $type_namespace_uri, $type_name, $options) {}
+
+    /**
+     * Add a new type to the SDO_DAS_DataFactory, 
+     * defined by its namespace and type name.
+     * The type becomes part of the model of data objects 
+     * that the data factory can create.
+     *
+     * @param string
+     * @param string
+     * @param array
+     * @return void
+     **/
+    function addType($type_namespace_uri, $type_name, $options) {}
+
+    /**
+     * Static method to get an instance of an SDO_DAS_DataFactory. 
+     * This instance is initially only configured with the basic SDO types. 
+     * A Data Access Service is responsible for populating
+     * the data factory model and then allowing PHP applications 
+     * to create SDOs based on the model through the SDO_DataFactory interface.
+     * PHP applications should always obtain a data factory from a 
+     * configured Data Access Service, not through this interface.
+     *
+     * @return SDO_DAS_DataFactory
+     **/
+    function getDataFactory() {}
+
+}
+class SDO_DAS_DataObject {
+    /**
+     * Get the SDO_DAS_ChangeSummary for an SDO_DAS_DataObject, 
+     * or NULL if it does not have one.
+     *
+     * @return SDO_DAS_ChangeSummary
+     **/
+    function getChangeSummary() {}
+
+}
+class SDO_DAS_Setting {
+    /**
+     * Get the list index for a modification made to an element of a 
+     * many-valued property. 
+     * For example, if we modified the third element of a 
+     * many-valued property
+     * we could obtain an SDO_DAS_Setting from the 
+     * change summary corresponding to that modification.
+     * A call to
+     * getListIndex
+     * on that setting would return the value 2 (lists are indexed from zero).
+     *
+     * @return int
+     **/
+    function getListIndex() {}
+
+    /**
+     * Returns the property index for the changed property. 
+     * This index identifies the property which was modified in data object.
+     *
+     * @return int
+     **/
+    function getPropertyIndex() {}
+
+    /**
+     * Returns the property name for the changed property. 
+     * This name identifies the property which was modified in data object.
+     *
+     * @return string
+     **/
+    function getPropertyName() {}
+
+    /**
+     * Returns the old value for the changed property.
+     * This can be used by a Data Access Service when 
+     * writing updates to a data source.
+     * The DAS uses the old value to detect conflicts by comparing 
+     * it with the current value in the data source.
+     * If they do not match, then the data source has been updated 
+     * since the data object was originally populated, and therefore
+     * writing any new updates risks compromising the integrity of the data.
+     *
+     * @return mixed
+     **/
+    function getValue() {}
+
+}
+class SDO_DataFactory {
+    /**
+     * Create a new SDO_DataObject given the data object's 
+     * namespace URI and type name.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function create($type_namespace_uri, $type_name) {}
+
+}
+class SDO_DataObject {
+    /**
+     * Clear an SDO_DataObject's properties. 
+     * Read-only properties are unaffected.
+     * Subsequent calls to isset() for the data object will return .
+     *
+     * @return void
+     **/
+    function clear() {}
+
+    /**
+     * Create a child SDO_DataObject of the default type for the 
+     * property identified.
+     * The data object is automatically inserted into the tree 
+     * and a reference to it is returned.
+     *
+     * @param mixed
+     * @return SDO_DataObject
+     **/
+    function createDataObject($identifier) {}
+
+    /**
+     * Get the data object which contains this data object.
+     *
+     * @return SDO_DataObject
+     **/
+    function getContainer() {}
+
+    /**
+     * Return the SDO_Sequence for this SDO_DataObject. 
+     * Accessing the SDO_DataObject through the SDO_Sequence interface 
+     * acts on the same SDO_DataObject instance data, 
+     * but preserves ordering across properties.
+     *
+     * @return SDO_Sequence
+     **/
+    function getSequence() {}
+
+    /**
+     * Return the name of the type for a data object.
+     * A convenience method corresponding to 
+     * SDO_Model_ReflectionDataObject::getType().getName().
+     *
+     * @return string
+     **/
+    function getTypeName() {}
+
+    /**
+     * Return the namespace URI of the type for a data object.
+     * A convenience method corresponding to 
+     * SDO_Model_ReflectionDataObject::getType().getNamespaceURI().
+     *
+     * @return string
+     **/
+    function getTypeNamespaceURI() {}
+
+}
+class SDO_Exception {
+    /**
+     * Returns the cause of this exception or NULL if the cause is nonexistent or unknown.
+     * Typically the cause will be an SDO_CPPException object, which may
+     * be used to obtain additional diagnostic information.
+     *
+     * @return mixed
+     **/
+    function getCause() {}
+
+}
+class SDO_List {
+    /**
+     * Insert a new element at a specified position in the list.
+     * All subsequent list items are moved up.
+     *
+     * @param mixed
+     * @param int
+     * @return void
+     **/
+    function insert($value, $index) {}
+
+}
+class SDO_Model_Property {
+    /**
+     * Returns the SDO_Model_Type which contains this property.
+     *
+     * @return SDO_Model_Type
+     **/
+    function getContainingType() {}
+
+    /**
+     * Returns the default value for the property.
+     * Only primitive data type properties can have default values.
+     *
+     * @return mixed
+     **/
+    function getDefault() {}
+
+    /**
+     * Returns the name of the SDO_Model_Property.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Get the SDO_Model_Type of the property.
+     * The SDO_Model_Type describes the type information for the property, such 
+     * as its type name, namespace URI, whether it is a primitive data type, 
+     * and so on.
+     *
+     * @return SDO_Model_Type
+     **/
+    function getType() {}
+
+    /**
+     * Test to see if the property corresponds to a containment relationship.
+     * Returns if the property defines a containment relationship,
+     * or if it is reference.
+     *
+     * @return bool
+     **/
+    function isContainment() {}
+
+    /**
+     * Test to see if the property is many-valued. 
+     * Returns if this is a many-valued property, otherwise returns 
+     * .
+     *
+     * @return bool
+     **/
+    function isMany() {}
+
+}
+class SDO_Model_ReflectionDataObject {
+    /**
+     * Construct an SDO_Model_ReflectionDataObject to reflect on an 
+     * SDO_DataObject. Reflecting on an SDO_DataObject gives access to 
+     * information about its model. The model contains information such as 
+     * the data object's type, and whether that type is sequenced
+     * (preserves ordering across properties) or open (each instance can have 
+     * its model extended). The model also holds information about the data 
+     * object's properties, any default values they may have, and so on.
+     *
+     * @param SDO_DataObject
+     * @return SDO_Model_ReflectionDataObject
+     **/
+    function __construct($data_object) {}
+
+    /**
+     * Get a string describing the SDO_DataObject.
+     * The default behaviour is to print the output, but
+     * if is specified for return, it is returned as a string.
+     *
+     * @param SDO_Model_ReflectionDataObject
+     * @param bool
+     * @return mixed
+     **/
+    function export($rdo, $return) {}
+
+    /**
+     * Get the SDO_Model_Property that contains the SDO_DataObject. 
+     * This method is used to navigate up to the parent's property which 
+     * contains the data object which has been reflected upon.
+     *
+     * @return SDO_Model_Property
+     **/
+    function getContainmentProperty() {}
+
+    /**
+     * Get the instance properties for the SDO_DataObject. The instance 
+     * properties consist of all the properties defined on the data object's 
+     * type, plus any instance properties from open content (if the data object
+     * is an open type).
+     *
+     * @return array
+     **/
+    function getInstanceProperties() {}
+
+    /**
+     * Returns the SDO_Model_Type for the SDO_DataObject. The SDO_Model_Type
+     * holds all the information about the data object's type, such as namespace 
+     * URI, type name, whether it is a primitive data type, and so on.
+     *
+     * @return SDO_Model_Type
+     **/
+    function getType() {}
+
+}
+class SDO_Model_Type {
+    /**
+     * Get the base type for this type.
+     * Returns the SDO_Model_Type for the base type if this type inherits from 
+     * another, otherwise returns . An example of when base types occur 
+     * is when a type defined in XML schema inherits from another type by using 
+     * .
+     *
+     * @return SDO_Model_Type
+     **/
+    function getBaseType() {}
+
+    /**
+     * Returns the name of the type. The combination of type name and namespace 
+     * URI is used to uniquely identify the type.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Returns the namespace URI of the type. The combination of namespace URI 
+     * and type name is used to uniquely identify the type.
+     *
+     * @return string
+     **/
+    function getNamespaceURI() {}
+
+    /**
+     * Get an array of SDO_Model_Property objects describing the properties 
+     * defined for the SDO_Model_Type. Each SDO_Model_Property holds 
+     * information such as the property name, default value, and so on.
+     *
+     * @return array
+     **/
+    function getProperties() {}
+
+    /**
+     * Get an SDO_Model_Property of the type, identified by its property index 
+     * or property name.
+     *
+     * @param mixed
+     * @return SDO_Model_Property
+     **/
+    function getProperty($identifier) {}
+
+    /**
+     * Test to see if this SDO_Model_Type is an abstract data type.
+     * Returns if this type is abstract, that is, no SDO_DataObject
+     * of this type can be instantiated, though other types may inherit
+     * from it.
+     *
+     * @return bool
+     **/
+    function isAbstractType() {}
+
+    /**
+     * Test to see if this SDO_Model_Type is a primitive data type.
+     * Returns if this type is a primitive data type, otherwise returns 
+     * .
+     *
+     * @return bool
+     **/
+    function isDataType() {}
+
+    /**
+     * Test for an SDO_DataObject being an instance of this SDO_Model_Type.
+     * Returns if the SDO_DataObject provided is an instance of this 
+     * SDO_Model_Type, or a derived type, otherwise returns .
+     *
+     * @param SDO_DataObject
+     * @return bool
+     **/
+    function isInstance($data_object) {}
+
+    /**
+     * Test to see if this type is open.
+     * Returns if this type is open, otherwise returns . An 
+     * SDO_DataObject whose type is open can have properties added to them which 
+     * are not described by the type. This capability is used to support 
+     * working with XML documents whose schema support open content, such as that 
+     * defined by an element.
+     *
+     * @return bool
+     **/
+    function isOpenType() {}
+
+    /**
+     * Test to see if this is a sequenced type. Returns if this type is 
+     * sequence, otherwise returns .
+     * Sequenced types can have the ordering across properties preserved and can 
+     * contain unstructured text. For more information on sequenced types see 
+     * the section on 
+     * Working with Sequenced Data
+     * Objects.
+     *
+     * @return bool
+     **/
+    function isSequencedType() {}
+
+}
+class SDO_Sequence {
+    /**
+     * Return the property for the specified sequence index.
+     *
+     * @param int
+     * @return SDO_Model_Property
+     **/
+    function getProperty($sequence_index) {}
+
+    /**
+     * Insert a new element at a specified position in the sequence. 
+     * All subsequent sequence items are moved up.
+     *
+     * @param mixed
+     * @param int
+     * @param mixed
+     * @return void
+     **/
+    function insert($value, $sequenceIndex, $propertyIdentifier) {}
+
+    /**
+     * Modify the position of the item in the sequence, 
+     * without altering the value of the property in the SDO_DataObject.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function move($toIndex, $fromIndex) {}
+
+}
+class SDO_DAS_XML_Document {
+    /**
+     * Returns the root SDO_DataObject.
+     *
+     * @return SDO_DataObject
+     **/
+    function getRootDataObject() {}
+
+    /**
+     * Returns root element's name.
+     *
+     * @return string
+     **/
+    function getRootElementName() {}
+
+    /**
+     * Returns root element's URI string.
+     *
+     * @return string
+     **/
+    function getRootElementURI() {}
+
+    /**
+     * Sets the given string as encoding.
+     *
+     * @param string
+     * @return void
+     **/
+    function setEncoding($encoding) {}
+
+    /**
+     * Controls whether an XML declaration will be generated at the start of the 
+     * XML document. Set to true to generate the XML declaration,
+     * or false to suppress it.
+     *
+     * @param bool
+     * @return void
+     **/
+    function setXMLDeclaration($xmlDeclatation) {}
+
+    /**
+     * Sets the given string as xml version.
+     *
+     * @param string
+     * @return void
+     **/
+    function setXMLVersion($xmlVersion) {}
+
+}
+class SDO_DAS_XML {
+    /**
+     * Load a second or subsequent schema file to an XML DAS that has already
+     * been created with the static method create.
+     * Although the file may be any valid schema file, a likely reason for 
+     * using this method is to add a schema file containing definitions of 
+     * extra complex types, hence the name. See Example 4 of the parent document 
+     * for an example.
+     *
+     * @param string
+     * @return void
+     **/
+    function addTypes($xsd_file) {}
+
+    /**
+     * This is the only static method of SDO_DAS_XML class. 
+     * Used to instantiate SDO_DAS_XML object.
+     *
+     * @param mixed
+     * @param string
+     * @return SDO_DAS_XML
+     **/
+    function create($xsd_file, $key) {}
+
+    /**
+     * Creates SDO_DataObject for a given namespace URI and type name. 
+     * The type should be defined in the underlying model 
+     * otherwise SDO_TypeNotFoundException will be thrown.
+     *
+     * @param string
+     * @param string
+     * @return SDO_DataObject
+     **/
+    function createDataObject($namespace_uri, $type_name) {}
+
+    /**
+     * Creates an XML Document object. This will contain just one empty root element
+     * on which none of the properties will have been set.
+     * The purpose of this call is to allow an application to create 
+     * an XML document from scratch without the need to load a 
+     * document from a file or string. The document that is created 
+     * will be as if a document had been loaded that contained just a single
+     * empty document element with no attributes set or elements within it.
+     *
+     * @param string
+     * @return SDO_DAS_XML_Document
+     **/
+    function createDocument($document_element_name) {}
+
+    /**
+     * Constructs the tree of SDO_DataObjects from the given address 
+     * to xml instance document. 
+     * Returns SDO_DAS_XML_Document Object. 
+     * Use SDO_DAS_XML_Document::getRootDataObject 
+     * method to get root data object.
+     *
+     * @param string
+     * @return SDO_XMLDocument
+     **/
+    function loadFile($xml_file) {}
+
+    /**
+     * Constructs the tree of SDO_DataObjects from the given xml instance string. 
+     * Returns SDO_DAS_XML_Document Object. 
+     * Use SDO_DAS_XML_Document::getRootDataObject method to get root data object.
+     *
+     * @param string
+     * @return SDO_DAS_XML_Document
+     **/
+    function loadString($xml_string) {}
+
+    /**
+     * Saves the SDO_DAS_XML_Document object to a file.
+     *
+     * @param SDO_XMLDocument
+     * @param string
+     * @param int
+     * @return void
+     **/
+    function saveFile($xdoc, $xml_file, $indent) {}
+
+    /**
+     * Saves the SDO_DAS_XML_Document object to string.
+     *
+     * @param SDO_XMLDocument
+     * @param int
+     * @return string
+     **/
+    function saveString($xdoc, $indent) {}
+
+}
+class SDO_DAS_Relational {
+    /**
+     * Given a PDO database handle and the special root object of a data graph, 
+     * examine the change summary in the datagraph and applies the changes 
+     * to the database.
+     * The changes that it can apply can be creations of data objects, 
+     * deletes of data objects, and modifications to properties of data objects.
+     *
+     * @param PDO
+     * @param SDODataObject
+     * @return void
+     **/
+    function applyChanges($database_handle, $root_data_object) {}
+
+    /**
+     * Constructs an instance of a Relational Data Access Service 
+     * from the passed metadata.
+     *
+     * @param array
+     * @param string
+     * @param array
+     * @return SDO_DAS_Relational
+     **/
+    function __construct($database_metadata, $application_root_type, $SDO_containment_references_metadata) {}
+
+    /**
+     * Returns the special root object at the top of an otherwise 
+     * empty data graph.
+     * This call is used when the application wants to create a 
+     * data graph from scratch, without having called
+     * executeQuery
+     * to create a data graph.
+     *
+     * @return SDODataObject
+     **/
+    function createRootDataObject() {}
+
+    /**
+     * Executes a given query against the relational database, 
+     * using the supplied PDO database handle.
+     * Differs from the simpler 
+     * executeQuery
+     * in that it takes a prepared statement and a list of values.
+     * This is the appropriate call to use either when the statement is 
+     * to executed a number of times with different arguments, and there
+     * is therefore a performance benefit to be had from preparing the 
+     * statement only once, or when the the SQL statement is to contain 
+     * varying values taken from a source that cannot be completely trusted.
+     * In this latter case it may be unsafe to construct the SQL statement
+     * by simply concatenating the parts of the statement together, 
+     * since the values may contain pieces of SQL. 
+     * To guard against this, a so-called SQL injection attack,
+     * it is safer to prepare the SQL statement with placeholders 
+     * (also known as parameter markers, denoted by '?') and supply a 
+     * list of the values to be substituted as a separate argument. 
+     * Otherwise this function is the same as 
+     * executeQuery in that 
+     * it uses the model that it built from the the metadata 
+     * to interpret the result set and returns a data graph.
+     *
+     * @param PDO
+     * @param PDOStatement
+     * @param array
+     * @param array
+     * @return SDODataObject
+     **/
+    function executePreparedQuery($database_handle, $prepared_statement, $value_list, $column_specifier) {}
+
+    /**
+     * Executes a given query against the relational database, 
+     * using the supplied PDO database handle.
+     * Uses the model that it built from the the metadata 
+     * to interpret the result set.
+     * Returns a data graph.
+     *
+     * @param PDO
+     * @param string
+     * @param array
+     * @return SDODataObject
+     **/
+    function executeQuery($database_handle, $SQL_statement, $column_specifier) {}
+
+}
+class SphinxClient {
+    /**
+     * Adds query with the current settings to multi-query batch. This method
+     * doesn't affect current settings (sorting, filtering, grouping etc.) in any way.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return int
+     **/
+    function addQuery($query, $index, $comment) {}
+
+    /**
+     * Connects to searchd, requests it to generate excerpts (snippets) from the
+     * given documents, and returns the results.
+     *
+     * @param array
+     * @param string
+     * @param string
+     * @param array
+     * @return array
+     **/
+    function buildExcerpts($docs, $index, $words, $opts) {}
+
+    /**
+     * Extracts keywords from query using tokenizer 
+     * settings for the given index, optionally with
+     * per-keyword occurrence statistics.
+     *
+     * @param string
+     * @param string
+     * @param bool
+     * @return array
+     **/
+    function buildKeywords($query, $index, $hits) {}
+
+    /**
+     * Creates a new SphinxClient object.
+     *
+     * @return 
+     **/
+    function __construct() {}
+
+    /**
+     * Escapes characters that are treated as special operators by the query
+     * language parser.
+     *
+     * @param string
+     * @return string
+     **/
+    function escapeString($string) {}
+
+    /**
+     * Returns string with the last error message. If there were no errors during
+     * the previous API call, empty string is returned. This method doesn't reset
+     * the error message, so you can safely call it several times.
+     *
+     * @return string
+     **/
+    function getLastError() {}
+
+    /**
+     * Returns last warning message. If there were no warnings during 
+     * the previous API call, empty string is returned. This method doesn't reset
+     * the warning, so you can safely call it several times.
+     *
+     * @return string
+     **/
+    function getLastWarning() {}
+
+    /**
+     * Connects to searchd server, runs the given search query with the current settings,
+     * obtains and returns the result set.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return array
+     **/
+    function query($query, $index, $comment) {}
+
+    /**
+     * Clears all currently set filters. This call is normally required when
+     * using multi-queries. You might want to set different filters for different
+     * queries in the batch. To do that, you should call
+     * SphinxClient::resetFilters and add new filters using 
+     * the respective calls.
+     *
+     * @return void
+     **/
+    function resetFilters() {}
+
+    /**
+     * Clears all currently group-by settings, and disables group-by. 
+     * This call is normally required only when using multi-queries.
+     *
+     * @return void
+     **/
+    function resetGroupBy() {}
+
+    /**
+     * Connects to searchd, runs a batch of all queries added using , obtains and returns the result sets.
+     *
+     * @return array
+     **/
+    function runQueries() {}
+
+    /**
+     * Controls the format of search results set arrays (whether matches should
+     * be returned as an array or a hash).
+     * If array_result is (default value), matches
+     * are returned as a hash with document IDs as keys, and other information (weight,
+     * attributes) as values. If array_result is , matches 
+     * are eturned as a plain array with complete per-match information including
+     * document IDs.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function setArrayResult($array_result) {}
+
+    /**
+     * Sets connection timeout (in seconds) for searchd connection.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setConnectTimeout($timeout) {}
+
+    /**
+     * Binds per-field weights by name.
+     *
+     * @param array
+     * @return bool
+     **/
+    function setFieldWeights($weights) {}
+
+    /**
+     * Adds new integer values set filter to the existing list of filters.
+     *
+     * @param string
+     * @param array
+     * @param bool
+     * @return bool
+     **/
+    function setFilter($attribute, $values, $exclude) {}
+
+    /**
+     * Adds new float range filter to the existing list of filters.
+     * Only those documents which have attribute 
+     * value stored in the index between min and
+     * max (including values that are exactly equal 
+     * to min or max) will 
+     * be matched (or rejected, if exclude is ).
+     *
+     * @param string
+     * @param float
+     * @param float
+     * @param bool
+     * @return bool
+     **/
+    function setFilterFloatRange($attribute, $min, $max, $exclude) {}
+
+    /**
+     * Adds new integer range filter to the existing list of filters.
+     * Only those documents which have attribute 
+     * value stored in the index between min and
+     * max (including values that are exactly equal 
+     * to min or max) will 
+     * be matched (or rejected, if exclude is ).
+     *
+     * @param string
+     * @param int
+     * @param int
+     * @param bool
+     * @return bool
+     **/
+    function setFilterRange($attribute, $min, $max, $exclude) {}
+
+    /**
+     * Sets anchor point for a geosphere distance (geodistance) calculations
+     * and enables them.
+     *
+     * @param string
+     * @param string
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setGeoAnchor($attrlat, $attrlong, $latitude, $longitude) {}
+
+    /**
+     * Sets grouping attribute, function, and group sorting mode, and enables
+     * grouping.
+     *
+     * @param string
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function setGroupBy($attribute, $func, $groupsort) {}
+
+    /**
+     * Sets attribute name for per-group distinct values count calculations. Only
+     * available for grouping queries. For each group, all values of
+     * attribute will be stored, then the amount of
+     * distinct values will be calculated and returned to the client. This feature
+     * is similar to COUNT(DISTINCT) clause in SQL.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setGroupDistinct($attribute) {}
+
+    /**
+     * Sets an accepted range of document IDs. Default range is from 0 to 0, i.e.
+     * no limit. Only those records that have document ID between
+     * min and max 
+     * (including IDs exactly equal to min or
+     * max) will be matched.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setIDRange($min, $max) {}
+
+    /**
+     * Sets per-index weights and enables weighted summing of match weights across
+     * different indexes.
+     *
+     * @param array
+     * @return bool
+     **/
+    function setIndexWeights($weights) {}
+
+    /**
+     * Sets offset into server-side result set and amount
+     * of matches to return to client starting from that offset
+     * (limit). Can additionally control maximum
+     * server-side result set size for current query
+     * (max_matches) and the threshold amount of matches
+     * to stop searching at (cutoff).
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setLimits($offset, $limit, $max, $cutoff) {}
+
+    /**
+     * Sets full-text query matching mode. mode is one of
+     * the constants listed below.
+     * 
+     * Match modes
+     * 
+     * 
+     * 
+     * Constant
+     * Description
+     * 
+     * 
+     * 
+     * 
+     * SPH_MATCH_ALL
+     * Match all query words (default mode).
+     * 
+     * 
+     * SPH_MATCH_ANY
+     * Match any of query words.
+     * 
+     * 
+     * SPH_MATCH_PHRASE
+     * Match query as a phrase, requiring perfect match.
+     * 
+     * 
+     * SPH_MATCH_BOOLEAN
+     * Match query as a boolean expression.
+     * 
+     * 
+     * SPH_MATCH_EXTENDED
+     * Match query as an expression in Sphinx internal query language.
+     * 
+     * 
+     * SPH_MATCH_FULLSCAN
+     * Enables fullscan.
+     * 
+     * 
+     * SPH_MATCH_EXTENDED2
+     * The same as SPH_MATCH_EXTENDED plus ranking
+     * and quorum searching support.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setMatchMode($mode) {}
+
+    /**
+     * Sets maximum search query time, in milliseconds. qtime must be a
+     * non-negative integer. Default value is 0, i.e. no limit.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setMaxQueryTime($qtime) {}
+
+    /**
+     * Sets ranking mode. Only available in
+     * SPH_MATCH_EXTENDED2 matching mode.
+     * 
+     * Ranking modes
+     * 
+     * 
+     * 
+     * Constant
+     * Description
+     * 
+     * 
+     * 
+     * 
+     * SPH_RANK_PROXIMITY_BM25
+     * Default ranking mode which uses both proximity and BM25
+     * ranking.
+     * 
+     * 
+     * SPH_RANK_BM25
+     * Statistical ranking mode which uses BM25 ranking only (similar
+     * to most of other full-text engines). This mode is faster, but may result
+     * in worse quality on queries which contain more than 1 keyword.
+     * 
+     * 
+     * SPH_RANK_NONE
+     * Disables ranking. This mode is the fastest. It is essentially
+     * equivalent to boolean searching, a weight of 1 is assigned to all
+     * matches.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setRankingMode($ranker) {}
+
+    /**
+     * Sets distributed retry count and delay.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setRetries($count, $delay) {}
+
+    /**
+     * Sets searchd host name and TCP port. All subsequent requests will use the
+     * new host and port settings. Default host and port are 'localhost' and 3312,
+     * respectively.
+     *
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function setServer($server, $port) {}
+
+    /**
+     * Sets matches sorting mode. See available modes below.
+     * 
+     * Sorting modes
+     * 
+     * 
+     * 
+     * Constant
+     * Description
+     * 
+     * 
+     * 
+     * 
+     * SPH_SORT_RELEVANCE
+     * Sort by relevance in descending order (best matches first).
+     * 
+     * 
+     * SPH_SORT_ATTR_DESC
+     * Sort by an attribute in descending order (bigger attribute
+     * values first).
+     * 
+     * 
+     * SPH_SORT_ATTR_ASC
+     * Sort by an attribute in ascending order (smaller attribute
+     * values first).
+     * 
+     * 
+     * SPH_SORT_TIME_SEGMENTS
+     * Sort by time segments (last hour/day/week/month) in descending
+     * order, and then by relevance in descending order.
+     * 
+     * 
+     * SPH_SORT_EXTENDED
+     * Sort by SQL-like combination of columns in ASC/DESC order.
+     * 
+     * 
+     * SPH_SORT_EXPR
+     * Sort by an arithmetic expression.
+     *
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function setSortMode($mode, $sortby) {}
+
+    /**
+     * Instantly updates given attribute values in given documents.
+     *
+     * @param string
+     * @param array
+     * @param array
+     * @return int
+     **/
+    function updateAttributes($index, $attributes, $values) {}
+
+}
+class ArrayIterator {
+    /**
+     * Get the current array entry.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * This function returns the current array key
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * The iterator to the next entry.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * This rewinds the iterator to the beginning.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function seek($position) {}
+
+    /**
+     * Checks if the array contains any more entries.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class ArrayObject {
+    /**
+     * @param mixed
+     * @return void
+     **/
+    function append($newval) {}
+
+    /**
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Create a new iterator from an ArrayObject instance.
+     *
+     * @return ArrayIterator
+     **/
+    function getIterator() {}
+
+    /**
+     * @param mixed
+     * @return bool
+     **/
+    function offsetExists($index) {}
+
+    /**
+     * @param mixed
+     * @return mixed
+     **/
+    function offsetGet($index) {}
+
+    /**
+     * Sets the value at the specified index to newval.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function offsetSet($index, $newval) {}
+
+    /**
+     * Unsets the value at the specified index.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function offsetUnset($index) {}
+
+}
+class CachingIterator {
+    const CALL_TOSTRING = 0;
+    const CATCH_GET_CHILD = 0;
+    /**
+     * @return bool
+     **/
+    function hasNext() {}
+
+    /**
+     * Move the iterator forward.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewind the iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Get the string representation of the current element.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+    /**
+     * Check whether the current element is valid.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class DirectoryIterator {
+    /**
+     * @return DirectoryIterator
+     **/
+    function current() {}
+
+    /**
+     * Get the last access time of file.
+     *
+     * @return int
+     **/
+    function getATime() {}
+
+    /**
+     * Get the inode modification time of file.
+     *
+     * @return int
+     **/
+    function getCTime() {}
+
+    /**
+     * Get the filename of the current dir entry.
+     *
+     * @return string
+     **/
+    function getFilename() {}
+
+    /**
+     * Get the files group.
+     *
+     * @return int
+     **/
+    function getGroup() {}
+
+    /**
+     * Get the inode of the file.
+     *
+     * @return int
+     **/
+    function getInode() {}
+
+    /**
+     * Get the last modification time of the file.
+     *
+     * @return int
+     **/
+    function getMTime() {}
+
+    /**
+     * Get the owner of the file.
+     *
+     * @return int
+     **/
+    function getOwner() {}
+
+    /**
+     * Get the directory path.
+     *
+     * @return string
+     **/
+    function getPath() {}
+
+    /**
+     * Get the path and filename of the current dir entry.
+     *
+     * @return string
+     **/
+    function getPathname() {}
+
+    /**
+     * Get the permissions of the file.
+     *
+     * @return int
+     **/
+    function getPerms() {}
+
+    /**
+     * Get the file size.
+     *
+     * @return int
+     **/
+    function getSize() {}
+
+    /**
+     * Get the file type.
+     *
+     * @return string
+     **/
+    function getType() {}
+
+    /**
+     * Check if the file is a directory.
+     *
+     * @return bool
+     **/
+    function isDir() {}
+
+    /**
+     * Check whether it's a directory and either .
+     * or ...
+     *
+     * @return bool
+     **/
+    function isDot() {}
+
+    /**
+     * Checks if the file is executable.
+     *
+     * @return bool
+     **/
+    function isExecutable() {}
+
+    /**
+     * Checks if it's a regular file.
+     *
+     * @return bool
+     **/
+    function isFile() {}
+
+    /**
+     * Checks if the entry is a symbolic link.
+     *
+     * @return bool
+     **/
+    function isLink() {}
+
+    /**
+     * Checks if the entry is readable.
+     *
+     * @return bool
+     **/
+    function isReadable() {}
+
+    /**
+     * Checks if the entry is writable.
+     *
+     * @return bool
+     **/
+    function isWritable() {}
+
+    /**
+     * Get the current dir entry.
+     *
+     * @return string
+     **/
+    function key() {}
+
+    /**
+     * Move to the next entry.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewind dir back to the start.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Check whether dir contains more entries.
+     *
+     * @return string
+     **/
+    function valid() {}
+
+}
+class FilterIterator {
+    /**
+     * Get the current element value.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * Get the inner iterator.
+     *
+     * @return Iterator
+     **/
+    function getInnerIterator() {}
+
+    /**
+     * Get the current key.
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Move the iterator forward.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewind the iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Checks whether the current element is valid.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class LimitIterator {
+    /**
+     * @return int
+     **/
+    function getPosition() {}
+
+    /**
+     * Moves the iterator forward.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds the iterator to the specified starting offset.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function seek($position) {}
+
+    /**
+     * Checks whether the current element is valid.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class ParentIterator {
+    /**
+     * Get the the inner iterator's children contained in a ParentIterator.
+     *
+     * @return ParentIterator
+     **/
+    function getChildren() {}
+
+    /**
+     * Check whether the inner iterator's current element has children.
+     *
+     * @return bool
+     **/
+    function hasChildren() {}
+
+    /**
+     * Moves the iterator forward.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds the iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+}
+class RecursiveCachingIterator {
+    /**
+     * @return RecursiveCachingIterator
+     **/
+    function getChildren() {}
+
+    /**
+     * @return boolean
+     **/
+    function hasChildren() {}
+
+}
+class RecursiveDirectoryIterator {
+    /**
+     * @return object
+     **/
+    function getChildren() {}
+
+    /**
+     * @param bool
+     * @return bool
+     **/
+    function hasChildren($allow_links) {}
+
+    /**
+     * @return string
+     **/
+    function key() {}
+
+    /**
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @return void
+     **/
+    function rewind() {}
+
+}
+class RecursiveIteratorIterator {
+    const LEAVES_ONLY = 0;
+    const SELF_FIRST = 0;
+    const CHILD_FIRST = 0;
+    /**
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * @return int
+     **/
+    function getDepth() {}
+
+    /**
+     * @return RecursiveIterator
+     **/
+    function getSubIterator() {}
+
+    /**
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @return boolean
+     **/
+    function valid() {}
+
+}
+class SimpleXMLIterator {
+    /**
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * @return object
+     **/
+    function getChildren() {}
+
+    /**
+     * @return bool
+     **/
+    function hasChildren() {}
+
+    /**
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class SplDoublyLinkedList {
+    /**
+     * @return mixed
+     **/
+    function bottom() {}
+
+    /**
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Get the current doubly linked list node.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * @return int
+     **/
+    function getIteratorMode() {}
+
+    /**
+     * @return bool
+     **/
+    function isEmpty() {}
+
+    /**
+     * This function returns the current node index
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Move the iterator to the next node.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @param mixed
+     * @return bool
+     **/
+    function offsetExists($index) {}
+
+    /**
+     * @param mixed
+     * @return mixed
+     **/
+    function offsetGet($index) {}
+
+    /**
+     * Sets the value at the specified index to newval.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function offsetSet($index, $newval) {}
+
+    /**
+     * Unsets the value at the specified index.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function offsetUnset($index) {}
+
+    /**
+     * @return mixed
+     **/
+    function pop() {}
+
+    /**
+     * Pushes value at the end of the doubly linked list.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function push($value) {}
+
+    /**
+     * This rewinds the iterator to the beginning.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function setIteratorMode($mode) {}
+
+    /**
+     * @return mixed
+     **/
+    function shift() {}
+
+    /**
+     * @return mixed
+     **/
+    function top() {}
+
+    /**
+     * Prepends value at the beginning of the doubly linked list.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function unshift($value) {}
+
+    /**
+     * Checks if the doubly linked list contains any more nodes.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class SplHeap {
+    /**
+     * Compare value1 with value2.
+     *
+     * @param mixed
+     * @param mixed
+     * @return int
+     **/
+    function compare($value1, $value2) {}
+
+    /**
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Get the current datastructure node.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * @return mixed
+     **/
+    function extract() {}
+
+    /**
+     * Insert value in the heap.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function insert($value) {}
+
+    /**
+     * @return bool
+     **/
+    function isEmpty() {}
+
+    /**
+     * This function returns the current node index
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Extracts the top node from the heap.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @return void
+     **/
+    function recoverFromCorruption() {}
+
+    /**
+     * This rewinds the iterator to the beginning. This is a no-op for heaps
+     * as the iterator is virtual and in fact never moves from the top of the 
+     * heap.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @return mixed
+     **/
+    function top() {}
+
+    /**
+     * Checks if the heap contains any more nodes.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class SplMaxHeap {
+    /**
+     * Compare value1 with value2.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function compare($value1, $value2) {}
+
+}
+class SplMinHeap {
+    /**
+     * Compare value1 with value2.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function compare($value1, $value2) {}
+
+}
+class SplPriorityQueue {
+    /**
+     * Compare priority1 with priority2.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function compare($priority1, $priority1) {}
+
+    /**
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Get the current datastructure node.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * @return mixed
+     **/
+    function extract() {}
+
+    /**
+     * Insert value with the priority priority in the queue.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function insert($value, $priority) {}
+
+    /**
+     * @return bool
+     **/
+    function isEmpty() {}
+
+    /**
+     * This function returns the current node index
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Extracts the top node from the queue.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @return void
+     **/
+    function recoverFromCorruption() {}
+
+    /**
+     * This rewinds the iterator to the beginning. This is a no-op for heaps
+     * as the iterator is virtual and in fact never moves from the top of the 
+     * heap.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function setExtractFlags($flags) {}
+
+    /**
+     * @return mixed
+     **/
+    function top() {}
+
+    /**
+     * Checks if the queue contains any more nodes.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class SplQueue {
+    /**
+     * Dequeues value from the top of of the queue.
+     *
+     * @return mixed
+     **/
+    function dequeue() {}
+
+    /**
+     * Enqueues value at the end of the queue.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function enqueue($value) {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function setIteratorMode($mode) {}
+
+}
+class SplStack {
+    /**
+     * @param int
+     * @return void
+     **/
+    function setIteratorMode($mode) {}
+
+}
+class SQLite3 {
+    /**
+     * Returns the number of database rows that were changed (or inserted or
+     * deleted) by the most recent SQL statement.
+     *
+     * @return int
+     **/
+    function changes() {}
+
+    /**
+     * Closes the database connection.
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * Instantiates an SQLite3 object and opens a connection to an
+     * SQLite 3 database. If the build includes encryption, then it will attempt
+     * to use the key.
+     *
+     * @param string
+     * @param int
+     * @param string
+     * @return 
+     **/
+    function __construct($filename, $flags, $encryption_key) {}
+
+    /**
+     * Registers a PHP function or user-defined function for use as an SQL
+     * aggregate function for use within SQL statements.
+     *
+     * @param string
+     * @param mixed
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function createAggregate($name, $step_callback, $final_callback, $argument_count) {}
+
+    /**
+     * Registers a PHP function or user-defined function for use as an SQL scalar
+     * function for use within SQL statements.
+     *
+     * @param string
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function createFunction($name, $callback, $argument_count) {}
+
+    /**
+     * Returns a string that has been properly escaped for safe inclusion in an
+     * SQL statement.
+     *
+     * @param string
+     * @return string
+     **/
+    function escapeString($value) {}
+
+    /**
+     * Executes a result-less query against a given database.
+     *
+     * @param string
+     * @return bool
+     **/
+    function exec($query) {}
+
+    /**
+     * Returns the numeric result code of the most recent failed SQLite request.
+     *
+     * @return int
+     **/
+    function lastErrorCode() {}
+
+    /**
+     * Returns English text describing the most recent failed SQLite request.
+     *
+     * @return string
+     **/
+    function lastErrorMsg() {}
+
+    /**
+     * Returns the row ID of the most recent INSERT into the database.
+     *
+     * @return int
+     **/
+    function lastInsertRowID() {}
+
+    /**
+     * Attempts to load an SQLite extension library.
+     *
+     * @param string
+     * @return bool
+     **/
+    function loadExtension($shared_library) {}
+
+    /**
+     * Opens an SQLite 3 Database. If the build includes encryption, then it will
+     * attempt to use the key.
+     *
+     * @param string
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function open($filename, $flags, $encryption_key) {}
+
+    /**
+     * Prepares an SQL statement for execution and returns an SQLite3_stmt object.
+     *
+     * @param string
+     * @return SQLite3_stmt
+     **/
+    function prepare($query) {}
+
+    /**
+     * Executes an SQL query, returning an SQLite3_result object if the query
+     * returns results.
+     *
+     * @param string
+     * @return SQLite3_result
+     **/
+    function query($query) {}
+
+    /**
+     * Executes a query and returns a single result.
+     *
+     * @param string
+     * @param bool
+     * @return SQLite3_result
+     **/
+    function querySingle($query, $entire_row) {}
+
+    /**
+     * Returns the SQLite3 library version as a string constant and as a number.
+     *
+     * @return array
+     **/
+    function version() {}
+
+}
+class SQLite3_result {
+    /**
+     * Returns the name of the column specified by the
+     * column_number.
+     *
+     * @param int
+     * @return string
+     **/
+    function columnName($column_number) {}
+
+    /**
+     * Returns the type of the column identified by
+     * column_number.
+     *
+     * @param int
+     * @return string
+     **/
+    function columnType($column_number) {}
+
+    /**
+     * Fetches a result row as an associative or numerically indexed array or both.
+     * By default, fetches as both.
+     *
+     * @param int
+     * @return array
+     **/
+    function fetchArray($mode) {}
+
+    /**
+     * Closes the result set.
+     *
+     * @return bool
+     **/
+    function finalize() {}
+
+    /**
+     * Returns the number of columns in the result set.
+     *
+     * @return int
+     **/
+    function numColumns() {}
+
+    /**
+     * Resets the result set back to the first row.
+     *
+     * @return bool
+     **/
+    function reset() {}
+
+}
+class SQLite3_stmt {
+    /**
+     * Binds a parameter to a statement variable.
+     *
+     * @param int
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function bindParam($param_number, $param, $type) {}
+
+    /**
+     * Binds the value of a parameter to a statement variable.
+     *
+     * @param int
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function bindValue($param_number, $param, $type) {}
+
+    /**
+     * Clears all current bound parameters.
+     *
+     * @return bool
+     **/
+    function clear() {}
+
+    /**
+     * Closes the prepared statement.
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * Executes a prepared statement and returns a result set object.
+     *
+     * @return SQLite3_result
+     **/
+    function execute() {}
+
+    /**
+     * Returns the number of parameters within the prepared statement.
+     *
+     * @return int
+     **/
+    function paramCount() {}
+
+    /**
+     * Resets the prepared statement to its state prior to execution. All bindings
+     * remain intact after reset.
+     *
+     * @return bool
+     **/
+    function reset() {}
+
+}
+class Swish {
+    const META_TYPE_UNDEF = 0;
+    const META_TYPE_STRING = 0;
+    const META_TYPE_ULONG = 0;
+    const META_TYPE_DATE = 0;
+    const IN_FILE_BIT = 0;
+    const IN_TITLE_BIT = 0;
+    const IN_HEAD_BIT = 0;
+    const IN_BODY_BIT = 0;
+    const IN_COMMENTS_BIT = 0;
+    const IN_HEADER_BIT = 0;
+    const IN_EMPHASIZED_BIT = 0;
+    const IN_META_BIT = 0;
+    const IN_FILE = 0;
+    const IN_TITLE = 0;
+    const IN_HEAD = 0;
+    const IN_BODY = 0;
+    const IN_COMMENTS = 0;
+    const IN_HEADER = 0;
+    const IN_EMPHASIZED = 0;
+    const IN_META = 0;
+    const IN_ALL = 0;
+    /**
+     * @param string
+     * @return void
+     **/
+    function __construct($index_names) {}
+
+}
+class tidy {
+    /**
+     * tidy::__construct constructs a new tidy object.
+     *
+     * @param string
+     * @param mixed
+     * @param string
+     * @param bool
+     * @return tidy
+     **/
+    function __construct($filename, $config, $encoding, $use_include_path) {}
+
+}
+class tidy_node {
+    /**
+     * @param int
+     * @return tidy_attr
+     **/
+    function get_attr($attrib_id) {}
+
+    /**
+     * @param int
+     * @return array
+     **/
+    function get_nodes($node_id) {}
+
+    /**
+     * @return tidy_node
+     **/
+    function next() {}
+
+    /**
+     * @return tidy_node
+     **/
+    function prev() {}
+
+}
+class tidyNode {
+    /**
+     * @return bool
+     **/
+    function hasChildren() {}
+
+    /**
+     * @return bool
+     **/
+    function hasSiblings() {}
+
+    /**
+     * This functions returns if the current node is ASP, or 
+     * otherwise.
+     *
+     * @return bool
+     **/
+    function isAsp() {}
+
+    /**
+     * @return bool
+     **/
+    function isComment() {}
+
+    /**
+     * @return bool
+     **/
+    function isHtml() {}
+
+    /**
+     * @return bool
+     **/
+    function isJste() {}
+
+    /**
+     * Returns if the current node is PHP code, otherwise.
+     *
+     * @return bool
+     **/
+    function isPhp() {}
+
+    /**
+     * @return bool
+     **/
+    function isText() {}
+
+    /**
+     * Returns the parent node of the current node.
+     *
+     * @return tidyNode
+     **/
+    function getParent() {}
+
+}
+class XMLReader {
+    /**
+     * Closes the input the XMLReader object is currently parsing.
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * This method copies the current node and returns the appropriate DOM object.
+     *
+     * @return DOMNode
+     **/
+    function expand() {}
+
+    /**
+     * Returns the value of a named attribute or an empty string if 
+     * attribute does not exist or not positioned on an element node.
+     *
+     * @param string
+     * @return string
+     **/
+    function getAttribute($name) {}
+
+    /**
+     * Returns the value of an attribute based on its position or an 
+     * empty string if attribute does not exist or not positioned on 
+     * an element node.
+     *
+     * @param int
+     * @return string
+     **/
+    function getAttributeNo($index) {}
+
+    /**
+     * Returns the value of an attribute by name and namespace URI or an empty 
+     * string if attribute does not exist or not positioned on an element node.
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function getAttributeNs($localName, $namespaceURI) {}
+
+    /**
+     * Indicates if specified property has been set.
+     *
+     * @param int
+     * @return bool
+     **/
+    function getParserProperty($property) {}
+
+    /**
+     * Returns a boolean indicating if the document being parsed is currently valid.
+     *
+     * @return bool
+     **/
+    function isValid() {}
+
+    /**
+     * Lookup in scope namespace for a given prefix.
+     *
+     * @param string
+     * @return bool
+     **/
+    function lookupNamespace($prefix) {}
+
+    /**
+     * Positions cursor on the named attribute.
+     *
+     * @param string
+     * @return bool
+     **/
+    function moveToAttribute($name) {}
+
+    /**
+     * Positions cursor on attribute based on its position.
+     *
+     * @param int
+     * @return bool
+     **/
+    function moveToAttributeNo($index) {}
+
+    /**
+     * Positions cursor on the named attribute in specified namespace.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function moveToAttributeNs($localName, $namespaceURI) {}
+
+    /**
+     * Moves cursor to the parent Element of current Attribute.
+     *
+     * @return bool
+     **/
+    function moveToElement() {}
+
+    /**
+     * Moves cursor to the first Attribute.
+     *
+     * @return bool
+     **/
+    function moveToFirstAttribute() {}
+
+    /**
+     * Moves cursor to the next Attribute if positioned on an Attribute or 
+     * moves to first attribute if positioned on an Element.
+     *
+     * @return bool
+     **/
+    function moveToNextAttribute() {}
+
+    /**
+     * Positions cursor on the next node skipping all subtrees.
+     *
+     * @param string
+     * @return bool
+     **/
+    function next($localname) {}
+
+    /**
+     * Set the URI containing the XML document to be parsed.
+     *
+     * @param string
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function open($URI, $encoding, $options) {}
+
+    /**
+     * Moves cursor to the next node in the document.
+     *
+     * @return bool
+     **/
+    function read() {}
+
+    /**
+     * Reads the contents of the current node, including child nodes and markup.
+     *
+     * @return string
+     **/
+    function readInnerXML() {}
+
+    /**
+     * Reads the contents of the current node, including the node itself.
+     *
+     * @return string
+     **/
+    function readOuterXML() {}
+
+    /**
+     * Reads the contents of the current node as an string.
+     *
+     * @return string
+     **/
+    function readString() {}
+
+    /**
+     * Set or Unset parser option for the parser. The options must be set 
+     * after xmlreader-open or 
+     * xmlreader-xml are called and before 
+     * the first xmlreader-read call.
+     *
+     * @param int
+     * @param bool
+     * @return bool
+     **/
+    function setParserProperty($property, $value) {}
+
+    /**
+     * Set the filename or URI for the RelaxNG Schema to use for validation.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setRelaxNGSchema($filename) {}
+
+    /**
+     * Set the data containing a RelaxNG Schema to use for validation.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setRelaxNGSchemaSource($source) {}
+
+    /**
+     * Use W3C XSD schema to validate the document as it is processed. Activation
+     * is only possible before the first Read().
+     *
+     * @param string
+     * @return boolean
+     **/
+    function setSchema($filename) {}
+
+    /**
+     * Set the data containing the XML to parse.
+     *
+     * @param string
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function xml($source, $encoding, $options) {}
+
+}
+class ZipArchive {
+    /**
+     * Adds an empty directory in the archive.
+     *
+     * @param string
+     * @return bool
+     **/
+    function addEmptyDir($dirname) {}
+
+    /**
+     * Adds a file to a ZIP archive from a given path
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function addFile($filename, $localname) {}
+
+    /**
+     * Add a file to a ZIP archive using its contents.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function addFromString($localname, $contents) {}
+
+    /**
+     * Close opened or created archive and save changes. This method is
+     * automatically called at the end of the script.
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * Delete an entry in the archive using its index.
+     *
+     * @param int
+     * @return bool
+     **/
+    function deleteIndex($index) {}
+
+    /**
+     * Delete an entry in the archive using its name.
+     *
+     * @param string
+     * @return bool
+     **/
+    function deleteName($name) {}
+
+    /**
+     * Extract the complete archive or the given files to the specified
+     * destination.
+     *
+     * @param string
+     * @param mixed
+     * @return mixed
+     **/
+    function extractTo($destination, $entries) {}
+
+    /**
+     * Returns the Zip archive comment.
+     *
+     * @return string
+     **/
+    function getArchiveComment() {}
+
+    /**
+     * Returns the comment of an entry using the entry index.
+     *
+     * @param int
+     * @param int
+     * @return string
+     **/
+    function getCommentIndex($index, $flags) {}
+
+    /**
+     * Returns the comment of an entry using the entry name.
+     *
+     * @param string
+     * @param int
+     * @return string
+     **/
+    function getCommentName($name, $flags) {}
+
+    /**
+     * Returns the entry contents using its index.
+     *
+     * @param int
+     * @param int
+     * @return mixed
+     **/
+    function getFromIndex($index, $flags) {}
+
+    /**
+     * Returns the entry contents using its name.
+     *
+     * @param string
+     * @param int
+     * @return mixed
+     **/
+    function getFromName($name, $flags) {}
+
+    /**
+     * Returns the name of an entry using its index.
+     *
+     * @param int
+     * @return string
+     **/
+    function getNameIndex($index) {}
+
+    /**
+     * Get a file handler to the entry defined by its name. For now it only
+     * supports read operations.
+     *
+     * @param string
+     * @return resource
+     **/
+    function getStream($name) {}
+
+    /**
+     * Locates an entry using its name.
+     *
+     * @param string
+     * @param int
+     * @return mixed
+     **/
+    function locateName($name, $flags) {}
+
+    /**
+     * Opens a new zip archive for reading, writing or modifying.
+     *
+     * @param string
+     * @param int
+     * @return mixed
+     **/
+    function open($filename, $flags) {}
+
+    /**
+     * Renames an entry defined by its index.
+     *
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function renameIndex($index, $newname) {}
+
+    /**
+     * Renames an entry defined by its name.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function renameName($name, $newname) {}
+
+    /**
+     * Set the comment of a ZIP archive.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function setArchiveComment($comment) {}
+
+    /**
+     * Set the comment of an entry defined by its index.
+     *
+     * @param int
+     * @param string
+     * @return mixed
+     **/
+    function setCommentIndex($index, $comment) {}
+
+    /**
+     * Set the comment of an entry defined by its name.
+     *
+     * @param string
+     * @param string
+     * @return mixed
+     **/
+    function setCommentName($name, $comment) {}
+
+    /**
+     * The function obtains information about the entry defined by its
+     * index.
+     *
+     * @param int
+     * @param int
+     * @return mixed
+     **/
+    function statIndex($index, $flags) {}
+
+    /**
+     * The function obtains information about the entry defined by its
+     * name.
+     *
+     * @param name
+     * @param int
+     * @return mixed
+     **/
+    function statName($name, $flags) {}
+
+    /**
+     * Undo all changes done in the archive.
+     *
+     * @return mixed
+     **/
+    function unchangeAll() {}
+
+    /**
+     * Revert all global changes to the archive archive. For now, this
+     * only reverts archive comment changes.
+     *
+     * @return mixed
+     **/
+    function unchangeArchive() {}
+
+    /**
+     * Revert all changes done to an entry at the given index.
+     *
+     * @param int
+     * @return mixed
+     **/
+    function unchangeIndex($index) {}
+
+    /**
+     * Revert all changes done to an entry.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function unchangeName($name) {}
+
+}
+class imagick {
+    const COLOR_BLACK = 0;
+    const COLOR_BLUE = 0;
+    const COLOR_CYAN = 0;
+    const COLOR_GREEN = 0;
+    const COLOR_RED = 0;
+    const COLOR_YELLOW = 0;
+    const COLOR_MAGENTA = 0;
+    const COLOR_OPACITY = 0;
+    const COLOR_ALPHA = 0;
+    const COLOR_FUZZ = 0;
+}
+class ZIPARCHIVE {
+    const CREATE = 0;
+    const OVERWRITE = 0;
+    const EXCL = 0;
+    const CHECKCONS = 0;
+    const FL_NOCASE = 0;
+    const FL_NODIR = 0;
+    const FL_COMPRESSED = 0;
+    const FL_UNCHANGED = 0;
+    const CM_DEFAULT = 0;
+    const CM_STORE = 0;
+    const CM_SHRINK = 0;
+    const CM_REDUCE_1 = 0;
+    const CM_REDUCE_2 = 0;
+    const CM_REDUCE_3 = 0;
+    const CM_REDUCE_4 = 0;
+    const CM_IMPLODE = 0;
+    const CM_DEFLATE = 0;
+    const CM_DEFLATE64 = 0;
+    const CM_PKWARE_IMPLODE = 0;
+    const CM_BZIP2 = 0;
+    const ER_OK = 0;
+    const ER_MULTIDISK = 0;
+    const ER_RENAME = 0;
+    const ER_CLOSE = 0;
+    const ER_SEEK = 0;
+    const ER_READ = 0;
+    const ER_WRITE = 0;
+    const ER_CRC = 0;
+    const ER_ZIPCLOSED = 0;
+    const ER_NOENT = 0;
+    const ER_EXISTS = 0;
+    const ER_OPEN = 0;
+    const ER_TMPOPEN = 0;
+    const ER_ZLIB = 0;
+    const ER_MEMORY = 0;
+    const ER_CHANGED = '';
+    const ER_COMPNOTSUPP = 0;
+    const ER_EOF = 0;
+    const ER_INVAL = 0;
+    const ER_NOZIP = 0;
+    const ER_INTERNAL = 0;
+    const ER_INCONS = 0;
+    const ER_REMOVE = 0;
+    const ER_DELETED = 0;
+}
+define('COUNT_NORMAL', 0);
+define('COUNT_RECURSIVE', 0);
+define('EXTR_OVERWRITE', 0);
+define('EXTR_SKIP', 0);
+define('EXTR_PREFIX_SAME', 0);
+define('EXTR_PREFIX_ALL', 0);
+define('EXTR_PREFIX_INVALID', 0);
+define('EXTR_PREFIX_IF_EXISTS', 0);
+define('EXTR_IF_EXISTS', 0);
+define('EXTR_REFS', 0);
+define('BBCODE_TYPE_NOARG', 0);
+define('BBCODE_TYPE_SINGLE', 0);
+define('BBCODE_TYPE_ARG', 0);
+define('BBCODE_TYPE_OPTARG', 0);
+define('BBCODE_TYPE_ROOT', 0);
+define('BBCODE_FLAGS_ARG_PARSING', 0);
+define('BBCODE_FLAGS_CDATA_NOT_ALLOWED', 0);
+define('BBCODE_FLAGS_SMILEYS_ON', 0);
+define('BBCODE_FLAGS_SMILEYS_OFF', 0);
+define('BBCODE_FLAGS_ONE_OPEN_PER_LEVEL', 0);
+define('BBCODE_FLAGS_REMOVE_IF_EMPTY', 0);
+define('BBCODE_FLAGS_DENY_REOPEN_CHILD', 0);
+define('BBCODE_ARG_DOUBLE_QUOTE', 0);
+define('BBCODE_ARG_SINGLE_QUOTE', 0);
+define('BBCODE_ARG_HTML_QUOTE', 0);
+define('BBCODE_ARG_QUOTE_ESCAPING', 0);
+define('BBCODE_AUTO_CORRECT', 0);
+define('BBCODE_CORRECT_REOPEN_TAGS', 0);
+define('BBCODE_DISABLE_TREE_BUILD', 0);
+define('BBCODE_DEFAULT_SMILEYS_ON', 0);
+define('BBCODE_DEFAULT_SMILEYS_OFF', 0);
+define('BBCODE_FORCE_SMILEYS_OFF', 0);
+define('BBCODE_SMILEYS_CASE_INSENSITIVE', 0);
+define('BBCODE_SET_FLAGS_SET', 0);
+define('BBCODE_SET_FLAGS_ADD', 0);
+define('BBCODE_SET_FLAGS_REMOVE', 0);
+define('CAL_GREGORIAN', 0);
+define('CAL_JULIAN', 0);
+define('CAL_JEWISH', 0);
+define('CAL_FRENCH', 0);
+define('CAL_NUM_CALS', 0);
+define('CAL_DOW_DAYNO', 0);
+define('CAL_DOW_SHORT', 0);
+define('CAL_DOW_LONG', 0);
+define('CAL_MONTH_GREGORIAN_SHORT', 0);
+define('CAL_MONTH_GREGORIAN_LONG', 0);
+define('CAL_MONTH_JULIAN_SHORT', 0);
+define('CAL_MONTH_JULIAN_LONG', 0);
+define('CAL_MONTH_JEWISH', 0);
+define('CAL_MONTH_FRENCH', 0);
+define('CLSCTX_INPROC_SERVER', 0);
+define('CLSCTX_INPROC_HANDLER', 0);
+define('CLSCTX_LOCAL_SERVER', 0);
+define('CLSCTX_REMOTE_SERVER', 0);
+define('CLSCTX_SERVER', 0);
+define('CLSCTX_ALL', 0);
+define('VT_NULL', 0);
+define('VT_EMPTY', 0);
+define('VT_UI1', 0);
+define('VT_I2', 0);
+define('VT_I4', 0);
+define('VT_R4', 0);
+define('VT_R8', 0);
+define('VT_BOOL', 0);
+define('VT_ERROR', 0);
+define('VT_CY', 0);
+define('VT_DATE', 0);
+define('VT_BSTR', 0);
+define('VT_DECIMAL', 0);
+define('VT_UNKNOWN', 0);
+define('VT_DISPATCH', 0);
+define('VT_VARIANT', 0);
+define('VT_I1', 0);
+define('VT_UI2', 0);
+define('VT_UI4', 0);
+define('VT_INT', 0);
+define('VT_UINT', 0);
+define('VT_ARRAY', 0);
+define('VT_BYREF', 0);
+define('CP_ACP', 0);
+define('CP_MACCP', 0);
+define('CP_OEMCP', 0);
+define('CP_UTF7', 0);
+define('CP_UTF8', 0);
+define('CP_SYMBOL', 0);
+define('CP_THREAD_ACP', 0);
+define('VARCMP_LT', 0);
+define('VARCMP_EQ', 0);
+define('VARCMP_GT', 0);
+define('VARCMP_NULL', 0);
+define('NORM_IGNORECASE', 0);
+define('NORM_IGNORENONSPACE', 0);
+define('NORM_IGNORESYMBOLS', 0);
+define('NORM_IGNOREWIDTH', 0);
+define('NORM_IGNOREKANATYPE', 0);
+define('NORM_IGNOREKASHIDA', 0);
+define('DISP_E_DIVBYZERO', 0);
+define('DISP_E_OVERFLOW', 0);
+define('MK_E_UNAVAILABLE', 0);
+define('CURLOPT_AUTOREFERER', 0);
+define('CURLOPT_COOKIESESSION', 0);
+define('CURLOPT_DNS_USE_GLOBAL_CACHE', 0);
+define('CYRUS_CONN_NONSYNCLITERAL', 0);
+define('CYRUS_CONN_INITIALRESPONSE', 0);
+define('CYRUS_CALLBACK_NUMBERED', 0);
+define('CYRUS_CALLBACK_NOLITERAL', 0);
+define('DATE_ATOM', '');
+define('DATE_COOKIE', '');
+define('DATE_ISO8601', '');
+define('DATE_RFC822', '');
+define('DATE_RFC850', '');
+define('DATE_RFC1036', '');
+define('DATE_RFC1123', '');
+define('DATE_RFC2822', '');
+define('DATE_RFC3339', '');
+define('DATE_RSS', '');
+define('DATE_W3C', '');
+define('DBX_MYSQL', 0);
+define('DBX_ODBC', 0);
+define('DBX_PGSQL', 0);
+define('DBX_MSSQL', 0);
+define('DBX_FBSQL', 0);
+define('DBX_OCI8', 0);
+define('DBX_SYBASECT', 0);
+define('DBX_SQLITE', 0);
+define('DBX_PERSISTENT', 0);
+define('DBX_RESULT_INFO', 0);
+define('DBX_RESULT_INDEX', 0);
+define('DBX_RESULT_ASSOC', 0);
+define('DBX_RESULT_UNBUFFERED', 0);
+define('DBX_COLNAMES_UNCHANGED', 0);
+define('DBX_COLNAMES_UPPERCASE', 0);
+define('DBX_COLNAMES_LOWERCASE', 0);
+define('DBX_CMP_NATIVE', 0);
+define('DBX_CMP_TEXT', 0);
+define('DBX_CMP_NUMBER', 0);
+define('DBX_CMP_ASC', 0);
+define('DBX_CMP_DESC', 0);
+define('F_DUPFD', 0);
+define('F_GETFD', 0);
+define('F_GETFL', 0);
+define('F_GETLK', 0);
+define('F_GETOWN', 0);
+define('F_RDLCK', 0);
+define('F_SETFL', 0);
+define('F_SETLK', 0);
+define('F_SETLKW', 0);
+define('F_SETOWN', 0);
+define('F_UNLCK', 0);
+define('F_WRLCK', 0);
+define('O_APPEND', 0);
+define('O_ASYNC', 0);
+define('O_CREAT', 0);
+define('O_EXCL', 0);
+define('O_NDELAY', 0);
+define('O_NOCTTY', 0);
+define('O_NONBLOCK', 0);
+define('O_RDONLY', 0);
+define('O_RDWR', 0);
+define('O_SYNC', 0);
+define('O_TRUNC', 0);
+define('O_WRONLY', 0);
+define('S_IRGRP', 0);
+define('S_IROTH', 0);
+define('S_IRUSR', 0);
+define('S_IRWXG', 0);
+define('S_IRWXO', 0);
+define('S_IRWXU', 0);
+define('S_IWGRP', 0);
+define('S_IWOTH', 0);
+define('S_IWUSR', 0);
+define('S_IXGRP', 0);
+define('S_IXOTH', 0);
+define('S_IXUSR', 0);
+define('DIRECTORY_SEPARATOR', '');
+define('PATH_SEPARATOR', '');
+define('EXP_GLOB', 0);
+define('EXP_EXACT', 0);
+define('EXP_REGEXP', 0);
+define('EXP_EOF', 0);
+define('EXP_TIMEOUT', 0);
+define('EXP_FULLBUFFER', 0);
+define('FBSQL_ASSOC', 0);
+define('FBSQL_NUM', 0);
+define('FBSQL_BOTH', 0);
+define('FBSQL_LOCK_DEFERRED', 0);
+define('FBSQL_LOCK_OPTIMISTIC', 0);
+define('FBSQL_LOCK_PESSIMISTIC', 0);
+define('FBSQL_ISO_READ_UNCOMMITTED', 0);
+define('FBSQL_ISO_READ_COMMITTED', 0);
+define('FBSQL_ISO_REPEATABLE_READ', 0);
+define('FBSQL_ISO_SERIALIZABLE', 0);
+define('FBSQL_ISO_VERSIONED', 0);
+define('FBSQL_UNKNOWN', 0);
+define('FBSQL_STOPPED', 0);
+define('FBSQL_STARTING', 0);
+define('FBSQL_RUNNING', 0);
+define('FBSQL_STOPPING', 0);
+define('FBSQL_NOEXEC', 0);
+define('FBSQL_LOB_DIRECT', 0);
+define('FBSQL_LOB_HANDLE', 0);
+define('FDFValue', 0);
+define('FDFStatus', 0);
+define('FDFFile', 0);
+define('FDFID', 0);
+define('FDFFf', 0);
+define('FDFSetFf', 0);
+define('FDFClearFf', 0);
+define('FDFFlags', 0);
+define('FDFSetF', 0);
+define('FDFClrF', 0);
+define('FDFAP', 0);
+define('FDFAS', 0);
+define('FDFAction', 0);
+define('FDFAA', 0);
+define('FDFAPRef', 0);
+define('FDFIF', 0);
+define('FDFEnter', 0);
+define('FDFExit', 0);
+define('FDFDown', 0);
+define('FDFUp', 0);
+define('FDFFormat', 0);
+define('FDFValidate', 0);
+define('FDFKeystroke', 0);
+define('FDFCalculate', 0);
+define('FDFNormalAP', 0);
+define('FDFRolloverAP', 0);
+define('FDFDownAP', 0);
+define('FILEINFO_NONE', 0);
+define('FILEINFO_SYMLINK', 0);
+define('FILEINFO_MIME', 0);
+define('FILEINFO_COMPRESS', 0);
+define('FILEINFO_DEVICES', 0);
+define('FILEINFO_CONTINUE', 0);
+define('FILEINFO_PRESERVE_ATIME', 0);
+define('FILEINFO_RAW', 0);
+define('GLOB_BRACE', 0);
+define('GLOB_ONLYDIR', 0);
+define('GLOB_MARK', 0);
+define('GLOB_NOSORT', 0);
+define('GLOB_NOCHECK', 0);
+define('GLOB_NOESCAPE', 0);
+define('PATHINFO_DIRNAME', 0);
+define('PATHINFO_BASENAME', 0);
+define('PATHINFO_EXTENSION', 0);
+define('PATHINFO_FILENAME', 0);
+define('FILE_USE_INCLUDE_PATH', 0);
+define('FILE_APPEND', 0);
+define('FILE_IGNORE_NEW_LINES', 0);
+define('FILE_SKIP_EMPTY_LINES', 0);
+define('FILE_BINARY', 0);
+define('FILE_TEXT', 0);
+define('INPUT_POST', 0);
+define('INPUT_GET', 0);
+define('INPUT_COOKIE', 0);
+define('INPUT_ENV', 0);
+define('INPUT_SERVER', 0);
+define('INPUT_SESSION', 0);
+define('INPUT_REQUEST', 0);
+define('FILTER_FLAG_NONE', 0);
+define('FILTER_REQUIRE_SCALAR', 0);
+define('FILTER_REQUIRE_ARRAY', 0);
+define('FILTER_FORCE_ARRAY', 0);
+define('FILTER_NULL_ON_FAILURE', 0);
+define('FILTER_VALIDATE_INT', 0);
+define('FILTER_VALIDATE_BOOLEAN', 0);
+define('FILTER_VALIDATE_FLOAT', 0);
+define('FILTER_VALIDATE_REGEXP', 0);
+define('FILTER_VALIDATE_URL', 0);
+define('FILTER_VALIDATE_EMAIL', 0);
+define('FILTER_VALIDATE_IP', 0);
+define('FILTER_DEFAULT', 0);
+define('FILTER_UNSAFE_RAW', 0);
+define('FILTER_SANITIZE_STRING', 0);
+define('FILTER_SANITIZE_STRIPPED', 0);
+define('FILTER_SANITIZE_ENCODED', 0);
+define('FILTER_SANITIZE_SPECIAL_CHARS', 0);
+define('FILTER_SANITIZE_EMAIL', 0);
+define('FILTER_SANITIZE_URL', 0);
+define('FILTER_SANITIZE_NUMBER_INT', 0);
+define('FILTER_SANITIZE_NUMBER_FLOAT', 0);
+define('FILTER_SANITIZE_MAGIC_QUOTES', 0);
+define('FILTER_CALLBACK', 0);
+define('FILTER_FLAG_ALLOW_OCTAL', 0);
+define('FILTER_FLAG_ALLOW_HEX', 0);
+define('FILTER_FLAG_STRIP_LOW', 0);
+define('FILTER_FLAG_STRIP_HIGH', 0);
+define('FILTER_FLAG_ENCODE_LOW', 0);
+define('FILTER_FLAG_ENCODE_HIGH', 0);
+define('FILTER_FLAG_ENCODE_AMP', 0);
+define('FILTER_FLAG_NO_ENCODE_QUOTES', 0);
+define('FILTER_FLAG_EMPTY_STRING_NULL', 0);
+define('FILTER_FLAG_ALLOW_FRACTION', 0);
+define('FILTER_FLAG_ALLOW_THOUSAND', 0);
+define('FILTER_FLAG_ALLOW_SCIENTIFIC', 0);
+define('FILTER_FLAG_SCHEME_REQUIRED', 0);
+define('FILTER_FLAG_HOST_REQUIRED', 0);
+define('FILTER_FLAG_PATH_REQUIRED', 0);
+define('FILTER_FLAG_QUERY_REQUIRED', 0);
+define('FILTER_FLAG_IPV4', 0);
+define('FILTER_FLAG_IPV6', 0);
+define('FILTER_FLAG_NO_RES_RANGE', 0);
+define('FILTER_FLAG_NO_PRIV_RANGE', 0);
+define('FRIBIDI_CHARSET_UTF8', 0);
+define('FRIBIDI_CHARSET_8859_6', 0);
+define('FRIBIDI_CHARSET_8859_8', 0);
+define('FRIBIDI_CHARSET_CP1255', 0);
+define('FRIBIDI_CHARSET_CP1256', 0);
+define('FRIBIDI_CHARSET_ISIRI_3342', 0);
+define('FRIBIDI_CHARSET_CAP_RTL', 0);
+define('FRIBIDI_RTL', 0);
+define('FRIBIDI_LTR', 0);
+define('FRIBIDI_AUTO', 0);
+define('FTP_ASCII', 0);
+define('FTP_TEXT', 0);
+define('FTP_BINARY', 0);
+define('FTP_IMAGE', 0);
+define('FTP_TIMEOUT_SEC', 0);
+define('GEOIP_COUNTRY_EDITION', 0);
+define('GEOIP_REGION_EDITION_REV0', 0);
+define('GEOIP_CITY_EDITION_REV0', 0);
+define('GEOIP_ORG_EDITION', 0);
+define('GEOIP_ISP_EDITION', 0);
+define('GEOIP_CITY_EDITION_REV1', 0);
+define('GEOIP_REGION_EDITION_REV1', 0);
+define('GEOIP_PROXY_EDITION', 0);
+define('GEOIP_ASNUM_EDITION', 0);
+define('GEOIP_NETSPEED_EDITION', 0);
+define('GEOIP_DOMAIN_EDITION', 0);
+define('GMP_ROUND_ZERO', 0);
+define('GMP_ROUND_PLUSINF', 0);
+define('GMP_ROUND_MINUSINF', 0);
+define('GMP_VERSION', '');
+define('GNUPG_SIG_MODE_NORMAL', 0);
+define('GNUPG_SIG_MODE_DETACH', 0);
+define('GNUPG_SIG_MODE_CLEAR', 0);
+define('GNUPG_VALIDITY_UNKNOWN', 0);
+define('GNUPG_VALIDITY_UNDEFINED', 0);
+define('GNUPG_VALIDITY_NEVER', 0);
+define('GNUPG_VALIDITY_MARGINAL', 0);
+define('GNUPG_VALIDITY_FULL', 0);
+define('GNUPG_VALIDITY_ULTIMATE', 0);
+define('GNUPG_PROTOCOL_OpenPGP', 0);
+define('GNUPG_PROTOCOL_CMS', 0);
+define('GNUPG_SIGSUM_VALID', 0);
+define('GNUPG_SIGSUM_GREEN', 0);
+define('GNUPG_SIGSUM_RED', 0);
+define('GNUPG_SIGSUM_KEY_REVOKED', 0);
+define('GNUPG_SIGSUM_KEY_EXPIRED', 0);
+define('GNUPG_SIGSUM_KEY_MISSING', 0);
+define('GNUPG_SIGSUM_SIG_EXPIRED', 0);
+define('GNUPG_SIGSUM_CRL_MISSING', 0);
+define('GNUPG_SIGSUM_CRL_TOO_OLD', 0);
+define('GNUPG_SIGSUM_BAD_POLICY', 0);
+define('GNUPG_SIGSUM_SYS_ERROR', 0);
+define('GNUPG_ERROR_WARNING', 0);
+define('GNUPG_ERROR_EXCEPTION', 0);
+define('GNUPG_ERROR_SILENT', 0);
+define('HASH_HMAC', 0);
+define('HTTP_SUPPORT', 0);
+define('HTTP_SUPPORT_REQUESTS', 0);
+define('HTTP_SUPPORT_MAGICMIME', 0);
+define('HTTP_SUPPORT_ENCODINGS', 0);
+define('HTTP_SUPPORT_SSLREQUESTS', 0);
+define('HW_ATTR_LANG', 0);
+define('HW_ATTR_NR', 0);
+define('HW_ATTR_NONE', 0);
+define('DB2_BINARY', 0);
+define('DB2_CONVERT', 0);
+define('DB2_PASSTHRU', 0);
+define('DB2_SCROLLABLE', 0);
+define('DB2_FORWARD_ONLY', 0);
+define('DB2_PARAM_IN', 0);
+define('DB2_PARAM_OUT', 0);
+define('DB2_PARAM_INOUT', 0);
+define('DB2_PARAM_FILE', 0);
+define('DB2_AUTOCOMMIT_ON', 0);
+define('DB2_AUTOCOMMIT_OFF', 0);
+define('DB2_DOUBLE', 0);
+define('DB2_LONG', 0);
+define('DB2_CHAR', 0);
+define('DB2_CASE_NATURAL', 0);
+define('DB2_CASE_LOWER', 0);
+define('DB2_CASE_UPPER', 0);
+define('DB2_DEFERRED_PREPARE_ON', 0);
+define('DB2_DEFERRED_PREPARE_OFF', 0);
+define('IFX_SCROLL', 0);
+define('IFX_HOLD', 0);
+define('IFX_LO_RDONLY', 0);
+define('IFX_LO_WRONLY', 0);
+define('IFX_LO_APPEND', 0);
+define('IFX_LO_RDWR', 0);
+define('IFX_LO_BUFFER', 0);
+define('IFX_LO_NOBUFFER', 0);
+define('IIS_READ', 0);
+define('IIS_WRITE', 0);
+define('IIS_EXECUTE', 0);
+define('IIS_SCRIPT', 0);
+define('IIS_ANONYMOUS', 0);
+define('IIS_BASIC', 0);
+define('IIS_NTLM', 0);
+define('IIS_STARTING', 0);
+define('IIS_STOPPED', 0);
+define('IIS_PAUSED', 0);
+define('IIS_RUNNING', 0);
+define('GD_VERSION', '');
+define('GD_MAJOR_VERSION', 0);
+define('GD_MINOR_VERSION', 0);
+define('GD_RELEASE_VERSION', 0);
+define('GD_EXTRA_VERSION', '');
+define('GD_BUNDLE', 0);
+define('IMG_GIF', 0);
+define('IMG_JPG', 0);
+define('IMG_JPEG', 0);
+define('IMG_PNG', 0);
+define('IMG_WBMP', 0);
+define('IMG_XPM', 0);
+define('IMG_COLOR_TILED', 0);
+define('IMG_COLOR_STYLED', 0);
+define('IMG_COLOR_BRUSHED', 0);
+define('IMG_COLOR_STYLEDBRUSHED', 0);
+define('IMG_COLOR_TRANSPARENT', 0);
+define('IMG_ARC_ROUNDED', 0);
+define('IMG_ARC_PIE', 0);
+define('IMG_ARC_CHORD', 0);
+define('IMG_ARC_NOFILL', 0);
+define('IMG_ARC_EDGED', 0);
+define('IMG_GD2_RAW', 0);
+define('IMG_GD2_COMPRESSED', 0);
+define('IMG_EFFECT_REPLACE', 0);
+define('IMG_EFFECT_ALPHABLEND', 0);
+define('IMG_EFFECT_NORMAL', 0);
+define('IMG_EFFECT_OVERLAY', 0);
+define('IMG_FILTER_NEGATE', 0);
+define('IMG_FILTER_GRAYSCALE', 0);
+define('IMG_FILTER_BRIGHTNESS', 0);
+define('IMG_FILTER_CONTRAST', 0);
+define('IMG_FILTER_COLORIZE', 0);
+define('IMG_FILTER_EDGEDETECT', 0);
+define('IMG_FILTER_GAUSSIAN_BLUR', 0);
+define('IMG_FILTER_SELECTIVE_BLUR', 0);
+define('IMG_FILTER_EMBOSS', 0);
+define('IMG_FILTER_MEAN_REMOVAL', 0);
+define('IMG_FILTER_SMOOTH', 0);
+define('IMAGETYPE_GIF', 0);
+define('IMAGETYPE_JPEG', 0);
+define('IMAGETYPE_PNG', 0);
+define('IMAGETYPE_SWF', 0);
+define('IMAGETYPE_PSD', 0);
+define('IMAGETYPE_BMP', 0);
+define('IMAGETYPE_WBMP', 0);
+define('IMAGETYPE_XBM', 0);
+define('IMAGETYPE_TIFF_II', 0);
+define('IMAGETYPE_TIFF_MM', 0);
+define('IMAGETYPE_IFF', 0);
+define('IMAGETYPE_JB2', 0);
+define('IMAGETYPE_JPC', 0);
+define('IMAGETYPE_JP2', 0);
+define('IMAGETYPE_JPX', 0);
+define('IMAGETYPE_SWC', 0);
+define('IMAGETYPE_ICO', 0);
+define('PNG_NO_FILTER', 0);
+define('PNG_FILTER_NONE', 0);
+define('PNG_FILTER_SUB', 0);
+define('PNG_FILTER_UP', 0);
+define('PNG_FILTER_AVG', 0);
+define('PNG_FILTER_PAETH', 0);
+define('PNG_ALL_FILTERS', 0);
+define('NIL', 0);
+define('OP_DEBUG', 0);
+define('OP_READONLY', 0);
+define('OP_ANONYMOUS', 0);
+define('OP_SHORTCACHE', 0);
+define('OP_SILENT', 0);
+define('OP_PROTOTYPE', 0);
+define('OP_HALFOPEN', 0);
+define('OP_EXPUNGE', 0);
+define('OP_SECURE', 0);
+define('CL_EXPUNGE', 0);
+define('FT_UID', 0);
+define('FT_PEEK', 0);
+define('FT_NOT', 0);
+define('FT_INTERNAL', 0);
+define('FT_PREFETCHTEXT', 0);
+define('ST_UID', 0);
+define('ST_SILENT', 0);
+define('ST_SET', 0);
+define('CP_UID', 0);
+define('CP_MOVE', 0);
+define('SE_UID', 0);
+define('SE_FREE', 0);
+define('SE_NOPREFETCH', 0);
+define('SO_FREE', 0);
+define('SO_NOSERVER', 0);
+define('SA_MESSAGES', 0);
+define('SA_RECENT', 0);
+define('SA_UNSEEN', 0);
+define('SA_UIDNEXT', 0);
+define('SA_UIDVALIDITY', 0);
+define('SA_ALL', 0);
+define('LATT_NOINFERIORS', 0);
+define('LATT_NOSELECT', 0);
+define('LATT_MARKED', 0);
+define('LATT_UNMARKED', 0);
+define('SORTDATE', 0);
+define('SORTARRIVAL', 0);
+define('SORTFROM', 0);
+define('SORTSUBJECT', 0);
+define('SORTTO', 0);
+define('SORTCC', 0);
+define('SORTSIZE', 0);
+define('TYPETEXT', 0);
+define('TYPEMULTIPART', 0);
+define('TYPEMESSAGE', 0);
+define('TYPEAPPLICATION', 0);
+define('TYPEAUDIO', 0);
+define('TYPEIMAGE', 0);
+define('TYPEVIDEO', 0);
+define('TYPEOTHER', 0);
+define('ENC7BIT', 0);
+define('ENC8BIT', 0);
+define('ENCBINARY', 0);
+define('ENCBASE64', 0);
+define('ENCQUOTEDPRINTABLE', 0);
+define('ENCOTHER', 0);
+define('IMAP_OPENTIMEOUT', 0);
+define('IMAP_READTIMEOUT', 0);
+define('IMAP_WRITETIMEOUT', 0);
+define('IMAP_CLOSETIMEOUT', 0);
+define('LATT_REFERRAL', 0);
+define('LATT_HASCHILDREN', 0);
+define('LATT_HASNOCHILDREN', 0);
+define('TYPEMODEL', 0);
+define('ASSERT_ACTIVE', 0);
+define('ASSERT_CALLBACK', 0);
+define('ASSERT_BAIL', 0);
+define('ASSERT_WARNING', 0);
+define('ASSERT_QUIET_EVAL', 0);
+define('INGRES_ASSOC', 0);
+define('INGRES_NUM', 0);
+define('INGRES_BOTH', 0);
+define('INGRES_EXT_VERSION', '');
+define('INGRES_API_VERSION', 0);
+define('INGRES_CURSOR_READONLY', 0);
+define('INGRES_CURSOR_UPDATE', 0);
+define('INGRES_DATE_MULTINATIONAL', 0);
+define('INGRES_DATE_MULTINATIONAL4', 0);
+define('INGRES_DATE_FINNISH', 0);
+define('INGRES_DATE_ISO', 0);
+define('INGRES_DATE_ISO4', 0);
+define('INGRES_DATE_GERMAN', 0);
+define('INGRES_DATE_MDY', 0);
+define('INGRES_DATE_DMY', 0);
+define('INGRES_DATE_YMD', 0);
+define('INGRES_MONEY_LEADING', 0);
+define('INGRES_MONEY_TRAILING', 0);
+define('INGRES_STRUCTURE_BTREE', 0);
+define('INGRES_STRUCTURE_CBTREE', 0);
+define('INGRES_STRUCTURE_HASH', 0);
+define('INGRES_STRUCTURE_CHASH', 0);
+define('INGRES_STRUCTURE_HEAP', 0);
+define('INGRES_STRUCTURE_CHEAP', 0);
+define('INGRES_STRUCTURE_ISAM', 0);
+define('INGRES_STRUCTURE_CISAM', 0);
+define('LDAP_DEREF_NEVER', 0);
+define('LDAP_DEREF_SEARCHING', 0);
+define('LDAP_DEREF_FINDING', 0);
+define('LDAP_DEREF_ALWAYS', 0);
+define('LDAP_OPT_DEREF', 0);
+define('LDAP_OPT_SIZELIMIT', 0);
+define('LDAP_OPT_TIMELIMIT', 0);
+define('LDAP_OPT_NETWORK_TIMEOUT', 0);
+define('LDAP_OPT_PROTOCOL_VERSION', 0);
+define('LDAP_OPT_ERROR_NUMBER', 0);
+define('LDAP_OPT_REFERRALS', 0);
+define('LDAP_OPT_RESTART', 0);
+define('LDAP_OPT_HOST_NAME', 0);
+define('LDAP_OPT_ERROR_STRING', 0);
+define('LDAP_OPT_MATCHED_DN', 0);
+define('LDAP_OPT_SERVER_CONTROLS', 0);
+define('LDAP_OPT_CLIENT_CONTROLS', 0);
+define('LDAP_OPT_DEBUG_LEVEL', 0);
+define('GSLC_SSL_NO_AUTH', 0);
+define('GSLC_SSL_ONEWAY_AUTH', 0);
+define('GSLC_SSL_TWOWAY_AUTH', 0);
+define('LIBXML_COMPACT', 0);
+define('LIBXML_DTDATTR', 0);
+define('LIBXML_DTDLOAD', 0);
+define('LIBXML_DTDVALID', 0);
+define('LIBXML_NOBLANKS', 0);
+define('LIBXML_NOCDATA', 0);
+define('LIBXML_NOEMPTYTAG', 0);
+define('LIBXML_NOENT', 0);
+define('LIBXML_NOERROR', 0);
+define('LIBXML_NONET', 0);
+define('LIBXML_NOWARNING', 0);
+define('LIBXML_NOXMLDECL', 0);
+define('LIBXML_NSCLEAN', 0);
+define('LIBXML_XINCLUDE', 0);
+define('LIBXML_ERR_ERROR', 0);
+define('LIBXML_ERR_FATAL', 0);
+define('LIBXML_ERR_NONE', 0);
+define('LIBXML_ERR_WARNING', 0);
+define('LIBXML_VERSION', 0);
+define('LIBXML_DOTTED_VERSION', '');
+define('MAILPARSE_EXTRACT_OUTPUT', 0);
+define('MAILPARSE_EXTRACT_STREAM', 0);
+define('MAILPARSE_EXTRACT_RETURN', 0);
+define('MB_OVERLOAD_MAIL', 0);
+define('MB_OVERLOAD_STRING', 0);
+define('MB_OVERLOAD_REGEX', 0);
+define('MB_CASE_UPPER', 0);
+define('MB_CASE_LOWER', 0);
+define('MB_CASE_TITLE', 0);
+define('M_PENDING', 0);
+define('M_DONE', 0);
+define('M_ERROR', 0);
+define('M_FAIL', 0);
+define('M_SUCCESS', 0);
+define('MING_NEW', 0);
+define('MING_ZLIB', 0);
+define('SWFBUTTON_HIT', 0);
+define('SWFBUTTON_DOWN', 0);
+define('SWFBUTTON_OVER', 0);
+define('SWFBUTTON_UP', 0);
+define('SWFBUTTON_MOUSEUPOUTSIDE', 0);
+define('SWFBUTTON_DRAGOVER', 0);
+define('SWFBUTTON_DRAGOUT', 0);
+define('SWFBUTTON_MOUSEUP', 0);
+define('SWFBUTTON_MOUSEDOWN', 0);
+define('SWFBUTTON_MOUSEOUT', 0);
+define('SWFBUTTON_MOUSEOVER', 0);
+define('SWFFILL_RADIAL_GRADIENT', 0);
+define('SWFFILL_LINEAR_GRADIENT', 0);
+define('SWFFILL_TILED_BITMAP', 0);
+define('SWFFILL_CLIPPED_BITMAP', 0);
+define('SWFTEXTFIELD_HASLENGTH', 0);
+define('SWFTEXTFIELD_NOEDIT', 0);
+define('SWFTEXTFIELD_PASSWORD', 0);
+define('SWFTEXTFIELD_MULTILINE', 0);
+define('SWFTEXTFIELD_WORDWRAP', 0);
+define('SWFTEXTFIELD_DRAWBOX', 0);
+define('SWFTEXTFIELD_NOSELECT', 0);
+define('SWFTEXTFIELD_HTML', 0);
+define('SWFTEXTFIELD_ALIGN_LEFT', 0);
+define('SWFTEXTFIELD_ALIGN_RIGHT', 0);
+define('SWFTEXTFIELD_ALIGN_CENTER', 0);
+define('SWFTEXTFIELD_ALIGN_JUSTIFY', 0);
+define('SWFACTION_ONLOAD', 0);
+define('SWFACTION_ENTERFRAME', 0);
+define('SWFACTION_UNLOAD', 0);
+define('SWFACTION_MOUSEMOVE', 0);
+define('SWFACTION_MOUSEDOWN', 0);
+define('SWFACTION_MOUSEUP', 0);
+define('SWFACTION_KEYDOWN', 0);
+define('SWFACTION_KEYUP', 0);
+define('SWFACTION_DATA', 0);
+define('CONNECTION_ABORTED', 0);
+define('CONNECTION_NORMAL', 0);
+define('CONNECTION_TIMEOUT', 0);
+define('__COMPILER_HALT_OFFSET__', 0);
+define('UDM_FIELD_URLID', 0);
+define('UDM_FIELD_URL', 0);
+define('UDM_FIELD_CONTENT', 0);
+define('UDM_FIELD_TITLE', 0);
+define('UDM_FIELD_KEYWORDS', 0);
+define('UDM_FIELD_DESC', 0);
+define('UDM_FIELD_DESCRIPTION', 0);
+define('UDM_FIELD_TEXT', 0);
+define('UDM_FIELD_SIZE', 0);
+define('UDM_FIELD_RATING', 0);
+define('UDM_FIELD_SCORE', 0);
+define('UDM_FIELD_MODIFIED', 0);
+define('UDM_FIELD_ORDER', 0);
+define('UDM_FIELD_CRC', 0);
+define('UDM_FIELD_CATEGORY', 0);
+define('UDM_FIELD_LANG', 0);
+define('UDM_FIELD_CHARSET', 0);
+define('UDM_PARAM_PAGE_SIZE', 0);
+define('UDM_PARAM_PAGE_NUM', 0);
+define('UDM_PARAM_SEARCH_MODE', 0);
+define('UDM_PARAM_CACHE_MODE', 0);
+define('UDM_PARAM_TRACK_MODE', 0);
+define('UDM_PARAM_PHRASE_MODE', 0);
+define('UDM_PARAM_CHARSET', 0);
+define('UDM_PARAM_LOCAL_CHARSET', 0);
+define('UDM_PARAM_BROWSER_CHARSET', 0);
+define('UDM_PARAM_STOPTABLE', 0);
+define('UDM_PARAM_STOP_TABLE', 0);
+define('UDM_PARAM_STOPFILE', 0);
+define('UDM_PARAM_STOP_FILE', 0);
+define('UDM_PARAM_WEIGHT_FACTOR', 0);
+define('UDM_PARAM_WORD_MATCH', 0);
+define('UDM_PARAM_MAX_WORD_LEN', 0);
+define('UDM_PARAM_MAX_WORDLEN', 0);
+define('UDM_PARAM_MIN_WORD_LEN', 0);
+define('UDM_PARAM_MIN_WORDLEN', 0);
+define('UDM_PARAM_ISPELL_PREFIXES', 0);
+define('UDM_PARAM_ISPELL_PREFIX', 0);
+define('UDM_PARAM_PREFIXES', 0);
+define('UDM_PARAM_PREFIX', 0);
+define('UDM_PARAM_CROSS_WORDS', 0);
+define('UDM_PARAM_CROSSWORDS', 0);
+define('UDM_PARAM_VARDIR', 0);
+define('UDM_PARAM_DATADIR', 0);
+define('UDM_PARAM_HLBEG', 0);
+define('UDM_PARAM_HLEND', 0);
+define('UDM_PARAM_SYNONYM', 0);
+define('UDM_PARAM_SEARCHD', 0);
+define('UDM_PARAM_QSTRING', 0);
+define('UDM_PARAM_REMOTE_ADDR', 0);
+define('UDM_LIMIT_CAT', 0);
+define('UDM_LIMIT_URL', 0);
+define('UDM_LIMIT_TAG', 0);
+define('UDM_LIMIT_LANG', 0);
+define('UDM_LIMIT_DATE', 0);
+define('UDM_PARAM_FOUND', 0);
+define('UDM_PARAM_NUM_ROWS', 0);
+define('UDM_PARAM_WORDINFO', 0);
+define('UDM_PARAM_WORD_INFO', 0);
+define('UDM_PARAM_SEARCHTIME', 0);
+define('UDM_PARAM_SEARCH_TIME', 0);
+define('UDM_PARAM_FIRST_DOC', 0);
+define('UDM_PARAM_LAST_DOC', 0);
+define('UDM_MODE_ALL', 0);
+define('UDM_MODE_ANY', 0);
+define('UDM_MODE_BOOL', 0);
+define('UDM_MODE_PHRASE', 0);
+define('UDM_CACHE_ENABLED', 0);
+define('UDM_CACHE_DISABLED', 0);
+define('UDM_TRACK_ENABLED', 0);
+define('UDM_TRACK_DISABLED', 0);
+define('UDM_PHRASE_ENABLED', 0);
+define('UDM_PHRASE_DISABLED', 0);
+define('UDM_CROSS_WORDS_ENABLED', 0);
+define('UDM_CROSSWORDS_ENABLED', 0);
+define('UDM_CROSS_WORDS_DISABLED', 0);
+define('UDM_CROSSWORDS_DISABLED', 0);
+define('UDM_PREFIXES_ENABLED', 0);
+define('UDM_PREFIX_ENABLED', 0);
+define('UDM_ISPELL_PREFIXES_ENABLED', 0);
+define('UDM_ISPELL_PREFIX_ENABLED', 0);
+define('UDM_PREFIXES_DISABLED', 0);
+define('UDM_PREFIX_DISABLED', 0);
+define('UDM_ISPELL_PREFIXES_DISABLED', 0);
+define('UDM_ISPELL_PREFIX_DISABLED', 0);
+define('UDM_ISPELL_TYPE_AFFIX', 0);
+define('UDM_ISPELL_TYPE_SPELL', 0);
+define('UDM_ISPELL_TYPE_DB', 0);
+define('UDM_ISPELL_TYPE_SERVER', 0);
+define('UDM_MATCH_WORD', 0);
+define('UDM_MATCH_BEGIN', 0);
+define('UDM_MATCH_SUBSTR', 0);
+define('UDM_MATCH_END', 0);
+define('MSQL_ASSOC', 0);
+define('MSQL_NUM', 0);
+define('MSQL_BOTH', 0);
+define('MSSQL_ASSOC', 0);
+define('MSSQL_NUM', 0);
+define('MSSQL_BOTH', 0);
+define('SQLTEXT', 0);
+define('SQLVARCHAR', 0);
+define('SQLCHAR', 0);
+define('SQLINT1', 0);
+define('SQLINT2', 0);
+define('SQLINT4', 0);
+define('SQLBIT', 0);
+define('SQLFLT8', 0);
+define('YPERR_ACCESS', 0);
+define('YPERR_BADARGS', 0);
+define('YPERR_BADDB', 0);
+define('YPERR_BUSY', 0);
+define('YPERR_DOMAIN', 0);
+define('YPERR_KEY', 0);
+define('YPERR_MAP', 0);
+define('YPERR_NODOM', 0);
+define('YPERR_NOMORE', 0);
+define('YPERR_PMAP', 0);
+define('YPERR_RESRC', 0);
+define('YPERR_RPC', 0);
+define('YPERR_YPBIND', 0);
+define('YPERR_YPERR', 0);
+define('YPERR_YPSERV', 0);
+define('YPERR_VERS', 0);
+define('OCI_DEFAULT', 0);
+define('OCI_DESCRIBE_ONLY', 0);
+define('OCI_COMMIT_ON_SUCCESS', 0);
+define('OCI_EXACT_FETCH', 0);
+define('OCI_SYSDATE', 0);
+define('OCI_B_BFILE', 0);
+define('OCI_B_CFILEE', 0);
+define('OCI_B_CLOB', 0);
+define('OCI_B_BLOB', 0);
+define('OCI_B_ROWID', 0);
+define('OCI_B_CURSOR', 0);
+define('OCI_B_NTY', 0);
+define('OCI_B_BIN', 0);
+define('SQLT_BFILEE', 0);
+define('SQLT_CFILEE', 0);
+define('SQLT_CLOB', 0);
+define('SQLT_BLOB', 0);
+define('SQLT_RDD', 0);
+define('SQLT_NTY', 0);
+define('SQLT_LNG', 0);
+define('SQLT_LBI', 0);
+define('SQLT_BIN', 0);
+define('SQLT_NUM', 0);
+define('SQLT_INT', 0);
+define('SQLT_AFC', 0);
+define('SQLT_CHR', 0);
+define('SQLT_VCS', 0);
+define('SQLT_AVC', 0);
+define('SQLT_STR', 0);
+define('SQLT_LVC', 0);
+define('SQLT_FLT', 0);
+define('SQLT_ODT', 0);
+define('SQLT_BDOUBLE', 0);
+define('SQLT_BFLOAT', 0);
+define('OCI_FETCHSTATEMENT_BY_COLUMN', 0);
+define('OCI_FETCHSTATEMENT_BY_ROW', 0);
+define('OCI_ASSOC', 0);
+define('OCI_NUM', 0);
+define('OCI_BOTH', 0);
+define('OCI_RETURN_NULLS', 0);
+define('OCI_RETURN_LOBS', 0);
+define('OCI_DTYPE_FILE', 0);
+define('OCI_DTYPE_LOB', 0);
+define('OCI_DTYPE_ROWID', 0);
+define('OCI_D_FILE', 0);
+define('OCI_D_LOB', 0);
+define('OCI_D_ROWID', 0);
+define('OCI_SYSOPER', 0);
+define('OCI_SYSDBA', 0);
+define('OCI_LOB_BUFFER_FREE', 0);
+define('OCI_TEMP_CLOB', 0);
+define('OCI_TEMP_BLOB', 0);
+define('ALC_FREQUENCY', 0);
+define('ALC_REFRESH', 0);
+define('ALC_SYNC', 0);
+define('AL_FREQUENCY', 0);
+define('AL_BITS', 0);
+define('AL_CHANNELS', 0);
+define('AL_SIZE', 0);
+define('AL_BUFFER', 0);
+define('AL_SOURCE_RELATIVE', 0);
+define('AL_SOURCE_STATE', 0);
+define('AL_PITCH', 0);
+define('AL_GAIN', 0);
+define('AL_MIN_GAIN', 0);
+define('AL_MAX_GAIN', 0);
+define('AL_MAX_DISTANCE', 0);
+define('AL_ROLLOFF_FACTOR', 0);
+define('AL_CONE_OUTER_GAIN', 0);
+define('AL_CONE_INNER_ANGLE', 0);
+define('AL_CONE_OUTER_ANGLE', 0);
+define('AL_REFERENCE_DISTANCE', 0);
+define('AL_POSITION', 0);
+define('AL_VELOCITY', 0);
+define('AL_DIRECTION', 0);
+define('AL_ORIENTATION', 0);
+define('AL_FORMAT_MONO8', 0);
+define('AL_FORMAT_MONO16', 0);
+define('AL_FORMAT_STEREO8', 0);
+define('AL_FORMAT_STEREO16', 0);
+define('AL_INITIAL', 0);
+define('AL_PLAYING', 0);
+define('AL_PAUSED', 0);
+define('AL_STOPPED', 0);
+define('AL_LOOPING', 0);
+define('AL_TRUE', 0);
+define('AL_FALSE', 0);
+define('WNOHANG', 0);
+define('WUNTRACED', 0);
+define('SIG_IGN', 0);
+define('SIG_DFL', 0);
+define('SIG_ERR', 0);
+define('SIGHUP', 0);
+define('SIGINT', 0);
+define('SIGQUIT', 0);
+define('SIGILL', 0);
+define('SIGTRAP', 0);
+define('SIGABRT', 0);
+define('SIGIOT', 0);
+define('SIGBUS', 0);
+define('SIGFPE', 0);
+define('SIGKILL', 0);
+define('SIGUSR1', 0);
+define('SIGSEGV', 0);
+define('SIGUSR2', 0);
+define('SIGPIPE', 0);
+define('SIGALRM', 0);
+define('SIGTERM', 0);
+define('SIGSTKFLT', 0);
+define('SIGCLD', 0);
+define('SIGCHLD', 0);
+define('SIGCONT', 0);
+define('SIGSTOP', 0);
+define('SIGTSTP', 0);
+define('SIGTTIN', 0);
+define('SIGTTOU', 0);
+define('SIGURG', 0);
+define('SIGXCPU', 0);
+define('SIGXFSZ', 0);
+define('SIGVTALRM', 0);
+define('SIGPROF', 0);
+define('SIGWINCH', 0);
+define('SIGPOLL', 0);
+define('SIGIO', 0);
+define('SIGPWR', 0);
+define('SIGSYS', 0);
+define('SIGBABY', 0);
+define('PGSQL_ASSOC', 0);
+define('PGSQL_NUM', 0);
+define('PGSQL_BOTH', 0);
+define('PGSQL_CONNECT_FORCE_NEW', 0);
+define('PGSQL_CONNECTION_BAD', 0);
+define('PGSQL_CONNECTION_OK', 0);
+define('PGSQL_SEEK_SET', 0);
+define('PGSQL_SEEK_CUR', 0);
+define('PGSQL_SEEK_END', 0);
+define('PGSQL_EMPTY_QUERY', 0);
+define('PGSQL_COMMAND_OK', 0);
+define('PGSQL_TUPLES_OK', 0);
+define('PGSQL_COPY_OUT', 0);
+define('PGSQL_COPY_IN', 0);
+define('PGSQL_BAD_RESPONSE', 0);
+define('PGSQL_NONFATAL_ERROR', 0);
+define('PGSQL_FATAL_ERROR', 0);
+define('PGSQL_TRANSACTION_IDLE', 0);
+define('PGSQL_TRANSACTION_ACTIVE', 0);
+define('PGSQL_TRANSACTION_INTRANS', 0);
+define('PGSQL_TRANSACTION_INERROR', 0);
+define('PGSQL_TRANSACTION_UNKNOWN', 0);
+define('PGSQL_DIAG_SEVERITY', 0);
+define('PGSQL_DIAG_SQLSTATE', 0);
+define('PGSQL_DIAG_MESSAGE_PRIMARY', 0);
+define('PGSQL_DIAG_MESSAGE_DETAIL', 0);
+define('PGSQL_DIAG_MESSAGE_HINT', 0);
+define('PGSQL_DIAG_STATEMENT_POSITION', 0);
+define('PGSQL_DIAG_INTERNAL_POSITION', 0);
+define('PGSQL_DIAG_INTERNAL_QUERY', 0);
+define('PGSQL_DIAG_CONTEXT', 0);
+define('PGSQL_DIAG_SOURCE_FILE', 0);
+define('PGSQL_DIAG_SOURCE_LINE', 0);
+define('PGSQL_DIAG_SOURCE_FUNCTION', 0);
+define('PGSQL_ERRORS_TERSE', 0);
+define('PGSQL_ERRORS_DEFAULT', 0);
+define('PGSQL_ERRORS_VERBOSE', 0);
+define('PGSQL_STATUS_LONG', 0);
+define('PGSQL_STATUS_STRING', 0);
+define('PGSQL_CONV_IGNORE_DEFAULT', 0);
+define('PGSQL_CONV_FORCE_NULL', 0);
+define('POSIX_F_OK', 0);
+define('POSIX_R_OK', 0);
+define('POSIX_W_OK', 0);
+define('POSIX_X_OK', 0);
+define('POSIX_S_IFBLK', 0);
+define('POSIX_S_IFCHR', 0);
+define('POSIX_S_IFIFO', 0);
+define('POSIX_S_IFREG', 0);
+define('POSIX_S_IFSOCK', 0);
+define('PRINTER_COPIES', 0);
+define('PRINTER_MODE', 0);
+define('PRINTER_TITLE', 0);
+define('PRINTER_DEVICENAME', 0);
+define('PRINTER_DRIVERVERSION', 0);
+define('PRINTER_OUTPUT_FILE', 0);
+define('PRINTER_RESOLUTION_Y', 0);
+define('PRINTER_RESOLUTION_X', 0);
+define('PRINTER_SCALE', 0);
+define('PRINTER_BACKGROUND_COLOR', 0);
+define('PRINTER_PAPER_LENGTH', 0);
+define('PRINTER_PAPER_WIDTH', 0);
+define('PRINTER_PAPER_FORMAT', 0);
+define('PRINTER_FORMAT_CUSTOM', 0);
+define('PRINTER_FORMAT_LETTER', 0);
+define('PRINTER_FORMAT_LEGAL', 0);
+define('PRINTER_FORMAT_A3', 0);
+define('PRINTER_FORMAT_A4', 0);
+define('PRINTER_FORMAT_A5', 0);
+define('PRINTER_FORMAT_B4', 0);
+define('PRINTER_FORMAT_B5', 0);
+define('PRINTER_FORMAT_FOLIO', 0);
+define('PRINTER_ORIENTATION', 0);
+define('PRINTER_ORIENTATION_PORTRAIT', 0);
+define('PRINTER_ORIENTATION_LANDSCAPE', 0);
+define('PRINTER_TEXT_COLOR', 0);
+define('PRINTER_TEXT_ALIGN', 0);
+define('PRINTER_TA_BASELINE', 0);
+define('PRINTER_TA_BOTTOM', 0);
+define('PRINTER_TA_TOP', 0);
+define('PRINTER_TA_CENTER', 0);
+define('PRINTER_TA_LEFT', 0);
+define('PRINTER_TA_RIGHT', 0);
+define('PRINTER_PEN_SOLID', 0);
+define('PRINTER_PEN_DASH', 0);
+define('PRINTER_PEN_DOT', 0);
+define('PRINTER_PEN_DASHDOT', 0);
+define('PRINTER_PEN_DASHDOTDOT', 0);
+define('PRINTER_PEN_INVISIBLE', 0);
+define('PRINTER_BRUSH_SOLID', 0);
+define('PRINTER_BRUSH_CUSTOM', 0);
+define('PRINTER_BRUSH_DIAGONAL', 0);
+define('PRINTER_BRUSH_CROSS', 0);
+define('PRINTER_BRUSH_DIAGCROSS', 0);
+define('PRINTER_BRUSH_FDIAGONAL', 0);
+define('PRINTER_BRUSH_HORIZONTAL', 0);
+define('PRINTER_BRUSH_VERTICAL', 0);
+define('PRINTER_FW_THIN', 0);
+define('PRINTER_FW_ULTRALIGHT', 0);
+define('PRINTER_FW_LIGHT', 0);
+define('PRINTER_FW_NORMAL', 0);
+define('PRINTER_FW_MEDIUM', 0);
+define('PRINTER_FW_BOLD', 0);
+define('PRINTER_FW_ULTRABOLD', 0);
+define('PRINTER_FW_HEAVY', 0);
+define('PRINTER_ENUM_LOCAL', 0);
+define('PRINTER_ENUM_NAME', 0);
+define('PRINTER_ENUM_SHARED', 0);
+define('PRINTER_ENUM_DEFAULT', 0);
+define('PRINTER_ENUM_CONNECTIONS', 0);
+define('PRINTER_ENUM_NETWORK', 0);
+define('PRINTER_ENUM_REMOTE', 0);
+define('PSPELL_FAST', 0);
+define('PSPELL_NORMAL', 0);
+define('PSPELL_BAD_SPELLERS', 0);
+define('PSPELL_RUN_TOGETHER', 0);
+define('RAR_HOST_MSDOS', 0);
+define('RAR_HOST_OS2', 0);
+define('RAR_HOST_WIN32', 0);
+define('RAR_HOST_UNIX', 0);
+define('RAR_HOST_BEOS', 0);
+define('RUNKIT_IMPORT_FUNCTIONS', 0);
+define('RUNKIT_IMPORT_CLASS_METHODS', 0);
+define('RUNKIT_IMPORT_CLASS_CONSTS', 0);
+define('RUNKIT_IMPORT_CLASS_PROPS', 0);
+define('RUNKIT_IMPORT_CLASSES', 0);
+define('RUNKIT_IMPORT_OVERRIDE', 0);
+define('RUNKIT_ACC_PUBLIC', 0);
+define('RUNKIT_ACC_PROTECTED', 0);
+define('RUNKIT_ACC_PRIVATE', 0);
+define('CLASSKIT_ACC_PUBLIC', 0);
+define('CLASSKIT_ACC_PROTECTED', 0);
+define('CLASSKIT_ACC_PRIVATE', 0);
+define('CLASSKIT_AGGREGATE_OVERRIDE', 0);
+define('RUNKIT_VERSION', '');
+define('CLASSKIT_VERSION', '');
+define('SAM_AUTO', '');
+define('SAM_BOOLEAN', '');
+define('SAM_BUS', '');
+define('SAM_BYTE', '');
+define('SAM_BYTES', '');
+define('SAM_CORRELID', '');
+define('SAM_DELIVERYMODE', '');
+define('SAM_DOUBLE', '');
+define('SAM_ENDPOINTS', '');
+define('SAM_FLOAT', '');
+define('SAM_HOST', '');
+define('SAM_INT', '');
+define('SAM_LONG', '');
+define('SAM_MANUAL', '');
+define('SAM_MESSAGEID', '');
+define('SAM_MQTT', '');
+define('SAM_MQTT_CLEANSTART', false);
+define('SAM_NON_PERSISTENT', '');
+define('SAM_PASSWORD', '');
+define('SAM_PERSISTENT', '');
+define('SAM_PORT', '');
+define('SAM_PRIORITY', '');
+define('SAM_REPLY_TO', '');
+define('SAM_RTT', '');
+define('SAM_STRING', '');
+define('SAM_TARGETCHAIN', '');
+define('SAM_TEXT', '');
+define('SAM_TIMETOLIVE', '');
+define('SAM_TRANSACTIONS', '');
+define('SAM_USERID', '');
+define('SAM_WAIT', '');
+define('SAM_WMQ', '');
+define('SAM_WMQ_BINDINGS', '');
+define('SAM_WMQ_CLIENT', '');
+define('SAM_WMQ_TARGET_CLIENT', '');
+define('SAM_WPM', '');
+define('SID', '');
+define('SNMP_OID_OUTPUT_FULL', 0);
+define('SNMP_OID_OUTPUT_NUMERIC', 0);
+define('SNMP_VALUE_LIBRARY', 0);
+define('SNMP_VALUE_PLAIN', 0);
+define('SNMP_VALUE_OBJECT', 0);
+define('SNMP_BIT_STR', 0);
+define('SNMP_OCTET_STR', 0);
+define('SNMP_OPAQUE', 0);
+define('SNMP_NULL', 0);
+define('SNMP_OBJECT_ID', 0);
+define('SNMP_IPADDRESS', 0);
+define('SNMP_COUNTER', 0);
+define('SNMP_UNSIGNED', 0);
+define('SNMP_TIMETICKS', 0);
+define('SNMP_UINTEGER', 0);
+define('SNMP_INTEGER', 0);
+define('SNMP_COUNTER64', 0);
+define('SOAP_1_1', 0);
+define('SOAP_1_2', 0);
+define('SOAP_PERSISTENCE_SESSION', 0);
+define('SOAP_PERSISTENCE_REQUEST', 0);
+define('SOAP_FUNCTIONS_ALL', 0);
+define('SOAP_ENCODED', 0);
+define('SOAP_LITERAL', 0);
+define('SOAP_RPC', 0);
+define('SOAP_DOCUMENT', 0);
+define('SOAP_ACTOR_NEXT', 0);
+define('SOAP_ACTOR_NONE', 0);
+define('SOAP_ACTOR_UNLIMATERECEIVER', 0);
+define('SOAP_COMPRESSION_ACCEPT', 0);
+define('SOAP_COMPRESSION_GZIP', 0);
+define('SOAP_COMPRESSION_DEFLATE', 0);
+define('SOAP_WAIT_ONE_WAY_CALLS', 0);
+define('UNKNOWN_TYPE', 0);
+define('XSD_STRING', 0);
+define('XSD_BOOLEAN', 0);
+define('XSD_DECIMAL', 0);
+define('XSD_FLOAT', 0);
+define('XSD_DOUBLE', 0);
+define('XSD_DURATION', 0);
+define('XSD_DATETIME', 0);
+define('XSD_TIME', 0);
+define('XSD_DATE', 0);
+define('XSD_GYEARMONTH', 0);
+define('XSD_GYEAR', 0);
+define('XSD_GMONTHDAY', 0);
+define('XSD_GDAY', 0);
+define('XSD_GMONTH', 0);
+define('XSD_HEXBINARY', 0);
+define('XSD_BASE64BINARY', 0);
+define('XSD_ANYURI', 0);
+define('XSD_ANYXML', 0);
+define('XSD_QNAME', 0);
+define('XSD_NOTATION', 0);
+define('XSD_NORMALIZEDSTRING', 0);
+define('XSD_TOKEN', 0);
+define('XSD_LANGUAGE', 0);
+define('XSD_NMTOKEN', 0);
+define('XSD_NAME', 0);
+define('XSD_NCNAME', 0);
+define('XSD_ID', 0);
+define('XSD_IDREF', 0);
+define('XSD_IDREFS', 0);
+define('XSD_ENTITY', 0);
+define('XSD_ENTITIES', 0);
+define('XSD_INTEGER', 0);
+define('XSD_NONPOSITIVEINTEGER', 0);
+define('XSD_NEGATIVEINTEGER', 0);
+define('XSD_LONG', 0);
+define('XSD_INT', 0);
+define('XSD_SHORT', 0);
+define('XSD_BYTE', 0);
+define('XSD_NONNEGATIVEINTEGER', 0);
+define('XSD_UNSIGNEDLONG', 0);
+define('XSD_UNSIGNEDINT', 0);
+define('XSD_UNSIGNEDSHORT', 0);
+define('XSD_UNSIGNEDBYTE', 0);
+define('XSD_POSITIVEINTEGER', 0);
+define('XSD_NMTOKENS', 0);
+define('XSD_ANYTYPE', 0);
+define('SOAP_ENC_OBJECT', 0);
+define('SOAP_ENC_ARRAY', 0);
+define('XSD_1999_TIMEINSTANT', 0);
+define('XSD_NAMESPACE', '');
+define('XSD_1999_NAMESPACE', '');
+define('WSDL_CACHE_NONE', 0);
+define('WSDL_CACHE_DISK', 0);
+define('WSDL_CACHE_MEMORY', 0);
+define('WSDL_CACHE_BOTH', 0);
+define('AF_UNIX', 0);
+define('AF_INET', 0);
+define('AF_INET6', 0);
+define('SOCK_STREAM', 0);
+define('SOCK_DGRAM', 0);
+define('SOCK_RAW', 0);
+define('SOCK_SEQPACKET', 0);
+define('SOCK_RDM', 0);
+define('MSG_OOB', 0);
+define('MSG_WAITALL', 0);
+define('MSG_PEEK', 0);
+define('MSG_DONTROUTE', 0);
+define('MSG_EOR', 0);
+define('MSG_EOF', 0);
+define('SO_DEBUG', 0);
+define('SO_REUSEADDR', 0);
+define('SO_KEEPALIVE', 0);
+define('SO_DONTROUTE', 0);
+define('SO_LINGER', 0);
+define('SO_BROADCAST', 0);
+define('SO_OOBINLINE', 0);
+define('SO_SNDBUF', 0);
+define('SO_RCVBUF', 0);
+define('SO_SNDLOWAT', 0);
+define('SO_RCVLOWAT', 0);
+define('SO_SNDTIMEO', 0);
+define('SO_RCVTIMEO', 0);
+define('SO_TYPE', 0);
+define('SO_ERROR', 0);
+define('SOL_SOCKET', 0);
+define('PHP_NORMAL_READ', 0);
+define('PHP_BINARY_READ', 0);
+define('SOL_TCP', 0);
+define('SOL_UDP', 0);
+define('SQLITE_ASSOC', 0);
+define('SQLITE_BOTH', 0);
+define('SQLITE_NUM', 0);
+define('SSH2_FINGERPRINT_MD5', 0);
+define('SSH2_FINGERPRINT_SHA1', 0);
+define('SSH2_FINGERPRINT_HEX', 0);
+define('SSH2_FINGERPRINT_RAW', 0);
+define('SSH2_TERM_UNIT_CHARS', 0);
+define('SSH2_TERM_UNIT_PIXELS', 0);
+define('SSH2_DEFAULT_TERM_WIDTH', 0);
+define('SSH2_DEFAULT_TERM_HEIGHT', 0);
+define('SSH2_DEFAULT_TERM_UNIT', 0);
+define('SSH2_STREAM_STDIO', 0);
+define('SSH2_STREAM_STDERR', 0);
+define('SSH2_DEFAULT_TERMINAL', '');
+define('CRYPT_SALT_LENGTH', 0);
+define('CRYPT_STD_DES', 0);
+define('CRYPT_EXT_DES', 0);
+define('CRYPT_MD5', 0);
+define('CRYPT_BLOWFISH', 0);
+define('HTML_SPECIALCHARS', 0);
+define('HTML_ENTITIES', 0);
+define('ENT_COMPAT', 0);
+define('ENT_QUOTES', 0);
+define('ENT_NOQUOTES', 0);
+define('CHAR_MAX', 0);
+define('LC_CTYPE', 0);
+define('LC_NUMERIC', 0);
+define('LC_TIME', 0);
+define('LC_COLLATE', 0);
+define('LC_MONETARY', 0);
+define('LC_ALL', 0);
+define('LC_MESSAGES', 0);
+define('STR_PAD_LEFT', 0);
+define('STR_PAD_RIGHT', 0);
+define('STR_PAD_BOTH', 0);
+define('SVN_REVISON_HEAD', 0);
+define('MOD_COLOR', 0);
+define('MOD_MATRIX', 0);
+define('TYPE_PUSHBUTTON', 0);
+define('TYPE_MENUBUTTON', 0);
+define('BSHitTest', 0.0);
+define('BSDown', 0.0);
+define('BSOver', 0.0);
+define('BSUp', 0.0);
+define('OverDowntoIdle', 0);
+define('IdletoOverDown', 0);
+define('OutDowntoIdle', 0);
+define('OutDowntoOverDown', 0);
+define('OverDowntoOutDown', 0);
+define('OverUptoOverDown', 0);
+define('OverUptoIdle', 0);
+define('IdletoOverUp', 0);
+define('ButtonEnter', 0);
+define('ButtonExit', 0);
+define('MenuEnter', 0);
+define('MenuExit', 0);
+define('ODBC_TYPE', 0);
+define('ODBC_BINMODE_PASSTHRU', 0);
+define('ODBC_BINMODE_RETURN', 0);
+define('ODBC_BINMODE_CONVERT', 0);
+define('SQL_ODBC_CURSORS', 0);
+define('SQL_CUR_USE_DRIVER', 0);
+define('SQL_CUR_USE_IF_NEEDED', 0);
+define('SQL_CUR_USE_ODBC', 0);
+define('SQL_CONCURRENCY', 0);
+define('SQL_CONCUR_READ_ONLY', 0);
+define('SQL_CONCUR_LOCK', 0);
+define('SQL_CONCUR_ROWVER', 0);
+define('SQL_CONCUR_VALUES', 0);
+define('SQL_CURSOR_TYPE', 0);
+define('SQL_CURSOR_FORWARD_ONLY', 0);
+define('SQL_CURSOR_KEYSET_DRIVEN', 0);
+define('SQL_CURSOR_DYNAMIC', 0);
+define('SQL_CURSOR_STATIC', 0);
+define('SQL_KEYSET_SIZE', 0);
+define('SQL_CHAR', 0);
+define('SQL_VARCHAR', 0);
+define('SQL_LONGVARCHAR', 0);
+define('SQL_DECIMAL', 0);
+define('SQL_NUMERIC', 0);
+define('SQL_BIT', 0);
+define('SQL_TINYINT', 0);
+define('SQL_SMALLINT', 0);
+define('SQL_INTEGER', 0);
+define('SQL_BIGINT', 0);
+define('SQL_REAL', 0);
+define('SQL_FLOAT', 0);
+define('SQL_DOUBLE', 0);
+define('SQL_BINARY', 0);
+define('SQL_VARBINARY', 0);
+define('SQL_LONGVARBINARY', 0);
+define('SQL_DATE', 0);
+define('SQL_TIME', 0);
+define('SQL_TIMESTAMP', 0);
+define('SQL_TYPE_DATE', 0);
+define('SQL_TYPE_TIME', 0);
+define('SQL_TYPE_TIMESTAMP', 0);
+define('SQL_BEST_ROWID', 0);
+define('SQL_ROWVER', 0);
+define('SQL_SCOPE_CURROW', 0);
+define('SQL_SCOPE_TRANSACTION', 0);
+define('SQL_SCOPE_SESSION', 0);
+define('SQL_NO_NULLS', 0);
+define('SQL_NULLABLE', 0);
+define('SQL_INDEX_UNIQUE', 0);
+define('SQL_INDEX_ALL', 0);
+define('SQL_ENSURE', 0);
+define('SQL_QUICK', 0);
+define('PHP_URL_SCHEME', 0);
+define('PHP_URL_HOST', 0);
+define('PHP_URL_PORT', 0);
+define('PHP_URL_USER', 0);
+define('PHP_URL_PASS', 0);
+define('PHP_URL_PATH', 0);
+define('PHP_URL_QUERY', 0);
+define('PHP_URL_FRAGMENT', 0);
+define('DC_MICROSOFT', 0);
+define('DC_BORLAND', 0);
+define('DC_CALL_CDECL', 0);
+define('DC_CALL_STD', 0);
+define('DC_RETVAL_MATH4', 0);
+define('DC_RETVAL_MATH8', 0);
+define('DC_CALL_STD_BO', 0);
+define('DC_CALL_STD_MS', 0);
+define('DC_CALL_STD_M8', 0);
+define('DC_FLAG_ARGPTR', 0);
+define('WIN32_SERVICE_CONTROL_CONTINUE', 0);
+define('WIN32_SERVICE_CONTROL_INTERROGATE', 0);
+define('WIN32_SERVICE_CONTROL_PAUSE', 0);
+define('WIN32_SERVICE_CONTROL_STOP', 0);
+define('WIN32_SERVICE_CONTROL_HARDWAREPROFILECHANGE', 0);
+define('WIN32_SERVICE_CONTROL_POWEREVENT', 0);
+define('WIN32_SERVICE_CONTROL_SESSIONCHANGE', 0);
+define('WIN32_ERROR_CALL_NOT_IMPLEMENTED', 0);
+define('WIN32_NO_ERROR', 0);
+define('WIN32_SERVICE_RUNNING', 0);
+define('WIN32_SERVICE_STOPPED', 0);
+define('WIN32_SERVICE_STOP_PENDING', 0);
+define('WIN32_SERVICE_WIN32_OWN_PROCESS', 0);
+define('WIN32_SERVICE_INTERACTIVE_PROCESS', 0);
+define('WIN32_SERVICE_START_PENDING', 0);
+define('WIN32_SERVICE_CONTINUE_PENDING', 0);
+define('WIN32_SERVICE_PAUSE_PENDING', 0);
+define('WIN32_SERVICE_PAUSED', 0);
+define('WIN32_SERVICE_ACCEPT_NETBINDCHANGE', 0);
+define('WIN32_SERVICE_ACCEPT_PARAMCHANGE', 0);
+define('WIN32_SERVICE_ACCEPT_PAUSE_CONTINUE', 0);
+define('WIN32_SERVICE_ACCEPT_SHUTDOWN', 0);
+define('WIN32_SERVICE_ACCEPT_STOP', 0);
+define('WIN32_SERVICE_ACCEPT_HARDWAREPROFILECHANGE', 0);
+define('WIN32_SERVICE_ACCEPT_POWEREVENT', 0);
+define('WIN32_SERVICE_ACCEPT_SESSIONCHANGE', 0);
+define('WIN32_SERVICE_FILE_SYSTEM_DRIVER', 0);
+define('WIN32_SERVICE_KERNEL_DRIVER', 0);
+define('WIN32_SERVICE_WIN32_SHARE_PROCESS', 0);
+define('WIN32_SERVICE_RUNS_IN_SYSTEM_PROCESS', 0);
+define('XATTR_ROOT', 0);
+define('XATTR_DONTFOLLOW', 0);
+define('XATTR_CREATE', 0);
+define('XATTR_REPLACE', 0);
+define('XDIFF_PATCH_NORMAL', 0);
+define('XDIFF_PATCH_REVERSE', 0);
+define('XML_ERROR_NONE', 0);
+define('XML_ERROR_NO_MEMORY', 0);
+define('XML_ERROR_SYNTAX', 0);
+define('XML_ERROR_NO_ELEMENTS', 0);
+define('XML_ERROR_INVALID_TOKEN', 0);
+define('XML_ERROR_UNCLOSED_TOKEN', 0);
+define('XML_ERROR_PARTIAL_CHAR', 0);
+define('XML_ERROR_TAG_MISMATCH', 0);
+define('XML_ERROR_DUPLICATE_ATTRIBUTE', 0);
+define('XML_ERROR_JUNK_AFTER_DOC_ELEMENT', 0);
+define('XML_ERROR_PARAM_ENTITY_REF', 0);
+define('XML_ERROR_UNDEFINED_ENTITY', 0);
+define('XML_ERROR_RECURSIVE_ENTITY_REF', 0);
+define('XML_ERROR_ASYNC_ENTITY', 0);
+define('XML_ERROR_BAD_CHAR_REF', 0);
+define('XML_ERROR_BINARY_ENTITY_REF', 0);
+define('XML_ERROR_ATTRIBUTE_EXTERNAL_ENTITY_REF', 0);
+define('XML_ERROR_MISPLACED_XML_PI', 0);
+define('XML_ERROR_UNKNOWN_ENCODING', 0);
+define('XML_ERROR_INCORRECT_ENCODING', 0);
+define('XML_ERROR_UNCLOSED_CDATA_SECTION', 0);
+define('XML_ERROR_EXTERNAL_ENTITY_HANDLING', 0);
+define('XML_OPTION_CASE_FOLDING', 0);
+define('XML_OPTION_TARGET_ENCODING', 0);
+define('XML_OPTION_SKIP_TAGSTART', 0);
+define('XML_OPTION_SKIP_WHITE', 0);
+define('XSL_CLONE_AUTO', 0);
+define('XSL_CLONE_NEVER', 0);
+define('XSL_CLONE_ALWAYS', 0);
+define('LIBXSLT_VERSION', 0);
+define('LIBXSLT_DOTTED_VERSION', '');
+define('LIBEXSLT_VERSION', 0);
+define('LIBEXSLT_DOTTED_VERSION', '');
+define('XSLT_OPT_SILENT', 0);
+define('XSLT_SABOPT_PARSE_PUBLIC_ENTITIES', 0);
+define('XSLT_SABOPT_DISABLE_ADDING_META', 0);
+define('XSLT_SABOPT_DISABLE_STRIPPING', 0);
+define('XSLT_SABOPT_IGNORE_DOC_NOT_FOUND', 0);
+define('XSLT_SABOPT_FILES_TO_HANDLER', 0);
+define('XSLT_ERR_UNSUPPORTED_SCHEME', 0);
+define('FORCE_GZIP', 0);
+define('FORCE_DEFLATE', 0);
+define('PHP_VERSION', '');
+define('PHP_MAJOR_VERSION', 0);
+define('PHP_MINOR_VERSION', 0);
+define('PHP_RELEASE_VERSION', 0);
+define('PHP_VERSION_ID', 0);
+define('PHP_EXTRA_VERSION', '');
+define('PHP_ZTS', 0);
+define('PHP_DEBUG', 0);
+define('PHP_OS', '');
+define('PHP_SAPI', '');
+define('PHP_EOL', '');
+define('PHP_INT_MAX', 0);
+define('PHP_INT_SIZE', 0);
+define('DEFAULT_INCLUDE_PATH', '');
+define('PEAR_INSTALL_DIR', '');
+define('PEAR_EXTENSION_DIR', '');
+define('PHP_EXTENSION_DIR', '');
+define('PHP_PREFIX', '');
+define('PHP_BINDIR', '');
+define('PHP_LIBDIR', '');
+define('PHP_DATADIR', '');
+define('PHP_SYSCONFDIR', '');
+define('PHP_LOCALSTATEDIR', '');
+define('PHP_CONFIG_FILE_PATH', '');
+define('PHP_CONFIG_FILE_SCAN_DIR', '');
+define('PHP_SHLIB_SUFFIX', '');
+define('PHP_OUTPUT_HANDLER_START', 0);
+define('PHP_OUTPUT_HANDLER_CONT', 0);
+define('PHP_OUTPUT_HANDLER_END', 0);
+define('E_ERROR', 0);
+define('E_WARNING', 0);
+define('E_PARSE', 0);
+define('E_NOTICE', 0);
+define('E_CORE_ERROR', 0);
+define('E_CORE_WARNING', 0);
+define('E_COMPILE_ERROR', 0);
+define('E_COMPILE_WARNING', 0);
+define('E_USER_ERROR', 0);
+define('E_USER_WARNING', 0);
+define('E_USER_NOTICE', 0);
+define('E_ALL', 0);
+define('E_STRICT', 0);
+define('SORT_ASC', 0);
+define('SORT_DESC', 0);
+define('SORT_REGULAR', 0);
+define('SORT_NUMERIC', 0);
+define('SORT_STRING', 0);
+define('CASE_LOWER', 0);
+define('CASE_UPPER', 0);
+define('INI_USER', 0);
+define('INI_PERDIR', 0);
+define('INI_SYSTEM', 0);
+define('INI_ALL', 0);
+define('M_E', 0.0);
+define('M_LOG2E', 0.0);
+define('M_LOG10E', 0.0);
+define('M_LN2', 0.0);
+define('M_LN10', 0.0);
+define('M_PI', 0.0);
+define('M_PI_2', 0.0);
+define('M_PI_4', 0.0);
+define('M_1_PI', 0.0);
+define('M_2_PI', 0.0);
+define('M_2_SQRTPI', 0.0);
+define('M_SQRT2', 0.0);
+define('M_SQRT1_2', 0.0);
+define('SEEK_SET', 0);
+define('SEEK_CUR', 0);
+define('SEEK_END', 0);
+define('LOCK_SH', 0);
+define('LOCK_EX', 0);
+define('LOCK_UN', 0);
+define('LOCK_NB', 0);
+define('INFO_GENERAL', 0);
+define('INFO_CREDITS', 0);
+define('INFO_CONFIGURATION', 0);
+define('INFO_MODULES', 0);
+define('INFO_ENVIRONMENT', 0);
+define('INFO_VARIABLES', 0);
+define('INFO_LICENSE', 0);
+define('INFO_ALL', 0);
+define('CREDITS_GROUP', 0);
+define('CREDITS_GENERAL', 0);
+define('CREDITS_SAPI', 0);
+define('CREDITS_MODULES', 0);
+define('CREDITS_DOCS', 0);
+define('CREDITS_FULLPAGE', 0);
+define('CREDITS_QA', 0);
+define('CREDITS_ALL', 0);
+define('ABDAY_1', 0);
+define('ABDAY_2', 0);
+define('ABDAY_3', 0);
+define('ABDAY_4', 0);
+define('ABDAY_5', 0);
+define('ABDAY_6', 0);
+define('ABDAY_7', 0);
+define('DAY_1', 0);
+define('DAY_2', 0);
+define('DAY_3', 0);
+define('DAY_4', 0);
+define('DAY_5', 0);
+define('DAY_6', 0);
+define('DAY_7', 0);
+define('ABMON_1', 0);
+define('ABMON_2', 0);
+define('ABMON_3', 0);
+define('ABMON_4', 0);
+define('ABMON_5', 0);
+define('ABMON_6', 0);
+define('ABMON_7', 0);
+define('ABMON_8', 0);
+define('ABMON_9', 0);
+define('ABMON_10', 0);
+define('ABMON_11', 0);
+define('ABMON_12', 0);
+define('MON_1', 0);
+define('MON_2', 0);
+define('MON_3', 0);
+define('MON_4', 0);
+define('MON_5', 0);
+define('MON_6', 0);
+define('MON_7', 0);
+define('MON_8', 0);
+define('MON_9', 0);
+define('MON_10', 0);
+define('MON_11', 0);
+define('MON_12', 0);
+define('AM_STR', 0);
+define('PM_STR', 0);
+define('D_T_FMT', 0);
+define('D_FMT', 0);
+define('T_FMT', 0);
+define('T_FMT_AMPM', 0);
+define('ERA', 0);
+define('ERA_YEAR', 0);
+define('ERA_D_T_FMT', 0);
+define('ERA_D_FMT', 0);
+define('ERA_T_FMT', 0);
+define('ALT_DIGITS', 0);
+define('INT_CURR_SYMBOL', 0);
+define('CURRENCY_SYMBOL', 0);
+define('CRNCYSTR', 0);
+define('MON_DECIMAL_POINT', 0);
+define('MON_THOUSANDS_SEP', 0);
+define('MON_GROUPING', 0);
+define('POSITIVE_SIGN', 0);
+define('NEGATIVE_SIGN', 0);
+define('INT_FRAC_DIGITS', 0);
+define('FRAC_DIGITS', 0);
+define('P_CS_PRECEDES', 0);
+define('P_SEP_BY_SPACE', 0);
+define('N_CS_PRECEDES', 0);
+define('N_SEP_BY_SPACE', 0);
+define('P_SIGN_POSN', 0);
+define('N_SIGN_POSN', 0);
+define('DECIMAL_POINT', 0);
+define('RADIXCHAR', 0);
+define('THOUSANDS_SEP', 0);
+define('THOUSEP', 0);
+define('GROUPING', 0);
+define('YESEXPR', 0);
+define('NOEXPR', 0);
+define('YESSTR', 0);
+define('NOSTR', 0);
+define('CODESET', 0);
+define('LOG_EMERG', 0);
+define('LOG_ALERT', 0);
+define('LOG_CRIT', 0);
+define('LOG_ERR', 0);
+define('LOG_WARNING', 0);
+define('LOG_NOTICE', 0);
+define('LOG_INFO', 0);
+define('LOG_DEBUG', 0);
+define('LOG_KERN', 0);
+define('LOG_USER', 0);
+define('LOG_MAIL', 0);
+define('LOG_DAEMON', 0);
+define('LOG_AUTH', 0);
+define('LOG_SYSLOG', 0);
+define('LOG_LPR', 0);
+define('LOG_NEWS', 0);
+define('LOG_UUCP', 0);
+define('LOG_CRON', 0);
+define('LOG_AUTHPRIV', 0);
+define('LOG_LOCAL0', 0);
+define('LOG_LOCAL1', 0);
+define('LOG_LOCAL2', 0);
+define('LOG_LOCAL3', 0);
+define('LOG_LOCAL4', 0);
+define('LOG_LOCAL5', 0);
+define('LOG_LOCAL6', 0);
+define('LOG_LOCAL7', 0);
+define('LOG_PID', 0);
+define('LOG_CONS', 0);
+define('LOG_ODELAY', 0);
+define('LOG_NDELAY', 0);
+define('LOG_NOWAIT', 0);
+define('LOG_PERROR', 0);

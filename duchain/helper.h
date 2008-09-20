@@ -24,6 +24,8 @@
 
 #include <language/duchain/identifier.h>
 #include <language/duchain/ducontext.h>
+#include <language/duchain/indexedstring.h>
+
 namespace KDevelop {
     class Declaration;
     class DUContext;
@@ -38,5 +40,17 @@ namespace Php {
                                         KDevelop::QualifiedIdentifier id,
                                         DeclarationType declarationType);
 
+
+    static const uint internalFunctionFilesCount = 2;
+    static const KDevelop::IndexedString internalFunctionFiles[internalFunctionFilesCount] = {
+        KDevelop::IndexedString("internalfunctions1"),
+        KDevelop::IndexedString("internalfunctions2")
+    };
+    inline bool isInternalFunctionFile(KDevelop::IndexedString url) {
+        for (uint i=0; i < internalFunctionFilesCount; i++) {
+            if (url == internalFunctionFiles[i]) return true;
+        }
+        return false;
+    }
 }
 #endif

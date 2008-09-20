@@ -27,6 +27,7 @@
 
 #include "parsesession.h"
 #include "editorintegrator.h"
+#include "helper.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -73,11 +74,13 @@ void ContextBuilder::startVisiting(AstNode* node)
     bool hasImports;
     {
         DUChainReadLocker lock(DUChain::lock());
-        hasImports = top->importedParentContexts().isEmpty();
+        hasImports = !top->importedParentContexts().isEmpty();
     }
-    if (hasImports &&  top->url() != IndexedString("internalfunctions")) {
+    if (!hasImports && !isInternalFunctionFile(top->url())) {
         DUChainWriteLocker lock(DUChain::lock());
-        top->addImportedParentContext(DUChain::self()->chainForDocument(IndexedString("internalfunctions")));
+        for (uint i=0; i < internalFunctionFilesCount; i++) {
+            top->addImportedParentContext(DUChain::self()->chainForDocument(internalFunctionFiles[i]));
+        }
     }
     visitNode(node);
 }

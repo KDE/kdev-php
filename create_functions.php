@@ -107,14 +107,20 @@ foreach ($dirs as $dir) {
             $paramName = str_replace('-', '', $paramName);
             $paramName = trim(trim(trim($paramName), '*'), '&');
             if (is_numeric(substr($paramName, 0, 1))) $paramName = '_'.$paramName;
-            $p = '';
-            //if ($param->type) $p .= $param->type.' ';
-            $p .= '$'.$paramName;
-            $params[] = $p;
+            $params[] = array(
+                'name' => $paramName,
+                'type' => (string)$param->type
+            );
         }
+        $desc = strip_tags($xml->refsect1->para->asXML());
+        $desc = trim($desc);
+        $desc = preg_replace('#  +#', ' ', $desc);
+        $desc = preg_replace('#^ #m', '', $desc);
         $functions[$class][] = array(
             'name' => $function,
-            'params' => $params
+            'params' => $params,
+            'type' => (string)$xml->refsect1->methodsynopsis->type,
+            'desc' => $desc
         );
     }
 }
@@ -139,33 +145,70 @@ function constTypeValue($ctype) {
         die("unknown constType: $ctype");
     }
 }
-echo "<?php\n";
-echo "// THIS FILE IS GENERATED\n";
-echo "// WARNING! All changes made in this file will be lost!\n\n";
+
+
+$fileHeader  = "<?php\n";
+$fileHeader .= "// THIS FILE IS GENERATED\n";
+$fileHeader .= "// WARNING! All changes made in this file will be lost!\n\n";
+
+$declarationCount = 0;
+$fileNumber = 1;
+$out = $fileHeader;
 foreach ($functions as $class => $i) {
     if ($class != 'global') {
-        echo "class $class {\n";
+        $out .= "class $class {\n";
+        $declarationCount++;
         foreach ($constants as $c=>$ctype) {
             if ($pos = strpos($c, '::')) {
                 if (substr($c, 0, $pos) == $class) {
                     unset($constants[$c]);
                     $c = substr($c, $pos+2);
-                    echo "    const $c = ".constTypeValue($ctype).";\n";
+                    $out .= "    const $c = ".constTypeValue($ctype).";\n";
+                    $declarationCount++;
                 }
             }
         }
     }
 
+    $indent = '';
+    if ($class != 'global') $indent = '    ';
     foreach ($i as $f) {
-        if ($class != 'global') echo '    ';
-        echo "function ".$f['name'];
-        echo "(";
-        echo implode(', ', $f['params']);
-        echo ") {}\n";
+        $out .= "$indent/**\n";
+        if ($f['desc']) {
+            $out .= "$indent * ";
+            $out .= str_replace("\n", "\n$indent * ", $f['desc']);
+            $out .= "\n";
+            $out .= "$indent *\n";
+        }
+        foreach ($f['params'] as $pi=>$param) {
+            $out .= "$indent * @param $param[type]\n";
+        }
+        $out .= "$indent * @return $f[type]\n";
+        $out .= "$indent **/\n";
+        $out .= "{$indent}function ".$f['name'];
+        $out .= "(";
+        foreach ($f['params'] as $pi=>$param) {
+            if ($pi > 0) $out .= ", ";
+            $out .= '$'.$param['name'];
+        }
+        $out .= ") {}\n\n";
+        $declarationCount++;
     }
 
-    if ($class != 'global') echo "}\n";
+    if ($class != 'global') $out .= "}\n";
+    if ($declarationCount > 5000) {
+        file_put_contents("phpfunctions$fileNumber.php", $out);
+        echo "created phpfunctions$fileNumber.php...\n";
+        $declarationCount = 0;
+        $fileNumber++;
+        $out = $fileHeader;
+    }
 }
 foreach ($constants as $c=>$ctype) {
-    echo "define('$c', ".constTypeValue($ctype).");\n";
+    $out .= "define('$c', ".constTypeValue($ctype).");\n";
+    $declarationCount++;
 }
+file_put_contents("phpfunctions$fileNumber.php", $out);
+echo "created phpfunctions$fileNumber.php...\n";
+
+echo "wrote ".($declarationCount+(($fileNumber-1) * 5000))." declarations in $fileNumber files\n";
