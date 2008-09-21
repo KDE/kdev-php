@@ -113,7 +113,7 @@ void createArgumentList(const NormalDeclarationCompletionItem& item, QString& re
         }
       }
 
-      if (num < functionType->arguments().count())
+      if (num < functionType->arguments().count() && functionType->arguments().at(num))
         ret += functionType->arguments().at(num)->toString() + " ";
 
       ret += "$" + dec->identifier().toString();

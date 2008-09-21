@@ -48,7 +48,7 @@ class CodeCompletionContext;
 class KDEVPHPCOMPLETION_EXPORT NormalDeclarationCompletionItem : public KDevelop::CompletionTreeItem {
 public:
   NormalDeclarationCompletionItem(KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), KSharedPtr<CodeCompletionContext> context=KSharedPtr<CodeCompletionContext>(), int _inheritanceDepth = 0)
-    : m_declaration(decl), completionContext(context), m_inheritanceDepth(_inheritanceDepth) {
+    : completionContext(context), m_declaration(decl), m_inheritanceDepth(_inheritanceDepth) {
   }
   
   virtual void execute(KTextEditor::Document* document, const KTextEditor::Range& word);

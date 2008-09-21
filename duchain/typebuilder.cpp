@@ -37,19 +37,59 @@
 using namespace KDevelop;
 namespace Php {
 
-StructureType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& docCommentName)
+AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
+{
+    uint iType = 0;
+    type = type.trimmed();
+    if (type == "int" || type == "integer") {
+        iType = IntegralType::TypeInt;
+    } else if (type == "float") {
+        iType = IntegralType::TypeFloat;
+    } else if (type == "bool") {
+        iType = IntegralType::TypeBoolean;
+    } else if (type == "string") {
+        iType = IntegralType::TypeString;
+    } else if (type == "mixed") {
+        iType = IntegralType::TypeMixed;
+    } else {
+        if(openTypeFromName(QualifiedIdentifier(type), node, true)) {
+            closeType();
+            return lastType();
+        } else {
+            return AbstractType::Ptr();
+        }
+    }
+    AbstractType::Ptr ret(new IntegralType(iType));
+    setLastType(ret);
+    return ret;
+}
+
+AbstractType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& docCommentName)
 {
     QString docComment = editor()->parseSession()->docComment(node->startToken);
     if (!docComment.isEmpty()) {
         QRegExp rx("\\* +@"+QRegExp::escape(docCommentName)+" ([^ ]*)");
         if (rx.indexIn(docComment) != -1) {
-            if(openTypeFromName(QualifiedIdentifier(rx.cap(1)), node, true)) {
-                closeType();
-                return StructureType::Ptr::dynamicCast(lastType());
-            }
+            return parseType(rx.cap(1), node);
         }
     }
-    return StructureType::Ptr();
+    return AbstractType::Ptr();
+}
+
+
+QList<AbstractType::Ptr> TypeBuilder::parseDocCommentParams(AstNode* node)
+{
+    QList<AbstractType::Ptr> ret;
+    QString docComment = editor()->parseSession()->docComment(node->startToken);
+    if (!docComment.isEmpty()) {
+        QRegExp rx("\\* +@param ([^ ]*)");
+        int pos = 0;
+        while ((pos = rx.indexIn(docComment, pos)) != -1) {
+            ret << parseType(rx.cap(1), node);
+            pos += rx.matchedLength();
+        }
+    }
+    return ret;
 }
 
 FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
@@ -59,11 +99,7 @@ FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
     openType(functionType);
 
     m_currentFunctionType = functionType;
-
-    StructureType::Ptr returnType = parseDocComment(node, "return");
-    if (returnType) {
-        functionType->setReturnType(AbstractType::Ptr::staticCast(returnType));
-    }
+    functionType->setReturnType(parseDocComment(node, "return"));
 
     return functionType;
 }
@@ -107,10 +143,11 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
 {
     if (node->methodName) {
         //method declaration
+        m_currentFunctionParams = parseDocCommentParams(node);
         openFunctionType(node);
         TypeBuilderBase::visitClassStatement(node);
         if (m_currentFunctionType && !m_currentFunctionType->returnType()) {
-            m_currentFunctionType->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
+            m_currentFunctionType->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
         }
         m_currentFunctionType = 0;
         closeType();
@@ -135,6 +172,12 @@ void TypeBuilder::visitParameter(ParameterAst *node)
             if (node->parameterType && openTypeFromName(node->parameterType, true)) {
                 closeType();
                 function->addArgument(lastType());
+            } else {
+                if (m_currentFunctionParams.count() > function->arguments().count()) {
+                    function->addArgument(m_currentFunctionParams.at(function->arguments().count()));
+                } else {
+                    function->addArgument(AbstractType::Ptr());
+                }
             }
         }
     }
@@ -142,10 +185,11 @@ void TypeBuilder::visitParameter(ParameterAst *node)
 
 void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
+    m_currentFunctionParams = parseDocCommentParams(node);
     openFunctionType(node);
     TypeBuilderBase::visitFunctionDeclarationStatement(node);
     if (!m_currentFunctionType->returnType()) {
-        m_currentFunctionType->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
+        m_currentFunctionType->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
     }
     m_currentFunctionType = 0;
     closeType();

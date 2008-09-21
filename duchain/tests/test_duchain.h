@@ -40,6 +40,7 @@ private slots:
   void testDeclarationReturnType();
   void testDeclarationMultipleReturnTypes();
   void testDeclarationReturnTypeDocBlock();
+  void testDeclarationReturnTypeDocBlockIntegral();
   void testClassImplementsInterface();
   void testClassExtends();
   void testStaticMethod();
@@ -66,6 +67,8 @@ private slots:
   void testTrueFalse();
   void testNull();
   void testFunctionDocBlock();
+  void testFunctionDocBlockParams();
+  void testMemberFunctionDocBlockParams();
 };
 
 }

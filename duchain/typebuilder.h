@@ -55,10 +55,14 @@ protected:
 
   KDevelop::AbstractType::Ptr m_expressionType;
   KDevelop::FunctionType::Ptr m_currentFunctionType;
+  QList<KDevelop::AbstractType::Ptr> m_currentFunctionParams;
 
 private:
     KDevelop::FunctionType::Ptr openFunctionType(AstNode* node);
-    KDevelop::StructureType::Ptr parseDocComment(AstNode* node, const QString& docCommentName);
+
+    KDevelop::AbstractType::Ptr parseType(QString type, AstNode* node);
+    KDevelop::AbstractType::Ptr parseDocComment(AstNode* node, const QString& docCommentName);
+    QList<KDevelop::AbstractType::Ptr> parseDocCommentParams(AstNode* node);
 };
 
 }
