@@ -78,9 +78,9 @@ void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(Compoun
             }
             m_result.setDeclarations(m_currentContext->findDeclarations(identifier, position));
         }
-    }
-    if (!m_result.allDeclarations().isEmpty()) {
-        usingDeclaration(node->variable, m_result.allDeclarations().last());
+        if (!m_result.allDeclarations().isEmpty()) {
+            usingDeclaration(node->variable, m_result.allDeclarations().last());
+        }
     }
     DefaultVisitor::visitCompoundVariableWithSimpleIndirectReference(node);
 }
@@ -93,6 +93,14 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
         Declaration* dec = findDeclarationImport(m_currentContext, id, ClassDeclarationType);
         DUChainReadLocker lock(DUChain::lock());
         m_result.setDeclaration(dec);
+    }
+}
+
+void ExpressionVisitor::visitVarExpressionNormal(VarExpressionNormalAst *node)
+{
+    DefaultVisitor::visitVarExpressionNormal(node);
+    if (node->array != -1) {
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeArray)));
     }
 }
 

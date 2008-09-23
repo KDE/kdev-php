@@ -425,6 +425,28 @@ void TestDUChain::testDeclareTypehintFunction()
     release(top);
 }
 
+void TestDUChain::testDeclareTypehintArrayFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo(array $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first()));
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralType::TypeArray);
+
+    IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
+    QVERIFY(type);
+    QVERIFY(type->dataType() == IntegralType::TypeArray);
+    release(top);
+}
+
 void TestDUChain::testClassImplementsInterface()
 {
     //                 0         1         2         3         4         5         6         7
@@ -534,11 +556,13 @@ void TestDUChain::testStaticMethod()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class B {} class A { static function foo() { return new B(); } } $i = A::foo();");
 
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse(method, DumpAll);
 
     DUChainWriteLocker lock(DUChain::lock());
 
-    QCOMPARE(top->localDeclarations().at(2)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
+    StructureType::Ptr type = top->localDeclarations().at(2)->type<StructureType>();
+    QVERIFY(type);
+    QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("B"));
 
     release(top);
 }
@@ -549,9 +573,22 @@ void TestDUChain::testOwnStaticMethod()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class B {} class A { static function foo() { return new B(); } function bar() { $i = self::foo(); $j = A::foo(); } } ");
 
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse(method, DumpAll);
 
     DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(top->childContexts().at(1));
+    QVERIFY(top->childContexts().at(1)->localDeclarations().at(0));
+    QVERIFY(top->childContexts().at(1)->localDeclarations().at(0)->type<FunctionType>());
+    AbstractType::Ptr ret = top->childContexts().at(1)->localDeclarations().at(0)
+                ->type<FunctionType>()->returnType();
+qDebug() << ret->toString();
+    QVERIFY(StructureType::Ptr::dynamicCast(ret));
+    QCOMPARE(StructureType::Ptr::dynamicCast(ret)->declaration(top), top->localDeclarations().at(0));
+
+    QVERIFY(top->childContexts().at(1)->childContexts().at(1+2));
+    QVERIFY(top->childContexts().at(1)->childContexts().at(1+2)->localDeclarations().at(0));
+    QVERIFY(top->childContexts().at(1)->childContexts().at(1+2)->localDeclarations().at(0)->type<StructureType>());
     QCOMPARE(top->childContexts().at(1)->childContexts().at(1+2)->localDeclarations().at(0)
                 ->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
     QCOMPARE(top->childContexts().at(1)->childContexts().at(1+2)->localDeclarations().at(1)
@@ -882,16 +919,28 @@ void TestDUChain::testTrueFalse()
 
     release(top);
 }
+
 void TestDUChain::testNull()
 {
-    //                 0         1         2         3         4         5         6         7
-    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? $a = null; ");
 
     TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
 
     QVERIFY(top->localDeclarations().at(0)->type<IntegralType>()->dataType() == IntegralType::TypeNull);
+
+    release(top);
+}
+
+void TestDUChain::testArray()
+{
+    QByteArray method("<? $a = array(); $b = array(1, 2, 3);");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(top->localDeclarations().at(0)->type<IntegralType>()->dataType() == IntegralType::TypeArray);
+    QVERIFY(top->localDeclarations().at(1)->type<IntegralType>()->dataType() == IntegralType::TypeArray);
 
     release(top);
 }
@@ -946,10 +995,13 @@ void TestDUChain::testFunctionDocBlockParams()
         AbstractType::Ptr arg = top->localDeclarations().at(1)->type<FunctionType>()->arguments().at(0);
         QVERIFY(IntegralType::Ptr::dynamicCast(arg));
         QVERIFY(IntegralType::Ptr::dynamicCast(arg)->dataType() == IntegralType::TypeInt);
+        QVERIFY(top->childContexts().at(1)->localDeclarations().at(0)->type<IntegralType>());
+        QVERIFY(top->childContexts().at(1)->localDeclarations().at(0)->type<IntegralType>()->dataType() == IntegralType::TypeInt);
 
         arg = top->localDeclarations().at(1)->type<FunctionType>()->arguments().at(1);
         QVERIFY(StructureType::Ptr::dynamicCast(arg));
         QCOMPARE(StructureType::Ptr::dynamicCast(arg)->declaration(top), top->localDeclarations().at(0));
+        QCOMPARE(top->childContexts().at(1)->localDeclarations().at(1)->type<StructureType>()->declaration(top), top->localDeclarations().at(0));
 
         arg = top->localDeclarations().at(1)->type<FunctionType>()->arguments().at(2);
         QVERIFY(IntegralType::Ptr::dynamicCast(arg));
@@ -964,11 +1016,11 @@ void TestDUChain::testFunctionDocBlockParams()
 
 void TestDUChain::testMemberFunctionDocBlockParams()
 {
-    TopDUContext* top = parse("<? class A { /**\n * @param bool\n * @param A\n **/\nfunction foo($a, $b) {} }", DumpNone);
+    TopDUContext* top = parse("<? class A { /**\n * @param bool\n * @param A\n * @param array\n **/\nfunction foo($a, $b, $c) {} }", DumpNone);
     {
         DUChainWriteLocker lock(DUChain::lock());
 
-        QCOMPARE(top->childContexts().first()->localDeclarations().first()->type<FunctionType>()->arguments().count(), 2);
+        QCOMPARE(top->childContexts().first()->localDeclarations().first()->type<FunctionType>()->arguments().count(), 3);
 
         AbstractType::Ptr arg = top->childContexts().first()->localDeclarations().first()->type<FunctionType>()->arguments().at(0);
         QVERIFY(IntegralType::Ptr::dynamicCast(arg));
@@ -977,6 +1029,10 @@ void TestDUChain::testMemberFunctionDocBlockParams()
         arg = top->childContexts().first()->localDeclarations().first()->type<FunctionType>()->arguments().at(1);
         QVERIFY(StructureType::Ptr::dynamicCast(arg));
         QCOMPARE(StructureType::Ptr::dynamicCast(arg)->declaration(top), top->localDeclarations().at(0));
+
+        arg = top->childContexts().first()->localDeclarations().first()->type<FunctionType>()->arguments().at(2);
+        QVERIFY(IntegralType::Ptr::dynamicCast(arg));
+        QVERIFY(IntegralType::Ptr::dynamicCast(arg)->dataType() == IntegralType::TypeArray);
 
         release(top);
     }

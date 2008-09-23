@@ -36,6 +36,7 @@ private slots:
   void testDeclareClass();
   void testClassMemberVar();
   void testDeclareTypehintFunction();
+  void testDeclareTypehintArrayFunction();
   void testReturnTypeClass();
   void testDeclarationReturnType();
   void testDeclarationMultipleReturnTypes();
@@ -66,6 +67,7 @@ private slots:
   void testInternalFunctions();
   void testTrueFalse();
   void testNull();
+  void testArray();
   void testFunctionDocBlock();
   void testFunctionDocBlockParams();
   void testMemberFunctionDocBlockParams();

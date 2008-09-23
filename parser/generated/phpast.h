@@ -1056,6 +1056,7 @@ struct KDEVPHPPARSER_EXPORT VarExpressionNormalAst: public AstNode
     EncapsListAst *encapsList;
     VariableAst *variable;
     ScalarAst *scalar;
+    qint64 array;
     const KDevPG::ListNode<ArrayPairValueAst *> *arrayValuesSequence;
     const KDevPG::ListNode<VariableAst *> *issetVariableSequence;
     VariableAst *emptyVarialbe;

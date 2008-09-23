@@ -284,7 +284,7 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
     VariableIdentifierAst* leftSideVariableIdentifier = m_lastVariableIdentifier;
     DeclarationBuilderBase::visitAssignmentExpressionEqual(node);
 
-    if (leftSideVariableIdentifier && m_expressionType) {
+    if (leftSideVariableIdentifier && currentAbstractType()) {
 
         //create new declaration for every assignment
         //TODO: don't create the same twice
@@ -293,8 +293,8 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
         openDefinition<Declaration>(identifierForNode(leftSideVariableIdentifier), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
 
-        //own closeDeclaration() that uses expressionType instead of lastType()
-        currentDeclaration()->setType(m_expressionType);
+        //own closeDeclaration() that uses currentAbstractType() instead of lastType()
+        currentDeclaration()->setType(currentAbstractType());
         eventuallyAssignInternalContext();
         DeclarationBuilderBase::closeDeclaration();
     }

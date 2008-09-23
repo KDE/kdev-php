@@ -428,7 +428,7 @@ expression=booleanOrExpression
   --varExpressionIsVariable flag is needed for assignmentExpression
   | try/rollback (variable=variable [: m_state.varExpressionIsVariable = true; :])
     catch (scalar=scalar)
-  | ARRAY LPAREN
+  | array=ARRAY LPAREN
         (#arrayValues=arrayPairValue
              -- break because array(1,) is allowed (solves FIRST/FOLLOW conflict)
           @ (COMMA [: if (yytoken == Token_RPAREN) { break; } :] ) | 0)

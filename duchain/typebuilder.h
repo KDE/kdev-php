@@ -53,7 +53,6 @@ protected:
   virtual void visitStatement(StatementAst* node);
   virtual void visitExpr(ExprAst *node);
 
-  KDevelop::AbstractType::Ptr m_expressionType;
   KDevelop::FunctionType::Ptr m_currentFunctionType;
   QList<KDevelop::AbstractType::Ptr> m_currentFunctionParams;
 

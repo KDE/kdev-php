@@ -99,9 +99,9 @@ void UseBuilder::visitFunctionCall(FunctionCallAst* node)
 
 void UseBuilder::visitExpr(ExprAst* node)
 {
+    UseBuilderBase::visitExpr(node);
     UseExpressionVisitor v(editor(), currentContext()->topContext(), this);
     v.visitNode(node);
-    UseBuilderBase::visitExpr(node);
 }
 
 }

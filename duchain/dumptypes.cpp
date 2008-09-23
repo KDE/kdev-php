@@ -35,7 +35,7 @@ DumpTypes::~ DumpTypes()
 
 void DumpTypes::dump(const AbstractType * type)
 {
-  type->accept(this);
+  if (type) type->accept(this);
   m_encountered.clear();
 }
 

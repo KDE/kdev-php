@@ -201,6 +201,24 @@ void TestExpressionParser::integralTypes()
     release(top);
 }
 
+void TestExpressionParser::newObject()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A {} ");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    ExpressionParser p(false, true);
+
+    ExpressionEvaluationResult res = p.evaluateType(QByteArray("new A();"), DUContextPointer(top));
+    QVERIFY(StructureType::Ptr::dynamicCast(res.type()));
+    QCOMPARE(StructureType::Ptr::staticCast(res.type())->declaration(top), top->localDeclarations().first());
+
+    release(top);
+}
+
 }
 
 #include "test_expressionparser.moc"

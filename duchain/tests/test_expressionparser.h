@@ -38,6 +38,7 @@ private slots:
   void chainCall();
   void thisObject();
   void integralTypes();
+  void newObject();
 };
 
 }

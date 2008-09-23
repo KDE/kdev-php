@@ -47,6 +47,7 @@ protected:
     void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
     void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
     void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
+    void visitVarExpressionNormal(VarExpressionNormalAst *node);
     void visitFunctionCall(FunctionCallAst* node);
     void visitScalar(ScalarAst *node);
     void visitVariableProperty(VariablePropertyAst *node);

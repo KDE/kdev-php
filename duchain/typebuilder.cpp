@@ -51,6 +51,8 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         iType = IntegralType::TypeString;
     } else if (type == "mixed") {
         iType = IntegralType::TypeMixed;
+    } else if (type == "array") {
+        iType = IntegralType::TypeArray;
     } else {
         if(openTypeFromName(QualifiedIdentifier(type), node, true)) {
             closeType();
@@ -166,21 +168,19 @@ void TypeBuilder::visitClassVariable(ClassVariableAst *node)
 
 void TypeBuilder::visitParameter(ParameterAst *node)
 {
-    TypeBuilderBase::visitParameter(node);
-    if (hasCurrentType()) {
-        if (FunctionType::Ptr function = currentType<FunctionType>()) {
-            if (node->parameterType && openTypeFromName(node->parameterType, true)) {
-                closeType();
-                function->addArgument(lastType());
-            } else {
-                if (m_currentFunctionParams.count() > function->arguments().count()) {
-                    function->addArgument(m_currentFunctionParams.at(function->arguments().count()));
-                } else {
-                    function->addArgument(AbstractType::Ptr());
-                }
-            }
+    if (node->parameterType && openTypeFromName(node->parameterType, true)) {
+    } else if (node->arrayType != -1) {
+        openAbstractType(AbstractType::Ptr(new IntegralType(IntegralType::TypeArray)));
+    } else {
+        if (m_currentFunctionParams.count() > m_currentFunctionType->arguments().count()) {
+            openAbstractType(m_currentFunctionParams.at(m_currentFunctionType->arguments().count()));
+        } else {
+            openAbstractType(AbstractType::Ptr());
         }
     }
+    TypeBuilderBase::visitParameter(node);
+    closeType();
+    m_currentFunctionType->addArgument(lastType());
 }
 
 void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
@@ -197,22 +197,24 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
 
 void TypeBuilder::visitExpr(ExprAst *node)
 {
-    m_expressionType = 0;
     node->ducontext = currentContext();
     ExpressionParser ep(true);
     ExpressionEvaluationResult res = ep.evaluateType(node, editor());
-    m_expressionType = res.type();
+    openAbstractType(res.type());
+
     TypeBuilderBase::visitExpr(node);
+
+    closeType();
 }
 
 void TypeBuilder::visitStatement(StatementAst* node)
 {
     TypeBuilderBase::visitStatement(node);
-    if (node->returnExpr && m_expressionType && m_currentFunctionType
+    if (node->returnExpr && lastType() && m_currentFunctionType
             && (!m_currentFunctionType->returnType()
                 || IntegralType::Ptr::dynamicCast(m_currentFunctionType->returnType())))
     {
-        m_currentFunctionType->setReturnType(m_expressionType);
+        m_currentFunctionType->setReturnType(lastType());
     }
 }
 
