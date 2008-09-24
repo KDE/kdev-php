@@ -36,6 +36,9 @@ private slots:
   void memberFunctionCall();
   void memberVariable();
   void variable();
+  void varInString();
+  void memberVarInString();
+  void memberFunctionInString();
   void variableTwoDeclarations();
   void classExtends();
   void classImplements();

@@ -394,6 +394,8 @@ void DefaultVisitor::visitEncapsList(EncapsListAst *node)
 void DefaultVisitor::visitEncapsVar(EncapsVarAst *node)
 {
     visitNode(node->expr);
+    visitNode(node->variable);
+    visitNode(node->propertyIdentifier);
     visitNode(node->offset);
 }
 

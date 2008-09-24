@@ -614,6 +614,8 @@ struct KDEVPHPPARSER_EXPORT EncapsVarAst: public AstNode
     enum { KIND = EncapsVarKind };
 
     ExprAst *expr;
+    VariableIdentifierAst *variable;
+    IdentifierAst *propertyIdentifier;
     EncapsVarOffsetAst *offset;
 };
 

@@ -827,6 +827,7 @@ bool Parser::parseAssignmentExpressionCheckIfVariable(AssignmentExpressionCheckI
         || yytoken == Token_ISSET
         || yytoken == Token_REQUIRE
         || yytoken == Token_CLASS_C
+        || yytoken == Token_EOF
         || yytoken == Token_DNUMBER
         || yytoken == Token_OBJECT_CAST
         || yytoken == Token_EXIT
@@ -844,7 +845,6 @@ bool Parser::parseAssignmentExpressionCheckIfVariable(AssignmentExpressionCheckI
         || yytoken == Token_INT_CAST
         || yytoken == Token_FUNC_C
         || yytoken == Token_PLUS
-        || yytoken == Token_EOF
         || yytoken == Token_UNSET_CAST
         || yytoken == Token_INCLUDE
         || yytoken == Token_DOLLAR
@@ -1712,8 +1712,8 @@ bool Parser::parseCaseList(CaseListAst **yynode)
 
     if (yytoken == Token_CASE
         || yytoken == Token_DEFAULT || yytoken == Token_RBRACE
-        || yytoken == Token_EOF
-        || yytoken == Token_ENDSWITCH)
+        || yytoken == Token_ENDSWITCH
+        || yytoken == Token_EOF)
     {
         while (yytoken == Token_CASE
                || yytoken == Token_DEFAULT)
@@ -3275,6 +3275,7 @@ bool Parser::parseCtorArguments(CtorArgumentsAst **yynode)
         || yytoken == Token_CONCAT_ASSIGN
         || yytoken == Token_LOGICAL_XOR
         || yytoken == Token_IS_SMALLER
+        || yytoken == Token_EOF
         || yytoken == Token_BIT_OR
         || yytoken == Token_COMMA
         || yytoken == Token_SR_ASSIGN
@@ -3292,7 +3293,6 @@ bool Parser::parseCtorArguments(CtorArgumentsAst **yynode)
         || yytoken == Token_IS_SMALLER_OR_EQUAL
         || yytoken == Token_SL
         || yytoken == Token_INSTANCEOF
-        || yytoken == Token_EOF
         || yytoken == Token_PLUS
         || yytoken == Token_MINUS_ASSIGN
         || yytoken == Token_IS_NOT_EQUAL
@@ -3755,8 +3755,8 @@ bool Parser::parseDimOffset(DimOffsetAst **yynode)
         || yytoken == Token_DOUBLE_CAST
         || yytoken == Token_CONSTANT_ENCAPSED_STRING
         || yytoken == Token_LINE
-        || yytoken == Token_MINUS || yytoken == Token_EOF
-        || yytoken == Token_RBRACKET)
+        || yytoken == Token_MINUS || yytoken == Token_RBRACKET
+        || yytoken == Token_EOF)
     {
         if (yytoken == Token_STRING
             || yytoken == Token_INCLUDE_ONCE
@@ -3934,6 +3934,7 @@ bool Parser::parseDynamicClassNameVariableProperties(DynamicClassNameVariablePro
         || yytoken == Token_CONCAT_ASSIGN
         || yytoken == Token_LOGICAL_XOR
         || yytoken == Token_IS_SMALLER
+        || yytoken == Token_EOF
         || yytoken == Token_BIT_OR
         || yytoken == Token_COMMA
         || yytoken == Token_SR_ASSIGN
@@ -3952,7 +3953,6 @@ bool Parser::parseDynamicClassNameVariableProperties(DynamicClassNameVariablePro
         || yytoken == Token_IS_SMALLER_OR_EQUAL
         || yytoken == Token_SL
         || yytoken == Token_INSTANCEOF
-        || yytoken == Token_EOF
         || yytoken == Token_PLUS
         || yytoken == Token_MINUS_ASSIGN
         || yytoken == Token_IS_NOT_EQUAL
@@ -4035,7 +4035,8 @@ bool Parser::parseElseSingle(ElseSingleAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_ELSE || yytoken == Token_STRING
+    if (yytoken == Token_ELSE || yytoken == Token_EOF
+        || yytoken == Token_STRING
         || yytoken == Token_DO
         || yytoken == Token_EXIT
         || yytoken == Token_FUNCTION
@@ -4047,7 +4048,6 @@ bool Parser::parseElseSingle(ElseSingleAst **yynode)
         || yytoken == Token_METHOD_C
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EOF
         || yytoken == Token_OPEN_TAG
         || yytoken == Token_RETURN
         || yytoken == Token_ENDIF
@@ -4167,7 +4167,8 @@ bool Parser::parseElseifList(ElseifListAst **yynode)
 
     (*yynode)->startToken = tokenStream->index() - 1;
 
-    if (yytoken == Token_ELSEIF || yytoken == Token_STRING
+    if (yytoken == Token_ELSEIF || yytoken == Token_EOF
+        || yytoken == Token_STRING
         || yytoken == Token_DO
         || yytoken == Token_EXIT
         || yytoken == Token_FUNCTION
@@ -4179,7 +4180,6 @@ bool Parser::parseElseifList(ElseifListAst **yynode)
         || yytoken == Token_METHOD_C
         || yytoken == Token_REQUIRE_ONCE
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EOF
         || yytoken == Token_OPEN_TAG
         || yytoken == Token_RETURN
         || yytoken == Token_ENDIF
@@ -4415,8 +4415,8 @@ bool Parser::parseEncapsList(EncapsListAst **yynode)
         || yytoken == Token_CURLY_OPEN
         || yytoken == Token_ENCAPSED_AND_WHITESPACE || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_BACKTICK
-        || yytoken == Token_EOF
-        || yytoken == Token_END_HEREDOC)
+        || yytoken == Token_END_HEREDOC
+        || yytoken == Token_EOF)
     {
         while (yytoken == Token_DOLLAR_OPEN_CURLY_BRACES
                || yytoken == Token_VARIABLE
@@ -4604,6 +4604,8 @@ bool Parser::parseEncapsVar(EncapsVarAst **yynode)
                 }
                 return false;
             }
+            (*yynode)->variable = __node_91;
+
             if (yytoken == Token_OBJECT_OPERATOR)
             {
                 if (yytoken != Token_OBJECT_OPERATOR)
@@ -4616,15 +4618,16 @@ bool Parser::parseEncapsVar(EncapsVarAst **yynode)
                 }
                 yylex();
 
-                if (yytoken != Token_STRING)
+                IdentifierAst *__node_92 = 0;
+                if (!parseIdentifier(&__node_92))
                 {
                     if (!mBlockErrors)
                     {
-                        expectedToken(yytoken, Token_STRING, "string");
+                        expectedSymbol(AstNode::IdentifierKind, "identifier");
                     }
                     return false;
                 }
-                yylex();
+                (*yynode)->propertyIdentifier = __node_92;
 
             }
             else if (yytoken == Token_LBRACKET)
@@ -4639,8 +4642,8 @@ bool Parser::parseEncapsVar(EncapsVarAst **yynode)
                 }
                 yylex();
 
-                EncapsVarOffsetAst *__node_92 = 0;
-                if (!parseEncapsVarOffset(&__node_92))
+                EncapsVarOffsetAst *__node_93 = 0;
+                if (!parseEncapsVarOffset(&__node_93))
                 {
                     if (!mBlockErrors)
                     {
@@ -4648,7 +4651,7 @@ bool Parser::parseEncapsVar(EncapsVarAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->offset = __node_92;
+                (*yynode)->offset = __node_93;
 
                 if (yytoken != Token_RBRACKET)
                 {
@@ -4681,8 +4684,8 @@ bool Parser::parseEncapsVar(EncapsVarAst **yynode)
             }
             yylex();
 
-            ExprAst *__node_93 = 0;
-            if (!parseExpr(&__node_93))
+            ExprAst *__node_94 = 0;
+            if (!parseExpr(&__node_94))
             {
                 if (!mBlockErrors)
                 {
@@ -4690,7 +4693,7 @@ bool Parser::parseEncapsVar(EncapsVarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->expr = __node_93;
+            (*yynode)->expr = __node_94;
 
             if (yytoken != Token_RBRACE)
             {
@@ -4756,8 +4759,8 @@ bool Parser::parseEncapsVarOffset(EncapsVarOffsetAst **yynode)
         }
         else if (yytoken == Token_VARIABLE)
         {
-            VariableIdentifierAst *__node_94 = 0;
-            if (!parseVariableIdentifier(&__node_94))
+            VariableIdentifierAst *__node_95 = 0;
+            if (!parseVariableIdentifier(&__node_95))
             {
                 if (!mBlockErrors)
                 {
@@ -4830,8 +4833,8 @@ bool Parser::parseEqualityExpression(EqualityExpressionAst **yynode)
         || yytoken == Token_LINE
         || yytoken == Token_MINUS)
     {
-        RelationalExpressionAst *__node_95 = 0;
-        if (!parseRelationalExpression(&__node_95))
+        RelationalExpressionAst *__node_96 = 0;
+        if (!parseRelationalExpression(&__node_96))
         {
             if (!mBlockErrors)
             {
@@ -4839,15 +4842,15 @@ bool Parser::parseEqualityExpression(EqualityExpressionAst **yynode)
             }
             return false;
         }
-        (*yynode)->expression = __node_95;
+        (*yynode)->expression = __node_96;
 
         while (yytoken == Token_IS_EQUAL
                || yytoken == Token_IS_NOT_IDENTICAL
                || yytoken == Token_IS_IDENTICAL
                || yytoken == Token_IS_NOT_EQUAL)
         {
-            EqualityExpressionRestAst *__node_96 = 0;
-            if (!parseEqualityExpressionRest(&__node_96))
+            EqualityExpressionRestAst *__node_97 = 0;
+            if (!parseEqualityExpressionRest(&__node_97))
             {
                 if (!mBlockErrors)
                 {
@@ -4855,7 +4858,7 @@ bool Parser::parseEqualityExpression(EqualityExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->additionalExpressionSequence = snoc((*yynode)->additionalExpressionSequence, __node_96, memoryPool);
+            (*yynode)->additionalExpressionSequence = snoc((*yynode)->additionalExpressionSequence, __node_97, memoryPool);
 
         }
     }
@@ -4936,8 +4939,8 @@ bool Parser::parseEqualityExpressionRest(EqualityExpressionRestAst **yynode)
         {
             return false;
         }
-        RelationalExpressionAst *__node_97 = 0;
-        if (!parseRelationalExpression(&__node_97))
+        RelationalExpressionAst *__node_98 = 0;
+        if (!parseRelationalExpression(&__node_98))
         {
             if (!mBlockErrors)
             {
@@ -4945,7 +4948,7 @@ bool Parser::parseEqualityExpressionRest(EqualityExpressionRestAst **yynode)
             }
             return false;
         }
-        (*yynode)->expression = __node_97;
+        (*yynode)->expression = __node_98;
 
     }
     else
@@ -5008,8 +5011,8 @@ bool Parser::parseExpr(ExprAst **yynode)
         || yytoken == Token_LINE
         || yytoken == Token_MINUS)
     {
-        LogicalOrExpressionAst *__node_98 = 0;
-        if (!parseLogicalOrExpression(&__node_98))
+        LogicalOrExpressionAst *__node_99 = 0;
+        if (!parseLogicalOrExpression(&__node_99))
         {
             if (!mBlockErrors)
             {
@@ -5017,7 +5020,7 @@ bool Parser::parseExpr(ExprAst **yynode)
             }
             return false;
         }
-        (*yynode)->expression = __node_98;
+        (*yynode)->expression = __node_99;
 
     }
     else
@@ -5126,8 +5129,8 @@ bool Parser::parseForExpr(ForExprAst **yynode)
             || yytoken == Token_LINE
             || yytoken == Token_MINUS)
         {
-            ExprAst *__node_99 = 0;
-            if (!parseExpr(&__node_99))
+            ExprAst *__node_100 = 0;
+            if (!parseExpr(&__node_100))
             {
                 if (!mBlockErrors)
                 {
@@ -5135,7 +5138,7 @@ bool Parser::parseForExpr(ForExprAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->exprsSequence = snoc((*yynode)->exprsSequence, __node_99, memoryPool);
+            (*yynode)->exprsSequence = snoc((*yynode)->exprsSequence, __node_100, memoryPool);
 
             while (yytoken == Token_COMMA)
             {
@@ -5149,8 +5152,8 @@ bool Parser::parseForExpr(ForExprAst **yynode)
                 }
                 yylex();
 
-                ExprAst *__node_100 = 0;
-                if (!parseExpr(&__node_100))
+                ExprAst *__node_101 = 0;
+                if (!parseExpr(&__node_101))
                 {
                     if (!mBlockErrors)
                     {
@@ -5158,7 +5161,7 @@ bool Parser::parseForExpr(ForExprAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->exprsSequence = snoc((*yynode)->exprsSequence, __node_100, memoryPool);
+                (*yynode)->exprsSequence = snoc((*yynode)->exprsSequence, __node_101, memoryPool);
 
             }
         }
@@ -5319,8 +5322,8 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
             || yytoken == Token_LINE
             || yytoken == Token_MINUS)
         {
-            StatementAst *__node_101 = 0;
-            if (!parseStatement(&__node_101))
+            StatementAst *__node_102 = 0;
+            if (!parseStatement(&__node_102))
             {
                 if (!mBlockErrors)
                 {
@@ -5328,7 +5331,7 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statement = __node_101;
+            (*yynode)->statement = __node_102;
 
         }
         else if (yytoken == Token_COLON)
@@ -5343,8 +5346,8 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
             }
             yylex();
 
-            InnerStatementListAst *__node_102 = 0;
-            if (!parseInnerStatementList(&__node_102))
+            InnerStatementListAst *__node_103 = 0;
+            if (!parseInnerStatementList(&__node_103))
             {
                 if (!mBlockErrors)
                 {
@@ -5352,7 +5355,7 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statements = __node_102;
+            (*yynode)->statements = __node_103;
 
             if (yytoken != Token_ENDFOR)
             {
@@ -5364,8 +5367,8 @@ bool Parser::parseForStatement(ForStatementAst **yynode)
             }
             yylex();
 
-            SemicolonOrCloseTagAst *__node_103 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_103))
+            SemicolonOrCloseTagAst *__node_104 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_104))
             {
                 if (!mBlockErrors)
                 {
@@ -5410,8 +5413,8 @@ bool Parser::parseForeachOptionalArg(ForeachOptionalArgAst **yynode)
             }
             yylex();
 
-            ForeachVariableAst *__node_104 = 0;
-            if (!parseForeachVariable(&__node_104))
+            ForeachVariableAst *__node_105 = 0;
+            if (!parseForeachVariable(&__node_105))
             {
                 if (!mBlockErrors)
                 {
@@ -5419,7 +5422,7 @@ bool Parser::parseForeachOptionalArg(ForeachOptionalArgAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->foreachVariable = __node_104;
+            (*yynode)->foreachVariable = __node_105;
 
         }
         else if (true /*epsilon*/)
@@ -5579,8 +5582,8 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
             || yytoken == Token_LINE
             || yytoken == Token_MINUS)
         {
-            StatementAst *__node_105 = 0;
-            if (!parseStatement(&__node_105))
+            StatementAst *__node_106 = 0;
+            if (!parseStatement(&__node_106))
             {
                 if (!mBlockErrors)
                 {
@@ -5588,7 +5591,7 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statement = __node_105;
+            (*yynode)->statement = __node_106;
 
         }
         else if (yytoken == Token_COLON)
@@ -5603,8 +5606,8 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
             }
             yylex();
 
-            InnerStatementListAst *__node_106 = 0;
-            if (!parseInnerStatementList(&__node_106))
+            InnerStatementListAst *__node_107 = 0;
+            if (!parseInnerStatementList(&__node_107))
             {
                 if (!mBlockErrors)
                 {
@@ -5612,7 +5615,7 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statements = __node_106;
+            (*yynode)->statements = __node_107;
 
             if (yytoken != Token_ENDFOREACH)
             {
@@ -5624,8 +5627,8 @@ bool Parser::parseForeachStatement(ForeachStatementAst **yynode)
             }
             yylex();
 
-            SemicolonOrCloseTagAst *__node_107 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_107))
+            SemicolonOrCloseTagAst *__node_108 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_108))
             {
                 if (!mBlockErrors)
                 {
@@ -5664,8 +5667,8 @@ bool Parser::parseForeachVariable(ForeachVariableAst **yynode)
             || yytoken == Token_DOLLAR
             || yytoken == Token_STRING)
         {
-            VariableAst *__node_108 = 0;
-            if (!parseVariable(&__node_108))
+            VariableAst *__node_109 = 0;
+            if (!parseVariable(&__node_109))
             {
                 if (!mBlockErrors)
                 {
@@ -5673,7 +5676,7 @@ bool Parser::parseForeachVariable(ForeachVariableAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->variable = __node_108;
+            (*yynode)->variable = __node_109;
 
         }
         else if (yytoken == Token_BIT_AND)
@@ -5688,8 +5691,8 @@ bool Parser::parseForeachVariable(ForeachVariableAst **yynode)
             }
             yylex();
 
-            VariableAst *__node_109 = 0;
-            if (!parseVariable(&__node_109))
+            VariableAst *__node_110 = 0;
+            if (!parseVariable(&__node_110))
             {
                 if (!mBlockErrors)
                 {
@@ -5697,7 +5700,7 @@ bool Parser::parseForeachVariable(ForeachVariableAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->variable = __node_109;
+            (*yynode)->variable = __node_110;
 
         }
         else
@@ -5727,8 +5730,8 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
     {
         if (yytoken == Token_STRING)
         {
-            IdentifierAst *__node_110 = 0;
-            if (!parseIdentifier(&__node_110))
+            IdentifierAst *__node_111 = 0;
+            if (!parseIdentifier(&__node_111))
             {
                 if (!mBlockErrors)
                 {
@@ -5736,7 +5739,7 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->stringFunctionNameOrClass = __node_110;
+            (*yynode)->stringFunctionNameOrClass = __node_111;
 
             if (yytoken == Token_LPAREN)
             {
@@ -5750,8 +5753,8 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
                 }
                 yylex();
 
-                FunctionCallParameterListAst *__node_111 = 0;
-                if (!parseFunctionCallParameterList(&__node_111))
+                FunctionCallParameterListAst *__node_112 = 0;
+                if (!parseFunctionCallParameterList(&__node_112))
                 {
                     if (!mBlockErrors)
                     {
@@ -5759,7 +5762,7 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->stringParameterList = __node_111;
+                (*yynode)->stringParameterList = __node_112;
 
                 if (yytoken != Token_RPAREN)
                 {
@@ -5786,8 +5789,8 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
 
                 if (yytoken == Token_STRING)
                 {
-                    IdentifierAst *__node_112 = 0;
-                    if (!parseIdentifier(&__node_112))
+                    IdentifierAst *__node_113 = 0;
+                    if (!parseIdentifier(&__node_113))
                     {
                         if (!mBlockErrors)
                         {
@@ -5795,7 +5798,7 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
                         }
                         return false;
                     }
-                    (*yynode)->stringFunctionName = __node_112;
+                    (*yynode)->stringFunctionName = __node_113;
 
                     if (yytoken != Token_LPAREN)
                     {
@@ -5807,8 +5810,8 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
                     }
                     yylex();
 
-                    FunctionCallParameterListAst *__node_113 = 0;
-                    if (!parseFunctionCallParameterList(&__node_113))
+                    FunctionCallParameterListAst *__node_114 = 0;
+                    if (!parseFunctionCallParameterList(&__node_114))
                     {
                         if (!mBlockErrors)
                         {
@@ -5816,7 +5819,7 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
                         }
                         return false;
                     }
-                    (*yynode)->stringParameterList = __node_113;
+                    (*yynode)->stringParameterList = __node_114;
 
                     if (yytoken != Token_RPAREN)
                     {
@@ -5832,8 +5835,8 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
                 else if (yytoken == Token_VARIABLE
                          || yytoken == Token_DOLLAR)
                 {
-                    VariableWithoutObjectsAst *__node_114 = 0;
-                    if (!parseVariableWithoutObjects(&__node_114))
+                    VariableWithoutObjectsAst *__node_115 = 0;
+                    if (!parseVariableWithoutObjects(&__node_115))
                     {
                         if (!mBlockErrors)
                         {
@@ -5841,7 +5844,7 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
                         }
                         return false;
                     }
-                    (*yynode)->varFunctionName = __node_114;
+                    (*yynode)->varFunctionName = __node_115;
 
                     if (yytoken != Token_LPAREN)
                     {
@@ -5853,8 +5856,8 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
                     }
                     yylex();
 
-                    FunctionCallParameterListAst *__node_115 = 0;
-                    if (!parseFunctionCallParameterList(&__node_115))
+                    FunctionCallParameterListAst *__node_116 = 0;
+                    if (!parseFunctionCallParameterList(&__node_116))
                     {
                         if (!mBlockErrors)
                         {
@@ -5862,7 +5865,7 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
                         }
                         return false;
                     }
-                    (*yynode)->stringParameterList = __node_115;
+                    (*yynode)->stringParameterList = __node_116;
 
                     if (yytoken != Token_RPAREN)
                     {
@@ -5888,8 +5891,8 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
         else if (yytoken == Token_VARIABLE
                  || yytoken == Token_DOLLAR)
         {
-            VariableWithoutObjectsAst *__node_116 = 0;
-            if (!parseVariableWithoutObjects(&__node_116))
+            VariableWithoutObjectsAst *__node_117 = 0;
+            if (!parseVariableWithoutObjects(&__node_117))
             {
                 if (!mBlockErrors)
                 {
@@ -5897,7 +5900,7 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->varFunctionName = __node_116;
+            (*yynode)->varFunctionName = __node_117;
 
             if (yytoken != Token_LPAREN)
             {
@@ -5909,8 +5912,8 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
             }
             yylex();
 
-            FunctionCallParameterListAst *__node_117 = 0;
-            if (!parseFunctionCallParameterList(&__node_117))
+            FunctionCallParameterListAst *__node_118 = 0;
+            if (!parseFunctionCallParameterList(&__node_118))
             {
                 if (!mBlockErrors)
                 {
@@ -5918,7 +5921,7 @@ bool Parser::parseFunctionCall(FunctionCallAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->varParameterList = __node_117;
+            (*yynode)->varParameterList = __node_118;
 
             if (yytoken != Token_RPAREN)
             {
@@ -6043,8 +6046,8 @@ bool Parser::parseFunctionCallParameterList(FunctionCallParameterListAst **yynod
             || yytoken == Token_LINE
             || yytoken == Token_MINUS)
         {
-            FunctionCallParameterListElementAst *__node_118 = 0;
-            if (!parseFunctionCallParameterListElement(&__node_118))
+            FunctionCallParameterListElementAst *__node_119 = 0;
+            if (!parseFunctionCallParameterListElement(&__node_119))
             {
                 if (!mBlockErrors)
                 {
@@ -6052,7 +6055,7 @@ bool Parser::parseFunctionCallParameterList(FunctionCallParameterListAst **yynod
                 }
                 return false;
             }
-            (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_118, memoryPool);
+            (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_119, memoryPool);
 
             while (yytoken == Token_COMMA)
             {
@@ -6066,8 +6069,8 @@ bool Parser::parseFunctionCallParameterList(FunctionCallParameterListAst **yynod
                 }
                 yylex();
 
-                FunctionCallParameterListElementAst *__node_119 = 0;
-                if (!parseFunctionCallParameterListElement(&__node_119))
+                FunctionCallParameterListElementAst *__node_120 = 0;
+                if (!parseFunctionCallParameterListElement(&__node_120))
                 {
                     if (!mBlockErrors)
                     {
@@ -6075,7 +6078,7 @@ bool Parser::parseFunctionCallParameterList(FunctionCallParameterListAst **yynod
                     }
                     return false;
                 }
-                (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_119, memoryPool);
+                (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_120, memoryPool);
 
             }
         }
@@ -6160,8 +6163,8 @@ bool Parser::parseFunctionCallParameterListElement(FunctionCallParameterListElem
             }
             yylex();
 
-            VariableAst *__node_120 = 0;
-            if (!parseVariable(&__node_120))
+            VariableAst *__node_121 = 0;
+            if (!parseVariable(&__node_121))
             {
                 if (!mBlockErrors)
                 {
@@ -6169,7 +6172,7 @@ bool Parser::parseFunctionCallParameterListElement(FunctionCallParameterListElem
                 }
                 return false;
             }
-            (*yynode)->variable = __node_120;
+            (*yynode)->variable = __node_121;
 
         }
         else if (yytoken == Token_STRING
@@ -6216,8 +6219,8 @@ bool Parser::parseFunctionCallParameterListElement(FunctionCallParameterListElem
                  || yytoken == Token_LINE
                  || yytoken == Token_MINUS)
         {
-            ExprAst *__node_121 = 0;
-            if (!parseExpr(&__node_121))
+            ExprAst *__node_122 = 0;
+            if (!parseExpr(&__node_122))
             {
                 if (!mBlockErrors)
                 {
@@ -6225,7 +6228,7 @@ bool Parser::parseFunctionCallParameterListElement(FunctionCallParameterListElem
                 }
                 return false;
             }
-            (*yynode)->expr = __node_121;
+            (*yynode)->expr = __node_122;
 
         }
         else
@@ -6281,8 +6284,8 @@ bool Parser::parseFunctionDeclarationStatement(FunctionDeclarationStatementAst *
         {
             return false;
         }
-        IdentifierAst *__node_122 = 0;
-        if (!parseIdentifier(&__node_122))
+        IdentifierAst *__node_123 = 0;
+        if (!parseIdentifier(&__node_123))
         {
             if (!mBlockErrors)
             {
@@ -6290,7 +6293,7 @@ bool Parser::parseFunctionDeclarationStatement(FunctionDeclarationStatementAst *
             }
             return false;
         }
-        (*yynode)->functionName = __node_122;
+        (*yynode)->functionName = __node_123;
 
         if (yytoken != Token_LPAREN)
         {
@@ -6302,8 +6305,8 @@ bool Parser::parseFunctionDeclarationStatement(FunctionDeclarationStatementAst *
         }
         yylex();
 
-        ParameterListAst *__node_123 = 0;
-        if (!parseParameterList(&__node_123))
+        ParameterListAst *__node_124 = 0;
+        if (!parseParameterList(&__node_124))
         {
             if (!mBlockErrors)
             {
@@ -6311,7 +6314,7 @@ bool Parser::parseFunctionDeclarationStatement(FunctionDeclarationStatementAst *
             }
             return false;
         }
-        (*yynode)->parameters = __node_123;
+        (*yynode)->parameters = __node_124;
 
         if (yytoken != Token_RPAREN)
         {
@@ -6333,8 +6336,8 @@ bool Parser::parseFunctionDeclarationStatement(FunctionDeclarationStatementAst *
         }
         yylex();
 
-        InnerStatementListAst *__node_124 = 0;
-        if (!parseInnerStatementList(&__node_124))
+        InnerStatementListAst *__node_125 = 0;
+        if (!parseInnerStatementList(&__node_125))
         {
             if (!mBlockErrors)
             {
@@ -6342,7 +6345,7 @@ bool Parser::parseFunctionDeclarationStatement(FunctionDeclarationStatementAst *
             }
             return false;
         }
-        (*yynode)->functionBody = __node_124;
+        (*yynode)->functionBody = __node_125;
 
         if (yytoken != Token_RBRACE)
         {
@@ -6376,8 +6379,8 @@ bool Parser::parseGlobalVar(GlobalVarAst **yynode)
     {
         if (yytoken == Token_VARIABLE)
         {
-            VariableIdentifierAst *__node_125 = 0;
-            if (!parseVariableIdentifier(&__node_125))
+            VariableIdentifierAst *__node_126 = 0;
+            if (!parseVariableIdentifier(&__node_126))
             {
                 if (!mBlockErrors)
                 {
@@ -6385,7 +6388,7 @@ bool Parser::parseGlobalVar(GlobalVarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->var = __node_125;
+            (*yynode)->var = __node_126;
 
         }
         else if (yytoken == Token_DOLLAR)
@@ -6404,8 +6407,8 @@ bool Parser::parseGlobalVar(GlobalVarAst **yynode)
                 || yytoken == Token_DOLLAR
                 || yytoken == Token_STRING)
             {
-                VariableAst *__node_126 = 0;
-                if (!parseVariable(&__node_126))
+                VariableAst *__node_127 = 0;
+                if (!parseVariable(&__node_127))
                 {
                     if (!mBlockErrors)
                     {
@@ -6413,7 +6416,7 @@ bool Parser::parseGlobalVar(GlobalVarAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->dollarVar = __node_126;
+                (*yynode)->dollarVar = __node_127;
 
             }
             else if (yytoken == Token_LBRACE)
@@ -6428,8 +6431,8 @@ bool Parser::parseGlobalVar(GlobalVarAst **yynode)
                 }
                 yylex();
 
-                ExprAst *__node_127 = 0;
-                if (!parseExpr(&__node_127))
+                ExprAst *__node_128 = 0;
+                if (!parseExpr(&__node_128))
                 {
                     if (!mBlockErrors)
                     {
@@ -6437,7 +6440,7 @@ bool Parser::parseGlobalVar(GlobalVarAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->expr = __node_127;
+                (*yynode)->expr = __node_128;
 
                 if (yytoken != Token_RBRACE)
                 {
@@ -6583,10 +6586,10 @@ bool Parser::parseInnerStatementList(InnerStatementListAst **yynode)
         || yytoken == Token_RBRACE
         || yytoken == Token_ENDDECLARE
         || yytoken == Token_ELSEIF
-        || yytoken == Token_EOF
         || yytoken == Token_DEFAULT
         || yytoken == Token_ENDFOR
         || yytoken == Token_ENDSWITCH
+        || yytoken == Token_EOF
         || yytoken == Token_ENDWHILE
         || yytoken == Token_ELSE)
     {
@@ -6662,8 +6665,8 @@ bool Parser::parseInnerStatementList(InnerStatementListAst **yynode)
                || yytoken == Token_DOUBLE_QUOTE
                || yytoken == Token_START_HEREDOC)
         {
-            TopStatementAst *__node_128 = 0;
-            if (!parseTopStatement(&__node_128))
+            TopStatementAst *__node_129 = 0;
+            if (!parseTopStatement(&__node_129))
             {
                 if (!mBlockErrors)
                 {
@@ -6671,7 +6674,7 @@ bool Parser::parseInnerStatementList(InnerStatementListAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statementsSequence = snoc((*yynode)->statementsSequence, __node_128, memoryPool);
+            (*yynode)->statementsSequence = snoc((*yynode)->statementsSequence, __node_129, memoryPool);
 
         }
     }
@@ -6703,8 +6706,8 @@ bool Parser::parseInterfaceDeclarationStatement(InterfaceDeclarationStatementAst
         }
         yylex();
 
-        IdentifierAst *__node_129 = 0;
-        if (!parseIdentifier(&__node_129))
+        IdentifierAst *__node_130 = 0;
+        if (!parseIdentifier(&__node_130))
         {
             if (!mBlockErrors)
             {
@@ -6712,7 +6715,7 @@ bool Parser::parseInterfaceDeclarationStatement(InterfaceDeclarationStatementAst
             }
             return false;
         }
-        (*yynode)->interfaceName = __node_129;
+        (*yynode)->interfaceName = __node_130;
 
         if (yytoken == Token_EXTENDS)
         {
@@ -6726,8 +6729,8 @@ bool Parser::parseInterfaceDeclarationStatement(InterfaceDeclarationStatementAst
             }
             yylex();
 
-            ClassImplementsAst *__node_130 = 0;
-            if (!parseClassImplements(&__node_130))
+            ClassImplementsAst *__node_131 = 0;
+            if (!parseClassImplements(&__node_131))
             {
                 if (!mBlockErrors)
                 {
@@ -6735,7 +6738,7 @@ bool Parser::parseInterfaceDeclarationStatement(InterfaceDeclarationStatementAst
                 }
                 return false;
             }
-            (*yynode)->extends = __node_130;
+            (*yynode)->extends = __node_131;
 
         }
         else if (true /*epsilon*/)
@@ -6755,8 +6758,8 @@ bool Parser::parseInterfaceDeclarationStatement(InterfaceDeclarationStatementAst
         }
         yylex();
 
-        ClassBodyAst *__node_131 = 0;
-        if (!parseClassBody(&__node_131))
+        ClassBodyAst *__node_132 = 0;
+        if (!parseClassBody(&__node_132))
         {
             if (!mBlockErrors)
             {
@@ -6764,7 +6767,7 @@ bool Parser::parseInterfaceDeclarationStatement(InterfaceDeclarationStatementAst
             }
             return false;
         }
-        (*yynode)->body = __node_131;
+        (*yynode)->body = __node_132;
 
         if (yytoken != Token_RBRACE)
         {
@@ -6837,8 +6840,8 @@ bool Parser::parseLogicalAndExpression(LogicalAndExpressionAst **yynode)
         || yytoken == Token_LINE
         || yytoken == Token_MINUS)
     {
-        PrintExpressionAst *__node_132 = 0;
-        if (!parsePrintExpression(&__node_132))
+        PrintExpressionAst *__node_133 = 0;
+        if (!parsePrintExpression(&__node_133))
         {
             if (!mBlockErrors)
             {
@@ -6846,7 +6849,7 @@ bool Parser::parseLogicalAndExpression(LogicalAndExpressionAst **yynode)
             }
             return false;
         }
-        (*yynode)->expressionSequence = snoc((*yynode)->expressionSequence, __node_132, memoryPool);
+        (*yynode)->expressionSequence = snoc((*yynode)->expressionSequence, __node_133, memoryPool);
 
         while (yytoken == Token_LOGICAL_AND)
         {
@@ -6860,8 +6863,8 @@ bool Parser::parseLogicalAndExpression(LogicalAndExpressionAst **yynode)
             }
             yylex();
 
-            PrintExpressionAst *__node_133 = 0;
-            if (!parsePrintExpression(&__node_133))
+            PrintExpressionAst *__node_134 = 0;
+            if (!parsePrintExpression(&__node_134))
             {
                 if (!mBlockErrors)
                 {
@@ -6869,7 +6872,7 @@ bool Parser::parseLogicalAndExpression(LogicalAndExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->expressionSequence = snoc((*yynode)->expressionSequence, __node_133, memoryPool);
+            (*yynode)->expressionSequence = snoc((*yynode)->expressionSequence, __node_134, memoryPool);
 
         }
     }
@@ -6933,8 +6936,8 @@ bool Parser::parseLogicalOrExpression(LogicalOrExpressionAst **yynode)
         || yytoken == Token_LINE
         || yytoken == Token_MINUS)
     {
-        LogicalXorExpressionAst *__node_134 = 0;
-        if (!parseLogicalXorExpression(&__node_134))
+        LogicalXorExpressionAst *__node_135 = 0;
+        if (!parseLogicalXorExpression(&__node_135))
         {
             if (!mBlockErrors)
             {
@@ -6942,7 +6945,7 @@ bool Parser::parseLogicalOrExpression(LogicalOrExpressionAst **yynode)
             }
             return false;
         }
-        (*yynode)->expressionSequence = snoc((*yynode)->expressionSequence, __node_134, memoryPool);
+        (*yynode)->expressionSequence = snoc((*yynode)->expressionSequence, __node_135, memoryPool);
 
         while (yytoken == Token_LOGICAL_OR)
         {
@@ -6956,8 +6959,8 @@ bool Parser::parseLogicalOrExpression(LogicalOrExpressionAst **yynode)
             }
             yylex();
 
-            LogicalXorExpressionAst *__node_135 = 0;
-            if (!parseLogicalXorExpression(&__node_135))
+            LogicalXorExpressionAst *__node_136 = 0;
+            if (!parseLogicalXorExpression(&__node_136))
             {
                 if (!mBlockErrors)
                 {
@@ -6965,7 +6968,7 @@ bool Parser::parseLogicalOrExpression(LogicalOrExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->expressionSequence = snoc((*yynode)->expressionSequence, __node_135, memoryPool);
+            (*yynode)->expressionSequence = snoc((*yynode)->expressionSequence, __node_136, memoryPool);
 
         }
     }
@@ -7029,8 +7032,8 @@ bool Parser::parseLogicalXorExpression(LogicalXorExpressionAst **yynode)
         || yytoken == Token_LINE
         || yytoken == Token_MINUS)
     {
-        LogicalAndExpressionAst *__node_136 = 0;
-        if (!parseLogicalAndExpression(&__node_136))
+        LogicalAndExpressionAst *__node_137 = 0;
+        if (!parseLogicalAndExpression(&__node_137))
         {
             if (!mBlockErrors)
             {
@@ -7038,7 +7041,7 @@ bool Parser::parseLogicalXorExpression(LogicalXorExpressionAst **yynode)
             }
             return false;
         }
-        (*yynode)->expressionSequence = snoc((*yynode)->expressionSequence, __node_136, memoryPool);
+        (*yynode)->expressionSequence = snoc((*yynode)->expressionSequence, __node_137, memoryPool);
 
         while (yytoken == Token_LOGICAL_XOR)
         {
@@ -7052,8 +7055,8 @@ bool Parser::parseLogicalXorExpression(LogicalXorExpressionAst **yynode)
             }
             yylex();
 
-            LogicalAndExpressionAst *__node_137 = 0;
-            if (!parseLogicalAndExpression(&__node_137))
+            LogicalAndExpressionAst *__node_138 = 0;
+            if (!parseLogicalAndExpression(&__node_138))
             {
                 if (!mBlockErrors)
                 {
@@ -7061,7 +7064,7 @@ bool Parser::parseLogicalXorExpression(LogicalXorExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->expressionSequence = snoc((*yynode)->expressionSequence, __node_137, memoryPool);
+            (*yynode)->expressionSequence = snoc((*yynode)->expressionSequence, __node_138, memoryPool);
 
         }
     }
@@ -7109,8 +7112,8 @@ bool Parser::parseMethodBody(MethodBodyAst **yynode)
             }
             yylex();
 
-            InnerStatementListAst *__node_138 = 0;
-            if (!parseInnerStatementList(&__node_138))
+            InnerStatementListAst *__node_139 = 0;
+            if (!parseInnerStatementList(&__node_139))
             {
                 if (!mBlockErrors)
                 {
@@ -7118,7 +7121,7 @@ bool Parser::parseMethodBody(MethodBodyAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statements = __node_138;
+            (*yynode)->statements = __node_139;
 
             if (yytoken != Token_RBRACE)
             {
@@ -7195,8 +7198,8 @@ bool Parser::parseMultiplicativeExpression(MultiplicativeExpressionAst **yynode)
         || yytoken == Token_LINE
         || yytoken == Token_MINUS)
     {
-        UnaryExpressionAst *__node_139 = 0;
-        if (!parseUnaryExpression(&__node_139))
+        UnaryExpressionAst *__node_140 = 0;
+        if (!parseUnaryExpression(&__node_140))
         {
             if (!mBlockErrors)
             {
@@ -7204,14 +7207,14 @@ bool Parser::parseMultiplicativeExpression(MultiplicativeExpressionAst **yynode)
             }
             return false;
         }
-        (*yynode)->expression = __node_139;
+        (*yynode)->expression = __node_140;
 
         while (yytoken == Token_DIV
                || yytoken == Token_MUL
                || yytoken == Token_MOD)
         {
-            MultiplicativeExpressionRestAst *__node_140 = 0;
-            if (!parseMultiplicativeExpressionRest(&__node_140))
+            MultiplicativeExpressionRestAst *__node_141 = 0;
+            if (!parseMultiplicativeExpressionRest(&__node_141))
             {
                 if (!mBlockErrors)
                 {
@@ -7219,7 +7222,7 @@ bool Parser::parseMultiplicativeExpression(MultiplicativeExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->additionalExpressionSequence = snoc((*yynode)->additionalExpressionSequence, __node_140, memoryPool);
+            (*yynode)->additionalExpressionSequence = snoc((*yynode)->additionalExpressionSequence, __node_141, memoryPool);
 
         }
     }
@@ -7286,8 +7289,8 @@ bool Parser::parseMultiplicativeExpressionRest(MultiplicativeExpressionRestAst *
         {
             return false;
         }
-        UnaryExpressionAst *__node_141 = 0;
-        if (!parseUnaryExpression(&__node_141))
+        UnaryExpressionAst *__node_142 = 0;
+        if (!parseUnaryExpression(&__node_142))
         {
             if (!mBlockErrors)
             {
@@ -7295,7 +7298,7 @@ bool Parser::parseMultiplicativeExpressionRest(MultiplicativeExpressionRestAst *
             }
             return false;
         }
-        (*yynode)->expression = __node_141;
+        (*yynode)->expression = __node_142;
 
     }
     else
@@ -7339,8 +7342,8 @@ bool Parser::parseNewElseSingle(NewElseSingleAst **yynode)
             }
             yylex();
 
-            InnerStatementListAst *__node_142 = 0;
-            if (!parseInnerStatementList(&__node_142))
+            InnerStatementListAst *__node_143 = 0;
+            if (!parseInnerStatementList(&__node_143))
             {
                 if (!mBlockErrors)
                 {
@@ -7348,7 +7351,7 @@ bool Parser::parseNewElseSingle(NewElseSingleAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statements = __node_142;
+            (*yynode)->statements = __node_143;
 
         }
         else if (true /*epsilon*/)
@@ -7381,8 +7384,8 @@ bool Parser::parseNewElseifList(NewElseifListAst **yynode)
     {
         while (yytoken == Token_ELSEIF)
         {
-            NewelseifListItemAst *__node_143 = 0;
-            if (!parseNewelseifListItem(&__node_143))
+            NewelseifListItemAst *__node_144 = 0;
+            if (!parseNewelseifListItem(&__node_144))
             {
                 if (!mBlockErrors)
                 {
@@ -7390,7 +7393,7 @@ bool Parser::parseNewElseifList(NewElseifListAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->newElseifListItemSequence = snoc((*yynode)->newElseifListItemSequence, __node_143, memoryPool);
+            (*yynode)->newElseifListItemSequence = snoc((*yynode)->newElseifListItemSequence, __node_144, memoryPool);
 
         }
     }
@@ -7432,8 +7435,8 @@ bool Parser::parseNewelseifListItem(NewelseifListItemAst **yynode)
         }
         yylex();
 
-        ExprAst *__node_144 = 0;
-        if (!parseExpr(&__node_144))
+        ExprAst *__node_145 = 0;
+        if (!parseExpr(&__node_145))
         {
             if (!mBlockErrors)
             {
@@ -7441,7 +7444,7 @@ bool Parser::parseNewelseifListItem(NewelseifListItemAst **yynode)
             }
             return false;
         }
-        (*yynode)->expr = __node_144;
+        (*yynode)->expr = __node_145;
 
         if (yytoken != Token_RPAREN)
         {
@@ -7463,8 +7466,8 @@ bool Parser::parseNewelseifListItem(NewelseifListItemAst **yynode)
         }
         yylex();
 
-        InnerStatementListAst *__node_145 = 0;
-        if (!parseInnerStatementList(&__node_145))
+        InnerStatementListAst *__node_146 = 0;
+        if (!parseInnerStatementList(&__node_146))
         {
             if (!mBlockErrors)
             {
@@ -7472,7 +7475,7 @@ bool Parser::parseNewelseifListItem(NewelseifListItemAst **yynode)
             }
             return false;
         }
-        (*yynode)->statements = __node_145;
+        (*yynode)->statements = __node_146;
 
     }
     else
@@ -7494,8 +7497,8 @@ bool Parser::parseObjectDimList(ObjectDimListAst **yynode)
     if (yytoken == Token_LBRACE
         || yytoken == Token_STRING)
     {
-        VariableNameAst *__node_146 = 0;
-        if (!parseVariableName(&__node_146))
+        VariableNameAst *__node_147 = 0;
+        if (!parseVariableName(&__node_147))
         {
             if (!mBlockErrors)
             {
@@ -7503,13 +7506,13 @@ bool Parser::parseObjectDimList(ObjectDimListAst **yynode)
             }
             return false;
         }
-        (*yynode)->variableName = __node_146;
+        (*yynode)->variableName = __node_147;
 
         while (yytoken == Token_LBRACE
                || yytoken == Token_LBRACKET)
         {
-            DimListItemAst *__node_147 = 0;
-            if (!parseDimListItem(&__node_147))
+            DimListItemAst *__node_148 = 0;
+            if (!parseDimListItem(&__node_148))
             {
                 if (!mBlockErrors)
                 {
@@ -7517,7 +7520,7 @@ bool Parser::parseObjectDimList(ObjectDimListAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->offsetItemsSequence = snoc((*yynode)->offsetItemsSequence, __node_147, memoryPool);
+            (*yynode)->offsetItemsSequence = snoc((*yynode)->offsetItemsSequence, __node_148, memoryPool);
 
         }
     }
@@ -7545,8 +7548,8 @@ bool Parser::parseObjectProperty(ObjectPropertyAst **yynode)
         if (yytoken == Token_LBRACE
             || yytoken == Token_STRING)
         {
-            ObjectDimListAst *__node_148 = 0;
-            if (!parseObjectDimList(&__node_148))
+            ObjectDimListAst *__node_149 = 0;
+            if (!parseObjectDimList(&__node_149))
             {
                 if (!mBlockErrors)
                 {
@@ -7554,14 +7557,14 @@ bool Parser::parseObjectProperty(ObjectPropertyAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->objectDimList = __node_148;
+            (*yynode)->objectDimList = __node_149;
 
         }
         else if (yytoken == Token_VARIABLE
                  || yytoken == Token_DOLLAR)
         {
-            VariableWithoutObjectsAst *__node_149 = 0;
-            if (!parseVariableWithoutObjects(&__node_149))
+            VariableWithoutObjectsAst *__node_150 = 0;
+            if (!parseVariableWithoutObjects(&__node_150))
             {
                 if (!mBlockErrors)
                 {
@@ -7569,7 +7572,7 @@ bool Parser::parseObjectProperty(ObjectPropertyAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->variableWithoutObjects = __node_149;
+            (*yynode)->variableWithoutObjects = __node_150;
 
         }
         else
@@ -7726,8 +7729,8 @@ bool Parser::parseParameter(ParameterAst **yynode)
     {
         if (yytoken == Token_STRING)
         {
-            IdentifierAst *__node_150 = 0;
-            if (!parseIdentifier(&__node_150))
+            IdentifierAst *__node_151 = 0;
+            if (!parseIdentifier(&__node_151))
             {
                 if (!mBlockErrors)
                 {
@@ -7735,7 +7738,7 @@ bool Parser::parseParameter(ParameterAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->parameterType = __node_150;
+            (*yynode)->parameterType = __node_151;
 
         }
         else if (yytoken == Token_ARRAY)
@@ -7779,8 +7782,8 @@ bool Parser::parseParameter(ParameterAst **yynode)
         {
             return false;
         }
-        VariableIdentifierAst *__node_151 = 0;
-        if (!parseVariableIdentifier(&__node_151))
+        VariableIdentifierAst *__node_152 = 0;
+        if (!parseVariableIdentifier(&__node_152))
         {
             if (!mBlockErrors)
             {
@@ -7788,7 +7791,7 @@ bool Parser::parseParameter(ParameterAst **yynode)
             }
             return false;
         }
-        (*yynode)->variable = __node_151;
+        (*yynode)->variable = __node_152;
 
         if (yytoken == Token_ASSIGN)
         {
@@ -7802,8 +7805,8 @@ bool Parser::parseParameter(ParameterAst **yynode)
             }
             yylex();
 
-            StaticScalarAst *__node_152 = 0;
-            if (!parseStaticScalar(&__node_152))
+            StaticScalarAst *__node_153 = 0;
+            if (!parseStaticScalar(&__node_153))
             {
                 if (!mBlockErrors)
                 {
@@ -7811,7 +7814,7 @@ bool Parser::parseParameter(ParameterAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->defaultValue = __node_152;
+            (*yynode)->defaultValue = __node_153;
 
         }
         else if (true /*epsilon*/)
@@ -7849,8 +7852,8 @@ bool Parser::parseParameterList(ParameterListAst **yynode)
             || yytoken == Token_STRING
             || yytoken == Token_BIT_AND)
         {
-            ParameterAst *__node_153 = 0;
-            if (!parseParameter(&__node_153))
+            ParameterAst *__node_154 = 0;
+            if (!parseParameter(&__node_154))
             {
                 if (!mBlockErrors)
                 {
@@ -7858,7 +7861,7 @@ bool Parser::parseParameterList(ParameterListAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_153, memoryPool);
+            (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_154, memoryPool);
 
             while (yytoken == Token_COMMA)
             {
@@ -7872,8 +7875,8 @@ bool Parser::parseParameterList(ParameterListAst **yynode)
                 }
                 yylex();
 
-                ParameterAst *__node_154 = 0;
-                if (!parseParameter(&__node_154))
+                ParameterAst *__node_155 = 0;
+                if (!parseParameter(&__node_155))
                 {
                     if (!mBlockErrors)
                     {
@@ -7881,7 +7884,7 @@ bool Parser::parseParameterList(ParameterListAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_154, memoryPool);
+                (*yynode)->parametersSequence = snoc((*yynode)->parametersSequence, __node_155, memoryPool);
 
             }
         }
@@ -8022,8 +8025,8 @@ bool Parser::parsePrintExpression(PrintExpressionAst **yynode)
             yylex();
 
         }
-        AssignmentExpressionAst *__node_155 = 0;
-        if (!parseAssignmentExpression(&__node_155))
+        AssignmentExpressionAst *__node_156 = 0;
+        if (!parseAssignmentExpression(&__node_156))
         {
             if (!mBlockErrors)
             {
@@ -8031,7 +8034,7 @@ bool Parser::parsePrintExpression(PrintExpressionAst **yynode)
             }
             return false;
         }
-        (*yynode)->expression = __node_155;
+        (*yynode)->expression = __node_156;
 
     }
     else
@@ -8093,8 +8096,8 @@ bool Parser::parseRelationalExpression(RelationalExpressionAst **yynode)
         || yytoken == Token_LINE
         || yytoken == Token_MINUS)
     {
-        ShiftExpressionAst *__node_156 = 0;
-        if (!parseShiftExpression(&__node_156))
+        ShiftExpressionAst *__node_157 = 0;
+        if (!parseShiftExpression(&__node_157))
         {
             if (!mBlockErrors)
             {
@@ -8102,7 +8105,7 @@ bool Parser::parseRelationalExpression(RelationalExpressionAst **yynode)
             }
             return false;
         }
-        (*yynode)->expression = __node_156;
+        (*yynode)->expression = __node_157;
 
         if (yytoken == Token_IS_SMALLER_OR_EQUAL
             || yytoken == Token_IS_GREATER
@@ -8111,8 +8114,8 @@ bool Parser::parseRelationalExpression(RelationalExpressionAst **yynode)
         {
             do
             {
-                RelationalExpressionRestAst *__node_157 = 0;
-                if (!parseRelationalExpressionRest(&__node_157))
+                RelationalExpressionRestAst *__node_158 = 0;
+                if (!parseRelationalExpressionRest(&__node_158))
                 {
                     if (!mBlockErrors)
                     {
@@ -8120,7 +8123,7 @@ bool Parser::parseRelationalExpression(RelationalExpressionAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->additionalExpressionSequence = snoc((*yynode)->additionalExpressionSequence, __node_157, memoryPool);
+                (*yynode)->additionalExpressionSequence = snoc((*yynode)->additionalExpressionSequence, __node_158, memoryPool);
 
             }
             while (yytoken == Token_IS_SMALLER_OR_EQUAL
@@ -8140,8 +8143,8 @@ bool Parser::parseRelationalExpression(RelationalExpressionAst **yynode)
             }
             yylex();
 
-            ClassNameReferenceAst *__node_158 = 0;
-            if (!parseClassNameReference(&__node_158))
+            ClassNameReferenceAst *__node_159 = 0;
+            if (!parseClassNameReference(&__node_159))
             {
                 if (!mBlockErrors)
                 {
@@ -8149,7 +8152,7 @@ bool Parser::parseRelationalExpression(RelationalExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->instanceofType = __node_158;
+            (*yynode)->instanceofType = __node_159;
 
         }
         else if (true /*epsilon*/)
@@ -8237,8 +8240,8 @@ bool Parser::parseRelationalExpressionRest(RelationalExpressionRestAst **yynode)
         {
             return false;
         }
-        ShiftExpressionAst *__node_159 = 0;
-        if (!parseShiftExpression(&__node_159))
+        ShiftExpressionAst *__node_160 = 0;
+        if (!parseShiftExpression(&__node_160))
         {
             if (!mBlockErrors)
             {
@@ -8246,7 +8249,7 @@ bool Parser::parseRelationalExpressionRest(RelationalExpressionRestAst **yynode)
             }
             return false;
         }
-        (*yynode)->expression = __node_159;
+        (*yynode)->expression = __node_160;
 
     }
     else
@@ -8288,8 +8291,8 @@ bool Parser::parseScalar(ScalarAst **yynode)
             || yytoken == Token_DNUMBER
             || yytoken == Token_FUNC_C)
         {
-            CommonScalarAst *__node_160 = 0;
-            if (!parseCommonScalar(&__node_160))
+            CommonScalarAst *__node_161 = 0;
+            if (!parseCommonScalar(&__node_161))
             {
                 if (!mBlockErrors)
                 {
@@ -8297,13 +8300,13 @@ bool Parser::parseScalar(ScalarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->commonScalar = __node_160;
+            (*yynode)->commonScalar = __node_161;
 
         }
         else if ((yytoken == Token_STRING) && ( LA(2).kind == Token_PAAMAYIM_NEKUDOTAYIM ))
         {
-            IdentifierAst *__node_161 = 0;
-            if (!parseIdentifier(&__node_161))
+            IdentifierAst *__node_162 = 0;
+            if (!parseIdentifier(&__node_162))
             {
                 if (!mBlockErrors)
                 {
@@ -8311,7 +8314,7 @@ bool Parser::parseScalar(ScalarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->className = __node_161;
+            (*yynode)->className = __node_162;
 
             if (yytoken != Token_PAAMAYIM_NEKUDOTAYIM)
             {
@@ -8323,20 +8326,6 @@ bool Parser::parseScalar(ScalarAst **yynode)
             }
             yylex();
 
-            IdentifierAst *__node_162 = 0;
-            if (!parseIdentifier(&__node_162))
-            {
-                if (!mBlockErrors)
-                {
-                    expectedSymbol(AstNode::IdentifierKind, "identifier");
-                }
-                return false;
-            }
-            (*yynode)->constant = __node_162;
-
-        }
-        else if (yytoken == Token_STRING)
-        {
             IdentifierAst *__node_163 = 0;
             if (!parseIdentifier(&__node_163))
             {
@@ -8347,6 +8336,20 @@ bool Parser::parseScalar(ScalarAst **yynode)
                 return false;
             }
             (*yynode)->constant = __node_163;
+
+        }
+        else if (yytoken == Token_STRING)
+        {
+            IdentifierAst *__node_164 = 0;
+            if (!parseIdentifier(&__node_164))
+            {
+                if (!mBlockErrors)
+                {
+                    expectedSymbol(AstNode::IdentifierKind, "identifier");
+                }
+                return false;
+            }
+            (*yynode)->constant = __node_164;
 
         }
         else if (yytoken == Token_STRING_VARNAME)
@@ -8375,8 +8378,8 @@ bool Parser::parseScalar(ScalarAst **yynode)
             }
             yylex();
 
-            EncapsListAst *__node_164 = 0;
-            if (!parseEncapsList(&__node_164))
+            EncapsListAst *__node_165 = 0;
+            if (!parseEncapsList(&__node_165))
             {
                 if (!mBlockErrors)
                 {
@@ -8384,7 +8387,7 @@ bool Parser::parseScalar(ScalarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->encapsList = __node_164;
+            (*yynode)->encapsList = __node_165;
 
             if (yytoken != Token_DOUBLE_QUOTE)
             {
@@ -8409,8 +8412,8 @@ bool Parser::parseScalar(ScalarAst **yynode)
             }
             yylex();
 
-            EncapsListAst *__node_165 = 0;
-            if (!parseEncapsList(&__node_165))
+            EncapsListAst *__node_166 = 0;
+            if (!parseEncapsList(&__node_166))
             {
                 if (!mBlockErrors)
                 {
@@ -8418,7 +8421,7 @@ bool Parser::parseScalar(ScalarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->encapsList = __node_165;
+            (*yynode)->encapsList = __node_166;
 
             if (yytoken != Token_END_HEREDOC)
             {
@@ -8545,8 +8548,8 @@ bool Parser::parseShiftExpression(ShiftExpressionAst **yynode)
         || yytoken == Token_LINE
         || yytoken == Token_MINUS)
     {
-        AdditiveExpressionAst *__node_166 = 0;
-        if (!parseAdditiveExpression(&__node_166))
+        AdditiveExpressionAst *__node_167 = 0;
+        if (!parseAdditiveExpression(&__node_167))
         {
             if (!mBlockErrors)
             {
@@ -8554,13 +8557,13 @@ bool Parser::parseShiftExpression(ShiftExpressionAst **yynode)
             }
             return false;
         }
-        (*yynode)->expression = __node_166;
+        (*yynode)->expression = __node_167;
 
         while (yytoken == Token_SL
                || yytoken == Token_SR)
         {
-            ShiftExpressionRestAst *__node_167 = 0;
-            if (!parseShiftExpressionRest(&__node_167))
+            ShiftExpressionRestAst *__node_168 = 0;
+            if (!parseShiftExpressionRest(&__node_168))
             {
                 if (!mBlockErrors)
                 {
@@ -8568,7 +8571,7 @@ bool Parser::parseShiftExpression(ShiftExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->additionalExpressionSequence = snoc((*yynode)->additionalExpressionSequence, __node_167, memoryPool);
+            (*yynode)->additionalExpressionSequence = snoc((*yynode)->additionalExpressionSequence, __node_168, memoryPool);
 
         }
     }
@@ -8621,8 +8624,8 @@ bool Parser::parseShiftExpressionRest(ShiftExpressionRestAst **yynode)
         {
             return false;
         }
-        AdditiveExpressionAst *__node_168 = 0;
-        if (!parseAdditiveExpression(&__node_168))
+        AdditiveExpressionAst *__node_169 = 0;
+        if (!parseAdditiveExpression(&__node_169))
         {
             if (!mBlockErrors)
             {
@@ -8630,7 +8633,7 @@ bool Parser::parseShiftExpressionRest(ShiftExpressionRestAst **yynode)
             }
             return false;
         }
-        (*yynode)->expression = __node_168;
+        (*yynode)->expression = __node_169;
 
     }
     else
@@ -8721,8 +8724,8 @@ bool Parser::parseStart(StartAst **yynode)
         || yytoken == Token_DOUBLE_QUOTE
         || yytoken == Token_START_HEREDOC || yytoken == Token_EOF)
     {
-        InnerStatementListAst *__node_169 = 0;
-        if (!parseInnerStatementList(&__node_169))
+        InnerStatementListAst *__node_170 = 0;
+        if (!parseInnerStatementList(&__node_170))
         {
             if (!mBlockErrors)
             {
@@ -8730,7 +8733,7 @@ bool Parser::parseStart(StartAst **yynode)
             }
             return false;
         }
-        (*yynode)->statements = __node_169;
+        (*yynode)->statements = __node_170;
 
         if (Token_EOF != yytoken)
         {
@@ -8831,8 +8834,8 @@ bool Parser::parseStatement(StatementAst **yynode)
             }
             yylex();
 
-            InnerStatementListAst *__node_170 = 0;
-            if (!parseInnerStatementList(&__node_170))
+            InnerStatementListAst *__node_171 = 0;
+            if (!parseInnerStatementList(&__node_171))
             {
                 if (!mBlockErrors)
                 {
@@ -8840,7 +8843,7 @@ bool Parser::parseStatement(StatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statements = __node_170;
+            (*yynode)->statements = __node_171;
 
             if (yytoken != Token_RBRACE)
             {
@@ -8875,8 +8878,8 @@ bool Parser::parseStatement(StatementAst **yynode)
             }
             yylex();
 
-            ExprAst *__node_171 = 0;
-            if (!parseExpr(&__node_171))
+            ExprAst *__node_172 = 0;
+            if (!parseExpr(&__node_172))
             {
                 if (!mBlockErrors)
                 {
@@ -8884,7 +8887,7 @@ bool Parser::parseStatement(StatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->ifExpr = __node_171;
+            (*yynode)->ifExpr = __node_172;
 
             if (yytoken != Token_RPAREN)
             {
@@ -8908,8 +8911,8 @@ bool Parser::parseStatement(StatementAst **yynode)
                 }
                 yylex();
 
-                InnerStatementListAst *__node_172 = 0;
-                if (!parseInnerStatementList(&__node_172))
+                InnerStatementListAst *__node_173 = 0;
+                if (!parseInnerStatementList(&__node_173))
                 {
                     if (!mBlockErrors)
                     {
@@ -8917,10 +8920,10 @@ bool Parser::parseStatement(StatementAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->statements = __node_172;
+                (*yynode)->statements = __node_173;
 
-                NewElseifListAst *__node_173 = 0;
-                if (!parseNewElseifList(&__node_173))
+                NewElseifListAst *__node_174 = 0;
+                if (!parseNewElseifList(&__node_174))
                 {
                     if (!mBlockErrors)
                     {
@@ -8928,8 +8931,8 @@ bool Parser::parseStatement(StatementAst **yynode)
                     }
                     return false;
                 }
-                NewElseSingleAst *__node_174 = 0;
-                if (!parseNewElseSingle(&__node_174))
+                NewElseSingleAst *__node_175 = 0;
+                if (!parseNewElseSingle(&__node_175))
                 {
                     if (!mBlockErrors)
                     {
@@ -8947,8 +8950,8 @@ bool Parser::parseStatement(StatementAst **yynode)
                 }
                 yylex();
 
-                SemicolonOrCloseTagAst *__node_175 = 0;
-                if (!parseSemicolonOrCloseTag(&__node_175))
+                SemicolonOrCloseTagAst *__node_176 = 0;
+                if (!parseSemicolonOrCloseTag(&__node_176))
                 {
                     if (!mBlockErrors)
                     {
@@ -9023,8 +9026,8 @@ bool Parser::parseStatement(StatementAst **yynode)
                      || yytoken == Token_LINE
                      || yytoken == Token_MINUS)
             {
-                StatementAst *__node_176 = 0;
-                if (!parseStatement(&__node_176))
+                StatementAst *__node_177 = 0;
+                if (!parseStatement(&__node_177))
                 {
                     if (!mBlockErrors)
                     {
@@ -9032,10 +9035,10 @@ bool Parser::parseStatement(StatementAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->ifStatement = __node_176;
+                (*yynode)->ifStatement = __node_177;
 
-                ElseifListAst *__node_177 = 0;
-                if (!parseElseifList(&__node_177))
+                ElseifListAst *__node_178 = 0;
+                if (!parseElseifList(&__node_178))
                 {
                     if (!mBlockErrors)
                     {
@@ -9043,10 +9046,10 @@ bool Parser::parseStatement(StatementAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->elseifList = __node_177;
+                (*yynode)->elseifList = __node_178;
 
-                ElseSingleAst *__node_178 = 0;
-                if (!parseElseSingle(&__node_178))
+                ElseSingleAst *__node_179 = 0;
+                if (!parseElseSingle(&__node_179))
                 {
                     if (!mBlockErrors)
                     {
@@ -9054,7 +9057,7 @@ bool Parser::parseStatement(StatementAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->elseSingle = __node_178;
+                (*yynode)->elseSingle = __node_179;
 
             }
             else
@@ -9084,8 +9087,8 @@ bool Parser::parseStatement(StatementAst **yynode)
             }
             yylex();
 
-            ExprAst *__node_179 = 0;
-            if (!parseExpr(&__node_179))
+            ExprAst *__node_180 = 0;
+            if (!parseExpr(&__node_180))
             {
                 if (!mBlockErrors)
                 {
@@ -9093,7 +9096,7 @@ bool Parser::parseStatement(StatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->whileExpr = __node_179;
+            (*yynode)->whileExpr = __node_180;
 
             if (yytoken != Token_RPAREN)
             {
@@ -9105,8 +9108,8 @@ bool Parser::parseStatement(StatementAst **yynode)
             }
             yylex();
 
-            WhileStatementAst *__node_180 = 0;
-            if (!parseWhileStatement(&__node_180))
+            WhileStatementAst *__node_181 = 0;
+            if (!parseWhileStatement(&__node_181))
             {
                 if (!mBlockErrors)
                 {
@@ -9114,7 +9117,7 @@ bool Parser::parseStatement(StatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->whilteStatement = __node_180;
+            (*yynode)->whilteStatement = __node_181;
 
         }
         else if (yytoken == Token_FOR)
@@ -9139,27 +9142,6 @@ bool Parser::parseStatement(StatementAst **yynode)
             }
             yylex();
 
-            ForExprAst *__node_181 = 0;
-            if (!parseForExpr(&__node_181))
-            {
-                if (!mBlockErrors)
-                {
-                    expectedSymbol(AstNode::ForExprKind, "forExpr");
-                }
-                return false;
-            }
-            (*yynode)->forExpr1 = __node_181;
-
-            if (yytoken != Token_SEMICOLON)
-            {
-                if (!mBlockErrors)
-                {
-                    expectedToken(yytoken, Token_SEMICOLON, ";");
-                }
-                return false;
-            }
-            yylex();
-
             ForExprAst *__node_182 = 0;
             if (!parseForExpr(&__node_182))
             {
@@ -9169,7 +9151,7 @@ bool Parser::parseStatement(StatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->forExpr2 = __node_182;
+            (*yynode)->forExpr1 = __node_182;
 
             if (yytoken != Token_SEMICOLON)
             {
@@ -9190,7 +9172,28 @@ bool Parser::parseStatement(StatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->forExpr3 = __node_183;
+            (*yynode)->forExpr2 = __node_183;
+
+            if (yytoken != Token_SEMICOLON)
+            {
+                if (!mBlockErrors)
+                {
+                    expectedToken(yytoken, Token_SEMICOLON, ";");
+                }
+                return false;
+            }
+            yylex();
+
+            ForExprAst *__node_184 = 0;
+            if (!parseForExpr(&__node_184))
+            {
+                if (!mBlockErrors)
+                {
+                    expectedSymbol(AstNode::ForExprKind, "forExpr");
+                }
+                return false;
+            }
+            (*yynode)->forExpr3 = __node_184;
 
             if (yytoken != Token_RPAREN)
             {
@@ -9202,8 +9205,8 @@ bool Parser::parseStatement(StatementAst **yynode)
             }
             yylex();
 
-            ForStatementAst *__node_184 = 0;
-            if (!parseForStatement(&__node_184))
+            ForStatementAst *__node_185 = 0;
+            if (!parseForStatement(&__node_185))
             {
                 if (!mBlockErrors)
                 {
@@ -9211,7 +9214,7 @@ bool Parser::parseStatement(StatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->forStatement = __node_184;
+            (*yynode)->forStatement = __node_185;
 
         }
         else if (yytoken == Token_SWITCH)
@@ -9236,8 +9239,8 @@ bool Parser::parseStatement(StatementAst **yynode)
             }
             yylex();
 
-            ExprAst *__node_185 = 0;
-            if (!parseExpr(&__node_185))
+            ExprAst *__node_186 = 0;
+            if (!parseExpr(&__node_186))
             {
                 if (!mBlockErrors)
                 {
@@ -9245,7 +9248,7 @@ bool Parser::parseStatement(StatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->swtichExpr = __node_185;
+            (*yynode)->swtichExpr = __node_186;
 
             if (yytoken != Token_RPAREN)
             {
@@ -9257,8 +9260,8 @@ bool Parser::parseStatement(StatementAst **yynode)
             }
             yylex();
 
-            SwitchCaseListAst *__node_186 = 0;
-            if (!parseSwitchCaseList(&__node_186))
+            SwitchCaseListAst *__node_187 = 0;
+            if (!parseSwitchCaseList(&__node_187))
             {
                 if (!mBlockErrors)
                 {
@@ -9266,7 +9269,7 @@ bool Parser::parseStatement(StatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->switchCaseList = __node_186;
+            (*yynode)->switchCaseList = __node_187;
 
         }
         else if (yytoken == Token_FOREACH)
@@ -9295,23 +9298,23 @@ bool Parser::parseStatement(StatementAst **yynode)
             qint64 try_startToken_2 = tokenStream->index() - 1;
             ParserState *try_startState_2 = copyCurrentState();
             {
-                VariableAst *__node_187 = 0;
-                if (!parseVariable(&__node_187))
+                VariableAst *__node_188 = 0;
+                if (!parseVariable(&__node_188))
                 {
                     goto __catch_2;
                 }
-                (*yynode)->foreachVar = __node_187;
+                (*yynode)->foreachVar = __node_188;
 
                 if (yytoken != Token_AS)
                     goto __catch_2;
                 yylex();
 
-                ForeachVariableAst *__node_188 = 0;
-                if (!parseForeachVariable(&__node_188))
+                ForeachVariableAst *__node_189 = 0;
+                if (!parseForeachVariable(&__node_189))
                 {
                     goto __catch_2;
                 }
-                (*yynode)->foreachVarAsVar = __node_188;
+                (*yynode)->foreachVarAsVar = __node_189;
 
             }
             blockErrors(blockErrors_2);
@@ -9329,8 +9332,8 @@ __catch_2:
                 blockErrors(blockErrors_2);
                 rewind(try_startToken_2);
 
-                ExprAst *__node_189 = 0;
-                if (!parseExpr(&__node_189))
+                ExprAst *__node_190 = 0;
+                if (!parseExpr(&__node_190))
                 {
                     if (!mBlockErrors)
                     {
@@ -9338,7 +9341,7 @@ __catch_2:
                     }
                     return false;
                 }
-                (*yynode)->foreachExpr = __node_189;
+                (*yynode)->foreachExpr = __node_190;
 
                 if (yytoken != Token_AS)
                 {
@@ -9350,8 +9353,8 @@ __catch_2:
                 }
                 yylex();
 
-                VariableAst *__node_190 = 0;
-                if (!parseVariable(&__node_190))
+                VariableAst *__node_191 = 0;
+                if (!parseVariable(&__node_191))
                 {
                     if (!mBlockErrors)
                     {
@@ -9359,12 +9362,12 @@ __catch_2:
                     }
                     return false;
                 }
-                (*yynode)->foreachExprAsVar = __node_190;
+                (*yynode)->foreachExprAsVar = __node_191;
 
             }
 
-            ForeachOptionalArgAst *__node_191 = 0;
-            if (!parseForeachOptionalArg(&__node_191))
+            ForeachOptionalArgAst *__node_192 = 0;
+            if (!parseForeachOptionalArg(&__node_192))
             {
                 if (!mBlockErrors)
                 {
@@ -9372,7 +9375,7 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->foreachArg = __node_191;
+            (*yynode)->foreachArg = __node_192;
 
             if (yytoken != Token_RPAREN)
             {
@@ -9384,8 +9387,8 @@ __catch_2:
             }
             yylex();
 
-            ForeachStatementAst *__node_192 = 0;
-            if (!parseForeachStatement(&__node_192))
+            ForeachStatementAst *__node_193 = 0;
+            if (!parseForeachStatement(&__node_193))
             {
                 if (!mBlockErrors)
                 {
@@ -9393,7 +9396,7 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->foreachStatement = __node_192;
+            (*yynode)->foreachStatement = __node_193;
 
         }
         else if (yytoken == Token_DECLARE)
@@ -9418,8 +9421,8 @@ __catch_2:
             }
             yylex();
 
-            DeclareItemAst *__node_193 = 0;
-            if (!parseDeclareItem(&__node_193))
+            DeclareItemAst *__node_194 = 0;
+            if (!parseDeclareItem(&__node_194))
             {
                 if (!mBlockErrors)
                 {
@@ -9427,7 +9430,7 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->declareItem = __node_193;
+            (*yynode)->declareItem = __node_194;
 
             while (yytoken == Token_COMMA)
             {
@@ -9441,8 +9444,8 @@ __catch_2:
                 }
                 yylex();
 
-                DeclareItemAst *__node_194 = 0;
-                if (!parseDeclareItem(&__node_194))
+                DeclareItemAst *__node_195 = 0;
+                if (!parseDeclareItem(&__node_195))
                 {
                     if (!mBlockErrors)
                     {
@@ -9450,7 +9453,7 @@ __catch_2:
                     }
                     return false;
                 }
-                (*yynode)->declareItem = __node_194;
+                (*yynode)->declareItem = __node_195;
 
             }
             if (yytoken != Token_RPAREN)
@@ -9463,8 +9466,8 @@ __catch_2:
             }
             yylex();
 
-            DeclareStatementAst *__node_195 = 0;
-            if (!parseDeclareStatement(&__node_195))
+            DeclareStatementAst *__node_196 = 0;
+            if (!parseDeclareStatement(&__node_196))
             {
                 if (!mBlockErrors)
                 {
@@ -9508,8 +9511,8 @@ __catch_2:
             }
             yylex();
 
-            InnerStatementListAst *__node_196 = 0;
-            if (!parseInnerStatementList(&__node_196))
+            InnerStatementListAst *__node_197 = 0;
+            if (!parseInnerStatementList(&__node_197))
             {
                 if (!mBlockErrors)
                 {
@@ -9517,7 +9520,7 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->statements = __node_196;
+            (*yynode)->statements = __node_197;
 
             if (yytoken != Token_RBRACE)
             {
@@ -9531,8 +9534,8 @@ __catch_2:
 
             while (yytoken == Token_CATCH)
             {
-                Catch_itemAst *__node_197 = 0;
-                if (!parseCatch_item(&__node_197))
+                Catch_itemAst *__node_198 = 0;
+                if (!parseCatch_item(&__node_198))
                 {
                     if (!mBlockErrors)
                     {
@@ -9540,7 +9543,7 @@ __catch_2:
                     }
                     return false;
                 }
-                (*yynode)->catchesSequence = snoc((*yynode)->catchesSequence, __node_197, memoryPool);
+                (*yynode)->catchesSequence = snoc((*yynode)->catchesSequence, __node_198, memoryPool);
 
             }
         }
@@ -9566,8 +9569,8 @@ __catch_2:
             }
             yylex();
 
-            VariableAst *__node_198 = 0;
-            if (!parseVariable(&__node_198))
+            VariableAst *__node_199 = 0;
+            if (!parseVariable(&__node_199))
             {
                 if (!mBlockErrors)
                 {
@@ -9575,7 +9578,7 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->unsetVariablesSequence = snoc((*yynode)->unsetVariablesSequence, __node_198, memoryPool);
+            (*yynode)->unsetVariablesSequence = snoc((*yynode)->unsetVariablesSequence, __node_199, memoryPool);
 
             while (yytoken == Token_COMMA)
             {
@@ -9589,8 +9592,8 @@ __catch_2:
                 }
                 yylex();
 
-                VariableAst *__node_199 = 0;
-                if (!parseVariable(&__node_199))
+                VariableAst *__node_200 = 0;
+                if (!parseVariable(&__node_200))
                 {
                     if (!mBlockErrors)
                     {
@@ -9598,7 +9601,7 @@ __catch_2:
                     }
                     return false;
                 }
-                (*yynode)->unsetVariablesSequence = snoc((*yynode)->unsetVariablesSequence, __node_199, memoryPool);
+                (*yynode)->unsetVariablesSequence = snoc((*yynode)->unsetVariablesSequence, __node_200, memoryPool);
 
             }
             if (yytoken != Token_RPAREN)
@@ -9611,8 +9614,8 @@ __catch_2:
             }
             yylex();
 
-            SemicolonOrCloseTagAst *__node_200 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_200))
+            SemicolonOrCloseTagAst *__node_201 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_201))
             {
                 if (!mBlockErrors)
                 {
@@ -9665,8 +9668,8 @@ __catch_2:
                  || yytoken == Token_LINE
                  || yytoken == Token_MINUS)
         {
-            ExprAst *__node_201 = 0;
-            if (!parseExpr(&__node_201))
+            ExprAst *__node_202 = 0;
+            if (!parseExpr(&__node_202))
             {
                 if (!mBlockErrors)
                 {
@@ -9674,10 +9677,10 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->expr = __node_201;
+            (*yynode)->expr = __node_202;
 
-            SemicolonOrCloseTagAst *__node_202 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_202))
+            SemicolonOrCloseTagAst *__node_203 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_203))
             {
                 if (!mBlockErrors)
                 {
@@ -9698,8 +9701,8 @@ __catch_2:
             }
             yylex();
 
-            StatementAst *__node_203 = 0;
-            if (!parseStatement(&__node_203))
+            StatementAst *__node_204 = 0;
+            if (!parseStatement(&__node_204))
             {
                 if (!mBlockErrors)
                 {
@@ -9707,7 +9710,7 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->doStatement = __node_203;
+            (*yynode)->doStatement = __node_204;
 
             if (yytoken != Token_WHILE)
             {
@@ -9729,8 +9732,8 @@ __catch_2:
             }
             yylex();
 
-            ExprAst *__node_204 = 0;
-            if (!parseExpr(&__node_204))
+            ExprAst *__node_205 = 0;
+            if (!parseExpr(&__node_205))
             {
                 if (!mBlockErrors)
                 {
@@ -9738,7 +9741,7 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->whilteExpr = __node_204;
+            (*yynode)->whilteExpr = __node_205;
 
             if (yytoken != Token_RPAREN)
             {
@@ -9750,8 +9753,8 @@ __catch_2:
             }
             yylex();
 
-            SemicolonOrCloseTagAst *__node_205 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_205))
+            SemicolonOrCloseTagAst *__node_206 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_206))
             {
                 if (!mBlockErrors)
                 {
@@ -9816,8 +9819,8 @@ __catch_2:
                 || yytoken == Token_LINE
                 || yytoken == Token_MINUS)
             {
-                ExprAst *__node_206 = 0;
-                if (!parseExpr(&__node_206))
+                ExprAst *__node_207 = 0;
+                if (!parseExpr(&__node_207))
                 {
                     if (!mBlockErrors)
                     {
@@ -9825,7 +9828,7 @@ __catch_2:
                     }
                     return false;
                 }
-                (*yynode)->breakExpr = __node_206;
+                (*yynode)->breakExpr = __node_207;
 
             }
             else if (true /*epsilon*/)
@@ -9835,8 +9838,8 @@ __catch_2:
             {
                 return false;
             }
-            SemicolonOrCloseTagAst *__node_207 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_207))
+            SemicolonOrCloseTagAst *__node_208 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_208))
             {
                 if (!mBlockErrors)
                 {
@@ -9901,8 +9904,8 @@ __catch_2:
                 || yytoken == Token_LINE
                 || yytoken == Token_MINUS)
             {
-                ExprAst *__node_208 = 0;
-                if (!parseExpr(&__node_208))
+                ExprAst *__node_209 = 0;
+                if (!parseExpr(&__node_209))
                 {
                     if (!mBlockErrors)
                     {
@@ -9910,7 +9913,7 @@ __catch_2:
                     }
                     return false;
                 }
-                (*yynode)->continueExpr = __node_208;
+                (*yynode)->continueExpr = __node_209;
 
             }
             else if (true /*epsilon*/)
@@ -9920,8 +9923,8 @@ __catch_2:
             {
                 return false;
             }
-            SemicolonOrCloseTagAst *__node_209 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_209))
+            SemicolonOrCloseTagAst *__node_210 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_210))
             {
                 if (!mBlockErrors)
                 {
@@ -9986,8 +9989,8 @@ __catch_2:
                 || yytoken == Token_LINE
                 || yytoken == Token_MINUS)
             {
-                ExprAst *__node_210 = 0;
-                if (!parseExpr(&__node_210))
+                ExprAst *__node_211 = 0;
+                if (!parseExpr(&__node_211))
                 {
                     if (!mBlockErrors)
                     {
@@ -9995,7 +9998,7 @@ __catch_2:
                     }
                     return false;
                 }
-                (*yynode)->returnExpr = __node_210;
+                (*yynode)->returnExpr = __node_211;
 
             }
             else if (true /*epsilon*/)
@@ -10005,8 +10008,8 @@ __catch_2:
             {
                 return false;
             }
-            SemicolonOrCloseTagAst *__node_211 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_211))
+            SemicolonOrCloseTagAst *__node_212 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_212))
             {
                 if (!mBlockErrors)
                 {
@@ -10027,8 +10030,8 @@ __catch_2:
             }
             yylex();
 
-            GlobalVarAst *__node_212 = 0;
-            if (!parseGlobalVar(&__node_212))
+            GlobalVarAst *__node_213 = 0;
+            if (!parseGlobalVar(&__node_213))
             {
                 if (!mBlockErrors)
                 {
@@ -10036,7 +10039,7 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->globalVarsSequence = snoc((*yynode)->globalVarsSequence, __node_212, memoryPool);
+            (*yynode)->globalVarsSequence = snoc((*yynode)->globalVarsSequence, __node_213, memoryPool);
 
             while (yytoken == Token_COMMA)
             {
@@ -10050,8 +10053,8 @@ __catch_2:
                 }
                 yylex();
 
-                GlobalVarAst *__node_213 = 0;
-                if (!parseGlobalVar(&__node_213))
+                GlobalVarAst *__node_214 = 0;
+                if (!parseGlobalVar(&__node_214))
                 {
                     if (!mBlockErrors)
                     {
@@ -10059,11 +10062,11 @@ __catch_2:
                     }
                     return false;
                 }
-                (*yynode)->globalVarsSequence = snoc((*yynode)->globalVarsSequence, __node_213, memoryPool);
+                (*yynode)->globalVarsSequence = snoc((*yynode)->globalVarsSequence, __node_214, memoryPool);
 
             }
-            SemicolonOrCloseTagAst *__node_214 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_214))
+            SemicolonOrCloseTagAst *__node_215 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_215))
             {
                 if (!mBlockErrors)
                 {
@@ -10084,8 +10087,8 @@ __catch_2:
             }
             yylex();
 
-            StaticVarAst *__node_215 = 0;
-            if (!parseStaticVar(&__node_215))
+            StaticVarAst *__node_216 = 0;
+            if (!parseStaticVar(&__node_216))
             {
                 if (!mBlockErrors)
                 {
@@ -10093,7 +10096,7 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->staticVarsSequence = snoc((*yynode)->staticVarsSequence, __node_215, memoryPool);
+            (*yynode)->staticVarsSequence = snoc((*yynode)->staticVarsSequence, __node_216, memoryPool);
 
             while (yytoken == Token_COMMA)
             {
@@ -10107,8 +10110,8 @@ __catch_2:
                 }
                 yylex();
 
-                StaticVarAst *__node_216 = 0;
-                if (!parseStaticVar(&__node_216))
+                StaticVarAst *__node_217 = 0;
+                if (!parseStaticVar(&__node_217))
                 {
                     if (!mBlockErrors)
                     {
@@ -10116,11 +10119,11 @@ __catch_2:
                     }
                     return false;
                 }
-                (*yynode)->staticVarsSequence = snoc((*yynode)->staticVarsSequence, __node_216, memoryPool);
+                (*yynode)->staticVarsSequence = snoc((*yynode)->staticVarsSequence, __node_217, memoryPool);
 
             }
-            SemicolonOrCloseTagAst *__node_217 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_217))
+            SemicolonOrCloseTagAst *__node_218 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_218))
             {
                 if (!mBlockErrors)
                 {
@@ -10141,8 +10144,8 @@ __catch_2:
             }
             yylex();
 
-            ExprAst *__node_218 = 0;
-            if (!parseExpr(&__node_218))
+            ExprAst *__node_219 = 0;
+            if (!parseExpr(&__node_219))
             {
                 if (!mBlockErrors)
                 {
@@ -10150,7 +10153,7 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->echoExprsSequence = snoc((*yynode)->echoExprsSequence, __node_218, memoryPool);
+            (*yynode)->echoExprsSequence = snoc((*yynode)->echoExprsSequence, __node_219, memoryPool);
 
             while (yytoken == Token_COMMA)
             {
@@ -10164,8 +10167,8 @@ __catch_2:
                 }
                 yylex();
 
-                ExprAst *__node_219 = 0;
-                if (!parseExpr(&__node_219))
+                ExprAst *__node_220 = 0;
+                if (!parseExpr(&__node_220))
                 {
                     if (!mBlockErrors)
                     {
@@ -10173,11 +10176,11 @@ __catch_2:
                     }
                     return false;
                 }
-                (*yynode)->echoExprsSequence = snoc((*yynode)->echoExprsSequence, __node_219, memoryPool);
+                (*yynode)->echoExprsSequence = snoc((*yynode)->echoExprsSequence, __node_220, memoryPool);
 
             }
-            SemicolonOrCloseTagAst *__node_220 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_220))
+            SemicolonOrCloseTagAst *__node_221 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_221))
             {
                 if (!mBlockErrors)
                 {
@@ -10198,8 +10201,8 @@ __catch_2:
             }
             yylex();
 
-            ExprAst *__node_221 = 0;
-            if (!parseExpr(&__node_221))
+            ExprAst *__node_222 = 0;
+            if (!parseExpr(&__node_222))
             {
                 if (!mBlockErrors)
                 {
@@ -10207,10 +10210,10 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->throwExpr = __node_221;
+            (*yynode)->throwExpr = __node_222;
 
-            SemicolonOrCloseTagAst *__node_222 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_222))
+            SemicolonOrCloseTagAst *__node_223 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_223))
             {
                 if (!mBlockErrors)
                 {
@@ -10257,8 +10260,8 @@ __catch_2:
             }
             yylex();
 
-            ExprAst *__node_223 = 0;
-            if (!parseExpr(&__node_223))
+            ExprAst *__node_224 = 0;
+            if (!parseExpr(&__node_224))
             {
                 if (!mBlockErrors)
                 {
@@ -10266,10 +10269,10 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->expr = __node_223;
+            (*yynode)->expr = __node_224;
 
-            SemicolonOrCloseTagAst *__node_224 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_224))
+            SemicolonOrCloseTagAst *__node_225 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_225))
             {
                 if (!mBlockErrors)
                 {
@@ -10325,8 +10328,8 @@ bool Parser::parseStaticArrayPairValue(StaticArrayPairValueAst **yynode)
         || yytoken == Token_STRING
         || yytoken == Token_MINUS)
     {
-        StaticScalarAst *__node_225 = 0;
-        if (!parseStaticScalar(&__node_225))
+        StaticScalarAst *__node_226 = 0;
+        if (!parseStaticScalar(&__node_226))
         {
             if (!mBlockErrors)
             {
@@ -10334,7 +10337,7 @@ bool Parser::parseStaticArrayPairValue(StaticArrayPairValueAst **yynode)
             }
             return false;
         }
-        (*yynode)->val1Sequence = snoc((*yynode)->val1Sequence, __node_225, memoryPool);
+        (*yynode)->val1Sequence = snoc((*yynode)->val1Sequence, __node_226, memoryPool);
 
         if (yytoken == Token_DOUBLE_ARROW)
         {
@@ -10348,8 +10351,8 @@ bool Parser::parseStaticArrayPairValue(StaticArrayPairValueAst **yynode)
             }
             yylex();
 
-            StaticScalarAst *__node_226 = 0;
-            if (!parseStaticScalar(&__node_226))
+            StaticScalarAst *__node_227 = 0;
+            if (!parseStaticScalar(&__node_227))
             {
                 if (!mBlockErrors)
                 {
@@ -10357,7 +10360,7 @@ bool Parser::parseStaticArrayPairValue(StaticArrayPairValueAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->val2Sequence = snoc((*yynode)->val2Sequence, __node_226, memoryPool);
+            (*yynode)->val2Sequence = snoc((*yynode)->val2Sequence, __node_227, memoryPool);
 
         }
         else if (true /*epsilon*/)
@@ -10386,8 +10389,8 @@ bool Parser::parseStaticMember(StaticMemberAst **yynode)
 
     if (yytoken == Token_STRING)
     {
-        IdentifierAst *__node_227 = 0;
-        if (!parseIdentifier(&__node_227))
+        IdentifierAst *__node_228 = 0;
+        if (!parseIdentifier(&__node_228))
         {
             if (!mBlockErrors)
             {
@@ -10395,7 +10398,7 @@ bool Parser::parseStaticMember(StaticMemberAst **yynode)
             }
             return false;
         }
-        (*yynode)->className = __node_227;
+        (*yynode)->className = __node_228;
 
         if (yytoken != Token_PAAMAYIM_NEKUDOTAYIM)
         {
@@ -10407,8 +10410,8 @@ bool Parser::parseStaticMember(StaticMemberAst **yynode)
         }
         yylex();
 
-        VariableWithoutObjectsAst *__node_228 = 0;
-        if (!parseVariableWithoutObjects(&__node_228))
+        VariableWithoutObjectsAst *__node_229 = 0;
+        if (!parseVariableWithoutObjects(&__node_229))
         {
             if (!mBlockErrors)
             {
@@ -10416,7 +10419,7 @@ bool Parser::parseStaticMember(StaticMemberAst **yynode)
             }
             return false;
         }
-        (*yynode)->variable = __node_228;
+        (*yynode)->variable = __node_229;
 
     }
     else
@@ -10457,8 +10460,8 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
             || yytoken == Token_DNUMBER
             || yytoken == Token_FUNC_C)
         {
-            CommonScalarAst *__node_229 = 0;
-            if (!parseCommonScalar(&__node_229))
+            CommonScalarAst *__node_230 = 0;
+            if (!parseCommonScalar(&__node_230))
             {
                 if (!mBlockErrors)
                 {
@@ -10466,7 +10469,7 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->value = __node_229;
+            (*yynode)->value = __node_230;
 
         }
         else if (yytoken == Token_STRING)
@@ -10524,8 +10527,8 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
             }
             yylex();
 
-            StaticScalarAst *__node_230 = 0;
-            if (!parseStaticScalar(&__node_230))
+            StaticScalarAst *__node_231 = 0;
+            if (!parseStaticScalar(&__node_231))
             {
                 if (!mBlockErrors)
                 {
@@ -10533,7 +10536,7 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->plusValue = __node_230;
+            (*yynode)->plusValue = __node_231;
 
         }
         else if (yytoken == Token_MINUS)
@@ -10548,8 +10551,8 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
             }
             yylex();
 
-            StaticScalarAst *__node_231 = 0;
-            if (!parseStaticScalar(&__node_231))
+            StaticScalarAst *__node_232 = 0;
+            if (!parseStaticScalar(&__node_232))
             {
                 if (!mBlockErrors)
                 {
@@ -10557,7 +10560,7 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->minusValue = __node_231;
+            (*yynode)->minusValue = __node_232;
 
         }
         else if (yytoken == Token_ARRAY)
@@ -10595,8 +10598,8 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                 || yytoken == Token_STRING
                 || yytoken == Token_MINUS)
             {
-                StaticArrayPairValueAst *__node_232 = 0;
-                if (!parseStaticArrayPairValue(&__node_232))
+                StaticArrayPairValueAst *__node_233 = 0;
+                if (!parseStaticArrayPairValue(&__node_233))
                 {
                     if (!mBlockErrors)
                     {
@@ -10604,7 +10607,7 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_232, memoryPool);
+                (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_233, memoryPool);
 
                 while (yytoken == Token_COMMA)
                 {
@@ -10622,8 +10625,8 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                     {
                         break;
                     }
-                    StaticArrayPairValueAst *__node_233 = 0;
-                    if (!parseStaticArrayPairValue(&__node_233))
+                    StaticArrayPairValueAst *__node_234 = 0;
+                    if (!parseStaticArrayPairValue(&__node_234))
                     {
                         if (!mBlockErrors)
                         {
@@ -10631,7 +10634,7 @@ bool Parser::parseStaticScalar(StaticScalarAst **yynode)
                         }
                         return false;
                     }
-                    (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_233, memoryPool);
+                    (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_234, memoryPool);
 
                 }
             }
@@ -10676,8 +10679,8 @@ bool Parser::parseStaticVar(StaticVarAst **yynode)
 
     if (yytoken == Token_VARIABLE)
     {
-        VariableIdentifierAst *__node_234 = 0;
-        if (!parseVariableIdentifier(&__node_234))
+        VariableIdentifierAst *__node_235 = 0;
+        if (!parseVariableIdentifier(&__node_235))
         {
             if (!mBlockErrors)
             {
@@ -10697,8 +10700,8 @@ bool Parser::parseStaticVar(StaticVarAst **yynode)
             }
             yylex();
 
-            StaticScalarAst *__node_235 = 0;
-            if (!parseStaticScalar(&__node_235))
+            StaticScalarAst *__node_236 = 0;
+            if (!parseStaticScalar(&__node_236))
             {
                 if (!mBlockErrors)
                 {
@@ -10706,7 +10709,7 @@ bool Parser::parseStaticVar(StaticVarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->staticScalar = __node_235;
+            (*yynode)->staticScalar = __node_236;
 
         }
         else if (true /*epsilon*/)
@@ -10768,8 +10771,8 @@ bool Parser::parseSwitchCaseList(SwitchCaseListAst **yynode)
             {
                 return false;
             }
-            CaseListAst *__node_236 = 0;
-            if (!parseCaseList(&__node_236))
+            CaseListAst *__node_237 = 0;
+            if (!parseCaseList(&__node_237))
             {
                 if (!mBlockErrors)
                 {
@@ -10777,7 +10780,7 @@ bool Parser::parseSwitchCaseList(SwitchCaseListAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->caseList = __node_236;
+            (*yynode)->caseList = __node_237;
 
             if (yytoken != Token_RBRACE)
             {
@@ -10822,8 +10825,8 @@ bool Parser::parseSwitchCaseList(SwitchCaseListAst **yynode)
             {
                 return false;
             }
-            CaseListAst *__node_237 = 0;
-            if (!parseCaseList(&__node_237))
+            CaseListAst *__node_238 = 0;
+            if (!parseCaseList(&__node_238))
             {
                 if (!mBlockErrors)
                 {
@@ -10831,7 +10834,7 @@ bool Parser::parseSwitchCaseList(SwitchCaseListAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->caseList = __node_237;
+            (*yynode)->caseList = __node_238;
 
             if (yytoken != Token_ENDSWITCH)
             {
@@ -10843,8 +10846,8 @@ bool Parser::parseSwitchCaseList(SwitchCaseListAst **yynode)
             }
             yylex();
 
-            SemicolonOrCloseTagAst *__node_238 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_238))
+            SemicolonOrCloseTagAst *__node_239 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_239))
             {
                 if (!mBlockErrors)
                 {
@@ -11012,8 +11015,8 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
             || yytoken == Token_LINE
             || yytoken == Token_MINUS)
         {
-            StatementAst *__node_239 = 0;
-            if (!parseStatement(&__node_239))
+            StatementAst *__node_240 = 0;
+            if (!parseStatement(&__node_240))
             {
                 if (!mBlockErrors)
                 {
@@ -11021,13 +11024,13 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statement = __node_239;
+            (*yynode)->statement = __node_240;
 
         }
         else if (yytoken == Token_FUNCTION)
         {
-            FunctionDeclarationStatementAst *__node_240 = 0;
-            if (!parseFunctionDeclarationStatement(&__node_240))
+            FunctionDeclarationStatementAst *__node_241 = 0;
+            if (!parseFunctionDeclarationStatement(&__node_241))
             {
                 if (!mBlockErrors)
                 {
@@ -11035,15 +11038,15 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->functionDeclaration = __node_240;
+            (*yynode)->functionDeclaration = __node_241;
 
         }
         else if (yytoken == Token_FINAL
                  || yytoken == Token_CLASS
                  || yytoken == Token_ABSTRACT)
         {
-            ClassDeclarationStatementAst *__node_241 = 0;
-            if (!parseClassDeclarationStatement(&__node_241))
+            ClassDeclarationStatementAst *__node_242 = 0;
+            if (!parseClassDeclarationStatement(&__node_242))
             {
                 if (!mBlockErrors)
                 {
@@ -11051,13 +11054,13 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->classDeclaration = __node_241;
+            (*yynode)->classDeclaration = __node_242;
 
         }
         else if (yytoken == Token_INTERFACE)
         {
-            InterfaceDeclarationStatementAst *__node_242 = 0;
-            if (!parseInterfaceDeclarationStatement(&__node_242))
+            InterfaceDeclarationStatementAst *__node_243 = 0;
+            if (!parseInterfaceDeclarationStatement(&__node_243))
             {
                 if (!mBlockErrors)
                 {
@@ -11065,7 +11068,7 @@ bool Parser::parseTopStatement(TopStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->interfaceDeclaration = __node_242;
+            (*yynode)->interfaceDeclaration = __node_243;
 
         }
         else if (yytoken == Token_HALT_COMPILER)
@@ -11187,30 +11190,6 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             }
             yylex();
 
-            UnaryExpressionAst *__node_243 = 0;
-            if (!parseUnaryExpression(&__node_243))
-            {
-                if (!mBlockErrors)
-                {
-                    expectedSymbol(AstNode::UnaryExpressionKind, "unaryExpression");
-                }
-                return false;
-            }
-            (*yynode)->unaryExpression = __node_243;
-
-        }
-        else if (yytoken == Token_PLUS)
-        {
-            if (yytoken != Token_PLUS)
-            {
-                if (!mBlockErrors)
-                {
-                    expectedToken(yytoken, Token_PLUS, "+");
-                }
-                return false;
-            }
-            yylex();
-
             UnaryExpressionAst *__node_244 = 0;
             if (!parseUnaryExpression(&__node_244))
             {
@@ -11223,13 +11202,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_244;
 
         }
-        else if (yytoken == Token_BANG)
+        else if (yytoken == Token_PLUS)
         {
-            if (yytoken != Token_BANG)
+            if (yytoken != Token_PLUS)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_BANG, "!");
+                    expectedToken(yytoken, Token_PLUS, "+");
                 }
                 return false;
             }
@@ -11247,13 +11226,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_245;
 
         }
-        else if (yytoken == Token_TILDE)
+        else if (yytoken == Token_BANG)
         {
-            if (yytoken != Token_TILDE)
+            if (yytoken != Token_BANG)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_TILDE, "~");
+                    expectedToken(yytoken, Token_BANG, "!");
                 }
                 return false;
             }
@@ -11271,13 +11250,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_246;
 
         }
-        else if (yytoken == Token_INT_CAST)
+        else if (yytoken == Token_TILDE)
         {
-            if (yytoken != Token_INT_CAST)
+            if (yytoken != Token_TILDE)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_INT_CAST, "int cast");
+                    expectedToken(yytoken, Token_TILDE, "~");
                 }
                 return false;
             }
@@ -11295,13 +11274,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_247;
 
         }
-        else if (yytoken == Token_DOUBLE_CAST)
+        else if (yytoken == Token_INT_CAST)
         {
-            if (yytoken != Token_DOUBLE_CAST)
+            if (yytoken != Token_INT_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_DOUBLE_CAST, "double cast");
+                    expectedToken(yytoken, Token_INT_CAST, "int cast");
                 }
                 return false;
             }
@@ -11319,13 +11298,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_248;
 
         }
-        else if (yytoken == Token_STRING_CAST)
+        else if (yytoken == Token_DOUBLE_CAST)
         {
-            if (yytoken != Token_STRING_CAST)
+            if (yytoken != Token_DOUBLE_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_STRING_CAST, "string cast");
+                    expectedToken(yytoken, Token_DOUBLE_CAST, "double cast");
                 }
                 return false;
             }
@@ -11343,13 +11322,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_249;
 
         }
-        else if (yytoken == Token_ARRAY_CAST)
+        else if (yytoken == Token_STRING_CAST)
         {
-            if (yytoken != Token_ARRAY_CAST)
+            if (yytoken != Token_STRING_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_ARRAY_CAST, "array cast");
+                    expectedToken(yytoken, Token_STRING_CAST, "string cast");
                 }
                 return false;
             }
@@ -11367,13 +11346,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_250;
 
         }
-        else if (yytoken == Token_OBJECT_CAST)
+        else if (yytoken == Token_ARRAY_CAST)
         {
-            if (yytoken != Token_OBJECT_CAST)
+            if (yytoken != Token_ARRAY_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_OBJECT_CAST, "object cast");
+                    expectedToken(yytoken, Token_ARRAY_CAST, "array cast");
                 }
                 return false;
             }
@@ -11391,13 +11370,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_251;
 
         }
-        else if (yytoken == Token_BOOL_CAST)
+        else if (yytoken == Token_OBJECT_CAST)
         {
-            if (yytoken != Token_BOOL_CAST)
+            if (yytoken != Token_OBJECT_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_BOOL_CAST, "bool cast");
+                    expectedToken(yytoken, Token_OBJECT_CAST, "object cast");
                 }
                 return false;
             }
@@ -11415,13 +11394,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_252;
 
         }
-        else if (yytoken == Token_UNSET_CAST)
+        else if (yytoken == Token_BOOL_CAST)
         {
-            if (yytoken != Token_UNSET_CAST)
+            if (yytoken != Token_BOOL_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_UNSET_CAST, "unset cast");
+                    expectedToken(yytoken, Token_BOOL_CAST, "bool cast");
                 }
                 return false;
             }
@@ -11439,13 +11418,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_253;
 
         }
-        else if (yytoken == Token_AT)
+        else if (yytoken == Token_UNSET_CAST)
         {
-            if (yytoken != Token_AT)
+            if (yytoken != Token_UNSET_CAST)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_AT, "@");
+                    expectedToken(yytoken, Token_UNSET_CAST, "unset cast");
                 }
                 return false;
             }
@@ -11461,6 +11440,30 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                 return false;
             }
             (*yynode)->unaryExpression = __node_254;
+
+        }
+        else if (yytoken == Token_AT)
+        {
+            if (yytoken != Token_AT)
+            {
+                if (!mBlockErrors)
+                {
+                    expectedToken(yytoken, Token_AT, "@");
+                }
+                return false;
+            }
+            yylex();
+
+            UnaryExpressionAst *__node_255 = 0;
+            if (!parseUnaryExpression(&__node_255))
+            {
+                if (!mBlockErrors)
+                {
+                    expectedSymbol(AstNode::UnaryExpressionKind, "unaryExpression");
+                }
+                return false;
+            }
+            (*yynode)->unaryExpression = __node_255;
 
         }
         else if (yytoken == Token_LIST)
@@ -11485,8 +11488,8 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             }
             yylex();
 
-            AssignmentListAst *__node_255 = 0;
-            if (!parseAssignmentList(&__node_255))
+            AssignmentListAst *__node_256 = 0;
+            if (!parseAssignmentList(&__node_256))
             {
                 if (!mBlockErrors)
                 {
@@ -11494,7 +11497,7 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->assignmentList = __node_255;
+            (*yynode)->assignmentList = __node_256;
 
             if (yytoken != Token_RPAREN)
             {
@@ -11516,8 +11519,8 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             }
             yylex();
 
-            UnaryExpressionAst *__node_256 = 0;
-            if (!parseUnaryExpression(&__node_256))
+            UnaryExpressionAst *__node_257 = 0;
+            if (!parseUnaryExpression(&__node_257))
             {
                 if (!mBlockErrors)
                 {
@@ -11525,7 +11528,7 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->unaryExpression = __node_256;
+            (*yynode)->unaryExpression = __node_257;
 
         }
         else if (yytoken == Token_EXIT)
@@ -11596,8 +11599,8 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                     || yytoken == Token_LINE
                     || yytoken == Token_MINUS)
                 {
-                    ExprAst *__node_257 = 0;
-                    if (!parseExpr(&__node_257))
+                    ExprAst *__node_258 = 0;
+                    if (!parseExpr(&__node_258))
                     {
                         if (!mBlockErrors)
                         {
@@ -11605,7 +11608,7 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                         }
                         return false;
                     }
-                    (*yynode)->expression = __node_257;
+                    (*yynode)->expression = __node_258;
 
                 }
                 else if (true /*epsilon*/)
@@ -11656,8 +11659,8 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             }
             yylex();
 
-            ExprAst *__node_258 = 0;
-            if (!parseExpr(&__node_258))
+            ExprAst *__node_259 = 0;
+            if (!parseExpr(&__node_259))
             {
                 if (!mBlockErrors)
                 {
@@ -11665,7 +11668,7 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->expression = __node_258;
+            (*yynode)->expression = __node_259;
 
             if (yytoken != Token_RPAREN)
             {
@@ -11690,30 +11693,6 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             }
             yylex();
 
-            UnaryExpressionAst *__node_259 = 0;
-            if (!parseUnaryExpression(&__node_259))
-            {
-                if (!mBlockErrors)
-                {
-                    expectedSymbol(AstNode::UnaryExpressionKind, "unaryExpression");
-                }
-                return false;
-            }
-            (*yynode)->unaryExpression = __node_259;
-
-        }
-        else if (yytoken == Token_INCLUDE_ONCE)
-        {
-            if (yytoken != Token_INCLUDE_ONCE)
-            {
-                if (!mBlockErrors)
-                {
-                    expectedToken(yytoken, Token_INCLUDE_ONCE, "include_once");
-                }
-                return false;
-            }
-            yylex();
-
             UnaryExpressionAst *__node_260 = 0;
             if (!parseUnaryExpression(&__node_260))
             {
@@ -11726,13 +11705,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_260;
 
         }
-        else if (yytoken == Token_REQUIRE)
+        else if (yytoken == Token_INCLUDE_ONCE)
         {
-            if (yytoken != Token_REQUIRE)
+            if (yytoken != Token_INCLUDE_ONCE)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_REQUIRE, "require");
+                    expectedToken(yytoken, Token_INCLUDE_ONCE, "include_once");
                 }
                 return false;
             }
@@ -11750,13 +11729,13 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
             (*yynode)->unaryExpression = __node_261;
 
         }
-        else if (yytoken == Token_REQUIRE_ONCE)
+        else if (yytoken == Token_REQUIRE)
         {
-            if (yytoken != Token_REQUIRE_ONCE)
+            if (yytoken != Token_REQUIRE)
             {
                 if (!mBlockErrors)
                 {
-                    expectedToken(yytoken, Token_REQUIRE_ONCE, "require_once");
+                    expectedToken(yytoken, Token_REQUIRE, "require");
                 }
                 return false;
             }
@@ -11772,6 +11751,30 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                 return false;
             }
             (*yynode)->unaryExpression = __node_262;
+
+        }
+        else if (yytoken == Token_REQUIRE_ONCE)
+        {
+            if (yytoken != Token_REQUIRE_ONCE)
+            {
+                if (!mBlockErrors)
+                {
+                    expectedToken(yytoken, Token_REQUIRE_ONCE, "require_once");
+                }
+                return false;
+            }
+            yylex();
+
+            UnaryExpressionAst *__node_263 = 0;
+            if (!parseUnaryExpression(&__node_263))
+            {
+                if (!mBlockErrors)
+                {
+                    expectedSymbol(AstNode::UnaryExpressionKind, "unaryExpression");
+                }
+                return false;
+            }
+            (*yynode)->unaryExpression = __node_263;
 
         }
         else if (yytoken == Token_DEC
@@ -11798,8 +11801,8 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                  || yytoken == Token_BACKTICK
                  || yytoken == Token_ISSET)
         {
-            UnaryExpressionNotPlusminusAst *__node_263 = 0;
-            if (!parseUnaryExpressionNotPlusminus(&__node_263))
+            UnaryExpressionNotPlusminusAst *__node_264 = 0;
+            if (!parseUnaryExpressionNotPlusminus(&__node_264))
             {
                 if (!mBlockErrors)
                 {
@@ -11807,7 +11810,7 @@ bool Parser::parseUnaryExpression(UnaryExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->unaryExpressionNotPlusminus = __node_263;
+            (*yynode)->unaryExpressionNotPlusminus = __node_264;
 
         }
         else
@@ -11858,8 +11861,8 @@ bool Parser::parseUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst **y
         while (yytoken == Token_DEC
                || yytoken == Token_INC)
         {
-            PostprefixOperatorAst *__node_264 = 0;
-            if (!parsePostprefixOperator(&__node_264))
+            PostprefixOperatorAst *__node_265 = 0;
+            if (!parsePostprefixOperator(&__node_265))
             {
                 if (!mBlockErrors)
                 {
@@ -11867,11 +11870,11 @@ bool Parser::parseUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst **y
                 }
                 return false;
             }
-            (*yynode)->prefixOperatorSequence = snoc((*yynode)->prefixOperatorSequence, __node_264, memoryPool);
+            (*yynode)->prefixOperatorSequence = snoc((*yynode)->prefixOperatorSequence, __node_265, memoryPool);
 
         }
-        VarExpressionAst *__node_265 = 0;
-        if (!parseVarExpression(&__node_265))
+        VarExpressionAst *__node_266 = 0;
+        if (!parseVarExpression(&__node_266))
         {
             if (!mBlockErrors)
             {
@@ -11879,13 +11882,13 @@ bool Parser::parseUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst **y
             }
             return false;
         }
-        (*yynode)->varExpression = __node_265;
+        (*yynode)->varExpression = __node_266;
 
         while (yytoken == Token_DEC
                || yytoken == Token_INC)
         {
-            PostprefixOperatorAst *__node_266 = 0;
-            if (!parsePostprefixOperator(&__node_266))
+            PostprefixOperatorAst *__node_267 = 0;
+            if (!parsePostprefixOperator(&__node_267))
             {
                 if (!mBlockErrors)
                 {
@@ -11893,7 +11896,7 @@ bool Parser::parseUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst **y
                 }
                 return false;
             }
-            (*yynode)->postfixOperatorSequence = snoc((*yynode)->postfixOperatorSequence, __node_266, memoryPool);
+            (*yynode)->postfixOperatorSequence = snoc((*yynode)->postfixOperatorSequence, __node_267, memoryPool);
 
         }
     }
@@ -11940,8 +11943,8 @@ bool Parser::parseVarExpression(VarExpressionAst **yynode)
              || yytoken == Token_STRING) && ( m_state.varExpressionState == OnlyVariable ))
         {
             m_state.varExpressionState = Normal;
-            VariableAst *__node_267 = 0;
-            if (!parseVariable(&__node_267))
+            VariableAst *__node_268 = 0;
+            if (!parseVariable(&__node_268))
             {
                 if (!mBlockErrors)
                 {
@@ -11949,14 +11952,14 @@ bool Parser::parseVarExpression(VarExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->variable = __node_267;
+            (*yynode)->variable = __node_268;
 
         }
         else if ((yytoken == Token_NEW) && ( m_state.varExpressionState == OnlyNewObject ))
         {
             m_state.varExpressionState = Normal;
-            VarExpressionNewObjectAst *__node_268 = 0;
-            if (!parseVarExpressionNewObject(&__node_268))
+            VarExpressionNewObjectAst *__node_269 = 0;
+            if (!parseVarExpressionNewObject(&__node_269))
             {
                 if (!mBlockErrors)
                 {
@@ -11964,7 +11967,7 @@ bool Parser::parseVarExpression(VarExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->newObject = __node_268;
+            (*yynode)->newObject = __node_269;
 
         }
         else if (yytoken == Token_STRING
@@ -11989,8 +11992,8 @@ bool Parser::parseVarExpression(VarExpressionAst **yynode)
                  || yytoken == Token_BACKTICK
                  || yytoken == Token_ISSET)
         {
-            VarExpressionNormalAst *__node_269 = 0;
-            if (!parseVarExpressionNormal(&__node_269))
+            VarExpressionNormalAst *__node_270 = 0;
+            if (!parseVarExpressionNormal(&__node_270))
             {
                 if (!mBlockErrors)
                 {
@@ -11998,7 +12001,7 @@ bool Parser::parseVarExpression(VarExpressionAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->varExpressionNormal = __node_269;
+            (*yynode)->varExpressionNormal = __node_270;
 
         }
         else
@@ -12034,8 +12037,8 @@ bool Parser::parseVarExpressionNewObject(VarExpressionNewObjectAst **yynode)
         }
         yylex();
 
-        ClassNameReferenceAst *__node_270 = 0;
-        if (!parseClassNameReference(&__node_270))
+        ClassNameReferenceAst *__node_271 = 0;
+        if (!parseClassNameReference(&__node_271))
         {
             if (!mBlockErrors)
             {
@@ -12043,10 +12046,10 @@ bool Parser::parseVarExpressionNewObject(VarExpressionNewObjectAst **yynode)
             }
             return false;
         }
-        (*yynode)->className = __node_270;
+        (*yynode)->className = __node_271;
 
-        CtorArgumentsAst *__node_271 = 0;
-        if (!parseCtorArguments(&__node_271))
+        CtorArgumentsAst *__node_272 = 0;
+        if (!parseCtorArguments(&__node_272))
         {
             if (!mBlockErrors)
             {
@@ -12054,7 +12057,7 @@ bool Parser::parseVarExpressionNewObject(VarExpressionNewObjectAst **yynode)
             }
             return false;
         }
-        (*yynode)->ctor = __node_271;
+        (*yynode)->ctor = __node_272;
 
     }
     else
@@ -12108,8 +12111,8 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
             }
             yylex();
 
-            ExprAst *__node_272 = 0;
-            if (!parseExpr(&__node_272))
+            ExprAst *__node_273 = 0;
+            if (!parseExpr(&__node_273))
             {
                 if (!mBlockErrors)
                 {
@@ -12117,7 +12120,7 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->expression = __node_272;
+            (*yynode)->expression = __node_273;
 
             if (yytoken != Token_RPAREN)
             {
@@ -12142,8 +12145,8 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
             }
             yylex();
 
-            EncapsListAst *__node_273 = 0;
-            if (!parseEncapsList(&__node_273))
+            EncapsListAst *__node_274 = 0;
+            if (!parseEncapsList(&__node_274))
             {
                 if (!mBlockErrors)
                 {
@@ -12151,7 +12154,7 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->encapsList = __node_273;
+            (*yynode)->encapsList = __node_274;
 
             if (yytoken != Token_BACKTICK)
             {
@@ -12183,12 +12186,12 @@ bool Parser::parseVarExpressionNormal(VarExpressionNormalAst **yynode)
             qint64 try_startToken_3 = tokenStream->index() - 1;
             ParserState *try_startState_3 = copyCurrentState();
             {
-                VariableAst *__node_274 = 0;
-                if (!parseVariable(&__node_274))
+                VariableAst *__node_275 = 0;
+                if (!parseVariable(&__node_275))
                 {
                     goto __catch_3;
                 }
-                (*yynode)->variable = __node_274;
+                (*yynode)->variable = __node_275;
 
                 m_state.varExpressionIsVariable = true;
             }
@@ -12207,8 +12210,8 @@ __catch_3:
                 blockErrors(blockErrors_3);
                 rewind(try_startToken_3);
 
-                ScalarAst *__node_275 = 0;
-                if (!parseScalar(&__node_275))
+                ScalarAst *__node_276 = 0;
+                if (!parseScalar(&__node_276))
                 {
                     if (!mBlockErrors)
                     {
@@ -12216,7 +12219,7 @@ __catch_3:
                     }
                     return false;
                 }
-                (*yynode)->scalar = __node_275;
+                (*yynode)->scalar = __node_276;
 
             }
 
@@ -12289,8 +12292,8 @@ __catch_3:
                 || yytoken == Token_LINE
                 || yytoken == Token_MINUS)
             {
-                ArrayPairValueAst *__node_276 = 0;
-                if (!parseArrayPairValue(&__node_276))
+                ArrayPairValueAst *__node_277 = 0;
+                if (!parseArrayPairValue(&__node_277))
                 {
                     if (!mBlockErrors)
                     {
@@ -12298,7 +12301,7 @@ __catch_3:
                     }
                     return false;
                 }
-                (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_276, memoryPool);
+                (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_277, memoryPool);
 
                 while (yytoken == Token_COMMA)
                 {
@@ -12316,8 +12319,8 @@ __catch_3:
                     {
                         break;
                     }
-                    ArrayPairValueAst *__node_277 = 0;
-                    if (!parseArrayPairValue(&__node_277))
+                    ArrayPairValueAst *__node_278 = 0;
+                    if (!parseArrayPairValue(&__node_278))
                     {
                         if (!mBlockErrors)
                         {
@@ -12325,7 +12328,7 @@ __catch_3:
                         }
                         return false;
                     }
-                    (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_277, memoryPool);
+                    (*yynode)->arrayValuesSequence = snoc((*yynode)->arrayValuesSequence, __node_278, memoryPool);
 
                 }
             }
@@ -12369,8 +12372,8 @@ __catch_3:
             }
             yylex();
 
-            VariableAst *__node_278 = 0;
-            if (!parseVariable(&__node_278))
+            VariableAst *__node_279 = 0;
+            if (!parseVariable(&__node_279))
             {
                 if (!mBlockErrors)
                 {
@@ -12378,7 +12381,7 @@ __catch_3:
                 }
                 return false;
             }
-            (*yynode)->issetVariableSequence = snoc((*yynode)->issetVariableSequence, __node_278, memoryPool);
+            (*yynode)->issetVariableSequence = snoc((*yynode)->issetVariableSequence, __node_279, memoryPool);
 
             while (yytoken == Token_COMMA)
             {
@@ -12392,8 +12395,8 @@ __catch_3:
                 }
                 yylex();
 
-                VariableAst *__node_279 = 0;
-                if (!parseVariable(&__node_279))
+                VariableAst *__node_280 = 0;
+                if (!parseVariable(&__node_280))
                 {
                     if (!mBlockErrors)
                     {
@@ -12401,7 +12404,7 @@ __catch_3:
                     }
                     return false;
                 }
-                (*yynode)->issetVariableSequence = snoc((*yynode)->issetVariableSequence, __node_279, memoryPool);
+                (*yynode)->issetVariableSequence = snoc((*yynode)->issetVariableSequence, __node_280, memoryPool);
 
             }
             if (yytoken != Token_RPAREN)
@@ -12437,8 +12440,8 @@ __catch_3:
             }
             yylex();
 
-            VariableAst *__node_280 = 0;
-            if (!parseVariable(&__node_280))
+            VariableAst *__node_281 = 0;
+            if (!parseVariable(&__node_281))
             {
                 if (!mBlockErrors)
                 {
@@ -12446,7 +12449,7 @@ __catch_3:
                 }
                 return false;
             }
-            (*yynode)->emptyVarialbe = __node_280;
+            (*yynode)->emptyVarialbe = __node_281;
 
             if (yytoken != Token_RPAREN)
             {
@@ -12461,8 +12464,8 @@ __catch_3:
         }
         else if (yytoken == Token_NEW)
         {
-            VarExpressionNewObjectAst *__node_281 = 0;
-            if (!parseVarExpressionNewObject(&__node_281))
+            VarExpressionNewObjectAst *__node_282 = 0;
+            if (!parseVarExpressionNewObject(&__node_282))
             {
                 if (!mBlockErrors)
                 {
@@ -12470,7 +12473,7 @@ __catch_3:
                 }
                 return false;
             }
-            (*yynode)->newObject = __node_281;
+            (*yynode)->newObject = __node_282;
 
         }
         else if (yytoken == Token_CLONE)
@@ -12485,8 +12488,8 @@ __catch_3:
             }
             yylex();
 
-            VarExpressionNormalAst *__node_282 = 0;
-            if (!parseVarExpressionNormal(&__node_282))
+            VarExpressionNormalAst *__node_283 = 0;
+            if (!parseVarExpressionNormal(&__node_283))
             {
                 if (!mBlockErrors)
                 {
@@ -12494,7 +12497,7 @@ __catch_3:
                 }
                 return false;
             }
-            (*yynode)->cloneCar = __node_282;
+            (*yynode)->cloneCar = __node_283;
 
         }
         else
@@ -12522,8 +12525,8 @@ bool Parser::parseVariable(VariableAst **yynode)
         || yytoken == Token_DOLLAR
         || yytoken == Token_STRING)
     {
-        BaseVariableWithFunctionCallsAst *__node_283 = 0;
-        if (!parseBaseVariableWithFunctionCalls(&__node_283))
+        BaseVariableWithFunctionCallsAst *__node_284 = 0;
+        if (!parseBaseVariableWithFunctionCalls(&__node_284))
         {
             if (!mBlockErrors)
             {
@@ -12531,12 +12534,12 @@ bool Parser::parseVariable(VariableAst **yynode)
             }
             return false;
         }
-        (*yynode)->var = __node_283;
+        (*yynode)->var = __node_284;
 
         while (yytoken == Token_OBJECT_OPERATOR)
         {
-            VariablePropertyAst *__node_284 = 0;
-            if (!parseVariableProperty(&__node_284))
+            VariablePropertyAst *__node_285 = 0;
+            if (!parseVariableProperty(&__node_285))
             {
                 if (!mBlockErrors)
                 {
@@ -12544,7 +12547,7 @@ bool Parser::parseVariable(VariableAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->variablePropertiesSequence = snoc((*yynode)->variablePropertiesSequence, __node_284, memoryPool);
+            (*yynode)->variablePropertiesSequence = snoc((*yynode)->variablePropertiesSequence, __node_285, memoryPool);
 
         }
     }
@@ -12600,8 +12603,8 @@ bool Parser::parseVariableName(VariableNameAst **yynode)
     {
         if (yytoken == Token_STRING)
         {
-            IdentifierAst *__node_285 = 0;
-            if (!parseIdentifier(&__node_285))
+            IdentifierAst *__node_286 = 0;
+            if (!parseIdentifier(&__node_286))
             {
                 if (!mBlockErrors)
                 {
@@ -12609,7 +12612,7 @@ bool Parser::parseVariableName(VariableNameAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->name = __node_285;
+            (*yynode)->name = __node_286;
 
         }
         else if (yytoken == Token_LBRACE)
@@ -12624,8 +12627,8 @@ bool Parser::parseVariableName(VariableNameAst **yynode)
             }
             yylex();
 
-            ExprAst *__node_286 = 0;
-            if (!parseExpr(&__node_286))
+            ExprAst *__node_287 = 0;
+            if (!parseExpr(&__node_287))
             {
                 if (!mBlockErrors)
                 {
@@ -12633,7 +12636,7 @@ bool Parser::parseVariableName(VariableNameAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->expr = __node_286;
+            (*yynode)->expr = __node_287;
 
             if (yytoken != Token_RBRACE)
             {
@@ -12680,8 +12683,8 @@ bool Parser::parseVariableProperty(VariablePropertyAst **yynode)
         }
         yylex();
 
-        ObjectPropertyAst *__node_287 = 0;
-        if (!parseObjectProperty(&__node_287))
+        ObjectPropertyAst *__node_288 = 0;
+        if (!parseObjectProperty(&__node_288))
         {
             if (!mBlockErrors)
             {
@@ -12689,7 +12692,7 @@ bool Parser::parseVariableProperty(VariablePropertyAst **yynode)
             }
             return false;
         }
-        (*yynode)->objectProperty = __node_287;
+        (*yynode)->objectProperty = __node_288;
 
         if (yytoken == Token_LPAREN)
         {
@@ -12704,8 +12707,8 @@ bool Parser::parseVariableProperty(VariablePropertyAst **yynode)
             (*yynode)->isFunctionCall = tokenStream->index() - 1;
             yylex();
 
-            FunctionCallParameterListAst *__node_288 = 0;
-            if (!parseFunctionCallParameterList(&__node_288))
+            FunctionCallParameterListAst *__node_289 = 0;
+            if (!parseFunctionCallParameterList(&__node_289))
             {
                 if (!mBlockErrors)
                 {
@@ -12713,7 +12716,7 @@ bool Parser::parseVariableProperty(VariablePropertyAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->parameterList = __node_288;
+            (*yynode)->parameterList = __node_289;
 
             if (yytoken != Token_RPAREN)
             {
@@ -12753,8 +12756,8 @@ bool Parser::parseVariableWithoutObjects(VariableWithoutObjectsAst **yynode)
     if (yytoken == Token_VARIABLE
         || yytoken == Token_DOLLAR)
     {
-        CompoundVariableWithSimpleIndirectReferenceAst *__node_289 = 0;
-        if (!parseCompoundVariableWithSimpleIndirectReference(&__node_289))
+        CompoundVariableWithSimpleIndirectReferenceAst *__node_290 = 0;
+        if (!parseCompoundVariableWithSimpleIndirectReference(&__node_290))
         {
             if (!mBlockErrors)
             {
@@ -12762,13 +12765,13 @@ bool Parser::parseVariableWithoutObjects(VariableWithoutObjectsAst **yynode)
             }
             return false;
         }
-        (*yynode)->variable = __node_289;
+        (*yynode)->variable = __node_290;
 
         while (yytoken == Token_LBRACE
                || yytoken == Token_LBRACKET)
         {
-            DimListItemAst *__node_290 = 0;
-            if (!parseDimListItem(&__node_290))
+            DimListItemAst *__node_291 = 0;
+            if (!parseDimListItem(&__node_291))
             {
                 if (!mBlockErrors)
                 {
@@ -12776,7 +12779,7 @@ bool Parser::parseVariableWithoutObjects(VariableWithoutObjectsAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->offsetItemsSequence = snoc((*yynode)->offsetItemsSequence, __node_290, memoryPool);
+            (*yynode)->offsetItemsSequence = snoc((*yynode)->offsetItemsSequence, __node_291, memoryPool);
 
         }
     }
@@ -12929,8 +12932,8 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
             || yytoken == Token_LINE
             || yytoken == Token_MINUS)
         {
-            StatementAst *__node_291 = 0;
-            if (!parseStatement(&__node_291))
+            StatementAst *__node_292 = 0;
+            if (!parseStatement(&__node_292))
             {
                 if (!mBlockErrors)
                 {
@@ -12938,7 +12941,7 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statement = __node_291;
+            (*yynode)->statement = __node_292;
 
         }
         else if (yytoken == Token_COLON)
@@ -12953,8 +12956,8 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
             }
             yylex();
 
-            InnerStatementListAst *__node_292 = 0;
-            if (!parseInnerStatementList(&__node_292))
+            InnerStatementListAst *__node_293 = 0;
+            if (!parseInnerStatementList(&__node_293))
             {
                 if (!mBlockErrors)
                 {
@@ -12962,7 +12965,7 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->statements = __node_292;
+            (*yynode)->statements = __node_293;
 
             if (yytoken != Token_ENDWHILE)
             {
@@ -12974,8 +12977,8 @@ bool Parser::parseWhileStatement(WhileStatementAst **yynode)
             }
             yylex();
 
-            SemicolonOrCloseTagAst *__node_293 = 0;
-            if (!parseSemicolonOrCloseTag(&__node_293))
+            SemicolonOrCloseTagAst *__node_294 = 0;
+            if (!parseSemicolonOrCloseTag(&__node_294))
             {
                 if (!mBlockErrors)
                 {

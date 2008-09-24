@@ -42,6 +42,8 @@ public:
     ExpressionEvaluationResult result() { return m_result; }
 
 protected:
+    KDevelop::Declaration* processVariable(VariableIdentifierAst *variable);
+
     void visitExpr(ExprAst *node);
     void visitAssignmentExpression(AssignmentExpressionAst *node);
     void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
@@ -50,6 +52,8 @@ protected:
     void visitVarExpressionNormal(VarExpressionNormalAst *node);
     void visitFunctionCall(FunctionCallAst* node);
     void visitScalar(ScalarAst *node);
+    void visitEncaps(EncapsAst *node);
+    void visitEncapsVar(EncapsVarAst *node);
     void visitVariableProperty(VariablePropertyAst *node);
     void visitStaticMember(StaticMemberAst* node);
 

@@ -668,7 +668,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
      --(expr allows STRING_VARNAME too - but without [expr])
     DOLLAR_OPEN_CURLY_BRACES ( ?[: LA(2).kind == Token_LBRACKET:] STRING_VARNAME LBRACKET expr=expr RBRACKET RBRACE
       | expr=expr RBRACE )
-  | variableIdentifier (OBJECT_OPERATOR STRING | LBRACKET offset=encapsVarOffset RBRACKET | 0)
+  | variable=variableIdentifier (OBJECT_OPERATOR propertyIdentifier=identifier | LBRACKET offset=encapsVarOffset RBRACKET | 0)
   | CURLY_OPEN expr=expr RBRACE
 -> encapsVar ;;
 

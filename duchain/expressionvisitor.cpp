@@ -39,6 +39,33 @@ ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor, bool useCursor)
 {
 }
 
+Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
+{
+    Declaration* ret = 0;
+    QualifiedIdentifier identifier = identifierForNode(variable);
+    if (identifier == QualifiedIdentifier("this")) {
+        DUChainReadLocker lock(DUChain::lock());
+        if (m_currentContext->parentContext()
+            && m_currentContext->parentContext()->type() == DUContext::Class
+            && m_currentContext->parentContext()->owner())
+        {
+            ret = m_currentContext->parentContext()->owner();
+        }
+    } else {
+        DUChainReadLocker lock(DUChain::lock());
+        SimpleCursor position = SimpleCursor::invalid();
+        if (m_useCursor) {
+            position = m_editor->findPosition(variable->variable, EditorIntegrator::FrontEdge);
+        }
+        QList<Declaration*> decs = m_currentContext->findDeclarations(identifier, position);
+        if (!decs.isEmpty()) ret = decs.last();
+    }
+    if (ret) {
+        usingDeclaration(variable, ret);
+    }
+    return ret;
+}
+
 void ExpressionVisitor::visitExpr(ExprAst *node)
 {
     if (node->ducontext) {
@@ -61,26 +88,7 @@ void ExpressionVisitor::visitAssignmentExpressionEqual(AssignmentExpressionEqual
 void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
 {
     if (node->variable) {
-        QualifiedIdentifier identifier = identifierForNode(node->variable);
-        if (identifier == QualifiedIdentifier("this")) {
-            DUChainReadLocker lock(DUChain::lock());
-            if (m_currentContext->parentContext()
-                && m_currentContext->parentContext()->type() == DUContext::Class
-                && m_currentContext->parentContext()->owner())
-            {
-                m_result.setDeclaration(m_currentContext->parentContext()->owner());
-            }
-        } else {
-            DUChainReadLocker lock(DUChain::lock());
-            SimpleCursor position = SimpleCursor::invalid();
-            if (m_useCursor) {
-                position = m_editor->findPosition(node->variable->variable, EditorIntegrator::FrontEdge);
-            }
-            m_result.setDeclarations(m_currentContext->findDeclarations(identifier, position));
-        }
-        if (!m_result.allDeclarations().isEmpty()) {
-            usingDeclaration(node->variable, m_result.allDeclarations().last());
-        }
+        m_result.setDeclaration(processVariable(node->variable));
     }
     DefaultVisitor::visitCompoundVariableWithSimpleIndirectReference(node);
 }
@@ -164,7 +172,8 @@ DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
 }
 void ExpressionVisitor::visitScalar(ScalarAst *node)
 {
-    //don't call parent, we handle everything here DefaultVisitor::visitScalar(node);
+    DefaultVisitor::visitScalar(node);
+
     if (node->className) {
         //class constant Foo::BAR
         DUContext* context = findClassContext(node->className);
@@ -218,6 +227,41 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
     } else if (node->encapsList) {
         IntegralType::Ptr integral(new IntegralType(IntegralType::TypeString));
         m_result.setType(AbstractType::Ptr::staticCast(integral));
+    }
+}
+
+void ExpressionVisitor::visitEncaps(EncapsAst *node)
+{
+    DefaultVisitor::visitEncaps(node);
+}
+
+void ExpressionVisitor::visitEncapsVar(EncapsVarAst *node)
+{
+    DefaultVisitor::visitEncapsVar(node);
+    if (node->variable) {
+        Declaration* dec = processVariable(node->variable);
+        if (dec && node->propertyIdentifier) {
+            //$foo->bar inside a string
+            DUChainReadLocker lock(DUChain::lock());
+            StructureType::Ptr structType = dec->type<StructureType>();
+            if (structType) {
+                QualifiedIdentifier id = structType->qualifiedIdentifier();
+                QList<Declaration*> declarations = m_currentContext->findDeclarations(id);
+                if (!declarations.isEmpty()) {
+                    DUContext* context = declarations.first()->internalContext();
+                    if (!context && m_currentContext->parentContext()->localScopeIdentifier() == declarations.first()->qualifiedIdentifier()) {
+                        //class is currentClass (internalContext is not yet set)
+                        context = m_currentContext->parentContext();
+                    }
+                    QualifiedIdentifier propertyId = identifierForNode(node->propertyIdentifier);
+                    QList<Declaration*> found = context->findDeclarations(propertyId);
+                    lock.unlock();
+                    if (!found.isEmpty()) {
+                        usingDeclaration(node->propertyIdentifier, found.last());
+                    }
+                }
+            }
+        }
     }
 }
 
