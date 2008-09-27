@@ -520,8 +520,9 @@ expression=booleanOrExpression
   | FOREACH LPAREN (
             -- allow $var as &$i and not expr() as &$i
         try/rollback(foreachVar=variable AS foreachVarAsVar=foreachVariable)
-        catch(foreachExpr=expr AS foreachExprAsVar=variable))
-        foreachArg=foreachOptionalArg RPAREN foreachStatement=foreachStatement
+        catch(foreachExpr=expr AS foreachExprAsVar=variableIdentifier))
+        (DOUBLE_ARROW foreachVariable=foreachVariable | 0) RPAREN
+        foreachStatement=foreachStatement
   | DECLARE LPAREN declareItem=declareItem @ COMMA RPAREN declareStatement
   | SEMICOLON     -- empty statement
   | TRY  LBRACE statements=innerStatementList RBRACE
@@ -570,10 +571,7 @@ expression=booleanOrExpression
     STRING ASSIGN scalar=staticScalar
 -> declareItem ;;
 
-    DOUBLE_ARROW foreachVariable=foreachVariable | 0
--> foreachOptionalArg ;;
-
-    variable=variable | BIT_AND variable=variable
+    (BIT_AND | 0) variable=variableIdentifier
 -> foreachVariable ;;
 
     statement=statement

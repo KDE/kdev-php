@@ -64,7 +64,6 @@ public:
     virtual void visitExpr(ExprAst *node);
     virtual void visitForExpr(ForExprAst *node);
     virtual void visitForStatement(ForStatementAst *node);
-    virtual void visitForeachOptionalArg(ForeachOptionalArgAst *node);
     virtual void visitForeachStatement(ForeachStatementAst *node);
     virtual void visitForeachVariable(ForeachVariableAst *node);
     virtual void visitFunctionCall(FunctionCallAst *node);

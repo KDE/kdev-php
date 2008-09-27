@@ -71,6 +71,7 @@ private slots:
   void testFunctionDocBlock();
   void testFunctionDocBlockParams();
   void testMemberFunctionDocBlockParams();
+  void testForeachLoop();
 };
 
 }

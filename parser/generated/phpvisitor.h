@@ -72,7 +72,6 @@ public:
     virtual void visitExpr(ExprAst *) {}
     virtual void visitForExpr(ForExprAst *) {}
     virtual void visitForStatement(ForStatementAst *) {}
-    virtual void visitForeachOptionalArg(ForeachOptionalArgAst *) {}
     virtual void visitForeachStatement(ForeachStatementAst *) {}
     virtual void visitForeachVariable(ForeachVariableAst *) {}
     virtual void visitFunctionCall(FunctionCallAst *) {}

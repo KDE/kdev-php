@@ -344,7 +344,6 @@ public:
     bool parseExpr(ExprAst **yynode);
     bool parseForExpr(ForExprAst **yynode);
     bool parseForStatement(ForStatementAst **yynode);
-    bool parseForeachOptionalArg(ForeachOptionalArgAst **yynode);
     bool parseForeachStatement(ForeachStatementAst **yynode);
     bool parseForeachVariable(ForeachVariableAst **yynode);
     bool parseFunctionCall(FunctionCallAst **yynode);

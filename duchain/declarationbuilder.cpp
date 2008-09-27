@@ -254,9 +254,9 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(node->variable, node->variable);
         openDefinition<Declaration>(identifierForNode(node->variable), newRange);
+        currentDeclaration()->setKind(Declaration::Instance);
     }
 
-    currentDeclaration()->setKind(Declaration::Instance);
     DeclarationBuilderBase::visitParameter(node);
     closeDeclaration();
 }
@@ -331,6 +331,35 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
             }
         }
     }
+}
+void DeclarationBuilder::visitStatement(StatementAst* node)
+{
+    DeclarationBuilderBase::visitStatement(node);
+
+    if (node->foreachExprAsVar) {
+        DUChainWriteLocker lock(DUChain::lock());
+        SimpleRange newRange = editorFindRange(node->foreachExprAsVar, node->foreachExprAsVar);
+        openDefinition<Declaration>(identifierForNode(node->foreachExprAsVar), newRange);
+        currentDeclaration()->setKind(Declaration::Instance);
+        closeDeclaration();
+    }
+
+    if (node->foreachVarAsVar) {
+        DUChainWriteLocker lock(DUChain::lock());
+        SimpleRange newRange = editorFindRange(node->foreachVarAsVar->variable, node->foreachVarAsVar->variable);
+        openDefinition<Declaration>(identifierForNode(node->foreachVarAsVar->variable), newRange);
+        currentDeclaration()->setKind(Declaration::Instance);
+        closeDeclaration();
+    }
+
+    if (node->foreachVariable) {
+        DUChainWriteLocker lock(DUChain::lock());
+        SimpleRange newRange = editorFindRange(node->foreachVariable->variable, node->foreachVariable->variable);
+        openDefinition<Declaration>(identifierForNode(node->foreachVariable->variable), newRange);
+        currentDeclaration()->setKind(Declaration::Instance);
+        closeDeclaration();
+    }
+
 }
 
 }

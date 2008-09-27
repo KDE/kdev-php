@@ -448,11 +448,6 @@ void DefaultVisitor::visitForStatement(ForStatementAst *node)
     visitNode(node->statements);
 }
 
-void DefaultVisitor::visitForeachOptionalArg(ForeachOptionalArgAst *node)
-{
-    visitNode(node->foreachVariable);
-}
-
 void DefaultVisitor::visitForeachStatement(ForeachStatementAst *node)
 {
     visitNode(node->statement);
@@ -756,7 +751,7 @@ void DefaultVisitor::visitStatement(StatementAst *node)
     visitNode(node->foreachVarAsVar);
     visitNode(node->foreachExpr);
     visitNode(node->foreachExprAsVar);
-    visitNode(node->foreachArg);
+    visitNode(node->foreachVariable);
     visitNode(node->foreachStatement);
     visitNode(node->declareItem);
     if (node->catchesSequence)
