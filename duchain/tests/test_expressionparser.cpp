@@ -250,12 +250,9 @@ void TestExpressionParser::cast()
     QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
     QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeArray);
 
-    /*
-    //TODO: stdObj
     res = p.evaluateType(QByteArray("(object)$foo"), DUContextPointer(top));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeArray);
-    */
+    QVERIFY(StructureType::Ptr::dynamicCast(res.type()));
+    QVERIFY(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier() == QualifiedIdentifier("stdClass"));
 
     release(top);
 }

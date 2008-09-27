@@ -53,7 +53,7 @@ void DUChainTestBase::initTestCase()
         if (!DUChain::self()->chainForDocument(internalFunctionFiles[i])) {
             QByteArray content("<?php ");
             if (i==0) {
-                content += "function substr() {} ";
+                content += "function substr() {} class stdClass {} ";
             }
             parseAdditionalFile(internalFunctionFiles[i], content);
         }

@@ -342,8 +342,11 @@ void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
                 type = IntegralType::TypeArray;
                 break;
             case CastObject:
-                //TODO
-                break;
+                {
+                    DUChainReadLocker lock(DUChain::lock());
+                    m_result.setDeclarations(m_currentContext->findDeclarations(QualifiedIdentifier("stdClass")));
+                    break;
+                }
             case CastBool:
                 type = IntegralType::TypeBoolean;
                 break;
