@@ -147,6 +147,17 @@ enum ScalarTypes
     ScalarTypeString
 };
 
+enum CastType
+{
+    CastInt,
+    CastDouble,
+    CastString,
+    CastArray,
+    CastObject,
+    CastBool,
+    CastUnset
+};
+
 struct KDEVPHPPARSER_EXPORT AstNode
 {
     enum AstNodeKind
@@ -1009,6 +1020,7 @@ struct KDEVPHPPARSER_EXPORT UnaryExpressionAst: public AstNode
 {
     enum { KIND = UnaryExpressionKind };
 
+    CastType castType;
     UnaryExpressionAst *unaryExpression;
     AssignmentListAst *assignmentList;
     ExprAst *expression;

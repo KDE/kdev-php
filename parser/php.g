@@ -82,6 +82,16 @@ namespace KDevelop
         ScalarTypeFloat,
         ScalarTypeString
     };
+
+    enum CastType {
+        CastInt,
+        CastDouble,
+        CastString,
+        CastArray,
+        CastObject,
+        CastBool,
+        CastUnset
+    };
 :]
 
 ------------------------------------------------------------
@@ -388,13 +398,13 @@ expression=booleanOrExpression
   | PLUS  unaryExpression=unaryExpression
   | BANG unaryExpression=unaryExpression
   | TILDE unaryExpression=unaryExpression
-  | INT_CAST unaryExpression=unaryExpression
-  | DOUBLE_CAST unaryExpression=unaryExpression
-  | STRING_CAST unaryExpression=unaryExpression
-  | ARRAY_CAST unaryExpression=unaryExpression
-  | OBJECT_CAST unaryExpression=unaryExpression
-  | BOOL_CAST unaryExpression=unaryExpression
-  | UNSET_CAST unaryExpression=unaryExpression
+  | INT_CAST unaryExpression=unaryExpression    [: (*yynode)->castType = CastInt; :]
+  | DOUBLE_CAST unaryExpression=unaryExpression [: (*yynode)->castType = CastDouble; :]
+  | STRING_CAST unaryExpression=unaryExpression [: (*yynode)->castType = CastString; :]
+  | ARRAY_CAST unaryExpression=unaryExpression  [: (*yynode)->castType = CastArray; :]
+  | OBJECT_CAST unaryExpression=unaryExpression [: (*yynode)->castType = CastObject; :]
+  | BOOL_CAST unaryExpression=unaryExpression   [: (*yynode)->castType = CastBool; :]
+  | UNSET_CAST unaryExpression=unaryExpression  [: (*yynode)->castType = CastUnset; :]
   | AT unaryExpression=unaryExpression
   | LIST LPAREN assignmentList=assignmentList RPAREN ASSIGN unaryExpression=unaryExpression
   | EXIT (LPAREN (expression=expr | 0) RPAREN | 0)
@@ -406,7 +416,9 @@ expression=booleanOrExpression
 
   | unaryExpressionNotPlusminus=unaryExpressionNotPlusminus
  )
--> unaryExpression ;;
+-> unaryExpression [
+     member variable castType: CastType;
+];;
 
     (#prefixOperator=postprefixOperator)*
     varExpression=varExpression

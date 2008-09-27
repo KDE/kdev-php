@@ -323,6 +323,42 @@ void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
     }
 }
 
+void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
+{
+    DefaultVisitor::visitUnaryExpression(node);
+    if (node->castType) {
+        uint type = 0;
+        switch (node->castType) {
+            case CastInt:
+                type = IntegralType::TypeInt;
+                break;
+            case CastDouble:
+                type = IntegralType::TypeFloat;
+                break;
+            case CastString:
+                type = IntegralType::TypeString;
+                break;
+            case CastArray:
+                type = IntegralType::TypeArray;
+                break;
+            case CastObject:
+                //TODO
+                break;
+            case CastBool:
+                type = IntegralType::TypeBoolean;
+                break;
+            case CastUnset:
+                //TODO
+                break;
+        }
+        if (type) {
+            IntegralType::Ptr integral(new IntegralType(type));
+            m_result.setType(AbstractType::Ptr::staticCast(integral));
+        }
+    }
+}
+
+
 QualifiedIdentifier ExpressionVisitor::identifierForNode(IdentifierAst* id)
 {
     if( !id )

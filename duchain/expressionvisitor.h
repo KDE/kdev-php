@@ -56,6 +56,7 @@ protected:
     void visitEncapsVar(EncapsVarAst *node);
     void visitVariableProperty(VariablePropertyAst *node);
     void visitStaticMember(StaticMemberAst* node);
+    void visitUnaryExpression(UnaryExpressionAst* node);
 
     KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);

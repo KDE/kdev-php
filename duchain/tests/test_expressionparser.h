@@ -39,6 +39,7 @@ private slots:
   void thisObject();
   void integralTypes();
   void newObject();
+  void cast();
 };
 
 }
