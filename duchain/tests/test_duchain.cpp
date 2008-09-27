@@ -1043,19 +1043,9 @@ void TestDUChain::testForeachLoop()
     TopDUContext* top = parse("<? $a = array(1); foreach($a as $k=>$i) { $i; }", DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QCOMPARE(top->childContexts().first()->localDeclarations().first()->type<FunctionType>()->arguments().count(), 3);
-
-    AbstractType::Ptr arg = top->childContexts().first()->localDeclarations().first()->type<FunctionType>()->arguments().at(0);
-    QVERIFY(IntegralType::Ptr::dynamicCast(arg));
-    QVERIFY(IntegralType::Ptr::dynamicCast(arg)->dataType() == IntegralType::TypeBoolean);
-
-    arg = top->childContexts().first()->localDeclarations().first()->type<FunctionType>()->arguments().at(1);
-    QVERIFY(StructureType::Ptr::dynamicCast(arg));
-    QCOMPARE(StructureType::Ptr::dynamicCast(arg)->declaration(top), top->localDeclarations().at(0));
-
-    arg = top->childContexts().first()->localDeclarations().first()->type<FunctionType>()->arguments().at(2);
-    QVERIFY(IntegralType::Ptr::dynamicCast(arg));
-    QVERIFY(IntegralType::Ptr::dynamicCast(arg)->dataType() == IntegralType::TypeArray);
+    QCOMPARE(top->localDeclarations().count(), 3);
+    QCOMPARE(top->localDeclarations().at(1)->qualifiedIdentifier(), QualifiedIdentifier("k"));
+    QCOMPARE(top->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("i"));
 
     release(top);
 }
