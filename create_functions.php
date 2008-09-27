@@ -32,7 +32,7 @@ if (!isset($_SERVER['argv'][1])) {
 
 $dirs = array("reference", "appendices");
 
-$functions = array();
+$classes = array();
 $constants = array();
 $existingFunctions = array();
 foreach ($dirs as $dir) {
@@ -50,6 +50,7 @@ foreach ($dirs as $dir) {
             $string = preg_replace('#'.preg_quote('<section xml:id="'.$i.'">').'.*?</section>#s', '', $string);
         }
         $xml = new SimpleXMLElement($string);
+        $xml->registerXPathNamespace('db', 'http://docbook.org/ns/docbook');
         if (isset($xml->variablelist)) {
             foreach ($xml->variablelist->varlistentry as $i=>$varlistentry) {
                 if ($c = (string)$varlistentry->term->constant) {
@@ -62,6 +63,37 @@ foreach ($dirs as $dir) {
                             $ctype = $varlistentry->term->link;
                         }
                         $constants[$c] = (string)$ctype;
+                    }
+                }
+            }
+        }
+        if ($list = $xml->xpath('//db:sect2[starts-with(@xml:id, "reserved.classes")]/db:variablelist/db:varlistentry')) {
+            foreach ($list as $l) {
+                if (!isset($classes[(string)$l->term->classname])) {
+                    $classes[(string)$l->term->classname] = array('functions'=>array());
+                }
+                $classes[(string)$l->term->classname]['desc'] = trim(strip_tags($l->listitem->asXML()));
+            }
+        }
+        $cEls = $xml->xpath('//db:classsynopsis/db:classsynopsisinfo');
+        if ($cEls) {
+            foreach ($cEls as $class) {
+                $class->registerXPathNamespace('db', 'http://docbook.org/ns/docbook');
+                $className = (string)$class->ooclass->classname;
+                if (!$className) continue;
+                if (!isset($classes[$className])) {
+                    $classes[$className] = array('functions'=>array());
+                }
+                if ($extends = $class->xpath('//db:ooclass')) {
+                    foreach ($extends as $c) {
+                        if ($c->modifier == 'extends') {
+                            $classes[$className]['extends'] = (string)$c->classname;
+                        }
+                    }
+                }
+                if ($interfaces = $class->xpath('//db:oointerface/db:interfacename')) {
+                    foreach ($interfaces as $if) {
+                        $classes[$className]['implements'][] = (string)$if;
                     }
                 }
             }
@@ -125,7 +157,10 @@ foreach ($dirs as $dir) {
         $desc = trim($desc);
         $desc = preg_replace('#  +#', ' ', $desc);
         $desc = preg_replace('#^ #m', '', $desc);
-        $functions[$class][] = array(
+        if (!isset($classes[$class])) {
+            $classes[$class] = array('functions'=>array());
+        }
+        $classes[$class]['functions'][] = array(
             'name' => $function,
             'params' => $params,
             'type' => (string)$methodsynopsis->type,
@@ -136,8 +171,8 @@ foreach ($dirs as $dir) {
 
 foreach (array_keys($constants) as $c) {
     if ($pos = strpos($c, '::')) {
-        if (!isset($functions[substr($c, 0, $pos)])) {
-            $functions[substr($c, 0, $pos)] = array();
+        if (!isset($classes[substr($c, 0, $pos)])) {
+            $classes[substr($c, 0, $pos)] = array('functions'=>array());
         }
     }
 }
@@ -163,9 +198,23 @@ $fileHeader .= "// WARNING! All changes made in this file will be lost!\n\n";
 $declarationCount = 0;
 $fileNumber = 1;
 $out = $fileHeader;
-foreach ($functions as $class => $i) {
+foreach ($classes as $class => $i) {
     if ($class != 'global') {
-        $out .= "class $class {\n";
+        if (isset($i['desc']) && $i['desc']) {
+            $out .= "/**\n";
+            $out .= " * ";
+            $out .= str_replace("\n", "\n * ", $i['desc']);
+            $out .= "\n";
+            $out .= " **/\n";
+        }
+        $out .= "class $class";
+        if (isset($i['extends'])) {
+            $out .= " extends {$i['extends']}";
+        }
+        if (isset($i['implements'])) {
+            $out .= " implements ".implode(", ", $i['implements']);
+        }
+        $out .= " {\n";
         $declarationCount++;
         foreach ($constants as $c=>$ctype) {
             if ($pos = strpos($c, '::')) {
@@ -181,7 +230,7 @@ foreach ($functions as $class => $i) {
 
     $indent = '';
     if ($class != 'global') $indent = '    ';
-    foreach ($i as $f) {
+    foreach ($i['functions'] as $f) {
         $out .= "$indent/**\n";
         if ($f['desc']) {
             $out .= "$indent * ";

@@ -2,6 +2,262 @@
 // THIS FILE IS GENERATED
 // WARNING! All changes made in this file will be lost!
 
+class SWFText {
+    /**
+     * swftext-&gt;addstring draws the string string
+     * at the current pen (cursor) location. Pen is at the baseline of the text; 
+     * i.e., ascending text is in the -y direction.
+     *
+     * @param string
+     * @return void
+     **/
+    function addString($string) {}
+
+    /**
+     * @param string
+     * @return void
+     **/
+    function addUTF8String($text) {}
+
+    /**
+     * Creates a new SWFText object, fresh for 
+     * manipulating.
+     *
+     * @return void
+     **/
+    function __construct() {}
+
+    /**
+     * @return float
+     **/
+    function getAscent() {}
+
+    /**
+     * @return float
+     **/
+    function getDescent() {}
+
+    /**
+     * @return float
+     **/
+    function getLeading() {}
+
+    /**
+     * @param string
+     * @return float
+     **/
+    function getUTF8Width($string) {}
+
+    /**
+     * Returns the rendered width of the string at the
+     * text object's current font, scale, and spacing settings.
+     *
+     * @param string
+     * @return float
+     **/
+    function getWidth($string) {}
+
+    /**
+     * swftext-&gt;moveto moves the pen (or cursor, if 
+     * that makes more sense) to (x,y)
+     * in text object's coordinate space. If either is zero, though, value 
+     * in that dimension stays the same. Annoying, should be fixed.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function moveTo($x, $y) {}
+
+    /**
+     * Changes the current text color.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setColor($red, $green, $blue, $a) {}
+
+    /**
+     * swftext-&gt;setfont sets the current font to 
+     * font.
+     *
+     * @param string
+     * @return void
+     **/
+    function setFont($font) {}
+
+    /**
+     * swftext-&gt;setheight sets the current font height to 
+     * height. Default is 240.
+     *
+     * @param int
+     * @return void
+     **/
+    function setHeight($height) {}
+
+    /**
+     * swftext-&gt;setspacing sets the current font spacing to 
+     * spacing. Default is 1.0. 
+     * 0 is all of the letters written at the same point. This doesn't really work 
+     * that well because it inflates the advance across the letter, doesn't add 
+     * the same amount of spacing between the letters. I should try and explain 
+     * that better, prolly. Or just fix the damn thing to do constant spacing. 
+     * This was really just a way to figure out how letter advances work, 
+     * anyway.. So nyah.
+     *
+     * @param float
+     * @return void
+     **/
+    function setSpacing($spacing) {}
+
+}
+class SWFTextField {
+    /**
+     * @param string
+     * @return void
+     **/
+    function addChars($chars) {}
+
+    /**
+     * swftextfield-&gt;setname concatenates the string
+     * string to the text field.
+     *
+     * @param string
+     * @return void
+     **/
+    function addString($string) {}
+
+    /**
+     * swftextfield-&gt;align sets the text field alignment
+     * to alignement. Valid values for 
+     * alignement are : SWFTEXTFIELD_ALIGN_LEFT, 
+     * SWFTEXTFIELD_ALIGN_RIGHT, SWFTEXTFIELD_ALIGN_CENTER and 
+     * SWFTEXTFIELD_ALIGN_JUSTIFY.
+     *
+     * @param int
+     * @return void
+     **/
+    function align($alignement) {}
+
+    /**
+     * swftextfield creates a new text field object. 
+     * Text Fields are less flexible than swftext objects- 
+     * they can't be rotated, scaled non-proportionally, or skewed, but they can
+     * be used as form entries, and they can use browser-defined fonts.
+     *
+     * @param int
+     * @return SWFTextField
+     **/
+    function __construct($flags) {}
+
+    /**
+     * swftextfield-&gt;setbounds sets the text field width 
+     * to width and height to height.
+     * If you don't set the bounds yourself, Ming makes a poor guess at what 
+     * the bounds are.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setBounds($width, $height) {}
+
+    /**
+     * swftextfield-&gt;setcolor sets the color of the text field. 
+     * Default is fully opaque black. Color is represented using RGB system.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setColor($red, $green, $blue, $a) {}
+
+    /**
+     * swftextfield-&gt;setfont sets the text field font to 
+     * the [browser-defined?] font font.
+     *
+     * @param string
+     * @return void
+     **/
+    function setFont($font) {}
+
+    /**
+     * swftextfield-&gt;setheight sets the font height of this text field
+     * font to the given height height. Default is 240.
+     *
+     * @param int
+     * @return void
+     **/
+    function setHeight($height) {}
+
+    /**
+     * swftextfield-&gt;setindentation sets the indentation of 
+     * the first line in the text field, to width.
+     *
+     * @param int
+     * @return void
+     **/
+    function setIndentation($width) {}
+
+    /**
+     * swftextfield-&gt;setleftmargin sets the left margin width
+     * of the text field to width. Default is 0.
+     *
+     * @param int
+     * @return void
+     **/
+    function setLeftMargin($width) {}
+
+    /**
+     * swftextfield-&gt;setlinespacing sets the line spacing
+     * of the text field to the height of height. Default is 40.
+     *
+     * @param int
+     * @return void
+     **/
+    function setLineSpacing($height) {}
+
+    /**
+     * swftextfield-&gt;setmargins set both margins at once, 
+     * for the man on the go.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setMargins($left, $right) {}
+
+    /**
+     * swftextfield-&gt;setname sets the variable name of this
+     * text field to name, for form posting and action 
+     * scripting purposes.
+     *
+     * @param string
+     * @return void
+     **/
+    function setName($name) {}
+
+    /**
+     * @param float
+     * @return void
+     **/
+    function setPadding($padding) {}
+
+    /**
+     * swftextfield-&gt;setrightmargin sets the right margin width
+     * of the text field to width. Default is 0.
+     *
+     * @param int
+     * @return void
+     **/
+    function setRightMargin($width) {}
+
+}
 class SWFVideoStream {
     /**
      * @param string
@@ -25,6 +281,14 @@ class SWFVideoStream {
      **/
     function setDimension($x, $y) {}
 
+}
+class MySQLi {
+}
+class MySQLi_Driver {
+}
+class MySQLi_Result {
+}
+class MySQLi_STMT {
 }
 class mysqli {
     /**
@@ -744,7 +1008,9 @@ class PDO {
     function sqliteCreateFunction($function_name, $callback, $num_args) {}
 
 }
-class PDOStatement {
+class PDOException extends RuntimeException {
+}
+class PDOStatement implements Traversable {
     /**
      * PDOStatement::bindColumn arranges to have a
      * particular variable bound to a given column in the result-set from a
@@ -931,7 +1197,7 @@ class PDOStatement {
     function setFetchMode($mode) {}
 
 }
-class Phar {
+class Phar extends DirectoryIterator implements Countable, ArrayAccess {
     /**
      * With this method, an empty directory is created with path dirname.
      * This method is similar to ZipArchive::addEmptyDir.
@@ -1514,7 +1780,7 @@ class Phar {
     function webPhar($alias, $index, $f404, $mimetypes, $rewrites) {}
 
 }
-class PharData {
+class PharData extends Phar {
     /**
      * With this method, an empty directory is created with path dirname.
      * This method is similar to ZipArchive::addEmptyDir.
@@ -1726,7 +1992,9 @@ class PharData {
     function setStub($stub) {}
 
 }
-class PharFileInfo {
+class PharException extends Exception {
+}
+class PharFileInfo extends SplFileInfo {
     /**
      * PharFileInfo::chmod allows setting of the executable
      * file permissions bit, as well as read-only bits. Writeable bits are
@@ -3556,7 +3824,7 @@ class SphinxClient {
     function updateAttributes($index, $attributes, $values) {}
 
 }
-class ArrayIterator {
+class ArrayIterator implements Iterator, Traversable, ArrayAccess, SeekableIterator, Countable {
     /**
      * Get the current array entry.
      *
@@ -3599,7 +3867,7 @@ class ArrayIterator {
     function valid() {}
 
 }
-class ArrayObject {
+class ArrayObject implements IteratorAggregate, Traversable, ArrayAccess, Countable {
     /**
      * @param mixed
      * @return void
@@ -3648,7 +3916,7 @@ class ArrayObject {
     function offsetUnset($index) {}
 
 }
-class CachingIterator {
+class CachingIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator, ArrayAccess, Countable {
     const CALL_TOSTRING = 0;
     const CATCH_GET_CHILD = 0;
     /**
@@ -3685,7 +3953,7 @@ class CachingIterator {
     function valid() {}
 
 }
-class DirectoryIterator {
+class DirectoryIterator extends SplFileInfo implements Iterator, Traversable {
     /**
      * @return DirectoryIterator
      **/
@@ -3854,7 +4122,7 @@ class DirectoryIterator {
     function valid() {}
 
 }
-class FilterIterator {
+class FilterIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
     /**
      * Get the current element value.
      *
@@ -3898,7 +4166,7 @@ class FilterIterator {
     function valid() {}
 
 }
-class LimitIterator {
+class LimitIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
     /**
      * @return int
      **/
@@ -3932,7 +4200,7 @@ class LimitIterator {
     function valid() {}
 
 }
-class ParentIterator {
+class ParentIterator extends RecursiveFilterIterator implements RecursiveIterator, OuterIterator, Traversable, Iterator {
     /**
      * Get the the inner iterator's children contained in a ParentIterator.
      *
@@ -3962,7 +4230,7 @@ class ParentIterator {
     function rewind() {}
 
 }
-class RecursiveCachingIterator {
+class RecursiveCachingIterator extends CachingIterator implements Countable, ArrayAccess, Iterator, Traversable, OuterIterator, RecursiveIterator {
     /**
      * @return RecursiveCachingIterator
      **/
@@ -3974,7 +4242,7 @@ class RecursiveCachingIterator {
     function hasChildren() {}
 
 }
-class RecursiveDirectoryIterator {
+class RecursiveDirectoryIterator extends DirectoryIterator implements Traversable, Iterator, RecursiveIterator {
     /**
      * @return object
      **/
@@ -4002,7 +4270,7 @@ class RecursiveDirectoryIterator {
     function rewind() {}
 
 }
-class RecursiveIteratorIterator {
+class RecursiveIteratorIterator implements OuterIterator, Traversable, Iterator {
     const LEAVES_ONLY = 0;
     const SELF_FIRST = 0;
     const CHILD_FIRST = 0;
@@ -4042,7 +4310,7 @@ class RecursiveIteratorIterator {
     function valid() {}
 
 }
-class SimpleXMLIterator {
+class SimpleXMLIterator extends SimpleXMLElement implements RecursiveIterator, Traversable, Iterator, Countable {
     /**
      * @return mixed
      **/
@@ -4079,7 +4347,7 @@ class SimpleXMLIterator {
     function valid() {}
 
 }
-class SplDoublyLinkedList {
+class SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
     /**
      * @return mixed
      **/
@@ -4202,7 +4470,7 @@ class SplDoublyLinkedList {
     function valid() {}
 
 }
-class SplHeap {
+class SplHeap implements Iterator, Countable {
     /**
      * Compare value1 with value2.
      *
@@ -4283,7 +4551,7 @@ class SplHeap {
     function valid() {}
 
 }
-class SplMaxHeap {
+class SplMaxHeap extends SplHeap implements Iterator, Countable {
     /**
      * Compare value1 with value2.
      *
@@ -4294,7 +4562,7 @@ class SplMaxHeap {
     function compare($value1, $value2) {}
 
 }
-class SplMinHeap {
+class SplMinHeap extends SplHeap implements Iterator, Countable {
     /**
      * Compare value1 with value2.
      *
@@ -4305,7 +4573,7 @@ class SplMinHeap {
     function compare($value1, $value2) {}
 
 }
-class SplPriorityQueue {
+class SplPriorityQueue implements Iterator, Countable {
     /**
      * Compare priority1 with priority2.
      *
@@ -4393,7 +4661,7 @@ class SplPriorityQueue {
     function valid() {}
 
 }
-class SplQueue {
+class SplQueue extends SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
     /**
      * Dequeues value from the top of of the queue.
      *
@@ -4416,13 +4684,21 @@ class SplQueue {
     function setIteratorMode($mode) {}
 
 }
-class SplStack {
+class SplStack extends SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
     /**
      * @param int
      * @return void
      **/
     function setIteratorMode($mode) {}
 
+}
+class SplBool {
+}
+class SplEnum {
+}
+class SplFloat {
+}
+class SplInt {
 }
 class SQLite3 {
     /**
@@ -5323,6 +5599,14 @@ class ZipArchive {
      **/
     function unchangeName($name) {}
 
+}
+class stdClass {
+}
+class __PHP_Incomplete_Class {
+}
+class exception {
+}
+class php_user_filter {
 }
 class imagick {
     const COLOR_BLACK = 0;

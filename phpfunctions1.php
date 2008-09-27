@@ -37289,6 +37289,9 @@ function readgzfile($filename, $use_include_path) {}
  **/
 function zlib_get_coding_type() {}
 
+/**
+ * The class from which dir is instantiated.
+ **/
 class Directory {
     /**
      * A pseudo-object oriented mechanism for reading a directory. The
@@ -37324,6 +37327,42 @@ class DomAttr {
      **/
     function isId() {}
 
+}
+class DOMAttr extends DOMNode {
+}
+class DOMCharacterData extends DOMNode {
+}
+class DOMComment extends DOMCharacterData {
+}
+class DOMDocument extends DOMNode {
+}
+class DOMDocumentFragment extends DOMNode {
+}
+class DOMDocumentType extends DOMNode {
+}
+class DOMElement extends DOMNode {
+}
+class DOMEntity extends DOMNode {
+}
+class DOMEntityReference extends DOMNode {
+}
+class DOMException extends Exception {
+}
+class DOMImplementation {
+}
+class DOMNamedNodeMap {
+}
+class DOMNode {
+}
+class DOMNodeList {
+}
+class DOMNotation extends DOMNode {
+}
+class DOMProcessingInstruction extends DOMNode {
+}
+class DOMText extends DOMCharacterData {
+}
+class DOMXPath {
 }
 class DomCharacterData {
     /**
@@ -39401,6 +39440,8 @@ class HaruEncoder {
     function getWritingMode() {}
 
 }
+class HaruException extends Exception {
+}
 class HaruFont {
     /**
      * Get the vertical ascent of the font.
@@ -40293,7 +40334,7 @@ class HaruPage {
     function textRect($left, $top, $right, $bottom, $text, $align) {}
 
 }
-class HttpMessage {
+class HttpMessage implements Iterator, Countable, Serializable {
     /**
      * Add headers. If append is true, headers with the same name will be separated, else overwritten.
      *
@@ -40616,7 +40657,7 @@ class HttpInflateStream {
     function update($data) {}
 
 }
-class HttpQueryString {
+class HttpQueryString implements ArrayAccess, Serializable {
     /**
      * Creates a new HttpQueryString object instance.
      *
@@ -41077,7 +41118,7 @@ class HttpRequest {
     function setUrl($url) {}
 
 }
-class HttpRequestPool {
+class HttpRequestPool implements Iterator, Countable {
     /**
      * Attach an HttpRequest object to this HttpRequestPool.
      *
@@ -41900,7 +41941,7 @@ class hw_api_reason {
     function type() {}
 
 }
-class Imagick {
+class Imagick implements Iterator, Traversable {
     /**
      * Adds an adaptive blur filter to image. The intensity of an adaptive blur
      * depends is dramatically decreased at edge of the image, whereas a standard
@@ -46375,6 +46416,8 @@ class NumberFormatter {
     function setTextAttribute($attr, $value) {}
 
 }
+class libXMLError {
+}
 class Memcache {
     /**
      * Memcache::add stores variable
@@ -47556,261 +47599,5 @@ class SWFSprite {
      * @return void
      **/
     function stopSound($sount) {}
-
-}
-class SWFText {
-    /**
-     * swftext-&gt;addstring draws the string string
-     * at the current pen (cursor) location. Pen is at the baseline of the text; 
-     * i.e., ascending text is in the -y direction.
-     *
-     * @param string
-     * @return void
-     **/
-    function addString($string) {}
-
-    /**
-     * @param string
-     * @return void
-     **/
-    function addUTF8String($text) {}
-
-    /**
-     * Creates a new SWFText object, fresh for 
-     * manipulating.
-     *
-     * @return void
-     **/
-    function __construct() {}
-
-    /**
-     * @return float
-     **/
-    function getAscent() {}
-
-    /**
-     * @return float
-     **/
-    function getDescent() {}
-
-    /**
-     * @return float
-     **/
-    function getLeading() {}
-
-    /**
-     * @param string
-     * @return float
-     **/
-    function getUTF8Width($string) {}
-
-    /**
-     * Returns the rendered width of the string at the
-     * text object's current font, scale, and spacing settings.
-     *
-     * @param string
-     * @return float
-     **/
-    function getWidth($string) {}
-
-    /**
-     * swftext-&gt;moveto moves the pen (or cursor, if 
-     * that makes more sense) to (x,y)
-     * in text object's coordinate space. If either is zero, though, value 
-     * in that dimension stays the same. Annoying, should be fixed.
-     *
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function moveTo($x, $y) {}
-
-    /**
-     * Changes the current text color.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function setColor($red, $green, $blue, $a) {}
-
-    /**
-     * swftext-&gt;setfont sets the current font to 
-     * font.
-     *
-     * @param string
-     * @return void
-     **/
-    function setFont($font) {}
-
-    /**
-     * swftext-&gt;setheight sets the current font height to 
-     * height. Default is 240.
-     *
-     * @param int
-     * @return void
-     **/
-    function setHeight($height) {}
-
-    /**
-     * swftext-&gt;setspacing sets the current font spacing to 
-     * spacing. Default is 1.0. 
-     * 0 is all of the letters written at the same point. This doesn't really work 
-     * that well because it inflates the advance across the letter, doesn't add 
-     * the same amount of spacing between the letters. I should try and explain 
-     * that better, prolly. Or just fix the damn thing to do constant spacing. 
-     * This was really just a way to figure out how letter advances work, 
-     * anyway.. So nyah.
-     *
-     * @param float
-     * @return void
-     **/
-    function setSpacing($spacing) {}
-
-}
-class SWFTextField {
-    /**
-     * @param string
-     * @return void
-     **/
-    function addChars($chars) {}
-
-    /**
-     * swftextfield-&gt;setname concatenates the string
-     * string to the text field.
-     *
-     * @param string
-     * @return void
-     **/
-    function addString($string) {}
-
-    /**
-     * swftextfield-&gt;align sets the text field alignment
-     * to alignement. Valid values for 
-     * alignement are : SWFTEXTFIELD_ALIGN_LEFT, 
-     * SWFTEXTFIELD_ALIGN_RIGHT, SWFTEXTFIELD_ALIGN_CENTER and 
-     * SWFTEXTFIELD_ALIGN_JUSTIFY.
-     *
-     * @param int
-     * @return void
-     **/
-    function align($alignement) {}
-
-    /**
-     * swftextfield creates a new text field object. 
-     * Text Fields are less flexible than swftext objects- 
-     * they can't be rotated, scaled non-proportionally, or skewed, but they can
-     * be used as form entries, and they can use browser-defined fonts.
-     *
-     * @param int
-     * @return SWFTextField
-     **/
-    function __construct($flags) {}
-
-    /**
-     * swftextfield-&gt;setbounds sets the text field width 
-     * to width and height to height.
-     * If you don't set the bounds yourself, Ming makes a poor guess at what 
-     * the bounds are.
-     *
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function setBounds($width, $height) {}
-
-    /**
-     * swftextfield-&gt;setcolor sets the color of the text field. 
-     * Default is fully opaque black. Color is represented using RGB system.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function setColor($red, $green, $blue, $a) {}
-
-    /**
-     * swftextfield-&gt;setfont sets the text field font to 
-     * the [browser-defined?] font font.
-     *
-     * @param string
-     * @return void
-     **/
-    function setFont($font) {}
-
-    /**
-     * swftextfield-&gt;setheight sets the font height of this text field
-     * font to the given height height. Default is 240.
-     *
-     * @param int
-     * @return void
-     **/
-    function setHeight($height) {}
-
-    /**
-     * swftextfield-&gt;setindentation sets the indentation of 
-     * the first line in the text field, to width.
-     *
-     * @param int
-     * @return void
-     **/
-    function setIndentation($width) {}
-
-    /**
-     * swftextfield-&gt;setleftmargin sets the left margin width
-     * of the text field to width. Default is 0.
-     *
-     * @param int
-     * @return void
-     **/
-    function setLeftMargin($width) {}
-
-    /**
-     * swftextfield-&gt;setlinespacing sets the line spacing
-     * of the text field to the height of height. Default is 40.
-     *
-     * @param int
-     * @return void
-     **/
-    function setLineSpacing($height) {}
-
-    /**
-     * swftextfield-&gt;setmargins set both margins at once, 
-     * for the man on the go.
-     *
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function setMargins($left, $right) {}
-
-    /**
-     * swftextfield-&gt;setname sets the variable name of this
-     * text field to name, for form posting and action 
-     * scripting purposes.
-     *
-     * @param string
-     * @return void
-     **/
-    function setName($name) {}
-
-    /**
-     * @param float
-     * @return void
-     **/
-    function setPadding($padding) {}
-
-    /**
-     * swftextfield-&gt;setrightmargin sets the right margin width
-     * of the text field to width. Default is 0.
-     *
-     * @param int
-     * @return void
-     **/
-    function setRightMargin($width) {}
 
 }
