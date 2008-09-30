@@ -112,8 +112,13 @@ const bool indentByDepth = false;
 QString nameForDeclaration(Declaration* dec) {
   if (dec->identifier().toString().isEmpty())
     return "<unknown>";
-  else
-    return dec->identifier().toString();
+  else {
+    QString ret = dec->identifier().toString();
+    if (dec->kind() == Declaration::Instance && dec->context()->parentContext() && dec->context()->parentContext()->type() == DUContext::Class) {
+      ret = "$" + ret;
+    }
+    return ret;
+  }
 }
 
 QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const {
