@@ -49,7 +49,11 @@ ReferencedTopDUContext ContextBuilder::build( const IndexedString& url, AstNode*
         DUChainWriteLocker lock(DUChain::lock());
         updateContext->clearImportedParentContexts();
     }
-    return ContextBuilderBase::build(url, node, updateContext);
+    ReferencedTopDUContext top = ContextBuilderBase::build(url, node, updateContext);
+    if (!updateContext) {
+        top->setLanguage(IndexedString("Php"));
+    }
+    return top;
 }
 
 void ContextBuilder::setEditor(EditorIntegrator* editor)

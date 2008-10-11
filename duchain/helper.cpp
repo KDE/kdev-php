@@ -70,19 +70,21 @@ Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifie
             if (declarationType == ClassDeclarationType && declarations[i].declaration()->internalContext()
                 && declarations[i].declaration()->internalContext()->type() == DUContext::Class) {
                 //TODO check if context is in any loaded project
-                currentContext->topContext()->addImportedParentContext(declarations[i].declaration()->context()->topContext());
-                return declarations[i].declaration();
             } else if(declarationType == FunctionDeclarationType
                 && dynamic_cast<FunctionDeclaration*>(declarations[i].declaration())) {
-                currentContext->topContext()->addImportedParentContext(declarations[i].declaration()->context()->topContext());
-                return declarations[i].declaration();
             } else if(declarationType == ConstantDeclarationType
                 && declarations[i].declaration()->kind() == Declaration::Instance) {
-                currentContext->topContext()->addImportedParentContext(declarations[i].declaration()->context()->topContext());
-                return declarations[i].declaration();
             } else {
                 kDebug() << "skipping declaration, invalid contextType";
+                continue;
             }
+            TopDUContext* top = declarations[i].declaration()->context()->topContext();
+            if (top->language() != IndexedString("Php")) {
+                kDebug() << "skipping declaration, invalid langauge" << top->language().str();
+                continue;
+            }
+            currentContext->topContext()->addImportedParentContext(top);
+            return declarations[i].declaration();
         }
     }
     return 0;

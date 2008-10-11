@@ -382,6 +382,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
                 if (foundItems[i].kind == CodeModelItem::Class) {
                     foreach(TopDUContext* top, DUChain::self()->chainsForDocument(url)) {
                         if (m_duContext->imports(top)) continue;
+                        if (top->language() != IndexedString("Php")) continue;
                         QList<Declaration*> decls = top->findDeclarations(foundItems[i].id);
                         foreach (Declaration* decl, decls) {
                             if (abort) return items;
