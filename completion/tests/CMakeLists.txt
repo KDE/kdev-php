@@ -3,7 +3,7 @@ set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${KDEVPLATFORM_INCLUDE_DIR}
+    ${KDevPlatform_INCLUDE_DIR}
 )
 
 set(completiontest_SRCS test_completion.cpp)

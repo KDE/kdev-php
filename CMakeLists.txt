@@ -10,7 +10,7 @@ find_package(KDE4 REQUIRED)
 
 find_package(KDevPlatform REQUIRED)
 include_directories(
-    ${KDEVPLATFORM_INCLUDE_DIR}
+    ${KDevPlatform_INCLUDE_DIR}
     ${KDE4_INCLUDES}
     ${KDE4_INCLUDE_DIR}/threadweaver
     ${CMAKE_CURRENT_BINARY_DIR}
@@ -51,8 +51,8 @@ kde4_add_plugin(kdevphplanguagesupport ${kdevphplanguagesupport_PART_SRCS})
 
 target_link_libraries(kdevphplanguagesupport
     ${KDE4_KDEUI_LIBS}
-    ${KDEVPLATFORM_INTERFACES_LIBRARY}
-    ${KDEVPLATFORM_LANGUAGE_LIBRARY}
+    ${KDevPlatform_INTERFACES_LIBRARY}
+    ${KDevPlatform_LANGUAGE_LIBRARY}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${KDE4_KTEXTEDITOR_LIBS}
     kdev4phpduchain
