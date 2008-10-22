@@ -49,6 +49,9 @@ public:
 protected:
     EditorIntegrator* editor() const;
 
+    virtual KDevelop::DUContext* newContext(const KDevelop::SimpleRange& range);
+    virtual KDevelop::TopDUContext* newTopContext(const KDevelop::SimpleRange& range, KDevelop::ParsingEnvironmentFile* file = 0);
+
     virtual void startVisiting( AstNode* node );
     virtual void setContextOnNode( AstNode* node, KDevelop::DUContext* ctx );
     virtual KDevelop::DUContext* contextFromNode( AstNode* node );

@@ -37,6 +37,7 @@
 #include <language/duchain/types/structuretype.h>
 
 #include "completion/helpers.h"
+#include "../../duchain/navigation/navigationwidget.h"
 
 using namespace KDevelop;
 
@@ -175,13 +176,10 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
       }
     }
     return QVariant();
-#if 0
     case CodeCompletionModel::ItemSelected:
        return QVariant(NavigationWidget::shortDescription(dec));
-#endif
     case CodeCompletionModel::IsExpandable:
-      return QVariant(false /* true*/);
-#if 0
+      return QVariant(true);
     case CodeCompletionModel::ExpandingWidget: {
       NavigationWidget* nav = new NavigationWidget(DeclarationPointer(dec), model->currentTopContext());
       model->addNavigationWidget(this, nav);
@@ -190,7 +188,6 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
       v.setValue<QWidget*>((QWidget*)nav);
       return v;
     }
-#endif
     case Qt::DisplayRole:
 
       switch (index.column()) {

@@ -15,7 +15,10 @@ set(duchain_SRCS
     expressionparser.cpp
     expressionevaluationresult.cpp
     helper.cpp
+    phpducontext.cpp
     tests/duchaintestbase.cpp
+    navigation/navigationwidget.cpp
+    navigation/declarationnavigationcontext.cpp
     )
 
 

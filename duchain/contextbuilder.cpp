@@ -28,6 +28,7 @@
 #include "parsesession.h"
 #include "editorintegrator.h"
 #include "helper.h"
+#include "phpducontext.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -92,6 +93,16 @@ void ContextBuilder::startVisiting(AstNode* node)
         }
     }
     visitNode(node);
+}
+
+DUContext* ContextBuilder::newContext(const SimpleRange& range)
+{
+    return new PhpDUContext<DUContext>(range, currentContext());
+}
+
+TopDUContext* ContextBuilder::newTopContext(const SimpleRange& range, ParsingEnvironmentFile* file)
+{
+    return new PhpDUContext<TopDUContext>(editor()->currentUrl(), range, file);
 }
 
 void ContextBuilder::setContextOnNode(AstNode* node, KDevelop::DUContext* ctx)
