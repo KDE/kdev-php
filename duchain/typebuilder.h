@@ -53,10 +53,10 @@ protected:
   virtual void visitStatement(StatementAst* node);
   virtual void visitExpr(ExprAst *node);
 
-  KDevelop::FunctionType::Ptr m_currentFunctionType;
-  QList<KDevelop::AbstractType::Ptr> m_currentFunctionParams;
-
 private:
+    KDevelop::FunctionType::Ptr m_currentFunctionType;
+    QList<KDevelop::AbstractType::Ptr> m_currentFunctionParams;
+
     KDevelop::FunctionType::Ptr openFunctionType(AstNode* node);
 
     KDevelop::AbstractType::Ptr parseType(QString type, AstNode* node);

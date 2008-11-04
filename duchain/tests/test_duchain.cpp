@@ -1063,6 +1063,19 @@ void TestDUChain::testPhp4StyleConstructor()
     release(top);
 }
 
+void TestDUChain::testFunctionInFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function aaa() { function bbb() { } }");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->localDeclarations().at(0)->qualifiedIdentifier(), QualifiedIdentifier("aaa"));
+
+    release(top);
+}
+
 }
 
 #include "test_duchain.moc"

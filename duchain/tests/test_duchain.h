@@ -73,6 +73,7 @@ private slots:
   void testMemberFunctionDocBlockParams();
   void testForeachLoop();
   void testPhp4StyleConstructor();
+  void testFunctionInFunction();
 };
 
 }

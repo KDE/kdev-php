@@ -100,7 +100,6 @@ FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
 
     openType(functionType);
 
-    m_currentFunctionType = functionType;
     functionType->setReturnType(parseDocComment(node, "return"));
 
     return functionType;
@@ -148,10 +147,9 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
         m_currentFunctionParams = parseDocCommentParams(node);
         openFunctionType(node);
         TypeBuilderBase::visitClassStatement(node);
-        if (m_currentFunctionType && !m_currentFunctionType->returnType()) {
-            m_currentFunctionType->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
+        if (currentType<FunctionType>() && !currentType<FunctionType>()->returnType()) {
+            currentType<FunctionType>()->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
         }
-        m_currentFunctionType = 0;
         closeType();
     } else {
         //member-variable
@@ -172,15 +170,15 @@ void TypeBuilder::visitParameter(ParameterAst *node)
     } else if (node->arrayType != -1) {
         openAbstractType(AbstractType::Ptr(new IntegralType(IntegralType::TypeArray)));
     } else {
-        if (m_currentFunctionParams.count() > m_currentFunctionType->arguments().count()) {
-            openAbstractType(m_currentFunctionParams.at(m_currentFunctionType->arguments().count()));
+        if (m_currentFunctionParams.count() > currentType<FunctionType>()->arguments().count()) {
+            openAbstractType(m_currentFunctionParams.at(currentType<FunctionType>()->arguments().count()));
         } else {
             openAbstractType(AbstractType::Ptr());
         }
     }
     TypeBuilderBase::visitParameter(node);
     closeType();
-    m_currentFunctionType->addArgument(lastType());
+    currentType<FunctionType>()->addArgument(lastType());
 }
 
 void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
@@ -188,10 +186,9 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
     m_currentFunctionParams = parseDocCommentParams(node);
     openFunctionType(node);
     TypeBuilderBase::visitFunctionDeclarationStatement(node);
-    if (!m_currentFunctionType->returnType()) {
-        m_currentFunctionType->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
+    if (!currentType<FunctionType>()->returnType()) {
+        currentType<FunctionType>()->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
     }
-    m_currentFunctionType = 0;
     closeType();
 }
 
@@ -210,11 +207,11 @@ void TypeBuilder::visitExpr(ExprAst *node)
 void TypeBuilder::visitStatement(StatementAst* node)
 {
     TypeBuilderBase::visitStatement(node);
-    if (node->returnExpr && lastType() && m_currentFunctionType
-            && (!m_currentFunctionType->returnType()
-                || IntegralType::Ptr::dynamicCast(m_currentFunctionType->returnType())))
+    if (node->returnExpr && lastType() && currentType<FunctionType>()
+            && (!currentType<FunctionType>()->returnType()
+                || IntegralType::Ptr::dynamicCast(currentType<FunctionType>()->returnType())))
     {
-        m_currentFunctionType->setReturnType(lastType());
+        currentType<FunctionType>()->setReturnType(lastType());
     }
 }
 
