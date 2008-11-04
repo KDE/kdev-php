@@ -46,10 +46,9 @@ namespace Php {
     QString formatComment(AstNode* node, EditorIntegrator* editor);
 
 
-    static const uint internalFunctionFilesCount = 2;
+    static const uint internalFunctionFilesCount = 1;
     static const KDevelop::IndexedString internalFunctionFiles[internalFunctionFilesCount] = {
-        KDevelop::IndexedString("internalfunctions1"),
-        KDevelop::IndexedString("internalfunctions2")
+        KDevelop::IndexedString("internalfunctions")
     };
     inline bool isInternalFunctionFile(KDevelop::IndexedString url) {
         for (uint i=0; i < internalFunctionFilesCount; i++) {
