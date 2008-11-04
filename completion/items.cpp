@@ -42,7 +42,20 @@
 using namespace KDevelop;
 
 namespace Php {
-  
+
+//The name to be viewed in the name column
+QString nameForDeclaration(Declaration* dec) {
+  if (dec->identifier().toString().isEmpty())
+    return "<unknown>";
+  else {
+    QString ret = dec->identifier().toString();
+    if (dec->kind() == Declaration::Instance && dec->context()->parentContext() && dec->context()->parentContext()->type() == DUContext::Class) {
+      ret = "$" + ret;
+    }
+    return ret;
+  }
+}
+
 void NormalDeclarationCompletionItem::execute(KTextEditor::Document* document, const KTextEditor::Range& word) {
   bool spaceBeforeParen = false; ///@todo Take this from some astyle config or something
   bool spaceBetweenParens = true;
@@ -56,7 +69,7 @@ void NormalDeclarationCompletionItem::execute(KTextEditor::Document* document, c
   {
     KDevelop::DUChainReadLocker lock(KDevelop::DUChain::lock());
     if(m_declaration) {
-      newText = m_declaration->identifier().toString();
+      newText = nameForDeclaration(m_declaration.data());
     } else {
       kDebug() << "Declaration disappeared";
       return;
@@ -108,19 +121,6 @@ void NormalDeclarationCompletionItem::execute(KTextEditor::Document* document, c
 }
 
 const bool indentByDepth = false;
-
-//The name to be viewed in the name column
-QString nameForDeclaration(Declaration* dec) {
-  if (dec->identifier().toString().isEmpty())
-    return "<unknown>";
-  else {
-    QString ret = dec->identifier().toString();
-    if (dec->kind() == Declaration::Instance && dec->context()->parentContext() && dec->context()->parentContext()->type() == DUContext::Class) {
-      ret = "$" + ret;
-    }
-    return ret;
-  }
-}
 
 QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const {
   DUChainReadLocker lock(DUChain::lock(), 500);
