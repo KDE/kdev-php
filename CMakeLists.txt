@@ -63,4 +63,4 @@ target_link_libraries(kdevphplanguagesupport
 install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR})
 
 install(FILES kdevphpsupport.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-install(FILES phpfunctions1.php phpfunctions2.php DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport)
+install(FILES phpfunctions.php DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport)

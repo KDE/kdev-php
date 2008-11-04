@@ -196,7 +196,6 @@ $fileHeader .= "// THIS FILE IS GENERATED\n";
 $fileHeader .= "// WARNING! All changes made in this file will be lost!\n\n";
 
 $declarationCount = 0;
-$fileNumber = 1;
 $out = $fileHeader;
 foreach ($classes as $class => $i) {
     if ($class != 'global') {
@@ -254,19 +253,12 @@ foreach ($classes as $class => $i) {
     }
 
     if ($class != 'global') $out .= "}\n";
-    if ($declarationCount > 5000) {
-        file_put_contents("phpfunctions$fileNumber.php", $out);
-        echo "created phpfunctions$fileNumber.php...\n";
-        $declarationCount = 0;
-        $fileNumber++;
-        $out = $fileHeader;
-    }
 }
 foreach ($constants as $c=>$ctype) {
     $out .= "define('$c', ".constTypeValue($ctype).");\n";
     $declarationCount++;
 }
-file_put_contents("phpfunctions$fileNumber.php", $out);
-echo "created phpfunctions$fileNumber.php...\n";
+file_put_contents("phpfunctions.php", $out);
+echo "created phpfunctions.php...\n";
 
-echo "wrote ".($declarationCount+(($fileNumber-1) * 5000))." declarations in $fileNumber files\n";
+echo "wrote ".$declarationCount." declarations\n";
