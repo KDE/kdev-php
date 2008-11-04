@@ -272,14 +272,14 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
 
         if (m_result.type() && StructureType::Ptr::dynamicCast(m_result.type())) {
             DUChainReadLocker lock(DUChain::lock());
-            QualifiedIdentifier id = StructureType::Ptr::staticCast(m_result.type())->qualifiedIdentifier();
-            QList<Declaration*> declarations = m_currentContext->findDeclarations(id);
-            if (!declarations.isEmpty()) {
-                DUContext* context = declarations.first()->internalContext();
-                if (!context && m_currentContext->parentContext()->localScopeIdentifier() == declarations.first()->qualifiedIdentifier()) {
+            Declaration* declaration = StructureType::Ptr::staticCast(m_result.type())->declaration(m_currentContext->topContext());
+            if (declaration) {
+                DUContext* context = declaration->internalContext();
+                if (!context && m_currentContext->parentContext()->localScopeIdentifier() == declaration->qualifiedIdentifier()) {
                     //class is currentClass (internalContext is not yet set)
                     context = m_currentContext->parentContext();
                 }
+
                 QualifiedIdentifier propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
                 m_result.setDeclarations(context->findDeclarations(propertyId));
                 lock.unlock();

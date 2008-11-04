@@ -1049,6 +1049,20 @@ void TestDUChain::testForeachLoop()
 
     release(top);
 }
+
+void TestDUChain::testPhp4StyleConstructor()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class Aa { function Aa() { $this->bb(); } } ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->childContexts().first()->localDeclarations().at(0)->qualifiedIdentifier(), QualifiedIdentifier("Aa::Aa"));
+
+    release(top);
+}
+
 }
 
 #include "test_duchain.moc"
