@@ -107,9 +107,8 @@ void ParseJob::run()
     if ( m_readFromDisk )
     {
         QString fileName = document().str();
-        if (fileName.startsWith("internalfunctions")) {
-            QString fileNumber = fileName.mid(17);
-            fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions"+fileNumber+".php");
+        if (fileName == "internalfunctions") {
+            fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
         }
         QFile file(fileName);
         //TODO: Read the first lines to determine encoding using Php encoding and use that for the text stream
