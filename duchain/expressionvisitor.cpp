@@ -275,23 +275,28 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
             Declaration* declaration = StructureType::Ptr::staticCast(m_result.type())->declaration(m_currentContext->topContext());
             if (declaration) {
                 DUContext* context = declaration->internalContext();
-                if (!context && m_currentContext->parentContext()->localScopeIdentifier() == declaration->qualifiedIdentifier()) {
-                    //class is currentClass (internalContext is not yet set)
-                    context = m_currentContext->parentContext();
+                if (!context && m_currentContext->parentContext()) {
+                    if (m_currentContext->parentContext()->localScopeIdentifier() == declaration->qualifiedIdentifier()) {
+                        //class is currentClass (internalContext is not yet set)
+                        context = m_currentContext->parentContext();
+                    }
                 }
-
-                QualifiedIdentifier propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
-                m_result.setDeclarations(context->findDeclarations(propertyId));
-                lock.unlock();
-                if (!m_result.allDeclarations().isEmpty()) {
-                    usingDeclaration(node->objectProperty->objectDimList->variableName, m_result.allDeclarations().last());
-                    if (node->isFunctionCall!=-1) {
-                        FunctionType::Ptr function = m_result.allDeclarations().last()->type<FunctionType>();
-                        if (function) {
-                            m_result.setType(function->returnType());
-                        } else {
-                            m_result.setType(AbstractType::Ptr());
+                if (context) {
+                    QualifiedIdentifier propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
+                    m_result.setDeclarations(context->findDeclarations(propertyId));
+                    lock.unlock();
+                    if (!m_result.allDeclarations().isEmpty()) {
+                        usingDeclaration(node->objectProperty->objectDimList->variableName, m_result.allDeclarations().last());
+                        if (node->isFunctionCall!=-1) {
+                            FunctionType::Ptr function = m_result.allDeclarations().last()->type<FunctionType>();
+                            if (function) {
+                                m_result.setType(function->returnType());
+                            } else {
+                                m_result.setType(AbstractType::Ptr());
+                            }
                         }
+                    } else {
+                        m_result.setType(AbstractType::Ptr());
                     }
                 } else {
                     m_result.setType(AbstractType::Ptr());

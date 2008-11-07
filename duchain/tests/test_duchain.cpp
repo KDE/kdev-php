@@ -1076,6 +1076,24 @@ void TestDUChain::testFunctionInFunction()
     release(top);
 }
 
+void TestDUChain::testObjectWithClassName()
+{
+
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class setupPage {} $setupPage = new setupPage; $setupPage->foo();");
+    TopDUContext* top = parse(method, DumpNone, "testObjectWithClassName.php");
+
+    QByteArray method2("<? $setupPage = new setupPage; $setupPage->foo();");
+    top = parse(method2, DumpNone, "testObjectWithClassName.php");
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    //TODO: complete test
+
+    release(top);
+}
+
 }
 
 #include "test_duchain.moc"

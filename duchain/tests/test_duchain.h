@@ -74,6 +74,7 @@ private slots:
   void testForeachLoop();
   void testPhp4StyleConstructor();
   void testFunctionInFunction();
+  void testObjectWithClassName();
 };
 
 }
