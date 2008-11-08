@@ -285,7 +285,7 @@ statements=innerStatementList
 [: m_state.varExpressionIsVariable = false; :] --reset flag
 expression=conditionalExpression
 (
-  assignmentAxpressionEqual=assignmentExpressionEqual | (
+  assignmentExpressionEqual=assignmentExpressionEqual | (
      (PLUS_ASSIGN | MINUS_ASSIGN | MUL_ASSIGN | DIV_ASSIGN
       | CONCAT_ASSIGN | MOD_ASSIGN | AND_ASSIGN | OR_ASSIGN
       | XOR_ASSIGN | SL_ASSIGN | SR_ASSIGN)

@@ -37,7 +37,7 @@ void DefaultVisitor::visitArrayPairValue(ArrayPairValueAst *node)
 void DefaultVisitor::visitAssignmentExpression(AssignmentExpressionAst *node)
 {
     visitNode(node->expression);
-    visitNode(node->assignmentAxpressionEqual);
+    visitNode(node->assignmentExpressionEqual);
     visitNode(node->assignmentExpression);
 }
 

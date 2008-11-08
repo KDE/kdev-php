@@ -305,7 +305,7 @@ struct KDEVPHPPARSER_EXPORT AssignmentExpressionAst: public AstNode
     enum { KIND = AssignmentExpressionKind };
 
     ConditionalExpressionAst *expression;
-    AssignmentExpressionEqualAst *assignmentAxpressionEqual;
+    AssignmentExpressionEqualAst *assignmentExpressionEqual;
     AssignmentExpressionAst *assignmentExpression;
 };
 
