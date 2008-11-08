@@ -40,6 +40,7 @@ private slots:
   void integralTypes();
   void newObject();
   void cast();
+  void operations();
 };
 
 }

@@ -82,6 +82,14 @@ void ExpressionVisitor::visitAssignmentExpression(AssignmentExpressionAst *node)
     }
     DefaultVisitor::visitAssignmentExpression(node);
     m_isAssignmentExpressionEqual = false;
+
+    if (node->operation == OperationPlus || node->operation == OperationMinus || node->operation == OperationMul || node->operation == OperationDiv) {
+        IntegralType::Ptr integral(new IntegralType(IntegralType::TypeInt));
+        m_result.setType(AbstractType::Ptr::staticCast(integral));
+    } else if (node->operation == OperationConcat) {
+        IntegralType::Ptr integral(new IntegralType(IntegralType::TypeString));
+        m_result.setType(AbstractType::Ptr::staticCast(integral));
+    }
 }
 
 void ExpressionVisitor::visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node)
@@ -371,6 +379,17 @@ void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
     }
 }
 
+void ExpressionVisitor::visitAdditiveExpressionRest(AdditiveExpressionRestAst* node)
+{
+    DefaultVisitor::visitAdditiveExpressionRest(node);
+    if (node->operation == OperationPlus || node->operation == OperationMinus) {
+        IntegralType::Ptr integral(new IntegralType(IntegralType::TypeInt));
+        m_result.setType(AbstractType::Ptr::staticCast(integral));
+    } else if (node->operation == OperationConcat) {
+        IntegralType::Ptr integral(new IntegralType(IntegralType::TypeString));
+        m_result.setType(AbstractType::Ptr::staticCast(integral));
+    }
+}
 
 
 QString ExpressionVisitor::stringForNode(IdentifierAst* id)

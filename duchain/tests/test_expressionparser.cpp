@@ -264,6 +264,61 @@ void TestExpressionParser::cast()
 
     release(top);
 }
+
+void TestExpressionParser::operations()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $foo = 1; ");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    ExpressionParser p(false, true);
+
+    ExpressionEvaluationResult res = p.evaluateType(QByteArray("'1' . '1'"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeString);
+
+    res = p.evaluateType(QByteArray("1 . 1"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeString);
+
+    res = p.evaluateType(QByteArray("1 + 1"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+
+    res = p.evaluateType(QByteArray("'1' + '1'"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+
+    res = p.evaluateType(QByteArray("$foo .= '1'"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeString);
+
+    res = p.evaluateType(QByteArray("$foo .= 1"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeString);
+
+    res = p.evaluateType(QByteArray("$foo += 1"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+
+    res = p.evaluateType(QByteArray("$foo += '1'"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+
+    res = p.evaluateType(QByteArray("$foo *= 1"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+
+    res = p.evaluateType(QByteArray("$foo *= '1'"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+
+    release(top);
+}
+
 }
 
 #include "test_expressionparser.moc"

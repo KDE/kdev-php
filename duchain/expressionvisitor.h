@@ -57,6 +57,7 @@ protected:
     void visitVariableProperty(VariablePropertyAst *node);
     void visitStaticMember(StaticMemberAst* node);
     void visitUnaryExpression(UnaryExpressionAst* node);
+    void visitAdditiveExpressionRest(AdditiveExpressionRestAst* node);
 
     QString stringForNode(IdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);

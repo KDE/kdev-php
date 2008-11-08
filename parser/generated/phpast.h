@@ -158,6 +158,21 @@ enum CastType
     CastUnset
 };
 
+enum OperationType
+{
+    OperationPlus = 1,
+    OperationMinus,
+    OperationConcat,
+    OperationMul,
+    OperationDiv,
+    OperationMod,
+    OperationAnd,
+    OperationOr,
+    OperationXor,
+    OperationSl,
+    OperationSr
+};
+
 struct KDEVPHPPARSER_EXPORT AstNode
 {
     enum AstNodeKind
@@ -287,6 +302,7 @@ struct KDEVPHPPARSER_EXPORT AdditiveExpressionRestAst: public AstNode
 {
     enum { KIND = AdditiveExpressionRestKind };
 
+    OperationType operation;
     MultiplicativeExpressionAst *expression;
 };
 
@@ -304,6 +320,7 @@ struct KDEVPHPPARSER_EXPORT AssignmentExpressionAst: public AstNode
 {
     enum { KIND = AssignmentExpressionKind };
 
+    OperationType operation;
     ConditionalExpressionAst *expression;
     AssignmentExpressionEqualAst *assignmentExpressionEqual;
     AssignmentExpressionAst *assignmentExpression;
@@ -793,6 +810,7 @@ struct KDEVPHPPARSER_EXPORT MultiplicativeExpressionRestAst: public AstNode
 {
     enum { KIND = MultiplicativeExpressionRestKind };
 
+    OperationType operation;
     UnaryExpressionAst *expression;
 };
 

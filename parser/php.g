@@ -92,6 +92,20 @@ namespace KDevelop
         CastBool,
         CastUnset
     };
+
+    enum OperationType {
+        OperationPlus = 1,
+        OperationMinus,
+        OperationConcat,
+        OperationMul,
+        OperationDiv,
+        OperationMod,
+        OperationAnd,
+        OperationOr,
+        OperationXor,
+        OperationSl,
+        OperationSr
+    };
 :]
 
 ------------------------------------------------------------
@@ -286,13 +300,25 @@ statements=innerStatementList
 expression=conditionalExpression
 (
   assignmentExpressionEqual=assignmentExpressionEqual | (
-     (PLUS_ASSIGN | MINUS_ASSIGN | MUL_ASSIGN | DIV_ASSIGN
-      | CONCAT_ASSIGN | MOD_ASSIGN | AND_ASSIGN | OR_ASSIGN
-      | XOR_ASSIGN | SL_ASSIGN | SR_ASSIGN)
+     (
+        PLUS_ASSIGN   [: (*yynode)->operation = OperationPlus; :]
+      | MINUS_ASSIGN  [: (*yynode)->operation = OperationMinus; :]
+      | MUL_ASSIGN    [: (*yynode)->operation = OperationMul; :]
+      | DIV_ASSIGN    [: (*yynode)->operation = OperationDiv; :]
+      | CONCAT_ASSIGN [: (*yynode)->operation = OperationConcat; :]
+      | MOD_ASSIGN    [: (*yynode)->operation = OperationMod; :]
+      | AND_ASSIGN    [: (*yynode)->operation = OperationAnd; :]
+      | OR_ASSIGN     [: (*yynode)->operation = OperationOr; :]
+      | XOR_ASSIGN    [: (*yynode)->operation = OperationXor; :]
+      | SL_ASSIGN     [: (*yynode)->operation = OperationSl; :]
+      | SR_ASSIGN     [: (*yynode)->operation = OperationSr; :]
+     )
      assignmentExpressionCheckIfVariable
      assignmentExpression=assignmentExpression)
    | 0)
--> assignmentExpression ;;
+-> assignmentExpression [
+     member variable operation: OperationType;
+];;
 
 --=& is special:
   -- $foo =& $var; is allowed but not $foo =& 'static';
@@ -380,18 +406,30 @@ expression=booleanOrExpression
    (#additionalExpression=additiveExpressionRest)*
 -> additiveExpression ;;
 
-   ( PLUS | MINUS | CONCAT )
+   (
+       PLUS   [: (*yynode)->operation = OperationPlus; :]
+     | MINUS  [: (*yynode)->operation = OperationMinus; :]
+     | CONCAT [: (*yynode)->operation = OperationConcat; :]
+   )
    expression=multiplicativeExpression
--> additiveExpressionRest ;;
+-> additiveExpressionRest [
+     member variable operation: OperationType;
+];;
 
 
    expression=unaryExpression
    (#additionalExpression=multiplicativeExpressionRest)*
 -> multiplicativeExpression ;;
 
-   ( MUL | DIV | MOD )
+   (
+       MUL [: (*yynode)->operation = OperationMul; :]
+     | DIV [: (*yynode)->operation = OperationDiv; :]
+     | MOD [: (*yynode)->operation = OperationMod; :]
+   )
    expression=unaryExpression
--> multiplicativeExpressionRest ;;
+-> multiplicativeExpressionRest [
+     member variable operation: OperationType;
+];;
 
  (
     MINUS unaryExpression=unaryExpression
