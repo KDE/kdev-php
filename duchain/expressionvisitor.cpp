@@ -188,14 +188,15 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
             m_result.setType(AbstractType::Ptr());
         }
     } else if (node->constant) {
-        QualifiedIdentifier id(identifierForNode(node->constant));
-        if (id == QualifiedIdentifier("true") || id == QualifiedIdentifier("false")) {
+        QString str(stringForNode(node->constant).toLower());
+        if (str == "true" || str == "false") {
             IntegralType::Ptr integral(new IntegralType(IntegralType::TypeBoolean));
             m_result.setType(AbstractType::Ptr::staticCast(integral));
-        } else if (id == QualifiedIdentifier("null")) {
+        } else if (str == "null") {
             IntegralType::Ptr integral(new IntegralType(IntegralType::TypeNull));
             m_result.setType(AbstractType::Ptr::staticCast(integral));
         } else {
+            QualifiedIdentifier id(identifierForNode(node->constant));
             //constant (created with declare('foo', 'bar'))
             //it could also be a global function call, without ()
             //TODO: prefer constant over function
@@ -367,20 +368,38 @@ void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
 }
 
 
+
+QString ExpressionVisitor::stringForNode(IdentifierAst* id)
+{
+    if( !id )
+        return QString();
+
+    return m_editor->parseSession()->symbol(id->string);
+}
+
 QualifiedIdentifier ExpressionVisitor::identifierForNode(IdentifierAst* id)
 {
     if( !id )
         return QualifiedIdentifier();
 
-    return QualifiedIdentifier(m_editor->parseSession()->symbol(id->string));
+    return QualifiedIdentifier(stringForNode(id));
 }
+
+QString ExpressionVisitor::stringForNode(VariableIdentifierAst* id)
+{
+    if( !id )
+        return QString();
+    QString ret(m_editor->parseSession()->symbol(id->variable));
+    ret = ret.mid(1); //cut off $
+    return ret;
+}
+
 QualifiedIdentifier ExpressionVisitor::identifierForNode(VariableIdentifierAst* id)
 {
     if( !id )
         return QualifiedIdentifier();
-    QString ret(m_editor->parseSession()->symbol(id->variable));
-    ret = ret.mid(1); //cut off $
-    return QualifiedIdentifier(ret);
+
+    return QualifiedIdentifier(stringForNode(id));
 }
 
 }

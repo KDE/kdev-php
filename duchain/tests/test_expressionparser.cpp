@@ -194,7 +194,15 @@ void TestExpressionParser::integralTypes()
     QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
     QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeBoolean));
 
+    res = p.evaluateType(QByteArray("TRUE"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeBoolean));
+
     res = p.evaluateType(QByteArray("null"), DUContextPointer(top));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeNull));
+
+    res = p.evaluateType(QByteArray("NULL"), DUContextPointer(top));
     QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
     QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeNull));
 

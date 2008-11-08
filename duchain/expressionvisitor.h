@@ -58,8 +58,11 @@ protected:
     void visitStaticMember(StaticMemberAst* node);
     void visitUnaryExpression(UnaryExpressionAst* node);
 
+    QString stringForNode(IdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
+    QString stringForNode(VariableIdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
+
 
     virtual void usingDeclaration(AstNode* node, KDevelop::Declaration* decl) {
         Q_UNUSED(node) Q_UNUSED(decl)
