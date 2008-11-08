@@ -443,6 +443,32 @@ void TestUses::classSelf()
     release(top);
 }
 
+void TestUses::objectWithClassName()
+{
+
+    //                 0         1         2         3         4         5         6         7         8
+    //                 012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class Aa { public static $i; const j=0; public $k; } $Aa = new Aa; $Aa->k; Aa::j; Aa::$i;");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* cls = top->localDeclarations().first();
+    QCOMPARE(cls->uses().keys().count(), 1);
+    QCOMPARE(cls->uses().values().count(), 1);
+    QCOMPARE(cls->uses().values().first().count(), 3);
+    QCOMPARE(cls->uses().values().first().first(), SimpleRange(0, 66, 0, 66+2));
+    QCOMPARE(cls->uses().values().first().at(1), SimpleRange(0, 78, 0, 78+2));
+    QCOMPARE(cls->uses().values().first().at(2), SimpleRange(0, 85, 0, 85+2));
+
+    Declaration* obj = top->localDeclarations().at(1);
+    QCOMPARE(obj->uses().keys().count(), 1);
+    QCOMPARE(obj->uses().values().count(), 1);
+    QCOMPARE(obj->uses().values().first().count(), 1);
+    QCOMPARE(obj->uses().values().first().first(), SimpleRange(0, 70, 0, 70+3));
+
+    release(top);
+}
+
 }
 
 #include "test_uses.moc"

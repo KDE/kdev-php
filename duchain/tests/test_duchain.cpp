@@ -1089,7 +1089,7 @@ void TestDUChain::testObjectWithClassName()
 
     DUChainWriteLocker lock(DUChain::lock());
 
-    //TODO: complete test
+    //just test that it doesn't crash
 
     release(top);
 }
