@@ -67,7 +67,10 @@ Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifie
         lock.unlock();
         DUChainWriteLocker wlock(DUChain::lock());
         for (uint i=0; i<nr; ++i) {
-            if (declarationType == ClassDeclarationType && declarations[i].declaration()->internalContext()
+            if (!declarations[i].declaration()) {
+                kDebug() << "skipping declaration, doesn't ahve declaration";
+                continue;
+            } else if (declarationType == ClassDeclarationType && declarations[i].declaration()->internalContext()
                 && declarations[i].declaration()->internalContext()->type() == DUContext::Class) {
                 //TODO check if context is in any loaded project
             } else if(declarationType == FunctionDeclarationType
