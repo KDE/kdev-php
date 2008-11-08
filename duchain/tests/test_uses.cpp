@@ -198,18 +198,19 @@ void TestUses::variableTwoDeclarations()
     Declaration* var = top->localDeclarations().at(1);
     QCOMPARE(var->uses().keys().count(), 1);
     QCOMPARE(var->uses().values().count(), 1);
-    QCOMPARE(var->uses().values().first().count(), 3);
+    QCOMPARE(var->uses().values().first().count(), 1);
     QCOMPARE(var->uses().values().first().at(0), SimpleRange(0, 29, 0, 31));
-    QCOMPARE(var->uses().values().first().at(1), SimpleRange(0, 33, 0, 35));
-    QCOMPARE(var->uses().values().first().at(2), SimpleRange(0, 41, 0, 43));
+    //QCOMPARE(var->uses().values().first().at(1), SimpleRange(0, 33, 0, 35));
+    //QCOMPARE(var->uses().values().first().at(2), SimpleRange(0, 41, 0, 43));
 
+    //$a = 0 is a new declaration!
     var = top->localDeclarations().at(2);
     QCOMPARE(var->uses().keys().count(), 1);
     QCOMPARE(var->uses().values().count(), 1);
-    QCOMPARE(var->uses().values().first().count(), 3);
-    QCOMPARE(var->uses().values().first().at(0), SimpleRange(0, 29, 0, 31));
-    QCOMPARE(var->uses().values().first().at(1), SimpleRange(0, 33, 0, 35));
-    QCOMPARE(var->uses().values().first().at(2), SimpleRange(0, 41, 0, 43));
+    QCOMPARE(var->uses().values().first().count(), 1);
+    //QCOMPARE(var->uses().values().first().at(0), SimpleRange(0, 29, 0, 31));
+    //QCOMPARE(var->uses().values().first().at(1), SimpleRange(0, 33, 0, 35));
+    QCOMPARE(var->uses().values().first().at(0), SimpleRange(0, 41, 0, 43));
 
     release(top);
 }

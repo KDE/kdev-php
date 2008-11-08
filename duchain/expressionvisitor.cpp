@@ -35,7 +35,7 @@ using namespace KDevelop;
 namespace Php {
 
 ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor, bool useCursor)
-    : m_editor(editor), m_useCursor(useCursor)
+    : m_editor(editor), m_useCursor(useCursor), m_isAssignmentExpressionEqual(false)
 {
 }
 
@@ -60,7 +60,7 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
         QList<Declaration*> decs = m_currentContext->findDeclarations(identifier, position);
         if (!decs.isEmpty()) ret = decs.last();
     }
-    if (ret) {
+    if (ret && !m_isAssignmentExpressionEqual) {
         usingDeclaration(variable, ret);
     }
     return ret;
@@ -77,7 +77,11 @@ void ExpressionVisitor::visitExpr(ExprAst *node)
 
 void ExpressionVisitor::visitAssignmentExpression(AssignmentExpressionAst *node)
 {
+    if (node->assignmentExpressionEqual) {
+        m_isAssignmentExpressionEqual = true;
+    }
     DefaultVisitor::visitAssignmentExpression(node);
+    m_isAssignmentExpressionEqual = false;
 }
 
 void ExpressionVisitor::visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node)

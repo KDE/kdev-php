@@ -78,6 +78,8 @@ private:
     KDevelop::DUContext* m_currentContext;
 
     ExpressionEvaluationResult m_result;
+
+    bool m_isAssignmentExpressionEqual;
 };
 
 }
