@@ -619,7 +619,7 @@ int Lexer::nextTokenKind()
                 it++;
                 int i = 0;
                 bool foundVar = false;
-                while (m_curpos < m_contentSize
+                while (m_curpos+i < m_contentSize
                         && (it->unicode() != '"' || isEscapedWithBackslash(it, m_curpos+i, m_curpos)))
                 {
                     if (it->unicode() == '$'  && !isEscapedWithBackslash(it, m_curpos+i, m_curpos)
