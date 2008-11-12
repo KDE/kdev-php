@@ -63,12 +63,12 @@ Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifie
         uint nr;
         const IndexedDeclaration* declarations = 0;
         PersistentSymbolTable::self().declarations(id, nr, declarations);
-        kDebug() << "found declarations: " << nr;
+        kDebug() << "found declarations:" << nr;
         lock.unlock();
         DUChainWriteLocker wlock(DUChain::lock());
         for (uint i=0; i<nr; ++i) {
             if (!declarations[i].declaration()) {
-                kDebug() << "skipping declaration, doesn't ahve declaration";
+                kDebug() << "skipping declaration, doesn't have declaration";
                 continue;
             } else if (declarationType == ClassDeclarationType && declarations[i].declaration()->internalContext()
                 && declarations[i].declaration()->internalContext()->type() == DUContext::Class) {
@@ -83,7 +83,7 @@ Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifie
             }
             TopDUContext* top = declarations[i].declaration()->context()->topContext();
             if (top->language() != IndexedString("Php")) {
-                kDebug() << "skipping declaration, invalid langauge" << top->language().str();
+                kDebug() << "skipping declaration, invalid language" << top->language().str();
                 continue;
             }
             currentContext->topContext()->addImportedParentContext(top);
