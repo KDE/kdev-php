@@ -26,6 +26,7 @@
 #include <QVariant>
 #include <language/duchain/declaration.h>
 #include <language/duchain/abstractfunctiondeclaration.h>
+#include <language/duchain/duchainutils.h>
 #include <language/duchain/ducontext.h>
 #include <language/duchain/types/functiontype.h>
 #include <QTextFormat>
@@ -33,20 +34,6 @@
 
 using namespace KDevelop;
 namespace Php {
-
-KDevelop::DUContext* getArgumentContext(KDevelop::Declaration* decl) {
-  DUContext* internal = decl->internalContext();
-  if( !internal )
-    return 0;
-  if( internal->type() == DUContext::Function )
-    return internal;
-  foreach( DUContext::Import ctx, internal->importedParentContexts() ) {
-    if( ctx.context() )
-      if( ctx.context()->type() == DUContext::Function )
-        return ctx.context();
-  }
-  return 0;
-}
 
 void createArgumentList(const NormalDeclarationCompletionItem& item, QString& ret, QList<QVariant>* highlighting )
 {
@@ -63,8 +50,8 @@ void createArgumentList(const NormalDeclarationCompletionItem& item, QString& re
   if (functionType && decl) {
 
     QVector<Declaration*> parameters;
-    if (getArgumentContext(dec))
-      parameters = getArgumentContext(dec)->localDeclarations();
+    if (DUChainUtils::getArgumentContext(dec))
+      parameters = DUChainUtils::getArgumentContext(dec)->localDeclarations();
 
     uint defaultParamNum = 0;
 
