@@ -46,8 +46,8 @@ Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifie
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->parentContext()) {
             foreach (DUContext::Import i, currentContext->parentContext()->importedParentContexts()) {
-                if (i.context()->type() == DUContext::Class) {
-                    return i.context()->owner();
+                if (i.context(currentContext->topContext())->type() == DUContext::Class) {
+                    return i.context(currentContext->topContext())->owner();
                 }
             }
         }
