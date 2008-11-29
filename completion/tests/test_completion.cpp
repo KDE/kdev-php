@@ -32,6 +32,7 @@
 #include "completion/context.h"
 #include "completion/items.h"
 #include "completion/helpers.h"
+#include "completion/model.h"
 
 
 using namespace KTextEditor;
@@ -336,6 +337,77 @@ void TestCompletion::variable()
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(0, 29), abort);
     QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(1)));
+
+    release(top);
+}
+
+void TestCompletion::variableStarted()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A {  } $aaa = new A();");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "s"));
+
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
+
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(0, 30), abort);
+    QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(1)));
+
+    release(top);
+}
+
+class TestCodeCompletionModel : public CodeCompletionModel
+{
+public:
+    //normally set by worker, but in test we don't have a worker
+    void foundDeclarations(QList<KDevelop::CompletionTreeItemPointer> items, CodeCompletionContext* completionContext)
+    {
+        m_completionItems.clear();
+        foreach (CompletionTreeItemPointer i, items) {
+            m_completionItems << KSharedPtr<CompletionTreeElement>::staticCast(i);
+        }
+        m_completionContext = KDevelop::CodeCompletionContext::Ptr(completionContext);
+        reset();
+    }
+};
+
+void TestCompletion::nameNormalVariable()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $abc = 0; define('def', 0); class ghi {} ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    CodeCompletionContext* cContext = new CodeCompletionContext(DUContextPointer(top), "");
+    bool abort = false;
+    QList<KDevelop::CompletionTreeItemPointer> itemList = cContext->completionItems(SimpleCursor(0, 44), abort);
+
+    TestCodeCompletionModel model;
+    model.foundDeclarations(itemList, cContext);
+
+    QCOMPARE(cContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
+
+    CompletionTreeItemPointer itm = searchDeclaration(itemList, top->localDeclarations().first());
+    QVERIFY(itm);
+    QCOMPARE(itm->data(model.index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, &model).toString(),
+        QString("$abc"));
+
+    itm = searchDeclaration(itemList, top->localDeclarations().at(1));
+    QVERIFY(itm);
+    QCOMPARE(itm->data(model.index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, &model).toString(),
+        QString("def"));
+
+    itm = searchDeclaration(itemList, top->localDeclarations().at(2));
+    QVERIFY(itm);
+    QCOMPARE(itm->data(model.index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, &model).toString(),
+        QString("ghi"));
 
     release(top);
 }

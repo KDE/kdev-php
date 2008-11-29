@@ -43,6 +43,8 @@ private slots:
     void projectFileClass();
     void thisCompletion();
     void variable();
+    void variableStarted();
+    void nameNormalVariable();
 };
 
 }
