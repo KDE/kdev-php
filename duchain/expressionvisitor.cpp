@@ -173,10 +173,10 @@ DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
         {
             DUChainReadLocker lock(DUChain::lock());
             context = declaration->internalContext();
-        }
-        if (!context && m_currentContext->parentContext()->localScopeIdentifier() == declaration->qualifiedIdentifier()) {
-            //className is currentClass (internalContext is not yet set)
-            context = m_currentContext->parentContext();
+            if (!context && m_currentContext->parentContext() && m_currentContext->parentContext()->localScopeIdentifier() == declaration->qualifiedIdentifier()) {
+                //className is currentClass (internalContext is not yet set)
+                context = m_currentContext->parentContext();
+            }
         }
         usingDeclaration(className, declaration);
     }
