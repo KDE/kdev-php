@@ -32,6 +32,7 @@
 #include <kstandarddirs.h>
 
 #include "phpparsejob.h"
+#include "../constantdeclaration.h"
 
 
 using namespace KTextEditor;
@@ -154,7 +155,7 @@ void TestDUChain::testDeclareClass()
     QCOMPARE(contextMethodBodyFoo->localScopeIdentifier(), QualifiedIdentifier("foo"));
     QCOMPARE(contextMethodBodyFoo->importedParentContexts().count(), 1);
     QCOMPARE(contextMethodBodyFoo->childContexts().count(), 0);
-    QVERIFY(contextMethodBodyFoo->importedParentContexts().first().context() ==
+    QVERIFY(contextMethodBodyFoo->importedParentContexts().first().context(top) ==
                     contextClassA->childContexts().first());
 
     //foo()
@@ -414,7 +415,7 @@ void TestDUChain::testDeclareTypehintFunction()
     QCOMPARE(contextFunctionBodyFoo->importedParentContexts().count(), 1);
     QCOMPARE(contextFunctionBodyFoo->childContexts().count(), 0);
 
-    QVERIFY(contextFunctionBodyFoo->importedParentContexts().first().context() ==
+    QVERIFY(contextFunctionBodyFoo->importedParentContexts().first().context(top) ==
                     contextFunctionFoo);
 
     FunctionType::Ptr fType = top->localDeclarations().at(1)->type<FunctionType>();
@@ -491,7 +492,7 @@ void TestDUChain::testClassImplementsInterface()
     QCOMPARE(dec->internalContext()->localScopeIdentifier(), QualifiedIdentifier("A"));
     //class A imports interface I context
     QCOMPARE(dec->internalContext()->importedParentContexts().count(), 1);
-    QVERIFY(dec->internalContext()->importedParentContexts().at(0).context() == top->childContexts().at(0));
+    QVERIFY(dec->internalContext()->importedParentContexts().at(0).context(top) == top->childContexts().at(0));
 
     QCOMPARE(dec->uses().count(), 0);
 
@@ -542,7 +543,7 @@ void TestDUChain::testClassExtends()
     QCOMPARE(dec->internalContext()->localScopeIdentifier(), QualifiedIdentifier("B"));
     //class B imports class A context
     QCOMPARE(dec->internalContext()->importedParentContexts().count(), 1);
-    QVERIFY(dec->internalContext()->importedParentContexts().at(0).context() == top->childContexts().at(0));
+    QVERIFY(dec->internalContext()->importedParentContexts().at(0).context(top) == top->childContexts().at(0));
 
     QCOMPARE(dec->uses().count(), 0);
 
@@ -757,6 +758,7 @@ void TestDUChain::testDefine()
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("BAR")).count(), 1);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("FOO")).first()->context(), top);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("BAR")).first()->context(), top);
+    QVERIFY(dynamic_cast<ConstantDeclaration*>(top->localDeclarations().first()));
 
     release(top);
 }
@@ -790,7 +792,7 @@ void TestDUChain::testGlobalFunction()
 
     QCOMPARE(top->importedParentContexts().count(), 1);
     QVERIFY(DUChain::self()->chainForDocument(IndexedString("internalfunctions")));
-    QCOMPARE(DUChain::self()->chainForDocument(IndexedString("internalfunctions")), top->importedParentContexts().first().context());
+    QCOMPARE(DUChain::self()->chainForDocument(IndexedString("internalfunctions")), top->importedParentContexts().first().context(top));
 
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("substr")).count(), 1);
 
