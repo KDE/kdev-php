@@ -37,7 +37,8 @@
 #include <language/duchain/types/structuretype.h>
 
 #include "completion/helpers.h"
-#include "../../duchain/navigation/navigationwidget.h"
+#include "../duchain/navigation/navigationwidget.h"
+#include "../duchain/constantdeclaration.h"
 
 using namespace KDevelop;
 
@@ -49,7 +50,8 @@ QString nameForDeclaration(Declaration* dec) {
     return "<unknown>";
   else {
     QString ret = dec->identifier().toString();
-    if (dec->kind() == Declaration::Instance && dec->context()->parentContext() && dec->context()->parentContext()->type() == DUContext::Class) {
+    bool isConst = dynamic_cast<ConstantDeclaration*>(dec);
+    if (!isConst && dec->kind() == Declaration::Instance && (!dec->context()->parentContext() || dec->context()->parentContext()->type() != DUContext::Class)) {
       ret = "$" + ret;
     }
     return ret;
@@ -123,6 +125,7 @@ void NormalDeclarationCompletionItem::execute(KTextEditor::Document* document, c
 const bool indentByDepth = false;
 
 QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const {
+
   DUChainReadLocker lock(DUChain::lock(), 500);
   if(!lock.locked()) {
     kDebug(9007) << "Failed to lock the du-chain in time";
@@ -131,7 +134,6 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
 
   static CompletionTreeItemPointer currentMatchContext;
 
-  
   //Stuff that does not require a declaration:
   switch (role) {
     case CodeCompletionModel::SetMatchContext:
@@ -189,7 +191,6 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
       return v;
     }
     case Qt::DisplayRole:
-
       switch (index.column()) {
         case CodeCompletionModel::Prefix:
         {
