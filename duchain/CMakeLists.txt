@@ -16,6 +16,7 @@ set(duchain_SRCS
     expressionevaluationresult.cpp
     helper.cpp
     phpducontext.cpp
+    constantdeclaration.cpp
     tests/duchaintestbase.cpp
     navigation/navigationwidget.cpp
     navigation/declarationnavigationcontext.cpp

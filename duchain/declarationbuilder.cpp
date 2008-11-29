@@ -31,6 +31,7 @@
 #include "phpast.h"
 #include "parsesession.h"
 #include "helper.h"
+#include "constantdeclaration.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -324,7 +325,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                 DUChainWriteLocker lock(DUChain::lock());
                 LockedSmartInterface iface = editor()->smart();
                 injectContext(iface, currentContext()->topContext()); //constants are always global
-                openDefinition<Declaration>(QualifiedIdentifier(constant), newRange);
+                openDefinition<ConstantDeclaration>(QualifiedIdentifier(constant), newRange);
                 currentDeclaration()->setKind(Declaration::Instance);
                 closeDeclaration();
                 closeInjectedContext(iface);
