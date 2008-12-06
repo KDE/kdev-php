@@ -27,26 +27,30 @@
 #include <QPair>
 #include <QMap>
 #include <QPointer>
-#include <language/codecompletion/codecompletionmodel.h>
 #include <ksharedptr.h>
+#include <ktexteditor/codecompletionmodelcontrollerinterface.h>
+
+#include <language/codecompletion/codecompletionmodel.h>
 #include <language/duchain/duchainpointer.h>
+
 #include "context.h"
 
 namespace Php {
 
-class KDEVPHPCOMPLETION_EXPORT CodeCompletionModel : public KDevelop::CodeCompletionModel
+class KDEVPHPCOMPLETION_EXPORT CodeCompletionModel : public KDevelop::CodeCompletionModel, public KTextEditor::CodeCompletionModelControllerInterface
 {
-  Q_OBJECT
+    Q_OBJECT
+    Q_INTERFACES(KTextEditor::CodeCompletionModelControllerInterface)
 
   public:
     CodeCompletionModel(QObject* parent = 0);
     virtual ~CodeCompletionModel();
- 
+
+    bool shouldAbortCompletion(KTextEditor::View* view, const KTextEditor::SmartRange &range, const QString &currentCompletion);
+    KTextEditor::Range completionRange(KTextEditor::View* view, const KTextEditor::Cursor &position);
+    
   protected:
     virtual void completionInvokedInternal(KTextEditor::View* view, const KTextEditor::Range& range, InvocationType invocationType, const KUrl& url);
-
-  private:
-    KSharedPtr<CodeCompletionContext> m_completionContext;
 };
 
 }

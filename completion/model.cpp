@@ -60,6 +60,8 @@ namespace Php {
 CodeCompletionModel::CodeCompletionModel( QObject * parent )
   : KDevelop::CodeCompletionModel(parent)
 {
+  connect(this, SIGNAL(modifyCompletionRange(KTextEditor::View*, KTextEditor::SmartRange*, QRegExp&)),
+        this, SLOT(modifyCompletionRangeInternal(KTextEditor::View*, KTextEditor::SmartRange*, QRegExp&)));
 }
 
 CodeCompletionModel::~CodeCompletionModel()
@@ -115,6 +117,29 @@ void CodeCompletionModel::completionInvokedInternal(KTextEditor::View* view, con
     kDebug(9007) << "Completion invoked for unknown context. Document:" << url << ", Known documents:" << DUChain::self()->documents();
   }
 }
+
+Range CodeCompletionModel::completionRange(View* view, const Cursor &position)
+{
+    Range range = CodeCompletionModelControllerInterface::completionRange(view, position);
+    if (range.start().column() > 0) {
+        KTextEditor::Range preRange(Cursor(range.start().line(), range.start().column()-1),
+                                    Cursor(range.start().line(), range.start().column()));
+        kDebug() << preRange << view->document()->text(preRange);
+        if (view->document()->text(preRange) == "$") {
+            range.expandToRange(preRange);
+            kDebug() << "using custom completion range" << range;
+        }
+    }
+    return range;
+}
+
+bool CodeCompletionModel::shouldAbortCompletion(View* view, const SmartRange &range, const QString &currentCompletion)
+{
+    Q_UNUSED(view);
+    Q_UNUSED(range);
+    static const QRegExp allowedText("^\\$?(\\w*)");
+    return !allowedText.exactMatch(currentCompletion);
+    }
 
 }
 
