@@ -33,6 +33,7 @@
 
 #include "phpparsejob.h"
 #include "../constantdeclaration.h"
+#include "../classdeclaration.h"
 
 
 using namespace KTextEditor;
@@ -454,7 +455,7 @@ void TestDUChain::testClassImplementsInterface()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? interface I { } class A implements I { }");
 
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse(method, DumpAll);
 
     DUChainWriteLocker lock(DUChain::lock());
     QCOMPARE(top->childContexts().count(), 2);
@@ -466,8 +467,10 @@ void TestDUChain::testClassImplementsInterface()
     QCOMPARE(dec->identifier(), Identifier("I"));
     StructureType::Ptr typeI = dec->type<StructureType>();
     QCOMPARE(typeI->qualifiedIdentifier(), QualifiedIdentifier("I"));
-    QCOMPARE(typeI->classType(), static_cast<uint>(StructureType::Interface));
     QVERIFY(typeI->declaration(top) == dec);
+    ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
+    QVERIFY(classDec);
+    QCOMPARE(classDec->classType(), ClassDeclarationData::Interface);
 
     QCOMPARE(dec->internalContext(), top->childContexts().at(0));
     QCOMPARE(dec->internalContext()->childContexts().count(), 0);
@@ -484,8 +487,10 @@ void TestDUChain::testClassImplementsInterface()
     QCOMPARE(dec->identifier(), Identifier("A"));
     StructureType::Ptr typeA = dec->type<StructureType>();
     QCOMPARE(typeA->qualifiedIdentifier(), QualifiedIdentifier("A"));
-    QCOMPARE(typeA->classType(), static_cast<uint>(StructureType::Class));
     QVERIFY(typeA->declaration(top) == dec);
+    classDec = dynamic_cast<ClassDeclaration*>(dec);
+    QVERIFY(classDec);
+    QCOMPARE(classDec->classType(), ClassDeclarationData::Class);
 
     QCOMPARE(dec->internalContext(), top->childContexts().at(1));
     QCOMPARE(dec->internalContext()->childContexts().count(), 0);
@@ -517,8 +522,10 @@ void TestDUChain::testClassExtends()
     QCOMPARE(dec->identifier(), Identifier("A"));
     StructureType::Ptr typeA = dec->type<StructureType>();
     QCOMPARE(typeA->qualifiedIdentifier(), QualifiedIdentifier("A"));
-    QCOMPARE(typeA->classType(), static_cast<uint>(StructureType::Class));
     QVERIFY(typeA->declaration(top) == dec);
+    ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
+    QVERIFY(classDec);
+    QCOMPARE(classDec->classType(), ClassDeclarationData::Class);
 
     QCOMPARE(dec->internalContext(), top->childContexts().at(0));
     QCOMPARE(dec->internalContext()->childContexts().count(), 0);
@@ -535,8 +542,10 @@ void TestDUChain::testClassExtends()
     QCOMPARE(dec->identifier(), Identifier("B"));
     StructureType::Ptr typeB = dec->type<StructureType>();
     QCOMPARE(typeB->qualifiedIdentifier(), QualifiedIdentifier("B"));
-    QCOMPARE(typeB->classType(), static_cast<uint>(StructureType::Class));
     QVERIFY(typeB->declaration(top) == dec);
+    classDec = dynamic_cast<ClassDeclaration*>(dec);
+    QVERIFY(classDec);
+    QCOMPARE(classDec->classType(), ClassDeclarationData::Class);
 
     QCOMPARE(dec->internalContext(), top->childContexts().at(1));
     QCOMPARE(dec->internalContext()->childContexts().count(), 0);

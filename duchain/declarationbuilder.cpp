@@ -32,6 +32,7 @@
 #include "parsesession.h"
 #include "helper.h"
 #include "constantdeclaration.h"
+#include "classdeclaration.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -80,8 +81,12 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
 {
     setComment(formatComment(node, editor()));
 
-    openDefinition<Declaration>(node->className, node);
-    currentDeclaration()->setKind(KDevelop::Declaration::Type);
+    ClassDeclaration* dec = openDefinition<ClassDeclaration>(node->className, node);
+    {
+        DUChainWriteLocker lock(DUChain::lock());
+        dec->setKind(KDevelop::Declaration::Type);
+        dec->setClassType(Php::ClassDeclarationData::Class);
+    }
 
     DeclarationBuilderBase::visitClassDeclarationStatement(node);
     closeDeclaration();
@@ -97,8 +102,12 @@ void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclaration
 {
     setComment(formatComment(node, editor()));
 
-    openDefinition<Declaration>(node->interfaceName, node);
-    currentDeclaration()->setKind(KDevelop::Declaration::Type);
+    ClassDeclaration* dec = openDefinition<ClassDeclaration>(node->interfaceName, node);
+    {
+        DUChainWriteLocker lock(DUChain::lock());
+        dec->setKind(KDevelop::Declaration::Type);
+        dec->setClassType(Php::ClassDeclarationData::Interface);
+    }
 
     DeclarationBuilderBase::visitInterfaceDeclarationStatement(node);
 
@@ -172,10 +181,20 @@ void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
         Declaration* dec = findDeclarationImport(currentContext(), identifierForNode(__it->element), ClassDeclarationType);
         if (dec) {
             StructureType::Ptr interface = StructureType::Ptr::dynamicCast(dec->abstractType());
-            if (interface && interface->classType() == StructureType::Interface) {
-                addBaseType(interface, true);
-            } else {
+            if (!interface) {
                 //TODO report error
+            } else {
+                Php::ClassDeclarationData::ClassType t;
+                {
+                    DUChainReadLocker lock(DUChain::lock());
+                    ClassDeclaration* ifDec = dynamic_cast<ClassDeclaration*>(interface->declaration(currentContext()->topContext()));
+                    t = ifDec->classType();
+                }
+                if (t == Php::ClassDeclarationData::Interface) {
+                    addBaseType(interface, true);
+                } else {
+                    //TODO report error
+                }
             }
         }
         __it = __it->next;

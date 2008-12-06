@@ -39,6 +39,7 @@
 #include "completion/helpers.h"
 #include "../duchain/navigation/navigationwidget.h"
 #include "../duchain/constantdeclaration.h"
+#include "../duchain/classdeclaration.h"
 
 using namespace KDevelop;
 
@@ -205,13 +206,17 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
             indentation += "typedef ";
 
           if( dec->kind() == Declaration::Type && !dec->type<FunctionType>() && !dec->isTypeAlias() ) {
-            if (StructureType::Ptr classType =  dec->type<StructureType>())
-              switch (classType->classType()) {
-                case StructureType::Class:
-                  return indentation + "class";
-                case StructureType::Interface:
-                  return indentation + "interface";
+            if (StructureType::Ptr classType =  dec->type<StructureType>()) {
+              ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
+              if (classDec) {
+                switch (classDec->classType()) {
+                  case ClassDeclarationData::Class:
+                    return indentation + "class";
+                  case ClassDeclarationData::Interface:
+                    return indentation + "interface";
+                }
               }
+            }
             return QVariant();
           }
 
@@ -326,6 +331,8 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
             break;
           case AbstractType::TypeStructure:
             if (StructureType::Ptr classType =  dec->type<StructureType>())
+              p |= CodeCompletionModel::Class;
+              /*
               switch (classType->classType()) {
                 case StructureType::Class:
                   p |= CodeCompletionModel::Class;
@@ -339,6 +346,7 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
                   //p |= CodeCompletionModel::Interface;
                   break;
               }
+              */
             break;
         }
       }

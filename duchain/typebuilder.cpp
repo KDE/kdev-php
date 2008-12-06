@@ -108,7 +108,6 @@ FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
 void TypeBuilder::visitClassDeclarationStatement( ClassDeclarationStatementAst* node )
 {
     StructureType::Ptr classType = StructureType::Ptr(new StructureType());
-    classType->setClassType(StructureType::Class);
 
     openType(classType);
 
@@ -116,25 +115,18 @@ void TypeBuilder::visitClassDeclarationStatement( ClassDeclarationStatementAst* 
 
     TypeBuilderBase::visitClassDeclarationStatement(node);
 
-    // Prevent additional elements being added if this becomes the current type again
-    classType->close();
-
     closeType();
 }
 
 void TypeBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node)
 {
     StructureType::Ptr classType = StructureType::Ptr(new StructureType());
-    classType->setClassType(StructureType::Interface);
 
     openType(classType);
 
     classTypeOpened(currentAbstractType()); //This callback is needed, because the type of the class-declaration needs to be set early so the class can be referenced from within itself
 
     TypeBuilderBase::visitInterfaceDeclarationStatement(node);
-
-    // Prevent additional elements being added if this becomes the current type again
-    classType->close();
 
     closeType();
 
