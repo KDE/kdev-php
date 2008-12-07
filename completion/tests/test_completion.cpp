@@ -412,6 +412,31 @@ void TestCompletion::nameNormalVariable()
     release(top);
 }
 
+void TestCompletion::nameClassMember()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { public $abc = 0; } $b = new A;  ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    CodeCompletionContext* cContext = new CodeCompletionContext(DUContextPointer(top), "$b->");
+    bool abort = false;
+    QList<KDevelop::CompletionTreeItemPointer> itemList = cContext->completionItems(SimpleCursor(0, 44), abort);
+
+    TestCodeCompletionModel model;
+    model.foundDeclarations(itemList, cContext);
+
+    QCOMPARE(cContext->memberAccessOperation(), CodeCompletionContext::MemberAccess);
+
+    CompletionTreeItemPointer itm = searchDeclaration(itemList, top->childContexts().first()->localDeclarations().first());
+    QVERIFY(itm);
+    QCOMPARE(itm->data(model.index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, &model).toString(),
+        QString("abc"));
+
+    release(top);
+}
 }
 
 #include "test_completion.moc"

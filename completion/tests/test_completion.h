@@ -45,6 +45,7 @@ private slots:
     void variable();
     void variableStarted();
     void nameNormalVariable();
+    void nameClassMember();
 };
 
 }
