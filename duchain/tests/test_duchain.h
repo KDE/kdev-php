@@ -75,6 +75,7 @@ private slots:
   void testPhp4StyleConstructor();
   void testFunctionInFunction();
   void testObjectWithClassName();
+  void testLargeNumberOfDeclarations();
 };
 
 }

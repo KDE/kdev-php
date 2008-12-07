@@ -1105,6 +1105,19 @@ void TestDUChain::testObjectWithClassName()
     release(top);
 }
 
+void TestDUChain::testLargeNumberOfDeclarations()
+{
+    TopDUContext* top = new TopDUContext(IndexedString("testurl"), SimpleRange(0, 0, 6000, 0), 0);
+    DUChainWriteLocker lock(DUChain::lock());
+    for (int i=0; i < 6000; ++i) {
+        SimpleRange newRange(i, 0, i, 1);
+        Declaration* dec = new Declaration(newRange, top);
+        dec->setIdentifier(Identifier(QString("dec%0").arg(i)));
+        dec->setAbstractType(AbstractType::Ptr(0));
+    }
+    DUChain::self()->removeDocumentChain(top);
+}
+
 }
 
 #include "test_duchain.moc"
