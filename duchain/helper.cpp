@@ -28,13 +28,33 @@
 #include "editorintegrator.h"
 #include "../parser/parsesession.h"
 #include "phpast.h"
+#include "constantdeclaration.h"
 
 using namespace KDevelop;
 
 namespace Php {
 
+bool isMatch(Declaration* declaration, DeclarationType declarationType)
+{
+    if (declarationType == ClassDeclarationType && declaration->internalContext()
+        && declaration->internalContext()->type() == DUContext::Class
+    ) {
+        return true;
+    } else if(declarationType == FunctionDeclarationType
+        && dynamic_cast<FunctionDeclaration*>(declaration)
+    ) {
+        return true;
+    } else if(declarationType == ConstantDeclarationType
+        && dynamic_cast<ConstantDeclaration*>(declaration)
+    ) {
+        return true;
+    }
+    return false;
+}
+
 Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifier id, DeclarationType declarationType)
 {
+    kDebug() << id.toString() << declarationType;
     if (declarationType == ClassDeclarationType && id == QualifiedIdentifier("self")) {
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->parentContext()) {
@@ -55,30 +75,26 @@ Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifie
         QList<Declaration*> foundDeclarations;
         DUChainReadLocker lock(DUChain::lock());
         foundDeclarations = currentContext->findDeclarations(id);
-
-        if (!foundDeclarations.isEmpty()) {
-            return foundDeclarations.first();
+        foreach (Declaration *declaration, foundDeclarations) {
+            if (isMatch(declaration, declarationType)) {
+                return declaration;
+            }
         }
-        kDebug() << "findDeclarations was empty, trying through PersistentSymbolTable" << id.toString();
+        kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable" << id.toString();
         uint nr;
         const IndexedDeclaration* declarations = 0;
         PersistentSymbolTable::self().declarations(id, nr, declarations);
         kDebug() << "found declarations:" << nr;
         lock.unlock();
+
         DUChainWriteLocker wlock(DUChain::lock());
         for (uint i=0; i<nr; ++i) {
+            //TODO check if context is in any loaded project
             if (!declarations[i].declaration()) {
                 kDebug() << "skipping declaration, doesn't have declaration";
                 continue;
-            } else if (declarationType == ClassDeclarationType && declarations[i].declaration()->internalContext()
-                && declarations[i].declaration()->internalContext()->type() == DUContext::Class) {
-                //TODO check if context is in any loaded project
-            } else if(declarationType == FunctionDeclarationType
-                && dynamic_cast<FunctionDeclaration*>(declarations[i].declaration())) {
-            } else if(declarationType == ConstantDeclarationType
-                && declarations[i].declaration()->kind() == Declaration::Instance) {
-            } else {
-                kDebug() << "skipping declaration, invalid contextType";
+            } else if (!isMatch(declarations[i].declaration(), declarationType)) {
+                kDebug() << "skipping declaration, doesn't match with declarationType";
                 continue;
             }
             TopDUContext* top = declarations[i].declaration()->context()->topContext();

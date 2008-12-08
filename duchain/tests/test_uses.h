@@ -52,7 +52,7 @@ private slots:
   void classParent();
   void classSelf();
   void objectWithClassName();
-
+  void classAndConstWithSameName();
 };
 
 }

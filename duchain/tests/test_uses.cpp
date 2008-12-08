@@ -24,6 +24,7 @@
 #include <language/duchain/duchainlock.h>
 
 #include "phpparsejob.h"
+#include "../constantdeclaration.h"
 
 
 using namespace KTextEditor;
@@ -445,7 +446,6 @@ void TestUses::classSelf()
 
 void TestUses::objectWithClassName()
 {
-
     //                 0         1         2         3         4         5         6         7         8
     //                 012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class Aa { public static $i; const j=0; public $k; } $Aa = new Aa; $Aa->k; Aa::j; Aa::$i;");
@@ -465,6 +465,41 @@ void TestUses::objectWithClassName()
     QCOMPARE(obj->uses().values().count(), 1);
     QCOMPARE(obj->uses().values().first().count(), 1);
     QCOMPARE(obj->uses().values().first().first(), SimpleRange(0, 70, 0, 70+3));
+
+    release(top);
+}
+
+void TestUses::classAndConstWithSameName()
+{
+    //                 0         1         2         3         4         5         6         7         8
+    //                 012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { } define('A', 0); A; new A; define('B', 0); class B { } new B; B; ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* cls = top->localDeclarations().first();
+    QCOMPARE(cls->uses().keys().count(), 1);
+    QCOMPARE(cls->uses().values().count(), 1);
+    QCOMPARE(cls->uses().values().first().count(), 1);
+    QCOMPARE(cls->uses().values().first().first(), SimpleRange(0, 38, 0, 39));
+
+    Declaration* cnst = top->localDeclarations().at(1);
+    QCOMPARE(cnst->uses().keys().count(), 1);
+    QCOMPARE(cnst->uses().values().count(), 1);
+    QCOMPARE(cnst->uses().values().first().count(), 1);
+    QCOMPARE(cnst->uses().values().first().first(), SimpleRange(0, 31, 0, 32));
+
+    cls = top->localDeclarations().at(2);
+    QCOMPARE(cls->uses().keys().count(), 1);
+    QCOMPARE(cls->uses().values().count(), 1);
+    QCOMPARE(cls->uses().values().first().count(), 1);
+    QCOMPARE(cls->uses().values().first().first(), SimpleRange(0, 76, 0, 77));
+
+    cnst = top->localDeclarations().at(3);
+    QCOMPARE(cnst->uses().keys().count(), 1);
+    QCOMPARE(cnst->uses().values().count(), 1);
+    QCOMPARE(cnst->uses().values().first().count(), 1);
+    QCOMPARE(cnst->uses().values().first().first(), SimpleRange(0, 73, 0, 74));
 
     release(top);
 }

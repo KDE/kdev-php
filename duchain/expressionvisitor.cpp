@@ -111,6 +111,7 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
     if (node->className->identifier) {
         QualifiedIdentifier id = identifierForNode(node->className->identifier);
         Declaration* dec = findDeclarationImport(m_currentContext, id, ClassDeclarationType);
+        usingDeclaration(node->className->identifier, dec);
         DUChainReadLocker lock(DUChain::lock());
         m_result.setDeclaration(dec);
     }
