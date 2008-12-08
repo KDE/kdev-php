@@ -156,6 +156,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
             Declaration* dec = findDeclarationImport(m_currentContext, functionIdentifier, FunctionDeclarationType);
             m_result.setDeclaration(dec);
             if (dec) {
+                usingDeclaration(node->stringFunctionNameOrClass, dec);
                 FunctionType::Ptr function = dec->type<FunctionType>();
                 if (function) {
                     m_result.setType(function->returnType());

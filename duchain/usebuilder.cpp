@@ -80,15 +80,6 @@ void UseBuilder::visitClassExtends(ClassExtendsAst *node)
     newUse(node->identifier);
 }
 
-void UseBuilder::visitFunctionCall(FunctionCallAst* node)
-{
-    UseBuilderBase::visitFunctionCall(node);
-    if (node->stringFunctionNameOrClass) {
-        //TODO: stringFunctionNameOrClass::stringFunctionName (static calls)
-        newUse(node->stringFunctionNameOrClass);
-    }
-}
-
 void UseBuilder::visitExpr(ExprAst* node)
 {
     UseBuilderBase::visitExpr(node);

@@ -504,6 +504,30 @@ void TestUses::classAndConstWithSameName()
     release(top);
 }
 
+
+void TestUses::classAndFunctionWithSameName()
+{
+    //                 0         1         2         3         4         5         6         7         8
+    //                 012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { } function A() {} new A; A(); ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* cls = top->localDeclarations().first();
+    QCOMPARE(cls->uses().keys().count(), 1);
+    QCOMPARE(cls->uses().values().count(), 1);
+    QCOMPARE(cls->uses().values().first().count(), 1);
+    QCOMPARE(cls->uses().values().first().first(), SimpleRange(0, 35, 0, 36));
+
+    Declaration* fn = top->localDeclarations().at(1);
+    QCOMPARE(fn->uses().keys().count(), 1);
+    QCOMPARE(fn->uses().values().count(), 1);
+    QCOMPARE(fn->uses().values().first().count(), 1);
+    QCOMPARE(fn->uses().values().first().first(), SimpleRange(0, 38, 0, 39));
+
+    release(top);
+}
+
 }
 
 #include "test_uses.moc"
