@@ -21,6 +21,7 @@
 #include "parsesession.h"
 #include "editorintegrator.h"
 #include "helper.h"
+#include "constantdeclaration.h"
 
 #include <language/duchain/topducontext.h>
 #include <language/duchain/duchain.h>
@@ -57,8 +58,12 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
         if (m_useCursor) {
             position = m_editor->findPosition(variable->variable, EditorIntegrator::FrontEdge);
         }
-        QList<Declaration*> decs = m_currentContext->findDeclarations(identifier, position);
-        if (!decs.isEmpty()) ret = decs.last();
+        foreach (Declaration *dec, m_currentContext->findDeclarations(identifier, position)) {
+            if (dec->kind() == Declaration::Instance && !dynamic_cast<ConstantDeclaration*>(dec)) {
+                ret = dec;
+                break;
+            }
+        }
     }
     if (ret && !m_isAssignmentExpressionEqual) {
         usingDeclaration(variable, ret);

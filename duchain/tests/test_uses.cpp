@@ -528,6 +528,29 @@ void TestUses::classAndFunctionWithSameName()
     release(top);
 }
 
+void TestUses::constAndVariableWithSameName()
+{
+    //                 0         1         2         3         4         5         6         7         8
+    //                 012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $A = 0; define('A', 0); A; $A; ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* var = top->localDeclarations().first();
+    QCOMPARE(var->uses().keys().count(), 1);
+    QCOMPARE(var->uses().values().count(), 1);
+    QCOMPARE(var->uses().values().first().count(), 1);
+    QCOMPARE(var->uses().values().first().first(), SimpleRange(0, 30, 0, 32));
+
+    Declaration* cnst = top->localDeclarations().at(1);
+    QCOMPARE(cnst->uses().keys().count(), 1);
+    QCOMPARE(cnst->uses().values().count(), 1);
+    QCOMPARE(cnst->uses().values().first().count(), 1);
+    QCOMPARE(cnst->uses().values().first().first(), SimpleRange(0, 27, 0, 28));
+
+    release(top);
+}
+
 }
 
 #include "test_uses.moc"

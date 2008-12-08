@@ -54,6 +54,7 @@ private slots:
   void objectWithClassName();
   void classAndConstWithSameName();
   void classAndFunctionWithSameName();
+  void constAndVariableWithSameName();
 };
 
 }
