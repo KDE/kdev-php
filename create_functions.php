@@ -22,15 +22,48 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.           *
  *****************************************************************************/
 
-if (!isset($_SERVER['argv'][1])) {
-    $msg = "Usage:\n".$_SERVER['argv'][0]." [path to phpdoc/en]\n";
+if (!isset($_SERVER['argv'][1]) || !isset($_SERVER['argv'][2])) {
+    $msg = "Usage:\n".$_SERVER['argv'][0]." [path to phpdoc] [path to php sources]\n";
     $msg .= "you may checkout from the php csv server using this command:\n";
     $msg .= "cvs -d :pserver:cvsread@cvs.php.net:/repository checkout phpdoc\n";
+    $msg .= "cvs -d :pserver:cvsread@cvs.php.net:/repository checkout -r PHP_5_2 php5\n";
     file_put_contents('php://stderr', $msg);
     exit(-1);
 }
+if (!file_exists($_SERVER['argv'][1])) {
+    file_put_contents('php://stderr', "phpdoc path not found");
+    exit(-1);
+}
+if (!file_exists($_SERVER['argv'][2])) {
+    file_put_contents('php://stderr', "php sources path not found");
+    exit(-1);
+}
 
-$dirs = array("reference", "appendices");
+//take ext/spl/spl.php as documentation for spl functions
+//make the file valid php
+$splContent = file_get_contents($_SERVER['argv'][2].'/ext/spl/spl.php');
+$splContent = str_replace('<?php', '', $splContent);
+$splContent = str_replace('?>', '', $splContent);
+$splContent = str_replace('mixed cmp_function', '$cmp_function', $splContent);
+$splContent = str_replace('string class_name', '$class_name', $splContent);
+$splContent = str_replace('string $', '$', $splContent);
+$splContent = str_replace('{/**/};', '{}', $splContent);
+$splContent = str_replace('{/**/}', '{}', $splContent);
+$splContent = str_replace("\t", '    ', $splContent);
+$splContent = preg_replace("#(const [A-Z_]+\s*)(0x[0-9]+;)#", '\1= \2', $splContent);
+$splContent = preg_replace("#/\\*\\* @(mainpage|defgroup|file).*?\\*/#s", '', $splContent);
+$splContent = trim($splContent);
+$spl = preg_replace("#/\\*.*?\\*/#s", '', $splContent);
+preg_match_all("#^(class|interface)\s+(\S+)[^{]*{#sm", $spl, $m);
+$skipClasses = $m[2];
+
+$skipClasses[] = 'self';
+$skipClasses[] = 'parent';
+$skipClasses[] = 'exception'; //lowercase
+$skipClasses[] = '__PHP_Incomplete_Class';
+$skipClasses[] = 'php_user_filter';
+
+$dirs = array("en/reference", "en/appendices");
 
 $classes = array();
 $constants = array();
@@ -128,7 +161,6 @@ foreach ($dirs as $dir) {
             if ($function == 'isset') continue;
             if ($function == 'unset') continue;
             if ($function == 'empty') continue;
-
         }
         if (strpos($function, '-')) continue;
         if (strpos($class, '-')) continue;
@@ -136,6 +168,7 @@ foreach ($dirs as $dir) {
         if ($function == 'clone') continue; //todo: bug in lexer
         if (substr($class, 0, 3) == 'DOM') $class = 'Dom'.substr($class, 3);
         $class = trim($class);
+        if ($class == 'imagick') $class = 'Imagick';
         if (in_array($class.'::'.$function, $existingFunctions)) continue;
         $existingFunctions[] = $class.'::'.$function;
 
@@ -171,8 +204,10 @@ foreach ($dirs as $dir) {
 
 foreach (array_keys($constants) as $c) {
     if ($pos = strpos($c, '::')) {
-        if (!isset($classes[substr($c, 0, $pos)])) {
-            $classes[substr($c, 0, $pos)] = array('functions'=>array());
+        $class = substr($c, 0, $pos);
+        if ($class == 'imagick') $class = 'Imagick';
+        if (!isset($classes[$class])) {
+            $classes[$class] = array('functions'=>array());
         }
     }
 }
@@ -197,7 +232,9 @@ $fileHeader .= "// WARNING! All changes made in this file will be lost!\n\n";
 
 $declarationCount = 0;
 $out = $fileHeader;
+$out .= $splContent;
 foreach ($classes as $class => $i) {
+    if (in_array($class, $skipClasses)) continue; //skip those as they are documented in spl.php
     if ($class != 'global') {
         if (isset($i['desc']) && $i['desc']) {
             $out .= "/**\n";
@@ -258,6 +295,7 @@ foreach ($constants as $c=>$ctype) {
     $out .= "define('$c', ".constTypeValue($ctype).");\n";
     $declarationCount++;
 }
+
 file_put_contents("phpfunctions.php", $out);
 echo "created phpfunctions.php...\n";
 
