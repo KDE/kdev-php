@@ -24,6 +24,7 @@
 #include <language/duchain/topducontext.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/duchain.h>
+#include <language/duchain/declaration.h>
 
 #include "parsesession.h"
 #include "editorintegrator.h"
@@ -102,7 +103,12 @@ DUContext* ContextBuilder::newContext(const SimpleRange& range)
 
 TopDUContext* ContextBuilder::newTopContext(const SimpleRange& range, ParsingEnvironmentFile* file)
 {
-    return new PhpDUContext<TopDUContext>(editor()->currentUrl(), range, file);
+    if (!file) {
+        file = new ParsingEnvironmentFile(editor()->currentUrl());
+    }
+    TopDUContext* ret = new PhpDUContext<TopDUContext>(editor()->currentUrl(), range, file);
+    file->setTopContext(ret);
+    return ret;
 }
 
 void ContextBuilder::setContextOnNode(AstNode* node, KDevelop::DUContext* ctx)
