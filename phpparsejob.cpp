@@ -98,7 +98,9 @@ void ParseJob::run()
     for (uint i=0; i < internalFunctionFilesCount; i++) {
         if (document() == internalFunctionFiles[i]) break;
         if (!DUChain::self()->chainForDocument(internalFunctionFiles[i])) {
-            ParseJob job(KUrl(internalFunctionFiles[i].str()), php());
+            //NOTE: no parent set, if php() would be needed it has to be set in some other way
+            //      because of jobs running in another thread as LanguageSupport
+            ParseJob job(KUrl(internalFunctionFiles[i].str()), 0);
             job.run();
         }
     }
