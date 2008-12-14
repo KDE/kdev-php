@@ -50,6 +50,7 @@ ReferencedTopDUContext ContextBuilder::build( const IndexedString& url, AstNode*
     if (updateContext) {
         DUChainWriteLocker lock(DUChain::lock());
         updateContext->clearImportedParentContexts();
+        updateContext->parsingEnvironmentFile()->clearModificationRevisions();
     }
     ReferencedTopDUContext top = ContextBuilderBase::build(url, node, updateContext);
     if (!updateContext) {

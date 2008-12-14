@@ -24,6 +24,7 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/functiondeclaration.h>
 #include <language/duchain/stringhelpers.h>
+#include <language/duchain/parsingenvironment.h>
 
 #include "editorintegrator.h"
 #include "../parser/parsesession.h"
@@ -103,6 +104,8 @@ Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifie
                 continue;
             }
             currentContext->topContext()->addImportedParentContext(top);
+            currentContext->topContext()->parsingEnvironmentFile()
+                ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
             return declarations[i].declaration();
         }
     }
