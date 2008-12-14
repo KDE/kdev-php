@@ -1,6 +1,7 @@
 /*****************************************************************************
  * Copyright (c) 2007 Andreas Pakulat <apaku@gmx.de>                         *
  * Copyright (c) 2007 Piyush verma <piyush.verma@gmail.com>                  *
+ * Copyright (c) 2008 Niko Sams <niko.sams@gmail.com>                        *
  *                                                                           *
  * Permission is hereby granted, free of charge, to any person obtaining     *
  * a copy of this software and associated documentation files (the           *
@@ -171,6 +172,17 @@ void ParseJob::run()
 
         UseBuilder useBuilder(&editor);
         useBuilder.buildUses(m_ast);
+
+        chain->setFeatures(TopDUContext::AllDeclarationsContextsAndUses);
+        ParsingEnvironmentFilePointer file = chain->parsingEnvironmentFile();
+        
+        QFileInfo fileInfo(document().str());
+        QDateTime lastModified = fileInfo.lastModified();
+        if (m_readFromDisk) {
+            file->setModificationRevision( KDevelop::ModificationRevision( lastModified ) );
+        } else {
+            file->setModificationRevision( KDevelop::ModificationRevision( lastModified, revisionToken() ) );
+        }
     }
     else
     {
