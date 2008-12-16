@@ -173,6 +173,8 @@ void ParseJob::run()
         UseBuilder useBuilder(&editor);
         useBuilder.buildUses(m_ast);
 
+        DUChainWriteLocker lock(DUChain::lock());
+
         chain->setFeatures(TopDUContext::AllDeclarationsContextsAndUses);
         ParsingEnvironmentFilePointer file = chain->parsingEnvironmentFile();
         
