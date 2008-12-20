@@ -119,7 +119,7 @@ void ParseJob::run()
         if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
         {
             KDevelop::ProblemPointer p(new KDevelop::Problem());
-            p->setSource(KDevelop::Problem::Disk);
+            p->setSource(KDevelop::ProblemData::Disk);
             p->setDescription(i18n( "Could not open file '%1'", document().str() ));
             switch (file.error()) {
               case QFile::ReadError:
