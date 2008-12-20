@@ -65,7 +65,7 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
 
 Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifier id, DeclarationType declarationType)
 {
-    kDebug() << id.toString() << declarationType;
+    //kDebug() << id.toString() << declarationType;
     if (declarationType == ClassDeclarationType && id == QualifiedIdentifier("self")) {
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->parentContext()) {
@@ -91,26 +91,26 @@ Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifie
                 return declaration;
             }
         }
-        kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable" << id.toString();
+        //kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable" << id.toString();
         uint nr;
         const IndexedDeclaration* declarations = 0;
         PersistentSymbolTable::self().declarations(id, nr, declarations);
-        kDebug() << "found declarations:" << nr;
+        //kDebug() << "found declarations:" << nr;
         lock.unlock();
 
         DUChainWriteLocker wlock(DUChain::lock());
         for (uint i=0; i<nr; ++i) {
             //TODO check if context is in any loaded project
             if (!declarations[i].declaration()) {
-                kDebug() << "skipping declaration, doesn't have declaration";
+                //kDebug() << "skipping declaration, doesn't have declaration";
                 continue;
             } else if (!isMatch(declarations[i].declaration(), declarationType)) {
-                kDebug() << "skipping declaration, doesn't match with declarationType";
+                //kDebug() << "skipping declaration, doesn't match with declarationType";
                 continue;
             }
             TopDUContext* top = declarations[i].declaration()->context()->topContext();
             if (top->language() != IndexedString("Php")) {
-                kDebug() << "skipping declaration, invalid language" << top->language().str();
+                //kDebug() << "skipping declaration, invalid language" << top->language().str();
                 continue;
             }
             currentContext->topContext()->addImportedParentContext(top);
