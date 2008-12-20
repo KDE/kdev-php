@@ -1042,6 +1042,7 @@ struct KDEVPHPPARSER_EXPORT UnaryExpressionAst: public AstNode
     UnaryExpressionAst *unaryExpression;
     AssignmentListAst *assignmentList;
     ExprAst *expression;
+    UnaryExpressionAst *includeExpression;
     UnaryExpressionNotPlusminusAst *unaryExpressionNotPlusminus;
 };
 

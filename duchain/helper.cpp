@@ -18,6 +18,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 #include "helper.h"
+
+#include <KIO/NetAccess>
+#include <KParts/MainWindow>
+
 #include <language/duchain/ducontext.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/persistentsymboltable.h>
@@ -25,10 +29,16 @@
 #include <language/duchain/functiondeclaration.h>
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/parsingenvironment.h>
+#include <interfaces/icore.h>
+#include <interfaces/iprojectcontroller.h>
+#include <interfaces/iuicontroller.h>
+#include <interfaces/iproject.h>
+#include <project/projectmodel.h>
 
 #include "editorintegrator.h"
 #include "../parser/parsesession.h"
 #include "phpast.h"
+#include "phpdefaultvisitor.h"
 #include "constantdeclaration.h"
 
 using namespace KDevelop;
@@ -115,6 +125,75 @@ Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifie
 QString formatComment(AstNode* node, EditorIntegrator* editor)
 {
     return KDevelop::formatComment(editor->parseSession()->docComment(node->startToken));
+}
+
+//Helper visitor to extract a commonScalar node
+//used to get the value of an function call argument
+class ScalarExpressionVisitor : public DefaultVisitor
+{
+public:
+    ScalarExpressionVisitor() : m_node(0) {}
+    CommonScalarAst* node() const { return m_node; }
+private:
+    virtual void visitCommonScalar(CommonScalarAst* node) {
+        m_node = node;
+    }
+    CommonScalarAst* m_node;
+};
+
+CommonScalarAst* findCommonScalar(AstNode* node)
+{
+    ScalarExpressionVisitor visitor;
+    visitor.visitNode(node);
+    return visitor.node();
+}
+
+
+bool includeExists(const IndexedString& url)
+{
+    {
+        DUChainReadLocker lock(DUChain::lock());
+        if (DUChain::self()->chainForDocument(url)) {
+            return true;
+        }
+    }
+    QWidget *w = 0;
+    if (ICore::self() && ICore::self()->uiController()) w = ICore::self()->uiController()->activeMainWindow();
+    if (KIO::NetAccess::exists(url.toUrl(), KIO::NetAccess::DestinationSide, w)) {
+        return true;
+    }
+    return false;
+}
+
+IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl)
+{
+    //look for file relative to current file
+    QString currentDir = currentUrl.url();
+    currentDir = currentDir.left(currentDir.lastIndexOf('/')+1);
+    IndexedString url(currentDir+includeFile);
+    if (includeExists(url)) return url;
+
+    //first look in own project
+    IProject* ownProject = ICore::self()->projectController()->findProjectForUrl(currentUrl);
+    if (ownProject) {
+        KUrl u = ownProject->projectItem()->url();
+        u.addPath(includeFile);
+        url = IndexedString(u.url());
+        if (includeExists(url)) return url;
+    }
+
+    //then in all open projects
+    foreach (IProject* project, ICore::self()->projectController()->projects()) {
+        if (project == ownProject) continue;
+        KUrl u = project->projectItem()->url();
+        u.addPath(includeFile);
+        url = IndexedString(u.url());
+        if (includeExists(url)) return url;
+    }
+
+    //TODO configurable include paths
+
+    return IndexedString();
 }
 
 }

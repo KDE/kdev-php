@@ -45,6 +45,7 @@
 #include "duchain/declarationbuilder.h"
 #include "duchain/usebuilder.h"
 #include "duchain/helper.h"
+#include "includebuilder.h"
 
 using namespace KDevelop;
 
@@ -98,7 +99,12 @@ void ParseJob::run()
 
     for (uint i=0; i < internalFunctionFilesCount; i++) {
         if (document() == internalFunctionFiles[i]) break;
-        if (!DUChain::self()->chainForDocument(internalFunctionFiles[i])) {
+        TopDUContext *top = 0;
+        {
+            DUChainWriteLocker lock(DUChain::lock());
+            top = DUChain::self()->chainForDocument(internalFunctionFiles[i]);
+        }
+        if (!top) {
             //NOTE: no parent set, if php() would be needed it has to be set in some other way
             //      because of jobs running in another thread as LanguageSupport
             ParseJob job(KUrl(internalFunctionFiles[i].str()), 0);
@@ -165,6 +171,16 @@ void ParseJob::run()
     {
         EditorIntegrator editor( m_session );
 
+        IncludeBuilder includeBuilder(&editor);
+        includeBuilder.build(document(), m_ast);
+        foreach (IndexedString file, includeBuilder.includes()) {
+            if ( abortRequested() )
+                return abortJob();
+            kDebug() << "parse included file" << file.str();
+            ParseJob job(file.toUrl(), 0);
+            job.run();
+        }
+
         DeclarationBuilder builder(&editor);
         KDevelop::ReferencedTopDUContext chain = builder.build(document(), m_ast);
         setDuChain(chain);
@@ -176,7 +192,7 @@ void ParseJob::run()
 
         chain->setFeatures(TopDUContext::AllDeclarationsContextsAndUses);
         ParsingEnvironmentFilePointer file = chain->parsingEnvironmentFile();
-        
+
         QFileInfo fileInfo(document().str());
         QDateTime lastModified = fileInfo.lastModified();
         if (m_readFromDisk) {

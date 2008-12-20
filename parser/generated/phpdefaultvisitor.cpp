@@ -883,6 +883,7 @@ void DefaultVisitor::visitUnaryExpression(UnaryExpressionAst *node)
     visitNode(node->unaryExpression);
     visitNode(node->assignmentList);
     visitNode(node->expression);
+    visitNode(node->includeExpression);
     visitNode(node->unaryExpressionNotPlusminus);
 }
 

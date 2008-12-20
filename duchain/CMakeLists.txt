@@ -5,6 +5,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
     )
 
 set(duchain_SRCS
+    includebuilder.cpp
     declarationbuilder.cpp
     contextbuilder.cpp
     editorintegrator.cpp
@@ -30,6 +31,8 @@ target_link_libraries(kdev4phpduchain
     ${KDevPlatform_LANGUAGE_LIBRARY}
     ${KDE4_KTEXTEDITOR_LIBS}
     ${KDevPlatform_INTERFACES_LIBRARY}
+    ${KDevPlatform_SHELL_LIBRARY}
+    ${KDevPlatform_PROJECT_LIBRARY}
     kdev4phpparser
  )
 

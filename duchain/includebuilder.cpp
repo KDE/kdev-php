@@ -17,49 +17,46 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-#ifndef PHPDUCHAINHELPER_H
-#define PHPDUCHAINHELPER_H
 
-#include "phpduchainexport.h"
 
-#include <language/duchain/identifier.h>
-#include <language/duchain/ducontext.h>
-#include <language/duchain/indexedstring.h>
+#include "includebuilder.h"
+#include "helper.h"
+#include "editorintegrator.h"
+#include "parsesession.h"
 
-namespace KDevelop {
-    class Declaration;
-    class DUContext;
-}
 namespace Php {
-    class AstNode;
-    class CommonScalarAst;
-    class EditorIntegrator;
+using namespace KDevelop;
 
-    enum DeclarationType {
-        ClassDeclarationType,
-        FunctionDeclarationType,
-        ConstantDeclarationType
-    };
-    KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext,
-                                        KDevelop::QualifiedIdentifier id,
-                                        DeclarationType declarationType);
+IncludeBuilder::IncludeBuilder(EditorIntegrator* editor)
+    : m_editor(editor)
+{}
 
-    QString formatComment(AstNode* node, EditorIntegrator* editor);
-
-
-    static const uint internalFunctionFilesCount = 1;
-    static const KDevelop::IndexedString internalFunctionFiles[internalFunctionFilesCount] = {
-        KDevelop::IndexedString("internalfunctions")
-    };
-    inline bool isInternalFunctionFile(KDevelop::IndexedString url) {
-        for (uint i=0; i < internalFunctionFilesCount; i++) {
-            if (url == internalFunctionFiles[i]) return true;
-        }
-        return false;
-    }
-
-    CommonScalarAst* findCommonScalar(AstNode* node);
-
-    KDevelop::IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl);
+QList< KDevelop::IndexedString > IncludeBuilder::includes()
+{
+    return m_includes;
 }
-#endif
+
+void IncludeBuilder::build(const IndexedString &document, AstNode *ast)
+{
+    m_document = document;
+    visitNode(ast);
+}
+
+void IncludeBuilder::visitUnaryExpression(UnaryExpressionAst* node)
+{
+    DefaultVisitor::visitUnaryExpression(node);
+    if (node->includeExpression) {
+        //find name of the constant (first argument of the function call)
+        CommonScalarAst* scalar = findCommonScalar(node->includeExpression);
+        if (scalar && scalar->string != -1) {
+            QString str = m_editor->parseSession()->symbol(scalar->string);
+            str = str.mid(1, str.length()-2);
+            IndexedString includeFile = findIncludeFileUrl(str, KUrl(m_document.str()));
+            if (!includeFile.isEmpty()) {
+                m_includes << includeFile;
+            }
+        }
+    }
+}
+
+}

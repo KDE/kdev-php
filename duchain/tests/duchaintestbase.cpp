@@ -50,7 +50,12 @@ DUChainTestBase::DUChainTestBase()
 void DUChainTestBase::initTestCase()
 {
     for (uint i=0; i < internalFunctionFilesCount; i++) {
-        if (!DUChain::self()->chainForDocument(internalFunctionFiles[i])) {
+        TopDUContext *top = 0;
+        {
+            DUChainReadLocker lock(DUChain::lock());
+            top = DUChain::self()->chainForDocument(internalFunctionFiles[i]);
+        }
+        if (!top) {
             QByteArray content("<?php ");
             if (i==0) {
                 content += "function substr() {} class stdClass {} ";

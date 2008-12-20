@@ -39,20 +39,6 @@ using namespace KDevelop;
 
 namespace Php {
 
-//Helper visitor to extract a commonScalar node
-//used to get the value of an function call argument
-class ScalarExpressionVisitor : public DefaultVisitor
-{
-public:
-    ScalarExpressionVisitor() : m_node(0) {}
-    CommonScalarAst* node() const { return m_node; }
-private:
-    virtual void visitCommonScalar(CommonScalarAst* node) {
-        m_node = node;
-    }
-    CommonScalarAst* m_node;
-};
-
 DeclarationBuilder::DeclarationBuilder (ParseSession* session)
     : m_lastVariableIdentifier(0)
 {
@@ -334,13 +320,13 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
         if (identifierForNode(node->stringFunctionNameOrClass) == QualifiedIdentifier("define")
             && node->stringParameterList->parametersSequence->count() > 0) {
             //constant, defined through define-function
-            ScalarExpressionVisitor visitor;
+
             //find name of the constant (first argument of the function call)
-            visitor.visitNode(node->stringParameterList->parametersSequence->at(0)->element);
-            if (visitor.node() && visitor.node()->string != -1) {
-                QString constant = editor()->parseSession()->symbol(visitor.node()->string);
+            CommonScalarAst* scalar = findCommonScalar(node->stringParameterList->parametersSequence->at(0)->element);
+            if (scalar && scalar->string != -1) {
+                QString constant = editor()->parseSession()->symbol(scalar->string);
                 constant = constant.mid(1, constant.length()-2);
-                SimpleRange newRange = editorFindRange(visitor.node(), visitor.node());
+                SimpleRange newRange = editorFindRange(scalar, scalar);
                 DUChainWriteLocker lock(DUChain::lock());
                 LockedSmartInterface iface = editor()->smart();
                 injectContext(iface, currentContext()->topContext()); //constants are always global

@@ -1096,13 +1096,14 @@ void TestDUChain::testObjectWithClassName()
     TopDUContext* top = parse(method, DumpNone, "testObjectWithClassName.php");
 
     QByteArray method2("<? $setupPage = new setupPage; $setupPage->foo();");
-    top = parse(method2, DumpNone, "testObjectWithClassName.php");
+    TopDUContext* top2 = parse(method2, DumpNone, "testObjectWithClassName.php");
 
     DUChainWriteLocker lock(DUChain::lock());
 
     //just test that it doesn't crash
 
     release(top);
+    release(top2);
 }
 
 void TestDUChain::testLargeNumberOfDeclarations()

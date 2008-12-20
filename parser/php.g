@@ -447,10 +447,10 @@ expression=booleanOrExpression
   | LIST LPAREN assignmentList=assignmentList RPAREN ASSIGN unaryExpression=unaryExpression
   | EXIT (LPAREN (expression=expr | 0) RPAREN | 0)
   | EVAL LPAREN expression=expr RPAREN
-  | INCLUDE unaryExpression=unaryExpression
-  | INCLUDE_ONCE unaryExpression=unaryExpression
-  | REQUIRE unaryExpression=unaryExpression
-  | REQUIRE_ONCE unaryExpression=unaryExpression
+  | INCLUDE includeExpression=unaryExpression
+  | INCLUDE_ONCE includeExpression=unaryExpression
+  | REQUIRE includeExpression=unaryExpression
+  | REQUIRE_ONCE includeExpression=unaryExpression
 
   | unaryExpressionNotPlusminus=unaryExpressionNotPlusminus
  )

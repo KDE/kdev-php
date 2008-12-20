@@ -64,11 +64,14 @@ protected:
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
     virtual void visitClassStatement(ClassStatementAst *node);
     virtual void visitTopStatement(TopStatementAst* node);
-    virtual void visitFunctionDeclarationStatement( FunctionDeclarationStatementAst* node );
+    virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
+    virtual void visitUnaryExpression(UnaryExpressionAst* node);
 
     virtual void addBaseType(const KDevelop::StructureType::Ptr& base, bool implementsInterface);
 
     virtual void classContextOpened(KDevelop::DUContext* context);
+private:
+    bool processInclude(const KUrl& url);
 };
 
 }

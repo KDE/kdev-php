@@ -17,49 +17,36 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-#ifndef PHPDUCHAINHELPER_H
-#define PHPDUCHAINHELPER_H
 
-#include "phpduchainexport.h"
 
-#include <language/duchain/identifier.h>
-#include <language/duchain/ducontext.h>
+#ifndef INCLUDEBUILDER_H
+#define INCLUDEBUILDER_H
+
+#include <QList>
 #include <language/duchain/indexedstring.h>
 
-namespace KDevelop {
-    class Declaration;
-    class DUContext;
-}
+#include "phpduchainexport.h"
+#include "phpdefaultvisitor.h"
+
 namespace Php {
-    class AstNode;
-    class CommonScalarAst;
-    class EditorIntegrator;
+class EditorIntegrator;
 
-    enum DeclarationType {
-        ClassDeclarationType,
-        FunctionDeclarationType,
-        ConstantDeclarationType
-    };
-    KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext,
-                                        KDevelop::QualifiedIdentifier id,
-                                        DeclarationType declarationType);
+class KDEVPHPDUCHAIN_EXPORT IncludeBuilder : public DefaultVisitor
+{
+public:
+    IncludeBuilder(EditorIntegrator* editor);
+    QList<KDevelop::IndexedString> includes();
+    void build(const KDevelop::IndexedString &document, AstNode* ast);
 
-    QString formatComment(AstNode* node, EditorIntegrator* editor);
+protected:
+    virtual void visitUnaryExpression(UnaryExpressionAst* node);
 
+private:
+    EditorIntegrator* m_editor;
+    QList<KDevelop::IndexedString> m_includes;
+    KDevelop::IndexedString m_document;
+};
 
-    static const uint internalFunctionFilesCount = 1;
-    static const KDevelop::IndexedString internalFunctionFiles[internalFunctionFilesCount] = {
-        KDevelop::IndexedString("internalfunctions")
-    };
-    inline bool isInternalFunctionFile(KDevelop::IndexedString url) {
-        for (uint i=0; i < internalFunctionFilesCount; i++) {
-            if (url == internalFunctionFiles[i]) return true;
-        }
-        return false;
-    }
-
-    CommonScalarAst* findCommonScalar(AstNode* node);
-
-    KDevelop::IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl);
 }
-#endif
+
+#endif // INCLUDEBUILDER_H
