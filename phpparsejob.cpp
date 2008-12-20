@@ -164,7 +164,6 @@ void ParseJob::run()
     if ( matched )
     {
         EditorIntegrator editor( m_session );
-        editor.setCurrentUrl(document(),true);
 
         DeclarationBuilder builder(&editor);
         KDevelop::ReferencedTopDUContext chain = builder.build(document(), m_ast);
