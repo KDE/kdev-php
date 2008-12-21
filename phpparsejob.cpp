@@ -153,7 +153,6 @@ void ParseJob::run()
 //         if( codec )
 //             s.setCodec( QTextCodec::codecForName(codec) );
         m_session->setContents( s.readAll() );
-        Q_ASSERT( m_session->contents().size() > 0 );
         file.close();
     }
     else
