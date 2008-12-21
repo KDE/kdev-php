@@ -97,8 +97,6 @@ void ParseJob::setDUChain( ReferencedTopDUContext duChain )
 
 void ParseJob::run()
 {
-    kDebug() << "parsing" << document().str();
-
     for (uint i=0; i < internalFunctionFilesCount; i++) {
         if (document() == internalFunctionFiles[i]) break;
         TopDUContext *top = 0;
@@ -128,6 +126,8 @@ void ParseJob::run()
             return;
         }
     }
+
+    kDebug() << "parsing" << document().str();
 
     m_readFromDisk = !contentsAvailableFromEditor();
 
