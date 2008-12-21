@@ -61,6 +61,7 @@ ParseJob::ParseJob( const KUrl &url, QObject *parent )
         , m_ast( 0 )
         , m_readFromDisk( false )
         , m_url( url )
+        , m_parentJob( 0 )
 {
 }
 
@@ -102,7 +103,7 @@ void ParseJob::run()
         if (document() == internalFunctionFiles[i]) break;
         TopDUContext *top = 0;
         {
-            DUChainWriteLocker lock(DUChain::lock());
+            DUChainReadLocker lock(DUChain::lock());
             top = DUChain::self()->chainForDocument(internalFunctionFiles[i]);
         }
         if (!top) {
@@ -110,6 +111,24 @@ void ParseJob::run()
             job.run();
         }
     }
+
+    {
+        DUChainReadLocker lock(DUChain::lock());
+        bool needsUpdate = true;
+        foreach (ParsingEnvironmentFilePointer file, DUChain::self()->allEnvironmentFiles(document())) {
+            if (file->needsUpdate()) {
+                needsUpdate = true;
+                break;
+            } else {
+                needsUpdate = false;
+            }
+        }
+        if (!needsUpdate) {
+            kDebug() << "Already up to date" << document().str();
+            return;
+        }
+    }
+
     m_readFromDisk = !contentsAvailableFromEditor();
 
     if ( m_readFromDisk )
@@ -174,8 +193,13 @@ void ParseJob::run()
         foreach (IndexedString file, includeBuilder.includes()) {
             if ( abortRequested() )
                 return abortJob();
+            if (hasParentDocument(file)) {
+                kDebug() << "file includes itself" << file.str();
+                continue;
+            }
             kDebug() << "parse included file" << file.str();
             ParseJob job(file.toUrl(), 0);
+            job.setParentJob(this);
             job.run();
         }
 
@@ -211,6 +235,20 @@ void ParseJob::run()
 ParseSession *ParseJob::parseSession() const
 {
     return m_session;
+}
+
+void ParseJob::setParentJob(ParseJob *job)
+{
+    m_parentJob = job;
+}
+
+
+bool ParseJob::hasParentDocument(const IndexedString &document)
+{
+    kDebug() << m_parentJob << document.str() << (m_parentJob ? m_parentJob->document().str() : "");
+    if (!m_parentJob) return false;
+    if (m_parentJob->document() == document) return true;
+    return m_parentJob->hasParentDocument(document);
 }
 
 }

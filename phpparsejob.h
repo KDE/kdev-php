@@ -66,6 +66,8 @@ public:
     ParseSession* parseSession() const;
     bool wasReadFromDisk() const;
 
+    void setParentJob(ParseJob *job);
+
 protected:
     virtual void run();
 
@@ -76,6 +78,13 @@ private:
     KDevelop::ReferencedTopDUContext m_duContext;
     KUrl m_url;
     KTextEditor::Range m_textRangeToParse;
+    ParseJob *m_parentJob; ///< parent job if this one is an include
+
+    /**
+     * Checks if a parent job parses already \p document. Used to prevent
+     * endless recursions in include statements
+     */
+    bool hasParentDocument(const KDevelop::IndexedString &document);
 };
 
 }
