@@ -178,7 +178,7 @@ IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &current
     if (ownProject) {
         KUrl u = ownProject->projectItem()->url();
         u.addPath(includeFile);
-        url = IndexedString(u.url());
+        url = IndexedString(u.path());
         if (includeExists(url)) return url;
     }
 
@@ -187,7 +187,7 @@ IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &current
         if (project == ownProject) continue;
         KUrl u = project->projectItem()->url();
         u.addPath(includeFile);
-        url = IndexedString(u.url());
+        url = IndexedString(u.path());
         if (includeExists(url)) return url;
     }
 
