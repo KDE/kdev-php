@@ -98,8 +98,6 @@ void ParseJob::run()
 {
     kDebug() << "parsing" << document().str();
 
-    QReadLocker lock(php()->language()->parseLock());
-
     for (uint i=0; i < internalFunctionFilesCount; i++) {
         if (document() == internalFunctionFiles[i]) break;
         TopDUContext *top = 0;
@@ -180,6 +178,8 @@ void ParseJob::run()
             ParseJob job(file.toUrl(), 0);
             job.run();
         }
+
+        QReadLocker parseLock(php()->language()->parseLock());
 
         DeclarationBuilder builder(&editor);
         KDevelop::ReferencedTopDUContext chain = builder.build(document(), m_ast);
