@@ -64,6 +64,11 @@ CodeCompletionModel::CodeCompletionModel( QObject * parent )
         this, SLOT(modifyCompletionRangeInternal(KTextEditor::View*, KTextEditor::SmartRange*, QRegExp&)));
 }
 
+KDevelop::CodeCompletionWorker* CodeCompletionModel::createCompletionWorker()
+{
+    return new CodeCompletionWorker(this);
+}
+
 CodeCompletionModel::~CodeCompletionModel()
 {
 }

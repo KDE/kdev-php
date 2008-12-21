@@ -75,7 +75,6 @@ LanguageSupport::LanguageSupport( QObject* parent, const QVariantList& /*args*/ 
 //    m_highlighting = new Highlighting( this );
 
     CodeCompletionModel* ccModel = new CodeCompletionModel(this);
-    ccModel->setCompletionWorker(new CodeCompletionWorker(ccModel));
     new KDevelop::CodeCompletion( this, ccModel, name() );
 /*
     //TODO: enable this
