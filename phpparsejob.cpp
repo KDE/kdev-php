@@ -245,7 +245,6 @@ void ParseJob::setParentJob(ParseJob *job)
 
 bool ParseJob::hasParentDocument(const IndexedString &document)
 {
-    kDebug() << m_parentJob << document.str() << (m_parentJob ? m_parentJob->document().str() : "");
     if (!m_parentJob) return false;
     if (m_parentJob->document() == document) return true;
     return m_parentJob->hasParentDocument(document);
