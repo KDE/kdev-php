@@ -57,6 +57,8 @@ public:
     KDevelop::ParseJob *createParseJob( const KUrl &url );
     /*the actual language object*/
     KDevelop::ILanguage *language();
+
+    static LanguageSupport* self();
     /*the code highlighter*/
 //    KDevelop::ICodeHighlighting* codeHighlighting() const;
 
@@ -66,6 +68,7 @@ private slots:
 
 private:
     Highlighting* m_highlighting;
+    static LanguageSupport* m_self;
 };
 
 }

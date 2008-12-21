@@ -36,6 +36,7 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/topducontext.h>
 #include <language/duchain/dumpchain.h>
+#include <interfaces/ilanguage.h>
 
 // #include "phphighlighting.h"
 #include "editorintegrator.h"
@@ -53,7 +54,7 @@ namespace Php
 {
 
 
-ParseJob::ParseJob( const KUrl &url, LanguageSupport *parent )
+ParseJob::ParseJob( const KUrl &url, QObject *parent )
         : KDevelop::ParseJob( url, parent )
         , m_session( new ParseSession )
         , m_ast( 0 )
@@ -68,9 +69,8 @@ ParseJob::~ParseJob()
 
 LanguageSupport *ParseJob::php() const
 {
-    return qobject_cast<LanguageSupport*>( const_cast<QObject*>( parent() ) );
+    return LanguageSupport::self();
 }
-
 
 StartAst *ParseJob::ast() const
 {
@@ -105,9 +105,7 @@ void ParseJob::run()
             top = DUChain::self()->chainForDocument(internalFunctionFiles[i]);
         }
         if (!top) {
-            //NOTE: no parent set, if php() would be needed it has to be set in some other way
-            //      because of jobs running in another thread as LanguageSupport
-            ParseJob job(KUrl(internalFunctionFiles[i].str()), 0);
+            ParseJob job(KUrl(internalFunctionFiles[i].str()));
             job.run();
         }
     }

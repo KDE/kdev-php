@@ -51,7 +51,7 @@ class ParseJob : public KDevelop::ParseJob
     Q_OBJECT
 
 public:
-    ParseJob( const KUrl &url, LanguageSupport* parent );
+    ParseJob( const KUrl &url, QObject* parent = 0 );
     virtual ~ParseJob();
 
     void setAST( StartAst* ast );

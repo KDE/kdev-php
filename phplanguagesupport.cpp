@@ -26,6 +26,7 @@
 #include "phplanguagesupport.h"
 
 #include <QMutexLocker>
+#include <QReadWriteLock>
 
 #include <kdebug.h>
 #include <kcomponentdata.h>
@@ -61,11 +62,15 @@ K_EXPORT_PLUGIN( KDevPhpSupportFactory( "kdevphpsupport" ) )
 namespace Php
 {
 
+LanguageSupport* LanguageSupport::m_self = 0;
+
 LanguageSupport::LanguageSupport( QObject* parent, const QVariantList& /*args*/ )
         : KDevelop::IPlugin( KDevPhpSupportFactory::componentData(), parent ),
         KDevelop::ILanguageSupport()
 {
     KDEV_USE_EXTENSION_INTERFACE( KDevelop::ILanguageSupport )
+
+    m_self = this;
 
 //    m_highlighting = new Highlighting( this );
 
@@ -85,7 +90,14 @@ LanguageSupport::LanguageSupport( QObject* parent, const QVariantList& /*args*/ 
 
 LanguageSupport::~LanguageSupport()
 {
+    ILanguage* lang = language();
+    lang->parseLock()->lockForWrite();
+    m_self = 0; //By locking the parse-mutexes, we make sure that parse- and preprocess-jobs get a chance to finish in a good state
+    lang->parseLock()->unlock();
+
+    // Remove any documents waiting to be parsed from the background paser.
     core()->languageController()->backgroundParser()->clear( this );
+
     //delete m_highlighting;
     //m_highlighting = 0;
 }
@@ -125,6 +137,11 @@ KDevelop::ILanguage *LanguageSupport::language()
 // {
 //     return 0;
 // }
+
+LanguageSupport *LanguageSupport::self()
+{
+    return m_self;
+}
 
 }
 
