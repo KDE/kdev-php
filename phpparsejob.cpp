@@ -24,6 +24,7 @@
  *****************************************************************************/
 #include "phpparsejob.h"
 #include <QFile>
+#include <QReadWriteLock>
 
 #include <ktexteditor/document.h>
 #include <ktexteditor/smartinterface.h>
@@ -96,6 +97,8 @@ void ParseJob::setDUChain( ReferencedTopDUContext duChain )
 void ParseJob::run()
 {
     kDebug() << "parsing" << document().str();
+
+    QReadLocker lock(php()->language()->parseLock());
 
     for (uint i=0; i < internalFunctionFilesCount; i++) {
         if (document() == internalFunctionFiles[i]) break;
