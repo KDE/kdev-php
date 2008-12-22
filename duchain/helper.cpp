@@ -168,7 +168,7 @@ bool includeExists(const IndexedString& url)
 IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl)
 {
     //look for file relative to current file
-    QString currentDir = currentUrl.url();
+    QString currentDir = currentUrl.path();
     currentDir = currentDir.left(currentDir.lastIndexOf('/')+1);
     IndexedString url(currentDir+includeFile);
     if (includeExists(url)) return url;
