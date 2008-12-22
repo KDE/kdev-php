@@ -170,7 +170,7 @@ void CodeCompletionWorker::computeGroups(QList<CompletionTreeItemPointer> items,
    * */
   ItemGrouper<ArgumentHintDepthExtractor, ItemGrouper<InheritanceDepthExtractor, ItemGrouper<SimplifiedAttributesExtractor> > > argumentHintDepthGrouper(tree, 0, items);
 
-  emit foundDeclarations( tree, completionContext.data() );
+  emit foundDeclarations( tree, KSharedPtr<KDevelop::CodeCompletionContext>::staticCast(completionContext) );
 }
 
 }
