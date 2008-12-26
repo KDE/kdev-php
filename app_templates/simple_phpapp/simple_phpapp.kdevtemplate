@@ -1,0 +1,6 @@
+# KDE Config File
+[General]
+Name=Simple PHP Application
+Category=PHP
+Comment=Generate filestructure to start a PHP application
+ShowFilesAfterGeneration=%{dest}/src/%{APPNAMELC}.php
