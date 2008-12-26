@@ -22,6 +22,7 @@
 #define DECLARATIONBUILDER_H
 
 #include "typebuilder.h"
+#include "helper.h"
 #include <language/duchain/builders/abstractdeclarationbuilder.h>
 namespace KDvelop {
     class Declaration;
@@ -57,6 +58,8 @@ protected:
     void classTypeOpened(KDevelop::AbstractType::Ptr type);
     void classContextOpened(KDevelop::DUContext* context);
 
+    KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext, DeclarationType declarationType, IdentifierAst* node);
+    KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext, DeclarationType declarationType, VariableIdentifierAst* node);
 
 private:
     VariableIdentifierAst* m_lastVariableIdentifier;

@@ -40,9 +40,12 @@ namespace Php {
         FunctionDeclarationType,
         ConstantDeclarationType
     };
-    KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext,
+    KDevelop::Declaration* findDeclarationImportHelper(KDevelop::DUContext* currentContext,
                                         KDevelop::QualifiedIdentifier id,
-                                        DeclarationType declarationType);
+                                        DeclarationType declarationType,
+                                        AstNode* node,
+                                        EditorIntegrator* editor,
+                                        bool createProblems);
 
     QString formatComment(AstNode* node, EditorIntegrator* editor);
 

@@ -48,6 +48,7 @@
 #include "duchain/usebuilder.h"
 #include "duchain/helper.h"
 #include "includebuilder.h"
+#include "phpducontext.h"
 
 using namespace KDevelop;
 
@@ -80,19 +81,9 @@ StartAst *ParseJob::ast() const
     return m_ast;
 }
 
-ReferencedTopDUContext ParseJob::duChain() const
-{
-    return m_duContext;
-}
-
 bool ParseJob::wasReadFromDisk() const
 {
     return m_readFromDisk;
-}
-
-void ParseJob::setDUChain( ReferencedTopDUContext duChain )
-{
-    m_duContext = duChain;
 }
 
 void ParseJob::run()
@@ -174,7 +165,8 @@ void ParseJob::run()
     }
     else
     {
-        m_session->setContents( contentsFromEditor().toAscii() );
+        m_session->setContents(contentsFromEditor());
+        m_session->setCurrentDocument(document().str());
     }
 
 
@@ -221,13 +213,40 @@ void ParseJob::run()
         QDateTime lastModified = fileInfo.lastModified();
         if (m_readFromDisk) {
             file->setModificationRevision( KDevelop::ModificationRevision( lastModified ) );
-        } else {
+        } else {            
             file->setModificationRevision( KDevelop::ModificationRevision( lastModified, revisionToken() ) );
         }
-    }
+    }   
     else
     {
+        ReferencedTopDUContext top;
+        {
+            DUChainReadLocker lock(DUChain::lock());
+            top = DUChain::self()->chainForDocument(document());
+        }
+        if (top) {
+            DUChainWriteLocker lock(DUChain::lock());
+            top->clearImportedParentContexts();
+            top->parsingEnvironmentFile()->clearModificationRevisions();
+            top->clearProblems();
+        } else {
+            DUChainWriteLocker lock(DUChain::lock());
+            ParsingEnvironmentFile *file = new ParsingEnvironmentFile(document());
+            top = new TopDUContext(document(), SimpleRange( SimpleCursor( 0, 0 ), SimpleCursor( INT_MAX, INT_MAX ) ), file);
+            file->setTopContext(top.data());
+            top->setLanguage(IndexedString("Php"));
+            DUChain::self()->addDocumentChain( top );
+        }
+        setDuChain(top);
+        foreach (ProblemPointer p, m_session->problems()) {
+            DUChainWriteLocker lock(DUChain::lock());
+            top->addProblem(p);
+        }
         kDebug() << "===Failed===" << document().str();
+        {
+            DUChainReadLocker lock(DUChain::lock());
+            kDebug() << DUChain::self()->chainForDocument(document());
+        }
         return;
     }
 }

@@ -55,8 +55,15 @@ void ParseSession::setContents( const QString& contents )
     m_contents = contents;
 }
 
+void ParseSession::setCurrentDocument(const QString& filename)
+{
+    m_currentDocument = filename;
+}
+
 bool ParseSession::readFile( const QString& filename, const char* codec )
 {
+    m_currentDocument = filename;
+
     QFile f(filename);
     if( !f.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
@@ -86,6 +93,7 @@ Parser* ParseSession::createParser(int initialState)
     parser->setTokenStream( m_tokenStream );
     parser->setMemoryPool( m_pool );
     parser->setDebug( m_debug );
+    parser->setCurrentDocument(m_currentDocument);
 
     parser->tokenize(m_contents, initialState);
     return parser;
@@ -106,6 +114,7 @@ bool ParseSession::parse( Php::StartAst** ast )
         parser->expectedSymbol(AstNode::StartKind, "start");
         kDebug() << "Couldn't parse content";
     }
+    m_problems = parser->problems();
     delete parser;
     return matched;
 }
@@ -135,6 +144,10 @@ QString ParseSession::docComment( qint64 token ) const
     const TokenStream::Token& tok = m_tokenStream->token( token );
     if (!tok.docCommentEnd) return QString();
     return m_contents.mid(tok.docCommentBegin, tok.docCommentEnd - tok.docCommentBegin + 1);
+}
+
+QList<KDevelop::ProblemPointer> ParseSession::problems() {
+    return m_problems;
 }
 
 }

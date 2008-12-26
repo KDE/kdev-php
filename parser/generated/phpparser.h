@@ -235,8 +235,13 @@ public:
         Info
     };
     void reportProblem( Parser::ProblemType type, const QString& message );
+    QList<KDevelop::ProblemPointer> problems()
+    {
+        return m_problems;
+    }
     QString tokenText(qint64 begin, qint64 end);
     void setDebug(bool debug);
+    void setCurrentDocument(QString url);
 
     enum InitialLexerState
     {
@@ -255,6 +260,8 @@ private:
     };
     QString m_contents;
     bool m_debug;
+    QString m_currentDocument;
+    QList<KDevelop::ProblemPointer> m_problems;
 
     struct ParserState
     {

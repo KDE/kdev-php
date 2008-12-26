@@ -43,6 +43,7 @@
 #include <QtCore/QString>
 #include <kdebug.h>
 #include <tokenstream.h>
+#include <language/interfaces/iproblem.h>
 #include "phplexer.h"
 
 namespace KDevelop
@@ -135,8 +136,12 @@ namespace KDevelop
       Info
   };
   void reportProblem( Parser::ProblemType type, const QString& message );
+  QList<KDevelop::ProblemPointer> problems() {
+      return m_problems;
+  }
   QString tokenText(qint64 begin, qint64 end);
   void setDebug(bool debug);
+  void setCurrentDocument(QString url);
 
     enum InitialLexerState {
         HtmlState = 0,
@@ -154,6 +159,8 @@ namespace KDevelop
     };
     QString m_contents;
     bool m_debug;
+    QString m_currentDocument;
+    QList<KDevelop::ProblemPointer> m_problems;
 
     struct ParserState {
         VarExpressionState varExpressionState;
@@ -836,6 +843,7 @@ identifier=identifier
 [:
 
 #include <QtCore/QDebug>
+#include <KTextEditor/Range>
 
 namespace Php
 {
@@ -892,6 +900,19 @@ void Parser::reportProblem( Parser::ProblemType type, const QString& message )
         qDebug() << "** WARNING:" << message;
     else if (type == Info)
         qDebug() << "** Info:" << message;
+    
+    qint64 sLine;
+    qint64 sCol;
+    qint64 index = tokenStream->index()-1;
+    tokenStream->startPosition(index, &sLine, &sCol);
+    qint64 eLine;
+    qint64 eCol;
+    tokenStream->endPosition(index, &eLine, &eCol);
+    KDevelop::Problem *p = new KDevelop::Problem();
+    p->setSource(KDevelop::ProblemData::Parser);
+    p->setDescription(message);
+    p->setFinalLocation(KDevelop::DocumentRange(m_currentDocument, KTextEditor::Range(sLine, sCol, eLine, eCol+1)));
+    m_problems << KDevelop::ProblemPointer(p);
 }
 
 
@@ -911,19 +932,30 @@ void Parser::expectedSymbol(int /*expectedSymbol*/, const QString& name)
     kDebug() << "index is:" << index;
     tokenStream->startPosition(index, &line, &col);
     QString tokenValue = tokenText(token.begin, token.end);
+    qint64 eLine;
+    qint64 eCol;
+    tokenStream->endPosition(index, &eLine, &eCol);
     reportProblem( Parser::Error,
-                   QString("Expected symbol \"%1\" (current token: \"%2\" [%3] at line: %4 col: %5)")
+                   QString("Expected symbol \"%1\" (current token: \"%2\" [%3] at %4:%5 - %6:%7)")
                   .arg(name)
                   .arg(token.kind != 0 ? tokenValue : "EOF")
                   .arg(token.kind)
                   .arg(line)
-                  .arg(col));
+                  .arg(col)
+                  .arg(eLine)
+                  .arg(eCol));
 }
 
 void Parser::setDebug( bool debug )
 {
     m_debug = debug;
 }
+
+void Parser::setCurrentDocument(QString url)
+{
+    m_currentDocument = url;
+}
+
 
 Parser::ParserState *Parser::copyCurrentState()
 {

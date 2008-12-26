@@ -13,6 +13,7 @@
 #include <QtCore/QString>
 #include <kdebug.h>
 #include <tokenstream.h>
+#include <language/interfaces/iproblem.h>
 #include "phplexer.h"
 
 namespace KDevelop

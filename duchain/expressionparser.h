@@ -39,11 +39,14 @@ public:
      * */
     explicit ExpressionParser(bool useCursor, bool debug = false);
 
+    void setCreateProblems(bool v);
+
     ExpressionEvaluationResult evaluateType( const QByteArray& expression, KDevelop::DUContextPointer context);
     ExpressionEvaluationResult evaluateType( AstNode* ast, EditorIntegrator* editor);
 private:
     bool m_useCursor;
     bool m_debug;
+    bool m_createProblems;
 };
 
 

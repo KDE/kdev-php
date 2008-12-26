@@ -51,9 +51,11 @@ ReferencedTopDUContext ContextBuilder::build( const IndexedString& url, AstNode*
         DUChainWriteLocker lock(DUChain::lock());
         updateContext->clearImportedParentContexts();
         updateContext->parsingEnvironmentFile()->clearModificationRevisions();
+        updateContext->clearProblems();
     }
     ReferencedTopDUContext top = ContextBuilderBase::build(url, node, updateContext);
     if (!updateContext) {
+	DUChainWriteLocker lock(DUChain::lock());
         top->setLanguage(IndexedString("Php"));
     }
     return top;

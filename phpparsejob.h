@@ -57,9 +57,6 @@ public:
     void setAST( StartAst* ast );
     virtual StartAst *ast() const;
 
-    void setDUChain( KDevelop::ReferencedTopDUContext duChain );
-    virtual KDevelop::ReferencedTopDUContext duChain() const;
-
     const KTextEditor::Range& textRangeToParse() const;
 
     LanguageSupport* php() const;

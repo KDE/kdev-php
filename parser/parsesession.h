@@ -50,6 +50,7 @@ public:
     ~ParseSession();
 
     void setContents( const QString& contents );
+    void setCurrentDocument(const QString& filename);
     bool readFile( const QString& filename, const char* charset = 0 );
     void setDebug( bool );
     TokenStream* tokenStream() const;
@@ -73,12 +74,15 @@ public:
    */
     KDevelop::SimpleCursor positionAt( qint64 offset ) const;
 
+    QList<KDevelop::ProblemPointer> problems();
+
 private:
     QString m_contents;
     bool m_debug;
+    QString m_currentDocument;
     KDevPG::MemoryPool* m_pool;
     TokenStream* m_tokenStream;
-
+    QList<KDevelop::ProblemPointer> m_problems;
 };
 
 }

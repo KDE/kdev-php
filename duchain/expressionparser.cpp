@@ -36,8 +36,12 @@ using namespace KDevelop;
 namespace Php {
 
 ExpressionParser::ExpressionParser(bool useCursor, bool debug)
-    : m_useCursor(useCursor), m_debug(debug)
+    : m_useCursor(useCursor), m_debug(debug), m_createProblems(false)
 {
+}
+void ExpressionParser::setCreateProblems(bool v)
+{
+    m_createProblems = v;
 }
 
 ExpressionEvaluationResult ExpressionParser::evaluateType( const QByteArray& expression, DUContextPointer context)
@@ -75,6 +79,7 @@ ExpressionEvaluationResult ExpressionParser::evaluateType( AstNode* ast, EditorI
     }
 
     ExpressionVisitor v(editor, m_useCursor);
+    v.setCreateProblems(m_createProblems);
     v.visitNode( ast );	
 
     return v.result();

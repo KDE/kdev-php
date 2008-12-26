@@ -23,6 +23,7 @@
 #include "phpdefaultvisitor.h"
 #include "phpduchainexport.h"
 #include "expressionevaluationresult.h"
+#include "helper.h"
 
 #include <language/duchain/types/abstracttype.h>
 #include <language/duchain/identifier.h>
@@ -40,6 +41,7 @@ class KDEVPHPDUCHAIN_EXPORT ExpressionVisitor : public DefaultVisitor
 public:
     ExpressionVisitor(EditorIntegrator* editor, bool useCursor);
     ExpressionEvaluationResult result() { return m_result; }
+    void setCreateProblems(bool v);
 
 protected:
     KDevelop::Declaration* processVariable(VariableIdentifierAst *variable);
@@ -69,6 +71,9 @@ protected:
         Q_UNUSED(node) Q_UNUSED(decl)
     }
 
+    KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext, DeclarationType declarationType, IdentifierAst* node);
+    KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext, DeclarationType declarationType, VariableIdentifierAst* node);
+
 protected:
     EditorIntegrator* m_editor;
 
@@ -81,6 +86,8 @@ private:
     ExpressionEvaluationResult m_result;
 
     bool m_isAssignmentExpressionEqual;
+
+    bool m_createProblems;
 };
 
 }

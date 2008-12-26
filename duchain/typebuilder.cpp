@@ -188,6 +188,7 @@ void TypeBuilder::visitExpr(ExprAst *node)
 {
     node->ducontext = currentContext();
     ExpressionParser ep(true);
+    ep.setCreateProblems(true);
     ExpressionEvaluationResult res = ep.evaluateType(node, editor());
     openAbstractType(res.type());
 

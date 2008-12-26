@@ -37,9 +37,10 @@
 
 #include "editorintegrator.h"
 #include "../parser/parsesession.h"
-#include "phpast.h"
+#include "../parser/phpast.h"
 #include "phpdefaultvisitor.h"
 #include "constantdeclaration.h"
+#include <klocalizedstring.h>
 
 using namespace KDevelop;
 
@@ -63,7 +64,8 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
     return false;
 }
 
-Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifier id, DeclarationType declarationType)
+Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIdentifier id,
+                                    DeclarationType declarationType, AstNode* node, EditorIntegrator* editor, bool createProblems)
 {
     //kDebug() << id.toString() << declarationType;
     if (declarationType == ClassDeclarationType && id == QualifiedIdentifier("self")) {
@@ -113,10 +115,33 @@ Declaration* findDeclarationImport(DUContext* currentContext, QualifiedIdentifie
                 //kDebug() << "skipping declaration, invalid language" << top->language().str();
                 continue;
             }
-            currentContext->topContext()->addImportedParentContext(top);
             currentContext->topContext()->parsingEnvironmentFile()
                 ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
             return declarations[i].declaration();
+        }
+    }
+
+    if (createProblems) {
+        KDevelop::Problem *p = new KDevelop::Problem();
+        p->setSource(KDevelop::ProblemData::DUChainBuilder);
+        QString declarationTypeString;
+        switch (declarationType) {
+            case ClassDeclarationType:
+                declarationTypeString = "class";
+                break;
+            case FunctionDeclarationType:
+                declarationTypeString = "function";
+                break;
+            case ConstantDeclarationType:
+                declarationTypeString = "constant";
+                break;
+        }
+        p->setDescription(i18n("Could not find %1 '%2'", declarationTypeString, id.toString()));
+        p->setFinalLocation(KDevelop::DocumentRange(editor->currentUrl().str(), editor->findRange(node).textRange()));
+        {
+            DUChainWriteLocker lock(DUChain::lock());
+            kDebug() << "Problem" << p->description();
+            currentContext->topContext()->addProblem(KDevelop::ProblemPointer(p));
         }
     }
     return 0;

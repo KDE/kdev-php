@@ -36,7 +36,7 @@ using namespace KDevelop;
 namespace Php {
 
 ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor, bool useCursor)
-    : m_editor(editor), m_useCursor(useCursor), m_isAssignmentExpressionEqual(false)
+    : m_editor(editor), m_useCursor(useCursor), m_isAssignmentExpressionEqual(false), m_createProblems(false)
 {
 }
 
@@ -114,8 +114,7 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
 {
     DefaultVisitor::visitVarExpressionNewObject(node);
     if (node->className->identifier) {
-        QualifiedIdentifier id = identifierForNode(node->className->identifier);
-        Declaration* dec = findDeclarationImport(m_currentContext, id, ClassDeclarationType);
+        Declaration* dec = findDeclarationImport(m_currentContext, ClassDeclarationType, node->className->identifier);
         usingDeclaration(node->className->identifier, dec);
         DUChainReadLocker lock(DUChain::lock());
         m_result.setDeclaration(dec);
@@ -157,8 +156,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
             //static function call foo::$bar()
         } else {
             //global function call foo();
-            QualifiedIdentifier functionIdentifier(m_editor->parseSession()->symbol(node->stringFunctionNameOrClass->string));
-            Declaration* dec = findDeclarationImport(m_currentContext, functionIdentifier, FunctionDeclarationType);
+            Declaration* dec = findDeclarationImport(m_currentContext, FunctionDeclarationType, node->stringFunctionNameOrClass);
             m_result.setDeclaration(dec);
             if (dec) {
                 usingDeclaration(node->stringFunctionNameOrClass, dec);
@@ -175,7 +173,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
 DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
 {
     DUContext* context = 0;
-    Declaration* declaration = findDeclarationImport(m_currentContext, identifierForNode(className), ClassDeclarationType);
+    Declaration* declaration = findDeclarationImport(m_currentContext, ClassDeclarationType, className);
     if (declaration) {
         {
             DUChainReadLocker lock(DUChain::lock());
@@ -215,11 +213,10 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
             IntegralType::Ptr integral(new IntegralType(IntegralType::TypeNull));
             m_result.setType(AbstractType::Ptr::staticCast(integral));
         } else {
-            QualifiedIdentifier id(identifierForNode(node->constant));
             //constant (created with declare('foo', 'bar'))
             //it could also be a global function call, without ()
             //TODO: prefer constant over function
-            Declaration* declaration = findDeclarationImport(m_currentContext, id, ConstantDeclarationType);
+            Declaration* declaration = findDeclarationImport(m_currentContext, ConstantDeclarationType, node->constant);
             m_result.setDeclaration(declaration);
             if (declaration) {
                 usingDeclaration(node->constant, declaration);
@@ -430,6 +427,23 @@ QualifiedIdentifier ExpressionVisitor::identifierForNode(VariableIdentifierAst* 
         return QualifiedIdentifier();
 
     return QualifiedIdentifier(stringForNode(id));
+}
+
+void ExpressionVisitor::setCreateProblems(bool v)
+{
+    m_createProblems = v;
+}
+
+Declaration* ExpressionVisitor::findDeclarationImport(DUContext* currentContext,
+                            DeclarationType declarationType, IdentifierAst* node)
+{
+    return findDeclarationImportHelper(currentContext, identifierForNode(node), declarationType, node, m_editor, m_createProblems);
+}
+
+Declaration* ExpressionVisitor::findDeclarationImport(DUContext* currentContext,
+                            DeclarationType declarationType, VariableIdentifierAst* node)
+{
+    return findDeclarationImportHelper(currentContext, identifierForNode(node), declarationType, node, m_editor, m_createProblems);
 }
 
 }

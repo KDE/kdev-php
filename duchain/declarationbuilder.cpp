@@ -150,7 +150,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 
 void DeclarationBuilder::visitClassExtends(ClassExtendsAst *node)
 {
-    Declaration* dec = findDeclarationImport(currentContext(), identifierForNode(node->identifier), ClassDeclarationType);
+    Declaration* dec = findDeclarationImport(currentContext(), ClassDeclarationType, node->identifier);
     if (dec) {
         StructureType::Ptr extends = StructureType::Ptr::dynamicCast(dec->abstractType());
         if (extends) {
@@ -164,7 +164,7 @@ void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
 {
     const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
     do {
-        Declaration* dec = findDeclarationImport(currentContext(), identifierForNode(__it->element), ClassDeclarationType);
+        Declaration* dec = findDeclarationImport(currentContext(), ClassDeclarationType, __it->element);
         if (dec) {
             StructureType::Ptr interface = StructureType::Ptr::dynamicCast(dec->abstractType());
             if (!interface) {
@@ -366,6 +366,18 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
         closeDeclaration();
     }
 
+}
+
+Declaration* DeclarationBuilder::findDeclarationImport(DUContext* currentContext,
+                            DeclarationType declarationType, IdentifierAst* node)
+{
+    return findDeclarationImportHelper(currentContext, identifierForNode(node), declarationType, node, editor(), true);
+}
+
+Declaration* DeclarationBuilder::findDeclarationImport(DUContext* currentContext,
+                            DeclarationType declarationType, VariableIdentifierAst* node)
+{
+    return findDeclarationImportHelper(currentContext, identifierForNode(node), declarationType, node, editor(), true);
 }
 
 }
