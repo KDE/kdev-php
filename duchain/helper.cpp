@@ -42,6 +42,8 @@
 #include "constantdeclaration.h"
 #include <klocalizedstring.h>
 
+#define ifDebug(x)
+
 using namespace KDevelop;
 
 namespace Php {
@@ -67,7 +69,7 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
 Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIdentifier id,
                                     DeclarationType declarationType, AstNode* node, EditorIntegrator* editor, bool createProblems)
 {
-    //kDebug() << id.toString() << declarationType;
+    ifDebug( kDebug() << id.toString() << declarationType; )
     if (declarationType == ClassDeclarationType && id == QualifiedIdentifier("self")) {
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->parentContext()) {
@@ -93,26 +95,26 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                 return declaration;
             }
         }
-        //kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable" << id.toString();
+        ifDebug( kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable" << id.toString(); )
         uint nr;
         const IndexedDeclaration* declarations = 0;
         PersistentSymbolTable::self().declarations(id, nr, declarations);
-        //kDebug() << "found declarations:" << nr;
+        ifDebug( kDebug() << "found declarations:" << nr; )
         lock.unlock();
 
         DUChainWriteLocker wlock(DUChain::lock());
         for (uint i=0; i<nr; ++i) {
             //TODO check if context is in any loaded project
             if (!declarations[i].declaration()) {
-                //kDebug() << "skipping declaration, doesn't have declaration";
+                ifDebug( kDebug() << "skipping declaration, doesn't have declaration"; )
                 continue;
             } else if (!isMatch(declarations[i].declaration(), declarationType)) {
-                //kDebug() << "skipping declaration, doesn't match with declarationType";
+                ifDebug( kDebug() << "skipping declaration, doesn't match with declarationType"; )
                 continue;
             }
             TopDUContext* top = declarations[i].declaration()->context()->topContext();
             if (top->language() != IndexedString("Php")) {
-                //kDebug() << "skipping declaration, invalid language" << top->language().str();
+                ifDebug( kDebug() << "skipping declaration, invalid language" << top->language().str(); )
                 continue;
             }
             if (ICore::self()) {
@@ -124,13 +126,13 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                     }
                 }
                 if (!loadedProjectContainsUrl) {
-                    //kDebug() << "skipping declaration, not in loaded project";
+                    ifDebug( kDebug() << "skipping declaration, not in loaded project"; )
                     continue;
                 }
             }
             currentContext->topContext()->parsingEnvironmentFile()
                 ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
-            //kDebug() << "using" << declarations[i].declaration()->toString() << top->url().str();
+            ifDebug( kDebug() << "using" << declarations[i].declaration()->toString() << top->url().str(); )
             return declarations[i].declaration();
         }
     }
@@ -154,7 +156,7 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
         p->setFinalLocation(KDevelop::DocumentRange(editor->currentUrl().str(), editor->findRange(node).textRange()));
         {
             DUChainWriteLocker lock(DUChain::lock());
-            kDebug() << "Problem" << p->description();
+            ifDebug( kDebug() << "Problem" << p->description(); )
             currentContext->topContext()->addProblem(KDevelop::ProblemPointer(p));
         }
     }
