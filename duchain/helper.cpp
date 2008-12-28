@@ -37,7 +37,7 @@
 
 #include "editorintegrator.h"
 #include "../parser/parsesession.h"
-#include "../parser/phpast.h"
+#include "phpast.h"
 #include "phpdefaultvisitor.h"
 #include "constantdeclaration.h"
 #include <klocalizedstring.h>

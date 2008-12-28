@@ -28,7 +28,7 @@
 #include <language/backgroundparser/parsejob.h>
 
 // from the parser subdirectory
-#include <phpast.h>
+#include "phpast.h"
 
 #include <QStringList>
 
