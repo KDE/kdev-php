@@ -60,8 +60,6 @@ namespace Php {
 CodeCompletionModel::CodeCompletionModel( QObject * parent )
   : KDevelop::CodeCompletionModel(parent)
 {
-  connect(this, SIGNAL(modifyCompletionRange(KTextEditor::View*, KTextEditor::SmartRange*, QRegExp&)),
-        this, SLOT(modifyCompletionRangeInternal(KTextEditor::View*, KTextEditor::SmartRange*, QRegExp&)));
 }
 
 KDevelop::CodeCompletionWorker* CodeCompletionModel::createCompletionWorker()
