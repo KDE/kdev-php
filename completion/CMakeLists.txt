@@ -16,10 +16,10 @@ set(completion_SRCS
 kde4_add_library( kdev4phpcompletion SHARED ${completion_SRCS} )
 target_link_libraries(kdev4phpcompletion
     ${KDE4_KDECORE_LIBS}
-    ${KDevPlatform_LANGUAGE_LIBRARY}
+    ${KDEVPLATFORM_LANGUAGE_LIBRARY}
     ${KDE4_KTEXTEDITOR_LIBS}
-    ${KDevPlatform_INTERFACES_LIBRARY}
-    ${KDevPlatform_PROJECT_LIBRARY}
+    ${KDEVPLATFORM_INTERFACES_LIBRARY}
+    ${KDEVPLATFORM_PROJECT_LIBRARY}
     kdev4phpduchain
  )
 
