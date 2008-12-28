@@ -214,9 +214,11 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
             m_result.setType(AbstractType::Ptr::staticCast(integral));
         } else {
             //constant (created with declare('foo', 'bar'))
-            //it could also be a global function call, without ()
-            //TODO: prefer constant over function
             Declaration* declaration = findDeclarationImport(m_currentContext, ConstantDeclarationType, node->constant);
+            if (!declaration) {
+                //it could also be a global function call, without ()
+                declaration = findDeclarationImport(m_currentContext, FunctionDeclarationType, node->constant);
+            }
             m_result.setDeclaration(declaration);
             if (declaration) {
                 usingDeclaration(node->constant, declaration);
