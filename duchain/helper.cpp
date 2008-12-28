@@ -130,6 +130,7 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                     continue;
                 }
             }
+            currentContext->topContext()->addImportedParentContext(top);
             currentContext->topContext()->parsingEnvironmentFile()
                 ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
             ifDebug( kDebug() << "using" << declarations[i].declaration()->toString() << top->url().str(); )
