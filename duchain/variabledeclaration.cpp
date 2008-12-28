@@ -18,64 +18,41 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-
-#include "classdeclaration.h"
+#include "variabledeclaration.h"
 
 #include <language/duchain/ducontext.h>
 #include <language/duchain/duchainregister.h>
 
 using namespace KDevelop;
 namespace Php {
-REGISTER_DUCHAIN_ITEM(ClassDeclaration);
+REGISTER_DUCHAIN_ITEM(VariableDeclaration);
 
-ClassDeclaration::ClassDeclaration(ClassDeclarationData& data) : KDevelop::Declaration(data) {
+VariableDeclaration::VariableDeclaration(VariableDeclarationData& data) : KDevelop::Declaration(data) {
 }
 
-ClassDeclaration::ClassDeclaration(const ClassDeclaration& rhs)
-    : KDevelop::Declaration(*new ClassDeclarationData( *rhs.d_func() )) {
+VariableDeclaration::VariableDeclaration(VariableDeclarationData& data, const KDevelop::SimpleRange& range)
+    : KDevelop::Declaration(data, range) {
+}
+
+VariableDeclaration::VariableDeclaration(const VariableDeclaration& rhs)
+    : KDevelop::Declaration(*new VariableDeclarationData( *rhs.d_func() )) {
   setSmartRange(rhs.smartRange(), DocumentRangeObject::DontOwn);
 }
 
-ClassDeclaration::ClassDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context)
-  : KDevelop::Declaration(*new ClassDeclarationData, range)
+VariableDeclaration::VariableDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context)
+  : KDevelop::Declaration(*new VariableDeclarationData, range)
 {
   d_func_dynamic()->setClassId(this);
   if( context )
     setContext( context );
 }
-
-KDevelop::Declaration* ClassDeclaration::clonePrivate() const
-{
-  return new ClassDeclaration(*this);
-}
-
-ClassDeclaration::~ClassDeclaration()
+VariableDeclaration::~VariableDeclaration()
 {
 }
 
-QString ClassDeclaration::toString() const 
+uint VariableDeclaration::additionalIdentity() const
 {
-    QString ret;
-    switch (d_func()->m_classType) {
-        case ClassDeclarationData::Class:
-            ret = "class";
-            break;
-        case ClassDeclarationData::Interface:
-            ret = "interface";
-            break;
-    }
-    ret += " " + identifier().toString();
-    return ret;
-}
-
-ClassDeclarationData::ClassType ClassDeclaration::classType() const
-{
-    return d_func()->m_classType;
-}
-
-void ClassDeclaration::setClassType(ClassDeclarationData::ClassType type) 
-{
-    d_func_dynamic()->m_classType = type;
+    return 2;
 }
 
 }

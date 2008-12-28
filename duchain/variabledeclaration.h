@@ -18,64 +18,59 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#ifndef VARIABLEDECLARATION_H
+#define VARIABLEDECLARATION_H
 
-#include "classdeclaration.h"
+#include <language/duchain/declaration.h>
+#include <language/duchain/declarationdata.h>
 
-#include <language/duchain/ducontext.h>
-#include <language/duchain/duchainregister.h>
+#include "phpduchainexport.h"
 
-using namespace KDevelop;
-namespace Php {
-REGISTER_DUCHAIN_ITEM(ClassDeclaration);
-
-ClassDeclaration::ClassDeclaration(ClassDeclarationData& data) : KDevelop::Declaration(data) {
-}
-
-ClassDeclaration::ClassDeclaration(const ClassDeclaration& rhs)
-    : KDevelop::Declaration(*new ClassDeclarationData( *rhs.d_func() )) {
-  setSmartRange(rhs.smartRange(), DocumentRangeObject::DontOwn);
-}
-
-ClassDeclaration::ClassDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context)
-  : KDevelop::Declaration(*new ClassDeclarationData, range)
+namespace Php
 {
-  d_func_dynamic()->setClassId(this);
-  if( context )
-    setContext( context );
-}
 
-KDevelop::Declaration* ClassDeclaration::clonePrivate() const
+class KDEVPHPDUCHAIN_EXPORT VariableDeclarationData : public KDevelop::DeclarationData
 {
-  return new ClassDeclaration(*this);
-}
-
-ClassDeclaration::~ClassDeclaration()
-{
-}
-
-QString ClassDeclaration::toString() const 
-{
-    QString ret;
-    switch (d_func()->m_classType) {
-        case ClassDeclarationData::Class:
-            ret = "class";
-            break;
-        case ClassDeclarationData::Interface:
-            ret = "interface";
-            break;
+public:
+    VariableDeclarationData()
+        : KDevelop::DeclarationData()
+    {
     }
-    ret += " " + identifier().toString();
-    return ret;
-}
 
-ClassDeclarationData::ClassType ClassDeclaration::classType() const
+    VariableDeclarationData( const VariableDeclarationData& rhs )
+        : KDevelop::DeclarationData( rhs )
+    {
+    }
+
+    ~VariableDeclarationData()
+    {
+    }
+
+};
+
+/**
+ * Declaration used for Php variables eg. $a = 0;
+ */
+class KDEVPHPDUCHAIN_EXPORT VariableDeclaration : public KDevelop::Declaration
 {
-    return d_func()->m_classType;
+public:
+    VariableDeclaration(const VariableDeclaration& rhs);
+    VariableDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context);
+    VariableDeclaration(VariableDeclarationData& data);
+    VariableDeclaration(VariableDeclarationData& data, const KDevelop::SimpleRange&);
+    virtual ~VariableDeclaration();
+
+    virtual uint additionalIdentity() const;
+
+  enum {
+    Identity = 83
+  };
+  typedef KDevelop::Declaration Base;
+
+private:
+  DUCHAIN_DECLARE_DATA(VariableDeclaration)
+};
+
 }
 
-void ClassDeclaration::setClassType(ClassDeclarationData::ClassType type) 
-{
-    d_func_dynamic()->m_classType = type;
-}
-
-}
+#endif // VARIABLEDECLARATION_H

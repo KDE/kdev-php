@@ -32,6 +32,7 @@
 #include "parsesession.h"
 #include "helper.h"
 #include "constantdeclaration.h"
+#include "variabledeclaration.h"
 #include "classdeclaration.h"
 
 using namespace KTextEditor;
@@ -296,7 +297,7 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
         //TODO: don't create the same twice
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(leftSideVariableIdentifier, leftSideVariableIdentifier);
-        openDefinition<Declaration>(identifierForNode(leftSideVariableIdentifier), newRange);
+        openDefinition<VariableDeclaration>(identifierForNode(leftSideVariableIdentifier), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
 
         //own closeDeclaration() that uses currentAbstractType() instead of lastType()
