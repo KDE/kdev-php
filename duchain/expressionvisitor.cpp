@@ -223,7 +223,7 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
             }
         }
     } else if (node->commonScalar) {
-        uint type;
+        uint type = IntegralType::TypeVoid;
         switch (node->commonScalar->scalarType) {
             case ScalarTypeInt:
                 type = IntegralType::TypeInt;
