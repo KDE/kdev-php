@@ -115,8 +115,20 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                 //kDebug() << "skipping declaration, invalid language" << top->language().str();
                 continue;
             }
+            bool loadedProjectContainsUrl = false;
+            foreach (IProject *project, ICore::self()->projectController()->projects()) {
+                if (project->fileSet().contains(top->url())) {
+                    loadedProjectContainsUrl = true;
+                    break;
+                }
+            }
+            if (!loadedProjectContainsUrl) {
+                //kDebug() << "skipping declaration, not in loaded project";
+                continue;
+            }
             currentContext->topContext()->parsingEnvironmentFile()
                 ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
+            //kDebug() << "using" << declarations[i].declaration()->toString() << top->url().str();
             return declarations[i].declaration();
         }
     }
