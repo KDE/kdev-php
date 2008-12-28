@@ -389,25 +389,28 @@ void TestCompletion::nameNormalVariable()
     bool abort = false;
     QList<KDevelop::CompletionTreeItemPointer> itemList = cContext->completionItems(SimpleCursor(0, 44), abort);
 
-    TestCodeCompletionModel model;
-    model.foundDeclarations(itemList, cContext);
+    TestCodeCompletionModel* model = new TestCodeCompletionModel;
+    model->foundDeclarations(itemList, cContext);
 
     QCOMPARE(cContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
 
     CompletionTreeItemPointer itm = searchDeclaration(itemList, top->localDeclarations().first());
     QVERIFY(itm);
-    QCOMPARE(itm->data(model.index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, &model).toString(),
+    QCOMPARE(itm->data(model->index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, model).toString(),
         QString("$abc"));
 
     itm = searchDeclaration(itemList, top->localDeclarations().at(1));
     QVERIFY(itm);
-    QCOMPARE(itm->data(model.index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, &model).toString(),
+    QCOMPARE(itm->data(model->index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, model).toString(),
         QString("def"));
 
     itm = searchDeclaration(itemList, top->localDeclarations().at(2));
     QVERIFY(itm);
-    QCOMPARE(itm->data(model.index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, &model).toString(),
+    QCOMPARE(itm->data(model->index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, model).toString(),
         QString("ghi"));
+
+    //don't delete model as its constructor does bad things (quit the current thread - we don't want that in test)
+    //TODO find better solution that doesn't leak
 
     release(top);
 }
@@ -425,15 +428,18 @@ void TestCompletion::nameClassMember()
     bool abort = false;
     QList<KDevelop::CompletionTreeItemPointer> itemList = cContext->completionItems(SimpleCursor(0, 44), abort);
 
-    TestCodeCompletionModel model;
-    model.foundDeclarations(itemList, cContext);
+    TestCodeCompletionModel *model = new TestCodeCompletionModel;
+    model->foundDeclarations(itemList, cContext);
 
     QCOMPARE(cContext->memberAccessOperation(), CodeCompletionContext::MemberAccess);
 
     CompletionTreeItemPointer itm = searchDeclaration(itemList, top->childContexts().first()->localDeclarations().first());
     QVERIFY(itm);
-    QCOMPARE(itm->data(model.index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, &model).toString(),
+    QCOMPARE(itm->data(model->index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, model).toString(),
         QString("abc"));
+
+    //don't delete model as its constructor does bad things (quit the current thread - we don't want that in test)
+    //TODO find better solution that doesn't leak
 
     release(top);
 }
