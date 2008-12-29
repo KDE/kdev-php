@@ -2,6 +2,127 @@
 // THIS FILE IS GENERATED
 // WARNING! All changes made in this file will be lost!
 
+/**
+ * The number of arguments passed to script
+ **/
+$argc = array();
+
+/**
+ * Array of arguments passed to script
+ **/
+$argv = array();
+
+/**
+ * HTTP Cookies
+ * @superglobal
+ **/
+$_COOKIE = array();
+
+/**
+ * HTTP Cookies
+ * @deprecated
+ **/
+$HTTP_COOKIE_VARS = array();
+
+/**
+ * Environment variables
+ * @superglobal
+ **/
+$_ENV = array();
+
+/**
+ * Environment variables
+ * @deprecated
+ **/
+$HTTP_ENV_VARS = array();
+
+/**
+ * HTTP File Upload variables
+ * @superglobal
+ **/
+$_FILES = array();
+
+/**
+ * HTTP File Upload variables
+ * @deprecated
+ **/
+$HTTP_POST_FILES = array();
+
+/**
+ * HTTP GET variables
+ * @superglobal
+ **/
+$_GET = array();
+
+/**
+ * HTTP GET variables
+ * @deprecated
+ **/
+$HTTP_GET_VARS = array();
+
+/**
+ * References all variables available in global scope
+ * @superglobal
+ **/
+$GLOBALS = array();
+
+/**
+ * Raw POST data
+ **/
+$HTTP_RAW_POST_DATA = array();
+
+/**
+ * HTTP response headers
+ **/
+$http_response_header = array();
+
+/**
+ * The previous error message
+ **/
+$php_errormsg = array();
+
+/**
+ * HTTP POST variables
+ * @superglobal
+ **/
+$_POST = array();
+
+/**
+ * HTTP POST variables
+ * @deprecated
+ **/
+$HTTP_POST_VARS = array();
+
+/**
+ * HTTP Request variables
+ * @superglobal
+ **/
+$_REQUEST = array();
+
+/**
+ * Server and execution environment information
+ * @superglobal
+ **/
+$_SERVER = array();
+
+/**
+ * Server and execution environment information
+ * @deprecated
+ **/
+$HTTP_SERVER_VARS = array();
+
+/**
+ * Session variables
+ * @superglobal
+ **/
+$_SESSION = array();
+
+/**
+ * Session variables
+ * @deprecated
+ **/
+$HTTP_SESSION_VARS = array();
+
 /** @ingroup SPL
  * @brief Default implementation for __autoload()
  * @since PHP 5.1

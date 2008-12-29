@@ -808,6 +808,24 @@ void TestDUChain::testGlobalFunction()
     release(top);
 }
 
+void TestDUChain::testGlobalVariableFromInternalFunctions()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? substr(); ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->importedParentContexts().count(), 1);
+    QVERIFY(DUChain::self()->chainForDocument(IndexedString("internalfunctions")));
+    QCOMPARE(DUChain::self()->chainForDocument(IndexedString("internalfunctions")), top->importedParentContexts().first().context(top));
+
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("_GET")).count(), 1);
+
+    release(top);
+}
+
 void TestDUChain::testNewObjectFromOtherFile()
 {
 

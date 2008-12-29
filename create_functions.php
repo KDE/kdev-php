@@ -63,10 +63,11 @@ $skipClasses[] = 'exception'; //lowercase
 $skipClasses[] = '__PHP_Incomplete_Class';
 $skipClasses[] = 'php_user_filter';
 
-$dirs = array("en/reference", "en/appendices");
+$dirs = array("en/reference", "en/appendices", "en/language/predefined/variables");
 
 $classes = array();
 $constants = array();
+$variables = array();
 $existingFunctions = array();
 foreach ($dirs as $dir) {
     $dirIt = new RecursiveIteratorIterator( new RecursiveDirectoryIterator($_SERVER['argv'][1].'/'.$dir));
@@ -84,6 +85,28 @@ foreach ($dirs as $dir) {
         }
         $xml = new SimpleXMLElement($string);
         $xml->registerXPathNamespace('db', 'http://docbook.org/ns/docbook');
+        $xml->registerXPathNamespace('phpdoc', 'http://php.net/ns/phpdoc');
+        if ($vars = $xml->xpath('//phpdoc:varentry//db:refnamediv')) {
+            foreach ($vars as $var) {
+                foreach ($var->refname as $i) {
+                    $v = array();
+                    $i = (string)$i;
+                    if (substr($i, 0, 1) != '$') continue;
+                    $v['deprecated'] = false;
+                    if (substr($i, -13) == ' [deprecated]') {
+                        $i = substr($i, 0, -13);
+                        $v['deprecated'] = true;
+                    }
+                    $v['desc'] = $var->refpurpose;
+                    $variables[$i] = $v;
+                }
+            }
+        }
+        if ($vars = $xml->xpath("//phpdoc:varentry[@xml:id='language.variables.superglobals']//db:member/db:varname")) {
+            foreach ($vars as $var) {
+                $variables[(string)$var]['superglobal'] = true;
+            }
+        }
         if (isset($xml->variablelist)) {
             foreach ($xml->variablelist->varlistentry as $i=>$varlistentry) {
                 if ($c = (string)$varlistentry->term->constant) {
@@ -232,6 +255,23 @@ $fileHeader .= "// WARNING! All changes made in this file will be lost!\n\n";
 
 $declarationCount = 0;
 $out = $fileHeader;
+
+foreach ($variables as $name=>$var) {
+    $declarationCount++;
+    $out .= "/**\n";
+    $out .= " * ";
+    $out .= str_replace("\n", "\n * ", $var['desc']);
+    $out .= "\n";
+    if ($var['deprecated']) {
+        $out .= " * @deprecated\n";
+    }
+    if (isset($var['superglobal']) && $var['superglobal']) {
+        $out .= " * @superglobal\n";
+    }
+    $out .= " **/\n";
+    $out .= "$name = array();\n\n";
+}
+
 $out .= $splContent;
 foreach ($classes as $class => $i) {
     if (in_array($class, $skipClasses)) continue; //skip those as they are documented in spl.php

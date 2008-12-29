@@ -57,6 +57,7 @@ private slots:
   void testDefine();
   void testDefaultFunctionParam();
   void testGlobalFunction();
+  void testGlobalVariableFromInternalFunctions();
   void testNewObjectFromOtherFile();
   void testUnknownReturnType();
   void testStaticFunctionCallFromOtherFile();
