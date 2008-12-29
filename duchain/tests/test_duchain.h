@@ -70,6 +70,7 @@ private slots:
   void testNull();
   void testArray();
   void testFunctionDocBlock();
+  void testVariableDocBlock();
   void testFunctionDocBlockParams();
   void testMemberFunctionDocBlockParams();
   void testForeachLoop();

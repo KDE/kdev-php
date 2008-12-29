@@ -286,6 +286,14 @@ void DeclarationBuilder::visitExpr(ExprAst *node)
     DeclarationBuilderBase::visitExpr(node);
 }
 
+void DeclarationBuilder::visitTopStatement(TopStatementAst* node)
+{
+    //docblock of an AssignmentExpression
+    setComment(formatComment(node, editor()));
+
+    DeclarationBuilderBase::visitTopStatement(node);
+}
+
 void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node)
 {
     VariableIdentifierAst* leftSideVariableIdentifier = m_lastVariableIdentifier;

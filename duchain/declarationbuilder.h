@@ -50,6 +50,7 @@ protected:
     virtual void visitClassVariable(ClassVariableAst *node);
     virtual void visitClassConstantDeclaration(ClassConstantDeclarationAst *node);
     virtual void visitExpr(ExprAst *node);
+    virtual void visitTopStatement(TopStatementAst* node);
     virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
     virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
     virtual void visitFunctionCall(FunctionCallAst* node);

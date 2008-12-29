@@ -1013,6 +1013,14 @@ void TestDUChain::testFunctionDocBlock()
     }
 }
 
+void TestDUChain::testVariableDocBlock()
+{
+    TopDUContext* top = parse("<? /**\n *Foo\n **/\n$a = 0; ", DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+    QCOMPARE(top->localDeclarations().first()->comment(), QByteArray("Foo"));
+    release(top);
+}
+
 void TestDUChain::testFunctionDocBlockParams()
 {
     TopDUContext* top = parse("<? class A {} /**\n * @param int\n * @param A\n * @param mixed **/\nfunction foo($a, $b, $c, $d) {} ", DumpNone);
