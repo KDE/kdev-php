@@ -294,6 +294,12 @@ void DefaultVisitor::visitConditionalExpression(ConditionalExpressionAst *node)
     visitNode(node->elseExpression);
 }
 
+void DefaultVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
+{
+    visitNode(node->className);
+    visitNode(node->constant);
+}
+
 void DefaultVisitor::visitCtorArguments(CtorArgumentsAst *node)
 {
     visitNode(node->parameterList);
@@ -698,8 +704,7 @@ void DefaultVisitor::visitRelationalExpressionRest(RelationalExpressionRestAst *
 void DefaultVisitor::visitScalar(ScalarAst *node)
 {
     visitNode(node->commonScalar);
-    visitNode(node->className);
-    visitNode(node->constant);
+    visitNode(node->constantOrClassConst);
     visitNode(node->encapsList);
 }
 
@@ -846,6 +851,7 @@ void DefaultVisitor::visitStaticMember(StaticMemberAst *node)
 void DefaultVisitor::visitStaticScalar(StaticScalarAst *node)
 {
     visitNode(node->value);
+    visitNode(node->constantOrClassConst);
     visitNode(node->plusValue);
     visitNode(node->minusValue);
     if (node->arrayValuesSequence)

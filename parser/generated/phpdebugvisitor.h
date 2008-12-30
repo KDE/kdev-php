@@ -1042,6 +1042,39 @@ public:
         m_indent--;
     }
 
+    virtual void visitConstantOrClassConst(ConstantOrClassConstAst *node)
+    {
+        qint64 beginLine,endLine,beginCol,endCol;
+        m_str->startPosition(node->startToken, &beginLine, &beginCol);
+        m_str->endPosition(node->endToken, &endLine, &endCol);
+        QString tokenString;
+        if (!m_content.isEmpty())
+        {
+            TokenStream::Token startToken = m_str->token(node->startToken);
+            TokenStream::Token endToken = m_str->token(node->endToken);
+            int begin = startToken.begin;
+            int end = endToken.end;
+            if (end-begin > 30)
+            {
+                tokenString = m_content.mid(begin, 10);
+                tokenString += " ...";
+                tokenString += QString("%1 more").arg(end-begin-20);
+                tokenString += "... ";
+                tokenString += m_content.mid(end-10, 10);
+            }
+            else
+            {
+                tokenString = m_content.mid(begin, end-begin+1);
+            }
+            tokenString = tokenString.replace('\n', "\\n");
+            tokenString = tokenString.replace('\r', "\\r");
+        }
+        qDebug() << QString().fill(' ', m_indent) << "constantOrClassConst[" << m_str->token( node->startToken ).begin << "," << beginLine << "," << beginCol << "] --- [" << m_str->token( node->endToken ).end << "," << endLine << "," << endCol << "] " << tokenString;
+        m_indent++;
+        DefaultVisitor::visitConstantOrClassConst(node);
+        m_indent--;
+    }
+
     virtual void visitCtorArguments(CtorArgumentsAst *node)
     {
         qint64 beginLine,endLine,beginCol,endCol;

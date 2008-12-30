@@ -52,6 +52,7 @@ public:
     virtual void visitCompoundVariable(CompoundVariableAst *) {}
     virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *) {}
     virtual void visitConditionalExpression(ConditionalExpressionAst *) {}
+    virtual void visitConstantOrClassConst(ConstantOrClassConstAst *) {}
     virtual void visitCtorArguments(CtorArgumentsAst *) {}
     virtual void visitDeclareItem(DeclareItemAst *) {}
     virtual void visitDeclareStatement(DeclareStatementAst *) {}

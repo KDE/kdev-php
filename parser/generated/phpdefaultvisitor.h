@@ -44,6 +44,7 @@ public:
     virtual void visitCompoundVariable(CompoundVariableAst *node);
     virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
     virtual void visitConditionalExpression(ConditionalExpressionAst *node);
+    virtual void visitConstantOrClassConst(ConstantOrClassConstAst *node);
     virtual void visitCtorArguments(CtorArgumentsAst *node);
     virtual void visitDeclareItem(DeclareItemAst *node);
     virtual void visitDeclareStatement(DeclareStatementAst *node);

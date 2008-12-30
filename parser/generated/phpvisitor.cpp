@@ -39,6 +39,7 @@ Visitor::ParserFuncType Visitor::sParserTable[] =
     reinterpret_cast<ParserFuncType>(&Visitor::visitCompoundVariable),
     reinterpret_cast<ParserFuncType>(&Visitor::visitCompoundVariableWithSimpleIndirectReference),
     reinterpret_cast<ParserFuncType>(&Visitor::visitConditionalExpression),
+    reinterpret_cast<ParserFuncType>(&Visitor::visitConstantOrClassConst),
     reinterpret_cast<ParserFuncType>(&Visitor::visitCtorArguments),
     reinterpret_cast<ParserFuncType>(&Visitor::visitDeclareItem),
     reinterpret_cast<ParserFuncType>(&Visitor::visitDeclareStatement),

@@ -331,6 +331,7 @@ public:
     bool parseCompoundVariable(CompoundVariableAst **yynode);
     bool parseCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst **yynode);
     bool parseConditionalExpression(ConditionalExpressionAst **yynode);
+    bool parseConstantOrClassConst(ConstantOrClassConstAst **yynode);
     bool parseCtorArguments(CtorArgumentsAst **yynode);
     bool parseDeclareItem(DeclareItemAst **yynode);
     bool parseDeclareStatement(DeclareStatementAst **yynode);
