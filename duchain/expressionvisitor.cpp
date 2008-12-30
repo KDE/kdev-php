@@ -58,7 +58,9 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
         if (m_useCursor) {
             position = m_editor->findPosition(variable->variable, EditorIntegrator::FrontEdge);
         }
-        foreach (Declaration *dec, m_currentContext->findDeclarations(identifier, position)) {
+        QList<Declaration*> decls = m_currentContext->findDeclarations(identifier, position);
+        for (int i=decls.count(); i--; i > 0) {
+            Declaration *dec = decls.at(i);
             if (dec->kind() == Declaration::Instance && !dynamic_cast<ConstantDeclaration*>(dec)) {
                 ret = dec;
                 break;
