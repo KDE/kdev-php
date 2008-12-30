@@ -192,7 +192,8 @@ void TestUses::variableTwoDeclarations()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A { } $a = new A(); $a; $a = 0; $a; ");
+    QByteArray method("<? class A { } $a = 'a'; $a; $a = 0; $a; $a = 'x'; $a; ");
+    //                                15            29  33      41  45        55
     TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
 
@@ -212,6 +213,18 @@ void TestUses::variableTwoDeclarations()
     QCOMPARE(var->uses().values().first().at(0), SimpleRange(0, 29, 0, 31));
     //QCOMPARE(var->uses().values().first().at(1), SimpleRange(0, 33, 0, 35));
     QCOMPARE(var->uses().values().first().at(1), SimpleRange(0, 41, 0, 43));
+
+    release(top);
+}
+void TestUses::variableTwoDeclarationsInFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo() { $a='a'; $a; $a=0; $a; $a=false; }");
+    //                                     20      28  32    38  42
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
 
     release(top);
 }

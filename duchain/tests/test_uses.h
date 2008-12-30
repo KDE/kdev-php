@@ -40,6 +40,7 @@ private slots:
   void memberVarInString();
   void memberFunctionInString();
   void variableTwoDeclarations();
+  void variableTwoDeclarationsInFunction();
   void classExtends();
   void classImplements();
   void classImplementsMultiple();
