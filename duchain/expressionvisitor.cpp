@@ -62,7 +62,8 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
         //context and (2) a function body consists of a single context (so this is no problem)
         QList<Declaration*> decls = m_currentContext->findDeclarations(identifier, position,
                             AbstractType::Ptr(), 0, DUContext::DontSearchInParent);
-        for (int i=decls.count(); i--; i > 0) {
+        for (int i=decls.count()-1; i >= 0; i--) {
+            kDebug() << i;
             Declaration *dec = decls.at(i);
             if (dec->kind() == Declaration::Instance && !dynamic_cast<ConstantDeclaration*>(dec)) {
                 ret = dec;
