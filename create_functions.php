@@ -42,17 +42,30 @@ if (!file_exists($_SERVER['argv'][2])) {
 //take ext/spl/spl.php as documentation for spl functions
 //make the file valid php
 $splContent = file_get_contents($_SERVER['argv'][2].'/ext/spl/spl.php');
-$splContent = str_replace('<?php', '', $splContent);
-$splContent = str_replace('?>', '', $splContent);
 $splContent = str_replace('mixed cmp_function', '$cmp_function', $splContent);
 $splContent = str_replace('string class_name', '$class_name', $splContent);
 $splContent = str_replace('string $', '$', $splContent);
 $splContent = str_replace('{/**/};', '{}', $splContent);
 $splContent = str_replace('{/**/}', '{}', $splContent);
 $splContent = str_replace("\t", '    ', $splContent);
+$splContent = str_replace("\r", '', $splContent);
 $splContent = preg_replace("#(const [A-Z_]+\s*)(0x[0-9]+;)#", '\1= \2', $splContent);
 $splContent = preg_replace("#/\\*\\* @(mainpage|defgroup|file).*?\\*/#s", '', $splContent);
 $splContent = trim($splContent);
+
+foreach (new DirectoryIterator($_SERVER['argv'][2].'/ext/spl/internal') as $file) {
+    if (!$file->isFile()) continue;
+    if (substr($file->getFilename(), -4) != '.inc') continue;
+    $c = file_get_contents($file->getPathname());
+    $c = str_replace("\t", '    ', $c);
+    $c = str_replace("\r", '', $c);
+    $c = preg_replace("#/\\*\\* @file.*?\\*/#s", '', $c);
+    $c = str_replace("rewind();\n    {", "rewind()\n    {", $c);
+    $c = trim($c);
+    $splContent .= $c;
+}
+$splContent = str_replace('<?php', '', $splContent);
+$splContent = str_replace('?>', '', $splContent);
 $spl = preg_replace("#/\\*.*?\\*/#s", '', $splContent);
 preg_match_all("#^(class|interface)\s+(\S+)[^{]*{#sm", $spl, $m);
 $skipClasses = $m[2];
@@ -332,8 +345,10 @@ foreach ($classes as $class => $i) {
     if ($class != 'global') $out .= "}\n";
 }
 foreach ($constants as $c=>$ctype) {
-    $out .= "define('$c', ".constTypeValue($ctype).");\n";
-    $declarationCount++;
+    if (strpos($c, '::')===false) {
+        $out .= "define('$c', ".constTypeValue($ctype).");\n";
+        $declarationCount++;
+    }
 }
 
 file_put_contents("phpfunctions.php", $out);

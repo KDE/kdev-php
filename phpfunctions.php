@@ -123,6 +123,18 @@ $_SESSION = array();
  **/
 $HTTP_SESSION_VARS = array();
 
+
+
+
+
+
+
+
+
+
+
+
+
 /** @ingroup SPL
  * @brief Default implementation for __autoload()
  * @since PHP 5.1
@@ -1111,7 +1123,1959 @@ interface SplSubject
     /** Notify all observers
      */
     function notify();
-}/**
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   Iterator that iterates over several iterators one after the other
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ */
+class AppendIterator implements OuterIterator
+{
+    /** @internal array of inner iterators */
+    private $iterators;
+
+    /** Construct an empty AppendIterator
+     */
+    function __construct()
+    {
+        $this->iterators = new ArrayIterator();
+    }
+
+    /** Append an Iterator
+     * @param $it Iterator to append
+     *
+     * If the current state is invalid but the appended iterator is valid
+     * the the AppendIterator itself becomes valid. However there will be no
+     * call to $it->rewind(). Also if the current state is invalid the inner
+     * ArrayIterator will be rewound und forwarded to the appended element.
+     */    
+    function append(Iterator $it)
+    {
+        $this->iterators->append($it);
+    }
+
+    /** @return the current inner Iterator
+     */
+    function getInnerIterator()
+    {
+        return $this->iterators->current();
+    }
+
+    /** Rewind to the first element of the first inner Iterator.
+     * @return void
+     */
+    function rewind()
+    {
+        $this->iterators->rewind();
+        if ($this->iterators->valid())
+        {
+            $this->getInnerIterator()->rewind();
+        }
+    }
+
+    /** @return whether the current element is valid
+      */
+    function valid()
+    {
+        return $this->iterators->valid() && $this->getInnerIterator()->valid();
+    }
+
+    /** @return the current value if it is valid or \c NULL
+     */
+    function current()
+    {
+        /* Using $this->valid() would be exactly the same; it would omit
+         * the access to a non valid element in the inner iterator. Since
+         * the user didn't respect the valid() return value false this
+         * must be intended hence we go on. */
+        return $this->iterators->valid() ? $this->getInnerIterator()->current() : NULL;
+    }
+
+    /** @return the current key if it is valid or \c NULL
+     */
+    function key()
+    {
+        return $this->iterators->valid() ? $this->getInnerIterator()->key() : NULL;
+    }
+
+    /** Move to the next element. If this means to another Iterator that 
+     * rewind that Iterator.
+     * @return void
+     */
+    function next()
+    {
+        if (!$this->iterators->valid())
+        {
+            return; /* done all */
+        }
+        $this->getInnerIterator()->next();
+        if ($this->getInnerIterator()->valid())
+        {
+            return; /* found valid element in current inner iterator */
+        }
+        $this->iterators->next();
+        while ($this->iterators->valid())
+        {
+            $this->getInnerIterator()->rewind();
+            if ($this->getInnerIterator()->valid())
+            {
+                return; /* found element as first elemet in another iterator */
+            }
+            $this->iterators->next();
+        }
+    }
+
+    /** Aggregates the inner iterator
+     */    
+    function __call($func, $params)
+    {
+        return call_user_func_array(array($this->getInnerIterator(), $func), $params);
+    }
+}
+
+
+
+
+
+/**
+ * @brief   Cached iteration over another Iterator
+ * @author  Marcus Boerger
+ * @version 1.2
+ * @since PHP 5.0
+ *
+ * This iterator wrapper does a one ahead iteration. This way it knows whether
+ * the inner iterator has one more element.
+ *
+ * @note If you want to convert the elements into strings and the inner 
+ *       Iterator is an internal Iterator then you need to provide the 
+ *       flag CALL_TOSTRING to do the conversion when the actual element
+ *       is being fetched. Otherwise the conversion would happen with the
+ *       already changed iterator. If you do not need this then it you should
+ *       omit this flag because it costs unneccessary work and time.
+ */
+class CachingIterator implements OuterIterator
+{
+    const CALL_TOSTRING        = 0x00000001;
+    const CATCH_GET_CHILD      = 0x00000002;
+    const TOSTRING_USE_KEY     = 0x00000010;
+    const TOSTRING_USE_CURRENT = 0x00000020;
+
+    private $it;
+    private $current;
+    private $key;
+    private $valid;
+    private $strValue;
+
+    /** Construct from another iterator
+     *
+     * @param it    Iterator to cache
+     * @param flags Bitmask: 
+     *              - CALL_TOSTRING  (whether to call __toString() for every element)
+     */
+    function __construct(Iterator $it, $flags = self::CALL_TOSTRING)
+    {
+        if ((($flags & self::CALL_TOSTRING) && ($flags & (self::TOSTRING_USE_KEY|self::TOSTRING_USE_CURRENT)))
+        || ((flags & (self::CIT_TOSTRING_USE_KEY|self::CIT_TOSTRING_USE_CURRENT)) == (self::CIT_TOSTRING_USE_KEY|self::CIT_TOSTRING_USE_CURRENT)))
+        {
+            throw new InvalidArgumentException('Flags must contain only one of CIT_CALL_TOSTRING, CIT_TOSTRING_USE_KEY, CIT_TOSTRING_USE_CURRENT');
+        }
+        $this->it = $it;
+        $this->flags = $flags & (0x0000FFFF);
+        $this->next();
+    }
+
+    /** Rewind the Iterator
+     */
+    function rewind()
+    {
+        $this->it->rewind();
+        $this->next();
+    }
+    
+    /** Forward to the next element
+     */
+    function next()
+    {
+        if ($this->valid = $this->it->valid()) {
+            $this->current = $this->it->current();
+            $this->key = $this->it->key();
+            if ($this->flags & self::CALL_TOSTRING) {
+                if (is_object($this->current)) {
+                    $this->strValue = $this->current->__toString();
+                } else {
+                    $this->strValue = (string)$this->current;
+                }
+            }
+        } else {
+            $this->current = NULL;
+            $this->key = NULL;
+            $this->strValue = NULL;
+        }
+        $this->it->next();
+    }
+    
+    /** @return whether teh iterator is valid
+     */
+    function valid()
+    {
+        return $this->valid;
+    }
+
+    /** @return whether there is one more element
+     */
+    function hasNext()
+    {
+        return $this->it->valid();
+    }
+    
+    /** @return the current element
+     */
+    function current()
+    {
+        return $this->current;
+    }
+
+    /** @return the current key
+     */
+    function key()
+    {
+        return $this->key;
+    }
+
+    /** Aggregate the inner iterator
+     *
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
+     */
+    function __call($func, $params)
+    {
+        return call_user_func_array(array($this->it, $func), $params);
+    }
+    
+    /** @return the string represenatation that was generated for the current 
+     *          element
+     * @throw exception when CALL_TOSTRING was not specified in constructor
+     */
+    function __toString()
+    {
+        if ($this->flags & self::TOSTRING_USE_KEY)
+        {
+            return $this->key;
+        }
+        else if ($this->flags & self::TOSTRING_USE_CURRENT)
+        {
+            return $this->current;
+        }
+        if (!$this->flags & self::CALL_TOSTRING)
+        {
+            throw new exception('CachingIterator does not fetch string value (see CachingIterator::__construct)');
+        }
+        return $this->strValue;
+    }
+    
+    /**
+     * @return The inner iterator
+     */    
+    function getInnerIterator()
+    {
+        return $this->it;
+    }
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   An empty Iterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ */
+class EmptyIterator implements Iterator
+{
+    /** No operation.
+     * @return void
+     */
+    function rewind()
+    {
+        // nothing to do
+    }
+
+    /** @return \c false
+     */
+    function valid()
+    {
+        return false;
+    }
+
+    /** This function must not be called. It throws an exception upon access.
+     * @throw Exception
+     * @return void
+     */
+    function current()
+    {
+        throw new Exception('Accessing the value of an EmptyIterator');
+    }
+
+    /** This function must not be called. It throws an exception upon access.
+     * @throw Exception
+     * @return void
+     */
+    function key()
+    {
+        throw new Exception('Accessing the key of an EmptyIterator');
+    }
+
+    /** No operation.
+     * @return void
+     */
+    function next()
+    {
+        // nothing to do
+    }
+}
+
+
+
+
+
+/**
+ * @brief   Abstract filter for iterators
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.0
+ *
+ * Instances of this class act as a filter around iterators. In other words 
+ * you can put an iterator into the constructor and the instance will only 
+ * return selected (accepted) elements.
+ *
+ * The only thing that needs to be done to make this work is implementing 
+ * method accept(). Typically this invloves reading the current element or 
+ * key of the inner Iterator and checking whether it is acceptable.
+ */
+abstract class FilterIterator implements OuterIterator
+{
+    private $it;
+
+    /**
+     * Constructs a filter around another iterator.
+     *
+     * @param it     Iterator to filter
+     */
+    function __construct(Iterator $it) {
+        $this->it = $it;
+    }
+
+    /**
+     * Rewind the inner iterator.
+     */
+    function rewind() {    
+        $this->it->rewind();
+        $this->fetch();
+    }
+
+    /**
+     * Accept function to decide whether an element of the inner iterator
+     * should be accessible through the Filteriterator.
+     *
+     * @return whether or not to expose the current element of the inner
+     *         iterator.
+     */
+    abstract function accept();
+
+    /**
+     * Fetch next element and store it.
+     *
+     * @return void
+     */
+    protected function fetch() {
+        while ($this->it->valid()) {
+            if ($this->accept()) {
+                return;
+            }
+            $this->it->next();
+        };
+    }
+
+    /**
+     * Move to next element
+     *
+     * @return void
+     */
+    function next() {
+        $this->it->next();
+        $this->fetch();
+    }
+    
+    /**
+     * @return Whether more elements are available
+     */
+    function valid() {
+        return $this->it->valid();
+    }
+    
+    /**
+     * @return The current key
+     */
+    function key() {
+        return $this->it->key();
+    }
+    
+    /**
+     * @return The current value
+     */
+    function current() {
+        return $this->it->current();
+    }
+    
+    /**
+     * hidden __clone
+     */
+    protected function __clone() {
+        // disallow clone 
+    }
+
+    /**
+     * @return The inner iterator
+     */    
+    function getInnerIterator()
+    {
+        return $this->it;
+    }
+
+    /** Aggregate the inner iterator
+     *
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
+     */
+    function __call($func, $params)
+    {
+        return call_user_func_array(array($this->it, $func), $params);
+    }
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   An infinite Iterator
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.1
+ *
+ * This Iterator takes another Iterator and infinitvely iterates it by
+ * rewinding it when its end is reached.
+ *
+ * \note Even an InfiniteIterator stops if its inner Iterator is empty.
+ *
+ \verbatim
+ $it       = new ArrayIterator(array(1,2,3));
+ $infinite = new InfiniteIterator($it);
+ $limit    = new LimitIterator($infinite, 0, 5);
+ foreach($limit as $val=>$key)
+ {
+     echo "$val=>$key\n";
+ }
+ \endverbatim
+ */
+class InfiniteIterator extends IteratorIterator
+{
+    /** Move the inner Iterator forward to its next element or rewind it.
+     * @return void
+     */
+    function next()
+    {
+        $this->getInnerIterator()->next();
+        if (!$this->getInnerIterator()->valid())
+        {
+            $this->getInnerIterator()->rewind();
+        }
+    }
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief Basic Iterator wrapper
+ * @since PHP 5.1
+ *
+ * This iterator wrapper allows to convert anything that is traversable into 
+ * an Iterator. It is very important to understand that most classes that do 
+ * not implement Iterator have their reasone to. Most likely they do not allow
+ * the full Iterator feature set. If so you need to provide techniques to
+ * prevent missuse. If you do not you must expect exceptions or fatal erros.
+ *
+ * It is also possible to derive the class and implement IteratorAggregate by
+ * downcasting the instances returned in getIterator. See the following
+ * example (assuming BaseClass implements Traversable):
+ \code
+ class SomeClass extends BaseClass implements IteratorAggregate
+ {
+   function getIterator()
+   {
+     return new IteratorIterator($this, 'BaseClass');
+   }
+ }
+ \endcode
+ *
+ * As you can see in the example this approach requires that the class to 
+ * downcast to is actually a base class of the specified iterator to wrap.
+ * Omitting the downcast in the above example would result in an endless loop
+ * since IteratorIterator::__construct() would call SomeClass::getIterator().
+ */
+class IteratorIterator implements OuterIterator
+{
+    /** Construct an IteratorIterator from an Iterator or an IteratorAggregate.
+     *
+     * @param iterator  inner iterator
+     * @param classname optional class the iterator has to be downcasted to
+     */
+    function __construct(Traversable $iterator, $classname = null)
+    {
+        if ($iterator instanceof IteratorAggregate)
+        {
+            $iterator = $iterator->getIterator();
+        }
+        if ($iterator instanceof Iterator)
+        {
+            $this->iterator = $iterator;
+        }
+        else
+        {
+            throw new Exception("Classes that only implement Traversable can be wrapped only after converting class IteratorIterator into c code");
+        }
+    }
+
+    /** \return the inner iterator as passed to the constructor
+     */
+    function getInnerIterator()
+    {
+        return $this->iterator;
+    }
+
+    /** \return whether the iterator is valid
+     */
+    function valid()
+    {
+        return $this->iterator->valid();
+    }
+
+    /** \return current key
+     */
+    function key()
+    {
+        return $this->iterator->key();
+    }
+
+    /** \return current value
+     */
+    function current()
+    {
+        return $this->iterator->current();
+    }
+
+    /** forward to next element
+     */
+    function next()
+    {
+        return $this->iterator->next();
+    }
+
+    /** rewind to the first element
+     */
+    function rewind()
+    {
+        return $this->iterator->rewind();
+    }
+
+    /** Aggregate the inner iterator
+     *
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
+     */
+    function __call($func, $params)
+    {
+        return call_user_func_array(array($this->iterator, $func), $params);
+    }
+
+    /** The inner iterator must be private because when this class will be
+     * converted to c code it won't no longer be available.
+     */
+    private $iterator;
+}
+
+
+
+
+
+/**
+ * @brief   Limited Iteration over another Iterator
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.0
+ *
+ * A class that starts iteration at a certain offset and only iterates over
+ * a specified amount of elements.
+ *
+ * This class uses SeekableIterator::seek() if available and rewind() plus
+ * a skip loop otehrwise.
+ */
+class LimitIterator implements OuterIterator
+{
+    private $it;
+    private $offset;
+    private $count;
+    private $pos;
+
+    /** Construct
+     *
+     * @param it     Iterator to limit
+     * @param offset Offset to first element
+     * @param count  Maximum number of elements to show or -1 for all
+     */
+    function __construct(Iterator $it, $offset = 0, $count = -1)
+    {
+        if ($offset < 0) {
+            throw new exception('Parameter offset must be > 0');
+        }
+        if ($count < 0 && $count != -1) {
+            throw new exception('Parameter count must either be -1 or a value greater than or equal to 0');
+        }
+        $this->it     = $it;
+        $this->offset = $offset;
+        $this->count  = $count;
+        $this->pos    = 0;
+    }
+    
+    /** Seek to specified position
+     * @param position offset to seek to (relative to beginning not offset
+     *                 specified in constructor).
+     * @throw exception when position is invalid
+     */
+    function seek($position) {
+        if ($position < $this->offset) {
+            throw new exception('Cannot seek to '.$position.' which is below offset '.$this->offset);
+        }
+        if ($position > $this->offset + $this->count && $this->count != -1) {
+            throw new exception('Cannot seek to '.$position.' which is behind offset '.$this->offset.' plus count '.$this->count);
+        }
+        if ($this->it instanceof SeekableIterator) {
+            $this->it->seek($position);
+            $this->pos = $position;
+        } else {
+            while($this->pos < $position && $this->it->valid()) {
+                $this->next();
+            }
+        }
+    }
+
+    /** Rewind to offset specified in constructor
+     */
+    function rewind()
+    {
+        $this->it->rewind();
+        $this->pos = 0;
+        $this->seek($this->offset);
+    }
+    
+    /** @return whether iterator is valid
+     */
+    function valid() {
+        return ($this->count == -1 || $this->pos < $this->offset + $this->count)
+             && $this->it->valid();
+    }
+    
+    /** @return current key
+     */
+    function key() {
+        return $this->it->key();
+    }
+
+    /** @return current element
+     */
+    function current() {
+        return $this->it->current();
+    }
+
+    /** Forward to nect element
+     */
+    function next() {
+        $this->it->next();
+        $this->pos++;
+    }
+
+    /** @return current position relative to zero (not to offset specified in 
+     *          constructor).
+     */
+    function getPosition() {
+        return $this->pos;
+    }
+
+    /**
+     * @return The inner iterator
+     */    
+    function getInnerIterator()
+    {
+        return $this->it;
+    }
+
+    /** Aggregate the inner iterator
+     *
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
+     */
+    function __call($func, $params)
+    {
+        return call_user_func_array(array($this->it, $func), $params);
+    }
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   An Iterator wrapper that doesn't call rewind
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.1
+ */
+class NoRewindIterator extends IteratorIterator
+{
+    /** Simply prevent execution of inner iterators rewind().
+     */
+    function rewind()
+    {
+        // nothing to do
+    }
+}
+
+
+
+
+
+/**
+ * @brief   Interface to access the current inner iteraor of iterator wrappers
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ */
+interface OuterIterator extends Iterator
+{
+    /** @return inner iterator
+     */
+    function getInnerIterator();
+}
+
+
+
+
+
+/**
+ * @brief   Iterator to filter parents
+ * @author  Marcus Boerger
+ * @version 1.2
+ * @since PHP 5.1
+ *
+ * This extended FilterIterator allows a recursive iteration using 
+ * RecursiveIteratorIterator that only shows those elements which have 
+ * children.
+ */
+class ParentIterator extends RecursiveFilterIterator
+{
+    /** @return whetehr the current element has children
+     */
+    function accept()
+    {
+        return $this->it->hasChildren();
+    }
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   A recursive array iterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ *
+ * Passes the RecursiveIterator interface to the inner Iterator and provides
+ * the same functionality as FilterIterator. This allows you to skip parents
+ * and all their childs before loading them all. You need to care about
+ * function getChildren() because it may not always suit your needs. The 
+ * builtin behavior uses reflection to return a new instance of the exact same
+ * class it is called from. That is you extend RecursiveFilterIterator and
+ * getChildren() will create instance of that class. The problem is that doing
+ * this does not transport any state or control information of your accept()
+ * implementation to the new instance. To overcome this problem you might 
+ * need to overwrite getChildren(), call this implementation and pass the
+ * control vaules manually.
+ */
+class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator
+{
+    /** @return whether the current element has children
+     */
+    function hasChildren()
+    {
+        return is_array($this->current());
+    }
+
+    /** @return an iterator for the current elements children
+     *
+     * @note the returned iterator will be of the same class as $this
+     */
+    function getChildren()
+    {
+        if ($this->current() instanceof self)
+        {
+            return $this->current();
+        }
+        if (empty($this->ref))
+        {
+            $this->ref = new ReflectionClass($this);
+        }
+        return $this->ref->newInstance($this->current());
+    }
+    
+    private $ref;
+}
+
+
+
+
+
+/**
+ * @brief   Cached recursive iteration over another Iterator
+ * @author  Marcus Boerger
+ * @version 1.2
+ * @since PHP 5.1
+ *
+ * @see CachingIterator
+ */
+class RecursiveCachingIterator extends CachingIterator implements RecursiveIterator
+{
+    private $hasChildren;
+    private $getChildren;
+
+    /** Construct from another iterator
+     *
+     * @param it    Iterator to cache
+     * @param flags Bitmask: 
+     *              - CALL_TOSTRING   (whether to call __toString() for every element)
+     *              - CATCH_GET_CHILD (whether to catch exceptions when trying to get childs)
+     */
+    function __construct(RecursiveIterator $it, $flags = self::CALL_TOSTRING)
+    {
+        parent::__construct($it, $flags);
+    }
+
+    /** Rewind Iterator
+     */    
+    function rewind()
+    {
+       $this->hasChildren = false;
+       $this->getChildren = NULL;
+       parent::rewind();
+    }
+
+    /** Forward to next element if necessary then an Iterator for the Children
+     * will be created.
+     */
+    function next()
+    {
+        if ($this->hasChildren = $this->it->hasChildren())
+        {
+            try
+            {
+                $child = $this->it->getChildren();
+                if (!$this->ref)
+                {
+                    $this->ref = new ReflectionClass($this);
+                }
+                $this->getChildren = $ref->newInstance($child, $this->flags);
+            }
+            catch(Exception $e)
+            {
+                if (!$this->flags & self::CATCH_GET_CHILD)
+                {
+                    throw $e;
+                }
+                $this->hasChildren = false;
+                $this->getChildren = NULL;
+            }
+        } else
+        {
+            $this->getChildren = NULL;
+        }
+        parent::next();
+    }
+    
+    private $ref;
+
+    /** @return whether the current element has children
+     * @note The check whether the Iterator for the children can be created was
+     *       already executed. Hence when flag CATCH_GET_CHILD was given in
+     *       constructor this fucntion returns false so that getChildren does 
+     *       not try to access those children.
+     */
+    function hasChildren()
+    {
+        return $this->hasChildren;
+    }
+
+    /** @return An Iterator for the children
+     */
+    function getChildren()
+    {
+        return $this->getChildren;
+    }
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   Iterator to filter recursive iterators
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ *
+ * Passes the RecursiveIterator interface to the inner Iterator and provides
+ * the same functionality as FilterIterator. This allows you to skip parents
+ * and all their childs before loading them all. You need to care about
+ * function getChildren() because it may not always suit your needs. The 
+ * builtin behavior uses reflection to return a new instance of the exact same
+ * class it is called from. That is you extend RecursiveFilterIterator and
+ * getChildren() will create instance of that class. The problem is that doing
+ * this does not transport any state or control information of your accept()
+ * implementation to the new instance. To overcome this problem you might 
+ * need to overwrite getChildren(), call this implementation and pass the
+ * control vaules manually.
+ */
+abstract class RecursiveFilterIterator extends FilterIterator implements RecursiveIterator
+{
+    /** @param $it the RecursiveIterator to filter
+     */
+    function __construct(RecursiveIterator $it)
+    {
+        parent::__construct($it);
+    }
+    
+    /** @return whether the current element has children
+     */
+    function hasChildren()
+    {
+        return $this->getInnerIterator()->hasChildren();
+    }
+
+    /** @return an iterator for the current elements children
+     *
+     * @note the returned iterator will be of the same class as $this
+     */
+    function getChildren()
+    {
+        if (empty($this->ref))
+        {
+            $this->ref = new ReflectionClass($this);
+        }
+        return $this->ref->newInstance($this->getInnerIterator()->getChildren());
+    }
+    
+    private $ref;
+}
+
+
+
+
+
+/**
+ * @brief   Interface for recursive iteration with RecursiveIteratorIterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.0
+ */
+interface RecursiveIterator extends Iterator
+{
+    /** @return whether the current element has children
+     */
+    function hasChildren();
+    
+    /** @return the sub iterator for the current element
+     * @note The returned object must implement RecursiveIterator.
+     */
+    function getChildren();
+}
+
+
+
+
+
+/**
+ * @brief   Iterates through recursive iterators
+ * @author  Marcus Boerger
+ * @version 1.2
+ * @since PHP 5.0
+ *
+ * The objects of this class are created by instances of RecursiveIterator. 
+ * Elements of those iterators may be traversable themselves. If so these 
+ * sub elements are recursed into.
+ */
+class RecursiveIteratorIterator implements OuterIterator
+{
+    /** Mode: Only show leaves */
+    const LEAVES_ONLY         = 0;
+    /** Mode: Show parents prior to their children */
+    const SELF_FIRST        = 1;
+    /** Mode: Show all children prior to their parent */
+    const CHILD_FIRST        = 2;
+
+    /** Flag: Catches exceptions during getChildren() calls and simply jumps
+     * to the next element. */
+    const CATCH_GET_CHILD    = 0x00000002;
+
+    private $ait = array();
+    private $count = 0;
+    private $mode  = self::LEAVES_ONLY;
+    private $flags = 0;
+
+    /** Construct from RecursiveIterator
+     *
+     * @param it     RecursiveIterator to iterate
+     * @param mode   Operation mode (one of):
+     *               - LEAVES_ONLY only show leaves
+     *               - SELF_FIRST  show parents prior to their childs
+     *               - CHILD_FIRST show all children prior to their parent
+     * @param flags  Control flags, zero or any combination of the following
+     *               (since PHP 5.1).
+     *               - CATCH_GET_CHILD which catches exceptions during
+     *                 getChildren() calls and simply jumps to the next 
+     *                 element.
+     */
+    function __construct(RecursiveIterator $it, $mode = self::LEAVES_ONLY, $flags = 0)
+    {
+        $this->ait[0] = $it;
+        $this->mode   = $mode;
+        $this->flags  = $flags;
+    }
+
+    /** Rewind to top iterator as set in constructor
+     */
+    function rewind()
+    {
+        while ($this->count) {
+            unset($this->ait[$this->count--]);
+            $this->endChildren();
+        }
+        $this->ait[0]->rewind();
+        $this->ait[0]->recursed = false;
+        callNextElement(true);
+    }
+    
+    /** @return whether iterator is valid
+     */
+    function valid()
+    {
+        $count = $this->count;
+        while ($count) {
+            $it = $this->ait[$count];
+            if ($it->valid()) {
+                return true;
+            }
+            $count--;
+            $this->endChildren();
+        }
+        return false;
+    }
+    
+    /** @return current key
+     */
+    function key()
+    {
+        $it = $this->ait[$this->count];
+        return $it->key();
+    }
+    
+    /** @return current element
+     */
+    function current()
+    {
+        $it = $this->ait[$this->count];
+        return $it->current();
+    }
+    
+    /** Forward to next element
+     */
+    function next()
+    {
+        while ($this->count) {
+            $it = $this->ait[$this->count];
+            if ($it->valid()) {
+                if (!$it->recursed && callHasChildren()) {
+                    $it->recursed = true;
+                    try
+                    {
+                        $sub = callGetChildren();
+                    }
+                    catch (Exception $e)
+                    {
+                        if (!($this->flags & self::CATCH_GET_CHILD))
+                        {
+                            throw $e;
+                        }
+                        $it->next();
+                        continue;
+                    }
+                    $sub->recursed = false;
+                    $sub->rewind();
+                    if ($sub->valid()) {
+                        $this->ait[++$this->count] = $sub;
+                        if (!$sub instanceof RecursiveIterator) {
+                            throw new Exception(get_class($sub).'::getChildren() must return an object that implements RecursiveIterator');
+                        }
+                        $this->beginChildren();
+                        return;
+                    }
+                    unset($sub);
+                }
+                $it->next();
+                $it->recursed = false;
+                if ($it->valid()) {
+                    return;
+                }
+                $it->recursed = false;
+            }
+            if ($this->count) {
+                unset($this->ait[$this->count--]);
+                $it = $this->ait[$this->count];
+                $this->endChildren();
+                callNextElement(false);
+            }
+        }
+        callNextElement(true);
+    }
+
+    /** @return Sub Iterator at given level or if unspecified the current sub 
+     *          Iterator
+     */
+    function getSubIterator($level = NULL)
+    {
+        if (is_null($level)) {
+            $level = $this->count;
+        }
+        return @$this->ait[$level];
+    }
+
+    /**
+     * @return The inner iterator
+     */    
+    function getInnerIterator()
+    {
+        return $this->it;
+    }
+
+    /** @return Current Depth (Number of parents)
+     */
+    function getDepth()
+    {
+        return $this->level;
+    }
+
+    /** @return whether current sub iterators current element has children
+     * @since PHP 5.1
+     */
+    function callHasChildren()
+    {
+        return $this->ait[$this->count]->hasChildren();
+    }
+
+    /** @return current sub iterators current children
+     * @since PHP 5.1
+     */
+    function callGetChildren()
+    {
+        return $this->ait[$this->count]->getChildren();
+    }
+
+    /** Called right after calling getChildren() and its rewind().
+     * @since PHP 5.1
+     */
+    function beginChildren()
+    {
+    }
+    
+    /** Called after current child iterator is invalid and right before it
+     * gets destructed.
+     * @since PHP 5.1
+     */
+    function endChildren()
+    {
+    }
+
+    private function callNextElement($after_move)
+    {
+        if ($this->valid())
+        {
+            if ($after_move)
+            {
+                if (($this->mode == self::SELF_FIRST && $this->callHasChildren())
+                ||   $this->mode == self::LEAVES_ONLY)
+                $this->nextElement();
+            }
+            else
+            {
+                $this->nextElement();
+            }
+        }
+    }
+    
+    /** Called when the next element is available
+     */
+    function nextElement()
+    {
+    }
+}
+
+
+
+
+
+/**
+ * @brief   Recursive regular expression filter for iterators
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ *
+ * This filter iterator assumes that the inner iterator 
+ */
+class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator
+{
+    /**
+     * Constructs a regular expression filter around an iterator whose 
+     * elemnts or keys are strings.
+     *
+     * @param it          inner iterator
+     * @param regex       the regular expression to match
+     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
+     *                    self::ALL_MATCHES, self::SPLIT)
+     * @param flags       special flags (self::USE_KEY)
+     * @param preg_flags  global PREG_* flags, see preg_match(), 
+     *                    preg_match_all(), preg_split()
+     */
+    function __construct(RecursiveIterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0) {
+        parent::__construct($it, $regex, $mode, $flags, $preg_flags);
+    }
+
+    /** @return whether the current element has children
+     */
+    function hasChildren()
+    {
+        return $this->getInnerIterator()->hasChildren();
+    }
+
+    /** @return an iterator for the current elements children
+     *
+     * @note the returned iterator will be of the same class as $this
+     */
+    function getChildren()
+    {
+        if (empty($this->ref))
+        {
+            $this->ref = new ReflectionClass($this);
+        }
+        return $this->ref->newInstance($this->getInnerIterator()->getChildren());
+    }
+    
+    private $ref;
+}
+
+
+
+
+
+/**
+ * @brief   Regular expression filter for iterators
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ *
+ * This filter iterator assumes that the inner iterator 
+ */
+class RegexIterator implements FilterIterator
+{
+    const USE_KEY     = 0x00000001; /**< If present in $flags the the key is 
+                                         used rather then the current value. */
+
+    const MATCH       = 0; /**< Mode: Executed a plain match only      */
+    const GET_MATCH   = 1; /**< Mode: Return the first matche (if any) */
+    const ALL_MATCHES = 2; /**< Mode: Return all matches (if any)      */
+    const SPLIT       = 3; /**< Mode: Return the split values (if any) */
+    const REPLACE     = 4; /**< Mode: Replace the input key or current */
+    
+    private $regex;     /**< the regular expression to match against */
+    private $mode;      /**< operation mode (one of self::MATCH, 
+                             self::GET_MATCH, self::ALL_MATCHES, self::SPLIT) */
+    private $flags;     /**< special flags (self::USE_KEY) */
+    private $preg_flags;/**< PREG_* flags, see preg_match(), preg_match_all(), 
+                             preg_split() */ 
+    private $key;       /**< the value used for key() */
+    private $current;   /**< the value used for current() */
+
+    /**
+     * Constructs a regular expression filter around an iterator whose 
+     * elemnts or keys are strings.
+     *
+     * @param it          inner iterator
+     * @param regex       the regular expression to match
+     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
+     *                    self::ALL_MATCHES, self::SPLIT)
+     * @param flags       special flags (self::USE_KEY)
+     * @param preg_flags  global PREG_* flags, see preg_match(), 
+     *                    preg_match_all(), preg_split()
+     */
+    function __construct(Iterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0) {
+        parent::__construct($it);
+        $this->regex = $regex;
+        $this->flags = $flags;
+        $this->mode = $mode;
+        $this->preg_flags = $preg_flags;
+    }
+
+    /**
+     * Match current or key against regular expression using mode, flags and
+     * preg_flags.
+     *
+     * @return whether this is a match
+     *
+     * @warning never call this twice for the same state
+     */
+    function accept()
+    {
+        $matches       = array();
+        $this->key     = parent::key();
+        $this->current = parent::current();
+        /* note that we use $this->current, rather than calling parent::current() */
+        $subject = ($this->flags & self::USE_KEY) ? $this->key : $this->current;
+        switch($this->mode)
+        {
+            case self::MATCH:
+                return preg_match($this->regex, $subject, $matches, $this->preg_flags);
+
+            case self::GET_MATCH:
+                $this->current = array();
+                return preg_match($this->regex, $subject, $this->current, $this->preg_flags) > 0;
+
+            case self::ALL_MATCHES:
+                $this->current = array();
+                return preg_match_all($this->regex, $subject, $this->current, $this->preg_flags) > 0;
+
+            case self::SPLIT:
+                $this->current = array();
+                preg_split($this->regex, $subject, $this->current, $this->preg_flags) > 1;
+
+            case self::REPLACE:
+                $this->current = array();
+                $result = preg_replace($this->regex, $this->replacement, $subject);
+                if ($this->flags & self::USE_KEY)
+                {
+                    $this->key = $result;
+                }
+                else
+                {
+                    $this->current = $result;
+                }
+        }
+    }
+
+    /** @return the key after accept has been called
+     */
+    function key()
+    {
+        return $this->key;
+    }
+
+    /** @return the current value after accept has been called
+     */
+    function current()
+    {
+        return $this->current;
+    }
+
+    /** @return current operation mode
+     */
+    function getMode()
+    {
+        return $this->mode;
+    }
+
+    /** @param mode new operaion mode
+     */
+    function setMode($mode)
+    {
+        $this->mode = $mode;
+    }
+
+    /** @return current operation flags
+     */
+    function getFlags()
+    {
+        return $this->flags;
+    }
+
+    /** @param flags new operaion flags
+     */
+    function setFlags($flags)
+    {
+        $this->flags = $flags;
+    }
+
+    /** @return current PREG flags
+     */
+    function getPregFlags()
+    {
+        return $this->preg_flags;
+    }
+
+    /** @param preg_flags new PREG flags
+     */
+    function setPregFlags($preg_flags)
+    {
+        $this->preg_flags = $preg_flags;
+    }
+}
+
+
+
+
+
+/** @brief seekable iterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.0
+ *
+ * Turns a normal iterator ino a seekable iterator. When there is a way
+ * to seek on an iterator LimitIterator can use this to efficiently rewind
+ * to offset.
+ */
+interface SeekableIterator extends Iterator
+{
+    /** Seek to an absolute position
+     *
+     * \param $index position to seek to
+     * \return void
+     *
+     * The method should throw an exception if it is not possible to seek to 
+     * the given position. Typically this exception should be of type 
+     * OutOfBoundsException.
+     \code
+    function seek($index);
+        $this->rewind();
+        $position = 0;
+        while($position < $index && $this->valid()) {
+            $this->next();
+            $position++;
+        }
+        if (!$this->valid()) {
+            throw new OutOfBoundsException('Invalid seek position');
+        }
+    }
+     \endcode
+     */
+    function seek($index);
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   Object representation for any stream
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.1
+ */
+class SplFileObject extends SplFileInfo implements RecursiveIterator, SeekableIterator
+{
+    /** Flag: wheter to suppress new lines */
+    const DROP_NEW_LINE   = 0x00000001;
+
+    private $fp;
+    private $fname;
+    private $line     = NULL;
+    private $lnum     = 0;
+    private $max_len  = 0;
+    private $flags    = 0;
+    private $delimiter= ',';
+    private $enclosure= '"';
+    
+    /**
+     * Constructs a new file object
+     * 
+     * @param $file_name         The name of the stream to open
+     * @param $open_mode         The file open mode
+     * @param $use_include_path  Whether to search in include paths
+     * @param $context           A stream context
+     * @throw RuntimeException   If file cannot be opened (e.g. insufficient 
+     *                           access rights).
+     */
+    function __construct($file_name, $open_mode = 'r', $use_include_path = false, $context = NULL)
+    {
+        $this->fp = fopen($file_name, $open_mode, $use_include_path, $context);
+        if (!$this->fp)
+        {
+            throw new RuntimeException("Cannot open file $file_name");
+        }
+        $this->fname = $file_name;
+    }
+    
+    /**
+     * @return whether the end of the stream is reached
+     */
+    function eof()
+    {
+        return eof($this->fp);
+    }
+
+    /** increase current line number
+     * @return next line from stream
+     */
+    function fgets()
+    {
+        $this->freeLine();
+        $this->lnum++;
+        $buf = fgets($this->fp, $this->max_len);
+        
+        return $buf;
+    }
+
+    /**
+     * @param delimiter  character used as field separator
+     * @param enclosure  end of 
+     * @return array containing read data
+     */
+    function fgetcsv($delimiter = NULL, $enclosure = NULL)
+    {
+        $this->freeLine();
+        $this->lnum++;
+        switch(fun_num_args())
+        {
+            case 0:
+                $delimiter = $this->delimiter;
+            case 1:
+                $enclosure = $this->enclosure;
+            default:
+            case 2:
+                break;
+        }
+        return fgetcsv($this->fp, $this->max_len, $delimiter, $enclosure); 
+    }
+
+    /**
+     * Set the delimiter and enclosure character used in fgetcsv
+     *
+     * @param delimiter new delimiter, defaults to ','
+     * @param enclosure new enclosure, defaults to '"'
+     */
+    function setCsvControl($delimiter = ';', $enclosure = '"')
+    {
+        $this->delimiter = $delimiter;
+        $this->enclosure = $enclosure;
+    }
+
+    /**
+     * @return array(delimiter, enclosure) as used in fgetcsv
+     */
+    function getCsvControl($delimiter = ',', $enclosure = '"')
+    {
+        return array($this->delimiter, $this->enclosure);
+    }
+
+    /**
+     * @param operation lock operation (LOCK_SH, LOCK_EX, LOCK_UN, LOCK_NB)
+     * @retval $wouldblock  whether the operation would block
+     */
+    function flock($operation, &$wouldblock)
+    {
+        return flock($this->fp, $operation, $wouldblock);
+    }
+
+    /**
+     * Flush current data
+     * @return success or failure
+     */
+    function fflush()
+    {
+        return fflush($this->fp);
+    }
+
+    /**
+     * @return current file position
+     */
+    function ftell()
+    {
+        return ftell($this->fp);
+    }
+
+    /**
+     * @param pos new file position
+     * @param whence seek method (SEEK_SET, SEEK_CUR, SEEK_END)
+     * @return Upon success, returns 0; otherwise, returns -1. Note that 
+     *         seeking past EOF is not considered an error.
+     */
+    function fseek($pos, $whence = SEEK_SET)
+    {
+        return fseek($this->fp, $pos, $whence);
+    }
+
+    /**
+     * @return next char from file
+     * @note a new line character does not increase $this->lnum
+     */
+    function fgetc()
+    {
+        $this->freeLine();
+        $c = fgetc($this->fp);
+        if ($c == '\n') {
+            $this->lnum++;
+        }
+    }
+
+    /** Read and return remaining part of stream
+     * @return size of remaining part passed through
+     */
+    function fpassthru()
+    {
+        return fpassthru($this->fp);
+    }
+
+    /** Get a line from the file and strip HTML tags
+     * @param $allowable_tags tags to keep in the string
+     */
+    function fgetss($allowable_tags = NULL)
+    {
+        return fgetss($this->fp, $allowable_tags);
+    }
+
+    /** Scan the next line
+     * @param $format string specifying format to parse
+     */    
+    function fscanf($format /* , ... */)
+    {
+        $this->freeLine();
+        $this->lnum++;
+        return fscanf($this->fp, $format /* , ... */);
+    }
+
+    /**
+     * @param $str to write
+     * @param $length maximum line length to write
+     */
+    function fwrite($str, $length = NULL)
+    {
+        return fwrite($this->fp, $length);
+    }
+
+    /**
+     * @return array of file stat information
+     */
+    function fstat()
+    {
+        return fstat($this->fp);
+    }
+
+    /**
+     * @param $size new size to truncate file to
+     */
+    function ftruncate($size)
+    {
+        return ftruncate($this->fp, $size);
+    }
+
+    /**
+     * @param $flags new flag set
+     */
+    function setFlags($flags)
+    {
+        $this->flags = $flags;
+    }
+
+    /**
+     *  @return current set of flags
+     */
+    function getFlags()
+    {
+        return $this->flags;
+    }
+
+    /**
+     * @param $max_len set the maximum line length read
+     */
+    function setMaxLineLen($max_len)
+    {
+        $this->max_len = $max_len;
+    }
+
+    /**
+     * @return current setting for max line
+     */
+    function getMaxLineLen()
+    {
+        return $this->max_len;
+    }
+
+    /**
+     * @return false
+     */
+    function hasChildren()
+    {
+        return false;
+    }
+
+    /**
+     * @return false
+     */
+    function getChildren()
+    {
+        return NULL;
+    }
+
+    /**
+     * Invalidate current line buffer and set line number to 0.
+     */
+    function rewind()
+    {
+        $this->freeLine();
+        $this->lnum = 0;
+    }
+
+    /**
+     * @return whether more data can be read
+     */
+    function valid()
+    {
+        return !$this->eof();
+    }
+    
+    /**
+     * @note Fill current line buffer if not done yet.
+     * @return line buffer 
+     */    
+    function current()
+    {
+        if (is_null($this->line))
+        {
+            $this->line = getCurrentLine();
+        }
+        return $this->line;
+    }
+
+    /**
+     * @return line number 
+     * @note fgetc() will increase the line number when reaing a new line char.
+     *       This has the effect key() called on a read a new line will already
+     *       return the increased line number.
+     * @note Line counting works as long as you only read the file and do not
+     *       use fseek().
+     */    
+    function key()
+    {
+        return $this->lnum;
+    }
+
+    /** Invalidate current line buffer.
+     */    
+    function next()
+    {
+        $this->freeLine();
+    }
+
+    /**
+     * @return next line read from file and increase the line counter
+     */
+    private function readLine()
+    {
+        if ($this->eof())
+        {
+            $this->freeLine();
+            throw new RuntimeException("Cannot read from file " . $this->fname);
+        }
+        if ($this->line) {
+            $this->lnum++;
+        }
+        $this->freeLine();
+        $this->line = fgets($this->fp, $this->max_len);
+        return $this->line;
+    }
+
+    /**
+     * Free the current line buffer and increment the line counter
+     */
+    private function freeLine()
+    {
+        if ($this->line) {
+            $this->line = NULL;
+        }
+    }
+
+    /*
+     * @note If you DO overload this function key() and current() will increment
+     *       $this->lnum automatically. If not then function reaLine() will do
+     *       that for you.
+     */ 
+    function getCurrentLine()
+    {
+        $this->freeLine();
+        if ($this->eof())
+        {
+            throw new RuntimeException("Cannot read from file " . $this->fname);
+        }
+        $this->readLine();
+    }
+
+    /**
+     * @return current line
+     */
+    function __toString()
+    {
+        return current();
+    }
+
+    /**
+     * @param $line_pos Seek to this line
+     */    
+    function seek($line_pos)
+    {
+        $this->rewind();
+        while($this->lnum < $line_pos && !$this->eof())
+        {
+            $this->getCurrentLine();
+        }
+    }
+}
+
+
+
+
+
+/**
+ * @brief   Object storage
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1.2
+ *
+ * This container allows to store objects uniquly without the need to compare
+ * them one by one. This is only possible internally. The code represenation
+ * here therefore has a complexity of O(n) while the actual implementation has
+ * complexity O(1).
+ */
+class SplObjectStorage implements Iterator, Countable
+{
+    private $storage = array();
+    private $index = 0;
+
+    /** Rewind to top iterator as set in constructor
+     */
+    function rewind()
+    {
+        rewind($this->storage);
+    }
+    
+    /** @return whether iterator is valid
+     */
+    function valid()
+    {
+        return key($this->storage) !== false;
+    }
+    
+    /** @return current key
+     */
+    function key()
+    {
+        return $this->index;
+    }
+    
+    /** @return current object
+     */
+    function current()
+    {
+        return current($this->storage);
+    }
+    
+    /** Forward to next element
+     */
+    function next()
+    {
+        next($this->storage);
+        $this->index++;
+    }
+
+    /** @return number of objects in storage
+     */
+    function count()
+    {
+        return count($this->storage);
+    }
+
+    /** @param obj object to look for
+     * @return whether $obj is contained in storage
+      */
+    function contains($obj)
+    {
+        if (is_object($obj))
+        {
+            foreach($this->storage as $object)
+            {
+                if ($object === $obj)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /** @param $obj new object to attach to storage if not yet contained
+     */
+    function attach($obj)
+    {
+        if (is_object($obj) && !$this->contains($obj))
+        {
+            $this->storage[] = $obj;
+        }
+    }
+
+    /** @param $obj object to remove from storage
+     */
+    function detach($obj)
+    {
+        if (is_object($obj))
+        {
+            foreach($this->storage as $idx => $object)
+            {
+                if ($object === $obj)
+                {
+                    unset($this->storage[$idx]);
+                    $this->rewind();
+                    return;
+                }
+            }
+        }
+    }
+}
+
+/**
  * apache_child_terminate will register the
  * Apache process executing the current PHP request for termination
  * once execution of PHP code is completed. It may be used to
@@ -52699,122 +54663,6 @@ class SphinxClient {
     function updateAttributes($index, $attributes, $values) {}
 
 }
-class CachingIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator, ArrayAccess, Countable {
-    const CALL_TOSTRING = 0;
-    const CATCH_GET_CHILD = 0;
-    /**
-     * @return void
-     **/
-    function hasNext() {}
-
-    /**
-     * Move the iterator forward.
-     *
-     * @return void
-     **/
-    function next() {}
-
-    /**
-     * Rewind the iterator.
-     *
-     * @return void
-     **/
-    function rewind() {}
-
-    /**
-     * Get the string representation of the current element.
-     *
-     * @return void
-     **/
-    function __toString() {}
-
-    /**
-     * Check whether the current element is valid.
-     *
-     * @return void
-     **/
-    function valid() {}
-
-    /**
-     * @param Iterator
-     * @param string
-     **/
-    function __construct($iterator, $flags) {}
-
-    /**
-     * May return the number of elements in the iterator.
-     *
-     * @return void
-     **/
-    function count() {}
-
-    /**
-     * May return the current element in the iteration.
-     *
-     * @return void
-     **/
-    function current() {}
-
-    /**
-     * @return void
-     **/
-    function getCache() {}
-
-    /**
-     * Get the bitmask of the flags used for this CachingIterator instance.
-     *
-     * @return void
-     **/
-    function getFlags() {}
-
-    /**
-     * Returns the iterator sent to the constructor.
-     *
-     * @return void
-     **/
-    function getInnerIterator() {}
-
-    /**
-     * This method may return a key for the current element.
-     *
-     * @return void
-     **/
-    function key() {}
-
-    /**
-     * @param string
-     * @return void
-     **/
-    function offsetExists($index) {}
-
-    /**
-     * @param string
-     * @return void
-     **/
-    function offsetGet($index) {}
-
-    /**
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function offsetSet($index, $newval) {}
-
-    /**
-     * @param string
-     * @return void
-     **/
-    function offsetUnset($index) {}
-
-    /**
-     * Set the flags for the CachingIterator object.
-     *
-     * @param bitmask
-     * @return void
-     **/
-    function setFlags($flags) {}
-
-}
 class FilterIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
     /**
      * Get the current element value.
@@ -52854,122 +54702,6 @@ class FilterIterator extends IteratorIterator implements OuterIterator, Traversa
     /**
      * Checks whether the current element is valid.
      *
-     * @return bool
-     **/
-    function valid() {}
-
-}
-class LimitIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
-    /**
-     * @return int
-     **/
-    function getPosition() {}
-
-    /**
-     * Moves the iterator forward.
-     *
-     * @return void
-     **/
-    function next() {}
-
-    /**
-     * Rewinds the iterator to the specified starting offset.
-     *
-     * @return void
-     **/
-    function rewind() {}
-
-    /**
-     * @param int
-     * @return void
-     **/
-    function seek($position) {}
-
-    /**
-     * Checks whether the current element is valid.
-     *
-     * @return bool
-     **/
-    function valid() {}
-
-}
-class ParentIterator extends RecursiveFilterIterator implements RecursiveIterator, OuterIterator, Traversable, Iterator {
-    /**
-     * Get the the inner iterator's children contained in a ParentIterator.
-     *
-     * @return ParentIterator
-     **/
-    function getChildren() {}
-
-    /**
-     * Check whether the inner iterator's current element has children.
-     *
-     * @return bool
-     **/
-    function hasChildren() {}
-
-    /**
-     * Moves the iterator forward.
-     *
-     * @return void
-     **/
-    function next() {}
-
-    /**
-     * Rewinds the iterator.
-     *
-     * @return void
-     **/
-    function rewind() {}
-
-}
-class RecursiveCachingIterator extends CachingIterator implements Countable, ArrayAccess, Iterator, Traversable, OuterIterator, RecursiveIterator {
-    /**
-     * @return RecursiveCachingIterator
-     **/
-    function getChildren() {}
-
-    /**
-     * @return bool
-     **/
-    function hasChildren() {}
-
-}
-class RecursiveIteratorIterator implements OuterIterator, Traversable, Iterator {
-    const LEAVES_ONLY = 0;
-    const SELF_FIRST = 0;
-    const CHILD_FIRST = 0;
-    /**
-     * @return mixed
-     **/
-    function current() {}
-
-    /**
-     * @return int
-     **/
-    function getDepth() {}
-
-    /**
-     * @return RecursiveIterator
-     **/
-    function getSubIterator() {}
-
-    /**
-     * @return mixed
-     **/
-    function key() {}
-
-    /**
-     * @return void
-     **/
-    function next() {}
-
-    /**
-     * @return void
-     **/
-    function rewind() {}
-
-    /**
      * @return bool
      **/
     function valid() {}
@@ -54640,16 +56372,6 @@ define('PNG_FILTER_UP', 0);
 define('PNG_FILTER_AVG', 0);
 define('PNG_FILTER_PAETH', 0);
 define('PNG_ALL_FILTERS', 0);
-define('imagick::COLOR_BLACK', 0);
-define('imagick::COLOR_BLUE', 0);
-define('imagick::COLOR_CYAN', 0);
-define('imagick::COLOR_GREEN', 0);
-define('imagick::COLOR_RED', 0);
-define('imagick::COLOR_YELLOW', 0);
-define('imagick::COLOR_MAGENTA', 0);
-define('imagick::COLOR_OPACITY', 0);
-define('imagick::COLOR_ALPHA', 0);
-define('imagick::COLOR_FUZZ', 0);
 define('NIL', 0);
 define('OP_DEBUG', 0);
 define('OP_READONLY', 0);
