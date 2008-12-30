@@ -80,6 +80,7 @@ private slots:
   void testLargeNumberOfDeclarations();
   void testStaticVariable();
   void testReturnTypeTwoDeclarations();
+  void testGlobalVariableNotVisibleInFunction();
 };
 
 }

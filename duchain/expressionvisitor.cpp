@@ -58,7 +58,10 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
         if (m_useCursor) {
             position = m_editor->findPosition(variable->variable, EditorIntegrator::FrontEdge);
         }
-        QList<Declaration*> decls = m_currentContext->findDeclarations(identifier, position);
+        //DontSearchInParent-flag because (1) in Php global variables aren't avaliable in function
+        //context and (2) a function body consists of a single context (so this is no problem)
+        QList<Declaration*> decls = m_currentContext->findDeclarations(identifier, position,
+                            AbstractType::Ptr(), 0, DUContext::DontSearchInParent);
         for (int i=decls.count(); i--; i > 0) {
             Declaration *dec = decls.at(i);
             if (dec->kind() == Declaration::Instance && !dynamic_cast<ConstantDeclaration*>(dec)) {

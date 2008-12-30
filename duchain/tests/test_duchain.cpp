@@ -1199,6 +1199,20 @@ void TestDUChain::testReturnTypeTwoDeclarations()
     release(top);
 }
 
+void TestDUChain::testGlobalVariableNotVisibleInFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $a = 0; function foo() { $a; }");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->localDeclarations().at(0)->uses().count(), 0);
+
+    release(top);
+}
+
 }
 
 #include "test_duchain.moc"
