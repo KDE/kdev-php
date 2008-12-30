@@ -635,7 +635,7 @@ expression=booleanOrExpression
   | COLON statements=innerStatementList ENDFOREACH semicolonOrCloseTag
 -> foreachStatement ;;
 
-  variableIdentifier (ASSIGN staticScalar=staticScalar | 0)
+  var=variableIdentifier (ASSIGN staticScalar=staticScalar | 0)
 -> staticVar ;;
 
     var=variableIdentifier

@@ -55,6 +55,7 @@ protected:
     virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
     virtual void visitFunctionCall(FunctionCallAst* node);
     virtual void visitStatement(StatementAst* node);
+    virtual void visitStaticVar(StaticVarAst* node);
 
     void classTypeOpened(KDevelop::AbstractType::Ptr type);
     void classContextOpened(KDevelop::DUContext* context);

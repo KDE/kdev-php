@@ -377,6 +377,20 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
 
 }
 
+void DeclarationBuilder::visitStaticVar(StaticVarAst* node)
+{
+    DeclarationBuilderBase::visitStaticVar(node);
+
+    DUChainWriteLocker lock(DUChain::lock());
+    SimpleRange newRange = editorFindRange(node->var, node->var);
+    openDefinition<VariableDeclaration>(identifierForNode(node->var), newRange);
+    currentDeclaration()->setKind(Declaration::Instance);
+
+    //own closeDeclaration() that uses currentAbstractType() instead of lastType()
+//     currentDeclaration()->setType(currentAbstractType());
+//     eventuallyAssignInternalContext();
+}
+
 Declaration* DeclarationBuilder::findDeclarationImport(DUContext* currentContext,
                             DeclarationType declarationType, IdentifierAst* node)
 {

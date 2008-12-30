@@ -78,6 +78,7 @@ private slots:
   void testFunctionInFunction();
   void testObjectWithClassName();
   void testLargeNumberOfDeclarations();
+  void testStaticVariable();
 };
 
 }

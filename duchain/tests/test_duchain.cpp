@@ -1145,6 +1145,20 @@ void TestDUChain::testLargeNumberOfDeclarations()
     DUChain::self()->removeDocumentChain(top);
 }
 
+void TestDUChain::testStaticVariable()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function aaa() { static $foo; }");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->childContexts().at(1)->localDeclarations().count(), 1);
+    QCOMPARE(top->childContexts().at(1)->localDeclarations().first()->qualifiedIdentifier(), QualifiedIdentifier("aaa::foo"));
+
+    release(top);
+}
+
 }
 
 #include "test_duchain.moc"

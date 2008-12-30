@@ -1015,6 +1015,7 @@ struct KDEVPHPPARSER_EXPORT StaticVarAst: public AstNode
 {
     enum { KIND = StaticVarKind };
 
+    VariableIdentifierAst *var;
     StaticScalarAst *staticScalar;
 };
 
