@@ -1015,9 +1015,10 @@ void TestDUChain::testFunctionDocBlock()
 
 void TestDUChain::testVariableDocBlock()
 {
-    TopDUContext* top = parse("<? /**\n *Foo\n **/\n$a = 0; ", DumpAll);
+    TopDUContext* top = parse("<? /**\n *Foo\n **/\n$a = 0; /**\n *Foo\n **/\nstatic $b;", DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
     QCOMPARE(top->localDeclarations().first()->comment(), QByteArray("Foo"));
+    QCOMPARE(top->localDeclarations().at(1)->comment(), QByteArray("Foo"));
     release(top);
 }
 
