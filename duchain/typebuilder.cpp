@@ -197,6 +197,26 @@ void TypeBuilder::visitExpr(ExprAst *node)
     closeType();
 }
 
+void TypeBuilder::visitStaticVar(StaticVarAst *node)
+{
+    AbstractType::Ptr type;
+    if (node->value) {
+        node->value->ducontext = currentContext();
+        ExpressionParser ep(true);
+        ep.setCreateProblems(true);
+        ExpressionEvaluationResult res = ep.evaluateType(node, editor());
+        type = res.type();
+    }
+    if (!type) {
+        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
+    }
+    openAbstractType(type);
+
+    TypeBuilderBase::visitStaticVar(node);
+
+    closeType();
+}
+
 void TypeBuilder::visitStatement(StatementAst* node)
 {
     TypeBuilderBase::visitStatement(node);

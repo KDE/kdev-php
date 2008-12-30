@@ -386,9 +386,7 @@ void DeclarationBuilder::visitStaticVar(StaticVarAst* node)
     openDefinition<VariableDeclaration>(identifierForNode(node->var), newRange);
     currentDeclaration()->setKind(Declaration::Instance);
 
-    //own closeDeclaration() that uses currentAbstractType() instead of lastType()
-//     currentDeclaration()->setType(currentAbstractType());
-//     eventuallyAssignInternalContext();
+    closeDeclaration();
 }
 
 Declaration* DeclarationBuilder::findDeclarationImport(DUContext* currentContext,

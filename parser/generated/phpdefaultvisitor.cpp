@@ -863,7 +863,7 @@ void DefaultVisitor::visitStaticScalar(StaticScalarAst *node)
 void DefaultVisitor::visitStaticVar(StaticVarAst *node)
 {
     visitNode(node->var);
-    visitNode(node->staticScalar);
+    visitNode(node->value);
 }
 
 void DefaultVisitor::visitSwitchCaseList(SwitchCaseListAst *node)

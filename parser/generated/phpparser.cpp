@@ -10707,7 +10707,7 @@ bool Parser::parseStaticVar(StaticVarAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->staticScalar = __node_234;
+            (*yynode)->value = __node_234;
 
         }
         else if (true /*epsilon*/)

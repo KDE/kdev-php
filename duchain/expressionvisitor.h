@@ -53,7 +53,9 @@ protected:
     void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
     void visitVarExpressionNormal(VarExpressionNormalAst *node);
     void visitFunctionCall(FunctionCallAst* node);
+    void visitConstantOrClassConst(ConstantOrClassConstAst *node);
     void visitScalar(ScalarAst *node);
+    void visitStaticScalar(StaticScalarAst *node);
     void visitEncaps(EncapsAst *node);
     void visitEncapsVar(EncapsVarAst *node);
     void visitVariableProperty(VariablePropertyAst *node);

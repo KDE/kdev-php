@@ -32,7 +32,7 @@
 --    resolved by LA()
 --  - encapsVar: STRING_VARNAME LBRACKET vs. expr (expr allows STRING_VARNAME too - but not LBRACKET)
 --    resolved by LA()
---  - scalar: constant vs. class constant (FOO v.s Cls::FOO)
+--  - constantOrClassConst: constant vs. class constant (FOO v.s Cls::FOO)
 --    resolved by LA() (could be avoided, but the Ast is much cleaner that way)
 -- 1 first/follow conflicts:
 --  - elseifList: dangling-else conflict - should be ok
@@ -635,7 +635,7 @@ expression=booleanOrExpression
   | COLON statements=innerStatementList ENDFOREACH semicolonOrCloseTag
 -> foreachStatement ;;
 
-  var=variableIdentifier (ASSIGN staticScalar=staticScalar | 0)
+  var=variableIdentifier (ASSIGN value=staticScalar | 0)
 -> staticVar ;;
 
     var=variableIdentifier
@@ -706,12 +706,15 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 -> variableName ;;
 
     commonScalar=commonScalar
-  | ?[: LA(2).kind == Token_PAAMAYIM_NEKUDOTAYIM :] className=identifier PAAMAYIM_NEKUDOTAYIM constant=identifier
-  | constant=identifier
+  | constantOrClassConst=constantOrClassConst
   | varname=STRING_VARNAME
   | DOUBLE_QUOTE encapsList=encapsList DOUBLE_QUOTE
   | START_HEREDOC encapsList=encapsList END_HEREDOC
 -> scalar ;;
+
+    ?[: LA(2).kind == Token_PAAMAYIM_NEKUDOTAYIM :] className=identifier PAAMAYIM_NEKUDOTAYIM constant=identifier
+  | constant=identifier
+-> constantOrClassConst ;;
 
     #encaps=encaps*
 -> encapsList ;;
@@ -757,10 +760,10 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 -> parameter ;;
 
     value=commonScalar
-  | STRING (PAAMAYIM_NEKUDOTAYIM STRING | 0)
+  | constantOrClassConst=constantOrClassConst
   | PLUS plusValue=staticScalar
   | MINUS minusValue=staticScalar
-  | ARRAY LPAREN
+  | array=ARRAY LPAREN
         (#arrayValues=staticArrayPairValue
              -- break because array(1,) is allowed
           @ (COMMA [: if (yytoken == Token_RPAREN) { break; } :] ) | 0)

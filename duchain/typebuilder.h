@@ -52,6 +52,7 @@ protected:
 
   virtual void visitStatement(StatementAst* node);
   virtual void visitExpr(ExprAst *node);
+  virtual void visitStaticVar(StaticVarAst *node);
 
 private:
     KDevelop::FunctionType::Ptr m_currentFunctionType;

@@ -1149,12 +1149,32 @@ void TestDUChain::testStaticVariable()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? function aaa() { static $foo; }");
+    QByteArray method("<? define('AA', 0); function aaa() { static $foo; static $bar=0; static $baz='a'; static $bam=array(); static $woid=+'1'; static $a=AA; }");
     TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QCOMPARE(top->childContexts().at(1)->localDeclarations().count(), 1);
+    QCOMPARE(top->childContexts().at(1)->localDeclarations().count(), 6);
+
     QCOMPARE(top->childContexts().at(1)->localDeclarations().first()->qualifiedIdentifier(), QualifiedIdentifier("aaa::foo"));
+    QVERIFY(top->childContexts().at(1)->localDeclarations().first()->type<IntegralType>());
+    QCOMPARE(top->childContexts().at(1)->localDeclarations().first()->type<IntegralType>()->dataType(), (uint)IntegralType::TypeMixed);
+
+    QCOMPARE(top->childContexts().at(1)->localDeclarations().at(1)->qualifiedIdentifier(), QualifiedIdentifier("aaa::bar"));
+    QVERIFY(top->childContexts().at(1)->localDeclarations().at(1)->type<IntegralType>());
+    QCOMPARE(top->childContexts().at(1)->localDeclarations().at(1)->type<IntegralType>()->dataType(), (uint)IntegralType::TypeInt);
+
+    QCOMPARE(top->childContexts().at(1)->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("aaa::baz"));
+    QVERIFY(top->childContexts().at(1)->localDeclarations().at(2)->type<IntegralType>());
+    QCOMPARE(top->childContexts().at(1)->localDeclarations().at(2)->type<IntegralType>()->dataType(), (uint)IntegralType::TypeString);
+
+    QVERIFY(top->childContexts().at(1)->localDeclarations().at(3)->type<IntegralType>());
+    QCOMPARE(top->childContexts().at(1)->localDeclarations().at(3)->type<IntegralType>()->dataType(), (uint)IntegralType::TypeArray);
+
+    QVERIFY(top->childContexts().at(1)->localDeclarations().at(4)->type<IntegralType>());
+    QCOMPARE(top->childContexts().at(1)->localDeclarations().at(4)->type<IntegralType>()->dataType(), (uint)IntegralType::TypeInt);
+
+    QVERIFY(top->childContexts().at(1)->localDeclarations().at(5)->type<IntegralType>());
+    QCOMPARE(top->childContexts().at(1)->localDeclarations().at(5)->type<IntegralType>()->dataType(), (uint)IntegralType::TypeInt);
 
     release(top);
 }

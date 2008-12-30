@@ -36,7 +36,7 @@ using namespace KDevelop;
 namespace Php {
 
 ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor, bool useCursor)
-    : m_editor(editor), m_useCursor(useCursor), m_isAssignmentExpressionEqual(false), m_createProblems(false)
+    : m_editor(editor), m_useCursor(useCursor), m_currentContext(0), m_isAssignmentExpressionEqual(false), m_createProblems(false)
 {
 }
 
@@ -187,9 +187,10 @@ DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
     }
     return context;
 }
-void ExpressionVisitor::visitScalar(ScalarAst *node)
+
+void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
 {
-    DefaultVisitor::visitScalar(node);
+    DefaultVisitor::visitConstantOrClassConst(node);
 
     if (node->className) {
         //class constant Foo::BAR
@@ -224,7 +225,14 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
                 usingDeclaration(node->constant, declaration);
             }
         }
-    } else if (node->commonScalar) {
+    }
+}
+
+void ExpressionVisitor::visitScalar(ScalarAst *node)
+{
+    DefaultVisitor::visitScalar(node);
+
+    if (node->commonScalar) {
         uint type = IntegralType::TypeVoid;
         switch (node->commonScalar->scalarType) {
             case ScalarTypeInt:
@@ -245,6 +253,39 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
         m_result.setType(AbstractType::Ptr::staticCast(integral));
     } else if (node->encapsList) {
         IntegralType::Ptr integral(new IntegralType(IntegralType::TypeString));
+        m_result.setType(AbstractType::Ptr::staticCast(integral));
+    }
+}
+
+void ExpressionVisitor::visitStaticScalar(StaticScalarAst *node)
+{
+    if (node->ducontext) {
+        m_currentContext = node->ducontext;
+    }
+    Q_ASSERT(m_currentContext);
+
+    DefaultVisitor::visitStaticScalar(node);
+
+    uint type = IntegralType::TypeVoid;
+    if (node->value) {
+        switch (node->value->scalarType) {
+            case ScalarTypeInt:
+                type = IntegralType::TypeInt;
+                break;
+            case ScalarTypeFloat:
+                type = IntegralType::TypeFloat;
+                break;
+            case ScalarTypeString:
+                type = IntegralType::TypeString;
+                break;
+        }
+    } else if (node->plusValue || node->minusValue) {
+        type = IntegralType::TypeInt;
+    } else if (node->array != -1) {
+        type = IntegralType::TypeArray;
+    }
+    if (type != IntegralType::TypeVoid) {
+        IntegralType::Ptr integral(new IntegralType(type));
         m_result.setType(AbstractType::Ptr::staticCast(integral));
     }
 }
