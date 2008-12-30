@@ -55,4 +55,12 @@ uint VariableDeclaration::additionalIdentity() const
     return 2;
 }
 
+KDevelop::DeclarationId VariableDeclaration::id(bool forceDirect) const
+{
+    Q_UNUSED(forceDirect);
+    //always forceDirect, because there can exist multiple declarations with the
+    //same identifier within one context, and uses wouldn't work correctly else
+    return KDevelop::Declaration::id(true);
+}
+
 }

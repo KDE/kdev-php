@@ -592,7 +592,7 @@ void TestDUChain::testOwnStaticMethod()
     QVERIFY(top->childContexts().at(1)->localDeclarations().at(0)->type<FunctionType>());
     AbstractType::Ptr ret = top->childContexts().at(1)->localDeclarations().at(0)
                 ->type<FunctionType>()->returnType();
-qDebug() << ret->toString();
+
     QVERIFY(StructureType::Ptr::dynamicCast(ret));
     QCOMPARE(StructureType::Ptr::dynamicCast(ret)->declaration(top), top->localDeclarations().at(0));
 
@@ -910,7 +910,7 @@ void TestDUChain::testSingleton()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { public static function self() { static $i; if(!$i) $i = new self(); return $i; }}");
 
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
 
     FunctionType::Ptr fun = top->childContexts().first()->localDeclarations().first()->type<FunctionType>();
@@ -1175,6 +1175,25 @@ void TestDUChain::testStaticVariable()
 
     QVERIFY(top->childContexts().at(1)->localDeclarations().at(5)->type<IntegralType>());
     QCOMPARE(top->childContexts().at(1)->localDeclarations().at(5)->type<IntegralType>()->dataType(), (uint)IntegralType::TypeInt);
+
+    release(top);
+}
+
+void TestDUChain::testReturnTypeTwoDeclarations()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo() { $i='a'; $i=0; return $i; } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* dec = top->localDeclarations().at(0);
+    FunctionType::Ptr functionType = dec->type<FunctionType>();
+    QVERIFY(functionType);
+    IntegralType::Ptr retType = IntegralType::Ptr::dynamicCast(functionType->returnType());
+    QVERIFY(retType);
+    QCOMPARE(retType->dataType(), (uint)IntegralType::TypeInt);
 
     release(top);
 }

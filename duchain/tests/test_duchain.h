@@ -79,6 +79,7 @@ private slots:
   void testObjectWithClassName();
   void testLargeNumberOfDeclarations();
   void testStaticVariable();
+  void testReturnTypeTwoDeclarations();
 };
 
 }

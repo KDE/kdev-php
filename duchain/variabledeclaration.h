@@ -61,6 +61,7 @@ public:
     virtual ~VariableDeclaration();
 
     virtual uint additionalIdentity() const;
+    virtual KDevelop::DeclarationId id(bool forceDirect = false) const;
 
   enum {
     Identity = 83

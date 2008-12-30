@@ -196,26 +196,23 @@ void TestUses::variableTwoDeclarations()
     //                                15        25  29      37  41        51
     TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
-    /*
+
     Declaration* var = top->localDeclarations().at(1);
     QCOMPARE(var->uses().keys().count(), 1);
     QCOMPARE(var->uses().values().count(), 1);
-    QCOMPARE(var->uses().values().first().count(), 3);
-    QCOMPARE(var->uses().values().first().at(0), SimpleRange(0, 29, 0, 31));
-    QCOMPARE(var->uses().values().first().at(1), SimpleRange(0, 33, 0, 35));
-    QCOMPARE(var->uses().values().first().at(1), SimpleRange(0, 41, 0, 43));
+    QCOMPARE(var->uses().values().first().count(), 1);
+    QCOMPARE(var->uses().values().first().first(), SimpleRange(0, 25, 0, 27));
 
     //$a = 0 is a new declaration!
     var = top->localDeclarations().at(2);
     QCOMPARE(var->uses().keys().count(), 1);
     QCOMPARE(var->uses().values().count(), 1);
-    QCOMPARE(var->uses().values().first().count(), 2);
-    QCOMPARE(var->uses().values().first().at(0), SimpleRange(0, 29, 0, 31));
-    //QCOMPARE(var->uses().values().first().at(1), SimpleRange(0, 33, 0, 35));
-    QCOMPARE(var->uses().values().first().at(1), SimpleRange(0, 41, 0, 43));
-    */
+    QCOMPARE(var->uses().values().first().count(), 1);
+    QCOMPARE(var->uses().values().first().first(), SimpleRange(0, 37, 0, 39));
+
     release(top);
 }
+
 void TestUses::variableTwoDeclarationsInFunction()
 {
     //                 0         1         2         3         4         5         6         7
@@ -225,6 +222,19 @@ void TestUses::variableTwoDeclarationsInFunction()
 
     TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* var = top->childContexts().at(1)->localDeclarations().at(0);
+    QCOMPARE(var->uses().keys().count(), 1);
+    QCOMPARE(var->uses().values().count(), 1);
+    QCOMPARE(var->uses().values().first().count(), 1);
+    QCOMPARE(var->uses().values().first().first(), SimpleRange(0, 28, 0, 30));
+
+    //$a = 0 is a new declaration!
+    var = top->childContexts().at(1)->localDeclarations().at(1);
+    QCOMPARE(var->uses().keys().count(), 1);
+    QCOMPARE(var->uses().values().count(), 1);
+    QCOMPARE(var->uses().values().first().count(), 1);
+    QCOMPARE(var->uses().values().first().first(), SimpleRange(0, 38, 0, 40));
 
     release(top);
 }
