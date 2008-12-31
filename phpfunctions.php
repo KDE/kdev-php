@@ -3134,7 +3134,7 @@ function apache_lookup_uri($filename) {}
 function apache_note($note_name, $note_value) {}
 
 /**
- * Fetches all HTTP requests from the current request.
+ * Fetches all HTTP request headers from the current request.
  *
  * @return array
  **/
@@ -3947,9 +3947,10 @@ function array_uintersect($array1, $array2, $data_compare_func) {}
  * without duplicate values.
  *
  * @param array
+ * @param int
  * @return array
  **/
-function array_unique($array) {}
+function array_unique($array, $sort_flags) {}
 
 /**
  * array_unshift prepends passed elements to the front
@@ -4951,6 +4952,13 @@ function call_user_method($method_name, $obj, $parameter) {}
 function class_exists($class_name, $autoload) {}
 
 /**
+ * Gets the name of the class the static method is called in.
+ *
+ * @return string
+ **/
+function get_called_class() {}
+
+/**
  * Gets the class methods names.
  *
  * @param mixed
@@ -5053,13 +5061,6 @@ function method_exists($object, $method_name) {}
  * @return bool
  **/
 function property_exists($class, $property) {}
-
-/**
- * Gets the name of the class the static method is called in.
- *
- * @return string
- **/
-function get_called_class() {}
 
 /**
  * Increases the components reference counter.
@@ -5695,8 +5696,8 @@ function curl_multi_exec($mh, $still_running) {}
 function curl_multi_getcontent($ch) {}
 
 /**
- * Ask the multi handle if there are any messages/informationals from the individual transfers. 
- * Messages may include informationals such as an error code from the transfer or just the fact 
+ * Ask the multi handle if there are any messages or information from the individual transfers. 
+ * Messages may include information such as an error code from the transfer or just the fact 
  * that a transfer is completed.
  *
  * @param resource
@@ -7120,6 +7121,13 @@ function chdir($directory) {}
 function chroot($directory) {}
 
 /**
+ * Return an instance of the Directory class
+ *
+ * @param string
+ **/
+function dir($path) {}
+
+/**
  * Closes the directory stream indicated by
  * dir_handle. The stream must have previously
  * been opened by opendir.
@@ -7521,7 +7529,7 @@ function debug_backtrace($provide_object) {}
 function debug_print_backtrace() {}
 
 /**
- * Gets information about the last error that occured.
+ * Gets information about the last error that occurred.
  *
  * @return array
  **/
@@ -7992,7 +8000,7 @@ function fbsql_create_blob($blob_data, $link_identifier) {}
 function fbsql_create_clob($clob_data, $link_identifier) {}
 
 /**
- * Attempts to create a new database on the specied server.
+ * Attempts to create a new database on the specified server.
  *
  * @param string
  * @param resource
@@ -9497,9 +9505,10 @@ function move_uploaded_file($filename, $destination) {}
  *
  * @param string
  * @param bool
+ * @param integer
  * @return array
  **/
-function parse_ini_file($filename, $process_sections) {}
+function parse_ini_file($filename, $process_sections, $scanner_mode) {}
 
 /**
  * pathinfo returns an associative array
@@ -10167,6 +10176,15 @@ function register_tick_function($function, $arg) {}
 function unregister_tick_function($function_name) {}
 
 /**
+ * The geoip_continent_code_by_name function will return
+ * the two letter continent code corresponding to a hostname or an IP address.
+ *
+ * @param string
+ * @return string
+ **/
+function geoip_continent_code_by_name($hostname) {}
+
+/**
  * The geoip_country_code_by_name function will return
  * the two letter country code corresponding to a hostname or an IP address.
  *
@@ -10222,7 +10240,7 @@ function geoip_db_filename($database) {}
 
 /**
  * The geoip_db_get_all_info function will return 
- * detailed informations as a multi-dimensional array about all the 
+ * detailed information as a multi-dimensional array about all the 
  * GeoIP database types.
  *
  * @return array
@@ -10273,6 +10291,26 @@ function geoip_record_by_name($hostname) {}
  * @return array
  **/
 function geoip_region_by_name($hostname) {}
+
+/**
+ * The geoip_region_name_by_code function will return the region
+ * name corresponding to a country and region code combo.
+ *
+ * @param string
+ * @param string
+ * @return string
+ **/
+function geoip_region_name_by_code($country_code, $region_code) {}
+
+/**
+ * The geoip_time_zone_by_country_and_region function will return the
+ * time zone corresponding to a country and region code combo.
+ *
+ * @param string
+ * @param string
+ * @return string
+ **/
+function geoip_time_zone_by_country_and_region($country_code, $region_code) {}
 
 /**
  * With bind_textdomain_codeset, you can set in which
@@ -13039,6 +13077,15 @@ function db2_free_stmt($stmt) {}
 function db2_get_option($resource, $option) {}
 
 /**
+ * Returns the auto generated ID of the last insert query that successfully 
+ * executed on this connection.
+ *
+ * @param resource
+ * @return int
+ **/
+function db2_last_insert_id($resource) {}
+
+/**
  * Use db2_lob_read to iterate through a specified column of 
  * a result set and retrieve a user defined size of LOB data.
  *
@@ -13081,6 +13128,20 @@ function db2_num_fields($stmt) {}
  * @return int
  **/
 function db2_num_rows($stmt) {}
+
+/**
+ * This function closes a DB2 client connection created with 
+ * db2_pconnect and returns the corresponding resources 
+ * to the database server. 
+ * 
+ * 
+ * This function is only available on i5/OS in response to i5/OS system 
+ * administration requests.
+ *
+ * @param resource
+ * @return bool
+ **/
+function db2_pclose($resource) {}
 
 /**
  * Returns a persistent connection to an IBM DB2 Universal Database, IBM
@@ -15613,7 +15674,7 @@ function imap_getacl($imap_stream, $mailbox) {}
 function imap_getmailboxes($imap_stream, $ref, $pattern) {}
 
 /**
- * Gets information on the subscribeds mailboxes.
+ * Gets information about the subscribed mailboxes.
  *
  * @param resource
  * @param string
@@ -15962,7 +16023,7 @@ function imap_subscribe($imap_stream, $mailbox) {}
 function imap_thread($imap_stream, $options) {}
 
 /**
- * Sets or fetchs the imap timeout.
+ * Sets or fetches the imap timeout.
  *
  * @param int
  * @param int
@@ -16398,7 +16459,7 @@ function version_compare($version1, $version2, $operator) {}
 function zend_logo_guid() {}
 
 /**
- * This function returns an unique identifier for the current thread.
+ * This function returns a unique identifier for the current thread.
  *
  * @return int
  **/
@@ -16617,7 +16678,7 @@ function ingres_num_fields($link) {}
 function ingres_num_rows($link) {}
 
 /**
- * Open a persistent connection to an Ingres II database.
+ * Open a persistent connection to an Ingres database.
  *
  * @param string
  * @param string
@@ -16645,6 +16706,55 @@ function ingres_query($query, $link) {}
  * @return bool
  **/
 function ingres_rollback($link) {}
+
+/**
+ * inotify_add_watch adds a new watch or modify an
+ * existing watch for the file or directory specified in
+ * pathname.
+ *
+ * @param resource
+ * @param string
+ * @param int
+ * @return int
+ **/
+function inotify_add_watch($inotify_instance, $pathname, $mask) {}
+
+/**
+ * Initialize an inotify instance for use with
+ * inotify_add_watch
+ *
+ * @return resource
+ **/
+function inotify_init() {}
+
+/**
+ * This function allows to know if inotify_read will block or not.
+ * If a number upper than zero is returned, there are pending events and 
+ * inotify_read will not block.
+ *
+ * @param resource
+ * @return int
+ **/
+function inotify_queue_len($inotify_instance) {}
+
+/**
+ * Read inotify events from an inotify instance.
+ *
+ * @param resource
+ * @return array
+ **/
+function inotify_read($inotify_instance) {}
+
+/**
+ * inotify_rm_watch removes the watch
+ * watch_descriptor from the inotify instance
+ * inotify_instance.
+ *
+ * @param resource
+ * @param int
+ * @return bool
+ **/
+function inotify_rm_watch($inotify_instance, $watch_descriptor) {}
 
 /**
  * Procedural style
@@ -16745,7 +16855,7 @@ function grapheme_substr($string, $start, $length) {}
 function intl_error_name($error_code) {}
 
 /**
- * Useful to handle errors occured in static methods when there's no object to
+ * Useful to handle errors occurred in static methods when there's no object to
  * get error code from.
  *
  * @return int
@@ -16797,6 +16907,13 @@ function json_decode($json, $assoc) {}
  * @return string
  **/
 function json_encode($value, $options) {}
+
+/**
+ * Returns the last error (if any) occured by last JSON parsing.
+ *
+ * @return int
+ **/
+function json_last_error() {}
 
 /**
  * kadm5_chpass_principal sets the new password
@@ -17538,6 +17655,14 @@ function mailparse_stream_encode($sourcefp, $destfp, $encoding) {}
 function mailparse_uudecode_all($fp) {}
 
 /**
+ * Returns the absolute value of number.
+ *
+ * @param mixed
+ * @return number
+ **/
+function abs($number) {}
+
+/**
  * Returns the arc cosine of arg in radians.
  * acos is the complementary function of
  * cos, which means that
@@ -17548,14 +17673,6 @@ function mailparse_uudecode_all($fp) {}
  * @return float
  **/
 function acos($arg) {}
-
-/**
- * Returns the absolute value of number.
- *
- * @param mixed
- * @return number
- **/
-function abs($number) {}
 
 /**
  * Returns the inverse hyperbolic cosine of
@@ -20111,6 +20228,12 @@ function ming_useconstants($use) {}
 function ming_useswfversion($version) {}
 
 /**
+ * Returns a new SWFSound object from given file
+ *
+ **/
+function SWFSound() {}
+
+/**
  * Checks whether the client disconnected.
  *
  * @return int
@@ -21875,7 +21998,7 @@ function mysql_pconnect($server, $username, $password, $client_flags) {}
 function mysql_ping($link_identifier) {}
 
 /**
- * mysql_query sends an unique query (multiple queries
+ * mysql_query sends a unique query (multiple queries
  * are not supported) to the currently
  * active database on the server that's associated with the
  * specified link_identifier.
@@ -23329,12 +23452,6 @@ function ncurses_ungetch($keycode) {}
 function ncurses_ungetmouse($mevent) {}
 
 /**
- * @param bool
- * @return void
- **/
-function ncurses_use_env($flag) {}
-
-/**
  * @return void
  **/
 function ncurses_update_panels() {}
@@ -23343,6 +23460,12 @@ function ncurses_update_panels() {}
  * @return bool
  **/
 function ncurses_use_default_colors() {}
+
+/**
+ * @param bool
+ * @return void
+ **/
+function ncurses_use_env($flag) {}
 
 /**
  * @param bool
@@ -26740,6 +26863,15 @@ function pcntl_getpriority($pid, $process_identifier) {}
 function pcntl_setpriority($priority, $pid, $process_identifier) {}
 
 /**
+ * The pcntl_signal_dispatch function calls the signal 
+ * handlers installed by pcntl_signal for each pending
+ * signal.
+ *
+ * @return bool
+ **/
+function pcntl_signal_dispatch() {}
+
+/**
  * The pcntl_signal function installs a new
  * signal handler for the signal indicated by signo.
  *
@@ -26749,6 +26881,45 @@ function pcntl_setpriority($priority, $pid, $process_identifier) {}
  * @return bool
  **/
 function pcntl_signal($signo, $handler, $restart_syscalls) {}
+
+/**
+ * The pcntl_sigprocmask function adds, removes or sets blocked
+ * signals, depending on the how parameter.
+ *
+ * @param int
+ * @param array
+ * @param array
+ * @return bool
+ **/
+function pcntl_sigprocmask($how, $set, $oldset) {}
+
+/**
+ * The pcntl_sigtimedwait function operates in exactly
+ * the same way as pcntl_sigwaitinfo except that it takes
+ * two additional parameters, seconds and
+ * nanoseconds, which enable an upper bound to be placed
+ * on the time for which the script is suspended.
+ *
+ * @param array
+ * @param array
+ * @param int
+ * @param int
+ * @return int
+ **/
+function pcntl_sigtimedwait($set, $siginfo, $seconds, $nanoseconds) {}
+
+/**
+ * The pcntl_sigwaitinfo function suspends execution of the
+ * calling script until one of the signals given in set
+ * are delivered. If one of the signal is already pending (e.g. blocked by
+ * pcntl_sigprocmask),
+ * pcntl_sigwaitinfo will return immediately.
+ *
+ * @param array
+ * @param array
+ * @return int
+ **/
+function pcntl_sigwaitinfo($set, $siginfo) {}
 
 /**
  * The wait function suspends execution of the current process until a
@@ -26835,54 +27006,6 @@ function pcntl_wstopsig($status) {}
  * @return int
  **/
 function pcntl_wtermsig($status) {}
-
-/**
- * The pcntl_signal_dispatch function calls the signal 
- * handlers installed by pcntl_signal for each pending
- * signal.
- *
- * @return bool
- **/
-function pcntl_signal_dispatch() {}
-
-/**
- * The pcntl_sigprocmask function adds, removes or sets blocked
- * signals, depending on the how parameter.
- *
- * @param int
- * @param array
- * @param array
- * @return bool
- **/
-function pcntl_sigprocmask($how, $set, $oldset) {}
-
-/**
- * The pcntl_sigtimedwait function operates in exactly
- * the same way as pcntl_sigwaitinfo except that it takes
- * two additional parameters, seconds and
- * nanoseconds, which enable an upper bound to be placed
- * on the time for which the script is suspended.
- *
- * @param array
- * @param array
- * @param int
- * @param int
- * @return int
- **/
-function pcntl_sigtimedwait($set, $siginfo, $seconds, $nanoseconds) {}
-
-/**
- * The pcntl_sigwaitinfo function suspends execution of the
- * calling script until one of the signals given in set
- * are delivered. If one of the signal is already pending (e.g. blocked by
- * pcntl_sigprocmask),
- * pcntl_sigwaitinfo will return immediately.
- *
- * @param array
- * @param array
- * @return int
- **/
-function pcntl_sigwaitinfo($set, $siginfo) {}
 
 /**
  * Returns the array consisting of the elements of the 
@@ -31996,6 +32119,14 @@ function runkit_sandbox_output_handler($sandbox, $callback) {}
 function runkit_superglobals() {}
 
 /**
+ * 
+ *    Runkit Anti-Sandbox Class
+ *   
+ *
+ **/
+function Runkit_Sandbox_Parent() {}
+
+/**
  * The function converts the pathname of an existing
  * accessible file and a project identifier into an
  * integer for use with for example
@@ -32024,7 +32155,7 @@ function ftok($pathname, $proj) {}
 function msg_get_queue($key, $perms) {}
 
 /**
- * Checks wether the message queue key exists.
+ * Checks whether the message queue key exists.
  *
  * @param int
  * @return bool
@@ -33007,6 +33138,16 @@ function class_implements($class, $autoload) {}
 function class_parents($class, $autoload) {}
 
 /**
+ * Calls a function for every element in an iterator.
+ *
+ * @param Traversable
+ * @param callback
+ * @param array
+ * @return ReturnType
+ **/
+function iterator_apply($iterator, $function, $args) {}
+
+/**
  * Count the elements in an iterator.
  *
  * @param Traversable
@@ -33088,23 +33229,13 @@ function spl_autoload($class_name, $file_extensions) {}
 function spl_classes() {}
 
 /**
- * This function returns an unique identifier for the object. This id can be
+ * This function returns a unique identifier for the object. This id can be
  * used as a hash key for storing objects or for identifying an object.
  *
  * @param object
  * @return string
  **/
 function spl_object_hash($obj) {}
-
-/**
- * Calls a function for every element in an iterator.
- *
- * @param Traversable
- * @param callback
- * @param array
- * @return ReturnType
- **/
-function iterator_apply($iterator, $function, $args) {}
 
 /**
  * @param string
@@ -33806,7 +33937,7 @@ function stats_absolute_deviation($a) {}
  * 
  * Computation of other parameters involve a search for a value that
  * produces the desired value of P. The search relies on the
- * monotinicity of P with the other parameter.
+ * monotonicity of P with the other parameter.
  * 
  * Note
  * 
@@ -34788,6 +34919,21 @@ function stream_socket_server($local_socket, $errno, $errstr, $flags, $context) 
 function stream_socket_shutdown($stream, $how) {}
 
 /**
+ * Tells wether the stream supports locking through 
+ * flock.
+ *
+ * @param resource
+ * @return resource
+ **/
+function stream_supports_locking($stream) {}
+
+/**
+ * Tells wether the stream supports locking.
+ *
+ **/
+function stream_supports_lock() {}
+
+/**
  * stream_wrapper_register allows you to implement
  * your own protocol handlers and streams for use with all the other
  * filesystem functions (such as fopen,
@@ -35298,6 +35444,10 @@ function sprintf($format, $args) {}
 function sscanf($str, $format) {}
 
 /**
+ * Similar to fgetcsv this functions parses a 
+ * string as its input unlike fgetcsv which 
+ * takes a file as its input.
+ *
  * @param string
  * @param string
  * @param string
@@ -35887,6 +36037,15 @@ function svn_auth_get_parameter($key) {}
 function svn_auth_set_parameter($key, $value) {}
 
 /**
+ * Get the SVN blame of a file from a repository URL.
+ *
+ * @param string
+ * @param int
+ * @return array
+ **/
+function svn_blame($repository_url, $revision_no) {}
+
+/**
  * Returns the contents of the URL repos_url to
  * a file in the repository, optionally at revision number
  * revision_no.
@@ -35953,7 +36112,18 @@ function svn_commit($log, $targets, $dontrecurse) {}
 function svn_diff($path1, $rev1, $path2, $rev2) {}
 
 /**
- * Abort a transaction, returns true if everything is ok, false othewise
+ * Export the contents of either a working copy or repository into a
+ * 'clean' directory.
+ *
+ * @param string
+ * @param string
+ * @param bool
+ * @return bool
+ **/
+function svn_export($frompath, $topath, $working_copy) {}
+
+/**
+ * Abort a transaction, returns true if everything is okay, false otherwise
  *
  * @param resource
  * @return bool
@@ -36198,6 +36368,14 @@ function svn_log($repos_url, $start_revision, $end_revision, $limit, $flags) {}
 function svn_ls($repos_url, $revision_no, $recurse) {}
 
 /**
+ * Creates a directory in a working copy or repository.
+ *
+ * @param string
+ * @return bool
+ **/
+function svn_mkdir($path) {}
+
+/**
  * Create a new subversion repository at path
  *
  * @param string
@@ -36261,6 +36439,15 @@ function svn_repos_open($path) {}
 function svn_repos_recover($path) {}
 
 /**
+ * Revert any local changes to the path in a working copy.
+ *
+ * @param string
+ * @param bool
+ * @return bool
+ **/
+function svn_revert($path, $recursive) {}
+
+/**
  * Returns the status of working copy files and directories, giving modifications,
  * additions, deletions and other changes to items in the working copy.
  *
@@ -36281,43 +36468,6 @@ function svn_status($path, $flags) {}
  * @return int
  **/
 function svn_update($path, $revno, $recurse) {}
-
-/**
- * Get the SVN blame of a file from a repository URL.
- *
- * @param string
- * @param int
- * @return array
- **/
-function svn_blame($repository_url, $revision_no) {}
-
-/**
- * Export the contents of either a working copy or repository into a
- * 'clean' directory.
- *
- * @param string
- * @param string
- * @param bool
- * @return bool
- **/
-function svn_export($frompath, $topath, $working_copy) {}
-
-/**
- * Creates a directory in a working copy or repository.
- *
- * @param string
- * @return bool
- **/
-function svn_mkdir($path) {}
-
-/**
- * Revert any local changes to the path in a working copy.
- *
- * @param string
- * @param bool
- * @return bool
- **/
-function svn_revert($path, $recursive) {}
 
 /**
  * Gets the URL specified by the parameter url with
@@ -37599,7 +37749,7 @@ function unicode_get_subst_char() {}
 function unicode_set_error_mode($direction, $mode) {}
 
 /**
- * When converting a string from or to unicode, an invalid or unconvertable
+ * When converting a string from or to unicode, an invalid or unconvertible
  * character may be encountered. When the conversion error mode is set to 
  * U_CONV_ERROR_SUBST, the character that caused the 
  * error is substituted by a character set by this function. The default 
@@ -38559,7 +38709,7 @@ function w32api_register_function($library, $function_name, $return_type) {}
 function w32api_set_call_method($method) {}
 
 /**
- * Serializes the passed variables and add the result to the fiven packet.
+ * Serializes the passed variables and add the result to the given packet.
  *
  * @param resource
  * @param mixed
@@ -40497,7 +40647,7 @@ class DomAttr {
     /**
      * Creates a new DOMAttr object. This object is read only. 
      * It may be appended to a document, but additional nodes may not be appended to this node until 
-     * the node is associated with a document. To create a writeable node, use 
+     * the node is associated with a document. To create a writable node, use 
      * .
      *
      * @param string
@@ -40514,40 +40664,6 @@ class DomAttr {
 
 }
 class DOMAttr extends DOMNode {
-}
-class DOMCharacterData extends DOMNode {
-}
-class DOMComment extends DOMCharacterData {
-}
-class DOMDocument extends DOMNode {
-}
-class DOMDocumentFragment extends DOMNode {
-}
-class DOMDocumentType extends DOMNode {
-}
-class DOMElement extends DOMNode {
-}
-class DOMEntity extends DOMNode {
-}
-class DOMEntityReference extends DOMNode {
-}
-class DOMException extends Exception {
-}
-class DOMImplementation {
-}
-class DOMNamedNodeMap {
-}
-class DOMNode {
-}
-class DOMNodeList {
-}
-class DOMNotation extends DOMNode {
-}
-class DOMProcessingInstruction extends DOMNode {
-}
-class DOMText extends DOMCharacterData {
-}
-class DOMXPath {
 }
 class DomCharacterData {
     /**
@@ -40598,6 +40714,8 @@ class DomCharacterData {
     function substringData($offset, $count) {}
 
 }
+class DOMCharacterData extends DOMNode {
+}
 class DomComment {
     /**
      * Creates a new DOMComment object. This object is read only. 
@@ -40609,6 +40727,8 @@ class DomComment {
      **/
     function __construct($value) {}
 
+}
+class DOMComment extends DOMCharacterData {
 }
 class DomDocument {
     /**
@@ -41069,6 +41189,8 @@ class DomDocument {
     function html_dump_mem() {}
 
 }
+class DOMDocument extends DOMNode {
+}
 class DomDocumentFragment {
     /**
      * Appends raw XML data to a DOMDocumentFragment.
@@ -41078,6 +41200,10 @@ class DomDocumentFragment {
      **/
     function appendXML($data) {}
 
+}
+class DOMDocumentFragment extends DOMNode {
+}
+class DOMDocumentType extends DOMNode {
 }
 class DomElement {
     /**
@@ -41334,6 +41460,10 @@ class DomElement {
     function tagname() {}
 
 }
+class DOMElement extends DOMNode {
+}
+class DOMEntity extends DOMNode {
+}
 class DomEntityReference {
     /**
      * Creates a new DOMEntityReference object.
@@ -41342,6 +41472,10 @@ class DomEntityReference {
      **/
     function __construct($name) {}
 
+}
+class DOMEntityReference extends DOMNode {
+}
+class DOMException extends Exception {
 }
 class DomImplementation {
     /**
@@ -41384,6 +41518,8 @@ class DomImplementation {
     function hasFeature($feature, $version) {}
 
 }
+class DOMImplementation {
+}
 class DomNamedNodeMap {
     /**
      * Retrieves a node specified by its nodeName.
@@ -41412,6 +41548,8 @@ class DomNamedNodeMap {
      **/
     function item($index) {}
 
+}
+class DOMNamedNodeMap {
 }
 class DomNode {
     /**
@@ -41885,6 +42023,8 @@ class DomNode {
     function unlink_node() {}
 
 }
+class DOMNode {
+}
 class DomNodelist {
     /**
      * Retrieves a node specified by index within the 
@@ -41895,6 +42035,10 @@ class DomNodelist {
      **/
     function item($index) {}
 
+}
+class DOMNodeList {
+}
+class DOMNotation extends DOMNode {
 }
 class DomProcessingInstruction {
     /**
@@ -41923,6 +42067,8 @@ class DomProcessingInstruction {
     function target() {}
 
 }
+class DOMProcessingInstruction extends DOMNode {
+}
 class DomText {
     /**
      * Creates a new DOMText object.
@@ -41949,6 +42095,8 @@ class DomText {
      **/
     function splitText($offset) {}
 
+}
+class DOMText extends DOMCharacterData {
 }
 class DomXPath {
     /**
@@ -41987,6 +42135,8 @@ class DomXPath {
      **/
     function registerNamespace($prefix, $namespaceURI) {}
 
+}
+class DOMXPath {
 }
 class DomAttribute {
     /**
@@ -42479,7 +42629,7 @@ class HaruDoc {
     function setInfoDateAttr($type, $year, $month, $day, $hour, $min, $sec, $ind, $off_hour, $off_min) {}
 
     /**
-     * Defines wich page should be shown when the document is opened.
+     * Defines which page should be shown when the document is opened.
      *
      * @param object
      * @return bool
@@ -42785,16 +42935,6 @@ class HaruOutline {
 }
 class HaruPage {
     /**
-     * Appends a circle to the current path.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function circle($x, $y, $ray) {}
-
-    /**
      * Appends an arc to the current path.
      *
      * @param float
@@ -42812,6 +42952,16 @@ class HaruPage {
      * @return bool
      **/
     function beginText() {}
+
+    /**
+     * Appends a circle to the current path.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function circle($x, $y, $ray) {}
 
     /**
      * Appends a straight line from the current point to the start point of the
@@ -43519,6 +43669,92 @@ class HaruPage {
     function textRect($left, $top, $right, $bottom, $text, $align) {}
 
 }
+class HttpDeflateStream {
+    /**
+     * Creates a new HttpDeflateStream object instance.
+     *
+     * @param int
+     * @return void
+     **/
+    function __construct($flags = 0) {}
+
+    /**
+     * Creates a new HttpDeflateStream object instance.
+     *
+     * @param int
+     * @param string
+     * @return HttpDeflateStream
+     **/
+    function factory($flags = 0, $class_name = 'HttpDeflateStream') {}
+
+    /**
+     * Finalizes the deflate stream. The deflate stream can be reused after finalizing.
+     *
+     * @param string
+     * @return string
+     **/
+    function finish($data) {}
+
+    /**
+     * Flushes the deflate stream.
+     *
+     * @param string
+     * @return string
+     **/
+    function flush($data) {}
+
+    /**
+     * Passes more data through the deflate stream.
+     *
+     * @param string
+     * @return string
+     **/
+    function update($data) {}
+
+}
+class HttpInflateStream {
+    /**
+     * Creates a new HttpInflateStream object instance.
+     *
+     * @param int
+     * @return void
+     **/
+    function __construct($flags = 0) {}
+
+    /**
+     * Creates a new HttpInflateStream object instance.
+     *
+     * @param int
+     * @param string
+     * @return HttpInflateStream
+     **/
+    function factory($flags = 0, $class_name = 'HttpInflateStream') {}
+
+    /**
+     * Finalizes the inflate stream. The inflate stream can be reused after finalizing.
+     *
+     * @param string
+     * @return string
+     **/
+    function finish($data) {}
+
+    /**
+     * Flushes the inflate stream.
+     *
+     * @param string
+     * @return string
+     **/
+    function flush($data) {}
+
+    /**
+     * Passes more data through the inflate stream.
+     *
+     * @param string
+     * @return string
+     **/
+    function update($data) {}
+
+}
 class HttpMessage implements Iterator, Countable, Serializable {
     /**
      * Add headers. If append is true, headers with the same name will be separated, else overwritten.
@@ -43754,92 +43990,6 @@ class HttpMessage implements Iterator, Countable, Serializable {
      * @return string
      **/
     function toString($include_parent = FALSE) {}
-
-}
-class HttpDeflateStream {
-    /**
-     * Creates a new HttpDeflateStream object instance.
-     *
-     * @param int
-     * @return void
-     **/
-    function __construct($flags = 0) {}
-
-    /**
-     * Creates a new HttpDeflateStream object instance.
-     *
-     * @param int
-     * @param string
-     * @return HttpDeflateStream
-     **/
-    function factory($flags = 0, $class_name = 'HttpDeflateStream') {}
-
-    /**
-     * Finalizes the deflate stream. The deflate stream can be reused after finalizing.
-     *
-     * @param string
-     * @return string
-     **/
-    function finish($data) {}
-
-    /**
-     * Flushes the deflate stream.
-     *
-     * @param string
-     * @return string
-     **/
-    function flush($data) {}
-
-    /**
-     * Passes more data through the deflate stream.
-     *
-     * @param string
-     * @return string
-     **/
-    function update($data) {}
-
-}
-class HttpInflateStream {
-    /**
-     * Creates a new HttpInflateStream object instance.
-     *
-     * @param int
-     * @return void
-     **/
-    function __construct($flags = 0) {}
-
-    /**
-     * Creates a new HttpInflateStream object instance.
-     *
-     * @param int
-     * @param string
-     * @return HttpInflateStream
-     **/
-    function factory($flags = 0, $class_name = 'HttpInflateStream') {}
-
-    /**
-     * Finalizes the inflate stream. The inflate stream can be reused after finalizing.
-     *
-     * @param string
-     * @return string
-     **/
-    function finish($data) {}
-
-    /**
-     * Flushes the inflate stream.
-     *
-     * @param string
-     * @return string
-     **/
-    function flush($data) {}
-
-    /**
-     * Passes more data through the inflate stream.
-     *
-     * @param string
-     * @return string
-     **/
-    function update($data) {}
 
 }
 class HttpQueryString implements ArrayAccess, Serializable {
@@ -45496,7 +45646,7 @@ class Imagick implements Iterator, Traversable {
     function deconstructImages() {}
 
     /**
-     * Reduces the speckle noise in an image while perserving the edges of the original image.
+     * Reduces the speckle noise in an image while preserving the edges of the original image.
      *
      * @return bool
      **/
@@ -45527,7 +45677,7 @@ class Imagick implements Iterator, Traversable {
 
     /**
      * Distorts an image using various distortion methods, by mapping color
-     * lookups of the source image to a new destination image usally of the same
+     * lookups of the source image to a new destination image usually of the same
      * size as the source image, unless 'bestfit' is set to .
      *
      * @param int
@@ -45732,7 +45882,7 @@ class Imagick implements Iterator, Traversable {
     function getImageBlob() {}
 
     /**
-     * Returns the chromaticy blue primary point for the image.
+     * Returns the chromaticity blue primary point for the image.
      *
      * @param float
      * @param float
@@ -45890,7 +46040,7 @@ class Imagick implements Iterator, Traversable {
     function getImageGeometry() {}
 
     /**
-     * Returns the chromaticy green primary point. Returns an array with the keys "x" and "y".
+     * Returns the chromaticity green primary point. Returns an array with the keys "x" and "y".
      *
      * @return array
      **/
@@ -45926,7 +46076,7 @@ class Imagick implements Iterator, Traversable {
     function getImageInterlaceScheme() {}
 
     /**
-     * Returns the interpolation method for the sepcified image.
+     * Returns the interpolation method for the specified image.
      *
      * @return int
      **/
@@ -46030,7 +46180,7 @@ class Imagick implements Iterator, Traversable {
     function getImageProperty($name) {}
 
     /**
-     * Returns the chromaticy red primary point as an array with the keys "x" and "y".
+     * Returns the chromaticity red primary point as an array with the keys "x" and "y".
      *
      * @return array
      **/
@@ -46060,6 +46210,16 @@ class Imagick implements Iterator, Traversable {
      * @return array
      **/
     function getImageResolution() {}
+
+    /**
+     * Implements direct to memory image formats. It returns all image
+     * sequences as a string. The format of the image determines the
+     * format of the returned blob (GIF, JPEG, PNG, etc.). To return a
+     * different image format, use Imagick::setImageFormat().
+     *
+     * @return string
+     **/
+    function getImagesBlob() {}
 
     /**
      * Gets the image scene.
@@ -46118,7 +46278,7 @@ class Imagick implements Iterator, Traversable {
     function getImageVirtualPixelMethod() {}
 
     /**
-     * Returns the chromaticy white point as an associative array with the keys "x" and "y".
+     * Returns the chromaticity white point as an associative array with the keys "x" and "y".
      *
      * @return array
      **/
@@ -46502,6 +46662,17 @@ class Imagick implements Iterator, Traversable {
      * @return bool
      **/
     function optimizeImageLayers() {}
+
+    /**
+     * Performs an ordered dither based on a number of pre-defined dithering threshold maps, 
+     * but over multiple intensity levels, which can be different for different channels, 
+     * according to the input arguments.
+     *
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function orderedPosterizeImage($threshold_map, $channel) {}
 
     /**
      * Changes the color value of any pixel that matches target and is an
@@ -47644,16 +47815,6 @@ class Imagick implements Iterator, Traversable {
      **/
     function writeImages($filename, $adjoin) {}
 
-    /**
-     * Implements direct to memory image formats. It returns all image
-     * sequences as a string. The format of the image determines the
-     * format of the returned blob (GIF, JPEG, PNG, etc.). To return a
-     * different image format, use Imagick::setImageFormat().
-     *
-     * @return string
-     **/
-    function getImagesBlob() {}
-
 }
 class ImagickDraw {
     /**
@@ -48359,7 +48520,7 @@ class ImagickDraw {
     function push() {}
 
     /**
-     * Starts a clip path definition which is comprized of any number of drawing
+     * Starts a clip path definition which is comprised of any number of drawing
      * commands and terminated by a ImagickDraw::popClipPath() command.
      *
      * @param string
@@ -48420,7 +48581,7 @@ class ImagickDraw {
     function rotate($degrees) {}
 
     /**
-     * Draws a rounted rectangle given two coordinates, x y corner radiuses
+     * Draws a rounded rectangle given two coordinates, x y corner radiuses
      * and using the current stroke, stroke width, and fill settings.
      *
      * @param float
@@ -49612,6 +49773,275 @@ class NumberFormatter {
     function setTextAttribute($attr, $value) {}
 
 }
+class KTaglib_MPEG_AudioProperties {
+    /**
+     * Returns the bitrate of the MPEG file
+     *
+     * @return integer
+     **/
+    function getBitrate() {}
+
+    /**
+     * Returns the amount of channels of the MPEG file
+     *
+     * @return integer
+     **/
+    function getChannels() {}
+
+    /**
+     * Returns the layer of the MPEG file (usually 3 for MP3).
+     *
+     * @return integer
+     **/
+    function getLayer() {}
+
+    /**
+     * Returns the length of the MPEG file
+     *
+     * @return integer
+     **/
+    function getLength() {}
+
+    /**
+     * Returns the sample bitrate of the MPEG file
+     *
+     * @return integer
+     **/
+    function getSampleBitrate() {}
+
+    /**
+     * Returns the version of the MPEG file header. The possible versions are
+     * 	defined in Tag_MPEG_Header (Version1, Version2, Version2.5).
+     *
+     * @return integer
+     **/
+    function getVersion() {}
+
+    /**
+     * Returns true if the MPEG file is copyrighted
+     *
+     * @return boolean
+     **/
+    function isCopyrighted() {}
+
+    /**
+     * Returns true if the file is marked as the original file
+     *
+     * @return boolean
+     **/
+    function isOriginal() {}
+
+    /**
+     * Returns true if protection mechanism (like DRM) are enabled for this file
+     *
+     * @return boolean
+     **/
+    function isProtectionEnabled() {}
+
+}
+class KTaglib_ID3v2_AttachedPictureFrame {
+    const Other = 0;
+    const FileIcon = 0;
+    const OtherFileIcon = 0;
+    const FrontCover = 0;
+    const BackCover = 0;
+    const LeafletPage = 0;
+    const Media = 0;
+    const LeadArtist = 0;
+    const Artist = 0;
+    const Conductor = 0;
+    const Band = 0;
+    const Composer = 0;
+    const Lyricist = 0;
+    const RecordingLocation = 0;
+    const DuringRecording = 0;
+    const DuringPerformance = 0;
+    const MovieScreenCapture = 0;
+    const ColouredFish = 0;
+    const Illustration = 0;
+    const BandLogo = 0;
+    /**
+     * Returns the attached description for a picture frame in an ID3v2.x frame.
+     *
+     * @return string
+     **/
+    function getDescription() {}
+
+    /**
+     * Returns the mime type of the image represented by the attached picture frame.
+     *
+     * @return string
+     **/
+    function getMimeType() {}
+
+    /**
+     * Returns the type of the image.
+     *
+     * @return integer
+     **/
+    function getType() {}
+
+    /**
+     * Saves the attached picture to the given filename.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function savePicture($filename) {}
+
+    /**
+     * Sets the picture to the give image. The image is loaded from the given filename.
+     * 	Please note that the picture is not saved unless you call the save method of the
+     * 	corresponding file object.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function setPicture($filename) {}
+
+    /**
+     * Sets the type of the image. This can be e.g. FrontCover or FileIcon. Please refer to the KTaglib_ID3v2_AttachedPictureFrame class description for a list of available types and their constant mappings.
+     *
+     * @param integer
+     * @return void
+     **/
+    function setType($type) {}
+
+}
+class KTagLib_ID3v2_Frame extends KTagLib_ID3v2_Frame {
+}
+class KTaglib_ID3v2_Frame {
+    /**
+     * Returns the size of the frame in bytes. Please refer to id3.org to see what
+     * ID3v2 frames are and how they are defined.
+     *
+     * @return integer
+     **/
+    function getSize() {}
+
+    /**
+     * Returns a string representation of the frame. This might be just the
+     * frame id, but might contain more information. Please see the ktaglib
+     * documentation for more information
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class KTagLib_Tag extends KTagLib_Tag {
+}
+class KTaglib_ID3v2_Tag {
+    /**
+     * Adds a frame to the ID3v2 tag. The frame must be a valid KTagLib_ID3v2_Frame object.
+     * 	To save the tag, the save function needs to be invoked.
+     *
+     * @return boolean
+     **/
+    function addFrame() {}
+
+    /**
+     * Returns an array of ID3v2 frames, associated with the ID3v2 tag.
+     *
+     * @return integer
+     **/
+    function getFrameList() {}
+
+}
+class KTaglib_MPEG_File {
+    /**
+     * Returns an object that provides access to the audio properties of
+     * the mpeg file.
+     *
+     * @return KTaglib_MPEG_File:
+     **/
+    function getAudioProperties() {}
+
+    /**
+     * Returns an object that represents an ID3v1 tag, which can be used
+     * to get information about the ID3v1 tag.
+     *
+     * @return KTaglib_ID3v1_Tag
+     **/
+    function getID3v1Tag() {}
+
+    /**
+     * Returns a ID3v2 object for the mpeg file. If no ID3v2 Tag is present, an
+     * KTaglib_TagNotFoundException is thrown.
+     *
+     * @return KTaglib_ID3v2_Tag
+     **/
+    function getID3v2Tag() {}
+
+}
+class KTagLib_MPEG_File {
+}
+class KTaglib_Tag {
+    /**
+     * Returns the album string of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return string
+     **/
+    function getAlbum() {}
+
+    /**
+     * Returns the artist string of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return string
+     **/
+    function getArtist() {}
+
+    /**
+     * Returns the comment of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return string
+     **/
+    function getComment() {}
+
+    /**
+     * Returns the genre of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return string
+     **/
+    function getGenre() {}
+
+    /**
+     * Returns the title string of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return string
+     **/
+    function getTitle() {}
+
+    /**
+     * Returns the track number of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return integer
+     **/
+    function getTrack() {}
+
+    /**
+     * Returns the year of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return integer
+     **/
+    function getYear() {}
+
+    /**
+     * Returns true if the tag exists, but is empty. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return boolean
+     **/
+    function isEmpty() {}
+
+}
 class libXMLError {
 }
 class Memcache {
@@ -50393,12 +50823,6 @@ class SWFMorph {
 }
 class SWFMovie {
     /**
-     * @param SWFFont
-     * @return mixed
-     **/
-    function addFont($font) {}
-
-    /**
      * Adds an SWF object instance to the current movie.
      *
      * @param object
@@ -50412,6 +50836,12 @@ class SWFMovie {
      * @return void
      **/
     function addExport($char, $name) {}
+
+    /**
+     * @param SWFFont
+     * @return mixed
+     **/
+    function addFont($font) {}
 
     /**
      * Creates a new movie object, representing an SWF movie.
@@ -50734,17 +51164,6 @@ class SWFSoundInstance {
 }
 class SWFSprite {
     /**
-     * swfsprite-&gt;remove remove a swfshape, a 
-     * swfbutton, a swftext, 
-     * a swfaction or a swfsprite object
-     * from the sprite.
-     *
-     * @param object
-     * @return void
-     **/
-    function remove($object) {}
-
-    /**
      * swfsprite-&gt;add adds a swfshape, a 
      * swfbutton, a swftext, 
      * a swfaction or a swfsprite object.
@@ -50774,6 +51193,17 @@ class SWFSprite {
      * @return void
      **/
     function nextFrame() {}
+
+    /**
+     * swfsprite-&gt;remove remove a swfshape, a 
+     * swfbutton, a swftext, 
+     * a swfaction or a swfsprite object
+     * from the sprite.
+     *
+     * @param object
+     * @return void
+     **/
+    function remove($object) {}
 
     /**
      * swfsprite-&gt;setframes sets the total number of frames 
@@ -51077,14 +51507,6 @@ class SWFVideoStream {
     function setDimension($x, $y) {}
 
 }
-class MySQLi {
-}
-class MySQLi_Driver {
-}
-class MySQLi_Result {
-}
-class MySQLi_STMT {
-}
 class mysqli {
     /**
      * Object oriented style (method)
@@ -51142,7 +51564,7 @@ class mysqli {
 
     /**
      * Returns a character set object providing several properties 
-     * of the current active characer set.
+     * of the current active character set.
      *
      * @return object
      **/
@@ -51293,6 +51715,8 @@ class mysqli {
     function stat() {}
 
 }
+class MySQLi {
+}
 class mysqli_driver {
     /**
      * @return void
@@ -51308,6 +51732,8 @@ class mysqli_driver {
     function embedded_server_start($start, $arguments, $groups) {}
 
 }
+class MySQLi_Driver {
+}
 class mysqli_result {
     /**
      * Object oriented style (method):
@@ -51316,6 +51742,14 @@ class mysqli_result {
      * @return bool
      **/
     function data_seek($offset) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param int
+     * @return mixed
+     **/
+    function fetch_all($resulttype) {}
 
     /**
      * Object oriented style (method):
@@ -51385,14 +51819,8 @@ class mysqli_result {
      **/
     function free() {}
 
-    /**
-     * Object oriented style (method):
-     *
-     * @param int
-     * @return mixed
-     **/
-    function fetch_all($resulttype) {}
-
+}
+class MySQLi_Result {
 }
 class mysqli_stmt {
     /**
@@ -51510,6 +51938,8 @@ class mysqli_stmt {
     function store_result() {}
 
 }
+class MySQLi_STMT {
+}
 class PDO {
     const PARAM_BOOL = 0;
     const PARAM_NULL = 0;
@@ -51581,6 +52011,9 @@ class PDO {
     const PARAM_EVT_FETCH_PRE = 0;
     const PARAM_EVT_FETCH_POST = 0;
     const PARAM_EVT_NORMALIZE = 0;
+    const FB_ATTR_DATE_FORMAT = 0;
+    const FB_ATTR_TIME_FORMAT = 0;
+    const FB_ATTR_TIMESTAMP_FORMAT = 0;
     const MYSQL_ATTR_USE_BUFFERED_QUERY = 0;
     const MYSQL_ATTR_LOCAL_INFILE = 0;
     const MYSQL_ATTR_INIT_COMMAND = 0;
@@ -53216,7 +53649,7 @@ class SCA_LocalProxy {
      * parameters are the desired SDO's namespace URI and type name. The
      * namespace and type must be defined in the interface of the component
      * that is to be called, so the namespace and type must be defined in one of
-     * the schema files which are specfied on the @types annotation within
+     * the schema files which are specified on the @types annotation within
      * the component for which the SCA_LocalProxy object is a proxy.
      *
      * @param string
@@ -53235,7 +53668,7 @@ class SCA_SoapProxy {
      * that is to be called, so the namespace and type must be defined within
      * the WSDL for the web service. If the web service is also an SCA component
      * then the types will have been defined within one of the schema files
-     * which are specfied on the @types annotation within the component for
+     * which are specified on the @types annotation within the component for
      * which the SCA_SoapProxy object is a proxy.
      *
      * @param string
@@ -53250,7 +53683,7 @@ class SCA {
      * This method is used inside an SCA component that needs to create
      * an SDO to return. The parameters are the desired SDO's namespace URI
      * and type name. The namespace and type must be defined in one of the
-     * schema files which are specfied on the @types annotation within the
+     * schema files which are specified on the @types annotation within the
      * component.
      *
      * @param string
@@ -53260,7 +53693,7 @@ class SCA {
     function createDataObject($type_namespace_uri, $type_name) {}
 
     /**
-     * Examine the target and initialise and return a proxy of the appropriate 
+     * Examine the target and initialize and return a proxy of the appropriate 
      * sort. If the target is for a local PHP component the returned proxy will be an 
      * SCA_LocalProxy. If the target is for a WSDL file, the returned proxy will be a 
      * SCA_SoapProxy.
@@ -54155,6 +54588,22 @@ class SoapClient {
     function __setCookie($name, $value) {}
 
     /**
+     * Sets the endpoint URL that will be touched by following SOAP requests.
+     *
+     * @param string
+     * @return string
+     **/
+    function __setLocation($location) {}
+
+    /**
+     * Defines headers to be sent along with the SOAP requests.
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function __setSoapHeaders($headers) {}
+
+    /**
      * This is a low level API function that is used to make a SOAP call. Usually,
      * in WSDL mode,
      * you can simply call SOAP functions as SoapClient 
@@ -54170,22 +54619,6 @@ class SoapClient {
      * @return mixed
      **/
     function __soapCall($function_name, $arguments, $options, $input_headers, $output_headers) {}
-
-    /**
-     * Sets the endpoint URL that will be touched by following SOAP requests.
-     *
-     * @param string
-     * @return string
-     **/
-    function __setLocation($location) {}
-
-    /**
-     * Defines headers to be sent along with the SOAP requests.
-     *
-     * @param mixed
-     * @return bool
-     **/
-    function __setSoapHeaders($headers) {}
 
 }
 class SoapServer {
@@ -55202,8 +55635,112 @@ class SQLite3 {
 
 }
 class SQLite3Result {
+    /**
+     * Returns the name of the column specified by the
+     * column_number.
+     *
+     * @param int
+     * @return string
+     **/
+    function columnName($column_number) {}
+
+    /**
+     * Returns the type of the column identified by
+     * column_number.
+     *
+     * @param int
+     * @return string
+     **/
+    function columnType($column_number) {}
+
+    /**
+     * Fetches a result row as an associative or numerically indexed array or both.
+     * By default, fetches as both.
+     *
+     * @param int
+     * @return array
+     **/
+    function fetchArray($mode) {}
+
+    /**
+     * Closes the result set.
+     *
+     * @return bool
+     **/
+    function finalize() {}
+
+    /**
+     * Returns the number of columns in the result set.
+     *
+     * @return int
+     **/
+    function numColumns() {}
+
+    /**
+     * Resets the result set back to the first row.
+     *
+     * @return bool
+     **/
+    function reset() {}
+
 }
 class SQLite3Stmt {
+    /**
+     * Binds a parameter to a statement variable.
+     *
+     * @param int
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function bindParam($param_number, $param, $type) {}
+
+    /**
+     * Binds the value of a parameter to a statement variable.
+     *
+     * @param int
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function bindValue($param_number, $param, $type) {}
+
+    /**
+     * Clears all current bound parameters.
+     *
+     * @return bool
+     **/
+    function clear() {}
+
+    /**
+     * Closes the prepared statement.
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * Executes a prepared statement and returns a result set object.
+     *
+     * @return SQLite3_result
+     **/
+    function execute() {}
+
+    /**
+     * Returns the number of parameters within the prepared statement.
+     *
+     * @return int
+     **/
+    function paramCount() {}
+
+    /**
+     * Resets the prepared statement to its state prior to execution. All bindings
+     * remain intact after reset.
+     *
+     * @return bool
+     **/
+    function reset() {}
+
 }
 class Swish {
     const META_TYPE_UNDEF = 0;
@@ -55592,6 +56129,15 @@ class XSLTProcessor {
     function setParameter($namespace, $name, $value) {}
 
     /**
+     * Sets the file to output profiling information when processing 
+     * a stylesheet.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setProfiling($filename) {}
+
+    /**
      * Transforms the source node to a DOMDocument applying
      * the stylesheet given by the
      * XSLTProcessor::importStylesheet method.
@@ -55857,6 +56403,11 @@ class ZipArchive {
 
 }
 class stdClass {
+}
+class KTaglib_MPEG_Header {
+    const Version1 = 0;
+    const Version2 = 0;
+    const Version2_5 = 0;
 }
 class ZIPARCHIVE {
     const CREATE = 0;
@@ -56156,6 +56707,8 @@ define('FILE_IGNORE_NEW_LINES', 0);
 define('FILE_SKIP_EMPTY_LINES', 0);
 define('FILE_BINARY', 0);
 define('FILE_TEXT', 0);
+define('INI_SCANNER_NORMAL', 0);
+define('INI_SCANNER_RAW', 0);
 define('INPUT_POST', 0);
 define('INPUT_GET', 0);
 define('INPUT_COOKIE', 0);
@@ -56468,6 +57021,33 @@ define('INGRES_STRUCTURE_HEAP', 0);
 define('INGRES_STRUCTURE_CHEAP', 0);
 define('INGRES_STRUCTURE_ISAM', 0);
 define('INGRES_STRUCTURE_CISAM', 0);
+define('IN_ACCESS', 0);
+define('IN_MODIFY', 0);
+define('IN_ATTRIB', 0);
+define('IN_CLOSE_WRITE', 0);
+define('IN_CLOSE_NOWRITE', 0);
+define('IN_OPEN', 0);
+define('IN_MOVED_TO', 0);
+define('IN_MOVED_FROM', 0);
+define('IN_CREATE', 0);
+define('IN_DELETE', 0);
+define('IN_DELETE_SELF', 0);
+define('IN_MOVE_SELF', 0);
+define('IN_CLOSE', 0);
+define('IN_MOVE', 0);
+define('IN_ALL_EVENTS', 0);
+define('IN_UNMOUNT', 0);
+define('IN_Q_OVERFLOW', 0);
+define('IN_IGNORED', 0);
+define('IN_ISDIR', 0);
+define('IN_ONLYDIR', 0);
+define('IN_DONT_FOLLOW', 0);
+define('IN_MASK_ADD', 0);
+define('IN_ONESHOT', 0);
+define('JSON_ERROR_NONE', 0);
+define('JSON_ERROR_DEPTH', 0);
+define('JSON_ERROR_CTRL_CHAR', 0);
+define('JSON_ERROR_SYNTAX', 0);
 define('LDAP_DEREF_NEVER', 0);
 define('LDAP_DEREF_SEARCHING', 0);
 define('LDAP_DEREF_FINDING', 0);
@@ -56816,6 +57396,53 @@ define('SIGIO', 0);
 define('SIGPWR', 0);
 define('SIGSYS', 0);
 define('SIGBABY', 0);
+define('SIG_BLOCK', 0);
+define('SIG_UNBLOCK', 0);
+define('SIG_SETMASK', 0);
+define('SI_USER', 0);
+define('SI_NOINFO', 0);
+define('SI_KERNEL', 0);
+define('SI_QUEUE', 0);
+define('SI_TIMER', 0);
+define('SI_MSGGQ', 0);
+define('SI_ASYNCIO', 0);
+define('SI_SIGIO', 0);
+define('SI_TKILL', 0);
+define('CLD_EXITED', 0);
+define('CLD_KILLED', 0);
+define('CLD_DUMPED', 0);
+define('CLD_TRAPPED', 0);
+define('CLD_STOPPED', 0);
+define('CLD_CONTINUED', 0);
+define('TRAP_BRKPT', 0);
+define('TRAP_TRACE', 0);
+define('POLL_IN', 0);
+define('POLL_OUT', 0);
+define('POLL_MSG', 0);
+define('POLL_ERR', 0);
+define('POLL_PRI', 0);
+define('POLL_HUP', 0);
+define('ILL_ILLOPC', 0);
+define('ILL_ILLOPN', 0);
+define('ILL_ILLADR', 0);
+define('ILL_ILLTRP', 0);
+define('ILL_PRVOPC', 0);
+define('ILL_PRVREG', 0);
+define('ILL_COPROC', 0);
+define('ILL_BADSTK', 0);
+define('FPE_INTDIV', 0);
+define('FPE_INTOVF', 0);
+define('FPE_FLTDIV', 0);
+define('FPE_FLTOVF', 0);
+define('FPE_FLTUND', 0);
+define('FPE_FLTRES', 0);
+define('FPE_FLTINV', 0);
+define('FPE_FLTSUB', 0);
+define('SEGV_MAPERR', 0);
+define('SEGV_ACCERR', 0);
+define('BUS_ADRALN', 0);
+define('BUS_ADRERR', 0);
+define('BUS_OBJERR', 0);
 define('PGSQL_ASSOC', 0);
 define('PGSQL_NUM', 0);
 define('PGSQL_BOTH', 0);
@@ -57327,6 +57954,7 @@ define('PHP_VERSION_ID', 0);
 define('PHP_EXTRA_VERSION', '');
 define('PHP_ZTS', 0);
 define('PHP_DEBUG', 0);
+define('PHP_MAXPATHLEN', 0);
 define('PHP_OS', '');
 define('PHP_SAPI', '');
 define('PHP_EOL', '');
@@ -57359,6 +57987,8 @@ define('E_COMPILE_WARNING', 0);
 define('E_USER_ERROR', 0);
 define('E_USER_WARNING', 0);
 define('E_USER_NOTICE', 0);
+define('E_DEPRECATED', 0);
+define('E_USER_DEPRECATED', 0);
 define('E_ALL', 0);
 define('E_STRICT', 0);
 define('SORT_ASC', 0);
