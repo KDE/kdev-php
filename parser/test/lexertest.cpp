@@ -168,20 +168,26 @@ void LexerTest::testCommentMultiLine2()
     delete ts;
 }
 
-TokenStream* LexerTest::tokenize(const QString& unit, bool debug)
+void LexerTest::testEndTag()
+{
+    TokenStream* ts = tokenize("<?\n':\n'?>\n>", true, Lexer::DefaultState);
+    //don't crash and we are fine
+    delete ts;
+}
+
+
+TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
     TokenStream* tokenStream = new TokenStream;
-    Lexer lexer(tokenStream, unit);
+    Lexer lexer(tokenStream, unit, initialState);
     int token;
+    int i = 0;
     while ((token = lexer.nextTokenKind())) {
         Parser::Token &t = tokenStream->next();
         t.begin = lexer.tokenBegin();
         t.end = lexer.tokenEnd();
         t.kind = token;
-    }
-    if (debug) {
-        for (int i=0; i < tokenStream->size(); ++i) {
-            Parser::Token &t = tokenStream->token(i);
+        if (debug) {
             qint64 beginLine;
             qint64 beginColumn;
             tokenStream->startPosition(i, &beginLine, &beginColumn);
@@ -192,6 +198,7 @@ TokenStream* LexerTest::tokenize(const QString& unit, bool debug)
                      << unit.mid(t.begin, t.end - t.begin + 1).replace('\n', "\\n")
                      << QString("[%0-%1] - [%2-%3]").arg(beginLine).arg(beginColumn).arg(endLine).arg(endColumn);
         }
+        ++i;
     }
     return tokenStream;
 }

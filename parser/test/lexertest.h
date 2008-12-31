@@ -24,6 +24,8 @@
 #include <QByteArray>
 #include <QTest>
 
+#include "phplexer.h"
+
 namespace KDevelop {
     class TopDUContext;
 }
@@ -44,9 +46,10 @@ private slots:
     void testCommentOneLine();
     void testCommentMultiLine();
     void testCommentMultiLine2();
+    void testEndTag();
 
 protected:
-    TokenStream* tokenize(const QString& unit, bool debug = false);
+    TokenStream* tokenize(const QString& unit, bool debug = false, int initialState = Lexer::HtmlState);
 };
 
 }

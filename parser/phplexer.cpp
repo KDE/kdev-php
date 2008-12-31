@@ -39,6 +39,9 @@ Lexer::Lexer(TokenStream* tokenStream, const QString& content, int initialState)
         m_tokenBegin(0), m_tokenEnd(0), m_haltCompiler(0)
 {
     pushState(ErrorState);
+    if (initialState == DefaultState) {
+        pushState(HtmlState);
+    }
     pushState(initialState);
 }
 
