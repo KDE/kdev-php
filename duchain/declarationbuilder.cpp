@@ -310,7 +310,7 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
         VariableDeclaration *dec = openDefinition<VariableDeclaration>(identifierForNode(leftSideVariableIdentifier), newRange);
         dec->setKind(Declaration::Instance);
         if (!m_lastTopStatementComment.isEmpty()) {
-            QRegExp rx("\\* +@"+QRegExp::escape("superglobal"));
+            QRegExp rx("\\* +@superglobal");
             if (rx.indexIn(m_lastTopStatementComment) != -1) {
                 dec->setSuperglobal(true);
             }
