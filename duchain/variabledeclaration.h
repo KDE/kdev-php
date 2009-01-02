@@ -33,7 +33,7 @@ class KDEVPHPDUCHAIN_EXPORT VariableDeclarationData : public KDevelop::Declarati
 {
 public:
     VariableDeclarationData()
-        : KDevelop::DeclarationData()
+        : KDevelop::DeclarationData(), m_isSuperglobal(false)
     {
     }
 
@@ -46,6 +46,7 @@ public:
     {
     }
 
+    bool m_isSuperglobal  : 1;
 };
 
 /**
@@ -59,6 +60,9 @@ public:
     VariableDeclaration(VariableDeclarationData& data);
     VariableDeclaration(VariableDeclarationData& data, const KDevelop::SimpleRange&);
     virtual ~VariableDeclaration();
+
+    bool isSuperglobal() const;
+    void setSuperglobal(bool superglobal);
 
     virtual uint additionalIdentity() const;
     virtual KDevelop::DeclarationId id(bool forceDirect = false) const;
