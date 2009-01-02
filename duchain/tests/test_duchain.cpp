@@ -34,6 +34,7 @@
 #include "phpparsejob.h"
 #include "../constantdeclaration.h"
 #include "../classdeclaration.h"
+#include <variabledeclaration.h>
 
 
 using namespace KTextEditor;
@@ -392,7 +393,7 @@ void TestDUChain::testDeclareTypehintFunction()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A {} function foo(A $i) { return $i; } ");
 
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse(method, DumpAll);
 
     DUChainWriteLocker lock(DUChain::lock());
 
@@ -418,6 +419,9 @@ void TestDUChain::testDeclareTypehintFunction()
 
     QVERIFY(contextFunctionBodyFoo->importedParentContexts().first().context(top) ==
                     contextFunctionFoo);
+
+    QVERIFY(top->childContexts().at(1)->localDeclarations().first()->type<StructureType>());
+    QCOMPARE(top->childContexts().at(1)->localDeclarations().first()->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("A"));
 
     FunctionType::Ptr fType = top->localDeclarations().at(1)->type<FunctionType>();
     QVERIFY(fType);
@@ -714,7 +718,7 @@ void TestDUChain::testStaticMemberVariable()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class B {} class A { /** @var B **/ public static $foo; } $i = A::$foo;");
 
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse(method, DumpAll);
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("i"));
@@ -1223,6 +1227,28 @@ void TestDUChain::testGlobalVariableInFunction()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().at(0)->uses().count(), 1);
+
+    release(top);
+}
+
+void TestDUChain::testSuperglobalInFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $_GET; function foo() { $_GET; }");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("_GET")).count(), 1);
+    Declaration* dec = top->findDeclarations(QualifiedIdentifier("_GET")).first();
+    QVERIFY(dynamic_cast<VariableDeclaration*>(dec));
+    QVERIFY(static_cast<VariableDeclaration*>(dec)->isSuperglobal());
+    QCOMPARE(dec->uses().keys().count(), 1);
+    QCOMPARE(dec->uses().values().count(), 1);
+    QCOMPARE(dec->uses().values().first().count(), 2);
+    QCOMPARE(dec->uses().values().first().first(), SimpleRange(0, 3, 0, 8));
+    QCOMPARE(dec->uses().values().first().at(1), SimpleRange(0, 27, 0, 32));
 
     release(top);
 }

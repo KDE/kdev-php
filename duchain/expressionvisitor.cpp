@@ -81,6 +81,17 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
             }
         }
     }
+    if (!ret) {
+        //look for a superglobal variable
+        DUChainReadLocker lock(DUChain::lock());
+        foreach (Declaration* dec, m_currentContext->topContext()->findDeclarations(identifier)) {
+            VariableDeclaration* varDec = dynamic_cast<VariableDeclaration*>(dec);
+            if (varDec && varDec->isSuperglobal()) {
+                ret = dec;
+                break;
+            }
+        }
+    }
     if (ret && !m_isAssignmentExpressionEqual) {
         usingDeclaration(variable, ret);
     }
