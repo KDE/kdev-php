@@ -22,6 +22,7 @@
 #include "editorintegrator.h"
 #include "helper.h"
 #include "constantdeclaration.h"
+#include "variabledeclaration.h"
 
 #include <language/duchain/topducontext.h>
 #include <language/duchain/duchain.h>
@@ -64,7 +65,17 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
                             AbstractType::Ptr(), 0, DUContext::DontSearchInParent);
         for (int i=decls.count()-1; i >= 0; i--) {
             Declaration *dec = decls.at(i);
-            if (dec->kind() == Declaration::Instance && !dynamic_cast<ConstantDeclaration*>(dec)) {
+            if (dec->kind() == Declaration::Instance && dynamic_cast<VariableDeclaration*>(dec)) {
+                ret = dec;
+                break;
+            }
+        }
+    }
+    if (!ret) {
+        //look for a function argument
+        DUChainReadLocker lock(DUChain::lock());
+        foreach (Declaration* dec, m_currentContext->findDeclarations(identifier)) {
+            if (dec->context()->type() == DUContext::Function) {
                 ret = dec;
                 break;
             }
@@ -376,9 +387,21 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
 
 void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
 {
-    Q_UNUSED(node);
     //don't call DefaultVisitor::visitStaticMember(node);
     //because we would end up in visitCompoundVariableWithSimpleIndirectReference
+    if (node->variable->variable->variable) {
+        DUContext* context = findClassContext(node->className);
+        if (context) {
+            DUChainReadLocker lock(DUChain::lock());
+            m_result.setDeclarations(context->findDeclarations(identifierForNode(node->variable->variable->variable)));
+            lock.unlock();
+            if (!m_result.allDeclarations().isEmpty()) {
+                usingDeclaration(node->variable->variable->variable, m_result.allDeclarations().last());
+            }
+        } else {
+            m_result.setType(AbstractType::Ptr());
+        }
+    }
 }
 
 void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
