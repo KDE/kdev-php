@@ -56,12 +56,13 @@ protected:
     virtual void visitFunctionCall(FunctionCallAst* node);
     virtual void visitStatement(StatementAst* node);
     virtual void visitStaticVar(StaticVarAst* node);
+    virtual void visitGlobalVar(GlobalVarAst* node);
 
     void classTypeOpened(KDevelop::AbstractType::Ptr type);
     void classContextOpened(KDevelop::DUContext* context);
 
-    KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext, DeclarationType declarationType, IdentifierAst* node);
-    KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext, DeclarationType declarationType, VariableIdentifierAst* node);
+    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
+    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
 
 private:
     VariableIdentifierAst* m_lastVariableIdentifier;

@@ -81,6 +81,7 @@ private slots:
   void testStaticVariable();
   void testReturnTypeTwoDeclarations();
   void testGlobalVariableNotVisibleInFunction();
+  void testGlobalVariableInFunction();
 };
 
 }

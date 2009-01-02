@@ -63,4 +63,16 @@ KDevelop::DeclarationId VariableDeclaration::id(bool forceDirect) const
     return KDevelop::Declaration::id(true);
 }
 
+bool VariableDeclaration::isSuperglobal() const
+{
+    DUCHAIN_D(VariableDeclaration);
+    return d->m_isSuperglobal;
+}
+
+void VariableDeclaration::setSuperglobal(bool superglobal)
+{
+    DUCHAIN_D_DYNAMIC(VariableDeclaration);
+    d->m_isSuperglobal = superglobal;
+}
+
 }

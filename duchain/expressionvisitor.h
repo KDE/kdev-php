@@ -73,8 +73,8 @@ protected:
         Q_UNUSED(node) Q_UNUSED(decl)
     }
 
-    KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext, DeclarationType declarationType, IdentifierAst* node);
-    KDevelop::Declaration* findDeclarationImport(KDevelop::DUContext* currentContext, DeclarationType declarationType, VariableIdentifierAst* node);
+    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
+    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
 
 protected:
     EditorIntegrator* m_editor;

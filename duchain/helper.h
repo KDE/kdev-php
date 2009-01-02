@@ -38,7 +38,8 @@ namespace Php {
     enum DeclarationType {
         ClassDeclarationType,
         FunctionDeclarationType,
-        ConstantDeclarationType
+        ConstantDeclarationType,
+        GlobalVariableDeclarationType
     };
     KDevelop::Declaration* findDeclarationImportHelper(KDevelop::DUContext* currentContext,
                                         KDevelop::QualifiedIdentifier id,

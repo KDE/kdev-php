@@ -63,7 +63,6 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
         QList<Declaration*> decls = m_currentContext->findDeclarations(identifier, position,
                             AbstractType::Ptr(), 0, DUContext::DontSearchInParent);
         for (int i=decls.count()-1; i >= 0; i--) {
-            kDebug() << i;
             Declaration *dec = decls.at(i);
             if (dec->kind() == Declaration::Instance && !dynamic_cast<ConstantDeclaration*>(dec)) {
                 ret = dec;
@@ -120,7 +119,7 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
 {
     DefaultVisitor::visitVarExpressionNewObject(node);
     if (node->className->identifier) {
-        Declaration* dec = findDeclarationImport(m_currentContext, ClassDeclarationType, node->className->identifier);
+        Declaration* dec = findDeclarationImport(ClassDeclarationType, node->className->identifier);
         usingDeclaration(node->className->identifier, dec);
         DUChainReadLocker lock(DUChain::lock());
         m_result.setDeclaration(dec);
@@ -162,7 +161,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
             //static function call foo::$bar()
         } else {
             //global function call foo();
-            Declaration* dec = findDeclarationImport(m_currentContext, FunctionDeclarationType, node->stringFunctionNameOrClass);
+            Declaration* dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionNameOrClass);
             m_result.setDeclaration(dec);
             if (dec) {
                 usingDeclaration(node->stringFunctionNameOrClass, dec);
@@ -179,7 +178,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
 DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
 {
     DUContext* context = 0;
-    Declaration* declaration = findDeclarationImport(m_currentContext, ClassDeclarationType, className);
+    Declaration* declaration = findDeclarationImport(ClassDeclarationType, className);
     if (declaration) {
         {
             DUChainReadLocker lock(DUChain::lock());
@@ -221,10 +220,10 @@ void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
             m_result.setType(AbstractType::Ptr::staticCast(integral));
         } else {
             //constant (created with declare('foo', 'bar'))
-            Declaration* declaration = findDeclarationImport(m_currentContext, ConstantDeclarationType, node->constant);
+            Declaration* declaration = findDeclarationImport(ConstantDeclarationType, node->constant);
             if (!declaration) {
                 //it could also be a global function call, without ()
-                declaration = findDeclarationImport(m_currentContext, FunctionDeclarationType, node->constant);
+                declaration = findDeclarationImport(FunctionDeclarationType, node->constant);
             }
             m_result.setDeclaration(declaration);
             if (declaration) {
@@ -377,21 +376,9 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
 
 void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
 {
+    Q_UNUSED(node);
     //don't call DefaultVisitor::visitStaticMember(node);
     //because we would end up in visitCompoundVariableWithSimpleIndirectReference
-    if (node->variable->variable->variable) {
-        DUContext* context = findClassContext(node->className);
-        if (context) {
-            DUChainReadLocker lock(DUChain::lock());
-            m_result.setDeclarations(context->findDeclarations(identifierForNode(node->variable->variable->variable)));
-            lock.unlock();
-            if (!m_result.allDeclarations().isEmpty()) {
-                usingDeclaration(node->variable->variable->variable, m_result.allDeclarations().last());
-            }
-        } else {
-            m_result.setType(AbstractType::Ptr());
-        }
-    }
 }
 
 void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
@@ -444,7 +431,6 @@ void ExpressionVisitor::visitAdditiveExpressionRest(AdditiveExpressionRestAst* n
     }
 }
 
-
 QString ExpressionVisitor::stringForNode(IdentifierAst* id)
 {
     if( !id )
@@ -483,16 +469,14 @@ void ExpressionVisitor::setCreateProblems(bool v)
     m_createProblems = v;
 }
 
-Declaration* ExpressionVisitor::findDeclarationImport(DUContext* currentContext,
-                            DeclarationType declarationType, IdentifierAst* node)
+Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
 {
-    return findDeclarationImportHelper(currentContext, identifierForNode(node), declarationType, node, m_editor, m_createProblems);
+    return findDeclarationImportHelper(m_currentContext, identifierForNode(node), declarationType, node, m_editor, m_createProblems);
 }
 
-Declaration* ExpressionVisitor::findDeclarationImport(DUContext* currentContext,
-                            DeclarationType declarationType, VariableIdentifierAst* node)
+Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
 {
-    return findDeclarationImportHelper(currentContext, identifierForNode(node), declarationType, node, m_editor, m_createProblems);
+    return findDeclarationImportHelper(m_currentContext, identifierForNode(node), declarationType, node, m_editor, m_createProblems);
 }
 
 }

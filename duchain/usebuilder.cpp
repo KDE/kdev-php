@@ -87,4 +87,25 @@ void UseBuilder::visitExpr(ExprAst* node)
     v.visitNode(node);
 }
 
+void UseBuilder::visitGlobalVar(GlobalVarAst* node)
+{
+    if (node->var) {
+        Declaration* dec = findDeclarationImport(GlobalVariableDeclarationType, node->var);
+        if (dec) {
+            newUse(node->var, dec);
+        }
+    }
+    UseBuilderBase::visitGlobalVar(node);
+}
+
+Declaration* UseBuilder::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
+{
+    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), true);
+}
+
+Declaration* UseBuilder::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
+{
+    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), true);
+}
+
 }

@@ -27,6 +27,7 @@
 
 #include <language/duchain/functiondeclaration.h>
 #include <language/duchain/stringhelpers.h>
+#include <language/duchain/aliasdeclaration.h>
 
 #include "phpast.h"
 #include "parsesession.h"
@@ -151,7 +152,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 
 void DeclarationBuilder::visitClassExtends(ClassExtendsAst *node)
 {
-    Declaration* dec = findDeclarationImport(currentContext(), ClassDeclarationType, node->identifier);
+    Declaration* dec = findDeclarationImport(ClassDeclarationType, node->identifier);
     if (dec) {
         StructureType::Ptr extends = StructureType::Ptr::dynamicCast(dec->abstractType());
         if (extends) {
@@ -165,7 +166,7 @@ void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
 {
     const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
     do {
-        Declaration* dec = findDeclarationImport(currentContext(), ClassDeclarationType, __it->element);
+        Declaration* dec = findDeclarationImport(ClassDeclarationType, __it->element);
         if (dec) {
             StructureType::Ptr interface = StructureType::Ptr::dynamicCast(dec->abstractType());
             if (!interface) {
@@ -389,16 +390,28 @@ void DeclarationBuilder::visitStaticVar(StaticVarAst* node)
     closeDeclaration();
 }
 
-Declaration* DeclarationBuilder::findDeclarationImport(DUContext* currentContext,
-                            DeclarationType declarationType, IdentifierAst* node)
+void DeclarationBuilder::visitGlobalVar(GlobalVarAst* node)
 {
-    return findDeclarationImportHelper(currentContext, identifierForNode(node), declarationType, node, editor(), true);
+    DeclarationBuilderBase::visitGlobalVar(node);
+    if (node->var) {
+        Declaration* aliasedDeclaration = findDeclarationImport(GlobalVariableDeclarationType, node->var);
+        if (aliasedDeclaration) {
+            DUChainWriteLocker lock(DUChain::lock());
+            AliasDeclaration* dec = openDefinition<AliasDeclaration>(identifierForNode(node->var), editor()->findRange(node->var));
+            dec->setAliasedDeclaration(aliasedDeclaration);
+            closeDeclaration();
+        }
+    }
 }
 
-Declaration* DeclarationBuilder::findDeclarationImport(DUContext* currentContext,
-                            DeclarationType declarationType, VariableIdentifierAst* node)
+Declaration* DeclarationBuilder::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
 {
-    return findDeclarationImportHelper(currentContext, identifierForNode(node), declarationType, node, editor(), true);
+    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), true);
+}
+
+Declaration* DeclarationBuilder::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
+{
+    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), true);
 }
 
 }

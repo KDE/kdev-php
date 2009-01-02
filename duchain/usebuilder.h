@@ -22,10 +22,10 @@
 #ifndef USEBUILDER_H
 #define USEBUILDER_H
 
-#include "contextbuilder.h"
-
 #include <language/duchain/builders/abstractusebuilder.h>
 
+#include "helper.h"
+#include "contextbuilder.h"
 #include "phpduchainexport.h"
 
 namespace Php {
@@ -50,7 +50,10 @@ protected:
     virtual void visitClassImplements(ClassImplementsAst *node);
     virtual void visitClassExtends(ClassExtendsAst *node);
     virtual void visitExpr(ExprAst* node);
+    virtual void visitGlobalVar(GlobalVarAst* node);
 
+    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
+    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
 };
 
 }

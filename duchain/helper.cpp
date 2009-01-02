@@ -21,6 +21,7 @@
 
 #include <KIO/NetAccess>
 #include <KParts/MainWindow>
+#include <KLocalizedString>
 
 #include <language/duchain/ducontext.h>
 #include <language/duchain/duchainlock.h>
@@ -40,7 +41,6 @@
 #include "phpast.h"
 #include "phpdefaultvisitor.h"
 #include "constantdeclaration.h"
-#include <klocalizedstring.h>
 
 #define ifDebug(x)
 
@@ -60,6 +60,11 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
         return true;
     } else if(declarationType == ConstantDeclarationType
         && dynamic_cast<ConstantDeclaration*>(declaration)
+    ) {
+        return true;
+    } else if(declarationType == GlobalVariableDeclarationType
+        && declaration->kind() == Declaration::Instance
+        && !dynamic_cast<ConstantDeclaration*>(declaration)
     ) {
         return true;
     }
@@ -88,6 +93,10 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
         }
     } else {
         QList<Declaration*> foundDeclarations;
+        DUContext *searchContext = currentContext;
+        if (declarationType == GlobalVariableDeclarationType) {
+            searchContext = currentContext->topContext();
+        }
         DUChainReadLocker lock(DUChain::lock());
         foundDeclarations = currentContext->findDeclarations(id);
         foreach (Declaration *declaration, foundDeclarations) {
@@ -95,46 +104,48 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                 return declaration;
             }
         }
-        ifDebug( kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable" << id.toString(); )
-        uint nr;
-        const IndexedDeclaration* declarations = 0;
-        PersistentSymbolTable::self().declarations(id, nr, declarations);
-        ifDebug( kDebug() << "found declarations:" << nr; )
-        lock.unlock();
+        if (declarationType != GlobalVariableDeclarationType) {
+            ifDebug( kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable" << id.toString(); )
+            uint nr;
+            const IndexedDeclaration* declarations = 0;
+            PersistentSymbolTable::self().declarations(id, nr, declarations);
+            ifDebug( kDebug() << "found declarations:" << nr; )
+            lock.unlock();
 
-        DUChainWriteLocker wlock(DUChain::lock());
-        for (uint i=0; i<nr; ++i) {
-            //TODO check if context is in any loaded project
-            if (!declarations[i].declaration()) {
-                ifDebug( kDebug() << "skipping declaration, doesn't have declaration"; )
-                continue;
-            } else if (!isMatch(declarations[i].declaration(), declarationType)) {
-                ifDebug( kDebug() << "skipping declaration, doesn't match with declarationType"; )
-                continue;
-            }
-            TopDUContext* top = declarations[i].declaration()->context()->topContext();
-            if (top->language() != IndexedString("Php")) {
-                ifDebug( kDebug() << "skipping declaration, invalid language" << top->language().str(); )
-                continue;
-            }
-            if (ICore::self()) {
-                bool loadedProjectContainsUrl = false;
-                foreach (IProject *project, ICore::self()->projectController()->projects()) {
-                    if (project->fileSet().contains(top->url())) {
-                        loadedProjectContainsUrl = true;
-                        break;
-                    }
-                }
-                if (!loadedProjectContainsUrl) {
-                    ifDebug( kDebug() << "skipping declaration, not in loaded project"; )
+            DUChainWriteLocker wlock(DUChain::lock());
+            for (uint i=0; i<nr; ++i) {
+                //TODO check if context is in any loaded project
+                if (!declarations[i].declaration()) {
+                    ifDebug( kDebug() << "skipping declaration, doesn't have declaration"; )
+                    continue;
+                } else if (!isMatch(declarations[i].declaration(), declarationType)) {
+                    ifDebug( kDebug() << "skipping declaration, doesn't match with declarationType"; )
                     continue;
                 }
+                TopDUContext* top = declarations[i].declaration()->context()->topContext();
+                if (top->language() != IndexedString("Php")) {
+                    ifDebug( kDebug() << "skipping declaration, invalid language" << top->language().str(); )
+                    continue;
+                }
+                if (ICore::self()) {
+                    bool loadedProjectContainsUrl = false;
+                    foreach (IProject *project, ICore::self()->projectController()->projects()) {
+                        if (project->fileSet().contains(top->url())) {
+                            loadedProjectContainsUrl = true;
+                            break;
+                        }
+                    }
+                    if (!loadedProjectContainsUrl) {
+                        ifDebug( kDebug() << "skipping declaration, not in loaded project"; )
+                        continue;
+                    }
+                }
+                currentContext->topContext()->addImportedParentContext(top);
+                currentContext->topContext()->parsingEnvironmentFile()
+                    ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
+                ifDebug( kDebug() << "using" << declarations[i].declaration()->toString() << top->url().str(); )
+                return declarations[i].declaration();
             }
-            currentContext->topContext()->addImportedParentContext(top);
-            currentContext->topContext()->parsingEnvironmentFile()
-                ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
-            ifDebug( kDebug() << "using" << declarations[i].declaration()->toString() << top->url().str(); )
-            return declarations[i].declaration();
         }
     }
 

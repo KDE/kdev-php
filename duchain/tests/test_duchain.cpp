@@ -1213,6 +1213,20 @@ void TestDUChain::testGlobalVariableNotVisibleInFunction()
     release(top);
 }
 
+void TestDUChain::testGlobalVariableInFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $a = 0; function foo() { global $a; $a; }");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->localDeclarations().at(0)->uses().count(), 1);
+
+    release(top);
+}
+
 }
 
 #include "test_duchain.moc"
