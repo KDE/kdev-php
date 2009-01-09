@@ -235,35 +235,14 @@ foreach ($dirs as $dir) {
             'type' => (string)$methodsynopsis->type,
             'desc' => $desc
         );
-
-        if (!isset($xml->refnamediv))
-            continue;
-        if (strtolower((string)$xml->refnamediv->refname) == strtolower($function))
-            continue;
-        if (strpos((string)$xml->refnamediv->refname, "::") !== false)
-            continue;
-        if (strpos((string)$xml->refnamediv->refname, "->") !== false)
-            continue;
-        $funcParms = array();
-        if (isset($xml->refsect1->classsynopsis->fieldsynopsis)) {
-            foreach ($xml->refsect1->classsynopsis->fieldsynopsis as $var) {
-                if (isset($var->varname) && isset($var->type)
-                    && ($var->type == "integer" || $var->type == "int" || $var->type == "string" || $var->type == "bool" || $var->type == "float")) {
-                    $funcParms[] = array(
-                        'name' => $var->varname,
-                        'type' => $var->type
-                    );
-                }
-            }
-        }
-        $classes['global']['functions'][] = array(
-            'name' => (string)$xml->refnamediv->refname,
-            'params' => $funcParms,
-            'desc' => $xml->refnamediv->refpurpose
-        );
     }
 }
 
+/*
+ Here be dirty hacks! PHP's documentation isn't as good as could be wished for...
+ */
+
+// Clean the functions from imagick
 foreach (array_keys($constants) as $c) {
     if ($pos = strpos($c, '::')) {
         $class = substr($c, 0, $pos);
@@ -273,6 +252,19 @@ foreach (array_keys($constants) as $c) {
         }
     }
 }
+
+// The dir function, which lacks parseable documentation...
+$classes['global']['functions'][] = array(
+    'name' => "dir",
+    'params' => array(array('name' => "path", 'type' => "string")),
+    'type' => "Directory",
+    'desc' => "Return an instance of the Directory class"
+);
+
+/*
+ Here ends the hackings...
+ */
+
 function constTypeValue($ctype) {
     if ($ctype == 'integer' || $ctype == 'int') {
         return "0";

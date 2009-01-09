@@ -7121,13 +7121,6 @@ function chdir($directory) {}
 function chroot($directory) {}
 
 /**
- * Return an instance of the Directory class
- *
- * @param string
- **/
-function dir($path) {}
-
-/**
  * Closes the directory stream indicated by
  * dir_handle. The stream must have previously
  * been opened by opendir.
@@ -20228,12 +20221,6 @@ function ming_useconstants($use) {}
 function ming_useswfversion($version) {}
 
 /**
- * Returns a new SWFSound object from given file
- *
- **/
-function SWFSound() {}
-
-/**
  * Checks whether the client disconnected.
  *
  * @return int
@@ -32119,14 +32106,6 @@ function runkit_sandbox_output_handler($sandbox, $callback) {}
 function runkit_superglobals() {}
 
 /**
- * 
- *    Runkit Anti-Sandbox Class
- *   
- *
- **/
-function Runkit_Sandbox_Parent() {}
-
-/**
  * The function converts the pathname of an existing
  * accessible file and a project identifier into an
  * integer for use with for example
@@ -34926,12 +34905,6 @@ function stream_socket_shutdown($stream, $how) {}
  * @return resource
  **/
 function stream_supports_locking($stream) {}
-
-/**
- * Tells wether the stream supports locking.
- *
- **/
-function stream_supports_lock() {}
 
 /**
  * stream_wrapper_register allows you to implement
@@ -40623,6 +40596,14 @@ function readgzfile($filename, $use_include_path) {}
  * @return string
  **/
 function zlib_get_coding_type() {}
+
+/**
+ * Return an instance of the Directory class
+ *
+ * @param string
+ * @return Directory
+ **/
+function dir($path) {}
 
 /**
  * The class from which dir is instantiated.
