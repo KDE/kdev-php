@@ -117,7 +117,7 @@ void TestCompletion::methodCall()
 
     QString ret;
     createArgumentList(*item2, ret, 0);
-    QCOMPARE(ret, QString("(A $a, $b = null)"));
+    QCOMPARE(ret, QString("(A $a, mixed $b = null)"));
 
 
     cptr = new CodeCompletionContext(DUContextPointer(top), "$blah; $i->foo(new A(), ");

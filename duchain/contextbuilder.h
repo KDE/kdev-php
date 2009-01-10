@@ -27,6 +27,7 @@
 
 #include "phpduchainexport.h"
 #include "editorintegrator.h"
+#include "helper.h"
 
 namespace Php
 {
@@ -70,6 +71,11 @@ protected:
     virtual void addBaseType(const KDevelop::StructureType::Ptr& base, bool implementsInterface);
 
     virtual void classContextOpened(KDevelop::DUContext* context);
+
+    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
+    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
+    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, const KDevelop::QualifiedIdentifier &identifier, AstNode* node, bool createProblems = true);
+
 private:
     bool processInclude(const KUrl& url);
 };

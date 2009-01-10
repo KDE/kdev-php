@@ -52,6 +52,21 @@ DeclarationBuilder::DeclarationBuilder (EditorIntegrator* editor)
 {
   setEditor(editor);
 }
+KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::IndexedString& url, Php::AstNode* node)
+{
+    //Run DeclarationBuilder twice, to find uses of declarations that are
+    //declared after the use. ($a = new Foo; class Foo {})
+    DeclarationBuilder b(editor());
+    b.preBuild(url, node);
+
+    return DeclarationBuilderBase::build(url, node);
+}
+
+void DeclarationBuilder::preBuild(const KDevelop::IndexedString& url, Php::AstNode* node)
+{
+    DeclarationBuilderBase::build(url, node);
+}
+
 
 void DeclarationBuilder::closeDeclaration()
 {
@@ -108,9 +123,8 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
     setComment(formatComment(node, editor()));
     if (node->methodName) {
         //method declaration
-        openDefinition<ClassFunctionDeclaration>(node->methodName, node);
-        ClassFunctionDeclaration* dec = dynamic_cast<ClassFunctionDeclaration*>(currentDeclaration());
-        Q_ASSERT(dec);
+        ClassFunctionDeclaration* dec = openDefinition<ClassFunctionDeclaration>(node->methodName, node);
+        dec->clearDefaultParameters();
         {
             DUChainWriteLocker lock(DUChain::lock());
             dec->setKind(Declaration::Type);
@@ -273,8 +287,9 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
 {
     setComment(formatComment(node, editor()));
 
-    openDefinition<FunctionDeclaration>(node->functionName, node);
-    currentDeclaration()->setKind(Declaration::Type);
+    FunctionDeclaration *dec = openDefinition<FunctionDeclaration>(node->functionName, node);
+    dec->setKind(Declaration::Type);
+    dec->clearDefaultParameters();
 
     DeclarationBuilderBase::visitFunctionDeclarationStatement(node);
 
@@ -409,16 +424,6 @@ void DeclarationBuilder::visitGlobalVar(GlobalVarAst* node)
             closeDeclaration();
         }
     }
-}
-
-Declaration* DeclarationBuilder::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
-{
-    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), true);
-}
-
-Declaration* DeclarationBuilder::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
-{
-    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), true);
 }
 
 }

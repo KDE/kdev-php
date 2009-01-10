@@ -45,7 +45,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         iType = IntegralType::TypeInt;
     } else if (type == "float") {
         iType = IntegralType::TypeFloat;
-    } else if (type == "bool") {
+    } else if (type == "bool" || type == "boolean") {
         iType = IntegralType::TypeBoolean;
     } else if (type == "string") {
         iType = IntegralType::TypeString;
@@ -53,16 +53,25 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         iType = IntegralType::TypeMixed;
     } else if (type == "array") {
         iType = IntegralType::TypeArray;
+    } else if (type == "resource") {
+        //TODO
+        iType = IntegralType::TypeMixed;
+    } else if (type == "object") {
+        //TODO
+        iType = IntegralType::TypeMixed;
+    } else if (type == "void") {
+        iType = IntegralType::TypeVoid;
     } else {
-        if(openTypeFromName(QualifiedIdentifier(type), node, true)) {
-            closeType();
-            return lastType();
-        } else {
-            return AbstractType::Ptr();
+        //don't use openTypeFromName as it uses cursor for findDeclarations
+        Declaration* decl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier(type), node, false);
+        if (decl && decl->abstractType()) {
+            injectType(decl->abstractType());
+            return decl->abstractType();
         }
+        iType = IntegralType::TypeMixed;
     }
     AbstractType::Ptr ret(new IntegralType(iType));
-    setLastType(ret);
+    injectType(ret);
     return ret;
 }
 
@@ -158,19 +167,26 @@ void TypeBuilder::visitClassVariable(ClassVariableAst *node)
 
 void TypeBuilder::visitParameter(ParameterAst *node)
 {
-    if (node->parameterType && openTypeFromName(node->parameterType, true)) {
+    AbstractType::Ptr type;
+    if (node->parameterType) {
+        //don't use openTypeFromName as it uses cursor for findDeclarations
+        Declaration* decl = findDeclarationImport(ClassDeclarationType, node->parameterType);
+        if (decl) type = decl->abstractType();
     } else if (node->arrayType != -1) {
-        openAbstractType(AbstractType::Ptr(new IntegralType(IntegralType::TypeArray)));
-    } else {
+        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
+    }
+    if (!type) {
         if (m_currentFunctionParams.count() > currentType<FunctionType>()->arguments().count()) {
-            openAbstractType(m_currentFunctionParams.at(currentType<FunctionType>()->arguments().count()));
+            type = m_currentFunctionParams.at(currentType<FunctionType>()->arguments().count());
         } else {
-            openAbstractType(AbstractType::Ptr());
+            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
         }
     }
+    openAbstractType(type);
     TypeBuilderBase::visitParameter(node);
     closeType();
-    currentType<FunctionType>()->addArgument(lastType());
+    DUChainWriteLocker lock(DUChain::lock());
+    currentType<FunctionType>()->addArgument(type);
 }
 
 void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)

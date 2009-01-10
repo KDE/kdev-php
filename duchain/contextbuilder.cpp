@@ -48,14 +48,17 @@ ReferencedTopDUContext ContextBuilder::build( const IndexedString& url, AstNode*
         updateContext = DUChain::self()->chainForDocument(url);
     }
     if (updateContext) {
+        kDebug() << "re-compiling" << url.str();
         DUChainWriteLocker lock(DUChain::lock());
         updateContext->clearImportedParentContexts();
         updateContext->parsingEnvironmentFile()->clearModificationRevisions();
         updateContext->clearProblems();
+    } else {
+        kDebug() << "compiling" << url.str();
     }
     ReferencedTopDUContext top = ContextBuilderBase::build(url, node, updateContext);
     if (!updateContext) {
-	DUChainWriteLocker lock(DUChain::lock());
+        DUChainWriteLocker lock(DUChain::lock());
         top->setLanguage(IndexedString("Php"));
     }
     return top;
@@ -248,6 +251,21 @@ void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
             }
         }
     }
+}
+
+Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
+{
+    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), true);
+}
+
+Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
+{
+    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), true);
+}
+
+Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, const QualifiedIdentifier &identifier, AstNode* node, bool createProblems)
+{
+    return findDeclarationImportHelper(currentContext(), identifier, declarationType, node, editor(), createProblems);
 }
 
 }

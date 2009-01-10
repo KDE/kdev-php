@@ -1050,7 +1050,8 @@ void TestDUChain::testFunctionDocBlockParams()
         QVERIFY(IntegralType::Ptr::dynamicCast(arg)->dataType() == IntegralType::TypeMixed);
 
         arg = top->localDeclarations().at(1)->type<FunctionType>()->arguments().at(3);
-        QVERIFY(!arg);
+        QVERIFY(IntegralType::Ptr::dynamicCast(arg));
+        QVERIFY(IntegralType::Ptr::dynamicCast(arg)->dataType() == IntegralType::TypeMixed);
 
         release(top);
     }

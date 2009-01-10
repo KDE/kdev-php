@@ -37,6 +37,7 @@ class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase {
 public:
     DeclarationBuilder(ParseSession* session);
     DeclarationBuilder(EditorIntegrator* editor);
+    virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, Php::AstNode* node);
 
 protected:
     virtual void closeDeclaration();
@@ -61,10 +62,9 @@ protected:
     void classTypeOpened(KDevelop::AbstractType::Ptr type);
     void classContextOpened(KDevelop::DUContext* context);
 
-    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
-    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
-
 private:
+    void preBuild(const KDevelop::IndexedString& url, Php::AstNode* node);
+
     VariableIdentifierAst* m_lastVariableIdentifier;
     unsigned int m_currentModifers;
     QString m_lastTopStatementComment;

@@ -213,10 +213,10 @@ void ParseJob::run()
         QDateTime lastModified = fileInfo.lastModified();
         if (m_readFromDisk) {
             file->setModificationRevision( KDevelop::ModificationRevision( lastModified ) );
-        } else {            
+        } else {
             file->setModificationRevision( KDevelop::ModificationRevision( lastModified, revisionToken() ) );
         }
-    }   
+    }
     else
     {
         ReferencedTopDUContext top;
