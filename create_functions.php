@@ -264,6 +264,8 @@ foreach ($dirs as $dir) {
     }
 }
 
+unset($existingFunctions);
+
 /*
  Here be dirty hacks! PHP's documentation isn't as good as could be wished for...
  */
@@ -321,7 +323,6 @@ $out = $fileHeader;
 ksort($variables);
 ksort($classes);
 ksort($constants);
-ksort($existingFunctions);
 
 foreach ($variables as $name=>$var) {
     $declarationCount++;
