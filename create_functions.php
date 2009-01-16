@@ -81,6 +81,7 @@ $dirs = array("en/reference", "en/appendices", "en/language/predefined/variables
 
 $classes = array();
 $constants = array();
+$constants_comments = array();
 $variables = array();
 $existingFunctions = array();
 foreach ($dirs as $dir) {
@@ -134,6 +135,28 @@ foreach ($dirs as $dir) {
                         }
                         $constants[$c] = (string)$ctype;
                     }
+                }
+            }
+        }
+        // handle constants.xml with different layout as those above
+        if ( !isset($xml->variablelist) && $file->getFilename() == 'constants.xml' && $xml->xpath("//db:constant") ) {
+            $consts = $xml->xpath("//db:entry");
+            foreach ( $consts as $i=>$p ) {
+                if ( isset($p->constant) ) {
+                    if ( !isset($p->type) ) {
+                        // default to integer constants
+                        $p->type = 'integer';
+                    } else {
+                        // check for comment
+                        // next entry is the value of the constant which is followed by the comment
+                        if ( isset($consts[$i+2]) && !$consts[$i+2]->children() ) {
+                            $comment = (string)$consts[$i+2];
+                            if ( !empty($comment) ) {
+                                $constants_comments[(string)$p->constant] = $comment;
+                            }
+                        }
+                    }
+                    $constants[(string)$p->constant] = (string)$p->type;
                 }
             }
         }
@@ -280,6 +303,10 @@ function constTypeValue($ctype) {
     }
 }
 
+function prepareComment($comment) {
+    return "/**\n * ".preg_replace("#^\s+#m", " * ", trim($comment))."\n **/\n";
+}
+
 
 $fileHeader  = "<?php\n";
 $fileHeader .= "// THIS FILE IS GENERATED\n";
@@ -365,6 +392,9 @@ foreach ($classes as $class => $i) {
 }
 foreach ($constants as $c=>$ctype) {
     if (strpos($c, '::')===false) {
+        if ( isset($constants_comments[$c]) ) {
+          $out .= prepareComment($constants_comments[$c]);
+        }
         $out .= "define('$c', ".constTypeValue($ctype).");\n";
         $declarationCount++;
     }
