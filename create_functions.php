@@ -315,6 +315,12 @@ $fileHeader .= "// WARNING! All changes made in this file will be lost!\n\n";
 $declarationCount = 0;
 $out = $fileHeader;
 
+// make sure the output it somehow ordered to prevent huge svn diffs
+ksort($variables);
+ksort($classes);
+ksort($constants);
+ksort($existingFunctions);
+
 foreach ($variables as $name=>$var) {
     $declarationCount++;
     $out .= "/**\n";
