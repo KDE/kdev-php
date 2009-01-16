@@ -60,8 +60,10 @@ foreach (new DirectoryIterator($_SERVER['argv'][2].'/ext/spl/internal') as $file
     $c = str_replace("\t", '    ', $c);
     $c = str_replace("\r", '', $c);
     $c = preg_replace("#/\\*\\* @file.*?\\*/#s", '', $c);
-    $c = preg_replace("#(function.*?){\n.*?    }#s", '{}', $c);
+    // normalize special case
     $c = str_replace("rewind();\n    {", "rewind()\n    {", $c);
+    // strip actual function code
+    $c = preg_replace("#(function.*?\))\s*\{\n.*?\n    \}#s", '\1{}', $c);
     $c = trim($c);
     $splContent .= $c;
 }
