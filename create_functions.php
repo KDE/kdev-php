@@ -59,12 +59,27 @@ foreach (new DirectoryIterator($_SERVER['argv'][2].'/ext/spl/internal') as $file
     $c = file_get_contents($file->getPathname());
     $c = str_replace("\t", '    ', $c);
     $c = str_replace("\r", '', $c);
+
     $c = preg_replace("#/\\*\\* @file.*?\\*/#s", '', $c);
+    // handle code blocks in comments - quick'n'dirty
+    if ( preg_match_all('#\\\code.*\\\endcode#s', $c, $codeblocks) ) {
+        $codeblocks = $codeblocks[0];
+        foreach( $codeblocks as $block ) {
+            $c = str_replace($block, md5($block), $c);
+        }
+    } else {
+        $codeblocks = array();
+    }
     // normalize special case
     $c = str_replace("rewind();\n    {", "rewind()\n    {", $c);
     // strip actual function code
     $c = preg_replace("#(function.*?\))\s*\{\n.*?\n    \}#s", '\1{}', $c);
     $c = trim($c);
+
+    foreach ( $codeblocks as $block ) {
+        $c = str_replace(md5($block), $block, $c);
+    }
+
     $splContent .= $c;
 }
 $splContent = str_replace('<?php', '', $splContent);
