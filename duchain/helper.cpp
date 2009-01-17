@@ -163,6 +163,9 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
             case ConstantDeclarationType:
                 declarationTypeString = "constant";
                 break;
+            case GlobalVariableDeclarationType:
+                declarationTypeString = "global";
+                break;
         }
         p->setDescription(i18n("Could not find %1 '%2'", declarationTypeString, id.toString()));
         p->setFinalLocation(KDevelop::DocumentRange(editor->currentUrl().str(), editor->findRange(node).textRange()));
