@@ -40,10 +40,10 @@ namespace Php
 ContextBuilder::ContextBuilder()
 {
 }
-ReferencedTopDUContext ContextBuilder::build( const IndexedString& url, AstNode* node)
+ReferencedTopDUContext ContextBuilder::build( const KDevelop::IndexedString& url, AstNode* node,
+                                            KDevelop::ReferencedTopDUContext updateContext, bool useSmart )
 {
-    ReferencedTopDUContext updateContext;
-    {
+    if (!updateContext) {
         DUChainReadLocker lock(DUChain::lock());
         updateContext = DUChain::self()->chainForDocument(url);
     }
@@ -56,7 +56,7 @@ ReferencedTopDUContext ContextBuilder::build( const IndexedString& url, AstNode*
     } else {
         kDebug() << "compiling" << url.str();
     }
-    ReferencedTopDUContext top = ContextBuilderBase::build(url, node, updateContext);
+    ReferencedTopDUContext top = ContextBuilderBase::build(url, node, updateContext, useSmart);
     if (!updateContext) {
         DUChainWriteLocker lock(DUChain::lock());
         top->setLanguage(IndexedString("Php"));

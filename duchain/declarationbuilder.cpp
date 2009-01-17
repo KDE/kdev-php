@@ -52,19 +52,21 @@ DeclarationBuilder::DeclarationBuilder (EditorIntegrator* editor)
 {
   setEditor(editor);
 }
-KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::IndexedString& url, Php::AstNode* node)
+KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::IndexedString& url, Php::AstNode* node,
+                                            KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
 {
     //Run DeclarationBuilder twice, to find uses of declarations that are
     //declared after the use. ($a = new Foo; class Foo {})
     DeclarationBuilder b(editor());
-    b.preBuild(url, node);
+    b.preBuild(url, node, updateContext, useSmart);
 
-    return DeclarationBuilderBase::build(url, node);
+    return DeclarationBuilderBase::build(url, node, updateContext, useSmart);
 }
 
-void DeclarationBuilder::preBuild(const KDevelop::IndexedString& url, Php::AstNode* node)
+void DeclarationBuilder::preBuild(const KDevelop::IndexedString& url, Php::AstNode* node,
+                                  KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
 {
-    DeclarationBuilderBase::build(url, node);
+    DeclarationBuilderBase::build(url, node, updateContext, useSmart);
 }
 
 
