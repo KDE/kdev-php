@@ -162,6 +162,11 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
   QString expressionPrefix = stripFinalWhitespace( m_text.left(start_expr) );
   ifDebug( log( "expressionPrefix: " + expressionPrefix ); )
 
+  ///Handle beginning of a PHP block
+  if ( expressionPrefix.endsWith("<?") && m_expression.compare("php", Qt::CaseInsensitive) == 0 ) {
+    return;
+  }
+
   ///Handle recursive contexts(Example: "ret = function1(param1, function2(" )
   if( expressionPrefix.endsWith('(') || expressionPrefix.endsWith(',') ) {
     log( QString("Recursive function-call: Searching parent-context in \"%1\"").arg(expressionPrefix) );
