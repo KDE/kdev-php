@@ -226,7 +226,8 @@ void ParseJob::run()
         }
         if (top) {
             DUChainWriteLocker lock(DUChain::lock());
-            top->clearImportedParentContexts();
+            ///NOTE: if we clear the imported parent contexts, autocompletion of built-in PHP stuff won't work!
+            //top->clearImportedParentContexts();
             top->parsingEnvironmentFile()->clearModificationRevisions();
             top->clearProblems();
         } else {
