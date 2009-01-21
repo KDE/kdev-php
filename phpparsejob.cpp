@@ -112,7 +112,7 @@ void ParseJob::run()
                 needsUpdate = false;
             }
         }
-        if (!(minimumFeatures() | TopDUContext::ForceUpdate) && !needsUpdate) {
+        if (!(minimumFeatures() & TopDUContext::ForceUpdate) && !needsUpdate) {
             kDebug() << "Already up to date" << document().str();
             return;
         }
