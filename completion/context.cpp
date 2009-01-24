@@ -22,7 +22,6 @@
 
 #include "duchain/expressionparser.h"
 #include "completion/helpers.h"
-#include "duchain/classdeclaration.h"
 
 #include <ktexteditor/view.h>
 #include <ktexteditor/document.h>
@@ -202,10 +201,6 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
     isThrow = true;
     expr = expr.right( expr.length() - 5 );
   }
-  if ( expr == "new" ) {
-    m_memberAccessOperation = ClassChoose;
-    return;
-  }
 
   ifDebug( kDebug() << "expression: " << expr; )
 
@@ -381,9 +376,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
       foreach( const DeclarationDepthPair& decl, decls ) {
         if (abort)
           return items;
-        if ( memberAccessOperation() == ClassChoose && !dynamic_cast<ClassDeclaration*>(decl.first) ) {
-          continue;
-        }
         items << CompletionTreeItemPointer( new NormalDeclarationCompletionItem(DeclarationPointer(decl.first), CodeCompletionContext::Ptr(this), decl.second ) );
       }
       uint count = 0;
@@ -399,9 +391,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
                         QList<Declaration*> decls = top->findDeclarations(foundItems[i].id);
                         foreach (Declaration* decl, decls) {
                             if (abort) return items;
-                            if ( memberAccessOperation() == ClassChoose && !dynamic_cast<ClassDeclaration*>(decl) ) {
-                              continue;
-                            }
                             items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), CodeCompletionContext::Ptr(this)));
                         }
                     }
