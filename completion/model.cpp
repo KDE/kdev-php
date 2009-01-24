@@ -100,17 +100,13 @@ void CodeCompletionModel::completionInvokedInternal(KTextEditor::View* view, con
       thisContext = top->findContextAt(SimpleCursor(range.start()));
 
        kDebug(9007) << "context is set to" << thisContext.data();
-        if( thisContext ) {
-          kDebug( 9007 ) << "================== duchain for the context =======================";
-          DumpChain dump;
-          dump.dump(thisContext.data());
-        } else {
-          kDebug( 9007 ) << "================== NO CONTEXT FOUND =======================";
-          m_completionItems.clear();
-          m_navigationWidgets.clear();
-          reset();
-          return;
+        if( !thisContext ) {
+          kDebug( 9007 ) << "========= NO CONTEXT FOUND => using top context instead ==========";
+          thisContext = top;
         }
+        kDebug( 9007 ) << "================== duchain for the context =======================";
+        DumpChain dump;
+        dump.dump(thisContext.data());
     }
 
     lock.unlock();
