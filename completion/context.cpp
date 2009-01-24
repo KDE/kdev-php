@@ -185,7 +185,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
   }
 
   ///Now care about m_expression. It may still contain keywords like "new "
-  bool isEmit = false, isReturn = false, isThrow = false;
+  bool isEmit = false, isReturn = false, isThrow = false, isNew = false;
 
   QString expr = m_expression.trimmed();
 
@@ -200,6 +200,10 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
   if( expr.startsWith("throw") )  {
     isThrow = true;
     expr = expr.right( expr.length() - 5 );
+  }
+  if ( expr.startsWith("new") ) {
+    isNew = true;
+    expr = expr.right( expr.length() - 3 );
   }
 
   ifDebug( kDebug() << "expression: " << expr; )
