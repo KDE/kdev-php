@@ -98,8 +98,6 @@ struct LastGrouper {
           ++nextIt;
           continue;
         } else {
-          curIt = nextIt;
-          ++nextIt;
           break;
         }
       }
