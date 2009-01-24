@@ -34,7 +34,7 @@ void compareEndPosition(TokenStream* tokenStream, qint64 index, qint64 expectedL
     qint64 line;
     qint64 column;
     tokenStream->endPosition(index, &line, &column);
-//     kDebug() << "  end" << index << ": actual" << line << column << "expected" << expectedLine << expectedColumn;
+    kDebug() << "  end" << index << ": actual" << line << column << "expected" << expectedLine << expectedColumn;
     QCOMPARE(line, expectedLine);
     QCOMPARE(column, expectedColumn);
 }
@@ -174,6 +174,58 @@ void LexerTest::testEndTag()
     //don't crash and we are fine
     delete ts;
 }
+
+void LexerTest::testNewlineInString()
+{
+    TokenStream* ts = tokenize("<?php \"\n\";", true);
+    QVERIFY(ts->size() == 3);
+
+    QVERIFY(ts->token(1).kind == Parser::Token_CONSTANT_ENCAPSED_STRING);
+    compareStartPosition(ts, 1, 0, 6);
+    compareEndPosition  (ts, 1, 1, 0);
+
+    QVERIFY(ts->token(2).kind == Parser::Token_SEMICOLON);
+    compareStartPosition(ts, 2, 1, 1);
+    compareEndPosition  (ts, 2, 1, 1);
+    delete ts;
+
+    ts = tokenize("<?php '\n';", true);
+    QCOMPARE((int)ts->size(), 3);
+
+    QVERIFY(ts->token(1).kind == Parser::Token_CONSTANT_ENCAPSED_STRING);
+    compareStartPosition(ts, 1, 0, 6);
+    compareEndPosition  (ts, 1, 1, 0);
+
+    QVERIFY(ts->token(2).kind == Parser::Token_SEMICOLON);
+    compareStartPosition(ts, 2, 1, 1);
+    compareEndPosition  (ts, 2, 1, 1);
+    delete ts;
+
+    ts = tokenize("<?php \"$a\n\";", true);
+    QCOMPARE((int)ts->size(), 6);
+
+    QVERIFY(ts->token(1).kind == Parser::Token_DOUBLE_QUOTE);
+    compareStartPosition(ts, 1, 0, 6);
+    compareEndPosition  (ts, 1, 0, 6);
+
+    QVERIFY(ts->token(2).kind == Parser::Token_VARIABLE);
+    compareStartPosition(ts, 2, 0, 7);
+    compareEndPosition  (ts, 2, 0, 8);
+
+    QVERIFY(ts->token(3).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
+    compareStartPosition(ts, 3, 0, 9);
+    compareEndPosition  (ts, 3, 0, 9);
+
+    QVERIFY(ts->token(4).kind == Parser::Token_DOUBLE_QUOTE);
+    compareStartPosition(ts, 4, 1, 0);
+    compareEndPosition  (ts, 4, 1, 0);
+
+    QVERIFY(ts->token(5).kind == Parser::Token_SEMICOLON);
+    compareStartPosition(ts, 5, 1, 1);
+    compareEndPosition  (ts, 5, 1, 1);
+    delete ts;
+}
+
 
 
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)

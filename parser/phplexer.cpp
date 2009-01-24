@@ -613,6 +613,7 @@ int Lexer::nextTokenKind()
                 while (m_curpos < m_contentSize
                         && (it->unicode() != '\'' || isEscapedWithBackslash(it, m_curpos, startPos)))
                 {
+                    if (it->unicode() == '\n') createNewline(m_curpos);
                     it++;
                     m_curpos++;
                 }
@@ -629,6 +630,9 @@ int Lexer::nextTokenKind()
                             && ((it+1)->unicode() == '{'
                                    || (isValidVariableIdentifier(it+1) && !(it+1)->isDigit()))) {
                         foundVar = true;
+                    }
+                    if (!foundVar) {
+                        if (it->unicode() == '\n') createNewline(m_curpos+i+1);
                     }
                     it++;
                     i++;
