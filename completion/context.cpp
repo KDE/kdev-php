@@ -189,10 +189,6 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
 
   QString expr = m_expression.trimmed();
 
-  if( expr.startsWith("emit") )  {
-    isEmit = true; //When isEmit is true, we should filter the result so only signals are left
-    expr = expr.right( expr.length() - 4 );
-  }
   if( expr.startsWith("return") )  {
     isReturn = true; //When isReturn is true, we should match the result against the return-type of the current context-function
     expr = expr.right( expr.length() - 6 );
