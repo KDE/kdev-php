@@ -72,7 +72,8 @@ namespace Php {
         MemberAccess,      ///klass->
         FunctionCallAccess,  ///"function(". Will never appear as initial access-operation, but as parentContext() access-operation.
         StaticMemberChoose, ///klass::
-        MemberChoose
+        MemberChoose,
+        ClassChoose
       };
       
       ///@return the used access-operation
