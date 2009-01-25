@@ -22,6 +22,7 @@
 
 #include "duchain/expressionparser.h"
 #include "completion/helpers.h"
+#include "duchain/classdeclaration.h"
 
 #include <ktexteditor/view.h>
 #include <ktexteditor/document.h>
@@ -204,18 +205,31 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
 
   ifDebug( kDebug() << "expression: " << expr; )
 
-    if (m_memberAccessOperation == StaticMemberChoose) {
-        QualifiedIdentifier id(expr);
-        LOCKDUCHAIN;
-        m_expressionResult.setDeclarations(m_duContext->findDeclarations(id));
-        if (m_expressionResult.type()) {
-            ifDebug( kDebug() << "expression type: " << m_expressionResult.type()->toString(); )
-        } else {
-            log( QString("expression \"%1\" could not be evaluated").arg(expr) );
-            m_valid = false;
-            return;
+  if (m_memberAccessOperation == StaticMemberChoose) {
+    LOCKDUCHAIN;
+    if ( expr == "self" || expr == "parent" ) {
+      // self and parent are only accessible from within a member function of a class
+      if ( DUContext* parent = context->parentContext() ) {
+        ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(parent->owner());
+        if ( classDec ) {
+          ///TODO: add ClassDeclaration* inherits() method to ClassDeclaration to get the base class
+          ///      and use that as declaration
+          m_expressionResult.setDeclaration(parent->owner());
         }
+        
+      }
     } else {
+      QualifiedIdentifier id(expr);
+      m_expressionResult.setDeclarations(m_duContext->findDeclarations(id));
+    }
+    if (m_expressionResult.type()) {
+      ifDebug( kDebug() << "expression type: " << m_expressionResult.type()->toString(); )
+    } else {
+      log( QString("expression \"%1\" could not be evaluated").arg(expr) );
+      m_valid = false;
+      return;
+    }
+  } else {
 
         ExpressionParser expressionParser(false);
     
