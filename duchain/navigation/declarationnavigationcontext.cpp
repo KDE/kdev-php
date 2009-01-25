@@ -18,10 +18,12 @@
 */
 
 #include "declarationnavigationcontext.h"
+#include "classdeclaration.h"
 
 #include <QtGui/QTextDocument>
 
 #include <klocale.h>
+#include <klocalizedstring.h>
 
 #include <language/duchain/functiondefinition.h>
 #include <language/duchain/namespacealiasdeclaration.h>
@@ -37,11 +39,40 @@ DeclarationNavigationContext::DeclarationNavigationContext( DeclarationPointer d
 {
 }
 
-
-
 NavigationContextPointer DeclarationNavigationContext::registerChild(DeclarationPointer declaration)
 {
   return AbstractDeclarationNavigationContext::registerChild(new DeclarationNavigationContext(declaration, m_topContext, this));
+}
+
+void DeclarationNavigationContext::htmlClass()
+{
+  AbstractDeclarationNavigationContext::htmlClass();
+
+  StructureType::Ptr klass = m_declaration->abstractType().cast<StructureType>();
+  Q_ASSERT(klass);
+  ClassDeclaration* classDecl = dynamic_cast<ClassDeclaration*>(klass->declaration(m_topContext.data()));
+  if(classDecl) {
+    if ( classDecl->baseClassesSize() > 0 ) {
+      modifyHtml() += i18n(" inherits ");
+      FOREACH_FUNCTION( const Php::BaseClassInstance& base, classDecl->baseClasses ) {
+        eventuallyMakeTypeLinks(base.baseClass.type());
+        if ( a < containerSize - 1 ) {
+          modifyHtml() += ", ";
+        }
+      }
+    }
+    modifyHtml() += " ";
+    if ( classDecl->interfacesSize() > 0 ) {
+      modifyHtml() += i18n(" interfaces ");
+      FOREACH_FUNCTION( const Php::BaseClassInstance& interface, classDecl->interfaces ) {
+        eventuallyMakeTypeLinks(interface.baseClass.type());
+        if ( a < containerSize - 1 ) {
+          modifyHtml() += ", ";
+        }
+      }
+    }
+    modifyHtml() += " ";
+  }
 }
 
 }

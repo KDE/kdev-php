@@ -31,6 +31,7 @@ class DeclarationNavigationContext : public KDevelop::AbstractDeclarationNavigat
 
   protected:
     KDevelop::NavigationContextPointer registerChild(KDevelop::DeclarationPointer declaration);
+    virtual void htmlClass();
 };
 
 }
