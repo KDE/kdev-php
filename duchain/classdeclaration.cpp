@@ -28,6 +28,9 @@ using namespace KDevelop;
 namespace Php {
 REGISTER_DUCHAIN_ITEM(ClassDeclaration);
 
+DEFINE_LIST_MEMBER_HASH(ClassDeclarationData, baseClasses, BaseClassInstance)
+DEFINE_LIST_MEMBER_HASH(ClassDeclarationData, interfaces, BaseClassInstance)
+
 ClassDeclaration::ClassDeclaration(ClassDeclarationData& data) : KDevelop::Declaration(data) {
 }
 
@@ -76,6 +79,43 @@ ClassDeclarationData::ClassType ClassDeclaration::classType() const
 void ClassDeclaration::setClassType(ClassDeclarationData::ClassType type) 
 {
     d_func_dynamic()->m_classType = type;
+}
+
+void ClassDeclaration::clearBaseClasses() {
+  d_func_dynamic()->baseClassesList().clear();
+}
+
+uint ClassDeclaration::baseClassesSize() const {
+  return d_func()->baseClassesSize();
+}
+
+const BaseClassInstance* ClassDeclaration::baseClasses() const {
+  return d_func()->baseClasses();
+}
+
+void ClassDeclaration::setBaseClass(BaseClassInstance base) {
+  ///TODO: make sure only one base class is set per ClassDeclaration
+  ///      inheritance makes a list of baseClasses possible though.
+  ///TODO: prevent recursion
+  d_func_dynamic()->baseClassesList().append(base);
+}
+
+
+void ClassDeclaration::clearInterfaces() {
+  d_func_dynamic()->interfacesList().clear();
+}
+
+uint ClassDeclaration::interfacesSize() const {
+  return d_func()->interfacesSize();
+}
+
+const BaseClassInstance* ClassDeclaration::interfaces() const {
+  return d_func()->interfaces();
+}
+
+void ClassDeclaration::addInterface(BaseClassInstance interface) {
+  ///TODO: prevent recursion
+  d_func_dynamic()->interfacesList().append(interface);
 }
 
 }

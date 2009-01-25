@@ -219,14 +219,13 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     closeContext();
 }
 
-void ContextBuilder::addBaseType(const StructureType::Ptr& base, bool implementsInterface)
+void ContextBuilder::addBaseType(const ClassDeclaration * const base, bool implementsInterface)
 {
     DUChainWriteLocker lock(DUChain::lock());
 
     Q_ASSERT(currentContext()->type() == DUContext::Class);
-    if (base->declaration(currentContext()->topContext())
-        && base->declaration(currentContext()->topContext())->logicalInternalContext(0)) {
-        currentContext()->addImportedParentContext( base->declaration(currentContext()->topContext())->logicalInternalContext(0) );
+    if (base->logicalInternalContext(0)) {
+        currentContext()->addImportedParentContext( base->logicalInternalContext(0) );
     }
 }
 

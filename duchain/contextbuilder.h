@@ -28,6 +28,7 @@
 #include "phpduchainexport.h"
 #include "editorintegrator.h"
 #include "helper.h"
+#include "classdeclaration.h"
 
 namespace Php
 {
@@ -69,7 +70,7 @@ protected:
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
     virtual void visitUnaryExpression(UnaryExpressionAst* node);
 
-    virtual void addBaseType(const KDevelop::StructureType::Ptr& base, bool implementsInterface);
+    virtual void addBaseType(const ClassDeclaration * const base, bool implementsInterface);
 
     virtual void classContextOpened(KDevelop::DUContext* context);
 

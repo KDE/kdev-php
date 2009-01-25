@@ -90,6 +90,8 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
     {
         DUChainWriteLocker lock(DUChain::lock());
         dec->setKind(KDevelop::Declaration::Type);
+        dec->clearBaseClasses();
+        dec->clearInterfaces();
         dec->setClassType(Php::ClassDeclarationData::Class);
     }
 
@@ -170,9 +172,15 @@ void DeclarationBuilder::visitClassExtends(ClassExtendsAst *node)
 {
     Declaration* dec = findDeclarationImport(ClassDeclarationType, node->identifier);
     if (dec) {
-        StructureType::Ptr extends = StructureType::Ptr::dynamicCast(dec->abstractType());
+        ClassDeclaration* extends = dynamic_cast<ClassDeclaration*>(dec);
         if (extends) {
             addBaseType(extends, false);
+            ClassDeclaration* currentClass = dynamic_cast<ClassDeclaration*>(currentDeclaration());
+            if(currentClass) {
+              currentClass->setBaseClass(BaseClassInstance(extends->indexedType()));
+            }else{
+              kWarning() << "base-specifier without class declaration";
+            }
         }
     }
 }
@@ -184,20 +192,16 @@ void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
     do {
         Declaration* dec = findDeclarationImport(ClassDeclarationType, __it->element);
         if (dec) {
-            StructureType::Ptr interface = StructureType::Ptr::dynamicCast(dec->abstractType());
+            ClassDeclaration* interface = dynamic_cast<ClassDeclaration*>(dec);
             if (!interface) {
                 //TODO report error
             } else {
-                Php::ClassDeclarationData::ClassType t;
-                {
-                    DUChainReadLocker lock(DUChain::lock());
-                    ClassDeclaration* ifDec = dynamic_cast<ClassDeclaration*>(interface->declaration(currentContext()->topContext()));
-                    t = ifDec->classType();
-                }
-                if (t == Php::ClassDeclarationData::Interface) {
-                    addBaseType(interface, true);
-                } else {
-                    //TODO report error
+                addBaseType(interface, true);
+                ClassDeclaration* currentClass = dynamic_cast<ClassDeclaration*>(currentDeclaration());
+                if(currentClass) {
+                  currentClass->addInterface(BaseClassInstance(interface->indexedType()));
+                }else{
+                  kWarning() << "base-specifier without class declaration";
                 }
             }
         }

@@ -27,6 +27,18 @@
 #define CLASSDECLARATION_H
 namespace Php {
 
+class ClassDeclaration;
+
+struct BaseClassInstance
+{
+  BaseClassInstance(KDevelop::IndexedType t):baseClass(t){}
+  BaseClassInstance(){}
+  KDevelop::IndexedType baseClass;
+};
+
+DECLARE_LIST_MEMBER_HASH(ClassDeclarationData, baseClasses, BaseClassInstance)
+DECLARE_LIST_MEMBER_HASH(ClassDeclarationData, interfaces, BaseClassInstance)
+
 class ClassDeclarationData : public KDevelop::DeclarationData
 {
 public:
@@ -36,17 +48,26 @@ public:
   };
   
   ClassDeclarationData() : m_classType(Class) {
+    initializeAppendedLists();
   }
 
   ~ClassDeclarationData() {
+    freeAppendedLists();
   }
 
   ClassDeclarationData(const ClassDeclarationData& rhs) : KDevelop::DeclarationData(rhs) {
+    initializeAppendedLists();
+    copyListsFrom(rhs);
     m_classType = rhs.m_classType;
   }
   
   /// Type of the class (class, interface)
   ClassType m_classType;
+  
+  START_APPENDED_LISTS_BASE(ClassDeclarationData, KDevelop::DeclarationData);
+  APPENDED_LIST_FIRST(ClassDeclarationData, BaseClassInstance, baseClasses);
+  APPENDED_LIST(ClassDeclarationData, BaseClassInstance, interfaces, baseClasses)
+  END_APPENDED_LISTS(ClassDeclarationData, interfaces);
 };
 
 class KDEVPHPDUCHAIN_EXPORT ClassDeclaration : public KDevelop::Declaration
@@ -63,6 +84,21 @@ public:
   void setClassType(ClassDeclarationData::ClassType type);
   
   ClassDeclarationData::ClassType classType() const;
+  
+  
+  void clearBaseClasses();
+  ///Count of base-classes
+  uint baseClassesSize() const;
+  ///The types this class is based on
+  const BaseClassInstance* baseClasses() const;
+  void setBaseClass(BaseClassInstance base);
+  
+  void clearInterfaces();
+  ///Count of base-classes
+  uint interfacesSize() const;
+  ///The types this class is based on
+  const BaseClassInstance* interfaces() const;
+  void addInterface(BaseClassInstance interface);
   
   enum {
     Identity = 81
