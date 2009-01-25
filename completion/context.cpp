@@ -33,6 +33,7 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/types/identifiedtype.h>
+#include <language/duchain/types/structuretype.h>
 #include <language/interfaces/iproblem.h>
 #include <util/pushvalue.h>
 #include <language/duchain/codemodel.h>
@@ -212,11 +213,19 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
       if ( DUContext* parent = context->parentContext() ) {
         ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(parent->owner());
         if ( classDec ) {
-          ///TODO: add ClassDeclaration* inherits() method to ClassDeclaration to get the base class
-          ///      and use that as declaration
-          m_expressionResult.setDeclaration(parent->owner());
+          if ( expr == "parent" ) {
+            if ( classDec->baseClassesSize() > 0 ) {
+              StructureType::Ptr classType = classDec->baseClasses()[0].baseClass.type().cast<StructureType>();
+              if ( classType ) {
+                ifDebug ( kDebug() << "correction: parent can do MemberAccess" );
+                m_memberAccessOperation = MemberAccess;
+                m_expressionResult.setDeclaration(classType->declaration(context->topContext()));
+              }
+            }
+          } else {
+            m_expressionResult.setDeclaration(parent->owner());
+          }
         }
-        
       }
     } else {
       QualifiedIdentifier id(expr);
