@@ -361,6 +361,12 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
       QList<DUContext*> containers = memberAccessContainers();
       kDebug() << "containers: " << containers.count();
       if( !containers.isEmpty() ) {
+        // get the parent class when we are inside a method declaration
+        ClassDeclaration* currentClass = 0;
+        if ( m_duContext->owner() && m_duContext->owner()->isFunctionDeclaration() &&
+             m_duContext->parentContext() && m_duContext->parentContext()->owner() ) {
+          currentClass = dynamic_cast<ClassDeclaration*>(m_duContext->parentContext()->owner());
+        }
         foreach(DUContext* ctx, containers) {
           ClassDeclaration* accessedClass = dynamic_cast<ClassDeclaration*>(ctx->owner());
           if (abort)
@@ -388,20 +394,23 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
               if ( classMember && accessedClass ) {
                 // by default only show public declarations
                 Declaration::AccessPolicy ap = Declaration::Public;
-                ClassDeclaration* memberClass = dynamic_cast<ClassDeclaration*>(classMember->context()->owner());
-                if ( memberClass ) {
-                  if ( memberClass == accessedClass ) {
-                    if ( m_parentAccess ) {
-                      // when we access the parent show all but private members
+                if ( currentClass ) {
+                  // if we are inside a class, we might want to show protected or private members
+                  ClassDeclaration* memberClass = dynamic_cast<ClassDeclaration*>(classMember->context()->owner());
+                  if ( memberClass ) {
+                    if ( currentClass == accessedClass ) {
+                      if ( currentClass == memberClass ) {
+                        // we can show all members of the current class
+                        ap = Declaration::Private;
+                      } else if ( currentClass->inherits( memberClass->indexedType() ) ) {
+                        // we can show all but private members of ancestors of the current class
+                        ap = Declaration::Protected;
+                      }
+                    } else if ( currentClass->inherits( accessedClass->indexedType() ) && ( accessedClass == memberClass || accessedClass->inherits( memberClass->indexedType() ) ) ) {
+                      // we can show all but private members of ancestors of the current class
                       ap = Declaration::Protected;
-                    } else {
-                      // else we can show everything
-                      ap = Declaration::Private;
                     }
-                  } else if ( accessedClass->inherits( memberClass->indexedType() ) ) {
-                    // we inherit this class, so show all but private
-                    ap = Declaration::Protected;
-                  } // else show only public declarations (default)
+                  }
                 }
                 if ( ap < classMember->accessPolicy() ) {
                   continue;
