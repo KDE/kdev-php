@@ -116,7 +116,7 @@ TopDUContext* DUChainTestBase::parseAdditionalFile(IndexedString fileName, QByte
 TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QString url)
 {
     if (dump)
-        kDebug(9007) << "==== Beginning new test case...:" << endl << unit;
+        kDebug() << "==== Beginning new test case...:" << endl << unit;
 
     ParseSession* session = new ParseSession();
     session->setContents(unit);
@@ -127,7 +127,7 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QSt
     }
 
     if (dump & DumpAST) {
-        kDebug(9007) << "===== AST:";
+        kDebug() << "===== AST:";
         DebugVisitor debugVisitor(session->tokenStream(), session->contents());
         debugVisitor.visitNode(ast);
     }
@@ -143,14 +143,14 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QSt
     useBuilder.buildUses(ast);
   
     if (dump & DumpDUChain) {
-        kDebug(9007) << "===== DUChain:";
+        kDebug() << "===== DUChain:";
 
         DUChainWriteLocker lock(DUChain::lock());
         dumper.dump(top);
     }
 
     if (dump & DumpType) {
-        kDebug(9007) << "===== Types:";
+        kDebug() << "===== Types:";
         DUChainWriteLocker lock(DUChain::lock());
         DumpTypes dt;
         foreach (const AbstractType::Ptr& type, declarationBuilder.topTypes())
@@ -158,7 +158,7 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QSt
     }
 
     if (dump)
-        kDebug(9007) << "===== Finished test case.";
+        kDebug() << "===== Finished test case.";
 
     delete session;
 

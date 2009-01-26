@@ -77,34 +77,34 @@ void CodeCompletionModel::completionInvokedInternal(KTextEditor::View* view, con
 
   DUChainReadLocker lock(DUChain::lock(), 400);
   if( !lock.locked() ) {
-    kDebug(9007) << "could not lock du-chain in time";
+    kDebug() << "could not lock du-chain in time";
     return;
   }
 
   TopDUContext* top = DUChain::self()->chainForDocument(view->document()->url());
   if(!top ) {
-    kDebug(9007) << "no top level context available";
+    kDebug() << "no top level context available";
     return;
   }
   setCurrentTopContext(TopDUContextPointer(top));
 
   if (top) {
-    kDebug(9007) << "completion invoked for context" << (DUContext*)top;
+    kDebug() << "completion invoked for context" << (DUContext*)top;
 
 //     if( top->parsingEnvironmentFile()->modificationRevision() != EditorIntegrator::modificationRevision(url.prettyUrl()) ) {
-//       kDebug(9007) << "Found context is not current. Its revision is " << top->parsingEnvironmentFile()->modificationRevision() << " while the document-revision is " << EditorIntegrator::modificationRevision(url.prettyUrl());
+//       kDebug() << "Found context is not current. Its revision is " << top->parsingEnvironmentFile()->modificationRevision() << " while the document-revision is " << EditorIntegrator::modificationRevision(url.prettyUrl());
 //     }
 
     DUContextPointer thisContext;
     {
       thisContext = top->findContextAt(SimpleCursor(range.start()));
 
-       kDebug(9007) << "context is set to" << thisContext.data();
+       kDebug() << "context is set to" << thisContext.data();
         if( !thisContext ) {
-          kDebug( 9007 ) << "========= NO CONTEXT FOUND => using top context instead ==========";
+          kDebug(  ) << "========= NO CONTEXT FOUND => using top context instead ==========";
           thisContext = top;
         }
-        kDebug( 9007 ) << "================== duchain for the context =======================";
+        kDebug() << "================== duchain for the context =======================";
         DumpChain dump;
         dump.dump(thisContext.data());
     }
@@ -113,7 +113,7 @@ void CodeCompletionModel::completionInvokedInternal(KTextEditor::View* view, con
 
     emit completionsNeeded(thisContext, range.start(), view);
   } else {
-    kDebug(9007) << "Completion invoked for unknown context. Document:" << url << ", Known documents:" << DUChain::self()->documents();
+    kDebug() << "Completion invoked for unknown context. Document:" << url << ", Known documents:" << DUChain::self()->documents();
   }
 }
 

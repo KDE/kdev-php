@@ -61,7 +61,7 @@ void CodeCompletionWorker::computeCompletions(KDevelop::DUContextPointer context
     DUChainReadLocker lock(DUChain::lock());
 
     if (!context) {
-      kDebug(9007) << "Completion context disappeared before completions could be calculated";
+      kDebug() << "Completion context disappeared before completions could be calculated";
       return;
     }
 
@@ -73,7 +73,7 @@ void CodeCompletionWorker::computeCompletions(KDevelop::DUContextPointer context
     computeGroups( items, completionContext );
 
   } else {
-    kDebug(9007) << "setContext: Invalid code-completion context";
+    kDebug() << "setContext: Invalid code-completion context";
   }
 }
 
@@ -184,7 +184,7 @@ int SimplifiedAttributesExtractor::groupingProperties = CodeCompletionModel::Pub
 
 void CodeCompletionWorker::computeGroups(QList<CompletionTreeItemPointer> items, KSharedPtr<CodeCompletionContext> completionContext)
 {
-  kDebug(9007) << "grouping" << items.count() << "completion-items";
+  kDebug() << "grouping" << items.count() << "completion-items";
   QList<KSharedPtr<CompletionTreeElement> > tree;
   /**
    * 1. Group by argument-hint depth

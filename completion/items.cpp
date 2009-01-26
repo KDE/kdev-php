@@ -129,7 +129,7 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
 
   DUChainReadLocker lock(DUChain::lock(), 500);
   if(!lock.locked()) {
-    kDebug(9007) << "Failed to lock the du-chain in time";
+    kDebug() << "Failed to lock the du-chain in time";
     return QVariant();
   }
 
@@ -170,10 +170,10 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
             int quality = ( conv.implicitConversion( effectiveType(dec), f.function.declaration()->type<CppFunctionType>()->arguments()[f.matchedArguments], true )  * 10 ) / MaximumConversionResult;
             return QVariant(quality);
           }else{
-            //kDebug(9007) << "MatchQuality requested with invalid match-context";
+            //kDebug() << "MatchQuality requested with invalid match-context";
           }
         } else {
-          //kDebug(9007) << "MatchQuality requested with invalid match-context";
+          //kDebug() << "MatchQuality requested with invalid match-context";
         }
 #endif
       }
