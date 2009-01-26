@@ -171,7 +171,7 @@ void TestCompletion::privateStaticObjectCompletion()
     QCOMPARE(itemList.at(3)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(9));
     QCOMPARE(itemList.at(4)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(10));
     QCOMPARE(itemList.at(5)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(11));
-    QCOMPARE(itemList.at(5)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(12));
+    QCOMPARE(itemList.at(6)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(12));
 
     release(top);
 }
