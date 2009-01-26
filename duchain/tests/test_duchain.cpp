@@ -506,6 +506,8 @@ void TestDUChain::testClassImplementsInterface()
     
     QCOMPARE(classDec->interfacesSize(), 1u);
     QCOMPARE(classDec->interfaces()[0].baseClass, indexedTypeI);
+    QVERIFY(classDec->implements(indexedTypeI));
+    QCOMPARE(classDec->baseClassesSize(), 0u);
 
     QCOMPARE(dec->uses().count(), 0);
 
@@ -566,6 +568,7 @@ void TestDUChain::testClassExtends()
     QCOMPARE(classDec->baseClassesSize(), 1u);
     QCOMPARE(classDec->baseClasses()[0].baseClass, indexedTypeA);
     QVERIFY(classDec->inherits(indexedTypeA));
+    QCOMPARE(classDec->interfacesSize(), 0u);
 
     QCOMPARE(dec->uses().count(), 0);
 

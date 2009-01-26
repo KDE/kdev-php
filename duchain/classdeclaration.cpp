@@ -129,4 +129,16 @@ void ClassDeclaration::addInterface(BaseClassInstance interface) {
   d_func_dynamic()->interfacesList().append(interface);
 }
 
+bool ClassDeclaration::implements(const IndexedType& type) const {
+  kDebug() << type.type()->toString();
+  if ( interfacesSize() > 0 ) {
+    FOREACH_FUNCTION( const Php::BaseClassInstance& base, interfaces ) {
+      kDebug() << base.baseClass.type()->toString();
+      if ( base.baseClass == type ) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 }

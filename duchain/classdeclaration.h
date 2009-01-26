@@ -102,6 +102,8 @@ public:
   const BaseClassInstance* interfaces() const;
   void addInterface(BaseClassInstance interface);
   
+  bool implements(const KDevelop::IndexedType& type) const;
+  
   enum {
     Identity = 81
   };
