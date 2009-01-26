@@ -63,7 +63,7 @@ void DeclarationNavigationContext::htmlClass()
     }
     modifyHtml() += " ";
     if ( classDecl->interfacesSize() > 0 ) {
-      modifyHtml() += i18n(" interfaces ");
+      modifyHtml() += i18n(" implements ");
       FOREACH_FUNCTION( const Php::BaseClassInstance& interface, classDecl->interfaces ) {
         eventuallyMakeTypeLinks(interface.baseClass.type());
         if ( a < containerSize - 1 ) {
