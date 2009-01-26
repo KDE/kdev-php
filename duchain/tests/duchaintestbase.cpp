@@ -88,11 +88,7 @@ bool DUChainTestBase::hasImportedParentContext(TopDUContext* top, DUContext* loo
 void DUChainTestBase::release(TopDUContext* top)
 
 {
-  //KDevelop::EditorIntegrator::releaseTopRange(top->textRangePtr());
-
-  TopDUContextPointer tp(top);
-  DUChain::self()->removeDocumentChain(static_cast<TopDUContext*>(top));
-  Q_ASSERT(!tp);
+  DUChain::self()->removeDocumentChain(top);
 }
 
 TopDUContext* DUChainTestBase::parseAdditionalFile(IndexedString fileName, QByteArray contents)
