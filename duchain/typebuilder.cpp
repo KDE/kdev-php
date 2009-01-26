@@ -72,6 +72,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
     }
     AbstractType::Ptr ret(new IntegralType(iType));
     injectType(ret);
+    //kDebug() << type << ret->toString();
     return ret;
 }
 
@@ -236,7 +237,7 @@ void TypeBuilder::visitStaticVar(StaticVarAst *node)
 void TypeBuilder::visitStatement(StatementAst* node)
 {
     TypeBuilderBase::visitStatement(node);
-    if (node->returnExpr && lastType() && currentType<FunctionType>()
+    if (node->returnExpr && lastType() && hasCurrentType() && currentType<FunctionType>()
             && (!currentType<FunctionType>()->returnType()
                 || IntegralType::Ptr::dynamicCast(currentType<FunctionType>()->returnType())))
     {

@@ -25,6 +25,7 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/topducontext.h>
 #include <language/duchain/classfunctiondeclaration.h>
+#include <language/duchain/functiondeclaration.h>
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/structuretype.h>
 #include <language/duchain/types/integraltype.h>
@@ -1266,6 +1267,18 @@ void TestDUChain::testSuperglobalInFunction()
     release(top);
 }
 
+void TestDUChain::testReturnWithoutFunction()
+{
+    //yes, this is possible in php, you then have $a as return value of an include call
+    QByteArray method("<? $a = 0; return $a; ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainWriteLocker lock(DUChain::lock());
+    
+    //just don't crash
+
+    release(top);
+}
 }
 
 #include "test_duchain.moc"

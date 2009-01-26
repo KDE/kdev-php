@@ -83,6 +83,7 @@ private slots:
   void testGlobalVariableNotVisibleInFunction();
   void testGlobalVariableInFunction();
   void testSuperglobalInFunction();
+  void testReturnWithoutFunction();
 };
 
 }
