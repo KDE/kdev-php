@@ -48,6 +48,9 @@ private slots:
     void testCommentMultiLine2();
     void testEndTag();
     void testNewlineInString();
+    void testNewlineInString2();
+    void testNewlineInStringWithVar();
+    void testNewlineInStringWithVar2();
 
 protected:
     TokenStream* tokenize(const QString& unit, bool debug = false, int initialState = Lexer::HtmlState);

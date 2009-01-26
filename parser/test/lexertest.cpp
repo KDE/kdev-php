@@ -44,7 +44,7 @@ void compareStartPosition(TokenStream* tokenStream, qint64 index, qint64 expecte
     qint64 line;
     qint64 column;
     tokenStream->startPosition(index, &line, &column);
-//     kDebug() << "start" << index << ": actual" << line << column << "expected" << expectedLine << expectedColumn;
+    kDebug() << "start" << index << ": actual" << line << column << "expected" << expectedLine << expectedColumn;
     QCOMPARE(line, expectedLine);
     QCOMPARE(column, expectedColumn);
 }
@@ -177,6 +177,8 @@ void LexerTest::testEndTag()
 
 void LexerTest::testNewlineInString()
 {
+                              //0            1
+                              //012345 6 7 890123456789
     TokenStream* ts = tokenize("<?php \"\n\";", true);
     QVERIFY(ts->size() == 3);
 
@@ -188,8 +190,13 @@ void LexerTest::testNewlineInString()
     compareStartPosition(ts, 2, 1, 1);
     compareEndPosition  (ts, 2, 1, 1);
     delete ts;
+}
 
-    ts = tokenize("<?php '\n';", true);
+void LexerTest::testNewlineInString2()
+{
+                     //0
+                    //0123 4567
+    TokenStream* ts = tokenize("<?php '\n';", true);
     QCOMPARE((int)ts->size(), 3);
 
     QVERIFY(ts->token(1).kind == Parser::Token_CONSTANT_ENCAPSED_STRING);
@@ -200,8 +207,11 @@ void LexerTest::testNewlineInString()
     compareStartPosition(ts, 2, 1, 1);
     compareEndPosition  (ts, 2, 1, 1);
     delete ts;
+}
 
-    ts = tokenize("<?php \"$a\n\";", true);
+void LexerTest::testNewlineInStringWithVar()
+{
+    TokenStream* ts = tokenize("<?php \"$a\n\";", true);
     QCOMPARE((int)ts->size(), 6);
 
     QVERIFY(ts->token(1).kind == Parser::Token_DOUBLE_QUOTE);
@@ -226,7 +236,38 @@ void LexerTest::testNewlineInString()
     delete ts;
 }
 
+void LexerTest::testNewlineInStringWithVar2()
+{
+                              //0            1
+                              //012345 6 789 0123456789
+    TokenStream* ts = tokenize("<?php \"\n$a\n\";", true);
+    QCOMPARE((int)ts->size(), 7);
 
+    QVERIFY(ts->token(1).kind == Parser::Token_DOUBLE_QUOTE);
+    compareStartPosition(ts, 1, 0, 6);
+    compareEndPosition  (ts, 1, 0, 6);
+
+    QVERIFY(ts->token(2).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
+    compareStartPosition(ts, 2, 0, 7);
+    compareEndPosition  (ts, 2, 0, 7);
+
+    QVERIFY(ts->token(3).kind == Parser::Token_VARIABLE);
+    compareStartPosition(ts, 3, 1, 0);
+    compareEndPosition  (ts, 3, 1, 1);
+
+    QVERIFY(ts->token(4).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
+    compareStartPosition(ts, 4, 1, 2);
+    compareEndPosition  (ts, 4, 1, 2);
+
+    QVERIFY(ts->token(5).kind == Parser::Token_DOUBLE_QUOTE);
+    compareStartPosition(ts, 5, 2, 0);
+    compareEndPosition  (ts, 5, 2, 0);
+
+    QVERIFY(ts->token(6).kind == Parser::Token_SEMICOLON);
+    compareStartPosition(ts, 6, 2, 1);
+    compareEndPosition  (ts, 6, 2, 1);
+    delete ts;
+}
 
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
@@ -234,12 +275,16 @@ TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialSta
     Lexer lexer(tokenStream, unit, initialState);
     int token;
     int i = 0;
+    QList<Parser::Token> tokens;
     while ((token = lexer.nextTokenKind())) {
         Parser::Token &t = tokenStream->next();
         t.begin = lexer.tokenBegin();
         t.end = lexer.tokenEnd();
         t.kind = token;
-        if (debug) {
+        tokens << t;
+    }
+    if (debug) {
+        foreach (const Parser::Token &t, tokens) {
             qint64 beginLine;
             qint64 beginColumn;
             tokenStream->startPosition(i, &beginLine, &beginColumn);
@@ -249,8 +294,8 @@ TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialSta
             kDebug() << tokenText(t.kind)
                      << unit.mid(t.begin, t.end - t.begin + 1).replace('\n', "\\n")
                      << QString("[%0-%1] - [%2-%3]").arg(beginLine).arg(beginColumn).arg(endLine).arg(endColumn);
-        }
         ++i;
+        }
     }
     return tokenStream;
 }

@@ -631,15 +631,19 @@ int Lexer::nextTokenKind()
                                    || (isValidVariableIdentifier(it+1) && !(it+1)->isDigit()))) {
                         foundVar = true;
                     }
-                    if (!foundVar) {
-                        if (it->unicode() == '\n') createNewline(m_curpos+i+1);
-                    }
                     it++;
                     i++;
                 }
                 if (!foundVar)
                 {
                     token = Parser::Token_CONSTANT_ENCAPSED_STRING;
+                    it -= i+1;
+                    for (int j=0; j < i; j++) {
+                        it++;
+                        if (it->unicode() == '\n') {
+                            createNewline(m_curpos+j+1);
+                        }
+                    }
                     m_curpos += i + 1;
                 }
                 else
