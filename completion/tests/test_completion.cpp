@@ -43,54 +43,180 @@ QTEST_MAIN(Php::TestCompletion)
 namespace Php
 {
 
+/**
+ * declaration of class A with a number of completion items
+ * 
+ * also introduces a instance of class A named $instA;
+ */
+const QByteArray testClassA(
+  "class A {"
+    // start non-static
+    // public
+    " public function pubf() {}"             // at(0)
+    " public $pub;"                          // at(1)
+    // protected
+    " protected function protf() {}"         // at(2)
+    " protected $prot;"                      // at(3)
+    // private
+    " private function privf() {}"           // at(4)
+    " private $priv;"                        // at(5)
+    // start static
+    // public
+    " static public function spubf() {}"     // at(6)
+    " static public $spub;"                  // at(7)
+    // const == static public
+    " const c = 0;"                          // at(8)
+    // protected
+    " static protected function sprotf() {}" // at(9)
+    " static protected $sprot;"              // at(10)
+    // private
+    " static private function sprivf() {}"   // at(11)
+    " static private $spriv;"                // at(12)
+  "} $instA = new A; "
+);
+
+/**
+ * declaration of class B which extends class A
+ * B has one new public member function
+ * 
+ * also introduces a instance of class B named $instB;
+ */
+const QByteArray testClassB(
+  "class B extends A {"
+    "public function __construct(){}" // at(0)
+  "} $instB = new B; "
+);
+
 
 TestCompletion::TestCompletion()
 {
 }
 
 
-void TestCompletion::objectCompletion()
+void TestCompletion::publicObjectCompletion()
 {
-    //                 0         1         2         3         4         5         6         7
-    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A { public function foo() {} public $bar; } $i = new A();");
-
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse("<?php " + testClassA, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $i->"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $instA->"));
     
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::MemberAccess);
 
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
     QCOMPARE(itemList.count(), 2);
-    QCOMPARE(itemList.first()->declaration().data(), top->childContexts().at(0)->localDeclarations().at(0));
+    QCOMPARE(itemList.at(0)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(0));
     QCOMPARE(itemList.at(1)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(1));
 
     release(top);
 }
-
-void TestCompletion::staticMembers()
+void TestCompletion::publicStaticObjectCompletion()
 {
-    //                 0         1         2         3         4         5         6         7
-    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A { public static function foo() {} public static $bar; } $i = new A();");
-
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse("<?php " + testClassA, DumpNone);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $i->"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; A::"));
+    
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::StaticMemberChoose);
+
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
-    QCOMPARE(itemList.count(), 0);
+    QCOMPARE(itemList.count(), 3);
+    QCOMPARE(itemList.at(0)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(6));
+    QCOMPARE(itemList.at(1)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(7));
+    QCOMPARE(itemList.at(2)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(8));
+
+    release(top);
+}
+void TestCompletion::privateObjectCompletion()
+{
+    TopDUContext* top = parse("<?php " + testClassA, DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "$this->"));
     
-    cptr = new CodeCompletionContext(DUContextPointer(top), "$blah; A::");
-    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::StaticMemberChoose);
-    itemList = cptr->completionItems(SimpleCursor(), abort);
-    QCOMPARE(itemList.count(), 2);
-    QCOMPARE(itemList.first()->declaration().data(), top->childContexts().at(0)->localDeclarations().at(0));
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::MemberAccess);
+
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+    QCOMPARE(itemList.count(), 6);
+    
+    QCOMPARE(itemList.at(0)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(0));
     QCOMPARE(itemList.at(1)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(1));
+    QCOMPARE(itemList.at(2)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(2));
+    QCOMPARE(itemList.at(3)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(3));
+    QCOMPARE(itemList.at(4)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(4));
+    QCOMPARE(itemList.at(5)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(5));
+
+    release(top);
+}
+void TestCompletion::privateStaticObjectCompletion()
+{
+    TopDUContext* top = parse("<?php " + testClassA, DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "self::"));
+    
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::StaticMemberChoose);
+
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+    QCOMPARE(itemList.count(), 7);
+    
+    QCOMPARE(itemList.at(0)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(6));
+    QCOMPARE(itemList.at(1)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(7));
+    QCOMPARE(itemList.at(2)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(8));
+    QCOMPARE(itemList.at(3)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(9));
+    QCOMPARE(itemList.at(4)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(10));
+    QCOMPARE(itemList.at(5)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(11));
+    QCOMPARE(itemList.at(5)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(12));
+
+    release(top);
+}
+void TestCompletion::protectedObjectCompletion()
+{
+    TopDUContext* top = parse("<?php " + testClassA + testClassB, DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    DUContext* funContext = top->childContexts().at(1)->localDeclarations().first()->internalContext();
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "$this->"));
+    
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::MemberAccess);
+
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+    QCOMPARE(itemList.count(), 5);
+
+    QCOMPARE(itemList.at(0)->declaration().data(), top->childContexts().at(1)->localDeclarations().at(0));
+    QCOMPARE(itemList.at(1)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(0));
+    QCOMPARE(itemList.at(2)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(1));
+    QCOMPARE(itemList.at(3)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(2));
+    QCOMPARE(itemList.at(4)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(3));
+
+    release(top);
+}
+void TestCompletion::protectedStaticObjectCompletion()
+{
+    TopDUContext* top = parse("<?php " + testClassA + testClassB, DumpNone);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    DUContext* funContext = top->childContexts().at(1)->localDeclarations().first()->internalContext();
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "self::"));
+    
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::StaticMemberChoose);
+
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+    
+    QCOMPARE(itemList.count(), 5);
+    
+    QCOMPARE(itemList.at(0)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(6));
+    QCOMPARE(itemList.at(1)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(7));
+    QCOMPARE(itemList.at(2)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(8));
+    QCOMPARE(itemList.at(3)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(9));
+    QCOMPARE(itemList.at(4)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(10));
 
     release(top);
 }

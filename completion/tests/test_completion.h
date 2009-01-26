@@ -31,8 +31,12 @@ public:
     TestCompletion();
 
 private slots:
-    void objectCompletion();
-    void staticMembers();
+    void publicObjectCompletion();
+    void publicStaticObjectCompletion();
+    void protectedObjectCompletion();
+    void protectedStaticObjectCompletion();
+    void privateObjectCompletion();
+    void privateStaticObjectCompletion();
     void methodCall();
     void functionCall();
     void newObjectFromOtherFile();
