@@ -484,6 +484,7 @@ void TestDUChain::testClassImplementsInterface()
     QCOMPARE(dec->uses().count(), 1);
     QCOMPARE(dec->uses().begin()->count(), 1);
 
+    IndexedType indexedTypeI = classDec->indexedType();
 
     //class A
     dec = top->localDeclarations().at(1);
@@ -502,6 +503,9 @@ void TestDUChain::testClassImplementsInterface()
     //class A imports interface I context
     QCOMPARE(dec->internalContext()->importedParentContexts().count(), 1);
     QVERIFY(dec->internalContext()->importedParentContexts().at(0).context(top) == top->childContexts().at(0));
+    
+    QCOMPARE(classDec->interfacesSize(), 1u);
+    QCOMPARE(classDec->interfaces()[0].baseClass, indexedTypeI);
 
     QCOMPARE(dec->uses().count(), 0);
 
@@ -539,7 +543,8 @@ void TestDUChain::testClassExtends()
     QCOMPARE(dec->uses().count(), 1);
     QCOMPARE(dec->uses().begin()->count(), 1);
 
-
+    IndexedType indexedTypeA = classDec->indexedType();
+  
     //class B
     dec = top->localDeclarations().at(1);
     QVERIFY(dec->isDefinition());
@@ -557,6 +562,10 @@ void TestDUChain::testClassExtends()
     //class B imports class A context
     QCOMPARE(dec->internalContext()->importedParentContexts().count(), 1);
     QVERIFY(dec->internalContext()->importedParentContexts().at(0).context(top) == top->childContexts().at(0));
+
+    QCOMPARE(classDec->baseClassesSize(), 1u);
+    QCOMPARE(classDec->baseClasses()[0].baseClass, indexedTypeA);
+    QVERIFY(classDec->inherits(indexedTypeA));
 
     QCOMPARE(dec->uses().count(), 0);
 
