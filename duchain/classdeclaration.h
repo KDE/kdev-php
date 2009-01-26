@@ -93,6 +93,8 @@ public:
   const BaseClassInstance* baseClasses() const;
   void setBaseClass(BaseClassInstance base);
   
+  bool inherits(const KDevelop::IndexedType& type) const;
+  
   void clearInterfaces();
   ///Count of base-classes
   uint interfacesSize() const;

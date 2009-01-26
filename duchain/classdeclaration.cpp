@@ -100,6 +100,17 @@ void ClassDeclaration::setBaseClass(BaseClassInstance base) {
   d_func_dynamic()->baseClassesList().append(base);
 }
 
+bool ClassDeclaration::inherits(const IndexedType& type) const {
+  if ( baseClassesSize() > 0 ) {
+    FOREACH_FUNCTION( const Php::BaseClassInstance& base, baseClasses ) {
+      if ( base.baseClass == type ) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 
 void ClassDeclaration::clearInterfaces() {
   d_func_dynamic()->interfacesList().clear();

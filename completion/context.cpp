@@ -81,7 +81,7 @@ int completionRecursionDepth = 0;
 
 CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QString& text, int depth)
   : KDevelop::CodeCompletionContext(context, text, depth)
-  , m_memberAccessOperation(NoMemberAccess)
+  , m_memberAccessOperation(NoMemberAccess), m_parentAccess(false)
 {
 
   m_valid = isValidPosition();
@@ -218,6 +218,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
               StructureType::Ptr classType = classDec->baseClasses()[0].baseClass.type().cast<StructureType>();
               if ( classType ) {
                 ifDebug ( kDebug() << "correction: parent can do MemberAccess" );
+                m_parentAccess = true;
                 m_memberAccessOperation = MemberAccess;
                 m_expressionResult.setDeclaration(classType->declaration(context->topContext()));
               }
@@ -361,15 +362,16 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
       kDebug() << "containers: " << containers.count();
       if( !containers.isEmpty() ) {
         foreach(DUContext* ctx, containers) {
+          ClassDeclaration* accessedClass = dynamic_cast<ClassDeclaration*>(ctx->owner());
           if (abort)
             return items;
 
           foreach( const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false ) ) {
               //If we have StaticMemberChoose, which means A::Bla, show only static members, except if we're within a class that derives from the container
+              ClassMemberDeclaration* classMember = dynamic_cast<ClassMemberDeclaration*>(decl.first);
               if(memberAccessOperation() != StaticMemberChoose) {
 //                 if(decl.first->kind() != Declaration::Instance)
 //                   continue; //needed for functions: todo make this more intelligent
-                ClassMemberDeclaration* classMember = dynamic_cast<ClassMemberDeclaration*>(decl.first);
                 if(classMember && classMember->isStatic())
                   continue; //Skip static class members when not doing static access
               } else {
@@ -378,9 +380,32 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
 //                     && m_duContext->parentContextOf(decl.first->internalContext())
 //                 ) {
 //                 }
-                ClassMemberDeclaration* classMember = dynamic_cast<ClassMemberDeclaration*>(decl.first);
                 if(!classMember || !classMember->isStatic())
                   continue; //Skip static class members when not doing static access
+              }
+              
+              // check access policy
+              if ( classMember && accessedClass ) {
+                // by default only show public declarations
+                Declaration::AccessPolicy ap = Declaration::Public;
+                ClassDeclaration* memberClass = dynamic_cast<ClassDeclaration*>(classMember->context()->owner());
+                if ( memberClass ) {
+                  if ( memberClass == accessedClass ) {
+                    if ( m_parentAccess ) {
+                      // when we access the parent show all but private members
+                      ap = Declaration::Protected;
+                    } else {
+                      // else we can show everything
+                      ap = Declaration::Private;
+                    }
+                  } else if ( accessedClass->inherits( memberClass->indexedType() ) ) {
+                    // we inherit this class, so show all but private
+                    ap = Declaration::Protected;
+                  } // else show only public declarations (default)
+                }
+                if ( ap < classMember->accessPolicy() ) {
+                  continue;
+                }
               }
               
               if(!decl.first->identifier().isEmpty())
