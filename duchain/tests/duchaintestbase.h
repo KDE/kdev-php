@@ -25,6 +25,7 @@
 #include <QTest>
 #include <language/duchain/dumpchain.h>
 #include <language/duchain/duchain.h>
+#include <language/duchain/duchainlock.h>
 
 #include "phpduchainexport.h"
 
@@ -72,6 +73,18 @@ namespace QTest {
 */
 namespace Php
 {
+/**
+ * Manage pointer to TopDUContexts and release them properly, even if a test fails
+ */
+struct DUChainReleaser {
+  DUChainReleaser(KDevelop::TopDUContext* top) : m_top(top) {}
+  ~DUChainReleaser() {
+    KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
+    KDevelop::DUChain::self()->removeDocumentChain(m_top);
+  }
+  KDevelop::TopDUContext* m_top;
+};
+
 class KDEVPHPDUCHAIN_EXPORT DUChainTestBase : public QObject
 {
   Q_OBJECT
@@ -96,8 +109,6 @@ protected:
   KDevelop::TopDUContext* parse(const QByteArray& unit, DumpAreas dump = static_cast<DumpAreas>(DumpAST | DumpDUChain | DumpType), QString fileName = QString());
   
   KDevelop::TopDUContext* parseAdditionalFile(KDevelop::IndexedString fileName, QByteArray contents);
-
-  void release(KDevelop::TopDUContext* top);
 
   KDevelop::DumpChain dumper;
   

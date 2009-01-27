@@ -85,12 +85,6 @@ bool DUChainTestBase::hasImportedParentContext(TopDUContext* top, DUContext* loo
     return false;
 }
 
-void DUChainTestBase::release(TopDUContext* top)
-
-{
-  DUChain::self()->removeDocumentChain(top);
-}
-
 TopDUContext* DUChainTestBase::parseAdditionalFile(IndexedString fileName, QByteArray contents)
 {
     ParseSession* session = new ParseSession();

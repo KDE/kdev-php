@@ -96,6 +96,7 @@ TestCompletion::TestCompletion()
 void TestCompletion::publicObjectCompletion()
 {
     TopDUContext* top = parse("<?php " + testClassA, DumpNone);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $instA->"));
@@ -107,12 +108,11 @@ void TestCompletion::publicObjectCompletion()
     QCOMPARE(itemList.count(), 2);
     QCOMPARE(itemList.at(0)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(0));
     QCOMPARE(itemList.at(1)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(1));
-
-    release(top);
 }
 void TestCompletion::publicStaticObjectCompletion()
 {
     TopDUContext* top = parse("<?php " + testClassA, DumpNone);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; A::"));
@@ -125,12 +125,11 @@ void TestCompletion::publicStaticObjectCompletion()
     QCOMPARE(itemList.at(0)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(6));
     QCOMPARE(itemList.at(1)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(7));
     QCOMPARE(itemList.at(2)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(8));
-
-    release(top);
 }
 void TestCompletion::privateObjectCompletion()
 {
     TopDUContext* top = parse("<?php " + testClassA, DumpNone);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
@@ -148,12 +147,11 @@ void TestCompletion::privateObjectCompletion()
     QCOMPARE(itemList.at(3)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(3));
     QCOMPARE(itemList.at(4)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(4));
     QCOMPARE(itemList.at(5)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(5));
-
-    release(top);
 }
 void TestCompletion::privateStaticObjectCompletion()
 {
     TopDUContext* top = parse("<?php " + testClassA, DumpNone);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
@@ -172,12 +170,11 @@ void TestCompletion::privateStaticObjectCompletion()
     QCOMPARE(itemList.at(4)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(10));
     QCOMPARE(itemList.at(5)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(11));
     QCOMPARE(itemList.at(6)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(12));
-
-    release(top);
 }
 void TestCompletion::protectedObjectCompletion()
 {
     TopDUContext* top = parse("<?php " + testClassA + testClassB, DumpNone);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().at(1)->localDeclarations().first()->internalContext();
@@ -194,12 +191,11 @@ void TestCompletion::protectedObjectCompletion()
     QCOMPARE(itemList.at(2)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(1));
     QCOMPARE(itemList.at(3)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(2));
     QCOMPARE(itemList.at(4)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(3));
-
-    release(top);
 }
 void TestCompletion::protectedStaticObjectCompletion()
 {
     TopDUContext* top = parse("<?php " + testClassA + testClassB, DumpNone);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().at(1)->localDeclarations().first()->internalContext();
@@ -217,8 +213,6 @@ void TestCompletion::protectedStaticObjectCompletion()
     QCOMPARE(itemList.at(2)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(8));
     QCOMPARE(itemList.at(3)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(9));
     QCOMPARE(itemList.at(4)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(10));
-
-    release(top);
 }
 
 void TestCompletion::methodCall()
@@ -228,6 +222,7 @@ void TestCompletion::methodCall()
     QByteArray method("<? class A { public function foo(A $a, $b = null) {} } $i = new A();");
 
     TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $i->foo("));
@@ -249,8 +244,6 @@ void TestCompletion::methodCall()
     cptr = new CodeCompletionContext(DUContextPointer(top), "$blah; $i->foo(new A(), ");
     itemList = cptr->completionItems(SimpleCursor(), abort);
     QVERIFY(searchDeclaration(itemList, top->childContexts().at(0)->localDeclarations().at(0)));
-
-    release(top);
 }
 
 void TestCompletion::functionCall()
@@ -260,6 +253,7 @@ void TestCompletion::functionCall()
     QByteArray method("<? class A {} function foo(A $a, $b = null) {}");
 
     TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; foo("));
     QVERIFY(cptr->parentContext());
@@ -278,19 +272,19 @@ void TestCompletion::functionCall()
         }
     }
     QVERIFY(found);
-    
-    release(top);
 }
 
 void TestCompletion::newObjectFromOtherFile()
 {
 
     TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo.php"), "<?php class Foo { function bar() {} } ");
+    DUChainReleaser releaseAddTop(addTop);
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? $a = new Foo(); ");
 
     TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $a->"));
@@ -298,9 +292,6 @@ void TestCompletion::newObjectFromOtherFile()
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
     QCOMPARE(itemList.count(), 1);
     QCOMPARE(itemList.first()->declaration().data(), addTop->childContexts().first()->localDeclarations().first());
-
-    release(addTop);
-    release(top);
 }
 
 void TestCompletion::baseClass()
@@ -308,6 +299,7 @@ void TestCompletion::baseClass()
     QByteArray method("<? class A { public $avar; } class B extends A { public $bvar; } $a = new A(); $b = new B(); ");
 
     TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$a->"));
@@ -321,19 +313,19 @@ void TestCompletion::baseClass()
     QCOMPARE(itemList.count(), 2);
     QCOMPARE(itemList.at(1)->declaration().data(), top->childContexts().first()->localDeclarations().first());
     QCOMPARE(itemList.at(0)->declaration().data(), top->childContexts().at(1)->localDeclarations().first());
-
-    release(top);
 }
 
 void TestCompletion::extendsFromOtherFile()
 {
 
     TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo.php"), "<?php class A { public $avar; } ");
+    DUChainReleaser releaseAddTop(addTop);
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class B extends A { public $bvar; } $b = new B();");
 
     TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$b->"));
@@ -342,9 +334,6 @@ void TestCompletion::extendsFromOtherFile()
     QCOMPARE(itemList.count(), 2);
     QCOMPARE(itemList.at(1)->declaration().data(), addTop->childContexts().first()->localDeclarations().first());
     QCOMPARE(itemList.at(0)->declaration().data(), top->childContexts().first()->localDeclarations().first());
-
-    release(addTop);
-    release(top);
 }
 
 
@@ -352,11 +341,13 @@ void TestCompletion::globalClassFromOtherFile()
 {
 
     TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo.php"), "<?php class A { } ");
+    DUChainReleaser releaseAddTop(addTop);
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? ");
 
     TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 /*
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "new "));
@@ -364,8 +355,6 @@ void TestCompletion::globalClassFromOtherFile()
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
     QVERIFY(searchDeclaration(itemList, addTop->localDeclarations().first()));
 */
-    release(addTop);
-    release(top);
 }
 
 void TestCompletion::codeModel()
@@ -406,21 +395,20 @@ protected:
 void TestCompletion::projectFileClass()
 {
     TopDUContext* addTop = parseAdditionalFile(IndexedString("file:///internal/projecttest0"), "<? class B {} ");
+    DUChainReleaser releaseAddTop(addTop);
 
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? ?>");
 
     TopDUContext* top = parse(method, DumpNone, "file:///internal/projecttest1");
+    DUChainReleaser releaseTop(top);
 
     DUChainWriteLocker lock(DUChain::lock());
     CodeCompletionContext::Ptr cptr(new TestCodeCompletionContext(DUContextPointer(top), ""));
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
     QVERIFY(searchDeclaration(itemList, addTop->localDeclarations().first()));
-
-    release(addTop);
-    release(top);
 }
 
 void TestCompletion::thisCompletion()
@@ -430,6 +418,7 @@ void TestCompletion::thisCompletion()
     QByteArray method("<? class A { public function foo() {} public $bar; }");
 
     TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
@@ -442,8 +431,6 @@ void TestCompletion::thisCompletion()
     QCOMPARE(itemList.count(), 2);
     QCOMPARE(itemList.first()->declaration().data(), top->childContexts().at(0)->localDeclarations().at(0));
     QCOMPARE(itemList.at(1)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(1));
-
-    release(top);
 }
 
 
@@ -454,6 +441,7 @@ void TestCompletion::variable()
     QByteArray method("<? class A {  } $a = new A();");
 
     TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), ""));
@@ -463,8 +451,6 @@ void TestCompletion::variable()
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(0, 29), abort);
     QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(1)));
-
-    release(top);
 }
 
 void TestCompletion::variableStarted()
@@ -474,6 +460,7 @@ void TestCompletion::variableStarted()
     QByteArray method("<? class A {  } $aaa = new A();");
 
     TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "s"));
@@ -483,8 +470,6 @@ void TestCompletion::variableStarted()
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(0, 30), abort);
     QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(1)));
-
-    release(top);
 }
 
 class TestCodeCompletionModel : public CodeCompletionModel
@@ -509,6 +494,7 @@ void TestCompletion::nameNormalVariable()
     QByteArray method("<? $abc = 0; define('def', 0); class ghi {} ");
 
     TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     CodeCompletionContext* cContext = new CodeCompletionContext(DUContextPointer(top), "");
@@ -537,8 +523,6 @@ void TestCompletion::nameNormalVariable()
 
     //don't delete model as its constructor does bad things (quit the current thread - we don't want that in test)
     //TODO find better solution that doesn't leak
-
-    release(top);
 }
 
 void TestCompletion::nameClassMember()
@@ -548,6 +532,7 @@ void TestCompletion::nameClassMember()
     QByteArray method("<? class A { public $abc = 0; } $b = new A;  ");
 
     TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     CodeCompletionContext* cContext = new CodeCompletionContext(DUContextPointer(top), "$b->");
@@ -566,8 +551,6 @@ void TestCompletion::nameClassMember()
 
     //don't delete model as its constructor does bad things (quit the current thread - we don't want that in test)
     //TODO find better solution that doesn't leak
-
-    release(top);
 }
 }
 
