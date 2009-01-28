@@ -52,7 +52,9 @@ QString nameForDeclaration(Declaration* dec) {
   else {
     QString ret = dec->identifier().toString();
     bool isConst = dynamic_cast<ConstantDeclaration*>(dec);
-    if (!isConst && dec->kind() == Declaration::Instance && (!dec->context() || dec->context()->type() != DUContext::Class)) {
+    ClassMemberDeclaration* classMember = dynamic_cast<ClassMemberDeclaration*>(dec);
+    if (!isConst && dec->kind() == Declaration::Instance && (!dec->context() || dec->context()->type() != DUContext::Class
+          || (classMember && classMember->isStatic() && !classMember->isFunctionDeclaration()))) {
       ret = "$" + ret;
     }
     return ret;
