@@ -51,32 +51,6 @@ using namespace KDevelop;
 
 namespace Php {
 
-
-///@todo move these together with those from expressionvisitor into an own file, or make them unnecessary
-QList<DeclarationPointer> convert( const QList<Declaration*>& list ) {
-  QList<DeclarationPointer> ret;
-  foreach( Declaration* decl, list )
-    ret << DeclarationPointer(decl);
-  return ret;
-}
-
-QList<Declaration*> convert( const QList<DeclarationPointer>& list ) {
-  QList<Declaration*> ret;
-  foreach( DeclarationPointer decl, list )
-    if( decl )
-      ret << decl.data();
-  return ret;
-}
-
-///Extracts the last line from the given string
-QString extractLastLine(const QString& str) {
-  int prevLineEnd = str.lastIndexOf('\n');
-  if(prevLineEnd != -1)
-    return str.mid(prevLineEnd+1);
-  else
-    return str;
-}
-
 int completionRecursionDepth = 0;
 
 CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QString& text, int depth)
