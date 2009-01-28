@@ -26,10 +26,13 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/declaration.h>
 
+#include <klocalizedstring.h>
+
 #include "parsesession.h"
 #include "editorintegrator.h"
 #include "helper.h"
 #include "phpducontext.h"
+#include "phpast.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -219,19 +222,30 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     closeContext();
 }
 
-void ContextBuilder::addBaseType(const ClassDeclaration * const base, bool implementsInterface)
+void ContextBuilder::addBaseType(IdentifierAst * identifier, bool implementsInterface)
 {
     DUChainWriteLocker lock(DUChain::lock());
-
+    
     Q_ASSERT(currentContext()->type() == DUContext::Class);
     
-    if (DUContext* baseContext = base->logicalInternalContext(0)) {
-        // prevent circular context imports which could lead to segfaults
-        if ( !baseContext->imports(currentContext()) && !currentContext()->imports(baseContext) ) {
-            currentContext()->addImportedParentContext( baseContext );
-        } else {
-            ///TODO report error
-            kDebug() << "circular reference spotted for " << base->toString();
+    ClassDeclaration* currentClass = dynamic_cast<ClassDeclaration*>(currentContext()->owner());
+    
+    ClassDeclaration* baseClass = dynamic_cast<ClassDeclaration*>(findDeclarationImport(ClassDeclarationType, identifier));
+    
+    if ( currentClass && baseClass ) {
+        if ( DUContext* baseContext = baseClass->logicalInternalContext(0) ) {
+            // prevent circular context imports which could lead to segfaults
+            if ( !baseContext->imports(currentContext()) && !currentContext()->imports(baseContext) ) {
+                currentContext()->addImportedParentContext( baseContext );
+                if ( implementsInterface ) {
+                    currentClass->addInterface( BaseClassInstance( baseClass->indexedType() ) );
+                } else {
+                    currentClass->setBaseClass( BaseClassInstance( baseClass->indexedType() ) );
+                }
+            } else {
+                ///TODO report error
+                reportError(i18n("Circular inheritance of %1 and %2", currentClass->toString(), baseClass->toString()), identifier);
+            }
         }
     }
 }
@@ -256,6 +270,19 @@ void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
                     ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
             }
         }
+    }
+}
+
+void ContextBuilder::reportError(const QString& errorMsg, AstNode* node)
+{
+    KDevelop::Problem *p = new KDevelop::Problem();
+    p->setSource(KDevelop::ProblemData::DUChainBuilder);
+    p->setDescription(errorMsg);
+    p->setFinalLocation(KDevelop::DocumentRange(editor()->currentUrl().str(), editor()->findRange(node).textRange()));
+    {
+        DUChainWriteLocker lock(DUChain::lock());
+        kDebug() << "Problem" << p->description();
+        currentContext()->topContext()->addProblem(KDevelop::ProblemPointer(p));
     }
 }
 

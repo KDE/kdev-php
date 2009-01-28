@@ -70,9 +70,11 @@ protected:
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
     virtual void visitUnaryExpression(UnaryExpressionAst* node);
 
-    virtual void addBaseType(const ClassDeclaration * const base, bool implementsInterface);
+    virtual void addBaseType(IdentifierAst * identifier, bool implementsInterface);
 
     virtual void classContextOpened(KDevelop::DUContext* context);
+    
+    virtual void reportError( const QString& errorMsg, AstNode* node );
 
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);

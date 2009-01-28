@@ -170,19 +170,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 
 void DeclarationBuilder::visitClassExtends(ClassExtendsAst *node)
 {
-    Declaration* dec = findDeclarationImport(ClassDeclarationType, node->identifier);
-    if (dec) {
-        ClassDeclaration* extends = dynamic_cast<ClassDeclaration*>(dec);
-        if (extends) {
-            addBaseType(extends, false);
-            ClassDeclaration* currentClass = dynamic_cast<ClassDeclaration*>(currentDeclaration());
-            if(currentClass) {
-              currentClass->setBaseClass(BaseClassInstance(extends->indexedType()));
-            }else{
-              kWarning() << "base-specifier without class declaration";
-            }
-        }
-    }
+    addBaseType(node->identifier, false);
 }
 
 
@@ -190,21 +178,7 @@ void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
 {
     const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
     do {
-        Declaration* dec = findDeclarationImport(ClassDeclarationType, __it->element);
-        if (dec) {
-            ClassDeclaration* interface = dynamic_cast<ClassDeclaration*>(dec);
-            if (!interface) {
-                //TODO report error
-            } else {
-                addBaseType(interface, true);
-                ClassDeclaration* currentClass = dynamic_cast<ClassDeclaration*>(currentDeclaration());
-                if(currentClass) {
-                  currentClass->addInterface(BaseClassInstance(interface->indexedType()));
-                }else{
-                  kWarning() << "base-specifier without class declaration";
-                }
-            }
-        }
+        addBaseType(__it->element, true);
         __it = __it->next;
     }
     while (__it != __end);
