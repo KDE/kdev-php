@@ -1231,6 +1231,18 @@ void TestDUChain::testReturnWithoutFunction()
     TopDUContext* top = parse(method, DumpAll);
     DUChainReleaser releaseTop(top);
 }
+
+void TestDUChain::testCircularInheritance()
+{
+    //circular inheritance is not allowed in PHP and should not crash kdevelop
+    QByteArray method("<? class a extends b {} class b extends c {} class c extends a {}");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    
+    DUChainWriteLocker lock(DUChain::lock());
+    QCOMPARE(top->problems().count(), 1);
+}
 }
 
 #include "test_duchain.moc"

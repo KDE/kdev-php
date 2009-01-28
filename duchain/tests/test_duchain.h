@@ -84,6 +84,7 @@ private slots:
   void testGlobalVariableInFunction();
   void testSuperglobalInFunction();
   void testReturnWithoutFunction();
+  void testCircularInheritance();
 };
 
 }
