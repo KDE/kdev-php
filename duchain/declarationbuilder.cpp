@@ -29,6 +29,8 @@
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/aliasdeclaration.h>
 
+#include <klocalizedstring.h>
+
 #include "phpast.h"
 #include "parsesession.h"
 #include "helper.h"
@@ -160,6 +162,14 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
     } else {
         if (node->modifiers) {
             m_currentModifers = node->modifiers->modifiers;
+
+            // have to report the errors here to get a good problem range
+            if (m_currentModifers & ModifierFinal) {
+                reportError( i18n("Properties cannot be declared final."), node->modifiers );
+            }
+            if (m_currentModifers & ModifierAbstract) {
+                reportError( i18n("Properties cannot be declared abstract."), node->modifiers );
+            }
         } else {
             m_currentModifers = 0;
         }
@@ -204,12 +214,6 @@ void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
         }
         if (m_currentModifers & ModifierStatic) {
             dec->setStatic(true);
-        }
-        if (m_currentModifers & ModifierFinal) {
-            //TODO report error
-        }
-        if (m_currentModifers & ModifierAbstract) {
-            //TODO report error
         }
         dec->setKind(Declaration::Instance);
     }
