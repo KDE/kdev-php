@@ -23,6 +23,7 @@
 
 #include <language/duchain/ducontext.h>
 #include <language/duchain/duchainregister.h>
+#include <language/duchain/types/structuretype.h>
 
 using namespace KDevelop;
 namespace Php {
@@ -101,9 +102,17 @@ void ClassDeclaration::setBaseClass(BaseClassInstance base) {
 }
 
 bool ClassDeclaration::inherits(const IndexedType& type) const {
-  if ( baseClassesSize() > 0 ) {
-    FOREACH_FUNCTION( const Php::BaseClassInstance& base, baseClasses ) {
-      if ( base.baseClass == type ) {
+  if( indexedType() == type )
+    return true;
+
+  FOREACH_FUNCTION(const BaseClassInstance& b, baseClasses)
+  {
+    if ( b.baseClass == type ) {
+      return true;
+    }
+    if( StructureType::Ptr c = b.baseClass.type().cast<StructureType>() ) {
+      ClassDeclaration* decl = dynamic_cast<ClassDeclaration*>(c->declaration(topContext()));
+      if( decl && decl->inherits( type ) ) {
         return true;
       }
     }
@@ -130,11 +139,14 @@ void ClassDeclaration::addInterface(BaseClassInstance interface) {
 }
 
 bool ClassDeclaration::implements(const IndexedType& type) const {
-  kDebug() << type.type()->toString();
-  if ( interfacesSize() > 0 ) {
-    FOREACH_FUNCTION( const Php::BaseClassInstance& base, interfaces ) {
-      kDebug() << base.baseClass.type()->toString();
-      if ( base.baseClass == type ) {
+  FOREACH_FUNCTION(const BaseClassInstance& b, interfaces)
+  {
+    if ( b.baseClass == type ) {
+      return true;
+    }
+    if( StructureType::Ptr c = b.baseClass.type().cast<StructureType>() ) {
+      ClassDeclaration* decl = dynamic_cast<ClassDeclaration*>(c->declaration(topContext()));
+      if( decl && decl->implements( type ) ) {
         return true;
       }
     }
