@@ -51,6 +51,8 @@ $splContent = str_replace("\t", '    ', $splContent);
 $splContent = str_replace("\r", '', $splContent);
 $splContent = preg_replace("#(const [A-Z_]+\s*)(0x[0-9]+;)#", '\1= \2', $splContent);
 $splContent = preg_replace("#/\\*\\* @(mainpage|defgroup|file).*?\\*/#s", '', $splContent);
+// strip actual function code
+$splContent = preg_replace("#(function.*?\))\s*(?!\{\n    \})\{\n.*?\n    \}#s", '\1{}', $splContent);
 $splContent = trim($splContent);
 
 foreach (new DirectoryIterator($_SERVER['argv'][2].'/ext/spl/internal') as $file) {

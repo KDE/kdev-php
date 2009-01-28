@@ -241,51 +241,27 @@ class Exception
      * @param $message Some text describing the exception
      * @param $code    Some code describing the exception
      */
-    function __construct($message = NULL, $code = 0) {
-        if (func_num_args()) {
-            $this->message = $message;
-        }
-        $this->code = $code;
-        $this->file = __FILE__; // of throw clause
-        $this->line = __LINE__; // of throw clause
-        $this->trace = debug_backtrace();
-        $this->string = StringFormat($this);
-    }
+    function __construct($message = NULL, $code = 0){}
 
     /** @return the message passed to the constructor
      */
-    final public function getMessage()
-    {
-        return $this->message;
-    }
+    final public function getMessage(){}
 
     /** @return the code passed to the constructor
      */
-    final public function getCode()
-    {
-        return $this->code;
-    }
+    final public function getCode(){}
 
     /** @return the name of the file where the exception was thrown
      */
-    final public function getFile()
-    {
-        return $this->file;
-    }
+    final public function getFile(){}
 
     /** @return the line number where the exception was thrown
      */
-    final public function getLine()
-    {
-        return $this->line;
-    }
+    final public function getLine(){}
 
     /** @return the stack trace as array
      */
-    final public function getTrace()
-    {
-        return $this->trace;
-    }
+    final public function getTrace(){}
 
     /** @return the stack trace as string
      */
@@ -295,10 +271,7 @@ class Exception
 
     /** @return string represenation of exception
      */
-    public function __toString()
-    {
-        return $this->string;
-    }
+    public function __toString(){}
 }
 
 /** @ingroup SPL
