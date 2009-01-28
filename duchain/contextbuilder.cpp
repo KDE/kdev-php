@@ -224,8 +224,15 @@ void ContextBuilder::addBaseType(const ClassDeclaration * const base, bool imple
     DUChainWriteLocker lock(DUChain::lock());
 
     Q_ASSERT(currentContext()->type() == DUContext::Class);
-    if (base->logicalInternalContext(0)) {
-        currentContext()->addImportedParentContext( base->logicalInternalContext(0) );
+    
+    if (DUContext* baseContext = base->logicalInternalContext(0)) {
+        // prevent circular context imports which could lead to segfaults
+        if ( !baseContext->imports(currentContext()) && !currentContext()->imports(baseContext) ) {
+            currentContext()->addImportedParentContext( baseContext );
+        } else {
+            ///TODO report error
+            kDebug() << "circular reference spotted for " << base->toString();
+        }
     }
 }
 
