@@ -1012,7 +1012,7 @@ void TestDUChain::testVariableDocBlock()
 
 void TestDUChain::testFunctionDocBlockParams()
 {
-    TopDUContext* top = parse("<? class A {} /**\n * @param int\n * @param A\n * @param mixed **/\nfunction foo($a, $b, $c, $d) {} ", DumpNone);
+    TopDUContext* top = parse("<? class A {} /**\n * @param\tint\n *\t@param A\n * @param mixed **/\nfunction foo($a, $b, $c, $d) {} ", DumpNone);
     {
         DUChainReleaser releaseTop(top);
         DUChainWriteLocker lock(DUChain::lock());

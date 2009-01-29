@@ -80,7 +80,7 @@ AbstractType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& doc
 {
     QString docComment = editor()->parseSession()->docComment(node->startToken);
     if (!docComment.isEmpty()) {
-        QRegExp rx("\\* +@"+QRegExp::escape(docCommentName)+" ([^ ]*)");
+        QRegExp rx("\\*\\s+@"+QRegExp::escape(docCommentName)+"\\s([^\\s]*)");
         if (rx.indexIn(docComment) != -1) {
             return parseType(rx.cap(1), node);
         }
@@ -94,7 +94,7 @@ QList<AbstractType::Ptr> TypeBuilder::parseDocCommentParams(AstNode* node)
     QList<AbstractType::Ptr> ret;
     QString docComment = editor()->parseSession()->docComment(node->startToken);
     if (!docComment.isEmpty()) {
-        QRegExp rx("\\* +@param ([^ ]*)");
+        QRegExp rx("\\*\\s+@param\\s([^\\s]*)");
         int pos = 0;
         while ((pos = rx.indexIn(docComment, pos)) != -1) {
             ret << parseType(rx.cap(1), node);
