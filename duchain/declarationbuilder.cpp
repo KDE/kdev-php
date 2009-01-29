@@ -74,7 +74,7 @@ void DeclarationBuilder::preBuild(const KDevelop::IndexedString& url, Php::AstNo
 
 void DeclarationBuilder::closeDeclaration()
 {
-    if (currentDeclaration()) {
+    if (currentDeclaration() && lastType()) {
         DUChainWriteLocker lock(DUChain::lock());
         currentDeclaration()->setType(lastType());
     }
