@@ -72,7 +72,12 @@ namespace Php {
         MemberAccess,      ///klass->
         FunctionCallAccess,  ///"function(". Will never appear as initial access-operation, but as parentContext() access-operation.
         StaticMemberChoose, ///klass::
-        MemberChoose
+        MemberChoose,
+        NewClassChoose, /// after the "new" keyword any non-abstract classes (not interfaces) should be shown
+        ClassExtendsChoose, /// after "class XYZ extends" any non-final classes should be shown
+        InterfaceChoose, /// after the "implements" keyword or after "interface XYZ extends" any interfaces should be shown
+        ExceptionChoose, /// after keywords "catch" and "throw new" only classes which extend Exception should be shown
+        ExceptionInstanceChoose /// after the "throw" keyword instancec of the exception class should be shown
       };
       
       ///@return the used access-operation
@@ -98,6 +103,7 @@ namespace Php {
 
     protected:
       virtual QList<QSet<KDevelop::IndexedString> > completionFiles();
+      inline bool isValidCompletionItem(KDevelop::Declaration* dec);
 
     private:
       MemberAccessOperation m_memberAccessOperation;

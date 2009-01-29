@@ -161,7 +161,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
   }
 
   ///Now care about m_expression. It may still contain keywords like "new "
-  bool isEmit = false, isReturn = false, isThrow = false, isNew = false;
+  bool isReturn = false;
 
   QString expr = m_expression.trimmed();
 
@@ -169,13 +169,25 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
     isReturn = true; //When isReturn is true, we should match the result against the return-type of the current context-function
     expr = expr.right( expr.length() - 6 );
   }
-  if( expr.startsWith("throw") )  {
-    isThrow = true;
-    expr = expr.right( expr.length() - 5 );
+  if ( expr == "throw" )  {
+    m_memberAccessOperation = ExceptionInstanceChoose;
+    return;
   }
-  if ( expr.startsWith("new") ) {
-    isNew = true;
-    expr = expr.right( expr.length() - 3 );
+  if ( expr == "catch" || ( expr == "new" && expressionPrefix.endsWith("throw") ) ) {
+    m_memberAccessOperation = ExceptionChoose;
+  }
+  ///TODO: handle class a implements c,d,e (i.e. the comma list)
+  if ( expr == "implements" || ( expr == "extends" && expressionPrefix.contains(QRegExp("interface\\s+\\S+$")) ) ) {
+    m_memberAccessOperation = InterfaceChoose;
+    return;
+  }
+  if ( expr == "extends" ) {
+    m_memberAccessOperation = ClassExtendsChoose;
+    return;
+  }
+  if ( expr == "new" ) {
+    m_memberAccessOperation = NewClassChoose;
+    return;
   }
 
   ifDebug( kDebug() << "expression: " << expr; )
@@ -401,12 +413,12 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
 
  
     } else {
-
       //Show all visible declarations
       QList<DeclarationDepthPair> decls = m_duContext->allDeclarations(m_duContext->type() == DUContext::Class ? m_duContext->range().end : position, m_duContext->topContext());
       foreach( const DeclarationDepthPair& decl, decls ) {
         if (abort)
           return items;
+        if (!isValidCompletionItem(decl.first)) continue;
         items << CompletionTreeItemPointer( new NormalDeclarationCompletionItem(DeclarationPointer(decl.first), CodeCompletionContext::Ptr(this), decl.second ) );
       }
       uint count = 0;
@@ -422,6 +434,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
                         QList<Declaration*> decls = top->findDeclarations(foundItems[i].id);
                         foreach (Declaration* decl, decls) {
                             if (abort) return items;
+                            if (!isValidCompletionItem(decl)) continue;
                             items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), CodeCompletionContext::Ptr(this)));
                         }
                     }
@@ -446,6 +459,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
       if( parentContext->memberAccessOperation() == CodeCompletionContext::FunctionCallAccess ) {
         if (!parentContext->memberAccessContainer().allDeclarationIds().isEmpty()) {
             Declaration* decl = parentContext->memberAccessContainer().allDeclarationIds().first().getDeclaration(m_duContext->topContext());
+            if (!isValidCompletionItem(decl)) continue;
             items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), parentContext));
         }
       } else {
@@ -455,6 +469,42 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
   } while( parentContext );
 
   return items;
+}
+///TODO: filter current declaration
+inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
+{
+    static IndexedType exceptionType(QualifiedIdentifier("Exception").index());
+    
+    if ( m_memberAccessOperation == ExceptionChoose
+          || m_memberAccessOperation == NewClassChoose
+          || m_memberAccessOperation == InterfaceChoose
+          || m_memberAccessOperation == ClassExtendsChoose ) {
+      ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
+      // filter non-classes
+      if ( !classDec ) {
+        return false;
+      }
+      // show non-interface and non-abstract
+      else if ( m_memberAccessOperation == NewClassChoose ) {
+        ///TODO handle abstract
+        return classDec->classType() == ClassDeclarationData::Class;
+      }
+      // filter non-exception classes
+      else if ( m_memberAccessOperation == ExceptionChoose ) {
+          return classDec->indexedType() == exceptionType || classDec->inherits(exceptionType);
+      }
+      // show interfaces
+      else if ( m_memberAccessOperation == InterfaceChoose ) {
+        return classDec->classType() == ClassDeclarationData::Interface;
+      }
+      // show anything but final classes and interfaces
+      else if ( m_memberAccessOperation == ClassExtendsChoose ) {
+        ///TODO handle final
+        return classDec->classType() == ClassDeclarationData::Class;
+      }
+    }
+    ///TODO m_memberAccessOperation == ExceptionInstanceChoose
+    return true;
 }
 
 QList<QSet<IndexedString> > CodeCompletionContext::completionFiles()
