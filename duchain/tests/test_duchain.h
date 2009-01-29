@@ -85,6 +85,7 @@ private slots:
   void testSuperglobalInFunction();
   void testReturnWithoutFunction();
   void testCircularInheritance();
+  void testFindDeclarations();
 };
 
 }

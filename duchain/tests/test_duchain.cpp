@@ -1243,6 +1243,31 @@ void TestDUChain::testCircularInheritance()
     DUChainWriteLocker lock(DUChain::lock());
     QCOMPARE(top->problems().count(), 1);
 }
+
+void TestDUChain::testFindDeclarations()
+{
+    DUChainWriteLocker lock(DUChain::lock());
+
+    TopDUContext* top1 = new TopDUContext(IndexedString("testfile1"), SimpleRange(0, 0, 0, 10), 0);
+    DUChainReleaser releaseTop1(top1);
+    DUChain::self()->addDocumentChain(top1);
+    TopDUContext* top2 = new TopDUContext(IndexedString("testfile2"), SimpleRange(0, 0, 0, 10), 0);
+    DUChainReleaser releaseTop2(top2);
+    DUChain::self()->addDocumentChain(top2);
+
+    Declaration* declaration = new Declaration(SimpleRange(0, 0, 0, 3), top1);
+    declaration->setIdentifier(Identifier("foo"));
+    
+    QCOMPARE(1, top1->findDeclarations(Identifier("foo")).count());
+    QCOMPARE(0, top2->findDeclarations(Identifier("foo")).count());
+    top2->addImportedParentContext(top1);
+    QCOMPARE(1, top2->findDeclarations(Identifier("foo")).count());
+    top2->clearImportedParentContexts();
+    QCOMPARE(0, top2->findDeclarations(Identifier("foo")).count());
+    top2->addImportedParentContext(top1);
+    QCOMPARE(1, top2->findDeclarations(Identifier("foo")).count());
+}
+
 }
 
 #include "test_duchain.moc"
