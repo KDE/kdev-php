@@ -53,7 +53,7 @@ void DeclarationNavigationContext::htmlClass()
   ClassDeclaration* classDecl = dynamic_cast<ClassDeclaration*>(klass->declaration(m_topContext.data()));
   if(classDecl) {
     if ( classDecl->baseClassesSize() > 0 ) {
-      modifyHtml() += i18n(" inherits ");
+      modifyHtml() += i18n(" extends ");
       FOREACH_FUNCTION( const Php::BaseClassInstance& base, classDecl->baseClasses ) {
         eventuallyMakeTypeLinks(base.baseClass.type());
         if ( a < containerSize - 1 ) {
