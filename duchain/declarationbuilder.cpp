@@ -130,9 +130,9 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
     if (node->methodName) {
         //method declaration
         ClassFunctionDeclaration* dec = openDefinition<ClassFunctionDeclaration>(node->methodName, node);
-        dec->clearDefaultParameters();
         {
             DUChainWriteLocker lock(DUChain::lock());
+            dec->clearDefaultParameters();
             dec->setKind(Declaration::Type);
             if (node->modifiers->modifiers & ModifierPublic) {
                 dec->setAccessPolicy(Declaration::Public);
@@ -227,9 +227,12 @@ void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationA
     openDefinition<ClassMemberDeclaration>(node->identifier, node->identifier);
     ClassMemberDeclaration* dec = dynamic_cast<ClassMemberDeclaration*>(currentDeclaration());
     Q_ASSERT(dec);
-    dec->setAccessPolicy(Declaration::Public);
-    dec->setStatic(true);
-    dec->setKind(Declaration::Instance);
+    {
+        DUChainWriteLocker lock(DUChain::lock());
+        dec->setAccessPolicy(Declaration::Public);
+        dec->setStatic(true);
+        dec->setKind(Declaration::Instance);
+    }
     DeclarationBuilderBase::visitClassConstantDeclaration(node);
     closeDeclaration();
 }
@@ -272,8 +275,11 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
     setComment(formatComment(node, editor()));
 
     FunctionDeclaration *dec = openDefinition<FunctionDeclaration>(node->functionName, node);
-    dec->setKind(Declaration::Type);
-    dec->clearDefaultParameters();
+    {
+        DUChainWriteLocker lock(DUChain::lock());
+        dec->setKind(Declaration::Type);
+        dec->clearDefaultParameters();
+    }
 
     DeclarationBuilderBase::visitFunctionDeclarationStatement(node);
 
