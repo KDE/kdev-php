@@ -86,6 +86,7 @@ public:
     virtual void visitNewelseifListItem(NewelseifListItemAst *node);
     virtual void visitObjectDimList(ObjectDimListAst *node);
     virtual void visitObjectProperty(ObjectPropertyAst *node);
+    virtual void visitOptionalClassModifier(OptionalClassModifierAst *node);
     virtual void visitOptionalModifiers(OptionalModifiersAst *node);
     virtual void visitParameter(ParameterAst *node);
     virtual void visitParameterList(ParameterListAst *node);

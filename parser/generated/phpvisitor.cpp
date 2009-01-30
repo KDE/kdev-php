@@ -81,6 +81,7 @@ Visitor::ParserFuncType Visitor::sParserTable[] =
     reinterpret_cast<ParserFuncType>(&Visitor::visitNewelseifListItem),
     reinterpret_cast<ParserFuncType>(&Visitor::visitObjectDimList),
     reinterpret_cast<ParserFuncType>(&Visitor::visitObjectProperty),
+    reinterpret_cast<ParserFuncType>(&Visitor::visitOptionalClassModifier),
     reinterpret_cast<ParserFuncType>(&Visitor::visitOptionalModifiers),
     reinterpret_cast<ParserFuncType>(&Visitor::visitParameter),
     reinterpret_cast<ParserFuncType>(&Visitor::visitParameterList),

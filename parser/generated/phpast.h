@@ -98,6 +98,7 @@ struct NewElseifListAst;
 struct NewelseifListItemAst;
 struct ObjectDimListAst;
 struct ObjectPropertyAst;
+struct OptionalClassModifierAst;
 struct OptionalModifiersAst;
 struct ParameterAst;
 struct ParameterListAst;
@@ -140,6 +141,13 @@ enum ModifierFlags
     ModifierStatic       = 1 << 3,
     ModifierFinal        = 1 << 4,
     ModifierAbstract     = 1 << 5
+};
+
+enum ClassModifier
+{
+    NormalClass,
+    AbstractClass,
+    FinalClass
 };
 
 enum ScalarTypes
@@ -252,36 +260,37 @@ struct KDEVPHPPARSER_EXPORT AstNode
         NewelseifListItemKind = 1070,
         ObjectDimListKind = 1071,
         ObjectPropertyKind = 1072,
-        OptionalModifiersKind = 1073,
-        ParameterKind = 1074,
-        ParameterListKind = 1075,
-        PostprefixOperatorKind = 1076,
-        PrintExpressionKind = 1077,
-        RelationalExpressionKind = 1078,
-        RelationalExpressionRestKind = 1079,
-        ScalarKind = 1080,
-        SemicolonOrCloseTagKind = 1081,
-        ShiftExpressionKind = 1082,
-        ShiftExpressionRestKind = 1083,
-        StartKind = 1084,
-        StatementKind = 1085,
-        StaticArrayPairValueKind = 1086,
-        StaticMemberKind = 1087,
-        StaticScalarKind = 1088,
-        StaticVarKind = 1089,
-        SwitchCaseListKind = 1090,
-        TopStatementKind = 1091,
-        UnaryExpressionKind = 1092,
-        UnaryExpressionNotPlusminusKind = 1093,
-        VarExpressionKind = 1094,
-        VarExpressionNewObjectKind = 1095,
-        VarExpressionNormalKind = 1096,
-        VariableKind = 1097,
-        VariableIdentifierKind = 1098,
-        VariableNameKind = 1099,
-        VariablePropertyKind = 1100,
-        VariableWithoutObjectsKind = 1101,
-        WhileStatementKind = 1102,
+        OptionalClassModifierKind = 1073,
+        OptionalModifiersKind = 1074,
+        ParameterKind = 1075,
+        ParameterListKind = 1076,
+        PostprefixOperatorKind = 1077,
+        PrintExpressionKind = 1078,
+        RelationalExpressionKind = 1079,
+        RelationalExpressionRestKind = 1080,
+        ScalarKind = 1081,
+        SemicolonOrCloseTagKind = 1082,
+        ShiftExpressionKind = 1083,
+        ShiftExpressionRestKind = 1084,
+        StartKind = 1085,
+        StatementKind = 1086,
+        StaticArrayPairValueKind = 1087,
+        StaticMemberKind = 1088,
+        StaticScalarKind = 1089,
+        StaticVarKind = 1090,
+        SwitchCaseListKind = 1091,
+        TopStatementKind = 1092,
+        UnaryExpressionKind = 1093,
+        UnaryExpressionNotPlusminusKind = 1094,
+        VarExpressionKind = 1095,
+        VarExpressionNewObjectKind = 1096,
+        VarExpressionNormalKind = 1097,
+        VariableKind = 1098,
+        VariableIdentifierKind = 1099,
+        VariableNameKind = 1100,
+        VariablePropertyKind = 1101,
+        VariableWithoutObjectsKind = 1102,
+        WhileStatementKind = 1103,
         AST_NODE_KIND_COUNT
     };
 
@@ -452,6 +461,7 @@ struct KDEVPHPPARSER_EXPORT ClassDeclarationStatementAst: public AstNode
 {
     enum { KIND = ClassDeclarationStatementKind };
 
+    OptionalClassModifierAst *modifier;
     IdentifierAst *className;
     ClassExtendsAst *extends;
     ClassImplementsAst *implements;
@@ -861,6 +871,13 @@ struct KDEVPHPPARSER_EXPORT ObjectPropertyAst: public AstNode
 
     ObjectDimListAst *objectDimList;
     VariableWithoutObjectsAst *variableWithoutObjects;
+};
+
+struct KDEVPHPPARSER_EXPORT OptionalClassModifierAst: public AstNode
+{
+    enum { KIND = OptionalClassModifierKind };
+
+    ClassModifier modifier;
 };
 
 struct KDEVPHPPARSER_EXPORT OptionalModifiersAst: public AstNode

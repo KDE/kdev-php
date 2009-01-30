@@ -373,6 +373,7 @@ public:
     bool parseNewelseifListItem(NewelseifListItemAst **yynode);
     bool parseObjectDimList(ObjectDimListAst **yynode);
     bool parseObjectProperty(ObjectPropertyAst **yynode);
+    bool parseOptionalClassModifier(OptionalClassModifierAst **yynode);
     bool parseOptionalModifiers(OptionalModifiersAst **yynode);
     bool parseParameter(ParameterAst **yynode);
     bool parseParameterList(ParameterListAst **yynode);

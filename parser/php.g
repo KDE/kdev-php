@@ -77,6 +77,12 @@ namespace KDevelop
         ModifierFinal        = 1 << 4,
         ModifierAbstract     = 1 << 5
     };
+    
+    enum ClassModifier {
+        NormalClass,
+        AbstractClass,
+        FinalClass
+    };
 
     enum ScalarTypes {
         ScalarTypeInt,
@@ -783,7 +789,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
     LBRACE body=classBody RBRACE
 -> interfaceDeclarationStatement ;;
 
-    (ABSTRACT | FINAL | 0) CLASS className=identifier
+    modifier=optionalClassModifier CLASS className=identifier
         (EXTENDS extends=classExtends | 0)
         (IMPLEMENTS implements=classImplements | 0)
     LBRACE body=classBody RBRACE
@@ -831,6 +837,15 @@ identifier=identifier
   )*
 -> optionalModifiers[
      member variable modifiers: unsigned int;
+] ;;
+
+  (
+    ABSTRACT   [: (*yynode)->modifier = AbstractClass; :]
+  | FINAL      [: (*yynode)->modifier = FinalClass;    :]
+  | 0
+  )
+-> optionalClassModifier[
+     member variable modifier: ClassModifier;
 ] ;;
 
 

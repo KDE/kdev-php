@@ -94,6 +94,7 @@ public:
     virtual void visitNewelseifListItem(NewelseifListItemAst *) {}
     virtual void visitObjectDimList(ObjectDimListAst *) {}
     virtual void visitObjectProperty(ObjectPropertyAst *) {}
+    virtual void visitOptionalClassModifier(OptionalClassModifierAst *) {}
     virtual void visitOptionalModifiers(OptionalModifiersAst *) {}
     virtual void visitParameter(ParameterAst *) {}
     virtual void visitParameterList(ParameterListAst *) {}

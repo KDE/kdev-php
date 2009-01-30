@@ -209,6 +209,7 @@ void DefaultVisitor::visitClassConstantDeclaration(ClassConstantDeclarationAst *
 
 void DefaultVisitor::visitClassDeclarationStatement(ClassDeclarationStatementAst *node)
 {
+    visitNode(node->modifier);
     visitNode(node->className);
     visitNode(node->extends);
     visitNode(node->implements);
@@ -644,6 +645,10 @@ void DefaultVisitor::visitObjectProperty(ObjectPropertyAst *node)
 {
     visitNode(node->objectDimList);
     visitNode(node->variableWithoutObjects);
+}
+
+void DefaultVisitor::visitOptionalClassModifier(OptionalClassModifierAst *)
+{
 }
 
 void DefaultVisitor::visitOptionalModifiers(OptionalModifiersAst *)
