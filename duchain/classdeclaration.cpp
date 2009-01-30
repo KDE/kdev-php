@@ -82,6 +82,16 @@ void ClassDeclaration::setClassType(ClassDeclarationData::ClassType type)
     d_func_dynamic()->m_classType = type;
 }
 
+ClassModifier ClassDeclaration::classModifier() const
+{
+    return d_func()->m_classModifier;
+}
+
+void ClassDeclaration::setClassModifier(ClassModifier modifier) 
+{
+    d_func_dynamic()->m_classModifier = modifier;
+}
+
 void ClassDeclaration::clearBaseClasses() {
   d_func_dynamic()->baseClassesList().clear();
 }

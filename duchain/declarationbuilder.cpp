@@ -95,6 +95,9 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
         dec->clearBaseClasses();
         dec->clearInterfaces();
         dec->setClassType(Php::ClassDeclarationData::Class);
+        if ( node->modifier ) {
+          dec->setClassModifier(node->modifier->modifier);
+        }
     }
 
     DeclarationBuilderBase::visitClassDeclarationStatement(node);
@@ -115,6 +118,8 @@ void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclaration
     {
         DUChainWriteLocker lock(DUChain::lock());
         dec->setKind(KDevelop::Declaration::Type);
+        dec->clearBaseClasses();
+        dec->clearInterfaces();
         dec->setClassType(Php::ClassDeclarationData::Interface);
     }
 
@@ -129,6 +134,9 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
     setComment(formatComment(node, editor()));
     if (node->methodName) {
         //method declaration
+        
+        ClassDeclaration *parent =  dynamic_cast<ClassDeclaration*>(currentDeclaration());
+        Q_ASSERT(parent);
         ClassFunctionDeclaration* dec = openDefinition<ClassFunctionDeclaration>(node->methodName, node);
         {
             DUChainWriteLocker lock(DUChain::lock());
@@ -144,16 +152,31 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
             if (node->modifiers->modifiers & ModifierStatic) {
                 dec->setStatic(true);
             }
-            if (node->modifiers->modifiers & ModifierFinal) {
-                //TODO: store this somewhere
+            if ( parent->classType() == ClassDeclarationData::Interface ) {
+                if ( node->modifiers->modifiers & ModifierFinal || node->modifiers->modifiers & ModifierAbstract ) {
+                    reportError( i18n("Access type for interface method %1 must be omitted.", dec->toString()), node->modifiers );
+                }
+                if ( node->methodBody ) {
+                    reportError( i18n("Interface function %1 cannot contain body.", dec->toString()), node->methodBody );
+                }
+            } else {
+                if (node->modifiers->modifiers & ModifierFinal) {
+                    //TODO: store this somewhere
+                }
+                if (node->modifiers->modifiers & ModifierAbstract) {
+                    if ( parent->classModifier() != AbstractClass ) {
+                        reportError( i18n("Class %1 contains abstract method %2 and must therefore be declared abstract "
+                                          "or implement the method.", parent->identifier().toString(), dec->identifier().toString()),
+                                      node->modifiers );
+                    } else if ( node->methodBody ) {
+                        reportError( i18n("Abstract function %1 cannot contain body.", dec->toString()), node->methodBody );
+                    } else if ( node->modifiers->modifiers & ModifierFinal ) {
+                        reportError( i18n("Cannot use the final modifier on an abstract class member."), node->modifiers );
+                    } else {
+                        //TODO: store somewhere that this function is abstract (?)
+                    }
+                }
             }
-            if (node->modifiers->modifiers & ModifierAbstract) {
-                //TODO: check if class is abstract
-                //TODO: check if no methodBody exists
-                //TODO: check if parent is not an interface
-                //TODO: store somewhere that this function is abstract (?)
-            }
-            //TODO: if class is interface check if no methodBody exists
         }
 
         DeclarationBuilderBase::visitClassStatement(node);

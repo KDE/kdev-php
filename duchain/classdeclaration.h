@@ -22,6 +22,7 @@
 #include <language/duchain/declarationdata.h>
 
 #include "phpduchainexport.h"
+#include "phpast.h"
 
 #ifndef CLASSDECLARATION_H
 #define CLASSDECLARATION_H
@@ -47,7 +48,7 @@ public:
     Interface
   };
   
-  ClassDeclarationData() : m_classType(Class) {
+  ClassDeclarationData() : m_classType(Class), m_classModifier(NormalClass) {
     initializeAppendedLists();
   }
 
@@ -59,10 +60,14 @@ public:
     initializeAppendedLists();
     copyListsFrom(rhs);
     m_classType = rhs.m_classType;
+    m_classModifier = rhs.m_classModifier;
   }
   
   /// Type of the class (class, interface)
   ClassType m_classType;
+  
+  /// Wether this class is declared final or abstract or non of all
+  ClassModifier m_classModifier;
   
   START_APPENDED_LISTS_BASE(ClassDeclarationData, KDevelop::DeclarationData);
   APPENDED_LIST_FIRST(ClassDeclarationData, BaseClassInstance, baseClasses);
@@ -82,9 +87,10 @@ public:
   QString toString() const;
 
   void setClassType(ClassDeclarationData::ClassType type);
-  
   ClassDeclarationData::ClassType classType() const;
   
+  void setClassModifier(ClassModifier modifier);
+  ClassModifier classModifier() const;
   
   void clearBaseClasses();
   ///Count of base-classes
