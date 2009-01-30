@@ -222,7 +222,7 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     closeContext();
 }
 
-void ContextBuilder::addBaseType(IdentifierAst * identifier, bool implementsInterface)
+void ContextBuilder::addBaseType(IdentifierAst * identifier, ClassDeclarationData::ClassType type)
 {
     DUChainWriteLocker lock(DUChain::lock());
     
@@ -237,13 +237,12 @@ void ContextBuilder::addBaseType(IdentifierAst * identifier, bool implementsInte
             // prevent circular context imports which could lead to segfaults
             if ( !baseContext->imports(currentContext()) && !currentContext()->imports(baseContext) ) {
                 currentContext()->addImportedParentContext( baseContext );
-                if ( implementsInterface ) {
-                    currentClass->addInterface( BaseClassInstance( baseClass->indexedType() ) );
+                if ( type ) {
+                    currentClass->addInterface( baseClass->indexedType() );
                 } else {
-                    currentClass->setBaseClass( BaseClassInstance( baseClass->indexedType() ) );
+                    currentClass->setBaseClass( baseClass->indexedType() );
                 }
             } else {
-                ///TODO report error
                 reportError(i18n("Circular inheritance of %1 and %2", currentClass->toString(), baseClass->toString()), identifier);
             }
         }

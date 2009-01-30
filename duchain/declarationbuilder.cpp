@@ -92,7 +92,7 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
     {
         DUChainWriteLocker lock(DUChain::lock());
         dec->setKind(KDevelop::Declaration::Type);
-        dec->clearBaseClasses();
+        dec->setBaseClass(IndexedType());
         dec->clearInterfaces();
         dec->setClassType(Php::ClassDeclarationData::Class);
         if ( node->modifier ) {
@@ -118,7 +118,7 @@ void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclaration
     {
         DUChainWriteLocker lock(DUChain::lock());
         dec->setKind(KDevelop::Declaration::Type);
-        dec->clearBaseClasses();
+        dec->setBaseClass(IndexedType());
         dec->clearInterfaces();
         dec->setClassType(Php::ClassDeclarationData::Interface);
     }
@@ -203,7 +203,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 
 void DeclarationBuilder::visitClassExtends(ClassExtendsAst *node)
 {
-    addBaseType(node->identifier, false);
+    addBaseType(node->identifier, ClassDeclarationData::Class);
 }
 
 
@@ -211,7 +211,7 @@ void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
 {
     const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
     do {
-        addBaseType(__it->element, true);
+        addBaseType(__it->element, ClassDeclarationData::Interface);
         __it = __it->next;
     }
     while (__it != __end);

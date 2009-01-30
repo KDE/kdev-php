@@ -70,7 +70,7 @@ protected:
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
     virtual void visitUnaryExpression(UnaryExpressionAst* node);
 
-    virtual void addBaseType(IdentifierAst * identifier, bool implementsInterface);
+    virtual void addBaseType(IdentifierAst * identifier, ClassDeclarationData::ClassType type);
 
     virtual void classContextOpened(KDevelop::DUContext* context);
     

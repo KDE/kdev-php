@@ -30,15 +30,7 @@ namespace Php {
 
 class ClassDeclaration;
 
-struct BaseClassInstance
-{
-  BaseClassInstance(KDevelop::IndexedType t):baseClass(t){}
-  BaseClassInstance(){}
-  KDevelop::IndexedType baseClass;
-};
-
-DECLARE_LIST_MEMBER_HASH(ClassDeclarationData, baseClasses, BaseClassInstance)
-DECLARE_LIST_MEMBER_HASH(ClassDeclarationData, interfaces, BaseClassInstance)
+DECLARE_LIST_MEMBER_HASH(ClassDeclarationData, interfaces, KDevelop::IndexedType)
 
 class ClassDeclarationData : public KDevelop::DeclarationData
 {
@@ -65,13 +57,13 @@ public:
   
   /// Type of the class (class, interface)
   ClassType m_classType;
-  
+  KDevelop::IndexedType m_baseClass;
+
   /// Wether this class is declared final or abstract or non of all
   ClassModifier m_classModifier;
   
   START_APPENDED_LISTS_BASE(ClassDeclarationData, KDevelop::DeclarationData);
-  APPENDED_LIST_FIRST(ClassDeclarationData, BaseClassInstance, baseClasses);
-  APPENDED_LIST(ClassDeclarationData, BaseClassInstance, interfaces, baseClasses)
+  APPENDED_LIST_FIRST(ClassDeclarationData, KDevelop::IndexedType, interfaces);
   END_APPENDED_LISTS(ClassDeclarationData, interfaces);
 };
 
@@ -92,22 +84,29 @@ public:
   void setClassModifier(ClassModifier modifier);
   ClassModifier classModifier() const;
   
-  void clearBaseClasses();
-  ///Count of base-classes
-  uint baseClassesSize() const;
   ///The types this class is based on
-  const BaseClassInstance* baseClasses() const;
-  void setBaseClass(BaseClassInstance base);
+  const KDevelop::IndexedType baseClass() const;
+  void setBaseClass(const KDevelop::IndexedType& base);
   
+  /**
+   * Returns true if the class extends the class given in \p type.
+   * Does not work like Php implements operator that works with interfaces too.
+   * \TODO probably merge with implements
+   */
   bool inherits(const KDevelop::IndexedType& type) const;
   
   void clearInterfaces();
   ///Count of base-classes
   uint interfacesSize() const;
   ///The types this class is based on
-  const BaseClassInstance* interfaces() const;
-  void addInterface(BaseClassInstance interface);
+  const KDevelop::IndexedType* interfaces() const;
+  void addInterface(const KDevelop::IndexedType& interface);
   
+  /**
+   * Returns true if the class implements the interface given in \p type.
+   * Does not work like Php implements operator that works with base classes too.
+   * \TODO probably merge with inherits
+   */
   bool implements(const KDevelop::IndexedType& type) const;
   
   enum {

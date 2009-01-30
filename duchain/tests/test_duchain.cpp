@@ -497,9 +497,9 @@ void TestDUChain::testClassImplementsInterface()
     QVERIFY(dec->internalContext()->importedParentContexts().at(0).context(top) == top->childContexts().at(0));
     
     QCOMPARE(classDec->interfacesSize(), 1u);
-    QCOMPARE(classDec->interfaces()[0].baseClass, indexedTypeI);
+    QCOMPARE(classDec->interfaces()[0], indexedTypeI);
     QVERIFY(classDec->implements(indexedTypeI));
-    QCOMPARE(classDec->baseClassesSize(), 0u);
+    QVERIFY(!classDec->baseClass());
 
     QCOMPARE(dec->uses().count(), 0);
 }
@@ -556,8 +556,7 @@ void TestDUChain::testClassExtends()
     QCOMPARE(dec->internalContext()->importedParentContexts().count(), 1);
     QVERIFY(dec->internalContext()->importedParentContexts().at(0).context(top) == top->childContexts().at(0));
 
-    QCOMPARE(classDec->baseClassesSize(), 1u);
-    QCOMPARE(classDec->baseClasses()[0].baseClass, indexedTypeA);
+    QCOMPARE(classDec->baseClass(), indexedTypeA);
     QVERIFY(classDec->inherits(indexedTypeA));
     QCOMPARE(classDec->interfacesSize(), 0u);
 

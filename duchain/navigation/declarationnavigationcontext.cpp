@@ -52,20 +52,15 @@ void DeclarationNavigationContext::htmlClass()
   Q_ASSERT(klass);
   ClassDeclaration* classDecl = dynamic_cast<ClassDeclaration*>(klass->declaration(m_topContext.data()));
   if(classDecl) {
-    if ( classDecl->baseClassesSize() > 0 ) {
+    if ( classDecl->baseClass() ) {
       modifyHtml() += i18n(" extends ");
-      FOREACH_FUNCTION( const Php::BaseClassInstance& base, classDecl->baseClasses ) {
-        eventuallyMakeTypeLinks(base.baseClass.type());
-        if ( a < containerSize - 1 ) {
-          modifyHtml() += ", ";
-        }
-      }
+      eventuallyMakeTypeLinks(classDecl->baseClass().type());
     }
     modifyHtml() += " ";
     if ( classDecl->interfacesSize() > 0 ) {
       modifyHtml() += i18n(" implements ");
-      FOREACH_FUNCTION( const Php::BaseClassInstance& interface, classDecl->interfaces ) {
-        eventuallyMakeTypeLinks(interface.baseClass.type());
+      FOREACH_FUNCTION( const IndexedType& interface, classDecl->interfaces ) {
+        eventuallyMakeTypeLinks(interface.type());
         if ( a < containerSize - 1 ) {
           modifyHtml() += ", ";
         }

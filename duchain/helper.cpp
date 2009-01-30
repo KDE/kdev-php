@@ -42,7 +42,7 @@
 #include "phpdefaultvisitor.h"
 #include "constantdeclaration.h"
 
-#define ifDebug(x)
+#define ifDebug(x) x
 
 using namespace KDevelop;
 
@@ -101,6 +101,13 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
         foundDeclarations = currentContext->findDeclarations(id);
         foreach (Declaration *declaration, foundDeclarations) {
             if (isMatch(declaration, declarationType)) {
+                ifDebug( kDebug() << "found matching declaration" << declaration->toString(); )
+                lock.unlock();
+                DUChainWriteLocker wlock(DUChain::lock());
+                //currentContext->topContext()->updateImportsCache();
+                if (!currentContext->topContext()->imports(declaration->context()->topContext(), SimpleCursor())) {
+                    currentContext->topContext()->addImportedParentContext(declaration->context()->topContext());
+                }
                 return declaration;
             }
         }
@@ -114,7 +121,6 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
 
             DUChainWriteLocker wlock(DUChain::lock());
             for (uint i=0; i<nr; ++i) {
-                //TODO check if context is in any loaded project
                 if (!declarations[i].declaration()) {
                     ifDebug( kDebug() << "skipping declaration, doesn't have declaration"; )
                     continue;

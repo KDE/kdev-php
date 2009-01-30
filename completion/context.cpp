@@ -200,8 +200,8 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
         ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(parent->owner());
         if ( classDec ) {
           if ( expr == "parent" ) {
-            if ( classDec->baseClassesSize() > 0 ) {
-              StructureType::Ptr classType = classDec->baseClasses()[0].baseClass.type().cast<StructureType>();
+            if ( classDec->baseClass() ) {
+              StructureType::Ptr classType = classDec->baseClass().type().cast<StructureType>();
               if ( classType ) {
                 ifDebug ( kDebug() << "correction: parent can do MemberAccess" );
                 m_parentAccess = true;

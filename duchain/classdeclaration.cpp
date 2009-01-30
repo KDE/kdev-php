@@ -29,8 +29,7 @@ using namespace KDevelop;
 namespace Php {
 REGISTER_DUCHAIN_ITEM(ClassDeclaration);
 
-DEFINE_LIST_MEMBER_HASH(ClassDeclarationData, baseClasses, BaseClassInstance)
-DEFINE_LIST_MEMBER_HASH(ClassDeclarationData, interfaces, BaseClassInstance)
+DEFINE_LIST_MEMBER_HASH(ClassDeclarationData, interfaces, KDevelop::IndexedType)
 
 ClassDeclaration::ClassDeclaration(ClassDeclarationData& data) : KDevelop::Declaration(data) {
 }
@@ -92,39 +91,27 @@ void ClassDeclaration::setClassModifier(ClassModifier modifier)
     d_func_dynamic()->m_classModifier = modifier;
 }
 
-void ClassDeclaration::clearBaseClasses() {
-  d_func_dynamic()->baseClassesList().clear();
+const KDevelop::IndexedType ClassDeclaration::baseClass() const
+{
+   return d_func()->m_baseClass;
 }
 
-uint ClassDeclaration::baseClassesSize() const {
-  return d_func()->baseClassesSize();
-}
-
-const BaseClassInstance* ClassDeclaration::baseClasses() const {
-  return d_func()->baseClasses();
-}
-
-void ClassDeclaration::setBaseClass(BaseClassInstance base) {
-  ///TODO: make sure only one base class is set per ClassDeclaration
-  ///      inheritance makes a list of baseClasses possible though.
-  ///TODO: prevent recursion
-  d_func_dynamic()->baseClassesList().append(base);
+void ClassDeclaration::setBaseClass(const KDevelop::IndexedType& base)
+{
+    d_func_dynamic()->m_baseClass = base;
 }
 
 bool ClassDeclaration::inherits(const IndexedType& type) const {
   if( indexedType() == type )
     return true;
 
-  FOREACH_FUNCTION(const BaseClassInstance& b, baseClasses)
-  {
-    if ( b.baseClass == type ) {
+  if ( baseClass() == type ) {
+    return true;
+  }
+  if( StructureType::Ptr c = baseClass().type().cast<StructureType>() ) {
+    ClassDeclaration* decl = dynamic_cast<ClassDeclaration*>(c->declaration(topContext()));
+    if( decl && decl->inherits( type ) ) {
       return true;
-    }
-    if( StructureType::Ptr c = b.baseClass.type().cast<StructureType>() ) {
-      ClassDeclaration* decl = dynamic_cast<ClassDeclaration*>(c->declaration(topContext()));
-      if( decl && decl->inherits( type ) ) {
-        return true;
-      }
     }
   }
   return false;
@@ -139,22 +126,22 @@ uint ClassDeclaration::interfacesSize() const {
   return d_func()->interfacesSize();
 }
 
-const BaseClassInstance* ClassDeclaration::interfaces() const {
+const KDevelop::IndexedType* ClassDeclaration::interfaces() const {
   return d_func()->interfaces();
 }
 
-void ClassDeclaration::addInterface(BaseClassInstance interface) {
+void ClassDeclaration::addInterface(const KDevelop::IndexedType& interface) {
   ///TODO: prevent recursion
   d_func_dynamic()->interfacesList().append(interface);
 }
 
 bool ClassDeclaration::implements(const IndexedType& type) const {
-  FOREACH_FUNCTION(const BaseClassInstance& b, interfaces)
+  FOREACH_FUNCTION(const KDevelop::IndexedType& b, interfaces)
   {
-    if ( b.baseClass == type ) {
+    if ( b == type ) {
       return true;
     }
-    if( StructureType::Ptr c = b.baseClass.type().cast<StructureType>() ) {
+    if( StructureType::Ptr c = b.type().cast<StructureType>() ) {
       ClassDeclaration* decl = dynamic_cast<ClassDeclaration*>(c->declaration(topContext()));
       if( decl && decl->implements( type ) ) {
         return true;
