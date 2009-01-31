@@ -175,6 +175,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
   }
   if ( expr == "catch" || ( expr == "new" && expressionPrefix.endsWith("throw") ) ) {
     m_memberAccessOperation = ExceptionChoose;
+    return;
   }
   ///TODO: handle class a implements c,d,e (i.e. the comma list)
   if ( expr == "implements" || ( expr == "extends" && expressionPrefix.contains(QRegExp("interface\\s+\\S+$")) ) ) {
