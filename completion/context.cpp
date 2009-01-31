@@ -94,6 +94,12 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
   }
 
   if( m_text.endsWith('(') ) {
+    ifDebug( log( m_text.left( m_text.length()-1 ).trimmed()); )
+    if ( m_text.left( m_text.length()-1 ).trimmed().endsWith("catch") ) {
+        ifDebug( log( "ExceptionChoose"); )
+        m_memberAccessOperation = ExceptionChoose;
+        return;
+    }
 
     if( depth == 0 ) {
       //The first context should never be a function-call context, so make this a NoMemberAccess context and the parent a function-call context.
@@ -173,7 +179,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
     m_memberAccessOperation = ExceptionInstanceChoose;
     return;
   }
-  if ( expr == "catch" || ( expr == "new" && expressionPrefix.endsWith("throw") ) ) {
+  if ( expr == "new" && expressionPrefix.endsWith("throw") ) {
     m_memberAccessOperation = ExceptionChoose;
     return;
   }
@@ -474,8 +480,13 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
 ///TODO: filter current declaration
 inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
 {
-    static IndexedType exceptionType(QualifiedIdentifier("Exception").index());
-    
+    static IndexedType exceptionType;
+    if (!exceptionType) {
+        QList<Declaration*> decs = dec->context()->findDeclarations(QualifiedIdentifier("Exception"));
+        Q_ASSERT(decs.count() == 1);
+        exceptionType = decs.first()->indexedType();
+    }
+
     if ( m_memberAccessOperation == ExceptionChoose
           || m_memberAccessOperation == NewClassChoose
           || m_memberAccessOperation == InterfaceChoose
@@ -504,7 +515,14 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
         return classDec->classType() == ClassDeclarationData::Class;
       }
     }
-    ///TODO m_memberAccessOperation == ExceptionInstanceChoose
+    if (m_memberAccessOperation == ExceptionInstanceChoose) {
+      if (dec->kind() != Declaration::Instance) return false;
+      StructureType::Ptr structType = dec->type<StructureType>();
+      if (!structType) return false;
+      ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(structType->declaration(dec->topContext()));
+      if (!classDec) return false;
+      return classDec->inherits(exceptionType);
+    }
     return true;
 }
 
