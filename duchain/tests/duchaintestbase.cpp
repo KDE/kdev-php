@@ -58,7 +58,7 @@ void DUChainTestBase::initTestCase()
         if (!top) {
             QByteArray content("<?php ");
             if (i==0) {
-                content += "function substr() {} class stdClass {}\n/**\n * @superglobal\n **/\n$_GET = array(); ";
+                content += "function substr() {} class stdClass {}\n/**\n * @superglobal\n **/\n$_GET = array();\nclass Exception {} ";
             }
             parseAdditionalFile(internalFunctionFiles[i], content);
         }
