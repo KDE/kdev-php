@@ -576,7 +576,7 @@ void TestCompletion::exceptions()
     QCOMPARE(itemList.count(), 2);
     QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(0)));
 
-    cptr = new CodeCompletionContext(DUContextPointer(top), "catch");
+    cptr = new CodeCompletionContext(DUContextPointer(top), "foo; catch(");
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::ExceptionChoose);
     itemList = cptr->completionItems(SimpleCursor(0, 61), abort);
     QCOMPARE(itemList.count(), 2);
