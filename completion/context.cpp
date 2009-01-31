@@ -145,7 +145,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
   ifDebug( log( "expressionPrefix: " + expressionPrefix ); )
 
   ///Handle beginning of a PHP block
-  if ( expressionPrefix.endsWith("<?") && m_expression.compare("php", Qt::CaseInsensitive) == 0 ) {
+  if ( expressionPrefix.endsWith("<?") && (m_expression.compare("php", Qt::CaseInsensitive) == 0 || m_expression.isEmpty()) ) {
     return;
   }
 
