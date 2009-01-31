@@ -421,12 +421,21 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
  
     } else {
       //Show all visible declarations
+      QSet<uint> existingIdentifiers;
       QList<DeclarationDepthPair> decls = m_duContext->allDeclarations(m_duContext->type() == DUContext::Class ? m_duContext->range().end : position, m_duContext->topContext());
-      foreach( const DeclarationDepthPair& decl, decls ) {
+      QListIterator<DeclarationDepthPair> i(decls);
+      i.toBack();
+      while (i.hasPrevious()) {
+        DeclarationDepthPair decl = i.previous();
+        Declaration* dec = decl.first;
+        if (dec->kind() == Declaration::Instance) {
+            if (existingIdentifiers.contains(dec->indexedIdentifier().index)) continue;
+            existingIdentifiers.insert(dec->indexedIdentifier().index);
+        }
         if (abort)
           return items;
-        if (!isValidCompletionItem(decl.first)) continue;
-        items << CompletionTreeItemPointer( new NormalDeclarationCompletionItem(DeclarationPointer(decl.first), CodeCompletionContext::Ptr(this), decl.second ) );
+        if (!isValidCompletionItem(dec)) continue;
+        items << CompletionTreeItemPointer( new NormalDeclarationCompletionItem(DeclarationPointer(dec), CodeCompletionContext::Ptr(this), decl.second ) );
       }
       uint count = 0;
       const CodeModelItem* foundItems = 0;

@@ -77,36 +77,13 @@ void CodeCompletionWorker::computeCompletions(KDevelop::DUContextPointer context
   }
 }
 
-///Always the last item of a grouping chain: insert the items and group consecutive identical declarations
-///TODO: sort list and group then to make declarations unique, maybe there's a algorithm to do both in one step?
+///Always the last item of a grouping chain: Only inserts the items
 struct LastGrouper {
   LastGrouper(QList<KSharedPtr<CompletionTreeElement> >& tree, CompletionTreeNode* parent, QList<CompletionTreeItemPointer> items)
   {
-    if ( items.empty() ) {
-      return;
-    }
-    // merge consecutive identical declarations, e.g. repetitive string concatenation or $arr[]=...;$arr[]=... stuff
-    QList<CompletionTreeItemPointer>::iterator curIt = items.begin();
-    QList<CompletionTreeItemPointer>::iterator nextIt = curIt+1;
-    while( true ) {
-      (*curIt)->setParent(parent);      
-      tree << KSharedPtr<CompletionTreeElement>( (*curIt).data() );
-      while ( nextIt != items.end() ) {
-        if ( (*curIt)->declaration()->toString() == (*nextIt)->declaration()->toString() ) {
-          // each item needs a parent, even if it's not part of the tree
-          (*nextIt)->setParent(parent);
-          ++nextIt;
-          continue;
-        } else {
-          break;
-        }
-      }
-      if ( nextIt == items.end() ) {
-        break;
-      } else {
-        curIt = nextIt;
-        ++nextIt;
-      }
+    foreach( CompletionTreeItemPointer item, items ) {
+      item->setParent(parent);
+      tree << KSharedPtr<CompletionTreeElement>( item.data() );
     }
   }
 };

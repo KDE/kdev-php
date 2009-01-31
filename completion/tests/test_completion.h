@@ -51,6 +51,7 @@ private slots:
     void nameNormalVariable();
     void nameClassMember();
     void exceptions();
+    void multipleVarialbeDeclarationsWithSameIdentifier();
 };
 
 }

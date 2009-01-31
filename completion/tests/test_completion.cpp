@@ -582,6 +582,25 @@ void TestCompletion::exceptions()
     QCOMPARE(itemList.count(), 2);
     QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(0)));
 }
+
+void TestCompletion::multipleVarialbeDeclarationsWithSameIdentifier()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $a=0;$a='0'; ");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), ""));
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(0, 15), abort);
+    QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(1)));
+    QVERIFY(!searchDeclaration(itemList, top->localDeclarations().at(0)));
+}
+
 }
 
 #include "test_completion.moc"
