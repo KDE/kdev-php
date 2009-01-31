@@ -90,7 +90,7 @@ public:
   
   /**
    * Returns true if the class extends the class given in \p type.
-   * Does not work like Php implements operator that works with interfaces too.
+   * Does not work like Php instanceof operator that works with interfaces too.
    * \TODO probably merge with implements
    */
   bool inherits(const KDevelop::IndexedType& type) const;
@@ -104,7 +104,7 @@ public:
   
   /**
    * Returns true if the class implements the interface given in \p type.
-   * Does not work like Php implements operator that works with base classes too.
+   * Does not work like Php instanceof operator that works with base classes too.
    * \TODO probably merge with inherits
    */
   bool implements(const KDevelop::IndexedType& type) const;
