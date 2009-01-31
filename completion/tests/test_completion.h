@@ -50,6 +50,7 @@ private slots:
     void variableStarted();
     void nameNormalVariable();
     void nameClassMember();
+    void exceptions();
 };
 
 }

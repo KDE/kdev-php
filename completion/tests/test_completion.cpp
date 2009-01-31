@@ -552,6 +552,36 @@ void TestCompletion::nameClassMember()
     //don't delete model as its constructor does bad things (quit the current thread - we don't want that in test)
     //TODO find better solution that doesn't leak
 }
+
+void TestCompletion::exceptions()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class MyExcpt extends Exception {} $excpt = new MyExcpt(); ");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "throw"));
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::ExceptionInstanceChoose);
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(0, 61), abort);
+    QCOMPARE(itemList.count(), 1);
+    QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(1)));
+
+    cptr = new CodeCompletionContext(DUContextPointer(top), "throw new");
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::ExceptionChoose);
+    itemList = cptr->completionItems(SimpleCursor(0, 61), abort);
+    QCOMPARE(itemList.count(), 2);
+    QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(0)));
+
+    cptr = new CodeCompletionContext(DUContextPointer(top), "catch");
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::ExceptionChoose);
+    itemList = cptr->completionItems(SimpleCursor(0, 61), abort);
+    QCOMPARE(itemList.count(), 2);
+    QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(0)));
+}
 }
 
 #include "test_completion.moc"
