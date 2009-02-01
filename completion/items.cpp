@@ -40,6 +40,7 @@
 #include "../duchain/navigation/navigationwidget.h"
 #include "../duchain/constantdeclaration.h"
 #include "../duchain/classdeclaration.h"
+#include "../duchain/variabledeclaration.h"
 
 using namespace KDevelop;
 
@@ -51,10 +52,7 @@ QString nameForDeclaration(Declaration* dec) {
     return "<unknown>";
   else {
     QString ret = dec->identifier().toString();
-    bool isConst = dynamic_cast<ConstantDeclaration*>(dec);
-    ClassMemberDeclaration* classMember = dynamic_cast<ClassMemberDeclaration*>(dec);
-    if (!isConst && dec->kind() == Declaration::Instance && (!dec->context() || dec->context()->type() != DUContext::Class
-          || (classMember && classMember->isStatic() && !classMember->isFunctionDeclaration()))) {
+    if (dynamic_cast<VariableDeclaration*>(dec)) {
       ret = "$" + ret;
     }
     return ret;
