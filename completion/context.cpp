@@ -53,7 +53,7 @@ namespace Php {
 
 int completionRecursionDepth = 0;
 
-CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QString& text, int depth)
+CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QString& text, const QString& followingText, int depth)
   : KDevelop::CodeCompletionContext(context, text, depth)
   , m_memberAccessOperation(NoMemberAccess), m_parentAccess(false)
 {
@@ -103,7 +103,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
 
     if( depth == 0 ) {
       //The first context should never be a function-call context, so make this a NoMemberAccess context and the parent a function-call context.
-      m_parentContext = new CodeCompletionContext( m_duContext, m_text, depth+1 );
+      m_parentContext = new CodeCompletionContext( m_duContext, m_text, QString(), depth+1 );
       ifDebug( log( "NoMemberAccess (created parentContext)"); )
       return;
     }
@@ -163,7 +163,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
     QString parentContextText = expressionPrefix.left(parentContextEnd);
 
     log( QString("This argument-number: %1 Building parent-context from \"%2\"").arg(otherArguments.size()).arg(parentContextText) );
-    m_parentContext = new CodeCompletionContext( m_duContext, parentContextText, depth+1 );
+    m_parentContext = new CodeCompletionContext( m_duContext, parentContextText, QString(), depth+1 );
   }
 
   ///Now care about m_expression. It may still contain keywords like "new "
@@ -334,7 +334,7 @@ QList<DUContext*> CodeCompletionContext::memberAccessContainers() const
     return ret;
 }
 
-QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KDevelop::SimpleCursor& position, bool& abort)
+QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KDevelop::SimpleCursor& position, bool& abort, bool fullCompletion)
 {
   LOCKDUCHAIN;
   

@@ -57,13 +57,13 @@ namespace Php {
        * @param text the text to analyze. It usually is the text in the range starting at the beginning of the context, and ending at the position where completion should start
        * @warning The du-chain must be unlocked when this is called
        * */
-      CodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, int depth = 0);
+      CodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, int depth = 0);
       ~CodeCompletionContext();
 
       ///Computes the full set of completion items, using the information retrieved earlier.
       ///Should only be called on the first context, parent contexts are included in the computations.
       ///@param Abort is checked regularly, and if it is false, the computation is aborted.
-      QList<KDevelop::CompletionTreeItemPointer> completionItems(const KDevelop::SimpleCursor& position, bool& abort);
+      virtual QList<KDevelop::CompletionTreeItemPointer> completionItems(const KDevelop::SimpleCursor& position, bool& abort, bool fullCompletion = true);
 
       bool isValidPosition() const;
 

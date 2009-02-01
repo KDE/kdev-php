@@ -99,7 +99,7 @@ void TestCompletion::publicObjectCompletion()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $instA->"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $instA->", QString()));
     
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::MemberAccess);
 
@@ -115,7 +115,7 @@ void TestCompletion::publicStaticObjectCompletion()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; A::"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; A::", QString()));
     
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::StaticMemberChoose);
 
@@ -133,7 +133,7 @@ void TestCompletion::privateObjectCompletion()
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "$this->"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "$this->", QString()));
     
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::MemberAccess);
 
@@ -155,7 +155,7 @@ void TestCompletion::privateStaticObjectCompletion()
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "self::"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "self::", QString()));
     
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::StaticMemberChoose);
 
@@ -178,7 +178,7 @@ void TestCompletion::protectedObjectCompletion()
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().at(1)->localDeclarations().first()->internalContext();
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "$this->"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "$this->", QString()));
     
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::MemberAccess);
 
@@ -199,7 +199,7 @@ void TestCompletion::protectedStaticObjectCompletion()
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().at(1)->localDeclarations().first()->internalContext();
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "self::"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "self::", QString()));
     
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::StaticMemberChoose);
 
@@ -225,7 +225,7 @@ void TestCompletion::methodCall()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $i->foo("));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $i->foo(", QString()));
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
     QVERIFY(cptr->parentContext());
     QCOMPARE(cptr->parentContext()->memberAccessOperation(), CodeCompletionContext::FunctionCallAccess);
@@ -241,7 +241,7 @@ void TestCompletion::methodCall()
     QCOMPARE(ret, QString("(A $a, mixed $b = null)"));
 
 
-    cptr = new CodeCompletionContext(DUContextPointer(top), "$blah; $i->foo(new A(), ");
+    cptr = new CodeCompletionContext(DUContextPointer(top), "$blah; $i->foo(new A(), ", QString());
     itemList = cptr->completionItems(SimpleCursor(), abort);
     QVERIFY(searchDeclaration(itemList, top->childContexts().at(0)->localDeclarations().at(0)));
 }
@@ -255,7 +255,7 @@ void TestCompletion::functionCall()
     TopDUContext* top = parse(method, DumpAll);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; foo("));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; foo(", QString()));
     QVERIFY(cptr->parentContext());
 
     QVERIFY(cptr->parentContext());
@@ -287,7 +287,7 @@ void TestCompletion::newObjectFromOtherFile()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $a->"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; $a->", QString()));
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
     QCOMPARE(itemList.count(), 1);
@@ -302,13 +302,13 @@ void TestCompletion::baseClass()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$a->"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$a->", QString()));
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
     QCOMPARE(itemList.count(), 1);
     QCOMPARE(itemList.first()->declaration().data(), top->childContexts().first()->localDeclarations().first());
 
-    cptr = new CodeCompletionContext(DUContextPointer(top), "$b->");
+    cptr = new CodeCompletionContext(DUContextPointer(top), "$b->", QString());
     itemList = cptr->completionItems(SimpleCursor(), abort);
     QCOMPARE(itemList.count(), 2);
     QCOMPARE(itemList.at(1)->declaration().data(), top->childContexts().first()->localDeclarations().first());
@@ -328,7 +328,7 @@ void TestCompletion::extendsFromOtherFile()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$b->"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$b->", QString()));
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
     QCOMPARE(itemList.count(), 2);
@@ -350,7 +350,7 @@ void TestCompletion::globalClassFromOtherFile()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 /*
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "new "));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "new ", QString()));
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
     QVERIFY(searchDeclaration(itemList, addTop->localDeclarations().first()));
@@ -378,8 +378,8 @@ void TestCompletion::codeModel()
 
 class TestCodeCompletionContext : public CodeCompletionContext {
 public:
-    TestCodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, int depth = 0)
-        : CodeCompletionContext(context, text, depth)
+    TestCodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, int depth = 0)
+        : CodeCompletionContext(context, text, followingText, depth)
     { }
 protected:
     QList<QSet<IndexedString> > completionFiles() {
@@ -405,7 +405,7 @@ void TestCompletion::projectFileClass()
     DUChainReleaser releaseTop(top);
 
     DUChainWriteLocker lock(DUChain::lock());
-    CodeCompletionContext::Ptr cptr(new TestCodeCompletionContext(DUContextPointer(top), ""));
+    CodeCompletionContext::Ptr cptr(new TestCodeCompletionContext(DUContextPointer(top), "", QString()));
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
     QVERIFY(searchDeclaration(itemList, addTop->localDeclarations().first()));
@@ -422,7 +422,7 @@ void TestCompletion::thisCompletion()
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "$this->"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "$this->", QString()));
 
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::MemberAccess);
 
@@ -444,7 +444,7 @@ void TestCompletion::variable()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), ""));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "", QString()));
 
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
 
@@ -463,7 +463,7 @@ void TestCompletion::variableStarted()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "s"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "s", QString()));
 
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
 
@@ -497,7 +497,7 @@ void TestCompletion::nameNormalVariable()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext* cContext = new CodeCompletionContext(DUContextPointer(top), "");
+    CodeCompletionContext* cContext = new CodeCompletionContext(DUContextPointer(top), "", QString());
     bool abort = false;
     QList<KDevelop::CompletionTreeItemPointer> itemList = cContext->completionItems(SimpleCursor(0, 44), abort);
 
@@ -535,7 +535,7 @@ void TestCompletion::nameClassMember()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext* cContext = new CodeCompletionContext(DUContextPointer(top), "$b->");
+    CodeCompletionContext* cContext = new CodeCompletionContext(DUContextPointer(top), "$b->", QString());
     bool abort = false;
     QList<KDevelop::CompletionTreeItemPointer> itemList = cContext->completionItems(SimpleCursor(0, 44), abort);
 
@@ -563,20 +563,20 @@ void TestCompletion::exceptions()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "throw"));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "throw", QString()));
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::ExceptionInstanceChoose);
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(0, 61), abort);
     QCOMPARE(itemList.count(), 1);
     QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(1)));
 
-    cptr = new CodeCompletionContext(DUContextPointer(top), "throw new");
+    cptr = new CodeCompletionContext(DUContextPointer(top), "throw new", QString());
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::ExceptionChoose);
     itemList = cptr->completionItems(SimpleCursor(0, 61), abort);
     QCOMPARE(itemList.count(), 2);
     QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(0)));
 
-    cptr = new CodeCompletionContext(DUContextPointer(top), "foo; catch(");
+    cptr = new CodeCompletionContext(DUContextPointer(top), "foo; catch(", QString());
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::ExceptionChoose);
     itemList = cptr->completionItems(SimpleCursor(0, 61), abort);
     QCOMPARE(itemList.count(), 2);
@@ -593,7 +593,7 @@ void TestCompletion::multipleVarialbeDeclarationsWithSameIdentifier()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), ""));
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "", QString()));
     QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(0, 15), abort);

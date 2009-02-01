@@ -40,13 +40,8 @@ class KDEVPHPCOMPLETION_EXPORT CodeCompletionWorker : public KDevelop::CodeCompl
   public:
     CodeCompletionWorker(CodeCompletionModel* parent);
     
-    CodeCompletionModel* model() const;
-    
   protected:
-    virtual void computeCompletions(KDevelop::DUContextPointer context, const KTextEditor::Cursor& position, KTextEditor::View* view, const KTextEditor::Range& contextRange, const QString& contextText);
-
-  private:
-    void computeGroups(QList<KDevelop::CompletionTreeItemPointer> items, KSharedPtr<CodeCompletionContext> completionContext);
+    virtual KDevelop::CodeCompletionContext* createCompletionContext(KDevelop::DUContextPointer context, const QString &contextText, const QString &followingText) const;
 };
 
 }
