@@ -161,9 +161,22 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
     skipFunctionArguments( expressionPrefix, otherArguments, parentContextEnd );
 
     QString parentContextText = expressionPrefix.left(parentContextEnd);
-
+    
+    if ( parentContextText == text ) {
+      log ( QString("Endless recursion spotted, this doesn't seem to be a valid position for a code completion.") );
+      m_valid = false;
+      return;
+    }
+    
     log( QString("This argument-number: %1 Building parent-context from \"%2\"").arg(otherArguments.size()).arg(parentContextText) );
+    
     m_parentContext = new CodeCompletionContext( m_duContext, parentContextText, QString(), depth+1 );
+    
+    if ( !m_parentContext->isValid() ) {
+      m_parentContext = 0;
+      m_valid = false;
+      return;
+    }
   }
 
   ///Now care about m_expression. It may still contain keywords like "new "
