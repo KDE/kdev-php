@@ -237,7 +237,7 @@ void ContextBuilder::addBaseType(IdentifierAst * identifier, ClassDeclarationDat
             // prevent circular context imports which could lead to segfaults
             if ( !baseContext->imports(currentContext()) && !currentContext()->imports(baseContext) ) {
                 currentContext()->addImportedParentContext( baseContext );
-                if ( type ) {
+                if ( type == ClassDeclarationData::Interface ) {
                     currentClass->addInterface( baseClass->indexedType() );
                 } else {
                     currentClass->setBaseClass( baseClass->indexedType() );
