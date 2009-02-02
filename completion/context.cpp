@@ -149,6 +149,12 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
     return;
   }
 
+  ///Handle lists of interfaces
+  if ( expressionPrefix.contains(QRegExp("implements\\s+([^\\s\\(\\{,\\}\\)]+\\s*,\\s*)+$")) ) {
+    m_memberAccessOperation = InterfaceChoose;
+    return;
+  }
+  
   ///Handle recursive contexts(Example: "ret = function1(param1, function2(" )
   if( expressionPrefix.endsWith('(') || expressionPrefix.endsWith(',') ) {
     log( QString("Recursive function-call: Searching parent-context in \"%1\"").arg(expressionPrefix) );
@@ -196,7 +202,6 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
     m_memberAccessOperation = ExceptionChoose;
     return;
   }
-  ///TODO: handle class a implements c,d,e (i.e. the comma list)
   if ( expr == "implements" || ( expr == "extends" && expressionPrefix.contains(QRegExp("interface\\s+\\S+$")) ) ) {
     m_memberAccessOperation = InterfaceChoose;
     return;
