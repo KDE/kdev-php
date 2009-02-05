@@ -71,52 +71,6 @@ CodeCompletionModel::~CodeCompletionModel()
 {
 }
 
-void CodeCompletionModel::completionInvokedInternal(KTextEditor::View* view, const KTextEditor::Range& range, InvocationType invocationType, const KUrl& url)
-{
-  Q_UNUSED(invocationType)
-
-  DUChainReadLocker lock(DUChain::lock(), 400);
-  if( !lock.locked() ) {
-    kDebug() << "could not lock du-chain in time";
-    return;
-  }
-
-  TopDUContext* top = DUChain::self()->chainForDocument(view->document()->url());
-  if(!top ) {
-    kDebug() << "no top level context available";
-    return;
-  }
-  setCurrentTopContext(TopDUContextPointer(top));
-
-  if (top) {
-    kDebug() << "completion invoked for context" << (DUContext*)top;
-
-//     if( top->parsingEnvironmentFile()->modificationRevision() != EditorIntegrator::modificationRevision(url.prettyUrl()) ) {
-//       kDebug() << "Found context is not current. Its revision is " << top->parsingEnvironmentFile()->modificationRevision() << " while the document-revision is " << EditorIntegrator::modificationRevision(url.prettyUrl());
-//     }
-
-    DUContextPointer thisContext;
-    {
-      thisContext = top->findContextAt(SimpleCursor(range.start()));
-
-       kDebug() << "context is set to" << thisContext.data();
-        if( !thisContext ) {
-          kDebug(  ) << "========= NO CONTEXT FOUND => using top context instead ==========";
-          thisContext = top;
-        }
-        kDebug() << "================== duchain for the context =======================";
-        DumpChain dump;
-        dump.dump(thisContext.data());
-    }
-
-    lock.unlock();
-
-    emit completionsNeeded(thisContext, range.start(), view);
-  } else {
-    kDebug() << "Completion invoked for unknown context. Document:" << url << ", Known documents:" << DUChain::self()->documents();
-  }
-}
-
 Range CodeCompletionModel::completionRange(View* view, const Cursor &position)
 {
     Range range = CodeCompletionModelControllerInterface::completionRange(view, position);

@@ -51,7 +51,6 @@ class KDEVPHPCOMPLETION_EXPORT CodeCompletionModel : public KDevelop::CodeComple
     
   protected:
     virtual KDevelop::CodeCompletionWorker* createCompletionWorker();
-    virtual void completionInvokedInternal(KTextEditor::View* view, const KTextEditor::Range& range, InvocationType invocationType, const KUrl& url);
 };
 
 }
