@@ -161,7 +161,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
                 }
             } else {
                 if (node->modifiers->modifiers & ModifierFinal) {
-                    //TODO: store this somewhere
+                    dec->setIsFinal(true);
                 }
                 if (node->modifiers->modifiers & ModifierAbstract) {
                     if ( parent->classModifier() != AbstractClass ) {
@@ -173,7 +173,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
                     } else if ( node->modifiers->modifiers & ModifierFinal ) {
                         reportError( i18n("Cannot use the final modifier on an abstract class member."), node->modifiers );
                     } else {
-                        //TODO: store somewhere that this function is abstract (?)
+                        dec->setIsAbstract(true);
                     }
                 }
             }
