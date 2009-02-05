@@ -52,6 +52,8 @@ private slots:
     void nameClassMember();
     void exceptions();
     void multipleVarialbeDeclarationsWithSameIdentifier();
+    void abstractMethods();
+    void interfaceMethods();
 };
 
 }

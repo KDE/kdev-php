@@ -159,6 +159,8 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
                 if ( !isEmptyMethodBody(node->methodBody) ) {
                     reportError( i18n("Interface function %1 cannot contain body.", dec->toString()), node->methodBody );
                 }
+                // handle interface methods like abstract methods
+                dec->setIsAbstract(true);
             } else {
                 if (node->modifiers->modifiers & ModifierAbstract) {
                     if ( parent->classModifier() != AbstractClass ) {

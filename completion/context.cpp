@@ -378,6 +378,9 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
              m_duContext->parentContext() && m_duContext->parentContext()->owner() ) {
           currentClass = dynamic_cast<ClassDeclaration*>(m_duContext->parentContext()->owner());
         }
+        
+        bool filterAbstract = memberAccessOperation() == StaticMemberChoose || memberAccessOperation() == MemberAccess;
+        
         foreach(DUContext* ctx, containers) {
           ClassDeclaration* accessedClass = dynamic_cast<ClassDeclaration*>(ctx->owner());
           if (abort)
@@ -424,6 +427,14 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
                   }
                 }
                 if ( ap < classMember->accessPolicy() ) {
+                  continue;
+                }
+              }
+              
+              // filter abstract methods
+              if ( filterAbstract ) {
+                ClassFunctionDeclaration* method = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
+                if ( method && method->isAbstract() ) {
                   continue;
                 }
               }
@@ -550,6 +561,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
       if (!classDec) return false;
       return classDec->inherits(exceptionType);
     }
+    
     return true;
 }
 

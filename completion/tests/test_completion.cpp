@@ -601,6 +601,44 @@ void TestCompletion::multipleVarialbeDeclarationsWithSameIdentifier()
     QVERIFY(!searchDeclaration(itemList, top->localDeclarations().at(0)));
 }
 
+void TestCompletion::abstractMethods()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? abstract class A {  abstract function foo(); function bar(){} }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    DUContext* funContext = top->childContexts().first()->localDeclarations().last()->internalContext();
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "$this->", QString()));
+
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+    QCOMPARE(itemList.count(), 1);
+    QCOMPARE(itemList.first()->declaration().data(), top->childContexts().first()->localDeclarations().last());
+}
+
+void TestCompletion::interfaceMethods()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? interface A {  function foo(); } class B implements A { function bar(){} }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    DUContext* funContext = top->childContexts().last()->localDeclarations().first()->internalContext();
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "$this->", QString()));
+
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+    QCOMPARE(itemList.count(), 1);
+    QCOMPARE(itemList.first()->declaration().data(), top->childContexts().last()->localDeclarations().first());
+}
+
 }
 
 #include "test_completion.moc"
