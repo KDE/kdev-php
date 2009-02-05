@@ -156,25 +156,27 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
                 if ( node->modifiers->modifiers & ModifierFinal || node->modifiers->modifiers & ModifierAbstract ) {
                     reportError( i18n("Access type for interface method %1 must be omitted.", dec->toString()), node->modifiers );
                 }
-                if ( node->methodBody ) {
+                if ( !isEmptyMethodBody(node->methodBody) ) {
                     reportError( i18n("Interface function %1 cannot contain body.", dec->toString()), node->methodBody );
                 }
             } else {
-                if (node->modifiers->modifiers & ModifierFinal) {
-                    dec->setIsFinal(true);
-                }
                 if (node->modifiers->modifiers & ModifierAbstract) {
                     if ( parent->classModifier() != AbstractClass ) {
                         reportError( i18n("Class %1 contains abstract method %2 and must therefore be declared abstract "
                                           "or implement the method.", parent->identifier().toString(), dec->identifier().toString()),
                                       node->modifiers );
-                    } else if ( node->methodBody ) {
+                    } else if ( !isEmptyMethodBody(node->methodBody) ) {
                         reportError( i18n("Abstract function %1 cannot contain body.", dec->toString()), node->methodBody );
                     } else if ( node->modifiers->modifiers & ModifierFinal ) {
                         reportError( i18n("Cannot use the final modifier on an abstract class member."), node->modifiers );
                     } else {
                         dec->setIsAbstract(true);
                     }
+                } else if (node->modifiers->modifiers & ModifierFinal) {
+                    dec->setIsFinal(true);
+                }
+                if ( !dec->isAbstract() && isEmptyMethodBody(node->methodBody) ) {
+                  reportError( i18n("Non-abstract method %1 must contain body.", dec->toString()), node->methodBody );
                 }
             }
         }

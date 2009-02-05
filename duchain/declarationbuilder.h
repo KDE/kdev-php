@@ -63,6 +63,11 @@ protected:
 
     void classTypeOpened(KDevelop::AbstractType::Ptr type);
     void classContextOpened(KDevelop::DUContext* context);
+    
+    /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
+    bool isEmptyMethodBody(const Php::MethodBodyAst* body) const {
+        return !body || !body->statements;
+    }
 
 private:
     void preBuild(const KDevelop::IndexedString& url, Php::AstNode* node,
