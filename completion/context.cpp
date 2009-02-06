@@ -507,8 +507,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
       }
       // show non-interface and non-abstract
       else if ( m_memberAccessOperation == NewClassChoose ) {
-        ///TODO handle abstract
-        return classDec->classType() == ClassDeclarationData::Class;
+        return !(classDec->classModifier() & Php::AbstractClass) && classDec->classType() == ClassDeclarationData::Class;
       }
       // filter non-exception classes
       else if ( m_memberAccessOperation == ExceptionChoose ) {
@@ -520,8 +519,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
       }
       // show anything but final classes and interfaces
       else if ( m_memberAccessOperation == ClassExtendsChoose ) {
-        ///TODO handle final
-        return classDec->classType() == ClassDeclarationData::Class;
+        return !(classDec->classModifier() & Php::FinalClass) && classDec->classType() == ClassDeclarationData::Class;
       }
     }
     if (m_memberAccessOperation == ExceptionInstanceChoose) {
