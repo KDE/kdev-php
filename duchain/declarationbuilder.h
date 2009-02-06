@@ -70,7 +70,7 @@ protected:
     }
 
 private:
-    void preBuild(const KDevelop::IndexedString& url, Php::AstNode* node,
+    KDevelop::ReferencedTopDUContext preBuild(const KDevelop::IndexedString& url, Php::AstNode* node,
                   KDevelop::ReferencedTopDUContext updateContext = KDevelop::ReferencedTopDUContext(),
                   bool useSmart = true);
 

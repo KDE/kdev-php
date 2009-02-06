@@ -60,15 +60,23 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
     //Run DeclarationBuilder twice, to find uses of declarations that are
     //declared after the use. ($a = new Foo; class Foo {})
     DeclarationBuilder b(editor());
-    b.preBuild(url, node, updateContext, useSmart);
+    updateContext = b.preBuild(url, node, updateContext, useSmart);
 
-    return DeclarationBuilderBase::build(url, node, updateContext, useSmart);
+    // now skip through some things the DeclarationBuilderBase (ContextBuilder) would do,
+    // most significantly don't clear imported parent contexts
+    {
+        DUChainWriteLocker lock(DUChain::lock());
+        updateContext->parsingEnvironmentFile()->clearModificationRevisions();
+        updateContext->clearProblems();
+    }
+    
+    return ContextBuilderBase::build(url, node, updateContext, useSmart);
 }
 
-void DeclarationBuilder::preBuild(const KDevelop::IndexedString& url, Php::AstNode* node,
+KDevelop::ReferencedTopDUContext DeclarationBuilder::preBuild(const KDevelop::IndexedString& url, Php::AstNode* node,
                                   KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
 {
-    DeclarationBuilderBase::build(url, node, updateContext, useSmart);
+    return DeclarationBuilderBase::build(url, node, updateContext, useSmart);
 }
 
 
