@@ -71,8 +71,7 @@ namespace Php {
         NoMemberAccess,  ///With NoMemberAccess, a global completion should be done
         MemberAccess,      ///klass->
         FunctionCallAccess,  ///"function(". Will never appear as initial access-operation, but as parentContext() access-operation.
-        StaticMemberChoose, ///klass::
-        MemberChoose,
+        StaticMemberAccess, ///klass::
         NewClassChoose, /// after the "new" keyword any non-abstract classes (not interfaces) should be shown
         ClassExtendsChoose, /// after "class XYZ extends" any non-final classes should be shown
         InterfaceChoose, /// after the "implements" keyword or after "interface XYZ extends" any interfaces should be shown

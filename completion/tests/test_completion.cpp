@@ -117,7 +117,7 @@ void TestCompletion::publicStaticObjectCompletion()
 
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$blah; A::", QString()));
     
-    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::StaticMemberChoose);
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::StaticMemberAccess);
 
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
@@ -157,7 +157,7 @@ void TestCompletion::privateStaticObjectCompletion()
     DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "self::", QString()));
     
-    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::StaticMemberChoose);
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::StaticMemberAccess);
 
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
@@ -201,7 +201,7 @@ void TestCompletion::protectedStaticObjectCompletion()
     DUContext* funContext = top->childContexts().at(1)->localDeclarations().first()->internalContext();
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(funContext), "self::", QString()));
     
-    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::StaticMemberChoose);
+    QCOMPARE(cptr->memberAccessOperation(), CodeCompletionContext::StaticMemberAccess);
 
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);

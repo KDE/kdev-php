@@ -88,9 +88,9 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
   }
 
   if( m_text.endsWith("::") ) {
-    m_memberAccessOperation = StaticMemberChoose; //We need to decide later whether it is a MemberChoose
+    m_memberAccessOperation = StaticMemberAccess;
     m_text = m_text.left( m_text.length()-2 );
-    ifDebug( log( "StaticMemberChoose"); )
+    ifDebug( log( "StaticMemberAccess"); )
   }
 
   if( m_text.endsWith('(') ) {
@@ -217,7 +217,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
 
   ifDebug( kDebug() << "expression: " << expr; )
 
-  if (m_memberAccessOperation == StaticMemberChoose) {
+  if (m_memberAccessOperation == StaticMemberAccess) {
     LOCKDUCHAIN;
     if ( expr == "self" || expr == "parent" ) {
       // self and parent are only accessible from within a member function of a class
@@ -358,7 +358,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
           currentClass = dynamic_cast<ClassDeclaration*>(m_duContext->parentContext()->owner());
         }
         
-        bool filterAbstract = memberAccessOperation() == StaticMemberChoose || memberAccessOperation() == MemberAccess;
+        bool filterAbstract = memberAccessOperation() == StaticMemberAccess || memberAccessOperation() == MemberAccess;
         
         foreach(DUContext* ctx, containers) {
           ClassDeclaration* accessedClass = dynamic_cast<ClassDeclaration*>(ctx->owner());
@@ -366,19 +366,12 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
             return items;
 
           foreach( const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false ) ) {
-              //If we have StaticMemberChoose, which means A::Bla, show only static members, except if we're within a class that derives from the container
+              //If we have StaticMemberAccess, which means A::Bla, show only static members, except if we're within a class that derives from the container
               ClassMemberDeclaration* classMember = dynamic_cast<ClassMemberDeclaration*>(decl.first);
-              if(memberAccessOperation() != StaticMemberChoose) {
-//                 if(decl.first->kind() != Declaration::Instance)
-//                   continue; //needed for functions: todo make this more intelligent
+              if(memberAccessOperation() != StaticMemberAccess) {
                 if(classMember && classMember->isStatic())
                   continue; //Skip static class members when not doing static access
               } else {
-//                 if (dynamic_cast<ClassMemberFunctionDeclaration*>(decl.first)
-//                     && decl.first->internalContext()
-//                     && m_duContext->parentContextOf(decl.first->internalContext())
-//                 ) {
-//                 }
                 if(!classMember || !classMember->isStatic())
                   continue; //Skip static class members when not doing static access
               }
@@ -399,7 +392,8 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
                         // we can show all but private members of ancestors of the current class
                         ap = Declaration::Protected;
                       }
-                    } else if ( currentClass->inherits( accessedClass->indexedType() ) && ( accessedClass == memberClass || accessedClass->inherits( memberClass->indexedType() ) ) ) {
+                    } else if ( currentClass->inherits( accessedClass->indexedType() )
+                            && ( accessedClass == memberClass || accessedClass->inherits( memberClass->indexedType() ) ) ) {
                       // we can show all but private members of ancestors of the current class
                       ap = Declaration::Protected;
                     }
@@ -426,7 +420,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
         kDebug() << "setContext: no container-type";
       }
 
- 
     } else {
       //Show all visible declarations
       QSet<uint> existingIdentifiers;
@@ -466,7 +459,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
             }
         }
       }
-      
 
       kDebug() << "setContext: using all declarations visible:" << decls.size();
     }
