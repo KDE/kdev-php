@@ -267,32 +267,11 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
         }
     }
 
-  switch( m_memberAccessOperation ) {
-
-    case NoMemberAccess:
-    {
-      if( !expr.trimmed().isEmpty() ) {
-        //This should never happen, because the position-cursor should be chosen at the beginning of a possible completion-context(not in the middle of a string)
-        log( QString("Cannot complete \"%1\" because there is an expression without an access-operation" ).arg(expr) );
-        m_valid  = false;
-      } else {
-        //Do nothing. We do not have a completion-container, which means that a global completion should be done.
-      }
-    }
-    break;
-    case MemberChoose:
-    case StaticMemberChoose:
-    {
-      ///@todo Check whether it is a MemberChoose
-    }
-    case MemberAccess:
-    case FunctionCallAccess:
-    {
-      //The result of the expression is stored in m_expressionResult, so we're fine
-      break;
-    }
+  if ( m_memberAccessOperation == NoMemberAccess && !expr.trimmed().isEmpty() ) {
+      //This should never happen, because the position-cursor should be chosen at the beginning of a possible completion-context(not in the middle of a string)
+      log( QString("Cannot complete \"%1\" because there is an expression without an access-operation" ).arg(expr) );
+      m_valid  = false;
   }
-
 }
 
 CodeCompletionContext::~CodeCompletionContext() {
