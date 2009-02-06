@@ -762,7 +762,9 @@ void TestDUChain::testDefine()
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("BAR")).count(), 1);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("FOO")).first()->context(), top);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("BAR")).first()->context(), top);
-    QVERIFY(dynamic_cast<ConstantDeclaration*>(top->localDeclarations().first()));
+    
+    QVERIFY(dynamic_cast<ConstantDeclaration*>(top->findDeclarations(QualifiedIdentifier("FOO")).first()));
+    QVERIFY(dynamic_cast<ConstantDeclaration*>(top->findDeclarations(QualifiedIdentifier("BAR")).first()));
 }
 void TestDUChain::testDefaultFunctionParam()
 {
@@ -1185,7 +1187,7 @@ void TestDUChain::testGlobalVariableNotVisibleInFunction()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QCOMPARE(top->localDeclarations().at(0)->uses().count(), 0);
+    QCOMPARE(top->findLocalDeclarations(QualifiedIdentifier("A::FOO")).first()->uses().count(), 0);
 }
 
 void TestDUChain::testGlobalVariableInFunction()
@@ -1198,7 +1200,7 @@ void TestDUChain::testGlobalVariableInFunction()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QCOMPARE(top->localDeclarations().at(0)->uses().count(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a")).first()->uses().count(), 1);
 }
 
 void TestDUChain::testSuperglobalInFunction()
@@ -1240,6 +1242,11 @@ void TestDUChain::testCircularInheritance()
     DUChainReleaser releaseTop(top);
     
     DUChainWriteLocker lock(DUChain::lock());
+    
+    foreach (KSharedPtr<KDevelop::Problem> prob, top->problems()) {
+      kDebug() << prob->description();
+    }
+    
     QCOMPARE(top->problems().count(), 1);
 }
 
