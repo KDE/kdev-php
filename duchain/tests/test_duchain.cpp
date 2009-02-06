@@ -1187,7 +1187,7 @@ void TestDUChain::testGlobalVariableNotVisibleInFunction()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QCOMPARE(top->findLocalDeclarations(QualifiedIdentifier("A::FOO")).first()->uses().count(), 0);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a")).first()->uses().count(), 0);
 }
 
 void TestDUChain::testGlobalVariableInFunction()
