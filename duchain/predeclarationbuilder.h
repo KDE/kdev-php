@@ -18,8 +18,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef DECLARATIONBUILDER_H
-#define DECLARATIONBUILDER_H
+#ifndef PREDECLARATIONBUILDER_H
+#define PREDECLARATIONBUILDER_H
 
 #include "typebuilder.h"
 #include "helper.h"
@@ -33,49 +33,38 @@ class EditorIntegrator;
 
 typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, Php::TypeBuilder> DeclarationBuilderBase;
 
-class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase {
+class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public DeclarationBuilderBase {
 public:
-    DeclarationBuilder(ParseSession* session);
-    DeclarationBuilder(EditorIntegrator* editor);
-    virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, Php::AstNode* node,
-                                            KDevelop::ReferencedTopDUContext updateContext
-                                                = KDevelop::ReferencedTopDUContext(), bool useSmart = true );
+    PreDeclarationBuilder(ParseSession* session);
+    PreDeclarationBuilder(EditorIntegrator* editor);
 
 protected:
     virtual void closeDeclaration();
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
-    virtual void visitClassStatement(ClassStatementAst *node);
-    virtual void visitClassExtends(ClassExtendsAst *node);
-    virtual void visitClassImplements(ClassImplementsAst *node);
-    virtual void visitParameter(ParameterAst *node);
+    virtual void visitClassStatement(ClassStatementAst *node){Q_UNUSED(node);}
+    virtual void visitClassExtends(ClassExtendsAst *node){Q_UNUSED(node);}
+    virtual void visitClassImplements(ClassImplementsAst *node){Q_UNUSED(node);}
+    virtual void visitParameter(ParameterAst *node){Q_UNUSED(node);}
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
-    virtual void visitClassVariable(ClassVariableAst *node);
-    virtual void visitClassConstantDeclaration(ClassConstantDeclarationAst *node);
-    virtual void visitExpr(ExprAst *node);
-    virtual void visitTopStatement(TopStatementAst* node);
-    virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
-    virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
-    virtual void visitFunctionCall(FunctionCallAst* node);
-    virtual void visitStatement(StatementAst* node);
-    virtual void visitStaticVar(StaticVarAst* node);
-    virtual void visitGlobalVar(GlobalVarAst* node);
+    virtual void visitClassVariable(ClassVariableAst *node){Q_UNUSED(node);}
+    virtual void visitClassConstantDeclaration(ClassConstantDeclarationAst *node){Q_UNUSED(node);}
+    virtual void visitExpr(ExprAst *node){Q_UNUSED(node);}
+    virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node){Q_UNUSED(node);}
+    virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node){Q_UNUSED(node);}
+    virtual void visitFunctionCall(FunctionCallAst* node){Q_UNUSED(node);}
+    virtual void visitStatement(StatementAst* node){Q_UNUSED(node);}
+    virtual void visitStaticVar(StaticVarAst* node){Q_UNUSED(node);}
+    virtual void visitGlobalVar(GlobalVarAst* node){Q_UNUSED(node);}
 
     void classTypeOpened(KDevelop::AbstractType::Ptr type);
     void classContextOpened(KDevelop::DUContext* context);
-    
-    /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
-    bool isEmptyMethodBody(const Php::MethodBodyAst* body) const {
-        return !body || !body->statements;
-    }
 
 private:
-    VariableIdentifierAst* m_lastVariableIdentifier;
-    unsigned int m_currentModifers;
     QString m_lastTopStatementComment;
 };
 
 }
 
-#endif // DECLARATIONBUILDER_H
+#endif // PREDECLARATIONBUILDER_H
 

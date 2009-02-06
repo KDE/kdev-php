@@ -38,6 +38,8 @@
 #include "variabledeclaration.h"
 #include "classdeclaration.h"
 
+#include "predeclarationbuilder.h"
+
 using namespace KTextEditor;
 using namespace KDevelop;
 
@@ -54,31 +56,19 @@ DeclarationBuilder::DeclarationBuilder (EditorIntegrator* editor)
 {
   setEditor(editor);
 }
+
 KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::IndexedString& url, Php::AstNode* node,
                                             KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
 {
     //Run DeclarationBuilder twice, to find uses of declarations that are
     //declared after the use. ($a = new Foo; class Foo {})
-    DeclarationBuilder b(editor());
-    updateContext = b.preBuild(url, node, updateContext, useSmart);
+    PreDeclarationBuilder b(editor());
+    updateContext = b.build(url, node, updateContext, useSmart);
 
     // now skip through some things the DeclarationBuilderBase (ContextBuilder) would do,
     // most significantly don't clear imported parent contexts
-    {
-        DUChainWriteLocker lock(DUChain::lock());
-        updateContext->parsingEnvironmentFile()->clearModificationRevisions();
-        updateContext->clearProblems();
-    }
-    
     return ContextBuilderBase::build(url, node, updateContext, useSmart);
 }
-
-KDevelop::ReferencedTopDUContext DeclarationBuilder::preBuild(const KDevelop::IndexedString& url, Php::AstNode* node,
-                                  KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
-{
-    return DeclarationBuilderBase::build(url, node, updateContext, useSmart);
-}
-
 
 void DeclarationBuilder::closeDeclaration()
 {
@@ -109,6 +99,7 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
     }
 
     DeclarationBuilderBase::visitClassDeclarationStatement(node);
+
     closeDeclaration();
 }
 
@@ -135,7 +126,6 @@ void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclaration
 
     closeDeclaration();
 }
-
 
 void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 {
@@ -218,7 +208,6 @@ void DeclarationBuilder::visitClassExtends(ClassExtendsAst *node)
     addBaseType(node->identifier, ClassDeclarationData::Class);
 }
 
-
 void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
 {
     const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
@@ -229,7 +218,6 @@ void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
     while (__it != __end);
     DeclarationBuilderBase::visitClassImplements(node);
 }
-
 
 void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
 {

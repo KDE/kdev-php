@@ -41,6 +41,7 @@
 #include "phpast.h"
 #include "phpdefaultvisitor.h"
 #include "constantdeclaration.h"
+#include "classdeclaration.h"
 
 #define ifDebug(x)
 
@@ -50,8 +51,8 @@ namespace Php {
 
 bool isMatch(Declaration* declaration, DeclarationType declarationType)
 {
-    if (declarationType == ClassDeclarationType && declaration->internalContext()
-        && declaration->internalContext()->type() == DUContext::Class
+    if (declarationType == ClassDeclarationType
+        && dynamic_cast<ClassDeclaration*>(declaration)
     ) {
         return true;
     } else if(declarationType == FunctionDeclarationType

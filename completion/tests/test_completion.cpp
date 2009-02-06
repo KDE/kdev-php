@@ -509,17 +509,17 @@ void TestCompletion::nameNormalVariable()
     CompletionTreeItemPointer itm = searchDeclaration(itemList, top->localDeclarations().first());
     QVERIFY(itm);
     QCOMPARE(itm->data(model->index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, model).toString(),
-        QString("$abc"));
+        QString("ghi"));
 
     itm = searchDeclaration(itemList, top->localDeclarations().at(1));
     QVERIFY(itm);
     QCOMPARE(itm->data(model->index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, model).toString(),
-        QString("def"));
+        QString("$abc"));
 
     itm = searchDeclaration(itemList, top->localDeclarations().at(2));
     QVERIFY(itm);
     QCOMPARE(itm->data(model->index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, model).toString(),
-        QString("ghi"));
+        QString("def"));
 
     //don't delete model as its constructor does bad things (quit the current thread - we don't want that in test)
     //TODO find better solution that doesn't leak
