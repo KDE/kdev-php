@@ -81,7 +81,12 @@ CompletionTreeItemPointer DUChainTestBase::searchDeclaration(QList<CompletionTre
 
 bool DUChainTestBase::hasImportedParentContext(TopDUContext* top, DUContext* lookingFor)
 {
+    kDebug() << "this topcontext has " << top->importedParentContexts().count() << " imported parent contexts"
+             << "\n we are looking for: " << lookingFor->url().byteArray();
     foreach (DUContext::Import import, top->importedParentContexts()) {
+        if ( import.context(top) ) {
+          kDebug() << import.context(top)->url().byteArray();
+        }
         if (import.context(top) == lookingFor) {
             return true;
         }
