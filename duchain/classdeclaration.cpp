@@ -59,6 +59,18 @@ ClassDeclaration::~ClassDeclaration()
 QString ClassDeclaration::toString() const 
 {
     QString ret;
+    
+    switch (d_func()->m_classModifier) {
+      case Php::AbstractClass:
+          ret = "abstract ";
+          break;
+      case Php::FinalClass:
+          ret = "final ";
+          break;
+      default:
+          break;
+    }
+    
     switch (d_func()->m_classType) {
         case ClassDeclarationData::Class:
             ret = "class";
