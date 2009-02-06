@@ -61,6 +61,10 @@ void DUChainTestBase::initTestCase()
                 content += "function substr() {} class stdClass {}\n/**\n * @superglobal\n **/\n$_GET = array();\nclass Exception {} ";
             }
             parseAdditionalFile(internalFunctionFiles[i], content);
+            kDebug() << "could not find internal function file: " << internalFunctionFiles[i].byteArray()
+                     << "used this instead: " << content;
+        } else {
+            kDebug() << "got internal function file: " << internalFunctionFiles[i].byteArray();
         }
     }
 }
