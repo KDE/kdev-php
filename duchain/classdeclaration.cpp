@@ -62,10 +62,10 @@ QString ClassDeclaration::toString() const
     
     switch (d_func()->m_classModifier) {
       case Php::AbstractClass:
-          ret = "abstract ";
+          ret += "abstract ";
           break;
       case Php::FinalClass:
-          ret = "final ";
+          ret += "final ";
           break;
       default:
           break;
@@ -73,10 +73,10 @@ QString ClassDeclaration::toString() const
     
     switch (d_func()->m_classType) {
         case ClassDeclarationData::Class:
-            ret = "class";
+            ret += "class";
             break;
         case ClassDeclarationData::Interface:
-            ret = "interface";
+            ret += "interface";
             break;
     }
     ret += " " + identifier().toString();
