@@ -558,6 +558,25 @@ void TestUses::constAndVariableWithSameName()
     QCOMPARE(cnst->uses().values().first().first(), SimpleRange(0, 27, 0, 28));
 }
 
+void TestUses::functionAndClassWithSameName()
+{
+    //                 0         1         2         3         4         5         6         7         8
+    //                 012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? interface foo { function asdf(); } class asdf {} class bar extends asdf implements foo {} ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* fnAsdf = top->childContexts().first()->localDeclarations().first();
+    QCOMPARE(fnAsdf->uses().keys().count(), 0);
+
+    Declaration* classAsdf = top->localDeclarations().at(1);
+    QCOMPARE(classAsdf->uses().keys().count(), 1);
+    QCOMPARE(classAsdf->uses().values().count(), 1);
+    QCOMPARE(classAsdf->uses().values().first().count(), 1);
+    QCOMPARE(classAsdf->uses().values().first().first(), SimpleRange(0, 70, 0, 74));
+}
+
 }
 
 #include "test_uses.moc"
