@@ -68,7 +68,7 @@ void UseBuilder::visitClassImplements(ClassImplementsAst *node)
     if (node->implementsSequence) {
         const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
         do {
-            newUse(__it->element);
+            newUse(__it->element, findDeclarationImport(ClassDeclarationType, __it->element));
             __it = __it->next;
         } while (__it != __end);
     }
@@ -77,7 +77,7 @@ void UseBuilder::visitClassImplements(ClassImplementsAst *node)
 void UseBuilder::visitClassExtends(ClassExtendsAst *node)
 {
     UseBuilderBase::visitClassExtends(node);
-    newUse(node->identifier);
+    newUse(node->identifier, findDeclarationImport(ClassDeclarationType, node->identifier));
 }
 
 void UseBuilder::visitExpr(ExprAst* node)
