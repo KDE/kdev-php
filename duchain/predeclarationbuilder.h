@@ -59,9 +59,6 @@ protected:
 
     void classTypeOpened(KDevelop::AbstractType::Ptr type);
     void classContextOpened(KDevelop::DUContext* context);
-
-private:
-    QString m_lastTopStatementComment;
 };
 
 }
