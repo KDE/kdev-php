@@ -82,6 +82,11 @@ private:
     
     /// handles common stuff for both interfaces and classes
     void openTypeDeclaration(AstNode *node, IdentifierAst *name, ClassDeclarationData::ClassType type);
+    
+    /// check if this declaration is lready defined
+    /// @param context defaults to current top context
+    bool isRedeclaration(const KDevelop::QualifiedIdentifier &identifier, AstNode *node,
+                          DeclarationType type, KDevelop::DUContext* context = 0);
 };
 
 }

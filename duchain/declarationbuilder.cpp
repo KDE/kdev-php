@@ -87,6 +87,7 @@ void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclaration
 void DeclarationBuilder::openTypeDeclaration(AstNode* node, IdentifierAst* name, ClassDeclarationData::ClassType type) {
     ClassDeclaration* classDec = m_types.value(name->string, 0);
     Q_ASSERT(classDec);
+    isRedeclaration(identifierForNode(name), name, ClassDeclarationType);
     if ( classDec->classType() == type ) {
         // seems like we have to do that manually, else the usebuilder crashes...
         setEncountered(classDec);
@@ -250,6 +251,7 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
 
 void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
+    isRedeclaration(identifierForNode(node->functionName), node->functionName, FunctionDeclarationType);
     FunctionDeclaration* dec = m_functions.value(node->functionName->string, 0);
     Q_ASSERT(dec);
     // seems like we have to set that, else the usebuilder crashes
@@ -260,6 +262,41 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
     DeclarationBuilderBase::visitFunctionDeclarationStatement(node);
 
     closeDeclaration();
+}
+
+bool DeclarationBuilder::isRedeclaration(const QualifiedIdentifier &identifier, AstNode* node,
+                                          DeclarationType type, DUContext* context)
+{
+    ///TODO: method redeclaration etc.
+    if ( type != ClassDeclarationType
+          && type != FunctionDeclarationType
+          && type != ConstantDeclarationType ) {
+        // the other types can be redeclared
+        return false;
+    }
+    if (!context) {
+        context = currentContext()->topContext();
+    }
+    DUChainWriteLocker lock(DUChain::lock());
+    QList<Declaration*> declarations = context->findDeclarations(identifier, editor()->findPosition(node->startToken, EditorIntegrator::FrontEdge));
+    foreach ( Declaration* dec, declarations ) {
+        if ( isMatch( dec, type ) ) {
+            QString filename(dec->context()->topContext()->url().str());
+            if ( filename == "internalfunctions" ) {
+                reportError(i18n("Cannot redeclare PHP internal %1.", dec->toString()), node);
+                
+            } else {
+                ///TODO: try to shorten the filename by removing the leading path to the current project
+                reportError(
+                    i18n("Cannot redeclare %1, already declared in %2 on line %3.",
+                          dec->toString(), filename, dec->range().start.line + 1
+                    ), node
+                );
+            }
+            return true;
+        }
+    }
+    return false;
 }
 
 void DeclarationBuilder::visitExpr(ExprAst *node)
@@ -328,7 +365,9 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                 DUChainWriteLocker lock(DUChain::lock());
                 LockedSmartInterface iface = editor()->smart();
                 injectContext(iface, currentContext()->topContext()); //constants are always global
-                openDefinition<ConstantDeclaration>(QualifiedIdentifier(constant), newRange);
+                QualifiedIdentifier identifier(constant);
+                isRedeclaration(identifier, scalar, ConstantDeclarationType);
+                openDefinition<ConstantDeclaration>(identifier, newRange);
                 currentDeclaration()->setKind(Declaration::Instance);
                 closeDeclaration();
                 closeInjectedContext(iface);

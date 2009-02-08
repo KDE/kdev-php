@@ -41,6 +41,8 @@ namespace Php {
         ConstantDeclarationType,
         GlobalVariableDeclarationType
     };
+    bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);
+
     KDevelop::Declaration* findDeclarationImportHelper(KDevelop::DUContext* currentContext,
                                         KDevelop::QualifiedIdentifier id,
                                         DeclarationType declarationType,
@@ -49,7 +51,6 @@ namespace Php {
                                         bool createProblems);
 
     QString formatComment(AstNode* node, EditorIntegrator* editor);
-
 
     CommonScalarAst* findCommonScalar(AstNode* node);
 
