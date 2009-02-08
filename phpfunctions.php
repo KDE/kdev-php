@@ -5736,7 +5736,7 @@ class HttpDeflateStream {
      * @param int
      * @return void
      **/
-    function __construct($flags = 0) {}
+    function __construct($flags) {}
 
     /**
      * Passes more data through the deflate stream.
@@ -5761,7 +5761,7 @@ class HttpDeflateStream {
      * @param string
      * @return HttpDeflateStream
      **/
-    function factory($flags = 0, $class_name = 'HttpDeflateStream') {}
+    function factory($flags, $class_name) {}
 
     /**
      * Flushes the deflate stream.
@@ -5779,7 +5779,7 @@ class HttpInflateStream {
      * @param int
      * @return void
      **/
-    function __construct($flags = 0) {}
+    function __construct($flags) {}
 
     /**
      * Passes more data through the inflate stream.
@@ -5804,7 +5804,7 @@ class HttpInflateStream {
      * @param string
      * @return HttpInflateStream
      **/
-    function factory($flags = 0, $class_name = 'HttpInflateStream') {}
+    function factory($flags, $class_name) {}
 
     /**
      * Flushes the inflate stream.
@@ -5829,7 +5829,7 @@ class HttpMessage implements Iterator, Countable, Serializable {
      * @param bool
      * @return string
      **/
-    function toString($include_parent = FALSE) {}
+    function toString($include_parent) {}
 
     /**
      * Set the Response Status of the HTTP message (i.e. the string following the response code).
@@ -5898,7 +5898,7 @@ class HttpMessage implements Iterator, Countable, Serializable {
      * @param int
      * @return string
      **/
-    function guessContentType($magic_file, $magic_mode = MAGIC_MIME) {}
+    function guessContentType($magic_file, $magic_mode) {}
 
     /**
      * Set the body of the HttpMessage.
@@ -5945,7 +5945,7 @@ class HttpMessage implements Iterator, Countable, Serializable {
      * @param string
      * @return HttpMessage
      **/
-    function fromEnv($message_type, $class_name = 'HttpMessage') {}
+    function fromEnv($message_type, $class_name) {}
 
     /**
      * Returns a clone of an HttpMessage object detached from any parent messages.
@@ -5968,7 +5968,7 @@ class HttpMessage implements Iterator, Countable, Serializable {
      * @param bool
      * @return void
      **/
-    function prepend($message, $top = TRUE) {}
+    function prepend($message, $top) {}
 
     /**
      * Creates an object regarding to the type of the message.
@@ -5992,7 +5992,7 @@ class HttpMessage implements Iterator, Countable, Serializable {
      * @param string
      * @return HttpMessage
      **/
-    function fromString($raw_message, $class_name = 'HttpMessage') {}
+    function fromString($raw_message, $class_name) {}
 
     /**
      * Create an HttpMessage object from a string.
@@ -6001,7 +6001,7 @@ class HttpMessage implements Iterator, Countable, Serializable {
      * @param string
      * @return HttpMessage
      **/
-    function factory($raw_message, $class_name = 'HttpMessage') {}
+    function factory($raw_message, $class_name) {}
 
     /**
      * Get parent Message.
@@ -6017,7 +6017,7 @@ class HttpMessage implements Iterator, Countable, Serializable {
      * @param bool
      * @return void
      **/
-    function addHeaders($headers, $append = FALSE) {}
+    function addHeaders($headers, $append) {}
 
     /**
      * Get Message Type.
@@ -6067,7 +6067,7 @@ class HttpQueryString implements ArrayAccess, Serializable {
      * @param mixed
      * @return void
      **/
-    function __construct($global = TRUE, $add) {}
+    function __construct($global, $add) {}
 
     /**
      * Get a single instance (differentiates between the global setting).
@@ -6075,7 +6075,7 @@ class HttpQueryString implements ArrayAccess, Serializable {
      * @param bool
      * @return HttpQueryString
      **/
-    function singleton($global = TRUE) {}
+    function singleton($global) {}
 
     /**
      * Copies the query string object and sets provided params at the clone.
@@ -6118,7 +6118,7 @@ class HttpQueryString implements ArrayAccess, Serializable {
      * @param bool
      * @return mixed
      **/
-    function get($key, $type = 0, $defval = NULL, $delete = FALSE) {}
+    function get($key, $type, $defval, $delete) {}
 
 }
 class HttpRequest {
@@ -6231,7 +6231,7 @@ class HttpRequest {
      * @param array
      * @return void
      **/
-    function __construct($url, $request_method = HTTP_METH_GET, $options) {}
+    function __construct($url, $request_method, $options) {}
 
     /**
      * Get previously set raw post data.
@@ -6342,7 +6342,7 @@ class HttpRequest {
      * @param bool
      * @return bool
      **/
-    function resetCookies($session_only = FALSE) {}
+    function resetCookies($session_only) {}
 
     /**
      * Get response info after the request has been sent.
@@ -6360,7 +6360,7 @@ class HttpRequest {
      * @param string
      * @return bool
      **/
-    function addPostFile($name, $file, $content_type = 'applicationxoctetstream') {}
+    function addPostFile($name, $file, $content_type) {}
 
     /**
      * Set the request options to use.
@@ -6624,7 +6624,7 @@ class HttpResponse {
      * @param bool
      * @return bool
      **/
-    function setContentDisposition($filename, $inline = FALSE) {}
+    function setContentDisposition($filename, $inline) {}
 
     /**
      * Set a custom Last-Modified date.
@@ -6655,7 +6655,7 @@ class HttpResponse {
      * @param int
      * @return string
      **/
-    function guessContentType($magic_file, $magic_mode=MAGIC_MIME) {}
+    function guessContentType($magic_file, $magic_mode) {}
 
     /**
      * Set the file to be sent.
@@ -6716,7 +6716,7 @@ class HttpResponse {
      * @param bool
      * @return bool
      **/
-    function send($clean_ob = TRUE) {}
+    function send($clean_ob) {}
 
     /**
      * Whether it should be attempted to cache the entity.
@@ -6734,7 +6734,7 @@ class HttpResponse {
      * @param bool
      * @return bool
      **/
-    function setHeader($name, $value, $replace = TRUE) {}
+    function setHeader($name, $value, $replace) {}
 
     /**
      * http_get_request_body_stream.
@@ -6781,7 +6781,7 @@ class HttpResponse {
      * @param bool
      * @return bool
      **/
-    function setCacheControl($control, $max_age = 0, $must_revalidate = TRUE) {}
+    function setCacheControl($control, $max_age, $must_revalidate) {}
 
     /**
      * http_get_request_headers.
@@ -6836,7 +6836,7 @@ class HttpResponse {
      * @param int
      * @return void
      **/
-    function redirect($url, $params, $session = FALSE, $status) {}
+    function redirect($url, $params, $session, $status) {}
 
     /**
      * Enable on-thy-fly gzip'ing of the sent entity.
@@ -8454,7 +8454,8 @@ class Imagick implements Iterator, Traversable {
 
     /**
      * This method can be used to query image width, height, size, and
-     * format without reading the whole image to memory.
+     * format without reading the whole image to memory. This method is available
+     * if Imagick has been compiled against ImageMagick version 6.2.9 or newer.
      *
      * @param string
      * @return bool
@@ -8666,6 +8667,16 @@ class Imagick implements Iterator, Traversable {
     function getImageSignature() {}
 
     /**
+     * Creates a vertical mirror image by reflecting the pixels 
+     * around the central x-axis while rotating them 90-degrees.
+     * This method is available if Imagick has been compiled against 
+     * ImageMagick version 6.2.9 or newer.
+     *
+     * @return bool
+     **/
+    function transposeImage() {}
+
+    /**
      * Sets the object's default compression quality.
      *
      * @param int
@@ -8853,6 +8864,8 @@ class Imagick implements Iterator, Traversable {
     /**
      * Creates a horizontal mirror image by reflecting the pixels around the
      * central y-axis while rotating them 270-degrees.
+     * This method is available if Imagick has been compiled against 
+     * ImageMagick version 6.2.9 or newer.
      *
      * @return bool
      **/
@@ -9222,7 +9235,8 @@ class Imagick implements Iterator, Traversable {
 
     /**
      * This method can be used to query image width, height, size, and
-     * format without reading the whole image to memory.
+     * format without reading the whole image to memory. This method is available
+     * if Imagick has been compiled against ImageMagick version 6.2.9 or newer.
      *
      * @param resource
      * @param string
@@ -10897,7 +10911,7 @@ class KTaglib_ID3v2_AttachedPictureFrame {
     /**
      * Sets the type of the image. This can be e.g. FrontCover or FileIcon. Please refer to the KTaglib_ID3v2_AttachedPictureFrame class description for a list of available types and their constant mappings.
      *
-     * @param integer
+     * @param int
      * @return void
      **/
     function setType($type) {}
@@ -10922,7 +10936,7 @@ class KTaglib_ID3v2_AttachedPictureFrame {
      * 	corresponding file object.
      *
      * @param string
-     * @return boolean
+     * @return void
      **/
     function setPicture($filename) {}
 
@@ -10930,14 +10944,14 @@ class KTaglib_ID3v2_AttachedPictureFrame {
      * Saves the attached picture to the given filename.
      *
      * @param string
-     * @return boolean
+     * @return bool
      **/
     function savePicture($filename) {}
 
     /**
      * Returns the type of the image.
      *
-     * @return integer
+     * @return int
      **/
     function getType() {}
 
@@ -10956,7 +10970,7 @@ class KTaglib_ID3v2_Frame {
      * Returns the size of the frame in bytes. Please refer to id3.org to see what
      * ID3v2 frames are and how they are defined.
      *
-     * @return integer
+     * @return int
      **/
     function getSize() {}
 
@@ -10965,7 +10979,7 @@ class KTaglib_ID3v2_Tag {
     /**
      * Returns an array of ID3v2 frames, associated with the ID3v2 tag.
      *
-     * @return integer
+     * @return array
      **/
     function getFrameList() {}
 
@@ -10973,30 +10987,31 @@ class KTaglib_ID3v2_Tag {
      * Adds a frame to the ID3v2 tag. The frame must be a valid KTagLib_ID3v2_Frame object.
      * 	To save the tag, the save function needs to be invoked.
      *
-     * @return boolean
+     * @param KTagLib_ID3v2_Frame
+     * @return bool
      **/
-    function addFrame() {}
+    function addFrame($frame) {}
 
 }
 class KTaglib_MPEG_AudioProperties {
     /**
      * Returns the layer of the MPEG file (usually 3 for MP3).
      *
-     * @return integer
+     * @return int
      **/
     function getLayer() {}
 
     /**
      * Returns true if protection mechanism (like DRM) are enabled for this file
      *
-     * @return boolean
+     * @return bool
      **/
     function isProtectionEnabled() {}
 
     /**
      * Returns true if the MPEG file is copyrighted
      *
-     * @return boolean
+     * @return bool
      **/
     function isCopyrighted() {}
 
@@ -11004,42 +11019,42 @@ class KTaglib_MPEG_AudioProperties {
      * Returns the version of the MPEG file header. The possible versions are
      * 	defined in Tag_MPEG_Header (Version1, Version2, Version2.5).
      *
-     * @return integer
+     * @return int
      **/
     function getVersion() {}
 
     /**
      * Returns the amount of channels of the MPEG file
      *
-     * @return integer
+     * @return int
      **/
     function getChannels() {}
 
     /**
      * Returns the bitrate of the MPEG file
      *
-     * @return integer
+     * @return int
      **/
     function getBitrate() {}
 
     /**
      * Returns true if the file is marked as the original file
      *
-     * @return boolean
+     * @return bool
      **/
     function isOriginal() {}
 
     /**
      * Returns the length of the MPEG file
      *
-     * @return integer
+     * @return int
      **/
     function getLength() {}
 
     /**
      * Returns the sample bitrate of the MPEG file
      *
-     * @return integer
+     * @return int
      **/
     function getSampleBitrate() {}
 
@@ -11057,17 +11072,19 @@ class KTaglib_MPEG_File {
      * Returns an object that represents an ID3v1 tag, which can be used
      * to get information about the ID3v1 tag.
      *
+     * @param bool
      * @return KTaglib_ID3v1_Tag
      **/
-    function getID3v1Tag() {}
+    function getID3v1Tag($create) {}
 
     /**
      * Returns a ID3v2 object for the mpeg file. If no ID3v2 Tag is present, an
      * KTaglib_TagNotFoundException is thrown.
      *
+     * @param bool
      * @return KTaglib_ID3v2_Tag
      **/
-    function getID3v2Tag() {}
+    function getID3v2Tag($create) {}
 
 }
 class KTaglib_MPEG_Header {
@@ -11096,7 +11113,7 @@ class KTaglib_Tag {
      * Returns the year of an ID3 tag. This method is implemented
      * in ID3v1 and ID3v2 tags.
      *
-     * @return integer
+     * @return int
      **/
     function getYear() {}
 
@@ -11104,7 +11121,7 @@ class KTaglib_Tag {
      * Returns true if the tag exists, but is empty. This method is implemented
      * in ID3v1 and ID3v2 tags.
      *
-     * @return boolean
+     * @return bool
      **/
     function isEmpty() {}
 
@@ -11112,7 +11129,7 @@ class KTaglib_Tag {
      * Returns the track number of an ID3 tag. This method is implemented
      * in ID3v1 and ID3v2 tags.
      *
-     * @return integer
+     * @return int
      **/
     function getTrack() {}
 
@@ -11408,9 +11425,10 @@ class Memcache {
      * @param int
      * @param bool
      * @param callback
+     * @param int
      * @return bool
      **/
-    function addServer($host, $port, $persistent, $weight, $timeout, $retry_interval, $status, $failure_callback) {}
+    function addServer($host, $port, $persistent, $weight, $timeout, $retry_interval, $status, $failure_callback, $timeoutms) {}
 
     /**
      * Memcache::set stores an item 
@@ -15115,7 +15133,7 @@ class SWFGradient {
      * @param int
      * @return void
      **/
-    function addEntry($ratio, $red, $green, $blue, $a) {}
+    function addEntry($ratio, $red, $green, $blue, $alpha) {}
 
 }
 class SWFMorph {
@@ -15311,7 +15329,7 @@ class SWFShape {
     function drawCircle($r) {}
 
     /**
-     * @param int
+     * @param float
      * @param float
      * @param float
      * @param float
@@ -15430,7 +15448,7 @@ class SWFShape {
      * @param int
      * @return SWFFill
      **/
-    function addFill($red, $green, $blue, $a) {}
+    function addFill($red, $green, $blue, $alpha) {}
 
     /**
      * @param float
@@ -16324,7 +16342,7 @@ class SphinxClient {
      * @param int
      * @return bool
      **/
-    function setLimits($offset, $limit, $max, $cutoff) {}
+    function setLimits($offset, $limit, $max_matches, $cutoff) {}
 
     /**
      * Returns last warning message. If there were no warnings during 
@@ -19902,7 +19920,7 @@ function mysqli_master_query($link, $query) {}
  * This function converts a ASCII encoded domain name to its original UTF-8 version.
  *
  * @param string
- * @param integer
+ * @param int
  * @return string
  **/
 function idn_to_utf8($ascii_domain, $errorcode) {}
@@ -19912,7 +19930,7 @@ function idn_to_utf8($ascii_domain, $errorcode) {}
  * If the input has non-ASCII characters, the output will be in the "xn--" ACE notation.
  *
  * @param string
- * @param integer
+ * @param int
  * @return string
  **/
 function idn_to_ascii($utf8_domain, $errorcode) {}
@@ -19920,7 +19938,7 @@ function idn_to_ascii($utf8_domain, $errorcode) {}
 /**
  * This function returns the error message string that corresponds to the given error code.
  *
- * @param integer
+ * @param int
  * @return string
  **/
 function idn_strerror($errorcode) {}
@@ -20339,9 +20357,13 @@ function xmlwriter_start_document($xmlwriter, $version, $encoding, $standalone) 
  * @param resource
  * @param string
  * @param string
+ * @param bool
+ * @param string
+ * @param string
+ * @param string
  * @return bool
  **/
-function xmlwriter_write_dtd_entity($xmlwriter, $name, $content) {}
+function xmlwriter_write_dtd_entity($xmlwriter, $name, $content, $pe, $pubid, $sysid, $ndataid) {}
 
 /**
  * Object oriented style:
@@ -22956,7 +22978,7 @@ function dirname($path) {}
  *
  * @param string
  * @param bool
- * @param integer
+ * @param int
  * @return array
  **/
 function parse_ini_file($filename, $process_sections, $scanner_mode) {}
@@ -23136,6 +23158,17 @@ function fileperms($filename) {}
  * @return int
  **/
 function readfile($filename, $use_include_path, $context) {}
+
+/**
+ * parse_ini_string returns the settings in string
+ * ini in an associative array.
+ *
+ * @param string
+ * @param bool
+ * @param int
+ * @return array
+ **/
+function parse_ini_string($ini, $process_sections, $scanner_mode) {}
 
 /**
  * fnmatch checks if the passed string would
@@ -33963,8 +33996,8 @@ function ldap_dn2ufn($dn) {}
 function ldap_get_values_len($link_identifier, $result_entry_identifier, $attribute) {}
 
 /**
- * Format a local time/date according to locale settings. Month and weekday
- * names and other language dependent strings respect the current locale set
+ * Format the time and/or date according to locale settings. Month and weekday
+ * names and other language-dependent strings respect the current locale set
  * with setlocale.
  *
  * @param string
@@ -37136,7 +37169,7 @@ function bzwrite($bz, $data, $length) {}
  * @param array
  * @return string
  **/
-function http_build_url($url, $parts, $flags = HTTP_URL_REPLACE, $new_url) {}
+function http_build_url($url, $parts, $flags, $new_url) {}
 
 /**
  * Opponent to parse_str().
@@ -37284,7 +37317,7 @@ function http_post_fields($url, $data, $files, $options, $info) {}
  * @param int
  * @return object
  **/
-function http_parse_params($param, $flags = HTTP_PARAMS_DEFAULT) {}
+function http_parse_params($param, $flags) {}
 
 /**
  * Parses HTTP headers into an associative array.
@@ -37338,7 +37371,7 @@ function http_cache_last_modified($timestamp_or_expires) {}
  * @param int
  * @return string
  **/
-function http_deflate($data, $flags = 0) {}
+function http_deflate($data, $flags) {}
 
 /**
  * Decodes a string which is HTTP-chunked encoded.
@@ -37374,7 +37407,7 @@ function http_send_last_modified($timestamp) {}
  * @param int
  * @return void
  **/
-function http_redirect($url, $params, $session = FALSE, $status) {}
+function http_redirect($url, $params, $session, $status) {}
 
 /**
  * Send the Content-Disposition.
@@ -37383,7 +37416,7 @@ function http_redirect($url, $params, $session = FALSE, $status) {}
  * @param bool
  * @return bool
  **/
-function http_send_content_disposition($filename, $inline = FALSE) {}
+function http_send_content_disposition($filename, $inline) {}
 
 /**
  * Sets the throttle delay and send buffer size.
@@ -37392,7 +37425,7 @@ function http_send_content_disposition($filename, $inline = FALSE) {}
  * @param int
  * @return void
  **/
-function http_throttle($sec, $bytes = 40960) {}
+function http_throttle($sec, $bytes) {}
 
 /**
  * Sends an already opened stream with support for (multiple) range requests.
@@ -37432,7 +37465,7 @@ function http_send_status($status) {}
  * @param string
  * @return bool
  **/
-function http_send_content_type($content_type = 'applicationxoctetstream') {}
+function http_send_content_type($content_type) {}
 
 /**
  * Get the raw request body (e.g. POST or PUT data).
@@ -37449,7 +37482,7 @@ function http_get_request_body() {}
  * @param bool
  * @return bool
  **/
-function http_match_request_header($header, $value, $match_case = FALSE) {}
+function http_match_request_header($header, $value, $match_case) {}
 
 /**
  * Matches the given Unix timestamp against the clients If-Modified-Since
@@ -37459,7 +37492,7 @@ function http_match_request_header($header, $value, $match_case = FALSE) {}
  * @param bool
  * @return bool
  **/
-function http_match_modified($timestamp, $for_range = FALSE) {}
+function http_match_modified($timestamp, $for_range) {}
 
 /**
  * Create a stream to read the raw request body (e.g. POST or PUT data).
@@ -37476,7 +37509,7 @@ function http_get_request_body_stream() {}
  * @param bool
  * @return bool
  **/
-function http_match_etag($etag, $for_range = FALSE) {}
+function http_match_etag($etag, $for_range) {}
 
 /**
  * Build a cookie string from an array/object like returned by http_parse_cookie.
@@ -37501,7 +37534,7 @@ function http_date($timestamp) {}
  * @param int
  * @return int
  **/
-function http_support($feature = 0) {}
+function http_support($feature) {}
 
 /**
  * Get a list of incoming HTTP headers.
@@ -45412,9 +45445,10 @@ function atan2($y, $x) {}
  *
  * @param float
  * @param int
+ * @param int
  * @return float
  **/
-function round($val, $precision) {}
+function round($val, $precision, $mode) {}
 
 /**
  * Returns the inverse hyperbolic sine of
@@ -46569,9 +46603,11 @@ function gethostbyaddr($ip_address) {}
  *
  * @param string
  * @param int
+ * @param array
+ * @param array
  * @return array
  **/
-function dns_get_record($hostname, $type) {}
+function dns_get_record($hostname, $type, $authns, $addtl) {}
 
 /**
  * This function behaves exactly as fsockopen with the
@@ -46657,7 +46693,7 @@ function getprotobyname($name) {}
  * in dotted format (i.e.: aaa.bbb.ccc.ddd) from the proper address
  * representation.
  *
- * @param int
+ * @param string
  * @return string
  **/
 function long2ip($proper_address) {}
@@ -47902,10 +47938,11 @@ function pg_end_copy($connection) {}
  * pg_set_client_encoding sets the client
  * encoding and returns 0 if success or -1 if error.
  *
+ * @param resource
  * @param string
  * @return int
  **/
-function pg_set_client_encoding($encoding) {}
+function pg_set_client_encoding($connection, $encoding) {}
 
 /**
  * Sends a request to execute a prepared statement with given parameters, and 
@@ -47923,10 +47960,11 @@ function pg_execute($connection, $stmtname, $params) {}
  * to the PostgreSQL backend server. This is needed in conjunction
  * with PostgreSQL's COPY FROM command.
  *
+ * @param resource
  * @param string
  * @return bool
  **/
-function pg_put_line($data) {}
+function pg_put_line($connection, $data) {}
 
 /**
  * pg_field_is_null tests if a field in a PostgreSQL
@@ -47943,10 +47981,11 @@ function pg_field_is_null($result, $row, $field) {}
  * pg_escape_bytea escapes string for
  * bytea datatype. It returns escaped string.
  *
+ * @param resource
  * @param string
  * @return string
  **/
-function pg_escape_bytea($data) {}
+function pg_escape_bytea($connection, $data) {}
 
 /**
  * pg_copy_from inserts records into a table from 
@@ -48036,10 +48075,11 @@ function pg_transaction_status($connection) {}
  * pg_query executes the query
  * on the specified database connection.
  *
+ * @param resource
  * @param string
  * @return resource
  **/
-function pg_query($query) {}
+function pg_query($connection, $query) {}
 
 /**
  * pg_unescape_bytea unescapes PostgreSQL bytea data
@@ -51517,7 +51557,7 @@ function spl_autoload_extensions($file_extensions) {}
  * @param Traversable
  * @param callback
  * @param array
- * @return ReturnType
+ * @return int
  **/
 function iterator_apply($iterator, $function, $args) {}
 
@@ -51899,16 +51939,25 @@ function ingres_rollback($link) {}
 function ingres_query($query, $link) {}
 
 /**
+ * ingres_autocommit_state is called to determine whether
+ * the current link has autocommit enabled or not.
+ *
+ * @param resource
+ * @return bool
+ **/
+function ingres_autocommit_state($link) {}
+
+/**
  * ingres_field_length returns the length of a
  * field. This is the number of bytes used by the server to store
  * the field. For detailed information, see the Ingres/OpenAPI User
  * Guide - Appendix C.
  *
- * @param int
  * @param resource
+ * @param int
  * @return int
  **/
-function ingres_field_length($index, $link) {}
+function ingres_field_length($result, $index) {}
 
 /**
  * Returns a string containing the last SQLSTATE, or NULL if no error has
@@ -51930,7 +51979,7 @@ function ingres_errsqlstate($link) {}
  * @param resource
  * @return int
  **/
-function ingres_num_rows($link) {}
+function ingres_num_rows($result) {}
 
 /**
  * ingres_num_fields returns the number of
@@ -51940,7 +51989,7 @@ function ingres_num_rows($link) {}
  * @param resource
  * @return int
  **/
-function ingres_num_fields($link) {}
+function ingres_num_fields($result) {}
 
 /**
  * ingres_autocommit is called before opening a
@@ -51962,29 +52011,29 @@ function ingres_autocommit($link) {}
  * type. For detailed information, see the Ingres/OpenAPI User Guide
  * - Appendix C.
  *
- * @param int
  * @param resource
+ * @param int
  * @return int
  **/
-function ingres_field_scale($index, $link) {}
+function ingres_field_scale($result, $index) {}
 
 /**
  * Get the type of a field in a query result.
  *
- * @param int
  * @param resource
+ * @param int
  * @return string
  **/
-function ingres_field_type($index, $link) {}
+function ingres_field_type($result, $index) {}
 
 /**
  * Test if a field is nullable.
  *
- * @param int
  * @param resource
+ * @param int
  * @return bool
  **/
-function ingres_field_nullable($index, $link) {}
+function ingres_field_nullable($result, $index) {}
 
 /**
  * Returns an string containing the active cursor name. If no cursor is
@@ -52040,11 +52089,11 @@ function ingres_pconnect($database, $username, $password) {}
  * ingres_field_name returns the name of a field
  * in a query result.
  *
- * @param int
  * @param resource
+ * @param int
  * @return string
  **/
-function ingres_field_name($index, $link) {}
+function ingres_field_name($result, $index) {}
 
 /**
  * ingres_field_precision returns the precision
@@ -52052,11 +52101,11 @@ function ingres_field_name($index, $link) {}
  * SQL data types. For detailed information, see the Ingres/OpenAPI
  * User Guide - Appendix C.
  *
- * @param int
  * @param resource
+ * @param int
  * @return int
  **/
-function ingres_field_precision($index, $link) {}
+function ingres_field_precision($result, $index) {}
 
 /**
  * This function is an extended version of
@@ -52513,7 +52562,7 @@ function extension_loaded($name) {}
 /**
  * Set the current active configuration setting of magic_quotes_runtime.
  *
- * @param int
+ * @param bool
  * @return bool
  **/
 function set_magic_quotes_runtime($new_setting) {}
@@ -54210,9 +54259,10 @@ function sybase_free_result($result) {}
  * @param string
  * @param string
  * @param string
+ * @param bool
  * @return resource
  **/
-function sybase_connect($servername, $username, $password, $charset, $appname) {}
+function sybase_connect($servername, $username, $password, $charset, $appname, $new) {}
 
 /**
  * sybase_pconnect acts very much like
@@ -54805,9 +54855,10 @@ function gzuncompress($data, $length) {}
  *
  * @param resource
  * @param int
+ * @param int
  * @return int
  **/
-function gzseek($zp, $offset) {}
+function gzseek($zp, $offset, $whence) {}
 
 /**
  * Returns a string containing a single (uncompressed) character
@@ -56846,6 +56897,7 @@ define('IMG_FILTER_GAUSSIAN_BLUR', 0);
 define('IMG_FILTER_GRAYSCALE', 0);
 define('IMG_FILTER_MEAN_REMOVAL', 0);
 define('IMG_FILTER_NEGATE', 0);
+define('IMG_FILTER_PIXELATE', 0);
 define('IMG_FILTER_SELECTIVE_BLUR', 0);
 define('IMG_FILTER_SMOOTH', 0);
 define('IMG_GD2_COMPRESSED', 0);
