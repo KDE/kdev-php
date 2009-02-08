@@ -49,6 +49,17 @@ DUChainTestBase::DUChainTestBase()
 
 void DUChainTestBase::initTestCase()
 {
+    DUChain::self()->disablePersistentStorage();
+    
+    // only use one internal function file
+    {
+        DUChainWriteLocker lock(DUChain::lock());
+        for ( uint i = 0; i < internalFunctionFilesCount; ++i ) {
+            if ( TopDUContext* top = DUChain::self()->chainForDocument(internalFunctionFiles[i]) ) {
+                DUChain::self()->removeDocumentChain(top);
+            }
+        }
+    }
     QByteArray content("<?php function define() {} function substr() {} class stdClass {}\n/**\n * @superglobal\n **/\n$_GET = array();\nclass Exception {} ");
     parseAdditionalFile(internalFunctionFiles[0], content);
 }
