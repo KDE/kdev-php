@@ -23,6 +23,8 @@
 
 #include "declarationbuilderbase.h"
 
+#include "predeclarationbuilder.h"
+
 #include "typebuilder.h"
 #include "helper.h"
 #include <language/duchain/builders/abstractdeclarationbuilder.h>
@@ -74,6 +76,12 @@ private:
     VariableIdentifierAst* m_lastVariableIdentifier;
     unsigned int m_currentModifers;
     QString m_lastTopStatementComment;
+    
+    QHash<qint64, ClassDeclaration*> m_types;
+    QHash<qint64, KDevelop::FunctionDeclaration*> m_functions;
+    
+    /// handles common stuff for both interfaces and classes
+    void openTypeDeclaration(AstNode *node, IdentifierAst *name, ClassDeclarationData::ClassType type);
 };
 
 }

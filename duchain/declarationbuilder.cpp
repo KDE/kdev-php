@@ -38,8 +38,6 @@
 #include "variabledeclaration.h"
 #include "classdeclaration.h"
 
-#include "predeclarationbuilder.h"
-
 using namespace KTextEditor;
 using namespace KDevelop;
 
@@ -50,8 +48,10 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
 {
     //Run DeclarationBuilder twice, to find uses of declarations that are
     //declared after the use. ($a = new Foo; class Foo {})
-    PreDeclarationBuilder b(editor());
-    updateContext = b.build(url, node, updateContext, useSmart);
+    {
+        PreDeclarationBuilder prebuilder(&m_types, &m_functions, editor());
+        updateContext = prebuilder.build(url, node, updateContext, useSmart);
+    }
 
     // now skip through some things the DeclarationBuilderBase (ContextBuilder) would do,
     // most significantly don't clear imported parent contexts
@@ -72,41 +72,28 @@ void DeclarationBuilder::closeDeclaration()
 
 void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
 {
-    setComment(formatComment(node, editor()));
-
-    ClassDeclaration* dec = openDefinition<ClassDeclaration>(node->className, node);
-    {
-        DUChainWriteLocker lock(DUChain::lock());
-        dec->setKind(KDevelop::Declaration::Type);
-        dec->setBaseClass(IndexedType());
-        dec->clearInterfaces();
-        dec->setClassType(Php::ClassDeclarationData::Class);
-        if ( node->modifier ) {
-          dec->setClassModifier(node->modifier->modifier);
-        }
-    }
-
+    openTypeDeclaration(node, node->className, ClassDeclarationData::Class);
     DeclarationBuilderBase::visitClassDeclarationStatement(node);
-
     closeDeclaration();
 }
 
 void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
 {
-    setComment(formatComment(node, editor()));
-
-    ClassDeclaration* dec = openDefinition<ClassDeclaration>(node->interfaceName, node);
-    {
-        DUChainWriteLocker lock(DUChain::lock());
-        dec->setKind(KDevelop::Declaration::Type);
-        dec->setBaseClass(IndexedType());
-        dec->clearInterfaces();
-        dec->setClassType(Php::ClassDeclarationData::Interface);
-    }
-
+    openTypeDeclaration(node, node->interfaceName, ClassDeclarationData::Interface);
     DeclarationBuilderBase::visitInterfaceDeclarationStatement(node);
-
     closeDeclaration();
+}
+
+void DeclarationBuilder::openTypeDeclaration(AstNode* node, IdentifierAst* name, ClassDeclarationData::ClassType type) {
+    ClassDeclaration* classDec = m_types.value(name->string, 0);
+    Q_ASSERT(classDec);
+    if ( classDec->classType() == type ) {
+        // seems like we have to do that manually, else the usebuilder crashes...
+        setEncountered(classDec);
+        openDeclarationInternal(classDec);
+    } else {
+        ///TODO: error - but can that even happen? name->string should be unique (its a int, not a string)
+    }
 }
 
 void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
@@ -263,14 +250,12 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
 
 void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
-    setComment(formatComment(node, editor()));
-
-    FunctionDeclaration *dec = openDefinition<FunctionDeclaration>(node->functionName, node);
-    {
-        DUChainWriteLocker lock(DUChain::lock());
-        dec->setKind(Declaration::Type);
-        dec->clearDefaultParameters();
-    }
+    FunctionDeclaration* dec = m_functions.value(node->functionName->string, 0);
+    Q_ASSERT(dec);
+    // seems like we have to set that, else the usebuilder crashes
+    DeclarationBuilderBase::setEncountered(dec);
+    
+    openDeclarationInternal(dec);
 
     DeclarationBuilderBase::visitFunctionDeclarationStatement(node);
 

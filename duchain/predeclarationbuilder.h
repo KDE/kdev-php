@@ -26,6 +26,7 @@
 #include "typebuilder.h"
 #include "helper.h"
 #include <language/duchain/builders/abstractdeclarationbuilder.h>
+
 namespace KDvelop {
     class Declaration;
 }
@@ -36,8 +37,14 @@ class EditorIntegrator;
 
 class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public DeclarationBuilderBase {
 public:
-    PreDeclarationBuilder(ParseSession* session) : DeclarationBuilderBase(session) {}
-    PreDeclarationBuilder(EditorIntegrator* editor) : DeclarationBuilderBase(editor) {}
+    PreDeclarationBuilder(QHash<qint64, ClassDeclaration*>* types, QHash<qint64,
+                          KDevelop::FunctionDeclaration*>* functions,
+                          ParseSession* session)
+                        : DeclarationBuilderBase(session), m_types(types), m_functions(functions) {}
+    PreDeclarationBuilder(QHash<qint64, ClassDeclaration*>* types, QHash<qint64,
+                          KDevelop::FunctionDeclaration*>* functions,
+                          EditorIntegrator* editor)
+                        : DeclarationBuilderBase(editor), m_types(types), m_functions(functions) {}
     
 protected:
     virtual void closeDeclaration();
@@ -57,6 +64,10 @@ protected:
     virtual void visitStatement(StatementAst* node){Q_UNUSED(node);}
     virtual void visitStaticVar(StaticVarAst* node){Q_UNUSED(node);}
     virtual void visitGlobalVar(GlobalVarAst* node){Q_UNUSED(node);}
+
+private:
+    QHash<qint64, ClassDeclaration*>* m_types;
+    QHash<qint64, KDevelop::FunctionDeclaration*>* m_functions;
 };
 
 }

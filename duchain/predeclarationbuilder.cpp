@@ -57,6 +57,7 @@ void PreDeclarationBuilder::closeDeclaration()
 
 void PreDeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
 {
+    setComment(formatComment(node, editor()));
     ClassDeclaration* dec = openDefinition<ClassDeclaration>(node->className, node);
     {
         DUChainWriteLocker lock(DUChain::lock());
@@ -71,11 +72,14 @@ void PreDeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationState
     
     DeclarationBuilderBase::visitClassDeclarationStatement(node);
     
+    m_types->insert(node->className->string, dec);
+    
     closeDeclaration();
 }
 
 void PreDeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
 {
+    setComment(formatComment(node, editor()));
     ClassDeclaration* dec = openDefinition<ClassDeclaration>(node->interfaceName, node);
     {
         DUChainWriteLocker lock(DUChain::lock());
@@ -95,11 +99,14 @@ void PreDeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarat
         node->body->classStatementsSequence = backup;
     }
     
+    m_types->insert(node->interfaceName->string, dec);
+    
     closeDeclaration();
 }
 
 void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
+    setComment(formatComment(node, editor()));
     FunctionDeclaration *dec = openDefinition<FunctionDeclaration>(node->functionName, node);
     {
         DUChainWriteLocker lock(DUChain::lock());
@@ -116,6 +123,8 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
         
         node->parameters->parametersSequence = parameterBackup;
     }
+    
+    m_functions->insert(node->functionName->string, dec);
     
     closeDeclaration();
 }
