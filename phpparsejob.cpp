@@ -89,18 +89,16 @@ bool ParseJob::wasReadFromDisk() const
 
 void ParseJob::run()
 {
-    if ( !isInternalFunctionFile(document()) && !m_parentJob ) {
+    if ( document() != IndexedString("internalfunctions") && !m_parentJob ) {
         QMutexLocker lock(&internalFunctionParseMutex);
-        for (uint i=0; i < internalFunctionFilesCount; i++) {
-            TopDUContext *top = 0;
-            {
-                DUChainReadLocker lock(DUChain::lock());
-                top = DUChain::self()->chainForDocument(internalFunctionFiles[i]);
-            }
-            if (!top) {
-                ParseJob job(KUrl(internalFunctionFiles[i].str()));
-                job.run();
-            }
+        TopDUContext *top = 0;
+        {
+            DUChainReadLocker lock(DUChain::lock());
+            top = DUChain::self()->chainForDocument(IndexedString("internalfunctions"));
+        }
+        if (!top) {
+            ParseJob job(KUrl(IndexedString("internalfunctions").str()));
+            job.run();
         }
     }
 

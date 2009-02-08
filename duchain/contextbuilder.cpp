@@ -91,15 +91,13 @@ void ContextBuilder::startVisiting(AstNode* node)
         DUChainReadLocker lock(DUChain::lock());
         hasImports = !top->importedParentContexts().isEmpty();
     }
-    if (!hasImports && !isInternalFunctionFile(top->url())) {
+    if (!hasImports && top->url() != IndexedString("internalfunctions")) {
         DUChainWriteLocker lock(DUChain::lock());
-        for (uint i=0; i < internalFunctionFilesCount; i++) {
-            TopDUContext* import = DUChain::self()->chainForDocument(internalFunctionFiles[i]);
-            if (!import) {
-                kWarning() << "importing internalFunctions failed" << currentContext()->url().str() << internalFunctionFiles[i].str();
-            } else {
-                top->addImportedParentContext(import);
-            }
+        TopDUContext* import = DUChain::self()->chainForDocument(IndexedString("internalfunctions"));
+        if (!import) {
+            kWarning() << "importing internalFunctions failed" << currentContext()->url().str();
+        } else {
+            top->addImportedParentContext(import);
         }
     }
     visitNode(node);

@@ -51,17 +51,6 @@ namespace Php {
     QString formatComment(AstNode* node, EditorIntegrator* editor);
 
 
-    static const uint internalFunctionFilesCount = 1;
-    static const KDevelop::IndexedString internalFunctionFiles[internalFunctionFilesCount] = {
-        KDevelop::IndexedString("internalfunctions")
-    };
-    inline bool isInternalFunctionFile(KDevelop::IndexedString url) {
-        for (uint i=0; i < internalFunctionFilesCount; i++) {
-            if (url == internalFunctionFiles[i]) return true;
-        }
-        return false;
-    }
-
     CommonScalarAst* findCommonScalar(AstNode* node);
 
     KDevelop::IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl);
