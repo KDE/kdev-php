@@ -40,12 +40,13 @@ using namespace KDevelop;
 namespace Php
 {
 
-ContextBuilder::ContextBuilder()
+ContextBuilder::ContextBuilder() : m_reportErrors(true)
 {
 }
 ReferencedTopDUContext ContextBuilder::build( const KDevelop::IndexedString& url, AstNode* node,
                                             KDevelop::ReferencedTopDUContext updateContext, bool useSmart )
 {
+    m_reportErrors = (url != IndexedString("internalfunctions"));
     if (!updateContext) {
         DUChainReadLocker lock(DUChain::lock());
         updateContext = DUChain::self()->chainForDocument(url);
@@ -240,7 +241,7 @@ void ContextBuilder::addBaseType(IdentifierAst * identifier, ClassDeclarationDat
                 } else {
                     currentClass->setBaseClass( baseClass->indexedType() );
                 }
-            } else {
+            } else if ( m_reportErrors ) {
                 reportError(i18n("Circular inheritance of %1 and %2", currentClass->toString(), baseClass->toString()), identifier);
             }
         }
@@ -285,16 +286,19 @@ void ContextBuilder::reportError(const QString& errorMsg, AstNode* node)
 
 Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
 {
-    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), true);
+    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), m_reportErrors);
 }
 
 Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
 {
-    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), true);
+    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), m_reportErrors);
 }
 
 Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, const QualifiedIdentifier &identifier, AstNode* node, bool createProblems)
 {
+    if ( !m_reportErrors ) {
+        createProblems = false;
+    }
     return findDeclarationImportHelper(currentContext(), identifier, declarationType, node, editor(), createProblems);
 }
 

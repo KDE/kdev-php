@@ -55,6 +55,7 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
 
     // now skip through some things the DeclarationBuilderBase (ContextBuilder) would do,
     // most significantly don't clear imported parent contexts
+    m_reportErrors = (url != IndexedString("internalfunctions"));
     return ContextBuilderBase::build(url, node, updateContext, useSmart);
 }
 
@@ -121,31 +122,43 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
                 dec->setStatic(true);
             }
             if ( parent->classType() == ClassDeclarationData::Interface ) {
-                if ( node->modifiers->modifiers & ModifierFinal || node->modifiers->modifiers & ModifierAbstract ) {
-                    reportError( i18n("Access type for interface method %1 must be omitted.", dec->toString()), node->modifiers );
-                }
-                if ( !isEmptyMethodBody(node->methodBody) ) {
-                    reportError( i18n("Interface function %1 cannot contain body.", dec->toString()), node->methodBody );
+                if ( m_reportErrors ) {
+                    if ( node->modifiers->modifiers & ModifierFinal || node->modifiers->modifiers & ModifierAbstract ) {
+                        reportError( i18n("Access type for interface method %1 must be omitted.",
+                                              dec->toString()), node->modifiers );
+                    }
+                    if ( !isEmptyMethodBody(node->methodBody) ) {
+                        reportError( i18n("Interface function %1 cannot contain body.",
+                                              dec->toString()), node->methodBody );
+                    }
                 }
                 // handle interface methods like abstract methods
                 dec->setIsAbstract(true);
             } else {
                 if (node->modifiers->modifiers & ModifierAbstract) {
-                    if ( parent->classModifier() != AbstractClass ) {
-                        reportError( i18n("Class %1 contains abstract method %2 and must therefore be declared abstract "
-                                          "or implement the method.", parent->identifier().toString(), dec->identifier().toString()),
-                                      node->modifiers );
-                    } else if ( !isEmptyMethodBody(node->methodBody) ) {
-                        reportError( i18n("Abstract function %1 cannot contain body.", dec->toString()), node->methodBody );
-                    } else if ( node->modifiers->modifiers & ModifierFinal ) {
-                        reportError( i18n("Cannot use the final modifier on an abstract class member."), node->modifiers );
-                    } else {
+                    if ( !m_reportErrors ) {
                         dec->setIsAbstract(true);
+                    } else {
+                        if ( parent->classModifier() != AbstractClass ) {
+                            reportError( i18n("Class %1 contains abstract method %2 and must therefore be declared abstract "
+                                              "or implement the method.",
+                                                  parent->identifier().toString(),
+                                                  dec->identifier().toString()),
+                                          node->modifiers );
+                        } else if ( !isEmptyMethodBody(node->methodBody) ) {
+                            reportError( i18n("Abstract function %1 cannot contain body.",
+                                                  dec->toString()), node->methodBody );
+                        } else if ( node->modifiers->modifiers & ModifierFinal ) {
+                            reportError( i18n("Cannot use the final modifier on an abstract class member."),
+                                                  node->modifiers );
+                        } else {
+                            dec->setIsAbstract(true);
+                        }
                     }
                 } else if (node->modifiers->modifiers & ModifierFinal) {
                     dec->setIsFinal(true);
                 }
-                if ( !dec->isAbstract() && isEmptyMethodBody(node->methodBody) ) {
+                if ( m_reportErrors && !dec->isAbstract() && isEmptyMethodBody(node->methodBody) ) {
                   reportError( i18n("Non-abstract method %1 must contain body.", dec->toString()), node->methodBody );
                 }
             }
@@ -157,13 +170,14 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
     } else {
         if (node->modifiers) {
             m_currentModifers = node->modifiers->modifiers;
-
-            // have to report the errors here to get a good problem range
-            if (m_currentModifers & ModifierFinal) {
-                reportError( i18n("Properties cannot be declared final."), node->modifiers );
-            }
-            if (m_currentModifers & ModifierAbstract) {
-                reportError( i18n("Properties cannot be declared abstract."), node->modifiers );
+            if ( m_reportErrors ) {
+                // have to report the errors here to get a good problem range
+                if (m_currentModifers & ModifierFinal) {
+                    reportError( i18n("Properties cannot be declared final."), node->modifiers );
+                }
+                if (m_currentModifers & ModifierAbstract) {
+                    reportError( i18n("Properties cannot be declared abstract."), node->modifiers );
+                }
             }
         } else {
             m_currentModifers = 0;
@@ -267,6 +281,9 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
 bool DeclarationBuilder::isRedeclaration(const QualifiedIdentifier &identifier, AstNode* node,
                                           DeclarationType type, DUContext* context)
 {
+    if ( !m_reportErrors ) {
+        return false;
+    }
     ///TODO: method redeclaration etc.
     if ( type != ClassDeclarationType
           && type != FunctionDeclarationType
