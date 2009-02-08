@@ -422,7 +422,6 @@ void TestUses::functionAndClassWithSameName()
     Declaration* fnAsdf = top->childContexts().first()->localDeclarations().first();
     QCOMPARE(fnAsdf->uses().keys().count(), 0);
 
-    compareUses(top->localDeclarations().first(), QList<SimpleRange>());
     compareUses(top->localDeclarations().at(1), SimpleRange(0, 70, 0, 74));
 }
 
