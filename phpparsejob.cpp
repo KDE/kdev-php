@@ -55,6 +55,7 @@ using namespace KDevelop;
 namespace Php
 {
 
+QMutex internalFunctionParseMutex;
 
 ParseJob::ParseJob( const KUrl &url, QObject *parent )
         : KDevelop::ParseJob( url, parent )
@@ -88,17 +89,20 @@ bool ParseJob::wasReadFromDisk() const
 
 void ParseJob::run()
 {
-    for (uint i=0; i < internalFunctionFilesCount; i++) {
-        if (document() == internalFunctionFiles[i]) break;
-        TopDUContext *top = 0;
-        {
-            DUChainReadLocker lock(DUChain::lock());
-            top = DUChain::self()->chainForDocument(internalFunctionFiles[i]);
+    if ( !isInternalFunctionFile(document()) && !m_parentJob ) {
+        internalFunctionParseMutex.lock();
+        for (uint i=0; i < internalFunctionFilesCount; i++) {
+            TopDUContext *top = 0;
+            {
+                DUChainReadLocker lock(DUChain::lock());
+                top = DUChain::self()->chainForDocument(internalFunctionFiles[i]);
+            }
+            if (!top) {
+                ParseJob job(KUrl(internalFunctionFiles[i].str()));
+                job.run();
+            }
         }
-        if (!top) {
-            ParseJob job(KUrl(internalFunctionFiles[i].str()));
-            job.run();
-        }
+        internalFunctionParseMutex.unlock();
     }
 
     {
