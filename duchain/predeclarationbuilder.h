@@ -21,6 +21,8 @@
 #ifndef PREDECLARATIONBUILDER_H
 #define PREDECLARATIONBUILDER_H
 
+#include "declarationbuilderbase.h"
+
 #include "typebuilder.h"
 #include "helper.h"
 #include <language/duchain/builders/abstractdeclarationbuilder.h>
@@ -31,13 +33,12 @@ namespace Php {
 class ParseSession;
 class EditorIntegrator;
 
-typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, Php::TypeBuilder> DeclarationBuilderBase;
 
 class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public DeclarationBuilderBase {
 public:
-    PreDeclarationBuilder(ParseSession* session);
-    PreDeclarationBuilder(EditorIntegrator* editor);
-
+    PreDeclarationBuilder(ParseSession* session) : DeclarationBuilderBase(session) {}
+    PreDeclarationBuilder(EditorIntegrator* editor) : DeclarationBuilderBase(editor) {}
+    
 protected:
     virtual void closeDeclaration();
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
@@ -56,9 +57,6 @@ protected:
     virtual void visitStatement(StatementAst* node){Q_UNUSED(node);}
     virtual void visitStaticVar(StaticVarAst* node){Q_UNUSED(node);}
     virtual void visitGlobalVar(GlobalVarAst* node){Q_UNUSED(node);}
-
-    void classTypeOpened(KDevelop::AbstractType::Ptr type);
-    void classContextOpened(KDevelop::DUContext* context);
 };
 
 }

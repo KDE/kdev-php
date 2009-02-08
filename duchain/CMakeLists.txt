@@ -6,6 +6,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
 
 set(duchain_SRCS
     includebuilder.cpp
+    declarationbuilderbase.cpp
     predeclarationbuilder.cpp
     declarationbuilder.cpp
     contextbuilder.cpp

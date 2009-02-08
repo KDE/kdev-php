@@ -43,16 +43,6 @@ using namespace KDevelop;
 
 namespace Php {
 
-PreDeclarationBuilder::PreDeclarationBuilder (ParseSession* session)
-{
-  setEditor(session);
-}
-
-PreDeclarationBuilder::PreDeclarationBuilder (EditorIntegrator* editor)
-{
-  setEditor(editor);
-}
-
 void PreDeclarationBuilder::closeDeclaration()
 {
     if (currentDeclaration() && lastType()) {
@@ -139,26 +129,6 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
     }
     
     closeDeclaration();
-}
-
-void PreDeclarationBuilder::classContextOpened(KDevelop::DUContext* context)
-{
-    DUChainWriteLocker lock(DUChain::lock());
-    currentDeclaration()->setInternalContext(context);
-}
-
-//copied from cpp
-void PreDeclarationBuilder::classTypeOpened(AbstractType::Ptr type)
-{
-    //We override this so we can get the class-declaration into a usable state(with filled type) earlier
-    DUChainWriteLocker lock(DUChain::lock());
-
-    IdentifiedType* idType = dynamic_cast<IdentifiedType*>(type.unsafeData());
-
-    if( idType && !idType->declarationId().isValid() ) //When the given type has no declaration yet, assume we are declaring it now
-        idType->setDeclaration( currentDeclaration() );
-
-    currentDeclaration()->setType(type);
 }
 
 }

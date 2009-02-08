@@ -45,18 +45,6 @@ using namespace KDevelop;
 
 namespace Php {
 
-DeclarationBuilder::DeclarationBuilder (ParseSession* session)
-    : m_lastVariableIdentifier(0)
-{
-  setEditor(session);
-}
-
-DeclarationBuilder::DeclarationBuilder (EditorIntegrator* editor)
-    : m_lastVariableIdentifier(0)
-{
-  setEditor(editor);
-}
-
 KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::IndexedString& url, Php::AstNode* node,
                                             KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
 {
@@ -101,12 +89,6 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
     DeclarationBuilderBase::visitClassDeclarationStatement(node);
 
     closeDeclaration();
-}
-
-void DeclarationBuilder::classContextOpened(KDevelop::DUContext* context)
-{
-    DUChainWriteLocker lock(DUChain::lock());
-    currentDeclaration()->setInternalContext(context);
 }
 
 void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
@@ -258,20 +240,6 @@ void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationA
     }
     DeclarationBuilderBase::visitClassConstantDeclaration(node);
     closeDeclaration();
-}
-
-//copied from cpp
-void DeclarationBuilder::classTypeOpened(AbstractType::Ptr type)
-{
-    //We override this so we can get the class-declaration into a usable state(with filled type) earlier
-    DUChainWriteLocker lock(DUChain::lock());
-
-    IdentifiedType* idType = dynamic_cast<IdentifiedType*>(type.unsafeData());
-
-    if( idType && !idType->declarationId().isValid() ) //When the given type has no declaration yet, assume we are declaring it now
-        idType->setDeclaration( currentDeclaration() );
-
-    currentDeclaration()->setType(type);
 }
 
 void DeclarationBuilder::visitParameter(ParameterAst *node)

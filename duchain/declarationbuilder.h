@@ -21,6 +21,8 @@
 #ifndef DECLARATIONBUILDER_H
 #define DECLARATIONBUILDER_H
 
+#include "declarationbuilderbase.h"
+
 #include "typebuilder.h"
 #include "helper.h"
 #include <language/duchain/builders/abstractdeclarationbuilder.h>
@@ -31,12 +33,14 @@ namespace Php {
 class ParseSession;
 class EditorIntegrator;
 
-typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, Php::TypeBuilder> DeclarationBuilderBase;
-
 class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase {
 public:
-    DeclarationBuilder(ParseSession* session);
-    DeclarationBuilder(EditorIntegrator* editor);
+    DeclarationBuilder(ParseSession* session)
+      : DeclarationBuilderBase(session), m_lastVariableIdentifier(0)
+    {}
+    DeclarationBuilder(EditorIntegrator* editor)
+      : DeclarationBuilderBase(editor), m_lastVariableIdentifier(0)
+    {}
     virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, Php::AstNode* node,
                                             KDevelop::ReferencedTopDUContext updateContext
                                                 = KDevelop::ReferencedTopDUContext(), bool useSmart = true );
@@ -60,9 +64,6 @@ protected:
     virtual void visitStatement(StatementAst* node);
     virtual void visitStaticVar(StaticVarAst* node);
     virtual void visitGlobalVar(GlobalVarAst* node);
-
-    void classTypeOpened(KDevelop::AbstractType::Ptr type);
-    void classContextOpened(KDevelop::DUContext* context);
     
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const Php::MethodBodyAst* body) const {
