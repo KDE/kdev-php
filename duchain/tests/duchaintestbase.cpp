@@ -49,24 +49,8 @@ DUChainTestBase::DUChainTestBase()
 
 void DUChainTestBase::initTestCase()
 {
-    for (uint i=0; i < internalFunctionFilesCount; i++) {
-        TopDUContext *top = 0;
-        {
-            DUChainReadLocker lock(DUChain::lock());
-            top = DUChain::self()->chainForDocument(internalFunctionFiles[i]);
-        }
-        if (!top) {
-            QByteArray content("<?php ");
-            if (i==0) {
-                content += "function define() {} function substr() {} class stdClass {}\n/**\n * @superglobal\n **/\n$_GET = array();\nclass Exception {} ";
-            }
-            parseAdditionalFile(internalFunctionFiles[i], content);
-            kDebug() << "could not find internal function file: " << internalFunctionFiles[i].byteArray()
-                     << "used this instead: " << content;
-        } else {
-            kDebug() << "got internal function file: " << internalFunctionFiles[i].byteArray();
-        }
-    }
+    QByteArray content("<?php function define() {} function substr() {} class stdClass {}\n/**\n * @superglobal\n **/\n$_GET = array();\nclass Exception {} ");
+    parseAdditionalFile(internalFunctionFiles[0], content);
 }
 
 CompletionTreeItemPointer DUChainTestBase::searchDeclaration(QList<CompletionTreeItemPointer> items, Declaration* declaration)
