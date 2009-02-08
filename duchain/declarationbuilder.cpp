@@ -59,18 +59,6 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
     return ContextBuilderBase::build(url, node, updateContext, useSmart);
 }
 
-void DeclarationBuilder::closeDeclaration()
-{
-    if (currentDeclaration() && lastType()) {
-        DUChainWriteLocker lock(DUChain::lock());
-        currentDeclaration()->setType(lastType());
-    }
-
-    eventuallyAssignInternalContext();
-
-    DeclarationBuilderBase::closeDeclaration();
-}
-
 void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
 {
     openTypeDeclaration(node, node->className, ClassDeclarationData::Class);

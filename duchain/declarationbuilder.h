@@ -48,7 +48,6 @@ public:
                                                 = KDevelop::ReferencedTopDUContext(), bool useSmart = true );
 
 protected:
-    virtual void closeDeclaration();
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
     virtual void visitClassStatement(ClassStatementAst *node);

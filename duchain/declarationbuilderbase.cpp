@@ -38,6 +38,18 @@ DeclarationBuilderBase::DeclarationBuilderBase (EditorIntegrator* editor)
   setEditor(editor);
 }
 
+void DeclarationBuilderBase::closeDeclaration()
+{
+    if (currentDeclaration() && lastType()) {
+        DUChainWriteLocker lock(DUChain::lock());
+        currentDeclaration()->setType(lastType());
+    }
+
+    eventuallyAssignInternalContext();
+
+    KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, Php::TypeBuilder>::closeDeclaration();
+}
+
 void DeclarationBuilderBase::classContextOpened(KDevelop::DUContext* context)
 {
     DUChainWriteLocker lock(DUChain::lock());

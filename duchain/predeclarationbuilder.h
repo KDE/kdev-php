@@ -47,7 +47,6 @@ public:
                         : DeclarationBuilderBase(editor), m_types(types), m_functions(functions) {}
     
 protected:
-    virtual void closeDeclaration();
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
     virtual void visitClassStatement(ClassStatementAst *node){Q_UNUSED(node);}

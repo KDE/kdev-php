@@ -37,6 +37,7 @@ public:
     DeclarationBuilderBase(EditorIntegrator* editor);
 
 protected:
+    virtual void closeDeclaration();
     void classTypeOpened(KDevelop::AbstractType::Ptr type);
     void classContextOpened(KDevelop::DUContext* context);
 };

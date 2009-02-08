@@ -43,18 +43,6 @@ using namespace KDevelop;
 
 namespace Php {
 
-void PreDeclarationBuilder::closeDeclaration()
-{
-    if (currentDeclaration() && lastType()) {
-        DUChainWriteLocker lock(DUChain::lock());
-        currentDeclaration()->setType(lastType());
-    }
-
-    eventuallyAssignInternalContext();
-
-    DeclarationBuilderBase::closeDeclaration();
-}
-
 void PreDeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
 {
     setComment(formatComment(node, editor()));
