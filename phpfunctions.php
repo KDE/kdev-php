@@ -4,6 +4,7 @@
 
 /**
  * References all variables available in global scope
+ * @superglobal
  **/
 $GLOBALS = array();
 
@@ -56,31 +57,37 @@ $HTTP_SESSION_VARS = array();
 
 /**
  * HTTP Cookies
+ * @superglobal
  **/
 $_COOKIE = array();
 
 /**
  * Environment variables
+ * @superglobal
  **/
 $_ENV = array();
 
 /**
  * HTTP File Upload variables
+ * @superglobal
  **/
 $_FILES = array();
 
 /**
  * HTTP GET variables
+ * @superglobal
  **/
 $_GET = array();
 
 /**
  * HTTP POST variables
+ * @superglobal
  **/
 $_POST = array();
 
 /**
  * HTTP Request variables
+ * @superglobal
  **/
 $_REQUEST = array();
 
@@ -92,6 +99,7 @@ $_SERVER = array();
 
 /**
  * Session variables
+ * @superglobal
  **/
 $_SESSION = array();
 

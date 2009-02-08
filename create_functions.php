@@ -123,15 +123,21 @@ foreach ($dirs as $dir) {
         if ($vars = $xml->xpath('//phpdoc:varentry//db:refnamediv')) {
             foreach ($vars as $var) {
                 foreach ($var->refname as $i) {
-                    $v = array();
                     $i = (string)$i;
+                    if ( isset($variables[$i]) ) {
+                        $v = $variables[$i];
+                    } else {
+                        $v = array();
+                    }
                     if (substr($i, 0, 1) != '$') continue;
-                    $v['deprecated'] = false;
+                    
                     if (substr($i, -13) == ' [deprecated]') {
                         $i = substr($i, 0, -13);
                         $v['deprecated'] = true;
+                    } else {
+                        $v['deprecated'] = false;
                     }
-                    $v['desc'] = $var->refpurpose;
+                    $v['desc'] = (string)$var->refpurpose;
                     $variables[$i] = $v;
                 }
             }
@@ -337,6 +343,7 @@ $declarationCount = 0;
 $out = $fileHeader;
 
 // make sure the output it somehow ordered to prevent huge svn diffs
+var_dump($variables);
 ksort($variables);
 ksort($classes);
 ksort($constants);
