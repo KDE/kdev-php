@@ -20,15 +20,20 @@
 #define TESTDUCHAIN_H
 
 #include "duchain/tests/duchaintestbase.h"
+#include <language/codecompletion/codecompletionitem.h>
 
 namespace Php
 {
+  
 class TestCompletion : public DUChainTestBase
 {
   Q_OBJECT
 
 public:
     TestCompletion();
+
+private:
+    void dumpCompletionItems(QList<KDevelop::CompletionTreeItemPointer> items);
 
 private slots:
     void publicObjectCompletion();

@@ -92,6 +92,13 @@ TestCompletion::TestCompletion()
 {
 }
 
+void TestCompletion::dumpCompletionItems(QList<CompletionTreeItemPointer> items)
+{
+    kDebug() << items.count() << "completion items:";
+    foreach ( CompletionTreeItemPointer item, items ) {
+        kDebug() << item->declaration()->toString();
+    }
+}
 
 void TestCompletion::publicObjectCompletion()
 {
@@ -305,6 +312,7 @@ void TestCompletion::baseClass()
     CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "$a->", QString()));
     bool abort = false;
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+    dumpCompletionItems(itemList);
     QCOMPARE(itemList.count(), 1);
     QCOMPARE(itemList.first()->declaration().data(), top->childContexts().first()->localDeclarations().first());
 
