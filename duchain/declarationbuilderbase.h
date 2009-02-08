@@ -1,6 +1,6 @@
 /***************************************************************************
  *   This file is part of KDevelop                                         *
- *   Copyright 2008 Niko Sams <niko.sams@gmail.com>                        *
+ *   Copyright 2008 Milian Wolff <mail@milianw.de>                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU Library General Public License as       *
