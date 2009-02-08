@@ -68,16 +68,8 @@ void PreDeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationState
           dec->setClassModifier(node->modifier->modifier);
         }
     }
-
-    // don't evaluate the body in PreDeclarationBuilder
-    {
-        const KDevPG::ListNode<ClassStatementAst*>* backup = node->body->classStatementsSequence;
-        node->body->classStatementsSequence = 0;
-        
-        DeclarationBuilderBase::visitClassDeclarationStatement(node);
-        
-        node->body->classStatementsSequence = backup;
-    }
+    
+    DeclarationBuilderBase::visitClassDeclarationStatement(node);
     
     closeDeclaration();
 }
@@ -93,7 +85,7 @@ void PreDeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarat
         dec->setClassType(Php::ClassDeclarationData::Interface);
     }
     
-    // don't evaluate the body in PreDeclarationBuilder
+    // don't evaluate the body of interfaces in PreDeclarationBuilder
     {
         const KDevPG::ListNode<ClassStatementAst*>* backup = node->body->classStatementsSequence;
         node->body->classStatementsSequence = 0;
@@ -115,16 +107,13 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
         dec->clearDefaultParameters();
     }
     
-    // don't evaluate the body or parameters in PreDeclarationBuilder
+    // don't evaluate the parameters of functions in PreDeclarationBuilder
     {
-        const KDevPG::ListNode<TopStatementAst*>* bodyBackup = node->functionBody->statementsSequence;
-        node->functionBody->statementsSequence = 0;
         const KDevPG::ListNode<ParameterAst*>* parameterBackup = node->parameters->parametersSequence;
         node->parameters->parametersSequence = 0;
         
         DeclarationBuilderBase::visitFunctionDeclarationStatement(node);
         
-        node->functionBody->statementsSequence = bodyBackup;
         node->parameters->parametersSequence = parameterBackup;
     }
     
