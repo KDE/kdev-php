@@ -90,7 +90,7 @@ bool ParseJob::wasReadFromDisk() const
 void ParseJob::run()
 {
     if ( !isInternalFunctionFile(document()) && !m_parentJob ) {
-        internalFunctionParseMutex.lock();
+        QMutexLocker lock(internalFunctionParseMutex);
         for (uint i=0; i < internalFunctionFilesCount; i++) {
             TopDUContext *top = 0;
             {
@@ -102,7 +102,6 @@ void ParseJob::run()
                 job.run();
             }
         }
-        internalFunctionParseMutex.unlock();
     }
 
     {
