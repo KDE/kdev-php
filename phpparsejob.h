@@ -46,6 +46,8 @@ class LanguageSupport;
 
 class ParseSession;
 
+class EditorIntegrator;
+
 class ParseJob : public KDevelop::ParseJob
 {
     Q_OBJECT
@@ -82,6 +84,10 @@ private:
      * endless recursions in include statements
      */
     bool hasParentDocument(const KDevelop::IndexedString &document);
+    
+    /// create a problem pointer for the current document
+    KDevelop::ProblemPointer createProblem( const QString &description, AstNode* node,
+                                            EditorIntegrator * editor, KDevelop::ProblemData::Source source );
 };
 
 }

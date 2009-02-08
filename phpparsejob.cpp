@@ -185,17 +185,33 @@ void ParseJob::run()
 
         IncludeBuilder includeBuilder(&editor);
         includeBuilder.build(document(), m_ast);
-        foreach (IndexedString file, includeBuilder.includes()) {
-            if ( abortRequested() )
-                return abortJob();
-            if (hasParentDocument(file)) {
-                kDebug() << "file includes itself" << file.str();
+        
+        QList<ProblemPointer> includeProblems;
+        {
+            QMapIterator<Php::AstNode*, QString> i(includeBuilder.badIncludes());
+            while ( i.hasNext() ) {
+                i.next();
+                includeProblems << createProblem(i18n("Included file %1 could not be found.", i.value()), i.key(),
+                                                    &editor, ProblemData::Preprocessor);
                 continue;
             }
-            kDebug() << "parse included file" << file.str();
-            ParseJob job(file.toUrl(), 0);
-            job.setParentJob(this);
-            job.run();
+        }
+        {
+            QMapIterator<Php::AstNode*, IndexedString> i(includeBuilder.includes());
+            while (i.hasNext()) {
+                i.next();
+                if ( abortRequested() )
+                    return abortJob();
+                if (hasParentDocument(i.value())) {
+                    includeProblems << createProblem(i18n("File %1 includes itself.", i.value().str()), i.key(),
+                                                        &editor, ProblemData::Preprocessor);
+                    continue;
+                }
+                kDebug() << "parse included file" << i.value().str();
+                ParseJob job(i.value().toUrl(), 0);
+                job.setParentJob(this);
+                job.run();
+            }
         }
 
         QReadLocker parseLock(php()->language()->parseLock());
@@ -208,6 +224,10 @@ void ParseJob::run()
         useBuilder.buildUses(m_ast);
 
         DUChainWriteLocker lock(DUChain::lock());
+        
+        foreach (ProblemPointer p, includeProblems) {
+            chain->addProblem(p);
+        }
 
         chain->setFeatures(TopDUContext::AllDeclarationsContextsAndUses);
         ParsingEnvironmentFilePointer file = chain->parsingEnvironmentFile();
@@ -272,6 +292,17 @@ bool ParseJob::hasParentDocument(const IndexedString &doc)
     if (!m_parentJob) return false;
     if (m_parentJob->document() == doc) return true;
     return m_parentJob->hasParentDocument(doc);
+}
+
+ProblemPointer ParseJob::createProblem( const QString &description, AstNode* node,
+                                        EditorIntegrator * editor, ProblemData::Source source )
+{
+    ProblemPointer p(new Problem());
+    p->setSource(source);
+    p->setDescription(description);
+    p->setFinalLocation(DocumentRange(document().str(), editor->findRange(node).textRange()));
+    kDebug() << p->description();
+    return p;
 }
 
 }

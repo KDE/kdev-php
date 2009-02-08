@@ -31,9 +31,14 @@ IncludeBuilder::IncludeBuilder(EditorIntegrator* editor)
     : m_editor(editor)
 {}
 
-QList< KDevelop::IndexedString > IncludeBuilder::includes()
+QMap< Php::AstNode*, KDevelop::IndexedString > IncludeBuilder::includes()
 {
     return m_includes;
+}
+
+QMap< Php::AstNode*, QString > IncludeBuilder::badIncludes()
+{
+    return m_badIncludes;
 }
 
 void IncludeBuilder::build(const IndexedString &document, AstNode *ast)
@@ -53,7 +58,9 @@ void IncludeBuilder::visitUnaryExpression(UnaryExpressionAst* node)
             str = str.mid(1, str.length()-2);
             IndexedString includeFile = findIncludeFileUrl(str, KUrl(m_document.str()));
             if (!includeFile.isEmpty()) {
-                m_includes << includeFile;
+                m_includes[node] = includeFile;
+            } else {
+                m_badIncludes[node] = str;
             }
         }
     }

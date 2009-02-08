@@ -22,7 +22,7 @@
 #ifndef INCLUDEBUILDER_H
 #define INCLUDEBUILDER_H
 
-#include <QList>
+#include <QMap>
 #include <language/duchain/indexedstring.h>
 
 #include "phpduchainexport.h"
@@ -35,7 +35,8 @@ class KDEVPHPDUCHAIN_EXPORT IncludeBuilder : public DefaultVisitor
 {
 public:
     IncludeBuilder(EditorIntegrator* editor);
-    QList<KDevelop::IndexedString> includes();
+    QMap<Php::AstNode*, KDevelop::IndexedString> includes();
+    QMap<Php::AstNode*, QString> badIncludes();
     void build(const KDevelop::IndexedString &document, AstNode* ast);
 
 protected:
@@ -43,7 +44,8 @@ protected:
 
 private:
     EditorIntegrator* m_editor;
-    QList<KDevelop::IndexedString> m_includes;
+    QMap<Php::AstNode*, KDevelop::IndexedString> m_includes;
+    QMap<Php::AstNode*, QString> m_badIncludes;
     KDevelop::IndexedString m_document;
 };
 
