@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "declarationbuilder.h"
+#include "predeclarationbuilder.h"
 
 #include <QByteArray>
 
@@ -57,6 +58,39 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
     // most significantly don't clear imported parent contexts
     m_reportErrors = (url != IndexedString("internalfunctions"));
     return ContextBuilderBase::build(url, node, updateContext, useSmart);
+}
+
+void DeclarationBuilder::closeDeclaration()
+{
+    if (currentDeclaration() && lastType()) {
+        DUChainWriteLocker lock(DUChain::lock());
+        currentDeclaration()->setType(lastType());
+    }
+
+    eventuallyAssignInternalContext();
+
+    DeclarationBuilderBase::closeDeclaration();
+}
+
+void DeclarationBuilder::classContextOpened(KDevelop::DUContext* context)
+{
+    DUChainWriteLocker lock(DUChain::lock());
+    currentDeclaration()->setInternalContext(context);
+}
+
+//copied from cpp
+void DeclarationBuilder::classTypeOpened(AbstractType::Ptr type)
+{
+    // We override this so we can get the class-declaration into a usable state(with filled type) earlier
+    DUChainWriteLocker lock(DUChain::lock());
+
+    IdentifiedType* idType = dynamic_cast<IdentifiedType*>(type.unsafeData());
+
+    // When the given type has no declaration yet, assume we are declaring it now
+    if( idType && !idType->declarationId().isValid() )
+        idType->setDeclaration( currentDeclaration() );
+
+    currentDeclaration()->setType(type);
 }
 
 void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
@@ -254,13 +288,14 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
 void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
     isRedeclaration(identifierForNode(node->functionName), node->functionName, FunctionDeclarationType);
+    
     FunctionDeclaration* dec = m_functions.value(node->functionName->string, 0);
     Q_ASSERT(dec);
     // seems like we have to set that, else the usebuilder crashes
     DeclarationBuilderBase::setEncountered(dec);
     
     openDeclarationInternal(dec);
-
+    
     DeclarationBuilderBase::visitFunctionDeclarationStatement(node);
 
     closeDeclaration();

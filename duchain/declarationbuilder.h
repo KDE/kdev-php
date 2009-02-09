@@ -21,10 +21,6 @@
 #ifndef DECLARATIONBUILDER_H
 #define DECLARATIONBUILDER_H
 
-#include "declarationbuilderbase.h"
-
-#include "predeclarationbuilder.h"
-
 #include "typebuilder.h"
 #include "helper.h"
 #include <language/duchain/builders/abstractdeclarationbuilder.h>
@@ -35,14 +31,14 @@ namespace Php {
 class ParseSession;
 class EditorIntegrator;
 
+typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, Php::TypeBuilder> DeclarationBuilderBase;
+
 class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase {
 public:
-    DeclarationBuilder(ParseSession* session)
-      : DeclarationBuilderBase(session), m_lastVariableIdentifier(0)
-    {}
-    DeclarationBuilder(EditorIntegrator* editor)
-      : DeclarationBuilderBase(editor), m_lastVariableIdentifier(0)
-    {}
+    DeclarationBuilder(ParseSession* session) : m_lastVariableIdentifier(0)
+    { setEditor(session); }
+    DeclarationBuilder(EditorIntegrator* editor) : m_lastVariableIdentifier(0)
+    { setEditor(editor); }
     virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, Php::AstNode* node,
                                             KDevelop::ReferencedTopDUContext updateContext
                                                 = KDevelop::ReferencedTopDUContext(), bool useSmart = true );
@@ -70,6 +66,10 @@ protected:
     bool isEmptyMethodBody(const Php::MethodBodyAst* body) const {
         return !body || !body->statements;
     }
+    
+    virtual void closeDeclaration();
+    void classTypeOpened(KDevelop::AbstractType::Ptr type);
+    void classContextOpened(KDevelop::DUContext* context);
 
 private:
     VariableIdentifierAst* m_lastVariableIdentifier;

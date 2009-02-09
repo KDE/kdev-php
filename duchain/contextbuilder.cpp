@@ -76,6 +76,7 @@ void ContextBuilder::setEditor(EditorIntegrator* editor)
 void ContextBuilder::setEditor(ParseSession* session)
 {
     EditorIntegrator* e = new EditorIntegrator(session);
+    //TODO: should this not be set to "true" ?
     ContextBuilderBase::setEditor(e, false);
 }
 

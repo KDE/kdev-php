@@ -43,6 +43,36 @@ using namespace KDevelop;
 
 namespace Php {
 
+PreDeclarationBuilder::~PreDeclarationBuilder()
+{
+}
+
+/*
+void PreDeclarationBuilder::visitNode(Php::AstNode* node) {
+    // AstNode is computer generated and the enum is sorted alphabetically
+    // filter out some kinds which cannot include class or function declarations
+    if ( node->kind >= AstNode::AdditiveExpressionKind && node->kind <= AstNode::BooleanOrExpressionKind ) {
+        return;
+    }
+    if ( node->kind == AstNode::ClassConstantDeclarationKind ) {
+        return;
+    }
+    if ( node->kind == AstNode::ClassExtendsKind || node->kind == AstNode::ClassImplementsKind ) {
+        return;
+    }
+    if ( node->kind >= AstNode::ClassVariableDeclarationKind && node->kind <= AstNode::CtorArgumentsKind ) {
+        return;
+    }
+    if ( node->kind == AstNode::ShiftExpressionKind || node->kind == AstNode::ShiftExpressionRestKind ) {
+        return;
+    }
+    if ( node->kind >= AstNode::UnaryExpressionKind && node->kind <= AstNode::VariableWithoutObjectsKind ) {
+        return;
+    }
+    DefaultVisitor::visitNode(node);
+}
+*/
+
 void PreDeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
 {
     setComment(formatComment(node, editor()));
@@ -58,7 +88,8 @@ void PreDeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationState
         }
     }
     
-    DeclarationBuilderBase::visitClassDeclarationStatement(node);
+    // only visit the body to look for other function declarations inside the methods
+    visitNode(node->body);
     
     m_types->insert(node->className->string, dec);
     
@@ -77,19 +108,18 @@ void PreDeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarat
         dec->setClassType(Php::ClassDeclarationData::Interface);
     }
     
-    // don't evaluate the body of interfaces in PreDeclarationBuilder
-    {
-        const KDevPG::ListNode<ClassStatementAst*>* backup = node->body->classStatementsSequence;
-        node->body->classStatementsSequence = 0;
-        
-        DeclarationBuilderBase::visitInterfaceDeclarationStatement(node);
-        
-        node->body->classStatementsSequence = backup;
-    }
+    // don't evaluate the body or extends of interfaces in PreDeclarationBuilder
     
     m_types->insert(node->interfaceName->string, dec);
     
     closeDeclaration();
+}
+
+void PreDeclarationBuilder::visitClassStatement(ClassStatementAst* node) {
+    // we are only looking for function declarations inside methods
+    if ( node->methodBody ) {
+      visitNode(node->methodBody);
+    }
 }
 
 void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
@@ -102,15 +132,8 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
         dec->clearDefaultParameters();
     }
     
-    // don't evaluate the parameters of functions in PreDeclarationBuilder
-    {
-        const KDevPG::ListNode<ParameterAst*>* parameterBackup = node->parameters->parametersSequence;
-        node->parameters->parametersSequence = 0;
-        
-        DeclarationBuilderBase::visitFunctionDeclarationStatement(node);
-        
-        node->parameters->parametersSequence = parameterBackup;
-    }
+    // only visit the body to look for other function declarations
+    visitNode(node->functionBody);
     
     m_functions->insert(node->functionName->string, dec);
     

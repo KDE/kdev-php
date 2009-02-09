@@ -21,9 +21,7 @@
 #ifndef PREDECLARATIONBUILDER_H
 #define PREDECLARATIONBUILDER_H
 
-#include "declarationbuilderbase.h"
-
-#include "typebuilder.h"
+#include "contextbuilder.h"
 #include "helper.h"
 #include <language/duchain/builders/abstractdeclarationbuilder.h>
 
@@ -34,35 +32,29 @@ namespace Php {
 class ParseSession;
 class EditorIntegrator;
 
+typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, ContextBuilder> PreDeclarationBuilderBase;
 
-class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public DeclarationBuilderBase {
+class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public PreDeclarationBuilderBase {
 public:
     PreDeclarationBuilder(QHash<qint64, ClassDeclaration*>* types, QHash<qint64,
                           KDevelop::FunctionDeclaration*>* functions,
                           ParseSession* session)
-                        : DeclarationBuilderBase(session), m_types(types), m_functions(functions) {}
+                        : m_types(types), m_functions(functions)
+    { setEditor(session); }
     PreDeclarationBuilder(QHash<qint64, ClassDeclaration*>* types, QHash<qint64,
                           KDevelop::FunctionDeclaration*>* functions,
                           EditorIntegrator* editor)
-                        : DeclarationBuilderBase(editor), m_types(types), m_functions(functions) {}
+                        : m_types(types), m_functions(functions)
+    { setEditor(editor); }
+    
+    virtual ~PreDeclarationBuilder();
     
 protected:
+//     virtual void visitNode(Php::AstNode* node);
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
-    virtual void visitClassStatement(ClassStatementAst *node){Q_UNUSED(node);}
-    virtual void visitClassExtends(ClassExtendsAst *node){Q_UNUSED(node);}
-    virtual void visitClassImplements(ClassImplementsAst *node){Q_UNUSED(node);}
-    virtual void visitParameter(ParameterAst *node){Q_UNUSED(node);}
+    virtual void visitClassStatement(ClassStatementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
-    virtual void visitClassVariable(ClassVariableAst *node){Q_UNUSED(node);}
-    virtual void visitClassConstantDeclaration(ClassConstantDeclarationAst *node){Q_UNUSED(node);}
-    virtual void visitExpr(ExprAst *node){Q_UNUSED(node);}
-    virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node){Q_UNUSED(node);}
-    virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node){Q_UNUSED(node);}
-    virtual void visitFunctionCall(FunctionCallAst* node){Q_UNUSED(node);}
-    virtual void visitStatement(StatementAst* node){Q_UNUSED(node);}
-    virtual void visitStaticVar(StaticVarAst* node){Q_UNUSED(node);}
-    virtual void visitGlobalVar(GlobalVarAst* node){Q_UNUSED(node);}
 
 private:
     QHash<qint64, ClassDeclaration*>* m_types;
