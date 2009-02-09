@@ -61,19 +61,19 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
 
 void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
 {
-    openTypeDeclaration(node, node->className, ClassDeclarationData::Class);
+    openTypeDeclaration(node->className, ClassDeclarationData::Class);
     DeclarationBuilderBase::visitClassDeclarationStatement(node);
     closeDeclaration();
 }
 
 void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
 {
-    openTypeDeclaration(node, node->interfaceName, ClassDeclarationData::Interface);
+    openTypeDeclaration(node->interfaceName, ClassDeclarationData::Interface);
     DeclarationBuilderBase::visitInterfaceDeclarationStatement(node);
     closeDeclaration();
 }
 
-void DeclarationBuilder::openTypeDeclaration(AstNode* node, IdentifierAst* name, ClassDeclarationData::ClassType type) {
+void DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, ClassDeclarationData::ClassType type) {
     ClassDeclaration* classDec = m_types.value(name->string, 0);
     Q_ASSERT(classDec);
     isRedeclaration(identifierForNode(name), name, ClassDeclarationType);
