@@ -203,6 +203,8 @@ void TestDUChain::testClassMemberVar()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
+    AbstractType::Ptr mixedType( new IntegralType(IntegralType::TypeMixed) );
+    
     QVERIFY(!top->parentContext());
     QCOMPARE(top->childContexts().count(), 1);
 
@@ -224,7 +226,7 @@ void TestDUChain::testClassMemberVar()
     QCOMPARE(var->identifier(), Identifier("foo"));
     QCOMPARE(var->accessPolicy(), Declaration::Public);
     QCOMPARE(var->isStatic(), false);
-    QVERIFY(!var->abstractType());
+    QCOMPARE(var->abstractType(), mixedType);
 
     //$bar
     var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().at(1));
@@ -242,7 +244,7 @@ void TestDUChain::testClassMemberVar()
     QCOMPARE(var->identifier(), Identifier("baz"));
     QCOMPARE(var->accessPolicy(), Declaration::Private);
     QCOMPARE(var->isStatic(), true);
-    QVERIFY(!var->abstractType());
+    QCOMPARE(var->abstractType(), mixedType);
 
     //$boo
     var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().at(3));
@@ -250,7 +252,7 @@ void TestDUChain::testClassMemberVar()
     QCOMPARE(var->identifier(), Identifier("boo"));
     QCOMPARE(var->accessPolicy(), Declaration::Public);
     QCOMPARE(var->isStatic(), false);
-    QVERIFY(!var->abstractType());
+    QCOMPARE(var->abstractType(), mixedType);
 }
 
 void TestDUChain::testReturnTypeClass()
