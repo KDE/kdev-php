@@ -1277,6 +1277,43 @@ void TestDUChain::testFindDeclarations()
     QCOMPARE(1, top2->findDeclarations(Identifier("foo")).count());
 }
 
+void TestDUChain::testMemberTypeAfterMethod()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { function foo(); public $bar; }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    DUContext* contextClassA = top->childContexts().first();
+
+    // function foo
+    {
+        ClassMemberDeclaration* var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().first());
+        QVERIFY(var);
+        QCOMPARE(var->identifier(), Identifier("foo"));
+        QCOMPARE(var->accessPolicy(), Declaration::Public);
+        QCOMPARE(var->isStatic(), false);
+        QVERIFY(var->type<FunctionType>());
+        IntegralType::Ptr ret = var->type<FunctionType>()->returnType().cast<IntegralType>();
+        QVERIFY(ret);
+        QVERIFY(ret->dataType() == IntegralType::TypeMixed);
+    }
+    
+    // public $bar
+    {
+        ClassMemberDeclaration* var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().at(1));
+        QVERIFY(var);
+        QCOMPARE(var->identifier(), Identifier("foo"));
+        QCOMPARE(var->accessPolicy(), Declaration::Public);
+        QCOMPARE(var->isStatic(), false);
+        QVERIFY(var->type<IntegralType>());
+        QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeMixed);
+    }
+}
+
 }
 
 #include "test_duchain.moc"
