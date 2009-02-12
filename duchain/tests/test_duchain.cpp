@@ -1306,7 +1306,7 @@ void TestDUChain::testMemberTypeAfterMethod()
     {
         ClassMemberDeclaration* var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().at(1));
         QVERIFY(var);
-        QCOMPARE(var->identifier(), Identifier("foo"));
+        QCOMPARE(var->identifier(), Identifier("bar"));
         QCOMPARE(var->accessPolicy(), Declaration::Public);
         QCOMPARE(var->isStatic(), false);
         QVERIFY(var->type<IntegralType>());
