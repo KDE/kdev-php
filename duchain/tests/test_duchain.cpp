@@ -1277,11 +1277,11 @@ void TestDUChain::testFindDeclarations()
     QCOMPARE(1, top2->findDeclarations(Identifier("foo")).count());
 }
 
-void TestDUChain::testMemberTypeAfterMethod()
+void TestDUChain::testMixed()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A { function foo(){} public $bar; }");
+    QByteArray method("<? class A { function foo(){} public $bar; } $topvar;");
 
     TopDUContext* top = parse(method, DumpNone);
     DUChainReleaser releaseTop(top);
@@ -1309,6 +1309,14 @@ void TestDUChain::testMemberTypeAfterMethod()
         QCOMPARE(var->identifier(), Identifier("bar"));
         QCOMPARE(var->accessPolicy(), Declaration::Public);
         QCOMPARE(var->isStatic(), false);
+        QVERIFY(var->type<IntegralType>());
+        QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeMixed);
+    }
+    
+    // top-context $topvar
+    {
+        Declaration* var = top->findDeclarations(QualifiedIdentifier("topvar")).first();
+        QVERIFY(var);
         QVERIFY(var->type<IntegralType>());
         QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeMixed);
     }
