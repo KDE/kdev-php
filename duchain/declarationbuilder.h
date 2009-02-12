@@ -33,6 +33,13 @@ class EditorIntegrator;
 
 typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, Php::TypeBuilder> DeclarationBuilderBase;
 
+/**
+ * The DeclarationBuilder builds declarations, types and contexts for everything in a AST.
+ * 
+ * \note Since PHP allows the usage of functions, classes and interfaces before definition,
+ *       a \see PreDeclarationBuilder is used to get the declarations _and_ types for those.
+ *       Thus type- and declaratoinbuilding for these is skipped in this class.
+ */
 class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase {
 public:
     DeclarationBuilder(ParseSession* session) : m_lastVariableIdentifier(0)
@@ -68,7 +75,6 @@ protected:
     }
     
     virtual void closeDeclaration();
-    void classTypeOpened(KDevelop::AbstractType::Ptr type);
     void classContextOpened(KDevelop::DUContext* context);
 
 private:
@@ -80,7 +86,7 @@ private:
     QHash<qint64, KDevelop::FunctionDeclaration*> m_functions;
     
     /// handles common stuff for both interfaces and classes
-    void openTypeDeclaration(IdentifierAst *name, ClassDeclarationData::ClassType type);
+    ClassDeclaration* openTypeDeclaration(IdentifierAst *name, ClassDeclarationData::ClassType type);
     
     /// check if this declaration is lready defined
     /// @param context defaults to current top context

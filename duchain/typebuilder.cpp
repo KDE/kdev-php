@@ -117,29 +117,20 @@ FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
 
 void TypeBuilder::visitClassDeclarationStatement( ClassDeclarationStatementAst* node )
 {
-    StructureType::Ptr classType = StructureType::Ptr(new StructureType());
-
-    openType(classType);
-
-    classTypeOpened(currentAbstractType()); //This callback is needed, because the type of the class-declaration needs to be set early so the class can be referenced from within itself
+    // the predeclaration builder should have set up a type already
+    // and the declarationbuilder should have set that as current type
+    Q_ASSERT(hasCurrentType() && currentType<StructureType>());
 
     TypeBuilderBase::visitClassDeclarationStatement(node);
-
-    closeType();
 }
 
 void TypeBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node)
 {
-    StructureType::Ptr classType = StructureType::Ptr(new StructureType());
-
-    openType(classType);
-
-    classTypeOpened(currentAbstractType()); //This callback is needed, because the type of the class-declaration needs to be set early so the class can be referenced from within itself
+    // the predeclaration builder should have set up a type already
+    // and the declarationbuilder should have set that as current type
+    Q_ASSERT(hasCurrentType() && currentType<StructureType>());
 
     TypeBuilderBase::visitInterfaceDeclarationStatement(node);
-
-    closeType();
-
 }
 
 void TypeBuilder::visitClassStatement(ClassStatementAst *node)
@@ -193,12 +184,19 @@ void TypeBuilder::visitParameter(ParameterAst *node)
 void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
     m_currentFunctionParams = parseDocCommentParams(node);
-    openFunctionType(node);
+    // the predeclarationbuilder should have already built the type
+    // and the declarationbuilder should have set it to open
+    Q_ASSERT(hasCurrentType());
+    FunctionType::Ptr type = currentType<FunctionType>();
+    Q_ASSERT(type);
+    
+    type->setReturnType(parseDocComment(node, "return"));
+    
     TypeBuilderBase::visitFunctionDeclarationStatement(node);
-    if (!currentType<FunctionType>()->returnType()) {
-        currentType<FunctionType>()->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
+    
+    if (!type->returnType()) {
+        type->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
     }
-    closeType();
 }
 
 void TypeBuilder::visitExpr(ExprAst *node)

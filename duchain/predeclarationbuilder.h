@@ -34,6 +34,11 @@ class EditorIntegrator;
 
 typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, ContextBuilder> PreDeclarationBuilderBase;
 
+/**
+ * The PreDeclarationBuilder builds usable declarations for classes, interfaces and functions.
+ * 
+ * \todo constants should probably be handled here as well
+ */
 class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public PreDeclarationBuilderBase {
 public:
     PreDeclarationBuilder(QHash<qint64, ClassDeclaration*>* types, QHash<qint64,

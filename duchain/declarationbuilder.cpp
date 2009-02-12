@@ -78,36 +78,25 @@ void DeclarationBuilder::classContextOpened(KDevelop::DUContext* context)
     currentDeclaration()->setInternalContext(context);
 }
 
-//copied from cpp
-void DeclarationBuilder::classTypeOpened(AbstractType::Ptr type)
-{
-    // We override this so we can get the class-declaration into a usable state(with filled type) earlier
-    DUChainWriteLocker lock(DUChain::lock());
-
-    IdentifiedType* idType = dynamic_cast<IdentifiedType*>(type.unsafeData());
-
-    // When the given type has no declaration yet, assume we are declaring it now
-    if( idType && !idType->declarationId().isValid() )
-        idType->setDeclaration( currentDeclaration() );
-
-    currentDeclaration()->setType(type);
-}
-
 void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
 {
-    openTypeDeclaration(node->className, ClassDeclarationData::Class);
+    ClassDeclaration* classDec = openTypeDeclaration(node->className, ClassDeclarationData::Class);
+    openType(classDec->abstractType());
     DeclarationBuilderBase::visitClassDeclarationStatement(node);
+    closeType();
     closeDeclaration();
 }
 
 void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
 {
-    openTypeDeclaration(node->interfaceName, ClassDeclarationData::Interface);
+    ClassDeclaration* interfaceDec = openTypeDeclaration(node->interfaceName, ClassDeclarationData::Interface);
+    openType(interfaceDec->abstractType());
     DeclarationBuilderBase::visitInterfaceDeclarationStatement(node);
+    closeType();
     closeDeclaration();
 }
 
-void DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, ClassDeclarationData::ClassType type) {
+ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, ClassDeclarationData::ClassType type) {
     ClassDeclaration* classDec = m_types.value(name->string, 0);
     Q_ASSERT(classDec);
     isRedeclaration(identifierForNode(name), name, ClassDeclarationType);
@@ -118,6 +107,7 @@ void DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, ClassDeclarati
     } else {
         ///TODO: error - but can that even happen? name->string should be unique (its a int, not a string)
     }
+    return classDec;
 }
 
 void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
@@ -295,9 +285,11 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
     DeclarationBuilderBase::setEncountered(dec);
     
     openDeclarationInternal(dec);
+    openType(dec->abstractType());
     
     DeclarationBuilderBase::visitFunctionDeclarationStatement(node);
 
+    closeType();
     closeDeclaration();
 }
 

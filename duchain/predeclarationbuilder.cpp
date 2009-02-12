@@ -28,6 +28,8 @@
 #include <language/duchain/functiondeclaration.h>
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/aliasdeclaration.h>
+#include <language/duchain/types/functiontype.h>
+#include <language/duchain/types/structuretype.h>
 
 #include <klocalizedstring.h>
 
@@ -86,6 +88,11 @@ void PreDeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationState
         if ( node->modifier ) {
           dec->setClassModifier(node->modifier->modifier);
         }
+        
+        // build the type as well, to make this declaration usable
+        StructureType::Ptr type(new StructureType());
+        type->setDeclaration(dec);
+        dec->setType(type);
     }
     
     // only visit the body to look for other function declarations inside the methods
@@ -106,6 +113,11 @@ void PreDeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarat
         dec->setBaseClass(IndexedType());
         dec->clearInterfaces();
         dec->setClassType(Php::ClassDeclarationData::Interface);
+        
+        // build the type as well, to make this declaration usable
+        StructureType::Ptr type(new StructureType());
+        type->setDeclaration(dec);
+        dec->setType(type);
     }
     
     // don't evaluate the body or extends of interfaces in PreDeclarationBuilder
@@ -130,8 +142,11 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
         DUChainWriteLocker lock(DUChain::lock());
         dec->setKind(Declaration::Type);
         dec->clearDefaultParameters();
+        
+        FunctionType::Ptr type = FunctionType::Ptr(new FunctionType());
+        
+        dec->setType(type);
     }
-    
     // only visit the body to look for other function declarations
     visitNode(node->functionBody);
     
