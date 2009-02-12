@@ -29,7 +29,6 @@
 #include <language/duchain/functiondeclaration.h>
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/aliasdeclaration.h>
-#include <language/duchain/types/integraltype.h>
 
 #include <klocalizedstring.h>
 
@@ -63,14 +62,9 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
 
 void DeclarationBuilder::closeDeclaration()
 {
-    if (currentDeclaration()) {
+    if (currentDeclaration() && lastType()) {
         DUChainWriteLocker lock(DUChain::lock());
-        if ( lastType() ) {
-            currentDeclaration()->setType(lastType());
-        } else if ( !currentDeclaration()->abstractType() ) {
-            // default to mixed type
-            currentDeclaration()->setType(IntegralType::Ptr(new IntegralType(IntegralType::TypeMixed)));
-        }
+        currentDeclaration()->setType(lastType());
     }
 
     eventuallyAssignInternalContext();

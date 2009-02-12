@@ -146,7 +146,9 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
         closeType();
     } else {
         //member-variable
-        parseDocComment(node, "var"); //sets lastType(), used openDefinition
+        if ( !parseDocComment(node, "var") ) { //sets lastType(), used openDefinition
+          parseType("mixed", node);
+        }
         TypeBuilderBase::visitClassStatement(node);
         clearLastType();
     }
