@@ -47,6 +47,7 @@ protected:
   virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
   virtual void visitClassStatement(ClassStatementAst *node);
   virtual void visitClassVariable(ClassVariableAst *node);
+  virtual void visitClassConstantDeclaration(Php::ClassConstantDeclarationAst* node);
   virtual void visitParameter(ParameterAst *node);
   virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
 
@@ -57,12 +58,16 @@ protected:
 private:
     KDevelop::FunctionType::Ptr m_currentFunctionType;
     QList<KDevelop::AbstractType::Ptr> m_currentFunctionParams;
+    
+    bool m_gotTypeFromDocComment;
 
     KDevelop::FunctionType::Ptr openFunctionType(AstNode* node);
 
     KDevelop::AbstractType::Ptr parseType(QString type, AstNode* node);
     KDevelop::AbstractType::Ptr parseDocComment(AstNode* node, const QString& docCommentName);
     QList<KDevelop::AbstractType::Ptr> parseDocCommentParams(AstNode* node);
+    
+    KDevelop::AbstractType::Ptr getTypeForNode(AstNode* node);
 };
 
 }

@@ -78,11 +78,16 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
 
 AbstractType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& docCommentName)
 {
+    m_gotTypeFromDocComment = false;
     QString docComment = editor()->parseSession()->docComment(node->startToken);
     if (!docComment.isEmpty()) {
         QRegExp rx("\\*\\s+@"+QRegExp::escape(docCommentName)+"\\s([^\\s]*)");
         if (rx.indexIn(docComment) != -1) {
-            return parseType(rx.cap(1), node);
+            AbstractType::Ptr type = parseType(rx.cap(1), node);
+            if ( type ) {
+                m_gotTypeFromDocComment = true;
+            }
+            return type;
         }
     }
     return AbstractType::Ptr();
@@ -102,6 +107,21 @@ QList<AbstractType::Ptr> TypeBuilder::parseDocCommentParams(AstNode* node)
         }
     }
     return ret;
+}
+
+AbstractType::Ptr TypeBuilder::getTypeForNode(AstNode* node) {
+    AbstractType::Ptr type;
+    if ( node ) {
+        node->ducontext = currentContext();
+        ExpressionParser ep(true);
+        ep.setCreateProblems(true);
+        ExpressionEvaluationResult res = ep.evaluateType(node, editor());
+        type = res.type();
+    }
+    if ( !type ) {
+        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
+    }
+    return type;
 }
 
 FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
@@ -146,17 +166,41 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
         closeType();
     } else {
         //member-variable
-        if ( !parseDocComment(node, "var") ) { //sets lastType(), used openDefinition
-          parseType("mixed", node);
-        }
+        parseDocComment(node, "var");
         TypeBuilderBase::visitClassStatement(node);
-        clearLastType();
+        if ( m_gotTypeFromDocComment ) {
+            clearLastType();
+            m_gotTypeFromDocComment = false;
+        }
     }
 }
 
 void TypeBuilder::visitClassVariable(ClassVariableAst *node)
 {
-    TypeBuilderBase::visitClassVariable(node);
+    if ( !m_gotTypeFromDocComment ) {
+        openAbstractType(getTypeForNode(node->value));
+    
+        TypeBuilderBase::visitClassVariable(node);
+        
+        closeType();
+    } else {
+        TypeBuilderBase::visitClassVariable(node);
+    }
+}
+
+void TypeBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst* node) {
+    if ( !m_gotTypeFromDocComment ) {
+        AbstractType::Ptr type = getTypeForNode(node->scalar);
+        type->setModifiers(type->modifiers() & AbstractType::ConstModifier);
+        openAbstractType(type);
+    
+        TypeBuilderBase::visitClassConstantDeclaration(node);
+        
+        closeType();
+    } else {
+        currentAbstractType()->setModifiers(currentAbstractType()->modifiers() & AbstractType::ConstModifier);
+        TypeBuilderBase::visitClassConstantDeclaration(node);
+    }
 }
 
 void TypeBuilder::visitParameter(ParameterAst *node)
@@ -203,11 +247,7 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
 
 void TypeBuilder::visitExpr(ExprAst *node)
 {
-    node->ducontext = currentContext();
-    ExpressionParser ep(true);
-    ep.setCreateProblems(true);
-    ExpressionEvaluationResult res = ep.evaluateType(node, editor());
-    openAbstractType(res.type());
+    openAbstractType(getTypeForNode(node));
 
     TypeBuilderBase::visitExpr(node);
 
@@ -216,18 +256,7 @@ void TypeBuilder::visitExpr(ExprAst *node)
 
 void TypeBuilder::visitStaticVar(StaticVarAst *node)
 {
-    AbstractType::Ptr type;
-    if (node->value) {
-        node->value->ducontext = currentContext();
-        ExpressionParser ep(true);
-        ep.setCreateProblems(true);
-        ExpressionEvaluationResult res = ep.evaluateType(node, editor());
-        type = res.type();
-    }
-    if (!type) {
-        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
-    }
-    openAbstractType(type);
+    openAbstractType(getTypeForNode(node->value));
 
     TypeBuilderBase::visitStaticVar(node);
 
@@ -244,7 +273,6 @@ void TypeBuilder::visitStatement(StatementAst* node)
         currentType<FunctionType>()->setReturnType(lastType());
     }
 }
-
 
 }
 
