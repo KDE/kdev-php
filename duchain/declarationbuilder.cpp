@@ -241,6 +241,16 @@ void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
 
 void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
 {
+    if ( m_reportErrors ) { // check for redeclarations
+         Q_ASSERT(currentContext()->type() == DUContext::Class);
+         DUChainWriteLocker lock(DUChain::lock());
+         foreach ( Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first()) ) {
+            if ( !dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier ) {
+                reportRedeclarationError(dec, node->identifier);
+                break;
+            }
+         }
+    }
     openDefinition<ClassMemberDeclaration>(node->identifier, node->identifier);
     ClassMemberDeclaration* dec = dynamic_cast<ClassMemberDeclaration*>(currentDeclaration());
     Q_ASSERT(dec);
