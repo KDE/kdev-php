@@ -99,7 +99,7 @@ void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclaration
 ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, ClassDeclarationData::ClassType type) {
     ClassDeclaration* classDec = m_types.value(name->string, 0);
     Q_ASSERT(classDec);
-    isRedeclaration(identifierForNode(name), name, ClassDeclarationType);
+    isGlobalRedeclaration(identifierForNode(name), name, ClassDeclarationType);
     Q_ASSERT(classDec->classType() == type);
     
     // seems like we have to do that manually, else the usebuilder crashes...
@@ -114,7 +114,6 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
     setComment(formatComment(node, editor()));
     if (node->methodName) {
         //method declaration
-        
         ClassDeclaration *parent =  dynamic_cast<ClassDeclaration*>(currentDeclaration());
         Q_ASSERT(parent);
         ClassFunctionDeclaration* dec = openDefinition<ClassFunctionDeclaration>(node->methodName, node);
@@ -276,7 +275,7 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
 
 void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
-    isRedeclaration(identifierForNode(node->functionName), node->functionName, FunctionDeclarationType);
+    isGlobalRedeclaration(identifierForNode(node->functionName), node->functionName, FunctionDeclarationType);
     
     FunctionDeclaration* dec = m_functions.value(node->functionName->string, 0);
     Q_ASSERT(dec);
@@ -292,8 +291,8 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
     closeDeclaration();
 }
 
-bool DeclarationBuilder::isRedeclaration(const QualifiedIdentifier &identifier, AstNode* node,
-                                          DeclarationType type, DUContext* context)
+bool DeclarationBuilder::isGlobalRedeclaration(const QualifiedIdentifier &identifier, AstNode* node,
+                                          DeclarationType type)
 {
     if ( !m_reportErrors ) {
         return false;
@@ -305,29 +304,33 @@ bool DeclarationBuilder::isRedeclaration(const QualifiedIdentifier &identifier, 
         // the other types can be redeclared
         return false;
     }
-    if (!context) {
-        context = currentContext()->topContext();
-    }
+    
     DUChainWriteLocker lock(DUChain::lock());
-    QList<Declaration*> declarations = context->findDeclarations(identifier, editor()->findPosition(node->startToken, EditorIntegrator::FrontEdge));
+    QList<Declaration*> declarations = currentContext()->topContext()->findDeclarations(
+                                            identifier,
+                                            editor()->findPosition(node->startToken, EditorIntegrator::FrontEdge)
+                                        );
     foreach ( Declaration* dec, declarations ) {
         if ( isMatch( dec, type ) ) {
-            QString filename(dec->context()->topContext()->url().str());
-            if ( filename == "internalfunctions" ) {
-                reportError(i18n("Cannot redeclare PHP internal %1.", dec->toString()), node);
-                
-            } else {
-                ///TODO: try to shorten the filename by removing the leading path to the current project
-                reportError(
-                    i18n("Cannot redeclare %1, already declared in %2 on line %3.",
-                          dec->toString(), filename, dec->range().start.line + 1
-                    ), node
-                );
-            }
+            reportRedeclarationError(dec, node);
             return true;
         }
     }
     return false;
+}
+
+void DeclarationBuilder::reportRedeclarationError(Declaration* declaration, AstNode* node) {
+    QString filename(declaration->context()->topContext()->url().str());
+    if ( filename == "internalfunctions" ) {
+        reportError(i18n("Cannot redeclare PHP internal %1.", declaration->toString()), node);
+    } else {
+        ///TODO: try to shorten the filename by removing the leading path to the current project
+        reportError(
+            i18n("Cannot redeclare %1, already declared in %2 on line %3.",
+                  declaration->toString(), filename, declaration->range().start.line + 1
+            ), node
+        );
+    }
 }
 
 void DeclarationBuilder::visitExpr(ExprAst *node)
@@ -397,7 +400,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                 LockedSmartInterface iface = editor()->smart();
                 injectContext(iface, currentContext()->topContext()); //constants are always global
                 QualifiedIdentifier identifier(constant);
-                isRedeclaration(identifier, scalar, ConstantDeclarationType);
+                isGlobalRedeclaration(identifier, scalar, ConstantDeclarationType);
                 openDefinition<ConstantDeclaration>(identifier, newRange);
                 currentDeclaration()->setKind(Declaration::Instance);
                 closeDeclaration();

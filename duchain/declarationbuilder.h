@@ -88,10 +88,14 @@ private:
     /// handles common stuff for both interfaces and classes
     ClassDeclaration* openTypeDeclaration(IdentifierAst *name, ClassDeclarationData::ClassType type);
     
-    /// check if this declaration is lready defined
-    /// @param context defaults to current top context
-    bool isRedeclaration(const KDevelop::QualifiedIdentifier &identifier, AstNode *node,
-                          DeclarationType type, KDevelop::DUContext* context = 0);
+    /// check if this declaration is already declared
+    bool isGlobalRedeclaration(const KDevelop::QualifiedIdentifier &identifier, AstNode *node,
+                          DeclarationType type);
+    
+    /// reports a redeclaration error for the given node
+    /// @param declaration the old declaration
+    /// @param node        the AstNode which resembles the redeclaration
+    void reportRedeclarationError(KDevelop::Declaration* declaration, AstNode *node);
 };
 
 }
