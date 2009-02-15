@@ -197,7 +197,7 @@ void TestDUChain::testClassMemberVar()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A { public $foo; /** @var A **/ protected $bar; private static $baz; var $boo; }");
+    QByteArray method("<? class A { public $foo; /** @var A **/ protected $bar; private static $baz = ''; var $boo = 1; }");
 
     TopDUContext* top = parse(method, DumpNone);
     DUChainReleaser releaseTop(top);
@@ -244,7 +244,7 @@ void TestDUChain::testClassMemberVar()
     QCOMPARE(var->accessPolicy(), Declaration::Private);
     QCOMPARE(var->isStatic(), true);
     QVERIFY(var->type<IntegralType>());
-    QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeMixed);
+    QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeString);
 
     //$boo
     var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().at(3));
@@ -253,7 +253,7 @@ void TestDUChain::testClassMemberVar()
     QCOMPARE(var->accessPolicy(), Declaration::Public);
     QCOMPARE(var->isStatic(), false);
     QVERIFY(var->type<IntegralType>());
-    QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeMixed);
+    QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeInt);
 }
 
 void TestDUChain::testReturnTypeClass()
