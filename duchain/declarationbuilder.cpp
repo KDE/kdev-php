@@ -215,6 +215,16 @@ void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
 
 void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
 {
+    if ( m_reportErrors ) { // check for redeclarations
+         Q_ASSERT(currentContext()->type() == DUContext::Class);
+         DUChainWriteLocker lock(DUChain::lock());
+         foreach ( Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->variable).first()) ) {
+              if ( !dec->isFunctionDeclaration() && ! dec->abstractType()->modifiers() & AbstractType::ConstModifier ) {
+                  reportRedeclarationError(dec, node->variable);
+                  break;
+              }
+         }
+    }
     {
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(node->variable, node->variable);
