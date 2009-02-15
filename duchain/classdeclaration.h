@@ -75,8 +75,8 @@ public:
   ClassDeclaration(ClassDeclarationData& data);
   ClassDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context);
   ~ClassDeclaration();
-
-  QString toString() const;
+  
+  virtual QString toString() const;
 
   void setClassType(ClassDeclarationData::ClassType type);
   ClassDeclarationData::ClassType classType() const;
