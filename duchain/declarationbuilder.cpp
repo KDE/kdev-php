@@ -100,13 +100,12 @@ ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, C
     ClassDeclaration* classDec = m_types.value(name->string, 0);
     Q_ASSERT(classDec);
     isRedeclaration(identifierForNode(name), name, ClassDeclarationType);
-    if ( classDec->classType() == type ) {
-        // seems like we have to do that manually, else the usebuilder crashes...
-        setEncountered(classDec);
-        openDeclarationInternal(classDec);
-    } else {
-        ///TODO: error - but can that even happen? name->string should be unique (its a int, not a string)
-    }
+    Q_ASSERT(classDec->classType() == type);
+    
+    // seems like we have to do that manually, else the usebuilder crashes...
+    setEncountered(classDec);
+    openDeclarationInternal(classDec);
+    
     return classDec;
 }
 
