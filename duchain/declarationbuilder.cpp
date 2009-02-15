@@ -114,6 +114,18 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
     setComment(formatComment(node, editor()));
     if (node->methodName) {
         //method declaration
+        
+        if ( m_reportErrors ) { // check for redeclarations
+            Q_ASSERT(currentContext()->type() == DUContext::Class);
+            DUChainWriteLocker lock(DUChain::lock());
+            foreach ( Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->methodName).first()) ) {
+                  if ( dec->isFunctionDeclaration() ) {
+                      reportRedeclarationError(dec, node->methodName);
+                      break;
+                  }
+            }
+        }
+        
         ClassDeclaration *parent =  dynamic_cast<ClassDeclaration*>(currentDeclaration());
         Q_ASSERT(parent);
         ClassFunctionDeclaration* dec = openDefinition<ClassFunctionDeclaration>(node->methodName, node);
