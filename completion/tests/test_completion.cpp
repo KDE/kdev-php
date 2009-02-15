@@ -131,7 +131,10 @@ void TestCompletion::publicStaticObjectCompletion()
     QCOMPARE(itemList.count(), 3);
     QCOMPARE(itemList.at(0)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(6));
     QCOMPARE(itemList.at(1)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(7));
+    // TODO: check that A::$spubf is completed
+    
     QCOMPARE(itemList.at(2)->declaration().data(), top->childContexts().at(0)->localDeclarations().at(8));
+    // TODO: check that A::c is completed
 }
 void TestCompletion::privateObjectCompletion()
 {
