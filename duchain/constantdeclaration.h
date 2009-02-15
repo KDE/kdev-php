@@ -61,6 +61,7 @@ public:
     virtual ~ConstantDeclaration();
 
     virtual uint additionalIdentity() const;
+    virtual QString toString() const;
 
   enum {
     Identity = 80

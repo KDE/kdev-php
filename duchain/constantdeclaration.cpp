@@ -55,4 +55,9 @@ uint ConstantDeclaration::additionalIdentity() const
     return 1;
 }
 
+QString ConstantDeclaration::toString() const
+{
+    return "const " + KDevelop::Declaration::toString();
+}
+
 }
