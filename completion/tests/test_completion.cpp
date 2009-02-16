@@ -30,7 +30,7 @@
 #include <language/duchain/codemodel.h>
 
 #include "completion/context.h"
-#include "completion/items.h"
+#include "completion/item.h"
 #include "completion/helpers.h"
 #include "completion/model.h"
 

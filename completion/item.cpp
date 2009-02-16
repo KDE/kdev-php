@@ -21,7 +21,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "items.h"
+#include "item.h"
 
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>

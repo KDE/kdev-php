@@ -29,7 +29,7 @@
 
 #include "phpduchainexport.h"
 
-#include "completion/items.h"
+#include "completion/item.h"
 #include "phpparser.h"
 
 namespace KDevelop {

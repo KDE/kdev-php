@@ -21,7 +21,7 @@
  */
 
 #include "completion/helpers.h"
-#include "completion/items.h"
+#include "completion/item.h"
 #include <QList>
 #include <QVariant>
 #include <language/duchain/declaration.h>

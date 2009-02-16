@@ -27,7 +27,7 @@
 #include <language/duchain/types/abstracttype.h>
 
 #include "phpcompletionexport.h"
-#include "items.h"
+#include "item.h"
 #include "expressionevaluationresult.h"
 
 namespace KTextEditor {
