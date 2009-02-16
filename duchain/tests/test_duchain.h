@@ -75,6 +75,8 @@ private slots:
   void testMemberFunctionDocBlockParams();
   void testForeachLoop();
   void testPhp4StyleConstructor();
+  void testConstructor();
+  void testDestructor();
   void testFunctionInFunction();
   void testObjectWithClassName();
   void testLargeNumberOfDeclarations();

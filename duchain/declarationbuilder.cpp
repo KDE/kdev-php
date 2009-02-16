@@ -38,6 +38,7 @@
 #include "constantdeclaration.h"
 #include "variabledeclaration.h"
 #include "classdeclaration.h"
+#include "classmethoddeclaration.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -121,7 +122,7 @@ bool DeclarationBuilder::isBaseMethodRedeclaration(const Identifier &identifier,
             {
                 kDebug() << dec->toString();
                 if ( dec->isFunctionDeclaration() ) {
-                    ClassFunctionDeclaration* func = dynamic_cast<ClassFunctionDeclaration*>(dec);
+                    ClassMethodDeclaration* func = dynamic_cast<ClassMethodDeclaration*>(dec);
                     // we cannot redeclare final classes ever
                     if ( func->isFinal() ) {
                         reportRedeclarationError(dec, node->methodName);
@@ -173,7 +174,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
             }
         }
         
-        ClassFunctionDeclaration* dec = openDefinition<ClassFunctionDeclaration>(node->methodName, node);
+        ClassMethodDeclaration* dec = openDefinition<ClassMethodDeclaration>(node->methodName, node);
         {
             DUChainWriteLocker lock(DUChain::lock());
             dec->clearDefaultParameters();

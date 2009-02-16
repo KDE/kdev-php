@@ -27,7 +27,6 @@
 
 #include <language/duchain/functiondefinition.h>
 #include <language/duchain/namespacealiasdeclaration.h>
-#include <language/duchain/classfunctiondeclaration.h>
 #include <language/duchain/forwarddeclaration.h>
 #include <language/duchain/duchainutils.h>
 

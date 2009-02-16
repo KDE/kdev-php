@@ -21,6 +21,7 @@ set(duchain_SRCS
     constantdeclaration.cpp
     variabledeclaration.cpp
     classdeclaration.cpp
+    classmethoddeclaration.cpp
     tests/duchaintestbase.cpp
     navigation/navigationwidget.cpp
     navigation/declarationnavigationcontext.cpp

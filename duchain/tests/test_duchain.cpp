@@ -1087,7 +1087,61 @@ void TestDUChain::testPhp4StyleConstructor()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QCOMPARE(top->childContexts().first()->localDeclarations().at(0)->qualifiedIdentifier(), QualifiedIdentifier("Aa::Aa"));
+    Declaration* dec = top->childContexts().first()->localDeclarations().at(0);
+    QVERIFY(dec);
+    QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("Aa::Aa"));
+    ClassFunctionDeclaration* classFuncDec = dynamic_cast<ClassFunctionDeclaration*>(dec);
+    QVERIFY(classFuncDec);
+    QVERIFY(classFuncDec->isConstructor());
+}
+
+void TestDUChain::testConstructor()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    {
+        QByteArray method("<? class foobar { function __construct() {} } ");
+        TopDUContext* top = parse(method, DumpNone);
+        DUChainReleaser releaseTop(top);
+        DUChainWriteLocker lock(DUChain::lock());
+
+        Declaration* dec = top->childContexts().first()->localDeclarations().at(0);
+        QVERIFY(dec);
+        ClassFunctionDeclaration* classFuncDec = dynamic_cast<ClassFunctionDeclaration*>(dec);
+        QVERIFY(classFuncDec);
+        QVERIFY(!classFuncDec->isDestructor());
+        QVERIFY(classFuncDec->isConstructor());
+    }
+    {
+        QByteArray method("<? class foobar { function foobar() {} } ");
+        TopDUContext* top = parse(method, DumpNone);
+        DUChainReleaser releaseTop(top);
+        DUChainWriteLocker lock(DUChain::lock());
+
+        Declaration* dec = top->childContexts().first()->localDeclarations().at(0);
+        QVERIFY(dec);
+        ClassFunctionDeclaration* classFuncDec = dynamic_cast<ClassFunctionDeclaration*>(dec);
+        QVERIFY(classFuncDec);
+        QVERIFY(!classFuncDec->isDestructor());
+        QVERIFY(classFuncDec->isConstructor());
+    }
+}
+
+void TestDUChain::testDestructor()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class foobar { function __destruct() {} } ");
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* dec = top->childContexts().first()->localDeclarations().at(0);
+    QVERIFY(dec);
+    ClassFunctionDeclaration* classFuncDec = dynamic_cast<ClassFunctionDeclaration*>(dec);
+    QVERIFY(classFuncDec);
+    QVERIFY(classFuncDec->isDestructor());
+    QVERIFY(!classFuncDec->isConstructor());
 }
 
 void TestDUChain::testFunctionInFunction()
