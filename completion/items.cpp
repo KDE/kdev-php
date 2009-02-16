@@ -55,7 +55,7 @@ QString nameForDeclaration(Declaration* dec) {
     if (dynamic_cast<VariableDeclaration*>(dec)) {
       ret = "$" + ret;
     } else if (ClassMemberDeclaration* memberDec = dynamic_cast<ClassMemberDeclaration*>(dec)) {
-      if ( memberDec->isStatic() && ! memberDec->abstractType()->modifiers() & AbstractType::ConstModifier ) {
+      if ( memberDec->isStatic() && memberDec->abstractType() && ! memberDec->abstractType()->modifiers() & AbstractType::ConstModifier ) {
         // PHP is strange, $obj->asdf, class::const but class::$static ...
         ret = "$" + ret;
       }
