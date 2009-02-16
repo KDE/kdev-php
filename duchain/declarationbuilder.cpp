@@ -109,25 +109,70 @@ ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, C
     return classDec;
 }
 
+bool DeclarationBuilder::isBaseMethodRedeclaration(const Identifier &identifier, ClassDeclaration *curClass,
+                                                    ClassStatementAst *node) {
+    while ( curClass->baseClass() ) {
+        StructureType::Ptr type = curClass->baseClass().type().cast<StructureType>();
+        Q_ASSERT(type);
+        {
+            DUChainWriteLocker lock(DUChain::lock());
+            foreach ( Declaration * dec,
+                      type->internalContext( currentContext()->topContext() )->findLocalDeclarations(identifier) )
+            {
+                kDebug() << dec->toString();
+                if ( dec->isFunctionDeclaration() ) {
+                    ClassFunctionDeclaration* func = dynamic_cast<ClassFunctionDeclaration*>(dec);
+                    // we cannot redeclare final classes ever
+                    if ( func->isFinal() ) {
+                        reportRedeclarationError(dec, node->methodName);
+                        return true;
+                    }
+                    // also we may not redeclare an already abstract method, we would have to implement it
+                    // TODO: original error message?
+                    // -> Can't inherit abstract function class::func() (previously declared in otherclass)
+                    else if ( func->isAbstract() && node->modifiers->modifiers & ModifierAbstract ) {
+                        reportRedeclarationError(dec, node->methodName);
+                        return true;
+                    }
+                }
+            }
+        }
+        curClass = dynamic_cast<ClassDeclaration*>(type->declaration( currentContext()->topContext() ));
+        Q_ASSERT(curClass);
+    }
+    return false;
+}
+
 void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 {
     setComment(formatComment(node, editor()));
     if (node->methodName) {
         //method declaration
         
+        ClassDeclaration *parent =  dynamic_cast<ClassDeclaration*>(currentDeclaration());
+        Q_ASSERT(parent);
+        
         if ( m_reportErrors ) { // check for redeclarations
             Q_ASSERT(currentContext()->type() == DUContext::Class);
-            DUChainWriteLocker lock(DUChain::lock());
-            foreach ( Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->methodName).first()) ) {
-                  if ( dec->isFunctionDeclaration() ) {
-                      reportRedeclarationError(dec, node->methodName);
-                      break;
-                  }
+            bool localError = false;
+            Identifier id = identifierForNode(node->methodName).first();
+            {
+                DUChainWriteLocker lock(DUChain::lock());
+                foreach ( Declaration * dec, currentContext()->findLocalDeclarations(id) ) {
+                      if ( dec->isFunctionDeclaration() ) {
+                          reportRedeclarationError(dec, node->methodName);
+                          localError = true;
+                          break;
+                      }
+                }
+            }
+            
+            if ( !localError ) {
+                // if we have no local error, check that we don't try to overwrite a final method of a baseclass
+                isBaseMethodRedeclaration(id, parent, node);
             }
         }
         
-        ClassDeclaration *parent =  dynamic_cast<ClassDeclaration*>(currentDeclaration());
-        Q_ASSERT(parent);
         ClassFunctionDeclaration* dec = openDefinition<ClassFunctionDeclaration>(node->methodName, node);
         {
             DUChainWriteLocker lock(DUChain::lock());

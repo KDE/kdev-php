@@ -91,7 +91,13 @@ private:
     /// check if this declaration is already declared
     bool isGlobalRedeclaration(const KDevelop::QualifiedIdentifier &identifier, AstNode *node,
                           DeclarationType type);
-    
+    /// check if a non-abstract method declaration tries to overwrite a final base method
+    /// or whether a abstract method is redeclared
+    /// @param identifier   The identifier for the current method
+    /// @param curClass     the current class we are in
+    /// @param node         the node we are processing, used to access modifiers and for error reporting
+    bool isBaseMethodRedeclaration(const KDevelop::Identifier &identifier, ClassDeclaration *curClass,
+                                    ClassStatementAst *node);
     /// reports a redeclaration error for the given node
     /// @param declaration the old declaration
     /// @param node        the AstNode which resembles the redeclaration
