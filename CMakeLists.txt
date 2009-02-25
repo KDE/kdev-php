@@ -36,8 +36,6 @@ else(KDEVPGQT_FOUND)
     )
 endif(KDEVPGQT_FOUND)
 
-include(KDevelopMacros)
-
 add_subdirectory(app_templates)
 add_subdirectory(parser)
 add_subdirectory(duchain)
