@@ -7,6 +7,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
 set(completion_SRCS
     worker.cpp
     item.cpp
+    implementationitem.cpp
     context.cpp
     model.cpp
     helpers.cpp

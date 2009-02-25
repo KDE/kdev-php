@@ -31,11 +31,13 @@
 #include <language/duchain/types/functiontype.h>
 #include <QTextFormat>
 #include <QStringList>
+#include <language/duchain/types/integraltype.h>
 
 using namespace KDevelop;
 namespace Php {
 
-void createArgumentList(const NormalDeclarationCompletionItem& item, QString& ret, QList<QVariant>* highlighting )
+void createArgumentList(const NormalDeclarationCompletionItem& item, QString& ret, QList<QVariant>* highlighting,
+                        bool phpTypeHinting)
 {
   ///@todo also highlight the matches of the previous arguments, they are given by ViableFunction
   Declaration* dec(item.declaration().data());
@@ -100,8 +102,19 @@ void createArgumentList(const NormalDeclarationCompletionItem& item, QString& re
         }
       }
 
-      if (num < functionType->arguments().count() && functionType->arguments().at(num))
-        ret += functionType->arguments().at(num)->toString() + " ";
+      if (num < functionType->arguments().count()) {
+        if ( AbstractType::Ptr type = functionType->arguments().at(num) ) {
+          kDebug() << type->toString() << type->whichType();
+          // when php-like type hinting is requested only add types for arrays and classes
+          if ( !phpTypeHinting
+                || (type->whichType() == AbstractType::TypeIntegral
+                    &&type.cast<IntegralType>()->dataType() == IntegralType::TypeArray)
+                || type->whichType() == AbstractType::TypeStructure )
+          {
+            ret += type->toString() + " ";
+          }
+        }
+      }
 
       ret += "$" + dec->identifier().toString();
 

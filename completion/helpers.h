@@ -38,7 +38,10 @@ namespace KDevelop {
 namespace Php {
 class NormalDeclarationCompletionItem;
 
-void KDEVPHPCOMPLETION_EXPORT createArgumentList(const NormalDeclarationCompletionItem& item, QString& ret, QList<QVariant>* highlighting);
+/**
+ * @param phpTypeHinting set to true if you only want PHP-valid typehinting (i.e. only array and classes)
+ */
+void KDEVPHPCOMPLETION_EXPORT createArgumentList(const NormalDeclarationCompletionItem& item, QString& ret, QList<QVariant>* highlighting, bool phpTypeHinting = false);
 int KDEVPHPCOMPLETION_EXPORT expressionAt(const QString& text, int index);
 
 }

@@ -21,8 +21,10 @@
 #include "context.h"
 
 #include "duchain/expressionparser.h"
-#include "completion/helpers.h"
+#include "helpers.h"
 #include "duchain/classdeclaration.h"
+
+#include "implementationitem.h"
 
 #include <ktexteditor/view.h>
 #include <ktexteditor/document.h>
@@ -78,6 +80,9 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
 
   if (m_text.endsWith( ';' ) || m_text.endsWith('}') || m_text.endsWith('{') || m_text.endsWith(')') ) {
     ///We're at the beginning of a new statement. General completion is valid.
+    if ( m_duContext->type() == DUContext::Class ) {
+        m_memberAccessOperation = OverloadeableChoose;
+    }
     return;
   }
 
@@ -346,8 +351,68 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
     items = m_storedItems;
   
   } else {
-
-    if ( m_expressionResult.type() ) {
+    if ( memberAccessOperation() == OverloadeableChoose ) {
+      // complete overloadable methods from parents
+      
+      // get current class
+      if ( ClassDeclaration * currentClass = dynamic_cast<ClassDeclaration*>(m_duContext->owner()) ) {
+        // overloadable choose is only possible inside classes which extend/implement others
+        if ( currentClass->baseClass() || currentClass->interfacesSize() ) {
+          DUContext* ctx = currentClass->internalContext();
+          if ( !ctx ) {
+            kDebug() << "invalid class context";
+            return items;
+          }
+          QList<uint> alreadyImplemented;
+          //TODO: always add __construct, __destruct and maby other magic functions
+          // get all visible declarations and add inherited to the completion items
+          foreach ( const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false ) ) {
+            if ( decl.first->isFunctionDeclaration() ) {
+              ClassFunctionDeclaration *method = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
+              if ( method ) {
+                if ( decl.second == 0 ) {
+                  // this function is already implemented
+                  alreadyImplemented << decl.first->indexedIdentifier().index;
+                  continue;
+                }
+                // skip already implemented functions
+                if ( alreadyImplemented.contains(decl.first->indexedIdentifier().index) ) {
+                  continue;
+                }
+                // skip final methods
+                if ( method->isFinal() ) {
+                  // make sure no non-final base methods are added
+                  alreadyImplemented << decl.first->indexedIdentifier().index;
+                  continue;
+                }
+                // make sure we inherit or implement the base class of this method
+                if ( !method->context() || !method->context()->owner() ) {
+                  kDebug() << "invalid parent context/owner:" << method->toString();
+                  continue;
+                }
+                IndexedType parentIType = method->context()->owner()->indexedType();
+                if ( !currentClass->inherits( parentIType ) && !currentClass->implements( parentIType ) ) {
+                  continue;
+                }
+                ImplementationItem::HelperType itype;
+                if ( method->isAbstract() ) {
+                  itype = ImplementationItem::Implement;
+                } else {
+                  itype = ImplementationItem::Override;
+                }
+                
+                items << CompletionTreeItemPointer( new ImplementationItem( itype, DeclarationPointer(decl.first),
+                                                    CodeCompletionContext::Ptr(this), decl.second ) );
+                // don't add identical items twice to the completion choices
+                alreadyImplemented << decl.first->indexedIdentifier().index;
+              }
+            }
+          }
+        }
+      } else {
+        kDebug() << "invalid owner declaration for overloadable completion";
+      }
+    } else if ( m_expressionResult.type() ) {
       QList<DUContext*> containers = memberAccessContainers();
       kDebug() << "containers: " << containers.count();
       if( !containers.isEmpty() ) {
