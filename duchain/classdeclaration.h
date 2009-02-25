@@ -28,8 +28,6 @@
 #define CLASSDECLARATION_H
 namespace Php {
 
-class ClassDeclaration;
-
 DECLARE_LIST_MEMBER_HASH(ClassDeclarationData, interfaces, KDevelop::IndexedType)
 
 class ClassDeclarationData : public KDevelop::DeclarationData
