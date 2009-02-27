@@ -104,7 +104,6 @@ void createArgumentList(const NormalDeclarationCompletionItem& item, QString& re
 
       if (num < functionType->arguments().count()) {
         if ( AbstractType::Ptr type = functionType->arguments().at(num) ) {
-          kDebug() << type->toString() << type->whichType();
           // when php-like type hinting is requested only add types for arrays and classes
           if ( !phpTypeHinting
                 || (type->whichType() == AbstractType::TypeIntegral
