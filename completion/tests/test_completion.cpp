@@ -649,6 +649,51 @@ void TestCompletion::interfaceMethods()
     QCOMPARE(itemList.count(), 1);
     QCOMPARE(itemList.first()->declaration().data(), top->childContexts().last()->localDeclarations().first());
 }
+void TestCompletion::implementMethods()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? interface A { function foo(); } class B implements A {  }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    // context of class B
+    DUContext* classContext = top->childContexts().last();
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(classContext), "{", QString()));
+
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+    dumpCompletionItems(itemList);
+    QCOMPARE(itemList.count(), 1);
+    QCOMPARE(itemList.first()->declaration().data(), top->childContexts().first()->localDeclarations().first());
+    
+    //TODO: verify actual completion text
+}
+
+void TestCompletion::overrideMethods()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { function a(){} final function b(){}  } class B extends A {  }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    // context of class B
+    DUContext* classContext = top->childContexts().last();
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(classContext), "{", QString()));
+
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+    dumpCompletionItems(itemList);
+    QCOMPARE(itemList.count(), 1);
+    QCOMPARE(itemList.first()->declaration().data(), top->childContexts().first()->localDeclarations().first());
+    
+    //TODO: verify actual completion text
+}
 
 }
 

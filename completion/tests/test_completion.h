@@ -59,6 +59,8 @@ private slots:
     void multipleVarialbeDeclarationsWithSameIdentifier();
     void abstractMethods();
     void interfaceMethods();
+    void overrideMethods();
+    void implementMethods();
 };
 
 }
