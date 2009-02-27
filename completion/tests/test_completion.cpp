@@ -43,6 +43,23 @@ QTEST_MAIN(Php::TestCompletion)
 namespace Php
 {
 
+class TestCodeCompletionModel : public CodeCompletionModel
+{
+public:
+    //normally set by worker, but in test we don't have a worker
+    //NOTE: ignore the compiler warning about foundDeclarations being hidden
+    //TODO: can this be fixed?
+    void foundDeclarations(QList<KDevelop::CompletionTreeItemPointer> items, CodeCompletionContext* completionContext)
+    {
+        m_completionItems.clear();
+        foreach (CompletionTreeItemPointer i, items) {
+            m_completionItems << KSharedPtr<CompletionTreeElement>::staticCast(i);
+        }
+        m_completionContext = KDevelop::CodeCompletionContext::Ptr(completionContext);
+        reset();
+    }
+};
+
 /**
  * declaration of class A with a number of completion items
  * 
@@ -482,21 +499,6 @@ void TestCompletion::variableStarted()
     QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(0, 30), abort);
     QVERIFY(searchDeclaration(itemList, top->localDeclarations().at(1)));
 }
-
-class TestCodeCompletionModel : public CodeCompletionModel
-{
-public:
-    //normally set by worker, but in test we don't have a worker
-    void foundDeclarations(QList<KDevelop::CompletionTreeItemPointer> items, CodeCompletionContext* completionContext)
-    {
-        m_completionItems.clear();
-        foreach (CompletionTreeItemPointer i, items) {
-            m_completionItems << KSharedPtr<CompletionTreeElement>::staticCast(i);
-        }
-        m_completionContext = KDevelop::CodeCompletionContext::Ptr(completionContext);
-        reset();
-    }
-};
 
 void TestCompletion::nameNormalVariable()
 {
