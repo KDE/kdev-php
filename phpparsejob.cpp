@@ -38,6 +38,7 @@
 #include <language/duchain/topducontext.h>
 #include <language/duchain/dumpchain.h>
 #include <interfaces/ilanguage.h>
+#include <language/highlighting/codehighlighting.h>
 
 // #include "phphighlighting.h"
 #include "editorintegrator.h"
@@ -220,6 +221,19 @@ void ParseJob::run()
 
         UseBuilder useBuilder(&editor);
         useBuilder.buildUses(m_ast);
+
+        if (!abortRequested() && editor.smart()) {
+          if (php() && php()->codeHighlighting()) {
+              php()->codeHighlighting()->highlightDUChain(chain);
+          }
+        }
+
+        {
+            kDebug() << "===Parsed===" << document().str();
+            DUChainReadLocker lock(DUChain::lock());
+            DumpChain d;
+            d.dump(chain);
+        }
 
         DUChainWriteLocker lock(DUChain::lock());
         

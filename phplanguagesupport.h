@@ -29,12 +29,10 @@
 #include <language/interfaces/ilanguagesupport.h>
 #include <QtCore/QVariant>
 
-namespace Php {
-    class Highlighting;
-}
 namespace KDevelop {
     class IDocument;
     class IProject;
+    class CodeHighlighting;
 }
 
 
@@ -60,14 +58,14 @@ public:
 
     static LanguageSupport* self();
     /*the code highlighter*/
-//    KDevelop::ICodeHighlighting* codeHighlighting() const;
+   const KDevelop::ICodeHighlighting* codeHighlighting() const;
 
 private slots:
     void projectOpened(KDevelop::IProject *project);
     void projectClosed();
 
 private:
-    Highlighting* m_highlighting;
+    KDevelop::CodeHighlighting* m_highlighting;
     static LanguageSupport* m_self;
 };
 

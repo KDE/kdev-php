@@ -51,6 +51,7 @@
 
 #include <language/codecompletion/codecompletion.h>
 #include <language/codecompletion/codecompletionmodel.h>
+#include <language/highlighting/codehighlighting.h>
 #include "completion/model.h"
 #include "completion/worker.h"
 
@@ -72,10 +73,11 @@ LanguageSupport::LanguageSupport( QObject* parent, const QVariantList& /*args*/ 
 
     m_self = this;
 
-//    m_highlighting = new Highlighting( this );
+    m_highlighting = new KDevelop::CodeHighlighting( this );
 
     CodeCompletionModel* ccModel = new CodeCompletionModel(this);
     new KDevelop::CodeCompletion( this, ccModel, name() );
+    
 /*
     //TODO: enable this
     connect( core()->projectController(),
@@ -132,10 +134,10 @@ KDevelop::ILanguage *LanguageSupport::language()
     return core()->languageController()->language( name() );
 }
 
-// KDevelop::ICodeHighlighting* LanguageSupport::codeHighlighting() const
-// {
-//     return 0;
-// }
+const KDevelop::ICodeHighlighting* LanguageSupport::codeHighlighting() const
+{
+    return m_highlighting;
+}
 
 LanguageSupport *LanguageSupport::self()
 {
