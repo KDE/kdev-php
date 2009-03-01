@@ -99,13 +99,13 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
   }
 
   if( m_text.endsWith('(') ) {
-    m_text = m_text.left( m_text.length()-1 ).trimmed();
-    ifDebug( log( m_text ); )
-    if ( m_text.endsWith("catch") ) {
+    QString m_text_copy = m_text.left( m_text.length()-1 ).trimmed();
+    ifDebug( log( m_text_copy ); )
+    if ( m_text_copy.endsWith("catch") ) {
       ifDebug( log( "ExceptionChoose"); )
       m_memberAccessOperation = ExceptionChoose;
       return;
-    } else if ( m_text.endsWith("array") ) {
+    } else if ( m_text_copy.endsWith("array") ) {
       ifDebug( log ("NoMemberAccess"); )
       m_memberAccessOperation = NoMemberAccess;
       return;
@@ -118,6 +118,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
       return;
     }
     m_memberAccessOperation = FunctionCallAccess;
+    m_text = m_text_copy;
     ifDebug( log( "FunctionCallAccess"); )
 
   }
