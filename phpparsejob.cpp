@@ -228,15 +228,8 @@ void ParseJob::run()
           }
         }
 
-        {
-            kDebug() << "===Parsed===" << document().str();
-            DUChainReadLocker lock(DUChain::lock());
-            DumpChain d;
-            d.dump(chain);
-        }
-
         DUChainWriteLocker lock(DUChain::lock());
-        
+
         foreach (ProblemPointer p, includeProblems) {
             chain->addProblem(p);
         }
