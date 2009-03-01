@@ -425,6 +425,25 @@ void TestUses::functionAndClassWithSameName()
     compareUses(top->localDeclarations().at(1), SimpleRange(0, 70, 0, 74));
 }
 
+void TestUses::constantInClassMember()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? define('TEST', 1); class A { var $a = TEST; var $b = array( TEST ); } TEST;");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* constant = top->findDeclarations(Identifier("TEST")).first();
+
+    QList<SimpleRange> uses;
+    uses << SimpleRange(0, 41, 0, 45);
+    uses << SimpleRange(0, 63, 0, 67);
+    uses << SimpleRange(0, 73, 0, 77);
+    compareUses(constant, uses);
+}
+
 }
 
 #include "test_uses.moc"

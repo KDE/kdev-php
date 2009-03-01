@@ -98,4 +98,14 @@ void UseBuilder::visitGlobalVar(GlobalVarAst* node)
     UseBuilderBase::visitGlobalVar(node);
 }
 
+void UseBuilder::visitStaticScalar(StaticScalarAst* node)
+{
+    if ( currentContext()->type() == DUContext::Class ) {
+        UseBuilderBase::visitStaticScalar(node);
+        UseExpressionVisitor v(editor(), currentContext()->topContext(), this);
+        node->ducontext = currentContext();
+        v.visitNode(node);
+    }
+}
+
 }
