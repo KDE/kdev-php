@@ -51,9 +51,6 @@ protected:
     virtual void visitClassExtends(ClassExtendsAst *node);
     virtual void visitExpr(ExprAst* node);
     virtual void visitGlobalVar(GlobalVarAst* node);
-
-    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
-    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
 };
 
 }

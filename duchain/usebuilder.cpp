@@ -98,14 +98,4 @@ void UseBuilder::visitGlobalVar(GlobalVarAst* node)
     UseBuilderBase::visitGlobalVar(node);
 }
 
-Declaration* UseBuilder::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
-{
-    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor());
-}
-
-Declaration* UseBuilder::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
-{
-    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor());
-}
-
 }
