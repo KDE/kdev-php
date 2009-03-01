@@ -287,20 +287,17 @@ void ContextBuilder::reportError(const QString& errorMsg, AstNode* node)
 
 Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
 {
-    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), m_reportErrors);
+    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor());
 }
 
 Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
 {
-    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor(), m_reportErrors);
+    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor());
 }
 
-Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, const QualifiedIdentifier &identifier, AstNode* node, bool createProblems)
+Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, const QualifiedIdentifier &identifier, AstNode* node)
 {
-    if ( !m_reportErrors ) {
-        createProblems = false;
-    }
-    return findDeclarationImportHelper(currentContext(), identifier, declarationType, node, editor(), createProblems);
+    return findDeclarationImportHelper(currentContext(), identifier, declarationType, node, editor());
 }
 
 }

@@ -73,7 +73,7 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
 }
 
 Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIdentifier id,
-                                    DeclarationType declarationType, AstNode* node, EditorIntegrator* editor, bool createProblems)
+                                    DeclarationType declarationType, AstNode* node, EditorIntegrator* editor)
 {
     ifDebug( kDebug() << id.toString() << declarationType; )
     if (declarationType == ClassDeclarationType && id == QualifiedIdentifier("self")) {
@@ -149,32 +149,6 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
         }
     }
 
-    if (createProblems) {
-        KDevelop::Problem *p = new KDevelop::Problem();
-        p->setSource(KDevelop::ProblemData::DUChainBuilder);
-        QString declarationTypeString;
-        switch (declarationType) {
-            case ClassDeclarationType:
-                declarationTypeString = "class";
-                break;
-            case FunctionDeclarationType:
-                declarationTypeString = "function";
-                break;
-            case ConstantDeclarationType:
-                declarationTypeString = "constant";
-                break;
-            case GlobalVariableDeclarationType:
-                declarationTypeString = "global";
-                break;
-        }
-        p->setDescription(i18n("Could not find %1 '%2'", declarationTypeString, id.toString()));
-        p->setFinalLocation(KDevelop::DocumentRange(editor->currentUrl().str(), editor->findRange(node).textRange()));
-        {
-            DUChainWriteLocker lock(DUChain::lock());
-            ifDebug( kDebug() << "Problem" << p->description(); )
-            currentContext->topContext()->addProblem(KDevelop::ProblemPointer(p));
-        }
-    }
     return 0;
 }
 

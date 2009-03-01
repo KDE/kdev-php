@@ -63,7 +63,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         iType = IntegralType::TypeVoid;
     } else {
         //don't use openTypeFromName as it uses cursor for findDeclarations
-        Declaration* decl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier(type), node, false);
+        Declaration* decl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier(type), node);
         if (decl && decl->abstractType()) {
             injectType(decl->abstractType());
             return decl->abstractType();

@@ -92,7 +92,7 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
             }
         }
     }
-    if (ret && !m_isAssignmentExpressionEqual) {
+    if (!m_isAssignmentExpressionEqual) {
         usingDeclaration(variable, ret);
     }
     return ret;
@@ -177,6 +177,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
                     }
                 }
             } else {
+                usingDeclaration(node->stringFunctionName, 0);
                 m_result.setType(AbstractType::Ptr());
             }
         } else if (node->varFunctionName) {
@@ -185,8 +186,8 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
             //global function call foo();
             Declaration* dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionNameOrClass);
             m_result.setDeclaration(dec);
+            usingDeclaration(node->stringFunctionNameOrClass, dec);
             if (dec) {
-                usingDeclaration(node->stringFunctionNameOrClass, dec);
                 FunctionType::Ptr function = dec->type<FunctionType>();
                 if (function) {
                     m_result.setType(function->returnType());
@@ -201,16 +202,14 @@ DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
 {
     DUContext* context = 0;
     Declaration* declaration = findDeclarationImport(ClassDeclarationType, className);
+    usingDeclaration(className, declaration);
     if (declaration) {
-        {
-            DUChainReadLocker lock(DUChain::lock());
-            context = declaration->internalContext();
-            if (!context && m_currentContext->parentContext() && m_currentContext->parentContext()->localScopeIdentifier() == declaration->qualifiedIdentifier()) {
-                //className is currentClass (internalContext is not yet set)
-                context = m_currentContext->parentContext();
-            }
+        DUChainReadLocker lock(DUChain::lock());
+        context = declaration->internalContext();
+        if (!context && m_currentContext->parentContext() && m_currentContext->parentContext()->localScopeIdentifier() == declaration->qualifiedIdentifier()) {
+            //className is currentClass (internalContext is not yet set)
+            context = m_currentContext->parentContext();
         }
-        usingDeclaration(className, declaration);
     }
     return context;
 }
@@ -228,6 +227,8 @@ void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
             lock.unlock();
             if (!m_result.allDeclarations().isEmpty()) {
                 usingDeclaration(node->constant, m_result.allDeclarations().last());
+            } else {
+                usingDeclaration(node->constant, 0);
             }
         } else {
             m_result.setType(AbstractType::Ptr());
@@ -248,9 +249,7 @@ void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
                 declaration = findDeclarationImport(FunctionDeclarationType, node->constant);
             }
             m_result.setDeclaration(declaration);
-            if (declaration) {
-                usingDeclaration(node->constant, declaration);
-            }
+            usingDeclaration(node->constant, declaration);
         }
     }
 }
@@ -345,6 +344,8 @@ void ExpressionVisitor::visitEncapsVar(EncapsVarAst *node)
                     lock.unlock();
                     if (!found.isEmpty()) {
                         usingDeclaration(node->propertyIdentifier, found.last());
+                    } else {
+                        usingDeclaration(node->propertyIdentifier, 0);
                     }
                 }
             }
@@ -383,6 +384,7 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
                             }
                         }
                     } else {
+                        usingDeclaration(node->objectProperty->objectDimList->variableName, 0);
                         m_result.setType(AbstractType::Ptr());
                     }
                 } else {
@@ -408,8 +410,11 @@ void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
             lock.unlock();
             if (!m_result.allDeclarations().isEmpty()) {
                 usingDeclaration(node->variable->variable->variable, m_result.allDeclarations().last());
+            } else {
+                usingDeclaration(node->variable->variable->variable, 0);
             }
         } else {
+            usingDeclaration(node->className, 0);
             m_result.setType(AbstractType::Ptr());
         }
     }
@@ -505,12 +510,12 @@ void ExpressionVisitor::setCreateProblems(bool v)
 
 Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
 {
-    return findDeclarationImportHelper(m_currentContext, identifierForNode(node), declarationType, node, m_editor, m_createProblems);
+    return findDeclarationImportHelper(m_currentContext, identifierForNode(node), declarationType, node, m_editor);
 }
 
 Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
 {
-    return findDeclarationImportHelper(m_currentContext, identifierForNode(node), declarationType, node, m_editor, m_createProblems);
+    return findDeclarationImportHelper(m_currentContext, identifierForNode(node), declarationType, node, m_editor);
 }
 
 }

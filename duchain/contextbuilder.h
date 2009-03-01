@@ -78,7 +78,7 @@ protected:
 
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
-    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, const KDevelop::QualifiedIdentifier &identifier, AstNode* node, bool createProblems = true);
+    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, const KDevelop::QualifiedIdentifier &identifier, AstNode* node);
     
     /// internalfunctions should not be checked for errors
     bool m_reportErrors;

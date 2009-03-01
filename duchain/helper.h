@@ -47,8 +47,7 @@ namespace Php {
                                         KDevelop::QualifiedIdentifier id,
                                         DeclarationType declarationType,
                                         AstNode* node,
-                                        EditorIntegrator* editor,
-                                        bool createProblems);
+                                        EditorIntegrator* editor);
 
     QString formatComment(AstNode* node, EditorIntegrator* editor);
 
