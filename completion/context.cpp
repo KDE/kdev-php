@@ -231,7 +231,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
         if ( classDec ) {
           if ( expr == "parent" ) {
             if ( classDec->baseClass() ) {
-              StructureType::Ptr classType = classDec->baseClass().type().cast<StructureType>();
+              StructureType::Ptr classType = classDec->baseClass().type<StructureType>();
               if ( classType ) {
                 ifDebug ( kDebug() << "correction: parent can do MemberAccess" );
                 m_parentAccess = true;

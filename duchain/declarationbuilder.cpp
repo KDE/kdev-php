@@ -113,7 +113,7 @@ ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, C
 bool DeclarationBuilder::isBaseMethodRedeclaration(const Identifier &identifier, ClassDeclaration *curClass,
                                                     ClassStatementAst *node) {
     while ( curClass->baseClass() ) {
-        StructureType::Ptr type = curClass->baseClass().type().cast<StructureType>();
+        StructureType::Ptr type = curClass->baseClass().type<StructureType>();
         Q_ASSERT(type);
         {
             DUChainWriteLocker lock(DUChain::lock());

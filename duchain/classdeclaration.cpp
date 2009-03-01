@@ -120,7 +120,7 @@ bool ClassDeclaration::inherits(const IndexedType& type) const {
   if ( baseClass() == type ) {
     return true;
   }
-  if( StructureType::Ptr c = baseClass().type().cast<StructureType>() ) {
+  if( StructureType::Ptr c = baseClass().type<StructureType>() ) {
     ClassDeclaration* decl = dynamic_cast<ClassDeclaration*>(c->declaration(topContext()));
     if( decl && decl->inherits( type ) ) {
       return true;
@@ -153,7 +153,7 @@ bool ClassDeclaration::implements(const IndexedType& type) const {
     if ( b == type ) {
       return true;
     }
-    if( StructureType::Ptr c = b.type().cast<StructureType>() ) {
+    if( StructureType::Ptr c = b.type<StructureType>() ) {
       ClassDeclaration* decl = dynamic_cast<ClassDeclaration*>(c->declaration(topContext()));
       if( decl && decl->implements( type ) ) {
         return true;

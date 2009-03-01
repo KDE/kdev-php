@@ -53,13 +53,13 @@ void DeclarationNavigationContext::htmlClass()
   if(classDecl) {
     if ( classDecl->baseClass() ) {
       modifyHtml() += i18n(" extends ");
-      eventuallyMakeTypeLinks(classDecl->baseClass().type());
+      eventuallyMakeTypeLinks(classDecl->baseClass().abstractType());
     }
     modifyHtml() += " ";
     if ( classDecl->interfacesSize() > 0 ) {
       modifyHtml() += i18n(" implements ");
       FOREACH_FUNCTION( const IndexedType& interface, classDecl->interfaces ) {
-        eventuallyMakeTypeLinks(interface.type());
+        eventuallyMakeTypeLinks(interface.abstractType());
         if ( a < containerSize - 1 ) {
           modifyHtml() += ", ";
         }
