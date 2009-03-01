@@ -697,6 +697,20 @@ void TestCompletion::overrideMethods()
     //TODO: verify actual completion text
 }
 
+void TestCompletion::inArray() {
+    TopDUContext* top = parse("", DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+    
+    CodeCompletionContext::Ptr cptr(new CodeCompletionContext(DUContextPointer(top), "<? $a = array( 1, ", QString()));
+
+    bool abort = false;
+    QList<CompletionTreeItemPointer> itemList = cptr->completionItems(SimpleCursor(), abort);
+    dumpCompletionItems(itemList);
+    QVERIFY(itemList.count() > 0);
+    // TODO: compare to global completion list
+}
+
 }
 
 #include "test_completion.moc"

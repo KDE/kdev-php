@@ -99,11 +99,16 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
   }
 
   if( m_text.endsWith('(') ) {
-    ifDebug( log( m_text.left( m_text.length()-1 ).trimmed()); )
-    if ( m_text.left( m_text.length()-1 ).trimmed().endsWith("catch") ) {
-        ifDebug( log( "ExceptionChoose"); )
-        m_memberAccessOperation = ExceptionChoose;
-        return;
+    m_text = m_text.left( m_text.length()-1 ).trimmed();
+    ifDebug( log( m_text ); )
+    if ( m_text.endsWith("catch") ) {
+      ifDebug( log( "ExceptionChoose"); )
+      m_memberAccessOperation = ExceptionChoose;
+      return;
+    } else if ( m_text.endsWith("array") ) {
+      ifDebug( log ("NoMemberAccess"); )
+      m_memberAccessOperation = NoMemberAccess;
+      return;
     }
 
     if( depth == 0 ) {
@@ -114,7 +119,6 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
     }
     m_memberAccessOperation = FunctionCallAccess;
     ifDebug( log( "FunctionCallAccess"); )
-    m_text = m_text.left( m_text.length()-1 );
 
   }
 
