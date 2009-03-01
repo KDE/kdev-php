@@ -402,7 +402,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
                 }
                 
                 items << CompletionTreeItemPointer( new ImplementationItem( itype, DeclarationPointer(decl.first),
-                                                    CodeCompletionContext::Ptr(this), decl.second ) );
+                                                    KDevelop::CodeCompletionContext::Ptr(this), decl.second ) );
                 // don't add identical items twice to the completion choices
                 alreadyImplemented << decl.first->indexedIdentifier().index;
               }
@@ -478,7 +478,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
               }
               
               if(!decl.first->identifier().isEmpty())
-                items << CompletionTreeItemPointer( new NormalDeclarationCompletionItem( DeclarationPointer(decl.first), CodeCompletionContext::Ptr(this), decl.second ) );
+                items << CompletionTreeItemPointer( new NormalDeclarationCompletionItem( DeclarationPointer(decl.first), KDevelop::CodeCompletionContext::Ptr(this), decl.second ) );
             }
         }
       } else {
@@ -501,7 +501,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
         if (abort)
           return items;
         if (!isValidCompletionItem(dec)) continue;
-        items << CompletionTreeItemPointer( new NormalDeclarationCompletionItem(DeclarationPointer(dec), CodeCompletionContext::Ptr(this), decl.second ) );
+        items << CompletionTreeItemPointer( new NormalDeclarationCompletionItem(DeclarationPointer(dec), KDevelop::CodeCompletionContext::Ptr(this), decl.second ) );
       }
       uint count = 0;
       const CodeModelItem* foundItems = 0;
@@ -517,7 +517,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
                         foreach (Declaration* decl, decls) {
                             if (abort) return items;
                             if (!isValidCompletionItem(decl)) continue;
-                            items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), CodeCompletionContext::Ptr(this)));
+                            items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), KDevelop::CodeCompletionContext::Ptr(this)));
                         }
                     }
                 }
@@ -541,7 +541,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
         if (!parentContext->memberAccessContainer().allDeclarationIds().isEmpty()) {
             Declaration* decl = parentContext->memberAccessContainer().allDeclarationIds().first().getDeclaration(m_duContext->topContext());
             if (!isValidCompletionItem(decl)) continue;
-            items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), parentContext));
+            items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), KDevelop::CodeCompletionContext::Ptr::staticCast(parentContext)));
         }
       } else {
         kDebug() << "parent-context has non function-call access type";

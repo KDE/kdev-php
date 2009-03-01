@@ -36,7 +36,7 @@ public:
     Implement
   };
 
-  ImplementationItem(HelperType type, KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), KSharedPtr<CodeCompletionContext> context=KSharedPtr<CodeCompletionContext>(), int _inheritanceDepth = 0)
+  ImplementationItem(HelperType type, KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), KSharedPtr<KDevelop::CodeCompletionContext> context=KSharedPtr<KDevelop::CodeCompletionContext>(), int _inheritanceDepth = 0)
     : NormalDeclarationCompletionItem(decl, context, _inheritanceDepth), m_type(type)
   {}
   

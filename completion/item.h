@@ -28,7 +28,7 @@
 #include <ktexteditor/codecompletionmodel.h>
 
 #include <language/duchain/duchainpointer.h>
-#include <language/codecompletion/codecompletionitem.h>
+#include <language/codecompletion/normaldeclarationcompletionitem.h>
 #include "context.h"
 
 namespace KTextEditor {
@@ -41,30 +41,25 @@ namespace KTextEditor {
 class QModelIndex;
 
 namespace Php {
+    class CodeCompletionContext;
 
-class CodeCompletionContext;
-  
 //A completion item used for completion of normal declarations while normal code-completion
-class KDEVPHPCOMPLETION_EXPORT NormalDeclarationCompletionItem : public KDevelop::CompletionTreeItem {
+class KDEVPHPCOMPLETION_EXPORT NormalDeclarationCompletionItem : public KDevelop::NormalDeclarationCompletionItem {
 public:
-  NormalDeclarationCompletionItem(KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), KSharedPtr<CodeCompletionContext> context=KSharedPtr<CodeCompletionContext>(), int _inheritanceDepth = 0)
-    : completionContext(context), m_declaration(decl), m_inheritanceDepth(_inheritanceDepth) {
+  NormalDeclarationCompletionItem(KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), KSharedPtr<KDevelop::CodeCompletionContext> context=KSharedPtr<KDevelop::CodeCompletionContext>(), int _inheritanceDepth = 0)
+    : KDevelop::NormalDeclarationCompletionItem(decl, context, _inheritanceDepth) {
   }
   
-  virtual void execute(KTextEditor::Document* document, const KTextEditor::Range& word);
 
   virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const;
 
-  virtual KDevelop::DeclarationPointer declaration() const;
-
-  virtual int inheritanceDepth() const;
-  virtual int argumentHintDepth() const;
-  
-  KSharedPtr<CodeCompletionContext> completionContext;
-  QString alternativeText; //Text shown when declaration is zero
 protected:
-    KDevelop::DeclarationPointer m_declaration;
-    int m_inheritanceDepth; //Inheritance-depth: 0 for local functions(within no class), 1 for within local class, 1000+ for global items.
+  virtual QString declarationName() const;
+  virtual void executed(KTextEditor::Document* document, const KTextEditor::Range& word);
+  virtual QWidget* createExpadingWidget(const KDevelop::CodeCompletionModel* model) const;
+  virtual bool createsExpadingWidget() const;
+
+  KSharedPtr<CodeCompletionContext> completionContext() const;
 };
 
 }

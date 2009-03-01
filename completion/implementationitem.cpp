@@ -163,9 +163,6 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
   } else {
     kDebug() << "Declaration disappeared";
   }
-  if ( replText.isEmpty() ) {
-    replText = alternativeText;
-  }
   
   document->replaceText( word, replText );
   //TODO: properly place the cursor inside the {} part

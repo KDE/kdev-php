@@ -29,6 +29,7 @@
 #include <ktexteditor/view.h>
 #include <ktexteditor/document.h>
 #include <language/codecompletion/codecompletionmodel.h>
+#include <language/codecompletion/codecompletionhelper.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/classfunctiondeclaration.h>
 #include <language/duchain/namespacealiasdeclaration.h>
@@ -47,15 +48,14 @@ using namespace KDevelop;
 
 namespace Php {
 
-//The name to be viewed in the name column
-QString nameForDeclaration(Declaration* dec) {
-  if (dec->identifier().toString().isEmpty())
+QString NormalDeclarationCompletionItem::declarationName() const {
+  if (m_declaration->identifier().toString().isEmpty())
     return "<unknown>";
   else {
-    QString ret = dec->identifier().toString();
-    if (dynamic_cast<VariableDeclaration*>(dec)) {
+    QString ret = m_declaration->identifier().toString();
+    if (dynamic_cast<VariableDeclaration*>(m_declaration.data())) {
       ret = "$" + ret;
-    } else if (ClassMemberDeclaration* memberDec = dynamic_cast<ClassMemberDeclaration*>(dec)) {
+    } else if (ClassMemberDeclaration* memberDec = dynamic_cast<ClassMemberDeclaration*>(m_declaration.data())) {
       if ( memberDec->isStatic() && memberDec->abstractType() && ! memberDec->abstractType()->modifiers() & AbstractType::ConstModifier ) {
         // PHP is strange, $obj->asdf, class::const but class::$static ...
         ret = "$" + ret;
@@ -65,32 +65,13 @@ QString nameForDeclaration(Declaration* dec) {
   }
 }
 
-void NormalDeclarationCompletionItem::execute(KTextEditor::Document* document, const KTextEditor::Range& word) {
-  
-  if( completionContext && completionContext->depth() != 0 )
-    return; //Do not replace any text when it is an argument-hint
-
-  QString newText;
-
-  {
-    KDevelop::DUChainReadLocker lock(KDevelop::DUChain::lock());
-    if(m_declaration) {
-      newText = nameForDeclaration(m_declaration.data());
-    } else {
-      kDebug() << "Declaration disappeared";
-      return;
-    }
-  }
-
-  document->replaceText(word, newText);
-
+void NormalDeclarationCompletionItem::executed(KTextEditor::Document* document, const KTextEditor::Range& word)
+{
   if( m_declaration && dynamic_cast<AbstractFunctionDeclaration*>(m_declaration.data()) ) {
     //Do some intelligent stuff for functions with the parens:
-   insertFunctionParenText(document, word, m_declaration);
+    insertFunctionParenText(document, word, m_declaration);
   }
 }
-
-const bool indentByDepth = false;
 
 QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const {
 
@@ -100,131 +81,34 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
     return QVariant();
   }
 
-  static CompletionTreeItemPointer currentMatchContext;
-
-  //Stuff that does not require a declaration:
-  switch (role) {
-    case CodeCompletionModel::SetMatchContext:
-      currentMatchContext = CompletionTreeItemPointer(const_cast<NormalDeclarationCompletionItem*>(this));
-      return QVariant(1);
-  };
-
   if(!m_declaration) {
-    if(role == Qt::DisplayRole && index.column() == CodeCompletionModel::Name)
-      return alternativeText;
     return QVariant();
   }
   
   Declaration* dec = const_cast<Declaration*>( m_declaration.data() );
 
   switch (role) {
-    case CodeCompletionModel::BestMatchesCount:
-      return QVariant(5);
-    break;
-    case CodeCompletionModel::MatchQuality:
-    {
-      if( currentMatchContext && currentMatchContext->asItem()) {
-        const NormalDeclarationCompletionItem& contextItem(*currentMatchContext->asItem<NormalDeclarationCompletionItem>());
-#if 0
-        if( contextItem.asItem() && contextItem.declaration && contextItem.completionContext && contextItem.completionContext->memberAccessOperation() == CodeCompletionContext::FunctionCallAccess && contextItem.listOffset < contextItem.completionContext->functions().count() )
-        {
-          CodeCompletionContext::Function f( contextItem.completionContext->functions()[contextItem.listOffset] );
-
-          if( f.function.isValid() && f.function.isViable() && f.function.declaration() && f.function.declaration()->type<CppFunctionType>() && f.function.declaration()->type<CppFunctionType>()->arguments().count() > f.matchedArguments ) {
-            TypeConversion conv(model->currentTopContext().data());
-
-            ///@todo fill the lvalue-ness correctly
-            int quality = ( conv.implicitConversion( effectiveType(dec), f.function.declaration()->type<CppFunctionType>()->arguments()[f.matchedArguments], true )  * 10 ) / MaximumConversionResult;
-            return QVariant(quality);
-          }else{
-            //kDebug() << "MatchQuality requested with invalid match-context";
-          }
-        } else {
-          //kDebug() << "MatchQuality requested with invalid match-context";
-        }
-#endif
-      }
-    }
-    return QVariant();
     case CodeCompletionModel::ItemSelected:
        return QVariant(NavigationWidget::shortDescription(dec));
-    case CodeCompletionModel::IsExpandable:
-      return QVariant(true);
-    case CodeCompletionModel::ExpandingWidget: {
-      NavigationWidget* nav = new NavigationWidget(DeclarationPointer(dec), model->currentTopContext());
-      model->addNavigationWidget(this, nav);
-
-      QVariant v;
-      v.setValue<QWidget*>((QWidget*)nav);
-      return v;
-    }
     case Qt::DisplayRole:
       switch (index.column()) {
         case CodeCompletionModel::Prefix:
         {
-          int depth = m_inheritanceDepth;
-          if( depth >= 1000 )
-            depth-=1000;
-          QString indentation;
-          if(indentByDepth)
-            indentation = QString(depth, ' ');
-
-          if( dec->isTypeAlias() )
-            indentation += "typedef ";
-
           if( dec->kind() == Declaration::Type && !dec->type<FunctionType>() && !dec->isTypeAlias() ) {
             if (StructureType::Ptr classType =  dec->type<StructureType>()) {
               ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
               if (classDec) {
                 switch (classDec->classType()) {
                   case ClassDeclarationData::Class:
-                    return indentation + "class";
+                    return "class";
                   case ClassDeclarationData::Interface:
-                    return indentation + "interface";
+                    return "interface";
                 }
               }
             }
             return QVariant();
           }
-
-          if (dec->abstractType()) {
-            if (FunctionType::Ptr functionType = dec->type<FunctionType>()) {
-              ClassFunctionDeclaration* funDecl = dynamic_cast<ClassFunctionDeclaration*>(dec);
-
-              if (functionType->returnType())
-                return indentation + functionType->returnType()->toString();
-              else if(funDecl && funDecl->isConstructor() )
-                return indentation + "<constructor>";
-              else if(funDecl && funDecl->isDestructor() )
-                return indentation + "<destructor>";
-              else
-                return indentation + "<incomplete type>";
-
-            } else {
-              QString ret = indentation;
-//               if(dec->type<EnumeratorType>())
-//                 ret += "enumerator ";
-              return  ret + dec->abstractType()->toString();
-            }
-          } else {
-            return indentation + "<incomplete type>";
-          }
         }
-
-        case CodeCompletionModel::Scope: {
-          //The scopes are not needed
-          return QVariant();
-/*          QualifiedIdentifier id = dec->qualifiedIdentifier();
-          if (id.isEmpty())
-            return QVariant();
-          id.pop();
-          if (id.isEmpty())
-            return QVariant();
-          return id.toString() + "::";*/
-        }
-
-        case CodeCompletionModel::Name:
-          return nameForDeclaration(dec);
 
         case CodeCompletionModel::Arguments:
           if (FunctionType::Ptr functionType = dec->type<FunctionType>()) {
@@ -233,128 +117,48 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
             return ret;
           }
         break;
-        case CodeCompletionModel::Postfix:
-          if (FunctionType::Ptr functionType = dec->type<FunctionType>()) {
-//             return functionType->cvString();
-          }
-          break;
       }
       break;
     case CodeCompletionModel::HighlightingMethod:
     if( index.column() == CodeCompletionModel::Arguments ) {
-      if( completionContext->memberAccessOperation() == CodeCompletionContext::FunctionCallAccess ) {
+      if( completionContext()->memberAccessOperation() == CodeCompletionContext::FunctionCallAccess ) {
         return QVariant(CodeCompletionModel::CustomHighlighting);
       }else{
         return QVariant();
       }
       break;
-    } else if(index.column() == CodeCompletionModel::Name) {
-      return QVariant(CodeCompletionModel::CustomHighlighting);
     }
 
     break;
 
     case CodeCompletionModel::CustomHighlight:
-    if( index.column() == CodeCompletionModel::Arguments && completionContext->memberAccessOperation() == CodeCompletionContext::FunctionCallAccess ) {
+    if( index.column() == CodeCompletionModel::Arguments && completionContext()->memberAccessOperation() == CodeCompletionContext::FunctionCallAccess ) {
       QString ret;
       QList<QVariant> highlight;
       createArgumentList(*this, ret, &highlight);
       return QVariant(highlight);
     }
-    if( index.column() == CodeCompletionModel::Name ) {
-      //Bold
-      QTextCharFormat boldFormat;
-      boldFormat.setFontWeight(QFont::Bold);
-
-      QList<QVariant> ret;
-      ret << 0;
-      ret << nameForDeclaration(dec).length();
-      ret << QVariant(boldFormat);
-      
-      return QVariant(ret);
-    }
     break;
-    case Qt::DecorationRole:
-    case CodeCompletionModel::CompletionRole: {
-      CodeCompletionModel::CompletionProperties p = DUChainUtils::completionProperties(dec);
-
-      if (dec->abstractType()) {
-#if 0
-        if (CppCVType* cv = dynamic_cast<CppCVType*>(dec->abstractType().data())) {
-          if (cv->isConstant())
-            p |= CodeCompletionModel::Const;
-          if (cv->isVolatile())
-            ;//TODO
-          }
-#endif
-
-        switch (dec->abstractType()->whichType()) {
-          case AbstractType::TypeIntegral:
-//             if (dec->type<EnumerationType>()) {
-//               // Remove variable bit set in DUChainUtils
-//               p &= ~CodeCompletionModel::Variable;
-//               p |= CodeCompletionModel::Enum;
-//             }
-            break;
-          case AbstractType::TypeStructure:
-            if (StructureType::Ptr classType =  dec->type<StructureType>())
-              p |= CodeCompletionModel::Class;
-              /*
-              switch (classType->classType()) {
-                case StructureType::Class:
-                  p |= CodeCompletionModel::Class;
-                  break;
-                case StructureType::Interface:
-                  // FIXME remove
-                  p |= CodeCompletionModel::Class;
-                  // Remove class bit set in DUChainUtils
-                  // TODO add Interface to KTextEditor
-                  //p &= ~CodeCompletionModel::Class;
-                  //p |= CodeCompletionModel::Interface;
-                  break;
-              }
-              */
-            break;
-        }
-      }
-
-      if( role == CodeCompletionModel::CompletionRole ) {
-        return (int)p;
-
-      } else {
-        if( index.column() == CodeCompletionModel::Icon ) {
-          lock.unlock();
-          return DUChainUtils::iconForProperties(p);
-        }
-        break;
-
-      }
-    }
-
-    case CodeCompletionModel::ScopeIndex:
-      return static_cast<int>(reinterpret_cast<long>(dec->context()));
   }
+  lock.unlock();
 
-  return QVariant();
+  return KDevelop::NormalDeclarationCompletionItem::data(index, role, model);
 }
 
-int NormalDeclarationCompletionItem::inheritanceDepth() const
+QWidget* NormalDeclarationCompletionItem::createExpadingWidget(const KDevelop::CodeCompletionModel* model) const
 {
-  return m_inheritanceDepth;
+  return new NavigationWidget(m_declaration, model->currentTopContext());
 }
 
-int NormalDeclarationCompletionItem::argumentHintDepth() const
+bool NormalDeclarationCompletionItem::createsExpadingWidget() const
 {
-  if( completionContext && completionContext->memberAccessOperation() == CodeCompletionContext::FunctionCallAccess )
-      return completionContext->depth();
-    else
-      return 0;
+  return true;
 }
 
-DeclarationPointer NormalDeclarationCompletionItem::declaration() const
-{
-    return m_declaration;
+KSharedPtr<CodeCompletionContext> NormalDeclarationCompletionItem::completionContext() const {
+  return KSharedPtr<CodeCompletionContext>::staticCast(m_completionContext);
 }
+
 
 }
 
