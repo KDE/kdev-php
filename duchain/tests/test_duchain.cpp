@@ -1300,11 +1300,11 @@ void TestDUChain::testCircularInheritance()
     
     DUChainWriteLocker lock(DUChain::lock());
     
-    foreach (KSharedPtr<KDevelop::Problem> prob, top->problems()) {
-      kDebug() << prob->description();
-    }
-    
-    QCOMPARE(top->problems().count(), 1);
+    QVERIFY(top->localDeclarations().at(0)->internalContext()->importedParentContexts().empty());
+    QVERIFY(top->localDeclarations().at(1)->internalContext()->importedParentContexts().empty());
+    QCOMPARE(top->localDeclarations().at(2)->internalContext()->importedParentContexts().count(), 1);
+    QCOMPARE(top->localDeclarations().at(2)->internalContext()->importedParentContexts().first().context(top),
+              top->localDeclarations().at(0)->internalContext());
 }
 
 void TestDUChain::testFindDeclarations()
