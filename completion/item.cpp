@@ -53,12 +53,14 @@ QString NormalDeclarationCompletionItem::declarationName() const {
     return "<unknown>";
   else {
     QString ret = m_declaration->identifier().toString();
-    if (dynamic_cast<VariableDeclaration*>(m_declaration.data())) {
-      ret = "$" + ret;
-    } else if (ClassMemberDeclaration* memberDec = dynamic_cast<ClassMemberDeclaration*>(m_declaration.data())) {
-      if ( memberDec->isStatic() && memberDec->abstractType() && ! memberDec->abstractType()->modifiers() & AbstractType::ConstModifier ) {
-        // PHP is strange, $obj->asdf, class::const but class::$static ...
+    if ( !m_declaration->isFunctionDeclaration() ) {
+      if (dynamic_cast<VariableDeclaration*>(m_declaration.data())) {
         ret = "$" + ret;
+      } else if ( ClassMemberDeclaration* memberDec = dynamic_cast<ClassMemberDeclaration*>(m_declaration.data())) {
+        if ( memberDec->isStatic() && memberDec->abstractType() && ! memberDec->abstractType()->modifiers() & AbstractType::ConstModifier ) {
+          // PHP is strange, $obj->asdf, class::const but class::$static ...
+          ret = "$" + ret;
+        }
       }
     }
     return ret;
