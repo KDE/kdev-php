@@ -50,7 +50,6 @@ private slots:
     void globalClassFromOtherFile();
     void codeModel();
     void projectFileClass();
-    void thisCompletion();
     void variable();
     void variableStarted();
     void nameNormalVariable();
