@@ -269,6 +269,47 @@ void LexerTest::testNewlineInStringWithVar2()
     delete ts;
 }
 
+void LexerTest::testMultiplePhpSections() {
+
+                              //0            1
+                              //012345 6 789 0123456789
+    TokenStream* ts = tokenize("<?php $a;?>\n<html>\n<?php $a;?>", true);
+    QCOMPARE((int)ts->size(), 9);
+
+    qint64 index = 0;
+    for (qint64 line = 0; line <= 2; ++line) {
+        if ( line == 1 ) {
+          // the html stuff in the middle
+          QVERIFY(ts->token(index).kind == Parser::Token_INLINE_HTML);
+          compareStartPosition(ts, index, 0, 11);
+          compareEndPosition  (ts, index, 1, 6);
+          ++index;
+        } else {
+          // the php stuff (symmetric) at the start and end
+          QVERIFY(ts->token(index).kind == Parser::Token_OPEN_TAG);
+          compareStartPosition(ts, index, line, 0);
+          compareEndPosition  (ts, index, line, 5);
+          ++index;
+
+          QVERIFY(ts->token(index).kind == Parser::Token_VARIABLE);
+          compareStartPosition(ts, index, line, 6);
+          compareEndPosition  (ts, index, line, 7);
+          ++index;
+
+          QVERIFY(ts->token(index).kind == Parser::Token_SEMICOLON);
+          compareStartPosition(ts, index, line, 8);
+          compareEndPosition  (ts, index, line, 8);
+          ++index;
+
+          QVERIFY(ts->token(index).kind == Parser::Token_CLOSE_TAG);
+          compareStartPosition(ts, index, line, 9);
+          compareEndPosition  (ts, index, line, 10);
+          ++index;
+        }
+    }
+    delete ts;
+}
+
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
     TokenStream* tokenStream = new TokenStream;

@@ -442,7 +442,6 @@ int Lexer::nextTokenKind()
                     //accept CLOSE_TAG inside StringVariableCurly too, as php does
                     token = Parser::Token_CLOSE_TAG;
                     m_curpos++;
-                    if ((it+2)->unicode() == '\n') m_curpos++;
                     while (state() != HtmlState) popState();
                 }
                 else

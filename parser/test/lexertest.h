@@ -51,6 +51,7 @@ private slots:
     void testNewlineInString2();
     void testNewlineInStringWithVar();
     void testNewlineInStringWithVar2();
+    void testMultiplePhpSections();
 
 protected:
     TokenStream* tokenize(const QString& unit, bool debug = false, int initialState = Lexer::HtmlState);
