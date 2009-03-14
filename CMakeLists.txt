@@ -14,9 +14,9 @@ include_directories(
     ${KDE4_INCLUDES}
     ${KDE4_INCLUDE_DIR}/threadweaver
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/duchain
-    ${CMAKE_SOURCE_DIR}/parser
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/duchain
+    ${CMAKE_CURRENT_SOURCE_DIR}/parser
 )
 
 add_definitions( -DKDE_DEFAULT_DEBUG_AREA=9043 )
@@ -31,8 +31,8 @@ if(KDEVPGQT_FOUND)
     )
 else(KDEVPGQT_FOUND)
     include_directories(
-        ${CMAKE_SOURCE_DIR}/parser/generated
-        ${CMAKE_SOURCE_DIR}/parser/generated/kdevelop-pg-qt
+        ${CMAKE_CURRENT_SOURCE_DIR}/parser/generated
+        ${CMAKE_CURRENT_SOURCE_DIR}/parser/generated/kdevelop-pg-qt
     )
 endif(KDEVPGQT_FOUND)
 
