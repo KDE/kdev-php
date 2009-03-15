@@ -44,6 +44,7 @@ private slots:
     void testOpenTagWithNewline();
     void testOpenTagWithSpace();
     void testCommentOneLine();
+    void testCommentOneLine2();
     void testCommentMultiLine();
     void testCommentMultiLine2();
     void testEndTag();

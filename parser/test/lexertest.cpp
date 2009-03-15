@@ -114,6 +114,29 @@ void LexerTest::testCommentOneLine()
     delete ts;
 }
 
+void LexerTest::testCommentOneLine2()
+{
+    TokenStream* ts = tokenize("<?php\n#comment\nfoo;");
+    QVERIFY(ts->size() == 4);
+
+    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
+    compareStartPosition(ts, 0, 0, 0);
+    compareEndPosition  (ts, 0, 0, 5);
+
+    QVERIFY(ts->token(1).kind == Parser::Token_COMMENT);
+    compareStartPosition(ts, 1, 1, 0);
+    compareEndPosition  (ts, 1, 1, 8);
+
+    QVERIFY(ts->token(2).kind == Parser::Token_STRING);
+    compareStartPosition(ts, 2, 2, 0);
+    compareEndPosition  (ts, 2, 2, 2);
+
+    QVERIFY(ts->token(3).kind == Parser::Token_SEMICOLON);
+    compareStartPosition(ts, 3, 2, 3);
+    compareEndPosition  (ts, 3, 2, 3);
+    delete ts;
+}
+
 void LexerTest::testCommentMultiLine()
 {
     TokenStream* ts = tokenize("<?php\n/*com\nment*/\nfoo;", true);
