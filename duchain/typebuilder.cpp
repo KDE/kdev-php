@@ -59,6 +59,8 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
     } else if (type == "object") {
         //TODO
         iType = IntegralType::TypeMixed;
+    } else if ( type == "null") {
+        iType = IntegralType::TypeNull;
     } else if (type == "void") {
         iType = IntegralType::TypeVoid;
     } else {
