@@ -869,7 +869,7 @@ void TestDUChain::testUnknownReturnType()
     FunctionType::Ptr fType = dec->type<FunctionType>();
     QVERIFY(fType);
     QVERIFY(IntegralType::Ptr::dynamicCast(fType->returnType()));
-    QVERIFY(IntegralType::Ptr::staticCast(fType->returnType())->dataType() == IntegralType::TypeMixed);
+    QVERIFY(IntegralType::Ptr::staticCast(fType->returnType())->dataType() == IntegralType::TypeVoid);
 }
 
 void TestDUChain::testStaticFunctionCallFromOtherFile()
@@ -1368,7 +1368,7 @@ void TestDUChain::testMemberTypeAfterMethod()
         QVERIFY(var->type<FunctionType>());
         IntegralType::Ptr ret = var->type<FunctionType>()->returnType().cast<IntegralType>();
         QVERIFY(ret);
-        QVERIFY(ret->dataType() == IntegralType::TypeMixed);
+        QVERIFY(ret->dataType() == IntegralType::TypeVoid);
     }
     
     // public $bar
