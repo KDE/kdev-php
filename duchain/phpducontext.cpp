@@ -48,7 +48,7 @@ QWidget* PhpDUContext<TopDUContext>::createNavigationWidget( Declaration* decl, 
     */
     return 0;
   } else {
-    return new NavigationWidget( DeclarationPointer(decl), TopDUContextPointer(topContext), htmlPrefix, htmlSuffix );
+    return new NavigationWidget( DeclarationPointer(decl), TopDUContextPointer(topContext ? topContext : this->topContext()), htmlPrefix, htmlSuffix );
   }
 }
 
@@ -56,11 +56,11 @@ template<>
 QWidget* PhpDUContext<DUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, const QString& htmlPrefix, const QString& htmlSuffix) const {
   if( decl == 0 ) {
     if( owner() )
-      return new NavigationWidget( DeclarationPointer(owner()), TopDUContextPointer(topContext), htmlPrefix, htmlSuffix );
+      return new NavigationWidget( DeclarationPointer(owner()), TopDUContextPointer(topContext ? topContext : this->topContext()), htmlPrefix, htmlSuffix );
     else
       return 0;
   } else {
-    return new NavigationWidget( DeclarationPointer(decl), TopDUContextPointer(topContext), htmlPrefix, htmlSuffix );
+    return new NavigationWidget( DeclarationPointer(decl), TopDUContextPointer(topContext ? topContext : this->topContext()), htmlPrefix, htmlSuffix );
   }
 }
 
