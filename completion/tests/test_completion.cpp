@@ -413,36 +413,18 @@ void TestCompletion::nameNormalVariable()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? $abc = 0; define('def', 0); class ghi {} ");
+    QByteArray method("<? $abc = 0; $arr = array(); define('def', 0); class ghi {} ");
 
     TopDUContext* top = parse(method, DumpAll);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     PhpCompletionTester tester(top, "");
-
-    TestCodeCompletionModel* model = new TestCodeCompletionModel;
-    model->foundDeclarations(tester.items, tester.completionContext.data());
-
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
 
-    CompletionTreeItemPointer itm = searchDeclaration(tester.items, top->localDeclarations().first());
-    QVERIFY(itm);
-    QCOMPARE(itm->data(model->index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, model).toString(),
-        QString("ghi"));
-
-    itm = searchDeclaration(tester.items, top->localDeclarations().at(1));
-    QVERIFY(itm);
-    QCOMPARE(itm->data(model->index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, model).toString(),
-        QString("$abc"));
-
-    itm = searchDeclaration(tester.items, top->localDeclarations().at(2));
-    QVERIFY(itm);
-    QCOMPARE(itm->data(model->index(0, Php::CodeCompletionModel::Name), Qt::DisplayRole, model).toString(),
-        QString("def"));
-
-    //don't delete model as its constructor does bad things (quit the current thread - we don't want that in test)
-    //TODO find better solution that doesn't leak
+    foreach( QString id, QStringList() << "ghi" << "def" << "$abc" << "$arr" ) {
+        QVERIFY(tester.names.contains(id, Qt::CaseSensitive));
+    }
 }
 
 void TestCompletion::nameClassMember()
