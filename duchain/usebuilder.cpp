@@ -84,6 +84,7 @@ void UseBuilder::visitExpr(ExprAst* node)
 {
     UseBuilderBase::visitExpr(node);
     UseExpressionVisitor v(editor(), currentContext()->topContext(), this);
+    node->ducontext = currentContext();
     v.visitNode(node);
 }
 
