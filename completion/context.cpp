@@ -352,6 +352,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
   
   typedef QPair<Declaration*, int> DeclarationDepthPair;
 
+  #warning FIXME: m_storedItems is never filled - can be removed? or used for optimization?
   if(!m_storedItems.isEmpty()) {
     items = m_storedItems;
   
