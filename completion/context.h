@@ -77,7 +77,8 @@ namespace Php {
         InterfaceChoose, /// after the "implements" keyword or after "interface XYZ extends" any interfaces should be shown
         ExceptionChoose, /// after keywords "catch" and "throw new" only classes which extend Exception should be shown
         ExceptionInstanceChoose, /// after the "throw" keyword instancec of the exception class should be shown
-        OverloadeableChoose /// in class context show list of overloadable or implementable methods
+        ClassMemberChoose /// in class context show list of overloadable or implementable methods
+                          /// and typical keywords for classes, i.e. access modifiers, static etc.
       };
       
       ///@return the used access-operation

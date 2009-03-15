@@ -8,6 +8,7 @@ set(completion_SRCS
     worker.cpp
     item.cpp
     implementationitem.cpp
+    keyworditem.cpp
     context.cpp
     model.cpp
     helpers.cpp

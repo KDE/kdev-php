@@ -25,6 +25,7 @@
 #include "duchain/classdeclaration.h"
 
 #include "implementationitem.h"
+#include "keyworditem.h"
 
 #include <ktexteditor/view.h>
 #include <ktexteditor/document.h>
@@ -53,6 +54,9 @@ using namespace KDevelop;
 
 namespace Php {
 
+/// add keyword to list of completion items
+#define ADD_KEYWORD(x) items << CompletionTreeItemPointer( new KeywordItem( x, KDevelop::CodeCompletionContext::Ptr(this) ) );
+
 int completionRecursionDepth = 0;
 
 CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QString& text, const QString& followingText, int depth)
@@ -78,11 +82,24 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
 
   ///First: find out what kind of completion we are dealing with
 
+  // if the parent context is a class, we can decide in completionItems
+  // which kind of completion is applicable
+  if ( m_duContext->type() == DUContext::Class ) {
+    if ( m_text.endsWith( ')' ) ) {
+      // TODO: add {...} according to chosen code style
+      m_valid = false;
+      return;
+    } else if ( m_text.endsWith( "var", Qt::CaseInsensitive ) || m_text.endsWith( "const", Qt::CaseInsensitive ) ) {
+      // nothing we can complete here
+      m_valid = false;
+      return;
+    }
+    m_memberAccessOperation = ClassMemberChoose;
+    return;
+  }
+
   if (m_text.endsWith( ';' ) || m_text.endsWith('}') || m_text.endsWith('{') || m_text.endsWith(')') ) {
     ///We're at the beginning of a new statement. General completion is valid.
-    if ( m_duContext->type() == DUContext::Class ) {
-        m_memberAccessOperation = OverloadeableChoose;
-    }
     return;
   }
 
@@ -357,66 +374,154 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
     items = m_storedItems;
   
   } else {
-    if ( memberAccessOperation() == OverloadeableChoose ) {
-      // complete overloadable methods from parents
-      
+    if ( memberAccessOperation() == ClassMemberChoose ) {
       // get current class
       if ( ClassDeclaration * currentClass = dynamic_cast<ClassDeclaration*>(m_duContext->owner()) ) {
-        // overloadable choose is only possible inside classes which extend/implement others
-        if ( currentClass->baseClass() || currentClass->interfacesSize() ) {
-          DUContext* ctx = currentClass->internalContext();
-          if ( !ctx ) {
-            kDebug() << "invalid class context";
-            return items;
+        // whether we want to show a list of overloadable functions
+        // i.e. not after we have typed one of the keywords var,const or abstract
+        bool showOverloadable = true;
+        // whether we want to remove static functions from the overloadable list
+        // i.e. after we have typed "public function"
+        bool filterStatic = false;
+        // whether we want to remove non-static functions from the overloadable list
+        // i.e. after we have typed "public static function"
+        bool filterNonStatic = false;
+        // private functions are always removed from the overloadable list
+        // but when we type "protected function" only protected functions may be shown
+        bool filterPublic = false;
+
+        {
+          // add typical keywords for class member definitions
+          QStringList modifiers = getMethodTokens(m_text);
+          
+          // don't add keywords when "function" was already typed
+          bool addKeywords = !modifiers.contains("function");
+          
+          if ( currentClass->classModifier() == AbstractClass ) {
+            // abstract is only allowed in abstract classes
+            if ( modifiers.contains("abstract") ) {
+              // don't show overloadable functions when we are defining an abstract function
+              showOverloadable = false;
+            } else if ( addKeywords ) {
+              ADD_KEYWORD("abstract");
+            }
+          } else {
+            // final is only allowed in non-abstract classes
+            if ( addKeywords && !modifiers.contains("final") ) {
+              ADD_KEYWORD("final");
+            }
           }
-          QList<uint> alreadyImplemented;
-          //TODO: always add __construct, __destruct and maby other magic functions
-          // get all visible declarations and add inherited to the completion items
-          foreach ( const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false ) ) {
-            if ( decl.first->isFunctionDeclaration() ) {
-              ClassFunctionDeclaration *method = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
-              if ( method ) {
-                if ( decl.second == 0 ) {
-                  // this function is already implemented
+          
+          if ( modifiers.contains("private") ) {
+            // overloadable functions must not be declared private
+            showOverloadable = false;
+          } else if ( modifiers.contains("protected") ) {
+            // only show protected overloadable methods
+            filterPublic = true;
+          } else if ( addKeywords && !modifiers.contains("public") ) {
+            ADD_KEYWORD("public");
+            ADD_KEYWORD("protected");
+            ADD_KEYWORD("private");
+          }
+          
+          if ( modifiers.contains("static") ) {
+            filterNonStatic = true;
+          } else {
+            if ( addKeywords ) {
+              ADD_KEYWORD("static");
+            } else {
+              filterStatic = true;
+            }
+          }
+          
+          if ( addKeywords ) {
+            ADD_KEYWORD("function");
+          }
+            
+          if ( modifiers.isEmpty() ) {
+            // var and const may not have any modifiers
+            ADD_KEYWORD("var");
+            ADD_KEYWORD("const");
+          }
+        }
+        kDebug() << showOverloadable;
+        // complete overloadable methods from parents
+        if ( showOverloadable ) {
+          // TODO: use m_duContext instead of ctx
+          // overloadable choose is only possible inside classes which extend/implement others
+          if ( currentClass->baseClass() || currentClass->interfacesSize() ) {
+            DUContext* ctx = currentClass->internalContext();
+            if ( !ctx ) {
+              kDebug() << "invalid class context";
+              return items;
+            }
+            QList<uint> alreadyImplemented;
+            //TODO: always add __construct, __destruct and maby other magic functions
+            // get all visible declarations and add inherited to the completion items
+            foreach ( const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false ) ) {
+              if ( decl.first->isFunctionDeclaration() ) {
+                ClassFunctionDeclaration *method = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
+                if ( method ) {
+                  if ( decl.second == 0 ) {
+                    // this function is already implemented
+                    alreadyImplemented << decl.first->indexedIdentifier().index;
+                    continue;
+                  }
+                  // skip already implemented functions
+                  if ( alreadyImplemented.contains(decl.first->indexedIdentifier().index) ) {
+                    continue;
+                  }
+                  // skip non-static functions when requested
+                  if ( filterNonStatic && !method->isStatic() ) {
+                    continue;
+                  }
+                  // skip static functions when requested
+                  if ( filterStatic && method->isStatic() ) {
+                    continue;
+                  }
+                  // always skip private functions
+                  if ( method->accessPolicy() == Declaration::Private ) {
+                    continue;
+                  }
+                  // skip public functions when requested
+                  if ( filterPublic && method->accessPolicy() == Declaration::Public ) {
+                    // make sure no non-public base methods are added
+                    alreadyImplemented << decl.first->indexedIdentifier().index;
+                    continue;
+                  }
+                  // skip final methods
+                  if ( method->isFinal() ) {
+                    // make sure no non-final base methods are added
+                    alreadyImplemented << decl.first->indexedIdentifier().index;
+                    continue;
+                  }
+                  // make sure we inherit or implement the base class of this method
+                  if ( !method->context() || !method->context()->owner() ) {
+                    kDebug() << "invalid parent context/owner:" << method->toString();
+                    continue;
+                  }
+                  IndexedType parentIType = method->context()->owner()->indexedType();
+                  if ( !currentClass->inherits( parentIType ) && !currentClass->implements( parentIType ) ) {
+                    continue;
+                  }
+                  ImplementationItem::HelperType itype;
+                  if ( method->isAbstract() ) {
+                    itype = ImplementationItem::Implement;
+                  } else {
+                    itype = ImplementationItem::Override;
+                  }
+                  
+                  items << CompletionTreeItemPointer( new ImplementationItem( itype, DeclarationPointer(decl.first),
+                                                      KDevelop::CodeCompletionContext::Ptr(this), decl.second ) );
+                  // don't add identical items twice to the completion choices
                   alreadyImplemented << decl.first->indexedIdentifier().index;
-                  continue;
                 }
-                // skip already implemented functions
-                if ( alreadyImplemented.contains(decl.first->indexedIdentifier().index) ) {
-                  continue;
-                }
-                // skip final methods
-                if ( method->isFinal() ) {
-                  // make sure no non-final base methods are added
-                  alreadyImplemented << decl.first->indexedIdentifier().index;
-                  continue;
-                }
-                // make sure we inherit or implement the base class of this method
-                if ( !method->context() || !method->context()->owner() ) {
-                  kDebug() << "invalid parent context/owner:" << method->toString();
-                  continue;
-                }
-                IndexedType parentIType = method->context()->owner()->indexedType();
-                if ( !currentClass->inherits( parentIType ) && !currentClass->implements( parentIType ) ) {
-                  continue;
-                }
-                ImplementationItem::HelperType itype;
-                if ( method->isAbstract() ) {
-                  itype = ImplementationItem::Implement;
-                } else {
-                  itype = ImplementationItem::Override;
-                }
-                
-                items << CompletionTreeItemPointer( new ImplementationItem( itype, DeclarationPointer(decl.first),
-                                                    KDevelop::CodeCompletionContext::Ptr(this), decl.second ) );
-                // don't add identical items twice to the completion choices
-                alreadyImplemented << decl.first->indexedIdentifier().index;
               }
             }
           }
+        } else {
+          kDebug() << "invalid owner declaration for overloadable completion";
         }
-      } else {
-        kDebug() << "invalid owner declaration for overloadable completion";
       }
     } else if ( m_expressionResult.type() ) {
       QList<DUContext*> containers = memberAccessContainers();

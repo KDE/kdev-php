@@ -97,25 +97,36 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
 
   if ( m_declaration ) {
     //TODO:respect custom code styles
-    QString currentLine = document->line(word.start().line());
+    
+    // get existing modifiers so we can respect the user's choice of public/protected and final
+    QStringList modifiers = getMethodTokens( document->text( KTextEditor::Range(KTextEditor::Cursor::start(), word.start()) ) );
+    // get range to replace
+    KTextEditor::Range replaceRange(word);
+    if ( !modifiers.isEmpty() ) {
+      // TODO: is there no easy API to map QString Index to a KTextEditor::Cursor ?!
+      QString methodText = document->text( KTextEditor::Range( KTextEditor::Cursor::start(), word.start() ) );
+      methodText = methodText.left( methodText.lastIndexOf( modifiers.last(), -1, Qt::CaseInsensitive ) );
+      replaceRange.start() = KTextEditor::Cursor( methodText.count( '\n' ), methodText.length() - methodText.lastIndexOf( '\n' ) - 1 );
+    }
+
     // get indendation
     QString indendation;
-    int nonWhiteSpacePos = currentLine.indexOf( QRegExp("\\S"), 0 );
-    if ( nonWhiteSpacePos == currentLine.length() ) {
-      // this line only contains whitespace
-      indendation = currentLine;
-    } else {
-      // get indendation
+    {
+      QString currentLine = document->line( replaceRange.start().line() );
+      
+      int nonWhiteSpacePos = currentLine.indexOf( QRegExp("\\S"), 0 );
       indendation = currentLine.left( nonWhiteSpacePos );
-      // since there's some non-whitespace in this line, skip to the next one
-      replText += "\n" + indendation;
-    }
-    
-    if ( indendation.isEmpty() ) {
-      // use a minimal indendation
-      // TODO: respect code style
-      indendation = "  ";
-      replText += indendation;
+      if ( nonWhiteSpacePos != -1 && nonWhiteSpacePos != replaceRange.start().column() ) {
+        // since there's some non-whitespace in this line, skip to the next one
+        replText += "\n" + indendation;
+      }
+      
+      if ( indendation.isEmpty() ) {
+        // use a minimal indendation
+        // TODO: respect code style
+        indendation = "  ";
+        replText += indendation;
+      }
     }
     
     // build phpdoc comment
@@ -133,25 +144,44 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
       replText += "\n" + indendation + " * @overload " + m_declaration->internalContext()->scopeIdentifier(true).toString();
       replText += "\n" + indendation + " **/\n" + indendation;
     }
-    
-    // write function signature
 
+    // write function signature
+    
+    // copy existing modifiers
+    if ( !modifiers.isEmpty() ) {
+      // the tokens are in a bad order and there's no reverse method or similar, so we can't simply join the tokens
+      QStringList::const_iterator i = modifiers.constEnd() - 1;
+      while ( true ) {
+        replText += (*i) + " ";
+        if ( i == modifiers.constBegin() ) {
+          break;
+        } else {
+          --i;
+        }
+      }
+    }
+    
     if ( ClassFunctionDeclaration* method = dynamic_cast<ClassFunctionDeclaration*>(m_declaration.data()) ) {
       // NOTE: it should _never_ be private - but that's the completionmodel / context / worker's job
-      if ( method->accessPolicy() == Declaration::Protected ) {
-        replText += "protected ";
-      } else {
-        replText += "public ";
+      if ( !modifiers.contains("public") && !modifiers.contains("protected") ) {
+        if ( method->accessPolicy() == Declaration::Protected ) {
+          replText += "protected ";
+        } else {
+          replText += "public ";
+        }
       }
-      if ( method->isStatic() ) {
-        replText += "static ";
+      if ( !modifiers.contains("static") && method->isStatic() ) {
+        modifiers << "static";
       }
     } else {
       kDebug() << "completion item for implementation was not a classfunction declaration!";
     }
     
-    // function FOO(
-    replText += "function " + m_declaration->identifier().toString();
+    if ( !modifiers.contains("function") ) {
+      replText += "function ";
+    }
+    
+    replText += m_declaration->identifier().toString();
     
     {
       // get argument list
@@ -163,12 +193,12 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
     
     // ) {...}
     replText += QString("{\n%1  \n%1}\n%1").arg(indendation);
+    
+    //TODO: properly place the cursor inside the {} part
+    document->replaceText( replaceRange, replText );
   } else {
     kDebug() << "Declaration disappeared";
   }
-  
-  document->replaceText( word, replText );
-  //TODO: properly place the cursor inside the {} part
 }
 
 }

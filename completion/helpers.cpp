@@ -250,4 +250,43 @@ int expressionAt( const QString& text, int index ) {
   return index;
 }
 
+QStringList getMethodTokens( QString text )
+{
+  QStringList tokens;
+
+  
+  text = text.trimmed();
+  if ( text.endsWith( "function", Qt::CaseInsensitive ) ) {
+    tokens << "function";
+    text = text.left( text.length() - 8 );
+  }
+  
+  QStringList possibleTokens;
+  possibleTokens << "private";
+  possibleTokens << "public";
+  possibleTokens << "protected";
+  possibleTokens << "static";
+  possibleTokens << "abstract";
+  possibleTokens << "final";
+  
+  while ( !possibleTokens.isEmpty() ) {
+    bool foundAnything = false;
+    text = text.trimmed();
+    foreach ( const QString &token, possibleTokens ) {
+      if ( text.endsWith( token, Qt::CaseInsensitive ) ) {
+        tokens << token;
+        text = text.left( text.length() - token.length() );
+        foundAnything = true;
+        possibleTokens.removeOne( token );
+        break;
+      }
+    }
+    if ( !foundAnything ) {
+      break;
+    }
+  }
+  
+  return tokens;
+}
+
 }

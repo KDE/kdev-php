@@ -26,6 +26,8 @@
 #include <language/duchain/types/abstracttype.h>
 #include "phpcompletionexport.h"
 
+#include <QtCore/QStringList>
+
 class QString;
 class QVariant;
 template<class T>
@@ -44,6 +46,9 @@ class NormalDeclarationCompletionItem;
 void KDEVPHPCOMPLETION_EXPORT createArgumentList(const NormalDeclarationCompletionItem& item, QString& ret, QList<QVariant>* highlighting, bool phpTypeHinting = false);
 int KDEVPHPCOMPLETION_EXPORT expressionAt(const QString& text, int index);
 
+/// get a list of tokens which define a method at the end of the given text
+/// NOTE: result will contain "function" if it's the last token at the end of the text
+QStringList getMethodTokens(QString text);
 }
 
 #endif
