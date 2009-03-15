@@ -398,6 +398,10 @@ bool DeclarationBuilder::isGlobalRedeclaration(const QualifiedIdentifier &identi
 }
 
 void DeclarationBuilder::reportRedeclarationError(Declaration* declaration, AstNode* node) {
+    if ( declaration->range().contains(editor()->findRange(node).start) ) {
+      // make sure this is not a wrongly reported redeclaration error
+      return;
+    }
     QString filename(declaration->context()->topContext()->url().str());
     if ( filename == "internalfunctions" ) {
         reportError(i18n("Cannot redeclare PHP internal %1.", declaration->toString()), node);
