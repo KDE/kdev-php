@@ -541,9 +541,22 @@ void TestCompletion::implementMethods()
 
     // context of class B
     DUContext* classContext = top->childContexts().last();
-    PhpCompletionTester tester(classContext, "{");
-    QCOMPARE(tester.items.count(), 1);
-    QCOMPARE(tester.items.first()->declaration().data(), top->childContexts().first()->localDeclarations().first());
+    {
+        PhpCompletionTester tester(classContext, "{");
+        QStringList compItems;
+        compItems << "foo";
+        compItems << "const";
+        compItems << "final";
+        compItems << "function";
+        compItems << "public";
+        compItems << "private";
+        compItems << "protected";
+        compItems << "static";
+        compItems << "var";
+        compItems.sort();
+        tester.names.sort();
+        QCOMPARE(tester.names, compItems);
+    }
     
     //TODO: verify actual completion text
 }
@@ -560,9 +573,45 @@ void TestCompletion::overrideMethods()
 
     // context of class B
     DUContext* classContext = top->childContexts().last();
-    PhpCompletionTester tester(classContext, "{");
-    QCOMPARE(tester.items.count(), 1);
-    QCOMPARE(tester.items.first()->declaration().data(), top->childContexts().first()->localDeclarations().first());
+    {
+        PhpCompletionTester tester(classContext, "{");
+        QStringList compItems;
+        compItems << "a";
+        compItems << "const";
+        compItems << "final";
+        compItems << "function";
+        compItems << "public";
+        compItems << "private";
+        compItems << "protected";
+        compItems << "static";
+        compItems << "var";
+        compItems.sort();
+        tester.names.sort();
+        QCOMPARE(tester.names, compItems);
+    }
+    {
+        PhpCompletionTester tester(classContext, "public static");
+        QStringList compItems;
+        compItems << "final";
+        compItems << "function";
+        compItems.sort();
+        tester.names.sort();
+        QCOMPARE(tester.names, compItems);
+    }
+    {
+        PhpCompletionTester tester(classContext, "private function");
+        QVERIFY(tester.items.isEmpty());
+    }
+    {
+        PhpCompletionTester tester(classContext, "final public ");
+        QStringList compItems;
+        compItems << "a";
+        compItems << "function";
+        compItems << "static";
+        compItems.sort();
+        tester.names.sort();
+        QCOMPARE(tester.names, compItems);
+    }
     
     //TODO: verify actual completion text
 }
