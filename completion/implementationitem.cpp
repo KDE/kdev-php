@@ -143,6 +143,9 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
       } else {
         replText += "public ";
       }
+      if ( method->isStatic() ) {
+        replText += "static ";
+      }
     } else {
       kDebug() << "completion item for implementation was not a classfunction declaration!";
     }
