@@ -163,7 +163,7 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
         openFunctionType(node);
         TypeBuilderBase::visitClassStatement(node);
         if (currentType<FunctionType>() && !currentType<FunctionType>()->returnType()) {
-            currentType<FunctionType>()->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
+            currentType<FunctionType>()->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
         }
         closeType();
     } else {
@@ -243,7 +243,7 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
     TypeBuilderBase::visitFunctionDeclarationStatement(node);
     
     if (!type->returnType()) {
-        type->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
+        type->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
     }
 }
 

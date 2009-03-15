@@ -68,6 +68,13 @@ void TestDUChain::testDeclareFunction()
     QCOMPARE(dec->context(), top);
     QCOMPARE(dec->internalContext(), top->childContexts().at(1));
 
+    // no return means void as return type
+    FunctionType::Ptr ftype = FunctionType::Ptr::dynamicCast(dec->abstractType());
+    QVERIFY(ftype);
+    IntegralType::Ptr itype = IntegralType::Ptr::dynamicCast(ftype->returnType());
+    QVERIFY(itype->dataType() == IntegralType::TypeVoid);
+    
+
     QCOMPARE(top->childContexts().at(0)->type(), DUContext::Function);
     QCOMPARE(top->childContexts().at(1)->type(), DUContext::Other);
 }
@@ -169,6 +176,14 @@ void TestDUChain::testDeclareClass()
     QCOMPARE(funDec->accessPolicy(), Declaration::Public);
     QCOMPARE(funDec->isStatic(), false);
 
+    {
+        // no return means void as return type
+        FunctionType::Ptr ftype = FunctionType::Ptr::dynamicCast(dec->abstractType());
+        QVERIFY(ftype);
+        IntegralType::Ptr itype = IntegralType::Ptr::dynamicCast(ftype->returnType());
+        QVERIFY(itype->dataType() == IntegralType::TypeVoid);
+    }
+    
     //bar()
     dec = contextClassA->localDeclarations().at(1);
     funDec = dynamic_cast<ClassFunctionDeclaration*>(dec);
