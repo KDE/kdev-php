@@ -365,6 +365,7 @@ int Lexer::nextTokenKind()
                                 token = Parser::Token_START_HEREDOC;
                                 pushState(StringHeredoc);
                                 m_curpos += pos-1;
+                                createNewline(m_curpos);
                             }
                         }
                     }

@@ -333,6 +333,53 @@ void LexerTest::testMultiplePhpSections() {
     delete ts;
 }
 
+void LexerTest::testHereDoc()
+{
+    TokenStream* ts = tokenize("<?php\necho <<<EOD1\nstart $text\nend\nEOD1;\n$extern;", true);
+    QCOMPARE((int)ts->size(), 12);
+
+    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
+    compareStartPosition(ts, 0, 0, 0);
+    compareEndPosition  (ts, 0, 0, 5);
+
+    QVERIFY(ts->token(1).kind == Parser::Token_ECHO);
+    compareStartPosition(ts, 1, 1, 0);
+    compareEndPosition  (ts, 1, 1, 3);
+
+    QVERIFY(ts->token(3).kind == Parser::Token_START_HEREDOC);
+    compareStartPosition(ts, 3, 1, 5);
+    compareEndPosition  (ts, 3, 1, 12);
+
+    QVERIFY(ts->token(4).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
+    compareStartPosition(ts, 4, 2, 0);
+    compareEndPosition  (ts, 4, 2, 5);
+    
+    QVERIFY(ts->token(5).kind == Parser::Token_VARIABLE);
+    compareStartPosition(ts, 5, 2, 6);
+    compareEndPosition  (ts, 5, 2, 10);
+
+    QVERIFY(ts->token(6).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
+    compareStartPosition(ts, 6, 2, 11);
+    compareEndPosition  (ts, 6, 3, 3);
+
+    QVERIFY(ts->token(7).kind == Parser::Token_END_HEREDOC);
+    compareStartPosition(ts, 7, 4, 0);
+    compareEndPosition  (ts, 7, 4, 3);
+
+    QVERIFY(ts->token(8).kind == Parser::Token_SEMICOLON);
+    compareStartPosition(ts, 8, 4, 4);
+    compareEndPosition  (ts, 8, 4, 4);
+
+    QVERIFY(ts->token(10).kind == Parser::Token_VARIABLE);
+    compareStartPosition(ts, 10, 5, 0);
+    compareEndPosition  (ts, 10, 5, 6);
+
+    QVERIFY(ts->token(11).kind == Parser::Token_SEMICOLON);
+    compareStartPosition(ts, 11, 5, 7);
+    compareEndPosition  (ts, 11, 5, 7);
+    delete ts;
+}
+
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
     TokenStream* tokenStream = new TokenStream;
