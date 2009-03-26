@@ -7,8 +7,8 @@ set(parser_STAT_SRCS
 
 if(KDEVPGQT_FOUND)
      kdevpgqt_generate(_kdevpgList php NAMESPACE Php DEBUG_VISITOR
-        "${CMAKE_SOURCE_DIR}/parser/php.g"
-        "${CMAKE_SOURCE_DIR}/parser/phplexer.h"
+        "${php_SOURCE_DIR}/parser/php.g"
+        "${php_SOURCE_DIR}/parser/phplexer.h"
     )
     set( parser_SRCS
        ${_kdevpgList}
@@ -38,20 +38,20 @@ install(TARGETS kdev4phpparser DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 
 add_custom_target( copy-generated
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_BINARY_DIR}/parser/phpparser.cpp" "${CMAKE_SOURCE_DIR}/parser/generated/phpparser.cpp"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_BINARY_DIR}/parser/phpparser.h" "${CMAKE_SOURCE_DIR}/parser/generated/phpparser.h"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_BINARY_DIR}/parser/phpast.h" "${CMAKE_SOURCE_DIR}/parser/generated/phpast.h"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_BINARY_DIR}/parser/phpvisitor.h" "${CMAKE_SOURCE_DIR}/parser/generated/phpvisitor.h"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_BINARY_DIR}/parser/phpvisitor.cpp" "${CMAKE_SOURCE_DIR}/parser/generated/phpvisitor.cpp"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_BINARY_DIR}/parser/phpdefaultvisitor.h" "${CMAKE_SOURCE_DIR}/parser/generated/phpdefaultvisitor.h"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_BINARY_DIR}/parser/phpdefaultvisitor.cpp" "${CMAKE_SOURCE_DIR}/parser/generated/phpdefaultvisitor.cpp"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_BINARY_DIR}/parser/phpdebugvisitor.h" "${CMAKE_SOURCE_DIR}/parser/generated/phpdebugvisitor.h"
-    DEPENDS "${CMAKE_BINARY_DIR}/parser/phpparser.cpp"
-    DEPENDS "${CMAKE_BINARY_DIR}/parser/phpparser.h"
-    DEPENDS "${CMAKE_BINARY_DIR}/parser/phpvisitor.cpp"
-    DEPENDS "${CMAKE_BINARY_DIR}/parser/phpvisitor.h"
-    DEPENDS "${CMAKE_BINARY_DIR}/parser/phpdefaultvisitor.cpp"
-    DEPENDS "${CMAKE_BINARY_DIR}/parser/phpdefaultvisitor.h"
-    DEPENDS "${CMAKE_BINARY_DIR}/parser/phpast.h"
-    DEPENDS "${CMAKE_BINARY_DIR}/parser/phpdebugvisitor.h"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${php_BINARY_DIR}/parser/phpparser.cpp" "${php_SOURCE_DIR}/parser/generated/phpparser.cpp"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${php_BINARY_DIR}/parser/phpparser.h" "${php_SOURCE_DIR}/parser/generated/phpparser.h"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${php_BINARY_DIR}/parser/phpast.h" "${php_SOURCE_DIR}/parser/generated/phpast.h"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${php_BINARY_DIR}/parser/phpvisitor.h" "${php_SOURCE_DIR}/parser/generated/phpvisitor.h"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${php_BINARY_DIR}/parser/phpvisitor.cpp" "${php_SOURCE_DIR}/parser/generated/phpvisitor.cpp"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${php_BINARY_DIR}/parser/phpdefaultvisitor.h" "${php_SOURCE_DIR}/parser/generated/phpdefaultvisitor.h"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${php_BINARY_DIR}/parser/phpdefaultvisitor.cpp" "${php_SOURCE_DIR}/parser/generated/phpdefaultvisitor.cpp"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${php_BINARY_DIR}/parser/phpdebugvisitor.h" "${php_SOURCE_DIR}/parser/generated/phpdebugvisitor.h"
+    DEPENDS "${php_BINARY_DIR}/parser/phpparser.cpp"
+    DEPENDS "${php_BINARY_DIR}/parser/phpparser.h"
+    DEPENDS "${php_BINARY_DIR}/parser/phpvisitor.cpp"
+    DEPENDS "${php_BINARY_DIR}/parser/phpvisitor.h"
+    DEPENDS "${php_BINARY_DIR}/parser/phpdefaultvisitor.cpp"
+    DEPENDS "${php_BINARY_DIR}/parser/phpdefaultvisitor.h"
+    DEPENDS "${php_BINARY_DIR}/parser/phpast.h"
+    DEPENDS "${php_BINARY_DIR}/parser/phpdebugvisitor.h"
     )

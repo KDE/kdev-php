@@ -140,7 +140,8 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
       
       replText += "/**\n" + indendation + " * ";
       // insert old comment:
-      replText += m_declaration->comment().replace('\n', "\n" + indendation + " *");
+      const QString indentationWithExtra = "\n" + indendation + " *";
+      replText += m_declaration->comment().replace('\n', indentationWithExtra.toAscii().constData());
       replText += "\n" + indendation + " * @overload " + m_declaration->internalContext()->scopeIdentifier(true).toString();
       replText += "\n" + indendation + " **/\n" + indendation;
     }
