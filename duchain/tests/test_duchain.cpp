@@ -29,12 +29,13 @@
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/structuretype.h>
 #include <language/duchain/types/integraltype.h>
+#include <language/duchain/classdeclaration.h>
 
 #include <kstandarddirs.h>
 
 #include "phpparsejob.h"
 #include "../constantdeclaration.h"
-#include "../classdeclaration.h"
+
 #include <variabledeclaration.h>
 
 
@@ -514,10 +515,8 @@ void TestDUChain::testClassImplementsInterface()
     QCOMPARE(dec->internalContext()->importedParentContexts().count(), 1);
     QVERIFY(dec->internalContext()->importedParentContexts().at(0).context(top) == top->childContexts().at(0));
     
-    QCOMPARE(classDec->interfacesSize(), 1u);
-    QCOMPARE(classDec->interfaces()[0], indexedTypeI);
-    QVERIFY(classDec->implements(indexedTypeI));
-    QVERIFY(!classDec->baseClass());
+    QCOMPARE(classDec->baseClassesSize(), 1u);
+    QCOMPARE(classDec->baseClasses()[0].baseClass, indexedTypeI);
 
     QCOMPARE(dec->uses().count(), 0);
 }
@@ -574,9 +573,8 @@ void TestDUChain::testClassExtends()
     QCOMPARE(dec->internalContext()->importedParentContexts().count(), 1);
     QVERIFY(dec->internalContext()->importedParentContexts().at(0).context(top) == top->childContexts().at(0));
 
-    QCOMPARE(classDec->baseClass(), indexedTypeA);
-    QVERIFY(classDec->inherits(indexedTypeA));
-    QCOMPARE(classDec->interfacesSize(), 0u);
+    QCOMPARE(classDec->baseClassesSize(), 1u);
+    QCOMPARE(classDec->baseClasses()[0].baseClass, indexedTypeA);
 
     QCOMPARE(dec->uses().count(), 0);
 }

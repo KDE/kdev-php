@@ -20,7 +20,6 @@ set(duchain_SRCS
     phpducontext.cpp
     constantdeclaration.cpp
     variabledeclaration.cpp
-    classdeclaration.cpp
     classmethoddeclaration.cpp
     tests/duchaintestbase.cpp
     navigation/navigationwidget.cpp

@@ -24,6 +24,7 @@
 #include "contextbuilder.h"
 #include "helper.h"
 #include <language/duchain/builders/abstractdeclarationbuilder.h>
+#include <language/duchain/classdeclaration.h>
 
 namespace KDvelop {
     class Declaration;
@@ -41,12 +42,12 @@ typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, ContextBuil
  */
 class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public PreDeclarationBuilderBase {
 public:
-    PreDeclarationBuilder(QHash<qint64, ClassDeclaration*>* types, QHash<qint64,
+    PreDeclarationBuilder(QHash<qint64, KDevelop::ClassDeclaration*>* types, QHash<qint64,
                           KDevelop::FunctionDeclaration*>* functions,
                           ParseSession* session)
                         : m_types(types), m_functions(functions)
     { setEditor(session); }
-    PreDeclarationBuilder(QHash<qint64, ClassDeclaration*>* types, QHash<qint64,
+    PreDeclarationBuilder(QHash<qint64, KDevelop::ClassDeclaration*>* types, QHash<qint64,
                           KDevelop::FunctionDeclaration*>* functions,
                           EditorIntegrator* editor)
                         : m_types(types), m_functions(functions)
@@ -62,7 +63,7 @@ protected:
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
 
 private:
-    QHash<qint64, ClassDeclaration*>* m_types;
+    QHash<qint64, KDevelop::ClassDeclaration*>* m_types;
     QHash<qint64, KDevelop::FunctionDeclaration*>* m_functions;
 };
 

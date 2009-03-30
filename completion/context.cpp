@@ -22,7 +22,6 @@
 
 #include "duchain/expressionparser.h"
 #include "helpers.h"
-#include "duchain/classdeclaration.h"
 
 #include "implementationitem.h"
 #include "keyworditem.h"
@@ -40,6 +39,7 @@
 #include <language/interfaces/iproblem.h>
 #include <util/pushvalue.h>
 #include <language/duchain/codemodel.h>
+#include <language/duchain/classdeclaration.h>
 
 #include <interfaces/icore.h>
 #include <interfaces/iprojectcontroller.h>
@@ -252,14 +252,24 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
         ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(parent->owner());
         if ( classDec ) {
           if ( expr == "parent" ) {
-            if ( classDec->baseClass() ) {
-              StructureType::Ptr classType = classDec->baseClass().type<StructureType>();
-              if ( classType ) {
-                ifDebug ( kDebug() << "correction: parent can do MemberAccess" );
-                m_parentAccess = true;
-                m_memberAccessOperation = MemberAccess;
-                m_expressionResult.setDeclaration(classType->declaration(context->topContext()));
+            FOREACH_FUNCTION(const BaseClassInstance& base, classDec->baseClasses) {
+              if ( StructureType::Ptr classType = base.baseClass.type<StructureType>() ) {
+                if ( ClassDeclaration* baseClass = dynamic_cast<ClassDeclaration*>(classType->declaration(context->topContext())) ) {
+                  if ( baseClass->classType() == ClassDeclarationData::Class
+                        && baseClass->classModifier() != ClassDeclarationData::Abstract ) {
+                    ifDebug ( kDebug() << "correction: parent can do MemberAccess" );
+                    m_parentAccess = true;
+                    m_memberAccessOperation = MemberAccess;
+                    m_expressionResult.setDeclaration(baseClass);
+                    break;
+                  }
+                }
               }
+            }
+            if ( !m_parentAccess ) {
+              ifDebug ( kDebug() << "class has no accessible parent class" );
+              m_valid = false;
+              return;
             }
           } else {
             m_expressionResult.setDeclaration(parent->owner());
@@ -397,7 +407,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
           // don't add keywords when "function" was already typed
           bool addKeywords = !modifiers.contains("function");
           
-          if ( currentClass->classModifier() == AbstractClass ) {
+          if ( currentClass->classModifier() == ClassDeclarationData::Abstract ) {
             // abstract is only allowed in abstract classes
             if ( modifiers.contains("abstract") ) {
               // don't show overloadable functions when we are defining an abstract function
@@ -449,7 +459,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
         if ( showOverloadable ) {
           // TODO: use m_duContext instead of ctx
           // overloadable choose is only possible inside classes which extend/implement others
-          if ( currentClass->baseClass() || currentClass->interfacesSize() ) {
+          if ( currentClass->baseClassesSize() ) {
             DUContext* ctx = currentClass->internalContext();
             if ( !ctx ) {
               kDebug() << "invalid class context";
@@ -500,10 +510,11 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
                     kDebug() << "invalid parent context/owner:" << method->toString();
                     continue;
                   }
-                  IndexedType parentIType = method->context()->owner()->indexedType();
-                  if ( !currentClass->inherits( parentIType ) && !currentClass->implements( parentIType ) ) {
+                  if ( !currentClass->isPublicBaseClass( dynamic_cast<ClassDeclaration*>(method->context()->owner()),
+                                                          m_duContext->topContext() ) ) {
                     continue;
                   }
+                  
                   ImplementationItem::HelperType itype;
                   if ( method->isAbstract() ) {
                     itype = ImplementationItem::Implement;
@@ -564,12 +575,14 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
                       if ( currentClass == memberClass ) {
                         // we can show all members of the current class
                         ap = Declaration::Private;
-                      } else if ( currentClass->inherits( memberClass->indexedType() ) ) {
+                      } else if ( currentClass->isPublicBaseClass( memberClass, m_duContext->topContext() ) ) {
                         // we can show all but private members of ancestors of the current class
                         ap = Declaration::Protected;
                       }
-                    } else if ( currentClass->inherits( accessedClass->indexedType() )
-                            && ( accessedClass == memberClass || accessedClass->inherits( memberClass->indexedType() ) ) ) {
+                    } else if ( currentClass->isPublicBaseClass( accessedClass, m_duContext->topContext() )
+                            && ( accessedClass == memberClass ||
+                                 accessedClass->isPublicBaseClass( memberClass, m_duContext->topContext() ) ) )
+                    {
                       // we can show all but private members of ancestors of the current class
                       ap = Declaration::Protected;
                     }
@@ -665,11 +678,12 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
 ///TODO: filter current declaration
 inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
 {
-    static IndexedType exceptionType;
-    if (!exceptionType) {
+    static ClassDeclaration* exceptionDecl;
+    if (!exceptionDecl) {
         QList<Declaration*> decs = dec->context()->findDeclarations(QualifiedIdentifier("Exception"));
         Q_ASSERT(decs.count() == 1);
-        exceptionType = decs.first()->indexedType();
+        exceptionDecl = dynamic_cast<ClassDeclaration*>(decs.first());
+        Q_ASSERT(exceptionDecl);
     }
 
     if ( m_memberAccessOperation == ExceptionChoose
@@ -683,11 +697,13 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
       }
       // show non-interface and non-abstract
       else if ( m_memberAccessOperation == NewClassChoose ) {
-        return !(classDec->classModifier() & Php::AbstractClass) && classDec->classType() == ClassDeclarationData::Class;
+        return !(classDec->classModifier() & ClassDeclarationData::Abstract)
+                  && classDec->classType() == ClassDeclarationData::Class;
       }
       // filter non-exception classes
       else if ( m_memberAccessOperation == ExceptionChoose ) {
-          return classDec->indexedType() == exceptionType || classDec->inherits(exceptionType);
+          return classDec->equalQualifiedIdentifier(exceptionDecl)
+                  || classDec->isPublicBaseClass(exceptionDecl, m_duContext->topContext());
       }
       // show interfaces
       else if ( m_memberAccessOperation == InterfaceChoose ) {
@@ -695,7 +711,8 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
       }
       // show anything but final classes and interfaces
       else if ( m_memberAccessOperation == ClassExtendsChoose ) {
-        return !(classDec->classModifier() & Php::FinalClass) && classDec->classType() == ClassDeclarationData::Class;
+        return !(classDec->classModifier() & ClassDeclarationData::Final)
+                && classDec->classType() == ClassDeclarationData::Class;
       }
     }
     if (m_memberAccessOperation == ExceptionInstanceChoose) {
@@ -704,7 +721,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
       if (!structType) return false;
       ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(structType->declaration(dec->topContext()));
       if (!classDec) return false;
-      return classDec->inherits(exceptionType);
+      return classDec->isPublicBaseClass(exceptionDecl, m_duContext->topContext());
     }
     
     return true;

@@ -29,6 +29,7 @@
 #include <language/duchain/functiondeclaration.h>
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/aliasdeclaration.h>
+#include <language/duchain/classdeclaration.h>
 
 #include <klocalizedstring.h>
 
@@ -37,7 +38,6 @@
 #include "helper.h"
 #include "constantdeclaration.h"
 #include "variabledeclaration.h"
-#include "classdeclaration.h"
 #include "classmethoddeclaration.h"
 
 using namespace KTextEditor;
@@ -112,9 +112,24 @@ ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, C
 
 bool DeclarationBuilder::isBaseMethodRedeclaration(const Identifier &identifier, ClassDeclaration *curClass,
                                                     ClassStatementAst *node) {
-    while ( curClass->baseClass() ) {
-        StructureType::Ptr type = curClass->baseClass().type<StructureType>();
-        Q_ASSERT(type);
+    while ( curClass->baseClassesSize() > 0 ) {
+        StructureType::Ptr type;
+        FOREACH_FUNCTION ( BaseClassInstance base, curClass->baseClasses ) {
+          type = base.baseClass.type<StructureType>();
+          if ( !type ) {
+            continue;
+          }
+          ClassDeclaration *nextClass = dynamic_cast<ClassDeclaration*>(type->declaration(currentContext()->topContext()));
+          if ( !nextClass || nextClass->classType() != ClassDeclarationData::Class ) {
+            type.clear();
+            continue;
+          }
+          curClass = nextClass;
+          break;
+        }
+        if ( !type ) {
+          break;
+        }
         {
             DUChainWriteLocker lock(DUChain::lock());
             foreach ( Declaration * dec,
@@ -138,8 +153,6 @@ bool DeclarationBuilder::isBaseMethodRedeclaration(const Identifier &identifier,
                 }
             }
         }
-        curClass = dynamic_cast<ClassDeclaration*>(type->declaration( currentContext()->topContext() ));
-        Q_ASSERT(curClass);
     }
     return false;
 }
@@ -207,7 +220,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
                     if ( !m_reportErrors ) {
                         dec->setIsAbstract(true);
                     } else {
-                        if ( parent->classModifier() != AbstractClass ) {
+                        if ( parent->classModifier() != ClassDeclarationData::Abstract ) {
                             reportError( i18n("Class %1 contains abstract method %2 and must therefore be declared abstract "
                                               "or implement the method.",
                                                   parent->identifier().toString(),
@@ -257,14 +270,14 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 
 void DeclarationBuilder::visitClassExtends(ClassExtendsAst *node)
 {
-    addBaseType(node->identifier, ClassDeclarationData::Class);
+    addBaseType(node->identifier);
 }
 
 void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
 {
     const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
     do {
-        addBaseType(__it->element, ClassDeclarationData::Interface);
+        addBaseType(__it->element);
         __it = __it->next;
     }
     while (__it != __end);

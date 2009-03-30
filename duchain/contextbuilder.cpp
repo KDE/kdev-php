@@ -25,6 +25,7 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/duchain.h>
 #include <language/duchain/declaration.h>
+#include <language/duchain/classdeclaration.h>
 
 #include <klocalizedstring.h>
 
@@ -222,7 +223,7 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     closeContext();
 }
 
-void ContextBuilder::addBaseType(IdentifierAst * identifier, ClassDeclarationData::ClassType type)
+void ContextBuilder::addBaseType(IdentifierAst * identifier)
 {
     DUChainWriteLocker lock(DUChain::lock());
     
@@ -237,11 +238,11 @@ void ContextBuilder::addBaseType(IdentifierAst * identifier, ClassDeclarationDat
             // prevent circular context imports which could lead to segfaults
             if ( !baseContext->imports(currentContext()) && !currentContext()->imports(baseContext) ) {
                 currentContext()->addImportedParentContext( baseContext );
-                if ( type == ClassDeclarationData::Interface ) {
-                    currentClass->addInterface( baseClass->indexedType() );
-                } else {
-                    currentClass->setBaseClass( baseClass->indexedType() );
-                }
+                BaseClassInstance base;
+                base.baseClass = baseClass->indexedType();
+                base.access = Declaration::Public;
+                base.virtualInheritance = false;
+                currentClass->addBaseClass(base);
             } else if ( m_reportErrors ) {
                 reportError(i18n("Circular inheritance of %1 and %2", currentClass->toString(), baseClass->toString()), identifier);
             }

@@ -37,11 +37,11 @@
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/structuretype.h>
 #include <language/codecompletion/codecompletionhelper.h>
+#include <language/duchain/classdeclaration.h>
 
 #include "completion/helpers.h"
 #include "../duchain/navigation/navigationwidget.h"
 #include "../duchain/constantdeclaration.h"
-#include "../duchain/classdeclaration.h"
 #include "../duchain/variabledeclaration.h"
 
 using namespace KDevelop;
@@ -100,11 +100,10 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
             if (StructureType::Ptr classType =  dec->type<StructureType>()) {
               ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
               if (classDec) {
-                switch (classDec->classType()) {
-                  case ClassDeclarationData::Class:
-                    return "class";
-                  case ClassDeclarationData::Interface:
-                    return "interface";
+                if (classDec->classType() == ClassDeclarationData::Interface) {
+                  return "interface";
+                } else {
+                  return "class";
                 }
               }
             }

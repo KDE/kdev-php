@@ -24,6 +24,8 @@
 #include "typebuilder.h"
 #include "helper.h"
 #include <language/duchain/builders/abstractdeclarationbuilder.h>
+#include <language/duchain/classdeclaration.h>
+
 namespace KDvelop {
     class Declaration;
 }
@@ -82,11 +84,11 @@ private:
     unsigned int m_currentModifers;
     QString m_lastTopStatementComment;
     
-    QHash<qint64, ClassDeclaration*> m_types;
+    QHash<qint64, KDevelop::ClassDeclaration*> m_types;
     QHash<qint64, KDevelop::FunctionDeclaration*> m_functions;
     
     /// handles common stuff for both interfaces and classes
-    ClassDeclaration* openTypeDeclaration(IdentifierAst *name, ClassDeclarationData::ClassType type);
+    KDevelop::ClassDeclaration* openTypeDeclaration(IdentifierAst *name, KDevelop::ClassDeclarationData::ClassType type);
     
     /// check if this declaration is already declared
     bool isGlobalRedeclaration(const KDevelop::QualifiedIdentifier &identifier, AstNode *node,
@@ -96,7 +98,7 @@ private:
     /// @param identifier   The identifier for the current method
     /// @param curClass     the current class we are in
     /// @param node         the node we are processing, used to access modifiers and for error reporting
-    bool isBaseMethodRedeclaration(const KDevelop::Identifier &identifier, ClassDeclaration *curClass,
+    bool isBaseMethodRedeclaration(const KDevelop::Identifier &identifier, KDevelop::ClassDeclaration *curClass,
                                     ClassStatementAst *node);
     /// reports a redeclaration error for the given node
     /// @param declaration the old declaration

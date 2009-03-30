@@ -18,7 +18,6 @@
 */
 
 #include "declarationnavigationcontext.h"
-#include "classdeclaration.h"
 
 #include <QtGui/QTextDocument>
 
@@ -29,6 +28,7 @@
 #include <language/duchain/namespacealiasdeclaration.h>
 #include <language/duchain/forwarddeclaration.h>
 #include <language/duchain/duchainutils.h>
+#include <language/duchain/classdeclaration.h>
 
 namespace Php {
 using namespace KDevelop;
@@ -50,19 +50,12 @@ void DeclarationNavigationContext::htmlClass()
   StructureType::Ptr klass = m_declaration->abstractType().cast<StructureType>();
   Q_ASSERT(klass);
   ClassDeclaration* classDecl = dynamic_cast<ClassDeclaration*>(klass->declaration(m_topContext.data()));
-  if(classDecl) {
-    if ( classDecl->baseClass() ) {
-      modifyHtml() += i18n(" extends ");
-      eventuallyMakeTypeLinks(classDecl->baseClass().abstractType());
-    }
-    modifyHtml() += " ";
-    if ( classDecl->interfacesSize() > 0 ) {
-      modifyHtml() += i18n(" implements ");
-      FOREACH_FUNCTION( const IndexedType& interface, classDecl->interfaces ) {
-        eventuallyMakeTypeLinks(interface.abstractType());
-        if ( a < containerSize - 1 ) {
-          modifyHtml() += ", ";
-        }
+  if ( classDecl && classDecl->baseClassesSize() > 0 ) {
+    modifyHtml() += i18n(" inherits ");
+    FOREACH_FUNCTION( const BaseClassInstance& base, classDecl->baseClasses ) {
+      eventuallyMakeTypeLinks(base.baseClass.abstractType());
+      if ( a < containerSize ) {
+        modifyHtml() += ", ";
       }
     }
     modifyHtml() += " ";

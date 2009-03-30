@@ -30,6 +30,7 @@
 #include <language/duchain/aliasdeclaration.h>
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/structuretype.h>
+#include <language/duchain/classdeclaration.h>
 
 #include <klocalizedstring.h>
 
@@ -38,7 +39,6 @@
 #include "helper.h"
 #include "constantdeclaration.h"
 #include "variabledeclaration.h"
-#include "classdeclaration.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -82,11 +82,22 @@ void PreDeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationState
     {
         DUChainWriteLocker lock(DUChain::lock());
         dec->setKind(KDevelop::Declaration::Type);
-        dec->setBaseClass(IndexedType());
-        dec->clearInterfaces();
-        dec->setClassType(Php::ClassDeclarationData::Class);
+        dec->clearBaseClasses();
+        dec->setClassType(ClassDeclarationData::Class);
         if ( node->modifier ) {
-          dec->setClassModifier(node->modifier->modifier);
+          switch ( node->modifier->modifier ) {
+            case NormalClass:
+              dec->setClassModifier(ClassDeclarationData::None);
+              break;
+            case FinalClass:
+              dec->setClassModifier(ClassDeclarationData::Final);
+              break;
+            case AbstractClass:
+              dec->setClassModifier(ClassDeclarationData::Abstract);
+              break;
+          }
+        } else {
+            dec->setClassModifier(ClassDeclarationData::None);
         }
         
         // build the type as well, to make this declaration usable
@@ -110,9 +121,8 @@ void PreDeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarat
     {
         DUChainWriteLocker lock(DUChain::lock());
         dec->setKind(KDevelop::Declaration::Type);
-        dec->setBaseClass(IndexedType());
-        dec->clearInterfaces();
-        dec->setClassType(Php::ClassDeclarationData::Interface);
+        dec->clearBaseClasses();
+        dec->setClassType(ClassDeclarationData::Interface);
         
         // build the type as well, to make this declaration usable
         StructureType::Ptr type(new StructureType());

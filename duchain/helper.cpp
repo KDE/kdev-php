@@ -30,6 +30,7 @@
 #include <language/duchain/functiondeclaration.h>
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/parsingenvironment.h>
+#include <language/duchain/classdeclaration.h>
 #include <interfaces/icore.h>
 #include <interfaces/iprojectcontroller.h>
 #include <interfaces/iuicontroller.h>
@@ -41,7 +42,7 @@
 #include "phpast.h"
 #include "phpdefaultvisitor.h"
 #include "constantdeclaration.h"
-#include "classdeclaration.h"
+
 
 #define ifDebug(x)
 
