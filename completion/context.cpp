@@ -93,8 +93,24 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
       // nothing we can complete here
       m_valid = false;
       return;
+    } else if ( m_text.endsWith( "extends", Qt::CaseInsensitive ) ) {
+      // when we change the "extends" stuff of an existing class m_duContext will be a class
+      // even though we are not inside it's {...} area
+      
+      m_memberAccessOperation = ClassExtendsChoose;
+      // interfaces can only extend interfaces
+      LOCKDUCHAIN;
+      if ( ClassDeclaration* klass = dynamic_cast<ClassDeclaration*>(m_duContext->owner()) ) {
+        if ( klass->classType() == ClassDeclarationData::Interface ) {
+          m_memberAccessOperation = InterfaceChoose;
+        }
+      }
+    } else if ( m_text.endsWith( "implements" ) || m_text.contains(QRegExp("implements\\s+([^\\s\\(\\{,\\}\\)]+\\s*,\\s*)+$")) ) {
+      // same as for extends
+      m_memberAccessOperation = InterfaceChoose;
+    } else {
+      m_memberAccessOperation = ClassMemberChoose;
     }
-    m_memberAccessOperation = ClassMemberChoose;
     return;
   }
 
