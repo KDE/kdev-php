@@ -627,6 +627,119 @@ void TestCompletion::inArray() {
     // TODO: compare to global completion list
 }
 
+void TestCompletion::verifyExtendsOrImplements(const QString &codeStr, const QString &completionStr,
+                                                ClassDeclarationData::ClassType type,
+                                                SimpleCursor cursor,
+                                                QStringList forbiddenIdentifiers)
+{
+    if ( cursor.isValid() ) {
+      kDebug() << codeStr.mid(0, cursor.column) + completionStr + "|" + codeStr.mid(cursor.column);
+    } else {
+      kDebug() << codeStr + completionStr + "|";
+    }
+    TopDUContext *top = parse(codeStr.toUtf8(), DumpNone);
+    DUChainReleaser releaseTop(top);
+
+    DUContext *ctx;
+    if ( cursor.isValid() ) {
+      DUChainWriteLocker lock(DUChain::lock());
+      ctx = top->findContextAt(cursor);
+      QVERIFY(ctx);
+      QVERIFY(ctx->owner());
+      QVERIFY(dynamic_cast<ClassDeclaration*>(ctx->owner()));
+    } else {
+      ctx = top;
+    }
+
+    PhpCompletionTester tester(ctx, completionStr);
+
+    QVERIFY( !tester.items.isEmpty() );
+    // make sure the items are unique
+    QCOMPARE( tester.names.size(), tester.names.toSet().size() );
+
+    foreach( CompletionTreeItemPointer item, tester.items ) {
+      ClassDeclaration* klass = dynamic_cast<ClassDeclaration*>(item->declaration().data());
+      QVERIFY( klass );
+      QVERIFY( klass->classModifier() != ClassDeclarationData::Final );
+      QCOMPARE( klass->classType(), type );
+
+      if ( !forbiddenIdentifiers.isEmpty() ) {
+        QVERIFY( ! forbiddenIdentifiers.contains(item->declaration()->identifier().toString()) );
+      }
+    }
+}
+
+void TestCompletion::newExtends()
+{
+    verifyExtendsOrImplements("<?php ", "class test extends ",
+                               ClassDeclarationData::Class,
+                               SimpleCursor::invalid(),
+                               QStringList() << "test");
+
+    verifyExtendsOrImplements("<?php ", "interface test extends ",
+                               ClassDeclarationData::Interface,
+                               SimpleCursor::invalid(),
+                               QStringList() << "test");
+
+    verifyExtendsOrImplements("<?php interface blub{} ", "interface test extends blub, ",
+                               ClassDeclarationData::Interface,
+                               SimpleCursor::invalid(),
+                               QStringList() << "test" << "blub");
+}
+
+void TestCompletion::updateExtends()
+{
+    //                         0         1         2         3         4         5
+    //                         012345678901234567890123456789012345678901234567890123456789
+    verifyExtendsOrImplements("<?php class test {}", " extends ",
+                               ClassDeclarationData::Class,
+                               SimpleCursor(0, 16),
+                               QStringList() << "test");
+
+    //                         0         1         2         3         4         5
+    //                         012345678901234567890123456789012345678901234567890123456789
+    verifyExtendsOrImplements("<?php interface test {}", " extends ",
+                               ClassDeclarationData::Interface,
+                               SimpleCursor(0, 20),
+                               QStringList() << "test");
+
+    //                         0         1         2         3         4         5
+    //                         012345678901234567890123456789012345678901234567890123456789
+    verifyExtendsOrImplements("<?php interface blub{} interface test extends blub {}", ", ",
+                               ClassDeclarationData::Interface,
+                               SimpleCursor(0, 50),
+                               QStringList() << "test" << "blub");
+}
+
+void TestCompletion::newImplements()
+{
+    verifyExtendsOrImplements("<?php ", "class test implements ",
+                               ClassDeclarationData::Interface,
+                               SimpleCursor::invalid(),
+                               QStringList() << "test");
+    verifyExtendsOrImplements("<?php interface blub{}", " class test implements blub, ",
+                               ClassDeclarationData::Interface,
+                               SimpleCursor::invalid(),
+                               QStringList() << "test" << "blub");
+}
+
+void TestCompletion::updateImplements()
+{
+    //                         0         1         2         3         4         5
+    //                         012345678901234567890123456789012345678901234567890123456789
+    verifyExtendsOrImplements("<?php class test {}", " implements ",
+                               ClassDeclarationData::Interface,
+                               SimpleCursor(0, 16),
+                               QStringList() << "test");
+
+    //                         0         1         2         3         4         5
+    //                         012345678901234567890123456789012345678901234567890123456789
+    verifyExtendsOrImplements("<?php interface blub{} class test implements blub {}", ", ",
+                               ClassDeclarationData::Interface,
+                               SimpleCursor(0, 49),
+                               QStringList() << "test" << "blub");
+}
+
 }
 
 #include "test_completion.moc"

@@ -21,6 +21,7 @@
 
 #include "duchain/tests/duchaintestbase.h"
 #include <language/codecompletion/codecompletionitem.h>
+#include <language/duchain/classdeclaration.h>
 
 namespace Php
 {
@@ -34,6 +35,10 @@ public:
 
 private:
     void dumpCompletionItems(QList<KDevelop::CompletionTreeItemPointer> items);
+    void verifyExtendsOrImplements(const QString &code, const QString &actionStr,
+                                    KDevelop::ClassDeclarationData::ClassType,
+                                    KDevelop::SimpleCursor cursor,
+                                    QStringList forbiddenIdentifiers);
 
 private slots:
     void publicObjectCompletion();
@@ -61,6 +66,10 @@ private slots:
     void overrideMethods();
     void implementMethods();
     void inArray();
+    void newExtends();
+    void updateExtends();
+    void newImplements();
+    void updateImplements();
 };
 
 }
