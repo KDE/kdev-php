@@ -45,17 +45,64 @@ NavigationContextPointer DeclarationNavigationContext::registerChild(Declaration
 
 void DeclarationNavigationContext::htmlClass()
 {
-  AbstractDeclarationNavigationContext::htmlClass();
-
   StructureType::Ptr klass = m_declaration->abstractType().cast<StructureType>();
   Q_ASSERT(klass);
   ClassDeclaration* classDecl = dynamic_cast<ClassDeclaration*>(klass->declaration(m_topContext.data()));
-  if ( classDecl && classDecl->baseClassesSize() > 0 ) {
-    modifyHtml() += i18n(" inherits ");
-    FOREACH_FUNCTION( const BaseClassInstance& base, classDecl->baseClasses ) {
-      eventuallyMakeTypeLinks(base.baseClass.abstractType());
-      if ( a < containerSize ) {
-        modifyHtml() += ", ";
+  if ( classDecl ) {
+    // write class modifier
+    switch ( classDecl->classModifier() ) {
+      case ClassDeclarationData::Abstract:
+        modifyHtml() += "abstract ";
+        break;
+      case ClassDeclarationData::Final:
+        modifyHtml() += "final ";
+        break;
+      default:
+        //nothing
+        break;
+    }
+    // write class type
+    if ( classDecl->classType() == ClassDeclarationData::Interface ) {
+      modifyHtml() += "interface ";
+    } else {
+      modifyHtml() += "class ";
+    }
+    // write class identifier
+    eventuallyMakeTypeLinks(m_declaration->abstractType());
+    // write inheritance
+    if ( classDecl->baseClassesSize() > 0 ) {
+      AbstractType::Ptr extends;
+      QList<AbstractType::Ptr> implements;
+      FOREACH_FUNCTION( const BaseClassInstance& base, classDecl->baseClasses ) {
+        StructureType::Ptr stype = base.baseClass.type<StructureType>();
+        if ( stype ) {
+          ClassDeclaration *classDecl = dynamic_cast<ClassDeclaration*>(stype->declaration(m_topContext.data()));
+          if ( classDecl ) {
+            if ( classDecl->classType() == ClassDeclarationData::Interface ) {
+              implements.append(base.baseClass.abstractType());
+            } else {
+              extends = base.baseClass.abstractType();
+            }
+          }
+        }
+      }
+      // write parent class
+      if ( extends ) {
+        modifyHtml() += " extends ";
+        eventuallyMakeTypeLinks(extends);
+      }
+      // write implemented interfaces
+      if ( !implements.isEmpty() ) {
+        modifyHtml() += " implements ";
+        for ( QList<AbstractType::Ptr>::iterator i = implements.begin(); ; ) {
+          eventuallyMakeTypeLinks(*i);
+          ++i;
+          if ( i != implements.end() ) {
+            modifyHtml() += ", ";
+          } else {
+            break;
+          }
+        }
       }
     }
     modifyHtml() += " ";
