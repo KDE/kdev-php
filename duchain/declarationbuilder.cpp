@@ -132,12 +132,18 @@ bool DeclarationBuilder::isBaseMethodRedeclaration(const Identifier &identifier,
         }
         {
             DUChainWriteLocker lock(DUChain::lock());
+            if ( !type->internalContext( currentContext()->topContext() ) ) {
+                continue;
+            }
             foreach ( Declaration * dec,
                       type->internalContext( currentContext()->topContext() )->findLocalDeclarations(identifier) )
             {
                 kDebug() << dec->toString();
                 if ( dec->isFunctionDeclaration() ) {
                     ClassMethodDeclaration* func = dynamic_cast<ClassMethodDeclaration*>(dec);
+                    if ( !func ) {
+                        continue;
+                    }
                     // we cannot redeclare final classes ever
                     if ( func->isFinal() ) {
                         reportRedeclarationError(dec, node->methodName);
