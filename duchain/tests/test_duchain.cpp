@@ -1368,7 +1368,7 @@ void TestDUChain::testMemberTypeAfterMethod()
         QVERIFY(ret);
         QVERIFY(ret->dataType() == IntegralType::TypeVoid);
     }
-    
+
     // public $bar
     {
         ClassMemberDeclaration* var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().at(1));
@@ -1380,7 +1380,6 @@ void TestDUChain::testMemberTypeAfterMethod()
         QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeMixed);
     }
 }
-
 }
 
 #include "test_duchain.moc"

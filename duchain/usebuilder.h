@@ -52,6 +52,7 @@ protected:
     virtual void visitExpr(ExprAst* node);
     virtual void visitGlobalVar(GlobalVarAst* node);
     virtual void visitStaticScalar(StaticScalarAst* node);
+    virtual void visitStatement(StatementAst* node);
 };
 
 }

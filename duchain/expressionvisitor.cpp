@@ -43,6 +43,8 @@ ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor, bool useCursor)
 
 Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
 {
+    Q_ASSERT(m_currentContext);
+
     Declaration* ret = 0;
     QualifiedIdentifier identifier = identifierForNode(variable);
     if (identifier == QualifiedIdentifier("this")) {
@@ -98,13 +100,13 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
     return ret;
 }
 
-void ExpressionVisitor::visitExpr(ExprAst *node)
+void ExpressionVisitor::visitNode(AstNode *node)
 {
-    if (node->ducontext) {
+    if (node && node->ducontext) {
         m_currentContext = node->ducontext;
     }
     Q_ASSERT(m_currentContext);
-    DefaultVisitor::visitExpr(node);
+    DefaultVisitor::visitNode(node);
 }
 
 void ExpressionVisitor::visitAssignmentExpression(AssignmentExpressionAst *node)

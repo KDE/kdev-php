@@ -458,6 +458,21 @@ void TestUses::useInAsignment()
     compareUses(d, SimpleRange(0, 16, 0, 18));
 }
 
+void TestUses::foreachArray()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    //QByteArray method("<? $a = array(1); foreach($a as $k=>$i) { $i; } ");
+    QByteArray method("<? $a = array(1); foreach($a as $k=>$i) { $i; } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *d = top->localDeclarations().first();
+    compareUses(d, SimpleRange(0, 26, 0, 28));
+}
+
 }
 
 #include "test_uses.moc"

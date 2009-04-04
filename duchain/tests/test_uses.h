@@ -59,6 +59,7 @@ private slots:
   void functionAndClassWithSameName();
   void constantInClassMember();
   void useInAsignment();
+  void foreachArray();
 };
 
 }

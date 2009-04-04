@@ -43,10 +43,11 @@ public:
     ExpressionEvaluationResult result() { return m_result; }
     void setCreateProblems(bool v);
 
+    virtual void visitNode(AstNode *node);
+
 protected:
     KDevelop::Declaration* processVariable(VariableIdentifierAst *variable);
 
-    void visitExpr(ExprAst *node);
     void visitAssignmentExpression(AssignmentExpressionAst *node);
     void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
     void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
