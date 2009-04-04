@@ -112,8 +112,11 @@ void ExpressionVisitor::visitAssignmentExpression(AssignmentExpressionAst *node)
     if (node->assignmentExpressionEqual) {
         m_isAssignmentExpressionEqual = true;
     }
-    DefaultVisitor::visitAssignmentExpression(node);
+    visitNode(node->expression);
     m_isAssignmentExpressionEqual = false;
+
+    visitNode(node->assignmentExpressionEqual);
+    visitNode(node->assignmentExpression);
 
     if (node->operation == OperationPlus || node->operation == OperationMinus || node->operation == OperationMul || node->operation == OperationDiv) {
         IntegralType::Ptr integral(new IntegralType(IntegralType::TypeInt));

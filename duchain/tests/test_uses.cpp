@@ -444,6 +444,20 @@ void TestUses::constantInClassMember()
     compareUses(constant, uses);
 }
 
+void TestUses::useInAsignment()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $a = 0; $b = $a; ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *d = top->localDeclarations().first();
+    compareUses(d, SimpleRange(0, 16, 0, 18));
+}
+
 }
 
 #include "test_uses.moc"
