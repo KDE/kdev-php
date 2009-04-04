@@ -113,7 +113,6 @@ void UseBuilder::visitStatement(Php::StatementAst* node)
 {
     if (node->foreachVar) {
         UseExpressionVisitor v(editor(), currentContext()->topContext(), this);
-        kDebug() << currentContext();
         node->foreachVar->ducontext = currentContext();
         v.visitNode(node->foreachVar);
     }
