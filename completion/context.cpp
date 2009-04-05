@@ -200,7 +200,8 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
   }
 
   ///Handle lists of interfaces
-  if ( textEndsOnInterfaceList(expressionPrefix) ) {
+  if ( expressionPrefix.endsWith(',') && m_duContext->type() != DUContext::Function &&
+       textEndsOnInterfaceList(expressionPrefix) ) {
     m_memberAccessOperation = InterfaceChoose;
     return;
   }
