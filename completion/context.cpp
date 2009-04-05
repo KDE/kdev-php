@@ -105,9 +105,16 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
           m_memberAccessOperation = InterfaceChoose;
         }
       }
-    } else if ( m_text.endsWith( "implements" ) || m_text.contains(QRegExp("implements\\s+([^\\s\\(\\{,\\}\\)]+\\s*,\\s*)+$")) ) {
-      // same as for extends
+    } else if ( m_text.endsWith( "implements", Qt::CaseInsensitive ) ) {
       m_memberAccessOperation = InterfaceChoose;
+    } else if ( m_text.endsWith(',')  ) {
+      // check if we really try to add something to a list of interfaces
+      if ( textEndsOnInterfaceList(m_text) ) {
+        m_memberAccessOperation = InterfaceChoose;
+      } else {
+        m_valid = false;
+        return;
+      }
     } else {
       m_memberAccessOperation = ClassMemberChoose;
     }
@@ -193,7 +200,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
   }
 
   ///Handle lists of interfaces
-  if ( expressionPrefix.contains(QRegExp("implements\\s+([^\\s\\(\\{,\\}\\)]+\\s*,\\s*)+$")) ) {
+  if ( textEndsOnInterfaceList(expressionPrefix) ) {
     m_memberAccessOperation = InterfaceChoose;
     return;
   }
@@ -324,6 +331,30 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
       //This should never happen, because the position-cursor should be chosen at the beginning of a possible completion-context(not in the middle of a string)
       log( QString("Cannot complete \"%1\" because there is an expression without an access-operation" ).arg(expr) );
       m_valid  = false;
+  }
+}
+
+bool CodeCompletionContext::textEndsOnInterfaceList( const QString& text ) {
+  QRegExp matches("(?:interface\\s+([^\\s\\(\\[\\{,\\}\\]\\)]+)\\s+extends"
+                    "|class\\s+[^\\s\\(\\[\\{,\\}\\]\\)]+\\s+"
+                      "(?:extends\\s+[^\\s\\(\\[\\{,\\}\\]\\)]+\\s+)?"
+                    "implements)"
+                    "\\s+((?:[^\\s\\(\\[\\{,\\}\\]\\)]+\\s*,\\s*)+)$");
+  matches.setCaseSensitivity(Qt::CaseInsensitive);
+
+  if ( text.contains( matches ) ) {
+    // make sure we don't try to implement the same interface twice
+    if ( !matches.cap(1).isEmpty() ) {
+      // add base interface
+      m_forbiddenIdentifiers << Identifier(matches.cap(1)).index();
+    }
+    // add implemented interfaces
+    foreach ( const QString &id, matches.cap(2).split(',', QString::SkipEmptyParts)) {
+      m_forbiddenIdentifiers << Identifier(id.trimmed()).index();
+    }
+    return true;
+  } else {
+    return false;
   }
 }
 
@@ -691,7 +722,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
 
   return items;
 }
-///TODO: filter current declaration
+
 inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
 {
     static ClassDeclaration* exceptionDecl;
@@ -706,6 +737,10 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
           || m_memberAccessOperation == NewClassChoose
           || m_memberAccessOperation == InterfaceChoose
           || m_memberAccessOperation == ClassExtendsChoose ) {
+      // filter current class
+      if ( !m_forbiddenIdentifiers.isEmpty() && m_forbiddenIdentifiers.contains(dec->identifier().index()) ) {
+        return false;
+      }
       ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
       // filter non-classes
       if ( !classDec ) {

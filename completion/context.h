@@ -112,6 +112,25 @@ namespace Php {
       ExpressionEvaluationResult m_expressionResult;
       QString m_expression;
       bool m_parentAccess;
+      /**
+       * a list of indizes of identifiers which must not be added as completion items
+       * examples:
+       * class test implements foo, ...
+       * => identifiers test and foo must not be proposed for completion
+       **/
+      QList<uint> m_forbiddenIdentifiers;
+      /**
+       * checks whether the string ends on a list of interfaces, e.g.:
+       * 
+       * interface iFace extends Iface1, Iface2, ...
+       * 
+       * or:
+       * 
+       * class Klass implements IFace1, IFace2, ...
+       * 
+       * All found identifiers are added to the forbiddenIdentifiers
+       */
+      bool textEndsOnInterfaceList( const QString& text );
   };
 }
 
