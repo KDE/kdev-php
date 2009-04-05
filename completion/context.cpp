@@ -96,7 +96,6 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
     } else if ( m_text.endsWith( "extends", Qt::CaseInsensitive ) ) {
       // when we change the "extends" stuff of an existing class m_duContext will be a class
       // even though we are not inside it's {...} area
-      
       m_memberAccessOperation = ClassExtendsChoose;
       // interfaces can only extend interfaces
       LOCKDUCHAIN;
@@ -105,8 +104,10 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
           m_memberAccessOperation = InterfaceChoose;
         }
       }
+      forbidLastIdentifier( m_text, "extends" );
     } else if ( m_text.endsWith( "implements", Qt::CaseInsensitive ) ) {
       m_memberAccessOperation = InterfaceChoose;
+      forbidLastIdentifier( m_text, "implements" );
     } else if ( m_text.endsWith(',')  ) {
       // check if we really try to add something to a list of interfaces
       if ( textEndsOnInterfaceList(m_text) ) {
@@ -255,10 +256,12 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
   }
   if ( expr == "implements" || ( expr == "extends" && expressionPrefix.contains(QRegExp("interface\\s+\\S+$")) ) ) {
     m_memberAccessOperation = InterfaceChoose;
+    forbidLastIdentifier( expressionPrefix );
     return;
   }
   if ( expr == "extends" ) {
     m_memberAccessOperation = ClassExtendsChoose;
+    forbidLastIdentifier( expressionPrefix );
     return;
   }
   if ( expr == "new" ) {
@@ -356,6 +359,19 @@ bool CodeCompletionContext::textEndsOnInterfaceList( const QString& text ) {
     return true;
   } else {
     return false;
+  }
+}
+
+void CodeCompletionContext::forbidLastIdentifier( const QString &text, const QString &additionalPattern ) {
+  // forbid current class
+  QRegExp curIdentifier;
+  if ( additionalPattern.isEmpty() ) {
+    curIdentifier.setPattern("\\s+(\\S+)$");
+  } else {
+    curIdentifier.setPattern("\\s+(\\S+)\\s+" + additionalPattern + "$");
+  }
+  if ( text.contains(curIdentifier) ) {
+    m_forbiddenIdentifiers << Identifier(curIdentifier.cap(1)).index();
   }
 }
 

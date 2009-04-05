@@ -119,6 +119,9 @@ namespace Php {
        * => identifiers test and foo must not be proposed for completion
        **/
       QList<uint> m_forbiddenIdentifiers;
+
+      void forbidLastIdentifier( const QString& text, const QString& additionalPattern = "" );
+
       /**
        * checks whether the string ends on a list of interfaces, e.g.:
        * 
