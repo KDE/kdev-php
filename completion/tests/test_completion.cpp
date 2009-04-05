@@ -656,7 +656,6 @@ void TestCompletion::verifyExtendsOrImplements(const QString &codeStr, const QSt
     QVERIFY( !tester.items.isEmpty() );
     // make sure the items are unique
     QCOMPARE( tester.names.size(), tester.names.toSet().size() );
-
     foreach( CompletionTreeItemPointer item, tester.items ) {
       ClassDeclaration* klass = dynamic_cast<ClassDeclaration*>(item->declaration().data());
       QVERIFY( klass );
@@ -691,21 +690,22 @@ void TestCompletion::updateExtends()
 {
     //                         0         1         2         3         4         5
     //                         012345678901234567890123456789012345678901234567890123456789
-    verifyExtendsOrImplements("<?php class test {}", " extends ",
+    verifyExtendsOrImplements("<?php class test {}", "class test extends ",
                                ClassDeclarationData::Class,
                                SimpleCursor(0, 16),
                                QStringList() << "test");
 
     //                         0         1         2         3         4         5
     //                         012345678901234567890123456789012345678901234567890123456789
-    verifyExtendsOrImplements("<?php interface test {}", " extends ",
+    verifyExtendsOrImplements("<?php interface test {}", "interface test extends ",
                                ClassDeclarationData::Interface,
                                SimpleCursor(0, 20),
                                QStringList() << "test");
 
     //                         0         1         2         3         4         5
     //                         012345678901234567890123456789012345678901234567890123456789
-    verifyExtendsOrImplements("<?php interface blub{} interface test extends blub {}", ", ",
+    verifyExtendsOrImplements("<?php interface blub{} interface test extends blub {}",
+                               "interface test extends blub,bar, ",
                                ClassDeclarationData::Interface,
                                SimpleCursor(0, 50),
                                QStringList() << "test" << "blub");
@@ -727,14 +727,15 @@ void TestCompletion::updateImplements()
 {
     //                         0         1         2         3         4         5
     //                         012345678901234567890123456789012345678901234567890123456789
-    verifyExtendsOrImplements("<?php class test {}", " implements ",
+    verifyExtendsOrImplements("<?php class test {}", "class test implements ",
                                ClassDeclarationData::Interface,
                                SimpleCursor(0, 16),
                                QStringList() << "test");
 
     //                         0         1         2         3         4         5
     //                         012345678901234567890123456789012345678901234567890123456789
-    verifyExtendsOrImplements("<?php interface blub{} class test implements blub {}", ", ",
+    verifyExtendsOrImplements("<?php interface blub{} class test implements blub {}",
+                               "class test implements blub, ",
                                ClassDeclarationData::Interface,
                                SimpleCursor(0, 49),
                                QStringList() << "test" << "blub");
