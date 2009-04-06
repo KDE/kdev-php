@@ -37,6 +37,7 @@ namespace KTextEditor {
 
 namespace KDevelop {
   class DUContext;
+  class ClassDeclaration;
 
   class CompletionTreeItem;
   typedef KSharedPtr<CompletionTreeItem> CompletionTreeItemPointer;
@@ -119,6 +120,9 @@ namespace Php {
        * => identifiers test and foo must not be proposed for completion
        **/
       QList<uint> m_forbiddenIdentifiers;
+
+      void forbidIdentifier(const QString &identifier);
+      void forbidIdentifier(KDevelop::ClassDeclaration* identifier);
 
       void forbidLastIdentifier( const QString& text, const QString& additionalPattern = "" );
 

@@ -23,6 +23,8 @@
 #include "duchain/expressionparser.h"
 #include "helpers.h"
 
+#include "../duchain/helper.h"
+
 #include "implementationitem.h"
 #include "keyworditem.h"
 
@@ -350,11 +352,11 @@ bool CodeCompletionContext::textEndsOnInterfaceList( const QString& text ) {
     // make sure we don't try to implement the same interface twice
     if ( !matches.cap(1).isEmpty() ) {
       // add base interface
-      m_forbiddenIdentifiers << Identifier(matches.cap(1)).index();
+      forbidIdentifier( matches.cap(1) );
     }
     // add implemented interfaces
     foreach ( const QString &id, matches.cap(2).split(',', QString::SkipEmptyParts)) {
-      m_forbiddenIdentifiers << Identifier(id.trimmed()).index();
+      forbidIdentifier( id.trimmed() );
     }
     return true;
   } else {
@@ -371,7 +373,54 @@ void CodeCompletionContext::forbidLastIdentifier( const QString &text, const QSt
     curIdentifier.setPattern("\\s+(\\S+)\\s+" + additionalPattern + "$");
   }
   if ( text.contains(curIdentifier) ) {
-    m_forbiddenIdentifiers << Identifier(curIdentifier.cap(1)).index();
+    forbidIdentifier( curIdentifier.cap(1) );
+  }
+}
+
+void CodeCompletionContext::forbidIdentifier( const QString& identifier ) {
+  QualifiedIdentifier id(identifier);
+
+  ClassDeclaration *dec = dynamic_cast<ClassDeclaration*>(
+    findDeclarationImportHelper(m_duContext.data(), id, ClassDeclarationType, 0, 0)
+  );
+  if ( dec ) {
+    forbidIdentifier(dec);
+  } else {
+    // might be a class we are currently writing, i.e. without a proper declaration
+    m_forbiddenIdentifiers << id.index();
+  }
+}
+
+void CodeCompletionContext::forbidIdentifier( ClassDeclaration* klass ) {
+  uint id;
+  {
+    LOCKDUCHAIN;
+    // TODO: qualifiedIdentifier is marked as expensive - any other way
+    //       we can do what we are doing here?
+    // TODO: maybe we should clar the m_fobiddenIdentifiers after we got
+    //       our list of items...
+    id = klass->qualifiedIdentifier().index();
+  }
+  if ( m_forbiddenIdentifiers.contains( id ) ) {
+    // nothing to do
+    return;
+  }
+
+  m_forbiddenIdentifiers << id;
+
+  // add parents so those are excluded from the completion items as well
+  if ( klass->baseClassesSize() > 0 ) {
+    FOREACH_FUNCTION( const BaseClassInstance& base, klass->baseClasses ) {
+      StructureType::Ptr type = base.baseClass.type<StructureType>();
+      if ( ! type.isNull() ) {
+        ClassDeclaration* parent = dynamic_cast<ClassDeclaration*>(
+          type->declaration( m_duContext->topContext() )
+        );
+        if ( parent ) {
+          forbidIdentifier( parent );
+        }
+      }
+    }
   }
 }
 
@@ -755,7 +804,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
           || m_memberAccessOperation == InterfaceChoose
           || m_memberAccessOperation == ClassExtendsChoose ) {
       // filter current class
-      if ( !m_forbiddenIdentifiers.isEmpty() && m_forbiddenIdentifiers.contains(dec->identifier().index()) ) {
+      if ( !m_forbiddenIdentifiers.isEmpty() && m_forbiddenIdentifiers.contains(dec->qualifiedIdentifier().index()) ) {
         return false;
       }
       ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
