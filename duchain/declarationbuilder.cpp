@@ -513,11 +513,14 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
 void DeclarationBuilder::visitStatement(StatementAst* node)
 {
     DeclarationBuilderBase::visitStatement(node);
-
+    
+    ///TODO: the parser seems to be "buggy" as in foreachExprAsVar, foreachVarAsVar are _never_ set
+    ///      at least I could not find any code combination for that.
+    ///      Good thing is that it's not neccessarily required for this stuff to work
     if (node->foreachExprAsVar) {
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(node->foreachExprAsVar, node->foreachExprAsVar);
-        openDefinition<Declaration>(identifierForNode(node->foreachExprAsVar), newRange);
+        openDefinition<VariableDeclaration>(identifierForNode(node->foreachExprAsVar), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
         closeDeclaration();
     }
@@ -525,7 +528,7 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
     if (node->foreachVarAsVar) {
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(node->foreachVarAsVar->variable, node->foreachVarAsVar->variable);
-        openDefinition<Declaration>(identifierForNode(node->foreachVarAsVar->variable), newRange);
+        openDefinition<VariableDeclaration>(identifierForNode(node->foreachVarAsVar->variable), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
         closeDeclaration();
     }
@@ -533,7 +536,7 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
     if (node->foreachVariable) {
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(node->foreachVariable->variable, node->foreachVariable->variable);
-        openDefinition<Declaration>(identifierForNode(node->foreachVariable->variable), newRange);
+        openDefinition<VariableDeclaration>(identifierForNode(node->foreachVariable->variable), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
         closeDeclaration();
     }
