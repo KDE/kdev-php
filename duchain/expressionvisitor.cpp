@@ -94,7 +94,7 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
             }
         }
     }
-    if (!m_isAssignmentExpressionEqual) {
+    if ( !m_isAssignmentExpressionEqual || identifier == QualifiedIdentifier("this") ) {
         usingDeclaration(variable, ret);
     }
     return ret;
