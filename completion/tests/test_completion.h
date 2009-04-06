@@ -70,6 +70,7 @@ private slots:
     void updateExtends();
     void newImplements();
     void updateImplements();
+    void avoidCircularInheritance();
 };
 
 }

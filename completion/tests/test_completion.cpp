@@ -741,6 +741,21 @@ void TestCompletion::updateImplements()
                                QStringList() << "test" << "blub");
 }
 
+void TestCompletion::avoidCircularInheritance()
+{
+  verifyExtendsOrImplements("<?php interface blub{} interface bar extends blub{}",
+                            "interface test extends bar, ",
+                             ClassDeclarationData::Interface,
+                             SimpleCursor::invalid(),
+                             QStringList() << "test" << "blub" << "bar");
+                             
+  verifyExtendsOrImplements("<?php interface blub{} interface bar extends blub{}",
+                            "class test implements bar, ",
+                             ClassDeclarationData::Interface,
+                             SimpleCursor::invalid(),
+                             QStringList() << "blub" << "bar");
+}
+
 }
 
 #include "test_completion.moc"
