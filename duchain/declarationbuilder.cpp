@@ -468,7 +468,6 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
             SimpleRange newRange = editorFindRange(leftSideVariableIdentifier, leftSideVariableIdentifier);
             VariableDeclaration *dec = openDefinition<VariableDeclaration>(identifierForNode(leftSideVariableIdentifier), newRange);
             dec->setKind(Declaration::Instance);
-            kDebug() << "left side variable identifier: " << dec->toString();
             if (!m_lastTopStatementComment.isEmpty()) {
                 QRegExp rx("\\* +@superglobal");
                 if (rx.indexIn(m_lastTopStatementComment) != -1) {
