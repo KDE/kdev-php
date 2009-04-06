@@ -463,14 +463,26 @@ void TestUses::foreachArray()
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     //QByteArray method("<? $a = array(1); foreach($a as $k=>$i) { $i; } ");
-    QByteArray method("<? $a = array(1); foreach($a as $k=>$i) { $i; } ");
+    QByteArray method("<? $a = array(1); foreach($a as $k=>$i) { var_dump($k, $i); } ");
 
     TopDUContext* top = parse(method, DumpAll);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    Declaration *d = top->localDeclarations().first();
+    // $a, $k, $i
+    QCOMPARE(top->localDeclarations().size(), 3);
+    
+    // $a
+    Declaration *d = top->localDeclarations().at(0);
     compareUses(d, SimpleRange(0, 26, 0, 28));
+    
+    // $k
+    d = top->localDeclarations().at(1);
+    compareUses(d, SimpleRange(0, 51, 0, 53));
+    
+    // $i
+    d = top->localDeclarations().at(2);
+    compareUses(d, SimpleRange(0, 55, 0, 57));
 }
 
 }
