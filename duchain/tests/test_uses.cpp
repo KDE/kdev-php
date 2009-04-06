@@ -350,6 +350,18 @@ void TestUses::classSelf()
     compareUses(top->localDeclarations().first(), SimpleRange(0, 28, 0, 32));
     compareUses(top->childContexts().first()->localDeclarations().first(), SimpleRange(0, 34, 0, 35));
 }
+void TestUses::classThis()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { function x() { $this->x(); } } ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    compareUses(top->localDeclarations().first(), SimpleRange(0, 28, 0, 33));
+    compareUses(top->childContexts().first()->localDeclarations().first(), SimpleRange(0, 35, 0, 36));
+}
 
 void TestUses::objectWithClassName()
 {

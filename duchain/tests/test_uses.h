@@ -52,6 +52,7 @@ private slots:
   void classConstant();
   void classParent();
   void classSelf();
+  void classThis();
   void objectWithClassName();
   void classAndConstWithSameName();
   void classAndFunctionWithSameName();
