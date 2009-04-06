@@ -138,7 +138,6 @@ bool DeclarationBuilder::isBaseMethodRedeclaration(const Identifier &identifier,
             foreach ( Declaration * dec,
                       type->internalContext( currentContext()->topContext() )->findLocalDeclarations(identifier) )
             {
-                kDebug() << dec->toString();
                 if ( dec->isFunctionDeclaration() ) {
                     ClassMethodDeclaration* func = dynamic_cast<ClassMethodDeclaration*>(dec);
                     if ( !func ) {
