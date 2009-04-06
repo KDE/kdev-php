@@ -41,18 +41,18 @@ namespace Php {
         ConstantDeclarationType,
         GlobalVariableDeclarationType
     };
-    bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);
+    KDEVPHPDUCHAIN_EXPORT bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);
 
-    KDevelop::Declaration* findDeclarationImportHelper(KDevelop::DUContext* currentContext,
+    KDEVPHPDUCHAIN_EXPORT KDevelop::Declaration* findDeclarationImportHelper(KDevelop::DUContext* currentContext,
                                         KDevelop::QualifiedIdentifier id,
                                         DeclarationType declarationType,
                                         AstNode* node,
                                         EditorIntegrator* editor);
 
-    QString formatComment(AstNode* node, EditorIntegrator* editor);
+    KDEVPHPDUCHAIN_EXPORT QString formatComment(AstNode* node, EditorIntegrator* editor);
 
-    CommonScalarAst* findCommonScalar(AstNode* node);
+    KDEVPHPDUCHAIN_EXPORT CommonScalarAst* findCommonScalar(AstNode* node);
 
-    KDevelop::IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl);
+    KDEVPHPDUCHAIN_EXPORT KDevelop::IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl);
 }
 #endif
