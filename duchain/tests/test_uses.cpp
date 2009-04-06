@@ -37,6 +37,7 @@ namespace Php
 
 void compareUses(Declaration* dec, QList<SimpleRange> ranges)
 {
+    kDebug() << "comparing uses for" << dec->toString();
     QCOMPARE(dec->uses().keys().count(), 1);
     QCOMPARE(dec->uses().values().count(), 1);
     QCOMPARE(dec->uses().values().first().count(), ranges.count());
@@ -503,23 +504,25 @@ void TestUses::assignmentToMemberArray()
     compareUses(x, SimpleRange(0, 50, 0, 55));
     
     // var $y
-    Declaration *y = x->logicalInternalContext(top)->findLocalDeclarations(Identifier("y")).first();
+    Declaration *y = x->logicalInternalContext(top)->findDeclarations(Identifier("y")).first();
     QVERIFY(y);
     
     // $this->y
     compareUses(y, SimpleRange(0, 57, 0, 58));
     
     // function z
-    Declaration *z = x->logicalInternalContext(top)->findLocalDeclarations(Identifier("z")).first();
+    Declaration *z = x->logicalInternalContext(top)->findDeclarations(Identifier("z")).first();
     QVERIFY(z);
     
     // $a
-    Declaration *a = z->logicalInternalContext(top)->findLocalDeclarations(Identifier("a")).first();
+    Declaration *a = z->logicalInternalContext(top)->findDeclarations(Identifier("a")).first();
     QVERIFY(a);
-    // $b = $a;
-    compareUses(a, SimpleRange(0, 46, 0, 48));
-    // $this->y[$a]
-    compareUses(a, SimpleRange(0, 59, 0, 61));
+    compareUses(a, QList<SimpleRange>()
+                      // $b = $a
+                      << SimpleRange(0, 46, 0, 48)
+                      // $this->y[$a]
+                      << SimpleRange(0, 59, 0, 61)
+    );
 }
 
 }

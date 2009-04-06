@@ -435,8 +435,10 @@ void DeclarationBuilder::reportRedeclarationError(Declaration* declaration, AstN
 
 void DeclarationBuilder::visitExpr(ExprAst *node)
 {
+    VariableIdentifierAst* lastIdentifier = m_lastVariableIdentifier;
     m_lastVariableIdentifier = 0;
     DeclarationBuilderBase::visitExpr(node);
+    m_lastVariableIdentifier = lastIdentifier;
 }
 
 void DeclarationBuilder::visitTopStatement(TopStatementAst* node)
@@ -454,24 +456,31 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
     DeclarationBuilderBase::visitAssignmentExpressionEqual(node);
 
     if (leftSideVariableIdentifier && currentAbstractType()) {
-
         //create new declaration for every assignment
         //TODO: don't create the same twice
-        DUChainWriteLocker lock(DUChain::lock());
-        SimpleRange newRange = editorFindRange(leftSideVariableIdentifier, leftSideVariableIdentifier);
-        VariableDeclaration *dec = openDefinition<VariableDeclaration>(identifierForNode(leftSideVariableIdentifier), newRange);
-        dec->setKind(Declaration::Instance);
-        if (!m_lastTopStatementComment.isEmpty()) {
-            QRegExp rx("\\* +@superglobal");
-            if (rx.indexIn(m_lastTopStatementComment) != -1) {
-                dec->setSuperglobal(true);
+        QualifiedIdentifier identifier = identifierForNode(leftSideVariableIdentifier);
+        // TODO: we cannot assign anything to $this, but we are currently not in the position
+        //       to decide whether we are really assigning to $this and are not using something
+        //       like $this->foo[$bar] = ...
+        //       => we really need better support for arrays here I think...
+        if ( identifier != QualifiedIdentifier("this") ) {
+            DUChainWriteLocker lock(DUChain::lock());
+            SimpleRange newRange = editorFindRange(leftSideVariableIdentifier, leftSideVariableIdentifier);
+            VariableDeclaration *dec = openDefinition<VariableDeclaration>(identifierForNode(leftSideVariableIdentifier), newRange);
+            dec->setKind(Declaration::Instance);
+            kDebug() << "left side variable identifier: " << dec->toString();
+            if (!m_lastTopStatementComment.isEmpty()) {
+                QRegExp rx("\\* +@superglobal");
+                if (rx.indexIn(m_lastTopStatementComment) != -1) {
+                    dec->setSuperglobal(true);
+                }
             }
-        }
 
-        //own closeDeclaration() that uses currentAbstractType() instead of lastType()
-        currentDeclaration()->setType(currentAbstractType());
-        eventuallyAssignInternalContext();
-        DeclarationBuilderBase::closeDeclaration();
+            //own closeDeclaration() that uses currentAbstractType() instead of lastType()
+            currentDeclaration()->setType(currentAbstractType());
+            eventuallyAssignInternalContext();
+            DeclarationBuilderBase::closeDeclaration();
+        }
     }
 }
 
