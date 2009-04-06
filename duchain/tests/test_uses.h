@@ -60,6 +60,7 @@ private slots:
   void constantInClassMember();
   void useInAsignment();
   void foreachArray();
+  void assignmentToMemberArray();
 };
 
 }

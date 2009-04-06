@@ -485,6 +485,43 @@ void TestUses::foreachArray()
     compareUses(d, SimpleRange(0, 55, 0, 57));
 }
 
+void TestUses::assignmentToMemberArray() 
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<?php class x { var $y; function z($a) { $b = $a; $this->y[$a] = true; } }");
+    
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+    
+    // class x
+    Declaration *x = top->localDeclarations().first();
+    QVERIFY(x);
+    
+    // $this
+    compareUses(x, SimpleRange(0, 50, 0, 55));
+    
+    // var $y
+    Declaration *y = x->logicalInternalContext(top)->findLocalDeclarations(Identifier("y")).first();
+    QVERIFY(y);
+    
+    // $this->y
+    compareUses(y, SimpleRange(0, 57, 0, 58));
+    
+    // function z
+    Declaration *z = x->logicalInternalContext(top)->findLocalDeclarations(Identifier("z")).first();
+    QVERIFY(z);
+    
+    // $a
+    Declaration *a = z->logicalInternalContext(top)->findLocalDeclarations(Identifier("a")).first();
+    QVERIFY(a);
+    // $b = $a;
+    compareUses(a, SimpleRange(0, 46, 0, 48));
+    // $this->y[$a]
+    compareUses(a, SimpleRange(0, 59, 0, 61));
+}
+
 }
 
 #include "test_uses.moc"
