@@ -29,7 +29,8 @@
 #include <language/duchain/declaration.h>
 #include <language/duchain/identifier.h>
 
-namespace Php {
+namespace Php
+{
 
 typedef KDevelop::AbstractTypeBuilder<AstNode, IdentifierAst, ContextBuilder> TypeBuilderBase;
 
@@ -43,22 +44,22 @@ typedef KDevelop::AbstractTypeBuilder<AstNode, IdentifierAst, ContextBuilder> Ty
 class KDEVPHPDUCHAIN_EXPORT TypeBuilder: public TypeBuilderBase
 {
 protected:
-  virtual void visitClassDeclarationStatement( ClassDeclarationStatementAst* node );
-  virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
-  virtual void visitClassStatement(ClassStatementAst *node);
-  virtual void visitClassVariable(ClassVariableAst *node);
-  virtual void visitClassConstantDeclaration(Php::ClassConstantDeclarationAst* node);
-  virtual void visitParameter(ParameterAst *node);
-  virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
+    virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst* node);
+    virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
+    virtual void visitClassStatement(ClassStatementAst *node);
+    virtual void visitClassVariable(ClassVariableAst *node);
+    virtual void visitClassConstantDeclaration(Php::ClassConstantDeclarationAst* node);
+    virtual void visitParameter(ParameterAst *node);
+    virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
 
-  virtual void visitStatement(StatementAst* node);
-  virtual void visitExpr(ExprAst *node);
-  virtual void visitStaticVar(StaticVarAst *node);
+    virtual void visitStatement(StatementAst* node);
+    virtual void visitExpr(ExprAst *node);
+    virtual void visitStaticVar(StaticVarAst *node);
 
 private:
     KDevelop::FunctionType::Ptr m_currentFunctionType;
     QList<KDevelop::AbstractType::Ptr> m_currentFunctionParams;
-    
+
     bool m_gotTypeFromDocComment;
 
     KDevelop::FunctionType::Ptr openFunctionType(AstNode* node);
@@ -66,7 +67,7 @@ private:
     KDevelop::AbstractType::Ptr parseType(QString type, AstNode* node);
     KDevelop::AbstractType::Ptr parseDocComment(AstNode* node, const QString& docCommentName);
     QList<KDevelop::AbstractType::Ptr> parseDocCommentParams(AstNode* node);
-    
+
     KDevelop::AbstractType::Ptr getTypeForNode(AstNode* node);
 };
 

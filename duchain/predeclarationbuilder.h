@@ -26,10 +26,12 @@
 #include <language/duchain/builders/abstractdeclarationbuilder.h>
 #include <language/duchain/classdeclaration.h>
 
-namespace KDvelop {
-    class Declaration;
+namespace KDvelop
+{
+class Declaration;
 }
-namespace Php {
+namespace Php
+{
 class ParseSession;
 class EditorIntegrator;
 
@@ -37,24 +39,27 @@ typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, ContextBuil
 
 /**
  * The PreDeclarationBuilder builds usable declarations for classes, interfaces and functions.
- * 
+ *
  * \todo constants should probably be handled here as well
  */
-class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public PreDeclarationBuilderBase {
+class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public PreDeclarationBuilderBase
+{
 public:
-    PreDeclarationBuilder(QHash<qint64, KDevelop::ClassDeclaration*>* types, QHash<qint64,
-                          KDevelop::FunctionDeclaration*>* functions,
+    PreDeclarationBuilder(QHash<qint64, KDevelop::ClassDeclaration*>* types, QHash < qint64,
+                          KDevelop::FunctionDeclaration* > * functions,
                           ParseSession* session)
-                        : m_types(types), m_functions(functions)
-    { setEditor(session); }
-    PreDeclarationBuilder(QHash<qint64, KDevelop::ClassDeclaration*>* types, QHash<qint64,
-                          KDevelop::FunctionDeclaration*>* functions,
+            : m_types(types), m_functions(functions) {
+        setEditor(session);
+    }
+    PreDeclarationBuilder(QHash<qint64, KDevelop::ClassDeclaration*>* types, QHash < qint64,
+                          KDevelop::FunctionDeclaration* > * functions,
                           EditorIntegrator* editor)
-                        : m_types(types), m_functions(functions)
-    { setEditor(editor); }
-    
+            : m_types(types), m_functions(functions) {
+        setEditor(editor);
+    }
+
     virtual ~PreDeclarationBuilder();
-    
+
 protected:
 //     virtual void visitNode(Php::AstNode* node);
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);

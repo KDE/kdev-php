@@ -31,35 +31,38 @@
 #include <language/codecompletion/normaldeclarationcompletionitem.h>
 #include "context.h"
 
-namespace KTextEditor {
-  class CodeCompletionModel;
-  class Document;
-  class Range;
-  class Cursor;
+namespace KTextEditor
+{
+class CodeCompletionModel;
+class Document;
+class Range;
+class Cursor;
 }
 
 class QModelIndex;
 
-namespace Php {
-    class CodeCompletionContext;
+namespace Php
+{
+class CodeCompletionContext;
 
 //A completion item used for completion of normal declarations while normal code-completion
-class KDEVPHPCOMPLETION_EXPORT NormalDeclarationCompletionItem : public KDevelop::NormalDeclarationCompletionItem {
+class KDEVPHPCOMPLETION_EXPORT NormalDeclarationCompletionItem : public KDevelop::NormalDeclarationCompletionItem
+{
 public:
-  NormalDeclarationCompletionItem(KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), KSharedPtr<KDevelop::CodeCompletionContext> context=KSharedPtr<KDevelop::CodeCompletionContext>(), int _inheritanceDepth = 0)
-    : KDevelop::NormalDeclarationCompletionItem(decl, context, _inheritanceDepth) {
-  }
-  
+    NormalDeclarationCompletionItem(KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), KSharedPtr<KDevelop::CodeCompletionContext> context = KSharedPtr<KDevelop::CodeCompletionContext>(), int _inheritanceDepth = 0)
+            : KDevelop::NormalDeclarationCompletionItem(decl, context, _inheritanceDepth) {
+    }
 
-  virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const;
+
+    virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const;
 
 protected:
-  virtual QString declarationName() const;
-  virtual void executed(KTextEditor::Document* document, const KTextEditor::Range& word);
-  virtual QWidget* createExpadingWidget(const KDevelop::CodeCompletionModel* model) const;
-  virtual bool createsExpadingWidget() const;
+    virtual QString declarationName() const;
+    virtual void executed(KTextEditor::Document* document, const KTextEditor::Range& word);
+    virtual QWidget* createExpadingWidget(const KDevelop::CodeCompletionModel* model) const;
+    virtual bool createsExpadingWidget() const;
 
-  KSharedPtr<CodeCompletionContext> completionContext() const;
+    KSharedPtr<CodeCompletionContext> completionContext() const;
 };
 
 }

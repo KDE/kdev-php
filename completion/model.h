@@ -35,21 +35,22 @@
 
 #include "context.h"
 
-namespace Php {
+namespace Php
+{
 
 class KDEVPHPCOMPLETION_EXPORT CodeCompletionModel : public KDevelop::CodeCompletionModel, public KTextEditor::CodeCompletionModelControllerInterface
 {
     Q_OBJECT
     Q_INTERFACES(KTextEditor::CodeCompletionModelControllerInterface)
 
-  public:
+public:
     CodeCompletionModel(QObject* parent = 0);
     virtual ~CodeCompletionModel();
 
     bool shouldAbortCompletion(KTextEditor::View* view, const KTextEditor::SmartRange &range, const QString &currentCompletion);
     KTextEditor::Range completionRange(KTextEditor::View* view, const KTextEditor::Cursor &position);
-    
-  protected:
+
+protected:
     virtual KDevelop::CodeCompletionWorker* createCompletionWorker();
 };
 

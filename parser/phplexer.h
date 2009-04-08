@@ -30,7 +30,7 @@ class QString;
 
 namespace KDevPG
 {
-    class TokenStream;
+class TokenStream;
 }
 
 namespace Php
@@ -44,7 +44,8 @@ class TokenStream;
  * For debugging output can be compared to php-tokens using the
  * test/test-tokenize.php script
  **/
-class KDEVPHPPARSER_EXPORT Lexer {
+class KDEVPHPPARSER_EXPORT Lexer
+{
 public:
     Lexer(TokenStream *tokenStream, const QString& contents, int initialState = HtmlState);
 
@@ -67,7 +68,7 @@ private:
 
     bool processVariable(QChar* it);
     bool isValidVariableIdentifier(QChar* it);
-    void createNewline( int pos );
+    void createNewline(int pos);
     bool isEscapedWithBackslash(QChar* it, int curPos, int startPos);
     bool isHeredocEnd(QChar* it);
 
@@ -77,8 +78,7 @@ private:
     int m_haltCompiler;
 
 public:
-    enum State
-    {
+    enum State {
         ErrorState = -1,
         HtmlState = 0,
         DefaultState = 1,

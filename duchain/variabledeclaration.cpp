@@ -24,27 +24,31 @@
 #include <language/duchain/duchainregister.h>
 
 using namespace KDevelop;
-namespace Php {
+namespace Php
+{
 REGISTER_DUCHAIN_ITEM(VariableDeclaration);
 
-VariableDeclaration::VariableDeclaration(VariableDeclarationData& data) : KDevelop::Declaration(data) {
+VariableDeclaration::VariableDeclaration(VariableDeclarationData& data) : KDevelop::Declaration(data)
+{
 }
 
 VariableDeclaration::VariableDeclaration(VariableDeclarationData& data, const KDevelop::SimpleRange& range)
-    : KDevelop::Declaration(data, range) {
+        : KDevelop::Declaration(data, range)
+{
 }
 
 VariableDeclaration::VariableDeclaration(const VariableDeclaration& rhs)
-    : KDevelop::Declaration(*new VariableDeclarationData( *rhs.d_func() )) {
-  setSmartRange(rhs.smartRange(), DocumentRangeObject::DontOwn);
+        : KDevelop::Declaration(*new VariableDeclarationData(*rhs.d_func()))
+{
+    setSmartRange(rhs.smartRange(), DocumentRangeObject::DontOwn);
 }
 
 VariableDeclaration::VariableDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context)
-  : KDevelop::Declaration(*new VariableDeclarationData, range)
+        : KDevelop::Declaration(*new VariableDeclarationData, range)
 {
-  d_func_dynamic()->setClassId(this);
-  if( context )
-    setContext( context );
+    d_func_dynamic()->setClassId(this);
+    if (context)
+        setContext(context);
 }
 VariableDeclaration::~VariableDeclaration()
 {

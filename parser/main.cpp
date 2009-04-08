@@ -72,13 +72,13 @@ int main(int argc, char* argv[])
         }
     }
 
-    foreach (QString fileName, files) {
+    foreach(QString fileName, files) {
         Php::ParseSession session;
-        if( !session.readFile( fileName, "utf-8" ) ) {
+        if (!session.readFile(fileName, "utf-8")) {
             qerr << "Can't open file " << fileName << endl;
             return 255;
         }
-        session.setDebug( debug );
+        session.setDebug(debug);
         qout << "Parsing file " << fileName << endl;
 
         if (printTokens) {
@@ -92,21 +92,20 @@ int main(int argc, char* argv[])
 
             qint64 line;
             qint64 column;
-            tokenStream.endPosition(tokenStream.size()-1, &line, &column);
+            tokenStream.endPosition(tokenStream.size() - 1, &line, &column);
 //             tokenStream.endPosition(lastTokenEnd, &line, &column);
             qDebug() << "last token endPosition: " << line << column;
-            
+
         }
 
         Php::StartAst* ast = 0;
-        if ( !session.parse( &ast ) ) {
-            exit( EXIT_FAILURE );
+        if (!session.parse(&ast)) {
+            exit(EXIT_FAILURE);
             qerr << "parse error" << endl;
             return 255;
         } else {
-            if( debug )
-            {
-                Php::DebugVisitor debugVisitor( session.tokenStream(), session.contents() );
+            if (debug) {
+                Php::DebugVisitor debugVisitor(session.tokenStream(), session.contents());
                 debugVisitor.visitStart(ast);
             }
             qout << "successfully parsed" << endl;
@@ -130,6 +129,6 @@ void printToken(int token, const Lexer& lexer, const QString& content)
 {
     int begin = lexer.tokenBegin();
     int end = lexer.tokenEnd();
-    qout << content.mid(begin, end-begin+1).replace("\n", "\\n")
-        << tokenText(token) << endl;
+    qout << content.mid(begin, end - begin + 1).replace("\n", "\\n")
+    << tokenText(token) << endl;
 }

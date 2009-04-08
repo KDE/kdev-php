@@ -32,16 +32,16 @@
 
 namespace KDevPG
 {
-    class MemoryPool;
+class MemoryPool;
 }
 namespace KDevelop
 {
-    class SimpleCursor;
+class SimpleCursor;
 }
 namespace Php
 {
-    class TokenStream;
-    class StartAst;
+class TokenStream;
+class StartAst;
 
 class KDEVPHPPARSER_EXPORT ParseSession
 {
@@ -49,30 +49,30 @@ public:
     ParseSession();
     ~ParseSession();
 
-    void setContents( const QString& contents );
+    void setContents(const QString& contents);
     void setCurrentDocument(const QString& filename);
-    bool readFile( const QString& filename, const char* charset = 0 );
-    void setDebug( bool );
+    bool readFile(const QString& filename, const char* charset = 0);
+    void setDebug(bool);
     TokenStream* tokenStream() const;
     QString contents() const;
 
-    bool parse( Php::StartAst** );
+    bool parse(Php::StartAst**);
     Parser* createParser(int initialState = Parser::HtmlState);
 
     QString symbol(qint64 token) const;
-    QString symbol( AstNode* node ) const;
+    QString symbol(AstNode* node) const;
 
-   /**
-    * Return the DocBlock before this token, if any
-    */
+    /**
+     * Return the DocBlock before this token, if any
+     */
     QString docComment(qint64 token) const;
 
-  /**
-   * Return the position (\a line%, \a column%) of the \a offset in the file.
-   *
-   * \note the line starts from 0.
-   */
-    KDevelop::SimpleCursor positionAt( qint64 offset ) const;
+    /**
+     * Return the position (\a line%, \a column%) of the \a offset in the file.
+     *
+     * \note the line starts from 0.
+     */
+    KDevelop::SimpleCursor positionAt(qint64 offset) const;
 
     QList<KDevelop::ProblemPointer> problems();
 

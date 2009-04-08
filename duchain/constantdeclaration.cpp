@@ -24,27 +24,31 @@
 #include <language/duchain/duchainregister.h>
 
 using namespace KDevelop;
-namespace Php {
+namespace Php
+{
 REGISTER_DUCHAIN_ITEM(ConstantDeclaration);
 
-ConstantDeclaration::ConstantDeclaration(ConstantDeclarationData& data) : KDevelop::Declaration(data) {
+ConstantDeclaration::ConstantDeclaration(ConstantDeclarationData& data) : KDevelop::Declaration(data)
+{
 }
 
 ConstantDeclaration::ConstantDeclaration(ConstantDeclarationData& data, const KDevelop::SimpleRange& range)
-    : KDevelop::Declaration(data, range) {
+        : KDevelop::Declaration(data, range)
+{
 }
 
 ConstantDeclaration::ConstantDeclaration(const ConstantDeclaration& rhs)
-    : KDevelop::Declaration(*new ConstantDeclarationData( *rhs.d_func() )) {
-  setSmartRange(rhs.smartRange(), DocumentRangeObject::DontOwn);
+        : KDevelop::Declaration(*new ConstantDeclarationData(*rhs.d_func()))
+{
+    setSmartRange(rhs.smartRange(), DocumentRangeObject::DontOwn);
 }
 
 ConstantDeclaration::ConstantDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context)
-  : KDevelop::Declaration(*new ConstantDeclarationData, range)
+        : KDevelop::Declaration(*new ConstantDeclarationData, range)
 {
-  d_func_dynamic()->setClassId(this);
-  if( context )
-    setContext( context );
+    d_func_dynamic()->setClassId(this);
+    if (context)
+        setContext(context);
 }
 ConstantDeclaration::~ConstantDeclaration()
 {

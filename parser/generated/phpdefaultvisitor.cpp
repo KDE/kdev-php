@@ -9,15 +9,12 @@ namespace Php
 void DefaultVisitor::visitAdditiveExpression(AdditiveExpressionAst *node)
 {
     visitNode(node->expression);
-    if (node->additionalExpressionSequence)
-    {
+    if (node->additionalExpressionSequence) {
         const KDevPG::ListNode<AdditiveExpressionRestAst*> *__it = node->additionalExpressionSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -52,15 +49,12 @@ void DefaultVisitor::visitAssignmentExpressionEqual(AssignmentExpressionEqualAst
 
 void DefaultVisitor::visitAssignmentList(AssignmentListAst *node)
 {
-    if (node->elementSequence)
-    {
+    if (node->elementSequence) {
         const KDevPG::ListNode<AssignmentListElementAst*> *__it = node->elementSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -73,15 +67,12 @@ void DefaultVisitor::visitAssignmentListElement(AssignmentListElementAst *node)
 void DefaultVisitor::visitBaseVariable(BaseVariableAst *node)
 {
     visitNode(node->var);
-    if (node->offsetItemsSequence)
-    {
+    if (node->offsetItemsSequence) {
         const KDevPG::ListNode<DimListItemAst*> *__it = node->offsetItemsSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
     visitNode(node->staticMember);
 }
@@ -94,85 +85,67 @@ void DefaultVisitor::visitBaseVariableWithFunctionCalls(BaseVariableWithFunction
 
 void DefaultVisitor::visitBitAndExpression(BitAndExpressionAst *node)
 {
-    if (node->expressionSequence)
-    {
+    if (node->expressionSequence) {
         const KDevPG::ListNode<EqualityExpressionAst*> *__it = node->expressionSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
 void DefaultVisitor::visitBitOrExpression(BitOrExpressionAst *node)
 {
-    if (node->expressionSequence)
-    {
+    if (node->expressionSequence) {
         const KDevPG::ListNode<BitXorExpressionAst*> *__it = node->expressionSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
 void DefaultVisitor::visitBitXorExpression(BitXorExpressionAst *node)
 {
-    if (node->expressionSequence)
-    {
+    if (node->expressionSequence) {
         const KDevPG::ListNode<BitAndExpressionAst*> *__it = node->expressionSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
 void DefaultVisitor::visitBooleanAndExpression(BooleanAndExpressionAst *node)
 {
-    if (node->expressionSequence)
-    {
+    if (node->expressionSequence) {
         const KDevPG::ListNode<BitOrExpressionAst*> *__it = node->expressionSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
 void DefaultVisitor::visitBooleanOrExpression(BooleanOrExpressionAst *node)
 {
-    if (node->expressionSequence)
-    {
+    if (node->expressionSequence) {
         const KDevPG::ListNode<BooleanAndExpressionAst*> *__it = node->expressionSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
 void DefaultVisitor::visitCaseList(CaseListAst *node)
 {
-    if (node->caseItemsSequence)
-    {
+    if (node->caseItemsSequence) {
         const KDevPG::ListNode<Case_itemAst*> *__it = node->caseItemsSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -189,15 +162,12 @@ void DefaultVisitor::visitCatch_item(Catch_itemAst *node)
 
 void DefaultVisitor::visitClassBody(ClassBodyAst *node)
 {
-    if (node->classStatementsSequence)
-    {
+    if (node->classStatementsSequence) {
         const KDevPG::ListNode<ClassStatementAst*> *__it = node->classStatementsSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -223,15 +193,12 @@ void DefaultVisitor::visitClassExtends(ClassExtendsAst *node)
 
 void DefaultVisitor::visitClassImplements(ClassImplementsAst *node)
 {
-    if (node->implementsSequence)
-    {
+    if (node->implementsSequence) {
         const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -259,15 +226,12 @@ void DefaultVisitor::visitClassVariable(ClassVariableAst *node)
 
 void DefaultVisitor::visitClassVariableDeclaration(ClassVariableDeclarationAst *node)
 {
-    if (node->varsSequence)
-    {
+    if (node->varsSequence) {
         const KDevPG::ListNode<ClassVariableAst*> *__it = node->varsSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -337,15 +301,12 @@ void DefaultVisitor::visitDynamicClassNameReference(DynamicClassNameReferenceAst
 
 void DefaultVisitor::visitDynamicClassNameVariableProperties(DynamicClassNameVariablePropertiesAst *node)
 {
-    if (node->propertiesSequence)
-    {
+    if (node->propertiesSequence) {
         const KDevPG::ListNode<DynamicClassNameVariablePropertyAst*> *__it = node->propertiesSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -361,15 +322,12 @@ void DefaultVisitor::visitElseSingle(ElseSingleAst *node)
 
 void DefaultVisitor::visitElseifList(ElseifListAst *node)
 {
-    if (node->elseifListItemSequence)
-    {
+    if (node->elseifListItemSequence) {
         const KDevPG::ListNode<ElseifListItemAst*> *__it = node->elseifListItemSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -386,15 +344,12 @@ void DefaultVisitor::visitEncaps(EncapsAst *node)
 
 void DefaultVisitor::visitEncapsList(EncapsListAst *node)
 {
-    if (node->encapsSequence)
-    {
+    if (node->encapsSequence) {
         const KDevPG::ListNode<EncapsAst*> *__it = node->encapsSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -413,15 +368,12 @@ void DefaultVisitor::visitEncapsVarOffset(EncapsVarOffsetAst *)
 void DefaultVisitor::visitEqualityExpression(EqualityExpressionAst *node)
 {
     visitNode(node->expression);
-    if (node->additionalExpressionSequence)
-    {
+    if (node->additionalExpressionSequence) {
         const KDevPG::ListNode<EqualityExpressionRestAst*> *__it = node->additionalExpressionSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -437,15 +389,12 @@ void DefaultVisitor::visitExpr(ExprAst *node)
 
 void DefaultVisitor::visitForExpr(ForExprAst *node)
 {
-    if (node->exprsSequence)
-    {
+    if (node->exprsSequence) {
         const KDevPG::ListNode<ExprAst*> *__it = node->exprsSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -477,15 +426,12 @@ void DefaultVisitor::visitFunctionCall(FunctionCallAst *node)
 
 void DefaultVisitor::visitFunctionCallParameterList(FunctionCallParameterListAst *node)
 {
-    if (node->parametersSequence)
-    {
+    if (node->parametersSequence) {
         const KDevPG::ListNode<FunctionCallParameterListElementAst*> *__it = node->parametersSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -515,15 +461,12 @@ void DefaultVisitor::visitIdentifier(IdentifierAst *)
 
 void DefaultVisitor::visitInnerStatementList(InnerStatementListAst *node)
 {
-    if (node->statementsSequence)
-    {
+    if (node->statementsSequence) {
         const KDevPG::ListNode<TopStatementAst*> *__it = node->statementsSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -536,43 +479,34 @@ void DefaultVisitor::visitInterfaceDeclarationStatement(InterfaceDeclarationStat
 
 void DefaultVisitor::visitLogicalAndExpression(LogicalAndExpressionAst *node)
 {
-    if (node->expressionSequence)
-    {
+    if (node->expressionSequence) {
         const KDevPG::ListNode<PrintExpressionAst*> *__it = node->expressionSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
 void DefaultVisitor::visitLogicalOrExpression(LogicalOrExpressionAst *node)
 {
-    if (node->expressionSequence)
-    {
+    if (node->expressionSequence) {
         const KDevPG::ListNode<LogicalXorExpressionAst*> *__it = node->expressionSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
 void DefaultVisitor::visitLogicalXorExpression(LogicalXorExpressionAst *node)
 {
-    if (node->expressionSequence)
-    {
+    if (node->expressionSequence) {
         const KDevPG::ListNode<LogicalAndExpressionAst*> *__it = node->expressionSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -584,15 +518,12 @@ void DefaultVisitor::visitMethodBody(MethodBodyAst *node)
 void DefaultVisitor::visitMultiplicativeExpression(MultiplicativeExpressionAst *node)
 {
     visitNode(node->expression);
-    if (node->additionalExpressionSequence)
-    {
+    if (node->additionalExpressionSequence) {
         const KDevPG::ListNode<MultiplicativeExpressionRestAst*> *__it = node->additionalExpressionSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -608,15 +539,12 @@ void DefaultVisitor::visitNewElseSingle(NewElseSingleAst *node)
 
 void DefaultVisitor::visitNewElseifList(NewElseifListAst *node)
 {
-    if (node->newElseifListItemSequence)
-    {
+    if (node->newElseifListItemSequence) {
         const KDevPG::ListNode<NewelseifListItemAst*> *__it = node->newElseifListItemSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -629,15 +557,12 @@ void DefaultVisitor::visitNewelseifListItem(NewelseifListItemAst *node)
 void DefaultVisitor::visitObjectDimList(ObjectDimListAst *node)
 {
     visitNode(node->variableName);
-    if (node->offsetItemsSequence)
-    {
+    if (node->offsetItemsSequence) {
         const KDevPG::ListNode<DimListItemAst*> *__it = node->offsetItemsSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -664,15 +589,12 @@ void DefaultVisitor::visitParameter(ParameterAst *node)
 
 void DefaultVisitor::visitParameterList(ParameterListAst *node)
 {
-    if (node->parametersSequence)
-    {
+    if (node->parametersSequence) {
         const KDevPG::ListNode<ParameterAst*> *__it = node->parametersSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -688,15 +610,12 @@ void DefaultVisitor::visitPrintExpression(PrintExpressionAst *node)
 void DefaultVisitor::visitRelationalExpression(RelationalExpressionAst *node)
 {
     visitNode(node->expression);
-    if (node->additionalExpressionSequence)
-    {
+    if (node->additionalExpressionSequence) {
         const KDevPG::ListNode<RelationalExpressionRestAst*> *__it = node->additionalExpressionSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
     visitNode(node->instanceofType);
 }
@@ -720,15 +639,12 @@ void DefaultVisitor::visitSemicolonOrCloseTag(SemicolonOrCloseTagAst *)
 void DefaultVisitor::visitShiftExpression(ShiftExpressionAst *node)
 {
     visitNode(node->expression);
-    if (node->additionalExpressionSequence)
-    {
+    if (node->additionalExpressionSequence) {
         const KDevPG::ListNode<ShiftExpressionRestAst*> *__it = node->additionalExpressionSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -764,25 +680,19 @@ void DefaultVisitor::visitStatement(StatementAst *node)
     visitNode(node->foreachVariable);
     visitNode(node->foreachStatement);
     visitNode(node->declareItem);
-    if (node->catchesSequence)
-    {
+    if (node->catchesSequence) {
         const KDevPG::ListNode<Catch_itemAst*> *__it = node->catchesSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
-    if (node->unsetVariablesSequence)
-    {
+    if (node->unsetVariablesSequence) {
         const KDevPG::ListNode<VariableAst*> *__it = node->unsetVariablesSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
     visitNode(node->expr);
     visitNode(node->doStatement);
@@ -790,60 +700,45 @@ void DefaultVisitor::visitStatement(StatementAst *node)
     visitNode(node->breakExpr);
     visitNode(node->continueExpr);
     visitNode(node->returnExpr);
-    if (node->globalVarsSequence)
-    {
+    if (node->globalVarsSequence) {
         const KDevPG::ListNode<GlobalVarAst*> *__it = node->globalVarsSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
-    if (node->staticVarsSequence)
-    {
+    if (node->staticVarsSequence) {
         const KDevPG::ListNode<StaticVarAst*> *__it = node->staticVarsSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
-    if (node->echoExprsSequence)
-    {
+    if (node->echoExprsSequence) {
         const KDevPG::ListNode<ExprAst*> *__it = node->echoExprsSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
     visitNode(node->throwExpr);
 }
 
 void DefaultVisitor::visitStaticArrayPairValue(StaticArrayPairValueAst *node)
 {
-    if (node->val1Sequence)
-    {
+    if (node->val1Sequence) {
         const KDevPG::ListNode<StaticScalarAst*> *__it = node->val1Sequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
-    if (node->val2Sequence)
-    {
+    if (node->val2Sequence) {
         const KDevPG::ListNode<StaticScalarAst*> *__it = node->val2Sequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -859,15 +754,12 @@ void DefaultVisitor::visitStaticScalar(StaticScalarAst *node)
     visitNode(node->constantOrClassConst);
     visitNode(node->plusValue);
     visitNode(node->minusValue);
-    if (node->arrayValuesSequence)
-    {
+    if (node->arrayValuesSequence) {
         const KDevPG::ListNode<StaticArrayPairValueAst*> *__it = node->arrayValuesSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -901,26 +793,20 @@ void DefaultVisitor::visitUnaryExpression(UnaryExpressionAst *node)
 
 void DefaultVisitor::visitUnaryExpressionNotPlusminus(UnaryExpressionNotPlusminusAst *node)
 {
-    if (node->prefixOperatorSequence)
-    {
+    if (node->prefixOperatorSequence) {
         const KDevPG::ListNode<PostprefixOperatorAst*> *__it = node->prefixOperatorSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
     visitNode(node->varExpression);
-    if (node->postfixOperatorSequence)
-    {
+    if (node->postfixOperatorSequence) {
         const KDevPG::ListNode<PostprefixOperatorAst*> *__it = node->postfixOperatorSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -943,25 +829,19 @@ void DefaultVisitor::visitVarExpressionNormal(VarExpressionNormalAst *node)
     visitNode(node->encapsList);
     visitNode(node->variable);
     visitNode(node->scalar);
-    if (node->arrayValuesSequence)
-    {
+    if (node->arrayValuesSequence) {
         const KDevPG::ListNode<ArrayPairValueAst*> *__it = node->arrayValuesSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
-    if (node->issetVariableSequence)
-    {
+    if (node->issetVariableSequence) {
         const KDevPG::ListNode<VariableAst*> *__it = node->issetVariableSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
     visitNode(node->emptyVarialbe);
     visitNode(node->newObject);
@@ -971,15 +851,12 @@ void DefaultVisitor::visitVarExpressionNormal(VarExpressionNormalAst *node)
 void DefaultVisitor::visitVariable(VariableAst *node)
 {
     visitNode(node->var);
-    if (node->variablePropertiesSequence)
-    {
+    if (node->variablePropertiesSequence) {
         const KDevPG::ListNode<VariablePropertyAst*> *__it = node->variablePropertiesSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 
@@ -1002,15 +879,12 @@ void DefaultVisitor::visitVariableProperty(VariablePropertyAst *node)
 void DefaultVisitor::visitVariableWithoutObjects(VariableWithoutObjectsAst *node)
 {
     visitNode(node->variable);
-    if (node->offsetItemsSequence)
-    {
+    if (node->offsetItemsSequence) {
         const KDevPG::ListNode<DimListItemAst*> *__it = node->offsetItemsSequence->front(), *__end = __it;
-        do
-        {
+        do {
             visitNode(__it->element);
             __it = __it->next;
-        }
-        while (__it != __end);
+        } while (__it != __end);
     }
 }
 

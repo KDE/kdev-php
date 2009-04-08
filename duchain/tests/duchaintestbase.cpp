@@ -57,7 +57,7 @@ void DUChainTestBase::initTestCase()
 
 CompletionTreeItemPointer DUChainTestBase::searchDeclaration(QList<CompletionTreeItemPointer> items, Declaration* declaration)
 {
-    foreach (CompletionTreeItemPointer item, items) {
+    foreach(CompletionTreeItemPointer item, items) {
         if (item->declaration().data() == declaration) {
             return item;
         }
@@ -68,10 +68,10 @@ CompletionTreeItemPointer DUChainTestBase::searchDeclaration(QList<CompletionTre
 bool DUChainTestBase::hasImportedParentContext(TopDUContext* top, DUContext* lookingFor)
 {
     kDebug() << "this topcontext has " << top->importedParentContexts().count() << " imported parent contexts"
-             << "\n we are looking for: " << lookingFor->url().byteArray();
-    foreach (DUContext::Import import, top->importedParentContexts()) {
-        if ( import.context(top) ) {
-          kDebug() << import.context(top)->url().byteArray();
+    << "\n we are looking for: " << lookingFor->url().byteArray();
+    foreach(DUContext::Import import, top->importedParentContexts()) {
+        if (import.context(top)) {
+            kDebug() << import.context(top)->url().byteArray();
         }
         if (import.context(top) == lookingFor) {
             return true;
@@ -89,12 +89,12 @@ TopDUContext* DUChainTestBase::parseAdditionalFile(IndexedString fileName, QByte
 
     DeclarationBuilder declarationBuilder(session);
     TopDUContext* top = declarationBuilder.build(fileName, ast);
-    
+
     UseBuilder useBuilder(session);
     useBuilder.buildUses(ast);
 
     delete session;
-    
+
     return top;
 }
 
@@ -119,14 +119,14 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QSt
 
     static int testNumber = 0;
     if (url.isEmpty()) url = QString("file:///internal/%1").arg(testNumber++);
-    
+
 
     DeclarationBuilder declarationBuilder(session);
     TopDUContext* top = declarationBuilder.build(IndexedString(url), ast);
 
     UseBuilder useBuilder(session);
     useBuilder.buildUses(ast);
-  
+
     if (dump & DumpDUChain) {
         kDebug() << "===== DUChain:";
 
@@ -138,8 +138,8 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QSt
         kDebug() << "===== Types:";
         DUChainWriteLocker lock(DUChain::lock());
         DumpTypes dt;
-        foreach (const AbstractType::Ptr& type, declarationBuilder.topTypes())
-            dt.dump(type.unsafeData());
+        foreach(const AbstractType::Ptr& type, declarationBuilder.topTypes())
+        dt.dump(type.unsafeData());
     }
 
     if (dump)

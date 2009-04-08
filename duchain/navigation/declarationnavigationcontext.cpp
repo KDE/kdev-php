@@ -30,83 +30,84 @@
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/classdeclaration.h>
 
-namespace Php {
+namespace Php
+{
 using namespace KDevelop;
 
-DeclarationNavigationContext::DeclarationNavigationContext( DeclarationPointer decl, KDevelop::TopDUContextPointer topContext, AbstractNavigationContext* previousContext)
-  : AbstractDeclarationNavigationContext( decl, topContext, previousContext )
+DeclarationNavigationContext::DeclarationNavigationContext(DeclarationPointer decl, KDevelop::TopDUContextPointer topContext, AbstractNavigationContext* previousContext)
+        : AbstractDeclarationNavigationContext(decl, topContext, previousContext)
 {
 }
 
 NavigationContextPointer DeclarationNavigationContext::registerChild(DeclarationPointer declaration)
 {
-  return AbstractDeclarationNavigationContext::registerChild(new DeclarationNavigationContext(declaration, m_topContext, this));
+    return AbstractDeclarationNavigationContext::registerChild(new DeclarationNavigationContext(declaration, m_topContext, this));
 }
 
 void DeclarationNavigationContext::htmlClass()
 {
-  StructureType::Ptr klass = m_declaration->abstractType().cast<StructureType>();
-  Q_ASSERT(klass);
-  ClassDeclaration* classDecl = dynamic_cast<ClassDeclaration*>(klass->declaration(m_topContext.data()));
-  if ( classDecl ) {
-    // write class modifier
-    switch ( classDecl->classModifier() ) {
-      case ClassDeclarationData::Abstract:
-        modifyHtml() += "abstract ";
-        break;
-      case ClassDeclarationData::Final:
-        modifyHtml() += "final ";
-        break;
-      default:
-        //nothing
-        break;
-    }
-    // write class type
-    if ( classDecl->classType() == ClassDeclarationData::Interface ) {
-      modifyHtml() += "interface ";
-    } else {
-      modifyHtml() += "class ";
-    }
-    // write class identifier
-    eventuallyMakeTypeLinks(m_declaration->abstractType());
-    // write inheritance
-    if ( classDecl->baseClassesSize() > 0 ) {
-      AbstractType::Ptr extends;
-      QList<AbstractType::Ptr> implements;
-      FOREACH_FUNCTION( const BaseClassInstance& base, classDecl->baseClasses ) {
-        StructureType::Ptr stype = base.baseClass.type<StructureType>();
-        if ( stype ) {
-          ClassDeclaration *classDecl = dynamic_cast<ClassDeclaration*>(stype->declaration(m_topContext.data()));
-          if ( classDecl ) {
-            if ( classDecl->classType() == ClassDeclarationData::Interface ) {
-              implements.append(base.baseClass.abstractType());
-            } else {
-              extends = base.baseClass.abstractType();
-            }
-          }
-        }
-      }
-      // write parent class
-      if ( extends ) {
-        modifyHtml() += " extends ";
-        eventuallyMakeTypeLinks(extends);
-      }
-      // write implemented interfaces
-      if ( !implements.isEmpty() ) {
-        modifyHtml() += " implements ";
-        for ( QList<AbstractType::Ptr>::iterator i = implements.begin(); ; ) {
-          eventuallyMakeTypeLinks(*i);
-          ++i;
-          if ( i != implements.end() ) {
-            modifyHtml() += ", ";
-          } else {
+    StructureType::Ptr klass = m_declaration->abstractType().cast<StructureType>();
+    Q_ASSERT(klass);
+    ClassDeclaration* classDecl = dynamic_cast<ClassDeclaration*>(klass->declaration(m_topContext.data()));
+    if (classDecl) {
+        // write class modifier
+        switch (classDecl->classModifier()) {
+        case ClassDeclarationData::Abstract:
+            modifyHtml() += "abstract ";
             break;
-          }
+        case ClassDeclarationData::Final:
+            modifyHtml() += "final ";
+            break;
+        default:
+            //nothing
+            break;
         }
-      }
+        // write class type
+        if (classDecl->classType() == ClassDeclarationData::Interface) {
+            modifyHtml() += "interface ";
+        } else {
+            modifyHtml() += "class ";
+        }
+        // write class identifier
+        eventuallyMakeTypeLinks(m_declaration->abstractType());
+        // write inheritance
+        if (classDecl->baseClassesSize() > 0) {
+            AbstractType::Ptr extends;
+            QList<AbstractType::Ptr> implements;
+            FOREACH_FUNCTION(const BaseClassInstance& base, classDecl->baseClasses) {
+                StructureType::Ptr stype = base.baseClass.type<StructureType>();
+                if (stype) {
+                    ClassDeclaration *classDecl = dynamic_cast<ClassDeclaration*>(stype->declaration(m_topContext.data()));
+                    if (classDecl) {
+                        if (classDecl->classType() == ClassDeclarationData::Interface) {
+                            implements.append(base.baseClass.abstractType());
+                        } else {
+                            extends = base.baseClass.abstractType();
+                        }
+                    }
+                }
+            }
+            // write parent class
+            if (extends) {
+                modifyHtml() += " extends ";
+                eventuallyMakeTypeLinks(extends);
+            }
+            // write implemented interfaces
+            if (!implements.isEmpty()) {
+                modifyHtml() += " implements ";
+                for (QList<AbstractType::Ptr>::iterator i = implements.begin(); ;) {
+                    eventuallyMakeTypeLinks(*i);
+                    ++i;
+                    if (i != implements.end()) {
+                        modifyHtml() += ", ";
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        modifyHtml() += " ";
     }
-    modifyHtml() += " ";
-  }
 }
 
 }

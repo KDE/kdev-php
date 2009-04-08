@@ -133,8 +133,7 @@ struct WhileStatementAst;
 
 class Lexer;
 
-enum ModifierFlags
-{
+enum ModifierFlags {
     ModifierPrivate      = 1,
     ModifierPublic       = 1 << 1,
     ModifierProtected    = 1 << 2,
@@ -143,22 +142,19 @@ enum ModifierFlags
     ModifierAbstract     = 1 << 5
 };
 
-enum ClassModifier
-{
+enum ClassModifier {
     NormalClass,
     AbstractClass,
     FinalClass
 };
 
-enum ScalarTypes
-{
+enum ScalarTypes {
     ScalarTypeInt,
     ScalarTypeFloat,
     ScalarTypeString
 };
 
-enum CastType
-{
+enum CastType {
     CastInt,
     CastDouble,
     CastString,
@@ -168,8 +164,7 @@ enum CastType
     CastUnset
 };
 
-enum OperationType
-{
+enum OperationType {
     OperationPlus = 1,
     OperationMinus,
     OperationConcat,
@@ -183,10 +178,8 @@ enum OperationType
     OperationSr
 };
 
-struct KDEVPHPPARSER_EXPORT AstNode
-{
-    enum AstNodeKind
-    {
+struct KDEVPHPPARSER_EXPORT AstNode {
+    enum AstNodeKind {
         AdditiveExpressionKind = 1000,
         AdditiveExpressionRestKind = 1001,
         ArrayPairValueKind = 1002,
@@ -302,24 +295,21 @@ struct KDEVPHPPARSER_EXPORT AstNode
 
 };
 
-struct KDEVPHPPARSER_EXPORT AdditiveExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT AdditiveExpressionAst: public AstNode {
     enum { KIND = AdditiveExpressionKind };
 
     MultiplicativeExpressionAst *expression;
     const KDevPG::ListNode<AdditiveExpressionRestAst *> *additionalExpressionSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT AdditiveExpressionRestAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT AdditiveExpressionRestAst: public AstNode {
     enum { KIND = AdditiveExpressionRestKind };
 
     OperationType operation;
     MultiplicativeExpressionAst *expression;
 };
 
-struct KDEVPHPPARSER_EXPORT ArrayPairValueAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ArrayPairValueAst: public AstNode {
     enum { KIND = ArrayPairValueKind };
 
     ExprAst *expr;
@@ -328,8 +318,7 @@ struct KDEVPHPPARSER_EXPORT ArrayPairValueAst: public AstNode
     VariableAst *variable;
 };
 
-struct KDEVPHPPARSER_EXPORT AssignmentExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT AssignmentExpressionAst: public AstNode {
     enum { KIND = AssignmentExpressionKind };
 
     OperationType operation;
@@ -338,36 +327,31 @@ struct KDEVPHPPARSER_EXPORT AssignmentExpressionAst: public AstNode
     AssignmentExpressionAst *assignmentExpression;
 };
 
-struct KDEVPHPPARSER_EXPORT AssignmentExpressionCheckIfVariableAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT AssignmentExpressionCheckIfVariableAst: public AstNode {
     enum { KIND = AssignmentExpressionCheckIfVariableKind };
 
 };
 
-struct KDEVPHPPARSER_EXPORT AssignmentExpressionEqualAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT AssignmentExpressionEqualAst: public AstNode {
     enum { KIND = AssignmentExpressionEqualKind };
 
     AssignmentExpressionAst *assignmentExpression;
 };
 
-struct KDEVPHPPARSER_EXPORT AssignmentListAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT AssignmentListAst: public AstNode {
     enum { KIND = AssignmentListKind };
 
     const KDevPG::ListNode<AssignmentListElementAst *> *elementSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT AssignmentListElementAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT AssignmentListElementAst: public AstNode {
     enum { KIND = AssignmentListElementKind };
 
     VariableAst *variable;
     AssignmentListAst *assignmentList;
 };
 
-struct KDEVPHPPARSER_EXPORT BaseVariableAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT BaseVariableAst: public AstNode {
     enum { KIND = BaseVariableKind };
 
     CompoundVariableWithSimpleIndirectReferenceAst *var;
@@ -375,58 +359,50 @@ struct KDEVPHPPARSER_EXPORT BaseVariableAst: public AstNode
     StaticMemberAst *staticMember;
 };
 
-struct KDEVPHPPARSER_EXPORT BaseVariableWithFunctionCallsAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT BaseVariableWithFunctionCallsAst: public AstNode {
     enum { KIND = BaseVariableWithFunctionCallsKind };
 
     FunctionCallAst *functionCall;
     BaseVariableAst *baseVariable;
 };
 
-struct KDEVPHPPARSER_EXPORT BitAndExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT BitAndExpressionAst: public AstNode {
     enum { KIND = BitAndExpressionKind };
 
     const KDevPG::ListNode<EqualityExpressionAst *> *expressionSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT BitOrExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT BitOrExpressionAst: public AstNode {
     enum { KIND = BitOrExpressionKind };
 
     const KDevPG::ListNode<BitXorExpressionAst *> *expressionSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT BitXorExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT BitXorExpressionAst: public AstNode {
     enum { KIND = BitXorExpressionKind };
 
     const KDevPG::ListNode<BitAndExpressionAst *> *expressionSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT BooleanAndExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT BooleanAndExpressionAst: public AstNode {
     enum { KIND = BooleanAndExpressionKind };
 
     const KDevPG::ListNode<BitOrExpressionAst *> *expressionSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT BooleanOrExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT BooleanOrExpressionAst: public AstNode {
     enum { KIND = BooleanOrExpressionKind };
 
     const KDevPG::ListNode<BooleanAndExpressionAst *> *expressionSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT CaseListAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT CaseListAst: public AstNode {
     enum { KIND = CaseListKind };
 
     const KDevPG::ListNode<Case_itemAst *> *caseItemsSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT Case_itemAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT Case_itemAst: public AstNode {
     enum { KIND = Case_itemKind };
 
     ExprAst *expr;
@@ -434,31 +410,27 @@ struct KDEVPHPPARSER_EXPORT Case_itemAst: public AstNode
     qint64 def;
 };
 
-struct KDEVPHPPARSER_EXPORT Catch_itemAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT Catch_itemAst: public AstNode {
     enum { KIND = Catch_itemKind };
 
     qint64 catchClass;
     InnerStatementListAst *statements;
 };
 
-struct KDEVPHPPARSER_EXPORT ClassBodyAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ClassBodyAst: public AstNode {
     enum { KIND = ClassBodyKind };
 
     const KDevPG::ListNode<ClassStatementAst *> *classStatementsSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT ClassConstantDeclarationAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ClassConstantDeclarationAst: public AstNode {
     enum { KIND = ClassConstantDeclarationKind };
 
     IdentifierAst *identifier;
     StaticScalarAst *scalar;
 };
 
-struct KDEVPHPPARSER_EXPORT ClassDeclarationStatementAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ClassDeclarationStatementAst: public AstNode {
     enum { KIND = ClassDeclarationStatementKind };
 
     OptionalClassModifierAst *modifier;
@@ -468,30 +440,26 @@ struct KDEVPHPPARSER_EXPORT ClassDeclarationStatementAst: public AstNode
     ClassBodyAst *body;
 };
 
-struct KDEVPHPPARSER_EXPORT ClassExtendsAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ClassExtendsAst: public AstNode {
     enum { KIND = ClassExtendsKind };
 
     IdentifierAst *identifier;
 };
 
-struct KDEVPHPPARSER_EXPORT ClassImplementsAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ClassImplementsAst: public AstNode {
     enum { KIND = ClassImplementsKind };
 
     const KDevPG::ListNode<IdentifierAst *> *implementsSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT ClassNameReferenceAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ClassNameReferenceAst: public AstNode {
     enum { KIND = ClassNameReferenceKind };
 
     IdentifierAst *identifier;
     DynamicClassNameReferenceAst *dynamicClassNameReference;
 };
 
-struct KDEVPHPPARSER_EXPORT ClassStatementAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ClassStatementAst: public AstNode {
     enum { KIND = ClassStatementKind };
 
     ClassConstantDeclarationAst *consts;
@@ -502,39 +470,34 @@ struct KDEVPHPPARSER_EXPORT ClassStatementAst: public AstNode
     MethodBodyAst *methodBody;
 };
 
-struct KDEVPHPPARSER_EXPORT ClassVariableAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ClassVariableAst: public AstNode {
     enum { KIND = ClassVariableKind };
 
     VariableIdentifierAst *variable;
     StaticScalarAst *value;
 };
 
-struct KDEVPHPPARSER_EXPORT ClassVariableDeclarationAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ClassVariableDeclarationAst: public AstNode {
     enum { KIND = ClassVariableDeclarationKind };
 
     const KDevPG::ListNode<ClassVariableAst *> *varsSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT CommonScalarAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT CommonScalarAst: public AstNode {
     enum { KIND = CommonScalarKind };
 
     ScalarTypes scalarType;
     qint64 string;
 };
 
-struct KDEVPHPPARSER_EXPORT CompoundVariableAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT CompoundVariableAst: public AstNode {
     enum { KIND = CompoundVariableKind };
 
     VariableIdentifierAst *variable;
     ExprAst *expr;
 };
 
-struct KDEVPHPPARSER_EXPORT CompoundVariableWithSimpleIndirectReferenceAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT CompoundVariableWithSimpleIndirectReferenceAst: public AstNode {
     enum { KIND = CompoundVariableWithSimpleIndirectReferenceKind };
 
     VariableIdentifierAst *indirectVariable;
@@ -542,8 +505,7 @@ struct KDEVPHPPARSER_EXPORT CompoundVariableWithSimpleIndirectReferenceAst: publ
     VariableIdentifierAst *variable;
 };
 
-struct KDEVPHPPARSER_EXPORT ConditionalExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ConditionalExpressionAst: public AstNode {
     enum { KIND = ConditionalExpressionKind };
 
     BooleanOrExpressionAst *expression;
@@ -551,53 +513,46 @@ struct KDEVPHPPARSER_EXPORT ConditionalExpressionAst: public AstNode
     ConditionalExpressionAst *elseExpression;
 };
 
-struct KDEVPHPPARSER_EXPORT ConstantOrClassConstAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ConstantOrClassConstAst: public AstNode {
     enum { KIND = ConstantOrClassConstKind };
 
     IdentifierAst *className;
     IdentifierAst *constant;
 };
 
-struct KDEVPHPPARSER_EXPORT CtorArgumentsAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT CtorArgumentsAst: public AstNode {
     enum { KIND = CtorArgumentsKind };
 
     FunctionCallParameterListAst *parameterList;
 };
 
-struct KDEVPHPPARSER_EXPORT DeclareItemAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT DeclareItemAst: public AstNode {
     enum { KIND = DeclareItemKind };
 
     StaticScalarAst *scalar;
 };
 
-struct KDEVPHPPARSER_EXPORT DeclareStatementAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT DeclareStatementAst: public AstNode {
     enum { KIND = DeclareStatementKind };
 
     StatementAst *statement;
     InnerStatementListAst *statements;
 };
 
-struct KDEVPHPPARSER_EXPORT DimListItemAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT DimListItemAst: public AstNode {
     enum { KIND = DimListItemKind };
 
     DimOffsetAst *dimOffset;
     ExprAst *expr;
 };
 
-struct KDEVPHPPARSER_EXPORT DimOffsetAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT DimOffsetAst: public AstNode {
     enum { KIND = DimOffsetKind };
 
     ExprAst *expr;
 };
 
-struct KDEVPHPPARSER_EXPORT DynamicClassNameReferenceAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT DynamicClassNameReferenceAst: public AstNode {
     enum { KIND = DynamicClassNameReferenceKind };
 
     BaseVariableAst *baseVariable;
@@ -605,59 +560,51 @@ struct KDEVPHPPARSER_EXPORT DynamicClassNameReferenceAst: public AstNode
     DynamicClassNameVariablePropertiesAst *properties;
 };
 
-struct KDEVPHPPARSER_EXPORT DynamicClassNameVariablePropertiesAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT DynamicClassNameVariablePropertiesAst: public AstNode {
     enum { KIND = DynamicClassNameVariablePropertiesKind };
 
     const KDevPG::ListNode<DynamicClassNameVariablePropertyAst *> *propertiesSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT DynamicClassNameVariablePropertyAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT DynamicClassNameVariablePropertyAst: public AstNode {
     enum { KIND = DynamicClassNameVariablePropertyKind };
 
     ObjectPropertyAst *property;
 };
 
-struct KDEVPHPPARSER_EXPORT ElseSingleAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ElseSingleAst: public AstNode {
     enum { KIND = ElseSingleKind };
 
     StatementAst *statement;
 };
 
-struct KDEVPHPPARSER_EXPORT ElseifListAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ElseifListAst: public AstNode {
     enum { KIND = ElseifListKind };
 
     const KDevPG::ListNode<ElseifListItemAst *> *elseifListItemSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT ElseifListItemAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ElseifListItemAst: public AstNode {
     enum { KIND = ElseifListItemKind };
 
     ExprAst *expr;
     StatementAst *statement;
 };
 
-struct KDEVPHPPARSER_EXPORT EncapsAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT EncapsAst: public AstNode {
     enum { KIND = EncapsKind };
 
     EncapsVarAst *var;
     qint64 value;
 };
 
-struct KDEVPHPPARSER_EXPORT EncapsListAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT EncapsListAst: public AstNode {
     enum { KIND = EncapsListKind };
 
     const KDevPG::ListNode<EncapsAst *> *encapsSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT EncapsVarAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT EncapsVarAst: public AstNode {
     enum { KIND = EncapsVarKind };
 
     ExprAst *expr;
@@ -666,66 +613,57 @@ struct KDEVPHPPARSER_EXPORT EncapsVarAst: public AstNode
     EncapsVarOffsetAst *offset;
 };
 
-struct KDEVPHPPARSER_EXPORT EncapsVarOffsetAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT EncapsVarOffsetAst: public AstNode {
     enum { KIND = EncapsVarOffsetKind };
 
 };
 
-struct KDEVPHPPARSER_EXPORT EqualityExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT EqualityExpressionAst: public AstNode {
     enum { KIND = EqualityExpressionKind };
 
     RelationalExpressionAst *expression;
     const KDevPG::ListNode<EqualityExpressionRestAst *> *additionalExpressionSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT EqualityExpressionRestAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT EqualityExpressionRestAst: public AstNode {
     enum { KIND = EqualityExpressionRestKind };
 
     RelationalExpressionAst *expression;
 };
 
-struct KDEVPHPPARSER_EXPORT ExprAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ExprAst: public AstNode {
     enum { KIND = ExprKind };
 
     LogicalOrExpressionAst *expression;
 };
 
-struct KDEVPHPPARSER_EXPORT ForExprAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ForExprAst: public AstNode {
     enum { KIND = ForExprKind };
 
     const KDevPG::ListNode<ExprAst *> *exprsSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT ForStatementAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ForStatementAst: public AstNode {
     enum { KIND = ForStatementKind };
 
     StatementAst *statement;
     InnerStatementListAst *statements;
 };
 
-struct KDEVPHPPARSER_EXPORT ForeachStatementAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ForeachStatementAst: public AstNode {
     enum { KIND = ForeachStatementKind };
 
     StatementAst *statement;
     InnerStatementListAst *statements;
 };
 
-struct KDEVPHPPARSER_EXPORT ForeachVariableAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ForeachVariableAst: public AstNode {
     enum { KIND = ForeachVariableKind };
 
     VariableIdentifierAst *variable;
 };
 
-struct KDEVPHPPARSER_EXPORT FunctionCallAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT FunctionCallAst: public AstNode {
     enum { KIND = FunctionCallKind };
 
     IdentifierAst *stringFunctionNameOrClass;
@@ -735,23 +673,20 @@ struct KDEVPHPPARSER_EXPORT FunctionCallAst: public AstNode
     FunctionCallParameterListAst *varParameterList;
 };
 
-struct KDEVPHPPARSER_EXPORT FunctionCallParameterListAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT FunctionCallParameterListAst: public AstNode {
     enum { KIND = FunctionCallParameterListKind };
 
     const KDevPG::ListNode<FunctionCallParameterListElementAst *> *parametersSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT FunctionCallParameterListElementAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT FunctionCallParameterListElementAst: public AstNode {
     enum { KIND = FunctionCallParameterListElementKind };
 
     VariableAst *variable;
     ExprAst *expr;
 };
 
-struct KDEVPHPPARSER_EXPORT FunctionDeclarationStatementAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT FunctionDeclarationStatementAst: public AstNode {
     enum { KIND = FunctionDeclarationStatementKind };
 
     IdentifierAst *functionName;
@@ -759,8 +694,7 @@ struct KDEVPHPPARSER_EXPORT FunctionDeclarationStatementAst: public AstNode
     InnerStatementListAst *functionBody;
 };
 
-struct KDEVPHPPARSER_EXPORT GlobalVarAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT GlobalVarAst: public AstNode {
     enum { KIND = GlobalVarKind };
 
     VariableIdentifierAst *var;
@@ -768,22 +702,19 @@ struct KDEVPHPPARSER_EXPORT GlobalVarAst: public AstNode
     ExprAst *expr;
 };
 
-struct KDEVPHPPARSER_EXPORT IdentifierAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT IdentifierAst: public AstNode {
     enum { KIND = IdentifierKind };
 
     qint64 string;
 };
 
-struct KDEVPHPPARSER_EXPORT InnerStatementListAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT InnerStatementListAst: public AstNode {
     enum { KIND = InnerStatementListKind };
 
     const KDevPG::ListNode<TopStatementAst *> *statementsSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT InterfaceDeclarationStatementAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT InterfaceDeclarationStatementAst: public AstNode {
     enum { KIND = InterfaceDeclarationStatementKind };
 
     IdentifierAst *interfaceName;
@@ -791,104 +722,90 @@ struct KDEVPHPPARSER_EXPORT InterfaceDeclarationStatementAst: public AstNode
     ClassBodyAst *body;
 };
 
-struct KDEVPHPPARSER_EXPORT LogicalAndExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT LogicalAndExpressionAst: public AstNode {
     enum { KIND = LogicalAndExpressionKind };
 
     const KDevPG::ListNode<PrintExpressionAst *> *expressionSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT LogicalOrExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT LogicalOrExpressionAst: public AstNode {
     enum { KIND = LogicalOrExpressionKind };
 
     const KDevPG::ListNode<LogicalXorExpressionAst *> *expressionSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT LogicalXorExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT LogicalXorExpressionAst: public AstNode {
     enum { KIND = LogicalXorExpressionKind };
 
     const KDevPG::ListNode<LogicalAndExpressionAst *> *expressionSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT MethodBodyAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT MethodBodyAst: public AstNode {
     enum { KIND = MethodBodyKind };
 
     InnerStatementListAst *statements;
 };
 
-struct KDEVPHPPARSER_EXPORT MultiplicativeExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT MultiplicativeExpressionAst: public AstNode {
     enum { KIND = MultiplicativeExpressionKind };
 
     UnaryExpressionAst *expression;
     const KDevPG::ListNode<MultiplicativeExpressionRestAst *> *additionalExpressionSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT MultiplicativeExpressionRestAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT MultiplicativeExpressionRestAst: public AstNode {
     enum { KIND = MultiplicativeExpressionRestKind };
 
     OperationType operation;
     UnaryExpressionAst *expression;
 };
 
-struct KDEVPHPPARSER_EXPORT NewElseSingleAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT NewElseSingleAst: public AstNode {
     enum { KIND = NewElseSingleKind };
 
     InnerStatementListAst *statements;
 };
 
-struct KDEVPHPPARSER_EXPORT NewElseifListAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT NewElseifListAst: public AstNode {
     enum { KIND = NewElseifListKind };
 
     const KDevPG::ListNode<NewelseifListItemAst *> *newElseifListItemSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT NewelseifListItemAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT NewelseifListItemAst: public AstNode {
     enum { KIND = NewelseifListItemKind };
 
     ExprAst *expr;
     InnerStatementListAst *statements;
 };
 
-struct KDEVPHPPARSER_EXPORT ObjectDimListAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ObjectDimListAst: public AstNode {
     enum { KIND = ObjectDimListKind };
 
     VariableNameAst *variableName;
     const KDevPG::ListNode<DimListItemAst *> *offsetItemsSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT ObjectPropertyAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ObjectPropertyAst: public AstNode {
     enum { KIND = ObjectPropertyKind };
 
     ObjectDimListAst *objectDimList;
     VariableWithoutObjectsAst *variableWithoutObjects;
 };
 
-struct KDEVPHPPARSER_EXPORT OptionalClassModifierAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT OptionalClassModifierAst: public AstNode {
     enum { KIND = OptionalClassModifierKind };
 
     ClassModifier modifier;
 };
 
-struct KDEVPHPPARSER_EXPORT OptionalModifiersAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT OptionalModifiersAst: public AstNode {
     enum { KIND = OptionalModifiersKind };
 
     unsigned int modifiers;
 };
 
-struct KDEVPHPPARSER_EXPORT ParameterAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ParameterAst: public AstNode {
     enum { KIND = ParameterKind };
 
     IdentifierAst *parameterType;
@@ -897,30 +814,26 @@ struct KDEVPHPPARSER_EXPORT ParameterAst: public AstNode
     StaticScalarAst *defaultValue;
 };
 
-struct KDEVPHPPARSER_EXPORT ParameterListAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ParameterListAst: public AstNode {
     enum { KIND = ParameterListKind };
 
     const KDevPG::ListNode<ParameterAst *> *parametersSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT PostprefixOperatorAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT PostprefixOperatorAst: public AstNode {
     enum { KIND = PostprefixOperatorKind };
 
     qint64 op;
 };
 
-struct KDEVPHPPARSER_EXPORT PrintExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT PrintExpressionAst: public AstNode {
     enum { KIND = PrintExpressionKind };
 
     qint64 print;
     AssignmentExpressionAst *expression;
 };
 
-struct KDEVPHPPARSER_EXPORT RelationalExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT RelationalExpressionAst: public AstNode {
     enum { KIND = RelationalExpressionKind };
 
     ShiftExpressionAst *expression;
@@ -928,15 +841,13 @@ struct KDEVPHPPARSER_EXPORT RelationalExpressionAst: public AstNode
     ClassNameReferenceAst *instanceofType;
 };
 
-struct KDEVPHPPARSER_EXPORT RelationalExpressionRestAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT RelationalExpressionRestAst: public AstNode {
     enum { KIND = RelationalExpressionRestKind };
 
     ShiftExpressionAst *expression;
 };
 
-struct KDEVPHPPARSER_EXPORT ScalarAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ScalarAst: public AstNode {
     enum { KIND = ScalarKind };
 
     CommonScalarAst *commonScalar;
@@ -945,36 +856,31 @@ struct KDEVPHPPARSER_EXPORT ScalarAst: public AstNode
     EncapsListAst *encapsList;
 };
 
-struct KDEVPHPPARSER_EXPORT SemicolonOrCloseTagAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT SemicolonOrCloseTagAst: public AstNode {
     enum { KIND = SemicolonOrCloseTagKind };
 
 };
 
-struct KDEVPHPPARSER_EXPORT ShiftExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ShiftExpressionAst: public AstNode {
     enum { KIND = ShiftExpressionKind };
 
     AdditiveExpressionAst *expression;
     const KDevPG::ListNode<ShiftExpressionRestAst *> *additionalExpressionSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT ShiftExpressionRestAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT ShiftExpressionRestAst: public AstNode {
     enum { KIND = ShiftExpressionRestKind };
 
     AdditiveExpressionAst *expression;
 };
 
-struct KDEVPHPPARSER_EXPORT StartAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT StartAst: public AstNode {
     enum { KIND = StartKind };
 
     InnerStatementListAst *statements;
 };
 
-struct KDEVPHPPARSER_EXPORT StatementAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT StatementAst: public AstNode {
     enum { KIND = StatementKind };
 
     InnerStatementListAst *statements;
@@ -1011,24 +917,21 @@ struct KDEVPHPPARSER_EXPORT StatementAst: public AstNode
     ExprAst *throwExpr;
 };
 
-struct KDEVPHPPARSER_EXPORT StaticArrayPairValueAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT StaticArrayPairValueAst: public AstNode {
     enum { KIND = StaticArrayPairValueKind };
 
     const KDevPG::ListNode<StaticScalarAst *> *val1Sequence;
     const KDevPG::ListNode<StaticScalarAst *> *val2Sequence;
 };
 
-struct KDEVPHPPARSER_EXPORT StaticMemberAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT StaticMemberAst: public AstNode {
     enum { KIND = StaticMemberKind };
 
     IdentifierAst *className;
     VariableWithoutObjectsAst *variable;
 };
 
-struct KDEVPHPPARSER_EXPORT StaticScalarAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT StaticScalarAst: public AstNode {
     enum { KIND = StaticScalarKind };
 
     CommonScalarAst *value;
@@ -1039,23 +942,20 @@ struct KDEVPHPPARSER_EXPORT StaticScalarAst: public AstNode
     const KDevPG::ListNode<StaticArrayPairValueAst *> *arrayValuesSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT StaticVarAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT StaticVarAst: public AstNode {
     enum { KIND = StaticVarKind };
 
     VariableIdentifierAst *var;
     StaticScalarAst *value;
 };
 
-struct KDEVPHPPARSER_EXPORT SwitchCaseListAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT SwitchCaseListAst: public AstNode {
     enum { KIND = SwitchCaseListKind };
 
     CaseListAst *caseList;
 };
 
-struct KDEVPHPPARSER_EXPORT TopStatementAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT TopStatementAst: public AstNode {
     enum { KIND = TopStatementKind };
 
     StatementAst *statement;
@@ -1064,8 +964,7 @@ struct KDEVPHPPARSER_EXPORT TopStatementAst: public AstNode
     InterfaceDeclarationStatementAst *interfaceDeclaration;
 };
 
-struct KDEVPHPPARSER_EXPORT UnaryExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT UnaryExpressionAst: public AstNode {
     enum { KIND = UnaryExpressionKind };
 
     CastType castType;
@@ -1076,8 +975,7 @@ struct KDEVPHPPARSER_EXPORT UnaryExpressionAst: public AstNode
     UnaryExpressionNotPlusminusAst *unaryExpressionNotPlusminus;
 };
 
-struct KDEVPHPPARSER_EXPORT UnaryExpressionNotPlusminusAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT UnaryExpressionNotPlusminusAst: public AstNode {
     enum { KIND = UnaryExpressionNotPlusminusKind };
 
     const KDevPG::ListNode<PostprefixOperatorAst *> *prefixOperatorSequence;
@@ -1085,8 +983,7 @@ struct KDEVPHPPARSER_EXPORT UnaryExpressionNotPlusminusAst: public AstNode
     const KDevPG::ListNode<PostprefixOperatorAst *> *postfixOperatorSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT VarExpressionAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT VarExpressionAst: public AstNode {
     enum { KIND = VarExpressionKind };
 
     VariableAst *variable;
@@ -1094,16 +991,14 @@ struct KDEVPHPPARSER_EXPORT VarExpressionAst: public AstNode
     VarExpressionNormalAst *varExpressionNormal;
 };
 
-struct KDEVPHPPARSER_EXPORT VarExpressionNewObjectAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT VarExpressionNewObjectAst: public AstNode {
     enum { KIND = VarExpressionNewObjectKind };
 
     ClassNameReferenceAst *className;
     CtorArgumentsAst *ctor;
 };
 
-struct KDEVPHPPARSER_EXPORT VarExpressionNormalAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT VarExpressionNormalAst: public AstNode {
     enum { KIND = VarExpressionNormalKind };
 
     ExprAst *expression;
@@ -1118,31 +1013,27 @@ struct KDEVPHPPARSER_EXPORT VarExpressionNormalAst: public AstNode
     VarExpressionNormalAst *cloneCar;
 };
 
-struct KDEVPHPPARSER_EXPORT VariableAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT VariableAst: public AstNode {
     enum { KIND = VariableKind };
 
     BaseVariableWithFunctionCallsAst *var;
     const KDevPG::ListNode<VariablePropertyAst *> *variablePropertiesSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT VariableIdentifierAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT VariableIdentifierAst: public AstNode {
     enum { KIND = VariableIdentifierKind };
 
     qint64 variable;
 };
 
-struct KDEVPHPPARSER_EXPORT VariableNameAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT VariableNameAst: public AstNode {
     enum { KIND = VariableNameKind };
 
     IdentifierAst *name;
     ExprAst *expr;
 };
 
-struct KDEVPHPPARSER_EXPORT VariablePropertyAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT VariablePropertyAst: public AstNode {
     enum { KIND = VariablePropertyKind };
 
     ObjectPropertyAst *objectProperty;
@@ -1150,16 +1041,14 @@ struct KDEVPHPPARSER_EXPORT VariablePropertyAst: public AstNode
     FunctionCallParameterListAst *parameterList;
 };
 
-struct KDEVPHPPARSER_EXPORT VariableWithoutObjectsAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT VariableWithoutObjectsAst: public AstNode {
     enum { KIND = VariableWithoutObjectsKind };
 
     CompoundVariableWithSimpleIndirectReferenceAst *variable;
     const KDevPG::ListNode<DimListItemAst *> *offsetItemsSequence;
 };
 
-struct KDEVPHPPARSER_EXPORT WhileStatementAst: public AstNode
-{
+struct KDEVPHPPARSER_EXPORT WhileStatementAst: public AstNode {
     enum { KIND = WhileStatementKind };
 
     StatementAst *statement;

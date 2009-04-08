@@ -22,21 +22,25 @@
 
 using namespace KDevelop;
 
-namespace Php {
+namespace Php
+{
 
-bool ClassMethodDeclaration::isConstructor() const {
-  Identifier id = identifier();
-  return id.nameEquals(Identifier("__construct"))
-      || id.nameEquals(context()->indexedLocalScopeIdentifier().identifier().first());
+bool ClassMethodDeclaration::isConstructor() const
+{
+    Identifier id = identifier();
+    return id.nameEquals(Identifier("__construct"))
+           || id.nameEquals(context()->indexedLocalScopeIdentifier().identifier().first());
 }
 
-bool ClassMethodDeclaration::isDestructor() const {
-  //TODO: register_shutdown_function
-  return identifier().nameEquals(Identifier("__destruct"));
+bool ClassMethodDeclaration::isDestructor() const
+{
+    //TODO: register_shutdown_function
+    return identifier().nameEquals(Identifier("__destruct"));
 }
 
-Declaration* ClassMethodDeclaration::clonePrivate() const {
-  return new ClassMethodDeclaration(*this);
+Declaration* ClassMethodDeclaration::clonePrivate() const
+{
+    return new ClassMethodDeclaration(*this);
 }
 
 

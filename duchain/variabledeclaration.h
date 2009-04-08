@@ -33,20 +33,17 @@ class KDEVPHPDUCHAIN_EXPORT VariableDeclarationData : public KDevelop::Declarati
 {
 public:
     VariableDeclarationData()
-        : KDevelop::DeclarationData(), m_isSuperglobal(false)
-    {
+            : KDevelop::DeclarationData(), m_isSuperglobal(false) {
     }
 
-    VariableDeclarationData( const VariableDeclarationData& rhs )
-        : KDevelop::DeclarationData( rhs )
-    {
+    VariableDeclarationData(const VariableDeclarationData& rhs)
+            : KDevelop::DeclarationData(rhs) {
     }
 
-    ~VariableDeclarationData()
-    {
+    ~VariableDeclarationData() {
     }
 
-    bool m_isSuperglobal  : 1;
+bool m_isSuperglobal  : 1;
 };
 
 /**
@@ -67,13 +64,13 @@ public:
     virtual uint additionalIdentity() const;
     virtual KDevelop::DeclarationId id(bool forceDirect = false) const;
 
-  enum {
-    Identity = 83
-  };
-  typedef KDevelop::Declaration Base;
+    enum {
+        Identity = 83
+    };
+    typedef KDevelop::Declaration Base;
 
 private:
-  DUCHAIN_DECLARE_DATA(VariableDeclaration)
+    DUCHAIN_DECLARE_DATA(VariableDeclaration)
 };
 
 }

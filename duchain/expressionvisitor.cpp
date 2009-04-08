@@ -34,10 +34,11 @@
 
 using namespace KDevelop;
 
-namespace Php {
+namespace Php
+{
 
 ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor, bool useCursor)
-    : m_editor(editor), m_useCursor(useCursor), m_currentContext(0), m_isAssignmentExpressionEqual(false), m_createProblems(false)
+        : m_editor(editor), m_useCursor(useCursor), m_currentContext(0), m_isAssignmentExpressionEqual(false), m_createProblems(false)
 {
 }
 
@@ -50,9 +51,8 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
     if (identifier == QualifiedIdentifier("this")) {
         DUChainReadLocker lock(DUChain::lock());
         if (m_currentContext->parentContext()
-            && m_currentContext->parentContext()->type() == DUContext::Class
-            && m_currentContext->parentContext()->owner())
-        {
+                && m_currentContext->parentContext()->type() == DUContext::Class
+                && m_currentContext->parentContext()->owner()) {
             ret = m_currentContext->parentContext()->owner();
         }
     } else {
@@ -64,8 +64,8 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
         //DontSearchInParent-flag because (1) in Php global variables aren't avaliable in function
         //context and (2) a function body consists of a single context (so this is no problem)
         QList<Declaration*> decls = m_currentContext->findDeclarations(identifier, position,
-                            AbstractType::Ptr(), 0, DUContext::DontSearchInParent);
-        for (int i=decls.count()-1; i >= 0; i--) {
+                                    AbstractType::Ptr(), 0, DUContext::DontSearchInParent);
+        for (int i = decls.count() - 1; i >= 0; i--) {
             Declaration *dec = decls.at(i);
             if (dec->kind() == Declaration::Instance && dynamic_cast<VariableDeclaration*>(dec)) {
                 ret = dec;
@@ -76,7 +76,7 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
     if (!ret) {
         //look for a function argument
         DUChainReadLocker lock(DUChain::lock());
-        foreach (Declaration* dec, m_currentContext->findDeclarations(identifier)) {
+        foreach(Declaration* dec, m_currentContext->findDeclarations(identifier)) {
             if (dec->context()->type() == DUContext::Function) {
                 ret = dec;
                 break;
@@ -86,7 +86,7 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
     if (!ret) {
         //look for a superglobal variable
         DUChainReadLocker lock(DUChain::lock());
-        foreach (Declaration* dec, m_currentContext->topContext()->findDeclarations(identifier)) {
+        foreach(Declaration* dec, m_currentContext->topContext()->findDeclarations(identifier)) {
             VariableDeclaration* varDec = dynamic_cast<VariableDeclaration*>(dec);
             if (varDec && varDec->isSuperglobal()) {
                 ret = dec;
@@ -94,7 +94,7 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
             }
         }
     }
-    if ( !m_isAssignmentExpressionEqual || identifier == QualifiedIdentifier("this") ) {
+    if (!m_isAssignmentExpressionEqual || identifier == QualifiedIdentifier("this")) {
         usingDeclaration(variable, ret);
     }
     return ret;
@@ -266,15 +266,15 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
     if (node->commonScalar) {
         uint type = IntegralType::TypeVoid;
         switch (node->commonScalar->scalarType) {
-            case ScalarTypeInt:
-                type = IntegralType::TypeInt;
-                break;
-            case ScalarTypeFloat:
-                type = IntegralType::TypeFloat;
-                break;
-            case ScalarTypeString:
-                type = IntegralType::TypeString;
-                break;
+        case ScalarTypeInt:
+            type = IntegralType::TypeInt;
+            break;
+        case ScalarTypeFloat:
+            type = IntegralType::TypeFloat;
+            break;
+        case ScalarTypeString:
+            type = IntegralType::TypeString;
+            break;
         }
         IntegralType::Ptr integral(new IntegralType(type));
         m_result.setType(AbstractType::Ptr::staticCast(integral));
@@ -300,15 +300,15 @@ void ExpressionVisitor::visitStaticScalar(StaticScalarAst *node)
     uint type = IntegralType::TypeVoid;
     if (node->value) {
         switch (node->value->scalarType) {
-            case ScalarTypeInt:
-                type = IntegralType::TypeInt;
-                break;
-            case ScalarTypeFloat:
-                type = IntegralType::TypeFloat;
-                break;
-            case ScalarTypeString:
-                type = IntegralType::TypeString;
-                break;
+        case ScalarTypeInt:
+            type = IntegralType::TypeInt;
+            break;
+        case ScalarTypeFloat:
+            type = IntegralType::TypeFloat;
+            break;
+        case ScalarTypeString:
+            type = IntegralType::TypeString;
+            break;
         }
     } else if (node->plusValue || node->minusValue) {
         type = IntegralType::TypeInt;
@@ -380,7 +380,7 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
                     lock.unlock();
                     if (!m_result.allDeclarations().isEmpty()) {
                         usingDeclaration(node->objectProperty->objectDimList->variableName, m_result.allDeclarations().last());
-                        if (node->isFunctionCall!=-1) {
+                        if (node->isFunctionCall != -1) {
                             FunctionType::Ptr function = m_result.allDeclarations().last()->type<FunctionType>();
                             if (function) {
                                 m_result.setType(function->returnType());
@@ -431,30 +431,29 @@ void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
     if (node->castType) {
         uint type = 0;
         switch (node->castType) {
-            case CastInt:
-                type = IntegralType::TypeInt;
-                break;
-            case CastDouble:
-                type = IntegralType::TypeFloat;
-                break;
-            case CastString:
-                type = IntegralType::TypeString;
-                break;
-            case CastArray:
-                type = IntegralType::TypeArray;
-                break;
-            case CastObject:
-                {
-                    DUChainReadLocker lock(DUChain::lock());
-                    m_result.setDeclarations(m_currentContext->findDeclarations(QualifiedIdentifier("stdClass")));
-                    break;
-                }
-            case CastBool:
-                type = IntegralType::TypeBoolean;
-                break;
-            case CastUnset:
-                //TODO
-                break;
+        case CastInt:
+            type = IntegralType::TypeInt;
+            break;
+        case CastDouble:
+            type = IntegralType::TypeFloat;
+            break;
+        case CastString:
+            type = IntegralType::TypeString;
+            break;
+        case CastArray:
+            type = IntegralType::TypeArray;
+            break;
+        case CastObject: {
+            DUChainReadLocker lock(DUChain::lock());
+            m_result.setDeclarations(m_currentContext->findDeclarations(QualifiedIdentifier("stdClass")));
+            break;
+        }
+        case CastBool:
+            type = IntegralType::TypeBoolean;
+            break;
+        case CastUnset:
+            //TODO
+            break;
         }
         if (type) {
             IntegralType::Ptr integral(new IntegralType(type));
@@ -477,7 +476,7 @@ void ExpressionVisitor::visitAdditiveExpressionRest(AdditiveExpressionRestAst* n
 
 QString ExpressionVisitor::stringForNode(IdentifierAst* id)
 {
-    if( !id )
+    if (!id)
         return QString();
 
     return m_editor->parseSession()->symbol(id->string);
@@ -485,7 +484,7 @@ QString ExpressionVisitor::stringForNode(IdentifierAst* id)
 
 QualifiedIdentifier ExpressionVisitor::identifierForNode(IdentifierAst* id)
 {
-    if( !id )
+    if (!id)
         return QualifiedIdentifier();
 
     return QualifiedIdentifier(stringForNode(id));
@@ -493,7 +492,7 @@ QualifiedIdentifier ExpressionVisitor::identifierForNode(IdentifierAst* id)
 
 QString ExpressionVisitor::stringForNode(VariableIdentifierAst* id)
 {
-    if( !id )
+    if (!id)
         return QString();
     QString ret(m_editor->parseSession()->symbol(id->variable));
     ret = ret.mid(1); //cut off $
@@ -502,7 +501,7 @@ QString ExpressionVisitor::stringForNode(VariableIdentifierAst* id)
 
 QualifiedIdentifier ExpressionVisitor::identifierForNode(VariableIdentifierAst* id)
 {
-    if( !id )
+    if (!id)
         return QualifiedIdentifier();
 
     return QualifiedIdentifier(stringForNode(id));

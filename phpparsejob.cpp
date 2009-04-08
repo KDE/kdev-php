@@ -58,13 +58,13 @@ namespace Php
 
 QMutex internalFunctionParseMutex;
 
-ParseJob::ParseJob( const KUrl &url, QObject *parent )
-        : KDevelop::ParseJob( url, parent )
-        , m_session( new ParseSession )
-        , m_ast( 0 )
-        , m_readFromDisk( false )
-        , m_url( url )
-        , m_parentJob( 0 )
+ParseJob::ParseJob(const KUrl &url, QObject *parent)
+        : KDevelop::ParseJob(url, parent)
+        , m_session(new ParseSession)
+        , m_ast(0)
+        , m_readFromDisk(false)
+        , m_url(url)
+        , m_parentJob(0)
 {
 }
 
@@ -79,7 +79,7 @@ LanguageSupport *ParseJob::php() const
 
 StartAst *ParseJob::ast() const
 {
-    Q_ASSERT( isFinished() && m_ast );
+    Q_ASSERT(isFinished() && m_ast);
     return m_ast;
 }
 
@@ -90,7 +90,7 @@ bool ParseJob::wasReadFromDisk() const
 
 void ParseJob::run()
 {
-    if ( document() != IndexedString("internalfunctions") && !m_parentJob ) {
+    if (document() != IndexedString("internalfunctions") && !m_parentJob) {
         QMutexLocker lock(&internalFunctionParseMutex);
         TopDUContext *top = 0;
         {
@@ -106,7 +106,7 @@ void ParseJob::run()
     {
         DUChainReadLocker lock(DUChain::lock());
         bool needsUpdate = true;
-        foreach (ParsingEnvironmentFilePointer file, DUChain::self()->allEnvironmentFiles(document())) {
+        foreach(ParsingEnvironmentFilePointer file, DUChain::self()->allEnvironmentFiles(document())) {
             if (file->needsUpdate()) {
                 needsUpdate = true;
                 break;
@@ -124,8 +124,7 @@ void ParseJob::run()
 
     m_readFromDisk = !contentsAvailableFromEditor();
 
-    if ( m_readFromDisk )
-    {
+    if (m_readFromDisk) {
         QString fileName = document().str();
         if (fileName == "internalfunctions") {
             fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
@@ -133,65 +132,61 @@ void ParseJob::run()
         QFile file(fileName);
         //TODO: Read the first lines to determine encoding using Php encoding and use that for the text stream
 
-        if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-        {
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             KDevelop::ProblemPointer p(new KDevelop::Problem());
             p->setSource(KDevelop::ProblemData::Disk);
-            p->setDescription(i18n( "Could not open file '%1'", document().str() ));
+            p->setDescription(i18n("Could not open file '%1'", document().str()));
             switch (file.error()) {
-              case QFile::ReadError:
-                  p->setExplanation(i18n("File could not be read from."));
-                  break;
-              case QFile::OpenError:
-                  p->setExplanation(i18n("File could not be opened."));
-                  break;
-              case QFile::PermissionsError:
-                  p->setExplanation(i18n("File permissions prevent opening for read."));
-                  break;
-              default:
-                  break;
+            case QFile::ReadError:
+                p->setExplanation(i18n("File could not be read from."));
+                break;
+            case QFile::OpenError:
+                p->setExplanation(i18n("File could not be opened."));
+                break;
+            case QFile::PermissionsError:
+                p->setExplanation(i18n("File permissions prevent opening for read."));
+                break;
+            default:
+                break;
             }
-            p->setFinalLocation(KDevelop::DocumentRange(document().str(), KTextEditor::Cursor(0,0), KTextEditor::Cursor(0,0)));
+            p->setFinalLocation(KDevelop::DocumentRange(document().str(), KTextEditor::Cursor(0, 0), KTextEditor::Cursor(0, 0)));
             // TODO addProblem(p);
             kWarning() << "Could not open file" << document().str()
             << "(path" << document().str() << ")";
             return ;
         }
 
-        QTextStream s( &file );
+        QTextStream s(&file);
 
 //         if( codec )
 //             s.setCodec( QTextCodec::codecForName(codec) );
-        m_session->setContents( s.readAll() );
+        m_session->setContents(s.readAll());
         file.close();
-    }
-    else
-    {
+    } else {
         m_session->setContents(contentsFromEditor());
         m_session->setCurrentDocument(document().str());
     }
 
 
     // 2) parse
-    bool matched = m_session->parse( &m_ast );
+    bool matched = m_session->parse(&m_ast);
 
-    if ( abortRequested() )
+    if (abortRequested())
         return abortJob();
 
-    if ( matched )
-    {
-        EditorIntegrator editor( m_session );
+    if (matched) {
+        EditorIntegrator editor(m_session);
 
         IncludeBuilder includeBuilder(&editor);
         includeBuilder.build(document(), m_ast);
-        
+
         QList<ProblemPointer> includeProblems;
         {
             QMapIterator<Php::AstNode*, QString> i(includeBuilder.badIncludes());
-            while ( i.hasNext() ) {
+            while (i.hasNext()) {
                 i.next();
                 includeProblems << createProblem(i18n("Included file %1 could not be found.", i.value()), i.key(),
-                                                    &editor, ProblemData::Preprocessor);
+                                                 &editor, ProblemData::Preprocessor);
                 continue;
             }
         }
@@ -199,11 +194,11 @@ void ParseJob::run()
             QMapIterator<Php::AstNode*, IndexedString> i(includeBuilder.includes());
             while (i.hasNext()) {
                 i.next();
-                if ( abortRequested() )
+                if (abortRequested())
                     return abortJob();
                 if (hasParentDocument(i.value())) {
                     includeProblems << createProblem(i18n("File %1 includes itself.", i.value().str()), i.key(),
-                                                        &editor, ProblemData::Preprocessor);
+                                                     &editor, ProblemData::Preprocessor);
                     continue;
                 }
                 kDebug() << "parse included file" << i.value().str();
@@ -223,14 +218,14 @@ void ParseJob::run()
         useBuilder.buildUses(m_ast);
 
         if (!abortRequested() && editor.smart()) {
-          if (php() && php()->codeHighlighting()) {
-              php()->codeHighlighting()->highlightDUChain(chain);
-          }
+            if (php() && php()->codeHighlighting()) {
+                php()->codeHighlighting()->highlightDUChain(chain);
+            }
         }
 
         DUChainWriteLocker lock(DUChain::lock());
 
-        foreach (ProblemPointer p, includeProblems) {
+        foreach(ProblemPointer p, includeProblems) {
             chain->addProblem(p);
         }
 
@@ -240,13 +235,11 @@ void ParseJob::run()
         QFileInfo fileInfo(document().str());
         QDateTime lastModified = fileInfo.lastModified();
         if (m_readFromDisk) {
-            file->setModificationRevision( KDevelop::ModificationRevision( lastModified ) );
+            file->setModificationRevision(KDevelop::ModificationRevision(lastModified));
         } else {
-            file->setModificationRevision( KDevelop::ModificationRevision( lastModified, revisionToken() ) );
+            file->setModificationRevision(KDevelop::ModificationRevision(lastModified, revisionToken()));
         }
-    }
-    else
-    {
+    } else {
         ReferencedTopDUContext top;
         {
             DUChainReadLocker lock(DUChain::lock());
@@ -261,13 +254,13 @@ void ParseJob::run()
         } else {
             DUChainWriteLocker lock(DUChain::lock());
             ParsingEnvironmentFile *file = new ParsingEnvironmentFile(document());
-            top = new TopDUContext(document(), SimpleRange( SimpleCursor( 0, 0 ), SimpleCursor( INT_MAX, INT_MAX ) ), file);
+            top = new TopDUContext(document(), SimpleRange(SimpleCursor(0, 0), SimpleCursor(INT_MAX, INT_MAX)), file);
             file->setTopContext(top.data());
             top->setLanguage(IndexedString("Php"));
-            DUChain::self()->addDocumentChain( top );
+            DUChain::self()->addDocumentChain(top);
         }
         setDuChain(top);
-        foreach (ProblemPointer p, m_session->problems()) {
+        foreach(ProblemPointer p, m_session->problems()) {
             DUChainWriteLocker lock(DUChain::lock());
             top->addProblem(p);
         }
@@ -299,8 +292,8 @@ bool ParseJob::hasParentDocument(const IndexedString &doc)
     return m_parentJob->hasParentDocument(doc);
 }
 
-ProblemPointer ParseJob::createProblem( const QString &description, AstNode* node,
-                                        EditorIntegrator * editor, ProblemData::Source source )
+ProblemPointer ParseJob::createProblem(const QString &description, AstNode* node,
+                                       EditorIntegrator * editor, ProblemData::Source source)
 {
     ProblemPointer p(new Problem());
     p->setSource(source);

@@ -25,10 +25,10 @@
 
 namespace Php
 {
-  
+
 class TestCompletion : public DUChainTestBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
     TestCompletion();
@@ -36,9 +36,9 @@ public:
 private:
     void dumpCompletionItems(QList<KDevelop::CompletionTreeItemPointer> items);
     void verifyExtendsOrImplements(const QString &code, const QString &actionStr,
-                                    KDevelop::ClassDeclarationData::ClassType,
-                                    KDevelop::SimpleCursor cursor,
-                                    QStringList forbiddenIdentifiers);
+                                   KDevelop::ClassDeclarationData::ClassType,
+                                   KDevelop::SimpleCursor cursor,
+                                   QStringList forbiddenIdentifiers);
 
 private slots:
     void publicObjectCompletion();

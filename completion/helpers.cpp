@@ -34,118 +34,114 @@
 #include <language/duchain/types/integraltype.h>
 
 using namespace KDevelop;
-namespace Php {
+namespace Php
+{
 
 void createArgumentList(const NormalDeclarationCompletionItem& item, QString& ret, QList<QVariant>* highlighting,
                         bool phpTypeHinting)
 {
-  ///@todo also highlight the matches of the previous arguments, they are given by ViableFunction
-  Declaration* dec(item.declaration().data());
+    ///@todo also highlight the matches of the previous arguments, they are given by ViableFunction
+    Declaration* dec(item.declaration().data());
 
-  int textFormatStart = 0;
-  QTextFormat normalFormat(QTextFormat::CharFormat);
-  QTextFormat highlightFormat; //highlightFormat is invalid, so kate uses the match-quality dependent color.
+    int textFormatStart = 0;
+    QTextFormat normalFormat(QTextFormat::CharFormat);
+    QTextFormat highlightFormat; //highlightFormat is invalid, so kate uses the match-quality dependent color.
 
-  AbstractFunctionDeclaration* decl = dynamic_cast<AbstractFunctionDeclaration*>(dec);
-  FunctionType::Ptr functionType = dec->type<FunctionType>();
+    AbstractFunctionDeclaration* decl = dynamic_cast<AbstractFunctionDeclaration*>(dec);
+    FunctionType::Ptr functionType = dec->type<FunctionType>();
 
-  if (functionType && decl) {
+    if (functionType && decl) {
 
-    QVector<Declaration*> parameters;
-    if (DUChainUtils::getArgumentContext(dec))
-      parameters = DUChainUtils::getArgumentContext(dec)->localDeclarations();
+        QVector<Declaration*> parameters;
+        if (DUChainUtils::getArgumentContext(dec))
+            parameters = DUChainUtils::getArgumentContext(dec)->localDeclarations();
 
-    uint defaultParamNum = 0;
+        uint defaultParamNum = 0;
 
-    int firstDefaultParam = parameters.count() - decl->defaultParametersSize();
+        int firstDefaultParam = parameters.count() - decl->defaultParametersSize();
 
-    ret = "(";
-    bool first = true;
-    int num = 0;
+        ret = "(";
+        bool first = true;
+        int num = 0;
 
-    foreach (Declaration* dec, parameters) {
-      if (first)
-        first = false;
-      else
-        ret += ", ";
+        foreach(Declaration* dec, parameters) {
+            if (first)
+                first = false;
+            else
+                ret += ", ";
 
-      bool doHighlight = false;
-      QTextFormat doFormat = normalFormat;
+            bool doHighlight = false;
+            QTextFormat doFormat = normalFormat;
 
 //       if( num < f.matchedArguments )
 //       {
-        doHighlight = true;
-        doFormat = QTextFormat( QTextFormat::CharFormat );
+            doHighlight = true;
+            doFormat = QTextFormat(QTextFormat::CharFormat);
 
 //         if( parameterConversion != conversions.end() ) {
 //           //Interpolate the color
 //           quint64 badMatchColor = 0xff7777ff; //Full blue
 //           quint64 goodMatchColor = 0xff77ff77; //Full green
-// 
+//
 //           uint totalColor = (badMatchColor*(Cpp::MaximumConversionResult-(*parameterConversion).rank) + goodMatchColor*(*parameterConversion).rank)/Cpp::MaximumConversionResult;
-// 
+//
 //           doFormat.setBackground( QBrush(totalColor) );
-// 
+//
 //           ++parameterConversion;
 //         }
 //       }
 
-      if( doHighlight )
-      {
-        if( highlighting && ret.length() != textFormatStart )
-        {
-          //Add a default-highlighting for the passed text
-          *highlighting <<  QVariant(textFormatStart);
-          *highlighting << QVariant(ret.length() - textFormatStart);
-          *highlighting << QVariant(normalFormat);
-          textFormatStart = ret.length();
+            if (doHighlight) {
+                if (highlighting && ret.length() != textFormatStart) {
+                    //Add a default-highlighting for the passed text
+                    *highlighting <<  QVariant(textFormatStart);
+                    *highlighting << QVariant(ret.length() - textFormatStart);
+                    *highlighting << QVariant(normalFormat);
+                    textFormatStart = ret.length();
+                }
+            }
+
+            if (num < functionType->arguments().count()) {
+                if (AbstractType::Ptr type = functionType->arguments().at(num)) {
+                    // when php-like type hinting is requested only add types for arrays and classes
+                    if (!phpTypeHinting
+                            || (type->whichType() == AbstractType::TypeIntegral
+                                && type.cast<IntegralType>()->dataType() == IntegralType::TypeArray)
+                            || type->whichType() == AbstractType::TypeStructure) {
+                        ret += type->toString() + " ";
+                    }
+                }
+            }
+
+            ret += "$" + dec->identifier().toString();
+
+            if (doHighlight) {
+                if (highlighting && ret.length() != textFormatStart) {
+                    *highlighting <<  QVariant(textFormatStart);
+                    *highlighting << QVariant(ret.length() - textFormatStart);
+                    *highlighting << doFormat;
+                    textFormatStart = ret.length();
+                }
+            }
+
+
+            if (num >= firstDefaultParam) {
+                ret += " = " + decl->defaultParameters()[defaultParamNum].str();
+                ++defaultParamNum;
+            }
+
+            ++num;
         }
-      }
+        ret += ')';
 
-      if (num < functionType->arguments().count()) {
-        if ( AbstractType::Ptr type = functionType->arguments().at(num) ) {
-          // when php-like type hinting is requested only add types for arrays and classes
-          if ( !phpTypeHinting
-                || (type->whichType() == AbstractType::TypeIntegral
-                    &&type.cast<IntegralType>()->dataType() == IntegralType::TypeArray)
-                || type->whichType() == AbstractType::TypeStructure )
-          {
-            ret += type->toString() + " ";
-          }
+        if (highlighting && ret.length() != textFormatStart) {
+            *highlighting <<  QVariant(textFormatStart);
+            *highlighting << QVariant(ret.length());
+            *highlighting << normalFormat;
+            textFormatStart = ret.length();
         }
-      }
-
-      ret += "$" + dec->identifier().toString();
-
-      if( doHighlight  )
-      {
-        if( highlighting && ret.length() != textFormatStart )
-        {
-          *highlighting <<  QVariant(textFormatStart);
-          *highlighting << QVariant(ret.length() - textFormatStart);
-          *highlighting << doFormat;
-          textFormatStart = ret.length();
-        }
-      }
-
-
-      if( num >= firstDefaultParam ) {
-        ret += " = " + decl->defaultParameters()[defaultParamNum].str();
-        ++defaultParamNum;
-      }
-
-      ++num;
+        return;
     }
-    ret += ')';
-
-    if( highlighting && ret.length() != textFormatStart ) {
-      *highlighting <<  QVariant(textFormatStart);
-      *highlighting << QVariant(ret.length());
-      *highlighting << normalFormat;
-      textFormatStart = ret.length();
-    }
-    return;
-  }
 }
 
 
@@ -154,139 +150,140 @@ enum { T_ACCESS, T_PAREN, T_BRACKET, T_IDE, T_UNKNOWN, T_TEMP };
  * Copied from kdevelop-3.4, should be redone
  * @param index should be the index BEHIND the expression
  * */
-int expressionAt( const QString& text, int index ) {
+int expressionAt(const QString& text, int index)
+{
 
-  /* C++ style comments present issues with finding the expr so I'm
-    matching for them and replacing them with empty C style comments
-    of the same length for purposes of finding the expr. */
+    /* C++ style comments present issues with finding the expr so I'm
+      matching for them and replacing them with empty C style comments
+      of the same length for purposes of finding the expr. */
 
-  if( index == 0 )
-    return 0;
+    if (index == 0)
+        return 0;
 
-  int last = T_UNKNOWN;
-  int start = index;
-  --index;
+    int last = T_UNKNOWN;
+    int start = index;
+    --index;
 
-  while ( index > 0 ) {
+    while (index > 0) {
 
-    while ( index > 0 && text[ index ].isSpace() ) {
-      --index;
+        while (index > 0 && text[ index ].isSpace()) {
+            --index;
+        }
+
+        QChar ch = text[ index ];
+        QString ch2 = text.mid(index - 1, 2);
+
+        if ((last != T_IDE) && (ch.isLetterOrNumber() || ch == '_' || ch == '$')) {
+            while (index > 0 && (text[ index ].isLetterOrNumber() || text[ index ] == '_'  || text[ index ] == '$')) {
+                --index;
+            }
+            last = T_IDE;
+        } else if (last != T_IDE && ch == ')') {
+            int count = 0;
+            while (index > 0) {
+                QChar ch = text[ index ];
+                if (ch == '(') {
+                    ++count;
+                } else if (ch == ')') {
+                    --count;
+                } else if (count == 0) {
+                    //index;
+                    last = T_PAREN;
+                    break;
+                }
+                --index;
+            }
+        } else if (last != T_IDE && ch == '>' && ch2 != "->" && ch2 != "::") {
+            int count = 0;
+            while (index > 0) {
+                QChar ch = text[ index ];
+                if (ch == '<') {
+                    ++count;
+                } else if (ch == '>') {
+                    --count;
+                } else if (count == 0) {
+                    //--index;
+                    last = T_TEMP;
+                    break;
+                }
+                --index;
+            }
+        } else if (ch == ']') {
+            int count = 0;
+            while (index > 0) {
+                QChar ch = text[ index ];
+                if (ch == '[') {
+                    ++count;
+                } else if (ch == ']') {
+                    --count;
+                } else if (count == 0) {
+                    //--index;
+                    last = T_BRACKET;
+                    break;
+                }
+                --index;
+            }
+        } else if (ch2 == "::") {
+            index -= 2;
+            last = T_ACCESS;
+        } else if (ch2 == "->") {
+            index -= 2;
+            last = T_ACCESS;
+        } else {
+            if (start > index) {
+                ++index;
+            }
+            last = T_UNKNOWN;
+            break;
+        }
     }
 
-    QChar ch = text[ index ];
-    QString ch2 = text.mid( index - 1, 2 );
-
-    if ( ( last != T_IDE ) && ( ch.isLetterOrNumber() || ch == '_' || ch == '$') ) {
-      while ( index > 0 && ( text[ index ].isLetterOrNumber() || text[ index ] == '_'  || text[ index ] == '$') ) {
-        --index;
-      }
-      last = T_IDE;
-    } else if ( last != T_IDE && ch == ')' ) {
-      int count = 0;
-      while ( index > 0 ) {
-        QChar ch = text[ index ];
-        if ( ch == '(' ) {
-          ++count;
-        } else if ( ch == ')' ) {
-          --count;
-        } else if ( count == 0 ) {
-          //index;
-          last = T_PAREN;
-          break;
-        }
-        --index;
-      }
-    } else if ( last != T_IDE && ch == '>' && ch2 != "->" && ch2 != "::") {
-      int count = 0;
-      while ( index > 0 ) {
-        QChar ch = text[ index ];
-        if ( ch == '<' ) {
-          ++count;
-        } else if ( ch == '>' ) {
-          --count;
-        } else if ( count == 0 ) {
-          //--index;
-          last = T_TEMP;
-          break;
-        }
-        --index;
-      }
-    } else if ( ch == ']' ) {
-      int count = 0;
-      while ( index > 0 ) {
-        QChar ch = text[ index ];
-        if ( ch == '[' ) {
-          ++count;
-        } else if ( ch == ']' ) {
-          --count;
-        } else if ( count == 0 ) {
-          //--index;
-          last = T_BRACKET;
-          break;
-        }
-        --index;
-      }
-    } else if ( ch2 == "::" ) {
-      index -= 2;
-      last = T_ACCESS;
-    } else if ( ch2 == "->" ) {
-      index -= 2;
-      last = T_ACCESS;
-    } else {
-      if ( start > index ) {
+    ///If we're at the first item, the above algorithm cannot be used safely,
+    ///so just determine whether the sign is valid for the beginning of an expression, if it isn't reject it.
+    if (index == 0 && start > index && !(text[ index ].isLetterOrNumber() || text[ index ] == '_' || text[ index ] == ':' || text[ index ] == '$')) {
         ++index;
-      }
-      last = T_UNKNOWN;
-      break;
     }
-  }
 
-  ///If we're at the first item, the above algorithm cannot be used safely,
-  ///so just determine whether the sign is valid for the beginning of an expression, if it isn't reject it.
-  if ( index == 0 && start > index && !( text[ index ].isLetterOrNumber() || text[ index ] == '_' || text[ index ] == ':' || text[ index ] == '$') ) {
-    ++index;
-  }
-
-  return index;
+    return index;
 }
 
-QStringList getMethodTokens( QString text )
+QStringList getMethodTokens(QString text)
 {
-  QStringList tokens;
+    QStringList tokens;
 
-  
-  text = text.trimmed();
-  if ( text.endsWith( "function", Qt::CaseInsensitive ) ) {
-    tokens << "function";
-    text = text.left( text.length() - 8 );
-  }
-  
-  QStringList possibleTokens;
-  possibleTokens << "private";
-  possibleTokens << "public";
-  possibleTokens << "protected";
-  possibleTokens << "static";
-  possibleTokens << "abstract";
-  possibleTokens << "final";
-  
-  while ( !possibleTokens.isEmpty() ) {
-    bool foundAnything = false;
+
     text = text.trimmed();
-    foreach ( const QString &token, possibleTokens ) {
-      if ( text.endsWith( token, Qt::CaseInsensitive ) ) {
-        tokens << token;
-        text = text.left( text.length() - token.length() );
-        foundAnything = true;
-        possibleTokens.removeOne( token );
-        break;
-      }
+    if (text.endsWith("function", Qt::CaseInsensitive)) {
+        tokens << "function";
+        text = text.left(text.length() - 8);
     }
-    if ( !foundAnything ) {
-      break;
+
+    QStringList possibleTokens;
+    possibleTokens << "private";
+    possibleTokens << "public";
+    possibleTokens << "protected";
+    possibleTokens << "static";
+    possibleTokens << "abstract";
+    possibleTokens << "final";
+
+    while (!possibleTokens.isEmpty()) {
+        bool foundAnything = false;
+        text = text.trimmed();
+        foreach(const QString &token, possibleTokens) {
+            if (text.endsWith(token, Qt::CaseInsensitive)) {
+                tokens << token;
+                text = text.left(text.length() - token.length());
+                foundAnything = true;
+                possibleTokens.removeOne(token);
+                break;
+            }
+        }
+        if (!foundAnything) {
+            break;
+        }
     }
-  }
-  
-  return tokens;
+
+    return tokens;
 }
 
 }

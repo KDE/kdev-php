@@ -35,7 +35,8 @@
 #include "expressionparser.h"
 
 using namespace KDevelop;
-namespace Php {
+namespace Php
+{
 
 AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
 {
@@ -59,7 +60,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
     } else if (type == "object") {
         //TODO
         iType = IntegralType::TypeMixed;
-    } else if ( type == "null") {
+    } else if (type == "null") {
         iType = IntegralType::TypeNull;
     } else if (type == "void") {
         iType = IntegralType::TypeVoid;
@@ -83,10 +84,10 @@ AbstractType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& doc
     m_gotTypeFromDocComment = false;
     QString docComment = editor()->parseSession()->docComment(node->startToken);
     if (!docComment.isEmpty()) {
-        QRegExp rx("\\*\\s+@"+QRegExp::escape(docCommentName)+"\\s([^\\s]*)");
+        QRegExp rx("\\*\\s+@" + QRegExp::escape(docCommentName) + "\\s([^\\s]*)");
         if (rx.indexIn(docComment) != -1) {
             AbstractType::Ptr type = parseType(rx.cap(1), node);
-            if ( type ) {
+            if (type) {
                 m_gotTypeFromDocComment = true;
             }
             return type;
@@ -111,16 +112,17 @@ QList<AbstractType::Ptr> TypeBuilder::parseDocCommentParams(AstNode* node)
     return ret;
 }
 
-AbstractType::Ptr TypeBuilder::getTypeForNode(AstNode* node) {
+AbstractType::Ptr TypeBuilder::getTypeForNode(AstNode* node)
+{
     AbstractType::Ptr type;
-    if ( node ) {
+    if (node) {
         node->ducontext = currentContext();
         ExpressionParser ep(true);
         ep.setCreateProblems(true);
         ExpressionEvaluationResult res = ep.evaluateType(node, editor());
         type = res.type();
     }
-    if ( !type ) {
+    if (!type) {
         type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
     }
     return type;
@@ -137,7 +139,7 @@ FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
     return functionType;
 }
 
-void TypeBuilder::visitClassDeclarationStatement( ClassDeclarationStatementAst* node )
+void TypeBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst* node)
 {
     // the predeclaration builder should have set up a type already
     // and the declarationbuilder should have set that as current type
@@ -170,7 +172,7 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
         //member-variable
         parseDocComment(node, "var");
         TypeBuilderBase::visitClassStatement(node);
-        if ( m_gotTypeFromDocComment ) {
+        if (m_gotTypeFromDocComment) {
             clearLastType();
             m_gotTypeFromDocComment = false;
         }
@@ -179,25 +181,26 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
 
 void TypeBuilder::visitClassVariable(ClassVariableAst *node)
 {
-    if ( !m_gotTypeFromDocComment ) {
+    if (!m_gotTypeFromDocComment) {
         openAbstractType(getTypeForNode(node->value));
-    
+
         TypeBuilderBase::visitClassVariable(node);
-        
+
         closeType();
     } else {
         TypeBuilderBase::visitClassVariable(node);
     }
 }
 
-void TypeBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst* node) {
-    if ( !m_gotTypeFromDocComment ) {
+void TypeBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst* node)
+{
+    if (!m_gotTypeFromDocComment) {
         AbstractType::Ptr type = getTypeForNode(node->scalar);
         type->setModifiers(type->modifiers() | AbstractType::ConstModifier);
         openAbstractType(type);
-    
+
         TypeBuilderBase::visitClassConstantDeclaration(node);
-        
+
         closeType();
     } else {
         currentAbstractType()->setModifiers(currentAbstractType()->modifiers() & AbstractType::ConstModifier);
@@ -237,11 +240,11 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
     Q_ASSERT(hasCurrentType());
     FunctionType::Ptr type = currentType<FunctionType>();
     Q_ASSERT(type);
-    
+
     type->setReturnType(parseDocComment(node, "return"));
-    
+
     TypeBuilderBase::visitFunctionDeclarationStatement(node);
-    
+
     if (!type->returnType()) {
         type->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
     }
@@ -270,8 +273,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
     TypeBuilderBase::visitStatement(node);
     if (node->returnExpr && lastType() && hasCurrentType() && currentType<FunctionType>()
             && (!currentType<FunctionType>()->returnType()
-                || IntegralType::Ptr::dynamicCast(currentType<FunctionType>()->returnType())))
-    {
+                || IntegralType::Ptr::dynamicCast(currentType<FunctionType>()->returnType()))) {
         currentType<FunctionType>()->setReturnType(lastType());
     }
 }

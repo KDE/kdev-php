@@ -55,10 +55,11 @@
 using namespace KTextEditor;
 using namespace KDevelop;
 
-namespace Php {
+namespace Php
+{
 
-CodeCompletionModel::CodeCompletionModel( QObject * parent )
-  : KDevelop::CodeCompletionModel(parent)
+CodeCompletionModel::CodeCompletionModel(QObject * parent)
+        : KDevelop::CodeCompletionModel(parent)
 {
 }
 
@@ -75,7 +76,7 @@ Range CodeCompletionModel::completionRange(View* view, const Cursor &position)
 {
     Range range = CodeCompletionModelControllerInterface::completionRange(view, position);
     if (range.start().column() > 0) {
-        KTextEditor::Range preRange(Cursor(range.start().line(), range.start().column()-1),
+        KTextEditor::Range preRange(Cursor(range.start().line(), range.start().column() - 1),
                                     Cursor(range.start().line(), range.start().column()));
         kDebug() << preRange << view->document()->text(preRange);
         if (view->document()->text(preRange) == "$") {
@@ -92,7 +93,7 @@ bool CodeCompletionModel::shouldAbortCompletion(View* view, const SmartRange &ra
     Q_UNUSED(range);
     static const QRegExp allowedText("^\\$?(\\w*)");
     return !allowedText.exactMatch(currentCompletion);
-    }
+}
 
 }
 

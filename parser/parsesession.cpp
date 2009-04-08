@@ -34,7 +34,7 @@ namespace Php
 {
 
 ParseSession::ParseSession()
-    :   m_debug(false),
+        :   m_debug(false),
         m_pool(new KDevPG::MemoryPool()),
         m_tokenStream(new TokenStream())
 {
@@ -50,7 +50,7 @@ QString ParseSession::contents() const
     return m_contents;
 }
 
-void ParseSession::setContents( const QString& contents )
+void ParseSession::setContents(const QString& contents)
 {
     m_contents = contents;
 }
@@ -60,23 +60,22 @@ void ParseSession::setCurrentDocument(const QString& filename)
     m_currentDocument = filename;
 }
 
-bool ParseSession::readFile( const QString& filename, const char* codec )
+bool ParseSession::readFile(const QString& filename, const char* codec)
 {
     m_currentDocument = filename;
 
     QFile f(filename);
-    if( !f.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
         kDebug() << "Couldn't open project file:" << filename;
         return false;
     }
     QTextStream s(&f);
-    if( codec )
-        s.setCodec( QTextCodec::codecForName(codec) );
+    if (codec)
+        s.setCodec(QTextCodec::codecForName(codec));
     m_contents = s.readAll();
     return true;
 }
-void ParseSession::setDebug( bool debug )
+void ParseSession::setDebug(bool debug)
 {
     m_debug = debug;
 }
@@ -90,26 +89,24 @@ TokenStream* ParseSession::tokenStream() const
 Parser* ParseSession::createParser(int initialState)
 {
     Parser* parser = new Parser;
-    parser->setTokenStream( m_tokenStream );
-    parser->setMemoryPool( m_pool );
-    parser->setDebug( m_debug );
+    parser->setTokenStream(m_tokenStream);
+    parser->setMemoryPool(m_pool);
+    parser->setDebug(m_debug);
     parser->setCurrentDocument(m_currentDocument);
 
     parser->tokenize(m_contents, initialState);
     return parser;
 }
 
-bool ParseSession::parse( Php::StartAst** ast )
+bool ParseSession::parse(Php::StartAst** ast)
 {
     Parser* parser = createParser();
     StartAst* phpAst;
     bool matched = parser->parseStart(&phpAst);
-    if( matched )
-    {
+    if (matched) {
         kDebug() << "Successfully parsed";
         *ast = phpAst;
-    }else
-    {
+    } else {
         *ast = 0;
         parser->expectedSymbol(AstNode::StartKind, "start");
         kDebug() << "Couldn't parse content";
@@ -119,34 +116,35 @@ bool ParseSession::parse( Php::StartAst** ast )
     return matched;
 }
 
-KDevelop::SimpleCursor ParseSession::positionAt( qint64 offset ) const
+KDevelop::SimpleCursor ParseSession::positionAt(qint64 offset) const
 {
     qint64 line, column;
-    m_tokenStream->locationTable()->positionAt( offset, &line, &column );
+    m_tokenStream->locationTable()->positionAt(offset, &line, &column);
     return KDevelop::SimpleCursor(line, column);
 }
 
-QString ParseSession::symbol( qint64 token ) const
+QString ParseSession::symbol(qint64 token) const
 {
-    const TokenStream::Token& tok = m_tokenStream->token( token );
+    const TokenStream::Token& tok = m_tokenStream->token(token);
     return m_contents.mid(tok.begin, tok.end - tok.begin + 1);
 }
 
-QString ParseSession::symbol( AstNode* node ) const
+QString ParseSession::symbol(AstNode* node) const
 {
     const TokenStream::Token& startTok = m_tokenStream->token(node->startToken);
     const TokenStream::Token& endTok = m_tokenStream->token(node->endToken);
     return m_contents.mid(startTok.begin, endTok.end - startTok.begin + 1);
 }
 
-QString ParseSession::docComment( qint64 token ) const
+QString ParseSession::docComment(qint64 token) const
 {
-    const TokenStream::Token& tok = m_tokenStream->token( token );
+    const TokenStream::Token& tok = m_tokenStream->token(token);
     if (!tok.docCommentEnd) return QString();
     return m_contents.mid(tok.docCommentBegin, tok.docCommentEnd - tok.docCommentBegin + 1);
 }
 
-QList<KDevelop::ProblemPointer> ParseSession::problems() {
+QList<KDevelop::ProblemPointer> ParseSession::problems()
+{
     return m_problems;
 }
 

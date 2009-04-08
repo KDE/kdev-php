@@ -53,10 +53,10 @@ class ParseJob : public KDevelop::ParseJob
     Q_OBJECT
 
 public:
-    ParseJob( const KUrl &url, QObject* parent = 0 );
+    ParseJob(const KUrl &url, QObject* parent = 0);
     virtual ~ParseJob();
 
-    void setAST( StartAst* ast );
+    void setAST(StartAst* ast);
     virtual StartAst *ast() const;
 
     const KTextEditor::Range& textRangeToParse() const;
@@ -84,10 +84,10 @@ private:
      * endless recursions in include statements
      */
     bool hasParentDocument(const KDevelop::IndexedString &document);
-    
+
     /// create a problem pointer for the current document
-    KDevelop::ProblemPointer createProblem( const QString &description, AstNode* node,
-                                            EditorIntegrator * editor, KDevelop::ProblemData::Source source );
+    KDevelop::ProblemPointer createProblem(const QString &description, AstNode* node,
+                                           EditorIntegrator * editor, KDevelop::ProblemData::Source source);
 };
 
 }

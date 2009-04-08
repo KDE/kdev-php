@@ -48,35 +48,36 @@
 
 using namespace KDevelop;
 
-namespace Php {
+namespace Php
+{
 
 bool isMatch(Declaration* declaration, DeclarationType declarationType)
 {
     if (declarationType == ClassDeclarationType
-        && dynamic_cast<ClassDeclaration*>(declaration)
-    ) {
+            && dynamic_cast<ClassDeclaration*>(declaration)
+       ) {
         return true;
-    } else if(declarationType == FunctionDeclarationType
-        && dynamic_cast<FunctionDeclaration*>(declaration)
-    ) {
+    } else if (declarationType == FunctionDeclarationType
+               && dynamic_cast<FunctionDeclaration*>(declaration)
+              ) {
         return true;
-    } else if(declarationType == ConstantDeclarationType
-        && dynamic_cast<ConstantDeclaration*>(declaration)
-    ) {
+    } else if (declarationType == ConstantDeclarationType
+               && dynamic_cast<ConstantDeclaration*>(declaration)
+              ) {
         return true;
-    } else if(declarationType == GlobalVariableDeclarationType
-        && declaration->kind() == Declaration::Instance
-        && !dynamic_cast<ConstantDeclaration*>(declaration)
-    ) {
+    } else if (declarationType == GlobalVariableDeclarationType
+               && declaration->kind() == Declaration::Instance
+               && !dynamic_cast<ConstantDeclaration*>(declaration)
+              ) {
         return true;
     }
     return false;
 }
 
 Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIdentifier id,
-                                    DeclarationType declarationType, AstNode* node, EditorIntegrator* editor)
+        DeclarationType declarationType, AstNode* node, EditorIntegrator* editor)
 {
-    ifDebug( kDebug() << id.toString() << declarationType; )
+    ifDebug(kDebug() << id.toString() << declarationType;)
     if (declarationType == ClassDeclarationType && id == QualifiedIdentifier("self")) {
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->parentContext()) {
@@ -87,7 +88,7 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
         //there can be just one Class-Context imported
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->parentContext()) {
-            foreach (DUContext::Import i, currentContext->parentContext()->importedParentContexts()) {
+            foreach(DUContext::Import i, currentContext->parentContext()->importedParentContexts()) {
                 if (i.context(currentContext->topContext())->type() == DUContext::Class) {
                     return i.context(currentContext->topContext())->owner();
                 }
@@ -101,50 +102,50 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
         }
         DUChainReadLocker lock(DUChain::lock());
         foundDeclarations = currentContext->findDeclarations(id);
-        foreach (Declaration *declaration, foundDeclarations) {
+        foreach(Declaration *declaration, foundDeclarations) {
             if (isMatch(declaration, declarationType)) {
                 return declaration;
             }
         }
         if (declarationType != GlobalVariableDeclarationType) {
-            ifDebug( kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable" << id.toString(); )
+            ifDebug(kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable" << id.toString();)
             uint nr;
             const IndexedDeclaration* declarations = 0;
             PersistentSymbolTable::self().declarations(id, nr, declarations);
-            ifDebug( kDebug() << "found declarations:" << nr; )
+            ifDebug(kDebug() << "found declarations:" << nr;)
             lock.unlock();
 
             DUChainWriteLocker wlock(DUChain::lock());
-            for (uint i=0; i<nr; ++i) {
+            for (uint i = 0; i < nr; ++i) {
                 if (!declarations[i].declaration()) {
-                    ifDebug( kDebug() << "skipping declaration, doesn't have declaration"; )
+                    ifDebug(kDebug() << "skipping declaration, doesn't have declaration";)
                     continue;
                 } else if (!isMatch(declarations[i].declaration(), declarationType)) {
-                    ifDebug( kDebug() << "skipping declaration, doesn't match with declarationType"; )
+                    ifDebug(kDebug() << "skipping declaration, doesn't match with declarationType";)
                     continue;
                 }
                 TopDUContext* top = declarations[i].declaration()->context()->topContext();
                 if (top->language() != IndexedString("Php")) {
-                    ifDebug( kDebug() << "skipping declaration, invalid language" << top->language().str(); )
+                    ifDebug(kDebug() << "skipping declaration, invalid language" << top->language().str();)
                     continue;
                 }
                 if (ICore::self()) {
                     bool loadedProjectContainsUrl = false;
-                    foreach (IProject *project, ICore::self()->projectController()->projects()) {
+                    foreach(IProject *project, ICore::self()->projectController()->projects()) {
                         if (project->fileSet().contains(top->url())) {
                             loadedProjectContainsUrl = true;
                             break;
                         }
                     }
                     if (!loadedProjectContainsUrl) {
-                        ifDebug( kDebug() << "skipping declaration, not in loaded project"; )
+                        ifDebug(kDebug() << "skipping declaration, not in loaded project";)
                         continue;
                     }
                 }
                 currentContext->topContext()->addImportedParentContext(top);
                 currentContext->topContext()->parsingEnvironmentFile()
-                    ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
-                ifDebug( kDebug() << "using" << declarations[i].declaration()->toString() << top->url().str(); )
+                ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
+                ifDebug(kDebug() << "using" << declarations[i].declaration()->toString() << top->url().str();)
                 return declarations[i].declaration();
             }
         }
@@ -164,7 +165,9 @@ class ScalarExpressionVisitor : public DefaultVisitor
 {
 public:
     ScalarExpressionVisitor() : m_node(0) {}
-    CommonScalarAst* node() const { return m_node; }
+    CommonScalarAst* node() const {
+        return m_node;
+    }
 private:
     virtual void visitCommonScalar(CommonScalarAst* node) {
         m_node = node;
@@ -200,8 +203,8 @@ IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &current
 {
     //look for file relative to current file
     QString currentDir = currentUrl.path();
-    currentDir = currentDir.left(currentDir.lastIndexOf('/')+1);
-    IndexedString url(currentDir+includeFile);
+    currentDir = currentDir.left(currentDir.lastIndexOf('/') + 1);
+    IndexedString url(currentDir + includeFile);
     if (includeExists(url)) return url;
 
     //first look in own project
@@ -214,7 +217,7 @@ IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &current
     }
 
     //then in all open projects
-    foreach (IProject* project, ICore::self()->projectController()->projects()) {
+    foreach(IProject* project, ICore::self()->projectController()->projects()) {
         if (project == ownProject) continue;
         KUrl u = project->projectItem()->url();
         u.addPath(includeFile);

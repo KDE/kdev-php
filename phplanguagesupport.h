@@ -29,10 +29,11 @@
 #include <language/interfaces/ilanguagesupport.h>
 #include <QtCore/QVariant>
 
-namespace KDevelop {
-    class IDocument;
-    class IProject;
-    class CodeHighlighting;
+namespace KDevelop
+{
+class IDocument;
+class IProject;
+class CodeHighlighting;
 }
 
 
@@ -44,21 +45,21 @@ class Highlighting;
 class LanguageSupport : public KDevelop::IPlugin, public KDevelop::ILanguageSupport
 {
     Q_OBJECT
-    Q_INTERFACES( KDevelop::ILanguageSupport )
+    Q_INTERFACES(KDevelop::ILanguageSupport)
 
 public:
-    LanguageSupport( QObject *parent, const QVariantList& args = QVariantList() );
+    LanguageSupport(QObject *parent, const QVariantList& args = QVariantList());
     virtual ~LanguageSupport();
     /*Name Of the Language*/
     QString name() const;
     /*Parsejob used by background parser to parse given Url*/
-    KDevelop::ParseJob *createParseJob( const KUrl &url );
+    KDevelop::ParseJob *createParseJob(const KUrl &url);
     /*the actual language object*/
     KDevelop::ILanguage *language();
 
     static LanguageSupport* self();
     /*the code highlighter*/
-   const KDevelop::ICodeHighlighting* codeHighlighting() const;
+    const KDevelop::ICodeHighlighting* codeHighlighting() const;
 
 private slots:
     void projectOpened(KDevelop::IProject *project);

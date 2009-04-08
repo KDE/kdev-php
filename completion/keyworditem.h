@@ -26,24 +26,24 @@
 
 using namespace KDevelop;
 
-namespace Php {
+namespace Php
+{
 
 class KeywordItem : public NormalDeclarationCompletionItem
 {
 public:
 
-  KeywordItem( const QString &keyword,
-                KSharedPtr<KDevelop::CodeCompletionContext> context = KSharedPtr<KDevelop::CodeCompletionContext>() )
-    : NormalDeclarationCompletionItem( KDevelop::DeclarationPointer(), context, 0 ),
-      m_keyword( keyword )
-  {}
-  
-  virtual void execute( KTextEditor::Document* document, const KTextEditor::Range& word );
-  
-  virtual QVariant data( const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model ) const;
+    KeywordItem(const QString &keyword,
+                KSharedPtr<KDevelop::CodeCompletionContext> context = KSharedPtr<KDevelop::CodeCompletionContext>())
+            : NormalDeclarationCompletionItem(KDevelop::DeclarationPointer(), context, 0),
+            m_keyword(keyword) {}
+
+    virtual void execute(KTextEditor::Document* document, const KTextEditor::Range& word);
+
+    virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const;
 
 private:
-  const QString m_keyword;
+    const QString m_keyword;
 };
 
 }

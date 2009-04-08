@@ -68,7 +68,7 @@ void TestExpressionParser::memberVariable()
     TopDUContext* top = parse(method, DumpNone);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
-    
+
     ExpressionParser p(false, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i->foo"), DUContextPointer(top));
     QVERIFY(res.type());
@@ -104,7 +104,7 @@ void TestExpressionParser::globalFunction()
 
     ExpressionParser p(false, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("foo"), DUContextPointer(top));
-    QVERIFY(res.type());    
+    QVERIFY(res.type());
     QVERIFY(FunctionType::Ptr::dynamicCast(res.type()));
     QCOMPARE(res.allDeclarations().count(), 1);
     QCOMPARE(res.allDeclarations().first(), top->localDeclarations().first());

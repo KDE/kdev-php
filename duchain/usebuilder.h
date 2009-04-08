@@ -28,7 +28,8 @@
 #include "contextbuilder.h"
 #include "phpduchainexport.h"
 
-namespace Php {
+namespace Php
+{
 
 class ParseSession;
 

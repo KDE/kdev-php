@@ -27,12 +27,15 @@
 #include <language/duchain/declaration.h>
 
 using namespace KDevelop;
-namespace Php {
+namespace Php
+{
 
-ExpressionEvaluationResult::~ExpressionEvaluationResult() {
+ExpressionEvaluationResult::~ExpressionEvaluationResult()
+{
 }
 
-ExpressionEvaluationResult::ExpressionEvaluationResult()/* : isInstance(false)*/ {
+ExpressionEvaluationResult::ExpressionEvaluationResult()/* : isInstance(false)*/
+{
 }
 
 void ExpressionEvaluationResult::setDeclaration(Declaration* declaration)
@@ -63,7 +66,7 @@ void ExpressionEvaluationResult::setDeclarations(QList<Declaration*> declaration
 AbstractType::Ptr ExpressionEvaluationResult::type() const
 {
     return m_type;
-    
+
 }
 
 QList<Declaration*> ExpressionEvaluationResult::allDeclarations() const

@@ -41,7 +41,7 @@ void compareUses(Declaration* dec, QList<SimpleRange> ranges)
     QCOMPARE(dec->uses().keys().count(), 1);
     QCOMPARE(dec->uses().values().count(), 1);
     QCOMPARE(dec->uses().values().first().count(), ranges.count());
-    for(int i = 0; i < ranges.count(); ++i) {
+    for (int i = 0; i < ranges.count(); ++i) {
         QCOMPARE(dec->uses().values().first().at(i), ranges.at(i));
     }
 }
@@ -121,7 +121,7 @@ void TestUses::variable()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
     QList<SimpleRange> ranges;
-    ranges << SimpleRange(1, 42-3, 1, 44-3) << SimpleRange(1, 46-3, 1, 48-3) << SimpleRange(1, 59-3, 1, 61-3);
+    ranges << SimpleRange(1, 42 - 3, 1, 44 - 3) << SimpleRange(1, 46 - 3, 1, 48 - 3) << SimpleRange(1, 59 - 3, 1, 61 - 3);
     compareUses(top->localDeclarations().at(1), ranges);
 }
 
@@ -171,7 +171,7 @@ void TestUses::memberFunctionInString()
     //$a
     compareUses(top->localDeclarations().at(1), SimpleRange(0, 50, 0, 52));
 
-     //foo
+    //foo
     compareUses(top->childContexts().first()->localDeclarations().first(), SimpleRange(0, 54, 0, 57));
 }
 
@@ -373,12 +373,12 @@ void TestUses::objectWithClassName()
     DUChainWriteLocker lock(DUChain::lock());
 
     QList<SimpleRange> ranges;
-    ranges << SimpleRange(0, 66, 0, 66+2);
-    ranges << SimpleRange(0, 78, 0, 78+2);
-    ranges << SimpleRange(0, 85, 0, 85+2);
+    ranges << SimpleRange(0, 66, 0, 66 + 2);
+    ranges << SimpleRange(0, 78, 0, 78 + 2);
+    ranges << SimpleRange(0, 85, 0, 85 + 2);
     compareUses(top->localDeclarations().first(), ranges);
 
-    compareUses(top->localDeclarations().at(1), SimpleRange(0, 70, 0, 70+3));
+    compareUses(top->localDeclarations().at(1), SimpleRange(0, 70, 0, 70 + 3));
 }
 
 void TestUses::classAndConstWithSameName()
@@ -484,57 +484,57 @@ void TestUses::foreachArray()
 
     // $a, $k, $i
     QCOMPARE(top->localDeclarations().size(), 3);
-    
+
     // $a
     Declaration *d = top->localDeclarations().at(0);
     compareUses(d, SimpleRange(0, 26, 0, 28));
-    
+
     // $k
     d = top->localDeclarations().at(1);
     compareUses(d, SimpleRange(0, 51, 0, 53));
-    
+
     // $i
     d = top->localDeclarations().at(2);
     compareUses(d, SimpleRange(0, 55, 0, 57));
 }
 
-void TestUses::assignmentToMemberArray() 
+void TestUses::assignmentToMemberArray()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<?php class x { var $y; function z($a) { $b = $a; $this->y[$a] = true; } }");
-    
+
     TopDUContext* top = parse(method, DumpAll);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
-    
+
     // class x
     Declaration *x = top->localDeclarations().first();
     QVERIFY(x);
-    
+
     // $this
     compareUses(x, SimpleRange(0, 50, 0, 55));
-    
+
     // var $y
     Declaration *y = x->logicalInternalContext(top)->findDeclarations(Identifier("y")).first();
     QVERIFY(y);
-    
+
     // $this->y
     compareUses(y, SimpleRange(0, 57, 0, 58));
-    
+
     // function z
     Declaration *z = x->logicalInternalContext(top)->findDeclarations(Identifier("z")).first();
     QVERIFY(z);
-    
+
     // $a
     Declaration *a = z->logicalInternalContext(top)->findDeclarations(Identifier("a")).first();
     QVERIFY(a);
     compareUses(a, QList<SimpleRange>()
-                      // $b = $a
-                      << SimpleRange(0, 46, 0, 48)
-                      // $this->y[$a]
-                      << SimpleRange(0, 59, 0, 61)
-    );
+                // $b = $a
+                << SimpleRange(0, 46, 0, 48)
+                // $this->y[$a]
+                << SimpleRange(0, 59, 0, 61)
+               );
 }
 
 }

@@ -18,7 +18,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-namespace Php {
+namespace Php
+{
 
 QString tokenText(int token)
 {

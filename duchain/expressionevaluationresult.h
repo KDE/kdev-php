@@ -27,17 +27,20 @@
 
 #include <QList>
 
-namespace KDevelop {
-  class IndexedType;
-  class TypeIdentifier;
-  class Declaration;
+namespace KDevelop
+{
+class IndexedType;
+class TypeIdentifier;
+class Declaration;
 }
 
 class QString;
 
-namespace Php {
+namespace Php
+{
 
-class KDEVPHPDUCHAIN_EXPORT ExpressionEvaluationResult {
+class KDEVPHPDUCHAIN_EXPORT ExpressionEvaluationResult
+{
 public:
     ExpressionEvaluationResult();
     ~ExpressionEvaluationResult();

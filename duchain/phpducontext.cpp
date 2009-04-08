@@ -24,7 +24,8 @@
 
 #include "navigation/navigationwidget.h"
 
-namespace Php {
+namespace Php
+{
 using namespace KDevelop;
 
 typedef PhpDUContext<TopDUContext> PhpTopDUContext;
@@ -34,34 +35,36 @@ typedef PhpDUContext<DUContext> PhpNormalDUContext;
 REGISTER_DUCHAIN_ITEM_WITH_DATA(PhpNormalDUContext, DUContextData);
 
 template<>
-QWidget* PhpDUContext<TopDUContext>::createNavigationWidget( Declaration* decl, TopDUContext* topContext, const QString& htmlPrefix, const QString& htmlSuffix ) const {
-  if( decl == 0 ) {
-  /*
-    KUrl u( url().str() );
-    IncludeItem i;
-    i.pathNumber = -1;
-    i.name = u.fileName();
-    i.isDirectory = false;
-    i.basePath = u.upUrl();
+QWidget* PhpDUContext<TopDUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, const QString& htmlPrefix, const QString& htmlSuffix) const
+{
+    if (decl == 0) {
+        /*
+          KUrl u( url().str() );
+          IncludeItem i;
+          i.pathNumber = -1;
+          i.name = u.fileName();
+          i.isDirectory = false;
+          i.basePath = u.upUrl();
 
-    return new NavigationWidget( i, TopDUContextPointer(topContext), htmlPrefix, htmlSuffix );
-    */
-    return 0;
-  } else {
-    return new NavigationWidget( DeclarationPointer(decl), TopDUContextPointer(topContext ? topContext : this->topContext()), htmlPrefix, htmlSuffix );
-  }
+          return new NavigationWidget( i, TopDUContextPointer(topContext), htmlPrefix, htmlSuffix );
+          */
+        return 0;
+    } else {
+        return new NavigationWidget(DeclarationPointer(decl), TopDUContextPointer(topContext ? topContext : this->topContext()), htmlPrefix, htmlSuffix);
+    }
 }
 
 template<>
-QWidget* PhpDUContext<DUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, const QString& htmlPrefix, const QString& htmlSuffix) const {
-  if( decl == 0 ) {
-    if( owner() )
-      return new NavigationWidget( DeclarationPointer(owner()), TopDUContextPointer(topContext ? topContext : this->topContext()), htmlPrefix, htmlSuffix );
-    else
-      return 0;
-  } else {
-    return new NavigationWidget( DeclarationPointer(decl), TopDUContextPointer(topContext ? topContext : this->topContext()), htmlPrefix, htmlSuffix );
-  }
+QWidget* PhpDUContext<DUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, const QString& htmlPrefix, const QString& htmlSuffix) const
+{
+    if (decl == 0) {
+        if (owner())
+            return new NavigationWidget(DeclarationPointer(owner()), TopDUContextPointer(topContext ? topContext : this->topContext()), htmlPrefix, htmlSuffix);
+        else
+            return 0;
+    } else {
+        return new NavigationWidget(DeclarationPointer(decl), TopDUContextPointer(topContext ? topContext : this->topContext()), htmlPrefix, htmlSuffix);
+    }
 }
 
 

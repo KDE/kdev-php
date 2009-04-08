@@ -33,17 +33,14 @@ class KDEVPHPDUCHAIN_EXPORT ConstantDeclarationData : public KDevelop::Declarati
 {
 public:
     ConstantDeclarationData()
-        : KDevelop::DeclarationData()
-    {
+            : KDevelop::DeclarationData() {
     }
 
-    ConstantDeclarationData( const ConstantDeclarationData& rhs )
-        : KDevelop::DeclarationData( rhs )
-    {
+    ConstantDeclarationData(const ConstantDeclarationData& rhs)
+            : KDevelop::DeclarationData(rhs) {
     }
 
-    ~ConstantDeclarationData()
-    {
+    ~ConstantDeclarationData() {
     }
 
 };
@@ -63,13 +60,13 @@ public:
     virtual uint additionalIdentity() const;
     virtual QString toString() const;
 
-  enum {
-    Identity = 80
-  };
-  typedef KDevelop::Declaration Base;
+    enum {
+        Identity = 80
+    };
+    typedef KDevelop::Declaration Base;
 
 private:
-  DUCHAIN_DECLARE_DATA(ConstantDeclaration)
+    DUCHAIN_DECLARE_DATA(ConstantDeclaration)
 };
 
 }

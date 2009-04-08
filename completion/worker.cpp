@@ -39,10 +39,11 @@
 
 using namespace KDevelop;
 
-namespace Php {
+namespace Php
+{
 
 CodeCompletionWorker::CodeCompletionWorker(CodeCompletionModel* parent)
-  : KDevelop::CodeCompletionWorker(parent)
+        : KDevelop::CodeCompletionWorker(parent)
 {
 }
 

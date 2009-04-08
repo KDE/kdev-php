@@ -43,7 +43,8 @@
 using namespace KTextEditor;
 using namespace KDevelop;
 
-namespace Php {
+namespace Php
+{
 
 PreDeclarationBuilder::~PreDeclarationBuilder()
 {
@@ -84,33 +85,33 @@ void PreDeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationState
         dec->setKind(KDevelop::Declaration::Type);
         dec->clearBaseClasses();
         dec->setClassType(ClassDeclarationData::Class);
-        if ( node->modifier ) {
-          switch ( node->modifier->modifier ) {
+        if (node->modifier) {
+            switch (node->modifier->modifier) {
             case NormalClass:
-              dec->setClassModifier(ClassDeclarationData::None);
-              break;
+                dec->setClassModifier(ClassDeclarationData::None);
+                break;
             case FinalClass:
-              dec->setClassModifier(ClassDeclarationData::Final);
-              break;
+                dec->setClassModifier(ClassDeclarationData::Final);
+                break;
             case AbstractClass:
-              dec->setClassModifier(ClassDeclarationData::Abstract);
-              break;
-          }
+                dec->setClassModifier(ClassDeclarationData::Abstract);
+                break;
+            }
         } else {
             dec->setClassModifier(ClassDeclarationData::None);
         }
-        
+
         // build the type as well, to make this declaration usable
         StructureType::Ptr type(new StructureType());
         type->setDeclaration(dec);
         dec->setType(type);
     }
-    
+
     // only visit the body to look for other function declarations inside the methods
     visitNode(node->body);
-    
+
     m_types->insert(node->className->string, dec);
-    
+
     closeDeclaration();
 }
 
@@ -123,24 +124,25 @@ void PreDeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarat
         dec->setKind(KDevelop::Declaration::Type);
         dec->clearBaseClasses();
         dec->setClassType(ClassDeclarationData::Interface);
-        
+
         // build the type as well, to make this declaration usable
         StructureType::Ptr type(new StructureType());
         type->setDeclaration(dec);
         dec->setType(type);
     }
-    
+
     // don't evaluate the body or extends of interfaces in PreDeclarationBuilder
-    
+
     m_types->insert(node->interfaceName->string, dec);
-    
+
     closeDeclaration();
 }
 
-void PreDeclarationBuilder::visitClassStatement(ClassStatementAst* node) {
+void PreDeclarationBuilder::visitClassStatement(ClassStatementAst* node)
+{
     // we are only looking for function declarations inside methods
-    if ( node->methodBody ) {
-      visitNode(node->methodBody);
+    if (node->methodBody) {
+        visitNode(node->methodBody);
     }
 }
 
@@ -152,16 +154,16 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
         DUChainWriteLocker lock(DUChain::lock());
         dec->setKind(Declaration::Type);
         dec->clearDefaultParameters();
-        
+
         FunctionType::Ptr type = FunctionType::Ptr(new FunctionType());
-        
+
         dec->setType(type);
     }
     // only visit the body to look for other function declarations
     visitNode(node->functionBody);
-    
+
     m_functions->insert(node->functionName->string, dec);
-    
+
     closeDeclaration();
 }
 

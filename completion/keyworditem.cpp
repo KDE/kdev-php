@@ -37,34 +37,36 @@
 
 using namespace KDevelop;
 
-namespace Php {
+namespace Php
+{
 
 QVariant KeywordItem::data(const QModelIndex& index, int role, const CodeCompletionModel* model) const
 {
-  switch ( role ) {
+    switch (role) {
     case CodeCompletionModel::IsExpandable:
-      return QVariant(false);
+        return QVariant(false);
     case Qt::DisplayRole:
-      if ( index.column() == KTextEditor::CodeCompletionModel::Name ) {
-        return QVariant(m_keyword);
-      } else {
-        return QVariant("");
-      }
-      break;
+        if (index.column() == KTextEditor::CodeCompletionModel::Name) {
+            return QVariant(m_keyword);
+        } else {
+            return QVariant("");
+        }
+        break;
     case KTextEditor::CodeCompletionModel::ItemSelected:
-      return QVariant("");
+        return QVariant("");
     case KTextEditor::CodeCompletionModel::InheritanceDepth:
-      return QVariant(0);
+        return QVariant(0);
     default:
-      //pass
-      break;
-  }
+        //pass
+        break;
+    }
 
-  return NormalDeclarationCompletionItem::data(index, role, model);
+    return NormalDeclarationCompletionItem::data(index, role, model);
 }
 
-void KeywordItem::execute(KTextEditor::Document* document, const KTextEditor::Range& word) {
-  document->replaceText( word, m_keyword + ' ' );
+void KeywordItem::execute(KTextEditor::Document* document, const KTextEditor::Range& word)
+{
+    document->replaceText(word, m_keyword + ' ');
 }
 
 }

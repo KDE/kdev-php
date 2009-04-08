@@ -26,23 +26,24 @@
 #include "phpduchainexport.h"
 #include "expressionevaluationresult.h"
 
-namespace Php {
-    class AstNode;
-    class EditorIntegrator;
+namespace Php
+{
+class AstNode;
+class EditorIntegrator;
 
 class KDEVPHPDUCHAIN_EXPORT ExpressionParser
 {
 public:
-     /**
-     * @param strict When this is false, the expression-visitor tries to recover from problems. For example when it cannot find a matching function, it returns the first of the candidates.
-     * @param debug Enables additional output
-     * */
+    /**
+    * @param strict When this is false, the expression-visitor tries to recover from problems. For example when it cannot find a matching function, it returns the first of the candidates.
+    * @param debug Enables additional output
+    * */
     explicit ExpressionParser(bool useCursor, bool debug = false);
 
     void setCreateProblems(bool v);
 
-    ExpressionEvaluationResult evaluateType( const QByteArray& expression, KDevelop::DUContextPointer context);
-    ExpressionEvaluationResult evaluateType( AstNode* ast, EditorIntegrator* editor);
+    ExpressionEvaluationResult evaluateType(const QByteArray& expression, KDevelop::DUContextPointer context);
+    ExpressionEvaluationResult evaluateType(AstNode* ast, EditorIntegrator* editor);
 private:
     bool m_useCursor;
     bool m_debug;

@@ -42,28 +42,28 @@ class KDEVPHPDUCHAIN_EXPORT ContextBuilder: public ContextBuilderBase, public De
 
 public:
     ContextBuilder();
-    virtual ~ContextBuilder ();
+    virtual ~ContextBuilder();
 
     void setEditor(EditorIntegrator* editor);
     void setEditor(ParseSession* session);
-    virtual KDevelop::ReferencedTopDUContext build( const KDevelop::IndexedString& url, AstNode* node,
-                                            KDevelop::ReferencedTopDUContext updateContext
-                                                = KDevelop::ReferencedTopDUContext(), bool useSmart = true );
+    virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
+            KDevelop::ReferencedTopDUContext updateContext
+            = KDevelop::ReferencedTopDUContext(), bool useSmart = true);
 protected:
     EditorIntegrator* editor() const;
 
     virtual KDevelop::DUContext* newContext(const KDevelop::SimpleRange& range);
     virtual KDevelop::TopDUContext* newTopContext(const KDevelop::SimpleRange& range, KDevelop::ParsingEnvironmentFile* file = 0);
 
-    virtual void startVisiting( AstNode* node );
-    virtual void setContextOnNode( AstNode* node, KDevelop::DUContext* ctx );
-    virtual KDevelop::DUContext* contextFromNode( AstNode* node );
-    virtual KTextEditor::Range editorFindRange( AstNode* fromRange, AstNode* toRange );
+    virtual void startVisiting(AstNode* node);
+    virtual void setContextOnNode(AstNode* node, KDevelop::DUContext* ctx);
+    virtual KDevelop::DUContext* contextFromNode(AstNode* node);
+    virtual KTextEditor::Range editorFindRange(AstNode* fromRange, AstNode* toRange);
 
     virtual KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
 
-    virtual void visitClassDeclarationStatement( ClassDeclarationStatementAst* );
+    virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst*);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
     virtual void visitClassStatement(ClassStatementAst *node);
     virtual void visitTopStatement(TopStatementAst* node);
@@ -73,13 +73,13 @@ protected:
     virtual void addBaseType(IdentifierAst * identifier);
 
     virtual void classContextOpened(KDevelop::DUContext* context);
-    
-    virtual void reportError( const QString& errorMsg, AstNode* node );
+
+    virtual void reportError(const QString& errorMsg, AstNode* node);
 
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, const KDevelop::QualifiedIdentifier &identifier, AstNode* node);
-    
+
     /// internalfunctions should not be checked for errors
     bool m_reportErrors;
 

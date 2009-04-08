@@ -24,11 +24,12 @@
 #include "editorintegrator.h"
 #include "parsesession.h"
 
-namespace Php {
+namespace Php
+{
 using namespace KDevelop;
 
 IncludeBuilder::IncludeBuilder(EditorIntegrator* editor)
-    : m_editor(editor)
+        : m_editor(editor)
 {}
 
 QMap< Php::AstNode*, KDevelop::IndexedString > IncludeBuilder::includes()
@@ -55,7 +56,7 @@ void IncludeBuilder::visitUnaryExpression(UnaryExpressionAst* node)
         CommonScalarAst* scalar = findCommonScalar(node->includeExpression);
         if (scalar && scalar->string != -1) {
             QString str = m_editor->parseSession()->symbol(scalar->string);
-            str = str.mid(1, str.length()-2);
+            str = str.mid(1, str.length() - 2);
             IndexedString includeFile = findIncludeFileUrl(str, KUrl(m_document.str()));
             if (!includeFile.isEmpty()) {
                 m_includes[node] = includeFile;

@@ -28,19 +28,23 @@
 #include <language/duchain/types/abstracttype.h>
 #include <language/duchain/identifier.h>
 
-namespace KDevelop {
-    class TopDUContext;
-    class Declaration;
+namespace KDevelop
+{
+class TopDUContext;
+class Declaration;
 }
 
-namespace Php {
+namespace Php
+{
 class EditorIntegrator;
 
 class KDEVPHPDUCHAIN_EXPORT ExpressionVisitor : public DefaultVisitor
 {
 public:
     ExpressionVisitor(EditorIntegrator* editor, bool useCursor);
-    ExpressionEvaluationResult result() { return m_result; }
+    ExpressionEvaluationResult result() {
+        return m_result;
+    }
     void setCreateProblems(bool v);
 
     virtual void visitNode(AstNode *node);

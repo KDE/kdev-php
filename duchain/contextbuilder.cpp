@@ -44,8 +44,8 @@ namespace Php
 ContextBuilder::ContextBuilder() : m_reportErrors(true)
 {
 }
-ReferencedTopDUContext ContextBuilder::build( const KDevelop::IndexedString& url, AstNode* node,
-                                            KDevelop::ReferencedTopDUContext updateContext, bool useSmart )
+ReferencedTopDUContext ContextBuilder::build(const KDevelop::IndexedString& url, AstNode* node,
+        KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
 {
     m_reportErrors = (url != IndexedString("internalfunctions"));
     if (!updateContext) {
@@ -143,14 +143,14 @@ KTextEditor::Range ContextBuilder::editorFindRange(AstNode* fromRange, AstNode* 
 
 QualifiedIdentifier ContextBuilder::identifierForNode(IdentifierAst* id)
 {
-    if( !id )
+    if (!id)
         return QualifiedIdentifier();
 
     return QualifiedIdentifier(editor()->parseSession()->symbol(id->string));
 }
 QualifiedIdentifier ContextBuilder::identifierForNode(VariableIdentifierAst* id)
 {
-    if( !id )
+    if (!id)
         return QualifiedIdentifier();
     QString ret(editor()->parseSession()->symbol(id->variable));
     ret = ret.mid(1); //cut off $
@@ -226,24 +226,24 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
 void ContextBuilder::addBaseType(IdentifierAst * identifier)
 {
     DUChainWriteLocker lock(DUChain::lock());
-    
+
     Q_ASSERT(currentContext()->type() == DUContext::Class);
-    
+
     ClassDeclaration* currentClass = dynamic_cast<ClassDeclaration*>(currentContext()->owner());
-    
+
     ClassDeclaration* baseClass = dynamic_cast<ClassDeclaration*>(findDeclarationImport(ClassDeclarationType, identifier));
-    
-    if ( currentClass && baseClass ) {
-        if ( DUContext* baseContext = baseClass->logicalInternalContext(0) ) {
+
+    if (currentClass && baseClass) {
+        if (DUContext* baseContext = baseClass->logicalInternalContext(0)) {
             // prevent circular context imports which could lead to segfaults
-            if ( !baseContext->imports(currentContext()) && !currentContext()->imports(baseContext) ) {
-                currentContext()->addImportedParentContext( baseContext );
+            if (!baseContext->imports(currentContext()) && !currentContext()->imports(baseContext)) {
+                currentContext()->addImportedParentContext(baseContext);
                 BaseClassInstance base;
                 base.baseClass = baseClass->indexedType();
                 base.access = Declaration::Public;
                 base.virtualInheritance = false;
                 currentClass->addBaseClass(base);
-            } else if ( m_reportErrors ) {
+            } else if (m_reportErrors) {
                 reportError(i18n("Circular inheritance of %1 and %2", currentClass->toString(), baseClass->toString()), identifier);
             }
         }
@@ -259,7 +259,7 @@ void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
         CommonScalarAst* scalar = findCommonScalar(node->includeExpression);
         if (scalar && scalar->string != -1) {
             QString str = editor()->parseSession()->symbol(scalar->string);
-            str = str.mid(1, str.length()-2);
+            str = str.mid(1, str.length() - 2);
             IndexedString includeFile = findIncludeFileUrl(str, KUrl(editor()->currentUrl().str()));
 
             DUChainWriteLocker lock(DUChain::lock());
@@ -267,7 +267,7 @@ void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
             if (top) {
                 currentContext()->topContext()->addImportedParentContext(top);
                 currentContext()->topContext()->parsingEnvironmentFile()
-                    ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
+                ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
             }
         }
     }

@@ -43,10 +43,11 @@
 using namespace KTextEditor;
 using namespace KDevelop;
 
-namespace Php {
+namespace Php
+{
 
 KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::IndexedString& url, Php::AstNode* node,
-                                            KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
+        KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
 {
     //Run DeclarationBuilder twice, to find uses of declarations that are
     //declared after the use. ($a = new Foo; class Foo {})
@@ -97,61 +98,62 @@ void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclaration
     closeDeclaration();
 }
 
-ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, ClassDeclarationData::ClassType type) {
+ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, ClassDeclarationData::ClassType type)
+{
     ClassDeclaration* classDec = m_types.value(name->string, 0);
     Q_ASSERT(classDec);
     isGlobalRedeclaration(identifierForNode(name), name, ClassDeclarationType);
     Q_ASSERT(classDec->classType() == type);
-    
+
     // seems like we have to do that manually, else the usebuilder crashes...
     setEncountered(classDec);
     openDeclarationInternal(classDec);
-    
+
     return classDec;
 }
 
 bool DeclarationBuilder::isBaseMethodRedeclaration(const Identifier &identifier, ClassDeclaration *curClass,
-                                                    ClassStatementAst *node) {
-    while ( curClass->baseClassesSize() > 0 ) {
+        ClassStatementAst *node)
+{
+    while (curClass->baseClassesSize() > 0) {
         StructureType::Ptr type;
-        FOREACH_FUNCTION ( BaseClassInstance base, curClass->baseClasses ) {
-          type = base.baseClass.type<StructureType>();
-          if ( !type ) {
-            continue;
-          }
-          ClassDeclaration *nextClass = dynamic_cast<ClassDeclaration*>(type->declaration(currentContext()->topContext()));
-          if ( !nextClass || nextClass->classType() != ClassDeclarationData::Class ) {
-            type.clear();
-            continue;
-          }
-          curClass = nextClass;
-          break;
+        FOREACH_FUNCTION(BaseClassInstance base, curClass->baseClasses) {
+            type = base.baseClass.type<StructureType>();
+            if (!type) {
+                continue;
+            }
+            ClassDeclaration *nextClass = dynamic_cast<ClassDeclaration*>(type->declaration(currentContext()->topContext()));
+            if (!nextClass || nextClass->classType() != ClassDeclarationData::Class) {
+                type.clear();
+                continue;
+            }
+            curClass = nextClass;
+            break;
         }
-        if ( !type ) {
-          break;
+        if (!type) {
+            break;
         }
         {
             DUChainWriteLocker lock(DUChain::lock());
-            if ( !type->internalContext( currentContext()->topContext() ) ) {
+            if (!type->internalContext(currentContext()->topContext())) {
                 continue;
             }
-            foreach ( Declaration * dec,
-                      type->internalContext( currentContext()->topContext() )->findLocalDeclarations(identifier) )
-            {
-                if ( dec->isFunctionDeclaration() ) {
+            foreach(Declaration * dec,
+                    type->internalContext(currentContext()->topContext())->findLocalDeclarations(identifier)) {
+                if (dec->isFunctionDeclaration()) {
                     ClassMethodDeclaration* func = dynamic_cast<ClassMethodDeclaration*>(dec);
-                    if ( !func ) {
+                    if (!func) {
                         continue;
                     }
                     // we cannot redeclare final classes ever
-                    if ( func->isFinal() ) {
+                    if (func->isFinal()) {
                         reportRedeclarationError(dec, node->methodName);
                         return true;
                     }
                     // also we may not redeclare an already abstract method, we would have to implement it
                     // TODO: original error message?
                     // -> Can't inherit abstract function class::func() (previously declared in otherclass)
-                    else if ( func->isAbstract() && node->modifiers->modifiers & ModifierAbstract ) {
+                    else if (func->isAbstract() && node->modifiers->modifiers & ModifierAbstract) {
                         reportRedeclarationError(dec, node->methodName);
                         return true;
                     }
@@ -167,31 +169,31 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
     setComment(formatComment(node, editor()));
     if (node->methodName) {
         //method declaration
-        
+
         ClassDeclaration *parent =  dynamic_cast<ClassDeclaration*>(currentDeclaration());
         Q_ASSERT(parent);
-        
-        if ( m_reportErrors ) { // check for redeclarations
+
+        if (m_reportErrors) {   // check for redeclarations
             Q_ASSERT(currentContext()->type() == DUContext::Class);
             bool localError = false;
             Identifier id = identifierForNode(node->methodName).first();
             {
                 DUChainWriteLocker lock(DUChain::lock());
-                foreach ( Declaration * dec, currentContext()->findLocalDeclarations(id) ) {
-                      if ( dec->isFunctionDeclaration() ) {
-                          reportRedeclarationError(dec, node->methodName);
-                          localError = true;
-                          break;
-                      }
+                foreach(Declaration * dec, currentContext()->findLocalDeclarations(id)) {
+                    if (dec->isFunctionDeclaration()) {
+                        reportRedeclarationError(dec, node->methodName);
+                        localError = true;
+                        break;
+                    }
                 }
             }
-            
-            if ( !localError ) {
+
+            if (!localError) {
                 // if we have no local error, check that we don't try to overwrite a final method of a baseclass
                 isBaseMethodRedeclaration(id, parent, node);
             }
         }
-        
+
         ClassMethodDeclaration* dec = openDefinition<ClassMethodDeclaration>(node->methodName, node);
         {
             DUChainWriteLocker lock(DUChain::lock());
@@ -207,36 +209,36 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
             if (node->modifiers->modifiers & ModifierStatic) {
                 dec->setStatic(true);
             }
-            if ( parent->classType() == ClassDeclarationData::Interface ) {
-                if ( m_reportErrors ) {
-                    if ( node->modifiers->modifiers & ModifierFinal || node->modifiers->modifiers & ModifierAbstract ) {
-                        reportError( i18n("Access type for interface method %1 must be omitted.",
-                                              dec->toString()), node->modifiers );
+            if (parent->classType() == ClassDeclarationData::Interface) {
+                if (m_reportErrors) {
+                    if (node->modifiers->modifiers & ModifierFinal || node->modifiers->modifiers & ModifierAbstract) {
+                        reportError(i18n("Access type for interface method %1 must be omitted.",
+                                         dec->toString()), node->modifiers);
                     }
-                    if ( !isEmptyMethodBody(node->methodBody) ) {
-                        reportError( i18n("Interface function %1 cannot contain body.",
-                                              dec->toString()), node->methodBody );
+                    if (!isEmptyMethodBody(node->methodBody)) {
+                        reportError(i18n("Interface function %1 cannot contain body.",
+                                         dec->toString()), node->methodBody);
                     }
                 }
                 // handle interface methods like abstract methods
                 dec->setIsAbstract(true);
             } else {
                 if (node->modifiers->modifiers & ModifierAbstract) {
-                    if ( !m_reportErrors ) {
+                    if (!m_reportErrors) {
                         dec->setIsAbstract(true);
                     } else {
-                        if ( parent->classModifier() != ClassDeclarationData::Abstract ) {
-                            reportError( i18n("Class %1 contains abstract method %2 and must therefore be declared abstract "
-                                              "or implement the method.",
-                                                  parent->identifier().toString(),
-                                                  dec->identifier().toString()),
-                                          node->modifiers );
-                        } else if ( !isEmptyMethodBody(node->methodBody) ) {
-                            reportError( i18n("Abstract function %1 cannot contain body.",
-                                                  dec->toString()), node->methodBody );
-                        } else if ( node->modifiers->modifiers & ModifierFinal ) {
-                            reportError( i18n("Cannot use the final modifier on an abstract class member."),
-                                                  node->modifiers );
+                        if (parent->classModifier() != ClassDeclarationData::Abstract) {
+                            reportError(i18n("Class %1 contains abstract method %2 and must therefore be declared abstract "
+                                             "or implement the method.",
+                                             parent->identifier().toString(),
+                                             dec->identifier().toString()),
+                                        node->modifiers);
+                        } else if (!isEmptyMethodBody(node->methodBody)) {
+                            reportError(i18n("Abstract function %1 cannot contain body.",
+                                             dec->toString()), node->methodBody);
+                        } else if (node->modifiers->modifiers & ModifierFinal) {
+                            reportError(i18n("Cannot use the final modifier on an abstract class member."),
+                                        node->modifiers);
                         } else {
                             dec->setIsAbstract(true);
                         }
@@ -244,8 +246,8 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
                 } else if (node->modifiers->modifiers & ModifierFinal) {
                     dec->setIsFinal(true);
                 }
-                if ( m_reportErrors && !dec->isAbstract() && isEmptyMethodBody(node->methodBody) ) {
-                  reportError( i18n("Non-abstract method %1 must contain body.", dec->toString()), node->methodBody );
+                if (m_reportErrors && !dec->isAbstract() && isEmptyMethodBody(node->methodBody)) {
+                    reportError(i18n("Non-abstract method %1 must contain body.", dec->toString()), node->methodBody);
                 }
             }
         }
@@ -256,13 +258,13 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
     } else {
         if (node->modifiers) {
             m_currentModifers = node->modifiers->modifiers;
-            if ( m_reportErrors ) {
+            if (m_reportErrors) {
                 // have to report the errors here to get a good problem range
                 if (m_currentModifers & ModifierFinal) {
-                    reportError( i18n("Properties cannot be declared final."), node->modifiers );
+                    reportError(i18n("Properties cannot be declared final."), node->modifiers);
                 }
                 if (m_currentModifers & ModifierAbstract) {
-                    reportError( i18n("Properties cannot be declared abstract."), node->modifiers );
+                    reportError(i18n("Properties cannot be declared abstract."), node->modifiers);
                 }
             }
         } else {
@@ -284,22 +286,21 @@ void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
     do {
         addBaseType(__it->element);
         __it = __it->next;
-    }
-    while (__it != __end);
+    } while (__it != __end);
     DeclarationBuilderBase::visitClassImplements(node);
 }
 
 void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
 {
-    if ( m_reportErrors ) { // check for redeclarations
-         Q_ASSERT(currentContext()->type() == DUContext::Class);
-         DUChainWriteLocker lock(DUChain::lock());
-         foreach ( Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->variable).first()) ) {
-              if ( !dec->isFunctionDeclaration() && ! dec->abstractType()->modifiers() & AbstractType::ConstModifier ) {
-                  reportRedeclarationError(dec, node->variable);
-                  break;
-              }
-         }
+    if (m_reportErrors) {   // check for redeclarations
+        Q_ASSERT(currentContext()->type() == DUContext::Class);
+        DUChainWriteLocker lock(DUChain::lock());
+        foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->variable).first())) {
+            if (!dec->isFunctionDeclaration() && ! dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
+                reportRedeclarationError(dec, node->variable);
+                break;
+            }
+        }
     }
     {
         DUChainWriteLocker lock(DUChain::lock());
@@ -327,15 +328,15 @@ void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
 
 void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
 {
-    if ( m_reportErrors ) { // check for redeclarations
-         Q_ASSERT(currentContext()->type() == DUContext::Class);
-         DUChainWriteLocker lock(DUChain::lock());
-         foreach ( Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first()) ) {
-            if ( !dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier ) {
+    if (m_reportErrors) {   // check for redeclarations
+        Q_ASSERT(currentContext()->type() == DUContext::Class);
+        DUChainWriteLocker lock(DUChain::lock());
+        foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first())) {
+            if (!dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
                 reportRedeclarationError(dec, node->identifier);
                 break;
             }
-         }
+        }
     }
     openDefinition<ClassMemberDeclaration>(node->identifier, node->identifier);
     ClassMemberDeclaration* dec = dynamic_cast<ClassMemberDeclaration*>(currentDeclaration());
@@ -372,15 +373,15 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
 void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
     isGlobalRedeclaration(identifierForNode(node->functionName), node->functionName, FunctionDeclarationType);
-    
+
     FunctionDeclaration* dec = m_functions.value(node->functionName->string, 0);
     Q_ASSERT(dec);
     // seems like we have to set that, else the usebuilder crashes
     DeclarationBuilderBase::setEncountered(dec);
-    
+
     openDeclarationInternal(dec);
     openType(dec->abstractType());
-    
+
     DeclarationBuilderBase::visitFunctionDeclarationStatement(node);
 
     closeType();
@@ -388,26 +389,26 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
 }
 
 bool DeclarationBuilder::isGlobalRedeclaration(const QualifiedIdentifier &identifier, AstNode* node,
-                                          DeclarationType type)
+        DeclarationType type)
 {
-    if ( !m_reportErrors ) {
+    if (!m_reportErrors) {
         return false;
     }
     ///TODO: method redeclaration etc.
-    if ( type != ClassDeclarationType
-          && type != FunctionDeclarationType
-          && type != ConstantDeclarationType ) {
+    if (type != ClassDeclarationType
+            && type != FunctionDeclarationType
+            && type != ConstantDeclarationType) {
         // the other types can be redeclared
         return false;
     }
-    
+
     DUChainWriteLocker lock(DUChain::lock());
     QList<Declaration*> declarations = currentContext()->topContext()->findDeclarations(
-                                            identifier,
-                                            editor()->findPosition(node->startToken, EditorIntegrator::FrontEdge)
-                                        );
-    foreach ( Declaration* dec, declarations ) {
-        if ( isMatch( dec, type ) ) {
+                                           identifier,
+                                           editor()->findPosition(node->startToken, EditorIntegrator::FrontEdge)
+                                       );
+    foreach(Declaration* dec, declarations) {
+        if (isMatch(dec, type)) {
             reportRedeclarationError(dec, node);
             return true;
         }
@@ -415,20 +416,21 @@ bool DeclarationBuilder::isGlobalRedeclaration(const QualifiedIdentifier &identi
     return false;
 }
 
-void DeclarationBuilder::reportRedeclarationError(Declaration* declaration, AstNode* node) {
-    if ( declaration->range().contains(editor()->findRange(node).start) ) {
-      // make sure this is not a wrongly reported redeclaration error
-      return;
+void DeclarationBuilder::reportRedeclarationError(Declaration* declaration, AstNode* node)
+{
+    if (declaration->range().contains(editor()->findRange(node).start)) {
+        // make sure this is not a wrongly reported redeclaration error
+        return;
     }
     QString filename(declaration->context()->topContext()->url().str());
-    if ( filename == "internalfunctions" ) {
+    if (filename == "internalfunctions") {
         reportError(i18n("Cannot redeclare PHP internal %1.", declaration->toString()), node);
     } else {
         ///TODO: try to shorten the filename by removing the leading path to the current project
         reportError(
             i18n("Cannot redeclare %1, already declared in %2 on line %3.",
-                  declaration->toString(), filename, declaration->range().start.line + 1
-            ), node
+                 declaration->toString(), filename, declaration->range().start.line + 1
+                ), node
         );
     }
 }
@@ -463,7 +465,7 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
         //       to decide whether we are really assigning to $this and are not using something
         //       like $this->foo[$bar] = ...
         //       => we really need better support for arrays here I think...
-        if ( identifier != QualifiedIdentifier("this") ) {
+        if (identifier != QualifiedIdentifier("this")) {
             DUChainWriteLocker lock(DUChain::lock());
             SimpleRange newRange = editorFindRange(leftSideVariableIdentifier, leftSideVariableIdentifier);
             VariableDeclaration *dec = openDefinition<VariableDeclaration>(identifierForNode(leftSideVariableIdentifier), newRange);
@@ -495,14 +497,14 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
     DeclarationBuilderBase::visitFunctionCall(node);
     if (node->stringFunctionNameOrClass && !node->stringFunctionName && !node->varFunctionName) {
         if (identifierForNode(node->stringFunctionNameOrClass) == QualifiedIdentifier("define")
-            && node->stringParameterList->parametersSequence->count() > 0) {
+                && node->stringParameterList->parametersSequence->count() > 0) {
             //constant, defined through define-function
 
             //find name of the constant (first argument of the function call)
             CommonScalarAst* scalar = findCommonScalar(node->stringParameterList->parametersSequence->at(0)->element);
             if (scalar && scalar->string != -1) {
                 QString constant = editor()->parseSession()->symbol(scalar->string);
-                constant = constant.mid(1, constant.length()-2);
+                constant = constant.mid(1, constant.length() - 2);
                 SimpleRange newRange = editorFindRange(scalar, scalar);
                 DUChainWriteLocker lock(DUChain::lock());
                 LockedSmartInterface iface = editor()->smart();

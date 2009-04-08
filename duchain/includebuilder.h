@@ -28,7 +28,8 @@
 #include "phpduchainexport.h"
 #include "phpdefaultvisitor.h"
 
-namespace Php {
+namespace Php
+{
 class EditorIntegrator;
 
 class KDEVPHPDUCHAIN_EXPORT IncludeBuilder : public DefaultVisitor

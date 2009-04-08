@@ -23,11 +23,12 @@
 #include <language/duchain/navigation/abstractnavigationwidget.h>
 #include "../phpduchainexport.h"
 
-namespace Php {
+namespace Php
+{
 
 class KDEVPHPDUCHAIN_EXPORT NavigationWidget : public KDevelop::AbstractNavigationWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 public:
 
     /**

@@ -25,22 +25,22 @@ namespace Php
 {
 class TestExpressionParser : public DUChainTestBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  TestExpressionParser();
+    TestExpressionParser();
 
 private slots:
-  void newClass();
-  void memberVariable();
-  void memberFunction();
-  void globalFunction();
-  void chainCall();
-  void thisObject();
-  void integralTypes();
-  void newObject();
-  void cast();
-  void operations();
+    void newClass();
+    void memberVariable();
+    void memberFunction();
+    void globalFunction();
+    void chainCall();
+    void thisObject();
+    void integralTypes();
+    void newObject();
+    void cast();
+    void operations();
 };
 
 }

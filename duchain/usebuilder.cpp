@@ -26,12 +26,14 @@
 using namespace KTextEditor;
 using namespace KDevelop;
 
-namespace Php {
+namespace Php
+{
 
-class UseExpressionVisitor : public ExpressionVisitor {
+class UseExpressionVisitor : public ExpressionVisitor
+{
 public:
     UseExpressionVisitor(EditorIntegrator* editor, bool useCursor, UseBuilder* useBuilder)
-        : ExpressionVisitor(editor, useCursor), m_builder(useBuilder) {
+            : ExpressionVisitor(editor, useCursor), m_builder(useBuilder) {
     }
 
 protected:
@@ -43,12 +45,12 @@ private:
     UseBuilder* m_builder;
 };
 
-UseBuilder::UseBuilder (ParseSession* session)
+UseBuilder::UseBuilder(ParseSession* session)
 {
     setEditor(session);
 }
 
-UseBuilder::UseBuilder (EditorIntegrator* editor)
+UseBuilder::UseBuilder(EditorIntegrator* editor)
 {
     setEditor(editor);
 }
@@ -101,7 +103,7 @@ void UseBuilder::visitGlobalVar(GlobalVarAst* node)
 
 void UseBuilder::visitStaticScalar(StaticScalarAst* node)
 {
-    if ( currentContext()->type() == DUContext::Class ) {
+    if (currentContext()->type() == DUContext::Class) {
         UseBuilderBase::visitStaticScalar(node);
         UseExpressionVisitor v(editor(), currentContext()->topContext(), this);
         node->ducontext = currentContext();

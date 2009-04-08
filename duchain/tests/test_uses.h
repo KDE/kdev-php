@@ -25,43 +25,43 @@ namespace Php
 {
 class TestUses : public DUChainTestBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  TestUses();
+    TestUses();
 
 private slots:
-  void newObject();
-  void functionCall();
-  void memberFunctionCall();
-  void memberVariable();
-  void variable();
-  void varInString();
-  void memberVarInString();
-  void memberFunctionInString();
-  void variableTwoDeclarations();
-  void variableTwoDeclarationsInFunction();
-  void classExtends();
-  void classImplements();
-  void classImplementsMultiple();
-  void interfaceExtends();
-  void interfaceExtendsMultiple();
-  void staticMemberFunctionCall();
-  void staticMemberVariable();
-  void constant();
-  void classConstant();
-  void classParent();
-  void classSelf();
-  void classThis();
-  void objectWithClassName();
-  void classAndConstWithSameName();
-  void classAndFunctionWithSameName();
-  void constAndVariableWithSameName();
-  void functionAndClassWithSameName();
-  void constantInClassMember();
-  void useInAsignment();
-  void foreachArray();
-  void assignmentToMemberArray();
+    void newObject();
+    void functionCall();
+    void memberFunctionCall();
+    void memberVariable();
+    void variable();
+    void varInString();
+    void memberVarInString();
+    void memberFunctionInString();
+    void variableTwoDeclarations();
+    void variableTwoDeclarationsInFunction();
+    void classExtends();
+    void classImplements();
+    void classImplementsMultiple();
+    void interfaceExtends();
+    void interfaceExtendsMultiple();
+    void staticMemberFunctionCall();
+    void staticMemberVariable();
+    void constant();
+    void classConstant();
+    void classParent();
+    void classSelf();
+    void classThis();
+    void objectWithClassName();
+    void classAndConstWithSameName();
+    void classAndFunctionWithSameName();
+    void constAndVariableWithSameName();
+    void functionAndClassWithSameName();
+    void constantInClassMember();
+    void useInAsignment();
+    void foreachArray();
+    void assignmentToMemberArray();
 };
 
 }

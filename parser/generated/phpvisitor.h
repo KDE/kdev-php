@@ -17,9 +17,8 @@ class KDEVPHPPARSER_EXPORT Visitor
 
 public:
     virtual ~Visitor() {}
-    virtual void visitNode(AstNode *node)
-    {
-        if (node) (this->*sParserTable[node->kind - 1000])(node);
+    virtual void visitNode(AstNode *node) {
+        if (node)(this->*sParserTable[node->kind - 1000])(node);
     }
     virtual void visitAdditiveExpression(AdditiveExpressionAst *) {}
     virtual void visitAdditiveExpressionRest(AdditiveExpressionRestAst *) {}

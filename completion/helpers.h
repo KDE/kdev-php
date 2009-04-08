@@ -33,11 +33,13 @@ class QVariant;
 template<class T>
 class QList;
 
-namespace KDevelop {
-  class Declaration;
-  class DUContext;
+namespace KDevelop
+{
+class Declaration;
+class DUContext;
 }
-namespace Php {
+namespace Php
+{
 class NormalDeclarationCompletionItem;
 
 /**

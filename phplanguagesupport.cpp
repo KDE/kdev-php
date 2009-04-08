@@ -57,36 +57,36 @@
 
 using namespace KDevelop;
 
-K_PLUGIN_FACTORY( KDevPhpSupportFactory, registerPlugin<Php::LanguageSupport>(); )
-K_EXPORT_PLUGIN( KDevPhpSupportFactory( "kdevphpsupport" ) )
+K_PLUGIN_FACTORY(KDevPhpSupportFactory, registerPlugin<Php::LanguageSupport>();)
+K_EXPORT_PLUGIN(KDevPhpSupportFactory("kdevphpsupport"))
 
 namespace Php
 {
 
 LanguageSupport* LanguageSupport::m_self = 0;
 
-LanguageSupport::LanguageSupport( QObject* parent, const QVariantList& /*args*/ )
-        : KDevelop::IPlugin( KDevPhpSupportFactory::componentData(), parent ),
+LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
+        : KDevelop::IPlugin(KDevPhpSupportFactory::componentData(), parent),
         KDevelop::ILanguageSupport()
 {
-    KDEV_USE_EXTENSION_INTERFACE( KDevelop::ILanguageSupport )
+    KDEV_USE_EXTENSION_INTERFACE(KDevelop::ILanguageSupport)
 
     m_self = this;
 
-    m_highlighting = new KDevelop::CodeHighlighting( this );
+    m_highlighting = new KDevelop::CodeHighlighting(this);
 
     CodeCompletionModel* ccModel = new CodeCompletionModel(this);
-    new KDevelop::CodeCompletion( this, ccModel, name() );
-    
-/*
-    //TODO: enable this
-    connect( core()->projectController(),
-             SIGNAL( projectOpened(KDevelop::IProject*) ),
-             this, SLOT( projectOpened(KDevelop::IProject*) ) );
-    connect( core()->projectController(),
-             SIGNAL( projectClosed() ),
-             this, SLOT( projectClosed() ) );
-*/
+    new KDevelop::CodeCompletion(this, ccModel, name());
+
+    /*
+        //TODO: enable this
+        connect( core()->projectController(),
+                 SIGNAL( projectOpened(KDevelop::IProject*) ),
+                 this, SLOT( projectOpened(KDevelop::IProject*) ) );
+        connect( core()->projectController(),
+                 SIGNAL( projectClosed() ),
+                 this, SLOT( projectClosed() ) );
+    */
 }
 
 LanguageSupport::~LanguageSupport()
@@ -97,15 +97,15 @@ LanguageSupport::~LanguageSupport()
     lang->parseLock()->unlock();
 
     // Remove any documents waiting to be parsed from the background paser.
-    core()->languageController()->backgroundParser()->clear( this );
+    core()->languageController()->backgroundParser()->clear(this);
 
     //delete m_highlighting;
     //m_highlighting = 0;
 }
 
-KDevelop::ParseJob *LanguageSupport::createParseJob( const KUrl &url )
+KDevelop::ParseJob *LanguageSupport::createParseJob(const KUrl &url)
 {
-    return new ParseJob( url, this );
+    return new ParseJob(url, this);
 }
 
 void LanguageSupport::projectOpened(KDevelop::IProject *project)
@@ -131,7 +131,7 @@ QString LanguageSupport::name() const
 
 KDevelop::ILanguage *LanguageSupport::language()
 {
-    return core()->languageController()->language( name() );
+    return core()->languageController()->language(name());
 }
 
 const KDevelop::ICodeHighlighting* LanguageSupport::codeHighlighting() const

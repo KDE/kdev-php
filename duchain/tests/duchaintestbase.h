@@ -32,8 +32,9 @@
 #include "completion/item.h"
 #include "phpparser.h"
 
-namespace KDevelop {
-    class TopDUContext;
+namespace KDevelop
+{
+class TopDUContext;
 }
 /*
 namespace QTest {
@@ -77,43 +78,43 @@ namespace Php
  * Manage pointer to TopDUContexts and release them properly, even if a test fails
  */
 struct DUChainReleaser {
-  DUChainReleaser(KDevelop::TopDUContext* top) : m_top(top) {}
-  ~DUChainReleaser() {
-    KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
-    KDevelop::DUChain::self()->removeDocumentChain(m_top);
-  }
-  KDevelop::TopDUContext* m_top;
+    DUChainReleaser(KDevelop::TopDUContext* top) : m_top(top) {}
+    ~DUChainReleaser() {
+        KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
+        KDevelop::DUChain::self()->removeDocumentChain(m_top);
+    }
+    KDevelop::TopDUContext* m_top;
 };
 
 class KDEVPHPDUCHAIN_EXPORT DUChainTestBase : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DUChainTestBase();
+    DUChainTestBase();
 
 public:
-  enum DumpArea {
-    DumpNone = 0,
-    DumpAST = 1,
-    DumpDUChain = 2,
-    DumpType = 4,
-    DumpAll = 7
-  };
-  Q_DECLARE_FLAGS(DumpAreas, DumpArea)
+    enum DumpArea {
+        DumpNone = 0,
+        DumpAST = 1,
+        DumpDUChain = 2,
+        DumpType = 4,
+        DumpAll = 7
+    };
+    Q_DECLARE_FLAGS(DumpAreas, DumpArea)
 
 public slots:
-  void initTestCase();
-  
-protected:
-  KDevelop::TopDUContext* parse(const QByteArray& unit, DumpAreas dump = static_cast<DumpAreas>(DumpAST | DumpDUChain | DumpType), QString fileName = QString());
-  
-  KDevelop::TopDUContext* parseAdditionalFile(KDevelop::IndexedString fileName, QByteArray contents);
+    void initTestCase();
 
-  KDevelop::DumpChain dumper;
-  
-  KDevelop::CompletionTreeItemPointer searchDeclaration(QList<KDevelop::CompletionTreeItemPointer> items, KDevelop::Declaration* declaration);
-  bool hasImportedParentContext(KDevelop::TopDUContext* top, KDevelop::DUContext* lookingFor);
+protected:
+    KDevelop::TopDUContext* parse(const QByteArray& unit, DumpAreas dump = static_cast<DumpAreas>(DumpAST | DumpDUChain | DumpType), QString fileName = QString());
+
+    KDevelop::TopDUContext* parseAdditionalFile(KDevelop::IndexedString fileName, QByteArray contents);
+
+    KDevelop::DumpChain dumper;
+
+    KDevelop::CompletionTreeItemPointer searchDeclaration(QList<KDevelop::CompletionTreeItemPointer> items, KDevelop::Declaration* declaration);
+    bool hasImportedParentContext(KDevelop::TopDUContext* top, KDevelop::DUContext* lookingFor);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(DUChainTestBase::DumpAreas)

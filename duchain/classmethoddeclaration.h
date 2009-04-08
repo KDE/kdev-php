@@ -28,53 +28,47 @@
 
 #include "phpduchainexport.h"
 
-namespace Php {
+namespace Php
+{
 
 class KDEVPHPDUCHAIN_EXPORT ClassMethodDeclarationData : public KDevelop::ClassFunctionDeclarationData
 {
 public:
     ClassMethodDeclarationData()
-        : KDevelop::ClassFunctionDeclarationData()
-    {}
+            : KDevelop::ClassFunctionDeclarationData() {}
 
-    ClassMethodDeclarationData( const ClassMethodDeclarationData& rhs )
-        : KDevelop::ClassFunctionDeclarationData( rhs )
-    {}
+    ClassMethodDeclarationData(const ClassMethodDeclarationData& rhs)
+            : KDevelop::ClassFunctionDeclarationData(rhs) {}
 
-    ~ClassMethodDeclarationData()
-    {}
+    ~ClassMethodDeclarationData() {}
 
 };
 
 /**
  * inherits ClassFunctionDeclaration to overwrite some stuff for PHP specific behaviour
  */
-class ClassMethodDeclaration : public KDevelop::ClassFunctionDeclaration {
+class ClassMethodDeclaration : public KDevelop::ClassFunctionDeclaration
+{
 public:
     ClassMethodDeclaration(const ClassMethodDeclaration &rhs)
-        : KDevelop::ClassFunctionDeclaration(rhs)
-    {}
+            : KDevelop::ClassFunctionDeclaration(rhs) {}
     ClassMethodDeclaration(const KDevelop::SimpleRange &range, KDevelop::DUContext *context)
-        : KDevelop::ClassFunctionDeclaration(range, context)
-    {}
+            : KDevelop::ClassFunctionDeclaration(range, context) {}
     ClassMethodDeclaration(ClassMethodDeclarationData &data)
-        : KDevelop::ClassFunctionDeclaration(data)
-    {}
+            : KDevelop::ClassFunctionDeclaration(data) {}
     ClassMethodDeclaration(ClassMethodDeclarationData &data, const KDevelop::SimpleRange &range, KDevelop::DUContext *context)
-        : KDevelop::ClassFunctionDeclaration(data, range, context)
-    {}
-    ~ClassMethodDeclaration()
-    {}
-    
+            : KDevelop::ClassFunctionDeclaration(data, range, context) {}
+    ~ClassMethodDeclaration() {}
+
     /// overwritten to check for __construct() method
     virtual bool isConstructor() const;
     /// overwritten to check for __destruct() method
     virtual bool isDestructor() const;
 
     enum {
-      Identity = 84
+        Identity = 84
     };
-    
+
     virtual KDevelop::Declaration* clonePrivate() const;
 private:
     DUCHAIN_DECLARE_DATA(ClassMethodDeclaration)

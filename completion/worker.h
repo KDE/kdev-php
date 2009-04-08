@@ -29,18 +29,19 @@
 
 #include "context.h"
 
-namespace Php {
-    
+namespace Php
+{
+
 class CodeCompletionModel;
 
 class KDEVPHPCOMPLETION_EXPORT CodeCompletionWorker : public KDevelop::CodeCompletionWorker
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+public:
     CodeCompletionWorker(CodeCompletionModel* parent);
-    
-  protected:
+
+protected:
     virtual KDevelop::CodeCompletionContext* createCompletionContext(KDevelop::DUContextPointer context, const QString &contextText, const QString &followingText) const;
 };
 

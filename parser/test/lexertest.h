@@ -26,8 +26,9 @@
 
 #include "phplexer.h"
 
-namespace KDevelop {
-    class TopDUContext;
+namespace KDevelop
+{
+class TopDUContext;
 }
 
 namespace Php
@@ -35,10 +36,10 @@ namespace Php
 class TokenStream;
 class LexerTest : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  LexerTest();
+    LexerTest();
 
 private slots:
     void testOpenTagWithNewline();

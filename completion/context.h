@@ -1,4 +1,4 @@
-/* 
+/*
    Copyright 2007 David Nolden <david.nolden.kdevelop@art-master.de>
    Copyright 2008 Hamish Rodda <rodda@kde.org>
    Copyright 2008 Niko Sams <niko.sams@gmail.com>
@@ -30,45 +30,49 @@
 #include "item.h"
 #include "expressionevaluationresult.h"
 
-namespace KTextEditor {
-  class View;
-  class Cursor;
+namespace KTextEditor
+{
+class View;
+class Cursor;
 }
 
-namespace KDevelop {
-  class DUContext;
-  class ClassDeclaration;
+namespace KDevelop
+{
+class DUContext;
+class ClassDeclaration;
 
-  class CompletionTreeItem;
-  typedef KSharedPtr<CompletionTreeItem> CompletionTreeItemPointer;
+class CompletionTreeItem;
+typedef KSharedPtr<CompletionTreeItem> CompletionTreeItemPointer;
 
-  class SimpleCursor;
+class SimpleCursor;
 }
 
-namespace Php {
-  /**
-   * This class is responsible for finding out what kind of completion is needed, what expression should be evaluated for the container-class of the completion, what conversion will be applied to the result of the completion, etc.
-   * */
-  class KDEVPHPCOMPLETION_EXPORT CodeCompletionContext : public KDevelop::CodeCompletionContext {
-    public:
-      typedef KSharedPtr<CodeCompletionContext> Ptr;
-      
-      /**
-       * @param firstContext should be true for a context that has no parent. Such a context will never be a function-call context.
-       * @param text the text to analyze. It usually is the text in the range starting at the beginning of the context, and ending at the position where completion should start
-       * @warning The du-chain must be unlocked when this is called
-       * */
-      CodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, int depth = 0);
-      ~CodeCompletionContext();
+namespace Php
+{
+/**
+ * This class is responsible for finding out what kind of completion is needed, what expression should be evaluated for the container-class of the completion, what conversion will be applied to the result of the completion, etc.
+ * */
+class KDEVPHPCOMPLETION_EXPORT CodeCompletionContext : public KDevelop::CodeCompletionContext
+{
+public:
+    typedef KSharedPtr<CodeCompletionContext> Ptr;
 
-      ///Computes the full set of completion items, using the information retrieved earlier.
-      ///Should only be called on the first context, parent contexts are included in the computations.
-      ///@param Abort is checked regularly, and if it is false, the computation is aborted.
-      virtual QList<KDevelop::CompletionTreeItemPointer> completionItems(const KDevelop::SimpleCursor& position, bool& abort, bool fullCompletion = true);
+    /**
+     * @param firstContext should be true for a context that has no parent. Such a context will never be a function-call context.
+     * @param text the text to analyze. It usually is the text in the range starting at the beginning of the context, and ending at the position where completion should start
+     * @warning The du-chain must be unlocked when this is called
+     * */
+    CodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, int depth = 0);
+    ~CodeCompletionContext();
 
-      bool isValidPosition() const;
+    ///Computes the full set of completion items, using the information retrieved earlier.
+    ///Should only be called on the first context, parent contexts are included in the computations.
+    ///@param Abort is checked regularly, and if it is false, the computation is aborted.
+    virtual QList<KDevelop::CompletionTreeItemPointer> completionItems(const KDevelop::SimpleCursor& position, bool& abort, bool fullCompletion = true);
 
-      enum MemberAccessOperation {
+    bool isValidPosition() const;
+
+    enum MemberAccessOperation {
         NoMemberAccess,  ///With NoMemberAccess, a global completion should be done
         MemberAccess,      ///klass->
         FunctionCallAccess,  ///"function(". Will never appear as initial access-operation, but as parentContext() access-operation.
@@ -79,66 +83,66 @@ namespace Php {
         ExceptionChoose, /// after keywords "catch" and "throw new" only classes which extend Exception should be shown
         ExceptionInstanceChoose, /// after the "throw" keyword instancec of the exception class should be shown
         ClassMemberChoose /// in class context show list of overloadable or implementable methods
-                          /// and typical keywords for classes, i.e. access modifiers, static etc.
-      };
-      
-      ///@return the used access-operation
-      MemberAccessOperation memberAccessOperation() const;
+        /// and typical keywords for classes, i.e. access modifiers, static etc.
+    };
 
-      ExpressionEvaluationResult memberAccessContainer() const;
+    ///@return the used access-operation
+    MemberAccessOperation memberAccessOperation() const;
 
-      /**
-       * Returns the internal context of memberAccessContainer, if any.
-       *
-       * When memberAccessOperation is StaticMemberChoose, this returns all
-       * fitting namespace-contexts.
-       * */
-      QList<KDevelop::DUContext*> memberAccessContainers() const;
+    ExpressionEvaluationResult memberAccessContainer() const;
 
-      /**
-       * When memberAccessOperation is FunctionCallAccess,
-       * this returns all functions available for matching, together with the argument-number that should be matched.
-       * */
-      const QList<KDevelop::AbstractFunctionDeclaration*>& functions() const;
-      
-      virtual CodeCompletionContext* parentContext();
+    /**
+     * Returns the internal context of memberAccessContainer, if any.
+     *
+     * When memberAccessOperation is StaticMemberChoose, this returns all
+     * fitting namespace-contexts.
+     * */
+    QList<KDevelop::DUContext*> memberAccessContainers() const;
 
-    protected:
-      virtual QList<QSet<KDevelop::IndexedString> > completionFiles();
-      inline bool isValidCompletionItem(KDevelop::Declaration* dec);
+    /**
+     * When memberAccessOperation is FunctionCallAccess,
+     * this returns all functions available for matching, together with the argument-number that should be matched.
+     * */
+    const QList<KDevelop::AbstractFunctionDeclaration*>& functions() const;
 
-    private:
-      MemberAccessOperation m_memberAccessOperation;
-      QList<KDevelop::CompletionTreeItemPointer> m_storedItems;
-      ExpressionEvaluationResult m_expressionResult;
-      QString m_expression;
-      bool m_parentAccess;
-      /**
-       * a list of indizes of identifiers which must not be added as completion items
-       * examples:
-       * class test implements foo, ...
-       * => identifiers test and foo must not be proposed for completion
-       **/
-      QList<uint> m_forbiddenIdentifiers;
+    virtual CodeCompletionContext* parentContext();
 
-      void forbidIdentifier(const QString &identifier);
-      void forbidIdentifier(KDevelop::ClassDeclaration* identifier);
+protected:
+    virtual QList<QSet<KDevelop::IndexedString> > completionFiles();
+    inline bool isValidCompletionItem(KDevelop::Declaration* dec);
 
-      void forbidLastIdentifier( const QString& text, const QString& additionalPattern = "" );
+private:
+    MemberAccessOperation m_memberAccessOperation;
+    QList<KDevelop::CompletionTreeItemPointer> m_storedItems;
+    ExpressionEvaluationResult m_expressionResult;
+    QString m_expression;
+    bool m_parentAccess;
+    /**
+     * a list of indizes of identifiers which must not be added as completion items
+     * examples:
+     * class test implements foo, ...
+     * => identifiers test and foo must not be proposed for completion
+     **/
+    QList<uint> m_forbiddenIdentifiers;
 
-      /**
-       * checks whether the string ends on a list of interfaces, e.g.:
-       * 
-       * interface iFace extends Iface1, Iface2, ...
-       * 
-       * or:
-       * 
-       * class Klass implements IFace1, IFace2, ...
-       * 
-       * All found identifiers are added to the forbiddenIdentifiers
-       */
-      bool textEndsOnInterfaceList( const QString& text );
-  };
+    void forbidIdentifier(const QString &identifier);
+    void forbidIdentifier(KDevelop::ClassDeclaration* identifier);
+
+    void forbidLastIdentifier(const QString& text, const QString& additionalPattern = "");
+
+    /**
+     * checks whether the string ends on a list of interfaces, e.g.:
+     *
+     * interface iFace extends Iface1, Iface2, ...
+     *
+     * or:
+     *
+     * class Klass implements IFace1, IFace2, ...
+     *
+     * All found identifiers are added to the forbiddenIdentifiers
+     */
+    bool textEndsOnInterfaceList(const QString& text);
+};
 }
 
 #endif

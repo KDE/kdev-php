@@ -22,14 +22,15 @@
 #include <language/duchain/navigation/abstractdeclarationnavigationcontext.h>
 #include <language/duchain/types/abstracttype.h>
 
-namespace Php {
+namespace Php
+{
 
 class DeclarationNavigationContext : public KDevelop::AbstractDeclarationNavigationContext
 {
-  public:
-    DeclarationNavigationContext( KDevelop::DeclarationPointer decl, KDevelop::TopDUContextPointer topContext, KDevelop::AbstractNavigationContext* previousContext = 0 );
+public:
+    DeclarationNavigationContext(KDevelop::DeclarationPointer decl, KDevelop::TopDUContextPointer topContext, KDevelop::AbstractNavigationContext* previousContext = 0);
 
-  protected:
+protected:
     KDevelop::NavigationContextPointer registerChild(KDevelop::DeclarationPointer declaration);
     virtual void htmlClass();
 };

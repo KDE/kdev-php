@@ -19,23 +19,19 @@ public:
     TokenStream *tokenStream;
     int yytoken;
 
-    inline Token LA(qint64 k = 1) const
-    {
+    inline Token LA(qint64 k = 1) const {
         return tokenStream->token(tokenStream->index() - 1 + k - 1);
     }
-    inline int yylex()
-    {
+    inline int yylex() {
         return (yytoken = tokenStream->nextToken());
     }
-    inline void rewind(qint64 index)
-    {
+    inline void rewind(qint64 index) {
         tokenStream->rewind(index);
         yylex();
     }
 
 // token stream
-    void setTokenStream(TokenStream *s)
-    {
+    void setTokenStream(TokenStream *s) {
         tokenStream = s;
     }
 
@@ -44,8 +40,7 @@ public:
     void expectedToken(int kind, qint64 token, const QString& name);
 
     bool mBlockErrors;
-    inline bool blockErrors(bool block)
-    {
+    inline bool blockErrors(bool block) {
         bool previous = mBlockErrors;
         mBlockErrors = block;
         return previous;
@@ -55,20 +50,17 @@ public:
     typedef KDevPG::MemoryPool memoryPoolType;
 
     KDevPG::MemoryPool *memoryPool;
-    void setMemoryPool(KDevPG::MemoryPool *p)
-    {
+    void setMemoryPool(KDevPG::MemoryPool *p) {
         memoryPool = p;
     }
     template <class T>
-    inline T *create()
-    {
-        T *node = new (memoryPool->allocate(sizeof(T))) T();
+    inline T *create() {
+        T *node = new(memoryPool->allocate(sizeof(T))) T();
         node->kind = T::KIND;
         return node;
     }
 
-    enum TokenType
-    {
+    enum TokenType {
         Token_ABSTRACT = 1000,
         Token_AND_ASSIGN = 1001,
         Token_ARRAY = 1002,
@@ -228,23 +220,20 @@ public:
      */
     void tokenize(const QString& contents, int initialState = Lexer::HtmlState);
 
-    enum ProblemType
-    {
+    enum ProblemType {
         Error,
         Warning,
         Info
     };
-    void reportProblem( Parser::ProblemType type, const QString& message );
-    QList<KDevelop::ProblemPointer> problems()
-    {
+    void reportProblem(Parser::ProblemType type, const QString& message);
+    QList<KDevelop::ProblemPointer> problems() {
         return m_problems;
     }
     QString tokenText(qint64 begin, qint64 end);
     void setDebug(bool debug);
     void setCurrentDocument(QString url);
 
-    enum InitialLexerState
-    {
+    enum InitialLexerState {
         HtmlState = 0,
         DefaultState = 1
     };
@@ -252,8 +241,7 @@ public:
 
 private:
 
-    enum VarExpressionState
-    {
+    enum VarExpressionState {
         Normal,
         OnlyVariable,
         OnlyNewObject
@@ -263,8 +251,7 @@ private:
     QString m_currentDocument;
     QList<KDevelop::ProblemPointer> m_problems;
 
-    struct ParserState
-    {
+    struct ParserState {
         VarExpressionState varExpressionState;
         bool varExpressionIsVariable;
     };
@@ -284,8 +271,7 @@ public:
 // This method is only called for ParserState objects != 0
 // and should restore the parser state given as argument.
     void restoreState(ParserState *state);
-    Parser()
-    {
+    Parser() {
         memoryPool = 0;
         tokenStream = 0;
         yytoken = Token_EOF;

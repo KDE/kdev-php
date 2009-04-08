@@ -26,33 +26,35 @@
 #include <language/duchain/ducontext.h>
 #include <language/duchain/indexedstring.h>
 
-namespace KDevelop {
-    class Declaration;
-    class DUContext;
+namespace KDevelop
+{
+class Declaration;
+class DUContext;
 }
-namespace Php {
-    class AstNode;
-    class CommonScalarAst;
-    class EditorIntegrator;
+namespace Php
+{
+class AstNode;
+class CommonScalarAst;
+class EditorIntegrator;
 
-    enum DeclarationType {
-        ClassDeclarationType,
-        FunctionDeclarationType,
-        ConstantDeclarationType,
-        GlobalVariableDeclarationType
-    };
-    KDEVPHPDUCHAIN_EXPORT bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);
+enum DeclarationType {
+    ClassDeclarationType,
+    FunctionDeclarationType,
+    ConstantDeclarationType,
+    GlobalVariableDeclarationType
+};
+KDEVPHPDUCHAIN_EXPORT bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);
 
-    KDEVPHPDUCHAIN_EXPORT KDevelop::Declaration* findDeclarationImportHelper(KDevelop::DUContext* currentContext,
-                                        KDevelop::QualifiedIdentifier id,
-                                        DeclarationType declarationType,
-                                        AstNode* node,
-                                        EditorIntegrator* editor);
+KDEVPHPDUCHAIN_EXPORT KDevelop::Declaration* findDeclarationImportHelper(KDevelop::DUContext* currentContext,
+        KDevelop::QualifiedIdentifier id,
+        DeclarationType declarationType,
+        AstNode* node,
+        EditorIntegrator* editor);
 
-    KDEVPHPDUCHAIN_EXPORT QString formatComment(AstNode* node, EditorIntegrator* editor);
+KDEVPHPDUCHAIN_EXPORT QString formatComment(AstNode* node, EditorIntegrator* editor);
 
-    KDEVPHPDUCHAIN_EXPORT CommonScalarAst* findCommonScalar(AstNode* node);
+KDEVPHPDUCHAIN_EXPORT CommonScalarAst* findCommonScalar(AstNode* node);
 
-    KDEVPHPDUCHAIN_EXPORT KDevelop::IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl);
+KDEVPHPDUCHAIN_EXPORT KDevelop::IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl);
 }
 #endif

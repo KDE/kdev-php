@@ -26,10 +26,12 @@
 #include <language/duchain/builders/abstractdeclarationbuilder.h>
 #include <language/duchain/classdeclaration.h>
 
-namespace KDvelop {
-    class Declaration;
+namespace KDvelop
+{
+class Declaration;
 }
-namespace Php {
+namespace Php
+{
 class ParseSession;
 class EditorIntegrator;
 
@@ -37,20 +39,23 @@ typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, Php::TypeBu
 
 /**
  * The DeclarationBuilder builds declarations, types and contexts for everything in a AST.
- * 
+ *
  * \note Since PHP allows the usage of functions, classes and interfaces before definition,
  *       a \see PreDeclarationBuilder is used to get the declarations _and_ types for those.
  *       Thus type- and declaratoinbuilding for these is skipped in this class.
  */
-class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase {
+class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase
+{
 public:
-    DeclarationBuilder(ParseSession* session) : m_lastVariableIdentifier(0)
-    { setEditor(session); }
-    DeclarationBuilder(EditorIntegrator* editor) : m_lastVariableIdentifier(0)
-    { setEditor(editor); }
+    DeclarationBuilder(ParseSession* session) : m_lastVariableIdentifier(0) {
+        setEditor(session);
+    }
+    DeclarationBuilder(EditorIntegrator* editor) : m_lastVariableIdentifier(0) {
+        setEditor(editor);
+    }
     virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, Php::AstNode* node,
-                                            KDevelop::ReferencedTopDUContext updateContext
-                                                = KDevelop::ReferencedTopDUContext(), bool useSmart = true );
+            KDevelop::ReferencedTopDUContext updateContext
+            = KDevelop::ReferencedTopDUContext(), bool useSmart = true);
 
 protected:
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
@@ -70,12 +75,12 @@ protected:
     virtual void visitStatement(StatementAst* node);
     virtual void visitStaticVar(StaticVarAst* node);
     virtual void visitGlobalVar(GlobalVarAst* node);
-    
+
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const Php::MethodBodyAst* body) const {
         return !body || !body->statements;
     }
-    
+
     virtual void closeDeclaration();
     void classContextOpened(KDevelop::DUContext* context);
 
@@ -83,23 +88,23 @@ private:
     VariableIdentifierAst* m_lastVariableIdentifier;
     unsigned int m_currentModifers;
     QString m_lastTopStatementComment;
-    
+
     QHash<qint64, KDevelop::ClassDeclaration*> m_types;
     QHash<qint64, KDevelop::FunctionDeclaration*> m_functions;
-    
+
     /// handles common stuff for both interfaces and classes
     KDevelop::ClassDeclaration* openTypeDeclaration(IdentifierAst *name, KDevelop::ClassDeclarationData::ClassType type);
-    
+
     /// check if this declaration is already declared
     bool isGlobalRedeclaration(const KDevelop::QualifiedIdentifier &identifier, AstNode *node,
-                          DeclarationType type);
+                               DeclarationType type);
     /// check if a non-abstract method declaration tries to overwrite a final base method
     /// or whether a abstract method is redeclared
     /// @param identifier   The identifier for the current method
     /// @param curClass     the current class we are in
     /// @param node         the node we are processing, used to access modifiers and for error reporting
     bool isBaseMethodRedeclaration(const KDevelop::Identifier &identifier, KDevelop::ClassDeclaration *curClass,
-                                    ClassStatementAst *node);
+                                   ClassStatementAst *node);
     /// reports a redeclaration error for the given node
     /// @param declaration the old declaration
     /// @param node        the AstNode which resembles the redeclaration
