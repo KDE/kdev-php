@@ -520,10 +520,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
 void DeclarationBuilder::visitStatement(StatementAst* node)
 {
     DeclarationBuilderBase::visitStatement(node);
-    
-    ///TODO: the parser seems to be "buggy" as in foreachExprAsVar, foreachVarAsVar are _never_ set
-    ///      at least I could not find any code combination for that.
-    ///      Good thing is that it's not neccessarily required for this stuff to work
+
     if (node->foreachExprAsVar) {
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(node->foreachExprAsVar, node->foreachExprAsVar);
