@@ -267,6 +267,7 @@ public:
     {
         if (!m_indent) printToken(node, "catchItem");
         if (node->catchClass) printToken(node->catchClass, "identifier", "catchClass");
+        if (node->var) printToken(node->var, "variableIdentifier", "var");
         if (node->statements) printToken(node->statements, "innerStatementList", "statements");
         m_indent++;
         DefaultVisitor::visitCatchItem(node);

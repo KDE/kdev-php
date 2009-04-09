@@ -439,6 +439,7 @@ struct KDEVPHPPARSER_EXPORT CatchItemAst: public AstNode
     enum { KIND = CatchItemKind };
 
     IdentifierAst *catchClass;
+    VariableIdentifierAst *var;
     InnerStatementListAst *statements;
 };
 

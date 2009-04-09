@@ -575,4 +575,16 @@ void DeclarationBuilder::visitGlobalVar(GlobalVarAst* node)
     }
 }
 
+void DeclarationBuilder::visitCatchItem(CatchItemAst *node)
+{
+    DeclarationBuilderBase::visitCatchItem(node);
+
+    DUChainWriteLocker lock(DUChain::lock());
+    SimpleRange newRange = editorFindRange(node->var, node->var);
+    openDefinition<VariableDeclaration>(identifierForNode(node->var), newRange);
+    currentDeclaration()->setKind(Declaration::Instance);
+    closeDeclaration();
+}
+
+
 }

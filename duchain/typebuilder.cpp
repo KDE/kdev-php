@@ -278,5 +278,17 @@ void TypeBuilder::visitStatement(StatementAst* node)
     }
 }
 
+void TypeBuilder::visitCatchItem(Php::CatchItemAst *node)
+{
+    TypeBuilderBase::visitCatchItem(node);
+    KDevelop::Declaration *dec = findDeclarationImport(ClassDeclarationType, node->catchClass);
+    if (dec && dec->abstractType()) {
+        openAbstractType(dec->abstractType());
+        closeType();
+    }
+
+}
+
+
 }
 

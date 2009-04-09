@@ -1380,6 +1380,25 @@ void TestDUChain::testMemberTypeAfterMethod()
         QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeMixed);
     }
 }
+
+
+void TestDUChain::testCatchDeclaration()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? try {} catch (Exception $e) {}");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    VariableDeclaration* ex = dynamic_cast<VariableDeclaration*>(top->localDeclarations().first());
+    QVERIFY(ex);
+    QCOMPARE(ex->identifier(), Identifier("e"));
+    QVERIFY(ex->type<StructureType>());
+    QCOMPARE(QualifiedIdentifier("Exception"), ex->type<StructureType>()->declaration(top)->qualifiedIdentifier());
+}
+
 }
 
 #include "test_duchain.moc"

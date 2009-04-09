@@ -89,6 +89,7 @@ private slots:
     void testCircularInheritance();
     void testFindDeclarations();
     void testMemberTypeAfterMethod();
+    void testCatchDeclaration();
 };
 
 }

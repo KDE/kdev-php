@@ -1973,6 +1973,8 @@ bool Parser::parseCatchItem(CatchItemAst **yynode)
             }
             return false;
         }
+        (*yynode)->var = __node_37;
+
         if (yytoken != Token_RPAREN)
         {
             if (!mBlockErrors)

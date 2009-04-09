@@ -185,6 +185,7 @@ void DefaultVisitor::visitCase_item(Case_itemAst *node)
 void DefaultVisitor::visitCatchItem(CatchItemAst *node)
 {
     visitNode(node->catchClass);
+    visitNode(node->var);
     visitNode(node->statements);
 }
 

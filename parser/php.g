@@ -623,7 +623,7 @@ expression=booleanOrExpression
   | def=DEFAULT (COLON | SEMICOLON) statements=innerStatementList
 -> case_item ;;
 
-    CATCH LPAREN catchClass=identifier variableIdentifier RPAREN
+    CATCH LPAREN catchClass=identifier var=variableIdentifier RPAREN
     LBRACE statements=innerStatementList RBRACE
 -> catchItem ;;
 
