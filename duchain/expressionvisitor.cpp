@@ -46,6 +46,11 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
 {
     Q_ASSERT(m_currentContext);
 
+    SimpleCursor position = SimpleCursor::invalid();
+    if (m_useCursor) {
+        position = m_editor->findPosition(variable->variable, EditorIntegrator::FrontEdge);
+    }
+
     Declaration* ret = 0;
     QualifiedIdentifier identifier = identifierForNode(variable);
     if (identifier == QualifiedIdentifier("this")) {
@@ -57,10 +62,6 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
         }
     } else {
         DUChainReadLocker lock(DUChain::lock());
-        SimpleCursor position = SimpleCursor::invalid();
-        if (m_useCursor) {
-            position = m_editor->findPosition(variable->variable, EditorIntegrator::FrontEdge);
-        }
         //DontSearchInParent-flag because (1) in Php global variables aren't avaliable in function
         //context and (2) a function body consists of a single context (so this is no problem)
         QList<Declaration*> decls = m_currentContext->findDeclarations(identifier, position,
@@ -76,7 +77,7 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
     if (!ret) {
         //look for a function argument
         DUChainReadLocker lock(DUChain::lock());
-        foreach(Declaration* dec, m_currentContext->findDeclarations(identifier)) {
+        foreach(Declaration* dec, m_currentContext->findDeclarations(identifier, position)) {
             if (dec->context()->type() == DUContext::Function) {
                 ret = dec;
                 break;
@@ -86,7 +87,7 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
     if (!ret) {
         //look for a superglobal variable
         DUChainReadLocker lock(DUChain::lock());
-        foreach(Declaration* dec, m_currentContext->topContext()->findDeclarations(identifier)) {
+        foreach(Declaration* dec, m_currentContext->topContext()->findDeclarations(identifier, position)) {
             VariableDeclaration* varDec = dynamic_cast<VariableDeclaration*>(dec);
             if (varDec && varDec->isSuperglobal()) {
                 ret = dec;

@@ -475,7 +475,6 @@ void TestUses::foreachArray()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    //QByteArray method("<? $a = array(1); foreach($a as $k=>$i) { $i; } ");
     QByteArray method("<? $a = array(1); foreach($a as $k=>$i) { var_dump($k, $i); } ");
 
     TopDUContext* top = parse(method, DumpAll);
@@ -537,6 +536,21 @@ void TestUses::assignmentToMemberArray()
                );
 }
 
+void TestUses::functionParamNewDeclaration()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo($a) { $a; $a = 0; }");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *d = top->childContexts().first()->localDeclarations().first();
+    compareUses(d, SimpleRange(0, 22, 0, 24));
 }
+
+}
+
 
 #include "test_uses.moc"
