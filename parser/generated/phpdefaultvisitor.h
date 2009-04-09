@@ -30,7 +30,7 @@ public:
     virtual void visitBooleanOrExpression(BooleanOrExpressionAst *node);
     virtual void visitCaseList(CaseListAst *node);
     virtual void visitCase_item(Case_itemAst *node);
-    virtual void visitCatch_item(Catch_itemAst *node);
+    virtual void visitCatchItem(CatchItemAst *node);
     virtual void visitClassBody(ClassBodyAst *node);
     virtual void visitClassConstantDeclaration(ClassConstantDeclarationAst *node);
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);

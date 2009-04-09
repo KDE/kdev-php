@@ -77,7 +77,7 @@ namespace KDevelop
         ModifierFinal        = 1 << 4,
         ModifierAbstract     = 1 << 5
     };
-    
+
     enum ClassModifier {
         NormalClass,
         AbstractClass,
@@ -203,7 +203,7 @@ namespace KDevelop
        FUNCTION ("function"), USE ("use"), GLOBAL ("global"), VAR ("var "), UNSET ("unset"),
        ISSET ("isset"), EMPTY ("empty"), HALT_COMPILER ("halt compiler"),
        DOUBLE_ARROW ("=>"), LIST ("list"), ARRAY ("array"), CLASS_C ("__CLASS__"),
-       METHOD_C ("__METHOD__"), FUNC_C ("__FUNCTION__"), LINE ("__LINE__"), 
+       METHOD_C ("__METHOD__"), FUNC_C ("__FUNCTION__"), LINE ("__LINE__"),
        FILE ("__FILE__"), COMMENT ("comment"), DOC_COMMENT ("doc comment"),  PAAMAYIM_NEKUDOTAYIM ("::"),
        INCLUDE ("include"), INCLUDE_ONCE ("include_once"), EVAL ("eval"), REQUIRE ("require"),
        REQUIRE_ONCE ("require_once") ;;
@@ -589,7 +589,7 @@ expression=booleanOrExpression
   | DECLARE LPAREN declareItem=declareItem @ COMMA RPAREN declareStatement
   | SEMICOLON     -- empty statement
   | TRY  LBRACE statements=innerStatementList RBRACE
-    #catches=catch_item*
+    #catches=catchItem*
   | UNSET LPAREN #unsetVariables=variable @ COMMA RPAREN semicolonOrCloseTag
   | expr=expr semicolonOrCloseTag
   | DO doStatement=statement WHILE LPAREN whilteExpr=expr RPAREN semicolonOrCloseTag
@@ -623,9 +623,9 @@ expression=booleanOrExpression
   | def=DEFAULT (COLON | SEMICOLON) statements=innerStatementList
 -> case_item ;;
 
-    CATCH LPAREN catchClass=STRING variableIdentifier RPAREN
+    CATCH LPAREN catchClass=identifier variableIdentifier RPAREN
     LBRACE statements=innerStatementList RBRACE
--> catch_item ;;
+-> catchItem ;;
 
     statement=statement
   | COLON statements=innerStatementList ENDDECLARE semicolonOrCloseTag
@@ -918,7 +918,7 @@ void Parser::reportProblem( Parser::ProblemType type, const QString& message )
         qDebug() << "** WARNING:" << message;
     else if (type == Info)
         qDebug() << "** Info:" << message;
-    
+
     qint64 sLine;
     qint64 sCol;
     qint64 index = tokenStream->index()-1;

@@ -6,7 +6,8 @@
 namespace Php
 {
 
-Visitor::ParserFuncType Visitor::sParserTable[] = {
+Visitor::ParserFuncType Visitor::sParserTable[] =
+{
     reinterpret_cast<ParserFuncType>(&Visitor::visitAdditiveExpression),
     reinterpret_cast<ParserFuncType>(&Visitor::visitAdditiveExpressionRest),
     reinterpret_cast<ParserFuncType>(&Visitor::visitArrayPairValue),
@@ -24,7 +25,7 @@ Visitor::ParserFuncType Visitor::sParserTable[] = {
     reinterpret_cast<ParserFuncType>(&Visitor::visitBooleanOrExpression),
     reinterpret_cast<ParserFuncType>(&Visitor::visitCaseList),
     reinterpret_cast<ParserFuncType>(&Visitor::visitCase_item),
-    reinterpret_cast<ParserFuncType>(&Visitor::visitCatch_item),
+    reinterpret_cast<ParserFuncType>(&Visitor::visitCatchItem),
     reinterpret_cast<ParserFuncType>(&Visitor::visitClassBody),
     reinterpret_cast<ParserFuncType>(&Visitor::visitClassConstantDeclaration),
     reinterpret_cast<ParserFuncType>(&Visitor::visitClassDeclarationStatement),

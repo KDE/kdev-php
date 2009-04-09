@@ -111,7 +111,7 @@ void UseBuilder::visitStaticScalar(StaticScalarAst* node)
     }
 }
 
-void UseBuilder::visitStatement(Php::StatementAst* node)
+void UseBuilder::visitStatement(StatementAst *node)
 {
     if (node->foreachVar) {
         UseExpressionVisitor v(editor(), currentContext()->topContext(), this);
@@ -121,5 +121,14 @@ void UseBuilder::visitStatement(Php::StatementAst* node)
     UseBuilderBase::visitStatement(node);
 }
 
+void UseBuilder::visitCatchItem(CatchItemAst *node)
+{
+    if (node->catchClass) {
+        Declaration* dec = findDeclarationImport(ClassDeclarationType, node->catchClass);
+        newUse(node->catchClass, dec);
+    }
+    UseBuilderBase::visitCatchItem(node);
+
+}
 
 }

@@ -63,6 +63,7 @@ private slots:
     void foreachArray();
     void assignmentToMemberArray();
     void functionParamNewDeclaration();
+    void catchClass();
 };
 
 }

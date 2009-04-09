@@ -54,6 +54,7 @@ protected:
     virtual void visitGlobalVar(GlobalVarAst* node);
     virtual void visitStaticScalar(StaticScalarAst* node);
     virtual void visitStatement(StatementAst* node);
+    virtual void visitCatchItem(CatchItemAst* node);
 };
 
 }
