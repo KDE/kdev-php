@@ -116,7 +116,7 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
         return QVariant(NavigationWidget::shortDescription(dec));
     case Qt::DisplayRole:
         switch (index.column()) {
-        case CodeCompletionModel::Prefix: {
+        case CodeCompletionModel::Prefix:
             if (dec->kind() == Declaration::Type && !dec->type<FunctionType>() && !dec->isTypeAlias()) {
                 if (StructureType::Ptr classType =  dec->type<StructureType>()) {
                     ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
@@ -130,7 +130,7 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
                 }
                 return QVariant();
             }
-        }
+        break;
 
         case CodeCompletionModel::Arguments:
             if (FunctionType::Ptr functionType = dec->type<FunctionType>()) {
