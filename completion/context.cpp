@@ -2,6 +2,7 @@
    Copyright 2007 David Nolden <david.nolden.kdevelop@art-master.de>
    Copyright 2008 Hamish Rodda <rodda@kde.org>
    Copyright 2008 Niko Sams <niko.sams@gmail.com>
+   Copyright 2009 Milian Wolff <mail@milianw.de>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -502,277 +503,271 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
 
     typedef QPair<Declaration*, int> DeclarationDepthPair;
 
-#warning FIXME: m_storedItems is never filled - can be removed? or used for optimization?
-    if (!m_storedItems.isEmpty()) {
-        items = m_storedItems;
+    if (memberAccessOperation() == ClassMemberChoose) {
+        // get current class
+        if (ClassDeclaration * currentClass = dynamic_cast<ClassDeclaration*>(m_duContext->owner())) {
+            // whether we want to show a list of overloadable functions
+            // i.e. not after we have typed one of the keywords var,const or abstract
+            bool showOverloadable = true;
+            // whether we want to remove static functions from the overloadable list
+            // i.e. after we have typed "public function"
+            bool filterStatic = false;
+            // whether we want to remove non-static functions from the overloadable list
+            // i.e. after we have typed "public static function"
+            bool filterNonStatic = false;
+            // private functions are always removed from the overloadable list
+            // but when we type "protected function" only protected functions may be shown
+            bool filterPublic = false;
 
-    } else {
-        if (memberAccessOperation() == ClassMemberChoose) {
-            // get current class
-            if (ClassDeclaration * currentClass = dynamic_cast<ClassDeclaration*>(m_duContext->owner())) {
-                // whether we want to show a list of overloadable functions
-                // i.e. not after we have typed one of the keywords var,const or abstract
-                bool showOverloadable = true;
-                // whether we want to remove static functions from the overloadable list
-                // i.e. after we have typed "public function"
-                bool filterStatic = false;
-                // whether we want to remove non-static functions from the overloadable list
-                // i.e. after we have typed "public static function"
-                bool filterNonStatic = false;
-                // private functions are always removed from the overloadable list
-                // but when we type "protected function" only protected functions may be shown
-                bool filterPublic = false;
+            {
+                // add typical keywords for class member definitions
+                QStringList modifiers = getMethodTokens(m_text);
 
-                {
-                    // add typical keywords for class member definitions
-                    QStringList modifiers = getMethodTokens(m_text);
+                // don't add keywords when "function" was already typed
+                bool addKeywords = !modifiers.contains("function");
 
-                    // don't add keywords when "function" was already typed
-                    bool addKeywords = !modifiers.contains("function");
-
-                    if (currentClass->classModifier() == ClassDeclarationData::Abstract) {
-                        // abstract is only allowed in abstract classes
-                        if (modifiers.contains("abstract")) {
-                            // don't show overloadable functions when we are defining an abstract function
-                            showOverloadable = false;
-                        } else if (addKeywords) {
-                            ADD_KEYWORD("abstract");
-                        }
-                    } else {
-                        // final is only allowed in non-abstract classes
-                        if (addKeywords && !modifiers.contains("final")) {
-                            ADD_KEYWORD("final");
-                        }
-                    }
-
-                    if (modifiers.contains("private")) {
-                        // overloadable functions must not be declared private
+                if (currentClass->classModifier() == ClassDeclarationData::Abstract) {
+                    // abstract is only allowed in abstract classes
+                    if (modifiers.contains("abstract")) {
+                        // don't show overloadable functions when we are defining an abstract function
                         showOverloadable = false;
-                    } else if (modifiers.contains("protected")) {
-                        // only show protected overloadable methods
-                        filterPublic = true;
-                    } else if (addKeywords && !modifiers.contains("public")) {
-                        ADD_KEYWORD("public");
-                        ADD_KEYWORD("protected");
-                        ADD_KEYWORD("private");
-                    }
-
-                    if (modifiers.contains("static")) {
-                        filterNonStatic = true;
-                    } else {
-                        if (addKeywords) {
-                            ADD_KEYWORD("static");
-                        } else {
-                            filterStatic = true;
-                        }
-                    }
-
-                    if (addKeywords) {
-                        ADD_KEYWORD("function");
-                    }
-
-                    if (modifiers.isEmpty()) {
-                        // var and const may not have any modifiers
-                        ADD_KEYWORD("var");
-                        ADD_KEYWORD("const");
-                    }
-                }
-                kDebug() << showOverloadable;
-                // complete overloadable methods from parents
-                if (showOverloadable) {
-                    // TODO: use m_duContext instead of ctx
-                    // overloadable choose is only possible inside classes which extend/implement others
-                    if (currentClass->baseClassesSize()) {
-                        DUContext* ctx = currentClass->internalContext();
-                        if (!ctx) {
-                            kDebug() << "invalid class context";
-                            return items;
-                        }
-                        QList<uint> alreadyImplemented;
-                        //TODO: always add __construct, __destruct and maby other magic functions
-                        // get all visible declarations and add inherited to the completion items
-                        foreach(const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false)) {
-                            if (decl.first->isFunctionDeclaration()) {
-                                ClassFunctionDeclaration *method = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
-                                if (method) {
-                                    if (decl.second == 0) {
-                                        // this function is already implemented
-                                        alreadyImplemented << decl.first->indexedIdentifier().index;
-                                        continue;
-                                    }
-                                    // skip already implemented functions
-                                    if (alreadyImplemented.contains(decl.first->indexedIdentifier().index)) {
-                                        continue;
-                                    }
-                                    // skip non-static functions when requested
-                                    if (filterNonStatic && !method->isStatic()) {
-                                        continue;
-                                    }
-                                    // skip static functions when requested
-                                    if (filterStatic && method->isStatic()) {
-                                        continue;
-                                    }
-                                    // always skip private functions
-                                    if (method->accessPolicy() == Declaration::Private) {
-                                        continue;
-                                    }
-                                    // skip public functions when requested
-                                    if (filterPublic && method->accessPolicy() == Declaration::Public) {
-                                        // make sure no non-public base methods are added
-                                        alreadyImplemented << decl.first->indexedIdentifier().index;
-                                        continue;
-                                    }
-                                    // skip final methods
-                                    if (method->isFinal()) {
-                                        // make sure no non-final base methods are added
-                                        alreadyImplemented << decl.first->indexedIdentifier().index;
-                                        continue;
-                                    }
-                                    // make sure we inherit or implement the base class of this method
-                                    if (!method->context() || !method->context()->owner()) {
-                                        kDebug() << "invalid parent context/owner:" << method->toString();
-                                        continue;
-                                    }
-                                    if (!currentClass->isPublicBaseClass(dynamic_cast<ClassDeclaration*>(method->context()->owner()),
-                                                                         m_duContext->topContext())) {
-                                        continue;
-                                    }
-
-                                    ImplementationItem::HelperType itype;
-                                    if (method->isAbstract()) {
-                                        itype = ImplementationItem::Implement;
-                                    } else {
-                                        itype = ImplementationItem::Override;
-                                    }
-
-                                    items << CompletionTreeItemPointer(new ImplementationItem(itype, DeclarationPointer(decl.first),
-                                                                       KDevelop::CodeCompletionContext::Ptr(this), decl.second));
-                                    // don't add identical items twice to the completion choices
-                                    alreadyImplemented << decl.first->indexedIdentifier().index;
-                                }
-                            }
-                        }
+                    } else if (addKeywords) {
+                        ADD_KEYWORD("abstract");
                     }
                 } else {
-                    kDebug() << "invalid owner declaration for overloadable completion";
+                    // final is only allowed in non-abstract classes
+                    if (addKeywords && !modifiers.contains("final")) {
+                        ADD_KEYWORD("final");
+                    }
+                }
+
+                if (modifiers.contains("private")) {
+                    // overloadable functions must not be declared private
+                    showOverloadable = false;
+                } else if (modifiers.contains("protected")) {
+                    // only show protected overloadable methods
+                    filterPublic = true;
+                } else if (addKeywords && !modifiers.contains("public")) {
+                    ADD_KEYWORD("public");
+                    ADD_KEYWORD("protected");
+                    ADD_KEYWORD("private");
+                }
+
+                if (modifiers.contains("static")) {
+                    filterNonStatic = true;
+                } else {
+                    if (addKeywords) {
+                        ADD_KEYWORD("static");
+                    } else {
+                        filterStatic = true;
+                    }
+                }
+
+                if (addKeywords) {
+                    ADD_KEYWORD("function");
+                }
+
+                if (modifiers.isEmpty()) {
+                    // var and const may not have any modifiers
+                    ADD_KEYWORD("var");
+                    ADD_KEYWORD("const");
                 }
             }
-        } else if (m_expressionResult.type()) {
-            QList<DUContext*> containers = memberAccessContainers();
-            kDebug() << "containers: " << containers.count();
-            if (!containers.isEmpty()) {
-                // get the parent class when we are inside a method declaration
-                ClassDeclaration* currentClass = 0;
-                if (m_duContext->owner() && m_duContext->owner()->isFunctionDeclaration() &&
-                        m_duContext->parentContext() && m_duContext->parentContext()->owner()) {
-                    currentClass = dynamic_cast<ClassDeclaration*>(m_duContext->parentContext()->owner());
-                }
-
-                bool filterAbstract = memberAccessOperation() == StaticMemberAccess || memberAccessOperation() == MemberAccess;
-
-                foreach(DUContext* ctx, containers) {
-                    ClassDeclaration* accessedClass = dynamic_cast<ClassDeclaration*>(ctx->owner());
-                    if (abort)
+            kDebug() << showOverloadable;
+            // complete overloadable methods from parents
+            if (showOverloadable) {
+                // TODO: use m_duContext instead of ctx
+                // overloadable choose is only possible inside classes which extend/implement others
+                if (currentClass->baseClassesSize()) {
+                    DUContext* ctx = currentClass->internalContext();
+                    if (!ctx) {
+                        kDebug() << "invalid class context";
                         return items;
-
+                    }
+                    QList<uint> alreadyImplemented;
+                    //TODO: always add __construct, __destruct and maby other magic functions
+                    // get all visible declarations and add inherited to the completion items
                     foreach(const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false)) {
-                        //If we have StaticMemberAccess, which means A::Bla, show only static members, except if we're within a class that derives from the container
-                        ClassMemberDeclaration* classMember = dynamic_cast<ClassMemberDeclaration*>(decl.first);
-                        if (memberAccessOperation() != StaticMemberAccess) {
-                            if (classMember && classMember->isStatic())
-                                continue; //Skip static class members when not doing static access
-                        } else {
-                            if (!classMember || !classMember->isStatic())
-                                continue; //Skip static class members when not doing static access
-                        }
-
-                        // check access policy
-                        if (classMember && accessedClass) {
-                            // by default only show public declarations
-                            Declaration::AccessPolicy ap = Declaration::Public;
-                            if (currentClass) {
-                                // if we are inside a class, we might want to show protected or private members
-                                ClassDeclaration* memberClass = dynamic_cast<ClassDeclaration*>(classMember->context()->owner());
-                                if (memberClass) {
-                                    if (currentClass == accessedClass) {
-                                        if (currentClass == memberClass) {
-                                            // we can show all members of the current class
-                                            ap = Declaration::Private;
-                                        } else if (currentClass->isPublicBaseClass(memberClass, m_duContext->topContext())) {
-                                            // we can show all but private members of ancestors of the current class
-                                            ap = Declaration::Protected;
-                                        }
-                                    } else if (currentClass->isPublicBaseClass(accessedClass, m_duContext->topContext())
-                                               && (accessedClass == memberClass ||
-                                                   accessedClass->isPublicBaseClass(memberClass, m_duContext->topContext()))) {
-                                        // we can show all but private members of ancestors of the current class
-                                        ap = Declaration::Protected;
-                                    }
+                        if (decl.first->isFunctionDeclaration()) {
+                            ClassFunctionDeclaration *method = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
+                            if (method) {
+                                if (decl.second == 0) {
+                                    // this function is already implemented
+                                    alreadyImplemented << decl.first->indexedIdentifier().index;
+                                    continue;
                                 }
-                            }
-                            if (ap < classMember->accessPolicy()) {
-                                continue;
+                                // skip already implemented functions
+                                if (alreadyImplemented.contains(decl.first->indexedIdentifier().index)) {
+                                    continue;
+                                }
+                                // skip non-static functions when requested
+                                if (filterNonStatic && !method->isStatic()) {
+                                    continue;
+                                }
+                                // skip static functions when requested
+                                if (filterStatic && method->isStatic()) {
+                                    continue;
+                                }
+                                // always skip private functions
+                                if (method->accessPolicy() == Declaration::Private) {
+                                    continue;
+                                }
+                                // skip public functions when requested
+                                if (filterPublic && method->accessPolicy() == Declaration::Public) {
+                                    // make sure no non-public base methods are added
+                                    alreadyImplemented << decl.first->indexedIdentifier().index;
+                                    continue;
+                                }
+                                // skip final methods
+                                if (method->isFinal()) {
+                                    // make sure no non-final base methods are added
+                                    alreadyImplemented << decl.first->indexedIdentifier().index;
+                                    continue;
+                                }
+                                // make sure we inherit or implement the base class of this method
+                                if (!method->context() || !method->context()->owner()) {
+                                    kDebug() << "invalid parent context/owner:" << method->toString();
+                                    continue;
+                                }
+                                if (!currentClass->isPublicBaseClass(dynamic_cast<ClassDeclaration*>(method->context()->owner()),
+                                                                        m_duContext->topContext())) {
+                                    continue;
+                                }
+
+                                ImplementationItem::HelperType itype;
+                                if (method->isAbstract()) {
+                                    itype = ImplementationItem::Implement;
+                                } else {
+                                    itype = ImplementationItem::Override;
+                                }
+
+                                items << CompletionTreeItemPointer(new ImplementationItem(itype, DeclarationPointer(decl.first),
+                                                                    KDevelop::CodeCompletionContext::Ptr(this), decl.second));
+                                // don't add identical items twice to the completion choices
+                                alreadyImplemented << decl.first->indexedIdentifier().index;
                             }
                         }
-
-                        // filter abstract methods
-                        if (filterAbstract) {
-                            ClassFunctionDeclaration* method = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
-                            if (method && method->isAbstract()) {
-                                continue;
-                            }
-                        }
-
-                        if (!decl.first->identifier().isEmpty())
-                            items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl.first), KDevelop::CodeCompletionContext::Ptr(this), decl.second));
                     }
                 }
             } else {
-                kDebug() << "setContext: no container-type";
+                kDebug() << "invalid owner declaration for overloadable completion";
+            }
+        }
+    } else if (m_expressionResult.type()) {
+        QList<DUContext*> containers = memberAccessContainers();
+        kDebug() << "containers: " << containers.count();
+        if (!containers.isEmpty()) {
+            // get the parent class when we are inside a method declaration
+            ClassDeclaration* currentClass = 0;
+            if (m_duContext->owner() && m_duContext->owner()->isFunctionDeclaration() &&
+                    m_duContext->parentContext() && m_duContext->parentContext()->owner()) {
+                currentClass = dynamic_cast<ClassDeclaration*>(m_duContext->parentContext()->owner());
             }
 
-        } else {
-            //Show all visible declarations
-            QSet<uint> existingIdentifiers;
-            QList<DeclarationDepthPair> decls = m_duContext->allDeclarations(m_duContext->type() == DUContext::Class ? m_duContext->range().end : position, m_duContext->topContext());
-            QListIterator<DeclarationDepthPair> i(decls);
-            i.toBack();
-            while (i.hasPrevious()) {
-                DeclarationDepthPair decl = i.previous();
-                Declaration* dec = decl.first;
-                if (dec->kind() == Declaration::Instance) {
-                    if (existingIdentifiers.contains(dec->indexedIdentifier().index)) continue;
-                    existingIdentifiers.insert(dec->indexedIdentifier().index);
-                }
+            bool filterAbstract = memberAccessOperation() == StaticMemberAccess || memberAccessOperation() == MemberAccess;
+
+            foreach(DUContext* ctx, containers) {
+                ClassDeclaration* accessedClass = dynamic_cast<ClassDeclaration*>(ctx->owner());
                 if (abort)
                     return items;
-                if (!isValidCompletionItem(dec)) continue;
-                items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(dec), KDevelop::CodeCompletionContext::Ptr(this), decl.second));
-            }
-            uint count = 0;
-            const CodeModelItem* foundItems = 0;
-            foreach(QSet<IndexedString> urlSets, completionFiles()) {
-                foreach(IndexedString url, urlSets) {
-                    CodeModel::self().items(url, count, foundItems);
-                    for (uint i = 0; i < count; ++i) {
-                        if (foundItems[i].kind == CodeModelItem::Class) {
-                            foreach(TopDUContext* top, DUChain::self()->chainsForDocument(url)) {
-                                if (m_duContext->imports(top)) continue;
-                                if (top->language() != IndexedString("Php")) continue;
-                                QList<Declaration*> decls = top->findDeclarations(foundItems[i].id);
-                                foreach(Declaration* decl, decls) {
-                                    if (abort) return items;
-                                    if (!isValidCompletionItem(decl)) continue;
-                                    items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), KDevelop::CodeCompletionContext::Ptr(this)));
+
+                foreach(const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false)) {
+                    //If we have StaticMemberAccess, which means A::Bla, show only static members, except if we're within a class that derives from the container
+                    ClassMemberDeclaration* classMember = dynamic_cast<ClassMemberDeclaration*>(decl.first);
+                    if (memberAccessOperation() != StaticMemberAccess) {
+                        if (classMember && classMember->isStatic())
+                            continue; //Skip static class members when not doing static access
+                    } else {
+                        if (!classMember || !classMember->isStatic())
+                            continue; //Skip static class members when not doing static access
+                    }
+
+                    // check access policy
+                    if (classMember && accessedClass) {
+                        // by default only show public declarations
+                        Declaration::AccessPolicy ap = Declaration::Public;
+                        if (currentClass) {
+                            // if we are inside a class, we might want to show protected or private members
+                            ClassDeclaration* memberClass = dynamic_cast<ClassDeclaration*>(classMember->context()->owner());
+                            if (memberClass) {
+                                if (currentClass == accessedClass) {
+                                    if (currentClass == memberClass) {
+                                        // we can show all members of the current class
+                                        ap = Declaration::Private;
+                                    } else if (currentClass->isPublicBaseClass(memberClass, m_duContext->topContext())) {
+                                        // we can show all but private members of ancestors of the current class
+                                        ap = Declaration::Protected;
+                                    }
+                                } else if (currentClass->isPublicBaseClass(accessedClass, m_duContext->topContext())
+                                            && (accessedClass == memberClass ||
+                                                accessedClass->isPublicBaseClass(memberClass, m_duContext->topContext()))) {
+                                    // we can show all but private members of ancestors of the current class
+                                    ap = Declaration::Protected;
                                 }
+                            }
+                        }
+                        if (ap < classMember->accessPolicy()) {
+                            continue;
+                        }
+                    }
+
+                    // filter abstract methods
+                    if (filterAbstract) {
+                        ClassFunctionDeclaration* method = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
+                        if (method && method->isAbstract()) {
+                            continue;
+                        }
+                    }
+
+                    if (!decl.first->identifier().isEmpty())
+                        items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl.first), KDevelop::CodeCompletionContext::Ptr(this), decl.second));
+                }
+            }
+        } else {
+            kDebug() << "setContext: no container-type";
+        }
+
+    } else {
+        //Show all visible declarations
+        QSet<uint> existingIdentifiers;
+        QList<DeclarationDepthPair> decls = m_duContext->allDeclarations(m_duContext->type() == DUContext::Class ? m_duContext->range().end : position, m_duContext->topContext());
+        QListIterator<DeclarationDepthPair> i(decls);
+        i.toBack();
+        while (i.hasPrevious()) {
+            DeclarationDepthPair decl = i.previous();
+            Declaration* dec = decl.first;
+            if (dec->kind() == Declaration::Instance) {
+                if (existingIdentifiers.contains(dec->indexedIdentifier().index)) continue;
+                existingIdentifiers.insert(dec->indexedIdentifier().index);
+            }
+            if (abort)
+                return items;
+            if (!isValidCompletionItem(dec)) continue;
+            items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(dec), KDevelop::CodeCompletionContext::Ptr(this), decl.second));
+        }
+        uint count = 0;
+        const CodeModelItem* foundItems = 0;
+        foreach(QSet<IndexedString> urlSets, completionFiles()) {
+            foreach(IndexedString url, urlSets) {
+                CodeModel::self().items(url, count, foundItems);
+                for (uint i = 0; i < count; ++i) {
+                    if (foundItems[i].kind == CodeModelItem::Class) {
+                        foreach(TopDUContext* top, DUChain::self()->chainsForDocument(url)) {
+                            if (m_duContext->imports(top)) continue;
+                            if (top->language() != IndexedString("Php")) continue;
+                            QList<Declaration*> decls = top->findDeclarations(foundItems[i].id);
+                            foreach(Declaration* decl, decls) {
+                                if (abort) return items;
+                                if (!isValidCompletionItem(decl)) continue;
+                                items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), KDevelop::CodeCompletionContext::Ptr(this)));
                             }
                         }
                     }
                 }
             }
-
-            kDebug() << "setContext: using all declarations visible:" << decls.size();
         }
+
+        kDebug() << "setContext: using all declarations visible:" << decls.size();
     }
 
     ///Find all recursive function-calls that should be shown as call-tips

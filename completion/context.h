@@ -113,7 +113,6 @@ protected:
 
 private:
     MemberAccessOperation m_memberAccessOperation;
-    QList<KDevelop::CompletionTreeItemPointer> m_storedItems;
     ExpressionEvaluationResult m_expressionResult;
     QString m_expression;
     bool m_parentAccess;
