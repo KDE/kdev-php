@@ -167,12 +167,12 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
     return KDevelop::NormalDeclarationCompletionItem::data(index, role, model);
 }
 
-QWidget* NormalDeclarationCompletionItem::createExpadingWidget(const KDevelop::CodeCompletionModel* model) const
+QWidget* NormalDeclarationCompletionItem::createExpandingWidget(const KDevelop::CodeCompletionModel* model) const
 {
     return new NavigationWidget(m_declaration, model->currentTopContext());
 }
 
-bool NormalDeclarationCompletionItem::createsExpadingWidget() const
+bool NormalDeclarationCompletionItem::createsExpandingWidget() const
 {
     return true;
 }

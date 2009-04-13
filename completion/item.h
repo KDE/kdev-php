@@ -59,8 +59,8 @@ public:
 protected:
     virtual QString declarationName() const;
     virtual void executed(KTextEditor::Document* document, const KTextEditor::Range& word);
-    virtual QWidget* createExpadingWidget(const KDevelop::CodeCompletionModel* model) const;
-    virtual bool createsExpadingWidget() const;
+    virtual QWidget* createExpandingWidget(const KDevelop::CodeCompletionModel* model) const;
+    virtual bool createsExpandingWidget() const;
 
     KSharedPtr<CodeCompletionContext> completionContext() const;
 };
