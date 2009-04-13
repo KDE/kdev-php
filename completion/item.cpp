@@ -55,13 +55,32 @@ QString NormalDeclarationCompletionItem::declarationName() const
         return "<unknown>";
     else {
         QString ret = m_declaration->identifier().toString();
+        bool isStatic = false;
         if (!m_declaration->isFunctionDeclaration()) {
             if (dynamic_cast<VariableDeclaration*>(m_declaration.data())) {
                 ret = "$" + ret;
             } else if (ClassMemberDeclaration* memberDec = dynamic_cast<ClassMemberDeclaration*>(m_declaration.data())) {
+                isStatic = memberDec->isStatic();
                 if (memberDec->isStatic() && memberDec->abstractType() && ! memberDec->abstractType()->modifiers() & AbstractType::ConstModifier) {
                     // PHP is strange, $obj->asdf, class::const but class::$static ...
                     ret = "$" + ret;
+                }
+            }
+        } else if ( ClassFunctionDeclaration* funDec = dynamic_cast<ClassFunctionDeclaration*>(m_declaration.data()) ) {
+            isStatic = funDec->isStatic();
+        }
+
+        if ( completionContext()->memberAccessOperation() == CodeCompletionContext::NoMemberAccess ) {
+            // if we complete a class member or method (inside a method)
+            // we might have to add "self::", "parent::" or "$this->"
+            if ( completionContext()->duContext()->parentContext()
+                    && completionContext()->duContext()->parentContext()->type() == DUContext::Class ) {
+                if ( m_declaration->context() && m_declaration->context()->type() == DUContext::Class ) {
+                    if ( isStatic ) {
+                        ret = "self::" + ret;
+                    } else {
+                        ret = "$this->" + ret;
+                    }
                 }
             }
         }

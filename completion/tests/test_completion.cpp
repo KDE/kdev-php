@@ -177,11 +177,37 @@ void TestCompletion::protectedObjectCompletion()
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().at(1)->localDeclarations().first()->internalContext();
-    PhpCompletionTester tester(funContext, "$this->");
 
-    QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::MemberAccess);
+    {
+        PhpCompletionTester tester(funContext, "$this->");
 
-    QCOMPARE(tester.names, QStringList() << "__construct" << "pubf" << "pub" << "protf" << "prot");
+        QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::MemberAccess);
+
+        QCOMPARE(tester.names, QStringList() << "__construct" << "pubf" << "pub" << "protf" << "prot");
+    }
+
+    {
+        PhpCompletionTester tester(funContext, "");
+
+        QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
+
+        kDebug() << tester.names;
+
+        QVERIFY(tester.names.contains("$this->__construct"));
+        QVERIFY(tester.names.contains("$this->pubf"));
+        QVERIFY(tester.names.contains("$this->pub"));
+        QVERIFY(tester.names.contains("self::spubf"));
+        QVERIFY(tester.names.contains("self::$spub"));
+        QVERIFY(tester.names.contains("$this->protf"));
+        QVERIFY(tester.names.contains("$this->prot"));
+        QVERIFY(tester.names.contains("self::sprotf"));
+        QVERIFY(tester.names.contains("self::$sprot"));
+        QVERIFY(tester.names.contains("self::c"));
+        QVERIFY(!tester.names.contains("self::sprivf"));
+        QVERIFY(!tester.names.contains("self::$spriv"));
+        QVERIFY(!tester.names.contains("$this->privf"));
+        QVERIFY(!tester.names.contains("$this->$priv"));
+    }
 }
 void TestCompletion::protectedStaticObjectCompletion()
 {
