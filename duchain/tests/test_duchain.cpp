@@ -31,6 +31,8 @@
 #include <language/duchain/types/integraltype.h>
 #include <language/duchain/classdeclaration.h>
 
+#include "integraltypeextended.h"
+
 #include <kstandarddirs.h>
 
 #include "phpparsejob.h"
@@ -1397,6 +1399,26 @@ void TestDUChain::testCatchDeclaration()
     QCOMPARE(ex->identifier(), Identifier("e"));
     QVERIFY(ex->type<StructureType>());
     QCOMPARE(QualifiedIdentifier("Exception"), ex->type<StructureType>()->declaration(top)->qualifiedIdentifier());
+}
+
+void TestDUChain::testResourceType()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? /**\n * @return resource\n**/\nfunction test() {}");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionDeclaration* fun = dynamic_cast<FunctionDeclaration*>(top->localDeclarations().first());
+    QVERIFY(fun);
+    FunctionType::Ptr ftype = FunctionType::Ptr::dynamicCast(fun->abstractType());
+    QVERIFY(ftype);
+    IntegralType::Ptr rtype = IntegralType::Ptr::dynamicCast(ftype->returnType());
+    QVERIFY(rtype);
+    QCOMPARE(rtype->toString(), QString("resource"));
+    QVERIFY(rtype->dataType() == IntegralTypeExtended::TypeResource);
 }
 
 }

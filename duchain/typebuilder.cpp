@@ -28,6 +28,7 @@
 #include <language/duchain/ducontext.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/types/integraltype.h>
+#include "integraltypeextended.h"
 
 #include "editorintegrator.h"
 #include "parsesession.h"
@@ -55,8 +56,9 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
     } else if (type == "array") {
         iType = IntegralType::TypeArray;
     } else if (type == "resource") {
-        //TODO
-        iType = IntegralType::TypeMixed;
+        AbstractType::Ptr ret(new IntegralTypeExtended(IntegralTypeExtended::TypeResource));
+        injectType(ret);
+        return ret;
     } else if (type == "object") {
         //TODO
         iType = IntegralType::TypeMixed;

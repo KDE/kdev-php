@@ -90,6 +90,7 @@ private slots:
     void testFindDeclarations();
     void testMemberTypeAfterMethod();
     void testCatchDeclaration();
+    void testResourceType();
 };
 
 }
