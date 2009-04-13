@@ -845,6 +845,23 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
         return classDec->isPublicBaseClass(exceptionDecl, m_duContext->topContext());
     }
 
+    if (m_memberAccessOperation == NoMemberAccess) {
+        // filter private methods and class members when doing a global completion
+        // when we are inside a class function, dont filter the private stuff
+        // of the current class
+        if ( ClassMemberDeclaration* memberDec = dynamic_cast<ClassMemberDeclaration*>(dec) ) {
+            if ( memberDec->accessPolicy() == Declaration::Private
+                    && memberDec->context() != m_duContext->parentContext() ) {
+                return false;
+            }
+        } else if ( ClassFunctionDeclaration* funDec = dynamic_cast<ClassFunctionDeclaration*>(dec) ) {
+            if ( funDec->accessPolicy() == Declaration::Private
+                    && memberDec->context() != m_duContext->parentContext() ) {
+                return false;
+            }
+        }
+    }
+
     return true;
 }
 
