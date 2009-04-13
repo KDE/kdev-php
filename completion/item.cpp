@@ -73,7 +73,7 @@ QString NormalDeclarationCompletionItem::declarationName() const
         if ( completionContext()->memberAccessOperation() == CodeCompletionContext::NoMemberAccess ) {
             // if we complete a class member or method (inside a method)
             // we might have to add "self::", "parent::" or "$this->"
-            if ( completionContext()->duContext()->parentContext()
+            if ( completionContext()->duContext() && completionContext()->duContext()->parentContext()
                     && completionContext()->duContext()->parentContext()->type() == DUContext::Class ) {
                 if ( m_declaration->context() && m_declaration->context()->type() == DUContext::Class ) {
                     if ( isStatic ) {
