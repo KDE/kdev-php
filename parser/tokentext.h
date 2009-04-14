@@ -18,6 +18,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#ifndef TOKENTEXT_H
+#define TOKENTEXT_H
+
 namespace Php
 {
 
@@ -321,3 +324,5 @@ QString tokenText(int token)
 }
 
 }
+
+#endif // TOKENTEXT_H

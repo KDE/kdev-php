@@ -16,8 +16,8 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef PHP_NAVIGATIONCONTEXT_H
-#define PHP_NAVIGATIONCONTEXT_H
+#ifndef DECLARATIONNAVIGATIONCONTEXT_H
+#define DECLARATIONNAVIGATIONCONTEXT_H
 
 #include <language/duchain/navigation/abstractdeclarationnavigationcontext.h>
 #include <language/duchain/types/abstracttype.h>

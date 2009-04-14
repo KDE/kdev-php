@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef DUCHAINTESTBASE_H
-#define DUCHAINTESTBASE_H
+#ifndef LEXERTEST_H
+#define LEXERTEST_H
 
 #include <QObject>
 #include <QByteArray>
@@ -62,4 +62,4 @@ protected:
 
 }
 
-#endif
+#endif // LEXERTEST_H

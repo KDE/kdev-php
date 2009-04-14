@@ -36,7 +36,6 @@
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/structuretype.h>
-#include <language/codecompletion/codecompletionhelper.h>
 #include <language/duchain/classdeclaration.h>
 
 #include "completion/helpers.h"

@@ -16,8 +16,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef TESTDUCHAIN_H
-#define TESTDUCHAIN_H
+#ifndef TESTCOMPLETION_H
+#define TESTCOMPLETION_H
 
 #include "duchain/tests/duchaintestbase.h"
 #include <language/codecompletion/codecompletionitem.h>
@@ -75,4 +75,4 @@ private slots:
 
 }
 
-#endif
+#endif // TESTCOMPLETION_H
