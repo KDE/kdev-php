@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    foreach(QString fileName, files) {
+    foreach(const QString &fileName, files) {
         Php::ParseSession session;
         if (!session.readFile(fileName, "utf-8")) {
             qerr << "Can't open file " << fileName << endl;

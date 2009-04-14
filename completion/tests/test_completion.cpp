@@ -52,7 +52,7 @@ public:
     //TODO: can this be fixed?
     void foundDeclarations(QList<KDevelop::CompletionTreeItemPointer> items, CodeCompletionContext* completionContext) {
         m_completionItems.clear();
-        foreach(CompletionTreeItemPointer i, items) {
+        foreach(const CompletionTreeItemPointer &i, items) {
             m_completionItems << KSharedPtr<CompletionTreeElement>::staticCast(i);
         }
         m_completionContext = KDevelop::CodeCompletionContext::Ptr(completionContext);
@@ -113,7 +113,7 @@ TestCompletion::TestCompletion()
 void TestCompletion::dumpCompletionItems(QList<CompletionTreeItemPointer> items)
 {
     kDebug() << items.count() << "completion items:";
-    foreach(CompletionTreeItemPointer item, items) {
+    foreach(const CompletionTreeItemPointer &item, items) {
         kDebug() << item->declaration()->toString();
     }
 }
@@ -447,7 +447,7 @@ void TestCompletion::nameNormalVariable()
     PhpCompletionTester tester(top, "");
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
 
-    foreach(QString id, QStringList() << "ghi" << "def" << "$abc" << "$arr") {
+    foreach(const QString &id, QStringList() << "ghi" << "def" << "$abc" << "$arr") {
         QVERIFY(tester.names.contains(id, Qt::CaseSensitive));
     }
 }
@@ -682,7 +682,7 @@ void TestCompletion::verifyExtendsOrImplements(const QString &codeStr, const QSt
     QVERIFY(!tester.items.isEmpty());
     // make sure the items are unique
     QCOMPARE(tester.names.size(), tester.names.toSet().size());
-    foreach(CompletionTreeItemPointer item, tester.items) {
+    foreach(const CompletionTreeItemPointer &item, tester.items) {
         ClassDeclaration* klass = dynamic_cast<ClassDeclaration*>(item->declaration().data());
         QVERIFY(klass);
         QVERIFY(klass->classModifier() != ClassDeclarationData::Final);

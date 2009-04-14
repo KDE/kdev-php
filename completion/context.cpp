@@ -748,7 +748,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
         uint count = 0;
         const CodeModelItem* foundItems = 0;
         foreach(QSet<IndexedString> urlSets, completionFiles()) {
-            foreach(IndexedString url, urlSets) {
+            foreach(const IndexedString &url, urlSets) {
                 CodeModel::self().items(url, count, foundItems);
                 for (uint i = 0; i < count; ++i) {
                     if (foundItems[i].kind == CodeModelItem::Class) {

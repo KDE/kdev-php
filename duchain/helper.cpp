@@ -88,7 +88,7 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
         //there can be just one Class-Context imported
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->parentContext()) {
-            foreach(DUContext::Import i, currentContext->parentContext()->importedParentContexts()) {
+            foreach(const DUContext::Import &i, currentContext->parentContext()->importedParentContexts()) {
                 if (i.context(currentContext->topContext())->type() == DUContext::Class) {
                     return i.context(currentContext->topContext())->owner();
                 }

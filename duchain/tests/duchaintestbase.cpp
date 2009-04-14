@@ -57,7 +57,7 @@ void DUChainTestBase::initTestCase()
 
 CompletionTreeItemPointer DUChainTestBase::searchDeclaration(QList<CompletionTreeItemPointer> items, Declaration* declaration)
 {
-    foreach(CompletionTreeItemPointer item, items) {
+    foreach(const CompletionTreeItemPointer &item, items) {
         if (item->declaration().data() == declaration) {
             return item;
         }
@@ -69,7 +69,7 @@ bool DUChainTestBase::hasImportedParentContext(TopDUContext* top, DUContext* loo
 {
     kDebug() << "this topcontext has " << top->importedParentContexts().count() << " imported parent contexts"
     << "\n we are looking for: " << lookingFor->url().byteArray();
-    foreach(DUContext::Import import, top->importedParentContexts()) {
+    foreach(const DUContext::Import &import, top->importedParentContexts()) {
         if (import.context(top)) {
             kDebug() << import.context(top)->url().byteArray();
         }

@@ -106,7 +106,7 @@ void ParseJob::run()
     {
         DUChainReadLocker lock(DUChain::lock());
         bool needsUpdate = true;
-        foreach(ParsingEnvironmentFilePointer file, DUChain::self()->allEnvironmentFiles(document())) {
+        foreach(const ParsingEnvironmentFilePointer &file, DUChain::self()->allEnvironmentFiles(document())) {
             if (file->needsUpdate()) {
                 needsUpdate = true;
                 break;
@@ -225,7 +225,7 @@ void ParseJob::run()
 
         DUChainWriteLocker lock(DUChain::lock());
 
-        foreach(ProblemPointer p, includeProblems) {
+        foreach(const ProblemPointer &p, includeProblems) {
             chain->addProblem(p);
         }
 
@@ -260,7 +260,7 @@ void ParseJob::run()
             DUChain::self()->addDocumentChain(top);
         }
         setDuChain(top);
-        foreach(ProblemPointer p, m_session->problems()) {
+        foreach(const ProblemPointer &p, m_session->problems()) {
             DUChainWriteLocker lock(DUChain::lock());
             top->addProblem(p);
         }
