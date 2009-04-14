@@ -253,7 +253,7 @@ QStringList getMethodTokens(QString text)
 
 
     text = text.trimmed();
-    if (text.endsWith("function", Qt::CaseInsensitive)) {
+    if (text.endsWith(QString("function"), Qt::CaseInsensitive)) {
         tokens << "function";
         text = text.left(text.length() - 8);
     }

@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
     bool printTokens = false;
     for (int i = 1; i < argc; i++) {
         QString arg(argv[i]);
-        if (arg.startsWith("--")) {
+        if (arg.startsWith(QString("--"))) {
             arg = arg.mid(2);
             if (arg == "debug") {
                 debug = true;

@@ -62,7 +62,7 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
         }
     } else {
         DUChainReadLocker lock(DUChain::lock());
-        //DontSearchInParent-flag because (1) in Php global variables aren't avaliable in function
+        //DontSearchInParent-flag because (1) in Php global variables aren't available in function
         //context and (2) a function body consists of a single context (so this is no problem)
         QList<Declaration*> decls = m_currentContext->findDeclarations(identifier, position,
                                     AbstractType::Ptr(), 0, DUContext::DontSearchInParent);

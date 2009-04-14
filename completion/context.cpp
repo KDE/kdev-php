@@ -93,11 +93,12 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
             // TODO: add {...} according to chosen code style
             m_valid = false;
             return;
-        } else if (m_text.endsWith("var", Qt::CaseInsensitive) || m_text.endsWith("const", Qt::CaseInsensitive)) {
+        } else if (m_text.endsWith(QString("var"), Qt::CaseInsensitive)
+                    || m_text.endsWith(QString("const"), Qt::CaseInsensitive)) {
             // nothing we can complete here
             m_valid = false;
             return;
-        } else if (m_text.endsWith("extends", Qt::CaseInsensitive)) {
+        } else if (m_text.endsWith(QString("extends"), Qt::CaseInsensitive)) {
             // when we change the "extends" stuff of an existing class m_duContext will be a class
             // even though we are not inside it's {...} area
             m_memberAccessOperation = ClassExtendsChoose;
@@ -109,7 +110,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
                 }
             }
             forbidLastIdentifier(m_text, "extends");
-        } else if (m_text.endsWith("implements", Qt::CaseInsensitive)) {
+        } else if (m_text.endsWith(QString("implements"), Qt::CaseInsensitive)) {
             m_memberAccessOperation = InterfaceChoose;
             forbidLastIdentifier(m_text, "implements");
         } else if (m_text.endsWith(',')) {
@@ -131,13 +132,13 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
         return;
     }
 
-    if (m_text.endsWith("->")) {
+    if (m_text.endsWith(QString("->"))) {
         m_memberAccessOperation = MemberAccess;
         m_text = m_text.left(m_text.length() - 2);
         ifDebug(log("MemberAccess");)
     }
 
-    if (m_text.endsWith("::")) {
+    if (m_text.endsWith(QString("::"))) {
         m_memberAccessOperation = StaticMemberAccess;
         m_text = m_text.left(m_text.length() - 2);
         ifDebug(log("StaticMemberAccess");)
@@ -146,11 +147,11 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
     if (m_text.endsWith('(')) {
         QString m_text_copy = m_text.left(m_text.length() - 1).trimmed();
         ifDebug(log(m_text_copy);)
-        if (m_text_copy.endsWith("catch")) {
+        if (m_text_copy.endsWith(QString("catch"))) {
             ifDebug(log("ExceptionChoose");)
             m_memberAccessOperation = ExceptionChoose;
             return;
-        } else if (m_text_copy.endsWith("array")) {
+        } else if (m_text_copy.endsWith(QString("array"))) {
             ifDebug(log("NoMemberAccess");)
             m_memberAccessOperation = NoMemberAccess;
             return;
@@ -193,14 +194,16 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
 
     m_expression = m_text.mid(start_expr).trimmed();
 
-    if (m_expression == "else")
-        m_expression = QString();
+    if (m_expression == "else") {
+        m_expression.clear();
+    }
 
     QString expressionPrefix = stripFinalWhitespace(m_text.left(start_expr));
     ifDebug(log("expressionPrefix: " + expressionPrefix);)
 
     ///Handle beginning of a PHP block
-    if (expressionPrefix.endsWith("<?") && (m_expression.isEmpty() || m_expression.compare("php", Qt::CaseInsensitive) == 0)) {
+    if (expressionPrefix.endsWith(QString("<?"))
+        && (m_expression.isEmpty() || m_expression.compare(QString("php"), Qt::CaseInsensitive) == 0)) {
         return;
     }
 
@@ -246,7 +249,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
 
     QString expr = m_expression.trimmed();
 
-    if (expr.startsWith("return"))  {
+    if (expr.startsWith(QString("return")))  {
         isReturn = true; //When isReturn is true, we should match the result against the return-type of the current context-function
         expr = expr.right(expr.length() - 6);
     }
@@ -847,7 +850,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
 
     if (m_memberAccessOperation == NoMemberAccess) {
         // filter private methods and class members when doing a global completion
-        // when we are inside a class function, dont filter the private stuff
+        // when we are inside a class function, don't filter the private stuff
         // of the current class
         if ( ClassMemberDeclaration* memberDec = dynamic_cast<ClassMemberDeclaration*>(dec) ) {
             if ( memberDec->accessPolicy() == Declaration::Private
