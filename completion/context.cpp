@@ -374,7 +374,7 @@ void CodeCompletionContext::forbidLastIdentifier(const QString &text, const QStr
     if (additionalPattern.isEmpty()) {
         curIdentifier.setPattern("\\s+(\\S+)$");
     } else {
-        curIdentifier.setPattern("\\s+(\\S+)\\s+" + additionalPattern + "$");
+        curIdentifier.setPattern("\\s+(\\S+)\\s+" + additionalPattern + '$');
     }
     if (text.contains(curIdentifier)) {
         forbidIdentifier(curIdentifier.cap(1));

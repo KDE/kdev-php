@@ -68,7 +68,7 @@ QVariant ImplementationItem::data(const QModelIndex& index, int role, const Code
                 break;
             }
 
-            ret = prefix + " " + ret.toString();
+            ret = prefix + ' ' + ret.toString();
         }
         //TODO column == Name - required?
         break;
@@ -119,7 +119,7 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
             indendation = currentLine.left(nonWhiteSpacePos);
             if (nonWhiteSpacePos != -1 && nonWhiteSpacePos != replaceRange.start().column()) {
                 // since there's some non-whitespace in this line, skip to the next one
-                replText += "\n" + indendation;
+                replText += '\n' + indendation;
             }
 
             if (indendation.isEmpty()) {
@@ -154,7 +154,7 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
             // the tokens are in a bad order and there's no reverse method or similar, so we can't simply join the tokens
             QStringList::const_iterator i = modifiers.constEnd() - 1;
             while (true) {
-                replText += (*i) + " ";
+                replText += (*i) + ' ';
                 if (i == modifiers.constBegin()) {
                     break;
                 } else {

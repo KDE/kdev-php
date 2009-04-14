@@ -108,12 +108,12 @@ void createArgumentList(const NormalDeclarationCompletionItem& item, QString& re
                             || (type->whichType() == AbstractType::TypeIntegral
                                 && type.cast<IntegralType>()->dataType() == IntegralType::TypeArray)
                             || type->whichType() == AbstractType::TypeStructure) {
-                        ret += type->toString() + " ";
+                        ret += type->toString() + ' ';
                     }
                 }
             }
 
-            ret += "$" + dec->identifier().toString();
+            ret += '$' + dec->identifier().toString();
 
             if (doHighlight) {
                 if (highlighting && ret.length() != textFormatStart) {

@@ -58,12 +58,12 @@ QString NormalDeclarationCompletionItem::declarationName() const
         bool isStatic = false;
         if (!m_declaration->isFunctionDeclaration()) {
             if (dynamic_cast<VariableDeclaration*>(m_declaration.data())) {
-                ret = "$" + ret;
+                ret = '$' + ret;
             } else if (ClassMemberDeclaration* memberDec = dynamic_cast<ClassMemberDeclaration*>(m_declaration.data())) {
                 isStatic = memberDec->isStatic();
                 if (memberDec->isStatic() && memberDec->abstractType() && ! memberDec->abstractType()->modifiers() & AbstractType::ConstModifier) {
                     // PHP is strange, $obj->asdf, class::const but class::$static ...
-                    ret = "$" + ret;
+                    ret = '$' + ret;
                 }
             }
         } else if ( ClassFunctionDeclaration* funDec = dynamic_cast<ClassFunctionDeclaration*>(m_declaration.data()) ) {

@@ -129,6 +129,6 @@ void printToken(int token, const Lexer& lexer, const QString& content)
 {
     int begin = lexer.tokenBegin();
     int end = lexer.tokenEnd();
-    qout << content.mid(begin, end - begin + 1).replace("\n", "\\n")
+    qout << content.mid(begin, end - begin + 1).replace('\n', "\\n")
     << tokenText(token) << endl;
 }

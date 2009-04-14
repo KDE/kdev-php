@@ -659,9 +659,9 @@ void TestCompletion::verifyExtendsOrImplements(const QString &codeStr, const QSt
         QStringList forbiddenIdentifiers)
 {
     if (cursor.isValid()) {
-        kDebug() << codeStr.mid(0, cursor.column) + completionStr + "|" + codeStr.mid(cursor.column);
+        kDebug() << codeStr.mid(0, cursor.column) + completionStr + '|' + codeStr.mid(cursor.column);
     } else {
-        kDebug() << codeStr + completionStr + "|";
+        kDebug() << codeStr + completionStr + '|';
     }
     TopDUContext *top = parse(codeStr.toUtf8(), DumpNone);
     DUChainReleaser releaseTop(top);
