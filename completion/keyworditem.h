@@ -33,7 +33,7 @@ class KeywordItem : public NormalDeclarationCompletionItem
 {
 public:
 
-    KeywordItem(const QString &keyword,
+    explicit KeywordItem(const QString &keyword,
                 KSharedPtr<KDevelop::CodeCompletionContext> context = KSharedPtr<KDevelop::CodeCompletionContext>())
             : NormalDeclarationCompletionItem(KDevelop::DeclarationPointer(), context, 0),
             m_keyword(keyword) {}

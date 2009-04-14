@@ -49,7 +49,7 @@ class CodeCompletionContext;
 class KDEVPHPCOMPLETION_EXPORT NormalDeclarationCompletionItem : public KDevelop::NormalDeclarationCompletionItem
 {
 public:
-    NormalDeclarationCompletionItem(KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), KSharedPtr<KDevelop::CodeCompletionContext> context = KSharedPtr<KDevelop::CodeCompletionContext>(), int _inheritanceDepth = 0)
+    explicit NormalDeclarationCompletionItem(KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), KSharedPtr<KDevelop::CodeCompletionContext> context = KSharedPtr<KDevelop::CodeCompletionContext>(), int _inheritanceDepth = 0)
             : KDevelop::NormalDeclarationCompletionItem(decl, context, _inheritanceDepth) {
     }
 

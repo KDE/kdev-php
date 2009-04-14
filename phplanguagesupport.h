@@ -48,7 +48,7 @@ class LanguageSupport : public KDevelop::IPlugin, public KDevelop::ILanguageSupp
     Q_INTERFACES(KDevelop::ILanguageSupport)
 
 public:
-    LanguageSupport(QObject *parent, const QVariantList& args = QVariantList());
+    explicit LanguageSupport(QObject *parent, const QVariantList& args = QVariantList());
     virtual ~LanguageSupport();
     /*Name Of the Language*/
     QString name() const;

@@ -37,7 +37,7 @@ public:
         Implement
     };
 
-    ImplementationItem(HelperType type, KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), KSharedPtr<KDevelop::CodeCompletionContext> context = KSharedPtr<KDevelop::CodeCompletionContext>(), int _inheritanceDepth = 0)
+    explicit ImplementationItem(HelperType type, KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), KSharedPtr<KDevelop::CodeCompletionContext> context = KSharedPtr<KDevelop::CodeCompletionContext>(), int _inheritanceDepth = 0)
             : NormalDeclarationCompletionItem(decl, context, _inheritanceDepth), m_type(type) {}
 
     virtual void execute(KTextEditor::Document* document, const KTextEditor::Range& word);
