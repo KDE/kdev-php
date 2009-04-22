@@ -47,9 +47,9 @@ CodeCompletionWorker::CodeCompletionWorker(CodeCompletionModel* parent)
 {
 }
 
-KDevelop::CodeCompletionContext* CodeCompletionWorker::createCompletionContext(KDevelop::DUContextPointer context, const QString &contextText, const QString &followingText) const
+KDevelop::CodeCompletionContext* CodeCompletionWorker::createCompletionContext(KDevelop::DUContextPointer context, const QString &contextText, const QString &followingText, const KDevelop::SimpleCursor& position) const
 {
-    return new CodeCompletionContext(context, contextText, followingText);
+    return new CodeCompletionContext(context, contextText, followingText, position);
 }
 
 }

@@ -37,8 +37,9 @@ using namespace KDevelop;
 namespace Php
 {
 
-ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor, bool useCursor)
-        : m_editor(editor), m_useCursor(useCursor), m_currentContext(0), m_isAssignmentExpressionEqual(false), m_createProblems(false)
+ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor)
+        : m_editor(editor), m_currentContext(0), m_isAssignmentExpressionEqual(false),
+          m_lineOffset(0), m_createProblems(false)
 {
 }
 
@@ -47,9 +48,8 @@ Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
     Q_ASSERT(m_currentContext);
 
     SimpleCursor position = SimpleCursor::invalid();
-    if (m_useCursor) {
-        position = m_editor->findPosition(variable->variable, EditorIntegrator::FrontEdge);
-    }
+    position = m_editor->findPosition(variable->variable, EditorIntegrator::FrontEdge);
+    position.line += m_lineOffset;
 
     Declaration* ret = 0;
     QualifiedIdentifier identifier = identifierForNode(variable);
@@ -512,6 +512,12 @@ void ExpressionVisitor::setCreateProblems(bool v)
 {
     m_createProblems = v;
 }
+
+void ExpressionVisitor::setLineOffset(int offs)
+{
+    m_lineOffset = offs;
+}
+
 
 Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
 {

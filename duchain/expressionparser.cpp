@@ -36,10 +36,11 @@ using namespace KDevelop;
 namespace Php
 {
 
-ExpressionParser::ExpressionParser(bool useCursor, bool debug)
-        : m_useCursor(useCursor), m_debug(debug), m_createProblems(false)
+ExpressionParser::ExpressionParser(int lineOffset, bool debug)
+        : m_lineOffset(lineOffset), m_debug(debug), m_createProblems(false)
 {
 }
+
 void ExpressionParser::setCreateProblems(bool v)
 {
     m_createProblems = v;
@@ -79,7 +80,8 @@ ExpressionEvaluationResult ExpressionParser::evaluateType(AstNode* ast, EditorIn
         debugVisitor.visitNode(ast);
     }
 
-    ExpressionVisitor v(editor, m_useCursor);
+    ExpressionVisitor v(editor);
+    v.setLineOffset(m_lineOffset);
     v.setCreateProblems(m_createProblems);
     v.visitNode(ast);
 

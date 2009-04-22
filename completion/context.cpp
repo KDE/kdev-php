@@ -63,8 +63,8 @@ namespace Php
 
 int completionRecursionDepth = 0;
 
-CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QString& text, const QString& followingText, int depth)
-        : KDevelop::CodeCompletionContext(context, text, depth)
+CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, const KDevelop::SimpleCursor& position, int depth)
+        : KDevelop::CodeCompletionContext(context, text, position, depth)
         , m_memberAccessOperation(NoMemberAccess), m_parentAccess(false)
 {
 
@@ -159,7 +159,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
 
         if (depth == 0) {
             //The first context should never be a function-call context, so make this a NoMemberAccess context and the parent a function-call context.
-            m_parentContext = new CodeCompletionContext(m_duContext, m_text, QString(), depth + 1);
+            m_parentContext = new CodeCompletionContext(m_duContext, m_text, QString(), m_position, depth + 1);
             ifDebug(log("NoMemberAccess (created parentContext)");)
             return;
         }
@@ -235,7 +235,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
 
         log(QString("This argument-number: %1 Building parent-context from \"%2\"").arg(otherArguments.size()).arg(parentContextText));
 
-        m_parentContext = new CodeCompletionContext(m_duContext, parentContextText, QString(), depth + 1);
+        m_parentContext = new CodeCompletionContext(m_duContext, parentContextText, QString(), m_position, depth + 1);
 
         if (!m_parentContext->isValid()) {
             m_parentContext = 0;
@@ -312,7 +312,7 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
             }
         } else {
             QualifiedIdentifier id(expr);
-            m_expressionResult.setDeclarations(m_duContext->findDeclarations(id));
+            m_expressionResult.setDeclarations(m_duContext->findDeclarations(id, m_position));
         }
         if (m_expressionResult.type()) {
             ifDebug(kDebug() << "expression type: " << m_expressionResult.type()->toString();)
@@ -323,8 +323,8 @@ CodeCompletionContext::CodeCompletionContext(DUContextPointer context, const QSt
         }
     } else {
 
-        ExpressionParser expressionParser(false);
-
+        int offs = m_position.line - expr.count('\n');
+        ExpressionParser expressionParser(offs);
         if (!expr.trimmed().isEmpty()) {
             m_expressionResult = expressionParser.evaluateType(expr.toUtf8(), m_duContext);
             if (m_expressionResult.type()) {
@@ -499,7 +499,7 @@ QList<DUContext*> CodeCompletionContext::memberAccessContainers() const
     return ret;
 }
 
-QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KDevelop::SimpleCursor& position, bool& abort, bool fullCompletion)
+QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& abort, bool fullCompletion)
 {
     LOCKDUCHAIN;
 
@@ -737,7 +737,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(const KD
     } else {
         //Show all visible declarations
         QSet<uint> existingIdentifiers;
-        QList<DeclarationDepthPair> decls = m_duContext->allDeclarations(m_duContext->type() == DUContext::Class ? m_duContext->range().end : position, m_duContext->topContext());
+        QList<DeclarationDepthPair> decls = m_duContext->allDeclarations(m_duContext->type() == DUContext::Class ? m_duContext->range().end : m_position, m_duContext->topContext());
         QListIterator<DeclarationDepthPair> i(decls);
         i.toBack();
         while (i.hasPrevious()) {

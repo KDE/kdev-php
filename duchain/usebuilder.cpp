@@ -32,8 +32,8 @@ namespace Php
 class UseExpressionVisitor : public ExpressionVisitor
 {
 public:
-    UseExpressionVisitor(EditorIntegrator* editor, bool useCursor, UseBuilder* useBuilder)
-            : ExpressionVisitor(editor, useCursor), m_builder(useBuilder) {
+    UseExpressionVisitor(EditorIntegrator* editor, UseBuilder* useBuilder)
+            : ExpressionVisitor(editor), m_builder(useBuilder) {
     }
 
 protected:
@@ -85,7 +85,7 @@ void UseBuilder::visitClassExtends(ClassExtendsAst *node)
 void UseBuilder::visitExpr(ExprAst* node)
 {
     UseBuilderBase::visitExpr(node);
-    UseExpressionVisitor v(editor(), currentContext()->topContext(), this);
+    UseExpressionVisitor v(editor(), this);
     node->ducontext = currentContext();
     v.visitNode(node);
 }
@@ -105,7 +105,7 @@ void UseBuilder::visitStaticScalar(StaticScalarAst* node)
 {
     if (currentContext()->type() == DUContext::Class) {
         UseBuilderBase::visitStaticScalar(node);
-        UseExpressionVisitor v(editor(), currentContext()->topContext(), this);
+        UseExpressionVisitor v(editor(), this);
         node->ducontext = currentContext();
         v.visitNode(node);
     }
@@ -114,7 +114,7 @@ void UseBuilder::visitStaticScalar(StaticScalarAst* node)
 void UseBuilder::visitStatement(StatementAst *node)
 {
     if (node->foreachVar) {
-        UseExpressionVisitor v(editor(), currentContext()->topContext(), this);
+        UseExpressionVisitor v(editor(), this);
         node->foreachVar->ducontext = currentContext();
         v.visitNode(node->foreachVar);
     }

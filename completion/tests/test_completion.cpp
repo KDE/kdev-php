@@ -371,8 +371,8 @@ void TestCompletion::codeModel()
 class TestCodeCompletionContext : public CodeCompletionContext
 {
 public:
-    TestCodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, int depth = 0)
-            : CodeCompletionContext(context, text, followingText, depth) { }
+    TestCodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, const SimpleCursor &position, int depth = 0)
+            : CodeCompletionContext(context, text, followingText, position, depth) { }
 protected:
     QList<QSet<IndexedString> > completionFiles() {
         QList<QSet<IndexedString> > ret;

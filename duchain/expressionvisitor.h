@@ -41,11 +41,12 @@ class EditorIntegrator;
 class KDEVPHPDUCHAIN_EXPORT ExpressionVisitor : public DefaultVisitor
 {
 public:
-    ExpressionVisitor(EditorIntegrator* editor, bool useCursor);
+    ExpressionVisitor(EditorIntegrator* editor);
     ExpressionEvaluationResult result() {
         return m_result;
     }
     void setCreateProblems(bool v);
+    void setLineOffset(int offs);
 
     virtual void visitNode(AstNode *node);
 
@@ -87,14 +88,13 @@ protected:
 private:
     KDevelop::DUContext* findClassContext(IdentifierAst* className);
 
-    bool m_useCursor;
+    bool m_createProblems;
+    int m_lineOffset;
     KDevelop::DUContext* m_currentContext;
 
     ExpressionEvaluationResult m_result;
 
     bool m_isAssignmentExpressionEqual;
-
-    bool m_createProblems;
 };
 
 }

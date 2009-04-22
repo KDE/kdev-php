@@ -42,7 +42,7 @@ public:
     CodeCompletionWorker(CodeCompletionModel* parent);
 
 protected:
-    virtual KDevelop::CodeCompletionContext* createCompletionContext(KDevelop::DUContextPointer context, const QString &contextText, const QString &followingText) const;
+    virtual KDevelop::CodeCompletionContext* createCompletionContext(KDevelop::DUContextPointer context, const QString &contextText, const QString &followingText, const KDevelop::SimpleCursor& position) const;
 };
 
 }

@@ -297,7 +297,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
         foreachNode = node->foreachExpr;
     }
     if (foreachNode) {
-        ExpressionVisitor v(editor(), true);
+        ExpressionVisitor v(editor());
         foreachNode->ducontext = currentContext();
         v.visitNode(foreachNode);
         DUChainReadLocker lock(DUChain::lock());

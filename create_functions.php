@@ -130,7 +130,7 @@ foreach ($dirs as $dir) {
                         $v = array();
                     }
                     if (substr($i, 0, 1) != '$') continue;
-                    
+
                     if (substr($i, -13) == ' [deprecated]') {
                         $i = substr($i, 0, -13);
                         $v['deprecated'] = true;

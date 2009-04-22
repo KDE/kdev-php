@@ -54,7 +54,7 @@ void TestExpressionParser::newClass()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    ExpressionParser p(false, true);
+    ExpressionParser p(1, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i"), DUContextPointer(top));
     QVERIFY(res.type());
     QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier("A"));
@@ -69,7 +69,7 @@ void TestExpressionParser::memberVariable()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    ExpressionParser p(false, true);
+    ExpressionParser p(1, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i->foo"), DUContextPointer(top));
     QVERIFY(res.type());
     QCOMPARE(res.allDeclarations().count(), 1);
@@ -86,7 +86,7 @@ void TestExpressionParser::memberFunction()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    ExpressionParser p(false, true);
+    ExpressionParser p(1, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i->foo"), DUContextPointer(top));
     QVERIFY(res.type());
     QVERIFY(FunctionType::Ptr::dynamicCast(res.type()));
@@ -102,7 +102,7 @@ void TestExpressionParser::globalFunction()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    ExpressionParser p(false, true);
+    ExpressionParser p(1, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("foo"), DUContextPointer(top));
     QVERIFY(res.type());
     QVERIFY(FunctionType::Ptr::dynamicCast(res.type()));
@@ -124,7 +124,7 @@ void TestExpressionParser::chainCall()
     QVERIFY(fn);
     QVERIFY(fn->returnType()->equals(top->localDeclarations().first()->abstractType().unsafeData()));
 
-    ExpressionParser p(false, true);
+    ExpressionParser p(1, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$a->foo()"), DUContextPointer(top));
     QVERIFY(res.type());
     QVERIFY(res.type()->equals(top->localDeclarations().first()->abstractType().unsafeData()));
@@ -144,7 +144,7 @@ void TestExpressionParser::thisObject()
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
-    ExpressionParser p(false, true);
+    ExpressionParser p(1, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$this"), DUContextPointer(funContext));
     QCOMPARE(res.allDeclarations().count(), 1);
     QCOMPARE(res.allDeclarations().first(), top->localDeclarations().first());
@@ -163,7 +163,7 @@ void TestExpressionParser::integralTypes()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    ExpressionParser p(false, true);
+    ExpressionParser p(1, true);
 
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("123"), DUContextPointer(top));
     QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
@@ -212,7 +212,7 @@ void TestExpressionParser::newObject()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    ExpressionParser p(false, true);
+    ExpressionParser p(1, true);
 
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("new A();"), DUContextPointer(top));
     QVERIFY(StructureType::Ptr::dynamicCast(res.type()));
@@ -229,7 +229,7 @@ void TestExpressionParser::cast()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    ExpressionParser p(false, true);
+    ExpressionParser p(1, true);
 
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("(string)$foo"), DUContextPointer(top));
     QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
@@ -266,7 +266,7 @@ void TestExpressionParser::operations()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    ExpressionParser p(false, true);
+    ExpressionParser p(1, true);
 
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("'1' . '1'"), DUContextPointer(top));
     QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
