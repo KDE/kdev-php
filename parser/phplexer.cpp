@@ -706,7 +706,7 @@ int Lexer::nextTokenKind()
             token = Parser::Token_LBRACKET;
             pushState(StringVariableBracket);
         } else if (state() != StringVariable && it->unicode() == '{' && (it + 1)->unicode() == '$'
-                   && (isValidVariableIdentifier(it + 2) && !(it + 2)->isDigit() || (it + 2)->unicode() == '{')) {
+                   && ((isValidVariableIdentifier(it + 2) && !(it + 2)->isDigit()) || (it + 2)->unicode() == '{')) {
             token = Parser::Token_CURLY_OPEN;
             pushState(StringVariableCurly);
         } else if (state() == StringVariable
@@ -722,9 +722,9 @@ int Lexer::nextTokenKind()
             while (m_curpos < m_contentSize) {
 
                 if (!isEscapedWithBackslash(it, m_curpos, startPos) &&
-                        (it->unicode() == '$' && (it + 1)->unicode() == '{' ||
-                         it->unicode() == '{' && (it + 1)->unicode() == '$' ||
-                         it->unicode() == '$' && isValidVariableIdentifier(it + 1) && !(it + 1)->isDigit())) {
+                        ((it->unicode() == '$' && (it + 1)->unicode() == '{') ||
+                         (it->unicode() == '{' && (it + 1)->unicode() == '$') ||
+                         (it->unicode() == '$' && isValidVariableIdentifier(it + 1) && !(it + 1)->isDigit()))) {
                     //variable is next ${var} or {$var}
                     break;
                 }
