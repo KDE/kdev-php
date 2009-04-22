@@ -118,6 +118,7 @@ bool DeclarationBuilder::isBaseMethodRedeclaration(const Identifier &identifier,
     while (curClass->baseClassesSize() > 0) {
         StructureType::Ptr type;
         FOREACH_FUNCTION(BaseClassInstance base, curClass->baseClasses) {
+            DUChainReadLocker lock(DUChain::lock());
             type = base.baseClass.type<StructureType>();
             if (!type) {
                 continue;
