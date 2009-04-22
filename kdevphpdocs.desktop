@@ -1,0 +1,16 @@
+[Desktop Entry]
+Type=Service
+Exec=blubb
+Comment=This plugin integrates PHP.net online documentation
+Name=KDevPhpDocs
+GenericName=PHP Documentation
+ServiceTypes=KDevelop/Plugin
+
+X-KDE-Library=kdevphpdocs
+X-KDevelop-Version=6
+X-KDevelop-Category=Global
+X-KDE-PluginInfo-Name=KDevPhpDocs
+X-KDE-PluginInfo-Author=Milian Wolff
+X-KDE-PluginInfo-License=GPL
+X-KDevelop-Mode=GUI
+X-KDevelop-Interfaces=org.kdevelop.IDocumentationProvider
