@@ -422,9 +422,13 @@ void CodeCompletionContext::forbidIdentifier(ClassDeclaration* klass)
         FOREACH_FUNCTION(const BaseClassInstance& base, klass->baseClasses) {
             StructureType::Ptr type = base.baseClass.type<StructureType>();
             if (! type.isNull()) {
-                ClassDeclaration* parent = dynamic_cast<ClassDeclaration*>(
+                ClassDeclaration* parent;
+                {
+                    LOCKDUCHAIN;
+                    parent = dynamic_cast<ClassDeclaration*>(
                                                type->declaration(m_duContext->topContext())
                                            );
+                }
                 if (parent) {
                     forbidIdentifier(parent);
                 }
