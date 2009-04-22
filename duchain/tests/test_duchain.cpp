@@ -1421,6 +1421,74 @@ void TestDUChain::testResourceType()
     QVERIFY(rtype->dataType() == IntegralTypeExtended::TypeResource);
 }
 
+void TestDUChain::testForeachIterator()
+{
+    QByteArray code;
+    code.append("<? class B {} class A implements Iterator {");
+    code.append("public function rewind() {} ");
+    code.append("/**\n * @return B\n */public function current() {} ");
+    code.append("public function key() {} ");
+    code.append("public function next() {} ");
+    code.append("public function valid() {} ");
+    code.append("} ");
+    code.append("$a = new A();");
+    code.append("foreach($a as $i) { $i; }");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* iDec = top->localDeclarations().at(3);
+    QCOMPARE(iDec->qualifiedIdentifier(), QualifiedIdentifier("i"));
+    QVERIFY(iDec->type<StructureType>());
+    QCOMPARE(iDec->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
+    QVERIFY(top->localDeclarations().first() == iDec->type<StructureType>()->declaration(top));
+}
+
+void TestDUChain::testForeachIterator2()
+{
+    QByteArray code;
+    code.append("<? class B {} class A implements Iterator {");
+    code.append("public function rewind() {} ");
+    code.append("/**\n * @return B\n */public function current() {} ");
+    code.append("public function key() {} ");
+    code.append("public function next() {} ");
+    code.append("public function valid() {} ");
+    code.append("} ");
+    code.append("foreach(new A() as $i) { $i; }");  //TODO: same test with foreach(new A())
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* iDec = top->localDeclarations().at(2);
+    QCOMPARE(iDec->qualifiedIdentifier(), QualifiedIdentifier("i"));
+    kDebug() << iDec->abstractType()->toString();
+    QVERIFY(iDec->type<StructureType>());
+    QCOMPARE(iDec->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
+    QVERIFY(top->localDeclarations().first() == iDec->type<StructureType>()->declaration(top));
+}
+
+void TestDUChain::testForeachIterator3()
+{
+    QByteArray code;
+    code.append("<? class B {} class A implements Iterator {");
+    code.append("public function rewind() {} ");
+    code.append("/**\n * @return B\n */public function current() {} ");
+    code.append("public function key() {} ");
+    code.append("public function next() {} ");
+    code.append("public function valid() {} ");
+    code.append("} ");
+    code.append("class C extends A { }");
+    code.append("foreach(new C() as $i) { $i; }");  //TODO: same test with foreach(new A())
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* iDec = top->localDeclarations().at(3);
+    QCOMPARE(iDec->qualifiedIdentifier(), QualifiedIdentifier("i"));
+    QVERIFY(iDec->type<StructureType>());
+    QCOMPARE(iDec->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
+    QVERIFY(top->localDeclarations().first() == iDec->type<StructureType>()->declaration(top));
+}
 }
 
 #include "test_duchain.moc"

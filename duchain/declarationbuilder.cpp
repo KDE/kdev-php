@@ -39,6 +39,7 @@
 #include "constantdeclaration.h"
 #include "variabledeclaration.h"
 #include "classmethoddeclaration.h"
+#include "expressionvisitor.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -523,13 +524,17 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
 void DeclarationBuilder::visitStatement(StatementAst* node)
 {
     DeclarationBuilderBase::visitStatement(node);
-
-    if (node->foreachExprAsVar) {
+{
+    DUChainWriteLocker lock(DUChain::lock());
+}
+    if (node->foreachVariable) {
         DUChainWriteLocker lock(DUChain::lock());
-        SimpleRange newRange = editorFindRange(node->foreachExprAsVar, node->foreachExprAsVar);
-        openDefinition<VariableDeclaration>(identifierForNode(node->foreachExprAsVar), newRange);
+        SimpleRange newRange = editorFindRange(node->foreachVariable->variable, node->foreachVariable->variable);
+        openDefinition<VariableDeclaration>(identifierForNode(node->foreachVariable->variable), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
         closeDeclaration();
+
+        clearLastType();
     }
 
     if (node->foreachVarAsVar) {
@@ -540,10 +545,10 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
         closeDeclaration();
     }
 
-    if (node->foreachVariable) {
+    if (node->foreachExprAsVar) {
         DUChainWriteLocker lock(DUChain::lock());
-        SimpleRange newRange = editorFindRange(node->foreachVariable->variable, node->foreachVariable->variable);
-        openDefinition<VariableDeclaration>(identifierForNode(node->foreachVariable->variable), newRange);
+        SimpleRange newRange = editorFindRange(node->foreachExprAsVar, node->foreachExprAsVar);
+        openDefinition<VariableDeclaration>(identifierForNode(node->foreachExprAsVar), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
         closeDeclaration();
     }

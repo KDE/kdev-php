@@ -52,6 +52,7 @@ void DUChainTestBase::initTestCase()
     DUChain::self()->disablePersistentStorage();
 
     QByteArray content("<?php function define() {} function substr() {} class stdClass {}\n/**\n * @superglobal\n **/\n$_GET = array();\nclass Exception {} interface testInterface {} ");
+    content.append("interface Iterator { function rewind(); function current(); function key(); function next(); function valid(); } ");
     parseAdditionalFile(IndexedString("internalfunctions"), content);
 }
 

@@ -91,6 +91,9 @@ private slots:
     void testMemberTypeAfterMethod();
     void testCatchDeclaration();
     void testResourceType();
+    void testForeachIterator();
+    void testForeachIterator2();
+    void testForeachIterator3();
 };
 
 }

@@ -28,12 +28,15 @@
 #include <language/duchain/ducontext.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/types/integraltype.h>
+#include <language/duchain/classdeclaration.h>
 #include "integraltypeextended.h"
 
 #include "editorintegrator.h"
 #include "parsesession.h"
 #include "phpdebugvisitor.h"
 #include "expressionparser.h"
+#include "expressionvisitor.h"
+#include "classmethoddeclaration.h"
 
 using namespace KDevelop;
 namespace Php
@@ -277,6 +280,33 @@ void TypeBuilder::visitStatement(StatementAst* node)
             && (!currentType<FunctionType>()->returnType()
                 || IntegralType::Ptr::dynamicCast(currentType<FunctionType>()->returnType()))) {
         currentType<FunctionType>()->setReturnType(lastType());
+    }
+
+    AstNode *foreachNode = 0;
+    if (node->foreachVar) {
+        foreachNode = node->foreachVar;
+    } else if (node->foreachExpr) {
+        foreachNode = node->foreachExpr;
+    }
+    if (foreachNode) {
+        ExpressionVisitor v(editor(), true);
+        foreachNode->ducontext = currentContext();
+        v.visitNode(foreachNode);
+        DUChainReadLocker lock(DUChain::lock());
+        if (StructureType::Ptr type = StructureType::Ptr::dynamicCast(v.result().type())) {
+            ClassDeclaration *classDec = dynamic_cast<ClassDeclaration*>(type->declaration(currentContext()->topContext()));
+            Q_ASSERT(classDec);
+            Declaration* iteratorDecl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier("Iterator"), 0);
+            Q_ASSERT(iteratorDecl);
+            if (classDec->context()->imports(iteratorDecl->context())) {
+                foreach (Declaration *d, classDec->internalContext()->findDeclarations(QualifiedIdentifier("current"))) {
+                    if (!dynamic_cast<ClassMethodDeclaration*>(d)) continue;
+                    Q_ASSERT(d->type<FunctionType>());
+                    injectType(d->type<FunctionType>()->returnType());
+                    kDebug() << "that's it: " << d->type<FunctionType>()->returnType()->toString();
+                }
+            }
+        }
     }
 }
 
