@@ -91,7 +91,15 @@ AbstractType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& doc
     if (!docComment.isEmpty()) {
         QRegExp rx("\\*\\s+@" + QRegExp::escape(docCommentName) + "\\s([^\\s]*)");
         if (rx.indexIn(docComment) != -1) {
-            AbstractType::Ptr type = parseType(rx.cap(1), node);
+            AbstractType::Ptr type;
+            if (rx.cap(1) == "$this") {
+                DUChainReadLocker lock(DUChain::lock());
+                if (currentContext()->owner()) {
+                    type = currentContext()->owner()->abstractType();
+                }
+            } else {
+                type = parseType(rx.cap(1), node);
+            }
             if (type) {
                 m_gotTypeFromDocComment = true;
             }

@@ -1454,7 +1454,7 @@ void TestDUChain::testForeachIterator2()
     code.append("public function next() {} ");
     code.append("public function valid() {} ");
     code.append("} ");
-    code.append("foreach(new A() as $i) { $i; }");  //TODO: same test with foreach(new A())
+    code.append("foreach(new A() as $i) { $i; }");
     TopDUContext* top = parse(code, DumpAST);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
@@ -1478,7 +1478,7 @@ void TestDUChain::testForeachIterator3()
     code.append("public function valid() {} ");
     code.append("} ");
     code.append("class C extends A { }");
-    code.append("foreach(new C() as $i) { $i; }");  //TODO: same test with foreach(new A())
+    code.append("foreach(new C() as $i) { $i; }");
     TopDUContext* top = parse(code, DumpAST);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
@@ -1489,6 +1489,22 @@ void TestDUChain::testForeachIterator3()
     QCOMPARE(iDec->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("B"));
     QVERIFY(top->localDeclarations().first() == iDec->type<StructureType>()->declaration(top));
 }
+
+void TestDUChain::testReturnThis()
+{
+    QByteArray code("<? class A { \n/**\n * @return $this\n */\npublic function x() {} } ");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* dec = top->childContexts().first()->localDeclarations().first();
+    QVERIFY(dec->type<FunctionType>());
+    AbstractType::Ptr t = dec->type<FunctionType>()->returnType();
+    kDebug() << t->toString();
+    QVERIFY(StructureType::Ptr::dynamicCast(t));
+    QVERIFY(StructureType::Ptr::dynamicCast(t)->declaration(top) == top->localDeclarations().first());
+}
+
 }
 
 #include "test_duchain.moc"

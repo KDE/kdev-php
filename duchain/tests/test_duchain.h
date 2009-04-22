@@ -94,6 +94,7 @@ private slots:
     void testForeachIterator();
     void testForeachIterator2();
     void testForeachIterator3();
+    void testReturnThis();
 };
 
 }
