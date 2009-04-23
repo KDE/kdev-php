@@ -50,7 +50,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
     QString lType = type.toLower();
     if (lType == "int" || lType == "integer") {
         iType = IntegralType::TypeInt;
-    } else if (lType == "float") {
+    } else if (lType == "float" || lType == "double") {
         iType = IntegralType::TypeFloat;
     } else if (lType == "bool" || lType == "boolean" || lType == "false" || lType == "true") {
         iType = IntegralType::TypeBoolean;
