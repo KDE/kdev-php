@@ -813,8 +813,8 @@ void TestDUChain::testGlobalFunction()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->importedParentContexts().count(), 1);
-    QVERIFY(DUChain::self()->chainForDocument(IndexedString("internalfunctions")));
-    QCOMPARE(DUChain::self()->chainForDocument(IndexedString("internalfunctions")), top->importedParentContexts().first().context(top));
+    QVERIFY(DUChain::self()->chainForDocument(IndexedString("PHPInternalFunctions")));
+    QCOMPARE(DUChain::self()->chainForDocument(IndexedString("PHPInternalFunctions")), top->importedParentContexts().first().context(top));
 
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("substr")).count(), 1);
 }
@@ -830,8 +830,8 @@ void TestDUChain::testGlobalVariableFromInternalFunctions()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->importedParentContexts().count(), 1);
-    QVERIFY(DUChain::self()->chainForDocument(IndexedString("internalfunctions")));
-    QCOMPARE(DUChain::self()->chainForDocument(IndexedString("internalfunctions")), top->importedParentContexts().first().context(top));
+    QVERIFY(DUChain::self()->chainForDocument(IndexedString("PHPInternalFunctions")));
+    QCOMPARE(DUChain::self()->chainForDocument(IndexedString("PHPInternalFunctions")), top->importedParentContexts().first().context(top));
 
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("_GET")).count(), 1);
 }

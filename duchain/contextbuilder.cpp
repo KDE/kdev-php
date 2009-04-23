@@ -46,7 +46,7 @@ ContextBuilder::ContextBuilder() : m_reportErrors(true)
 ReferencedTopDUContext ContextBuilder::build(const KDevelop::IndexedString& url, AstNode* node,
         KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
 {
-    m_reportErrors = (url != IndexedString("internalfunctions"));
+    m_reportErrors = (url != IndexedString("PHPInternalFunctions"));
     if (!updateContext) {
         DUChainReadLocker lock(DUChain::lock());
         updateContext = DUChain::self()->chainForDocument(url);
@@ -93,9 +93,9 @@ void ContextBuilder::startVisiting(AstNode* node)
         DUChainReadLocker lock(DUChain::lock());
         hasImports = !top->importedParentContexts().isEmpty();
     }
-    if (!hasImports && top->url() != IndexedString("internalfunctions")) {
+    if (!hasImports && top->url() != IndexedString("PHPInternalFunctions")) {
         DUChainWriteLocker lock(DUChain::lock());
-        TopDUContext* import = DUChain::self()->chainForDocument(IndexedString("internalfunctions"));
+        TopDUContext* import = DUChain::self()->chainForDocument(IndexedString("PHPInternalFunctions"));
         if (!import) {
             kWarning() << "importing internalFunctions failed" << currentContext()->url().str();
         } else {

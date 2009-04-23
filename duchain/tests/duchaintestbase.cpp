@@ -53,7 +53,7 @@ void DUChainTestBase::initTestCase()
 
     QByteArray content("<?php function define() {} function substr() {} class stdClass {}\n/**\n * @superglobal\n **/\n$_GET = array();\nclass Exception {} interface testInterface {} ");
     content.append("interface Iterator { function rewind(); function current(); function key(); function next(); function valid(); } ");
-    parseAdditionalFile(IndexedString("internalfunctions"), content);
+    parseAdditionalFile(IndexedString("PHPInternalFunctions"), content);
 }
 
 CompletionTreeItemPointer DUChainTestBase::searchDeclaration(QList<CompletionTreeItemPointer> items, Declaration* declaration)

@@ -90,15 +90,15 @@ bool ParseJob::wasReadFromDisk() const
 
 void ParseJob::run()
 {
-    if (document() != IndexedString("internalfunctions") && !m_parentJob) {
+    if (document() != IndexedString("PHPInternalFunctions") && !m_parentJob) {
         QMutexLocker lock(&internalFunctionParseMutex);
         TopDUContext *top = 0;
         {
             DUChainReadLocker lock(DUChain::lock());
-            top = DUChain::self()->chainForDocument(IndexedString("internalfunctions"));
+            top = DUChain::self()->chainForDocument(IndexedString("PHPInternalFunctions"));
         }
         if (!top) {
-            ParseJob job(KUrl(IndexedString("internalfunctions").str()));
+            ParseJob job(KUrl(IndexedString("PHPInternalFunctions").str()));
             job.run();
         }
     }
@@ -126,7 +126,7 @@ void ParseJob::run()
 
     if (m_readFromDisk) {
         QString fileName = document().str();
-        if (fileName == "internalfunctions") {
+        if (fileName == "PHPInternalFunctions") {
             fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
         }
         QFile file(fileName);
