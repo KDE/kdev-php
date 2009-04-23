@@ -47,26 +47,27 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
 {
     uint iType = 0;
     type = type.trimmed();
-    if (type == "int" || type == "integer") {
+    QString lType = type.toLower();
+    if (lType == "int" || lType == "integer") {
         iType = IntegralType::TypeInt;
-    } else if (type == "float") {
+    } else if (lType == "float") {
         iType = IntegralType::TypeFloat;
-    } else if (type == "bool" || type == "boolean" || type == "false" || type == "true") {
+    } else if (lType == "bool" || lType == "boolean" || lType == "false" || lType == "true") {
         iType = IntegralType::TypeBoolean;
-    } else if (type == "string") {
+    } else if (lType == "string") {
         iType = IntegralType::TypeString;
-    } else if (type == "mixed") {
+    } else if (lType == "mixed") {
         iType = IntegralType::TypeMixed;
-    } else if (type == "array") {
+    } else if (lType == "array") {
         iType = IntegralType::TypeArray;
-    } else if (type == "resource") {
+    } else if (lType == "resource") {
         return AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeResource));
-    } else if (type == "object") {
+    } else if (lType == "object") {
         //TODO
         iType = IntegralType::TypeMixed;
-    } else if (type == "null") {
+    } else if (lType == "null") {
         iType = IntegralType::TypeNull;
-    } else if (type == "void") {
+    } else if (lType == "void") {
         iType = IntegralType::TypeVoid;
     } else {
         //don't use openTypeFromName as it uses cursor for findDeclarations
