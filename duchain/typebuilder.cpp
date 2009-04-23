@@ -37,6 +37,7 @@
 #include "expressionparser.h"
 #include "expressionvisitor.h"
 #include "classmethoddeclaration.h"
+#include <language/duchain/types/unsuretype.h>
 
 using namespace KDevelop;
 namespace Php
@@ -59,9 +60,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
     } else if (type == "array") {
         iType = IntegralType::TypeArray;
     } else if (type == "resource") {
-        AbstractType::Ptr ret(new IntegralTypeExtended(IntegralTypeExtended::TypeResource));
-        injectType(ret);
-        return ret;
+        return AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeResource));
     } else if (type == "object") {
         //TODO
         iType = IntegralType::TypeMixed;
@@ -73,12 +72,35 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         //don't use openTypeFromName as it uses cursor for findDeclarations
         Declaration* decl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier(type), node);
         if (decl && decl->abstractType()) {
-            injectType(decl->abstractType());
             return decl->abstractType();
+        }
+        if (type.contains('|')) {
+            QList<AbstractType::Ptr> types;
+            foreach (const QString& t, type.split('|')) {
+                AbstractType::Ptr subType = parseType(t, node);
+                if (!(IntegralType::Ptr::dynamicCast(subType) && IntegralType::Ptr::staticCast(subType)->dataType() == IntegralType::TypeMixed)) {
+                    types << parseType(t, node);
+                }
+            }
+            if (!type.isEmpty()) {
+                UnsureType::Ptr ret(new UnsureType());
+                foreach (const AbstractType::Ptr& t, types) {
+                    ret->addType(t->indexed());
+                }
+                //kDebug() << type << ret->toString();
+                return AbstractType::Ptr::staticCast(ret);
+            }
         }
         iType = IntegralType::TypeMixed;
     }
     AbstractType::Ptr ret(new IntegralType(iType));
+    //kDebug() << type << ret->toString();
+    return ret;
+}
+
+AbstractType::Ptr TypeBuilder::injectParseType(QString type, AstNode* node)
+{
+    AbstractType::Ptr ret = parseType(type, node);
     injectType(ret);
     //kDebug() << type << ret->toString();
     return ret;
@@ -98,7 +120,7 @@ AbstractType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& doc
                     type = currentContext()->owner()->abstractType();
                 }
             } else {
-                type = parseType(rx.cap(1), node);
+                type = injectParseType(rx.cap(1), node);
             }
             if (type) {
                 m_gotTypeFromDocComment = true;

@@ -30,6 +30,7 @@
 #include <language/duchain/types/structuretype.h>
 #include <language/duchain/types/integraltype.h>
 #include <language/duchain/classdeclaration.h>
+#include <language/duchain/types/unsuretype.h>
 
 #include "integraltypeextended.h"
 
@@ -1504,6 +1505,27 @@ void TestDUChain::testReturnThis()
     QVERIFY(StructureType::Ptr::dynamicCast(t));
     QVERIFY(StructureType::Ptr::dynamicCast(t)->declaration(top) == top->localDeclarations().first());
 }
+
+void TestDUChain::testUnsureReturnType()
+{
+    QByteArray code("<? /**\n * @return bool|int\n */\nfunction x() {} ");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* dec = top->localDeclarations().first();
+    QVERIFY(dec->type<FunctionType>());
+    TypePtr<UnsureType> t = dec->type<FunctionType>()->returnType().cast<UnsureType>();
+    kDebug() << t->toString();
+    UnsureType::Ptr ut = UnsureType::Ptr::dynamicCast(t);
+    QVERIFY(ut);
+    QCOMPARE((uint)2, ut->typesSize());
+    QVERIFY(ut->types()[0].type<IntegralType>());
+    QVERIFY(ut->types()[0].type<IntegralType>()->dataType() == IntegralType::TypeBoolean);
+    QVERIFY(ut->types()[1].type<IntegralType>());
+    QVERIFY(ut->types()[1].type<IntegralType>()->dataType() == IntegralType::TypeInt);
+}
+
 
 }
 
