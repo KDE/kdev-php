@@ -38,8 +38,9 @@ namespace Php
 {
 
 ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor)
-        : m_editor(editor), m_currentContext(0), m_isAssignmentExpressionEqual(false),
-          m_lineOffset(0), m_createProblems(false)
+        : m_editor(editor), m_createProblems(false),
+          m_lineOffset(0), m_currentContext(0),
+          m_isAssignmentExpressionEqual(false)
 {
 }
 
