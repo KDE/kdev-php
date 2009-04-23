@@ -30,7 +30,7 @@ namespace Php
 REGISTER_TYPE(IntegralTypeExtended);
 
 IntegralTypeExtended::IntegralTypeExtended(const IntegralTypeExtended& rhs)
-  : IntegralType(copyData<IntegralTypeExtendedData>(*rhs.d_func()))
+  : IntegralType(copyData<IntegralTypeExtended>(*rhs.d_func()))
 {
 }
 
@@ -40,9 +40,8 @@ IntegralTypeExtended::IntegralTypeExtended(IntegralTypeExtendedData& data)
 }
 
 IntegralTypeExtended::IntegralTypeExtended(uint type)
-  : IntegralType(createData<IntegralTypeExtendedData>())
+  : IntegralType(createData<IntegralTypeExtended>())
 {
-  d_func_dynamic()->setTypeClassId<IntegralTypeExtended>();
   setDataType(type);
   setModifiers(ConstModifier);
 }
