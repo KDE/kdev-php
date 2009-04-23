@@ -1562,6 +1562,24 @@ void TestDUChain::testUnsureReturnType3()
     QVERIFY(ut->types()[1].type<IntegralType>()->dataType() == IntegralType::TypeBoolean);
 }
 
+void TestDUChain::testUnsureReturnType4()
+{
+    QByteArray code("<? \n/**\n * @param bool|int\n */\nfunction x($a) { return $a; } ");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* dec = top->localDeclarations().first();
+    QVERIFY(dec->type<FunctionType>());
+    TypePtr<UnsureType> ut = dec->type<FunctionType>()->returnType().cast<UnsureType>();
+    QVERIFY(ut);
+    QCOMPARE((uint)2, ut->typesSize());
+    QVERIFY(ut->types()[0].type<IntegralType>());
+    QVERIFY(ut->types()[0].type<IntegralType>()->dataType() == IntegralType::TypeBoolean);
+    QVERIFY(ut->types()[1].type<IntegralType>());
+    QVERIFY(ut->types()[1].type<IntegralType>()->dataType() == IntegralType::TypeInt);
+}
+
 }
 
 #include "test_duchain.moc"

@@ -98,6 +98,7 @@ private slots:
     void testUnsureReturnType();
     void testUnsureReturnType2();
     void testUnsureReturnType3();
+    void testUnsureReturnType4();
 };
 
 }
