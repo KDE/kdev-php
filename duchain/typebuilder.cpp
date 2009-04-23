@@ -51,7 +51,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         iType = IntegralType::TypeInt;
     } else if (type == "float") {
         iType = IntegralType::TypeFloat;
-    } else if (type == "bool" || type == "boolean") {
+    } else if (type == "bool" || type == "boolean" || type == "false" || type == "true") {
         iType = IntegralType::TypeBoolean;
     } else if (type == "string") {
         iType = IntegralType::TypeString;
