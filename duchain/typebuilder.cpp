@@ -310,7 +310,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
     if (node->returnExpr && lastType() && hasCurrentType() && currentType<FunctionType>())
     {
         FunctionType::Ptr ft = currentType<FunctionType>();
-        kDebug() << lastType()->toString();
+        kDebug() << "return" << (ft->returnType() ? ft->returnType()->toString() : "none") << lastType()->toString();
         if (ft->returnType()) {
             if (ft->returnType().cast<IntegralType>()
                 && ft->returnType().cast<IntegralType>()->dataType() == IntegralType::TypeMixed)
@@ -318,17 +318,20 @@ void TypeBuilder::visitStatement(StatementAst* node)
                 //don't add TypeMixed to the list, just ignore
                 ft->setReturnType(lastType());
             } else {
+                UnsureType::Ptr retT;
                 if (ft->returnType().cast<UnsureType>()) {
-                    //we already have an unsure type
+                    //kDebug() << "we already have an unsure type";
+                    retT = ft->returnType().cast<UnsureType>();
                     if (lastType().cast<UnsureType>()) {
+                        //kDebug() << "add multiple to returnType";
                         FOREACH_FUNCTION(const IndexedType& t, lastType().cast<UnsureType>()->types) {
-                            ft->returnType().cast<UnsureType>()->addType(t);
+                            retT->addType(t);
                         }
                     } else {
-                        ft->returnType().cast<UnsureType>()->addType(lastType()->indexed());
+                        //kDebug() << "add to returnType";
+                        retT->addType(lastType()->indexed());
                     }
                 } else {
-                    UnsureType::Ptr retT;
                     if (lastType().cast<UnsureType>()) {
                         retT = lastType().cast<UnsureType>();
                     } else {
@@ -336,8 +339,8 @@ void TypeBuilder::visitStatement(StatementAst* node)
                         retT->addType(lastType()->indexed());
                     }
                     retT->addType(ft->returnType()->indexed());
-                    ft->setReturnType(AbstractType::Ptr::staticCast(retT));
                 }
+                ft->setReturnType(AbstractType::Ptr::staticCast(retT));
             }
         } else {
             ft->setReturnType(lastType());

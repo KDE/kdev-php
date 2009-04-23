@@ -1545,7 +1545,7 @@ void TestDUChain::testUnsureReturnType2()
 
 void TestDUChain::testUnsureReturnType3()
 {
-    QByteArray code("<? function x() { if(rand(0,1)) return false; else return 1; } ");
+    QByteArray code("<? function x() { if(rand(0,1)) return false; else return 1; return \"a\"; } ");
     TopDUContext* top = parse(code, DumpAST);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
@@ -1555,11 +1555,13 @@ void TestDUChain::testUnsureReturnType3()
     kDebug() << dec->type<FunctionType>()->returnType()->toString();
     TypePtr<UnsureType> ut = dec->type<FunctionType>()->returnType().cast<UnsureType>();
     QVERIFY(ut);
-    QCOMPARE((uint)2, ut->typesSize());
+    QCOMPARE((uint)3, ut->typesSize());
     QVERIFY(ut->types()[0].type<IntegralType>());
     QVERIFY(ut->types()[0].type<IntegralType>()->dataType() == IntegralType::TypeInt);
     QVERIFY(ut->types()[1].type<IntegralType>());
     QVERIFY(ut->types()[1].type<IntegralType>()->dataType() == IntegralType::TypeBoolean);
+    QVERIFY(ut->types()[2].type<IntegralType>());
+    QVERIFY(ut->types()[2].type<IntegralType>()->dataType() == IntegralType::TypeString);
 }
 
 void TestDUChain::testUnsureReturnType4()
