@@ -116,6 +116,7 @@ ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, C
 bool DeclarationBuilder::isBaseMethodRedeclaration(const Identifier &identifier, ClassDeclaration *curClass,
         ClassStatementAst *node)
 {
+    DUChainWriteLocker lock(DUChain::lock());
     while (curClass->baseClassesSize() > 0) {
         StructureType::Ptr type;
         FOREACH_FUNCTION(BaseClassInstance base, curClass->baseClasses) {
@@ -136,7 +137,6 @@ bool DeclarationBuilder::isBaseMethodRedeclaration(const Identifier &identifier,
             break;
         }
         {
-            DUChainWriteLocker lock(DUChain::lock());
             if (!type->internalContext(currentContext()->topContext())) {
                 continue;
             }
