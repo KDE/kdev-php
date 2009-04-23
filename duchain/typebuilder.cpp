@@ -306,10 +306,41 @@ void TypeBuilder::visitStaticVar(StaticVarAst *node)
 void TypeBuilder::visitStatement(StatementAst* node)
 {
     TypeBuilderBase::visitStatement(node);
-    if (node->returnExpr && lastType() && hasCurrentType() && currentType<FunctionType>()
-            && (!currentType<FunctionType>()->returnType()
-                || IntegralType::Ptr::dynamicCast(currentType<FunctionType>()->returnType()))) {
-        currentType<FunctionType>()->setReturnType(lastType());
+    if (node->returnExpr && lastType() && hasCurrentType() && currentType<FunctionType>())
+    {
+        FunctionType::Ptr ft = currentType<FunctionType>();
+        kDebug() << lastType()->toString();
+        if (ft->returnType()) {
+            if (ft->returnType().cast<IntegralType>()
+                && ft->returnType().cast<IntegralType>()->dataType() == IntegralType::TypeMixed)
+            {
+                //don't add TypeMixed to the list, just ignore
+                ft->setReturnType(lastType());
+            } else {
+                if (ft->returnType().cast<UnsureType>()) {
+                    //we already have an unsure type
+                    if (lastType().cast<UnsureType>()) {
+                        FOREACH_FUNCTION(const IndexedType& t, lastType().cast<UnsureType>()->types) {
+                            ft->returnType().cast<UnsureType>()->addType(t);
+                        }
+                    } else {
+                        ft->returnType().cast<UnsureType>()->addType(lastType()->indexed());
+                    }
+                } else {
+                    UnsureType::Ptr retT;
+                    if (lastType().cast<UnsureType>()) {
+                        retT = lastType().cast<UnsureType>();
+                    } else {
+                        retT = new UnsureType();
+                        retT->addType(lastType()->indexed());
+                    }
+                    retT->addType(ft->returnType()->indexed());
+                    ft->setReturnType(AbstractType::Ptr::staticCast(retT));
+                }
+            }
+        } else {
+            ft->setReturnType(lastType());
+        }
     }
 
     AstNode *foreachNode = 0;

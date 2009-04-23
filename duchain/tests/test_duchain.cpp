@@ -1515,9 +1515,7 @@ void TestDUChain::testUnsureReturnType()
 
     Declaration* dec = top->localDeclarations().first();
     QVERIFY(dec->type<FunctionType>());
-    TypePtr<UnsureType> t = dec->type<FunctionType>()->returnType().cast<UnsureType>();
-    kDebug() << t->toString();
-    UnsureType::Ptr ut = UnsureType::Ptr::dynamicCast(t);
+    TypePtr<UnsureType> ut = dec->type<FunctionType>()->returnType().cast<UnsureType>();
     QVERIFY(ut);
     QCOMPARE((uint)2, ut->typesSize());
     QVERIFY(ut->types()[0].type<IntegralType>());
@@ -1536,9 +1534,7 @@ void TestDUChain::testUnsureReturnType2()
 
     Declaration* dec = top->localDeclarations().at(2);
     QVERIFY(dec->type<FunctionType>());
-    TypePtr<UnsureType> t = dec->type<FunctionType>()->returnType().cast<UnsureType>();
-    kDebug() << t->toString();
-    UnsureType::Ptr ut = UnsureType::Ptr::dynamicCast(t);
+    TypePtr<UnsureType> ut = dec->type<FunctionType>()->returnType().cast<UnsureType>();
     QVERIFY(ut);
     QCOMPARE((uint)2, ut->typesSize());
     QVERIFY(ut->types()[0].type<StructureType>());
@@ -1546,6 +1542,26 @@ void TestDUChain::testUnsureReturnType2()
     QVERIFY(ut->types()[1].type<StructureType>());
     QCOMPARE(ut->types()[1].type<StructureType>()->toString(), QString("B"));
 }
+
+void TestDUChain::testUnsureReturnType3()
+{
+    QByteArray code("<? function x() { if(rand(0,1)) return false; else return 1; } ");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* dec = top->localDeclarations().at(0);
+    QVERIFY(dec->type<FunctionType>());
+    kDebug() << dec->type<FunctionType>()->returnType()->toString();
+    TypePtr<UnsureType> ut = dec->type<FunctionType>()->returnType().cast<UnsureType>();
+    QVERIFY(ut);
+    QCOMPARE((uint)2, ut->typesSize());
+    QVERIFY(ut->types()[0].type<IntegralType>());
+    QVERIFY(ut->types()[0].type<IntegralType>()->dataType() == IntegralType::TypeInt);
+    QVERIFY(ut->types()[1].type<IntegralType>());
+    QVERIFY(ut->types()[1].type<IntegralType>()->dataType() == IntegralType::TypeBoolean);
+}
+
 }
 
 #include "test_duchain.moc"
