@@ -48,6 +48,7 @@
 #include <interfaces/iprojectcontroller.h>
 #include <interfaces/iproject.h>
 #include <project/projectmodel.h>
+#include <language/duchain/types/unsuretype.h>
 
 #define LOCKDUCHAIN     DUChainReadLocker lock(DUChain::lock())
 
@@ -475,9 +476,17 @@ CodeCompletionContext* CodeCompletionContext::parentContext()
 QList<DUContext*> CodeCompletionContext::memberAccessContainers() const
 {
     QList<DUContext*> ret;
-    foreach(DeclarationId declarationId, m_expressionResult.allDeclarationIds()) {
-        AbstractType::Ptr expressionTarget = m_expressionResult.type();
-        const IdentifiedType* idType = dynamic_cast<const IdentifiedType*>(expressionTarget.unsafeData());
+    QList<AbstractType::Ptr> types;
+    AbstractType::Ptr expressionTarget = m_expressionResult.type();
+    if (expressionTarget.cast<UnsureType>()) {
+        FOREACH_FUNCTION(const IndexedType& t, expressionTarget.cast<UnsureType>()->types) {
+            types << t.abstractType();
+        }
+    } else {
+        types << expressionTarget;
+    }
+    foreach (const AbstractType::Ptr &type, types) {
+        const IdentifiedType* idType = dynamic_cast<const IdentifiedType*>(type.unsafeData());
         Declaration* declaration = 0;
         if (idType) {
             declaration = idType->declaration(m_duContext->topContext());

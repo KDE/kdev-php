@@ -782,6 +782,25 @@ void TestCompletion::avoidCircularInheritance()
                               QStringList() << "blub" << "bar");
 }
 
+
+
+void TestCompletion::unsureType()
+{
+    QByteArray method("<? class A { public $vA; } class B { public $vB; } function foo() { return new A; return new B; } $f = foo(); ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    PhpCompletionTester tester(top, "$f->");
+    QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::MemberAccess);
+
+    kDebug() << tester.names;
+    foreach(const QString &id, QStringList() << "vA" << "vB") {
+        QVERIFY(tester.names.contains(id, Qt::CaseSensitive));
+    }
+}
+
 }
 
 #include "test_completion.moc"

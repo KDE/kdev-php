@@ -71,6 +71,7 @@ private slots:
     void newImplements();
     void updateImplements();
     void avoidCircularInheritance();
+    void unsureType();
 };
 
 }
