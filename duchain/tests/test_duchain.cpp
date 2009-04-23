@@ -1527,6 +1527,25 @@ void TestDUChain::testUnsureReturnType()
 }
 
 
+void TestDUChain::testUnsureReturnType2()
+{
+    QByteArray code("<? class A {} class B {}\n/**\n * @return A|B\n */\nfunction x() {} ");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* dec = top->localDeclarations().at(2);
+    QVERIFY(dec->type<FunctionType>());
+    TypePtr<UnsureType> t = dec->type<FunctionType>()->returnType().cast<UnsureType>();
+    kDebug() << t->toString();
+    UnsureType::Ptr ut = UnsureType::Ptr::dynamicCast(t);
+    QVERIFY(ut);
+    QCOMPARE((uint)2, ut->typesSize());
+    QVERIFY(ut->types()[0].type<StructureType>());
+    QCOMPARE(ut->types()[0].type<StructureType>()->toString(), QString("A"));
+    QVERIFY(ut->types()[1].type<StructureType>());
+    QCOMPARE(ut->types()[1].type<StructureType>()->toString(), QString("B"));
+}
 }
 
 #include "test_duchain.moc"
