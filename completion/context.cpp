@@ -609,11 +609,11 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                             if (method) {
                                 if (decl.second == 0) {
                                     // this function is already implemented
-                                    alreadyImplemented << decl.first->indexedIdentifier().index;
+                                    alreadyImplemented << decl.first->indexedIdentifier().getIndex();
                                     continue;
                                 }
                                 // skip already implemented functions
-                                if (alreadyImplemented.contains(decl.first->indexedIdentifier().index)) {
+                                if (alreadyImplemented.contains(decl.first->indexedIdentifier().getIndex())) {
                                     continue;
                                 }
                                 // skip non-static functions when requested
@@ -631,13 +631,13 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                                 // skip public functions when requested
                                 if (filterPublic && method->accessPolicy() == Declaration::Public) {
                                     // make sure no non-public base methods are added
-                                    alreadyImplemented << decl.first->indexedIdentifier().index;
+                                    alreadyImplemented << decl.first->indexedIdentifier().getIndex();
                                     continue;
                                 }
                                 // skip final methods
                                 if (method->isFinal()) {
                                     // make sure no non-final base methods are added
-                                    alreadyImplemented << decl.first->indexedIdentifier().index;
+                                    alreadyImplemented << decl.first->indexedIdentifier().getIndex();
                                     continue;
                                 }
                                 // make sure we inherit or implement the base class of this method
@@ -660,7 +660,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                                 items << CompletionTreeItemPointer(new ImplementationItem(itype, DeclarationPointer(decl.first),
                                                                     KDevelop::CodeCompletionContext::Ptr(this), decl.second));
                                 // don't add identical items twice to the completion choices
-                                alreadyImplemented << decl.first->indexedIdentifier().index;
+                                alreadyImplemented << decl.first->indexedIdentifier().getIndex();
                             }
                         }
                     }
@@ -753,8 +753,8 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
             DeclarationDepthPair decl = i.previous();
             Declaration* dec = decl.first;
             if (dec->kind() == Declaration::Instance) {
-                if (existingIdentifiers.contains(dec->indexedIdentifier().index)) continue;
-                existingIdentifiers.insert(dec->indexedIdentifier().index);
+                if (existingIdentifiers.contains(dec->indexedIdentifier().getIndex())) continue;
+                existingIdentifiers.insert(dec->indexedIdentifier().getIndex());
             }
             if (abort)
                 return items;

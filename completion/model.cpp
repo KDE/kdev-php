@@ -74,7 +74,7 @@ CodeCompletionModel::~CodeCompletionModel()
 
 Range CodeCompletionModel::completionRange(View* view, const Cursor &position)
 {
-    Range range = CodeCompletionModelControllerInterface::completionRange(view, position);
+    Range range = KDevelop::CodeCompletionModel::completionRange(view, position);
     if (range.start().column() > 0) {
         KTextEditor::Range preRange(Cursor(range.start().line(), range.start().column() - 1),
                                     Cursor(range.start().line(), range.start().column()));
