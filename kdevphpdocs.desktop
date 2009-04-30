@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Service
 Exec=blubb
-Comment=This plugin integrates PHP.net online documentation
+Comment=This plugin integrates PHP.net online documentation.
 Comment[pt]=Este 'plugin' integra a documentação 'online' do PHP.net
 Comment[pt_BR]=Este 'plugin' integra a documentação 'online' do PHP.net
 Comment[sv]=Insticksprogrammet integrerar PHP.net direktdokumentation
