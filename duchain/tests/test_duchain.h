@@ -99,6 +99,7 @@ private slots:
     void testUnsureReturnType2();
     void testUnsureReturnType3();
     void testUnsureReturnType4();
+    void testDeclareMemberOutOfClass();
 };
 
 }

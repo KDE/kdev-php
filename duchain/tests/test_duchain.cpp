@@ -1582,6 +1582,25 @@ void TestDUChain::testUnsureReturnType4()
     QVERIFY(ut->types()[1].type<IntegralType>()->dataType() == IntegralType::TypeInt);
 }
 
+void TestDUChain::testDeclareMemberOutOfClass()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray code("<? class foo{} $bar = new foo; $bar->asdf = true;");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* dec = top->findDeclarationAt(SimpleCursor(0, 35));
+    QVERIFY(dec);
+    ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(dec);
+    QVERIFY(cmdec);
+
+    QCOMPARE(cmdec->identifier().toString(), QString("asdf"));
+    QVERIFY(cmdec->type<IntegralType>());
+    QVERIFY(cmdec->type<IntegralType>()->dataType() == IntegralType::TypeBoolean);
+}
+
 }
 
 #include "test_duchain.moc"
