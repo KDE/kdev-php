@@ -564,6 +564,24 @@ void TestUses::catchClass()
     compareUses(d, SimpleRange(0, 18, 0, 27));
 }
 
+void TestUses::variableRedeclaration()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $s = 'a'; $s = $s . $s;");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *d = top->findDeclarationAt(QualifiedIdentifier("s")).first();
+    compareUses(d, QList<SimpleRange>()
+                     << SimpleRange(0, 13, 0, 15)
+                     << SimpleRange(0, 18, 0, 20)
+                     << SimpleRange(0, 23, 0, 25)
+                );
+}
+
 }
 
 

@@ -64,6 +64,7 @@ private slots:
     void assignmentToMemberArray();
     void functionParamNewDeclaration();
     void catchClass();
+    void variableRedeclaration();
 };
 
 }
