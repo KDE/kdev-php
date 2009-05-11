@@ -171,6 +171,7 @@ FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
     openType(functionType);
 
     functionType->setReturnType(parseDocComment(node, "return"));
+    m_gotReturnTypeFromDocComment = functionType->returnType();
 
     return functionType;
 }
@@ -278,6 +279,7 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
     Q_ASSERT(type);
 
     type->setReturnType(parseDocComment(node, "return"));
+    m_gotReturnTypeFromDocComment = type->returnType();
 
     TypeBuilderBase::visitFunctionDeclarationStatement(node);
 
@@ -307,7 +309,7 @@ void TypeBuilder::visitStaticVar(StaticVarAst *node)
 void TypeBuilder::visitStatement(StatementAst* node)
 {
     TypeBuilderBase::visitStatement(node);
-    if (node->returnExpr && lastType() && hasCurrentType() && currentType<FunctionType>())
+    if ( !m_gotReturnTypeFromDocComment && node->returnExpr && lastType() && hasCurrentType() && currentType<FunctionType>())
     {
         FunctionType::Ptr ft = currentType<FunctionType>();
         kDebug() << "return" << (ft->returnType() ? ft->returnType()->toString() : "none") << lastType()->toString();

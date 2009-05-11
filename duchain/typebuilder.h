@@ -62,6 +62,7 @@ private:
     QList<KDevelop::AbstractType::Ptr> m_currentFunctionParams;
 
     bool m_gotTypeFromDocComment;
+    bool m_gotReturnTypeFromDocComment;
 
     KDevelop::FunctionType::Ptr openFunctionType(AstNode* node);
 
