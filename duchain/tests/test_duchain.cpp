@@ -1199,7 +1199,7 @@ void TestDUChain::testObjectWithClassName()
 void TestDUChain::testLargeNumberOfDeclarations()
 {
     TopDUContext* top = new TopDUContext(IndexedString("testurl"), SimpleRange(0, 0, 6000, 0), 0);
-    KDevelop::DUChain::self()->addDocumentChain(top);
+    DUChain::self()->addDocumentChain(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
     for (int i = 0; i < 6000; ++i) {
