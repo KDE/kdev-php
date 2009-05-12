@@ -574,7 +574,7 @@ void TestUses::variableRedeclaration()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    Declaration *d = top->findDeclarationAt(QualifiedIdentifier("s")).first();
+    Declaration *d = top->findDeclarations(QualifiedIdentifier("s")).first();
     compareUses(d, QList<SimpleRange>()
                      << SimpleRange(0, 13, 0, 15)
                      << SimpleRange(0, 18, 0, 20)
