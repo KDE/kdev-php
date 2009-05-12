@@ -345,8 +345,18 @@ void TestDUChain::testDeclarationMultipleReturnTypes()
 
     FunctionType::Ptr fType = top->localDeclarations().at(1)->type<FunctionType>();
     QVERIFY(fType);
-    QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
-    QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("A"));
+
+    TypePtr<UnsureType> ut = UnsureType::Ptr::dynamicCast(fType->returnType());
+    QVERIFY(ut);
+    QCOMPARE(2u, ut->typesSize());
+
+    ///TODO: why are the types not in the correct order, i.e. null, A
+    QVERIFY(ut->types()[0].type<StructureType>());
+    QVERIFY(ut->types()[0].type<StructureType>()->declaration(top));
+    QCOMPARE(ut->types()[0].type<StructureType>()->declaration(top)->qualifiedIdentifier(), QualifiedIdentifier("A"));
+
+    QVERIFY(ut->types()[1].type<IntegralType>());
+    QVERIFY(ut->types()[1].type<IntegralType>()->dataType() == IntegralType::TypeNull);
 }
 
 void TestDUChain::testDeclarationReturnTypeDocBlock()
