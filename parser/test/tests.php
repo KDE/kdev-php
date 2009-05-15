@@ -3,6 +3,9 @@
 class foo {
     const bar = 'bar';
 }
+$asdf = new foo;
+$asdf->somethingNew = true;
+
 function test($a=foo::bar) { echo $bar; }
 function test(array &$a=array()) {}
 function test2(foo $x, $y='blub') {}
@@ -204,5 +207,5 @@ $foo =& $blah() || die($i);
 if (true) { ?>
 <? echo "foo"; ?>
 <?="bar";?>
-<? } 
+<? }
 

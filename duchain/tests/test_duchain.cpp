@@ -1594,21 +1594,37 @@ void TestDUChain::testUnsureReturnType4()
 
 void TestDUChain::testDeclareMemberOutOfClass()
 {
-    //                 0         1         2         3         4         5         6         7
-    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray code("<? class foo{} $bar = new foo; $bar->asdf = true;");
     TopDUContext* top = parse(code, DumpAST);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    Declaration* dec = top->findDeclarationAt(SimpleCursor(0, 35));
-    QVERIFY(dec);
-    ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(dec);
-    QVERIFY(cmdec);
+    { // $bar is only declared once
+        QList<Declaration*> decs = top->findLocalDeclarations(Identifier("bar"));
+        QCOMPARE(decs.size(), 1);
+        Declaration *dec = decs.first();
+        QVERIFY(dec->type<StructureType>());
+        QVERIFY(dec->type<StructureType>()->declaration(top)->identifier().nameEquals(Identifier("foo")));
 
-    QCOMPARE(cmdec->identifier().toString(), QString("asdf"));
-    QVERIFY(cmdec->type<IntegralType>());
-    QVERIFY(cmdec->type<IntegralType>()->dataType() == IntegralType::TypeBoolean);
+        // while we are at it, compare uses
+        QCOMPARE(dec->uses().keys().count(), 1);
+        QCOMPARE(dec->uses().values().count(), 1);
+        QCOMPARE(dec->uses().values().first().count(), 1);
+        kDebug() << dec->uses().values().first().first().textRange();
+        QCOMPARE(dec->uses().values().first().first(), SimpleRange(0, 31, 0, 35));
+    }
+
+    { // check if asdf got declared
+        QList<Declaration*> decs = top->findDeclarations(Identifier("asdf"));
+        QCOMPARE(decs.size(), 1);
+        ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
+        QVERIFY(cmdec);
+        QVERIFY(cmdec->type<IntegralType>());
+        QVERIFY(cmdec->type<IntegralType>()->dataType() == IntegralType::TypeBoolean);
+    }
+    QCOMPARE(top->problems().count(), 0);
 }
 
 }
