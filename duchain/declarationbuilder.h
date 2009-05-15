@@ -47,10 +47,10 @@ typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, Php::TypeBu
 class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase
 {
 public:
-    DeclarationBuilder(ParseSession* session) : m_lastVariableIdentifier(0) {
+    DeclarationBuilder(ParseSession* session) : m_lastVariableIdentifier(0), m_currentModifers(0) {
         setEditor(session);
     }
-    DeclarationBuilder(EditorIntegrator* editor) : m_lastVariableIdentifier(0) {
+    DeclarationBuilder(EditorIntegrator* editor) : m_lastVariableIdentifier(0), m_currentModifers(0) {
         setEditor(editor);
     }
     virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, Php::AstNode* node,
