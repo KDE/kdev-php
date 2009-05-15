@@ -68,6 +68,7 @@ protected:
     void visitStaticMember(StaticMemberAst* node);
     void visitUnaryExpression(UnaryExpressionAst* node);
     void visitAdditiveExpressionRest(AdditiveExpressionRestAst* node);
+    void visitVariable(VariableAst* node);
 
     QString stringForNode(IdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);

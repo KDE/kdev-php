@@ -44,7 +44,7 @@ ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor)
 {
 }
 
-Declaration* ExpressionVisitor::processVariable(VariableIdentifierAst *variable)
+Declaration* ExpressionVisitor::processVariable(Php::VariableIdentifierAst* variable)
 {
     Q_ASSERT(m_currentContext);
 
@@ -142,6 +142,21 @@ void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(Compoun
         m_result.setDeclaration(processVariable(node->variable));
     }
     DefaultVisitor::visitCompoundVariableWithSimpleIndirectReference(node);
+}
+void ExpressionVisitor::visitVariable(VariableAst* node)
+{
+    if ( node->variablePropertiesSequence &&
+         node->variablePropertiesSequence->front() &&
+         node->variablePropertiesSequence->front()->element &&
+         node->variablePropertiesSequence->front()->element->objectProperty ) {
+        // make sure we mark $foo as a use in $foo->...
+        bool isAssignmentExpressionEqual = m_isAssignmentExpressionEqual;
+        m_isAssignmentExpressionEqual = false;
+        DefaultVisitor::visitVariable(node);
+        m_isAssignmentExpressionEqual = isAssignmentExpressionEqual;
+    } else {
+        DefaultVisitor::visitVariable(node);
+    }
 }
 
 void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *node)
@@ -380,8 +395,11 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
                     QualifiedIdentifier propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
                     m_result.setDeclarations(context->findDeclarations(propertyId));
                     lock.unlock();
+                    kDebug() << m_result.allDeclarations().count();
                     if (!m_result.allDeclarations().isEmpty()) {
-                        usingDeclaration(node->objectProperty->objectDimList->variableName, m_result.allDeclarations().last());
+                        if ( !m_isAssignmentExpressionEqual ) {
+                            usingDeclaration(node->objectProperty->objectDimList->variableName, m_result.allDeclarations().last());
+                        }
                         if (node->isFunctionCall != -1) {
                             FunctionType::Ptr function = m_result.allDeclarations().last()->type<FunctionType>();
                             if (function) {
@@ -391,7 +409,9 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
                             }
                         }
                     } else {
-                        usingDeclaration(node->objectProperty->objectDimList->variableName, 0);
+                        if ( !m_isAssignmentExpressionEqual ) {
+                            usingDeclaration(node->objectProperty->objectDimList->variableName, 0);
+                        }
                         m_result.setType(AbstractType::Ptr());
                     }
                 } else {

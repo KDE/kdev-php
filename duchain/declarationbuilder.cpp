@@ -294,38 +294,42 @@ void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
 
 void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
 {
+    QualifiedIdentifier name = identifierForNode(node->variable);
     if (m_reportErrors) {   // check for redeclarations
-        Q_ASSERT(currentContext()->type() == DUContext::Class);
         DUChainWriteLocker lock(DUChain::lock());
-        foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->variable).first())) {
+        Q_ASSERT(currentContext()->type() == DUContext::Class);
+        foreach(Declaration * dec, currentContext()->findLocalDeclarations(name.first())) {
             if (!dec->isFunctionDeclaration() && ! dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
-                reportRedeclarationError(dec, node->variable);
+                reportRedeclarationError(dec, node);
                 break;
             }
         }
     }
-    {
-        DUChainWriteLocker lock(DUChain::lock());
-        SimpleRange newRange = editorFindRange(node->variable, node->variable);
-        openDefinition<ClassMemberDeclaration>(identifierForNode(node->variable), newRange);
-
-        ClassMemberDeclaration* dec = dynamic_cast<ClassMemberDeclaration*>(currentDeclaration());
-        Q_ASSERT(dec);
-        if (m_currentModifers & ModifierPublic) {
-            dec->setAccessPolicy(Declaration::Public);
-        } else if (m_currentModifers & ModifierProtected) {
-            dec->setAccessPolicy(Declaration::Protected);
-        } else if (m_currentModifers & ModifierPrivate) {
-            dec->setAccessPolicy(Declaration::Private);
-        }
-        if (m_currentModifers & ModifierStatic) {
-            dec->setStatic(true);
-        }
-        dec->setKind(Declaration::Instance);
-    }
-
+    openClassMemberDeclaration(node->variable, name);
     DeclarationBuilderBase::visitClassVariable(node);
     closeDeclaration();
+}
+
+void DeclarationBuilder::openClassMemberDeclaration(AstNode* node, const QualifiedIdentifier &name)
+{
+    DUChainWriteLocker lock(DUChain::lock());
+
+    SimpleRange newRange = editorFindRange(node, node);
+    openDefinition<ClassMemberDeclaration>(name, newRange);
+
+    ClassMemberDeclaration* dec = dynamic_cast<ClassMemberDeclaration*>(currentDeclaration());
+    Q_ASSERT(dec);
+    if (m_currentModifers & ModifierPublic) {
+        dec->setAccessPolicy(Declaration::Public);
+    } else if (m_currentModifers & ModifierProtected) {
+        dec->setAccessPolicy(Declaration::Protected);
+    } else if (m_currentModifers & ModifierPrivate) {
+        dec->setAccessPolicy(Declaration::Private);
+    }
+    if (m_currentModifers & ModifierStatic) {
+        dec->setStatic(true);
+    }
+    dec->setKind(Declaration::Instance);
 }
 
 void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
@@ -439,10 +443,13 @@ void DeclarationBuilder::reportRedeclarationError(Declaration* declaration, AstN
 
 void DeclarationBuilder::visitExpr(ExprAst *node)
 {
-    VariableIdentifierAst* lastIdentifier = m_lastVariableIdentifier;
+    VariableIdentifierAst* lastVariableIdentifier = m_lastVariableIdentifier;
+    IdentifierAst* lastIdentifier = m_lastIdentifier;
     m_lastVariableIdentifier = 0;
+    m_lastIdentifier = 0;
     DeclarationBuilderBase::visitExpr(node);
-    m_lastVariableIdentifier = lastIdentifier;
+    m_lastVariableIdentifier = lastVariableIdentifier;
+    m_lastIdentifier = lastIdentifier;
 }
 
 void DeclarationBuilder::visitTopStatement(TopStatementAst* node)
@@ -456,21 +463,69 @@ void DeclarationBuilder::visitTopStatement(TopStatementAst* node)
 
 void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node)
 {
-    VariableIdentifierAst* leftSideVariableIdentifier = m_lastVariableIdentifier;
+    IdentifierAst* lastIdentifier = m_lastIdentifier;
+    VariableIdentifierAst* lastVariableIdentifier = m_lastVariableIdentifier;
     DeclarationBuilderBase::visitAssignmentExpressionEqual(node);
 
-    if (leftSideVariableIdentifier && currentAbstractType()) {
+    /*
+    // in PHP it is possible to declare class members outside the class scope
+    if ( node->var && node->variablePropertiesSequence &&
+         node->variablePropertiesSequence->front()->element &&
+         node->variablePropertiesSequence->front()->element->objectProperty ) {
+        ObjectPropertyAst* property = node->variablePropertiesSequence->front()->element->objectProperty;
+        if ( property->objectDimList && property->objectDimList->variableName &&
+             property->objectDimList->variableName->name ) {
+            QualifiedIdentifier member = identifierForNode(property->objectDimList->variableName->name);
+
+        }
+    }
+    DeclarationBuilderBase::visitVariable(node);
+    */
+
+    if ( (lastIdentifier || lastVariableIdentifier) && currentAbstractType()) {
         //create new declaration for every assignment
         //TODO: don't create the same twice
-        QualifiedIdentifier identifier = identifierForNode(leftSideVariableIdentifier);
-        // TODO: we cannot assign anything to $this, but we are currently not in the position
-        //       to decide whether we are really assigning to $this and are not using something
-        //       like $this->foo[$bar] = ...
-        //       => we really need better support for arrays here I think...
-        if (identifier != QualifiedIdentifier("this")) {
+        if ( lastIdentifier ) {
+            // assignment to class members
+
+            // get current class
+            if ( StructureType::Ptr classType = lastType().cast<StructureType>() ) {
+                DUChainWriteLocker lock(DUChain::lock());
+                if ( DUContext* ctx = classType->internalContext( currentContext()->topContext() ) ) {
+                    QualifiedIdentifier identifier = identifierForNode(lastIdentifier);
+                    foreach ( Declaration* dec, ctx->findLocalDeclarations(identifier.first()) ) {
+                        if ( ClassMemberDeclaration* cdec = dynamic_cast<ClassMemberDeclaration*>(dec) ) {
+                            if ( cdec->accessPolicy() != Declaration::Public ) {
+                                reportError(i18n("Cannot access non-public property for redeclaration."), lastIdentifier);
+                                return;
+                            }
+                        }
+                    }
+                    // this member should be public and non-static
+                    m_currentModifers = ModifierPublic;
+                    openClassMemberDeclaration(lastIdentifier, identifier);
+                    m_currentModifers = 0;
+                    //own closeDeclaration() that uses currentAbstractType() instead of lastType()
+                    currentDeclaration()->setType(currentAbstractType());
+                    eventuallyAssignInternalContext();
+                    DeclarationBuilderBase::closeDeclaration();
+                }
+            }
+        } else {
+            // assigment to other variables
+            QualifiedIdentifier identifier = identifierForNode(lastVariableIdentifier);
+            if (identifier == QualifiedIdentifier("this")) {
+                // TODO: we cannot assign anything to $this, but we are currently not in the position
+                //       to decide whether we are really assigning to $this and are not using something
+                //       like $this->foo[$bar] = ...
+                //       => we really need better support for arrays here I think...
+                return;
+            }
+
+            SimpleRange newRange = editorFindRange(lastVariableIdentifier, lastVariableIdentifier);
+
             DUChainWriteLocker lock(DUChain::lock());
-            SimpleRange newRange = editorFindRange(leftSideVariableIdentifier, leftSideVariableIdentifier);
-            VariableDeclaration *dec = openDefinition<VariableDeclaration>(identifierForNode(leftSideVariableIdentifier), newRange);
+            VariableDeclaration *dec = openDefinition<VariableDeclaration>(identifier, newRange);
             dec->setKind(Declaration::Instance);
             if (!m_lastTopStatementComment.isEmpty()) {
                 QRegExp rx("\\* +@superglobal");
@@ -478,7 +533,6 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
                     dec->setSuperglobal(true);
                 }
             }
-
             //own closeDeclaration() that uses currentAbstractType() instead of lastType()
             currentDeclaration()->setType(currentAbstractType());
             eventuallyAssignInternalContext();
@@ -490,8 +544,19 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
 void DeclarationBuilder::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
 {
     //needed in assignmentExpressionEqual
+    m_lastIdentifier = 0;
     m_lastVariableIdentifier = node->variable;
     DeclarationBuilderBase::visitCompoundVariableWithSimpleIndirectReference(node);
+}
+
+void DeclarationBuilder::visitObjectProperty(Php::ObjectPropertyAst* node)
+{
+    //needed in assignmentExpressionEqual
+    if ( node->objectDimList && node->objectDimList->variableName ) {
+        m_lastVariableIdentifier = 0;
+        m_lastIdentifier = node->objectDimList->variableName->name;
+    }
+    DeclarationBuilderBase::visitObjectProperty(node);
 }
 
 void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)

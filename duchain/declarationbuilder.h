@@ -76,6 +76,7 @@ protected:
     virtual void visitStaticVar(StaticVarAst* node);
     virtual void visitGlobalVar(GlobalVarAst* node);
     virtual void visitCatchItem(CatchItemAst *node);
+    virtual void visitObjectProperty(Php::ObjectPropertyAst* node);
 
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const Php::MethodBodyAst* body) const {
@@ -85,8 +86,13 @@ protected:
     virtual void closeDeclaration();
     void classContextOpened(KDevelop::DUContext* context);
 
+    /// don't forget to closeDeclaration() afterwards
+    /// set m_currentModifers to your likings and reset it afterwards
+    void openClassMemberDeclaration(Php::AstNode* node, const KDevelop::QualifiedIdentifier& name);
+
 private:
     VariableIdentifierAst* m_lastVariableIdentifier;
+    IdentifierAst* m_lastIdentifier;
     unsigned int m_currentModifers;
     QString m_lastTopStatementComment;
 
