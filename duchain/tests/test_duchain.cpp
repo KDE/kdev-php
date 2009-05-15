@@ -1184,16 +1184,15 @@ void TestDUChain::testFunctionInFunction()
 
 void TestDUChain::testObjectWithClassName()
 {
-
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class setupPage {} $setupPage = new setupPage; $setupPage->foo();");
     TopDUContext* top = parse(method, DumpNone, "testObjectWithClassName.php");
-    DUChainReleaser releaseTop(top);
 
+    // update top (the pointer will be the same)
     QByteArray method2("<? $setupPage = new setupPage; $setupPage->foo();");
     TopDUContext* top2 = parse(method2, DumpNone, "testObjectWithClassName.php");
-    DUChainReleaser releaseTop2(top2);
+    QVERIFY(top2 == top);
 }
 
 void TestDUChain::testLargeNumberOfDeclarations()
