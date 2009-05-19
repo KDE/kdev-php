@@ -1618,7 +1618,7 @@ void TestDUChain::testDeclareMemberOutOfClass()
     }
 
     { // check if asdf got declared
-        QList<Declaration*> decs = top->findDeclarations(Identifier("asdf"));
+        QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier("asdf"));
         QCOMPARE(decs.size(), 1);
         ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
         QVERIFY(cmdec);

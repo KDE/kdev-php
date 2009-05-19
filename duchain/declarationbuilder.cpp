@@ -488,12 +488,14 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
                     }
                     // this member should be public and non-static
                     m_currentModifers = ModifierPublic;
+                    injectContext(editor()->smart(), ctx);
                     openClassMemberDeclaration(lastIdentifier, identifier);
                     m_currentModifers = 0;
                     //own closeDeclaration() that uses currentAbstractType() instead of lastType()
                     currentDeclaration()->setType(currentAbstractType());
                     eventuallyAssignInternalContext();
                     DeclarationBuilderBase::closeDeclaration();
+                    closeInjectedContext(editor()->smart());
                 }
             }
         } else {

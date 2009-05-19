@@ -395,7 +395,6 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
                     QualifiedIdentifier propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
                     m_result.setDeclarations(context->findDeclarations(propertyId));
                     lock.unlock();
-                    kDebug() << m_result.allDeclarations().count();
                     if (!m_result.allDeclarations().isEmpty()) {
                         if ( !m_isAssignmentExpressionEqual ) {
                             usingDeclaration(node->objectProperty->objectDimList->variableName, m_result.allDeclarations().last());
