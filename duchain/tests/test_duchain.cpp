@@ -1188,6 +1188,7 @@ void TestDUChain::testObjectWithClassName()
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class setupPage {} $setupPage = new setupPage; $setupPage->foo();");
     TopDUContext* top = parse(method, DumpNone, "testObjectWithClassName.php");
+    DUChainReleaser releaseTop(top);
 
     // update top (the pointer will be the same)
     QByteArray method2("<? $setupPage = new setupPage; $setupPage->foo();");
