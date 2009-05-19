@@ -467,21 +467,6 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
     VariableIdentifierAst* lastVariableIdentifier = m_lastVariableIdentifier;
     DeclarationBuilderBase::visitAssignmentExpressionEqual(node);
 
-    /*
-    // in PHP it is possible to declare class members outside the class scope
-    if ( node->var && node->variablePropertiesSequence &&
-         node->variablePropertiesSequence->front()->element &&
-         node->variablePropertiesSequence->front()->element->objectProperty ) {
-        ObjectPropertyAst* property = node->variablePropertiesSequence->front()->element->objectProperty;
-        if ( property->objectDimList && property->objectDimList->variableName &&
-             property->objectDimList->variableName->name ) {
-            QualifiedIdentifier member = identifierForNode(property->objectDimList->variableName->name);
-
-        }
-    }
-    DeclarationBuilderBase::visitVariable(node);
-    */
-
     if ( (lastIdentifier || lastVariableIdentifier) && currentAbstractType()) {
         //create new declaration for every assignment
         //TODO: don't create the same twice
