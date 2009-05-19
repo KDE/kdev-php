@@ -5,6 +5,7 @@ Comment=This plugin integrates PHP.net online documentation.
 Comment[pt]=Este 'plugin' integra a documentação 'online' do PHP.net.
 Comment[pt_BR]=Este 'plugin' integra a documentação 'online' do PHP.net.
 Comment[sv]=Insticksprogrammet integrerar PHP.net nätdokumentation.
+Comment[tr]=Bu eklenti PHP.net çevrimiçi belgelendirmeleri ile bütünleşme sağlar.
 Comment[uk]=За допомогою цього додатка можна інтегрувати документацію PHP.net.
 Name=KDevPhpDocs
 Name[sv]=KDevelop PHP-dokument
@@ -12,6 +13,7 @@ GenericName=PHP Documentation
 GenericName[pt]=Documentação de PHP
 GenericName[pt_BR]=Documentação PHP
 GenericName[sv]=PHP-dokumentation
+GenericName[tr]=PHP Belgelendirmesi
 GenericName[uk]=Документація з PHP
 ServiceTypes=KDevelop/Plugin
 
