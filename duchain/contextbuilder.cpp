@@ -274,13 +274,31 @@ void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
 
 void ContextBuilder::reportError(const QString& errorMsg, AstNode* node)
 {
+    reportError(errorMsg, editor()->findRange(node).textRange());
+}
+
+void ContextBuilder::reportError(const QString& errorMsg, QList< Php::AstNode* > nodes)
+{
+    KTextEditor::Range range = KTextEditor::Range::invalid();
+    foreach ( AstNode* node, nodes ) {
+        if ( !range.isValid() ) {
+            range.setRange( editor()->findRange(node).textRange() );
+        } else {
+            range.expandToRange( editor()->findRange(node).textRange() );
+        }
+    }
+    reportError(errorMsg, range);
+}
+
+void ContextBuilder::reportError(const QString& errorMsg, KTextEditor::Range range)
+{
     KDevelop::Problem *p = new KDevelop::Problem();
     p->setSource(KDevelop::ProblemData::DUChainBuilder);
     p->setDescription(errorMsg);
-    p->setFinalLocation(KDevelop::DocumentRange(editor()->currentUrl().str(), editor()->findRange(node).textRange()));
+    p->setFinalLocation(KDevelop::DocumentRange(editor()->currentUrl().str(), range));
     {
         DUChainWriteLocker lock(DUChain::lock());
-        kDebug() << "Problem" << p->description();
+        kDebug() << "Problem" << p->description() << p->finalLocation();
         currentContext()->topContext()->addProblem(KDevelop::ProblemPointer(p));
     }
 }

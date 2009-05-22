@@ -74,7 +74,14 @@ protected:
 
     virtual void classContextOpened(KDevelop::DUContext* context);
 
-    virtual void reportError(const QString& errorMsg, AstNode* node);
+    /// Report @p errorMsg with the range of @p node
+    /// @see void reportError(const QString& errorMsg, KTextEditor::Range range);
+    void reportError(const QString& errorMsg, AstNode* node);
+    /// Report @p errorMsg with the range encompassing all nodes in @p nodes
+    /// @see void reportError(const QString& errorMsg, KTextEditor::Range range);
+    void reportError(const QString& errorMsg, QList<AstNode*> nodes);
+    /// Report @p errorMsg with range @p range
+    void reportError(const QString& errorMsg, KTextEditor::Range range);
 
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
