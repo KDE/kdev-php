@@ -468,8 +468,7 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
     DeclarationBuilderBase::visitAssignmentExpressionEqual(node);
 
     if ( (lastIdentifier || lastVariableIdentifier) && currentAbstractType()) {
-        //create new declaration for every assignment
-        //TODO: don't create the same twice
+        //create new declaration assignments to not-yet declared variables and class members
         if ( lastIdentifier ) {
             // assignment to class members
 
@@ -508,9 +507,23 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
                 return;
             }
 
-            SimpleRange newRange = editorFindRange(lastVariableIdentifier, lastVariableIdentifier);
 
             DUChainWriteLocker lock(DUChain::lock());
+
+            // check if this variable is already declared
+            {
+                QList< Declaration* > decs = currentContext()->findLocalDeclarations(identifier.first());
+                if ( !decs.isEmpty() ) {
+                    // we expect that the list of declarations has the newest declaration at back
+                    if ( decs.last()->abstractType()->indexed() == currentAbstractType()->indexed() ) {
+                        kDebug() << "skipping redeclaration of" << decs.first()->toString();
+                        return;
+                    }
+                }
+            }
+
+            SimpleRange newRange = editorFindRange(lastVariableIdentifier, lastVariableIdentifier);
+
             VariableDeclaration *dec = openDefinition<VariableDeclaration>(identifier, newRange);
             dec->setKind(Declaration::Instance);
             if (!m_lastTopStatementComment.isEmpty()) {

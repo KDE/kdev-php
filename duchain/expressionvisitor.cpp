@@ -49,7 +49,7 @@ Declaration* ExpressionVisitor::processVariable(Php::VariableIdentifierAst* vari
     Q_ASSERT(m_currentContext);
 
     SimpleCursor position = SimpleCursor::invalid();
-    position = m_editor->findPosition(variable->variable, EditorIntegrator::FrontEdge);
+    position = m_editor->findPosition(variable->variable, EditorIntegrator::BackEdge);
     position.line += m_lineOffset;
 
     Declaration* ret = 0;
@@ -96,7 +96,9 @@ Declaration* ExpressionVisitor::processVariable(Php::VariableIdentifierAst* vari
             }
         }
     }
-    if (!m_isAssignmentExpressionEqual || identifier == QualifiedIdentifier("this")) {
+    if ( !m_isAssignmentExpressionEqual || identifier == QualifiedIdentifier("this")
+         // might be something like $s = $s . $s; in which case we have to add a use for the first $s
+         || (ret && ret->range().end < position) ) {
         usingDeclaration(variable, ret);
     }
     return ret;
