@@ -515,7 +515,8 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
                 QList< Declaration* > decs = currentContext()->findLocalDeclarations(identifier.first());
                 if ( !decs.isEmpty() ) {
                     // we expect that the list of declarations has the newest declaration at back
-                    if ( decs.last()->abstractType()->indexed() == currentAbstractType()->indexed() ) {
+                    if ( dynamic_cast<VariableDeclaration*>(decs.last())
+                         && decs.last()->abstractType()->indexed() == currentAbstractType()->indexed() ) {
                         kDebug() << "skipping redeclaration of" << decs.first()->toString();
                         return;
                     }
