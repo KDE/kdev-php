@@ -501,11 +501,10 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
         } else {
             // assigment to other variables
             QualifiedIdentifier identifier = identifierForNode(lastVariableIdentifier);
-            if (identifier == QualifiedIdentifier("this")) {
-                // TODO: we cannot assign anything to $this, but we are currently not in the position
-                //       to decide whether we are really assigning to $this and are not using something
-                //       like $this->foo[$bar] = ...
-                //       => we really need better support for arrays here I think...
+            if ( identifier == QualifiedIdentifier("this")
+                 && currentContext()->parentContext()
+                 && currentContext()->parentContext()->type() == DUContext::Class ) {
+                reportError(i18n("Cannot re-assign $this."), QList<AstNode*>() << node << lastVariableIdentifier);
                 return;
             }
 

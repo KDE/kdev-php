@@ -1628,6 +1628,21 @@ void TestDUChain::testDeclareMemberOutOfClass()
     QCOMPARE(top->problems().count(), 0);
 }
 
+void TestDUChain::testThisRedeclaration()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray code("<? class foo{ function foo(){ $this->test = true; $this = false;} }");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    // only $this = false is a problem, $this->test = true is perfectly valid
+    QCOMPARE(top->problems().count(), 1);
+    kDebug() << top->problems().first()->finalLocation();
+    QVERIFY(top->problems().first()->finalLocation() == KTextEditor::Range(0, 50, 0, 63));
+}
+
 }
 
 #include "test_duchain.moc"
