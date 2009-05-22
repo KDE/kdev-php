@@ -101,6 +101,7 @@ private slots:
     void testUnsureReturnType4();
     void testDeclareMemberOutOfClass();
     void testThisRedeclaration();
+    void testImplicitArrayDeclaration();
 };
 
 }

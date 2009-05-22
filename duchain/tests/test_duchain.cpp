@@ -1643,6 +1643,74 @@ void TestDUChain::testThisRedeclaration()
     QVERIFY(top->problems().first()->finalLocation() == KTextEditor::Range(0, 50, 0, 63));
 }
 
+void TestDUChain::testImplicitArrayDeclaration()
+{
+    ///TODO: adapt to unsure type once it's supported
+    {
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray code("<? $a[1] = true;");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QList<Declaration*> decs = top->findDeclarations(Identifier("a"));
+    QCOMPARE(decs.size(), 1);
+    VariableDeclaration* vdec = dynamic_cast<VariableDeclaration*>(decs.first());
+    QVERIFY(vdec);
+    QVERIFY(vdec->type<IntegralType>());
+    QVERIFY(vdec->type<IntegralType>()->dataType() == IntegralType::TypeArray);
+    }
+
+    {
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray code("<? $b = 1; $a[$b] = true;");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QList<Declaration*> decs = top->findDeclarations(Identifier("a"));
+    QCOMPARE(decs.size(), 1);
+    VariableDeclaration* vdec = dynamic_cast<VariableDeclaration*>(decs.first());
+    QVERIFY(vdec);
+    QVERIFY(vdec->type<IntegralType>());
+    QVERIFY(vdec->type<IntegralType>()->dataType() == IntegralType::TypeArray);
+    }
+
+    {
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray code("<? class foo{} $bar = new foo; $bar->a[1] = true;");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier("a"));
+    QCOMPARE(decs.size(), 1);
+    ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
+    QVERIFY(cmdec);
+    QVERIFY(cmdec->type<IntegralType>());
+    QVERIFY(cmdec->type<IntegralType>()->dataType() == IntegralType::TypeArray);
+    }
+
+    {
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray code("<? class foo{} $bar = new foo; $b = 1; $bar->a[$b] = true;");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier("a"));
+    QCOMPARE(decs.size(), 1);
+    ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
+    QVERIFY(cmdec);
+    QVERIFY(cmdec->type<IntegralType>());
+    QVERIFY(cmdec->type<IntegralType>()->dataType() == IntegralType::TypeArray);
+    }
+}
+
 }
 
 #include "test_duchain.moc"
