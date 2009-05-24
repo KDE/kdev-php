@@ -18,7 +18,7 @@ GenericName[uk]=Документація з PHP
 ServiceTypes=KDevelop/Plugin
 
 X-KDE-Library=kdevphpdocs
-X-KDevelop-Version=6
+X-KDevelop-Version=7
 X-KDevelop-Category=Global
 X-KDE-PluginInfo-Name=KDevPhpDocs
 X-KDE-PluginInfo-Author=Milian Wolff
