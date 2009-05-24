@@ -117,6 +117,16 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
 
             DUChainWriteLocker wlock(DUChain::lock());
             for (uint i = 0; i < nr; ++i) {
+                ParsingEnvironmentFilePointer env = DUChain::self()->environmentFileForDocument(declarations[i].indexedTopContext());
+                if(!env) {
+                    ifDebug(kDebug() << "skipping declaration, missing meta-data";)
+                    continue;
+                }
+                if(env->language() != IndexedString("Php")) {
+                    ifDebug(kDebug() << "skipping declaration, invalid language" << env->language().str();)
+                    continue;
+                }
+
                 if (!declarations[i].declaration()) {
                     ifDebug(kDebug() << "skipping declaration, doesn't have declaration";)
                     continue;
@@ -125,10 +135,7 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                     continue;
                 }
                 TopDUContext* top = declarations[i].declaration()->context()->topContext();
-                if (top->language() != IndexedString("Php")) {
-                    ifDebug(kDebug() << "skipping declaration, invalid language" << top->language().str();)
-                    continue;
-                }
+
                 if (ICore::self()) {
                     bool loadedProjectContainsUrl = false;
                     foreach(IProject *project, ICore::self()->projectController()->projects()) {

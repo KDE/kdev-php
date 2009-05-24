@@ -61,10 +61,6 @@ ReferencedTopDUContext ContextBuilder::build(const KDevelop::IndexedString& url,
         kDebug() << "compiling" << url.str();
     }
     ReferencedTopDUContext top = ContextBuilderBase::build(url, node, updateContext, useSmart);
-    if (!updateContext) {
-        DUChainWriteLocker lock(DUChain::lock());
-        top->setLanguage(IndexedString("Php"));
-    }
     return top;
 }
 
@@ -114,6 +110,7 @@ TopDUContext* ContextBuilder::newTopContext(const SimpleRange& range, ParsingEnv
 {
     if (!file) {
         file = new ParsingEnvironmentFile(editor()->currentUrl());
+        file->setLanguage(IndexedString("Php"));
     }
     TopDUContext* ret = new PhpDUContext<TopDUContext>(editor()->currentUrl(), range, file);
     file->setTopContext(ret);

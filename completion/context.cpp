@@ -49,6 +49,7 @@
 #include <interfaces/iproject.h>
 #include <project/projectmodel.h>
 #include <language/duchain/types/unsuretype.h>
+#include <language/duchain/parsingenvironment.h>
 
 #define LOCKDUCHAIN     DUChainReadLocker lock(DUChain::lock())
 
@@ -768,9 +769,11 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                 CodeModel::self().items(url, count, foundItems);
                 for (uint i = 0; i < count; ++i) {
                     if (foundItems[i].kind == CodeModelItem::Class) {
-                        foreach(TopDUContext* top, DUChain::self()->chainsForDocument(url)) {
+                        foreach(ParsingEnvironmentFilePointer env, DUChain::self()->allEnvironmentFiles(url)) {
+                            if (env->language() != IndexedString("Php")) continue;
+                            TopDUContext* top = env->topContext();
+                            if(!top) continue;
                             if (m_duContext->imports(top)) continue;
-                            if (top->language() != IndexedString("Php")) continue;
                             QList<Declaration*> decls = top->findDeclarations(foundItems[i].id);
                             foreach(Declaration* decl, decls) {
                                 if (abort) return items;

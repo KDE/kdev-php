@@ -254,9 +254,9 @@ void ParseJob::run()
         } else {
             DUChainWriteLocker lock(DUChain::lock());
             ParsingEnvironmentFile *file = new ParsingEnvironmentFile(document());
+            file->setLanguage(IndexedString("Php"));
             top = new TopDUContext(document(), SimpleRange(SimpleCursor(0, 0), SimpleCursor(INT_MAX, INT_MAX)), file);
             file->setTopContext(top.data());
-            top->setLanguage(IndexedString("Php"));
             DUChain::self()->addDocumentChain(top);
         }
         setDuChain(top);
