@@ -2,6 +2,7 @@
 Type=Service
 Exec=blubb
 Comment=This plugin integrates PHP.net online documentation.
+Comment[fr]=Ce module intègre la documentation de PHP.net en ligne.
 Comment[pt]=Este 'plugin' integra a documentação 'online' do PHP.net.
 Comment[pt_BR]=Este 'plugin' integra a documentação 'online' do PHP.net.
 Comment[sv]=Insticksprogrammet integrerar PHP.net nätdokumentation.
@@ -10,6 +11,7 @@ Comment[uk]=За допомогою цього додатка можна інт�
 Name=KDevPhpDocs
 Name[sv]=KDevelop PHP-dokument
 GenericName=PHP Documentation
+GenericName[fr]=Documentation PHP
 GenericName[pt]=Documentação de PHP
 GenericName[pt_BR]=Documentação PHP
 GenericName[sv]=PHP-dokumentation
