@@ -63,7 +63,7 @@ void TestDUChain::testDeclareFunction()
     TopDUContext* top = parse(method, DumpNone);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
-
+ 
     QCOMPARE(top->childContexts().count(), 2);
     QCOMPARE(top->localDeclarations().count(), 1);
 
@@ -1348,11 +1348,23 @@ void TestDUChain::testFindDeclarations()
     Declaration* declaration = new Declaration(SimpleRange(0, 0, 0, 3), top1);
     declaration->setIdentifier(Identifier("foo"));
 
+    QVERIFY(!top1->usingImportsCache());
+    QVERIFY(!top2->usingImportsCache());
+    
     QCOMPARE(1, top1->findDeclarations(Identifier("foo")).count());
     QCOMPARE(0, top2->findDeclarations(Identifier("foo")).count());
     top2->addImportedParentContext(top1);
+
+    QVERIFY(!top1->usingImportsCache());
+    QVERIFY(!top2->usingImportsCache());
+    
     QCOMPARE(1, top2->findDeclarations(Identifier("foo")).count());
     top2->clearImportedParentContexts();
+    QCOMPARE(top2->importedParentContexts().size(), 0);
+    
+    QVERIFY(!top1->usingImportsCache());
+    QVERIFY(!top2->usingImportsCache());
+    
     QCOMPARE(0, top2->findDeclarations(Identifier("foo")).count());
     top2->addImportedParentContext(top1);
     QCOMPARE(1, top2->findDeclarations(Identifier("foo")).count());
