@@ -1,6 +1,7 @@
 /***************************************************************************
  *   This file is part of KDevelop                                         *
  *   Copyright 2008 Niko Sams <niko.sams@gmail.com>                        *
+ *   Copyright 2009 Milian Wolff <mail@milianw.de>                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU Library General Public License as       *
@@ -36,20 +37,103 @@
 using namespace Php;
 using namespace std;
 
-void printToken(int token, const Lexer& lexer, const QString& content);
 void showUsage(char**);
 
 QTextStream qout(stdout);
 QTextStream qerr(stderr);
 QTextStream qin(stdin);
 
+class PhpParser {
+public:
+    PhpParser(const bool debug, const bool printTokens)
+        : m_debug(debug), m_printTokens(printTokens)
+    {
+        m_session.setDebug(debug);
+    }
+
+    /// parse contents of a file
+    void parseFile( const QString &fileName )
+    {
+        if (!m_session.readFile(fileName, "utf-8")) {
+            qerr << "Can't open file " << fileName << endl;
+            exit(255);
+        } else {
+            qout << "Parsing file " << fileName << endl;
+        }
+        runSession();
+    }
+
+    /// parse code directly
+    void parseCode( const QString &code )
+    {
+        m_session.setContents(code);
+
+        qout << "Parsing input" << endl;
+        runSession();
+    }
+
+private:
+    /**
+     * actually run the parse session
+     */
+    void runSession()
+    {
+        if (m_printTokens) {
+            TokenStream tokenStream;
+            Lexer lexer(&tokenStream, m_session.contents());
+            int token;
+            while ((token = lexer.nextTokenKind())) {
+                printToken(token, lexer);
+            }
+            printToken(token, lexer);
+
+            qint64 line;
+            qint64 column;
+            tokenStream.endPosition(tokenStream.size() - 1, &line, &column);
+//             tokenStream.endPosition(lastTokenEnd, &line, &column);
+            qDebug() << "last token endPosition: " << line << column;
+        }
+
+        Php::StartAst* ast = 0;
+        if (!m_session.parse(&ast)) {
+            exit(EXIT_FAILURE);
+            qerr << "parse error" << endl;
+            exit(255);
+        } else {
+            if (m_debug) {
+                Php::DebugVisitor debugVisitor(m_session.tokenStream(), m_session.contents());
+                debugVisitor.visitStart(ast);
+            }
+            qout << "successfully parsed" << endl;
+        }
+    }
+
+    /**
+     * print the token with the same text as php tokens - so they can be compared with
+     * the result of get_token_all (see test-tokenize.php)
+     **/
+    void printToken(int token, const Lexer& lexer) const
+    {
+        int begin = lexer.tokenBegin();
+        int end = lexer.tokenEnd();
+        qout << m_session.contents().mid(begin, end - begin + 1).replace('\n', "\\n")
+        << tokenText(token) << endl;
+    }
+
+    Php::ParseSession m_session;
+    const bool m_debug;
+    const bool m_printTokens;
+};
+
 int main(int argc, char* argv[])
 {
     qout.setCodec("UTF-8");
+    qin.setCodec("UTF-8");
 
     QStringList files;
     bool debug = false;
     bool printTokens = false;
+    QStringList code;
     for (int i = 1; i < argc; i++) {
         QString arg(argv[i]);
         if (arg.startsWith(QString("--"))) {
@@ -58,6 +142,16 @@ int main(int argc, char* argv[])
                 debug = true;
             } else if (arg == "print-tokens") {
                 printTokens = true;
+            } else if (arg == "code") {
+                for (int j = i + 1; j < argc; ++j ) {
+                    code << argv[j];
+                }
+                if ( code.isEmpty() ) {
+                    qerr << "no code given" << endl;
+                    showUsage(argv);
+                    return 1;
+                }
+                break;
             } else {
                 qerr << "unknown option: " << endl;
                 showUsage(argv);
@@ -68,57 +162,25 @@ int main(int argc, char* argv[])
         }
     }
 
-    if ( files.isEmpty() ) {
+    PhpParser parser(debug, printTokens);
+
+    if ( !code.isEmpty() ) {
+        parser.parseCode( code.join(" ") );
+    } else if ( files.isEmpty() ) {
         files << "-";
     }
 
     foreach(const QString &fileName, files) {
-        Php::ParseSession session;
-        session.setDebug(debug);
         if ( fileName == "-" ) {
             if ( isatty(STDIN_FILENO) ) {
                 qerr << "no STDIN given" << endl;
                 return 255;
             }
-            qerr << "reading from stdin" << endl;
-            session.setContents( qin.readAll().toUtf8() );
-            qout << "Parsing input" << endl;
-        } else if (!session.readFile(fileName, "utf-8")) {
-            qerr << "Can't open file " << fileName << endl;
-            return 255;
+            parser.parseCode( qin.readAll().toUtf8() );
         } else {
-            qout << "Parsing file " << fileName << endl;
+            parser.parseFile(fileName);
         }
 
-        if (printTokens) {
-            TokenStream tokenStream;
-            Lexer lexer(&tokenStream, session.contents());
-            int token;
-            while ((token = lexer.nextTokenKind())) {
-                printToken(token, lexer, session.contents());
-            }
-            printToken(token, lexer, session.contents());
-
-            qint64 line;
-            qint64 column;
-            tokenStream.endPosition(tokenStream.size() - 1, &line, &column);
-//             tokenStream.endPosition(lastTokenEnd, &line, &column);
-            qDebug() << "last token endPosition: " << line << column;
-
-        }
-
-        Php::StartAst* ast = 0;
-        if (!session.parse(&ast)) {
-            exit(EXIT_FAILURE);
-            qerr << "parse error" << endl;
-            return 255;
-        } else {
-            if (debug) {
-                Php::DebugVisitor debugVisitor(session.tokenStream(), session.contents());
-                debugVisitor.visitStart(ast);
-            }
-            qout << "successfully parsed" << endl;
-        }
     }
     return 0;
 }
@@ -129,17 +191,8 @@ void showUsage(char** argv)
     qout << "" << endl;
     qout << "--print-tokens Print all found tokens" << endl;
     qout << "--debug        Print AST" << endl;
+    qout << "--code ...     All following arguments will be interpreted as PHP code." << endl
+         << "               Hence put this option at the end of the list." << endl;
     qout << "" << endl;
     qout << "If FILE is empty or -, read from STDIN." << endl;
-}
-/**
- * print the token with the same text as php tokens - so they can be compared with
- * the result of get_token_all (see test-tokenize.php)
- **/
-void printToken(int token, const Lexer& lexer, const QString& content)
-{
-    int begin = lexer.tokenBegin();
-    int end = lexer.tokenEnd();
-    qout << content.mid(begin, end - begin + 1).replace('\n', "\\n")
-    << tokenText(token) << endl;
 }
