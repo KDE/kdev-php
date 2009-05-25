@@ -41,15 +41,11 @@ void showUsage(char**);
 
 QTextStream qout(stdout);
 QTextStream qerr(stderr);
+QTextStream qin(stdin);
 
 int main(int argc, char* argv[])
 {
     qout.setCodec("UTF-8");
-
-    if (argc <= 1) {
-        showUsage(argv);
-        return 1;
-    }
 
     QStringList files;
     bool debug = false;
@@ -72,14 +68,27 @@ int main(int argc, char* argv[])
         }
     }
 
+    if ( files.isEmpty() ) {
+        files << "-";
+    }
+
     foreach(const QString &fileName, files) {
         Php::ParseSession session;
-        if (!session.readFile(fileName, "utf-8")) {
+        session.setDebug(debug);
+        if ( fileName == "-" ) {
+            if ( isatty(STDIN_FILENO) ) {
+                qerr << "no STDIN given" << endl;
+                return 255;
+            }
+            qerr << "reading from stdin" << endl;
+            session.setContents( qin.readAll().toUtf8() );
+            qout << "Parsing input" << endl;
+        } else if (!session.readFile(fileName, "utf-8")) {
             qerr << "Can't open file " << fileName << endl;
             return 255;
+        } else {
+            qout << "Parsing file " << fileName << endl;
         }
-        session.setDebug(debug);
-        qout << "Parsing file " << fileName << endl;
 
         if (printTokens) {
             TokenStream tokenStream;
@@ -116,10 +125,12 @@ int main(int argc, char* argv[])
 
 void showUsage(char** argv)
 {
-    qout << "Usage: [options] " << argv[0] << "file" << endl;
+    qout << "Usage: " << argv[0] << " [options] FILE" << endl;
     qout << "" << endl;
     qout << "--print-tokens Print all found tokens" << endl;
     qout << "--debug        Print AST" << endl;
+    qout << "" << endl;
+    qout << "If FILE is empty or -, read from STDIN." << endl;
 }
 /**
  * print the token with the same text as php tokens - so they can be compared with
