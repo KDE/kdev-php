@@ -540,7 +540,6 @@ void ExpressionVisitor::setLineOffset(int offs)
     m_lineOffset = offs;
 }
 
-
 Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
 {
     return findDeclarationImportHelper(m_currentContext, identifierForNode(node), declarationType, node, m_editor);
