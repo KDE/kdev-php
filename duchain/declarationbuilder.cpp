@@ -30,6 +30,7 @@
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/aliasdeclaration.h>
 #include <language/duchain/classdeclaration.h>
+#include <language/duchain/types/integraltype.h>
 
 #include <klocalizedstring.h>
 
@@ -355,6 +356,26 @@ void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationA
     }
     DeclarationBuilderBase::visitClassConstantDeclaration(node);
     closeDeclaration();
+    if ( m_reportErrors ) {
+        // const class members may only be ints, floats, bools or strings
+        bool badType = true;
+        if ( IntegralType* type = fastCast<IntegralType*>(lastType().unsafeData()) ) {
+            switch( type->dataType() ) {
+                case IntegralType::TypeBoolean:
+                case IntegralType::TypeFloat:
+                case IntegralType::TypeInt:
+                case IntegralType::TypeString:
+                    badType = false;
+                    break;
+                default:
+                    // every other type is a badType (see above)
+                    break;
+            }
+        }
+        if ( badType ) {
+            reportError(i18n("Only booleans, ints, floats and strings are allowed for class constants."), node->scalar);
+        }
+    }
 }
 
 void DeclarationBuilder::visitParameter(ParameterAst *node)
