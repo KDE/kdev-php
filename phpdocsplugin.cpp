@@ -35,6 +35,9 @@
 #include <language/duchain/classdeclaration.h>
 #include <language/duchain/functiondeclaration.h>
 #include <language/duchain/classmemberdeclaration.h>
+#include <language/duchain/classfunctiondeclaration.h>
+
+#include <QtCore/QFile>
 
 #include "phpdocumentation.h"
 
@@ -44,9 +47,69 @@ K_PLUGIN_FACTORY(PhpDocsFactory, registerPlugin<PhpDocsPlugin>(); )
 K_EXPORT_PLUGIN(PhpDocsFactory(KAboutData("kdevphpdocs","kdevphpdocs", ki18n("PhpDocs"), "0.1", ki18n("Check PHP.net documentation"), KAboutData::License_GPL).addAuthor(ki18n("Milian Wolff"), ki18n("Maintainer"), "mail@milianw.de", "http://milianw.de")))
 
 PhpDocsPlugin::PhpDocsPlugin(QObject* parent, const QVariantList& args)
-    : IPlugin(PhpDocsFactory::componentData(), parent)
+    : IPlugin(PhpDocsFactory::componentData(), parent), m_useRemoteDocumentation(false)
 {
     Q_UNUSED(args);
+}
+
+///TODO: possibly return multiple filenames (i.e. fallbacks) when doing local lookups
+QString PhpDocsPlugin::getDocumentationFilename( KDevelop::Declaration* dec ) const
+{
+    QString fname;
+
+    //TODO: most of the SPL stuff is not found for me in the deb package php-doc
+    //      => check newer documentation or give a fallback to ref.spl.html
+    if ( ClassFunctionDeclaration* fdec = dynamic_cast<ClassFunctionDeclaration*>( dec ) ) {
+        // class methods -> php.net/function.CLASS-METHOD
+        if ( dec->context() && dec->context()->type() == DUContext::Class && dec->context()->owner() ) {
+            QString className = dec->context()->owner()->identifier().toString();
+
+            if ( fdec->isConstructor() ) {
+                fname = "construct";
+            } else if ( fdec->isDestructor() ) {
+                fname = "destruct";
+            } else {
+                fname = fdec->identifier().toString();
+            }
+
+            fname = "function." + className + fname;
+        }
+    } else if ( dynamic_cast<ClassDeclaration*>(dec) ) {
+        ///TODO: check with current documentation
+        fname = "ref." + dec->identifier().toString();
+    } else if ( dynamic_cast<FunctionDeclaration*>(dec) ) {
+        fname = "function." + dec->identifier().toString();
+    }
+    // check for superglobals
+    else if ( dec->identifier() == Identifier("GLOBALS") ||
+                dec->identifier() == Identifier("php_errormsg") ||
+                dec->identifier() == Identifier("HTTP_RAW_POST_DATA") ||
+                dec->identifier() == Identifier("http_response_header") ||
+                dec->identifier() == Identifier("argc") ||
+                dec->identifier() == Identifier("argv") ) {
+        ///TODO: check with current documentation
+//         fname = QString("reserved.variables.") + dec->identifier().toString();
+        fname = "reserved.variables.html";
+    } else if ( dec->identifier() == Identifier("_SERVER") ||
+                dec->identifier() == Identifier("_GET") ||
+                dec->identifier() == Identifier("_POST") ||
+                dec->identifier() == Identifier("_FILES") ||
+                dec->identifier() == Identifier("_REQUEST") ||
+                dec->identifier() == Identifier("_SESSION") ||
+                dec->identifier() == Identifier("_ENV") ||
+                dec->identifier() == Identifier("_COOKIE") ) {
+//         fname = QString("reserved.variables.") + dec->identifier().toString().mid(1);
+        ///TODO: check with current documentation
+        fname = "reserved.variables.html";
+    }
+
+    if ( !fname.isEmpty() ) {
+        fname = fname.toLower();
+        fname.replace('_', '-');
+        fname.append(".html");
+    }
+
+    return fname;
 }
 
 KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForDeclaration( Declaration* dec )
@@ -56,42 +119,25 @@ KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForDeclaration( Declara
 
         // filter non global or non-php declarations
         if ( dec->topContext()->url() != IndexedString("PHPInternalFunctions") ) {
-            kDebug() << "topcontext is not internal functions:" << dec->topContext()->url().str();
             return KSharedPtr<IDocumentation>();
         }
 
-        KUrl url("http://php.net/");
-
-        if ( ClassMemberDeclaration* cdec = dynamic_cast<ClassMemberDeclaration*>( dec ) ) {
-            // classmember (methods and properties) -> php.net/CLASS.CLASSMEMBER
-            url.addPath( cdec->identifier().toString() + "." +
-                         dec->identifier().toString() );
-        } else if ( dynamic_cast<ClassDeclaration*>(dec) ||
-                    dynamic_cast<FunctionDeclaration*>(dec) ) {
-            // class -> php.net/CLASS
-            // function -> php.net/FUNCTION {
-            url.addPath( dec->identifier().toString() );
+        QString file = getDocumentationFilename( dec );
+        if ( file.isEmpty() ) {
+            return KSharedPtr<IDocumentation>();
         }
-        // check for superglobals
-        else if ( dec->identifier() == Identifier("GLOBALS") ||
-                  dec->identifier() == Identifier("php_errormsg") ||
-                  dec->identifier() == Identifier("HTTP_RAW_POST_DATA") ||
-                  dec->identifier() == Identifier("http_response_header") ||
-                  dec->identifier() == Identifier("argc") ||
-                  dec->identifier() == Identifier("argv") ) {
-            url.addPath( QString("reserved.variables.") + dec->identifier().toString() );
-        } else if ( dec->identifier() == Identifier("_SERVER") ||
-                    dec->identifier() == Identifier("_GET") ||
-                    dec->identifier() == Identifier("_POST") ||
-                    dec->identifier() == Identifier("_FILES") ||
-                    dec->identifier() == Identifier("_REQUEST") ||
-                    dec->identifier() == Identifier("_SESSION") ||
-                    dec->identifier() == Identifier("_ENV") ||
-                    dec->identifier() == Identifier("_COOKIE") ) {
-            url.addPath( QString("reserved.variables.") + dec->identifier().toString().mid(1) );
+
+        KUrl url;
+        ///TODO: make configurable
+        if ( m_useRemoteDocumentation ) {
+            url.setUrl("http://php.net/");
         } else {
-            kDebug() << "looks like nothing we can provide documentation for:" << dec->toString();
-            ///TODO: constants
+            url.setUrl("file:///usr/share/doc/php-doc/html/");
+        }
+        url.addPath( file );
+
+        if ( !m_useRemoteDocumentation && !QFile::exists( url.toLocalFile() ) ) {
+            kDebug() << "cannot find local documentation file" << url << "for" << dec->toString();
             return KSharedPtr<IDocumentation>();
         }
 

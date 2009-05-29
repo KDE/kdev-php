@@ -33,6 +33,10 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
   public:
     PhpDocsPlugin(QObject *parent, const QVariantList & args= QVariantList());
     virtual KSharedPtr< KDevelop::IDocumentation > documentationForDeclaration (KDevelop::Declaration*);
+
+  private:
+    QString getDocumentationFilename(KDevelop::Declaration*) const;
+    bool m_useRemoteDocumentation;
 };
 
 #endif // PHPDOCSPLUGIN_H
