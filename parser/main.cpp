@@ -96,7 +96,6 @@ private:
 
         Php::StartAst* ast = 0;
         if (!m_session.parse(&ast)) {
-            exit(EXIT_FAILURE);
             qerr << "parse error" << endl;
             exit(255);
         } else {
