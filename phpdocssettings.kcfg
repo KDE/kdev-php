@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE kcfg SYSTEM "http://www.kde.org/standards/kcfg/1.0/kcfg.dtd">
+<kcfg>
+  <kcfgfile name="kdeveloprc"/>
+  <group name="PHP Documentation">
+    <entry name="PhpDocLocation" key="PhpDocLocation" type="Url">
+        <default>http://php.net</default>
+        <label>Specifies the location of the PHP documentation to use.</label>
+        <whatsthis>Make sure local copies are downloaded in HTML format with many files.
+        </whatsthis>
+    </entry>
+  </group>
+</kcfg>

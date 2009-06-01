@@ -1,0 +1,12 @@
+[Desktop Entry]
+Icon=kdevelop
+Type=Service
+ServiceTypes=KCModule
+
+X-KDE-ModuleType=Library
+X-KDE-Library=kdevphpdocs_config
+X-KDE-FactoryName=kdevphpdocs_config
+X-KDE-ParentApp=kdevplatform
+X-KDE-ParentComponents=kdevplatform
+X-KDE-CfgDlgHierarchy=DOCUMENTATION
+Name=PHP Documentation
