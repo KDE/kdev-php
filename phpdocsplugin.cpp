@@ -40,6 +40,7 @@
 #include <QtCore/QFile>
 
 #include "phpdocumentation.h"
+#include "phpdocssettings.h"
 
 using namespace KDevelop;
 
@@ -47,7 +48,7 @@ K_PLUGIN_FACTORY(PhpDocsFactory, registerPlugin<PhpDocsPlugin>(); )
 K_EXPORT_PLUGIN(PhpDocsFactory(KAboutData("kdevphpdocs","kdevphpdocs", ki18n("PhpDocs"), "0.1", ki18n("Check PHP.net documentation"), KAboutData::License_GPL).addAuthor(ki18n("Milian Wolff"), ki18n("Maintainer"), "mail@milianw.de", "http://milianw.de")))
 
 PhpDocsPlugin::PhpDocsPlugin(QObject* parent, const QVariantList& args)
-    : IPlugin(PhpDocsFactory::componentData(), parent), m_useRemoteDocumentation(false)
+    : IPlugin(PhpDocsFactory::componentData(), parent)
 {
     Q_UNUSED(args);
 }
@@ -127,18 +128,13 @@ KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForDeclaration( Declara
             return KSharedPtr<IDocumentation>();
         }
 
-        KUrl url;
-        ///TODO: make configurable
-        if ( m_useRemoteDocumentation ) {
-            url.setUrl("http://php.net/");
-        } else {
-            url.setUrl("file:///usr/share/doc/php-doc/html/");
-        }
+        KUrl url = PhpDocsSettings::phpDocLocation();
+        kDebug() << url;
+        kDebug() << PhpDocsSettings::self();
         url.addPath( file );
-
-        if ( !m_useRemoteDocumentation && !QFile::exists( url.toLocalFile() ) ) {
-            kDebug() << "cannot find local documentation file" << url << "for" << dec->toString();
-            return KSharedPtr<IDocumentation>();
+        if ( url.isLocalFile() && !QFile::exists( url.toLocalFile() ) ) {
+            kDebug() << "bad path" << url << "for documentation of" << dec->toString() << "falling back to http://php.net/";
+            url.setUrl("http://php.net/" + file);
         }
 
         kDebug() << "php documentation located at " << url << "for" << dec->toString();

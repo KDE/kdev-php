@@ -36,7 +36,6 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
 
   private:
     QString getDocumentationFilename(KDevelop::Declaration*) const;
-    bool m_useRemoteDocumentation;
 };
 
 #endif // PHPDOCSPLUGIN_H
