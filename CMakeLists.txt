@@ -23,6 +23,8 @@ set(kdevphpdocs_settings_SRCS
 
 kde4_add_kcfg_files(kdevphpdocs_settings_SRCS phpdocssettings.kcfgc)
 
+install(FILES phpdocssettings.kcfg DESTINATION ${KCFG_INSTALL_DIR})
+
 ########## Documentation Plugin #####
 
 set(kdevphpdocs_SRCS
@@ -30,8 +32,6 @@ set(kdevphpdocs_SRCS
     phpdocsplugin.cpp
     ${kdevphpdocs_settings_SRCS}
 )
-
-kde4_add_kcfg_files(kdevphpdocs_SRCS phpdocssettings.kcfgc)
 
 kde4_add_plugin(kdevphpdocs ${kdevphpdocs_SRCS})
 
