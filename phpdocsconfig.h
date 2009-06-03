@@ -25,8 +25,13 @@
 
 #include "ui_phpdocsconfig.h"
 
+namespace Ui
+{
+    class PhpDocsConfigUI;
+}
+
 class PhpDocsConfig
-    : public KCModule, public Ui::PhpDocsConfigUI
+    : public KCModule
 {
   Q_OBJECT
 
@@ -34,9 +39,8 @@ class PhpDocsConfig
     explicit PhpDocsConfig(QWidget *parent = 0, const QVariantList &args = QVariantList());
     virtual ~PhpDocsConfig();
 
-    virtual void save();
-    virtual void load();
-    virtual void defaults();
+  private:
+        Ui::PhpDocsConfigUI* m_configWidget;
 };
 
 #endif // PHPDOCS_CONFIG_H

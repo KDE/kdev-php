@@ -36,6 +36,7 @@
 #include <QtCore/QStringList>
 
 #include "phpdocssettings.h"
+#include "ui_phpdocsconfig.h"
 
 K_PLUGIN_FACTORY(PhpDocsConfigFactory, registerPlugin<PhpDocsConfig>();)
 K_EXPORT_PLUGIN(PhpDocsConfigFactory("kdevphpdocs_config"))
@@ -43,46 +44,24 @@ K_EXPORT_PLUGIN(PhpDocsConfigFactory("kdevphpdocs_config"))
 PhpDocsConfig::PhpDocsConfig(QWidget *parent, const QVariantList &args)
     : KCModule(PhpDocsConfigFactory::componentData(), parent, args)
 {
-    setupUi(this);
+    QVBoxLayout * l = new QVBoxLayout( this );
 
-    ///TODO: how to use this?
-    addConfig( PhpDocsSettings::self(), this );
+    QWidget* w = new QWidget;
+    m_configWidget = new Ui::PhpDocsConfigUI;
+    m_configWidget->setupUi( w );
 
-    kcfg_phpDocLocation->setMode( KFile::Directory | KFile::ExistingOnly );
+    m_configWidget->kcfg_phpDocLocation->setMode( KFile::Directory | KFile::ExistingOnly );
 
-    connect( kcfg_phpDocLocation, SIGNAL(textChanged(QString)),
-             this, SLOT(changed()) );
-    connect( kcfg_phpDocLocation, SIGNAL(urlSelected(KUrl)),
-             this, SLOT(changed()) );
+    l->addWidget( w );
+
+    addConfig( PhpDocsSettings::self(), w );
 
     load();
 }
 
 PhpDocsConfig::~PhpDocsConfig()
 {
-}
-
-void PhpDocsConfig::save()
-{
-    ///TODO: can't this be done automatically with KConfigXT? i.e. the mapping .ui <-> .kcfg
-    PhpDocsSettings::self()->phpDocLocationItem()->setValue( kcfg_phpDocLocation->url() );
-    PhpDocsSettings::self()->writeConfig();
-    KCModule::save();
-    kDebug() << PhpDocsSettings::phpDocLocation() << PhpDocsSettings::self();
-}
-
-void PhpDocsConfig::load()
-{
-    PhpDocsSettings::self()->readConfig();
-    kcfg_phpDocLocation->setUrl( PhpDocsSettings::phpDocLocation() );
-    KCModule::load();
-}
-
-void PhpDocsConfig::defaults()
-{
-    PhpDocsSettings::self()->setDefaults();
-    kcfg_phpDocLocation->setUrl( PhpDocsSettings::phpDocLocation() );
-    KCModule::defaults();
+    delete m_configWidget;
 }
 
 #include "phpdocsconfig.moc"
