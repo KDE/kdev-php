@@ -36,6 +36,9 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
 
   private:
     QString getDocumentationFilename(KDevelop::Declaration*) const;
+
+  private slots:
+    void readConfig();
 };
 
 #endif // PHPDOCSPLUGIN_H

@@ -35,7 +35,8 @@ set(kdevphpdocs_SRCS
 
 kde4_add_plugin(kdevphpdocs ${kdevphpdocs_SRCS})
 
-target_link_libraries(kdevphpdocs ${KDE4_KDEUI_LIBS} ${KDE4_KTEXTEDITOR_LIBS} ${KDE4_KHTML_LIBS}
+target_link_libraries(kdevphpdocs
+                        ${KDE4_KDEUI_LIBS} ${KDE4_KTEXTEDITOR_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KUTILS_LIBS}
                       kdevplatformlanguage kdevplatforminterfaces)
 
 install(TARGETS kdevphpdocs DESTINATION ${PLUGIN_INSTALL_DIR})

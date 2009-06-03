@@ -29,6 +29,7 @@
 #include <KAboutData>
 #include <KDebug>
 #include <KFile>
+#include <KSettings/Dispatcher>
 
 #include <QtGui/QBoxLayout>
 #include <QtGui/QLabel>
@@ -57,6 +58,16 @@ PhpDocsConfig::PhpDocsConfig(QWidget *parent, const QVariantList &args)
     addConfig( PhpDocsSettings::self(), w );
 
     load();
+}
+
+void PhpDocsConfig::save()
+{
+    KCModule::save();
+
+    // looks like we have to force a write so readConfig() can get the new values
+    PhpDocsSettings::self()->writeConfig();
+
+    KSettings::Dispatcher::reparseConfiguration( componentData().componentName() );
 }
 
 PhpDocsConfig::~PhpDocsConfig()

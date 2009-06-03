@@ -24,6 +24,8 @@
 #include <KPluginLoader>
 #include <KAboutData>
 #include <KMimeType>
+#include <KSettings/Dispatcher>
+#include <KUrl>
 
 #include <interfaces/idocumentation.h>
 
@@ -51,6 +53,18 @@ PhpDocsPlugin::PhpDocsPlugin(QObject* parent, const QVariantList& args)
     : IPlugin(PhpDocsFactory::componentData(), parent)
 {
     Q_UNUSED(args);
+
+    readConfig();
+
+    KSettings::Dispatcher::registerComponent( KComponentData("kdevphpdocs_config"),
+                                              this, "readConfig" );
+}
+
+void PhpDocsPlugin::readConfig()
+{
+    // since PhpDocsSettings pointer in this plugin is distinct from the one in the KCM
+    // we have to trigger reading manually
+    PhpDocsSettings::self()->readConfig();
 }
 
 ///TODO: possibly return multiple filenames (i.e. fallbacks) when doing local lookups
