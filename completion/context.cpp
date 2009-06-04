@@ -105,10 +105,12 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             // even though we are not inside it's {...} area
             m_memberAccessOperation = ClassExtendsChoose;
             // interfaces can only extend interfaces
-            LOCKDUCHAIN;
-            if (ClassDeclaration* klass = dynamic_cast<ClassDeclaration*>(m_duContext->owner())) {
-                if (klass->classType() == ClassDeclarationData::Interface) {
-                    m_memberAccessOperation = InterfaceChoose;
+            {
+                LOCKDUCHAIN;
+                if (ClassDeclaration* klass = dynamic_cast<ClassDeclaration*>(m_duContext->owner())) {
+                    if (klass->classType() == ClassDeclarationData::Interface) {
+                        m_memberAccessOperation = InterfaceChoose;
+                    }
                 }
             }
             forbidLastIdentifier(m_text, "extends");
