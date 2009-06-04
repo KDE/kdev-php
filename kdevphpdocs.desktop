@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Comment=This plugin integrates PHP.net online documentation.
+Comment[es]=Este complemento integra la documentación en línea de PHP.net.
 Comment[fr]=Ce module intègre la documentation de PHP.net en ligne.
 Comment[pt]=Este 'plugin' integra a documentação 'online' do PHP.net.
 Comment[pt_BR]=Este 'plugin' integra a documentação 'online' do PHP.net.
