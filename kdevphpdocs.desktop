@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Comment=This plugin integrates PHP.net online documentation.
+Comment[ca]=Aquest connector integra la documentació en línia de PHP.net.
 Comment[es]=Este complemento integra la documentación en línea de PHP.net.
 Comment[fr]=Ce module intègre la documentation de PHP.net en ligne.
 Comment[pt]=Este 'plugin' integra a documentação 'online' do PHP.net.
@@ -13,6 +14,7 @@ Name=KDevPhpDocs
 Name[sv]=KDevelop PHP-dokument
 Name[x-test]=xxKDevPhpDocsxx
 GenericName=PHP Documentation
+GenericName[ca]=Documentació PHP
 GenericName[es]=Documentación PHP
 GenericName[fr]=Documentation PHP
 GenericName[nds]=PHP-Dokmentatschoon
