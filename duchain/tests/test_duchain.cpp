@@ -808,7 +808,7 @@ void TestDUChain::testDefaultFunctionParam()
     AbstractFunctionDeclaration* fun = dynamic_cast<AbstractFunctionDeclaration*>(top->localDeclarations().first());
     QVERIFY(fun);
 
-    QCOMPARE(fun->defaultParametersSize(), 2);
+    QCOMPARE(fun->defaultParametersSize(), 2u);
     QCOMPARE(fun->defaultParameters()[0].str(), QString("false"));
     QCOMPARE(fun->defaultParameters()[1].str(), QString("null"));
 }
@@ -982,7 +982,7 @@ void TestDUChain::testNull()
 
 void TestDUChain::testArray()
 {
-    QByteArray method("<? $a = array(); $b = array(1, 2, 3);");
+    QByteArray method("<? $a = array(); $b = array(1, 2, 3); $b[] = 'test';");
 
     TopDUContext* top = parse(method, DumpAll);
     DUChainReleaser releaseTop(top);
@@ -990,6 +990,8 @@ void TestDUChain::testArray()
 
     QVERIFY(top->localDeclarations().at(0)->type<IntegralType>()->dataType() == IntegralType::TypeArray);
     QVERIFY(top->localDeclarations().at(1)->type<IntegralType>()->dataType() == IntegralType::TypeArray);
+    // $b[] = 'test'; is not a redeclaration of b! Esp. it's type should not change.
+    QCOMPARE(top->findDeclarations(Identifier("b")).count(), 1);
 }
 
 void TestDUChain::testFunctionDocBlock()
