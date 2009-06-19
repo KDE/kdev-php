@@ -312,6 +312,11 @@ $classes['global']['functions'][] = array(
     'desc' => "Return an instance of the Directory class"
 );
 
+$skipFunctions = array();
+// remove delete() function which only acts as a pointer to unlink
+// in the documentation but does not actually exist as a alias in PHP
+$skipFunctions[] = 'delete';
+
 /*
  Here ends the hackings...
  */
@@ -326,7 +331,8 @@ function constTypeValue($ctype) {
     } else if ($ctype == 'float') {
         return "0.0";
     } else {
-        die("unknown constType: $ctype");
+        // default to integer const type
+        return "0";
     }
 }
 
@@ -334,6 +340,9 @@ function prepareComment($comment) {
     return "/**\n * ".preg_replace("#^\s+#m", " * ", trim($comment))."\n **/\n";
 }
 
+function sortFunctions($a, $b) {
+    return strnatcasecmp($a['name'], $b['name']);
+}
 
 $fileHeader  = "<?php\n";
 $fileHeader .= "// THIS FILE IS GENERATED\n";
@@ -343,7 +352,6 @@ $declarationCount = 0;
 $out = $fileHeader;
 
 // make sure the output it somehow ordered to prevent huge svn diffs
-var_dump($variables);
 ksort($variables);
 ksort($classes);
 ksort($constants);
@@ -398,7 +406,11 @@ foreach ($classes as $class => $i) {
 
     $indent = '';
     if ($class != 'global') $indent = '    ';
+    usort($i['functions'], 'sortFunctions');
     foreach ($i['functions'] as $f) {
+        if ( $class == 'global' && in_array($f['name'], $skipFunctions) ) {
+            continue;
+        }
         $out .= "$indent/**\n";
         if ($f['desc']) {
             $out .= "$indent * ";
