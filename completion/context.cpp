@@ -79,6 +79,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     ifDebug(log("non-processed text: " + m_text);)
 
     m_text = clearComments(m_text);
+    m_text = clearHashComments(m_text);
     m_text = clearStrings(m_text);
     m_text = stripFinalWhitespace(m_text);
 

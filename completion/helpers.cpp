@@ -32,6 +32,8 @@
 #include <QTextFormat>
 #include <QStringList>
 #include <language/duchain/types/integraltype.h>
+#include <language/duchain/stringhelpers.h>
+#include <language/duchain/safetycounter.h>
 
 using namespace KDevelop;
 namespace Php
@@ -284,6 +286,35 @@ QStringList getMethodTokens(QString text)
     }
 
     return tokens;
+}
+
+///TODO: remove this once clearHashComments is moved to kdevplatform
+void fillString( QString& str, int start, int end, QChar replacement ) {
+  for( int a = start; a < end; a++) str[a] = replacement;
+}
+
+///TODO: move to kdevplatform since other language will need that as well
+QString clearHashComments( QString str, QChar replacement ) {
+  const QString withoutStrings = clearStrings(str, '$');
+
+  SafetyCounter s( 1000 );
+  int lastPos = 0;
+  int pos;
+  const int len = str.length();
+
+  while ( (pos = withoutStrings.indexOf( "#", lastPos )) != -1 ) {
+    if ( !s ) return str;
+    int i = withoutStrings.indexOf( '\n', pos );
+    if ( i != -1 && i < len ) {
+      fillString( str, pos, i+1, replacement );
+      lastPos = i+1;
+    } else {
+      fillString( str, pos, len, replacement );
+      break;
+    }
+  }
+
+  return str;
 }
 
 }

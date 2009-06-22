@@ -72,6 +72,7 @@ private slots:
     void updateImplements();
     void avoidCircularInheritance();
     void unsureType();
+    void completionAfterHashComment();
 };
 
 }

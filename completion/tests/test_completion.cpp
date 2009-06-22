@@ -801,6 +801,20 @@ void TestCompletion::unsureType()
     }
 }
 
+void TestCompletion::completionAfterHashComment()
+{
+    TopDUContext* top = parse("<?php\n", DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    PhpCompletionTester tester(top, "<?php\n# SOMECOMMENT\n");
+
+    kDebug() << tester.names;
+    QVERIFY(tester.items.count() > 0);
+
+    // TODO: compare to global completion list
+}
+
 }
 
 #include "test_completion.moc"
