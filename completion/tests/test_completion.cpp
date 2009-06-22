@@ -815,6 +815,23 @@ void TestCompletion::completionAfterHashComment()
     // TODO: compare to global completion list
 }
 
+void TestCompletion::phpStartTag()
+{
+    TopDUContext* top = parse("<?php\n", DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    foreach ( const QString &code, QStringList() << "<?" << "<?p" << "<?ph" << "<?php" ) {
+        PhpCompletionTester tester(top, code);
+
+        QVERIFY(tester.items.isEmpty());
+    }
+
+    PhpCompletionTester tester(top, "<?php ");
+
+    QVERIFY(!tester.items.isEmpty());
+}
+
 }
 
 #include "test_completion.moc"

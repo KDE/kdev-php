@@ -73,6 +73,7 @@ private slots:
     void avoidCircularInheritance();
     void unsureType();
     void completionAfterHashComment();
+    void phpStartTag();
 };
 
 }

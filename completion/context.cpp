@@ -78,6 +78,11 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
 
     ifDebug(log("non-processed text: " + m_text);)
 
+    if ( m_text.endsWith("<?") || m_text.endsWith("<?php", Qt::CaseInsensitive) ) {
+        m_valid = false;
+        return;
+    }
+
     m_text = clearComments(m_text);
     m_text = clearHashComments(m_text);
     m_text = clearStrings(m_text);
