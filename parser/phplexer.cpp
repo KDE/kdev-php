@@ -368,7 +368,11 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_DIV_ASSIGN;
             } else if ((it + 1)->unicode() == '/') {
                 //accept COMMENT inside StringVariableCurly too, as php does
-                token = Parser::Token_COMMENT;
+                if ((it + 2)->unicode() == '/') {
+                    token = Parser::Token_DOC_COMMENT;
+                } else {
+                    token = Parser::Token_COMMENT;
+                }
                 while (m_curpos < m_contentSize && it->unicode() != '\n' &&
                         !((it + 1)->unicode() == '?' && (it + 2)->unicode() == '>')) {
                     it++;

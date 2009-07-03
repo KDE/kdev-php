@@ -996,50 +996,66 @@ void TestDUChain::testArray()
 
 void TestDUChain::testFunctionDocBlock()
 {
-    TopDUContext* top = parse("<? /**\n *Foo\n **/\nfunction foo() {} ", DumpNone);
     {
+        TopDUContext* top = parse("<? /**\n *Foo\n **/\nfunction foo() {} ", DumpNone);
         DUChainReleaser releaseTop(top);
         DUChainWriteLocker lock(DUChain::lock());
         QCOMPARE(top->localDeclarations().first()->comment(), QByteArray("Foo"));
     }
 
-    top = parse("<? /**\n *Bar\n **/\nclass A { /**\n *Foo\n **/\nfunction foo() {} }", DumpNone);
     {
+        TopDUContext* top = parse("<? /**\n *Bar\n **/\nclass A { /**\n *Foo\n **/\nfunction foo() {} }", DumpNone);
         DUChainReleaser releaseTop(top);
         DUChainWriteLocker lock(DUChain::lock());
         QCOMPARE(top->localDeclarations().first()->comment(), QByteArray("Bar"));
         QCOMPARE(top->childContexts().first()->localDeclarations().first()->comment(), QByteArray("Foo"));
     }
 
-    top = parse("<? /**\n *Foo\n **/\ninterface A { }", DumpNone);
     {
+        TopDUContext* top = parse("<? /**\n *Foo\n **/\ninterface A { }", DumpNone);
         DUChainReleaser releaseTop(top);
         DUChainWriteLocker lock(DUChain::lock());
         QCOMPARE(top->localDeclarations().first()->comment(), QByteArray("Foo"));
     }
 
-    top = parse("<? class A { /**\n *Foo\n **/\npublic $foo; }", DumpNone);
     {
+        TopDUContext* top = parse("<? class A { /**\n *Foo\n **/\npublic $foo; }", DumpNone);
         DUChainReleaser releaseTop(top);
         DUChainWriteLocker lock(DUChain::lock());
         QCOMPARE(top->childContexts().first()->localDeclarations().first()->comment(), QByteArray("Foo"));
     }
 
-    top = parse("<? class A { /**\n *Foo\n **/\nconst FOO=0; }", DumpNone);
     {
+        TopDUContext* top = parse("<? class A { /**\n *Foo\n **/\nconst FOO=0; }", DumpNone);
         DUChainReleaser releaseTop(top);
         DUChainWriteLocker lock(DUChain::lock());
         QCOMPARE(top->childContexts().first()->localDeclarations().first()->comment(), QByteArray("Foo"));
+    }
+
+    {
+        TopDUContext* top = parse("<?\n/// Foo\nfunction foo() {} ", DumpNone);
+        DUChainReleaser releaseTop(top);
+        DUChainWriteLocker lock(DUChain::lock());
+        QCOMPARE(top->localDeclarations().first()->comment(), QByteArray(" Foo"));
     }
 }
 
 void TestDUChain::testVariableDocBlock()
 {
-    TopDUContext* top = parse("<? /**\n *Foo\n **/\n$a = 0; /**\n *Foo\n **/\nstatic $b;", DumpAll);
-    DUChainReleaser releaseTop(top);
-    DUChainWriteLocker lock(DUChain::lock());
-    QCOMPARE(top->localDeclarations().first()->comment(), QByteArray("Foo"));
-    QCOMPARE(top->localDeclarations().at(1)->comment(), QByteArray("Foo"));
+    {
+        TopDUContext* top = parse("<? /**\n *Foo\n **/\n$a = 0; /**\n *Foo\n **/\nstatic $b;", DumpAll);
+        DUChainReleaser releaseTop(top);
+        DUChainWriteLocker lock(DUChain::lock());
+        QCOMPARE(top->localDeclarations().first()->comment(), QByteArray("Foo"));
+        QCOMPARE(top->localDeclarations().at(1)->comment(), QByteArray("Foo"));
+    }
+    {
+        TopDUContext* top = parse("<? /// Foo\n$a = 0; /// Foo\nstatic $b;", DumpAll);
+        DUChainReleaser releaseTop(top);
+        DUChainWriteLocker lock(DUChain::lock());
+        QCOMPARE(top->localDeclarations().first()->comment(), QByteArray(" Foo"));
+        QCOMPARE(top->localDeclarations().at(1)->comment(), QByteArray(" Foo"));
+    }
 }
 
 void TestDUChain::testFunctionDocBlockParams()
