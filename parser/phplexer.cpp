@@ -373,13 +373,34 @@ int Lexer::nextTokenKind()
                 } else {
                     token = Parser::Token_COMMENT;
                 }
-                while (m_curpos < m_contentSize && it->unicode() != '\n' &&
+                while (m_curpos < m_contentSize &&
                         !((it + 1)->unicode() == '?' && (it + 2)->unicode() == '>')) {
+                    if ( it->unicode() == '\n' ) {
+                        createNewline(m_curpos);
+                        if ( token == Parser::Token_COMMENT ) {
+                            break;
+                        } else {
+                            // lookahead to check whether this doc comment spans multiple lines
+                            QChar* it2 = it + 1;
+                            int pos = m_curpos + 1;
+                            while ( pos < m_contentSize && (it2)->isSpace() && (it2)->unicode() != '\n' ) {
+                                ++it2;
+                                ++pos;
+                            }
+                            if ( it2->unicode() == '/' && (it2 + 1)->unicode() == '/'
+                                 && (it2 + 2)->unicode() == '/' ) {
+                                // seems to be a multi-line doc-comment
+                                it = it2 + 2;
+                                m_curpos = pos + 2;
+                                continue;
+                            } else {
+                                // not a multi-line doc-comment
+                                break;
+                            }
+                        }
+                    }
                     it++;
                     m_curpos++;
-                }
-                if (it->unicode() == '\n') {
-                    createNewline(m_curpos);
                 }
             } else if ((it + 1)->unicode() == '*') {
                 //accept COMMENT inside StringVariableCurly too, as php does

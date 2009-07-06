@@ -1033,10 +1033,18 @@ void TestDUChain::testFunctionDocBlock()
     }
 
     {
-        TopDUContext* top = parse("<?\n/// Foo\nfunction foo() {} ", DumpNone);
+        TopDUContext* top = parse("<?\n/// Foo\n/// Bar\nfunction foo() {} ", DumpNone);
         DUChainReleaser releaseTop(top);
         DUChainWriteLocker lock(DUChain::lock());
-        QCOMPARE(top->localDeclarations().first()->comment(), QByteArray(" Foo"));
+        QCOMPARE(top->localDeclarations().first()->comment(), QByteArray(" Foo\n Bar"));
+    }
+
+    {
+        // same as above but with indendation
+        TopDUContext* top = parse("<?\n  /// Foo\n  /// Bar\n  function foo() {} ", DumpNone);
+        DUChainReleaser releaseTop(top);
+        DUChainWriteLocker lock(DUChain::lock());
+        QCOMPARE(top->localDeclarations().first()->comment(), QByteArray(" Foo\n Bar"));
     }
 }
 
