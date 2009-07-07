@@ -88,9 +88,6 @@ LanguageSupport::~LanguageSupport()
 
     // Remove any documents waiting to be parsed from the background paser.
     core()->languageController()->backgroundParser()->clear(this);
-
-    //delete m_highlighting;
-    //m_highlighting = 0;
 }
 
 KDevelop::ParseJob *LanguageSupport::createParseJob(const KUrl &url)
