@@ -61,10 +61,6 @@ public:
     /*the code highlighter*/
     const KDevelop::ICodeHighlighting* codeHighlighting() const;
 
-private slots:
-    void projectOpened(KDevelop::IProject *project);
-    void projectClosed();
-
 private:
     KDevelop::CodeHighlighting* m_highlighting;
     static LanguageSupport* m_self;

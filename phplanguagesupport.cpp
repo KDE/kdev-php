@@ -77,16 +77,6 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
 
     CodeCompletionModel* ccModel = new CodeCompletionModel(this);
     new KDevelop::CodeCompletion(this, ccModel, name());
-
-    /*
-        //TODO: enable this
-        connect( core()->projectController(),
-                 SIGNAL( projectOpened(KDevelop::IProject*) ),
-                 this, SLOT( projectOpened(KDevelop::IProject*) ) );
-        connect( core()->projectController(),
-                 SIGNAL( projectClosed() ),
-                 this, SLOT( projectClosed() ) );
-    */
 }
 
 LanguageSupport::~LanguageSupport()
@@ -106,22 +96,6 @@ LanguageSupport::~LanguageSupport()
 KDevelop::ParseJob *LanguageSupport::createParseJob(const KUrl &url)
 {
     return new ParseJob(url, this);
-}
-
-void LanguageSupport::projectOpened(KDevelop::IProject *project)
-{
-    foreach(KDevelop::IDocument* doc, core()->documentController()->openDocuments()) {
-        if (project->inProject(doc->url())) {
-            QString path = doc->url().path();
-
-            core()->languageController()->backgroundParser()->addDocument(doc->url());
-        }
-    }
-}
-
-void LanguageSupport::projectClosed()
-{
-    // FIXME This should remove the project files from the backgroundparser
 }
 
 QString LanguageSupport::name() const
