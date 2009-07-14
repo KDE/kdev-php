@@ -239,6 +239,8 @@ void ParseJob::run()
         } else {
             file->setModificationRevision(KDevelop::ModificationRevision(lastModified, revisionToken()));
         }
+
+        DUChain::self()->updateContextEnvironment( chain->topContext(), file.data() );
     } else {
         ReferencedTopDUContext top;
         {
