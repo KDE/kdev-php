@@ -19,7 +19,6 @@
  ***************************************************************************/
 #include "helper.h"
 
-#include <KIO/NetAccess>
 #include <KParts/MainWindow>
 #include <KLocalizedString>
 
@@ -189,47 +188,66 @@ CommonScalarAst* findCommonScalar(AstNode* node)
     return visitor.node();
 }
 
-
-bool includeExists(const IndexedString& url)
+bool includeExists(const KUrl &url)
 {
     {
         DUChainReadLocker lock(DUChain::lock());
+        ///TODO: this may load the chain into memory, do we really want that here?
         if (DUChain::self()->chainForDocument(url)) {
             return true;
         }
     }
-    QWidget *w = 0;
-    if (ICore::self() && ICore::self()->uiController()) w = ICore::self()->uiController()->activeMainWindow();
-    if (KIO::NetAccess::exists(url.toUrl(), KIO::NetAccess::DestinationSide, w)) {
-        return true;
+    if ( url.isLocalFile() ) {
+        return QFile::exists(url.toLocalFile());
+    } else {
+        return false;
     }
-    return false;
+}
+
+KUrl getUrlForBase(const QString &includeFile, const KUrl &baseUrl) {
+    KUrl url = baseUrl;
+    if ( includeFile[0] == '/' ) {
+        url.setPath(includeFile);
+    } else {
+        url.addPath(includeFile);
+    }
+    return url;
 }
 
 IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl)
 {
-    //look for file relative to current file
-    QString currentDir = currentUrl.path();
-    currentDir = currentDir.left(currentDir.lastIndexOf('/') + 1);
-    IndexedString url(currentDir + includeFile);
-    if (includeExists(url)) return url;
-
-    //first look in own project
-    IProject* ownProject = ICore::self()->projectController()->findProjectForUrl(currentUrl);
-    if (ownProject) {
-        KUrl u = ownProject->projectItem()->url();
-        u.addPath(includeFile);
-        url = IndexedString(u.path());
-        if (includeExists(url)) return url;
+    // check remote files
+    if ( includeFile.startsWith("http://", Qt::CaseInsensitive) || includeFile.startsWith("ftp://", Qt::CaseInsensitive) ) {
+        // always expect remote includes to exist
+        return IndexedString(includeFile);
     }
 
-    //then in all open projects
+    KUrl url;
+
+    // look for file relative to current url
+    url = getUrlForBase(includeFile, currentUrl.upUrl());
+    if ( ICore::self()->projectController()->findProjectForUrl(url) || includeExists(url) ) {
+        return IndexedString(url);
+    }
+
+    // look for file relative to current project base
+    IProject* ownProject = ICore::self()->projectController()->findProjectForUrl(currentUrl);
+    if ( ownProject ) {
+        url = getUrlForBase(includeFile, ownProject->folder());
+        if ( ownProject->inProject(url) || includeExists(url) ) {
+            return IndexedString(url);
+        }
+    }
+
+    // now look in all other projects
     foreach(IProject* project, ICore::self()->projectController()->projects()) {
-        if (project == ownProject) continue;
-        KUrl u = project->projectItem()->url();
-        u.addPath(includeFile);
-        url = IndexedString(u.path());
-        if (includeExists(url)) return url;
+        if ( project == ownProject ) {
+            continue;
+        }
+        url = getUrlForBase(includeFile, project->folder());
+        if ( project->inProject(url) || includeExists(url) ) {
+            return IndexedString(url);
+        }
     }
 
     //TODO configurable include paths
