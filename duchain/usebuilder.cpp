@@ -20,6 +20,8 @@
 
 #include "usebuilder.h"
 
+#include <KLocalizedString>
+
 #include "editorintegrator.h"
 #include "expressionvisitor.h"
 #include "parsesession.h"
@@ -38,7 +40,7 @@ public:
 
 protected:
     virtual void usingDeclaration(AstNode* node, KDevelop::Declaration* decl) {
-        m_builder->newUse(node, decl);
+        m_builder->newCheckedUse(node, decl);
     }
 
 private:
@@ -70,7 +72,7 @@ void UseBuilder::visitClassImplements(ClassImplementsAst *node)
     if (node->implementsSequence) {
         const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
         do {
-            newUse(__it->element, findDeclarationImport(ClassDeclarationType, __it->element));
+            newCheckedUse(__it->element, findDeclarationImport(ClassDeclarationType, __it->element));
             __it = __it->next;
         } while (__it != __end);
     }
@@ -79,7 +81,7 @@ void UseBuilder::visitClassImplements(ClassImplementsAst *node)
 void UseBuilder::visitClassExtends(ClassExtendsAst *node)
 {
     UseBuilderBase::visitClassExtends(node);
-    newUse(node->identifier, findDeclarationImport(ClassDeclarationType, node->identifier));
+    newCheckedUse(node->identifier, findDeclarationImport(ClassDeclarationType, node->identifier));
 }
 
 void UseBuilder::visitExpr(ExprAst* node)
@@ -95,7 +97,7 @@ void UseBuilder::visitGlobalVar(GlobalVarAst* node)
     if (node->var) {
         Declaration* dec = findDeclarationImport(GlobalVariableDeclarationType, node->var);
         if (dec) {
-            newUse(node->var, dec);
+            newCheckedUse(node->var, dec);
         }
     }
     UseBuilderBase::visitGlobalVar(node);
@@ -125,10 +127,19 @@ void UseBuilder::visitCatchItem(CatchItemAst *node)
 {
     if (node->catchClass) {
         Declaration* dec = findDeclarationImport(ClassDeclarationType, node->catchClass);
-        newUse(node->catchClass, dec);
+        newCheckedUse(node->catchClass, dec);
     }
     UseBuilderBase::visitCatchItem(node);
 
 }
+
+void UseBuilder::newCheckedUse(AstNode* node, Declaration* declaration)
+{
+    if ( declaration && declaration->comment().contains("@deprecated") ) {
+        reportError(i18n("Usage of %1 is deprecated.", declaration->toString()), node, ProblemData::Hint);
+    }
+    UseBuilderBase::newUse(node, declaration);
+}
+
 
 }

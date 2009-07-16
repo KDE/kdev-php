@@ -44,7 +44,7 @@ public:
     UseBuilder(ParseSession* session);
     UseBuilder(EditorIntegrator* editor);
 
-    using UseBuilderBase::newUse;
+    void newCheckedUse(AstNode* node, KDevelop::Declaration* declaration);
 
 protected:
     virtual void visitParameter(ParameterAst *node);
