@@ -47,10 +47,12 @@ typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, Php::TypeBu
 class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase
 {
 public:
-    DeclarationBuilder(ParseSession* session) : m_lastVariableIdentifier(0), m_currentModifers(0) {
+    DeclarationBuilder(ParseSession* session)
+        :  m_findAssignmentTarget(false), m_isAssignmentToArrayMember(false), m_currentModifers(0) {
         setEditor(session);
     }
-    DeclarationBuilder(EditorIntegrator* editor) : m_lastVariableIdentifier(0), m_currentModifers(0) {
+    DeclarationBuilder(EditorIntegrator* editor)
+        : m_findAssignmentTarget(false), m_isAssignmentToArrayMember(false), m_currentModifers(0) {
         setEditor(editor);
     }
     virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, Php::AstNode* node,
@@ -67,16 +69,15 @@ protected:
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst *node);
     virtual void visitClassConstantDeclaration(ClassConstantDeclarationAst *node);
-    virtual void visitExpr(ExprAst *node);
     virtual void visitTopStatement(TopStatementAst* node);
+    virtual void visitAssignmentExpression(AssignmentExpressionAst* node);
     virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
-    virtual void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
+    virtual void visitVariable(VariableAst* node);
     virtual void visitFunctionCall(FunctionCallAst* node);
     virtual void visitStatement(StatementAst* node);
     virtual void visitStaticVar(StaticVarAst* node);
     virtual void visitGlobalVar(GlobalVarAst* node);
     virtual void visitCatchItem(CatchItemAst *node);
-    virtual void visitObjectProperty(Php::ObjectPropertyAst* node);
 
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const Php::MethodBodyAst* body) const {
@@ -91,8 +92,12 @@ protected:
     void openClassMemberDeclaration(Php::AstNode* node, const KDevelop::QualifiedIdentifier& name);
 
 private:
-    VariableIdentifierAst* m_lastVariableIdentifier;
-    IdentifierAst* m_lastIdentifier;
+    bool m_findAssignmentTarget;
+    bool m_isAssignmentToArrayMember;
+    KDevelop::QualifiedIdentifier m_assignmentTarget;
+    KDevelop::QualifiedIdentifier m_assignmentTargetParent;
+    AstNode* m_assignmentTargetNode;
+
     unsigned int m_currentModifers;
     QString m_lastTopStatementComment;
 
