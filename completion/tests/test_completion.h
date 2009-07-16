@@ -56,7 +56,6 @@ private slots:
     void codeModel();
     void projectFileClass();
     void variable();
-    void variableStarted();
     void nameNormalVariable();
     void nameClassMember();
     void exceptions();

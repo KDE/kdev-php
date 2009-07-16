@@ -419,21 +419,6 @@ void TestCompletion::variable()
     QVERIFY(searchDeclaration(tester.items, top->localDeclarations().at(1)));
 }
 
-void TestCompletion::variableStarted()
-{
-    //                 0         1         2         3         4         5         6         7
-    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A {  } $aaa = new A();");
-
-    TopDUContext* top = parse(method, DumpNone);
-    DUChainReleaser releaseTop(top);
-    DUChainWriteLocker lock(DUChain::lock());
-
-    PhpCompletionTester tester(top, "s");
-    QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
-    QVERIFY(searchDeclaration(tester.items, top->localDeclarations().at(1)));
-}
-
 void TestCompletion::nameNormalVariable()
 {
     //                 0         1         2         3         4         5         6         7
