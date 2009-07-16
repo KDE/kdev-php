@@ -76,12 +76,15 @@ protected:
 
     /// Report @p errorMsg with the range of @p node
     /// @see void reportError(const QString& errorMsg, KTextEditor::Range range);
-    void reportError(const QString& errorMsg, AstNode* node);
+    void reportError(const QString& errorMsg, AstNode* node,
+                        KDevelop::ProblemData::Severity severity = KDevelop::ProblemData::Error);
     /// Report @p errorMsg with the range encompassing all nodes in @p nodes
     /// @see void reportError(const QString& errorMsg, KTextEditor::Range range);
-    void reportError(const QString& errorMsg, QList<AstNode*> nodes);
+    void reportError(const QString& errorMsg, QList<AstNode*> nodes,
+                        KDevelop::ProblemData::Severity severity = KDevelop::ProblemData::Error);
     /// Report @p errorMsg with range @p range
-    void reportError(const QString& errorMsg, KTextEditor::Range range);
+    void reportError(const QString& errorMsg, KTextEditor::Range range,
+                        KDevelop::ProblemData::Severity severity = KDevelop::ProblemData::Error);
 
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);

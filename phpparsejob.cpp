@@ -295,10 +295,12 @@ bool ParseJob::hasParentDocument(const IndexedString &doc)
 }
 
 ProblemPointer ParseJob::createProblem(const QString &description, AstNode* node,
-                                       EditorIntegrator * editor, ProblemData::Source source)
+                                       EditorIntegrator * editor, ProblemData::Source source,
+                                       ProblemData::Severity severity)
 {
     ProblemPointer p(new Problem());
     p->setSource(source);
+    p->setSeverity(severity);
     p->setDescription(description);
     p->setFinalLocation(DocumentRange(document().str(), editor->findRange(node).textRange()));
     kDebug() << p->description();

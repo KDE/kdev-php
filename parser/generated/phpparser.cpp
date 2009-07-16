@@ -75,6 +75,17 @@ void Parser::reportProblem( Parser::ProblemType type, const QString& message )
     tokenStream->endPosition(index, &eLine, &eCol);
     KDevelop::Problem *p = new KDevelop::Problem();
     p->setSource(KDevelop::ProblemData::Parser);
+    switch ( type ) {
+        case Error:
+            p->setSeverity(KDevelop::ProblemData::Error);
+            break;
+        case Warning:
+            p->setSeverity(KDevelop::ProblemData::Warning);
+            break;
+        case Info:
+            p->setSeverity(KDevelop::ProblemData::Hint);
+            break;
+    }
     p->setDescription(message);
     p->setFinalLocation(KDevelop::DocumentRange(m_currentDocument, KTextEditor::Range(sLine, sCol, eLine, eCol+1)));
     m_problems << KDevelop::ProblemPointer(p);

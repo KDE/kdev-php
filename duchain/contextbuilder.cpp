@@ -269,12 +269,12 @@ void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
     }
 }
 
-void ContextBuilder::reportError(const QString& errorMsg, AstNode* node)
+void ContextBuilder::reportError(const QString& errorMsg, AstNode* node, KDevelop::ProblemData::Severity severity)
 {
-    reportError(errorMsg, editor()->findRange(node).textRange());
+    reportError(errorMsg, editor()->findRange(node).textRange(), severity);
 }
 
-void ContextBuilder::reportError(const QString& errorMsg, QList< Php::AstNode* > nodes)
+void ContextBuilder::reportError(const QString& errorMsg, QList< Php::AstNode* > nodes, KDevelop::ProblemData::Severity severity)
 {
     KTextEditor::Range range = KTextEditor::Range::invalid();
     foreach ( AstNode* node, nodes ) {
@@ -284,12 +284,13 @@ void ContextBuilder::reportError(const QString& errorMsg, QList< Php::AstNode* >
             range.expandToRange( editor()->findRange(node).textRange() );
         }
     }
-    reportError(errorMsg, range);
+    reportError(errorMsg, range, severity);
 }
 
-void ContextBuilder::reportError(const QString& errorMsg, KTextEditor::Range range)
+void ContextBuilder::reportError(const QString& errorMsg, KTextEditor::Range range, KDevelop::ProblemData::Severity severity)
 {
     KDevelop::Problem *p = new KDevelop::Problem();
+    p->setSeverity(severity);
     p->setSource(KDevelop::ProblemData::DUChainBuilder);
     p->setDescription(errorMsg);
     p->setFinalLocation(KDevelop::DocumentRange(editor()->currentUrl().str(), range));
