@@ -610,9 +610,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
 void DeclarationBuilder::visitStatement(StatementAst* node)
 {
     DeclarationBuilderBase::visitStatement(node);
-{
-    DUChainWriteLocker lock(DUChain::lock());
-}
+
     if (node->foreachVariable) {
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(node->foreachVariable->variable, node->foreachVariable->variable);
