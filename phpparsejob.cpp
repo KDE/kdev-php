@@ -217,7 +217,7 @@ void ParseJob::run()
         UseBuilder useBuilder(&editor);
         useBuilder.buildUses(m_ast);
 
-        if (!abortRequested() && editor.smart()) {
+        if (!abortRequested() && editor.smart() && KDevelop::EditorIntegrator::documentForUrl(document())) {
             if (php() && php()->codeHighlighting()) {
                 php()->codeHighlighting()->highlightDUChain(chain);
             }
