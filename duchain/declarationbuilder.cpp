@@ -593,6 +593,10 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
                             reportError(i18n("Cannot access non-public property for redeclaration."), m_assignmentTargetNode);
                             return;
                         }
+                        if ( cdec->abstractType()->indexed() == type->indexed() ) {
+                            kDebug() << "skipping redeclaration of" << cdec->toString();
+                            return;
+                        }
                     }
                 }
 

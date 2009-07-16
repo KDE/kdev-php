@@ -1635,7 +1635,7 @@ void TestDUChain::testDeclareMemberOutOfClass()
 {
     //               0         1         2         3         4         5         6         7
     //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray code("<? class foo{} $bar = new foo; $bar->asdf = true;");
+    QByteArray code("<? class foo{} $bar = new foo; $bar->asdf = true; $bar->asdf = false;");
     TopDUContext* top = parse(code, DumpAST);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
@@ -1650,13 +1650,14 @@ void TestDUChain::testDeclareMemberOutOfClass()
         // while we are at it, compare uses
         QCOMPARE(dec->uses().keys().count(), 1);
         QCOMPARE(dec->uses().values().count(), 1);
-        QCOMPARE(dec->uses().values().first().count(), 1);
+        QCOMPARE(dec->uses().values().first().count(), 2);
         kDebug() << dec->uses().values().first().first().textRange();
         QCOMPARE(dec->uses().values().first().first(), SimpleRange(0, 31, 0, 35));
     }
 
     { // check if asdf got declared
         QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier("asdf"));
+        // the type of both assignments to $bar->asdf are the same, hence it should only be declared once
         QCOMPARE(decs.size(), 1);
         ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
         QVERIFY(cmdec);
