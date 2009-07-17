@@ -644,11 +644,20 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
                 ///TODO: $var = 1; class var {} $var = 1; <-- should not redeclare $var
                 QList< Declaration* > decs = currentContext()->findLocalDeclarations(m_assignmentTarget.first());
                 if ( !decs.isEmpty() ) {
-                    // we expect that the list of declarations has the newest declaration at back
-                    if ( dynamic_cast<VariableDeclaration*>(decs.last())
-                         && decs.last()->abstractType()->indexed() == type->indexed() ) {
-                        kDebug() << "skipping redeclaration of" << decs.first()->toString();
-                        return;
+                    QList< Declaration* >::const_iterator it = decs.constEnd() - 1;
+                    while ( true ) {
+                        // we expect that the list of declarations has the newest declaration at back
+                        if ( dynamic_cast<VariableDeclaration*>( *it ) ) {
+                            if ( (*it)->abstractType()->indexed() == type->indexed() ) {
+                                kDebug() << "skipping redeclaration of" << (*it)->toString();
+                                return;
+                            }
+                            break;
+                        }
+                        if ( it == decs.constBegin() ) {
+                            break;
+                        }
+                        --it;
                     }
                 }
             }
