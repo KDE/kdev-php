@@ -576,26 +576,41 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
 
             // get parent class context
             DUContext* parentCtx = 0;
-            foreach( Declaration* parent, currentContext()->topContext()->findDeclarations(m_assignmentTargetParent) ) {
-                if ( StructureType::Ptr type = parent->type<StructureType>() ) {
-                    parentCtx = type->internalContext(currentContext()->topContext());
-                    break;
+            if ( m_assignmentTargetParent == QualifiedIdentifier("this") ) {
+                if ( currentContext()->parentContext() && currentContext()->parentContext()->type() == DUContext::Class ) {
+                    parentCtx = currentContext()->parentContext();
+                }
+            } else {
+                foreach( Declaration* parent, currentContext()->topContext()->findDeclarations(m_assignmentTargetParent) ) {
+                    if ( StructureType::Ptr type = parent->type<StructureType>() ) {
+                        parentCtx = type->internalContext(currentContext()->topContext());
+                        break;
+                    }
                 }
             }
 
             if ( parentCtx ) {
                 // check for redeclaration of private or protected stuff
-                ///TODO: check whether we are in a class method and assign something to the current class
-                ///TODO: don't declare if it is already declared with the same type
-                foreach ( Declaration* dec, parentCtx->findLocalDeclarations(m_assignmentTarget.first()) ) {
-                    if ( ClassMemberDeclaration* cdec = dynamic_cast<ClassMemberDeclaration*>(dec) ) {
-                        if ( cdec->accessPolicy() != Declaration::Public ) {
-                            reportError(i18n("Cannot access non-public property for redeclaration."), m_assignmentTargetNode);
-                            return;
-                        }
-                        if ( cdec->abstractType()->indexed() == type->indexed() ) {
-                            kDebug() << "skipping redeclaration of" << cdec->toString();
-                            return;
+                {
+                    // only interesting context might be the class context when we are inside a method
+                    DUContext *ctx = currentContext()->parentContext();
+                    foreach ( Declaration* dec, parentCtx->findDeclarations(m_assignmentTarget) ) {
+                        if ( ClassMemberDeclaration* cdec = dynamic_cast<ClassMemberDeclaration*>(dec) ) {
+                            if ( cdec->accessPolicy() == Declaration::Private && cdec->context() != ctx ) {
+                                reportError(i18n("Cannot redeclare private property %1 from this context.",
+                                                    cdec->toString()), m_assignmentTargetNode);
+                                return;
+                            } else if ( cdec->accessPolicy() == Declaration::Protected
+                                        && cdec->context() != ctx
+                                        && ( !ctx || !ctx->imports(cdec->context()) ) ) {
+                                reportError(i18n("Cannot redeclare protected property %1 from this context.",
+                                                    cdec->toString()), m_assignmentTargetNode);
+                                return;
+                            }
+                            if ( cdec->abstractType()->indexed() == type->indexed() ) {
+                                kDebug() << "skipping redeclaration of" << cdec->toString();
+                                return;
+                            }
                         }
                     }
                 }

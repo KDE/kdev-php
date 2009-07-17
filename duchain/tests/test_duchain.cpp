@@ -1635,7 +1635,13 @@ void TestDUChain::testDeclareMemberOutOfClass()
 {
     //               0         1         2         3         4         5         6         7
     //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray code("<? class foo{} $bar = new foo; $bar->asdf = true; $bar->asdf = false;");
+    QByteArray code("<? class foo{ protected $prot; private $priv; }\n"
+                    // allowed, should only declare asdf once
+                    "$bar = new foo; $bar->asdf = true; $bar->asdf = false;\n"
+                    // not allowed:
+                    "$bar->prot = 1;\n"
+                    // not allowed:
+                    "$bar->priv = 1;");
     TopDUContext* top = parse(code, DumpAST);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
@@ -1650,9 +1656,15 @@ void TestDUChain::testDeclareMemberOutOfClass()
         // while we are at it, compare uses
         QCOMPARE(dec->uses().keys().count(), 1);
         QCOMPARE(dec->uses().values().count(), 1);
-        QCOMPARE(dec->uses().values().first().count(), 2);
-        kDebug() << dec->uses().values().first().first().textRange();
-        QCOMPARE(dec->uses().values().first().first(), SimpleRange(0, 31, 0, 35));
+        QCOMPARE(dec->uses().values().first().count(), 4);
+        kDebug() << dec->uses().values().first().at(0).textRange();
+        QCOMPARE(dec->uses().values().first().at(0), SimpleRange(1, 16, 1, 20));
+        kDebug() << dec->uses().values().first().at(1).textRange();
+        QCOMPARE(dec->uses().values().first().at(1), SimpleRange(1, 35, 1, 39));
+        kDebug() << dec->uses().values().first().at(2).textRange();
+        QCOMPARE(dec->uses().values().first().at(2), SimpleRange(2, 0, 2, 4));
+        kDebug() << dec->uses().values().first().at(3).textRange();
+        QCOMPARE(dec->uses().values().first().at(3), SimpleRange(3, 0, 3, 4));
     }
 
     { // check if asdf got declared
@@ -1661,10 +1673,63 @@ void TestDUChain::testDeclareMemberOutOfClass()
         QCOMPARE(decs.size(), 1);
         ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
         QVERIFY(cmdec);
+        QVERIFY(cmdec->accessPolicy() == Declaration::Public);
+        QVERIFY(!cmdec->isStatic());
         QVERIFY(cmdec->type<IntegralType>());
         QVERIFY(cmdec->type<IntegralType>()->dataType() == IntegralType::TypeBoolean);
     }
-    QCOMPARE(top->problems().count(), 0);
+
+    // check that prot and priv don't get redeclared
+    QCOMPARE(top->problems().count(), 2);
+    QCOMPARE(top->problems().at(0)->finalLocation().start().line(), 2);
+    QCOMPARE(top->problems().at(1)->finalLocation().start().line(), 3);
+}
+
+void TestDUChain::testDeclareMemberInClassMethod()
+{
+    QByteArray code("<? class foo { private $priv = 0; protected $prot = 0; } class bar extends foo {\n"
+                    // should declare member variable asdf (once!) as public
+                    " function test() { $this->asdf = true; $this->asdf = false; }\n"
+                    // should only declare bar once as private
+                    " private $xyz = 0; function test2() { $this->xyz = 42; }\n"
+                    // should not create any local declarations, and issue an error for trying to
+                    // assign something to a private member variable of a parent class
+                    " function test3() { $this->prot = 42;\n$this->priv = 42; }\n"
+                    " }");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    { // asdf
+        QList<Declaration*> decs = top->childContexts().last()->findLocalDeclarations(Identifier("asdf"));
+        QCOMPARE(decs.size(), 1);
+        ClassMemberDeclaration *dec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
+        QVERIFY(dec);
+        QVERIFY(dec->accessPolicy() == Declaration::Public);
+        QVERIFY(!dec->isStatic());
+        QVERIFY(dec->type<IntegralType>());
+        QVERIFY(dec->type<IntegralType>()->dataType() == IntegralType::TypeBoolean);
+    }
+
+    { // xyz
+        QList<Declaration*> decs = top->childContexts().last()->findLocalDeclarations(Identifier("xyz"));
+        QCOMPARE(decs.size(), 1);
+        ClassMemberDeclaration *dec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
+        QVERIFY(dec);
+        QVERIFY(dec->accessPolicy() == Declaration::Private);
+        QVERIFY(!dec->isStatic());
+        QVERIFY(dec->type<IntegralType>());
+        QVERIFY(dec->type<IntegralType>()->dataType() == IntegralType::TypeInt);
+    }
+
+    { // prot and priv
+        QVERIFY(top->childContexts().last()->findLocalDeclarations(Identifier("prot")).isEmpty());
+        QVERIFY(top->childContexts().last()->findLocalDeclarations(Identifier("priv")).isEmpty());
+    }
+
+    // only one problem: error trying to assign to a private member of a parent class
+    QCOMPARE(top->problems().count(), 1);
+    QCOMPARE(top->problems().first()->finalLocation().start().line(), 4);
 }
 
 void TestDUChain::testThisRedeclaration()

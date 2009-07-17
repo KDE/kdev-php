@@ -100,6 +100,7 @@ private slots:
     void testUnsureReturnType3();
     void testUnsureReturnType4();
     void testDeclareMemberOutOfClass();
+    void testDeclareMemberInClassMethod();
     void testThisRedeclaration();
     void testImplicitArrayDeclaration();
 };
