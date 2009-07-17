@@ -641,7 +641,6 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
 
             // check if this variable is already declared
             {
-                ///TODO: $var = 1; class var {} $var = 1; <-- should not redeclare $var
                 QList< Declaration* > decs = currentContext()->findLocalDeclarations(m_assignmentTarget.first());
                 if ( !decs.isEmpty() ) {
                     QList< Declaration* >::const_iterator it = decs.constEnd() - 1;
