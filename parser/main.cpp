@@ -83,6 +83,10 @@ private:
             Lexer lexer(&tokenStream, m_session.contents());
             int token;
             while ((token = lexer.nextTokenKind())) {
+                Parser::Token &t = tokenStream.next();
+                t.begin = lexer.tokenBegin();
+                t.end = lexer.tokenEnd();
+                t.kind = token;
                 printToken(token, lexer);
             }
             printToken(token, lexer);
@@ -91,7 +95,7 @@ private:
             qint64 column;
             tokenStream.endPosition(tokenStream.size() - 1, &line, &column);
 //             tokenStream.endPosition(lastTokenEnd, &line, &column);
-            qDebug() << "last token endPosition: " << line << column;
+            qDebug() << "last token endPosition: line" << line << "column" << column;
         }
 
         Php::StartAst* ast = 0;
