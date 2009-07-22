@@ -51,7 +51,7 @@ KDEVPHPDUCHAIN_EXPORT KDevelop::Declaration* findDeclarationImportHelper(KDevelo
         AstNode* node,
         EditorIntegrator* editor);
 
-KDEVPHPDUCHAIN_EXPORT QString formatComment(AstNode* node, EditorIntegrator* editor);
+KDEVPHPDUCHAIN_EXPORT QByteArray formatComment(AstNode* node, EditorIntegrator* editor);
 
 KDEVPHPDUCHAIN_EXPORT CommonScalarAst* findCommonScalar(AstNode* node);
 

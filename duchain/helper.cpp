@@ -160,9 +160,9 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
     return 0;
 }
 
-QString formatComment(AstNode* node, EditorIntegrator* editor)
+QByteArray formatComment(AstNode* node, EditorIntegrator* editor)
 {
-    return KDevelop::formatComment(editor->parseSession()->docComment(node->startToken));
+    return KDevelop::formatComment(editor->parseSession()->docComment(node->startToken).toUtf8());
 }
 
 //Helper visitor to extract a commonScalar node
