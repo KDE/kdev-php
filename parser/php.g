@@ -513,7 +513,7 @@ expression=booleanOrExpression
 -> functionCallParameterList ;;
 
 
-    (BIT_AND variable=variable) | expr=expr
+    (BIT_AND variable=variable) | (variable=variable) | expr=expr
 -> functionCallParameterListElement ;;
 
     #element=assignmentListElement @COMMA
@@ -761,7 +761,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
     (#parameters=parameter @ COMMA) | 0
 -> parameterList ;;
 
-(parameterType=identifier | arrayType=ARRAY | 0) (BIT_AND | 0)
+(parameterType=identifier | arrayType=ARRAY | 0) (isRef=BIT_AND | 0)
     variable=variableIdentifier (ASSIGN defaultValue=staticScalar | 0)
 -> parameter ;;
 

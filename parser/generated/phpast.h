@@ -894,6 +894,7 @@ struct KDEVPHPPARSER_EXPORT ParameterAst: public AstNode
 
     IdentifierAst *parameterType;
     qint64 arrayType;
+    qint64 isRef;
     VariableIdentifierAst *variable;
     StaticScalarAst *defaultValue;
 };
