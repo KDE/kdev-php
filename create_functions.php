@@ -24,9 +24,9 @@
 
 if (!isset($_SERVER['argv'][1]) || !isset($_SERVER['argv'][2])) {
     $msg = "Usage:\n".$_SERVER['argv'][0]." [path to phpdoc] [path to php sources]\n";
-    $msg .= "you may checkout from the php csv server using this command:\n";
-    $msg .= "cvs -d :pserver:cvsread@cvs.php.net:/repository checkout phpdoc\n";
-    $msg .= "cvs -d :pserver:cvsread@cvs.php.net:/repository checkout -r PHP_5_2 php5\n";
+    $msg .= "you may checkout from the php svn server using this command:\n";
+    $msg .= "svn checkout http://svn.php.net/repository/phpdoc/en/trunk ./phpdoc-en\n";
+    $msg .= "svn checkout http://svn.php.net/repository/php/php-src/branches/PHP_5_3 php5\n";
     file_put_contents('php://stderr', $msg);
     exit(-1);
 }
@@ -96,7 +96,7 @@ $skipClasses[] = 'exception'; //lowercase
 $skipClasses[] = '__PHP_Incomplete_Class';
 $skipClasses[] = 'php_user_filter';
 
-$dirs = array("en/reference", "en/appendices", "en/language/predefined/variables");
+$dirs = array("reference", "appendices", "language/predefined/variables");
 
 $classes = array();
 $constants = array();
