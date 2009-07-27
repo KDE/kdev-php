@@ -262,6 +262,14 @@ void TypeBuilder::visitParameter(ParameterAst *node)
             type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
         }
     }
+
+    if ( node->isRef != -1 ) {
+      ReferenceType::Ptr p( new ReferenceType() );
+      p->setBaseType( type );
+
+      type = p.cast<AbstractType>();
+    }
+
     openAbstractType(type);
     TypeBuilderBase::visitParameter(node);
     closeType();
