@@ -103,6 +103,7 @@ private slots:
     void testDeclareMemberInClassMethod();
     void testThisRedeclaration();
     void testImplicitArrayDeclaration();
+    void testImplicitReferenceDeclaration();
 };
 
 }

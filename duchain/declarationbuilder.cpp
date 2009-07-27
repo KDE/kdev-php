@@ -48,6 +48,68 @@ using namespace KDevelop;
 namespace Php
 {
 
+void DeclarationBuilder::getVariableIdentifier(VariableAst* node,
+                                                QualifiedIdentifier &identifier,
+                                                QualifiedIdentifier &parent,
+                                                AstNode* &targetNode,
+                                                bool &arrayAccess)
+{
+    parent = QualifiedIdentifier();
+    if ( node->variablePropertiesSequence ) {
+        // at least one "->" in the assigment target
+        // => find he parent of the target
+        // => find the target (last object property)
+        if ( node->variablePropertiesSequence->count() == 1 ) {
+            // $parent->target
+            ///TODO: $parent[0]->target = ... (we don't know the type of [0] yet, need proper array handling first)
+            if ( node->var && node->var->baseVariable && node->var->baseVariable->var
+                && !node->var->baseVariable->offsetItemsSequence ) {
+                parent = identifierForNode(
+                    node->var->baseVariable->var->variable
+                );
+            }
+        } else {
+            // $var->...->parent->target
+            ///TODO: $var->...->parent[0]->target = ... (we don't know the type of [0] yet, need proper array handling first)
+            const KDevPG::ListNode< VariablePropertyAst* >* parentNode = node->variablePropertiesSequence->at(
+                node->variablePropertiesSequence->count() - 2
+            );
+            if ( parentNode->element && parentNode->element->objectProperty
+                && parentNode->element->objectProperty->objectDimList
+                && parentNode->element->objectProperty->objectDimList->variableName
+                && !parentNode->element->objectProperty->objectDimList->offsetItemsSequence ) {
+                parent = identifierForNode(
+                    parentNode->element->objectProperty->objectDimList->variableName->name
+                );
+            }
+        }
+
+        if ( !parent.isEmpty() ) {
+            const KDevPG::ListNode< VariablePropertyAst* >* tNode = node->variablePropertiesSequence->at(
+                node->variablePropertiesSequence->count() - 1
+            );
+            if ( tNode->element && tNode->element->objectProperty
+                && tNode->element->objectProperty->objectDimList
+                && tNode->element->objectProperty->objectDimList->variableName ) {
+                arrayAccess = (bool) tNode->element->objectProperty->objectDimList->offsetItemsSequence;
+                identifier = identifierForNode(
+                    tNode->element->objectProperty->objectDimList->variableName->name
+                );
+                targetNode = tNode->element->objectProperty->objectDimList->variableName->name;
+            }
+        }
+    } else {
+        // simple assignment to $var
+        if ( node->var && node->var->baseVariable && node->var->baseVariable->var ) {
+            arrayAccess = (bool) node->var->baseVariable->offsetItemsSequence;
+            identifier = identifierForNode(
+                node->var->baseVariable->var->variable
+            );
+            targetNode = node->var->baseVariable->var->variable;
+        }
+    }
+}
+
 KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::IndexedString& url, Php::AstNode* node,
         KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
 {
@@ -333,6 +395,47 @@ void DeclarationBuilder::openClassMemberDeclaration(AstNode* node, const Qualifi
     dec->setKind(Declaration::Instance);
 }
 
+void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::Ptr type,
+                                                const QualifiedIdentifier& identifier,
+                                                AstNode* node )
+{
+    // check for redeclaration of private or protected stuff
+    {
+        // only interesting context might be the class context when we are inside a method
+        DUContext *ctx = currentContext()->parentContext();
+        foreach ( Declaration* dec, parentCtx->findDeclarations(identifier) ) {
+            if ( ClassMemberDeclaration* cdec = dynamic_cast<ClassMemberDeclaration*>(dec) ) {
+                if ( cdec->accessPolicy() == Declaration::Private && cdec->context() != ctx ) {
+                    reportError(i18n("Cannot redeclare private property %1 from this context.",
+                                        cdec->toString()), node);
+                    return;
+                } else if ( cdec->accessPolicy() == Declaration::Protected
+                            && cdec->context() != ctx
+                            && ( !ctx || !ctx->imports(cdec->context()) ) ) {
+                    reportError(i18n("Cannot redeclare protected property %1 from this context.",
+                                        cdec->toString()), node);
+                    return;
+                }
+                if ( cdec->abstractType()->indexed() == type->indexed() ) {
+                    kDebug() << "skipping redeclaration of" << cdec->toString();
+                    return;
+                }
+            }
+        }
+    }
+
+    // this member should be public and non-static
+    m_currentModifers = ModifierPublic;
+    injectContext(editor()->smart(), parentCtx);
+    openClassMemberDeclaration(node, identifier);
+    m_currentModifers = 0;
+    //own closeDeclaration() that doesn't use lastType()
+    currentDeclaration()->setType(type);
+    eventuallyAssignInternalContext();
+    DeclarationBuilderBase::closeDeclaration();
+    closeInjectedContext(editor()->smart());
+}
+
 void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
 {
     if (m_reportErrors) {   // check for redeclarations
@@ -493,62 +596,63 @@ void DeclarationBuilder::visitAssignmentExpression(AssignmentExpressionAst* node
 void DeclarationBuilder::visitVariable(VariableAst* node)
 {
     if ( m_findAssignmentTarget ) {
-        if ( node->variablePropertiesSequence ) {
-            // at least one "->" in the assigment target
-            // => find he parent of the target
-            // => find the target (last object property)
-            if ( node->variablePropertiesSequence->count() == 1 ) {
-                // $parent->target
-                ///TODO: $parent[0]->target = ... (we don't know the type of [0] yet, need proper array handling first)
-                if ( node->var && node->var->baseVariable && node->var->baseVariable->var
-                    && !node->var->baseVariable->offsetItemsSequence ) {
-                    m_assignmentTargetParent = identifierForNode(
-                        node->var->baseVariable->var->variable
-                    );
-                }
-            } else {
-                // $var->...->parent->target
-                ///TODO: $var->...->parent[0]->target = ... (we don't know the type of [0] yet, need proper array handling first)
-                const KDevPG::ListNode< VariablePropertyAst* >* parentNode = node->variablePropertiesSequence->at(
-                    node->variablePropertiesSequence->count() - 2
-                );
-                if ( parentNode->element && parentNode->element->objectProperty
-                    && parentNode->element->objectProperty->objectDimList
-                    && parentNode->element->objectProperty->objectDimList->variableName
-                    && !parentNode->element->objectProperty->objectDimList->offsetItemsSequence ) {
-                    m_assignmentTargetParent = identifierForNode(
-                        parentNode->element->objectProperty->objectDimList->variableName->name
-                    );
-                }
-            }
-
-            if ( !m_assignmentTargetParent.isEmpty() ) {
-                const KDevPG::ListNode< VariablePropertyAst* >* targetNode = node->variablePropertiesSequence->at(
-                    node->variablePropertiesSequence->count() - 1
-                );
-                if ( targetNode->element && targetNode->element->objectProperty
-                    && targetNode->element->objectProperty->objectDimList
-                    && targetNode->element->objectProperty->objectDimList->variableName ) {
-                    m_isAssignmentToArrayMember = (bool) targetNode->element->objectProperty->objectDimList->offsetItemsSequence;
-                    m_assignmentTarget = identifierForNode(
-                        targetNode->element->objectProperty->objectDimList->variableName->name
-                    );
-                    m_assignmentTargetNode = targetNode->element->objectProperty->objectDimList->variableName->name;
-                }
-            }
-        } else {
-            // simple assignment to $var
-            if ( node->var && node->var->baseVariable && node->var->baseVariable->var ) {
-                m_isAssignmentToArrayMember = (bool) node->var->baseVariable->offsetItemsSequence;
-                m_assignmentTarget = identifierForNode(
-                    node->var->baseVariable->var->variable
-                );
-                m_assignmentTargetNode = node->var->baseVariable->var->variable;
-            }
-        }
+        getVariableIdentifier(node, m_assignmentTarget, m_assignmentTargetParent,
+                                    m_assignmentTargetNode, m_isAssignmentToArrayMember);
         m_findAssignmentTarget = false;
     }
     DeclarationBuilderBase::visitVariable(node);
+}
+
+void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr type,
+                                            const QualifiedIdentifier& identifier,
+                                            AstNode* node)
+{
+    // we must not re-assign $this in a class context
+    if ( identifier == QualifiedIdentifier("this")
+            && currentContext()->parentContext()
+            && currentContext()->parentContext()->type() == DUContext::Class ) {
+        reportError(i18n("Cannot re-assign $this."), QList<AstNode*>() << node);
+        return;
+    }
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    // check if this variable is already declared
+    {
+        QList< Declaration* > decs = parentCtx->findLocalDeclarations(identifier.first());
+        if ( !decs.isEmpty() ) {
+            QList< Declaration* >::const_iterator it = decs.constEnd() - 1;
+            while ( true ) {
+                // we expect that the list of declarations has the newest declaration at back
+                if ( dynamic_cast<VariableDeclaration*>( *it ) ) {
+                    if ( (*it)->abstractType()->indexed() == type->indexed() ) {
+                        kDebug() << "skipping redeclaration of" << (*it)->toString();
+                        return;
+                    }
+                    break;
+                }
+                if ( it == decs.constBegin() ) {
+                    break;
+                }
+                --it;
+            }
+        }
+    }
+
+    SimpleRange newRange = editorFindRange(node, node);
+
+    VariableDeclaration *dec = openDefinition<VariableDeclaration>(identifier, newRange);
+    dec->setKind(Declaration::Instance);
+    if (!m_lastTopStatementComment.isEmpty()) {
+        QRegExp rx("\\* +@superglobal");
+        if (rx.indexIn(m_lastTopStatementComment) != -1) {
+            dec->setSuperglobal(true);
+        }
+    }
+    //own closeDeclaration() that doesn't use lastType()
+    currentDeclaration()->setType(type);
+    eventuallyAssignInternalContext();
+    DeclarationBuilderBase::closeDeclaration();
 }
 
 ///TODO: we need to handle assignment to array-members properly
@@ -582,106 +686,48 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
                 }
             } else {
                 foreach( Declaration* parent, currentContext()->topContext()->findDeclarations(m_assignmentTargetParent) ) {
-                    if ( StructureType::Ptr type = parent->type<StructureType>() ) {
-                        parentCtx = type->internalContext(currentContext()->topContext());
+                    if ( StructureType::Ptr ctype = parent->type<StructureType>() ) {
+                        parentCtx = ctype->internalContext(currentContext()->topContext());
                         break;
                     }
                 }
             }
 
             if ( parentCtx ) {
-                // check for redeclaration of private or protected stuff
-                {
-                    // only interesting context might be the class context when we are inside a method
-                    DUContext *ctx = currentContext()->parentContext();
-                    foreach ( Declaration* dec, parentCtx->findDeclarations(m_assignmentTarget) ) {
-                        if ( ClassMemberDeclaration* cdec = dynamic_cast<ClassMemberDeclaration*>(dec) ) {
-                            if ( cdec->accessPolicy() == Declaration::Private && cdec->context() != ctx ) {
-                                reportError(i18n("Cannot redeclare private property %1 from this context.",
-                                                    cdec->toString()), m_assignmentTargetNode);
-                                return;
-                            } else if ( cdec->accessPolicy() == Declaration::Protected
-                                        && cdec->context() != ctx
-                                        && ( !ctx || !ctx->imports(cdec->context()) ) ) {
-                                reportError(i18n("Cannot redeclare protected property %1 from this context.",
-                                                    cdec->toString()), m_assignmentTargetNode);
-                                return;
-                            }
-                            if ( cdec->abstractType()->indexed() == type->indexed() ) {
-                                kDebug() << "skipping redeclaration of" << cdec->toString();
-                                return;
-                            }
-                        }
-                    }
-                }
-
-                // this member should be public and non-static
-                m_currentModifers = ModifierPublic;
-                injectContext(editor()->smart(), parentCtx);
-                openClassMemberDeclaration(m_assignmentTargetNode, m_assignmentTarget);
-                m_currentModifers = 0;
-                //own closeDeclaration() that doesn't use lastType()
-                currentDeclaration()->setType(type);
-                eventuallyAssignInternalContext();
-                DeclarationBuilderBase::closeDeclaration();
-                closeInjectedContext(editor()->smart());
+                declareClassMember(parentCtx, type, m_assignmentTarget, m_assignmentTargetNode );
             }
         } else {
             // assigment to other variables
-
-            // we must not re-assign $this in a class context
-            if ( m_assignmentTarget == QualifiedIdentifier("this")
-                 && currentContext()->parentContext()
-                 && currentContext()->parentContext()->type() == DUContext::Class ) {
-                reportError(i18n("Cannot re-assign $this."), QList<AstNode*>() << node << m_assignmentTargetNode);
-                return;
-            }
-
-            DUChainWriteLocker lock(DUChain::lock());
-
-            // check if this variable is already declared
-            {
-                QList< Declaration* > decs = currentContext()->findLocalDeclarations(m_assignmentTarget.first());
-                if ( !decs.isEmpty() ) {
-                    QList< Declaration* >::const_iterator it = decs.constEnd() - 1;
-                    while ( true ) {
-                        // we expect that the list of declarations has the newest declaration at back
-                        if ( dynamic_cast<VariableDeclaration*>( *it ) ) {
-                            if ( (*it)->abstractType()->indexed() == type->indexed() ) {
-                                kDebug() << "skipping redeclaration of" << (*it)->toString();
-                                return;
-                            }
-                            break;
-                        }
-                        if ( it == decs.constBegin() ) {
-                            break;
-                        }
-                        --it;
-                    }
-                }
-            }
-
-            SimpleRange newRange = editorFindRange(m_assignmentTargetNode, m_assignmentTargetNode);
-
-            VariableDeclaration *dec = openDefinition<VariableDeclaration>(m_assignmentTarget, newRange);
-            dec->setKind(Declaration::Instance);
-            if (!m_lastTopStatementComment.isEmpty()) {
-                QRegExp rx("\\* +@superglobal");
-                if (rx.indexIn(m_lastTopStatementComment) != -1) {
-                    dec->setSuperglobal(true);
-                }
-            }
-            //own closeDeclaration() that doesn't use lastType()
-            currentDeclaration()->setType(type);
-            eventuallyAssignInternalContext();
-            DeclarationBuilderBase::closeDeclaration();
+            declareVariable(currentContext(), type, m_assignmentTarget, m_assignmentTargetNode );
         }
     }
 }
 
 void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
 {
-    DeclarationBuilderBase::visitFunctionCall(node);
+    {
+        FunctionType::Ptr oldFunction = m_currentFunctionType;
+
+        Declaration* dec = 0;
+        if ( node->stringFunctionName ) {
+            dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionName);
+        } else if ( node->stringFunctionNameOrClass ) {
+            dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionNameOrClass);
+        } else {
+            ///TODO: node->varFunctionName
+        }
+
+        if ( dec ) {
+            m_currentFunctionType = dec->type<FunctionType>();
+        } else {
+            m_currentFunctionType = 0;
+        }
+
+        DeclarationBuilderBase::visitFunctionCall(node);
+
+        m_currentFunctionType = oldFunction;
+    }
+
     if (node->stringFunctionNameOrClass && !node->stringFunctionName && !node->varFunctionName) {
         if (identifierForNode(node->stringFunctionNameOrClass) == QualifiedIdentifier("define")
                 && node->stringParameterList->parametersSequence->count() > 0) {
@@ -706,6 +752,82 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
         }
     }
 }
+
+void DeclarationBuilder::visitFunctionCallParameterList(FunctionCallParameterListAst* node)
+{
+    int oldPos = m_functionCallParameterPos;
+    m_functionCallParameterPos = 0;
+
+    DeclarationBuilderBase::visitFunctionCallParameterList(node);
+
+    m_functionCallParameterPos = oldPos;
+}
+
+void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node)
+{
+    ///TODO: Maybe we should also support declaration of variables in node->expression ?
+    ///      Then the whole structure below should be changed... Maybe set a flag
+    ///      "declare everything undefined" and then check each variable...
+    if ( node->variable && !m_currentFunctionType.isNull() &&
+            m_currentFunctionType->arguments().count() > m_functionCallParameterPos) {
+        ReferenceType::Ptr refType = m_currentFunctionType->arguments()
+                                        .at(m_functionCallParameterPos).cast<ReferenceType>();
+        if ( refType ) {
+            // this argument is referenced, so if the node contains undeclared variables we have
+            // to declare them with a NULL type, see also:
+            // http://de.php.net/manual/en/language.references.whatdo.php
+            QualifiedIdentifier identifier;
+            QualifiedIdentifier parent;
+            bool arrayAccess;
+            AstNode* targetNode;
+            getVariableIdentifier(node->variable, identifier, parent, targetNode, arrayAccess);
+            ///TODO: support something like: foo($var[0])
+            if ( !arrayAccess ) {
+                DUContext *ctx;
+                if ( parent.isEmpty() ) {
+                    ctx = currentContext();
+                } else {
+                    ClassDeclaration* cdec = dynamic_cast<ClassDeclaration*>(
+                        findDeclarationImport(ClassDeclarationType, parent, 0)
+                    );
+                    if ( cdec ) {
+                        ctx = cdec->internalContext();
+                    }
+                }
+                if ( ctx ) {
+                    bool isDeclared = false;
+                    {
+                        DUChainWriteLocker lock(DUChain::lock());
+                        foreach ( Declaration* dec, ctx->findDeclarations(identifier) ) {
+                            if ( dec->kind() == Declaration::Instance ) {
+                                isDeclared = true;
+                                break;
+                            }
+                        }
+                    }
+                    if ( !isDeclared && parent.isEmpty() ) {
+                        // check also for global vars
+                        isDeclared = findDeclarationImport(GlobalVariableDeclarationType, identifier, targetNode);
+                    }
+                    if ( !isDeclared ) {
+                        // couldn't find the dec, declare it with NULL type, just like PHP does:
+                        AbstractType::Ptr newType(new IntegralType(IntegralType::TypeNull));
+                        if ( !parent.isEmpty() ) {
+                            declareClassMember(ctx, newType, identifier, targetNode);
+                        } else {
+                            declareVariable(ctx, newType, identifier, targetNode);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    DeclarationBuilderBase::visitFunctionCallParameterListElement(node);
+
+    ++m_functionCallParameterPos;
+}
+
 void DeclarationBuilder::visitStatement(StatementAst* node)
 {
     DeclarationBuilderBase::visitStatement(node);

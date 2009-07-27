@@ -1744,7 +1744,7 @@ void TestDUChain::testThisRedeclaration()
     // only $this = false is a problem, $this->test = true is perfectly valid
     QCOMPARE(top->problems().count(), 1);
     kDebug() << top->problems().first()->finalLocation();
-    QVERIFY(top->problems().first()->finalLocation() == KTextEditor::Range(0, 50, 0, 63));
+    QVERIFY(top->problems().first()->finalLocation() == KTextEditor::Range(0, 50, 0, 55));
 }
 
 void TestDUChain::testImplicitArrayDeclaration()
@@ -1813,6 +1813,23 @@ void TestDUChain::testImplicitArrayDeclaration()
     QVERIFY(cmdec->type<IntegralType>());
     QVERIFY(cmdec->type<IntegralType>()->dataType() == IntegralType::TypeArray);
     }
+}
+
+void TestDUChain::testImplicitReferenceDeclaration()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray code("<? function asdf(&$foo) {} asdf($bar);");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QList<Declaration*> decs = top->findDeclarations(Identifier("bar"));
+    QCOMPARE(decs.size(), 1);
+    QVERIFY(dynamic_cast<VariableDeclaration*>(decs.first()));
+    QVERIFY(decs.first()->type<IntegralType>());
+    kDebug() << decs.first()->type<IntegralType>()->dataType() << decs.first()->toString();
+    QVERIFY(decs.first()->type<IntegralType>()->dataType() == IntegralType::TypeNull);
 }
 
 }

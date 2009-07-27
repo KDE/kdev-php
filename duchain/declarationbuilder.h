@@ -74,6 +74,8 @@ protected:
     virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
     virtual void visitVariable(VariableAst* node);
     virtual void visitFunctionCall(FunctionCallAst* node);
+    virtual void visitFunctionCallParameterList(FunctionCallParameterListAst* node);
+    virtual void visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node);
     virtual void visitStatement(StatementAst* node);
     virtual void visitStaticVar(StaticVarAst* node);
     virtual void visitGlobalVar(GlobalVarAst* node);
@@ -97,6 +99,10 @@ private:
     KDevelop::QualifiedIdentifier m_assignmentTarget;
     KDevelop::QualifiedIdentifier m_assignmentTargetParent;
     AstNode* m_assignmentTargetNode;
+    /// The position of the current argument, will only be set inside function calls.
+    int m_functionCallParameterPos;
+    /// Type of the current function, will only be set inside function calls.
+    KDevelop::FunctionType::Ptr m_currentFunctionType;
 
     unsigned int m_currentModifers;
     QString m_lastTopStatementComment;
@@ -121,6 +127,50 @@ private:
     /// @param declaration the old declaration
     /// @param node        the AstNode which resembles the redeclaration
     void reportRedeclarationError(KDevelop::Declaration* declaration, AstNode *node);
+
+    /**
+     * Get the interesting identifiers out of a VariableAst node:
+     * $var yields @p id = 'var', @p parent = ''
+     * $var->asdf yields @p id = 'asdf', @p parent = 'asdf'
+     * $var->...->foo->bar yields @p id = 'bar', @p parent => 'foo'
+     *
+     * @note If the parent or the identifier itself end on an array access, e.g. $var[0] or
+     *       $var->...->parent[0]->bar, @p arrayAccess will be set to true.
+     *
+     * @param id the last identifier
+     * @param parent the parent of the last identifier
+     * @param lastNode the node of the last identifier
+     * @param arrayAccess the node actually ends on an array access, like $node->var->..->asdf[0]
+     */
+    void getVariableIdentifier(VariableAst *node,
+                                    KDevelop::QualifiedIdentifier &id,
+                                    KDevelop::QualifiedIdentifier &parent,
+                                    AstNode* &targetNode,
+                                    bool &arrayAccess);
+
+    /**
+     * Declare a class member in @p parentCtx. Validates whether the current context allowes
+     * redeclaration of private/protected members.
+     *
+     * @param parentCtx  The class context you want to add the member to.
+     * @param type       The type of the member.
+     * @param identifier The identifier of the member.
+     * @param node       The node of the member.
+     */
+    void declareClassMember(KDevelop::DUContext *parentCtx, KDevelop::AbstractType::Ptr type,
+                            const KDevelop::QualifiedIdentifier& identifier, AstNode* node );
+
+    /**
+     * Declare a variable in @p parentCtx. If the the variable is already defined in the
+     * context and it's last type equals @p type, don't do anything.
+     *
+     * @param parentCtx  The context you want to declare the variable in.
+     * @param type       The type of the variable
+     * @param identifier The identifier for the variable.
+     * @param node       The node for the variable.
+     */
+    void declareVariable(KDevelop::DUContext *parentCtx, KDevelop::AbstractType::Ptr type,
+                            const KDevelop::QualifiedIdentifier& identifier, AstNode* node );
 };
 
 }
