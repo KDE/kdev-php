@@ -1102,6 +1102,39 @@ interface SplSubject
 
 
 
+/** @ingroup SPL
+ * @brief Implementation of a stack through a DoublyLinkedList. As SplStack 
+ *        extends SplDoublyLinkedList, shift() and unshift() are still available even
+ *        though they don't make much sense for a stack.
+ * @since PHP 5.3
+ *
+ * The SplStack class provides the main functionalities of a
+ * stack implemented using a doubly linked list (DLL).
+ */
+class SplStack extends SplDoublyLinkedList
+{
+    protected $_it_mode = parent::IT_MODE_LIFO;
+
+    /** Changes the iteration mode. There are two orthogonal sets of modes that 
+     * can be set:
+     *
+     * - The behavior of the iterator (either one or the other)
+     *  - SplDoublyLnkedList::IT_MODE_DELETE (Elements are deleted by the iterator)
+     *  - SplDoublyLnkedList::IT_MODE_KEEP   (Elements are traversed by the iterator)
+     *
+     * The default mode is 0 : SplDoublyLnkedList::IT_MODE_LIFO | SplDoublyLnkedList::IT_MODE_KEEP
+     *
+     * @note The iteration's direction is not modifiable for stack instances
+     * @param $mode              New mode of iteration
+     * @throw RuntimeException   If the new mode affects the iteration's direction.
+     */
+    public function setIteratorMode($mode){}
+}
+
+
+
+
+
 /**
  * @brief   Regular expression filter for iterators
  * @author  Marcus Boerger
@@ -1185,6 +1218,81 @@ class RegexIterator extends FilterIterator
     /** @param preg_flags new PREG flags
      */
     function setPregFlags($preg_flags){}
+}
+
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   RecursiveIteratorIterator to generate ASCII graphic trees for the
+ *          entries in a RecursiveIterator
+ * @author  Marcus Boerger, Johannes Schlueter
+ * @version 1.1
+ * @since   PHP 5.3
+ */
+class RecursiveTreeIterator extends RecursiveIteratorIterator
+{
+    const BYPASS_CURRENT = 0x00000004;
+    const BYPASS_KEY     = 0x00000008;
+
+    private $rit_flags;
+
+    /**
+     * @param it         iterator to use as inner iterator
+     * @param rit_flags  flags passed to RecursiveIteratoIterator (parent)
+     * @param cit_flags  flags passed to RecursiveCachingIterator (for hasNext)
+     * @param mode       mode  passed to RecursiveIteratoIterator (parent)
+     */
+    function __construct(RecursiveIterator $it, $rit_flags = self::BYPASS_KEY, $cit_flags = CachingIterator::CATCH_GET_CHILD, $mode = self::SELF_FIRST){}
+
+    private $prefix = array(0=>'', 1=>'| ', 2=>'  ', 3=>'|-', 4=>'\-', 5=>'');
+
+    /** Prefix used to start elements. */
+    const PREFIX_LEFT         = 0;
+    /** Prefix used if $level < depth and hasNext($level) == true. */
+    const PREFIX_MID_HAS_NEXT = 1;
+    /** Prefix used if $level < depth and hasNext($level) == false. */
+    const PREFIX_MID_LAST     = 2;
+    /** Prefix used if $level == depth and hasNext($level) == true. */
+    const PREFIX_END_HAS_NEXT = 3;
+    /** Prefix used if $level == depth and hasNext($level) == false. */
+    const PREFIX_END_LAST     = 4;
+    /** Prefix used right in front of the current element. */
+    const PREFIX_RIGHT        = 5;
+
+    /**
+     * Set prefix part as used in getPrefix() and stored in $prefix.
+     * @param $part   any PREFIX_* const.
+     * @param $value  new prefix string for specified part.
+     * @throws OutOfRangeException if 0 > $part or $part > 5.
+     */
+    function setPrefixPart($part, $value){}
+
+    /** @return string to place in front of current element
+     */
+    function getPrefix(){}
+
+    /** @return string presentation build for current element
+     */
+    function getEntry(){}
+
+    /** @return string to place after the current element
+     */
+    function getPostfix(){}
+
+    /** @return the current element prefixed and postfixed
+     */
+    function current(){}
+
+    /** @return the current key prefixed and postfixed
+     */
+    function key(){}
+
+    /** Aggregates the inner iterator
+     */
+    function __call($func, $params){}
 }
 
 
@@ -1543,6 +1651,97 @@ interface OuterIterator extends Iterator
 
 
 
+/** @ingroup SPL
+ * @brief   Iterator that iterates over several iterators one after the other
+ * @author  Johannes Schlueter
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.3
+ */
+class MultipleIterator implements Iterator
+{
+    /** Inner Iterators */
+    private $iterators;
+
+    /** Flags: const MIT_* */
+    private $flags;
+
+    /** do not require all sub iterators to be valid in iteration */
+    const MIT_NEED_ANY = 0;
+
+    /** require all sub iterators to be valid in iteration */
+    const MIT_NEED_ALL  = 1;
+
+    /** keys are created from sub iterators position */
+    const MIT_KEYS_NUMERIC  = 0;
+
+    /** keys are created from sub iterators associated infromation */
+    const MIT_KEYS_ASSOC  = 2;
+
+    /** Construct a new empty MultipleIterator
+    * @param flags MIT_* flags
+    */
+    public function __construct($flags = self::MIT_NEED_ALL|self::MIT_KEYS_NUMERIC){}
+
+    /** @return current flags MIT_* */
+    public function getFlags(){}
+
+    /** @param $flags new flags. */
+    public function setFlags($flags){}
+
+    /** @param $iter new Iterator to attach.
+    * @param $inf associative info forIteraotr, must be NULL, integer or string
+    *
+    * @throws IllegalValueException if a inf is none of NULL, integer or string
+    * @throws IllegalValueException if a inf is already an associated info
+    */
+    public function attachIterator(Iterator $iter, $inf = NULL){}
+
+    /** @param $iter attached Iterator that should be detached. */
+    public function detachIterator(Iterator $iter){}
+
+    /** @param $iter Iterator to check
+    * @return whether $iter is attached or not
+    */
+    public function containsIterator(Iterator $iter){}
+
+    /** @return number of attached Iterator instances. */
+    public function countIterators(){}
+
+    /** Rewind all attached Iterator instances. */
+    public function rewind(){}
+
+    /**
+    * @return whether all or one sub iterator is valid depending on flags.
+    * In mode MIT_NEED_ALL we expect all sub iterators to be valid and
+    * return flase on the first non valid one. If that flag is not set we
+    * return true on the first valid sub iterator found. If no Iterator
+    * is attached, we always return false.
+    */
+    public function valid(){}
+
+    /** Move all attached Iterator instances forward. That is invoke
+    * their next() method regardless of their state.
+    */
+    public function next(){}
+
+    /** @return false if no sub Iterator is attached and an array of
+    * all registered Iterator instances current() result.
+    * @throws RuntimeException      if mode MIT_NEED_ALL is set and at least one
+    *                               attached Iterator is not valid().
+    * @throws IllegalValueException if a key is NULL and MIT_KEYS_ASSOC is set.
+    */
+    public function current(){}
+
+    /** @return false if no sub Iterator is attached and an array of
+    * all registered Iterator instances key() result.
+    * @throws LogicException if mode MIT_NEED_ALL is set and at least one
+    *         attached Iterator is not valid().
+    */
+    public function key(){}
+}
+
+
 
 /** @ingroup SPL
  * @brief   Object representation for any stream
@@ -1794,6 +1993,207 @@ interface SeekableIterator extends Iterator
      \endcode
      */
     function seek($index);
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief Implementation of a Queue through a DoublyLinkedList. As SplQueue
+ *        extends SplDoublyLinkedList, unshift() and pop() are still available 
+ *        even though they don't make much sense for a queue. For convenience,
+ *        two aliases are available:
+ *         - enqueue() is an alias of push()
+ *         - dequeue() is an alias of shift()
+ *
+ * @since PHP 5.3
+ *
+ * The SplQueue class provides the main functionalities of a
+ * queue implemented using a doubly linked list (DLL).
+ */
+class SplQueue extends SplDoublyLinkedList
+{
+    protected $_it_mode = parent::IT_MODE_FIFO;
+
+    /** Changes the iteration mode. There are two orthogonal sets of modes that 
+     * can be set:
+     *
+     * - The behavior of the iterator (either one or the other)
+     *  - SplDoublyLnkedList::IT_MODE_DELETE (Elements are deleted by the iterator)
+     *  - SplDoublyLnkedList::IT_MODE_KEEP   (Elements are traversed by the iterator)
+     *
+     * The default mode is 0 : SplDoublyLnkedList::IT_MODE_LIFO | SplDoublyLnkedList::IT_MODE_KEEP
+     *
+     * @note The iteration's direction is not modifiable for queue instances
+     * @param $mode              New mode of iteration
+     * @throw RuntimeException   If the new mode affects the iteration's direction.
+     */
+    public function setIteratorMode($mode){}
+
+    /** @return the first element of the queue.
+     * @note dequeue is an alias of push()
+     * @see splDoublyLinkedList::push()
+     */
+    public function dequeue(){}
+
+    /** Pushes an element at the end of the queue.
+     * @param $data variable to add to the queue.
+     * @note enqueue is an alias of shift()
+     * @see splDoublyLinkedList::shift()
+     */
+    public function enqueue($data){}
+}
+
+
+
+
+/** @ingroup SPL
+ * @brief Doubly Linked List
+ * @since PHP 5.3
+ *
+ * The SplDoublyLinkedList class provides the main functionalities of a
+ * doubly linked list (DLL).
+ * @note The following userland implementation of Iterator is a bit different
+ *        from the internal one. Internally, iterators generated by nested 
+ *        foreachs are independent, while they share the same traverse pointer 
+ *        in userland.
+ */
+class SplDoublyLinkedList implements Iterator, ArrayAccess, Countable
+{
+    protected $_llist   = array();
+    protected $_it_mode = 0;
+    protected $_it_pos  = 0;
+
+    /** Iterator mode
+     * @see setIteratorMode
+     */
+    const IT_MODE_LIFO     = 0x00000002;
+
+    /** Iterator mode
+     * @see setIteratorMode
+     */
+    const IT_MODE_FIFO     = 0x00000000;
+
+    /** Iterator mode
+     * @see setIteratorMode
+     */
+    const IT_MODE_KEEP     = 0x00000000;
+
+    /** Iterator mode
+     * @see setIteratorMode
+     */
+    const IT_MODE_DELETE   = 0x00000001;
+
+    /** @return the element popped from the end of the DLL.
+     * @throw RuntimeException If the datastructure is empty.
+     */
+    public function pop(){}
+
+    /** @return the element shifted from the beginning of the DLL.
+     * @throw RuntimeException If the datastructure is empty.
+     */
+    public function shift(){}
+
+    /** Pushes an element to the end of the DLL.
+     * @param $data variable to add to the DLL.
+     */
+    public function push($data){}
+
+    /** Adds an element to the beginning of the DLL.
+     * @param $data variable to add to the DLL.
+     */
+    public function unshift($data){}
+
+    /** @return the element at the beginning of the DLL.
+     */
+    public function top(){}
+
+    /** @return the element at the end of the DLL.
+     */
+    public function bottom(){}
+
+    /** @return number elements in the DLL.
+     */
+    public function count(){}
+
+    /** @return whether the DLL is empty.
+     */
+    public function isEmpty(){}
+
+    /** Changes the iteration mode. There are two orthogonal sets of modes that 
+     * can be set:
+     * - The direction of the iteration (either one or the other)
+     *  - SplDoublyLnkedList::IT_MODE_LIFO (Stack style)
+     *  - SplDoublyLnkedList::IT_MODE_FIFO (Queue style)
+     *
+     * - The behavior of the iterator (either one or the other)
+     *  - SplDoublyLnkedList::IT_MODE_DELETE (Elements are deleted by the iterator)
+     *  - SplDoublyLnkedList::IT_MODE_KEEP   (Elements are traversed by the iterator)
+     *
+     * The default mode is 0 : SplDoublyLnkedList::IT_MODE_FIFO | SplDoublyLnkedList::IT_MODE_KEEP
+     *
+     * @param $mode new mode of iteration
+     */
+    public function setIteratorMode($mode){}
+
+    /** @return the current iteration mode
+     * @see setIteratorMode
+     */
+    public function getIteratorMode(){}
+
+    /** Rewind to top iterator as set in constructor
+     */
+    public function rewind(){}
+
+    /** @return whether iterator is valid
+     */
+    public function valid(){}
+
+    /** @return current key
+     */
+    public function key(){}
+
+    /** @return current object
+     */
+    public function current(){}
+
+    /** Forward to next element
+     */
+    public function next(){}
+
+    /** @return whether a certain offset exists in the DLL
+     *
+     * @param $offset             The offset
+     * @throw OutOfRangeException If the offset is either invalid or out of
+     *                            range.
+     */
+    public function offsetExists($offset){}
+
+    /** @return the data at a certain offset in the DLL
+     *
+     * @param $offset             The offset
+     * @throw OutOfRangeException If the offset is either invalid or out of
+     *                            range.
+     */
+    public function offsetGet($offset){}
+
+    /** Defines the data at a certain offset in the DLL
+     *
+     * @param $offset             The offset
+     * @param $value              New value
+     * @throw OutOfRangeException If the offset is either invalid or out of
+     *                            range.
+     */
+    public function offsetSet($offset, $value){}
+
+    /** Unsets the element at a certain offset in the DLL
+     *
+     * @param $offset             The offset
+     * @throw OutOfRangeException If the offset is either invalid or out of
+     *                            range.
+     */
+    public function offsetUnset($offset){}
 }
 
 
@@ -2155,7 +2555,7 @@ class RecursiveIteratorIterator implements OuterIterator
 /**
  * @brief   Object storage
  * @author  Marcus Boerger
- * @version 1.0
+ * @version 1.1
  * @since PHP 5.1.2
  *
  * This container allows to store objects uniquly without the need to compare
@@ -2163,7 +2563,7 @@ class RecursiveIteratorIterator implements OuterIterator
  * here therefore has a complexity of O(n) while the actual implementation has
  * complexity O(1).
  */
-class SplObjectStorage implements Iterator, Countable
+class SplObjectStorage implements Iterator, Countable, ArrayAccess
 {
     private $storage = array();
     private $index = 0;
@@ -2184,6 +2584,16 @@ class SplObjectStorage implements Iterator, Countable
      */
     function current(){}
     
+    /** @return get current object's associated information
+     * @since 5.3.0
+     */
+    function getInfo(){}
+    
+    /** @return set current object's associated information
+     * @since 5.3.0
+     */
+    function setInfo($inf = NULL){}
+    
     /** Forward to next element
      */
     function next(){}
@@ -2192,18 +2602,46 @@ class SplObjectStorage implements Iterator, Countable
      */
     function count(){}
 
-    /** @param obj object to look for
+    /** @param $obj object to look for
      * @return whether $obj is contained in storage
-      */
+     */
     function contains($obj){}
 
-    /** @param $obj new object to attach to storage if not yet contained
+    /** @param $obj new object to attach to storage or object whose
+     *              associative information is to be replaced
+     * @param $inf associative information stored along the object
      */
-    function attach($obj){}
+    function attach($obj, $inf = NULL){}
 
     /** @param $obj object to remove from storage
      */
     function detach($obj){}
+
+    /** @param $obj new object to attach to storage or object whose
+     *              associative information is to be replaced
+     * @param $inf associative information stored along the object
+     * @since 5.3.0
+     */
+    function offsetSet($obj, $inf){}
+
+    /** @param $obj Exising object to look for
+     * @return associative information stored with object
+     * @throw UnexpectedValueException if Object $obj is not contained in
+     *                                 storage
+     * @since 5.3.0
+     */
+    function offsetGet($obj){}
+
+    /** @param $obj Exising object to look for
+     * @return associative information stored with object
+     * @since 5.3.0
+     */
+    function offsetUnset($obj){}
+
+    /** @param $obj object to look for
+     * @return whether $obj is contained in storage
+     */
+    function offsetEsists($obj){}
 }
 
 
@@ -2324,7 +2762,7 @@ class Collator {
      * @param int
      * @return bool
      **/
-    function asort($arr, $sort_flag) {}
+    function asort(&$arr, $sort_flag) {}
 
     /**
      * Object oriented style
@@ -2404,7 +2842,7 @@ class Collator {
      * @param int
      * @return bool
      **/
-    function sort($arr, $sort_flag) {}
+    function sort(&$arr, $sort_flag) {}
 
     /**
      * Object oriented style
@@ -2412,7 +2850,7 @@ class Collator {
      * @param array
      * @return bool
      **/
-    function sortWithSortKeys($arr) {}
+    function sortWithSortKeys(&$arr) {}
 
 }
 class DOMAttr extends DOMNode {
@@ -3744,6 +4182,13 @@ class DomNode {
     function first_child() {}
 
     /**
+     * Gets line number for where the node is defined.
+     *
+     * @return int
+     **/
+    function getLineNo() {}
+
+    /**
      * This function returns the content of the actual node.
      *
      * @return string
@@ -4284,7 +4729,7 @@ class FilesystemIterator extends DirectoryIterator implements SeekableIterator, 
     function current() {}
 
     /**
-     * Gets the handling flags, as set in FilesystemIterator::__construct.
+     * Gets the handling flags, as set in FilesystemIterator::__construct or FilesystemIterator::setFlags.
      *
      * @return int
      **/
@@ -4296,7 +4741,7 @@ class FilesystemIterator extends DirectoryIterator implements SeekableIterator, 
     function key() {}
 
     /**
-     * Move to the next entry.
+     * Move to the next file.
      *
      * @return void
      **/
@@ -4312,7 +4757,7 @@ class FilesystemIterator extends DirectoryIterator implements SeekableIterator, 
     /**
      * Sets handling flags.
      *
-     * @param string
+     * @param int
      * @return void
      **/
     function setFlags($flags) {}
@@ -4321,12 +4766,19 @@ class FilesystemIterator extends DirectoryIterator implements SeekableIterator, 
      * Constructs a new filesystem iterator from the path.
      *
      * @param string
-     * @param string
+     * @param int
      **/
     function __construct($path, $flags) {}
 
 }
 class FilterIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
+    /**
+     * Returns whether the current element of the iterator is acceptable trough this filter.
+     *
+     * @return bool
+     **/
+    function accept() {}
+
     /**
      * Get the current element value.
      *
@@ -4383,10 +4835,1529 @@ class GlobIterator extends FilesystemIterator implements Iterator, Traversable, 
      * Constructs a new directory iterator from a glob expression.
      *
      * @param string
-     * @param string
+     * @param integer
      **/
     function __construct($path, $flags) {}
 
+}
+class Gmagick {
+    const COLOR_ALPHA = 0;
+    const COLOR_BLACK = 0;
+    const COLOR_BLUE = 0;
+    const COLOR_CYAN = 0;
+    const COLOR_FUZZ = 0;
+    const COLOR_GREEN = 0;
+    const COLOR_MAGENTA = 0;
+    const COLOR_OPACITY = 0;
+    const COLOR_RED = 0;
+    const COLOR_YELLOW = 0;
+    /**
+     * Adds new image to Gmagick object from the current position of the source object. After the operation iterator position is moved at the end of the list.
+     *
+     * @param Gmagick
+     * @return void
+     **/
+    function addimage($Gmagick) {}
+
+    /**
+     * Adds random noise to the image.
+     *
+     * @param int
+     * @return void
+     **/
+    function addnoiseimage($NOISE) {}
+
+    /**
+     * Annotates an image with text.
+     *
+     * @param GmagickDraw
+     * @param int
+     * @param int
+     * @param float
+     * @param string
+     * @return void
+     **/
+    function annotateimage($GmagickDraw, $x, $y, $angle, $text) {}
+
+    /**
+     * Adds blur filter to image.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function blurimage($radius, $sigma) {}
+
+    /**
+     * Surrounds the image with a border of the color defined by the bordercolor GmagickPixel object or a color string.
+     *
+     * @param GmagickPixel
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function borderimage($color, $width, $height) {}
+
+    /**
+     * Simulates a charcoal drawing.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function charcoalimage($radius, $sigma) {}
+
+    /**
+     * Removes a region of an image and collapses the image to occupy the removed portion.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function chopimage($width, $height, $x, $y) {}
+
+    /**
+     * Clears all resources associated to Gmagick object
+     *
+     * @return void
+     **/
+    function clear() {}
+
+    /**
+     * Adds a comment to your image.
+     *
+     * @param string
+     * @return void
+     **/
+    function commentimage($comment) {}
+
+    /**
+     * Composite one image onto another at the specified offset.
+     *
+     * @param Gmagick
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function compositeimage($source, $COMPOSE, $x, $y) {}
+
+    /**
+     * Extracts a region of the image.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function cropimage($x, $y, $width, $height) {}
+
+    /**
+     * Creates a fixed size thumbnail by first scaling the image down and cropping a specified area from the center.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function cropthumbnailimage($x, $y, $width, $height) {}
+
+    /**
+     * Returns reference to the current gmagick object with image pointer at the correct sequence.
+     *
+     * @return void
+     **/
+    function current() {}
+
+    /**
+     * Displaces an image's colormap by a given number of positions. If you cycle the colormap a number of times you can 
+     * produce a psychedelic effect.
+     *
+     * @param float
+     * @return void
+     **/
+    function cyclecolormapimage($displace) {}
+
+    /**
+     * Compares each image with the next in a sequence and returns the maximum bounding region of any pixel differences it discovers.
+     *
+     * @return void
+     **/
+    function deconstructimages() {}
+
+    /**
+     * Reduces the speckle noise in an image while preserving the edges of the original image.
+     *
+     * @return void
+     **/
+    function despeckleimage() {}
+
+    /**
+     * Destroys the Gmagick object and frees all resources associated with it
+     *
+     * @return void
+     **/
+    function destroy() {}
+
+    /**
+     * Renders the GmagickDraw object on the current image
+     *
+     * @param GmagickDraw
+     * @return void
+     **/
+    function drawimage($GmagickDraw) {}
+
+    /**
+     * Enhance edges within the image with a convolution filter of the given radius. Use radius 0 and it will be auto-selected.
+     *
+     * @param float
+     * @return void
+     **/
+    function edgeimage($radius) {}
+
+    /**
+     * Returns a grayscale image with a three-dimensional effect. We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma). For reasonable results, radius should be larger than sigma. Use a radius of 0 and it will choose a suitable radius for you.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function embossimage($radius, $sigma) {}
+
+    /**
+     * Applies a digital filter that improves the quality of a noisy image.
+     *
+     * @return void
+     **/
+    function enhanceimage() {}
+
+    /**
+     * Equalizes the image histogram.
+     *
+     * @return void
+     **/
+    function equalizeimage() {}
+
+    /**
+     * Creates a vertical mirror image by reflecting the pixels around the central x-axis.
+     *
+     * @return void
+     **/
+    function flipimage() {}
+
+    /**
+     * Creates a horizontal mirror image by reflecting the pixels around the central y-axis.
+     *
+     * @return void
+     **/
+    function flopimage() {}
+
+    /**
+     * Adds a simulated three-dimensional border around the image. The width and height specify the border width of the vertical and horizontal sides of the frame. The inner and outer bevels indicate the width of the inner and outer shadows of the frame.
+     *
+     * @param GmagickPixel
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function frameimage($color, $width, $height, $inner_bevel, $outer_bevel) {}
+
+    /**
+     * Gamma-corrects an image. The same image viewed on different devices will have perceptual differences in the way the image's intensities are represented on the screen. Specify individual gamma levels for the red, green, and blue channels, or adjust all three with the gamma parameter. Values typically range from 0.8 to 2.3.
+     *
+     * @param float
+     * @return void
+     **/
+    function gammaimage($gamma) {}
+
+    /**
+     * Returns the GraphicsMagick API copyright as a string.
+     *
+     * @return void
+     **/
+    function getcopyright() {}
+
+    /**
+     * Returns the filename associated with an image sequence.
+     *
+     * @return void
+     **/
+    function getfilename() {}
+
+    /**
+     * Returns the image background color.
+     *
+     * @return void
+     **/
+    function getimagebackgroundcolor() {}
+
+    /**
+     * Returns the chromaticity blue primary point for the image.
+     *
+     * @return void
+     **/
+    function getimageblueprimary() {}
+
+    /**
+     * Returns the image border color.
+     *
+     * @return void
+     **/
+    function getimagebordercolor() {}
+
+    /**
+     * Gets the depth for a particular image channel.
+     *
+     * @return void
+     **/
+    function getimagechanneldepth() {}
+
+    /**
+     * Returns the color of the specified colormap index.
+     *
+     * @return void
+     **/
+    function getimagecolors() {}
+
+    /**
+     * Gets the image colorspace.
+     *
+     * @return void
+     **/
+    function getimagecolorspace() {}
+
+    /**
+     * Returns the composite operator associated with the image.
+     *
+     * @return void
+     **/
+    function getimagecompose() {}
+
+    /**
+     * Gets the image delay
+     *
+     * @return void
+     **/
+    function getimagedelay() {}
+
+    /**
+     * Gets the depth of the image.
+     *
+     * @return void
+     **/
+    function getimagedepth() {}
+
+    /**
+     * Gets the image disposal method
+     *
+     * @return void
+     **/
+    function getimagedispose() {}
+
+    /**
+     * Returns an associative array with the keys "min" and "max".
+     *
+     * @return void
+     **/
+    function getimageextrema() {}
+
+    /**
+     * Returns the filename of a particular image in a sequence
+     *
+     * @return void
+     **/
+    function getimagefilename() {}
+
+    /**
+     * Returns the format of a particular image in a sequence.
+     *
+     * @return void
+     **/
+    function getimageformat() {}
+
+    /**
+     * Gets the image gamma
+     *
+     * @return void
+     **/
+    function getimagegamma() {}
+
+    /**
+     * Returns the chromaticity green primary point. Returns an array with the keys "x" and "y".
+     *
+     * @return void
+     **/
+    function getimagegreenprimary() {}
+
+    /**
+     * Returns the image height
+     *
+     * @return void
+     **/
+    function getimageheight() {}
+
+    /**
+     * Returns the image histogram as an array of GmagickPixel objects. Throw an GmagickException on error.
+     *
+     * @return void
+     **/
+    function getimagehistogram() {}
+
+    /**
+     * Returns the index of the current active image within the Gmagick object.
+     *
+     * @return void
+     **/
+    function getimageindex() {}
+
+    /**
+     * Gets the image interlace scheme.
+     *
+     * @return void
+     **/
+    function getimageinterlacescheme() {}
+
+    /**
+     * Gets the image iterations.
+     *
+     * @return void
+     **/
+    function getimageiterations() {}
+
+    /**
+     * Returns TRUE if the image has a matte channel otherwise false.
+     *
+     * @return void
+     **/
+    function getimagematte() {}
+
+    /**
+     * Returns GmagickPixel object on success. Throw an GmagickException on error.
+     *
+     * @return void
+     **/
+    function getimagemattecolor() {}
+
+    /**
+     * Returns the named image profile.
+     *
+     * @return void
+     **/
+    function getimageprofile() {}
+
+    /**
+     * Returns the chromaticity red primary point as an array with the keys "x" and "y".
+     *
+     * @return void
+     **/
+    function getimageredprimary() {}
+
+    /**
+     * Gets the image rendering intent
+     *
+     * @return void
+     **/
+    function getimagerenderingintent() {}
+
+    /**
+     * Returns the resolution as an array.
+     *
+     * @return void
+     **/
+    function getimageresolution() {}
+
+    /**
+     * Gets the image scene.
+     *
+     * @return void
+     **/
+    function getimagescene() {}
+
+    /**
+     * Generates an SHA-256 message digest for the image pixel stream.
+     *
+     * @return void
+     **/
+    function getimagesignature() {}
+
+    /**
+     * Gets the potential image type.
+     *
+     * @return void
+     **/
+    function getimagetype() {}
+
+    /**
+     * Gets the image units of resolution.
+     *
+     * @return void
+     **/
+    function getimageunits() {}
+
+    /**
+     * Returns the chromaticity white point as an associative array with the keys "x" and "y".
+     *
+     * @return void
+     **/
+    function getimagewhitepoint() {}
+
+    /**
+     * Returns the width of the image.
+     *
+     * @return void
+     **/
+    function getimagewidth() {}
+
+    /**
+     * Returns the GraphicsMagick package name.
+     *
+     * @return void
+     **/
+    function getpackagename() {}
+
+    /**
+     * Returns the Gmagick quantum depth as a string.
+     *
+     * @return void
+     **/
+    function getquantumdepth() {}
+
+    /**
+     * Returns the GraphicsMagick release date as a string.
+     *
+     * @return void
+     **/
+    function getreleasedate() {}
+
+    /**
+     * Gets the horizontal and vertical sampling factor.
+     *
+     * @return void
+     **/
+    function getsamplingfactors() {}
+
+    /**
+     * Returns the size associated with the Gmagick object as an array with the keys "columns" and "rows".
+     *
+     * @return void
+     **/
+    function getsize() {}
+
+    /**
+     * Returns the GraphicsMagick API version as a string and as a number.
+     *
+     * @return void
+     **/
+    function getversion() {}
+
+    /**
+     * Returns TRUE if the object has more images when traversing the list in the forward direction.
+     *
+     * @return void
+     **/
+    function hasnextimage() {}
+
+    /**
+     * Returns TRUE if the object has more images when traversing the list in the reverse direction
+     *
+     * @return void
+     **/
+    function haspreviousimage() {}
+
+    /**
+     * Creates a new image that is a copy of an existing one with the image pixels "imploded" by the specified percentage.
+     *
+     * @param float
+     * @return void
+     **/
+    function implodeimage($radius) {}
+
+    /**
+     * Adds a label to an image.
+     *
+     * @param string
+     * @return void
+     **/
+    function labelimage($label) {}
+
+    /**
+     * Adjusts the levels of an image by scaling the colors falling between specified white and black
+     * points to the full available quantum range. The parameters provided represent the black, mid, and 
+     * white points. The black point specifies the darkest color in the image. Colors darker than the black
+     * point are set to zero. Mid point specifies a gamma correction to apply to the image. White point
+     * specifies the lightest color in the image. Colors brighter than the white point are set to the
+     * maximum quantum value.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param int
+     * @return void
+     **/
+    function levelimage($blackPoint, $gamma, $whitePoint, $channel) {}
+
+    /**
+     * Conveniently scales an image proportionally to twice its original size.
+     *
+     * @return void
+     **/
+    function magnifyimage() {}
+
+    /**
+     * Replaces the colors of an image with the closest color from a reference image.
+     *
+     * @param gmagick
+     * @param int
+     * @return void
+     **/
+    function mapimage($gmagick, $dither) {}
+
+    /**
+     * Applies a digital filter that improves the quality of a noisy image. Each pixel is replaced by the median in a set of neighboring pixels as defined by radius.
+     *
+     * @param float
+     * @return void
+     **/
+    function medianfilterimage($radius) {}
+
+    /**
+     * A convenient method that scales an image proportionally to one-half its original size
+     *
+     * @return void
+     **/
+    function minifyimage() {}
+
+    /**
+     * Lets you control the brightness, saturation, and hue of an image. Hue is the 
+     * percentage of absolute rotation from the current position. For example 50 results 
+     * in a counter-clockwise rotation of 90 degrees, 150 results in a clockwise rotation
+     * of 90 degrees, with 0 and 200 both resulting in a rotation of 180 degrees.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function modulateimage($brightness, $saturation, $hue) {}
+
+    /**
+     * Simulates motion blur. We convolve the image with a Gaussian operator of the 
+     * given radius and standard deviation (sigma). For reasonable results, radius should be
+     * larger than sigma. Use a radius of 0 and MotionBlurImage() selects a suitable radius
+     * for you. Angle gives the angle of the blurring motion.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function motionblurimage($radius, $sigma, $angle) {}
+
+    /**
+     * Creates a new image with the specified background color
+     *
+     * @param int
+     * @param int
+     * @param mixed
+     * @param string
+     * @return void
+     **/
+    function newimage($width, $height, $background, $height) {}
+
+    /**
+     * Associates the next image in the image list with an Gmagick object.
+     *
+     * @return void
+     **/
+    function nextimage() {}
+
+    /**
+     * Enhances the contrast of a color image by adjusting the pixels color to span the entire range of colors available.
+     *
+     * @param int
+     * @return void
+     **/
+    function normalizeimage($channel) {}
+
+    /**
+     * Applies a special effect filter that simulates an oil painting. Each pixel is replaced by the most frequent color occurring in a circular region defined by radius.
+     *
+     * @return void
+     **/
+    function oilpaintimage() {}
+
+    /**
+     * Assocates the previous image in an image list with the Gmagick object.
+     *
+     * @return void
+     **/
+    function previousimage() {}
+
+    /**
+     * Adds or removes a ICC, IPTC, or generic profile from an image. If the profile is NULL, it is removed from the image otherwise added. Use a name of '*' and a profile of NULL to remove all profiles from the image.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function profileimage($name, $profile) {}
+
+    /**
+     * Analyzes the colors within a reference image and chooses a fixed number of
+     * colors to represent the image. The goal of the algorithm is to minimize the 
+     * color difference between the input and output image while minimizing the processing time.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param bool
+     * @param bool
+     * @return void
+     **/
+    function quantizeimage($numColors, $colorspace, $treeDepth, $dither, $measureError) {}
+
+    /**
+     * Analyzes the colors within a sequence of images and chooses a fixed number of 
+     * colors to represent the image. The goal of the algorithm is to minimize the 
+     * color difference between the input and output image while minimizing the processing time.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param bool
+     * @param bool
+     * @return void
+     **/
+    function quantizeimages($numColors, $colorspace, $treeDepth, $dither, $measureError) {}
+
+    /**
+     * MagickQueryFontMetrics() returns an array representing the font metrics.
+     *
+     * @return void
+     **/
+    function queryfontmetrics() {}
+
+    /**
+     * Returns fonts supported by Gmagick.
+     *
+     * @return void
+     **/
+    function queryfonts() {}
+
+    /**
+     * Returns formats supported by Gmagick.
+     *
+     * @param string
+     * @return void
+     **/
+    function queryformats($pattern) {}
+
+    /**
+     * Radial blurs an image.
+     *
+     * @param float
+     * @param int
+     * @return void
+     **/
+    function radialblurimage($angle, $channel) {}
+
+    /**
+     * Creates a simulated three-dimensional button-like effect by lightening and darkening the edges of the image. Members width and height of raise_info define the width of the vertical and horizontal edge of the effect.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param bool
+     * @return void
+     **/
+    function raiseimage($width, $height, $x, $y, $raise) {}
+
+    /**
+     * Reads image from filename.
+     *
+     * @param string
+     * @return void
+     **/
+    function read($filename) {}
+
+    /**
+     * Reads image from filename.
+     *
+     * @param string
+     * @return void
+     **/
+    function readimage($filename) {}
+
+    /**
+     * Reads image from a binary string.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function readimageblob($imageContents, $filename) {}
+
+    /**
+     * Reads an image or image sequence from an open file descriptor.
+     *
+     * @param string
+     * @return void
+     **/
+    function readimagefile($fp) {}
+
+    /**
+     * Smooths the contours of an image while still preserving edge information. The algorithm works by replacing each pixel with its neighbor closest in value. A neighbor is defined by radius. Use a radius of 0 and Gmagick::reduceNoiseImage() selects a suitable radius for you.
+     *
+     * @param float
+     * @return void
+     **/
+    function reducenoiseimage($radius) {}
+
+    /**
+     * Removes an image from the image list.
+     *
+     * @return void
+     **/
+    function removeimage() {}
+
+    /**
+     * Removes the named image profile and returns it.
+     *
+     * @param string
+     * @return void
+     **/
+    function removeimageprofile($name) {}
+
+    /**
+     * Resample image to desired resolution.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @param float
+     * @return void
+     **/
+    function resampleimage($xResolution, $yResolution, $filter, $blur) {}
+
+    /**
+     * Scales an image to the desired dimensions with a filter.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param float
+     * @param bool
+     * @return void
+     **/
+    function resizeimage($width, $height, $filter, $blur, $fit) {}
+
+    /**
+     * Offsets an image as defined by x and y.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function rollimage($x, $y) {}
+
+    /**
+     * Rotates an image the specified number of degrees. Empty triangles left over from rotating the image are filled with the background color.
+     *
+     * @param mixed
+     * @param float
+     * @return void
+     **/
+    function rotateimage($color, $degrees) {}
+
+    /**
+     * Scales the size of an image to the given dimensions. The other parameter will be calculated if 0 is passed as either param.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function scaleimage($width, $height) {}
+
+    /**
+     * Separates a channel from the image and returns a grayscale image. A channel is a particular color component of each pixel in the image.
+     *
+     * @param int
+     * @return void
+     **/
+    function separateimagechannel($channel) {}
+
+    /**
+     * Sets the filename before you read or write an image file.
+     *
+     * @param string
+     * @return void
+     **/
+    function setfilename($filename) {}
+
+    /**
+     * Sets the image background color.
+     *
+     * @param GmagickPixel
+     * @return void
+     **/
+    function setimagebackgroundcolor($color) {}
+
+    /**
+     * Sets the image chromaticity blue primary point.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setimageblueprimary($x, $y) {}
+
+    /**
+     * Sets the image border color.
+     *
+     * @param GmagickPixel
+     * @return void
+     **/
+    function setimagebordercolor($color) {}
+
+    /**
+     * Sets the depth of a particular image channel.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setimagechanneldepth($channel, $depth) {}
+
+    /**
+     * Sets the image colorspace.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimagecolorspace($colorspace) {}
+
+    /**
+     * Sets the image composite operator.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimagecompose($composite) {}
+
+    /**
+     * Sets the image delay
+     *
+     * @param int
+     * @return void
+     **/
+    function setimagedelay($delay) {}
+
+    /**
+     * Sets the image depth
+     *
+     * @param float
+     * @return void
+     **/
+    function setimagedepth($depth) {}
+
+    /**
+     * Sets the image disposal method.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimagedispose($disposeType) {}
+
+    /**
+     * Sets the filename of a particular image in a sequence.
+     *
+     * @param string
+     * @return void
+     **/
+    function setimagefilename($filename) {}
+
+    /**
+     * Sets the format of a particular image in a sequence.
+     *
+     * @param string
+     * @return void
+     **/
+    function setimageformat($imageFormat) {}
+
+    /**
+     * Sets the image gamma.
+     *
+     * @param float
+     * @return void
+     **/
+    function setimagegamma($gamma) {}
+
+    /**
+     * Sets the image chromaticity green primary point.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setimagegreenprimary($x, $y) {}
+
+    /**
+     * Set the iterator to the position in the image list specified with the index parameter.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimageindex($index) {}
+
+    /**
+     * Sets the interlace scheme of the image.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimageinterlacescheme($interlace) {}
+
+    /**
+     * Sets the image iterations.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimageiterations($iterations) {}
+
+    /**
+     * Adds a named profile to the Gmagick object. If a profile with the same name already exists, it is replaced.
+     * This method differs from the Gmagick::ProfileImage() method in that it does not apply any CMS color profiles.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setimageprofile($name, $profile) {}
+
+    /**
+     * Sets the image chromaticity red primary point.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setimageredprimary($x, $y) {}
+
+    /**
+     * Sets the image rendering intent.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimagerenderingintent($rendering_intent) {}
+
+    /**
+     * Sets the image resolution.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setimageresolution($xResolution, $yResolution) {}
+
+    /**
+     * Sets the image scene.
+     *
+     * @param string
+     * @return void
+     **/
+    function setimagescene($scene) {}
+
+    /**
+     * Sets the image type.
+     *
+     * @param string
+     * @return void
+     **/
+    function setimagetype($imgType) {}
+
+    /**
+     * Sets the image units of resolution.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimageunits($resolution) {}
+
+    /**
+     * Sets the image chromaticity white point.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setimagewhitepoint($x, $y) {}
+
+    /**
+     * Sets the image sampling factors.
+     *
+     * @param array
+     * @return void
+     **/
+    function setsamplingfactors($factors) {}
+
+    /**
+     * Sets the size of the Gmagick object. Set it before you read a raw image format such as RGB, GRAY, or CMYK.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setsize($columns, $rows) {}
+
+    /**
+     * Slides one edge of an image along the X or Y axis, creating a parallelogram.
+     * An X direction shear slides an edge along the X axis, while a Y direction shear slides an edge along the Y axis. 
+     * The amount of the shear is controlled by a shear angle. For X direction shears, x_shear is measured relative to the
+     * Y axis, and similarly, for Y direction shears y_shear is measured relative to the X axis. Empty triangles left over
+     * from shearing the image are filled with the background color.
+     *
+     * @param mixed
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function shearimage($color, $xShear, $yShear) {}
+
+    /**
+     * Applies a special effect to the image, similar to the effect achieved in a 
+     * photo darkroom by selectively exposing areas of photo sensitive paper to light. 
+     * Threshold ranges from 0 to QuantumRange and is a measure of the extent of the solarization.
+     *
+     * @param float
+     * @return void
+     **/
+    function solarizeimage($threshold) {}
+
+    /**
+     * Special effects method that randomly displaces each pixel in a block defined by the radius parameter.
+     *
+     * @param float
+     * @return void
+     **/
+    function spreadimage($radius) {}
+
+    /**
+     * Strips an image of all profiles and comments.
+     *
+     * @return void
+     **/
+    function stripimage() {}
+
+    /**
+     * Swirls the pixels about the center of the image, where degrees indicates the sweep of the arc through which each pixel is moved. You get a more dramatic effect as the degrees move from 1 to 360.
+     *
+     * @param float
+     * @return void
+     **/
+    function swirlimage($degrees) {}
+
+    /**
+     * Changes the size of an image to the given dimensions and removes any associated profiles. 
+     * The goal is to produce small low cost thumbnail images suited for display on the Web. 
+     * If TRUE is given as a third parameter then columns and rows parameters are used as maximums
+     * for each side. Both sides will be scaled down until the match or are smaller than the parameter given for the side.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function thumbnailimage($width, $height) {}
+
+    /**
+     * Remove edges that are the background color from the image.
+     *
+     * @param float
+     * @return void
+     **/
+    function trimimage($fuzz) {}
+
+    /**
+     * Writes an image to the specified filename. If the filename parameter is NULL, 
+     * the image is written to the filename set by Gmagick::ReadImage() or Gmagick::SetImageFilename().
+     *
+     * @param string
+     * @return void
+     **/
+    function write($filename) {}
+
+    /**
+     * Writes an image to the specified filename. If the filename parameter is NULL, 
+     * the image is written to the filename set by Gmagick::ReadImage() or Gmagick::SetImageFilename().
+     *
+     * @param string
+     * @return void
+     **/
+    function writeimage($filename) {}
+
+    /**
+     * The Gmagick constructor.
+     *
+     * @param string
+     **/
+    function __construct($filename) {}
+
+}
+class GmagickDraw {
+    /**
+     * Draws text on the image.
+     *
+     * @param float
+     * @param float
+     * @param string
+     * @return void
+     **/
+    function annotate($x, $y, $text) {}
+
+    /**
+     * Draws an arc falling within a specified bounding rectangle on the image.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function arc($sx, $sy, $ex, $ey, $sd, $ed) {}
+
+    /**
+     * Draws a bezier curve through a set of points on the image.
+     *
+     * @param array
+     * @return void
+     **/
+    function bezier($coordinate_array) {}
+
+    /**
+     * Draws an ellipse on the image.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function ellipse($ox, $oy, $rx, $ry, $start, $end) {}
+
+    /**
+     * Returns the fill color used for drawing filled objects.
+     *
+     * @return void
+     **/
+    function getfillcolor() {}
+
+    /**
+     * Returns the opacity used when drawing
+     *
+     * @return void
+     **/
+    function getfillopacity() {}
+
+    /**
+     * Returns a string specifying the font used when annotating with text.
+     *
+     * @return void
+     **/
+    function getfont() {}
+
+    /**
+     * Returns the font pointsize used when annotating with text.
+     *
+     * @return void
+     **/
+    function getfontsize() {}
+
+    /**
+     * Returns the font style used when annotating with text.
+     *
+     * @return void
+     **/
+    function getfontstyle() {}
+
+    /**
+     * Returns the font weight used when annotating with text.
+     *
+     * @return void
+     **/
+    function getfontweight() {}
+
+    /**
+     * Returns the color used for stroking object outlines.
+     *
+     * @return void
+     **/
+    function getstrokecolor() {}
+
+    /**
+     * Returns the opacity of stroked object outlines.
+     *
+     * @return void
+     **/
+    function getstrokeopacity() {}
+
+    /**
+     * Returns the width of the stroke used to draw object outlines.
+     *
+     * @return void
+     **/
+    function getstrokewidth() {}
+
+    /**
+     * Returns the decoration applied when annotating with text.
+     *
+     * @return void
+     **/
+    function gettextdecoration() {}
+
+    /**
+     * Returns a string which specifies the code set used for text annotations.
+     *
+     * @return void
+     **/
+    function gettextencoding() {}
+
+    /**
+     * Draws a line on the image using the current stroke color, stroke opacity, and stroke width.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function line($sx, $sy, $ex, $ey) {}
+
+    /**
+     * Draws a point using the current stroke color and stroke thickness at the specified coordinates.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function point($x, $y) {}
+
+    /**
+     * Draws a polygon using the current stroke, stroke width, and fill color or texture, using the specified array of coordinates.
+     *
+     * @param array
+     * @return void
+     **/
+    function polygon($coordinates) {}
+
+    /**
+     * Draws a polyline using the current stroke, stroke width, and fill color or texture, using the specified array of coordinates.
+     *
+     * @param array
+     * @return void
+     **/
+    function polyline($coordinate_array) {}
+
+    /**
+     * Draws a rectangle given two coordinates and using the current stroke, stroke width, and fill settings.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function rectangle($x1, $y1, $x2, $y2) {}
+
+    /**
+     * Applies the specified rotation to the current coordinate space.
+     *
+     * @param float
+     * @return void
+     **/
+    function rotate($degrees) {}
+
+    /**
+     * Draws a rounded rectangle given two coordinates, x and y corner radiuses and using the current stroke, stroke width, and fill settings.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function roundrectangle($x1, $y1, $x2, $y2, $rx, $ry) {}
+
+    /**
+     * Adjusts the scaling factor to apply in the horizontal and vertical directions to the current coordinate space.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function scale($x, $y) {}
+
+    /**
+     * Sets the fill color to be used for drawing filled objects.
+     *
+     * @param string
+     * @return void
+     **/
+    function setfillcolor($color) {}
+
+    /**
+     * Sets the opacity to use when drawing using the fill color or fill texture. Setting it to 1.0 will make
+     * fill full opaque.
+     *
+     * @param float
+     * @return void
+     **/
+    function setfillopacity($fill_opacity) {}
+
+    /**
+     * Sets the fully-specified font to use when annotating with text
+     *
+     * @param string
+     * @return void
+     **/
+    function setfont($font) {}
+
+    /**
+     * Sets the font pointsize to use when annotating with text.
+     *
+     * @param float
+     * @return void
+     **/
+    function setfontsize($pointsize) {}
+
+    /**
+     * Sets the font style to use when annotating with text. The AnyStyle enumeration acts as a wild-card "don't care" option.
+     *
+     * @param string
+     * @return void
+     **/
+    function setfontstyle($style) {}
+
+    /**
+     * Sets the font weight to use when annotating with text.
+     *
+     * @param int
+     * @return void
+     **/
+    function setfontweight($weight) {}
+
+    /**
+     * Sets the color used for stroking object outlines.
+     *
+     * @param GmagickPixel
+     * @return void
+     **/
+    function setstrokecolor($color) {}
+
+    /**
+     * Specifies the opacity of stroked object outlines.
+     *
+     * @param float
+     * @return void
+     **/
+    function setstrokeopacity($stroke_opacity) {}
+
+    /**
+     * Sets the width of the stroke used to draw object outlines
+     *
+     * @param float
+     * @return void
+     **/
+    function setstrokewidth($width) {}
+
+    /**
+     * Specifies a decoration to be applied when annotating with text.
+     *
+     * @param int
+     * @return void
+     **/
+    function settextdecoration($decoration) {}
+
+    /**
+     * Specifies specifies the code set to use for text annotations. The only character 
+     * encoding which may be specified at this time is "UTF-8" for representing Unicode as 
+     * a sequence of bytes. Specify an empty string to set text encoding to the system's default. 
+     * Successful text annotation using Unicode may require fonts designed to support Unicode.
+     *
+     * @param string
+     * @return void
+     **/
+    function settextencoding($encoding) {}
+
+}
+class GmagickException extends Exception {
+}
+class GmagickPixel {
+    /**
+     * Returns the color described by the GmagickPixel object, as an array. If the color has an opacity channel set, this is provided as a fourth value in the list.
+     *
+     * @param bool
+     * @param bool
+     * @return void
+     **/
+    function getcolor($as_array, $normalize_array) {}
+
+    /**
+     * Returns the color count associated with this color
+     *
+     * @param bool
+     * @param bool
+     * @return void
+     **/
+    function getcolorcount($as_array, $normalize_array) {}
+
+    /**
+     * Retrieves the value of the color channel specified, as a floating-point number between 0 and 1.
+     *
+     * @param int
+     * @return void
+     **/
+    function getcolorvalue($color) {}
+
+    /**
+     * Sets the color described by the GmagickPixel object, with a string (e.g. "blue", "#0000ff", "rgb(0,0,255)", "cmyk(100,100,100,10)", etc.).
+     *
+     * @param string
+     * @return void
+     **/
+    function setcolor($color) {}
+
+    /**
+     * Sets the value of the specified channel of this object to the provided value, which should be between 0 and 1. This function can be used to provide an opacity channel to a GmagickPixel object.
+     *
+     * @param int
+     * @param float
+     * @return void
+     **/
+    function setcolorvalue($color, $value) {}
+
+    /**
+     * Constructs an GmagickPixel object. If a color is specified, the object is constructed and then initialised with that color before being returned.
+     *
+     * @param string
+     **/
+    function __construct($color) {}
+
+}
+class GmagickPixelException extends Exception {
 }
 class HaruAnnotation {
     /**
@@ -10926,7 +12897,7 @@ class IntlDateFormatter {
      * @param int
      * @return array
      **/
-    function localtime($value, $position) {}
+    function localtime($value, &$position) {}
 
     /**
      * Object oriented style
@@ -10935,7 +12906,7 @@ class IntlDateFormatter {
      * @param int
      * @return int
      **/
-    function parse($value, $position) {}
+    function parse($value, &$position) {}
 
     /**
      * Object oriented style
@@ -11269,9 +13240,10 @@ class Locale {
      *
      * @param string
      * @param string
+     * @param bool
      * @return bool
      **/
-    function filterMatches($langtag, $locale) {}
+    function filterMatches($langtag, $locale, $canonicalize) {}
 
     /**
      * Object oriented style
@@ -11370,10 +13342,11 @@ class Locale {
      *
      * @param array
      * @param string
+     * @param bool
      * @param string
      * @return string
      **/
-    function lookup($langtag, $locale, $default) {}
+    function lookup($langtag, $locale, $canonicalize, $default) {}
 
     /**
      * Object oriented style
@@ -11514,7 +13487,7 @@ class Memcache {
      * @param int
      * @return string
      **/
-    function get($key, $flags) {}
+    function get($key, &$flags) {}
 
     /**
      * Memcache::getExtendedStats returns a two-dimensional
@@ -11853,7 +13826,7 @@ class Memcached {
      *
      * @param string
      * @param int
-     * @return bool
+     * @return int
      **/
     function decrement($key, $offset) {}
 
@@ -11934,7 +13907,7 @@ class Memcached {
      * @param double
      * @return mixed
      **/
-    function get($key, $cache_cb, $cas_token) {}
+    function get($key, $cache_cb, &$cas_token) {}
 
     /**
      * Memcached::getByKey is functionally equivalent to
@@ -11948,7 +13921,7 @@ class Memcached {
      * @param double
      * @return mixed
      **/
-    function getByKey($server_key, $key, $cache_cb, $cas_token) {}
+    function getByKey($server_key, $key, $cache_cb, &$cas_token) {}
 
     /**
      * Memcached::getDelayed issues a request to memcache for
@@ -12000,7 +13973,7 @@ class Memcached {
      * @param integer
      * @return mixed
      **/
-    function getMulti($keys, $cas_tokens, $flags) {}
+    function getMulti($keys, &$cas_tokens, $flags) {}
 
     /**
      * Memcached::getMultiByKey is functionally equivalent to
@@ -12014,7 +13987,7 @@ class Memcached {
      * @param integer
      * @return void
      **/
-    function getMultiByKey($server_key, $keys, $cas_tokens, $flags) {}
+    function getMultiByKey($server_key, $keys, &$cas_tokens, $flags) {}
 
     /**
      * This method returns the value of a Memcached option. Some options
@@ -12035,6 +14008,14 @@ class Memcached {
      * @return int
      **/
     function getResultCode() {}
+
+    /**
+     * Memcached::getResultMessage returns a string that
+     * describes the result code of the last executed Memcached method.
+     *
+     * @return string
+     **/
+    function getResultMessage() {}
 
     /**
      * Memcached::getServerByKey returns the server that
@@ -12080,7 +14061,7 @@ class Memcached {
      *
      * @param string
      * @param int
-     * @return bool
+     * @return int
      **/
     function increment($key, $offset) {}
 
@@ -12474,9 +14455,10 @@ class MongoCollection extends MongoCollection {
 
     /**
      * @param array
+     * @param array
      * @return array
      **/
-    function findOne($query) {}
+    function findOne($query, $fields) {}
 
     /**
      * @param array
@@ -12619,12 +14601,6 @@ class MongoCursor extends MongoCursor {
      * @return MongoCursor
      **/
     function skip($num) {}
-
-    /**
-     * @param int
-     * @return MongoCursor
-     **/
-    function softLimit($num) {}
 
     /**
      * @param array
@@ -12788,6 +14764,10 @@ class MongoDate {
     function __toString() {}
 
 }
+class MongoEmptyObj {
+}
+class MongoException extends MongoException {
+}
 class MongoGridFS {
     /**
      * @return array
@@ -12817,7 +14797,14 @@ class MongoGridFS {
     /**
      * @param string
      * @param array
-     * @return MongoId
+     * @return mixed
+     **/
+    function storeBytes($bytes, $extra) {}
+
+    /**
+     * @param string
+     * @param array
+     * @return mixed
      **/
     function storeFile($filename, $extra) {}
 
@@ -13066,7 +15053,7 @@ class NumberFormatter {
      * @param int
      * @return mixed
      **/
-    function parse($value, $type, $position) {}
+    function parse($value, $type, &$position) {}
 
     /**
      * Object oriented style
@@ -13076,7 +15063,7 @@ class NumberFormatter {
      * @param int
      * @return float
      **/
-    function parseCurrency($value, $currency, $position) {}
+    function parseCurrency($value, &$currency, &$position) {}
 
     /**
      * Object oriented style
@@ -13579,7 +15566,7 @@ class PDOStatement implements Traversable {
      * @param mixed
      * @return bool
      **/
-    function bindColumn($column, $param, $type, $maxlen, $driverdata) {}
+    function bindColumn($column, &$param, $type, $maxlen, $driverdata) {}
 
     /**
      * Binds a PHP variable to a corresponding named or question mark placeholder
@@ -13595,7 +15582,7 @@ class PDOStatement implements Traversable {
      * @param mixed
      * @return bool
      **/
-    function bindParam($parameter, $variable, $data_type, $length, $driver_options) {}
+    function bindParam($parameter, &$variable, $data_type, $length, $driver_options) {}
 
     /**
      * Binds a value to a corresponding named or question mark placeholder
@@ -15963,7 +17950,7 @@ class SQLite3Stmt {
      * @param int
      * @return bool
      **/
-    function bindParam($param_number, $param, $type) {}
+    function bindParam($param_number, &$param, $type) {}
 
     /**
      * Binds the value of a parameter to a statement variable.
@@ -17408,7 +19395,7 @@ class SoapClient {
      * @param array
      * @return mixed
      **/
-    function __soapCall($function_name, $arguments, $options, $input_headers, $output_headers) {}
+    function __soapCall($function_name, $arguments, $options, $input_headers, &$output_headers) {}
 
 }
 class SoapFault extends Exception {
@@ -18029,136 +20016,6 @@ class SphinxClient {
 }
 class SplBool {
 }
-class SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
-    /**
-     * @return mixed
-     **/
-    function bottom() {}
-
-    /**
-     * @return int
-     **/
-    function count() {}
-
-    /**
-     * Get the current doubly linked list node.
-     *
-     * @return mixed
-     **/
-    function current() {}
-
-    /**
-     * @return int
-     **/
-    function getIteratorMode() {}
-
-    /**
-     * @return bool
-     **/
-    function isEmpty() {}
-
-    /**
-     * This function returns the current node index
-     *
-     * @return mixed
-     **/
-    function key() {}
-
-    /**
-     * Move the iterator to the next node.
-     *
-     * @return void
-     **/
-    function next() {}
-
-    /**
-     * @param mixed
-     * @return bool
-     **/
-    function offsetExists($index) {}
-
-    /**
-     * @param mixed
-     * @return mixed
-     **/
-    function offsetGet($index) {}
-
-    /**
-     * Sets the value at the specified index to newval.
-     *
-     * @param mixed
-     * @param mixed
-     * @return void
-     **/
-    function offsetSet($index, $newval) {}
-
-    /**
-     * Unsets the value at the specified index.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function offsetUnset($index) {}
-
-    /**
-     * @return mixed
-     **/
-    function pop() {}
-
-    /**
-     * Move the iterator to the previous node.
-     *
-     * @return void
-     **/
-    function prev() {}
-
-    /**
-     * Pushes value at the end of the doubly linked list.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function push($value) {}
-
-    /**
-     * This rewinds the iterator to the beginning.
-     *
-     * @return void
-     **/
-    function rewind() {}
-
-    /**
-     * @param int
-     * @return void
-     **/
-    function setIteratorMode($mode) {}
-
-    /**
-     * @return mixed
-     **/
-    function shift() {}
-
-    /**
-     * @return mixed
-     **/
-    function top() {}
-
-    /**
-     * Prepends value at the beginning of the doubly linked list.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function unshift($value) {}
-
-    /**
-     * Checks if the doubly linked list contains any more nodes.
-     *
-     * @return bool
-     **/
-    function valid() {}
-
-}
 class SplEnum {
 }
 class SplFixedArray implements Iterator, ArrayAccess, Countable {
@@ -18464,37 +20321,6 @@ class SplPriorityQueue implements Iterator, Countable {
      * @return bool
      **/
     function valid() {}
-
-}
-class SplQueue extends SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
-    /**
-     * Dequeues value from the top of of the queue.
-     *
-     * @return mixed
-     **/
-    function dequeue() {}
-
-    /**
-     * Enqueues value at the end of the queue.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function enqueue($value) {}
-
-    /**
-     * @param int
-     * @return void
-     **/
-    function setIteratorMode($mode) {}
-
-}
-class SplStack extends SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
-    /**
-     * @param int
-     * @return void
-     **/
-    function setIteratorMode($mode) {}
 
 }
 class SplString {
@@ -19018,6 +20844,13 @@ class ZipArchive {
     function getNameIndex($index) {}
 
     /**
+     * Returns the status error message, system and/or zip messages.
+     *
+     * @return string
+     **/
+    function getStatus() {}
+
+    /**
      * Get a file handler to the entry defined by its name. For now it only
      * supports read operations.
      *
@@ -19441,7 +21274,7 @@ function apc_delete($key) {}
  * @param bool
  * @return mixed
  **/
-function apc_fetch($key, $success) {}
+function apc_fetch($key, &$success) {}
 
 /**
  * Loads a set of constants from the cache.
@@ -19865,7 +21698,7 @@ function array_merge_recursive($array1) {}
  * @param mixed
  * @return bool
  **/
-function array_multisort($arr, $arg, $arg) {}
+function array_multisort(&$arr, $arg, $arg) {}
 
 /**
  * array_pad returns a copy of the
@@ -19898,7 +21731,7 @@ function array_pad($input, $pad_size, $pad_value) {}
  * @param array
  * @return mixed
  **/
-function array_pop($array) {}
+function array_pop(&$array) {}
 
 /**
  * array_product returns the product of values
@@ -19923,7 +21756,7 @@ function array_product($array) {}
  * @param mixed
  * @return int
  **/
-function array_push($array, $var) {}
+function array_push(&$array, $var) {}
 
 /**
  * array_rand is rather useful when you want to
@@ -19947,6 +21780,40 @@ function array_rand($input, $num_req) {}
  * @return mixed
  **/
 function array_reduce($input, $function, $initial) {}
+
+/**
+ * array_replace replaces the values of the first
+ * array with the same values from all the following
+ * arrays. If a key from the first array exists in the second array, its value
+ * will be replaced by the value from the second array. If the key exists in the
+ * second array, and not the first, it will be created in the first array.
+ * If a key only exists in the first array, it will be left as is.
+ * If several arrays are passed for replacement, they will be processed
+ * in order, the later arrays overwriting the previous values.
+ *
+ * @param array
+ * @param array
+ * @param array
+ * @return array
+ **/
+function array_replace(&$array, &$array1, &$array2) {}
+
+/**
+ * array_replace_recursive replaces the values of the first
+ * array with the same values from all the following
+ * arrays. If a key from the first array exists in the second array, its value
+ * will be replaced by the value from the second array. If the key exists in the
+ * second array, and not the first, it will be created in the first array.
+ * If a key only exists in the first array, it will be left as is. 
+ * If several arrays are passed for replacement, they will be processed
+ * in order, the later array overwriting the previous values.
+ *
+ * @param array
+ * @param array
+ * @param array
+ * @return array
+ **/
+function array_replace_recursive(&$array, &$array1, &$array2) {}
 
 /**
  * Takes an input array and returns a new array with
@@ -19978,7 +21845,7 @@ function array_search($needle, $haystack, $strict) {}
  * @param array
  * @return mixed
  **/
-function array_shift($array) {}
+function array_shift(&$array) {}
 
 /**
  * array_slice returns the sequence of elements
@@ -20006,7 +21873,7 @@ function array_slice($array, $offset, $length, $preserve_keys) {}
  * @param mixed
  * @return array
  **/
-function array_splice($input, $offset, $length, $replacement) {}
+function array_splice(&$input, $offset, $length, $replacement) {}
 
 /**
  * array_sum returns the sum of values in an array.
@@ -20107,7 +21974,7 @@ function array_unique($array, $sort_flags) {}
  * @param mixed
  * @return int
  **/
-function array_unshift($array, $var) {}
+function array_unshift(&$array, $var) {}
 
 /**
  * array_values returns all the values from the
@@ -20129,7 +21996,7 @@ function array_values($input) {}
  * @param mixed
  * @return bool
  **/
-function array_walk($array, $funcname, $userdata) {}
+function array_walk(&$array, $funcname, $userdata) {}
 
 /**
  * Applies the user-defined function funcname to each
@@ -20141,7 +22008,7 @@ function array_walk($array, $funcname, $userdata) {}
  * @param mixed
  * @return bool
  **/
-function array_walk_recursive($input, $funcname, $userdata) {}
+function array_walk_recursive(&$input, $funcname, $userdata) {}
 
 /**
  * This function sorts an array such that array indices maintain their
@@ -20151,7 +22018,7 @@ function array_walk_recursive($input, $funcname, $userdata) {}
  * @param int
  * @return bool
  **/
-function arsort($array, $sort_flags) {}
+function arsort(&$array, $sort_flags) {}
 
 /**
  * ascii2ebcdic is an Apache-specific function which
@@ -20197,7 +22064,7 @@ function asinh($arg) {}
  * @param int
  * @return bool
  **/
-function asort($array, $sort_flags) {}
+function asort(&$array, $sort_flags) {}
 
 /**
  * assert will check the given
@@ -20777,7 +22644,7 @@ function call_user_func_array($function, $param_arr) {}
  * @param mixed
  * @return mixed
  **/
-function call_user_method($method_name, $obj, $parameter) {}
+function call_user_method($method_name, &$obj, $parameter) {}
 
 /**
  * @param string
@@ -20785,7 +22652,7 @@ function call_user_method($method_name, $obj, $parameter) {}
  * @param array
  * @return mixed
  **/
-function call_user_method_array($method_name, $obj, $params) {}
+function call_user_method_array($method_name, &$obj, $params) {}
 
 /**
  * This function will return the number of days in the
@@ -20988,6 +22855,17 @@ function classkit_method_remove($classname, $methodname) {}
  * @return bool
  **/
 function classkit_method_rename($classname, $methodname, $newname) {}
+
+/**
+ * Creates an alias named alias
+ * base on the defined class original.
+ * The aliased class is exactly the same as the original class.
+ *
+ * @param string
+ * @param string
+ * @return boolean
+ **/
+function class_alias($original, $alias) {}
 
 /**
  * This function checks whether or not the given class has been defined.
@@ -21532,7 +23410,7 @@ function curl_multi_close($mh) {}
  * @param int
  * @return int
  **/
-function curl_multi_exec($mh, $still_running) {}
+function curl_multi_exec($mh, &$still_running) {}
 
 /**
  * If CURLOPT_RETURNTRANSFER is an option that is set for a specific handle, 
@@ -21553,7 +23431,7 @@ function curl_multi_getcontent($ch) {}
  * @param int
  * @return array
  **/
-function curl_multi_info_read($mh, $msgs_in_queue) {}
+function curl_multi_info_read($mh, &$msgs_in_queue) {}
 
 /**
  * Allows the processing of multiple cURL handles in parallel.
@@ -21620,7 +23498,7 @@ function curl_version($age) {}
  * @param array
  * @return mixed
  **/
-function current($array) {}
+function current(&$array) {}
 
 /**
  * @param resource
@@ -22973,7 +24851,7 @@ function dbplus_close($relation) {}
  * @param array
  * @return int
  **/
-function dbplus_curr($relation, $tuple) {}
+function dbplus_curr($relation, &$tuple) {}
 
 /**
  * Returns a clear error string for the given error code.
@@ -23009,7 +24887,7 @@ function dbplus_find($relation, $constraints, $tuple) {}
  * @param array
  * @return int
  **/
-function dbplus_first($relation, $tuple) {}
+function dbplus_first($relation, &$tuple) {}
 
 /**
  * Writes all changes applied to relation since the
@@ -23071,7 +24949,7 @@ function dbplus_getunique($relation, $uniqueid) {}
  * @param array
  * @return int
  **/
-function dbplus_info($relation, $key, $result) {}
+function dbplus_info($relation, $key, &$result) {}
 
 /**
  * Reads the data for the last tuple for the given
@@ -23082,7 +24960,7 @@ function dbplus_info($relation, $key, $result) {}
  * @param array
  * @return int
  **/
-function dbplus_last($relation, $tuple) {}
+function dbplus_last($relation, &$tuple) {}
 
 /**
  * Requests a write lock on the given relation.
@@ -23101,7 +24979,7 @@ function dbplus_lockrel($relation) {}
  * @param array
  * @return int
  **/
-function dbplus_next($relation, $tuple) {}
+function dbplus_next($relation, &$tuple) {}
 
 /**
  * Opens the given relation file.
@@ -23120,7 +24998,7 @@ function dbplus_open($name) {}
  * @param array
  * @return int
  **/
-function dbplus_prev($relation, $tuple) {}
+function dbplus_prev($relation, &$tuple) {}
 
 /**
  * Changes access permissions as specified by mask,
@@ -23319,7 +25197,7 @@ function dbplus_tcl($sid, $script) {}
  * @param array
  * @return int
  **/
-function dbplus_tremove($relation, $tuple, $current) {}
+function dbplus_tremove($relation, $tuple, &$current) {}
 
 /**
  * @param resource
@@ -23755,7 +25633,7 @@ function dngettext($domain, $msgid1, $msgid2, $n) {}
  * @param array
  * @return array
  **/
-function dns_get_record($hostname, $type, $authns, $addtl) {}
+function dns_get_record($hostname, $type, &$authns, &$addtl) {}
 
 /**
  * Creates a new Dom document from scratch and returns it.
@@ -23773,7 +25651,7 @@ function domxml_new_doc($version) {}
  * @param array
  * @return DomDocument
  **/
-function domxml_open_file($filename, $mode, $error) {}
+function domxml_open_file($filename, $mode, &$error) {}
 
 /**
  * The function parses the XML document in the given string.
@@ -23783,7 +25661,7 @@ function domxml_open_file($filename, $mode, $error) {}
  * @param array
  * @return DomDocument
  **/
-function domxml_open_mem($str, $mode, $error) {}
+function domxml_open_mem($str, $mode, &$error) {}
 
 /**
  * Gets the version of the XML library currently used.
@@ -23861,7 +25739,7 @@ function dotnet_load($assembly_name, $datatype_name, $codepage) {}
  * @param array
  * @return array
  **/
-function each($array) {}
+function each(&$array) {}
 
 /**
  * Returns the Unix timestamp corresponding to midnight on Easter of
@@ -24045,7 +25923,7 @@ function enchant_dict_is_in_session($dict, $word) {}
  * @param array
  * @return bool
  **/
-function enchant_dict_quick_check($dict, $word, $suggestions) {}
+function enchant_dict_quick_check($dict, $word, &$suggestions) {}
 
 /**
  * Add a correction for 'mis' using 'cor'.
@@ -24074,7 +25952,7 @@ function enchant_dict_suggest($dict, $word) {}
  * @param array
  * @return mixed
  **/
-function end($array) {}
+function end(&$array) {}
 
 /**
  * @param string
@@ -24082,7 +25960,7 @@ function end($array) {}
  * @param array
  * @return int
  **/
-function ereg($pattern, $string, $regs) {}
+function ereg($pattern, $string, &$regs) {}
 
 /**
  * This function is identical to ereg except that it
@@ -24093,7 +25971,7 @@ function ereg($pattern, $string, $regs) {}
  * @param array
  * @return int
  **/
-function eregi($pattern, $string, $regs) {}
+function eregi($pattern, $string, &$regs) {}
 
 /**
  * This function is identical to ereg_replace
@@ -24183,7 +26061,7 @@ function escapeshellcmd($command) {}
  * @param int
  * @return string
  **/
-function exec($command, $output, $return_var) {}
+function exec($command, &$output, &$return_var) {}
 
 /**
  * exif_imagetype reads the first bytes of an image and
@@ -24224,7 +26102,7 @@ function exif_tagname($index) {}
  * @param int
  * @return string
  **/
-function exif_thumbnail($filename, $width, $height, $imagetype) {}
+function exif_thumbnail($filename, &$width, &$height, &$imagetype) {}
 
 /**
  * Returns e raised to the power of arg.
@@ -24243,7 +26121,7 @@ function exp($arg) {}
  * @param array
  * @return int
  **/
-function expect_expectl($expect, $cases, $match) {}
+function expect_expectl($expect, $cases, &$match) {}
 
 /**
  * Execute command via Bourne shell, and open the PTY stream to the process.
@@ -25660,7 +27538,7 @@ function floatval($var) {}
  * @param int
  * @return bool
  **/
-function flock($handle, $operation, $wouldblock) {}
+function flock($handle, $operation, &$wouldblock) {}
 
 /**
  * @param float
@@ -25669,9 +27547,9 @@ function flock($handle, $operation, $wouldblock) {}
 function floor($value) {}
 
 /**
- * Flushes the output buffers of PHP and whatever backend PHP is using (CGI,
- * a web server, etc). This effectively tries to push all the output so far
- * to the user's browser.
+ * Flushes the write buffers of PHP and whatever backend PHP is using (CGI,
+ * a web server, etc). This attempts to push current output all the way to
+ * the browser with a few caveats.
  *
  * @return void
  **/
@@ -25714,6 +27592,29 @@ function fnmatch($pattern, $string, $flags) {}
  * @return resource
  **/
 function fopen($filename, $mode, $use_include_path, $context) {}
+
+/**
+ * Calls a user defined function or method given by the function
+ * parameter, with the following arguments. This function must be called within a method
+ * context, it can't be used outside a class.
+ *
+ * @param callback
+ * @param mixed
+ * @return mixed
+ **/
+function forward_static_call($function, $parameter) {}
+
+/**
+ * Calls a user defined function or method given by the function
+ * parameter. This function must be called within a method context, it can't be 
+ * used outside a class. All arguments of the forwarded method are passed as values,
+ * and as an array, similarly to call_user_func_array.
+ *
+ * @param callback
+ * @param array
+ * @return mixed
+ **/
+function forward_static_call_array($function, $parameters) {}
 
 /**
  * Reads to EOF on the given file pointer from the current position and
@@ -25838,7 +27739,7 @@ function fseek($handle, $offset, $whence) {}
  * @param float
  * @return resource
  **/
-function fsockopen($hostname, $port, $errno, $errstr, $timeout) {}
+function fsockopen($hostname, $port, &$errno, &$errstr, $timeout) {}
 
 /**
  * Gathers the statistics of the file opened by the file
@@ -25880,7 +27781,7 @@ function ftok($pathname, $proj) {}
  * @param string
  * @return bool
  **/
-function ftp_alloc($ftp_stream, $filesize, $result) {}
+function ftp_alloc($ftp_stream, $filesize, &$result) {}
 
 /**
  * Changes to the parent directory.
@@ -26514,7 +28415,7 @@ function gethostname() {}
  * @param array
  * @return array
  **/
-function getimagesize($filename, $imageinfo) {}
+function getimagesize($filename, &$imageinfo) {}
 
 /**
  * Gets the time of the last modification of the current page.
@@ -26532,7 +28433,7 @@ function getlastmod() {}
  * @param array
  * @return bool
  **/
-function getmxrr($hostname, $mxhosts, $weight) {}
+function getmxrr($hostname, &$mxhosts, &$weight) {}
 
 /**
  * @return int
@@ -26989,7 +28890,7 @@ function gmp_div_r($n, $d, $round) {}
 /**
  * Calculates factorial (a!) of a.
  *
- * @param int
+ * @param mixed
  * @return resource
  **/
 function gmp_fact($a) {}
@@ -27347,7 +29248,7 @@ function gnupg_decrypt($identifier, $text) {}
  * @param string
  * @return array
  **/
-function gnupg_decryptverify($identifier, $text, $plaintext) {}
+function gnupg_decryptverify($identifier, $text, &$plaintext) {}
 
 /**
  * Encrypts the given plaintext with the keys, which
@@ -27464,7 +29365,7 @@ function gnupg_sign($identifier, $plaintext) {}
  * @param string
  * @return array
  **/
-function gnupg_verify($identifier, $signed_text, $signature, $plaintext) {}
+function gnupg_verify($identifier, $signed_text, $signature, &$plaintext) {}
 
 /**
  * gopher_parsedir parses a gopher formatted directory
@@ -27485,7 +29386,7 @@ function gopher_parsedir($dirent) {}
  * @param int
  * @return string
  **/
-function grapheme_extract($haystack, $size, $extract_type, $start, $next) {}
+function grapheme_extract($haystack, $size, $extract_type, $start, &$next) {}
 
 /**
  * Procedural style
@@ -27876,7 +29777,15 @@ function headers_list() {}
  * @param int
  * @return bool
  **/
-function headers_sent($file, $line) {}
+function headers_sent(&$file, &$line) {}
+
+/**
+ * Removes an HTTP header previously set using header.
+ *
+ * @param string
+ * @return void
+ **/
+function header_remove($name) {}
 
 /**
  * Converts logical Hebrew text to visual text.
@@ -28016,7 +29925,7 @@ function http_build_str($query, $prefix, $arg_separator) {}
  * @param array
  * @return string
  **/
-function http_build_url($url, $parts, $flags, $new_url) {}
+function http_build_url($url, $parts, $flags, &$new_url) {}
 
 /**
  * Attempts to cache the sent entity by its ETag, either supplied or generated 
@@ -28070,7 +29979,7 @@ function http_deflate($data, $flags) {}
  * @param array
  * @return string
  **/
-function http_get($url, $options, $info) {}
+function http_get($url, $options, &$info) {}
 
 /**
  * Get the raw request body (e.g. POST or PUT data).
@@ -28101,7 +30010,7 @@ function http_get_request_headers() {}
  * @param array
  * @return string
  **/
-function http_head($url, $options, $info) {}
+function http_head($url, $options, &$info) {}
 
 /**
  * Decompress data compressed with either gzip, deflate AKA zlib or raw
@@ -28151,7 +30060,7 @@ function http_match_request_header($header, $value, $match_case) {}
  * @param array
  * @return string
  **/
-function http_negotiate_charset($supported, $result) {}
+function http_negotiate_charset($supported, &$result) {}
 
 /**
  * This function negotiates the clients preferred content type based on its
@@ -28162,7 +30071,7 @@ function http_negotiate_charset($supported, $result) {}
  * @param array
  * @return string
  **/
-function http_negotiate_content_type($supported, $result) {}
+function http_negotiate_content_type($supported, &$result) {}
 
 /**
  * This function negotiates the clients preferred language based on its
@@ -28174,7 +30083,7 @@ function http_negotiate_content_type($supported, $result) {}
  * @param array
  * @return string
  **/
-function http_negotiate_language($supported, $result) {}
+function http_negotiate_language($supported, &$result) {}
 
 /**
  * Parses HTTP cookies like sent in a response into a struct.
@@ -28244,7 +30153,7 @@ function http_persistent_handles_ident($ident) {}
  * @param array
  * @return string
  **/
-function http_post_data($url, $data, $options, $info) {}
+function http_post_data($url, $data, $options, &$info) {}
 
 /**
  * Performs an HTTP POST request on the supplied url.
@@ -28256,7 +30165,7 @@ function http_post_data($url, $data, $options, $info) {}
  * @param array
  * @return string
  **/
-function http_post_fields($url, $data, $files, $options, $info) {}
+function http_post_fields($url, $data, $files, $options, &$info) {}
 
 /**
  * Performs an HTTP PUT request on the supplied url.
@@ -28267,7 +30176,7 @@ function http_post_fields($url, $data, $files, $options, $info) {}
  * @param array
  * @return string
  **/
-function http_put_data($url, $data, $options, $info) {}
+function http_put_data($url, $data, $options, &$info) {}
 
 /**
  * Performs an HTTP PUT request on the supplied url.
@@ -28278,7 +30187,7 @@ function http_put_data($url, $data, $options, $info) {}
  * @param array
  * @return string
  **/
-function http_put_file($url, $file, $options, $info) {}
+function http_put_file($url, $file, $options, &$info) {}
 
 /**
  * Performs an HTTP PUT request on the supplied url.
@@ -28289,7 +30198,7 @@ function http_put_file($url, $file, $options, $info) {}
  * @param array
  * @return string
  **/
-function http_put_stream($url, $stream, $options, $info) {}
+function http_put_stream($url, $stream, $options, &$info) {}
 
 /**
  * Redirect to the given url.
@@ -28312,7 +30221,7 @@ function http_redirect($url, $params, $session, $status) {}
  * @param array
  * @return string
  **/
-function http_request($method, $url, $body, $options, $info) {}
+function http_request($method, $url, $body, $options, &$info) {}
 
 /**
  * Generate x-www-form-urlencoded resp. form-data encoded request body.
@@ -29793,7 +31702,7 @@ function idn_strerror($errorcode) {}
  * @param int
  * @return string
  **/
-function idn_to_ascii($utf8_domain, $errorcode) {}
+function idn_to_ascii($utf8_domain, &$errorcode) {}
 
 /**
  * This function converts a ASCII encoded domain name to its original UTF-8 version.
@@ -29802,7 +31711,7 @@ function idn_to_ascii($utf8_domain, $errorcode) {}
  * @param int
  * @return string
  **/
-function idn_to_utf8($ascii_domain, $errorcode) {}
+function idn_to_utf8($ascii_domain, &$errorcode) {}
 
 /**
  * Deletes the slob object on the given slob object-id
@@ -31629,6 +33538,15 @@ function imap_fetchstructure($imap_stream, $msg_number, $options) {}
 function imap_fetch_overview($imap_stream, $sequence, $options) {}
 
 /**
+ * Purges the cache of entries of a specific type.
+ *
+ * @param resource
+ * @param int
+ * @return string
+ **/
+function imap_gc($imap_stream, $caches) {}
+
+/**
  * Gets the ACL for a given mailbox.
  *
  * @param resource
@@ -32475,13 +34393,6 @@ function ingres_set_environment($link, $options) {}
 function ingres_unbuffered_query($link, $query, $params, $types) {}
 
 /**
- * Object oriented style (method):
- *
- * @return mysqli
- **/
-function init() {}
-
-/**
  * Returns the value of the configuration option on success.
  *
  * @param string
@@ -32707,7 +34618,7 @@ function is_buffer($var) {}
  * @param string
  * @return bool
  **/
-function is_callable($name, $syntax_only, $callable_name) {}
+function is_callable($name, $syntax_only, &$callable_name) {}
 
 /**
  * Tells whether the given filename is a directory.
@@ -33222,7 +35133,7 @@ function kadm5_modify_principal($handle, $principal, $options) {}
  * @param array
  * @return mixed
  **/
-function key($array) {}
+function key(&$array) {}
 
 /**
  * Sorts an array by key in reverse order, maintaining key to data
@@ -33232,7 +35143,7 @@ function key($array) {}
  * @param int
  * @return bool
  **/
-function krsort($array, $sort_flags) {}
+function krsort(&$array, $sort_flags) {}
 
 /**
  * Sorts an array by key, maintaining key to data correlations. This is
@@ -33242,7 +35153,7 @@ function krsort($array, $sort_flags) {}
  * @param int
  * @return bool
  **/
-function ksort($array, $sort_flags) {}
+function ksort(&$array, $sort_flags) {}
 
 /**
  * Returns a string with the first character of
@@ -33481,7 +35392,7 @@ function ldap_get_entries($link_identifier, $result_identifier) {}
  * @param mixed
  * @return bool
  **/
-function ldap_get_option($link_identifier, $option, $retval) {}
+function ldap_get_option($link_identifier, $option, &$retval) {}
 
 /**
  * Reads all the values of the attribute in the entry in the result.
@@ -33608,7 +35519,7 @@ function ldap_next_reference($link, $entry) {}
  * @param array
  * @return bool
  **/
-function ldap_parse_reference($link, $entry, $referrals) {}
+function ldap_parse_reference($link, $entry, &$referrals) {}
 
 /**
  * @param resource
@@ -33619,7 +35530,7 @@ function ldap_parse_reference($link, $entry, $referrals) {}
  * @param array
  * @return bool
  **/
-function ldap_parse_result($link, $result, $errcode, $matcheddn, $errmsg, $referrals) {}
+function ldap_parse_result($link, $result, &$errcode, &$matcheddn, &$errmsg, &$referrals) {}
 
 /**
  * Performs the search for a specified filter on the
@@ -33748,6 +35659,14 @@ function levenshtein($str1, $str2) {}
  * @return void
  **/
 function libxml_clear_errors() {}
+
+/**
+ * Disable/enable the ability to load external entities.
+ *
+ * @param bool
+ * @return ReturnType
+ **/
+function libxml_disable_entity_loader($disable) {}
 
 /**
  * Retrieve array of errors.
@@ -34627,7 +36546,7 @@ function maxdb_stmt_affected_rows($stmt) {}
  * @param mixed
  * @return bool
  **/
-function maxdb_stmt_bind_param($stmt, $types, $var1) {}
+function maxdb_stmt_bind_param($stmt, $types, &$var1) {}
 
 /**
  * Procedural style:
@@ -34636,7 +36555,7 @@ function maxdb_stmt_bind_param($stmt, $types, $var1) {}
  * @param mixed
  * @return bool
  **/
-function maxdb_stmt_bind_result($stmt, $var1) {}
+function maxdb_stmt_bind_result($stmt, &$var1) {}
 
 /**
  * Procedural style:
@@ -34876,7 +36795,7 @@ function mb_convert_kana($str, $option, $encoding) {}
  * @param mixed
  * @return string
  **/
-function mb_convert_variables($to_encoding, $from_encoding, $vars) {}
+function mb_convert_variables($to_encoding, $from_encoding, &$vars) {}
 
 /**
  * Decodes encoded-word string str in MIME header.
@@ -35113,7 +37032,7 @@ function mb_output_handler($contents, $status) {}
  * @param array
  * @return bool
  **/
-function mb_parse_str($encoded_string, $result) {}
+function mb_parse_str($encoded_string, &$result) {}
 
 /**
  * Get a MIME charset string for a specific encoding.
@@ -35682,8 +37601,7 @@ function mcrypt_module_get_algo_key_size($algorithm, $lib_dir) {}
  * Returns an array with the key sizes supported by the specified algorithm.
  * If it returns an empty array then all key sizes between 1 and
  * mcrypt_module_get_algo_key_size are supported by the
- * algorithm. The optional lib_dir parameter can
- * contain the location where the mode module is on the system.
+ * algorithm.
  *
  * @param string
  * @param string
@@ -35693,9 +37611,7 @@ function mcrypt_module_get_supported_key_sizes($algorithm, $lib_dir) {}
 
 /**
  * This function returns if the specified algorithm is a block
- * algorithm, or is it is a stream algorithm. The optional
- * lib_dir parameter can contain the location where
- * the algorithm module is on the system.
+ * algorithm, or is it is a stream algorithm.
  *
  * @param string
  * @param string
@@ -35706,9 +37622,7 @@ function mcrypt_module_is_block_algorithm($algorithm, $lib_dir) {}
 /**
  * This function returns if the mode is for use with block
  * algorithms, otherwise it returns . (e.g. for stream, and
- * for cbc, cfb, ofb). The optional lib_dir
- * parameter can contain the location where the mode module is on the
- * system.
+ * for cbc, cfb, ofb).
  *
  * @param string
  * @param string
@@ -35719,9 +37633,7 @@ function mcrypt_module_is_block_algorithm_mode($mode, $lib_dir) {}
 /**
  * This function returns if the mode outputs blocks of bytes or
  * if it outputs just bytes. (e.g. for cbc and ecb, and
- * for cfb and stream). The optional lib_dir
- * parameter can contain the location where the mode module is on the
- * system.
+ * for cfb and stream).
  *
  * @param string
  * @param string
@@ -35733,8 +37645,7 @@ function mcrypt_module_is_block_mode($mode, $lib_dir) {}
  * This function opens the module of the algorithm and the mode to be used.
  * The name of the algorithm is specified in algorithm, e.g. "twofish" or is
  * one of the MCRYPT_ciphername constants. The module is closed by calling
- * mcrypt_module_close. Normally it returns an
- * encryption descriptor, or on error.
+ * mcrypt_module_close.
  *
  * @param string
  * @param string
@@ -35745,9 +37656,7 @@ function mcrypt_module_is_block_mode($mode, $lib_dir) {}
 function mcrypt_module_open($algorithm, $algorithm_directory, $mode, $mode_directory) {}
 
 /**
- * This function runs the self test on the algorithm specified. The
- * optional lib_dir parameter can contain the
- * location of where the algorithm module is on the system.
+ * This function runs the self test on the algorithm specified.
  *
  * @param string
  * @param string
@@ -36045,7 +37954,7 @@ function move_uploaded_file($filename, $destination) {}
  * @param resource
  * @return void
  **/
-function mqseries_back($hconn, $compCode, $reason) {}
+function mqseries_back($hconn, &$compCode, &$reason) {}
 
 /**
  * The
@@ -36059,7 +37968,7 @@ function mqseries_back($hconn, $compCode, $reason) {}
  * @param resource
  * @return void
  **/
-function mqseries_begin($hconn, $beginOptions, $compCode, $reason) {}
+function mqseries_begin($hconn, $beginOptions, &$compCode, &$reason) {}
 
 /**
  * The
@@ -36075,7 +37984,7 @@ function mqseries_begin($hconn, $beginOptions, $compCode, $reason) {}
  * @param resource
  * @return void
  **/
-function mqseries_close($hconn, $hobj, $options, $compCode, $reason) {}
+function mqseries_close($hconn, $hobj, $options, &$compCode, &$reason) {}
 
 /**
  * The
@@ -36091,7 +38000,7 @@ function mqseries_close($hconn, $hobj, $options, $compCode, $reason) {}
  * @param resource
  * @return void
  **/
-function mqseries_cmit($hconn, $compCode, $reason) {}
+function mqseries_cmit($hconn, &$compCode, &$reason) {}
 
 /**
  * The
@@ -36106,7 +38015,7 @@ function mqseries_cmit($hconn, $compCode, $reason) {}
  * @param resource
  * @return void
  **/
-function mqseries_conn($qManagerName, $hconn, $compCode, $reason) {}
+function mqseries_conn($qManagerName, &$hconn, &$compCode, &$reason) {}
 
 /**
  * The
@@ -36122,7 +38031,7 @@ function mqseries_conn($qManagerName, $hconn, $compCode, $reason) {}
  * @param resource
  * @return void
  **/
-function mqseries_connx($qManagerName, $connOptions, $hconn, $compCode, $reason) {}
+function mqseries_connx($qManagerName, &$connOptions, &$hconn, &$compCode, &$reason) {}
 
 /**
  * The
@@ -36139,7 +38048,7 @@ function mqseries_connx($qManagerName, $connOptions, $hconn, $compCode, $reason)
  * @param resource
  * @return void
  **/
-function mqseries_disc($hconn, $compCode, $reason) {}
+function mqseries_disc($hconn, &$compCode, &$reason) {}
 
 /**
  * The
@@ -36160,7 +38069,7 @@ function mqseries_disc($hconn, $compCode, $reason) {}
  * @param resource
  * @return void
  **/
-function mqseries_get($hConn, $hObj, $md, $gmo, $bufferLength, $msg, $data_length, $compCode, $reason) {}
+function mqseries_get($hConn, $hObj, &$md, &$gmo, &$bufferLength, &$msg, &$data_length, &$compCode, &$reason) {}
 
 /**
  * The
@@ -36180,7 +38089,7 @@ function mqseries_get($hConn, $hObj, $md, $gmo, $bufferLength, $msg, $data_lengt
  * @param resource
  * @return void
  **/
-function mqseries_inq($hconn, $hobj, $selectorCount, $selectors, $intAttrCount, $intAttr, $charAttrLength, $charAttr, $compCode, $reason) {}
+function mqseries_inq($hconn, $hobj, $selectorCount, $selectors, $intAttrCount, &$intAttr, $charAttrLength, &$charAttr, &$compCode, &$reason) {}
 
 /**
  * The
@@ -36195,7 +38104,7 @@ function mqseries_inq($hconn, $hobj, $selectorCount, $selectors, $intAttrCount, 
  * @param resource
  * @return void
  **/
-function mqseries_open($hconn, $objDesc, $option, $hobj, $compCode, $reason) {}
+function mqseries_open($hconn, &$objDesc, $option, &$hobj, &$compCode, &$reason) {}
 
 /**
  * The
@@ -36212,7 +38121,7 @@ function mqseries_open($hconn, $objDesc, $option, $hobj, $compCode, $reason) {}
  * @param resource
  * @return void
  **/
-function mqseries_put($hConn, $hObj, $md, $pmo, $message, $compCode, $reason) {}
+function mqseries_put($hConn, $hObj, &$md, &$pmo, $message, &$compCode, &$reason) {}
 
 /**
  * The
@@ -36228,7 +38137,7 @@ function mqseries_put($hConn, $hObj, $md, $pmo, $message, $compCode, $reason) {}
  * @param resource
  * @return void
  **/
-function mqseries_put1($hconn, $objDesc, $msgDesc, $pmo, $buffer, $compCode, $reason) {}
+function mqseries_put1($hconn, &$objDesc, &$msgDesc, &$pmo, $buffer, &$compCode, &$reason) {}
 
 /**
  * The mqseries_set
@@ -36247,7 +38156,7 @@ function mqseries_put1($hconn, $objDesc, $msgDesc, $pmo, $buffer, $compCode, $re
  * @param resource
  * @return void
  **/
-function mqseries_set($hconn, $hobj, $selectorcount, $selectors, $intattrcount, $intattrs, $charattrlength, $charattrs, $compCode, $reason) {}
+function mqseries_set($hconn, $hobj, $selectorcount, $selectors, $intattrcount, $intattrs, $charattrlength, $charattrs, &$compCode, &$reason) {}
 
 /**
  * mqseries_strerror
@@ -36439,7 +38348,7 @@ function msg_queue_exists($key) {}
  * @param int
  * @return bool
  **/
-function msg_receive($queue, $desiredmsgtype, $msgtype, $maxsize, $message, $unserialize, $flags, $errorcode) {}
+function msg_receive($queue, $desiredmsgtype, &$msgtype, $maxsize, &$message, $unserialize, $flags, &$errorcode) {}
 
 /**
  * msg_remove_queue destroys the message queue specified
@@ -36465,7 +38374,7 @@ function msg_remove_queue($queue) {}
  * @param int
  * @return bool
  **/
-function msg_send($queue, $msgtype, $message, $serialize, $blocking, $errorcode) {}
+function msg_send($queue, $msgtype, $message, $serialize, $blocking, &$errorcode) {}
 
 /**
  * msg_set_queue allows you to change the values of the
@@ -36787,7 +38696,7 @@ function msql_select_db($database_name, $link_identifier) {}
  * @param int
  * @return bool
  **/
-function mssql_bind($stmt, $param_name, $var, $type, $is_output, $is_null, $maxlen) {}
+function mssql_bind($stmt, $param_name, &$var, $type, $is_output, $is_null, $maxlen) {}
 
 /**
  * Closes the link to a MS SQL Server database that's associated with the
@@ -37971,7 +39880,7 @@ function m_checkstatus($conn, $identifier) {}
  * @param int
  * @return int
  **/
-function m_completeauthorizations($conn, $array) {}
+function m_completeauthorizations($conn, &$array) {}
 
 /**
  * @param resource
@@ -38236,7 +40145,7 @@ function m_verifysslcert($conn, $tf) {}
  * @param array
  * @return bool
  **/
-function natcasesort($array) {}
+function natcasesort(&$array) {}
 
 /**
  * This function implements a sort algorithm that orders alphanumeric strings
@@ -38248,7 +40157,7 @@ function natcasesort($array) {}
  * @param array
  * @return bool
  **/
-function natsort($array) {}
+function natsort(&$array) {}
 
 /**
  * @param int
@@ -38408,7 +40317,7 @@ function ncurses_clrtoeol() {}
  * @param int
  * @return int
  **/
-function ncurses_color_content($color, $r, $g, $b) {}
+function ncurses_color_content($color, &$r, &$g, &$b) {}
 
 /**
  * Sets the active foreground and background colors. Any characters written
@@ -38564,7 +40473,7 @@ function ncurses_getch() {}
  * @param int
  * @return void
  **/
-function ncurses_getmaxyx($window, $y, $x) {}
+function ncurses_getmaxyx($window, &$y, &$x) {}
 
 /**
  * ncurses_getmouse reads mouse event out of
@@ -38573,7 +40482,7 @@ function ncurses_getmaxyx($window, $y, $x) {}
  * @param array
  * @return bool
  **/
-function ncurses_getmouse($mevent) {}
+function ncurses_getmouse(&$mevent) {}
 
 /**
  * @param resource
@@ -38581,7 +40490,7 @@ function ncurses_getmouse($mevent) {}
  * @param int
  * @return void
  **/
-function ncurses_getyx($window, $y, $x) {}
+function ncurses_getyx($window, &$y, &$x) {}
 
 /**
  * @param int
@@ -38704,7 +40613,7 @@ function ncurses_insstr($text) {}
  * @param string
  * @return int
  **/
-function ncurses_instr($buffer) {}
+function ncurses_instr(&$buffer) {}
 
 /**
  * Checks if ncurses is in endwin mode.
@@ -38762,7 +40671,7 @@ function ncurses_mouseinterval($milliseconds) {}
  * @param int
  * @return int
  **/
-function ncurses_mousemask($newmask, $oldmask) {}
+function ncurses_mousemask($newmask, &$oldmask) {}
 
 /**
  * @param int
@@ -38770,7 +40679,7 @@ function ncurses_mousemask($newmask, $oldmask) {}
  * @param bool
  * @return bool
  **/
-function ncurses_mouse_trafo($y, $x, $toscreen) {}
+function ncurses_mouse_trafo(&$y, &$x, $toscreen) {}
 
 /**
  * @param int
@@ -38969,7 +40878,7 @@ function ncurses_noraw() {}
  * @param int
  * @return int
  **/
-function ncurses_pair_content($pair, $f, $b) {}
+function ncurses_pair_content($pair, &$f, &$b) {}
 
 /**
  * @param resource
@@ -39387,7 +41296,7 @@ function ncurses_whline($window, $charattr, $n) {}
  * @param bool
  * @return bool
  **/
-function ncurses_wmouse_trafo($window, $y, $x, $toscreen) {}
+function ncurses_wmouse_trafo($window, &$y, &$x, $toscreen) {}
 
 /**
  * @param resource
@@ -39452,7 +41361,7 @@ function newt_button($left, $top, $text) {}
  * @param array
  * @return resource
  **/
-function newt_button_bar($buttons) {}
+function newt_button_bar(&$buttons) {}
 
 /**
  * Open a centered window of the specified size.
@@ -39782,7 +41691,7 @@ function newt_form_get_current($form) {}
  * @param array
  * @return void
  **/
-function newt_form_run($form, $exit_struct) {}
+function newt_form_run($form, &$exit_struct) {}
 
 /**
  * @param resource
@@ -39833,7 +41742,7 @@ function newt_form_watch_fd($form, $stream, $flags) {}
  * @param int
  * @return void
  **/
-function newt_get_screen_size($cols, $rows) {}
+function newt_get_screen_size(&$cols, &$rows) {}
 
 /**
  * @param resource
@@ -39864,7 +41773,7 @@ function newt_grid_free($grid, $recurse) {}
  * @param int
  * @return void
  **/
-function newt_grid_get_size($grid, $width, $height) {}
+function newt_grid_get_size($grid, &$width, &$height) {}
 
 /**
  * @param int
@@ -40162,7 +42071,7 @@ function newt_redraw_help_line() {}
  * @param int
  * @return string
  **/
-function newt_reflow_text($text, $width, $flex_down, $flex_up, $actual_width, $actual_height) {}
+function newt_reflow_text($text, $width, $flex_down, $flex_up, &$actual_width, &$actual_height) {}
 
 /**
  * To increase performance, newt only updates the display when it needs to,
@@ -40328,7 +42237,7 @@ function newt_win_choice($title, $button1_text, $button2_text, $format, $args) {
  * @param string
  * @return int
  **/
-function newt_win_entries($title, $text, $suggested_width, $flex_down, $flex_up, $data_width, $items, $button1) {}
+function newt_win_entries($title, $text, $suggested_width, $flex_down, $flex_up, $data_width, &$items, $button1) {}
 
 /**
  * @param string
@@ -40342,7 +42251,7 @@ function newt_win_entries($title, $text, $suggested_width, $flex_down, $flex_up,
  * @param string
  * @return int
  **/
-function newt_win_menu($title, $text, $suggestedWidth, $flexDown, $flexUp, $maxListHeight, $items, $listItem, $button1) {}
+function newt_win_menu($title, $text, $suggestedWidth, $flexDown, $flexUp, $maxListHeight, $items, &$listItem, $button1) {}
 
 /**
  * @param string
@@ -40383,7 +42292,7 @@ function newt_win_ternary($title, $button1_text, $button2_text, $button3_text, $
  * @param array
  * @return mixed
  **/
-function next($array) {}
+function next(&$array) {}
 
 /**
  * The plural version of gettext. Some languages 
@@ -40764,7 +42673,7 @@ function ob_tidyhandler($input, $mode) {}
  * @param int
  * @return int
  **/
-function ocifetchinto($statement, $result, $mode) {}
+function ocifetchinto($statement, &$result, $mode) {}
 
 /**
  * Binds the PHP array var_array to the Oracle
@@ -40780,7 +42689,7 @@ function ocifetchinto($statement, $result, $mode) {}
  * @param int
  * @return bool
  **/
-function oci_bind_array_by_name($statement, $name, $var_array, $max_table_length, $max_item_length, $type) {}
+function oci_bind_array_by_name($statement, $name, &$var_array, $max_table_length, $max_item_length, $type) {}
 
 /**
  * Binds the PHP variable variable to the Oracle
@@ -40795,7 +42704,7 @@ function oci_bind_array_by_name($statement, $name, $var_array, $max_table_length
  * @param int
  * @return bool
  **/
-function oci_bind_by_name($statement, $ph_name, $variable, $maxlength, $type) {}
+function oci_bind_by_name($statement, $ph_name, &$variable, $maxlength, $type) {}
 
 /**
  * Invalidates a cursor, freeing all associated resources and cancels the
@@ -40844,7 +42753,7 @@ function oci_connect($username, $password, $db, $charset, $session_mode) {}
  * @param int
  * @return bool
  **/
-function oci_define_by_name($statement, $column_name, $variable, $type) {}
+function oci_define_by_name($statement, $column_name, &$variable, $type) {}
 
 /**
  * Returns the last error found.
@@ -40882,7 +42791,7 @@ function oci_fetch($statement) {}
  * @param int
  * @return int
  **/
-function oci_fetch_all($statement, $output, $skip, $maxrows, $flags) {}
+function oci_fetch_all($statement, &$output, $skip, $maxrows, $flags) {}
 
 /**
  * Returns an array, which corresponds to the next result row.
@@ -41308,7 +43217,7 @@ function odbc_fetch_array($result, $rownumber) {}
  * @param int
  * @return int
  **/
-function odbc_fetch_into($result_id, $result_array, $rownumber) {}
+function odbc_fetch_into($result_id, &$result_array, $rownumber) {}
 
 /**
  * Fetch an object from an ODBC query. See the changelog below
@@ -41780,7 +43689,7 @@ function openlog($ident, $option, $facility) {}
  * @param bool
  * @return bool
  **/
-function openssl_csr_export($csr, $out, $notext) {}
+function openssl_csr_export($csr, &$out, $notext) {}
 
 /**
  * openssl_csr_export_to_file takes the Certificate
@@ -41819,7 +43728,7 @@ function openssl_csr_get_subject($csr, $use_shortnames) {}
  * @param array
  * @return mixed
  **/
-function openssl_csr_new($dn, $privkey, $configargs, $extraattribs) {}
+function openssl_csr_new($dn, &$privkey, $configargs, $extraattribs) {}
 
 /**
  * openssl_csr_sign generates an x509 certificate
@@ -41834,6 +43743,47 @@ function openssl_csr_new($dn, $privkey, $configargs, $extraattribs) {}
  * @return resource
  **/
 function openssl_csr_sign($csr, $cacert, $priv_key, $days, $configargs, $serial) {}
+
+/**
+ * Takes a raw or base64 encoded string and decrypts it using a given method and key.
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @return string
+ **/
+function openssl_decrypt($data, $method, $password, $raw_input) {}
+
+/**
+ * @param string
+ * @param resource
+ * @return string
+ **/
+function openssl_dh_compute_key($pub_key, $dh_key) {}
+
+/**
+ * Computes a digest hash value for the given data using a given method,
+ * and returns a raw or binhex encoded string.
+ *
+ * @param string
+ * @param string
+ * @param bool
+ * @return string
+ **/
+function openssl_digest($data, $method, $raw_output) {}
+
+/**
+ * Encrypts given data with given method and key, returns a raw
+ * or base64 encoded string
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @param bool
+ * @return string
+ **/
+function openssl_encrypt($data, $method, $password, $raw_output) {}
 
 /**
  * openssl_error_string returns the last error from the
@@ -41854,6 +43804,22 @@ function openssl_error_string() {}
 function openssl_free_key($key_identifier) {}
 
 /**
+ * Gets a list of available cipher methods.
+ *
+ * @param bool
+ * @return array
+ **/
+function openssl_get_cipher_methods($aliases) {}
+
+/**
+ * Gets a list of available digest methods.
+ *
+ * @param bool
+ * @return array
+ **/
+function openssl_get_md_methods($aliases) {}
+
+/**
  * openssl_open opens (decrypts)
  * sealed_data using the private key associated with
  * the key identifier priv_key_id and the envelope key
@@ -41869,7 +43835,7 @@ function openssl_free_key($key_identifier) {}
  * @param mixed
  * @return bool
  **/
-function openssl_open($sealed_data, $open_data, $env_key, $priv_key_id) {}
+function openssl_open($sealed_data, &$open_data, $env_key, $priv_key_id) {}
 
 /**
  * Decrypts the S/MIME encrypted message contained in the file specified by
@@ -41945,7 +43911,7 @@ function openssl_pkcs7_verify($filename, $flags, $outfilename, $cainfo, $extrace
  * @param array
  * @return bool
  **/
-function openssl_pkcs12_export($x509, $out, $priv_key, $pass, $args) {}
+function openssl_pkcs12_export($x509, &$out, $priv_key, $pass, $args) {}
 
 /**
  * openssl_pkcs12_export_to_file stores
@@ -41971,7 +43937,7 @@ function openssl_pkcs12_export_to_file($x509, $filename, $priv_key, $pass, $args
  * @param string
  * @return bool
  **/
-function openssl_pkcs12_read($pkcs12, $certs, $pass) {}
+function openssl_pkcs12_read($pkcs12, &$certs, $pass) {}
 
 /**
  * openssl_pkey_export exports
@@ -41984,7 +43950,7 @@ function openssl_pkcs12_read($pkcs12, $certs, $pass) {}
  * @param array
  * @return bool
  **/
-function openssl_pkey_export($key, $out, $passphrase, $configargs) {}
+function openssl_pkey_export($key, &$out, $passphrase, $configargs) {}
 
 /**
  * openssl_pkey_export_to_file saves an ascii-armoured
@@ -42058,7 +44024,7 @@ function openssl_pkey_new($configargs) {}
  * @param int
  * @return bool
  **/
-function openssl_private_decrypt($data, $decrypted, $key, $padding) {}
+function openssl_private_decrypt($data, &$decrypted, $key, $padding) {}
 
 /**
  * openssl_private_encrypt encrypts data
@@ -42072,7 +44038,7 @@ function openssl_private_decrypt($data, $decrypted, $key, $padding) {}
  * @param int
  * @return bool
  **/
-function openssl_private_encrypt($data, $crypted, $key, $padding) {}
+function openssl_private_encrypt($data, &$crypted, $key, $padding) {}
 
 /**
  * openssl_public_decrypt decrypts
@@ -42086,7 +44052,7 @@ function openssl_private_encrypt($data, $crypted, $key, $padding) {}
  * @param int
  * @return bool
  **/
-function openssl_public_decrypt($data, $decrypted, $key, $padding) {}
+function openssl_public_decrypt($data, &$decrypted, $key, $padding) {}
 
 /**
  * openssl_public_encrypt encrypts data
@@ -42100,7 +44066,18 @@ function openssl_public_decrypt($data, $decrypted, $key, $padding) {}
  * @param int
  * @return bool
  **/
-function openssl_public_encrypt($data, $crypted, $key, $padding) {}
+function openssl_public_encrypt($data, &$crypted, $key, $padding) {}
+
+/**
+ * openssl_random_pseudo_bytes returns a with
+ * length caracters. It also indicates if it has used
+ * a strong algorithm to produce those pseudo-random bytes in the second argument.
+ *
+ * @param string
+ * @param string
+ * @return bool
+ **/
+function openssl_random_pseudo_bytes($length, $strong) {}
 
 /**
  * openssl_seal seals (encrypts)
@@ -42119,7 +44096,7 @@ function openssl_public_encrypt($data, $crypted, $key, $padding) {}
  * @param array
  * @return int
  **/
-function openssl_seal($data, $sealed_data, $env_keys, $pub_key_ids) {}
+function openssl_seal($data, &$sealed_data, &$env_keys, $pub_key_ids) {}
 
 /**
  * openssl_sign computes a signature for the
@@ -42134,7 +44111,7 @@ function openssl_seal($data, $sealed_data, $env_keys, $pub_key_ids) {}
  * @param int
  * @return bool
  **/
-function openssl_sign($data, $signature, $priv_key_id, $signature_alg) {}
+function openssl_sign($data, &$signature, $priv_key_id, $signature_alg) {}
 
 /**
  * openssl_verify verifies that the
@@ -42183,7 +44160,7 @@ function openssl_x509_check_private_key($cert, $key) {}
  * @param bool
  * @return bool
  **/
-function openssl_x509_export($x509, $output, $notext) {}
+function openssl_x509_export($x509, &$output, $notext) {}
 
 /**
  * openssl_x509_export_to_file stores
@@ -42344,7 +44321,7 @@ function ovrimos_execute($result_id, $parameters_array) {}
  * @param int
  * @return bool
  **/
-function ovrimos_fetch_into($result_id, $result_array, $how, $rownumber) {}
+function ovrimos_fetch_into($result_id, &$result_array, $how, $rownumber) {}
 
 /**
  * Fetches a row from the result set. Column values should be retrieved with
@@ -42478,7 +44455,7 @@ function pack($format, $args) {}
  * @param int
  * @return array
  **/
-function parsekit_compile_file($filename, $errors, $options) {}
+function parsekit_compile_file($filename, &$errors, $options) {}
 
 /**
  * @param string
@@ -42486,7 +44463,7 @@ function parsekit_compile_file($filename, $errors, $options) {}
  * @param int
  * @return array
  **/
-function parsekit_compile_string($phpcode, $errors, $options) {}
+function parsekit_compile_string($phpcode, &$errors, $options) {}
 
 /**
  * @param mixed
@@ -42525,7 +44502,7 @@ function parse_ini_string($ini, $process_sections, $scanner_mode) {}
  * @param array
  * @return void
  **/
-function parse_str($str, $arr) {}
+function parse_str($str, &$arr) {}
 
 /**
  * This function parses a URL and returns an associative array containing any
@@ -42554,7 +44531,7 @@ function parse_url($url, $component) {}
  * @param int
  * @return void
  **/
-function passthru($command, $return_var) {}
+function passthru($command, &$return_var) {}
 
 /**
  * pathinfo returns an associative array
@@ -42657,7 +44634,7 @@ function pcntl_signal_dispatch() {}
  * @param array
  * @return bool
  **/
-function pcntl_sigprocmask($how, $set, $oldset) {}
+function pcntl_sigprocmask($how, $set, &$oldset) {}
 
 /**
  * The pcntl_sigtimedwait function operates in exactly
@@ -42672,7 +44649,7 @@ function pcntl_sigprocmask($how, $set, $oldset) {}
  * @param int
  * @return int
  **/
-function pcntl_sigtimedwait($set, $siginfo, $seconds, $nanoseconds) {}
+function pcntl_sigtimedwait($set, &$siginfo, $seconds, $nanoseconds) {}
 
 /**
  * The pcntl_sigwaitinfo function suspends execution of the
@@ -42685,7 +44662,7 @@ function pcntl_sigtimedwait($set, $siginfo, $seconds, $nanoseconds) {}
  * @param array
  * @return int
  **/
-function pcntl_sigwaitinfo($set, $siginfo) {}
+function pcntl_sigwaitinfo($set, &$siginfo) {}
 
 /**
  * The wait function suspends execution of the current process until a
@@ -42700,7 +44677,7 @@ function pcntl_sigwaitinfo($set, $siginfo) {}
  * @param int
  * @return int
  **/
-function pcntl_wait($status, $options) {}
+function pcntl_wait(&$status, $options) {}
 
 /**
  * Suspends execution of the current process until a child as specified by
@@ -42713,7 +44690,7 @@ function pcntl_wait($status, $options) {}
  * @param int
  * @return int
  **/
-function pcntl_waitpid($pid, $status, $options) {}
+function pcntl_waitpid($pid, &$status, $options) {}
 
 /**
  * Returns the return code of a terminated child. This function is
@@ -43645,6 +45622,17 @@ function PDF_get_pdi_value($p, $key, $doc, $page, $reserved) {}
 function PDF_get_value($p, $key, $modifier) {}
 
 /**
+ * Queries detailed information about a loaded font.
+ *
+ * @param resource
+ * @param int
+ * @param string
+ * @param string
+ * @return float
+ **/
+function PDF_info_font($pdfdoc, $font, $keyword, $optlist) {}
+
+/**
  * Queries information about a matchbox on the current page.
  *
  * @param resource
@@ -44405,7 +46393,7 @@ function PDF_utf32_to_utf16($pdfdoc, $utf32string, $ordering) {}
  * @param float
  * @return resource
  **/
-function pfsockopen($hostname, $port, $errno, $errstr, $timeout) {}
+function pfsockopen($hostname, $port, &$errno, &$errstr, $timeout) {}
 
 /**
  * pg_affected_rows returns the number of tuples
@@ -45358,7 +47346,7 @@ function phpversion($extension) {}
  * @param string
  * @return bool
  **/
-function php_check_syntax($filename, $error_message) {}
+function php_check_syntax($filename, &$error_message) {}
 
 /**
  * Check if a file is loaded, and retrieve its path.
@@ -45773,7 +47761,7 @@ function pow($base, $exp) {}
  * @param int
  * @return mixed
  **/
-function preg_filter($pattern, $replacement, $subject, $limit, $count) {}
+function preg_filter($pattern, $replacement, $subject, $limit, &$count) {}
 
 /**
  * Returns the array consisting of the elements of the 
@@ -45805,7 +47793,7 @@ function preg_last_error() {}
  * @param int
  * @return int
  **/
-function preg_match($pattern, $subject, $matches, $flags, $offset) {}
+function preg_match($pattern, $subject, &$matches, $flags, $offset) {}
 
 /**
  * Searches subject for all matches to the regular
@@ -45820,7 +47808,7 @@ function preg_match($pattern, $subject, $matches, $flags, $offset) {}
  * @param int
  * @return int
  **/
-function preg_match_all($pattern, $subject, $matches, $flags, $offset) {}
+function preg_match_all($pattern, $subject, &$matches, $flags, $offset) {}
 
 /**
  * preg_quote takes str
@@ -45847,7 +47835,7 @@ function preg_quote($str, $delimiter) {}
  * @param int
  * @return mixed
  **/
-function preg_replace($pattern, $replacement, $subject, $limit, $count) {}
+function preg_replace($pattern, $replacement, $subject, $limit, &$count) {}
 
 /**
  * The behavior of this function is almost identical to
@@ -45862,7 +47850,7 @@ function preg_replace($pattern, $replacement, $subject, $limit, $count) {}
  * @param int
  * @return mixed
  **/
-function preg_replace_callback($pattern, $callback, $subject, $limit, $count) {}
+function preg_replace_callback($pattern, $callback, $subject, $limit, &$count) {}
 
 /**
  * Split the given string by a regular expression.
@@ -45876,20 +47864,12 @@ function preg_replace_callback($pattern, $callback, $subject, $limit, $count) {}
 function preg_split($pattern, $subject, $limit, $flags) {}
 
 /**
- * Object oriented style (method)
- *
- * @param string
- * @return mysqli_stmt
- **/
-function prepare($query) {}
-
-/**
  * Rewind the internal array pointer.
  *
  * @param array
  * @return mixed
  **/
-function prev($array) {}
+function prev(&$array) {}
 
 /**
  * This function deletes the printers spool file.
@@ -46296,7 +48276,7 @@ function proc_nice($increment) {}
  * @param array
  * @return resource
  **/
-function proc_open($cmd, $descriptorspec, $pipes, $cwd, $env, $other_options) {}
+function proc_open($cmd, $descriptorspec, &$pipes, $cwd, $env, $other_options) {}
 
 /**
  * Signals a process (created using
@@ -48241,14 +50221,6 @@ function readlink($path) {}
 function realpath($path) {}
 
 /**
- * Object oriented style (method):
- *
- * @param string
- * @return bool
- **/
-function real_query($query) {}
-
-/**
  * Recode the file referenced by file handle
  * input into the file referenced by file
  * handle output according to the recode
@@ -48317,7 +50289,7 @@ function rename_function($original_name, $new_name) {}
  * @param array
  * @return mixed
  **/
-function reset($array) {}
+function reset(&$array) {}
 
 /**
  * Used after changing the error handler function using
@@ -48439,7 +50411,7 @@ function rpm_version() {}
  * @param int
  * @return bool
  **/
-function rsort($array, $sort_flags) {}
+function rsort(&$array, $sort_flags) {}
 
 /**
  * This function returns a string with whitespace stripped from the
@@ -48954,7 +50926,7 @@ function setrawcookie($name, $value, $expire, $path, $domain, $secure, $httponly
  * @param string
  * @return bool
  **/
-function settype($var, $type) {}
+function settype(&$var, $type) {}
 
 /**
  * Sets a user function (error_handler) to handle
@@ -49119,6 +51091,15 @@ function shm_detach($shm_identifier) {}
 function shm_get_var($shm_identifier, $variable_key) {}
 
 /**
+ * Checks whether a specific key exists inside a shared memory segment.
+ *
+ * @param resource
+ * @param int
+ * @return bool
+ **/
+function shm_has_var($shm_identifier, $variable_key) {}
+
+/**
  * shm_put_var inserts or updates the
  * variable with the given
  * variable_key.
@@ -49155,7 +51136,7 @@ function shm_remove_var($shm_identifier, $variable_key) {}
  * @param array
  * @return bool
  **/
-function shuffle($array) {}
+function shuffle(&$array) {}
 
 /**
  * This calculates the similarity between two strings as described in Oliver
@@ -49169,7 +51150,7 @@ function shuffle($array) {}
  * @param float
  * @return int
  **/
-function similar_text($first, $second, $percent) {}
+function similar_text($first, $second, &$percent) {}
 
 /**
  * This function takes a node of a DOM
@@ -49464,7 +51445,7 @@ function socket_create_listen($port, $backlog) {}
  * @param array
  * @return bool
  **/
-function socket_create_pair($domain, $type, $protocol, $fd) {}
+function socket_create_pair($domain, $type, $protocol, &$fd) {}
 
 /**
  * Queries the remote side of the given socket which may either result in
@@ -49475,7 +51456,7 @@ function socket_create_pair($domain, $type, $protocol, $fd) {}
  * @param int
  * @return bool
  **/
-function socket_getpeername($socket, $address, $port) {}
+function socket_getpeername($socket, &$address, &$port) {}
 
 /**
  * @param resource
@@ -49483,7 +51464,7 @@ function socket_getpeername($socket, $address, $port) {}
  * @param int
  * @return bool
  **/
-function socket_getsockname($socket, $addr, $port) {}
+function socket_getsockname($socket, &$addr, &$port) {}
 
 /**
  * The socket_get_option function retrieves the value for
@@ -49545,7 +51526,7 @@ function socket_read($socket, $length, $type) {}
  * @param int
  * @return int
  **/
-function socket_recv($socket, $buf, $len, $flags) {}
+function socket_recv($socket, &$buf, $len, $flags) {}
 
 /**
  * The socket_recvfrom function receives
@@ -49565,7 +51546,7 @@ function socket_recv($socket, $buf, $len, $flags) {}
  * @param int
  * @return int
  **/
-function socket_recvfrom($socket, $buf, $len, $flags, $name, $port) {}
+function socket_recvfrom($socket, &$buf, $len, $flags, &$name, &$port) {}
 
 /**
  * socket_select accepts arrays of sockets and waits for
@@ -49580,7 +51561,7 @@ function socket_recvfrom($socket, $buf, $len, $flags, $name, $port) {}
  * @param int
  * @return int
  **/
-function socket_select($read, $write, $except, $tv_sec, $tv_usec) {}
+function socket_select(&$read, &$write, &$except, $tv_sec, $tv_usec) {}
 
 /**
  * The function socket_send sends
@@ -49688,7 +51669,7 @@ function socket_write($socket, $buffer, $length) {}
  * @param int
  * @return bool
  **/
-function sort($array, $sort_flags) {}
+function sort(&$array, $sort_flags) {}
 
 /**
  * Calculates the soundex key of str.
@@ -49915,7 +51896,7 @@ function sqlite_escape_string($item) {}
  * @param string
  * @return bool
  **/
-function sqlite_exec($dbhandle, $query, $error_msg) {}
+function sqlite_exec($dbhandle, $query, &$error_msg) {}
 
 /**
  * sqlite_factory behaves similarly to
@@ -49930,7 +51911,7 @@ function sqlite_exec($dbhandle, $query, $error_msg) {}
  * @param string
  * @return SQLiteDatabase
  **/
-function sqlite_factory($filename, $mode, $error_message) {}
+function sqlite_factory($filename, $mode, &$error_message) {}
 
 /**
  * Object oriented style (method):
@@ -50079,7 +52060,7 @@ function sqlite_num_rows($result) {}
  * @param string
  * @return resource
  **/
-function sqlite_open($filename, $mode, $error_message) {}
+function sqlite_open($filename, $mode, &$error_message) {}
 
 /**
  * sqlite_popen will first check to see if a persistent
@@ -50092,7 +52073,7 @@ function sqlite_open($filename, $mode, $error_message) {}
  * @param string
  * @return resource
  **/
-function sqlite_popen($filename, $mode, $error_message) {}
+function sqlite_popen($filename, $mode, &$error_message) {}
 
 /**
  * Object oriented style (method):
@@ -50111,7 +52092,7 @@ function sqlite_prev($result) {}
  * @param string
  * @return resource
  **/
-function sqlite_query($dbhandle, $query, $result_type, $error_msg) {}
+function sqlite_query($dbhandle, $query, $result_type, &$error_msg) {}
 
 /**
  * Object oriented style (method):
@@ -50168,7 +52149,7 @@ function sqlite_udf_encode_binary($data) {}
  * @param string
  * @return resource
  **/
-function sqlite_unbuffered_query($dbhandle, $query, $result_type, $error_msg) {}
+function sqlite_unbuffered_query($dbhandle, $query, $result_type, &$error_msg) {}
 
 /**
  * Object oriented style (method):
@@ -51085,13 +53066,6 @@ function stats_stat_powersum($arr, $power) {}
 function stats_variance($a, $sample) {}
 
 /**
- * Object oriented style (method):
- *
- * @return mysqli_result
- **/
-function store_result() {}
-
-/**
  * Binary safe case-insensitive string comparison.
  *
  * @param string
@@ -51373,7 +53347,7 @@ function stream_resolve_include_path($filename, $context) {}
  * @param int
  * @return int
  **/
-function stream_select($read, $write, $except, $tv_sec, $tv_usec) {}
+function stream_select(&$read, &$write, &$except, $tv_sec, $tv_usec) {}
 
 /**
  * Sets blocking or non-blocking mode on a stream.
@@ -51415,7 +53389,7 @@ function stream_set_write_buffer($stream, $buffer) {}
  * @param string
  * @return resource
  **/
-function stream_socket_accept($server_socket, $timeout, $peername) {}
+function stream_socket_accept($server_socket, $timeout, &$peername) {}
 
 /**
  * Initiates a stream or datagram connection to the destination specified
@@ -51436,7 +53410,7 @@ function stream_socket_accept($server_socket, $timeout, $peername) {}
  * @param resource
  * @return resource
  **/
-function stream_socket_client($remote_socket, $errno, $errstr, $timeout, $flags, $context) {}
+function stream_socket_client($remote_socket, &$errno, &$errstr, $timeout, $flags, $context) {}
 
 /**
  * @param resource
@@ -51478,7 +53452,7 @@ function stream_socket_pair($domain, $type, $protocol) {}
  * @param string
  * @return string
  **/
-function stream_socket_recvfrom($socket, $length, $flags, $address) {}
+function stream_socket_recvfrom($socket, $length, $flags, &$address) {}
 
 /**
  * Sends the specified data through the
@@ -51503,7 +53477,7 @@ function stream_socket_sendto($socket, $data, $flags, $address) {}
  * @param resource
  * @return resource
  **/
-function stream_socket_server($local_socket, $errno, $errstr, $flags, $context) {}
+function stream_socket_server($local_socket, &$errno, &$errstr, $flags, $context) {}
 
 /**
  * Shutdowns (partially or not) a full-duplex connection.
@@ -51868,7 +53842,7 @@ function str_getcsv($input, $delimiter, $enclosure, $escape) {}
  * @param int
  * @return mixed
  **/
-function str_ireplace($search, $replace, $subject, $count) {}
+function str_ireplace($search, $replace, $subject, &$count) {}
 
 /**
  * This functions returns the input string
@@ -51908,7 +53882,7 @@ function str_repeat($input, $multiplier) {}
  * @param int
  * @return mixed
  **/
-function str_replace($search, $replace, $subject, $count) {}
+function str_replace($search, $replace, $subject, &$count) {}
 
 /**
  * Performs the ROT13 encoding on the str argument and
@@ -53436,7 +55410,7 @@ function syslog($priority, $message) {}
  * @param int
  * @return string
  **/
-function system($command, $return_var) {}
+function system($command, &$return_var) {}
 
 /**
  * Returns three samples representing the average system load
@@ -53914,7 +55888,7 @@ function trim($str, $charlist) {}
  * @param callback
  * @return bool
  **/
-function uasort($array, $cmp_function) {}
+function uasort(&$array, $cmp_function) {}
 
 /**
  * Returns a string with the first character of
@@ -54154,7 +56128,7 @@ function udm_set_agent_param($agent, $var, $val) {}
  * @param callback
  * @return bool
  **/
-function uksort($array, $cmp_function) {}
+function uksort(&$array, $cmp_function) {}
 
 /**
  * umask sets PHP's umask to
@@ -54301,13 +56275,6 @@ function urldecode($str) {}
 function urlencode($str) {}
 
 /**
- * Object oriented style (method):
- *
- * @return mysqli_result
- **/
-function use_result() {}
-
-/**
  * This function sets whether or not to use the SOAP error handler in the SOAP server. 
  * It will return the previous value. If set to , details of errors
  * in a SoapServer application will be sent to the clients.
@@ -54335,7 +56302,7 @@ function usleep($micro_seconds) {}
  * @param callback
  * @return bool
  **/
-function usort($array, $cmp_function) {}
+function usort(&$array, $cmp_function) {}
 
 /**
  * This function decodes data, assumed to be
@@ -55322,7 +57289,7 @@ function xdiff_string_diff($old_data, $new_data, $context, $minimal) {}
  * @param string
  * @return mixed
  **/
-function xdiff_string_merge3($old_data, $new_data1, $new_data2, $error) {}
+function xdiff_string_merge3($old_data, $new_data1, $new_data2, &$error) {}
 
 /**
  * Patches a str string with an unified patch in patch parameter 
@@ -55338,7 +57305,7 @@ function xdiff_string_merge3($old_data, $new_data1, $new_data2, $error) {}
  * @param string
  * @return string
  **/
-function xdiff_string_patch($str, $patch, $flags, $error) {}
+function xdiff_string_patch($str, $patch, $flags, &$error) {}
 
 /**
  * Patches a string str with a binary patch.
@@ -55364,7 +57331,7 @@ function xmlrpc_decode($xml, $encoding) {}
  * @param string
  * @return mixed
  **/
-function xmlrpc_decode_request($xml, $method, $encoding) {}
+function xmlrpc_decode_request($xml, &$method, $encoding) {}
 
 /**
  * @param mixed
@@ -55449,7 +57416,7 @@ function xmlrpc_server_register_method($server, $method_name, $function) {}
  * @param string
  * @return bool
  **/
-function xmlrpc_set_type($value, $type) {}
+function xmlrpc_set_type(&$value, $type) {}
 
 /**
  * @param resource
@@ -55869,7 +57836,7 @@ function xml_parser_set_option($parser, $option, $value) {}
  * @param array
  * @return int
  **/
-function xml_parse_into_struct($parser, $data, $values, $index) {}
+function xml_parse_into_struct($parser, $data, &$values, &$index) {}
 
 /**
  * Sets the character data handler function for the XML parser
@@ -55947,7 +57914,7 @@ function xml_set_notation_decl_handler($parser, $handler) {}
  * @param object
  * @return bool
  **/
-function xml_set_object($parser, $object) {}
+function xml_set_object($parser, &$object) {}
 
 /**
  * Sets the processing instruction (PI) handler function for the XML parser
@@ -56190,7 +58157,7 @@ function xslt_set_log($xh, $log) {}
  * @param object
  * @return bool
  **/
-function xslt_set_object($processor, $obj) {}
+function xslt_set_object($processor, &$obj) {}
 
 /**
  * Set SAX handlers on the resource handle given by
@@ -56260,7 +58227,7 @@ function yaz_ccl_conf($id, $config) {}
  * @param array
  * @return bool
  **/
-function yaz_ccl_parse($id, $query, $result) {}
+function yaz_ccl_parse($id, $query, &$result) {}
 
 /**
  * Closes the connection given by parameter id.
@@ -56360,7 +58327,7 @@ function yaz_get_option($id, $name) {}
  * @param array
  * @return int
  **/
-function yaz_hits($id, $searchresult) {}
+function yaz_hits($id, &$searchresult) {}
 
 /**
  * This function prepares for an Extended Services request using the
@@ -56425,7 +58392,7 @@ function yaz_scan($id, $type, $startterm, $flags) {}
  * @param array
  * @return array
  **/
-function yaz_scan_result($id, $result) {}
+function yaz_scan_result($id, &$result) {}
 
 /**
  * yaz_schema specifies the schema for retrieval.
@@ -56486,7 +58453,7 @@ function yaz_syntax($id, $syntax) {}
  * @param array
  * @return mixed
  **/
-function yaz_wait($options) {}
+function yaz_wait(&$options) {}
 
 /**
  * @param string
@@ -57292,6 +59259,13 @@ class mysqli {
     function get_warnings() {}
 
     /**
+     * Object oriented style (method):
+     *
+     * @return mysqli
+     **/
+    function init() {}
+
+    /**
      * Object oriented style (method)
      *
      * @param int
@@ -57351,7 +59325,15 @@ class mysqli {
      * @param int
      * @return int
      **/
-    function poll($read, $error, $reject, $sec, $usec) {}
+    function poll(&$read, &$error, &$reject, $sec, $usec) {}
+
+    /**
+     * Object oriented style (method)
+     *
+     * @param string
+     * @return mysqli_stmt
+     **/
+    function prepare($query) {}
 
     /**
      * Object oriented style (method):
@@ -57375,6 +59357,14 @@ class mysqli {
      * @return bool
      **/
     function real_connect($host, $username, $passwd, $dbname, $port, $socket, $flags) {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @param string
+     * @return bool
+     **/
+    function real_query($query) {}
 
     /**
      * Get result from async query.
@@ -57424,6 +59414,20 @@ class mysqli {
      * @return string
      **/
     function stat() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return mysqli_result
+     **/
+    function store_result() {}
+
+    /**
+     * Object oriented style (method):
+     *
+     * @return mysqli_result
+     **/
+    function use_result() {}
 
 }
 class mysqli_driver {
@@ -57552,7 +59556,7 @@ class mysqli_stmt {
      * @param mixed
      * @return bool
      **/
-    function bind_param($types, $var1) {}
+    function bind_param($types, &$var1) {}
 
     /**
      * Object oriented style (method):
@@ -57560,7 +59564,7 @@ class mysqli_stmt {
      * @param mixed
      * @return bool
      **/
-    function bind_result($var1) {}
+    function bind_result(&$var1) {}
 
     /**
      * Object oriented style (method):
@@ -57755,7 +59759,7 @@ class streamWrapper {
      * @param string
      * @return bool
      **/
-    function stream_open($path, $mode, $options, $opened_path) {}
+    function stream_open($path, $mode, $options, &$opened_path) {}
 
     /**
      * This method is called in response to fread
@@ -58565,6 +60569,8 @@ define('FILEINFO_COMPRESS', 0);
 define('FILEINFO_CONTINUE', 0);
 define('FILEINFO_DEVICES', 0);
 define('FILEINFO_MIME', 0);
+define('FILEINFO_MIME_ENCODING', 0);
+define('FILEINFO_MIME_TYPE', 0);
 define('FILEINFO_NONE', 0);
 define('FILEINFO_PRESERVE_ATIME', 0);
 define('FILEINFO_RAW', 0);
@@ -58797,6 +60803,9 @@ define('IMAGETYPE_TIFF_MM', 0);
 define('IMAGETYPE_WBMP', 0);
 define('IMAGETYPE_XBM', 0);
 define('IMAP_CLOSETIMEOUT', 0);
+define('IMAP_GC_ELT', 0);
+define('IMAP_GC_ENV', 0);
+define('IMAP_GC_TEXTS', 0);
 define('IMAP_OPENTIMEOUT', 0);
 define('IMAP_READTIMEOUT', 0);
 define('IMAP_WRITETIMEOUT', 0);
@@ -59857,6 +61866,8 @@ define('SSH2_STREAM_STDIO', 0);
 define('SSH2_TERM_UNIT_CHARS', 0);
 define('SSH2_TERM_UNIT_PIXELS', 0);
 define('STATEMENT_TRACE', 0);
+define('STREAM_CAST_AS_STREAM', 0);
+define('STREAM_CAST_FOR_SELECT', 0);
 define('STREAM_CLIENT_ASYNC_CONNECT', 0);
 define('STREAM_CLIENT_CONNECT', 0);
 define('STREAM_CLIENT_PERSISTENT', 0);

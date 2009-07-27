@@ -268,7 +268,8 @@ foreach ($dirs as $dir) {
             if (is_numeric(substr($paramName, 0, 1))) $paramName = '_'.$paramName;
             $params[] = array(
                 'name' => $paramName,
-                'type' => (string)$param->type
+                'type' => (string)$param->type,
+                'isRef' => isset($param->parameter->attributes()->role) ? ($param->parameter->attributes()->role == "reference") : false
             );
         }
         $desc = strip_tags($xml->refsect1->para->asXML());
@@ -427,6 +428,7 @@ foreach ($classes as $class => $i) {
         $out .= "(";
         foreach ($f['params'] as $pi=>$param) {
             if ($pi > 0) $out .= ", ";
+            if ($param['isRef']) $out .= "&";
             $out .= '$'.$param['name'];
         }
         $out .= ") {}\n\n";
