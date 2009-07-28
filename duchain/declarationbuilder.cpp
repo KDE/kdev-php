@@ -575,30 +575,32 @@ void DeclarationBuilder::visitTopStatement(TopStatementAst* node)
 
 void DeclarationBuilder::visitAssignmentExpression(AssignmentExpressionAst* node)
 {
-    bool lastFindAssignmentTarget = m_findAssignmentTarget;
-    m_findAssignmentTarget = (bool) node->assignmentExpressionEqual;
-    if ( m_findAssignmentTarget ) {
-        QualifiedIdentifier lastAssignmentTarget = m_assignmentTarget;
-        QualifiedIdentifier lastAssignmentTargetParent = m_assignmentTargetParent;
-        m_assignmentTarget = QualifiedIdentifier();
-        m_assignmentTargetParent = QualifiedIdentifier();
+    if ( node->assignmentExpressionEqual ) {
+        bool lastFindAssignmentTarget = m_findVariable;
+        QualifiedIdentifier lastAssignmentTarget = m_variable;
+        QualifiedIdentifier lastAssignmentTargetParent = m_variableParent;
+        m_findVariable = true;
+        m_variable = QualifiedIdentifier();
+        m_variableParent = QualifiedIdentifier();
 
         DeclarationBuilderBase::visitAssignmentExpression(node);
 
-        m_assignmentTarget = lastAssignmentTarget;
-        m_assignmentTargetParent = lastAssignmentTargetParent;
+        m_variable = lastAssignmentTarget;
+        m_variableParent = lastAssignmentTargetParent;
+        m_findVariable = lastFindAssignmentTarget;
     } else {
         DeclarationBuilderBase::visitAssignmentExpression(node);
     }
-    m_findAssignmentTarget = lastFindAssignmentTarget;
 }
 
 void DeclarationBuilder::visitVariable(VariableAst* node)
 {
-    if ( m_findAssignmentTarget ) {
-        getVariableIdentifier(node, m_assignmentTarget, m_assignmentTargetParent,
-                                    m_assignmentTargetNode, m_isAssignmentToArrayMember);
-        m_findAssignmentTarget = false;
+    kDebug() << m_findVariable;
+    if ( m_findVariable ) {
+        getVariableIdentifier(node, m_variable, m_variableParent,
+                                    m_variableNode, m_variableIsArray);
+        kDebug() << "test";
+        m_findVariable = false;
     }
     DeclarationBuilderBase::visitVariable(node);
 }
@@ -662,30 +664,30 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
 {
     DeclarationBuilderBase::visitAssignmentExpressionEqual(node);
 
-    if ( !m_assignmentTarget.isEmpty() && currentAbstractType()) {
+    if ( !m_variable.isEmpty() && currentAbstractType()) {
         //create new declaration assignments to not-yet declared variables and class members
 
         AbstractType::Ptr type;
-        if ( m_isAssignmentToArrayMember ) {
+        if ( m_variableIsArray ) {
             // implicit array declaration
             type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
         } else {
             type = currentAbstractType();
         }
 
-        if ( !m_assignmentTargetParent.isEmpty() ) {
+        if ( !m_variableParent.isEmpty() ) {
             // assignment to class members
 
             DUChainWriteLocker lock(DUChain::lock());
 
             // get parent class context
             DUContext* parentCtx = 0;
-            if ( m_assignmentTargetParent == QualifiedIdentifier("this") ) {
+            if ( m_variableParent == QualifiedIdentifier("this") ) {
                 if ( currentContext()->parentContext() && currentContext()->parentContext()->type() == DUContext::Class ) {
                     parentCtx = currentContext()->parentContext();
                 }
             } else {
-                foreach( Declaration* parent, currentContext()->topContext()->findDeclarations(m_assignmentTargetParent) ) {
+                foreach( Declaration* parent, currentContext()->topContext()->findDeclarations(m_variableParent) ) {
                     if ( StructureType::Ptr ctype = parent->type<StructureType>() ) {
                         parentCtx = ctype->internalContext(currentContext()->topContext());
                         break;
@@ -694,11 +696,11 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
             }
 
             if ( parentCtx ) {
-                declareClassMember(parentCtx, type, m_assignmentTarget, m_assignmentTargetNode );
+                declareClassMember(parentCtx, type, m_variable, m_variableNode );
             }
         } else {
             // assigment to other variables
-            declareVariable(currentContext(), type, m_assignmentTarget, m_assignmentTargetNode );
+            declareVariable(currentContext(), type, m_variable, m_variableNode );
         }
     }
 }
@@ -765,10 +767,14 @@ void DeclarationBuilder::visitFunctionCallParameterList(FunctionCallParameterLis
 
 void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node)
 {
-    ///TODO: Maybe we should also support declaration of variables in node->expression ?
-    ///      Then the whole structure below should be changed... Maybe set a flag
-    ///      "declare everything undefined" and then check each variable...
-    if ( node->variable && !m_currentFunctionType.isNull() &&
+    {
+        bool oldFlag = m_findVariable;
+        m_findVariable = true;
+        DeclarationBuilderBase::visitFunctionCallParameterListElement(node);
+        m_findVariable = oldFlag;
+    }
+
+    if ( m_variableNode && !m_currentFunctionType.isNull() &&
             m_currentFunctionType->arguments().count() > m_functionCallParameterPos) {
         ReferenceType::Ptr refType = m_currentFunctionType->arguments()
                                         .at(m_functionCallParameterPos).cast<ReferenceType>();
@@ -776,19 +782,14 @@ void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParam
             // this argument is referenced, so if the node contains undeclared variables we have
             // to declare them with a NULL type, see also:
             // http://de.php.net/manual/en/language.references.whatdo.php
-            QualifiedIdentifier identifier;
-            QualifiedIdentifier parent;
-            bool arrayAccess;
-            AstNode* targetNode;
-            getVariableIdentifier(node->variable, identifier, parent, targetNode, arrayAccess);
             ///TODO: support something like: foo($var[0])
-            if ( !arrayAccess ) {
+            if ( !m_variableIsArray ) {
                 DUContext *ctx;
-                if ( parent.isEmpty() ) {
+                if ( m_variableParent.isEmpty() ) {
                     ctx = currentContext();
                 } else {
                     ClassDeclaration* cdec = dynamic_cast<ClassDeclaration*>(
-                        findDeclarationImport(ClassDeclarationType, parent, 0)
+                        findDeclarationImport(ClassDeclarationType, m_variableParent, 0)
                     );
                     if ( cdec ) {
                         ctx = cdec->internalContext();
@@ -798,32 +799,30 @@ void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParam
                     bool isDeclared = false;
                     {
                         DUChainWriteLocker lock(DUChain::lock());
-                        foreach ( Declaration* dec, ctx->findDeclarations(identifier) ) {
+                        foreach ( Declaration* dec, ctx->findDeclarations(m_variable) ) {
                             if ( dec->kind() == Declaration::Instance ) {
                                 isDeclared = true;
                                 break;
                             }
                         }
                     }
-                    if ( !isDeclared && parent.isEmpty() ) {
+                    if ( !isDeclared && m_variableParent.isEmpty() ) {
                         // check also for global vars
-                        isDeclared = findDeclarationImport(GlobalVariableDeclarationType, identifier, targetNode);
+                        isDeclared = findDeclarationImport(GlobalVariableDeclarationType, m_variable, m_variableNode);
                     }
                     if ( !isDeclared ) {
                         // couldn't find the dec, declare it with NULL type, just like PHP does:
                         AbstractType::Ptr newType(new IntegralType(IntegralType::TypeNull));
-                        if ( !parent.isEmpty() ) {
-                            declareClassMember(ctx, newType, identifier, targetNode);
+                        if ( !m_variableParent.isEmpty() ) {
+                            declareClassMember(ctx, newType, m_variable, m_variableNode);
                         } else {
-                            declareVariable(ctx, newType, identifier, targetNode);
+                            declareVariable(ctx, newType, m_variable, m_variableNode);
                         }
                     }
                 }
             }
         }
     }
-
-    DeclarationBuilderBase::visitFunctionCallParameterListElement(node);
 
     ++m_functionCallParameterPos;
 }

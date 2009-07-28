@@ -48,11 +48,11 @@ class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase
 {
 public:
     DeclarationBuilder(ParseSession* session)
-        :  m_findAssignmentTarget(false), m_isAssignmentToArrayMember(false), m_currentModifers(0) {
+        :  m_findVariable(false), m_variableIsArray(false), m_currentModifers(0) {
         setEditor(session);
     }
     DeclarationBuilder(EditorIntegrator* editor)
-        : m_findAssignmentTarget(false), m_isAssignmentToArrayMember(false), m_currentModifers(0) {
+        : m_findVariable(false), m_variableIsArray(false), m_currentModifers(0) {
         setEditor(editor);
     }
     virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, Php::AstNode* node,
@@ -94,11 +94,22 @@ protected:
     void openClassMemberDeclaration(Php::AstNode* node, const KDevelop::QualifiedIdentifier& name);
 
 private:
-    bool m_findAssignmentTarget;
-    bool m_isAssignmentToArrayMember;
-    KDevelop::QualifiedIdentifier m_assignmentTarget;
-    KDevelop::QualifiedIdentifier m_assignmentTargetParent;
-    AstNode* m_assignmentTargetNode;
+    /// Set this to true if you want to catch any variable in the lower AST tree
+    bool m_findVariable;
+    /// If the found variable is accessed as an array ($var[...]) this is set to true.
+    /// @see m_findVariable
+    bool m_variableIsArray;
+    /// The identifier for the found variable.
+    /// @see m_findVariable
+    KDevelop::QualifiedIdentifier m_variable;
+    /// The identifier for the parent of the found variable. Empty if
+    /// the found variable is not a class member.
+    /// @see m_findVariable
+    KDevelop::QualifiedIdentifier m_variableParent;
+    /// The AstNode of the found variable. Use this for declarations.
+    /// @see m_findVariable
+    AstNode* m_variableNode;
+
     /// The position of the current argument, will only be set inside function calls.
     int m_functionCallParameterPos;
     /// Type of the current function, will only be set inside function calls.
