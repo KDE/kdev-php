@@ -513,7 +513,7 @@ expression=booleanOrExpression
 -> functionCallParameterList ;;
 
 
-    (BIT_AND variable=variable) | (variable=variable) | expr=expr
+    (BIT_AND variable=variable) | expr=expr
 -> functionCallParameterListElement ;;
 
     #element=assignmentListElement @COMMA
