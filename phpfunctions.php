@@ -1102,39 +1102,6 @@ interface SplSubject
 
 
 
-/** @ingroup SPL
- * @brief Implementation of a stack through a DoublyLinkedList. As SplStack 
- *        extends SplDoublyLinkedList, shift() and unshift() are still available even
- *        though they don't make much sense for a stack.
- * @since PHP 5.3
- *
- * The SplStack class provides the main functionalities of a
- * stack implemented using a doubly linked list (DLL).
- */
-class SplStack extends SplDoublyLinkedList
-{
-    protected $_it_mode = parent::IT_MODE_LIFO;
-
-    /** Changes the iteration mode. There are two orthogonal sets of modes that 
-     * can be set:
-     *
-     * - The behavior of the iterator (either one or the other)
-     *  - SplDoublyLnkedList::IT_MODE_DELETE (Elements are deleted by the iterator)
-     *  - SplDoublyLnkedList::IT_MODE_KEEP   (Elements are traversed by the iterator)
-     *
-     * The default mode is 0 : SplDoublyLnkedList::IT_MODE_LIFO | SplDoublyLnkedList::IT_MODE_KEEP
-     *
-     * @note The iteration's direction is not modifiable for stack instances
-     * @param $mode              New mode of iteration
-     * @throw RuntimeException   If the new mode affects the iteration's direction.
-     */
-    public function setIteratorMode($mode){}
-}
-
-
-
-
-
 /**
  * @brief   Regular expression filter for iterators
  * @author  Marcus Boerger
@@ -1218,81 +1185,6 @@ class RegexIterator extends FilterIterator
     /** @param preg_flags new PREG flags
      */
     function setPregFlags($preg_flags){}
-}
-
-
-
-
-
-
-/** @ingroup SPL
- * @brief   RecursiveIteratorIterator to generate ASCII graphic trees for the
- *          entries in a RecursiveIterator
- * @author  Marcus Boerger, Johannes Schlueter
- * @version 1.1
- * @since   PHP 5.3
- */
-class RecursiveTreeIterator extends RecursiveIteratorIterator
-{
-    const BYPASS_CURRENT = 0x00000004;
-    const BYPASS_KEY     = 0x00000008;
-
-    private $rit_flags;
-
-    /**
-     * @param it         iterator to use as inner iterator
-     * @param rit_flags  flags passed to RecursiveIteratoIterator (parent)
-     * @param cit_flags  flags passed to RecursiveCachingIterator (for hasNext)
-     * @param mode       mode  passed to RecursiveIteratoIterator (parent)
-     */
-    function __construct(RecursiveIterator $it, $rit_flags = self::BYPASS_KEY, $cit_flags = CachingIterator::CATCH_GET_CHILD, $mode = self::SELF_FIRST){}
-
-    private $prefix = array(0=>'', 1=>'| ', 2=>'  ', 3=>'|-', 4=>'\-', 5=>'');
-
-    /** Prefix used to start elements. */
-    const PREFIX_LEFT         = 0;
-    /** Prefix used if $level < depth and hasNext($level) == true. */
-    const PREFIX_MID_HAS_NEXT = 1;
-    /** Prefix used if $level < depth and hasNext($level) == false. */
-    const PREFIX_MID_LAST     = 2;
-    /** Prefix used if $level == depth and hasNext($level) == true. */
-    const PREFIX_END_HAS_NEXT = 3;
-    /** Prefix used if $level == depth and hasNext($level) == false. */
-    const PREFIX_END_LAST     = 4;
-    /** Prefix used right in front of the current element. */
-    const PREFIX_RIGHT        = 5;
-
-    /**
-     * Set prefix part as used in getPrefix() and stored in $prefix.
-     * @param $part   any PREFIX_* const.
-     * @param $value  new prefix string for specified part.
-     * @throws OutOfRangeException if 0 > $part or $part > 5.
-     */
-    function setPrefixPart($part, $value){}
-
-    /** @return string to place in front of current element
-     */
-    function getPrefix(){}
-
-    /** @return string presentation build for current element
-     */
-    function getEntry(){}
-
-    /** @return string to place after the current element
-     */
-    function getPostfix(){}
-
-    /** @return the current element prefixed and postfixed
-     */
-    function current(){}
-
-    /** @return the current key prefixed and postfixed
-     */
-    function key(){}
-
-    /** Aggregates the inner iterator
-     */
-    function __call($func, $params){}
 }
 
 
@@ -1651,97 +1543,6 @@ interface OuterIterator extends Iterator
 
 
 
-/** @ingroup SPL
- * @brief   Iterator that iterates over several iterators one after the other
- * @author  Johannes Schlueter
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.3
- */
-class MultipleIterator implements Iterator
-{
-    /** Inner Iterators */
-    private $iterators;
-
-    /** Flags: const MIT_* */
-    private $flags;
-
-    /** do not require all sub iterators to be valid in iteration */
-    const MIT_NEED_ANY = 0;
-
-    /** require all sub iterators to be valid in iteration */
-    const MIT_NEED_ALL  = 1;
-
-    /** keys are created from sub iterators position */
-    const MIT_KEYS_NUMERIC  = 0;
-
-    /** keys are created from sub iterators associated infromation */
-    const MIT_KEYS_ASSOC  = 2;
-
-    /** Construct a new empty MultipleIterator
-    * @param flags MIT_* flags
-    */
-    public function __construct($flags = self::MIT_NEED_ALL|self::MIT_KEYS_NUMERIC){}
-
-    /** @return current flags MIT_* */
-    public function getFlags(){}
-
-    /** @param $flags new flags. */
-    public function setFlags($flags){}
-
-    /** @param $iter new Iterator to attach.
-    * @param $inf associative info forIteraotr, must be NULL, integer or string
-    *
-    * @throws IllegalValueException if a inf is none of NULL, integer or string
-    * @throws IllegalValueException if a inf is already an associated info
-    */
-    public function attachIterator(Iterator $iter, $inf = NULL){}
-
-    /** @param $iter attached Iterator that should be detached. */
-    public function detachIterator(Iterator $iter){}
-
-    /** @param $iter Iterator to check
-    * @return whether $iter is attached or not
-    */
-    public function containsIterator(Iterator $iter){}
-
-    /** @return number of attached Iterator instances. */
-    public function countIterators(){}
-
-    /** Rewind all attached Iterator instances. */
-    public function rewind(){}
-
-    /**
-    * @return whether all or one sub iterator is valid depending on flags.
-    * In mode MIT_NEED_ALL we expect all sub iterators to be valid and
-    * return flase on the first non valid one. If that flag is not set we
-    * return true on the first valid sub iterator found. If no Iterator
-    * is attached, we always return false.
-    */
-    public function valid(){}
-
-    /** Move all attached Iterator instances forward. That is invoke
-    * their next() method regardless of their state.
-    */
-    public function next(){}
-
-    /** @return false if no sub Iterator is attached and an array of
-    * all registered Iterator instances current() result.
-    * @throws RuntimeException      if mode MIT_NEED_ALL is set and at least one
-    *                               attached Iterator is not valid().
-    * @throws IllegalValueException if a key is NULL and MIT_KEYS_ASSOC is set.
-    */
-    public function current(){}
-
-    /** @return false if no sub Iterator is attached and an array of
-    * all registered Iterator instances key() result.
-    * @throws LogicException if mode MIT_NEED_ALL is set and at least one
-    *         attached Iterator is not valid().
-    */
-    public function key(){}
-}
-
-
 
 /** @ingroup SPL
  * @brief   Object representation for any stream
@@ -1993,207 +1794,6 @@ interface SeekableIterator extends Iterator
      \endcode
      */
     function seek($index);
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief Implementation of a Queue through a DoublyLinkedList. As SplQueue
- *        extends SplDoublyLinkedList, unshift() and pop() are still available 
- *        even though they don't make much sense for a queue. For convenience,
- *        two aliases are available:
- *         - enqueue() is an alias of push()
- *         - dequeue() is an alias of shift()
- *
- * @since PHP 5.3
- *
- * The SplQueue class provides the main functionalities of a
- * queue implemented using a doubly linked list (DLL).
- */
-class SplQueue extends SplDoublyLinkedList
-{
-    protected $_it_mode = parent::IT_MODE_FIFO;
-
-    /** Changes the iteration mode. There are two orthogonal sets of modes that 
-     * can be set:
-     *
-     * - The behavior of the iterator (either one or the other)
-     *  - SplDoublyLnkedList::IT_MODE_DELETE (Elements are deleted by the iterator)
-     *  - SplDoublyLnkedList::IT_MODE_KEEP   (Elements are traversed by the iterator)
-     *
-     * The default mode is 0 : SplDoublyLnkedList::IT_MODE_LIFO | SplDoublyLnkedList::IT_MODE_KEEP
-     *
-     * @note The iteration's direction is not modifiable for queue instances
-     * @param $mode              New mode of iteration
-     * @throw RuntimeException   If the new mode affects the iteration's direction.
-     */
-    public function setIteratorMode($mode){}
-
-    /** @return the first element of the queue.
-     * @note dequeue is an alias of push()
-     * @see splDoublyLinkedList::push()
-     */
-    public function dequeue(){}
-
-    /** Pushes an element at the end of the queue.
-     * @param $data variable to add to the queue.
-     * @note enqueue is an alias of shift()
-     * @see splDoublyLinkedList::shift()
-     */
-    public function enqueue($data){}
-}
-
-
-
-
-/** @ingroup SPL
- * @brief Doubly Linked List
- * @since PHP 5.3
- *
- * The SplDoublyLinkedList class provides the main functionalities of a
- * doubly linked list (DLL).
- * @note The following userland implementation of Iterator is a bit different
- *        from the internal one. Internally, iterators generated by nested 
- *        foreachs are independent, while they share the same traverse pointer 
- *        in userland.
- */
-class SplDoublyLinkedList implements Iterator, ArrayAccess, Countable
-{
-    protected $_llist   = array();
-    protected $_it_mode = 0;
-    protected $_it_pos  = 0;
-
-    /** Iterator mode
-     * @see setIteratorMode
-     */
-    const IT_MODE_LIFO     = 0x00000002;
-
-    /** Iterator mode
-     * @see setIteratorMode
-     */
-    const IT_MODE_FIFO     = 0x00000000;
-
-    /** Iterator mode
-     * @see setIteratorMode
-     */
-    const IT_MODE_KEEP     = 0x00000000;
-
-    /** Iterator mode
-     * @see setIteratorMode
-     */
-    const IT_MODE_DELETE   = 0x00000001;
-
-    /** @return the element popped from the end of the DLL.
-     * @throw RuntimeException If the datastructure is empty.
-     */
-    public function pop(){}
-
-    /** @return the element shifted from the beginning of the DLL.
-     * @throw RuntimeException If the datastructure is empty.
-     */
-    public function shift(){}
-
-    /** Pushes an element to the end of the DLL.
-     * @param $data variable to add to the DLL.
-     */
-    public function push($data){}
-
-    /** Adds an element to the beginning of the DLL.
-     * @param $data variable to add to the DLL.
-     */
-    public function unshift($data){}
-
-    /** @return the element at the beginning of the DLL.
-     */
-    public function top(){}
-
-    /** @return the element at the end of the DLL.
-     */
-    public function bottom(){}
-
-    /** @return number elements in the DLL.
-     */
-    public function count(){}
-
-    /** @return whether the DLL is empty.
-     */
-    public function isEmpty(){}
-
-    /** Changes the iteration mode. There are two orthogonal sets of modes that 
-     * can be set:
-     * - The direction of the iteration (either one or the other)
-     *  - SplDoublyLnkedList::IT_MODE_LIFO (Stack style)
-     *  - SplDoublyLnkedList::IT_MODE_FIFO (Queue style)
-     *
-     * - The behavior of the iterator (either one or the other)
-     *  - SplDoublyLnkedList::IT_MODE_DELETE (Elements are deleted by the iterator)
-     *  - SplDoublyLnkedList::IT_MODE_KEEP   (Elements are traversed by the iterator)
-     *
-     * The default mode is 0 : SplDoublyLnkedList::IT_MODE_FIFO | SplDoublyLnkedList::IT_MODE_KEEP
-     *
-     * @param $mode new mode of iteration
-     */
-    public function setIteratorMode($mode){}
-
-    /** @return the current iteration mode
-     * @see setIteratorMode
-     */
-    public function getIteratorMode(){}
-
-    /** Rewind to top iterator as set in constructor
-     */
-    public function rewind(){}
-
-    /** @return whether iterator is valid
-     */
-    public function valid(){}
-
-    /** @return current key
-     */
-    public function key(){}
-
-    /** @return current object
-     */
-    public function current(){}
-
-    /** Forward to next element
-     */
-    public function next(){}
-
-    /** @return whether a certain offset exists in the DLL
-     *
-     * @param $offset             The offset
-     * @throw OutOfRangeException If the offset is either invalid or out of
-     *                            range.
-     */
-    public function offsetExists($offset){}
-
-    /** @return the data at a certain offset in the DLL
-     *
-     * @param $offset             The offset
-     * @throw OutOfRangeException If the offset is either invalid or out of
-     *                            range.
-     */
-    public function offsetGet($offset){}
-
-    /** Defines the data at a certain offset in the DLL
-     *
-     * @param $offset             The offset
-     * @param $value              New value
-     * @throw OutOfRangeException If the offset is either invalid or out of
-     *                            range.
-     */
-    public function offsetSet($offset, $value){}
-
-    /** Unsets the element at a certain offset in the DLL
-     *
-     * @param $offset             The offset
-     * @throw OutOfRangeException If the offset is either invalid or out of
-     *                            range.
-     */
-    public function offsetUnset($offset){}
 }
 
 
@@ -2555,7 +2155,7 @@ class RecursiveIteratorIterator implements OuterIterator
 /**
  * @brief   Object storage
  * @author  Marcus Boerger
- * @version 1.1
+ * @version 1.0
  * @since PHP 5.1.2
  *
  * This container allows to store objects uniquly without the need to compare
@@ -2563,7 +2163,7 @@ class RecursiveIteratorIterator implements OuterIterator
  * here therefore has a complexity of O(n) while the actual implementation has
  * complexity O(1).
  */
-class SplObjectStorage implements Iterator, Countable, ArrayAccess
+class SplObjectStorage implements Iterator, Countable
 {
     private $storage = array();
     private $index = 0;
@@ -2584,16 +2184,6 @@ class SplObjectStorage implements Iterator, Countable, ArrayAccess
      */
     function current(){}
     
-    /** @return get current object's associated information
-     * @since 5.3.0
-     */
-    function getInfo(){}
-    
-    /** @return set current object's associated information
-     * @since 5.3.0
-     */
-    function setInfo($inf = NULL){}
-    
     /** Forward to next element
      */
     function next(){}
@@ -2602,46 +2192,18 @@ class SplObjectStorage implements Iterator, Countable, ArrayAccess
      */
     function count(){}
 
-    /** @param $obj object to look for
+    /** @param obj object to look for
      * @return whether $obj is contained in storage
-     */
+      */
     function contains($obj){}
 
-    /** @param $obj new object to attach to storage or object whose
-     *              associative information is to be replaced
-     * @param $inf associative information stored along the object
+    /** @param $obj new object to attach to storage if not yet contained
      */
-    function attach($obj, $inf = NULL){}
+    function attach($obj){}
 
     /** @param $obj object to remove from storage
      */
     function detach($obj){}
-
-    /** @param $obj new object to attach to storage or object whose
-     *              associative information is to be replaced
-     * @param $inf associative information stored along the object
-     * @since 5.3.0
-     */
-    function offsetSet($obj, $inf){}
-
-    /** @param $obj Exising object to look for
-     * @return associative information stored with object
-     * @throw UnexpectedValueException if Object $obj is not contained in
-     *                                 storage
-     * @since 5.3.0
-     */
-    function offsetGet($obj){}
-
-    /** @param $obj Exising object to look for
-     * @return associative information stored with object
-     * @since 5.3.0
-     */
-    function offsetUnset($obj){}
-
-    /** @param $obj object to look for
-     * @return whether $obj is contained in storage
-     */
-    function offsetEsists($obj){}
 }
 
 
@@ -14935,6 +14497,97 @@ class MongoUtil {
     function toIndexString($keys) {}
 
 }
+class MultipleIterator implements Iterator, Traversable {
+    /**
+     * Attaches iterator information.
+     *
+     * @param Iterator
+     * @param string
+     * @return void
+     **/
+    function attachIterator($iterator, $infos) {}
+
+    /**
+     * Checks if an iterator is attached or not.
+     *
+     * @param Iterator
+     * @return void
+     **/
+    function containsIterator($iterator) {}
+
+    /**
+     * Gets the number of attached iterator instances.
+     *
+     * @return void
+     **/
+    function countIterators() {}
+
+    /**
+     * Get the registered iterator instances.
+     *
+     * @return void
+     **/
+    function current() {}
+
+    /**
+     * Detaches an iterator.
+     *
+     * @param Iterator
+     * @return void
+     **/
+    function detachIterator($iterator) {}
+
+    /**
+     * Gets information about the flags.
+     *
+     * @return void
+     **/
+    function getFlags() {}
+
+    /**
+     * Get the registered iterator instances.
+     *
+     * @return void
+     **/
+    function key() {}
+
+    /**
+     * Moves all attached iterator instances forward.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds all attached iterator instances.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Sets flags.
+     *
+     * @param integer
+     * @return void
+     **/
+    function setFlags($flags) {}
+
+    /**
+     * Checks the validity of sub iterators.
+     *
+     * @return void
+     **/
+    function valid() {}
+
+    /**
+     * Construct a new MultipleIterator.
+     *
+     * @param integer
+     **/
+    function __construct($flags) {}
+
+}
 class MySQLi {
 }
 class MySQLi_Driver {
@@ -20016,6 +19669,136 @@ class SphinxClient {
 }
 class SplBool {
 }
+class SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
+    /**
+     * @return mixed
+     **/
+    function bottom() {}
+
+    /**
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Get the current doubly linked list node.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * @return int
+     **/
+    function getIteratorMode() {}
+
+    /**
+     * @return bool
+     **/
+    function isEmpty() {}
+
+    /**
+     * This function returns the current node index
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Move the iterator to the next node.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @param mixed
+     * @return bool
+     **/
+    function offsetExists($index) {}
+
+    /**
+     * @param mixed
+     * @return mixed
+     **/
+    function offsetGet($index) {}
+
+    /**
+     * Sets the value at the specified index to newval.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function offsetSet($index, $newval) {}
+
+    /**
+     * Unsets the value at the specified index.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function offsetUnset($index) {}
+
+    /**
+     * @return mixed
+     **/
+    function pop() {}
+
+    /**
+     * Move the iterator to the previous node.
+     *
+     * @return void
+     **/
+    function prev() {}
+
+    /**
+     * Pushes value at the end of the doubly linked list.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function push($value) {}
+
+    /**
+     * This rewinds the iterator to the beginning.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function setIteratorMode($mode) {}
+
+    /**
+     * @return mixed
+     **/
+    function shift() {}
+
+    /**
+     * @return mixed
+     **/
+    function top() {}
+
+    /**
+     * Prepends value at the beginning of the doubly linked list.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function unshift($value) {}
+
+    /**
+     * Checks if the doubly linked list contains any more nodes.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
 class SplEnum {
 }
 class SplFixedArray implements Iterator, ArrayAccess, Countable {
@@ -20321,6 +20104,37 @@ class SplPriorityQueue implements Iterator, Countable {
      * @return bool
      **/
     function valid() {}
+
+}
+class SplQueue extends SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
+    /**
+     * Dequeues value from the top of of the queue.
+     *
+     * @return mixed
+     **/
+    function dequeue() {}
+
+    /**
+     * Enqueues value at the end of the queue.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function enqueue($value) {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function setIteratorMode($mode) {}
+
+}
+class SplStack extends SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
+    /**
+     * @param int
+     * @return void
+     **/
+    function setIteratorMode($mode) {}
 
 }
 class SplString {
