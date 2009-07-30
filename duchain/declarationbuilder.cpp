@@ -772,27 +772,21 @@ void DeclarationBuilder::visitFunctionCallParameterList(FunctionCallParameterLis
 
 void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node)
 {
-    {
-        bool lastFindVariable = m_findVariable;
-        QualifiedIdentifier lastVariable = m_variable;
-        QualifiedIdentifier lastVariableParent = m_variableParent;
-        bool lastIsArray = m_variableIsArray;
-        AstNode* lastNode = m_variableNode;
+    bool lastFindVariable = m_findVariable;
+    QualifiedIdentifier lastVariable = m_variable;
+    QualifiedIdentifier lastVariableParent = m_variableParent;
+    bool lastIsArray = m_variableIsArray;
+    AstNode* lastNode = m_variableNode;
 
-        m_findVariable = true;
-        m_variable = QualifiedIdentifier();
-        m_variableParent = QualifiedIdentifier();
-        m_variableIsArray = false;
-        m_variableNode = 0;
+    m_findVariable = true;
+    m_variable = QualifiedIdentifier();
+    m_variableParent = QualifiedIdentifier();
+    m_variableIsArray = false;
+    m_variableNode = 0;
 
-        DeclarationBuilderBase::visitFunctionCallParameterListElement(node);
+    DeclarationBuilderBase::visitFunctionCallParameterListElement(node);
 
-        m_findVariable = lastFindVariable;
-        m_variable = lastVariable;
-        m_variableParent = lastVariableParent;
-        m_variableIsArray = lastIsArray;
-        m_variableNode = lastNode;
-    }
+    kDebug() << m_findVariable << m_variable.toString() << m_variableParent.toString() << m_variableIsArray << m_variableNode;
 
     if ( m_variableNode && !m_currentFunctionType.isNull() &&
             m_currentFunctionType->arguments().count() > m_functionCallParameterPos) {
@@ -843,6 +837,12 @@ void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParam
             }
         }
     }
+
+    m_findVariable = lastFindVariable;
+    m_variable = lastVariable;
+    m_variableParent = lastVariableParent;
+    m_variableIsArray = lastIsArray;
+    m_variableNode = lastNode;
 
     ++m_functionCallParameterPos;
 }
