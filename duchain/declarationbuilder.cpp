@@ -576,18 +576,25 @@ void DeclarationBuilder::visitTopStatement(TopStatementAst* node)
 void DeclarationBuilder::visitAssignmentExpression(AssignmentExpressionAst* node)
 {
     if ( node->assignmentExpressionEqual ) {
-        bool lastFindAssignmentTarget = m_findVariable;
-        QualifiedIdentifier lastAssignmentTarget = m_variable;
-        QualifiedIdentifier lastAssignmentTargetParent = m_variableParent;
+        bool lastFindVariable = m_findVariable;
+        QualifiedIdentifier lastVariable = m_variable;
+        QualifiedIdentifier lastVariableParent = m_variableParent;
+        bool lastIsArray = m_variableIsArray;
+        AstNode* lastNode = m_variableNode;
+
         m_findVariable = true;
         m_variable = QualifiedIdentifier();
         m_variableParent = QualifiedIdentifier();
+        m_variableIsArray = false;
+        m_variableNode = 0;
 
         DeclarationBuilderBase::visitAssignmentExpression(node);
 
-        m_variable = lastAssignmentTarget;
-        m_variableParent = lastAssignmentTargetParent;
-        m_findVariable = lastFindAssignmentTarget;
+        m_findVariable = lastFindVariable;
+        m_variable = lastVariable;
+        m_variableParent = lastVariableParent;
+        m_variableIsArray = lastIsArray;
+        m_variableNode = lastNode;
     } else {
         DeclarationBuilderBase::visitAssignmentExpression(node);
     }
@@ -766,10 +773,25 @@ void DeclarationBuilder::visitFunctionCallParameterList(FunctionCallParameterLis
 void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node)
 {
     {
-        bool oldFlag = m_findVariable;
+        bool lastFindVariable = m_findVariable;
+        QualifiedIdentifier lastVariable = m_variable;
+        QualifiedIdentifier lastVariableParent = m_variableParent;
+        bool lastIsArray = m_variableIsArray;
+        AstNode* lastNode = m_variableNode;
+
         m_findVariable = true;
+        m_variable = QualifiedIdentifier();
+        m_variableParent = QualifiedIdentifier();
+        m_variableIsArray = false;
+        m_variableNode = 0;
+
         DeclarationBuilderBase::visitFunctionCallParameterListElement(node);
-        m_findVariable = oldFlag;
+
+        m_findVariable = lastFindVariable;
+        m_variable = lastVariable;
+        m_variableParent = lastVariableParent;
+        m_variableIsArray = lastIsArray;
+        m_variableNode = lastNode;
     }
 
     if ( m_variableNode && !m_currentFunctionType.isNull() &&

@@ -87,7 +87,8 @@ void TestDUChain::testDeclareVar()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A {} class B {} $i = new A(); $j = new B(); $i = new B(); $i = 'foo';");
+    QByteArray method("<? class A {} class B {} $i = new A(); $j = new B(); $i = new B(); $i = 'foo';"
+                        " $a = substr($i, 0, 1);");
 
     TopDUContext* top = parse(method, DumpNone);
     DUChainReleaser releaseTop(top);
@@ -95,7 +96,7 @@ void TestDUChain::testDeclareVar()
 
     QVERIFY(!top->parentContext());
     QCOMPARE(top->childContexts().count(), 2);
-    QCOMPARE(top->localDeclarations().count(), 6);
+    QCOMPARE(top->localDeclarations().count(), 7);
 
     //class A
     Declaration* dec = top->localDeclarations().at(0);
@@ -134,6 +135,11 @@ void TestDUChain::testDeclareVar()
     //$i (3rd)
     decVar = top->localDeclarations().at(5);
     QCOMPARE(decVar->identifier(), Identifier("i"));
+    QVERIFY(decVar->type<IntegralType>());
+
+    // $a
+    decVar = top->localDeclarations().at(6);
+    QCOMPARE(decVar->identifier(), Identifier("a"));
     QVERIFY(decVar->type<IntegralType>());
 }
 
