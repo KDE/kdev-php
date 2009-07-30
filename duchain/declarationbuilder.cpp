@@ -595,11 +595,9 @@ void DeclarationBuilder::visitAssignmentExpression(AssignmentExpressionAst* node
 
 void DeclarationBuilder::visitVariable(VariableAst* node)
 {
-    kDebug() << m_findVariable;
     if ( m_findVariable ) {
         getVariableIdentifier(node, m_variable, m_variableParent,
                                     m_variableNode, m_variableIsArray);
-        kDebug() << "test";
         m_findVariable = false;
     }
     DeclarationBuilderBase::visitVariable(node);

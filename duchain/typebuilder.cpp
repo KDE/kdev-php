@@ -320,7 +320,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
     if ( !m_gotReturnTypeFromDocComment && node->returnExpr && lastType() && hasCurrentType() && currentType<FunctionType>())
     {
         FunctionType::Ptr ft = currentType<FunctionType>();
-        kDebug() << "return" << (ft->returnType() ? ft->returnType()->toString() : "none") << lastType()->toString();
+        // kDebug() << "return" << (ft->returnType() ? ft->returnType()->toString() : "none") << lastType()->toString();
         if (ft->returnType()) {
             if (ft->returnType().cast<IntegralType>()
                 && ft->returnType().cast<IntegralType>()->dataType() == IntegralType::TypeMixed)
@@ -378,7 +378,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
                     if (!dynamic_cast<ClassMethodDeclaration*>(d)) continue;
                     Q_ASSERT(d->type<FunctionType>());
                     injectType(d->type<FunctionType>()->returnType());
-                    kDebug() << "that's it: " << d->type<FunctionType>()->returnType()->toString();
+                    // kDebug() << "that's it: " << d->type<FunctionType>()->returnType()->toString();
                 }
             }
         }
