@@ -100,16 +100,22 @@ int Lexer::nextTokenKind()
     m_tokenBegin = m_curpos;
     switch (state()) {
     case HtmlState:
-        if (it->unicode() == '<' && (it + 1)->unicode() == '?') {
+        if (it->unicode() == '<' && (it + 1)->unicode() == '?'
+            ///TODO: per-project configuration to set whether we use shortags
+            ///      or not. In the former case we'd need to rise an error here
+            && !( (it + 2)->toLower().unicode() == 'x'
+                 && (it + 3)->toLower().unicode() == 'm'
+                 && (it + 4)->toLower().unicode() == 'l' ) )
+        {
             token = Parser::Token_OPEN_TAG;
             if ((it + 2)->unicode() == '=') {
                 token = Parser::Token_OPEN_TAG_WITH_ECHO;
                 m_curpos++;
                 it++;
             } else if ((it + 2)->toLower().unicode() == 'p'
-                       && (it + 3)->toLower().unicode() == 'h'
-                       && (it + 4)->toLower().unicode() == 'p'
-                       && (it + 5)->isSpace()) {
+                    && (it + 3)->toLower().unicode() == 'h'
+                    && (it + 4)->toLower().unicode() == 'p'
+                    && (it + 5)->isSpace()) {
                 m_curpos += 4;
                 if ((it + 5)->unicode() == '\n') createNewline(m_curpos + 1);
             }
