@@ -216,6 +216,10 @@ KUrl getUrlForBase(const QString &includeFile, const KUrl &baseUrl) {
 
 IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl)
 {
+    if ( includeFile.isEmpty() ) {
+        return IndexedString();
+    }
+
     // check remote files
     if ( includeFile.startsWith("http://", Qt::CaseInsensitive) || includeFile.startsWith("ftp://", Qt::CaseInsensitive) ) {
         // always expect remote includes to exist
