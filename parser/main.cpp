@@ -90,12 +90,14 @@ private:
                 printToken(token, lexer);
             }
             printToken(token, lexer);
-
-            qint64 line;
-            qint64 column;
-            tokenStream.endPosition(tokenStream.size() - 1, &line, &column);
-//             tokenStream.endPosition(lastTokenEnd, &line, &column);
-            qDebug() << "last token endPosition: line" << line << "column" << column;
+            if ( tokenStream.size() > 0 ) {
+                qint64 line;
+                qint64 column;
+                tokenStream.endPosition(tokenStream.size() - 1, &line, &column);
+                qDebug() << "last token endPosition: line" << line << "column" << column;
+            } else {
+                qDebug() << "empty token stream";
+            }
         }
 
         Php::StartAst* ast = 0;
