@@ -792,8 +792,6 @@ void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParam
 
     DeclarationBuilderBase::visitFunctionCallParameterListElement(node);
 
-    kDebug() << m_findVariable << m_variable.toString() << m_variableParent.toString() << m_variableIsArray << m_variableNode;
-
     if ( m_variableNode && !m_currentFunctionType.isNull() &&
             m_currentFunctionType->arguments().count() > m_functionCallParameterPos) {
         ReferenceType::Ptr refType = m_currentFunctionType->arguments()
