@@ -104,7 +104,20 @@ const QByteArray testClassB(
     "} $instB = new B; "
 );
 
-typedef CodeCompletionItemTester<CodeCompletionContext> PhpCompletionTester;
+typedef CodeCompletionItemTester<CodeCompletionContext> BasePhpCompletionTester;
+
+/**
+ * Automatically prepent the test string with "<?php " when it does not start with "<?" already-
+ * If we would not do that the Tokenizer in the code-completion would not work (always T_INLINE_HTML).
+ */
+class PhpCompletionTester : public BasePhpCompletionTester
+{
+public:
+    PhpCompletionTester(DUContext* context, QString text = "; ")
+        : BasePhpCompletionTester(context, text.startsWith("<?") ? text : text.prepend("<?php "))
+    {
+    }
+};
 
 TestCompletion::TestCompletion()
 {
@@ -398,7 +411,7 @@ void TestCompletion::projectFileClass()
 
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionItemTester<TestCodeCompletionContext> tester(top, "");
+    CodeCompletionItemTester<TestCodeCompletionContext> tester(top, "<?php ");
     QVERIFY(searchDeclaration(tester.items, addTop->localDeclarations().first()));
 }
 
@@ -474,14 +487,14 @@ void TestCompletion::exceptions()
     DUChainWriteLocker lock(DUChain::lock());
 
     {
-        PhpCompletionTester tester(top, "throw");
+        PhpCompletionTester tester(top, "throw ");
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::ExceptionInstanceChoose);
         QCOMPARE(tester.items.count(), 1);
         QVERIFY(searchDeclaration(tester.items, top->localDeclarations().at(1)));
     }
 
     {
-        PhpCompletionTester tester(top, "throw new");
+        PhpCompletionTester tester(top, "throw new ");
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::ExceptionChoose);
         QCOMPARE(tester.items.count(), 2);
         QVERIFY(searchDeclaration(tester.items, top->localDeclarations().at(0)));
@@ -806,7 +819,7 @@ void TestCompletion::phpStartTag()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    foreach ( const QString &code, QStringList() << "<?" << "<?p" << "<?ph" << "<?php" ) {
+    foreach ( const QString &code, QStringList() << "<?p" << "<?ph" << "<?php" ) {
         PhpCompletionTester tester(top, code);
 
         QVERIFY(tester.items.isEmpty());
@@ -815,6 +828,17 @@ void TestCompletion::phpStartTag()
     PhpCompletionTester tester(top, "<?php ");
 
     QVERIFY(!tester.items.isEmpty());
+}
+
+void TestCompletion::outsidePhpContext()
+{
+    TopDUContext* top = parse("<?php $var = 1; ?>=", DumpDUChain);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    PhpCompletionTester tester(top, "<?php $var = 1; ?>=");
+
+    QVERIFY(tester.items.isEmpty());
 }
 
 }

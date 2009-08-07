@@ -73,6 +73,7 @@ private slots:
     void unsureType();
     void completionAfterHashComment();
     void phpStartTag();
+    void outsidePhpContext();
 };
 
 }

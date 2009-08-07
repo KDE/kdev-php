@@ -107,6 +107,11 @@ public:
 
     virtual CodeCompletionContext* parentContext();
 
+    /**
+     * Returns the code for the CodeCompletionContext.
+     */
+    const QString& code() const;
+
 protected:
     virtual QList<QSet<KDevelop::IndexedString> > completionFiles();
     inline bool isValidCompletionItem(KDevelop::Declaration* dec);
@@ -126,21 +131,6 @@ private:
 
     void forbidIdentifier(const QString &identifier);
     void forbidIdentifier(KDevelop::ClassDeclaration* identifier);
-
-    void forbidLastIdentifier(const QString& text, const QString& additionalPattern = "");
-
-    /**
-     * checks whether the string ends on a list of interfaces, e.g.:
-     *
-     * interface iFace extends Iface1, Iface2, ...
-     *
-     * or:
-     *
-     * class Klass implements IFace1, IFace2, ...
-     *
-     * All found identifiers are added to the forbiddenIdentifiers
-     */
-    bool textEndsOnInterfaceList(const QString& text);
 };
 }
 

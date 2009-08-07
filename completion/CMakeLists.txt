@@ -23,6 +23,7 @@ target_link_libraries(kdev4phpcompletion
     ${KDEVPLATFORM_INTERFACES_LIBRARY}
     ${KDEVPLATFORM_PROJECT_LIBRARY}
     kdev4phpduchain
+    kdev4phpparser
  )
 
 install(TARGETS kdev4phpcompletion DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
