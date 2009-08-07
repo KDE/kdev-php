@@ -104,6 +104,7 @@ private slots:
     void testThisRedeclaration();
     void testImplicitArrayDeclaration();
     void testImplicitReferenceDeclaration();
+    void testClassContextRange();
 };
 
 }

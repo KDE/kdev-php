@@ -1838,6 +1838,19 @@ void TestDUChain::testImplicitReferenceDeclaration()
     QVERIFY(decs.first()->type<IntegralType>()->dataType() == IntegralType::TypeNull);
 }
 
+void TestDUChain::testClassContextRange()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray code("<?php class A { } $a = new A; ?> <?php $b = 1; $a->foobar = 1; $a->barFoo= 0;");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->childContexts().first()->range().textRange(), KTextEditor::Range(0, 6, 0, 17));
+    QCOMPARE(top->childContexts().first()->localDeclarations().count(), 2);
+}
+
 }
 
 #include "test_duchain.moc"

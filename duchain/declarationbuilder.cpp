@@ -377,6 +377,10 @@ void DeclarationBuilder::openClassMemberDeclaration(AstNode* node, const Qualifi
 {
     DUChainWriteLocker lock(DUChain::lock());
 
+    // dirty hack: declarations of class members outside the class context would
+    //             make the class context encompass the newRange. This is not what we want.
+    SimpleRange oldRange = currentContext()->range();
+
     SimpleRange newRange = editorFindRange(node, node);
     openDefinition<ClassMemberDeclaration>(name, newRange);
 
@@ -393,6 +397,8 @@ void DeclarationBuilder::openClassMemberDeclaration(AstNode* node, const Qualifi
         dec->setStatic(true);
     }
     dec->setKind(Declaration::Instance);
+
+    currentContext()->setRange(oldRange);
 }
 
 void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::Ptr type,
