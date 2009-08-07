@@ -220,6 +220,8 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     }
 
     switch ( lastToken.type() ) {
+        ///TODO: sometime in the future we should do skeleton-completion, e.g. after T_IF create something like
+        ///      if (CURSOR) {...}, properly indented to the users style
         case Parser::Token_IF:
         case Parser::Token_WHILE:
         case Parser::Token_ELSE:
@@ -236,6 +238,8 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_CONST:
         case Parser::Token_INLINE_HTML:
         case Parser::Token_INVALID:
+        case Parser::Token_FUNCTION:
+        case Parser::Token_ARRAY:
             ifDebug(log("no completion after this token");)
             m_valid = false;
             break;
