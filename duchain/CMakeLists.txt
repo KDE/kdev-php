@@ -25,6 +25,7 @@ set(duchain_SRCS
     tests/duchaintestbase.cpp
     navigation/navigationwidget.cpp
     navigation/declarationnavigationcontext.cpp
+    navigation/includenavigationcontext.cpp
     )
 
 

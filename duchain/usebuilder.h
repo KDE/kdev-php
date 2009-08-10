@@ -55,6 +55,7 @@ protected:
     virtual void visitStaticScalar(StaticScalarAst* node);
     virtual void visitStatement(StatementAst* node);
     virtual void visitCatchItem(CatchItemAst* node);
+    virtual void visitUnaryExpression( UnaryExpressionAst* node );
 };
 
 }

@@ -23,6 +23,10 @@
 #include <language/duchain/navigation/abstractnavigationwidget.h>
 #include "../phpduchainexport.h"
 
+namespace KDevelop {
+    struct IncludeItem;
+}
+
 namespace Php
 {
 
@@ -39,10 +43,13 @@ public:
       * */
     NavigationWidget(KDevelop::DeclarationPointer declaration, KDevelop::TopDUContextPointer topContext, const QString& htmlPrefix = QString(), const QString& htmlSuffix = QString());
 
+    NavigationWidget(const KDevelop::IncludeItem& includeItem, KDevelop::TopDUContextPointer topContext, const QString& htmlPrefix, const QString& htmlSuffix);
+
     /**
     * Creates a compact html description-text
     **/
     static QString shortDescription(KDevelop::Declaration* declaration);
+    static QString shortDescription(const KDevelop::IncludeItem& includeItem);
 
 protected:
     KDevelop::DeclarationPointer m_declaration;

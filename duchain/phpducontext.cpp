@@ -23,6 +23,7 @@
 #include <language/duchain/topducontextdata.h>
 
 #include "navigation/navigationwidget.h"
+#include <language/util/includeitem.h>
 
 namespace Php
 {
@@ -38,17 +39,16 @@ template<>
 QWidget* PhpDUContext<TopDUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, const QString& htmlPrefix, const QString& htmlSuffix) const
 {
     if (decl == 0) {
-        /*
-          KUrl u( url().str() );
-          IncludeItem i;
-          i.pathNumber = -1;
-          i.name = u.fileName();
-          i.isDirectory = false;
-          i.basePath = u.upUrl();
-
-          return new NavigationWidget( i, TopDUContextPointer(topContext), htmlPrefix, htmlSuffix );
-          */
         return 0;
+    } else if ( decl->kind() == Declaration::Namespace && decl->range().isEmpty() ) {
+        KUrl u( decl->identifier().toString() );
+        IncludeItem i;
+        i.pathNumber = -1;
+        i.name = u.fileName();
+        i.isDirectory = false;
+        i.basePath = u.upUrl();
+
+        return new NavigationWidget( i, TopDUContextPointer(topContext), htmlPrefix, htmlSuffix );
     } else {
         return new NavigationWidget(DeclarationPointer(decl), TopDUContextPointer(topContext ? topContext : this->topContext()), htmlPrefix, htmlSuffix);
     }

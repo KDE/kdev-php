@@ -80,6 +80,7 @@ protected:
     virtual void visitStaticVar(StaticVarAst* node);
     virtual void visitGlobalVar(GlobalVarAst* node);
     virtual void visitCatchItem(CatchItemAst *node);
+    virtual void visitUnaryExpression( UnaryExpressionAst* node );
 
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const Php::MethodBodyAst* body) const {

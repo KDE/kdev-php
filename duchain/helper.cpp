@@ -259,4 +259,18 @@ IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &current
     return IndexedString();
 }
 
+IndexedString getIncludeFileForNode(UnaryExpressionAst* node, EditorIntegrator* editor) {
+    if ( node->includeExpression ) {
+        //find name of the constant (first argument of the function call)
+        CommonScalarAst* scalar = findCommonScalar(node->includeExpression);
+        if (scalar && scalar->string != -1) {
+            QString str = editor->parseSession()->symbol(scalar->string);
+            str = str.mid(1, str.length() - 2);
+            return findIncludeFileUrl(str, editor->currentUrl().toUrl());
+        }
+    }
+
+    return IndexedString();
+}
+
 }

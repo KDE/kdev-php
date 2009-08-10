@@ -250,21 +250,14 @@ void ContextBuilder::addBaseType(IdentifierAst * identifier)
 void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
 {
     DefaultVisitor::visitUnaryExpression(node);
-    if (node->includeExpression) {
-        //find name of the constant (first argument of the function call)
-        CommonScalarAst* scalar = findCommonScalar(node->includeExpression);
-        if (scalar && scalar->string != -1) {
-            QString str = editor()->parseSession()->symbol(scalar->string);
-            str = str.mid(1, str.length() - 2);
-            IndexedString includeFile = findIncludeFileUrl(str, editor()->currentUrl().toUrl());
-
-            DUChainWriteLocker lock(DUChain::lock());
-            TopDUContext *top = DUChain::self()->chainForDocument(includeFile);
-            if (top) {
-                currentContext()->topContext()->addImportedParentContext(top);
-                currentContext()->topContext()->parsingEnvironmentFile()
-                ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
-            }
+    IndexedString includeFile = getIncludeFileForNode(node, editor());
+    if ( !includeFile.isEmpty() ) {
+        DUChainWriteLocker lock(DUChain::lock());
+        TopDUContext *top = DUChain::self()->chainForDocument(includeFile);
+        if (top) {
+            currentContext()->topContext()->addImportedParentContext(top);
+            currentContext()->topContext()->parsingEnvironmentFile()
+            ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
         }
     }
 }

@@ -141,5 +141,23 @@ void UseBuilder::newCheckedUse(AstNode* node, Declaration* declaration)
     UseBuilderBase::newUse(node, declaration);
 }
 
+void UseBuilder::visitUnaryExpression( UnaryExpressionAst* node )
+{
+    UseBuilderBase::visitUnaryExpression(node);
+    IndexedString includeFile = getIncludeFileForNode(node, editor());
+    if ( !includeFile.isEmpty() ) {
+        ///TODO: is there not a more elegant way to get a QualifiedIdentifier from a IndexedString?
+        QualifiedIdentifier identifier(QString::fromUtf8(includeFile.byteArray()));
+
+        DUChainWriteLocker lock(DUChain::lock());
+        foreach ( Declaration* dec, currentContext()->topContext()->findDeclarations(identifier) ) {
+            if ( dec->kind() == Declaration::Namespace && dec->range().isEmpty() ) {
+                newUse(node->includeExpression, dec);
+                return;
+            }
+        }
+    }
+
+}
 
 }
