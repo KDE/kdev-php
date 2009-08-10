@@ -256,7 +256,7 @@ void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
         if (scalar && scalar->string != -1) {
             QString str = editor()->parseSession()->symbol(scalar->string);
             str = str.mid(1, str.length() - 2);
-            IndexedString includeFile = findIncludeFileUrl(str, KUrl(editor()->currentUrl().str()));
+            IndexedString includeFile = findIncludeFileUrl(str, editor()->currentUrl().toUrl());
 
             DUChainWriteLocker lock(DUChain::lock());
             TopDUContext *top = DUChain::self()->chainForDocument(includeFile);
