@@ -578,10 +578,10 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     ifDebug(kDebug() << "expression: " << expr;)
 
     if (m_memberAccessOperation == StaticMemberAccess) {
-        LOCKDUCHAIN;
         if (expr == "self" || expr == "parent") {
             // self and parent are only accessible from within a member function of a class
             if (DUContext* parent = context->parentContext()) {
+                LOCKDUCHAIN;
                 ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(parent->owner());
                 if (classDec) {
                     if (expr == "parent") {
@@ -611,7 +611,8 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             }
         } else {
             QualifiedIdentifier id(expr);
-            m_expressionResult.setDeclarations(m_duContext->findDeclarations(id, m_position));
+
+            m_expressionResult.setDeclaration(findDeclarationImportHelper(duContext(), id, ClassDeclarationType, 0, 0));
         }
         if (m_expressionResult.type()) {
             ifDebug(kDebug() << "expression type: " << m_expressionResult.type()->toString();)
