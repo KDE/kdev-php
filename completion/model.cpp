@@ -79,7 +79,8 @@ Range CodeCompletionModel::completionRange(View* view, const Cursor &position)
         KTextEditor::Range preRange(Cursor(range.start().line(), range.start().column() - 1),
                                     Cursor(range.start().line(), range.start().column()));
         kDebug() << preRange << view->document()->text(preRange);
-        if (view->document()->text(preRange) == "$") {
+        const QString contents = view->document()->text(preRange);
+        if ( contents == "$" || contents == "/" ) {
             range.expandToRange(preRange);
             kDebug() << "using custom completion range" << range;
         }

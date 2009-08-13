@@ -54,6 +54,9 @@
 #include <language/duchain/types/unsuretype.h>
 #include <language/duchain/parsingenvironment.h>
 
+#include <language/util/includeitem.h>
+#include "includefileitem.h"
+
 #define LOCKDUCHAIN     DUChainReadLocker lock(DUChain::lock())
 
 #define ifDebug(x) x
@@ -201,6 +204,10 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
 
     TokenAccess lastToken(this);
 
+    /// even when we skip to some more meaning ful token, this will
+    /// always be the end position of the last token
+    const qint64 lastTokenEnd = lastToken.tokenAt(0).end + 1;
+
     bool lastWasWhitespace = lastToken == Parser::Token_WHITESPACE;
     if ( lastWasWhitespace ) {
         ifDebug(log("skipping whitespace token");)
@@ -208,6 +215,11 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     }
 
     ifDebug(log(tokenText(lastToken.type()));)
+
+    ///TODO: REFACTOR: push some stuff into its own methods
+    ///                and call them from inside the big switch.
+    ///                Then we can forget about having additional checks
+    ///                beforehand and can handle it all in one place.
 
     // The following tokens require a whitespace after them for code-completion:
     if ( !lastWasWhitespace ) {
@@ -223,6 +235,27 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 break;
         }
     }
+
+    if ( lastToken.type() == Parser::Token_LPAREN ) {
+        qint64 pos = -1;
+        if ( lastToken.typeAt(pos) == Parser::Token_WHITESPACE ) {
+            --pos;
+        }
+        switch ( lastToken.typeAt(pos) ) {
+            case Parser::Token_REQUIRE:
+            case Parser::Token_REQUIRE_ONCE:
+            case Parser::Token_INCLUDE:
+            case Parser::Token_INCLUDE_ONCE:
+                // we want file completion here (see below)
+                lastToken.moveTo(pos);
+                break;
+            default:
+                // nothing
+                break;
+        }
+    }
+
+    ifDebug(log(tokenText(lastToken.type()));)
 
     switch ( lastToken.type() ) {
         ///TODO: sometime in the future we should do skeleton-completion, e.g. after T_IF create something like
@@ -377,6 +410,22 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_THROW:
             m_memberAccessOperation = ExceptionInstanceChoose;
             break;
+        case Parser::Token_REQUIRE:
+        case Parser::Token_REQUIRE_ONCE:
+        case Parser::Token_INCLUDE:
+        case Parser::Token_INCLUDE_ONCE:
+            // check if we can do file completion
+            {
+                const QString existingText = m_text.mid( lastTokenEnd ).append(followingText).trimmed();
+
+                if ( existingText.startsWith('"') || existingText.startsWith('\'') ) {
+                    m_memberAccessOperation = FileChoose;
+                    m_expression = existingText.mid(1);
+                } else {
+                    m_valid = false;
+                }
+            }
+            break;
         default:
             // normal completion is valid
             if ( duContext() && duContext()->type() == DUContext::Class ) {
@@ -390,6 +439,9 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
 
     ifDebug(
         switch ( m_memberAccessOperation ) {
+            case FileChoose:
+                log("FileChoose");
+                break;
             case ExceptionInstanceChoose:
                 log("ExceptionInstanceChoose");
                 break;
@@ -432,6 +484,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     // check whether we need the expression or have everything we need and can return early
     switch ( m_memberAccessOperation ) {
         // these access operations don't need the previous expression evaluated
+        case FileChoose:
         case ClassMemberChoose:
         case InterfaceChoose:
         case NewClassChoose:
@@ -731,7 +784,63 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
 
     typedef QPair<Declaration*, int> DeclarationDepthPair;
 
-    if (memberAccessOperation() == ClassMemberChoose) {
+    if ( memberAccessOperation() == FileChoose ) {
+        // file completion
+        KUrl path = getUrlForBase(m_expression, m_duContext->url().toUrl().upUrl());
+        KUrl base = path;
+        if ( !m_expression.isEmpty() && !m_expression.endsWith('/') ) {
+            base = base.upUrl();
+        }
+        kDebug() << path << base << m_expression;
+        IProject* project = ICore::self()->projectController()->findProjectForUrl(base);
+        if ( project && !abort ) {
+            kDebug() << "found project";
+            QList<KUrl> addedUrls;
+            foreach ( ProjectFolderItem* folder, project->foldersForUrl(base) ) {
+                if ( abort ) {
+                    break;
+                }
+                kDebug() << "found:" << folder->url();
+                foreach ( ProjectFileItem* subFile, folder->fileList() ) {
+                    if ( abort ) {
+                        break;
+                    }
+                    kDebug() << subFile->url();
+                    if ( addedUrls.contains(subFile->url()) ) {
+                        continue;
+                    } else {
+                        addedUrls << subFile->url();
+                    }
+                    IncludeItem item;
+                    item.isDirectory = false;
+                    item.basePath = base;
+                    item.name = subFile->fileName();
+                    kDebug() << item.name << subFile->fileName() << subFile->url().fileName();
+                    items << CompletionTreeItemPointer(new IncludeFileItem(item));
+                }
+                foreach ( ProjectFolderItem* subFolder, folder->folderList() ) {
+                    if ( abort ) {
+                        break;
+                    }
+                    kDebug() << subFolder->url();
+                    if ( addedUrls.contains(subFolder->url()) ) {
+                        continue;
+                    } else {
+                        addedUrls << subFolder->url();
+                    }
+                    IncludeItem item;
+                    item.isDirectory = true;
+                    item.basePath = base;
+                    item.name = subFolder->folderName();
+                    items << CompletionTreeItemPointer(new IncludeFileItem(item));
+                }
+            }
+        }
+
+        kDebug() << "found items:" << items.count();
+
+        return items;
+    } else if (memberAccessOperation() == ClassMemberChoose) {
         // get current class
         if (ClassDeclaration * currentClass = dynamic_cast<ClassDeclaration*>(m_duContext->owner())) {
             // whether we want to show a list of overloadable functions

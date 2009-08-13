@@ -8,11 +8,13 @@ set(completion_SRCS
     worker.cpp
     item.cpp
     implementationitem.cpp
+    includefileitem.cpp
     keyworditem.cpp
     context.cpp
     model.cpp
     helpers.cpp
 )
+
 
 
 kde4_add_library( kdev4phpcompletion SHARED ${completion_SRCS} )
@@ -22,6 +24,7 @@ target_link_libraries(kdev4phpcompletion
     ${KDE4_KTEXTEDITOR_LIBS}
     ${KDEVPLATFORM_INTERFACES_LIBRARY}
     ${KDEVPLATFORM_PROJECT_LIBRARY}
+    ${KDE4_KIO_LIBS}
     kdev4phpduchain
     kdev4phpparser
  )

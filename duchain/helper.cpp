@@ -205,6 +205,9 @@ bool includeExists(const KUrl &url)
 }
 
 KUrl getUrlForBase(const QString &includeFile, const KUrl &baseUrl) {
+    if ( includeFile.isEmpty() ) {
+        return baseUrl;
+    }
     KUrl url = baseUrl;
     if ( includeFile[0] == '/' ) {
         url.setPath(includeFile);
