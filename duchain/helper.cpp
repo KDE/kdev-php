@@ -269,6 +269,9 @@ IndexedString getIncludeFileForNode(UnaryExpressionAst* node, EditorIntegrator* 
         if (scalar && scalar->string != -1) {
             QString str = editor->parseSession()->symbol(scalar->string);
             str = str.mid(1, str.length() - 2);
+            if ( str == "." || str == ".." || str.endsWith('/') ) {
+                return IndexedString();
+            }
             return findIncludeFileUrl(str, editor->currentUrl().toUrl());
         }
     }

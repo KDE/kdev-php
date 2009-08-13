@@ -57,12 +57,14 @@ void IncludeBuilder::visitUnaryExpression(UnaryExpressionAst* node)
         if (scalar && scalar->string != -1) {
             QString str = m_editor->parseSession()->symbol(scalar->string);
             str = str.mid(1, str.length() - 2);
-            IndexedString includeFile = findIncludeFileUrl(str, KUrl(m_document.str()));
-            if (!includeFile.isEmpty()) {
-                m_includes[node] = includeFile;
-            } else {
-                m_badIncludes[node] = str;
+            if ( str != "." && str != ".." && !str.endsWith('/') ) {
+                IndexedString includeFile = findIncludeFileUrl(str, KUrl(m_document.str()));
+                if (!includeFile.isEmpty()) {
+                    m_includes[node] = includeFile;
+                    return;
+                }
             }
+            m_badIncludes[node] = str;
         }
     }
 }
