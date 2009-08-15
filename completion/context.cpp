@@ -835,6 +835,14 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     item.name = subFolder->folderName();
                     items << CompletionTreeItemPointer(new IncludeFileItem(item));
                 }
+                if ( !folder->isProjectRoot() ) {
+                    // expect a parent dir
+                    IncludeItem item;
+                    item.isDirectory = true;
+                    item.basePath = base;
+                    item.name = "..";
+                    items << CompletionTreeItemPointer(new IncludeFileItem(item));
+                }
             }
         }
 
