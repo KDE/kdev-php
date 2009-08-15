@@ -793,21 +793,17 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
             base = base.upUrl();
         }
         base.cleanPath();
-        kDebug() << path << base << m_expression;
         IProject* project = ICore::self()->projectController()->findProjectForUrl(base);
         if ( project && !abort ) {
-            kDebug() << "found project";
             QList<KUrl> addedUrls;
             foreach ( ProjectFolderItem* folder, project->foldersForUrl(base) ) {
                 if ( abort ) {
                     break;
                 }
-                kDebug() << "found:" << folder->url();
                 foreach ( ProjectFileItem* subFile, folder->fileList() ) {
                     if ( abort ) {
                         break;
                     }
-                    kDebug() << subFile->url();
                     if ( addedUrls.contains(subFile->url()) ) {
                         continue;
                     } else {
@@ -823,7 +819,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     if ( abort ) {
                         break;
                     }
-                    kDebug() << subFolder->url();
                     if ( addedUrls.contains(subFolder->url()) ) {
                         continue;
                     } else {
@@ -845,8 +840,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                 }
             }
         }
-
-        kDebug() << "found items:" << items.count();
 
         return items;
     } else if (memberAccessOperation() == ClassMemberChoose) {
