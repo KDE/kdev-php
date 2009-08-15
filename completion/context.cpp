@@ -792,6 +792,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
         if ( !m_expression.isEmpty() && !m_expression.endsWith('/') ) {
             base = base.upUrl();
         }
+        base.cleanPath();
         kDebug() << path << base << m_expression;
         IProject* project = ICore::self()->projectController()->findProjectForUrl(base);
         if ( project && !abort ) {
@@ -816,7 +817,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     item.isDirectory = false;
                     item.basePath = base;
                     item.name = subFile->fileName();
-                    kDebug() << item.name << subFile->fileName() << subFile->url().fileName();
                     items << CompletionTreeItemPointer(new IncludeFileItem(item));
                 }
                 foreach ( ProjectFolderItem* subFolder, folder->folderList() ) {
