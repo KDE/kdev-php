@@ -38,12 +38,13 @@ public:
 
     VariableDeclarationData(const VariableDeclarationData& rhs)
             : KDevelop::DeclarationData(rhs) {
+        m_isSuperglobal = rhs.m_isSuperglobal;
     }
 
     ~VariableDeclarationData() {
     }
 
-bool m_isSuperglobal  : 1;
+bool m_isSuperglobal;
 };
 
 /**
