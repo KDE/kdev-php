@@ -80,7 +80,7 @@ Range CodeCompletionModel::completionRange(View* view, const Cursor &position)
                                     Cursor(range.start().line(), range.start().column()));
         kDebug() << preRange << view->document()->text(preRange);
         const QString contents = view->document()->text(preRange);
-        if ( contents == "$" || contents == "/" ) {
+        if ( contents == "$" ) {
             range.expandToRange(preRange);
             kDebug() << "using custom completion range" << range;
         }
