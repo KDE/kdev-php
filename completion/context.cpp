@@ -145,7 +145,7 @@ public:
     }
 
     /// check whether the current token is prepended by the list of tokens
-    bool prependedBy(const TokenList &list) const {
+    bool prependedBy(const TokenList &list, bool skipWhitespace = false) const {
         // this would be useless, hence forbid it
         Q_ASSERT ( !list.isEmpty() );
 
@@ -155,7 +155,10 @@ public:
         } else {
             uint pos = 1;
             foreach ( const Parser::TokenType& type, list ) {
-                if ( m_stream.token( m_pos - pos ).kind == type ) {
+                if ( skipWhitespace && m_stream.token( m_pos - pos).kind == Parser::Token_WHITESPACE ) {
+                    ++pos;
+                }
+                if ( m_stream.token( m_pos - pos).kind == type ) {
                     ++pos;
                     continue;
                 } else {
@@ -411,6 +414,49 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_THROW:
             m_memberAccessOperation = ExceptionInstanceChoose;
             break;
+        case Parser::Token_CONCAT:
+            // check if we have something like
+            // include dirname(__FILE__) . "/
+            // or eventually
+            ///TODO: include __DIR__ . "/ (php 5.3)
+            {
+            const QString existingText = m_text.mid( lastTokenEnd ).append(followingText).trimmed();
+            if ( ( existingText.startsWith("\"/") || existingText.startsWith("'/") ) &&
+                 lastToken.prependedBy(TokenList() << Parser::Token_RPAREN << Parser::Token_FILE
+                                                   << Parser::Token_LPAREN << Parser::Token_STRING, true) )
+            {
+                // find T_STRING (we skip whitespace)
+                qint64 relPos = -4;
+                while ( lastToken.typeAt(relPos) != Parser::Token_STRING ) {
+                    --relPos;
+                }
+                if ( lastToken.stringAt(relPos).toLower() == "dirname" ) {
+                    --relPos;
+                    if ( lastToken.typeAt(relPos) == Parser::Token_WHITESPACE ) {
+                        --relPos;
+                    }
+                    if ( lastToken.typeAt(relPos) == Parser::Token_LPAREN ) {
+                        --relPos;
+                        if ( lastToken.typeAt(relPos) == Parser::Token_WHITESPACE ) {
+                            --relPos;
+                        }
+                    }
+                    switch ( lastToken.typeAt(relPos) ) {
+                        case Parser::Token_REQUIRE:
+                        case Parser::Token_REQUIRE_ONCE:
+                        case Parser::Token_INCLUDE:
+                        case Parser::Token_INCLUDE_ONCE:
+                            // this really looks like we want to include something :)
+                            m_memberAccessOperation = FileChoose;
+                            m_expression = existingText.mid(2);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            }
+            break;
         case Parser::Token_REQUIRE:
         case Parser::Token_REQUIRE_ONCE:
         case Parser::Token_INCLUDE:
@@ -436,6 +482,10 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 m_memberAccessOperation = NoMemberAccess;
             }
             break;
+    }
+
+    if ( m_memberAccessOperation == NoMemberAccess ) {
+        // hack: check if we actually want to
     }
 
     ifDebug(
@@ -787,6 +837,11 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
     typedef QPair<Declaration*, int> DeclarationDepthPair;
 
     if ( memberAccessOperation() == FileChoose ) {
+        if ( !ICore::self() ) {
+            // in unit tests we can't do anything
+            kDebug() << "no core found";
+            return items;
+        }
         // file completion
         KUrl path = getUrlForBase(m_expression, m_duContext->url().toUrl().upUrl());
         KUrl base = path;

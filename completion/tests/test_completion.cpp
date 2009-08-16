@@ -865,6 +865,26 @@ void TestCompletion::nonGlobalInFunction()
     QVERIFY(!searchDeclaration(tester.items, decs.first()));
 }
 
+void TestCompletion::fileCompletion()
+{
+    TopDUContext* top = parse("<?php ", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    foreach ( const QString& code, QStringList() << "include \"" << "include_once \"" << "require_once \""
+                                                 << "require \"" << "include ( \""
+                                                 << "include dirname(__FILE__) . \"/"
+                                                 << "include ( dirname(__FILE__) . \"/"
+                                                 << "include '" << "include ( '"
+                                                 << "include ( dirname(__FILE__) . '/"
+                                                 /** TODO:  << "include __DIR__ . \"/" */ )
+    {
+        kDebug() << code;
+        PhpCompletionTester tester(top, code);
+        QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::FileChoose);
+    }
+}
+
 }
 
 #include "test_completion.moc"
