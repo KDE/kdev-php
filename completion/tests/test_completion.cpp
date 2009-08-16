@@ -399,20 +399,31 @@ protected:
 
 void TestCompletion::projectFileClass()
 {
-    TopDUContext* addTop = parseAdditionalFile(IndexedString("file:///internal/projecttest0"), "<? class B {} ");
+    TopDUContext* addTop = parseAdditionalFile(IndexedString("file:///internal/projecttest0"), "<? class B { function invisible() {} } ");
     DUChainReleaser releaseAddTop(addTop);
 
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? ?>");
-
-    TopDUContext* top = parse(method, DumpNone, "file:///internal/projecttest1");
+    TopDUContext* top = parse("<?php class foo { function bar() {} }", DumpNone, "file:///internal/projecttest1");
     DUChainReleaser releaseTop(top);
 
     DUChainWriteLocker lock(DUChain::lock());
 
-    CodeCompletionItemTester<TestCodeCompletionContext> tester(top, "<?php ");
-    QVERIFY(searchDeclaration(tester.items, addTop->localDeclarations().first()));
+    {
+        // outside of class foo
+        CodeCompletionItemTester<TestCodeCompletionContext> tester(top, "<?php ");
+        QVERIFY(searchDeclaration(tester.items, addTop->localDeclarations().first()));
+    }
+    {
+        // inside of class foo, i.e. in its bar() method
+        CodeCompletionItemTester<TestCodeCompletionContext> tester(top->childContexts().first()->childContexts().first(), "<?php ");
+
+        kDebug() << tester.names;
+        // we want to see the class
+        QVERIFY(searchDeclaration(tester.items, addTop->localDeclarations().first()));
+        // but not its methods
+        QVERIFY(!searchDeclaration(tester.items, addTop->childContexts().first()->localDeclarations().first()));
+    }
 }
 
 

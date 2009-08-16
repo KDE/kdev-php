@@ -1111,6 +1111,11 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                             QList<Declaration*> decls = top->findDeclarations(foundItems[i].id);
                             foreach(Declaration* decl, decls) {
                                 if (abort) return items;
+                                // we don't want to have class methods, just normal functions
+                                if ( foundItems[i].kind == CodeModelItem::Function &&
+                                     decl->context() && decl->context()->type() == DUContext::Class ) {
+                                    continue;
+                                }
                                 if (!isValidCompletionItem(decl)) continue;
                                 items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), KDevelop::CodeCompletionContext::Ptr(this)));
                             }
