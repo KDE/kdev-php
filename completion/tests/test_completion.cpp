@@ -271,7 +271,7 @@ void TestCompletion::functionCall()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A {} function foo(A $a, $b = null) {}");
+    QByteArray method("<? $outside = 1; class A {} function foo(A $a, $b = null) {}");
 
     TopDUContext* top = parse(method, DumpAll);
     DUChainReleaser releaseTop(top);
@@ -839,6 +839,19 @@ void TestCompletion::outsidePhpContext()
     PhpCompletionTester tester(top, "<?php $var = 1; ?>=");
 
     QVERIFY(tester.items.isEmpty());
+}
+
+void TestCompletion::nonGlobalInFunction()
+{
+    TopDUContext* top = parse("<?php $outside = 1; function test() {}", DumpDUChain);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    PhpCompletionTester tester(top->childContexts().first(), "");
+
+    QList<Declaration*> decs = top->findLocalDeclarations(Identifier("outside"));
+    QCOMPARE(decs.count(), 1);
+    QVERIFY(!searchDeclaration(tester.items, decs.first()));
 }
 
 }

@@ -25,6 +25,7 @@
 #include "helpers.h"
 
 #include "../duchain/helper.h"
+#include "../duchain/variabledeclaration.h"
 
 #include "implementationitem.h"
 #include "keyworditem.h"
@@ -1079,6 +1080,14 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
             DeclarationDepthPair decl = i.previous();
             Declaration* dec = decl.first;
             if (dec->kind() == Declaration::Instance) {
+                // filter non-superglobal vars of other contexts
+                if (dec->context() != m_duContext.data()) {
+                    VariableDeclaration* vDec = dynamic_cast<VariableDeclaration*>(dec);
+                    if ( vDec && !vDec->isSuperglobal() ) {
+                        continue;
+                    }
+                }
+
                 if (existingIdentifiers.contains(dec->indexedIdentifier().getIndex())) continue;
                 existingIdentifiers.insert(dec->indexedIdentifier().getIndex());
             }

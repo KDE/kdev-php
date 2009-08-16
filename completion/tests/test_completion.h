@@ -74,6 +74,7 @@ private slots:
     void completionAfterHashComment();
     void phpStartTag();
     void outsidePhpContext();
+    void nonGlobalInFunction();
 };
 
 }
