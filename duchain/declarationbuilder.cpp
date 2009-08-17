@@ -405,6 +405,8 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
                                                 const QualifiedIdentifier& identifier,
                                                 AstNode* node )
 {
+    DUChainWriteLocker lock(DUChain::lock());
+
     // check for redeclaration of private or protected stuff
     {
         // only interesting context might be the class context when we are inside a method
@@ -668,6 +670,23 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
     DeclarationBuilderBase::closeDeclaration();
 }
 
+DUContext* getClassContext(const QualifiedIdentifier &identifier, DUContext* currentCtx) {
+    if ( identifier == QualifiedIdentifier("this") ) {
+        if ( currentCtx->parentContext() && currentCtx->parentContext()->type() == DUContext::Class ) {
+            return currentCtx->parentContext();
+        }
+    } else {
+        DUChainReadLocker lock(DUChain::lock());
+        foreach( Declaration* parent, currentCtx->topContext()->findDeclarations(identifier) ) {
+            if ( StructureType::Ptr ctype = parent->type<StructureType>() ) {
+                return ctype->internalContext(currentCtx->topContext());
+            }
+        }
+        ///TODO: if we can't find anything here we might have to use the findDeclarationImport helper
+    }
+    return 0;
+}
+
 ///TODO: we need to handle assignment to array-members properly
 ///      currently we just make sure the the array is declared, but don't know
 ///      anything about its contents
@@ -689,25 +708,8 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
         if ( !m_variableParent.isEmpty() ) {
             // assignment to class members
 
-            DUChainWriteLocker lock(DUChain::lock());
-
-            // get parent class context
-            DUContext* parentCtx = 0;
-            if ( m_variableParent == QualifiedIdentifier("this") ) {
-                if ( currentContext()->parentContext() && currentContext()->parentContext()->type() == DUContext::Class ) {
-                    parentCtx = currentContext()->parentContext();
-                }
-            } else {
-                foreach( Declaration* parent, currentContext()->topContext()->findDeclarations(m_variableParent) ) {
-                    if ( StructureType::Ptr ctype = parent->type<StructureType>() ) {
-                        parentCtx = ctype->internalContext(currentContext()->topContext());
-                        break;
-                    }
-                }
-            }
-
-            if ( parentCtx ) {
-                declareClassMember(parentCtx, type, m_variable, m_variableNode );
+            if ( DUContext* ctx = getClassContext(m_variableParent, currentContext()) ) {
+                declareClassMember(ctx, type, m_variable, m_variableNode);
             }
         } else {
             // assigment to other variables
@@ -802,16 +804,11 @@ void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParam
             // http://de.php.net/manual/en/language.references.whatdo.php
             ///TODO: support something like: foo($var[0])
             if ( !m_variableIsArray ) {
-                DUContext *ctx;
+                DUContext *ctx = 0;
                 if ( m_variableParent.isEmpty() ) {
                     ctx = currentContext();
                 } else {
-                    ClassDeclaration* cdec = dynamic_cast<ClassDeclaration*>(
-                        findDeclarationImport(ClassDeclarationType, m_variableParent, 0)
-                    );
-                    if ( cdec ) {
-                        ctx = cdec->internalContext();
-                    }
+                    ctx = getClassContext(m_variableParent, currentContext());
                 }
                 if ( ctx ) {
                     bool isDeclared = false;

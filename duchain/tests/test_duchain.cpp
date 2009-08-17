@@ -1823,6 +1823,7 @@ void TestDUChain::testImplicitArrayDeclaration()
 
 void TestDUChain::testImplicitReferenceDeclaration()
 {
+    {
     //               0         1         2         3         4         5         6         7
     //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray code("<? function asdf(&$foo) {} asdf($bar);");
@@ -1836,6 +1837,30 @@ void TestDUChain::testImplicitReferenceDeclaration()
     QVERIFY(decs.first()->type<IntegralType>());
     kDebug() << decs.first()->type<IntegralType>()->dataType() << decs.first()->toString();
     QVERIFY(decs.first()->type<IntegralType>()->dataType() == IntegralType::TypeNull);
+    }
+
+    {
+    // a user reported a crash with the code example below
+
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray code("<? function test(&$p) {} class foo{ private $a; function test() {test($this->a);}  }");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY( top->childContexts().last()->localScopeIdentifier() == QualifiedIdentifier("foo"));
+
+    // a is already declared
+    QList<Declaration*> decs = top->childContexts().last()->findDeclarations(Identifier("a"));
+    QCOMPARE(decs.size(), 1);
+    ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
+    QVERIFY(cmdec);
+    QVERIFY(cmdec->type<IntegralType>());
+
+    kDebug() << cmdec->type<IntegralType>()->dataType() << cmdec->toString();
+    QVERIFY(cmdec->type<IntegralType>()->dataType() == IntegralType::TypeMixed);
+    }
 }
 
 void TestDUChain::testClassContextRange()
