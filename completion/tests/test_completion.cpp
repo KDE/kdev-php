@@ -113,8 +113,8 @@ typedef CodeCompletionItemTester<CodeCompletionContext> BasePhpCompletionTester;
 class PhpCompletionTester : public BasePhpCompletionTester
 {
 public:
-    PhpCompletionTester(DUContext* context, QString text = "; ")
-        : BasePhpCompletionTester(context, text.startsWith("<?") ? text : text.prepend("<?php "))
+    PhpCompletionTester(DUContext* context, QString text = "; ", QString followingText = "")
+        : BasePhpCompletionTester(context, text.startsWith("<?") ? text : text.prepend("<?php "), followingText)
     {
     }
 };
@@ -846,12 +846,13 @@ void TestCompletion::completionInComments()
 
 void TestCompletion::phpStartTag()
 {
-    TopDUContext* top = parse("<?php\n", DumpAll);
+    // some context with a function (or anything else for that matter) starting with "php" substring
+    TopDUContext* top = parse("<?php function php_test() {} \n", DumpAll);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    foreach ( const QString &code, QStringList() << "<?p" << "<?ph" << "<?php" ) {
-        PhpCompletionTester tester(top, code);
+    foreach ( const QString &code, QStringList() << "p" << "ph" << "php" ) {
+        PhpCompletionTester tester(top, "<?", code);
 
         QVERIFY(tester.items.isEmpty());
     }

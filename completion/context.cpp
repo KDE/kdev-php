@@ -378,10 +378,11 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             }
             }
             break;
-        case Parser::Token_STRING:
-            // don't do completion if no whitespace is given or
-            if ( !lastWasWhitespace && lastToken.typeAt(-1) == Parser::Token_OPEN_TAG ) {
-                ifDebug(log("no completion because string is prepended by <?");)
+        case Parser::Token_OPEN_TAG:
+            // don't do completion if no whitespace is given and there is some text following,
+            // esp. for stuff like <?php <?ph <?p
+            if ( !lastWasWhitespace && !followingText.isEmpty() ) {
+                ifDebug(log("no completion because <? is followed by" + followingText));
                 m_valid = false;
             } else {
                 // else just do normal completion
