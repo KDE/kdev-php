@@ -218,6 +218,14 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         lastToken.pop();
     }
 
+    // when the text after the current token starts with /* we are inside
+    // a multi line comment => don't offer completion
+    if ( m_text.mid( lastTokenEnd, 2 ) == "/*" ) {
+        ifDebug(log("no completion in comments"));
+        m_valid = false;
+        return;
+    }
+
     ifDebug(log(tokenText(lastToken.type()));)
 
     ///TODO: REFACTOR: push some stuff into its own methods
@@ -284,6 +292,15 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_ARRAY:
             ifDebug(log("no completion after this token");)
             m_valid = false;
+            break;
+        case Parser::Token_COMMENT:
+            // don't offer code completion in comments, i.e. single line comments that don't end on \n
+            // multi-line comments are handled above
+            if ( !lastWasWhitespace && !lastToken.stringAt(0).endsWith('\n')
+                    && !lastToken.stringAt(0).startsWith("/*") ) {
+                ifDebug(log("no completion in comments");)
+                m_valid = false;
+            }
             break;
         case Parser::Token_EXTENDS:
             if ( lastToken.prependedBy(TokenList() << Parser::Token_WHITESPACE << Parser::Token_STRING

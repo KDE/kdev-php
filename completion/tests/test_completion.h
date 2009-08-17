@@ -71,7 +71,8 @@ private slots:
     void updateImplements();
     void avoidCircularInheritance();
     void unsureType();
-    void completionAfterHashComment();
+    void completionAfterComments();
+    void completionInComments();
     void phpStartTag();
     void outsidePhpContext();
     void nonGlobalInFunction();

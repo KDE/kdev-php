@@ -810,18 +810,38 @@ void TestCompletion::unsureType()
     }
 }
 
-void TestCompletion::completionAfterHashComment()
+void TestCompletion::completionAfterComments()
 {
     TopDUContext* top = parse("<?php\n", DumpAll);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "<?php\n# SOMECOMMENT\n");
+    foreach ( const QString &code, QStringList() << "# asdf\n"
+                                    << "// asdf\n"
+                                    << "/* */" )
+    {
+        PhpCompletionTester tester(top, code);
 
-    kDebug() << tester.names;
-    QVERIFY(tester.items.count() > 0);
+        kDebug() << tester.names;
+        QVERIFY(tester.completionContext->isValid());
+        QVERIFY(tester.items.count() > 0);
+    }
 
     // TODO: compare to global completion list
+}
+
+void TestCompletion::completionInComments()
+{
+    TopDUContext* top = parse("<?php\n", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    foreach ( const QString &code, QStringList() << "# "
+                                    << "// " << "/* " )
+    {
+        PhpCompletionTester tester(top, code);
+        QVERIFY(!tester.completionContext->isValid());
+    }
 }
 
 void TestCompletion::phpStartTag()
