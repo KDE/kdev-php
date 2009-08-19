@@ -106,185 +106,7 @@ $existingFunctions = array();
 foreach ($dirs as $dir) {
     $dirIt = new RecursiveIteratorIterator( new RecursiveDirectoryIterator($_SERVER['argv'][1].'/'.$dir));
     foreach ($dirIt as $file) {
-        if (substr($file->getFilename(), -4) != '.xml') continue;
-        if (substr($file->getFilename(), 0, 9) == 'entities.') continue;
-        $string = file_get_contents($file->getPathname());
-        $string = preg_replace('#<!\\[CDATA\\[.*?\\]\\]>#s', '', $string);
-        $string = preg_replace('#&[A-Za-z\\.0-9-_]+;#', '', $string);
-        $removeSections = array();
-        $removeSections[] = 'apd.installwin32';
-        $removeSections[] = 'intl.intldateformatter-constants.calendartypes';
-        foreach ($removeSections as $i) {
-            $string = preg_replace('#'.preg_quote('<section xml:id="'.$i.'">').'.*?</section>#s', '', $string);
-        }
-        $xml = new SimpleXMLElement($string);
-        $xml->registerXPathNamespace('db', 'http://docbook.org/ns/docbook');
-        $xml->registerXPathNamespace('phpdoc', 'http://php.net/ns/phpdoc');
-        if ($vars = $xml->xpath('//phpdoc:varentry//db:refnamediv')) {
-            foreach ($vars as $var) {
-                foreach ($var->refname as $i) {
-                    $i = (string)$i;
-                    if ( isset($variables[$i]) ) {
-                        $v = $variables[$i];
-                    } else {
-                        $v = array();
-                    }
-                    if (substr($i, 0, 1) != '$') continue;
-
-                    if (substr($i, -13) == ' [deprecated]') {
-                        $i = substr($i, 0, -13);
-                        $v['deprecated'] = true;
-                    } else {
-                        $v['deprecated'] = false;
-                    }
-                    $v['desc'] = (string)$var->refpurpose;
-                    $variables[$i] = $v;
-                }
-            }
-        }
-        if ($vars = $xml->xpath("//phpdoc:varentry[@xml:id='language.variables.superglobals']//db:member/db:varname")) {
-            foreach ($vars as $var) {
-                $variables[(string)$var]['superglobal'] = true;
-            }
-        }
-        if (isset($xml->variablelist)) {
-            foreach ($xml->variablelist->varlistentry as $i=>$varlistentry) {
-                if ($c = (string)$varlistentry->term->constant) {
-                    if (!isset($constants[$c])) {
-                        if (strpos($c, '=')) {
-                            $c = substr($c, 0, strpos($c, '='));
-                        }
-                        $ctype = $varlistentry->term->type;
-                        if (!$ctype) {
-                            $ctype = $varlistentry->term->link;
-                        }
-                        $constants[$c] = (string)$ctype;
-                    }
-                }
-            }
-        }
-        // handle constants.xml with different layout as those above
-        if ( !isset($xml->variablelist) && $file->getFilename() == 'constants.xml' && $xml->xpath("//db:constant") ) {
-            $consts = $xml->xpath("//db:entry");
-            foreach ( $consts as $i=>$p ) {
-                if ( isset($p->constant) ) {
-                    if ( !isset($p->type) ) {
-                        // default to integer constants
-                        $p->type = 'integer';
-                    } else {
-                        // check for comment
-                        // next entry is the value of the constant which is followed by the comment
-                        if ( isset($consts[$i+2]) && !$consts[$i+2]->children() ) {
-                            $comment = (string)$consts[$i+2];
-                            if ( !empty($comment) ) {
-                                $constants_comments[(string)$p->constant] = $comment;
-                            }
-                        }
-                    }
-                    $constants[(string)$p->constant] = (string)$p->type;
-                }
-            }
-        }
-        if ($list = $xml->xpath('//db:sect2[starts-with(@xml:id, "reserved.classes")]/db:variablelist/db:varlistentry')) {
-            foreach ($list as $l) {
-                if (!isset($classes[(string)$l->term->classname])) {
-                    $classes[(string)$l->term->classname] = array('functions'=>array());
-                }
-                $classes[(string)$l->term->classname]['desc'] = trim(strip_tags($l->listitem->asXML()));
-            }
-        }
-        $cEls = $xml->xpath('//db:classsynopsis/db:classsynopsisinfo');
-        if ($cEls) {
-            foreach ($cEls as $class) {
-                $class->registerXPathNamespace('db', 'http://docbook.org/ns/docbook');
-                $className = (string)$class->ooclass->classname;
-                if (!$className) continue;
-                if (!isset($classes[$className])) {
-                    $classes[$className] = array('functions'=>array());
-                }
-                if ($extends = $class->xpath('//db:ooclass')) {
-                    foreach ($extends as $c) {
-                        if ($c->modifier == 'extends') {
-                            $classes[$className]['extends'] = (string)$c->classname;
-                        }
-                    }
-                }
-                if ($interfaces = $class->xpath('//db:oointerface/db:interfacename')) {
-                    foreach ($interfaces as $if) {
-                        $classes[$className]['implements'][] = (string)$if;
-                    }
-                }
-            }
-        }
-        if (!isset($xml->refsect1)) continue;
-        if (isset($xml->refsect1->methodsynopsis)) {
-            $methodsynopsis = $xml->refsect1->methodsynopsis;
-            $function = (string)$methodsynopsis->methodname;
-            $class = 'global';
-        } else if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->methodsynopsis)) {
-            $methodsynopsis = $xml->refsect1->classsynopsis->methodsynopsis;
-            $class = (string)$xml->refsect1->classsynopsis->ooclass->classname;
-            $function = (string)$methodsynopsis->methodname;
-        } else {
-            continue;
-        }
-        if (strpos($function, '::')) {
-            $class = substr($function, 0, strpos($function, '::'));
-            $function = substr($function, strpos($function, '::')+2);
-        } else if (strpos($function, '->')) {
-            $class = substr($function, 0, strpos($function, '->'));
-            $function = substr($function, strpos($function, '->')+2);
-        } else {
-            if ($function == '__halt_compiler') continue;
-            if ($function == 'exit') continue;
-            if ($function == 'die') continue;
-            if ($function == 'eval') continue;
-            if ($function == 'echo') continue;
-            if ($function == 'print') continue;
-            if ($function == 'array') continue;
-            if ($function == 'list') continue;
-            if ($function == 'isset') continue;
-            if ($function == 'unset') continue;
-            if ($function == 'empty') continue;
-        }
-        if (strpos($function, '-')) continue;
-        if (strpos($class, '-')) continue;
-        if ($function == 'isSet') continue; //todo: bug in lexer
-        if ($function == 'clone') continue; //todo: bug in lexer
-        if (substr($class, 0, 3) == 'DOM') $class = 'Dom'.substr($class, 3);
-        $class = trim($class);
-        if ($class == 'imagick') $class = 'Imagick';
-        if (in_array($class.'::'.$function, $existingFunctions)) continue;
-        $existingFunctions[] = $class.'::'.$function;
-
-        $params = array();
-        foreach ($methodsynopsis->methodparam as $param) {
-            $paramName = $param->parameter;
-            if (trim($paramName) == '...') continue;
-            if (!trim($paramName)) continue;
-            $paramName = str_replace('/', '', $paramName);
-            $paramName = str_replace('-', '', $paramName);
-            $paramName = trim(trim(trim($paramName), '*'), '&');
-            if (is_numeric(substr($paramName, 0, 1))) $paramName = '_'.$paramName;
-            $params[] = array(
-                'name' => $paramName,
-                'type' => (string)$param->type,
-                'isRef' => isset($param->parameter->attributes()->role) ? ($param->parameter->attributes()->role == "reference") : false
-            );
-        }
-        $desc = strip_tags($xml->refsect1->para->asXML());
-        $desc = trim($desc);
-        $desc = preg_replace('#  +#', ' ', $desc);
-        $desc = preg_replace('#^ #m', '', $desc);
-        if (!isset($classes[$class])) {
-            $classes[$class] = array('functions'=>array());
-        }
-        $classes[$class]['functions'][] = array(
-            'name' => $function,
-            'params' => $params,
-            'type' => (string)$methodsynopsis->type,
-            'desc' => $desc
-        );
+        parseFile($file);
     }
 }
 
@@ -451,3 +273,193 @@ file_put_contents("phpfunctions.php", $out);
 echo "created phpfunctions.php...\n";
 
 echo "wrote ".$declarationCount." declarations\n";
+
+/**
+ * Parse file
+ *
+ * @param   SplFileInfo  $file  File handler
+ * @return  bool
+ */
+function parseFile($file, $funcOverload="") {
+global $existingFunctions, $constants, $constants_comments, $variables, $classes;
+    if (substr($file->getFilename(), -4) != '.xml') return false;
+    if (substr($file->getFilename(), 0, 9) == 'entities.') return false;
+    $string = file_get_contents($file->getPathname());
+    $string = preg_replace('#<!\\[CDATA\\[.*?\\]\\]>#s', '', $string);
+    $string = preg_replace('#&[A-Za-z\\.0-9-_]+;#', '', $string);
+    $removeSections = array();
+    $removeSections[] = 'apd.installwin32';
+    $removeSections[] = 'intl.intldateformatter-constants.calendartypes';
+    foreach ($removeSections as $i) {
+        $string = preg_replace('#'.preg_quote('<section xml:id="'.$i.'">').'.*?</section>#s', '', $string);
+    }
+    $xml = new SimpleXMLElement($string);
+    $xml->registerXPathNamespace('db', 'http://docbook.org/ns/docbook');
+    $xml->registerXPathNamespace('phpdoc', 'http://php.net/ns/phpdoc');
+    if ($vars = $xml->xpath('//phpdoc:varentry//db:refnamediv')) {
+        foreach ($vars as $var) {
+            foreach ($var->refname as $i) {
+                $i = (string)$i;
+                if ( isset($variables[$i]) ) {
+                    $v = $variables[$i];
+                } else {
+                    $v = array();
+                }
+                if (substr($i, 0, 1) != '$') continue;
+
+                if (substr($i, -13) == ' [deprecated]') {
+                    $i = substr($i, 0, -13);
+                    $v['deprecated'] = true;
+                } else {
+                    $v['deprecated'] = false;
+                }
+                $v['desc'] = (string)$var->refpurpose;
+                $variables[$i] = $v;
+            }
+        }
+    }
+    if ($vars = $xml->xpath("//phpdoc:varentry[@xml:id='language.variables.superglobals']//db:member/db:varname")) {
+        foreach ($vars as $var) {
+            $variables[(string)$var]['superglobal'] = true;
+        }
+    }
+    if (isset($xml->variablelist)) {
+        foreach ($xml->variablelist->varlistentry as $i=>$varlistentry) {
+            if ($c = (string)$varlistentry->term->constant) {
+                if (!isset($constants[$c])) {
+                    if (strpos($c, '=')) {
+                        $c = substr($c, 0, strpos($c, '='));
+                    }
+                    $ctype = $varlistentry->term->type;
+                    if (!$ctype) {
+                        $ctype = $varlistentry->term->link;
+                    }
+                    $constants[$c] = (string)$ctype;
+                }
+            }
+        }
+    }
+    // handle constants.xml with different layout as those above
+    if ( !isset($xml->variablelist) && $file->getFilename() == 'constants.xml' && $xml->xpath("//db:constant") ) {
+        $consts = $xml->xpath("//db:entry");
+        foreach ( $consts as $i=>$p ) {
+            if ( isset($p->constant) ) {
+                if ( !isset($p->type) ) {
+                    // default to integer constants
+                    $p->type = 'integer';
+                } else {
+                    // check for comment
+                    // next entry is the value of the constant which is followed by the comment
+                    if ( isset($consts[$i+2]) && !$consts[$i+2]->children() ) {
+                        $comment = (string)$consts[$i+2];
+                        if ( !empty($comment) ) {
+                            $constants_comments[(string)$p->constant] = $comment;
+                        }
+                    }
+                }
+                $constants[(string)$p->constant] = (string)$p->type;
+            }
+        }
+    }
+    if ($list = $xml->xpath('//db:sect2[starts-with(@xml:id, "reserved.classes")]/db:variablelist/db:varlistentry')) {
+        foreach ($list as $l) {
+            if (!isset($classes[(string)$l->term->classname])) {
+                $classes[(string)$l->term->classname] = array('functions'=>array());
+            }
+            $classes[(string)$l->term->classname]['desc'] = trim(strip_tags($l->listitem->asXML()));
+        }
+    }
+    $cEls = $xml->xpath('//db:classsynopsis/db:classsynopsisinfo');
+    if ($cEls) {
+        foreach ($cEls as $class) {
+            $class->registerXPathNamespace('db', 'http://docbook.org/ns/docbook');
+            $className = (string)$class->ooclass->classname;
+            if (!$className) continue;
+            if (!isset($classes[$className])) {
+                $classes[$className] = array('functions'=>array());
+            }
+            if ($extends = $class->xpath('//db:ooclass')) {
+                foreach ($extends as $c) {
+                    if ($c->modifier == 'extends') {
+                        $classes[$className]['extends'] = (string)$c->classname;
+                    }
+                }
+            }
+            if ($interfaces = $class->xpath('//db:oointerface/db:interfacename')) {
+                foreach ($interfaces as $if) {
+                    $classes[$className]['implements'][] = (string)$if;
+                }
+            }
+        }
+    }
+    if (!isset($xml->refsect1)) return false;
+    if (isset($xml->refsect1->methodsynopsis)) {
+        $methodsynopsis = $xml->refsect1->methodsynopsis;
+        $function = (string)$methodsynopsis->methodname;
+        $class = 'global';
+    } else if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->methodsynopsis)) {
+        $methodsynopsis = $xml->refsect1->classsynopsis->methodsynopsis;
+        $class = (string)$xml->refsect1->classsynopsis->ooclass->classname;
+        $function = (string)$methodsynopsis->methodname;
+    } else {
+        return false;
+    }
+    if (strpos($function, '::')) {
+        $class = substr($function, 0, strpos($function, '::'));
+        $function = substr($function, strpos($function, '::')+2);
+    } else if (strpos($function, '->')) {
+        $class = substr($function, 0, strpos($function, '->'));
+        $function = substr($function, strpos($function, '->')+2);
+    } else {
+        if ($function == '__halt_compiler') return false;
+        if ($function == 'exit') return false;
+        if ($function == 'die') return false;
+        if ($function == 'eval') return false;
+        if ($function == 'echo') return false;
+        if ($function == 'print') return false;
+        if ($function == 'array') return false;
+        if ($function == 'list') return false;
+        if ($function == 'isset') return false;
+        if ($function == 'unset') return false;
+        if ($function == 'empty') return false;
+    }
+    if (strpos($function, '-')) return false;
+    if (strpos($class, '-')) return false;
+    if ($function == 'isSet') return false; //todo: bug in lexer
+    if ($function == 'clone') return false; //todo: bug in lexer
+    if (substr($class, 0, 3) == 'DOM') $class = 'Dom'.substr($class, 3);
+    $class = trim($class);
+    if ($class == 'imagick') $class = 'Imagick';
+    if (in_array($class.'::'.$function, $existingFunctions)) return false;
+    $existingFunctions[] = $class.'::'.$function;
+
+    $params = array();
+    foreach ($methodsynopsis->methodparam as $param) {
+        $paramName = $param->parameter;
+        if (trim($paramName) == '...') continue;
+        if (!trim($paramName)) continue;
+        $paramName = str_replace('/', '', $paramName);
+        $paramName = str_replace('-', '', $paramName);
+        $paramName = trim(trim(trim($paramName), '*'), '&');
+        if (is_numeric(substr($paramName, 0, 1))) $paramName = '_'.$paramName;
+        $params[] = array(
+            'name' => $paramName,
+            'type' => (string)$param->type,
+            'isRef' => isset($param->parameter->attributes()->role) ? ($param->parameter->attributes()->role == "reference") : false
+        );
+    }
+    $desc = strip_tags($xml->refsect1->para->asXML());
+    $desc = trim($desc);
+    $desc = preg_replace('#  +#', ' ', $desc);
+    $desc = preg_replace('#^ #m', '', $desc);
+    if (!isset($classes[$class])) {
+        $classes[$class] = array('functions'=>array());
+    }
+    $classes[$class]['functions'][] = array(
+        'name' => $function,
+        'params' => $params,
+        'type' => (string)$methodsynopsis->type,
+        'desc' => $desc
+    );
+    return true;
+} // end of function parseFile()
