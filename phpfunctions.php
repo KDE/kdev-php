@@ -1102,6 +1102,39 @@ interface SplSubject
 
 
 
+/** @ingroup SPL
+ * @brief   An infinite Iterator
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.1
+ *
+ * This Iterator takes another Iterator and infinitvely iterates it by
+ * rewinding it when its end is reached.
+ *
+ * \note Even an InfiniteIterator stops if its inner Iterator is empty.
+ *
+ \verbatim
+ $it       = new ArrayIterator(array(1,2,3));
+ $infinite = new InfiniteIterator($it);
+ $limit    = new LimitIterator($infinite, 0, 5);
+ foreach($limit as $val=>$key)
+ {
+     echo "$val=>$key\n";
+ }
+ \endverbatim
+ */
+class InfiniteIterator extends IteratorIterator
+{
+    /** Move the inner Iterator forward to its next element or rewind it.
+     * @return void
+     */
+    function next(){}
+}
+
+
+
+
+
 /**
  * @brief   Regular expression filter for iterators
  * @author  Marcus Boerger
@@ -1241,6 +1274,365 @@ class RecursiveCachingIterator extends CachingIterator implements RecursiveItera
 
 
 
+/**
+ * @brief   Iterates through recursive iterators
+ * @author  Marcus Boerger
+ * @version 1.2
+ * @since PHP 5.0
+ *
+ * The objects of this class are created by instances of RecursiveIterator. 
+ * Elements of those iterators may be traversable themselves. If so these 
+ * sub elements are recursed into.
+ */
+class RecursiveIteratorIterator implements OuterIterator
+{
+    /** Mode: Only show leaves */
+    const LEAVES_ONLY         = 0;
+    /** Mode: Show parents prior to their children */
+    const SELF_FIRST        = 1;
+    /** Mode: Show all children prior to their parent */
+    const CHILD_FIRST        = 2;
+
+    /** Flag: Catches exceptions during getChildren() calls and simply jumps
+     * to the next element. */
+    const CATCH_GET_CHILD    = 0x00000002;
+
+    private $ait = array();
+    private $count = 0;
+    private $mode  = self::LEAVES_ONLY;
+    private $flags = 0;
+
+    /** Construct from RecursiveIterator
+     *
+     * @param it     RecursiveIterator to iterate
+     * @param mode   Operation mode (one of):
+     *               - LEAVES_ONLY only show leaves
+     *               - SELF_FIRST  show parents prior to their childs
+     *               - CHILD_FIRST show all children prior to their parent
+     * @param flags  Control flags, zero or any combination of the following
+     *               (since PHP 5.1).
+     *               - CATCH_GET_CHILD which catches exceptions during
+     *                 getChildren() calls and simply jumps to the next 
+     *                 element.
+     */
+    function __construct(RecursiveIterator $it, $mode = self::LEAVES_ONLY, $flags = 0){}
+
+    /** Rewind to top iterator as set in constructor
+     */
+    function rewind(){}
+    
+    /** @return whether iterator is valid
+     */
+    function valid(){}
+    
+    /** @return current key
+     */
+    function key(){}
+    
+    /** @return current element
+     */
+    function current(){}
+    
+    /** Forward to next element
+     */
+    function next(){}
+
+    /** @return Sub Iterator at given level or if unspecified the current sub 
+     *          Iterator
+     */
+    function getSubIterator($level = NULL){}
+
+    /**
+     * @return The inner iterator
+     */    
+    function getInnerIterator(){}
+
+    /** @return Current Depth (Number of parents)
+     */
+    function getDepth(){}
+
+    /** @return whether current sub iterators current element has children
+     * @since PHP 5.1
+     */
+    function callHasChildren(){}
+
+    /** @return current sub iterators current children
+     * @since PHP 5.1
+     */
+    function callGetChildren(){}
+
+    /** Called right after calling getChildren() and its rewind().
+     * @since PHP 5.1
+     */
+    function beginChildren(){}
+
+    private function callNextElement($after_move){}
+    
+    /** Called when the next element is available
+     */
+    function nextElement()
+    {
+    }
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   An Iterator wrapper that doesn't call rewind
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.1
+ */
+class NoRewindIterator extends IteratorIterator
+{
+    /** Simply prevent execution of inner iterators rewind().
+     */
+    function rewind(){}
+}
+
+
+
+
+
+/** @brief seekable iterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.0
+ *
+ * Turns a normal iterator ino a seekable iterator. When there is a way
+ * to seek on an iterator LimitIterator can use this to efficiently rewind
+ * to offset.
+ */
+interface SeekableIterator extends Iterator
+{
+    /** Seek to an absolute position
+     *
+     * \param $index position to seek to
+     * \return void
+     *
+     * The method should throw an exception if it is not possible to seek to 
+     * the given position. Typically this exception should be of type 
+     * OutOfBoundsException.
+     \code
+    function seek($index);
+        $this->rewind();
+        $position = 0;
+        while($position < $index && $this->valid()) {
+            $this->next();
+            $position++;
+        }
+        if (!$this->valid()) {
+            throw new OutOfBoundsException('Invalid seek position');
+        }
+    }
+     \endcode
+     */
+    function seek($index);
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   Iterator that iterates over several iterators one after the other
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ */
+class AppendIterator implements OuterIterator
+{
+    /** @internal array of inner iterators */
+    private $iterators;
+
+    /** Construct an empty AppendIterator
+     */
+    function __construct(){}
+
+    /** Append an Iterator
+     * @param $it Iterator to append
+     *
+     * If the current state is invalid but the appended iterator is valid
+     * the the AppendIterator itself becomes valid. However there will be no
+     * call to $it->rewind(). Also if the current state is invalid the inner
+     * ArrayIterator will be rewound und forwarded to the appended element.
+     */    
+    function append(Iterator $it){}
+
+    /** @return the current inner Iterator
+     */
+    function getInnerIterator(){}
+
+    /** Rewind to the first element of the first inner Iterator.
+     * @return void
+     */
+    function rewind(){}
+
+    /** @return whether the current element is valid
+      */
+    function valid(){}
+
+    /** @return the current value if it is valid or \c NULL
+     */
+    function current(){}
+
+    /** @return the current key if it is valid or \c NULL
+     */
+    function key(){}
+
+    /** Move to the next element. If this means to another Iterator that 
+     * rewind that Iterator.
+     * @return void
+     */
+    function next(){}
+
+    /** Aggregates the inner iterator
+     */    
+    function __call($func, $params){}
+}
+
+
+
+
+
+/**
+ * @brief   Interface for recursive iteration with RecursiveIteratorIterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.0
+ */
+interface RecursiveIterator extends Iterator
+{
+    /** @return whether the current element has children
+     */
+    function hasChildren();
+    
+    /** @return the sub iterator for the current element
+     * @note The returned object must implement RecursiveIterator.
+     */
+    function getChildren();
+}
+
+
+
+
+
+/**
+ * @brief   Limited Iteration over another Iterator
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.0
+ *
+ * A class that starts iteration at a certain offset and only iterates over
+ * a specified amount of elements.
+ *
+ * This class uses SeekableIterator::seek() if available and rewind() plus
+ * a skip loop otehrwise.
+ */
+class LimitIterator implements OuterIterator
+{
+    private $it;
+    private $offset;
+    private $count;
+    private $pos;
+
+    /** Construct
+     *
+     * @param it     Iterator to limit
+     * @param offset Offset to first element
+     * @param count  Maximum number of elements to show or -1 for all
+     */
+    function __construct(Iterator $it, $offset = 0, $count = -1){}
+    
+    /** Seek to specified position
+     * @param position offset to seek to (relative to beginning not offset
+     *                 specified in constructor).
+     * @throw exception when position is invalid
+     */
+    function seek($position){}
+
+    /** Rewind to offset specified in constructor
+     */
+    function rewind(){}
+    
+    /** @return whether iterator is valid
+     */
+    function valid(){}
+    
+    /** @return current key
+     */
+    function key(){}
+
+    /** @return current element
+     */
+    function current(){}
+
+    /** Forward to nect element
+     */
+    function next(){}
+
+    /** @return current position relative to zero (not to offset specified in 
+     *          constructor).
+     */
+    function getPosition(){}
+
+    /**
+     * @return The inner iterator
+     */    
+    function getInnerIterator(){}
+
+    /** Aggregate the inner iterator
+     *
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
+     */
+    function __call($func, $params){}
+}
+
+
+
+
+
+/**
+ * @brief   Interface to access the current inner iteraor of iterator wrappers
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ */
+interface OuterIterator extends Iterator
+{
+    /** @return inner iterator
+     */
+    function getInnerIterator();
+}
+
+
+
+
+
+/**
+ * @brief   Iterator to filter parents
+ * @author  Marcus Boerger
+ * @version 1.2
+ * @since PHP 5.1
+ *
+ * This extended FilterIterator allows a recursive iteration using 
+ * RecursiveIteratorIterator that only shows those elements which have 
+ * children.
+ */
+class ParentIterator extends RecursiveFilterIterator
+{
+    /** @return whetehr the current element has children
+     */
+    function accept(){}
+}
+
+
+
+
+
 /** @ingroup SPL
  * @brief Basic Iterator wrapper
  * @since PHP 5.1
@@ -1319,30 +1711,30 @@ class IteratorIterator implements OuterIterator
 
 
 
-/** @ingroup SPL
- * @brief   Iterator to filter recursive iterators
+/**
+ * @brief   Recursive regular expression filter for iterators
  * @author  Marcus Boerger
  * @version 1.0
  * @since PHP 5.1
  *
- * Passes the RecursiveIterator interface to the inner Iterator and provides
- * the same functionality as FilterIterator. This allows you to skip parents
- * and all their childs before loading them all. You need to care about
- * function getChildren() because it may not always suit your needs. The 
- * builtin behavior uses reflection to return a new instance of the exact same
- * class it is called from. That is you extend RecursiveFilterIterator and
- * getChildren() will create instance of that class. The problem is that doing
- * this does not transport any state or control information of your accept()
- * implementation to the new instance. To overcome this problem you might 
- * need to overwrite getChildren(), call this implementation and pass the
- * control vaules manually.
+ * This filter iterator assumes that the inner iterator 
  */
-abstract class RecursiveFilterIterator extends FilterIterator implements RecursiveIterator
+class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator
 {
-    /** @param $it the RecursiveIterator to filter
+    /**
+     * Constructs a regular expression filter around an iterator whose 
+     * elemnts or keys are strings.
+     *
+     * @param it          inner iterator
+     * @param regex       the regular expression to match
+     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
+     *                    self::ALL_MATCHES, self::SPLIT)
+     * @param flags       special flags (self::USE_KEY)
+     * @param preg_flags  global PREG_* flags, see preg_match(), 
+     *                    preg_match_all(), preg_split()
      */
-    function __construct(RecursiveIterator $it){}
-    
+    function __construct(RecursiveIterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
+
     /** @return whether the current element has children
      */
     function hasChildren(){}
@@ -1354,28 +1746,6 @@ abstract class RecursiveFilterIterator extends FilterIterator implements Recursi
     function getChildren(){}
     
     private $ref;
-}
-
-
-
-
-
-/**
- * @brief   Interface for recursive iteration with RecursiveIteratorIterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.0
- */
-interface RecursiveIterator extends Iterator
-{
-    /** @return whether the current element has children
-     */
-    function hasChildren();
-    
-    /** @return the sub iterator for the current element
-     * @note The returned object must implement RecursiveIterator.
-     */
-    function getChildren();
 }
 
 
@@ -1466,61 +1836,134 @@ class CachingIterator implements OuterIterator
 
 
 
+/**
+ * @brief   Object storage
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1.2
+ *
+ * This container allows to store objects uniquly without the need to compare
+ * them one by one. This is only possible internally. The code represenation
+ * here therefore has a complexity of O(n) while the actual implementation has
+ * complexity O(1).
+ */
+class SplObjectStorage implements Iterator, Countable
+{
+    private $storage = array();
+    private $index = 0;
+
+    /** Rewind to top iterator as set in constructor
+     */
+    function rewind(){}
+    
+    /** @return whether iterator is valid
+     */
+    function valid(){}
+    
+    /** @return current key
+     */
+    function key(){}
+    
+    /** @return current object
+     */
+    function current(){}
+    
+    /** Forward to next element
+     */
+    function next(){}
+
+    /** @return number of objects in storage
+     */
+    function count(){}
+
+    /** @param obj object to look for
+     * @return whether $obj is contained in storage
+      */
+    function contains($obj){}
+
+    /** @param $obj new object to attach to storage if not yet contained
+     */
+    function attach($obj){}
+
+    /** @param $obj object to remove from storage
+     */
+    function detach($obj){}
+}
+
+
+
+
+
 /** @ingroup SPL
- * @brief   Iterator that iterates over several iterators one after the other
+ * @brief   A recursive array iterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ *
+ * Passes the RecursiveIterator interface to the inner Iterator and provides
+ * the same functionality as FilterIterator. This allows you to skip parents
+ * and all their childs before loading them all. You need to care about
+ * function getChildren() because it may not always suit your needs. The 
+ * builtin behavior uses reflection to return a new instance of the exact same
+ * class it is called from. That is you extend RecursiveFilterIterator and
+ * getChildren() will create instance of that class. The problem is that doing
+ * this does not transport any state or control information of your accept()
+ * implementation to the new instance. To overcome this problem you might 
+ * need to overwrite getChildren(), call this implementation and pass the
+ * control vaules manually.
+ */
+class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator
+{
+    /** @return whether the current element has children
+     */
+    function hasChildren(){}
+
+    /** @return an iterator for the current elements children
+     *
+     * @note the returned iterator will be of the same class as $this
+     */
+    function getChildren(){}
+    
+    private $ref;
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   An empty Iterator
  * @author  Marcus Boerger
  * @version 1.0
  * @since PHP 5.1
  */
-class AppendIterator implements OuterIterator
+class EmptyIterator implements Iterator
 {
-    /** @internal array of inner iterators */
-    private $iterators;
-
-    /** Construct an empty AppendIterator
-     */
-    function __construct(){}
-
-    /** Append an Iterator
-     * @param $it Iterator to append
-     *
-     * If the current state is invalid but the appended iterator is valid
-     * the the AppendIterator itself becomes valid. However there will be no
-     * call to $it->rewind(). Also if the current state is invalid the inner
-     * ArrayIterator will be rewound und forwarded to the appended element.
-     */    
-    function append(Iterator $it){}
-
-    /** @return the current inner Iterator
-     */
-    function getInnerIterator(){}
-
-    /** Rewind to the first element of the first inner Iterator.
+    /** No operation.
      * @return void
      */
     function rewind(){}
 
-    /** @return whether the current element is valid
-      */
+    /** @return \c false
+     */
     function valid(){}
 
-    /** @return the current value if it is valid or \c NULL
+    /** This function must not be called. It throws an exception upon access.
+     * @throw Exception
+     * @return void
      */
     function current(){}
 
-    /** @return the current key if it is valid or \c NULL
+    /** This function must not be called. It throws an exception upon access.
+     * @throw Exception
+     * @return void
      */
     function key(){}
 
-    /** Move to the next element. If this means to another Iterator that 
-     * rewind that Iterator.
+    /** No operation.
      * @return void
      */
     function next(){}
-
-    /** Aggregates the inner iterator
-     */    
-    function __call($func, $params){}
 }
 
 
@@ -1528,16 +1971,133 @@ class AppendIterator implements OuterIterator
 
 
 /**
- * @brief   Interface to access the current inner iteraor of iterator wrappers
+ * @brief   Abstract filter for iterators
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.0
+ *
+ * Instances of this class act as a filter around iterators. In other words 
+ * you can put an iterator into the constructor and the instance will only 
+ * return selected (accepted) elements.
+ *
+ * The only thing that needs to be done to make this work is implementing 
+ * method accept(). Typically this invloves reading the current element or 
+ * key of the inner Iterator and checking whether it is acceptable.
+ */
+abstract class FilterIterator implements OuterIterator
+{
+    private $it;
+
+    /**
+     * Constructs a filter around another iterator.
+     *
+     * @param it     Iterator to filter
+     */
+    function __construct(Iterator $it){}
+
+    /**
+     * Rewind the inner iterator.
+     */
+    function rewind() {    
+        $this->it->rewind();
+        $this->fetch();
+    }
+
+    /**
+     * Accept function to decide whether an element of the inner iterator
+     * should be accessible through the Filteriterator.
+     *
+     * @return whether or not to expose the current element of the inner
+     *         iterator.
+     */
+    abstract function accept();
+
+    /**
+     * Fetch next element and store it.
+     *
+     * @return void
+     */
+    protected function fetch(){}
+
+    /**
+     * Move to next element
+     *
+     * @return void
+     */
+    function next(){}
+    
+    /**
+     * @return Whether more elements are available
+     */
+    function valid(){}
+    
+    /**
+     * @return The current key
+     */
+    function key(){}
+    
+    /**
+     * @return The current value
+     */
+    function current(){}
+    
+    /**
+     * hidden __clone
+     */
+    protected function __clone(){}
+
+    /**
+     * @return The inner iterator
+     */    
+    function getInnerIterator(){}
+
+    /** Aggregate the inner iterator
+     *
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
+     */
+    function __call($func, $params){}
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   Iterator to filter recursive iterators
  * @author  Marcus Boerger
  * @version 1.0
  * @since PHP 5.1
+ *
+ * Passes the RecursiveIterator interface to the inner Iterator and provides
+ * the same functionality as FilterIterator. This allows you to skip parents
+ * and all their childs before loading them all. You need to care about
+ * function getChildren() because it may not always suit your needs. The 
+ * builtin behavior uses reflection to return a new instance of the exact same
+ * class it is called from. That is you extend RecursiveFilterIterator and
+ * getChildren() will create instance of that class. The problem is that doing
+ * this does not transport any state or control information of your accept()
+ * implementation to the new instance. To overcome this problem you might 
+ * need to overwrite getChildren(), call this implementation and pass the
+ * control vaules manually.
  */
-interface OuterIterator extends Iterator
+abstract class RecursiveFilterIterator extends FilterIterator implements RecursiveIterator
 {
-    /** @return inner iterator
+    /** @param $it the RecursiveIterator to filter
      */
-    function getInnerIterator();
+    function __construct(RecursiveIterator $it){}
+    
+    /** @return whether the current element has children
+     */
+    function hasChildren(){}
+
+    /** @return an iterator for the current elements children
+     *
+     * @note the returned iterator will be of the same class as $this
+     */
+    function getChildren(){}
+    
+    private $ref;
 }
 
 
@@ -1754,566 +2314,6 @@ class SplFileObject extends SplFileInfo implements RecursiveIterator, SeekableIt
      * @param $line_pos Seek to this line
      */    
     function seek($line_pos){}
-}
-
-
-
-
-
-/** @brief seekable iterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.0
- *
- * Turns a normal iterator ino a seekable iterator. When there is a way
- * to seek on an iterator LimitIterator can use this to efficiently rewind
- * to offset.
- */
-interface SeekableIterator extends Iterator
-{
-    /** Seek to an absolute position
-     *
-     * \param $index position to seek to
-     * \return void
-     *
-     * The method should throw an exception if it is not possible to seek to 
-     * the given position. Typically this exception should be of type 
-     * OutOfBoundsException.
-     \code
-    function seek($index);
-        $this->rewind();
-        $position = 0;
-        while($position < $index && $this->valid()) {
-            $this->next();
-            $position++;
-        }
-        if (!$this->valid()) {
-            throw new OutOfBoundsException('Invalid seek position');
-        }
-    }
-     \endcode
-     */
-    function seek($index);
-}
-
-
-
-
-
-/**
- * @brief   Recursive regular expression filter for iterators
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- *
- * This filter iterator assumes that the inner iterator 
- */
-class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator
-{
-    /**
-     * Constructs a regular expression filter around an iterator whose 
-     * elemnts or keys are strings.
-     *
-     * @param it          inner iterator
-     * @param regex       the regular expression to match
-     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
-     *                    self::ALL_MATCHES, self::SPLIT)
-     * @param flags       special flags (self::USE_KEY)
-     * @param preg_flags  global PREG_* flags, see preg_match(), 
-     *                    preg_match_all(), preg_split()
-     */
-    function __construct(RecursiveIterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
-
-    /** @return whether the current element has children
-     */
-    function hasChildren(){}
-
-    /** @return an iterator for the current elements children
-     *
-     * @note the returned iterator will be of the same class as $this
-     */
-    function getChildren(){}
-    
-    private $ref;
-}
-
-
-
-
-
-/**
- * @brief   Abstract filter for iterators
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.0
- *
- * Instances of this class act as a filter around iterators. In other words 
- * you can put an iterator into the constructor and the instance will only 
- * return selected (accepted) elements.
- *
- * The only thing that needs to be done to make this work is implementing 
- * method accept(). Typically this invloves reading the current element or 
- * key of the inner Iterator and checking whether it is acceptable.
- */
-abstract class FilterIterator implements OuterIterator
-{
-    private $it;
-
-    /**
-     * Constructs a filter around another iterator.
-     *
-     * @param it     Iterator to filter
-     */
-    function __construct(Iterator $it){}
-
-    /**
-     * Rewind the inner iterator.
-     */
-    function rewind() {    
-        $this->it->rewind();
-        $this->fetch();
-    }
-
-    /**
-     * Accept function to decide whether an element of the inner iterator
-     * should be accessible through the Filteriterator.
-     *
-     * @return whether or not to expose the current element of the inner
-     *         iterator.
-     */
-    abstract function accept();
-
-    /**
-     * Fetch next element and store it.
-     *
-     * @return void
-     */
-    protected function fetch(){}
-
-    /**
-     * Move to next element
-     *
-     * @return void
-     */
-    function next(){}
-    
-    /**
-     * @return Whether more elements are available
-     */
-    function valid(){}
-    
-    /**
-     * @return The current key
-     */
-    function key(){}
-    
-    /**
-     * @return The current value
-     */
-    function current(){}
-    
-    /**
-     * hidden __clone
-     */
-    protected function __clone(){}
-
-    /**
-     * @return The inner iterator
-     */    
-    function getInnerIterator(){}
-
-    /** Aggregate the inner iterator
-     *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
-     */
-    function __call($func, $params){}
-}
-
-
-
-
-
-/**
- * @brief   Limited Iteration over another Iterator
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.0
- *
- * A class that starts iteration at a certain offset and only iterates over
- * a specified amount of elements.
- *
- * This class uses SeekableIterator::seek() if available and rewind() plus
- * a skip loop otehrwise.
- */
-class LimitIterator implements OuterIterator
-{
-    private $it;
-    private $offset;
-    private $count;
-    private $pos;
-
-    /** Construct
-     *
-     * @param it     Iterator to limit
-     * @param offset Offset to first element
-     * @param count  Maximum number of elements to show or -1 for all
-     */
-    function __construct(Iterator $it, $offset = 0, $count = -1){}
-    
-    /** Seek to specified position
-     * @param position offset to seek to (relative to beginning not offset
-     *                 specified in constructor).
-     * @throw exception when position is invalid
-     */
-    function seek($position){}
-
-    /** Rewind to offset specified in constructor
-     */
-    function rewind(){}
-    
-    /** @return whether iterator is valid
-     */
-    function valid(){}
-    
-    /** @return current key
-     */
-    function key(){}
-
-    /** @return current element
-     */
-    function current(){}
-
-    /** Forward to nect element
-     */
-    function next(){}
-
-    /** @return current position relative to zero (not to offset specified in 
-     *          constructor).
-     */
-    function getPosition(){}
-
-    /**
-     * @return The inner iterator
-     */    
-    function getInnerIterator(){}
-
-    /** Aggregate the inner iterator
-     *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
-     */
-    function __call($func, $params){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   A recursive array iterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- *
- * Passes the RecursiveIterator interface to the inner Iterator and provides
- * the same functionality as FilterIterator. This allows you to skip parents
- * and all their childs before loading them all. You need to care about
- * function getChildren() because it may not always suit your needs. The 
- * builtin behavior uses reflection to return a new instance of the exact same
- * class it is called from. That is you extend RecursiveFilterIterator and
- * getChildren() will create instance of that class. The problem is that doing
- * this does not transport any state or control information of your accept()
- * implementation to the new instance. To overcome this problem you might 
- * need to overwrite getChildren(), call this implementation and pass the
- * control vaules manually.
- */
-class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator
-{
-    /** @return whether the current element has children
-     */
-    function hasChildren(){}
-
-    /** @return an iterator for the current elements children
-     *
-     * @note the returned iterator will be of the same class as $this
-     */
-    function getChildren(){}
-    
-    private $ref;
-}
-
-
-
-
-
-/**
- * @brief   Iterates through recursive iterators
- * @author  Marcus Boerger
- * @version 1.2
- * @since PHP 5.0
- *
- * The objects of this class are created by instances of RecursiveIterator. 
- * Elements of those iterators may be traversable themselves. If so these 
- * sub elements are recursed into.
- */
-class RecursiveIteratorIterator implements OuterIterator
-{
-    /** Mode: Only show leaves */
-    const LEAVES_ONLY         = 0;
-    /** Mode: Show parents prior to their children */
-    const SELF_FIRST        = 1;
-    /** Mode: Show all children prior to their parent */
-    const CHILD_FIRST        = 2;
-
-    /** Flag: Catches exceptions during getChildren() calls and simply jumps
-     * to the next element. */
-    const CATCH_GET_CHILD    = 0x00000002;
-
-    private $ait = array();
-    private $count = 0;
-    private $mode  = self::LEAVES_ONLY;
-    private $flags = 0;
-
-    /** Construct from RecursiveIterator
-     *
-     * @param it     RecursiveIterator to iterate
-     * @param mode   Operation mode (one of):
-     *               - LEAVES_ONLY only show leaves
-     *               - SELF_FIRST  show parents prior to their childs
-     *               - CHILD_FIRST show all children prior to their parent
-     * @param flags  Control flags, zero or any combination of the following
-     *               (since PHP 5.1).
-     *               - CATCH_GET_CHILD which catches exceptions during
-     *                 getChildren() calls and simply jumps to the next 
-     *                 element.
-     */
-    function __construct(RecursiveIterator $it, $mode = self::LEAVES_ONLY, $flags = 0){}
-
-    /** Rewind to top iterator as set in constructor
-     */
-    function rewind(){}
-    
-    /** @return whether iterator is valid
-     */
-    function valid(){}
-    
-    /** @return current key
-     */
-    function key(){}
-    
-    /** @return current element
-     */
-    function current(){}
-    
-    /** Forward to next element
-     */
-    function next(){}
-
-    /** @return Sub Iterator at given level or if unspecified the current sub 
-     *          Iterator
-     */
-    function getSubIterator($level = NULL){}
-
-    /**
-     * @return The inner iterator
-     */    
-    function getInnerIterator(){}
-
-    /** @return Current Depth (Number of parents)
-     */
-    function getDepth(){}
-
-    /** @return whether current sub iterators current element has children
-     * @since PHP 5.1
-     */
-    function callHasChildren(){}
-
-    /** @return current sub iterators current children
-     * @since PHP 5.1
-     */
-    function callGetChildren(){}
-
-    /** Called right after calling getChildren() and its rewind().
-     * @since PHP 5.1
-     */
-    function beginChildren(){}
-
-    private function callNextElement($after_move){}
-    
-    /** Called when the next element is available
-     */
-    function nextElement()
-    {
-    }
-}
-
-
-
-
-
-/**
- * @brief   Object storage
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1.2
- *
- * This container allows to store objects uniquly without the need to compare
- * them one by one. This is only possible internally. The code represenation
- * here therefore has a complexity of O(n) while the actual implementation has
- * complexity O(1).
- */
-class SplObjectStorage implements Iterator, Countable
-{
-    private $storage = array();
-    private $index = 0;
-
-    /** Rewind to top iterator as set in constructor
-     */
-    function rewind(){}
-    
-    /** @return whether iterator is valid
-     */
-    function valid(){}
-    
-    /** @return current key
-     */
-    function key(){}
-    
-    /** @return current object
-     */
-    function current(){}
-    
-    /** Forward to next element
-     */
-    function next(){}
-
-    /** @return number of objects in storage
-     */
-    function count(){}
-
-    /** @param obj object to look for
-     * @return whether $obj is contained in storage
-      */
-    function contains($obj){}
-
-    /** @param $obj new object to attach to storage if not yet contained
-     */
-    function attach($obj){}
-
-    /** @param $obj object to remove from storage
-     */
-    function detach($obj){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   An infinite Iterator
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.1
- *
- * This Iterator takes another Iterator and infinitvely iterates it by
- * rewinding it when its end is reached.
- *
- * \note Even an InfiniteIterator stops if its inner Iterator is empty.
- *
- \verbatim
- $it       = new ArrayIterator(array(1,2,3));
- $infinite = new InfiniteIterator($it);
- $limit    = new LimitIterator($infinite, 0, 5);
- foreach($limit as $val=>$key)
- {
-     echo "$val=>$key\n";
- }
- \endverbatim
- */
-class InfiniteIterator extends IteratorIterator
-{
-    /** Move the inner Iterator forward to its next element or rewind it.
-     * @return void
-     */
-    function next(){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   An empty Iterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- */
-class EmptyIterator implements Iterator
-{
-    /** No operation.
-     * @return void
-     */
-    function rewind(){}
-
-    /** @return \c false
-     */
-    function valid(){}
-
-    /** This function must not be called. It throws an exception upon access.
-     * @throw Exception
-     * @return void
-     */
-    function current(){}
-
-    /** This function must not be called. It throws an exception upon access.
-     * @throw Exception
-     * @return void
-     */
-    function key(){}
-
-    /** No operation.
-     * @return void
-     */
-    function next(){}
-}
-
-
-
-
-
-/**
- * @brief   Iterator to filter parents
- * @author  Marcus Boerger
- * @version 1.2
- * @since PHP 5.1
- *
- * This extended FilterIterator allows a recursive iteration using 
- * RecursiveIteratorIterator that only shows those elements which have 
- * children.
- */
-class ParentIterator extends RecursiveFilterIterator
-{
-    /** @return whetehr the current element has children
-     */
-    function accept(){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   An Iterator wrapper that doesn't call rewind
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.1
- */
-class NoRewindIterator extends IteratorIterator
-{
-    /** Simply prevent execution of inner iterators rewind().
-     */
-    function rewind(){}
 }
 
 class Collator {
@@ -3262,12 +3262,11 @@ class DomDocument {
     function validate() {}
 
     /**
-     * This method substitutes XIncludes in a DOMDocument object.
+     * This function substitutes XIncludes in a DomDocument object.
      *
-     * @param int
      * @return int
      **/
-    function xinclude($options) {}
+    function xinclude() {}
 
     /**
      * Creates a new DOMDocument object.
@@ -4335,7 +4334,7 @@ class FilesystemIterator extends DirectoryIterator implements SeekableIterator, 
 }
 class FilterIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
     /**
-     * Returns whether the current element of the iterator is acceptable trough this filter.
+     * Returns whether the current element of the iterator is acceptable through this filter.
      *
      * @return bool
      **/
@@ -8547,6 +8546,15 @@ class Imagick implements Iterator, Traversable {
     function affineTransformImage($matrix) {}
 
     /**
+     * Translate, scale, shear, or rotate image colors. This method supports variable sized matrices but normally
+     * 5x5 matrix is used for RGBA and 6x6 is used for CMYK. The last row should contain the normalized values.
+     *
+     * @param array
+     * @return bool
+     **/
+    function animateImages($matrix) {}
+
+    /**
      * Annotates an image with text.
      *
      * @param ImagickDraw
@@ -8651,8 +8659,7 @@ class Imagick implements Iterator, Traversable {
 
     /**
      * Replaces colors in the image from a color lookup table. Optional second
-     * parameter to replace colors in a specific channel. This method is available
-     * if Imagick is compiled against ImageMagick 6.3.5-7 or newer.
+     * parameter to replace colors in a specific channel.
      *
      * @param Imagick
      * @param float
@@ -8824,6 +8831,15 @@ class Imagick implements Iterator, Traversable {
     function cycleColormapImage($displace) {}
 
     /**
+     * Deciphers image that has been enciphered before. The image must be enciphered
+     * using Imagick::encipherImage.
+     *
+     * @param string
+     * @return bool
+     **/
+    function decipherImage($passphrase) {}
+
+    /**
      * Compares each image with the next in a sequence and returns the maximum
      * bounding region of any pixel differences it discovers.
      *
@@ -8903,6 +8919,15 @@ class Imagick implements Iterator, Traversable {
     function embossImage($radius, $sigma) {}
 
     /**
+     * Converts plain pixels to enciphered pixels. The image is not readable
+     * until it has been deciphered using Imagick::decipherImage
+     *
+     * @param string
+     * @return bool
+     **/
+    function encipherImage($passphrase) {}
+
+    /**
      * Applies a digital filter that improves the quality of a noisy image.
      *
      * @return bool
@@ -8929,6 +8954,18 @@ class Imagick implements Iterator, Traversable {
     function evaluateImage($op, $constant, $channel) {}
 
     /**
+     * Comfortability method for setting image size. The method sets the image size and allows
+     * setting x,y coordinates where the new area begins.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function extentImage($width, $height, $x, $y) {}
+
+    /**
      * Merges a sequence of images. This is useful for combining Photoshop layers into a single image.
      *
      * @return Imagick
@@ -8941,6 +8978,22 @@ class Imagick implements Iterator, Traversable {
      * @return bool
      **/
     function flipImage() {}
+
+    /**
+     * Changes the color value of any pixel that matches target and is an
+     * immediate neighbor. This method is a replacement for deprecated 
+     * Imagick::paintFloodFillImage.
+     *
+     * @param mixed
+     * @param float
+     * @param mixed
+     * @param int
+     * @param int
+     * @param bool
+     * @param int
+     * @return bool
+     **/
+    function floodFillPaintImage($fill, $fuzz, $bordercolor, $x, $y, $invert, $channel) {}
 
     /**
      * Creates a horizontal mirror image by reflecting the pixels around the central y-axis.
@@ -9030,11 +9083,25 @@ class Imagick implements Iterator, Traversable {
     function getFilename() {}
 
     /**
+     * Returns the objects font property.
+     *
+     * @return string
+     **/
+    function getFont() {}
+
+    /**
      * Returns the format of the Imagick object.
      *
      * @return string
      **/
     function getFormat() {}
+
+    /**
+     * Gets the global gravity property for the Imagick object.
+     *
+     * @return bool
+     **/
+    function getGravity() {}
 
     /**
      * Returns the ImageMagick home URL.
@@ -9049,6 +9116,14 @@ class Imagick implements Iterator, Traversable {
      * @return Imagick
      **/
     function getImage() {}
+
+    /**
+     * Gets the image alpha channel value. The returned value is one of the 
+     * alpha channel constants.
+     *
+     * @return int
+     **/
+    function getImageAlphaChannel() {}
 
     /**
      * Returns the image background color.
@@ -9089,7 +9164,7 @@ class Imagick implements Iterator, Traversable {
      * @param int
      * @return int
      **/
-    function getImageChannelDepth($channelType) {}
+    function getImageChannelDepth($channel) {}
 
     /**
      * Compares one or more image channels of an image to a reconstructed image
@@ -9101,6 +9176,16 @@ class Imagick implements Iterator, Traversable {
      * @return float
      **/
     function getImageChannelDistortion($reference, $channel, $metric) {}
+
+    /**
+     * Compares one or more image channels of an image to a reconstructed image and returns the specified distortion metrics
+     *
+     * @param Imagick
+     * @param int
+     * @param int
+     * @return double
+     **/
+    function getImageChannelDistortions($reference, $metric, $channel) {}
 
     /**
      * Gets the extrema for one or more image channels. Return value is an
@@ -9122,6 +9207,14 @@ class Imagick implements Iterator, Traversable {
     function getImageChannelMean($channel) {}
 
     /**
+     * Gets the range for one or more image channels.
+     *
+     * @param int
+     * @return bool
+     **/
+    function getImageChannelRange($channel) {}
+
+    /**
      * Returns statistics for each channel in the image. The statistics include
      * the channel depth, its minima and maxima, the mean, and the standard
      * deviation. You can access the red channel mean, for example, like this:
@@ -9129,6 +9222,13 @@ class Imagick implements Iterator, Traversable {
      * @return array
      **/
     function getImageChannelStatistics() {}
+
+    /**
+     * Returns the image clip mask. The clip mask is an Imagick object containing the clip mask.
+     *
+     * @return Imagick
+     **/
+    function getImageClipMask() {}
 
     /**
      * Returns the color of the specified colormap index.
@@ -9269,7 +9369,8 @@ class Imagick implements Iterator, Traversable {
     function getImageInterlaceScheme() {}
 
     /**
-     * Returns the interpolation method for the specified image.
+     * Returns the interpolation method for the specified image. The method is one of 
+     * the Imagick::INTERPOLATE_* constants.
      *
      * @return int
      **/
@@ -9344,8 +9445,7 @@ class Imagick implements Iterator, Traversable {
 
     /**
      * Returns all associated profiles that match the pattern. If is passed as second parameter
-     * only the profile names are returned. This method is present if Imagick is compiled against
-     * ImageMagick 6.3.5-9 or later.
+     * only the profile names are returned.
      *
      * @param string
      * @param bool
@@ -9355,8 +9455,7 @@ class Imagick implements Iterator, Traversable {
 
     /**
      * Returns all associated properties that match the pattern. If is passed as second parameter
-     * only the property names are returned. This method is present if Imagick is compiled against 
-     * ImageMagick 6.3.5-9 or later.
+     * only the property names are returned.
      *
      * @param string
      * @param bool
@@ -9547,6 +9646,13 @@ class Imagick implements Iterator, Traversable {
     function getPixelRegionIterator($x, $y, $columns, $rows) {}
 
     /**
+     * Returns the objects point size property.
+     *
+     * @return string
+     **/
+    function getPointSize() {}
+
+    /**
      * Returns the Imagick quantum depth as a string.
      *
      * @return array
@@ -9681,6 +9787,19 @@ class Imagick implements Iterator, Traversable {
     function linearStretchImage($blackPoint, $whitePoint) {}
 
     /**
+     * This method scales the images using liquid rescaling method. This method
+     * is an implementation of a technique called seam carving. In order for this
+     * method to work as expected ImageMagick must be compiled with liblqr support.
+     *
+     * @param int
+     * @param int
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function liquidRescaleImage($width, $height, $delta_x, $rigidity) {}
+
+    /**
      * Is a convenience method that scales an image proportionally to twice its original size.
      *
      * @return bool
@@ -9719,6 +9838,16 @@ class Imagick implements Iterator, Traversable {
      * @return bool
      **/
     function medianFilterImage($radius) {}
+
+    /**
+     * Merges image layers into one. This method is useful when working with image
+     * formats that use multiple layers such as PSD. The merging is controlled using
+     * the layer_method which defines how the layers are merged.
+     *
+     * @param int
+     * @return bool
+     **/
+    function mergeImageLayers($layer_method) {}
 
     /**
      * Is a convenience method that scales an image proportionally to one-half its original size
@@ -9848,6 +9977,18 @@ class Imagick implements Iterator, Traversable {
     function oilPaintImage($radius) {}
 
     /**
+     * Changes any pixel that matches color with the color defined by fill.
+     *
+     * @param mixed
+     * @param mixed
+     * @param float
+     * @param bool
+     * @param int
+     * @return bool
+     **/
+    function opaquePaintImage($target, $fill, $fuzz, $invert, $channel) {}
+
+    /**
      * Compares each image the GIF disposed forms of the previous image
      * in the sequence. From this it attempts to select the smallest
      * cropped image to replace each frame, while preserving the results
@@ -9870,7 +10011,8 @@ class Imagick implements Iterator, Traversable {
 
     /**
      * Changes the color value of any pixel that matches target and is an
-     * immediate neighbor.
+     * immediate neighbor. As of ImageMagick 6.3.8 this method has been deprecated
+     * and Imagick::floodfillPaintImage should be used instead.
      *
      * @param mixed
      * @param float
@@ -10132,6 +10274,14 @@ class Imagick implements Iterator, Traversable {
     function resampleImage($x_resolution, $y_resolution, $filter, $blur) {}
 
     /**
+     * The page definition as a string. The string is in format WxH+x+y.
+     *
+     * @param string
+     * @return bool
+     **/
+    function resetImagePage($page) {}
+
+    /**
      * Scales an image to the desired dimensions with a
      * filter.
      *
@@ -10261,8 +10411,10 @@ class Imagick implements Iterator, Traversable {
 
     /**
      * Sets object's font property. This method can be used for example to set font for 
-     * caption: pseudo-format. This method is available if Imagick is compile against
-     * at least version 6.3.6-4 of ImageMagick.
+     * caption: pseudo-format. The font needs to be configured in ImageMagick confiration
+     * or a file by the name of font must exist. This method should
+     * not be confused with ImagickDraw::setFont which sets the font
+     * for a specific ImagickDraw object.
      *
      * @param string
      * @return bool
@@ -10278,12 +10430,29 @@ class Imagick implements Iterator, Traversable {
     function setFormat($format) {}
 
     /**
+     * Sets the global gravity property for the Imagick object.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setGravity($gravity) {}
+
+    /**
      * Replaces the current image sequence with the image from replace object.
      *
      * @param Imagick
      * @return bool
      **/
     function setImage($replace) {}
+
+    /**
+     * Activate or deactivate image alpha channel. The mode 
+     * is one of the Imagick::ALPHACHANNEL_* constants.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageAlphaChannel($mode) {}
 
     /**
      * Sets the image background color.
@@ -10326,6 +10495,14 @@ class Imagick implements Iterator, Traversable {
      * @return bool
      **/
     function setImageChannelDepth($channel, $depth) {}
+
+    /**
+     * Sets image clip mask from another Imagick object.
+     *
+     * @param Imagick
+     * @return bool
+     **/
+    function setImageClipMask($clip_mask) {}
 
     /**
      * Sets the color of the specified colormap index.
@@ -10650,6 +10827,15 @@ class Imagick implements Iterator, Traversable {
     function setPage($width, $height, $x, $y) {}
 
     /**
+     * Sets object's point size property. This method can be used for example to set font size for 
+     * caption: pseudo-format.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setPointSize($point_size) {}
+
+    /**
      * Sets the image resolution.
      *
      * @param float
@@ -10921,6 +11107,17 @@ class Imagick implements Iterator, Traversable {
     function transformImage($crop, $geometry) {}
 
     /**
+     * Paints pixels matching the target color transparent.
+     *
+     * @param mixed
+     * @param float
+     * @param float
+     * @param bool
+     * @return bool
+     **/
+    function transparentPaintImage($target, $alpha, $fuzz, $invert) {}
+
+    /**
      * Creates a vertical mirror image by reflecting the pixels 
      * around the central x-axis while rotating them 90-degrees.
      *
@@ -11013,6 +11210,15 @@ class Imagick implements Iterator, Traversable {
     function writeImage($filename) {}
 
     /**
+     * Writes the image sequence to an open filehandle. The handle must be opened with
+     * for example fopen.
+     *
+     * @param resource
+     * @return bool
+     **/
+    function writeImageFile($filehandle) {}
+
+    /**
      * Writes an image or image sequence.
      *
      * @param string
@@ -11020,6 +11226,15 @@ class Imagick implements Iterator, Traversable {
      * @return bool
      **/
     function writeImages($filename, $adjoin) {}
+
+    /**
+     * Writes all image frames into an open filehandle. This method can be used to write
+     * animated gifs or other multiframe images into open filehandle.
+     *
+     * @param resource
+     * @return bool
+     **/
+    function writeImagesFile($filehandle) {}
 
     /**
      * The Imagick constructor
@@ -14165,10 +14380,26 @@ class MongoCursor extends MongoCursor {
     function skip($num) {}
 
     /**
+     * This method will override the static class variable slaveOkay.
+     *
+     * @param boolean
+     * @return MongoCursor
+     **/
+    function slaveOkay($okay) {}
+
+    /**
      * @param array
      * @return MongoCursor
      **/
     function sort($fields) {}
+
+    /**
+     * Mongo has a feature known as tailable cursors which are similar to the Unix "tail -f" command.
+     *
+     * @param boolean
+     * @return MongoCursor
+     **/
+    function tailable($tail) {}
 
     /**
      * @return boolean
@@ -15404,7 +15635,7 @@ class PDOStatement implements Traversable {
     function setFetchMode($mode) {}
 
 }
-class Phar extends DirectoryIterator implements Countable, ArrayAccess {
+class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess {
     const BZ2 = 0;
     const COMPRESSED = 0;
     const GZ = 0;
@@ -15430,7 +15661,7 @@ class Phar extends DirectoryIterator implements Countable, ArrayAccess {
     function addEmptyDir($dirname) {}
 
     /**
-     * With this method, any file or URL can be added to the tar/zip archive. If
+     * With this method, any file or URL can be added to the phar archive. If
      * the optional second parameter localname is specified,
      * the file will be stored in the archive with that name, otherwise the
      * file parameter is used as the path to store within
@@ -15465,10 +15696,10 @@ class Phar extends DirectoryIterator implements Countable, ArrayAccess {
     function apiVersion() {}
 
     /**
-     * Populate a tar/zip archive from directory contents. The optional second
+     * Populate a phar archive from directory contents. The optional second
      * parameter is a regular expression (pcre) that is used to exclude files.
      * Any filename that matches the regular expression will be included, all others will be
-     * excluded. For more fine-grained control, use PharData::buildFromIterator.
+     * excluded. For more fine-grained control, use Phar::buildFromIterator.
      *
      * @param string
      * @param string
@@ -15914,13 +16145,13 @@ class Phar extends DirectoryIterator implements Countable, ArrayAccess {
      * set the signature algorithm for a phar and apply it. The
      * signature algorithm must be one of Phar::MD5,
      * Phar::SHA1, Phar::SHA256,
-     * Phar::SHA512, or Phar::PGP
-     * (pgp not yet supported and falls back to SHA-1).
+     * Phar::SHA512, or Phar::OPENSSL.
      *
      * @param int
+     * @param string
      * @return void
      **/
-    function setSignatureAlgorithm($sigtype) {}
+    function setSignatureAlgorithm($sigtype, $privatekey) {}
 
     /**
      * This method is used to add a PHP bootstrap loader stub to a new Phar archive, or
@@ -16491,6 +16722,1058 @@ class Rar {
      * @return int
      **/
     function getVersion() {}
+
+}
+class RecursiveFilterIterator extends FilterIterator implements Iterator, Traversable, OuterIterator, RecursiveIterator {
+    /**
+     * Return the inner iterator's children contained in a RecursiveFilterIterator.
+     *
+     * @return void
+     **/
+    function getChildren() {}
+
+    /**
+     * Check whether the inner iterator's current element has children.
+     *
+     * @return void
+     **/
+    function hasChildren() {}
+
+    /**
+     * Create a RecursiveFilterIterator from a RecursiveIterator.
+     *
+     * @param RecursiveIterator
+     **/
+    function __construct($iterator) {}
+
+}
+class Reflection {
+    /**
+     * Exports a reflection.
+     *
+     * @param Reflector
+     * @param string
+     * @return void
+     **/
+    function export($reflector, $return) {}
+
+    /**
+     * Gets modifier names.
+     *
+     * @param int
+     * @return array
+     **/
+    function getModifierNames($modifiers) {}
+
+}
+class ReflectionClass implements Reflector {
+    /**
+     * Exports a reflected class.
+     *
+     * @param mixed
+     * @param bool
+     * @return string
+     **/
+    function export($argument, $return) {}
+
+    /**
+     * Gets the defined constants.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function getConstant($name) {}
+
+    /**
+     * Gets defined constants from a class.
+     *
+     * @return array
+     **/
+    function getConstants() {}
+
+    /**
+     * Gets the constructor from a class.
+     *
+     * @return object
+     **/
+    function getConstructor() {}
+
+    /**
+     * Gets default properties from a class.
+     *
+     * @return array
+     **/
+    function getDefaultProperties() {}
+
+    /**
+     * Gets doc comments from a class.
+     *
+     * @return string
+     **/
+    function getDocComment() {}
+
+    /**
+     * Gets end line number from a user-defined class definition.
+     *
+     * @return int
+     **/
+    function getEndLine() {}
+
+    /**
+     * Gets an extensions ReflectionExtension object.
+     *
+     * @return ReflectionExtension
+     **/
+    function getExtension() {}
+
+    /**
+     * Gets an extensions name.
+     *
+     * @return string
+     **/
+    function getExtensionName() {}
+
+    /**
+     * Gets a filename.
+     *
+     * @return string
+     **/
+    function getFileName() {}
+
+    /**
+     * Get the interface names.
+     *
+     * @return array
+     **/
+    function getInterfaceNames() {}
+
+    /**
+     * Gets the interfaces.
+     *
+     * @return array
+     **/
+    function getInterfaces() {}
+
+    /**
+     * Gets a ReflectionMethod about a method.
+     *
+     * @param string
+     * @return object
+     **/
+    function getMethod($name) {}
+
+    /**
+     * Gets a list of methods.
+     *
+     * @param string
+     * @return array
+     **/
+    function getMethods($filter) {}
+
+    /**
+     * @return int
+     **/
+    function getModifiers() {}
+
+    /**
+     * Gets the class name.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Gets the namespace name.
+     *
+     * @return string
+     **/
+    function getNamespaceName() {}
+
+    /**
+     * @return object
+     **/
+    function getParentClass() {}
+
+    /**
+     * Gets the properties.
+     *
+     * @param string
+     * @return ReflectionProperty
+     **/
+    function getProperties($filter) {}
+
+    /**
+     * Gets a property.
+     *
+     * @param string
+     * @return ReflectionProperty
+     **/
+    function getProperty($name) {}
+
+    /**
+     * Gets the short name of the class, the part without the namespace.
+     *
+     * @return string
+     **/
+    function getShortName() {}
+
+    /**
+     * Get the starting line number.
+     *
+     * @return int
+     **/
+    function getStartLine() {}
+
+    /**
+     * Get the static properties.
+     *
+     * @return array
+     **/
+    function getStaticProperties() {}
+
+    /**
+     * Gets the static property values.
+     *
+     * @param string
+     * @param string
+     * @return mixed
+     **/
+    function getStaticPropertyValue($name, $default) {}
+
+    /**
+     * Checks whether the class has a specific constant defined or not.
+     *
+     * @param string
+     * @return bool
+     **/
+    function hasConstant($name) {}
+
+    /**
+     * Checks whether a specific method is defined in a class.
+     *
+     * @param string
+     * @return bool
+     **/
+    function hasMethod($name) {}
+
+    /**
+     * Checks whether the specified property is defined.
+     *
+     * @param string
+     * @return bool
+     **/
+    function hasProperty($name) {}
+
+    /**
+     * Checks whether it implements an interface.
+     *
+     * @param string
+     * @return bool
+     **/
+    function implementsInterface($interface) {}
+
+    /**
+     * Checks if this class is defined in a namespace.
+     *
+     * @return bool
+     **/
+    function inNamespace() {}
+
+    /**
+     * Checks if the class is abstract.
+     *
+     * @return bool
+     **/
+    function isAbstract() {}
+
+    /**
+     * Checks if a class is final.
+     *
+     * @return bool
+     **/
+    function isFinal() {}
+
+    /**
+     * Checks if a class is an instance of an object.
+     *
+     * @param string
+     * @return bool
+     **/
+    function isInstance($object) {}
+
+    /**
+     * Checks if the class is instanciable.
+     *
+     * @return bool
+     **/
+    function isInstantiable() {}
+
+    /**
+     * Checks whether the class is an interface.
+     *
+     * @return bool
+     **/
+    function isInterface() {}
+
+    /**
+     * Checks whether the class is internal, as opposed to user-defined.
+     *
+     * @return bool
+     **/
+    function isInternal() {}
+
+    /**
+     * Checks whether the class is iterateable.
+     *
+     * @return bool
+     **/
+    function isIterateable() {}
+
+    /**
+     * Checks if the class is a subclass of a specified class.
+     *
+     * @param string
+     * @return bool
+     **/
+    function isSubclassOf($class) {}
+
+    /**
+     * Checks whether the class is user-defined, as opposed to internal.
+     *
+     * @return bool
+     **/
+    function isUserDefined() {}
+
+    /**
+     * A new instance.
+     *
+     * @param mixed
+     * @return object
+     **/
+    function newInstance($args) {}
+
+    /**
+     * New instance args.
+     *
+     * @param array
+     * @return object
+     **/
+    function newInstanceArgs($args) {}
+
+    /**
+     * Sets static property value.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setStaticPropertyValue($name, $value) {}
+
+    /**
+     * Clones.
+     *
+     * @return void
+     **/
+    function __clone() {}
+
+    /**
+     * Constructs a new ReflectionClass object.
+     *
+     * @param string
+     **/
+    function __construct($argument) {}
+
+    /**
+     * To a string.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class ReflectionException extends Exception {
+}
+class ReflectionExtension implements Reflector {
+    /**
+     * Exports a reflected extension.
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function export($name, $return) {}
+
+    /**
+     * Gets a list of classes from an extension.
+     *
+     * @return array
+     **/
+    function getClasses() {}
+
+    /**
+     * Gets a listing of class names as defined in the extension.
+     *
+     * @return array
+     **/
+    function getClassNames() {}
+
+    /**
+     * Get defined constants from an extension.
+     *
+     * @return array
+     **/
+    function getConstants() {}
+
+    /**
+     * Gets dependencies, by listing both required and conflicting dependencies.
+     *
+     * @return array
+     **/
+    function getDependencies() {}
+
+    /**
+     * Get defined functions from an extension.
+     *
+     * @return array
+     **/
+    function getFunctions() {}
+
+    /**
+     * Get the ini entries for an extension.
+     *
+     * @return array
+     **/
+    function getINIEntries() {}
+
+    /**
+     * Gets the extensions name.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Gets the version of the extension.
+     *
+     * @return string
+     **/
+    function getVersion() {}
+
+    /**
+     * Gets information about an extension.
+     *
+     * @return string
+     **/
+    function info() {}
+
+    /**
+     * Clones.
+     *
+     * @return void
+     **/
+    function __clone() {}
+
+    /**
+     * Construct a ReflectionExtension object.
+     *
+     * @param string
+     **/
+    function __construct($name) {}
+
+    /**
+     * To a string.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class ReflectionFunction extends ReflectionFunctionAbstract implements Reflector {
+    /**
+     * Exports a Reflected function.
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function export($name, $return) {}
+
+    /**
+     * Invokes a reflected function.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function invoke($args) {}
+
+    /**
+     * Invokes args.
+     *
+     * @param array
+     * @return mixed
+     **/
+    function invokeArgs($args) {}
+
+    /**
+     * Checks if the function is disabled, via the 
+     * disable_functions
+     * directive.
+     *
+     * @return bool
+     **/
+    function isDisabled() {}
+
+    /**
+     * Constructs a ReflectionFunction object.
+     *
+     * @param string
+     **/
+    function __construct($name) {}
+
+    /**
+     * To string.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class ReflectionFunctionAbstract implements Reflector {
+    /**
+     * Get a Doc comment from a function.
+     *
+     * @return string
+     **/
+    function getDocComment() {}
+
+    /**
+     * Get the ending line number.
+     *
+     * @return int
+     **/
+    function getEndLine() {}
+
+    /**
+     * Get the extension information of a function.
+     *
+     * @return ReflectionExtension
+     **/
+    function getExtension() {}
+
+    /**
+     * Get the extensions name.
+     *
+     * @return string
+     **/
+    function getExtensionName() {}
+
+    /**
+     * Gets the file name from a user-defined function.
+     *
+     * @return string
+     **/
+    function getFileName() {}
+
+    /**
+     * Get the name of the function.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Get the namespace name where the class is defined.
+     *
+     * @return string
+     **/
+    function getNamespaceName() {}
+
+    /**
+     * Get the number of parameters that a function defines, both optional
+     * and required.
+     *
+     * @return int
+     **/
+    function getNumberOfParameters() {}
+
+    /**
+     * Get the number of required parameters that a function defines.
+     *
+     * @return int
+     **/
+    function getNumberOfRequiredParameters() {}
+
+    /**
+     * Get the parameters.
+     *
+     * @return ReflectionParameter
+     **/
+    function getParameters() {}
+
+    /**
+     * Get the short name of the function (without the namespace part).
+     *
+     * @return string
+     **/
+    function getShortName() {}
+
+    /**
+     * Gets the starting line number of the function.
+     *
+     * @return int
+     **/
+    function getStartLine() {}
+
+    /**
+     * Get the static variables.
+     *
+     * @return array
+     **/
+    function getStaticVariables() {}
+
+    /**
+     * Checks whether a function is defined in a namespace.
+     *
+     * @return bool
+     **/
+    function inNamespace() {}
+
+    /**
+     * Checks whether it's a closure.
+     *
+     * @return bool
+     **/
+    function isClosure() {}
+
+    /**
+     * Checks whether the function is deprecated.
+     *
+     * @return bool
+     **/
+    function isDeprecated() {}
+
+    /**
+     * Checks whether the function is internal, as opposed to user-defined.
+     *
+     * @return bool
+     **/
+    function isInternal() {}
+
+    /**
+     * Checks whether the function is user-defined, as opposed to internal.
+     *
+     * @return bool
+     **/
+    function isUserDefined() {}
+
+    /**
+     * Checks whether the function returns a reference.
+     *
+     * @return bool
+     **/
+    function returnsReference() {}
+
+    /**
+     * Clones a function.
+     *
+     * @return void
+     **/
+    function __clone() {}
+
+    /**
+     * To string.
+     *
+     * @return void
+     **/
+    function __toString() {}
+
+}
+class ReflectionMethod extends ReflectionFunctionAbstract implements Reflector {
+    /**
+     * Exports a ReflectionMethod.
+     *
+     * @param string
+     * @param string
+     * @param bool
+     * @return string
+     **/
+    function export($class, $name, $return) {}
+
+    /**
+     * Gets the declaring class.
+     *
+     * @return ReflectionClass
+     **/
+    function getDeclaringClass() {}
+
+    /**
+     * Gets the modifiers.
+     *
+     * @return int
+     **/
+    function getModifiers() {}
+
+    /**
+     * Gets the methods prototype.
+     *
+     * @return void
+     **/
+    function getPrototype() {}
+
+    /**
+     * Invokes a reflected method.
+     *
+     * @param object
+     * @param string
+     * @return mixed
+     **/
+    function invoke($object, $args) {}
+
+    /**
+     * Invoke arguments.
+     *
+     * @param string
+     * @param array
+     * @return mixed
+     **/
+    function invokeArgs($object, $args) {}
+
+    /**
+     * Checks if the method is abstract.
+     *
+     * @return bool
+     **/
+    function isAbstract() {}
+
+    /**
+     * Checks if the method is a constructor.
+     *
+     * @return bool
+     **/
+    function isConstructor() {}
+
+    /**
+     * Checks if the method is a destructor.
+     *
+     * @return bool
+     **/
+    function isDestructor() {}
+
+    /**
+     * Checks if the method is final.
+     *
+     * @return bool
+     **/
+    function isFinal() {}
+
+    /**
+     * Checks if the method is private.
+     *
+     * @return bool
+     **/
+    function isPrivate() {}
+
+    /**
+     * Checks if the method is protected.
+     *
+     * @return bool
+     **/
+    function isProtected() {}
+
+    /**
+     * Checks if the method is public.
+     *
+     * @return bool
+     **/
+    function isPublic() {}
+
+    /**
+     * Checks if the method is static.
+     *
+     * @return bool
+     **/
+    function isStatic() {}
+
+    /**
+     * Constructs a new ReflectionMethod.
+     *
+     * @param string
+     * @param string
+     **/
+    function __construct($class_or_method, $name) {}
+
+    /**
+     * To string.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class ReflectionObject extends ReflectionClass implements Reflector {
+    /**
+     * Exports a reflection.
+     *
+     * @param string
+     * @param bool
+     * @return string
+     **/
+    function export($argument, $return) {}
+
+    /**
+     * Constructs a ReflectionObject.
+     *
+     * @param string
+     **/
+    function __construct($argument) {}
+
+}
+class ReflectionParameter implements Reflector {
+    /**
+     * Checks whether the parameter allows .
+     *
+     * @return bool
+     **/
+    function allowsNull() {}
+
+    /**
+     * Exports.
+     *
+     * @param string
+     * @param string
+     * @param bool
+     * @return string
+     **/
+    function export($function, $parameter, $return) {}
+
+    /**
+     * Gets a class.
+     *
+     * @return ReflectionClass
+     **/
+    function getClass() {}
+
+    /**
+     * Gets the declaring class.
+     *
+     * @return ReflectionClass
+     **/
+    function getDeclaringClass() {}
+
+    /**
+     * Gets the declaring function.
+     *
+     * @return ReflectionFunction
+     **/
+    function getDeclaringFunction() {}
+
+    /**
+     * Gets the parameters default value.
+     *
+     * @return mixed
+     **/
+    function getDefaultValue() {}
+
+    /**
+     * Gets the name of the parameter.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Gets the position of the parameter.
+     *
+     * @return int
+     **/
+    function getPosition() {}
+
+    /**
+     * Checks if the parameter expects an array.
+     *
+     * @return bool
+     **/
+    function isArray() {}
+
+    /**
+     * Checks if a default value for the parameter is available.
+     *
+     * @return bool
+     **/
+    function isDefaultValueAvailable() {}
+
+    /**
+     * Checks if the parameter is optional.
+     *
+     * @return bool
+     **/
+    function isOptional() {}
+
+    /**
+     * Checks if the parameter is passed in by reference.
+     *
+     * @return bool
+     **/
+    function isPassedByReference() {}
+
+    /**
+     * Clones.
+     *
+     * @return void
+     **/
+    function __clone() {}
+
+    /**
+     * Constructs a ReflectionParameter class.
+     *
+     * @param string
+     * @param string
+     **/
+    function __construct($function, $parameter) {}
+
+    /**
+     * To string.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class ReflectionProperty implements Reflector {
+    /**
+     * Exports a reflection.
+     *
+     * @param mixed
+     * @param string
+     * @param bool
+     * @return string
+     **/
+    function export($class, $name, $return) {}
+
+    /**
+     * Gets the declaring class.
+     *
+     * @return ReflectionClass
+     **/
+    function getDeclaringClass() {}
+
+    /**
+     * Gets the doc comment.
+     *
+     * @return string
+     **/
+    function getDocComment() {}
+
+    /**
+     * Gets the modifiers.
+     *
+     * @return int
+     **/
+    function getModifiers() {}
+
+    /**
+     * Gets the properties name.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Gets the properties value.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function getValue($object) {}
+
+    /**
+     * Checks whether the property is the default.
+     *
+     * @return bool
+     **/
+    function isDefault() {}
+
+    /**
+     * Checks whether the property is private.
+     *
+     * @return bool
+     **/
+    function isPrivate() {}
+
+    /**
+     * Checks whether the property is protected.
+     *
+     * @return bool
+     **/
+    function isProtected() {}
+
+    /**
+     * Checks whether the property is public.
+     *
+     * @return bool
+     **/
+    function isPublic() {}
+
+    /**
+     * Checks whether the property is static.
+     *
+     * @return bool
+     **/
+    function isStatic() {}
+
+    /**
+     * Sets a property to be accessible. For example, it may allow protected
+     * and private properties to be accessed.
+     *
+     * @param bool
+     * @return void
+     **/
+    function setAccessible($accessible) {}
+
+    /**
+     * Sets (changes) a properties value.
+     *
+     * @param object
+     * @param mixed
+     * @return void
+     **/
+    function setValue($object, $value) {}
+
+    /**
+     * Clones.
+     *
+     * @return void
+     **/
+    function __clone() {}
+
+    /**
+     * @param mixed
+     * @param string
+     **/
+    function __construct($class, $name) {}
+
+    /**
+     * To string.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class Reflector {
+    /**
+     * Exports.
+     *
+     * @return string
+     **/
+    function export() {}
+
+    /**
+     * To string.
+     *
+     * @return string
+     **/
+    function __toString() {}
 
 }
 class Runkit_Sandbox_Parent {
@@ -17500,19 +18783,19 @@ class SQLite3 {
     function open($filename, $flags, $encryption_key) {}
 
     /**
-     * Prepares an SQL statement for execution and returns an SQLite3_stmt object.
+     * Prepares an SQL statement for execution and returns an SQLite3Stmt object.
      *
      * @param string
-     * @return SQLite3_stmt
+     * @return SQLite3Stmt
      **/
     function prepare($query) {}
 
     /**
-     * Executes an SQL query, returning an SQLite3_result object if the query
+     * Executes an SQL query, returning an SQLite3Result object if the query
      * returns results.
      *
      * @param string
-     * @return SQLite3_result
+     * @return SQLite3Result
      **/
     function query($query) {}
 
@@ -17598,22 +18881,22 @@ class SQLite3Stmt {
     /**
      * Binds a parameter to a statement variable.
      *
-     * @param int
+     * @param string
      * @param mixed
      * @param int
      * @return bool
      **/
-    function bindParam($param_number, &$param, $type) {}
+    function bindParam($sql_param, &$param, $type) {}
 
     /**
      * Binds the value of a parameter to a statement variable.
      *
-     * @param int
+     * @param string
      * @param mixed
      * @param int
      * @return bool
      **/
-    function bindValue($param_number, $param, $type) {}
+    function bindValue($sql_param, $value, $type) {}
 
     /**
      * Clears all current bound parameters.
@@ -17632,7 +18915,7 @@ class SQLite3Stmt {
     /**
      * Executes a prepared statement and returns a result set object.
      *
-     * @return SQLite3_result
+     * @return SQLite3Result
      **/
     function execute() {}
 
@@ -18937,8 +20220,7 @@ class SimpleXMLElement {
 }
 class SoapClient {
     /**
-     * This constructor creates SoapClient objects 
-     * in WSDL or non-WSDL mode.
+     * SoapClient::SoapClient
      *
      * @param mixed
      * @param array
@@ -18950,7 +20232,7 @@ class SoapClient {
      *
      * @param string
      * @param string
-     * @return void
+     * @return mixed
      **/
     function __call($function_name, $arguments) {}
 
@@ -18969,7 +20251,7 @@ class SoapClient {
     /**
      * Returns a list of available SOAP functions.
      *
-     * @return void
+     * @return array
      **/
     function __getFunctions() {}
 
@@ -19082,7 +20364,7 @@ class SoapFault extends Exception {
     /**
      * Returns a string representation of the SoapFault.
      *
-     * @return void
+     * @return string
      **/
     function __toString() {}
 
@@ -20139,6 +21421,15 @@ class SplStack extends SplDoublyLinkedList implements Iterator, ArrayAccess, Cou
 }
 class SplString {
 }
+class SplTempFileObject extends SplFileObject implements SeekableIterator, Iterator, Traversable, RecursiveIterator {
+    /**
+     * Construct a new temporary file object.
+     *
+     * @param integer
+     **/
+    function __construct($max_memory) {}
+
+}
 class Swish {
     const IN_ALL = 0;
     const IN_BODY = 0;
@@ -20662,7 +21953,7 @@ class ZipArchive {
      *
      * @return string
      **/
-    function getStatus() {}
+    function getStatusString() {}
 
     /**
      * Get a file handler to the entry defined by its name. For now it only
@@ -23267,7 +24558,7 @@ function curl_multi_init() {}
 function curl_multi_remove_handle($mh, $ch) {}
 
 /**
- * Get all the sockets associated with the cURL extension, which can then be "selected".
+ * Blocks until there is activity on any of the curl_multi connections.
  *
  * @param resource
  * @param float
@@ -25865,6 +27156,243 @@ function escapeshellarg($arg) {}
  * @return string
  **/
 function escapeshellcmd($command) {}
+
+/**
+ * event_add schedules the execution of the event 
+ * when the event specified in event_set occurs or in at least the time 
+ * specified by the timeout argument. If
+ * timeout was not specified, not timeout is set. The
+ * event must be already initalized by event_set
+ * and event_base_set functions. If the
+ * event already has a timeout set, it is replaced by
+ * the new one.
+ *
+ * @param resource
+ * @param int
+ * @return bool
+ **/
+function event_add($event, $timeout) {}
+
+/**
+ * Destroys the specified event_base and frees all the
+ * resources associated. Note that it's not possible to destroy an event base
+ * with events attached to it.
+ *
+ * @param resource
+ * @return void
+ **/
+function event_base_free($event_base) {}
+
+/**
+ * Starts event loop for the specified event base.
+ *
+ * @param resource
+ * @param int
+ * @return int
+ **/
+function event_base_loop($event_base, $flags) {}
+
+/**
+ * Abort the active event loop immediately. The behaviour is similar to
+ * break statement.
+ *
+ * @param resource
+ * @return bool
+ **/
+function event_base_loopbreak($event_base) {}
+
+/**
+ * The next event loop iteration after the given timer expires will complete
+ * normally, then exit without blocking for events again.
+ *
+ * @param resource
+ * @param int
+ * @return bool
+ **/
+function event_base_loopexit($event_base, $timeout) {}
+
+/**
+ * Returns new event base, which can be used later in event_base_set, 
+ * event_base_loop and other functions.
+ *
+ * @return resource
+ **/
+function event_base_new() {}
+
+/**
+ * Sets the number of different event priority levels.
+ *
+ * @param resource
+ * @param int
+ * @return bool
+ **/
+function event_base_priority_init($event_base, $npriorities) {}
+
+/**
+ * Associates the event_base with the
+ * event.
+ *
+ * @param resource
+ * @param resource
+ * @return bool
+ **/
+function event_base_set($event, $event_base) {}
+
+/**
+ * Assign the specified bevent to the
+ * event_base.
+ *
+ * @param resource
+ * @param resource
+ * @return resource
+ **/
+function event_buffer_base_set($bevent, $event_base) {}
+
+/**
+ * Disables the specified buffered event.
+ *
+ * @param resource
+ * @param int
+ * @return bool
+ **/
+function event_buffer_disable($bevent, $events) {}
+
+/**
+ * Enables the specified buffered event.
+ *
+ * @param resource
+ * @param int
+ * @return bool
+ **/
+function event_buffer_enable($bevent, $events) {}
+
+/**
+ * Changes the file descriptor on which the buffered event operates.
+ *
+ * @param resource
+ * @param resource
+ * @return void
+ **/
+function event_buffer_fd_set($bevent, $fd) {}
+
+/**
+ * Destroys the specified buffered event and frees all the resources
+ * associated.
+ *
+ * @param resource
+ * @return void
+ **/
+function event_buffer_free($bevent) {}
+
+/**
+ * Libevent provides an abstraction layer on top of the regular event API.
+ * Using buffered event you don't need to deal with the I/O manually, instead
+ * it provides input and output buffers that get filled and drained
+ * automatically.
+ *
+ * @param resource
+ * @param mixed
+ * @param mixed
+ * @param mixed
+ * @param mixed
+ * @return resource
+ **/
+function event_buffer_new($stream, $readcb, $writecb, $errorcb, $arg) {}
+
+/**
+ * Assign a priority to the bevent.
+ *
+ * @param resource
+ * @param int
+ * @return resource
+ **/
+function event_buffer_priority_set($bevent, $priority) {}
+
+/**
+ * Reads data from the input buffer of the buffered event.
+ *
+ * @param resource
+ * @param 
+ * @return string
+ **/
+function event_buffer_read($bevent, $data_size) {}
+
+/**
+ * Sets the read and write timeouts for the specified buffered event.
+ *
+ * @param resource
+ * @param int
+ * @param int
+ * @return void
+ **/
+function event_buffer_timeout_set($bevent, $read_timeout, $write_timeout) {}
+
+/**
+ * Sets the watermarks for read and write events. Libevent does not invoke
+ * read callback unless there is at least lowmark bytes
+ * in the input buffer; if the read buffer is beyond the highmark, 
+ * reading is stopped. On output, the write callback is invoked whenever the
+ * buffered data falls below the lowmark.
+ *
+ * @param resource
+ * @param int
+ * @param int
+ * @param int
+ * @return bool
+ **/
+function event_buffer_watermark_set($bevent, $events, $lowmark, $highmark) {}
+
+/**
+ * Writes data to the specified buffered event. The data is appended to the
+ * output buffer and written to the descriptor when it becomes available for
+ * writing.
+ *
+ * @param resource
+ * @param string
+ * @param int
+ * @return bool
+ **/
+function event_buffer_write($bevent, $data, $data_size) {}
+
+/**
+ * Cancels the event.
+ *
+ * @param resource
+ * @return bool
+ **/
+function event_del($event) {}
+
+/**
+ * Frees previously created event resource.
+ *
+ * @param resource
+ * @return bool
+ **/
+function event_free($event) {}
+
+/**
+ * Creates and returns new event resource.
+ *
+ * @return resource
+ **/
+function event_new() {}
+
+/**
+ * Prepares the event to be used in event_add. The event
+ * is prepared to call the function specified by the callback 
+ * on the events specified in parameter events, which
+ * is a set of the following flags: EV_TIMEOUT, 
+ * EV_SIGNAL, EV_READ and
+ * EV_WRITE.
+ *
+ * @param resource
+ * @param resource
+ * @param int
+ * @param mixed
+ * @param mixed
+ * @return bool
+ **/
+function event_set($event, $fd, $events, $callback, $arg) {}
 
 /**
  * exec executes the given
@@ -31509,23 +33037,22 @@ function idate($format, $timestamp) {}
 function idn_strerror($errorcode) {}
 
 /**
- * This function converts a UTF-8 encoded domain name to ASCII according to the IDNA toUnicode() specification.
- * If the input has non-ASCII characters, the output will be in the "xn--" ACE notation.
+ * Procedural style
  *
  * @param string
  * @param int
  * @return string
  **/
-function idn_to_ascii($utf8_domain, &$errorcode) {}
+function idn_to_ascii($domain, $options) {}
 
 /**
- * This function converts a ASCII encoded domain name to its original UTF-8 version.
+ * Procedural style
  *
  * @param string
  * @param int
  * @return string
  **/
-function idn_to_utf8($ascii_domain, &$errorcode) {}
+function idn_to_utf8($domain, $options) {}
 
 /**
  * Deletes the slob object on the given slob object-id
@@ -60255,6 +61782,13 @@ define('ERA_D_T_FMT', 0);
 define('ERA_T_FMT', 0);
 define('ERA_YEAR', 0);
 define('ERROR_TRACE', 0);
+define('EVLOOP_NONBLOCK', 0);
+define('EVLOOP_ONCE', 0);
+define('EV_PERSIST', 0);
+define('EV_READ', 0);
+define('EV_SIGNAL', 0);
+define('EV_TIMEOUT', 0);
+define('EV_WRITE', 0);
 define('EXP_EOF', 0);
 define('EXP_EXACT', 0);
 define('EXP_FULLBUFFER', 0);
