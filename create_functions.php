@@ -282,6 +282,7 @@ echo "wrote ".$declarationCount." declarations\n";
  */
 function parseFile($file, $funcOverload="") {
 global $existingFunctions, $constants, $constants_comments, $variables, $classes;
+
     if (substr($file->getFilename(), -4) != '.xml') return false;
     if (substr($file->getFilename(), 0, 9) == 'entities.') return false;
     $string = file_get_contents($file->getPathname());
@@ -392,6 +393,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             }
         }
     }
+
     if (!isset($xml->refsect1)) return false;
     if (isset($xml->refsect1->methodsynopsis)) {
         $methodsynopsis = $xml->refsect1->methodsynopsis;
@@ -401,6 +403,16 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         $methodsynopsis = $xml->refsect1->classsynopsis->methodsynopsis;
         $class = (string)$xml->refsect1->classsynopsis->ooclass->classname;
         $function = (string)$methodsynopsis->methodname;
+    } elseif ( isset($xml->refnamediv->refpurpose->function) ) {
+        // This is function alias
+        $functionName = (string)$xml->refnamediv->refname;
+        $aliasName    = (string)$xml->refnamediv->refpurpose->function;
+        $baseFileName = dirname($file->getPathname()).'/'.str_replace('_', '-', $aliasName).'.xml';
+        if ( $baseFileName == $file->getPathname() || !file_exists($baseFileName) ) {
+            return false;
+        }
+        parseFile(new SplFileInfo($baseFileName), $functionName);
+        return true;
     } else {
         return false;
     }
@@ -423,6 +435,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         if ($function == 'unset') return false;
         if ($function == 'empty') return false;
     }
+
     if (strpos($function, '-')) return false;
     if (strpos($class, '-')) return false;
     if ($function == 'isSet') return false; //todo: bug in lexer
@@ -430,8 +443,8 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     if (substr($class, 0, 3) == 'DOM') $class = 'Dom'.substr($class, 3);
     $class = trim($class);
     if ($class == 'imagick') $class = 'Imagick';
-    if (in_array($class.'::'.$function, $existingFunctions)) return false;
-    $existingFunctions[] = $class.'::'.$function;
+    if (in_array($class.'::'.($funcOverload ? $funcOverload : $function), $existingFunctions)) return false;
+    $existingFunctions[] = $class.'::'.($funcOverload ? $funcOverload : $function);
 
     $params = array();
     foreach ($methodsynopsis->methodparam as $param) {
@@ -452,14 +465,15 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     $desc = trim($desc);
     $desc = preg_replace('#  +#', ' ', $desc);
     $desc = preg_replace('#^ #m', '', $desc);
+
     if (!isset($classes[$class])) {
         $classes[$class] = array('functions'=>array());
     }
     $classes[$class]['functions'][] = array(
-        'name' => $function,
+        'name'   => $funcOverload ? $funcOverload : $function,
         'params' => $params,
-        'type' => (string)$methodsynopsis->type,
-        'desc' => $desc
+        'type'   => (string)$methodsynopsis->type,
+        'desc'   => $funcOverload ? str_replace($function, $funcOverload, $desc) : $desc
     );
     return true;
 } // end of function parseFile()
