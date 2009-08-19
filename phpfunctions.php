@@ -22222,6 +22222,15 @@ function aggregate_properties_by_list($object, $class_name, $properties_list, $e
 function aggregate_properties_by_regexp($object, $class_name, $regexp, $exclude) {}
 
 /**
+ * Gets the aggregation information for the given
+ * object.
+ *
+ * @param object
+ * @return array
+ **/
+function aggregation_info($object) {}
+
+/**
  * apache_child_terminate will register the
  * Apache process executing the current PHP request for termination
  * once execution of PHP code is completed. It may be used to
@@ -23868,6 +23877,16 @@ function chgrp($filename, $group) {}
  * @return bool
  **/
 function chmod($filename, $mode) {}
+
+/**
+ * This function returns a string with whitespace stripped from the
+ * end of str.
+ *
+ * @param string
+ * @param string
+ * @return string
+ **/
+function chop($str, $charlist) {}
 
 /**
  * Attempts to change the owner of the file filename
@@ -26696,6 +26715,16 @@ function dirname($path) {}
  * @param string
  * @return float
  **/
+function diskfreespace($directory) {}
+
+/**
+ * Given a string containing a directory, this function will return the
+ * number of bytes available on the corresponding filesystem or disk
+ * partition.
+ *
+ * @param string
+ * @return float
+ **/
 function disk_free_space($directory) {}
 
 /**
@@ -26727,6 +26756,27 @@ function dl($library) {}
  * @return string
  **/
 function dngettext($domain, $msgid1, $msgid2, $n) {}
+
+/**
+ * Searches DNS for records of type type
+ * corresponding to host.
+ *
+ * @param string
+ * @param string
+ * @return bool
+ **/
+function dns_check_record($host, $type) {}
+
+/**
+ * Searches DNS for MX records corresponding to 
+ * hostname.
+ *
+ * @param string
+ * @param array
+ * @param array
+ * @return bool
+ **/
+function dns_get_mx($hostname, &$mxhosts, &$weight) {}
 
 /**
  * Fetch DNS Resource Records associated with the given
@@ -26836,6 +26886,14 @@ function dom_import_simplexml($node) {}
  * @return int
  **/
 function dotnet_load($assembly_name, $datatype_name, $codepage) {}
+
+/**
+ * Gets the float value of var.
+ *
+ * @param mixed
+ * @return float
+ **/
+function doubleval($var) {}
 
 /**
  * Return the current key and value pair from an array and advance the array
@@ -28155,6 +28213,16 @@ function fbsql_start_db($database_name, $link_identifier, $database_options) {}
 function fbsql_stop_db($database_name, $link_identifier) {}
 
 /**
+ * fbsql_tablename gets the name of the current table in
+ * the given result set.
+ *
+ * @param resource
+ * @param int
+ * @return string
+ **/
+function fbsql_tablename($result, $index) {}
+
+/**
  * fbsql_table_name gets the name of the current table in
  * the given result set.
  *
@@ -28992,6 +29060,14 @@ function fprintf($handle, $format, $args) {}
 function fputcsv($handle, $fields, $delimiter, $enclosure) {}
 
 /**
+ * @param resource
+ * @param string
+ * @param int
+ * @return int
+ **/
+function fputs($handle, $string, $length) {}
+
+/**
  * fread reads up to
  * length bytes from the file pointer
  * referenced by handle. Reading stops as soon as one
@@ -29366,6 +29442,15 @@ function ftp_put($ftp_stream, $remote_file, $local_file, $mode, $startpos) {}
  * @return string
  **/
 function ftp_pwd($ftp_stream) {}
+
+/**
+ * ftp_quit closes the given link identifier
+ * and releases the resource.
+ *
+ * @param resource
+ * @return bool
+ **/
+function ftp_quit($ftp_stream) {}
 
 /**
  * Sends an arbitrary command to the FTP server.
@@ -30085,6 +30170,15 @@ function get_object_vars($object) {}
 function get_parent_class($object) {}
 
 /**
+ * Gets the names of all files that have been included using
+ * include, include_once,
+ * require or require_once.
+ *
+ * @return array
+ **/
+function get_required_files() {}
+
+/**
  * This function gets the type of the given resource.
  *
  * @param resource
@@ -30182,6 +30276,17 @@ function gmp_cmp($a, $b) {}
  * @return resource
  **/
 function gmp_com($a) {}
+
+/**
+ * Divides a by b and
+ * returns the integer result.
+ *
+ * @param resource
+ * @param resource
+ * @param int
+ * @return resource
+ **/
+function gmp_div($a, $b, $round) {}
 
 /**
  * Divides n by d,
@@ -30945,6 +31050,17 @@ function gzopen($filename, $mode, $use_include_path) {}
  * @return int
  **/
 function gzpassthru($zp) {}
+
+/**
+ * gzputs writes the contents of
+ * string to the given gz-file.
+ *
+ * @param resource
+ * @param string
+ * @param int
+ * @return int
+ **/
+function gzputs($zp, $string, $length) {}
 
 /**
  * gzread reads up to length bytes
@@ -33052,6 +33168,15 @@ function idn_to_ascii($domain, $options) {}
  * @param int
  * @return string
  **/
+function idn_to_unicode($domain, $options) {}
+
+/**
+ * Procedural style
+ *
+ * @param string
+ * @param int
+ * @return string
+ **/
 function idn_to_utf8($domain, $options) {}
 
 /**
@@ -34946,6 +35071,18 @@ function imap_get_quotaroot($imap_stream, $quota_root) {}
  * @param string
  * @return object
  **/
+function imap_header($imap_stream, $msg_number, $fromlength, $subjectlength, $defaulthost) {}
+
+/**
+ * Gets information about the given message number by reading its headers.
+ *
+ * @param resource
+ * @param int
+ * @param int
+ * @param int
+ * @param string
+ * @return object
+ **/
 function imap_headerinfo($imap_stream, $msg_number, $fromlength, $subjectlength, $defaulthost) {}
 
 /**
@@ -34977,6 +35114,16 @@ function imap_last_error() {}
 function imap_list($imap_stream, $ref, $pattern) {}
 
 /**
+ * Read the list of mailboxes.
+ *
+ * @param resource
+ * @param string
+ * @param string
+ * @return array
+ **/
+function imap_listmailbox($imap_stream, $ref, $pattern) {}
+
+/**
  * Returns an array containing the names of the mailboxes that have
  * content in the text of the mailbox.
  *
@@ -34987,6 +35134,16 @@ function imap_list($imap_stream, $ref, $pattern) {}
  * @return array
  **/
 function imap_listscan($imap_stream, $ref, $pattern, $content) {}
+
+/**
+ * Gets an array of all the mailboxes that you have subscribed.
+ *
+ * @param resource
+ * @param string
+ * @param string
+ * @return array
+ **/
+function imap_listsubscribed($imap_stream, $ref, $pattern) {}
 
 /**
  * Gets an array of all the mailboxes that you have subscribed.
@@ -35187,6 +35344,18 @@ function imap_rfc822_write_address($mailbox, $host, $personal) {}
  * @return bool
  **/
 function imap_savebody($imap_stream, $file, $msg_number, $part_number, $options) {}
+
+/**
+ * Returns an array containing the names of the mailboxes that have
+ * content in the text of the mailbox.
+ *
+ * @param resource
+ * @param string
+ * @param string
+ * @param string
+ * @return array
+ **/
+function imap_scanmailbox($imap_stream, $ref, $pattern, $content) {}
 
 /**
  * This function performs a search on the mailbox currently opened
@@ -35734,6 +35903,17 @@ function ingres_set_environment($link, $options) {}
 function ingres_unbuffered_query($link, $query, $params, $types) {}
 
 /**
+ * Sets the value of the given configuration option. The configuration option
+ * will keep this new value during the script's execution, and will be restored
+ * at the script's ending.
+ *
+ * @param string
+ * @param string
+ * @return string
+ **/
+function ini_alter($varname, $newvalue) {}
+
+/**
  * Returns the value of the configuration option on success.
  *
  * @param string
@@ -35970,6 +36150,14 @@ function is_callable($name, $syntax_only, &$callable_name) {}
 function is_dir($filename) {}
 
 /**
+ * Finds whether the type of the given variable is float.
+ *
+ * @param mixed
+ * @return bool
+ **/
+function is_double($var) {}
+
+/**
  * Tells whether the filename is executable.
  *
  * @param string
@@ -36021,12 +36209,28 @@ function is_infinite($val) {}
 function is_int($var) {}
 
 /**
+ * Finds whether the type of the given variable is integer.
+ *
+ * @param mixed
+ * @return bool
+ **/
+function is_integer($var) {}
+
+/**
  * Tells whether the given file is a symbolic link.
  *
  * @param string
  * @return bool
  **/
 function is_link($filename) {}
+
+/**
+ * Finds whether the type of the given variable is integer.
+ *
+ * @param mixed
+ * @return bool
+ **/
+function is_long($var) {}
 
 /**
  * Checks whether val is 'not a number', 
@@ -36072,6 +36276,14 @@ function is_object($var) {}
  * @return bool
  **/
 function is_readable($filename) {}
+
+/**
+ * Finds whether the type of the given variable is float.
+ *
+ * @param mixed
+ * @return bool
+ **/
+function is_real($var) {}
 
 /**
  * Finds whether the given variable is a resource.
@@ -36150,6 +36362,16 @@ function is_uploaded_file($filename) {}
  * @return bool
  **/
 function is_writable($filename) {}
+
+/**
+ * Returns if the filename exists and is
+ * writable. The filename argument may be a directory name allowing you
+ * to check if a directory is writable.
+ *
+ * @param string
+ * @return bool
+ **/
+function is_writeable($filename) {}
 
 /**
  * Calls a function for every element in an iterator.
@@ -36316,6 +36538,15 @@ function jdtounix($jday) {}
  * @return int
  **/
 function jewishtojd($month, $day, $year) {}
+
+/**
+ * Join array elements with a glue string.
+ *
+ * @param string
+ * @param array
+ * @return string
+ **/
+function join($glue, $pieces) {}
 
 /**
  * Converts a JPEG file into a WBMP file.
@@ -36564,6 +36795,14 @@ function ldap_add($link_identifier, $dn, $entry) {}
  * @return bool
  **/
 function ldap_bind($link_identifier, $bind_rdn, $bind_password) {}
+
+/**
+ * Unbinds from the LDAP directory.
+ *
+ * @param resource
+ * @return bool
+ **/
+function ldap_close($link_identifier) {}
 
 /**
  * Compare value of attribute
@@ -37180,6 +37419,14 @@ function lzf_decompress($data) {}
 function lzf_optimized_for() {}
 
 /**
+ * Set the current active configuration setting of magic_quotes_runtime.
+ *
+ * @param bool
+ * @return bool
+ **/
+function magic_quotes_runtime($new_setting) {}
+
+/**
  * Sends an email.
  *
  * @param string
@@ -37339,6 +37586,25 @@ function maxdb_autocommit($link, $mode) {}
  *
  * @param resource
  * @param string
+ * @param mixed
+ * @return bool
+ **/
+function maxdb_bind_param($stmt, $types, &$var1) {}
+
+/**
+ * Procedural style:
+ *
+ * @param resource
+ * @param mixed
+ * @return bool
+ **/
+function maxdb_bind_result($stmt, &$var1) {}
+
+/**
+ * Procedural style:
+ *
+ * @param resource
+ * @param string
  * @param string
  * @param string
  * @return bool
@@ -37357,9 +37623,26 @@ function maxdb_character_set_name($link) {}
  * Procedural style:
  *
  * @param resource
+ * @return string
+ **/
+function maxdb_client_encoding($link) {}
+
+/**
+ * Procedural style:
+ *
+ * @param resource
  * @return bool
  **/
 function maxdb_close($link) {}
+
+/**
+ * Procedural style:
+ *
+ * @param resource
+ * @param int
+ * @return bool
+ **/
+function maxdb_close_long_data($stmt, $param_nr) {}
 
 /**
  * Procedural style:
@@ -37474,6 +37757,31 @@ function maxdb_errno($link) {}
  * @return string
  **/
 function maxdb_error($link) {}
+
+/**
+ * Procedural style:
+ *
+ * @param resource
+ * @param string
+ * @return string
+ **/
+function maxdb_escape_string($link, $escapestr) {}
+
+/**
+ * Procedural style:
+ *
+ * @param resource
+ * @return bool
+ **/
+function maxdb_execute($stmt) {}
+
+/**
+ * Procedural style:
+ *
+ * @param resource
+ * @return bool
+ **/
+function maxdb_fetch($stmt) {}
 
 /**
  * Procedural style:
@@ -37602,6 +37910,14 @@ function maxdb_get_host_info($link) {}
  * Procedural style:
  *
  * @param resource
+ * @return resource
+ **/
+function maxdb_get_metadata($stmt) {}
+
+/**
+ * Procedural style:
+ *
+ * @param resource
  * @return int
  **/
 function maxdb_get_proto_info($link) {}
@@ -37719,6 +38035,14 @@ function maxdb_options($link, $option, $value) {}
  * Procedural style:
  *
  * @param resource
+ * @return int
+ **/
+function maxdb_param_count($stmt) {}
+
+/**
+ * Procedural style:
+ *
+ * @param resource
  * @return bool
  **/
 function maxdb_ping($link) {}
@@ -37822,6 +38146,16 @@ function maxdb_rpl_query_type($link) {}
 function maxdb_select_db($link, $dbname) {}
 
 /**
+ * Procedural style:
+ *
+ * @param resource
+ * @param int
+ * @param string
+ * @return bool
+ **/
+function maxdb_send_long_data($stmt, $param_nr, $data) {}
+
+/**
  * Object oriented style (method)
  *
  * @param resource
@@ -37841,6 +38175,16 @@ function maxdb_server_end() {}
  * @return bool
  **/
 function maxdb_server_init($server, $groups) {}
+
+/**
+ * Procedural style:
+ *
+ * @param resource
+ * @param int
+ * @param mixed
+ * @return bool
+ **/
+function maxdb_set_opt($link, $option, $value) {}
 
 /**
  * Procedural style:
@@ -39740,6 +40084,17 @@ function msg_set_queue($queue, $data) {}
 function msg_stat_queue($queue) {}
 
 /**
+ * msql selects a database and executes a query
+ * on it.
+ *
+ * @param string
+ * @param string
+ * @param resource
+ * @return resource
+ **/
+function msql($database, $query, $link_identifier) {}
+
+/**
  * Returns number of affected rows by the last SELECT, UPDATE or DELETE
  * query associated with result.
  *
@@ -39767,6 +40122,16 @@ function msql_close($link_identifier) {}
 function msql_connect($hostname) {}
 
 /**
+ * msql_createdb attempts to create a new database on 
+ * the mSQL server.
+ *
+ * @param string
+ * @param resource
+ * @return bool
+ **/
+function msql_createdb($database_name, $link_identifier) {}
+
+/**
  * msql_create_db attempts to create a new database on 
  * the mSQL server.
  *
@@ -39788,6 +40153,17 @@ function msql_create_db($database_name, $link_identifier) {}
  * @return bool
  **/
 function msql_data_seek($result, $row_number) {}
+
+/**
+ * msql_dbname returns the contents of one cell from a 
+ * mSQL result set.
+ *
+ * @param resource
+ * @param int
+ * @param mixed
+ * @return string
+ **/
+function msql_dbname($result, $row, $field) {}
 
 /**
  * msql_db_query selects a database and executes a query
@@ -39863,6 +40239,55 @@ function msql_fetch_object($result) {}
  * @return array
  **/
 function msql_fetch_row($result) {}
+
+/**
+ * msql_fieldflags returns the field flags of
+ * the specified field.
+ *
+ * @param resource
+ * @param int
+ * @return string
+ **/
+function msql_fieldflags($result, $field_offset) {}
+
+/**
+ * msql_fieldlen returns the length of the specified 
+ * field.
+ *
+ * @param resource
+ * @param int
+ * @return int
+ **/
+function msql_fieldlen($result, $field_offset) {}
+
+/**
+ * msql_fieldname gets the name of the specified field
+ * index.
+ *
+ * @param resource
+ * @param int
+ * @return string
+ **/
+function msql_fieldname($result, $field_offset) {}
+
+/**
+ * Returns the name of the table that the specified field is in.
+ *
+ * @param resource
+ * @param int
+ * @return int
+ **/
+function msql_fieldtable($result, $field_offset) {}
+
+/**
+ * msql_fieldtype gets the type of the specified field
+ * index.
+ *
+ * @param resource
+ * @param int
+ * @return string
+ **/
+function msql_fieldtype($result, $field_offset) {}
 
 /**
  * msql_field_flags returns the field flags of
@@ -39966,6 +40391,24 @@ function msql_list_fields($database, $tablename, $link_identifier) {}
 function msql_list_tables($database, $link_identifier) {}
 
 /**
+ * msql_numfields returns the number of fields
+ * in a result set.
+ *
+ * @param resource
+ * @return int
+ **/
+function msql_numfields($result) {}
+
+/**
+ * msql_numrows returns the number of rows in
+ * a result set.
+ *
+ * @param resource
+ * @return int
+ **/
+function msql_numrows($query_identifier) {}
+
+/**
  * msql_num_fields returns the number of fields
  * in a result set.
  *
@@ -40024,6 +40467,17 @@ function msql_result($result, $row, $field) {}
  * @return bool
  **/
 function msql_select_db($database_name, $link_identifier) {}
+
+/**
+ * msql_tablename returns the contents of one cell from a 
+ * mSQL result set.
+ *
+ * @param resource
+ * @param int
+ * @param mixed
+ * @return string
+ **/
+function msql_tablename($result, $row, $field) {}
 
 /**
  * Binds a parameter to a stored procedure or a remote stored procedure.
@@ -44004,6 +44458,140 @@ function ob_start($output_callback, $chunk_size, $erase) {}
 function ob_tidyhandler($input, $mode) {}
 
 /**
+ * Binds the PHP variable variable to the Oracle
+ * placeholder ph_name. Whether it will be used for
+ * input or output will be determined at run-time and the necessary
+ * storage space will be allocated.
+ *
+ * @param resource
+ * @param string
+ * @param mixed
+ * @param int
+ * @param int
+ * @return bool
+ **/
+function ocibindbyname($statement, $ph_name, &$variable, $maxlength, $type) {}
+
+/**
+ * Invalidates a cursor, freeing all associated resources and cancels the
+ * ability to read from it.
+ *
+ * @param resource
+ * @return bool
+ **/
+function ocicancel($statement) {}
+
+/**
+ * Checks if the given field from the 
+ * statement is .
+ *
+ * @param resource
+ * @param mixed
+ * @return bool
+ **/
+function ocicolumnisnull($statement, $field) {}
+
+/**
+ * Returns the name of the field.
+ *
+ * @param resource
+ * @param int
+ * @return string
+ **/
+function ocicolumnname($statement, $field) {}
+
+/**
+ * Returns precision of the field.
+ *
+ * @param resource
+ * @param int
+ * @return int
+ **/
+function ocicolumnprecision($statement, $field) {}
+
+/**
+ * Returns the scale of the column with field index.
+ *
+ * @param resource
+ * @param int
+ * @return int
+ **/
+function ocicolumnscale($statement, $field) {}
+
+/**
+ * Returns the size of a field.
+ *
+ * @param resource
+ * @param mixed
+ * @return int
+ **/
+function ocicolumnsize($statement, $field) {}
+
+/**
+ * Returns a field's data type.
+ *
+ * @param resource
+ * @param int
+ * @return mixed
+ **/
+function ocicolumntype($statement, $field) {}
+
+/**
+ * Returns Oracle's raw data type of the field.
+ *
+ * @param resource
+ * @param int
+ * @return int
+ **/
+function ocicolumntyperaw($statement, $field) {}
+
+/**
+ * Commits all outstanding statements for the active transaction on the
+ * Oracle connection.
+ *
+ * @param resource
+ * @return bool
+ **/
+function ocicommit($connection) {}
+
+/**
+ * Defines PHP variables for fetches of SQL-Columns.
+ *
+ * @param resource
+ * @param string
+ * @param mixed
+ * @param int
+ * @return bool
+ **/
+function ocidefinebyname($statement, $column_name, &$variable, $type) {}
+
+/**
+ * Returns the last error found.
+ *
+ * @param resource
+ * @return array
+ **/
+function ocierror($source) {}
+
+/**
+ * Executes a previously parsed statement.
+ *
+ * @param resource
+ * @param int
+ * @return bool
+ **/
+function ociexecute($statement, $mode) {}
+
+/**
+ * Fetches the next row (for SELECT statements) into the internal
+ * result-buffer.
+ *
+ * @param resource
+ * @return bool
+ **/
+function ocifetch($statement) {}
+
+/**
  * This function is deprecated. Recommended alternatives:
  * oci_fetch_array, oci_fetch_object,
  * oci_fetch_assoc and
@@ -44015,6 +44603,191 @@ function ob_tidyhandler($input, $mode) {}
  * @return int
  **/
 function ocifetchinto($statement, &$result, $mode) {}
+
+/**
+ * Fetches all the rows from a result into a user-defined array.
+ *
+ * @param resource
+ * @param array
+ * @param int
+ * @param int
+ * @param int
+ * @return int
+ **/
+function ocifetchstatement($statement, &$output, $skip, $maxrows, $flags) {}
+
+/**
+ * Frees resources associated with Oracle's cursor or statement, which was
+ * received from as a result of oci_parse or obtained
+ * from Oracle.
+ *
+ * @param resource
+ * @return bool
+ **/
+function ocifreecursor($statement) {}
+
+/**
+ * Frees resources associated with Oracle's cursor or statement, which was
+ * received from as a result of oci_parse or obtained
+ * from Oracle.
+ *
+ * @param resource
+ * @return bool
+ **/
+function ocifreestatement($statement) {}
+
+/**
+ * Enables or disables internal debug output.
+ *
+ * @param bool
+ * @return void
+ **/
+function ociinternaldebug($onoff) {}
+
+/**
+ * Closes the Oracle connection.
+ *
+ * @param resource
+ * @return bool
+ **/
+function ocilogoff($connection) {}
+
+/**
+ * Returns a connection identifier needed for most other OCI calls.
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @param int
+ * @return resource
+ **/
+function ocilogon($username, $password, $db, $charset, $session_mode) {}
+
+/**
+ * Allocates a new collection object.
+ *
+ * @param resource
+ * @param string
+ * @param string
+ * @return OCI-Collection
+ **/
+function ocinewcollection($connection, $tdo, $schema) {}
+
+/**
+ * Allocates a new statement handle on the specified connection.
+ *
+ * @param resource
+ * @return resource
+ **/
+function ocinewcursor($connection) {}
+
+/**
+ * Allocates resources to hold descriptor or LOB locator.
+ *
+ * @param resource
+ * @param int
+ * @return OCI-Lob
+ **/
+function ocinewdescriptor($connection, $type) {}
+
+/**
+ * Establishes a new connection to an Oracle server and logs on.
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @param int
+ * @return resource
+ **/
+function ocinlogon($username, $password, $db, $charset, $session_mode) {}
+
+/**
+ * Gets the number of columns in the given statement.
+ *
+ * @param resource
+ * @return int
+ **/
+function ocinumcols($statement) {}
+
+/**
+ * Prepares the queryusing
+ * connection and returns the statement identifier,
+ * which can be used with oci_bind_by_name, 
+ * oci_execute and other functions.
+ *
+ * @param resource
+ * @param string
+ * @return resource
+ **/
+function ociparse($connection, $query) {}
+
+/**
+ * Creates a persistent connection to an Oracle server and logs on.
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @param int
+ * @return resource
+ **/
+function ociplogon($username, $password, $db, $charset, $session_mode) {}
+
+/**
+ * Returns the data from field in the current row,
+ * fetched by oci_fetch.
+ *
+ * @param resource
+ * @param mixed
+ * @return mixed
+ **/
+function ociresult($statement, $field) {}
+
+/**
+ * Rolls back all outstanding statements for the Oracle 
+ * connection.
+ *
+ * @param resource
+ * @return bool
+ **/
+function ocirollback($connection) {}
+
+/**
+ * Gets the number of rows affected during statement execution.
+ *
+ * @param resource
+ * @return int
+ **/
+function ocirowcount($statement) {}
+
+/**
+ * Returns a string with version information of the Oracle server, which uses
+ * the provided connection.
+ *
+ * @param resource
+ * @return string
+ **/
+function ociserverversion($connection) {}
+
+/**
+ * Sets the number of rows to be prefetched after successful call to
+ * oci_execute.
+ *
+ * @param resource
+ * @param int
+ * @return bool
+ **/
+function ocisetprefetch($statement, $rows) {}
+
+/**
+ * Returns the type of the provided OCI statement.
+ *
+ * @param resource
+ * @return string
+ **/
+function ocistatementtype($statement) {}
 
 /**
  * Binds the PHP array var_array to the Oracle
@@ -44510,6 +45283,16 @@ function odbc_cursor($result_id) {}
 function odbc_data_source($connection_id, $fetch_type) {}
 
 /**
+ * Sends an SQL statement to the database server.
+ *
+ * @param resource
+ * @param string
+ * @param int
+ * @return resource
+ **/
+function odbc_do($connection_id, $query_string, $flags) {}
+
+/**
  * @param resource
  * @return string
  **/
@@ -44611,6 +45394,16 @@ function odbc_field_name($result_id, $field_number) {}
  * @return int
  **/
 function odbc_field_num($result_id, $field_name) {}
+
+/**
+ * Gets the length of the field referenced by number in the given result
+ * identifier.
+ *
+ * @param resource
+ * @param int
+ * @return int
+ **/
+function odbc_field_precision($result_id, $field_number) {}
 
 /**
  * Gets the scale of the field referenced by number in the given result
@@ -45159,6 +45952,26 @@ function openssl_get_cipher_methods($aliases) {}
  * @return array
  **/
 function openssl_get_md_methods($aliases) {}
+
+/**
+ * openssl_get_privatekey parses
+ * key and prepares it for use by other functions.
+ *
+ * @param mixed
+ * @param string
+ * @return resource
+ **/
+function openssl_get_privatekey($key, $passphrase) {}
+
+/**
+ * openssl_get_publickey extracts the public key from
+ * certificate and prepares it for use by other
+ * functions.
+ *
+ * @param mixed
+ * @return resource
+ **/
+function openssl_get_publickey($certificate) {}
 
 /**
  * openssl_open opens (decrypts)
@@ -48775,6 +49588,16 @@ function png2wbmp($pngname, $wbmpname, $dest_height, $dest_width, $threshold) {}
 function popen($command, $mode) {}
 
 /**
+ * Every array has an internal pointer to its "pos" element,
+ * which is initialized to the first element inserted into the
+ * array.
+ *
+ * @param array
+ * @return mixed
+ **/
+function pos(&$array) {}
+
+/**
  * posix_access checks the user's permission of a file.
  *
  * @param string
@@ -51551,6 +52374,20 @@ function readline_write_history($filename) {}
 function readlink($path) {}
 
 /**
+ * read_exif_data reads the
+ * EXIF headers from a JPEG or 
+ * TIFF image file. This way you can read meta data 
+ * generated by digital cameras.
+ *
+ * @param string
+ * @param string
+ * @param bool
+ * @param bool
+ * @return array
+ **/
+function read_exif_data($filename, $sections, $arrays, $thumbnail) {}
+
+/**
  * realpath expands all symbolic links and
  * resolves references to '/./', '/../' and extra '/' characters in
  * the input path. and return the canonicalized
@@ -51560,6 +52397,16 @@ function readlink($path) {}
  * @return string
  **/
 function realpath($path) {}
+
+/**
+ * Recode the string string according to
+ * the recode request request.
+ *
+ * @param string
+ * @param string
+ * @return string
+ **/
+function recode($request, $string) {}
 
 /**
  * Recode the file referenced by file handle
@@ -52013,6 +52860,13 @@ function session_cache_expire($new_cache_expire) {}
 function session_cache_limiter($cache_limiter) {}
 
 /**
+ * End the current session and store session data.
+ *
+ * @return void
+ **/
+function session_commit() {}
+
+/**
  * session_decode decodes the session data in
  * data, setting variables stored in the
  * session.
@@ -52307,6 +53161,15 @@ function set_include_path($new_include_path) {}
 function set_magic_quotes_runtime($new_setting) {}
 
 /**
+ * Sets blocking or non-blocking mode on a stream.
+ *
+ * @param resource
+ * @param int
+ * @return bool
+ **/
+function set_socket_blocking($stream, $mode) {}
+
+/**
  * Set the number of seconds a script is allowed to run. If this is reached,
  * the script returns a fatal error. The default limit is 30 seconds or, if
  * it exists, the max_execution_time value defined in the
@@ -52472,6 +53335,17 @@ function shm_remove($shm_identifier) {}
 function shm_remove_var($shm_identifier, $variable_key) {}
 
 /**
+ * Prints out or returns a syntax highlighted version of the code contained
+ * in filename using the colors defined in the
+ * built-in syntax highlighter for PHP.
+ *
+ * @param string
+ * @param bool
+ * @return mixed
+ **/
+function show_source($filename, $return) {}
+
+/**
  * This function shuffles (randomizes the order of the elements in) an array.
  *
  * @param array
@@ -52545,6 +53419,15 @@ function sin($arg) {}
  * @return float
  **/
 function sinh($arg) {}
+
+/**
+ * Counts all elements in an array, or properties in an object.
+ *
+ * @param mixed
+ * @param int
+ * @return int
+ **/
+function sizeof($var, $mode) {}
 
 /**
  * @param int
@@ -53303,6 +54186,15 @@ function sqlite_fetch_object($result, $class_name, $ctor_params, $decode_binary)
  * @return string
  **/
 function sqlite_fetch_single($result, $decode_binary) {}
+
+/**
+ * Object oriented style (method):
+ *
+ * @param resource
+ * @param bool
+ * @return string
+ **/
+function sqlite_fetch_string($result, $decode_binary) {}
 
 /**
  * Object oriented style (method):
@@ -54416,6 +55308,18 @@ function stats_variance($a, $sample) {}
 function strcasecmp($str1, $str2) {}
 
 /**
+ * Returns part of haystack string from the first
+ * occurrence of needle to the end of
+ * haystack.
+ *
+ * @param string
+ * @param mixed
+ * @param bool
+ * @return string
+ **/
+function strchr($haystack, $needle, $before_needle) {}
+
+/**
  * @param string
  * @param string
  * @return int
@@ -54668,6 +55572,18 @@ function stream_is_local($stream_or_url) {}
  * @return void
  **/
 function stream_notification_callback($notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max) {}
+
+/**
+ * Allows you to implement your own protocol handlers and streams for use
+ * with all the other filesystem functions (such as fopen,
+ * fread etc.).
+ *
+ * @param string
+ * @param string
+ * @param int
+ * @return bool
+ **/
+function stream_register_wrapper($protocol, $classname, $flags) {}
 
 /**
  * @param string
@@ -57616,6 +58532,18 @@ function urldecode($str) {}
 function urlencode($str) {}
 
 /**
+ * Used to trigger a user error condition, it can be used by in conjunction
+ * with the built-in error handler, or with a user defined function that has
+ * been set as the new error handler
+ * (set_error_handler).
+ *
+ * @param string
+ * @param int
+ * @return bool
+ **/
+function user_error($error_msg, $error_type) {}
+
+/**
  * This function sets whether or not to use the SOAP error handler in the SOAP server. 
  * It will return the previous value. If set to , details of errors
  * in a SoapServer application will be sent to the clients.
@@ -58249,6 +59177,14 @@ function w32api_set_call_method($method) {}
  * @return bool
  **/
 function wddx_add_vars($packet_id, $var_name) {}
+
+/**
+ * Unserializes a WDDX packet.
+ *
+ * @param string
+ * @return mixed
+ **/
+function wddx_deserialize($packet) {}
 
 /**
  * Ends and returns the given WDDX packet.
