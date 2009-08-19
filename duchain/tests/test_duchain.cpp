@@ -785,9 +785,10 @@ void TestDUChain::testClassConst()
 
 void TestDUChain::testDefine()
 {
+    // the last define tests that we don't crash under that circumstance
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? define('FOO', 'foo'); function x() { define('BAR', 'bar'); } ");
+    QByteArray method("<? define('FOO', 'foo'); function x() { define('BAR', 'bar'); } define(); ");
 
     TopDUContext* top = parse(method, DumpNone);
     DUChainReleaser releaseTop(top);
