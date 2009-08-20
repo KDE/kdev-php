@@ -116,7 +116,7 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
     //Run DeclarationBuilder twice, to find uses of declarations that are
     //declared after the use. ($a = new Foo; class Foo {})
     {
-        PreDeclarationBuilder prebuilder(&m_types, &m_functions, editor());
+        PreDeclarationBuilder prebuilder(&m_types, &m_functions, &m_upcomingClassVariables, editor());
         updateContext = prebuilder.build(url, node, updateContext, useSmart);
     }
 
@@ -151,6 +151,7 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
     DeclarationBuilderBase::visitClassDeclarationStatement(node);
     closeType();
     closeDeclaration();
+    m_upcomingClassVariables.clear();
 }
 
 void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
@@ -405,6 +406,11 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
                                                 const QualifiedIdentifier& identifier,
                                                 AstNode* node )
 {
+    if ( m_upcomingClassVariables.contains(identifier) ) {
+        kDebug() << "not adding class member because it will be added eventually.";
+        return;
+    }
+
     DUChainWriteLocker lock(DUChain::lock());
 
     // check for redeclaration of private or protected stuff

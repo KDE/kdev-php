@@ -1877,6 +1877,24 @@ void TestDUChain::testClassContextRange()
     QCOMPARE(top->childContexts().first()->localDeclarations().count(), 2);
 }
 
+void TestDUChain::testLateClassMembers()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray code("<?php class A { function f() { $this->val = 'b'; } private $val = 'a'; } ");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    ClassDeclaration* cdec = dynamic_cast<ClassDeclaration*>(top->localDeclarations().first());
+    QVERIFY(cdec);
+    QList<Declaration*> decs = cdec->logicalInternalContext(top)->findDeclarations(Identifier("val"));
+    QCOMPARE(decs.count(), 1);
+    ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
+    QVERIFY(cmdec);
+    QCOMPARE(cmdec->accessPolicy(), Declaration::Private);
+}
+
 }
 
 #include "test_duchain.moc"

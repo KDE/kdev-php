@@ -105,6 +105,7 @@ private slots:
     void testImplicitArrayDeclaration();
     void testImplicitReferenceDeclaration();
     void testClassContextRange();
+    void testLateClassMembers();
 };
 
 }

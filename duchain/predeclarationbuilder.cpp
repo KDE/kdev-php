@@ -143,7 +143,14 @@ void PreDeclarationBuilder::visitClassStatement(ClassStatementAst* node)
     // we are only looking for function declarations inside methods
     if (node->methodBody) {
         visitNode(node->methodBody);
+    } else {
+        PreDeclarationBuilderBase::visitClassStatement(node);
     }
+}
+
+void PreDeclarationBuilder::visitClassVariable(ClassVariableAst* node)
+{
+    m_upcomingClassVariables->append(identifierForNode(node->variable));
 }
 
 void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)

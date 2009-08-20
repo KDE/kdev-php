@@ -45,16 +45,18 @@ typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, ContextBuil
 class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public PreDeclarationBuilderBase
 {
 public:
-    PreDeclarationBuilder(QHash<qint64, KDevelop::ClassDeclaration*>* types, QHash < qint64,
-                          KDevelop::FunctionDeclaration* > * functions,
+    PreDeclarationBuilder(QHash<qint64, KDevelop::ClassDeclaration*>* types,
+                          QHash<qint64, KDevelop::FunctionDeclaration*>* functions,
+                          QList<KDevelop::QualifiedIdentifier>* upcomingClassVariables,
                           ParseSession* session)
-            : m_types(types), m_functions(functions) {
+            : m_types(types), m_functions(functions), m_upcomingClassVariables(upcomingClassVariables) {
         setEditor(session);
     }
-    PreDeclarationBuilder(QHash<qint64, KDevelop::ClassDeclaration*>* types, QHash < qint64,
-                          KDevelop::FunctionDeclaration* > * functions,
+    PreDeclarationBuilder(QHash<qint64, KDevelop::ClassDeclaration*>* types,
+                          QHash<qint64, KDevelop::FunctionDeclaration*>* functions,
+                          QList<KDevelop::QualifiedIdentifier>* upcomingClassVariables,
                           EditorIntegrator* editor)
-            : m_types(types), m_functions(functions) {
+            : m_types(types), m_functions(functions), m_upcomingClassVariables(upcomingClassVariables) {
         setEditor(editor);
     }
 
@@ -66,10 +68,12 @@ protected:
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
     virtual void visitClassStatement(ClassStatementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
+    virtual void visitClassVariable(ClassVariableAst* node);
 
 private:
     QHash<qint64, KDevelop::ClassDeclaration*>* m_types;
     QHash<qint64, KDevelop::FunctionDeclaration*>* m_functions;
+    QList<KDevelop::QualifiedIdentifier>* m_upcomingClassVariables;
 };
 
 }
