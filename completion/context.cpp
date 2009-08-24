@@ -1225,6 +1225,11 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
 
 inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
 {
+    if ( dec->range().isEmpty() ) {
+        // hack for included files
+        return false;
+    }
+
     static ClassDeclaration* exceptionDecl;
     if (!exceptionDecl) {
         QList<Declaration*> decs = dec->context()->findDeclarations(QualifiedIdentifier("exception"));
