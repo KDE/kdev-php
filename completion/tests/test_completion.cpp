@@ -26,9 +26,9 @@
 #include <language/duchain/topducontext.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/duchainpointer.h>
-#include <language/duchain/types/structuretype.h>
 #include <language/duchain/codemodel.h>
 #include <language/codecompletion/codecompletiontesthelper.h>
+#include "duchain/structuretype.h"
 
 #include "completion/context.h"
 #include "completion/item.h"

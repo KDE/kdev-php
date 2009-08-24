@@ -62,7 +62,7 @@ void UseBuilder::visitParameter(ParameterAst *node)
     UseBuilderBase::visitParameter(node);
 
     if (node->parameterType) {
-        newUse(node->parameterType);
+        newCheckedUse(node->parameterType, findDeclarationImport(ClassDeclarationType, node->parameterType));
     }
 }
 

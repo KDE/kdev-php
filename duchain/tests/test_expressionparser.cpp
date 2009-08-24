@@ -25,10 +25,10 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/topducontext.h>
 #include <language/duchain/types/functiontype.h>
-#include <language/duchain/types/structuretype.h>
 #include <language/duchain/types/integraltype.h>
 #include <language/duchain/declaration.h>
 
+#include "structuretype.h"
 #include "expressionparser.h"
 
 using namespace KTextEditor;
@@ -57,7 +57,7 @@ void TestExpressionParser::newClass()
     ExpressionParser p(1, true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i"), DUContextPointer(top));
     QVERIFY(res.type());
-    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier("a"));
 }
 void TestExpressionParser::memberVariable()
 {
@@ -74,7 +74,7 @@ void TestExpressionParser::memberVariable()
     QVERIFY(res.type());
     QCOMPARE(res.allDeclarations().count(), 1);
     QCOMPARE(res.allDeclarations().first(), top->childContexts().first()->localDeclarations().first());
-    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier("A"));
+    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier("a"));
 }
 void TestExpressionParser::memberFunction()
 {
@@ -252,8 +252,10 @@ void TestExpressionParser::cast()
     QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeArray);
 
     res = p.evaluateType(QByteArray("(object)$foo"), DUContextPointer(top));
+    kDebug() << res.type();
+    kDebug() << res.type()->toString();
     QVERIFY(StructureType::Ptr::dynamicCast(res.type()));
-    QVERIFY(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier() == QualifiedIdentifier("stdClass"));
+    QVERIFY(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier() == QualifiedIdentifier("stdclass"));
 }
 
 void TestExpressionParser::operations()

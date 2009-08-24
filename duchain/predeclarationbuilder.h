@@ -24,7 +24,6 @@
 #include "contextbuilder.h"
 #include "helper.h"
 #include <language/duchain/builders/abstractdeclarationbuilder.h>
-#include <language/duchain/classdeclaration.h>
 
 namespace KDvelop
 {
@@ -34,6 +33,8 @@ namespace Php
 {
 class ParseSession;
 class EditorIntegrator;
+class FunctionDeclaration;
+class ClassDeclaration;
 
 typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, ContextBuilder> PreDeclarationBuilderBase;
 
@@ -45,15 +46,15 @@ typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, ContextBuil
 class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public PreDeclarationBuilderBase
 {
 public:
-    PreDeclarationBuilder(QHash<qint64, KDevelop::ClassDeclaration*>* types,
-                          QHash<qint64, KDevelop::FunctionDeclaration*>* functions,
+    PreDeclarationBuilder(QHash<qint64, Php::ClassDeclaration*>* types,
+                          QHash<qint64, Php::FunctionDeclaration*>* functions,
                           QList<KDevelop::QualifiedIdentifier>* upcomingClassVariables,
                           ParseSession* session)
             : m_types(types), m_functions(functions), m_upcomingClassVariables(upcomingClassVariables) {
         setEditor(session);
     }
-    PreDeclarationBuilder(QHash<qint64, KDevelop::ClassDeclaration*>* types,
-                          QHash<qint64, KDevelop::FunctionDeclaration*>* functions,
+    PreDeclarationBuilder(QHash<qint64, Php::ClassDeclaration*>* types,
+                          QHash<qint64, Php::FunctionDeclaration*>* functions,
                           QList<KDevelop::QualifiedIdentifier>* upcomingClassVariables,
                           EditorIntegrator* editor)
             : m_types(types), m_functions(functions), m_upcomingClassVariables(upcomingClassVariables) {
@@ -71,8 +72,8 @@ protected:
     virtual void visitClassVariable(ClassVariableAst* node);
 
 private:
-    QHash<qint64, KDevelop::ClassDeclaration*>* m_types;
-    QHash<qint64, KDevelop::FunctionDeclaration*>* m_functions;
+    QHash<qint64, Php::ClassDeclaration*>* m_types;
+    QHash<qint64, Php::FunctionDeclaration*>* m_functions;
     QList<KDevelop::QualifiedIdentifier>* m_upcomingClassVariables;
 };
 

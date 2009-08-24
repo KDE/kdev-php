@@ -26,10 +26,8 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/persistentsymboltable.h>
 #include <language/duchain/duchain.h>
-#include <language/duchain/functiondeclaration.h>
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/parsingenvironment.h>
-#include <language/duchain/classdeclaration.h>
 #include <interfaces/icore.h>
 #include <interfaces/iprojectcontroller.h>
 #include <interfaces/iuicontroller.h>
@@ -41,6 +39,9 @@
 #include "phpast.h"
 #include "phpdefaultvisitor.h"
 #include "constantdeclaration.h"
+#include "classdeclaration.h"
+#include "classmethoddeclaration.h"
+#include "functiondeclaration.h"
 
 
 #define ifDebug(x)
@@ -277,6 +278,18 @@ IndexedString getIncludeFileForNode(UnaryExpressionAst* node, EditorIntegrator* 
     }
 
     return IndexedString();
+}
+
+QString prettyName(Declaration* dec) {
+    if ( ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec) ) {
+        return classDec->prettyName();
+    } else if ( ClassMethodDeclaration* classMember = dynamic_cast<ClassMethodDeclaration*>(dec) ) {
+        return classMember->prettyName();
+    } else if ( FunctionDeclaration* func = dynamic_cast<FunctionDeclaration*>(dec) ) {
+        return func->prettyName();
+    } else {
+        return dec->identifier().toString();
+    }
 }
 
 }

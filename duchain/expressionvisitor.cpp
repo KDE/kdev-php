@@ -30,7 +30,7 @@
 #include <language/duchain/persistentsymboltable.h>
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/integraltype.h>
-#include <language/duchain/types/structuretype.h>
+#include "structuretype.h"
 
 using namespace KDevelop;
 
@@ -189,7 +189,8 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
             DUContext* context = findClassContext(node->stringFunctionNameOrClass);
             if (context) {
                 DUChainReadLocker lock(DUChain::lock());
-                m_result.setDeclarations(context->findDeclarations(identifierForNode(node->stringFunctionName)));
+                QualifiedIdentifier methodName(stringForNode(node->stringFunctionName).toLower());
+                m_result.setDeclarations(context->findDeclarations(methodName));
                 lock.unlock();
                 if (!m_result.allDeclarations().isEmpty()) {
                     usingDeclaration(node->stringFunctionName, m_result.allDeclarations().last());
@@ -394,7 +395,13 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
                     }
                 }
                 if (context) {
-                    QualifiedIdentifier propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
+                    QualifiedIdentifier propertyId;
+                    if ( node->isFunctionCall != -1 ) {
+                        propertyId = QualifiedIdentifier(stringForNode(node->objectProperty->objectDimList->variableName->name).toLower());
+                    } else {
+                        propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
+                    }
+
                     m_result.setDeclarations(context->findDeclarations(propertyId));
                     lock.unlock();
                     if (!m_result.allDeclarations().isEmpty()) {
@@ -468,7 +475,7 @@ void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
             break;
         case CastObject: {
             DUChainReadLocker lock(DUChain::lock());
-            m_result.setDeclarations(m_currentContext->findDeclarations(QualifiedIdentifier("stdClass")));
+            m_result.setDeclarations(m_currentContext->findDeclarations(QualifiedIdentifier("stdclass")));
             break;
         }
         case CastBool:
@@ -542,7 +549,14 @@ void ExpressionVisitor::setLineOffset(int offs)
 
 Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
 {
-    return findDeclarationImportHelper(m_currentContext, identifierForNode(node), declarationType, node, m_editor);
+    // methods and class names are case insensitive
+    QualifiedIdentifier id;
+    if ( declarationType == ClassDeclarationType || declarationType == FunctionDeclarationType ) {
+        id = QualifiedIdentifier(stringForNode(node).toLower());
+    } else {
+        id = identifierForNode(node);
+    }
+    return findDeclarationImportHelper(m_currentContext, id, declarationType, node, m_editor);
 }
 
 Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)

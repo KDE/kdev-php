@@ -28,7 +28,9 @@
 #include <language/duchain/namespacealiasdeclaration.h>
 #include <language/duchain/forwarddeclaration.h>
 #include <language/duchain/duchainutils.h>
-#include <language/duchain/classdeclaration.h>
+
+#include "classdeclaration.h"
+#include "helper.h"
 
 namespace Php
 {
@@ -108,6 +110,11 @@ void DeclarationNavigationContext::htmlClass()
         }
         modifyHtml() += " ";
     }
+}
+
+QualifiedIdentifier DeclarationNavigationContext::prettyQualifiedIdentifier( DeclarationPointer decl ) const
+{
+    return QualifiedIdentifier(prettyName(decl.data()));
 }
 
 }

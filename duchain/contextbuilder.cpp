@@ -153,9 +153,19 @@ QualifiedIdentifier ContextBuilder::identifierForNode(VariableIdentifierAst* id)
     return QualifiedIdentifier(ret);
 }
 
+IdentifierPair ContextBuilder::identifierPairForNode( IdentifierAst* id )
+{
+    if (!id) {
+        return qMakePair(QString(), QualifiedIdentifier());
+    }
+    const QString ret(editor()->parseSession()->symbol(id->string));
+
+    return qMakePair(ret, QualifiedIdentifier(ret.toLower()));
+}
+
 void ContextBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst* node)
 {
-    openContext(node, DUContext::Class, node->className);
+    openContext(node, editorFindRange(node, node), DUContext::Class, identifierPairForNode(node->className).second);
     classContextOpened(currentContext()); //This callback is needed, so we can set the internal context and so find the declaration for the context (before closeDeclaration())
     DefaultVisitor::visitClassDeclarationStatement(node);
     closeContext();
@@ -168,7 +178,7 @@ void ContextBuilder::classContextOpened(KDevelop::DUContext* context)
 
 void ContextBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node)
 {
-    openContext(node, DUContext::Class, node->interfaceName);
+    openContext(node, editorFindRange(node, node), DUContext::Class, identifierPairForNode(node->interfaceName).second);
     classContextOpened(currentContext()); //This callback is needed, so we can set the internal context and so find the declaration for the context (before closeDeclaration())
     DefaultVisitor::visitInterfaceDeclarationStatement(node);
     closeContext();
@@ -296,7 +306,13 @@ void ContextBuilder::reportError(const QString& errorMsg, KTextEditor::Range ran
 
 Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
 {
-    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor());
+    QualifiedIdentifier id;
+    if ( declarationType == ClassDeclarationType || declarationType == FunctionDeclarationType ) {
+        id = identifierPairForNode(node).second;
+    } else {
+        id = identifierForNode(node);
+    }
+    return findDeclarationImportHelper(currentContext(), id, declarationType, node, editor());
 }
 
 Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)

@@ -28,8 +28,9 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/types/functiontype.h>
-#include <language/duchain/classfunctiondeclaration.h>
 #include <language/codecompletion/codecompletionmodel.h>
+
+#include "classmethoddeclaration.h"
 
 #include <ktexteditor/document.h>
 #include <kicon.h>

@@ -65,6 +65,9 @@ private slots:
     void functionParamNewDeclaration();
     void catchClass();
     void variableRedeclaration();
+    void caseInsensitiveFunction();
+    void caseInsensitiveMethod();
+    void caseInsensitiveClass();
 };
 
 }

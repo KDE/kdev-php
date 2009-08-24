@@ -23,7 +23,6 @@
 
 #include "phpdefaultvisitor.h"
 #include <language/duchain/builders/abstractcontextbuilder.h>
-#include <language/duchain/types/structuretype.h>
 
 #include "phpduchainexport.h"
 #include "editorintegrator.h"
@@ -36,6 +35,10 @@ class EditorIntegrator;
 class ParseSession;
 
 typedef KDevelop::AbstractContextBuilder<AstNode, IdentifierAst> ContextBuilderBase;
+
+/// first is the "pretty" identifier used for printing
+/// second comes the all-lowercase identifier used for storage
+typedef QPair<QString, KDevelop::QualifiedIdentifier> IdentifierPair;
 
 class KDEVPHPDUCHAIN_EXPORT ContextBuilder: public ContextBuilderBase, public DefaultVisitor
 {
@@ -62,6 +65,7 @@ protected:
 
     virtual KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
+    IdentifierPair identifierPairForNode(IdentifierAst* id);
 
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst*);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);

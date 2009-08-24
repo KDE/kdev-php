@@ -30,6 +30,7 @@
 #include <language/duchain/types/integraltype.h>
 #include <language/duchain/classdeclaration.h>
 #include "integraltypeextended.h"
+#include "structuretype.h"
 
 #include "editorintegrator.h"
 #include "parsesession.h"
@@ -71,7 +72,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         iType = IntegralType::TypeVoid;
     } else {
         //don't use openTypeFromName as it uses cursor for findDeclarations
-        Declaration* decl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier(type), node);
+        Declaration* decl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier(type.toLower()), node);
         if (decl && decl->abstractType()) {
             return decl->abstractType();
         }
@@ -371,7 +372,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
         if (StructureType::Ptr type = StructureType::Ptr::dynamicCast(v.result().type())) {
             ClassDeclaration *classDec = dynamic_cast<ClassDeclaration*>(type->declaration(currentContext()->topContext()));
             Q_ASSERT(classDec);
-            Declaration* iteratorDecl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier("Iterator"), 0);
+            Declaration* iteratorDecl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier("iterator"), 0);
             Q_ASSERT(iteratorDecl);
             if (classDec->context()->imports(iteratorDecl->context())) {
                 foreach (Declaration *d, classDec->internalContext()->findDeclarations(QualifiedIdentifier("current"))) {

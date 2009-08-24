@@ -36,7 +36,6 @@
 
 
 #include <language/duchain/declaration.h>
-#include <language/duchain/classfunctiondeclaration.h>
 #include <language/duchain/ducontext.h>
 #include <language/duchain/duchain.h>
 #include <language/duchain/parsingenvironment.h>
@@ -47,6 +46,7 @@
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/dumpchain.h>
 
+#include "duchain/classmethoddeclaration.h"
 
 #include "context.h"
 #include "worker.h"

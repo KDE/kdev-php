@@ -42,6 +42,7 @@ void compareUses(Declaration* dec, QList<SimpleRange> ranges)
     QCOMPARE(dec->uses().values().count(), 1);
     QCOMPARE(dec->uses().values().first().count(), ranges.count());
     for (int i = 0; i < ranges.count(); ++i) {
+        kDebug() << dec->uses().values().first().at(i).textRange() << ranges.at(i).textRange();
         QCOMPARE(dec->uses().values().first().at(i), ranges.at(i));
     }
 }
@@ -560,7 +561,7 @@ void TestUses::catchClass()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    Declaration *d = top->findDeclarations(QualifiedIdentifier("Exception")).first();
+    Declaration *d = top->findDeclarations(QualifiedIdentifier("exception")).first();
     compareUses(d, SimpleRange(0, 18, 0, 27));
 }
 
@@ -583,6 +584,84 @@ void TestUses::variableRedeclaration()
                      << SimpleRange(0, 23, 0, 25)
                 );
 }
+
+void TestUses::caseInsensitiveFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function fooBar(){}\n"
+                      "fOoBar();\nFOOBAR();\nfoobar();");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QList<Declaration*> decs = top->findLocalDeclarations(Identifier("foobar"));
+    QCOMPARE(decs.size(), 1);
+    Declaration *d = decs.first();
+    compareUses(d, QList<SimpleRange>()
+                    << SimpleRange(1, 0, 1, 6)
+                    << SimpleRange(2, 0, 2, 6)
+                    << SimpleRange(3, 0, 3, 6)
+                );
+}
+
+void TestUses::caseInsensitiveMethod()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class asdf{ static function barFoo(){} function fooBar() {} } $a = new asdf;\n"
+                      "$a->fOoBar();\n$a->FOOBAR();\n$a->foobar();\n"
+                      "asdf::barfoo();\nasdf::bArFoo();\nasdf::BARFOO();\n");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    {
+        QList<Declaration*> decs = top->childContexts().first()->findDeclarations(QualifiedIdentifier("foobar"));
+        QCOMPARE(decs.size(), 1);
+        Declaration *d = decs.first();
+        compareUses(d, QList<SimpleRange>()
+                        << SimpleRange(1, 4, 1, 10)
+                        << SimpleRange(2, 4, 2, 10)
+                        << SimpleRange(3, 4, 3, 10)
+                    );
+    }
+
+    {
+        QList<Declaration*> decs = top->childContexts().first()->findDeclarations(QualifiedIdentifier("barfoo"));
+        QCOMPARE(decs.size(), 1);
+        Declaration *d = decs.first();
+        compareUses(d, QList<SimpleRange>()
+                        << SimpleRange(4, 6, 4, 12)
+                        << SimpleRange(5, 6, 5, 12)
+                        << SimpleRange(6, 6, 6, 12)
+                    );
+    }
+}
+
+void TestUses::caseInsensitiveClass()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class asDf{}\n"
+                      "new asdf();\nnew ASDF();\nnew asDF();");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QList<Declaration*> decs = top->findLocalDeclarations(Identifier("asdf"));
+    QCOMPARE(decs.size(), 1);
+    Declaration *d = decs.first();
+    compareUses(d, QList<SimpleRange>()
+                    << SimpleRange(1, 4, 1, 8)
+                    << SimpleRange(2, 4, 2, 8)
+                    << SimpleRange(3, 4, 3, 8)
+                );
+}
+
 
 }
 

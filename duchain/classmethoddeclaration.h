@@ -25,6 +25,7 @@
 
 #include <language/duchain/declaration.h>
 #include <language/duchain/declarationdata.h>
+#include <language/duchain/indexedstring.h>
 
 #include "phpduchainexport.h"
 
@@ -38,32 +39,37 @@ public:
             : KDevelop::ClassFunctionDeclarationData() {}
 
     ClassMethodDeclarationData(const ClassMethodDeclarationData& rhs)
-            : KDevelop::ClassFunctionDeclarationData(rhs) {}
+            : KDevelop::ClassFunctionDeclarationData(rhs)
+    {
+        prettyName = rhs.prettyName;
+    }
 
     ~ClassMethodDeclarationData() {}
 
+    KDevelop::IndexedString prettyName;
 };
 
 /**
  * inherits ClassFunctionDeclaration to overwrite some stuff for PHP specific behaviour
  */
-class ClassMethodDeclaration : public KDevelop::ClassFunctionDeclaration
+class KDEVPHPDUCHAIN_EXPORT ClassMethodDeclaration : public KDevelop::ClassFunctionDeclaration
 {
 public:
-    ClassMethodDeclaration(const ClassMethodDeclaration &rhs)
-            : KDevelop::ClassFunctionDeclaration(rhs) {}
-    ClassMethodDeclaration(const KDevelop::SimpleRange &range, KDevelop::DUContext *context)
-            : KDevelop::ClassFunctionDeclaration(range, context) {}
-    ClassMethodDeclaration(ClassMethodDeclarationData &data)
-            : KDevelop::ClassFunctionDeclaration(data) {}
-    ClassMethodDeclaration(ClassMethodDeclarationData &data, const KDevelop::SimpleRange &range, KDevelop::DUContext *context)
-            : KDevelop::ClassFunctionDeclaration(data, range, context) {}
-    ~ClassMethodDeclaration() {}
+    ClassMethodDeclaration(const ClassMethodDeclaration &rhs);
+    ClassMethodDeclaration(const KDevelop::SimpleRange &range, KDevelop::DUContext *context);
+    ClassMethodDeclaration(ClassMethodDeclarationData &data);
+    ClassMethodDeclaration(ClassMethodDeclarationData &data, const KDevelop::SimpleRange &range, KDevelop::DUContext *context);
+    ~ClassMethodDeclaration();
 
     /// overwritten to check for __construct() method
     virtual bool isConstructor() const;
     /// overwritten to check for __destruct() method
     virtual bool isDestructor() const;
+
+    virtual QString toString() const;
+
+    void setPrettyName(const QString& name);
+    QString prettyName() const;
 
     enum {
         Identity = 84

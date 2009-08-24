@@ -6,6 +6,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
 
 set(duchain_SRCS
     integraltypeextended.cpp
+    structuretype.cpp
     includebuilder.cpp
     predeclarationbuilder.cpp
     declarationbuilder.cpp
@@ -22,6 +23,8 @@ set(duchain_SRCS
     constantdeclaration.cpp
     variabledeclaration.cpp
     classmethoddeclaration.cpp
+    classdeclaration.cpp
+    functiondeclaration.cpp
     tests/duchaintestbase.cpp
     navigation/navigationwidget.cpp
     navigation/declarationnavigationcontext.cpp

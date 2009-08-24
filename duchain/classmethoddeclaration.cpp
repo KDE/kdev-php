@@ -20,10 +20,41 @@
 
 #include "classmethoddeclaration.h"
 
+#include <language/duchain/duchainregister.h>
+#include <language/duchain/types/functiontype.h>
 using namespace KDevelop;
 
 namespace Php
 {
+REGISTER_DUCHAIN_ITEM(ClassMethodDeclaration);
+
+ClassMethodDeclaration::ClassMethodDeclaration(const ClassMethodDeclaration& rhs)
+        : KDevelop::ClassFunctionDeclaration(*new ClassMethodDeclarationData(*rhs.d_func()))
+{
+    setSmartRange(rhs.smartRange(), DocumentRangeObject::DontOwn);
+}
+
+ClassMethodDeclaration::ClassMethodDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context)
+        : KDevelop::ClassFunctionDeclaration(*new ClassMethodDeclarationData, range, context)
+{
+    d_func_dynamic()->setClassId(this);
+    if (context)
+        setContext(context);
+}
+
+ClassMethodDeclaration::ClassMethodDeclaration(ClassMethodDeclarationData& data)
+        : KDevelop::ClassFunctionDeclaration(data)
+{
+}
+
+ClassMethodDeclaration::ClassMethodDeclaration(ClassMethodDeclarationData& data, const KDevelop::SimpleRange& range, KDevelop::DUContext* context)
+        : KDevelop::ClassFunctionDeclaration(data, range, context)
+{
+}
+
+ClassMethodDeclaration::~ClassMethodDeclaration()
+{
+}
 
 bool ClassMethodDeclaration::isConstructor() const
 {
@@ -41,6 +72,33 @@ bool ClassMethodDeclaration::isDestructor() const
 Declaration* ClassMethodDeclaration::clonePrivate() const
 {
     return new ClassMethodDeclaration(*this);
+}
+
+QString ClassMethodDeclaration::prettyName() const
+{
+    return d_func()->prettyName.str();
+}
+
+void ClassMethodDeclaration::setPrettyName( const QString& name )
+{
+    d_func_dynamic()->prettyName = KDevelop::IndexedString(name);
+}
+
+QString ClassMethodDeclaration::toString() const
+{
+    if( !abstractType() )
+        return ClassMemberDeclaration::toString();
+
+    TypePtr<FunctionType> function = type<FunctionType>();
+    if(function) {
+        return QString("%1 %2 %3").arg(function->partToString( FunctionType::SignatureReturn ))
+                                  .arg(prettyName())
+                                  .arg(function->partToString( FunctionType::SignatureArguments ));
+    } else {
+        QString type = abstractType() ? abstractType()->toString() : QString("<notype>");
+        kDebug(9505) << "A function has a bad type attached:" << type;
+        return QString("invalid member-function %1 type %2").arg(prettyName()).arg(type);
+    }
 }
 
 

@@ -38,15 +38,16 @@
 #include <klocalizedstring.h>
 #include <language/duchain/ducontext.h>
 #include <language/duchain/duchain.h>
-#include <language/duchain/classfunctiondeclaration.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/types/identifiedtype.h>
-#include <language/duchain/types/structuretype.h>
 #include <language/interfaces/iproblem.h>
 #include <util/pushvalue.h>
 #include <language/duchain/codemodel.h>
 #include <language/duchain/classdeclaration.h>
+
+#include "classmethoddeclaration.h"
+#include "structuretype.h"
 
 #include <interfaces/icore.h>
 #include <interfaces/iprojectcontroller.h>
@@ -679,7 +680,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 }
             }
         } else {
-            QualifiedIdentifier id(expr);
+            QualifiedIdentifier id(expr.toLower());
 
             m_expressionResult.setDeclaration(findDeclarationImportHelper(duContext(), id, ClassDeclarationType, 0, 0));
         }
@@ -721,7 +722,7 @@ const QString& CodeCompletionContext::code() const
 
 void CodeCompletionContext::forbidIdentifier(const QString& identifier)
 {
-    QualifiedIdentifier id(identifier);
+    QualifiedIdentifier id(identifier.toLower());
 
     ClassDeclaration *dec = dynamic_cast<ClassDeclaration*>(
                                 findDeclarationImportHelper(m_duContext.data(), id, ClassDeclarationType, 0, 0)
@@ -1226,7 +1227,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
 {
     static ClassDeclaration* exceptionDecl;
     if (!exceptionDecl) {
-        QList<Declaration*> decs = dec->context()->findDeclarations(QualifiedIdentifier("Exception"));
+        QList<Declaration*> decs = dec->context()->findDeclarations(QualifiedIdentifier("exception"));
         Q_ASSERT(decs.count() == 1);
         exceptionDecl = dynamic_cast<ClassDeclaration*>(decs.first());
         Q_ASSERT(exceptionDecl);

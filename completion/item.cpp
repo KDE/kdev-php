@@ -31,17 +31,18 @@
 #include <language/codecompletion/codecompletionmodel.h>
 #include <language/codecompletion/codecompletionhelper.h>
 #include <language/duchain/declaration.h>
-#include <language/duchain/classfunctiondeclaration.h>
 #include <language/duchain/namespacealiasdeclaration.h>
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/types/functiontype.h>
-#include <language/duchain/types/structuretype.h>
-#include <language/duchain/classdeclaration.h>
+#include "classdeclaration.h"
+#include "classmethoddeclaration.h"
+#include "structuretype.h"
 
 #include "completion/helpers.h"
 #include "../duchain/navigation/navigationwidget.h"
 #include "../duchain/constantdeclaration.h"
 #include "../duchain/variabledeclaration.h"
+#include "../duchain/helper.h"
 
 using namespace KDevelop;
 
@@ -53,7 +54,7 @@ QString NormalDeclarationCompletionItem::declarationName() const
     if (m_declaration->identifier().toString().isEmpty())
         return "<unknown>";
     else {
-        QString ret = m_declaration->identifier().toString();
+        QString ret = prettyName(m_declaration.data());
         bool isStatic = false;
         if (!m_declaration->isFunctionDeclaration()) {
             if (dynamic_cast<VariableDeclaration*>(m_declaration.data())) {

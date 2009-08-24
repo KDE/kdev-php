@@ -26,10 +26,8 @@
 #include <ktexteditor/smartrange.h>
 #include <ktexteditor/smartinterface.h>
 
-#include <language/duchain/functiondeclaration.h>
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/aliasdeclaration.h>
-#include <language/duchain/classdeclaration.h>
 #include <language/duchain/types/integraltype.h>
 
 #include <klocalizedstring.h>
@@ -40,6 +38,8 @@
 #include "constantdeclaration.h"
 #include "variabledeclaration.h"
 #include "classmethoddeclaration.h"
+#include "classdeclaration.h"
+#include "functiondeclaration.h"
 #include "expressionvisitor.h"
 
 using namespace KTextEditor;
@@ -177,7 +177,7 @@ ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, C
     return classDec;
 }
 
-bool DeclarationBuilder::isBaseMethodRedeclaration(const Identifier &identifier, ClassDeclaration *curClass,
+bool DeclarationBuilder::isBaseMethodRedeclaration(const IdentifierPair &ids, ClassDeclaration *curClass,
         ClassStatementAst *node)
 {
     DUChainWriteLocker lock(DUChain::lock());
@@ -205,7 +205,7 @@ bool DeclarationBuilder::isBaseMethodRedeclaration(const Identifier &identifier,
                 continue;
             }
             foreach(Declaration * dec,
-                    type->internalContext(currentContext()->topContext())->findLocalDeclarations(identifier)) {
+                    type->internalContext(currentContext()->topContext())->findLocalDeclarations(ids.second.first())) {
                 if (dec->isFunctionDeclaration()) {
                     ClassMethodDeclaration* func = dynamic_cast<ClassMethodDeclaration*>(dec);
                     if (!func) {
@@ -239,13 +239,13 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
         ClassDeclaration *parent =  dynamic_cast<ClassDeclaration*>(currentDeclaration());
         Q_ASSERT(parent);
 
+        IdentifierPair ids = identifierPairForNode(node->methodName);
         if (m_reportErrors) {   // check for redeclarations
             Q_ASSERT(currentContext()->type() == DUContext::Class);
             bool localError = false;
-            Identifier id = identifierForNode(node->methodName).first();
             {
                 DUChainWriteLocker lock(DUChain::lock());
-                foreach(Declaration * dec, currentContext()->findLocalDeclarations(id)) {
+                foreach(Declaration * dec, currentContext()->findLocalDeclarations(ids.second.first())) {
                     if (dec->isFunctionDeclaration()) {
                         reportRedeclarationError(dec, node->methodName);
                         localError = true;
@@ -256,13 +256,14 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 
             if (!localError) {
                 // if we have no local error, check that we don't try to overwrite a final method of a baseclass
-                isBaseMethodRedeclaration(id, parent, node);
+                isBaseMethodRedeclaration(ids, parent, node);
             }
         }
 
-        ClassMethodDeclaration* dec = openDefinition<ClassMethodDeclaration>(node->methodName, node);
         {
             DUChainWriteLocker lock(DUChain::lock());
+            ClassMethodDeclaration* dec = openDefinition<ClassMethodDeclaration>(ids.second, editorFindRange(node->methodName, node->methodName));
+            dec->setPrettyName(ids.first);
             dec->clearDefaultParameters();
             dec->setKind(Declaration::Type);
             if (node->modifiers->modifiers & ModifierPublic) {
