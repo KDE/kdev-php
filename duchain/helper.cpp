@@ -107,6 +107,10 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                 return declaration;
             }
         }
+        if ( currentContext->url() == IndexedString("PHPInternalFunctions") ) {
+            // when compiling php internal functions, we don't need to ask the persistent symbol table for anything
+            return 0;
+        }
         if (declarationType != GlobalVariableDeclarationType) {
             ifDebug(kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable" << id.toString();)
             uint nr;
@@ -136,7 +140,7 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                 }
                 TopDUContext* top = declarations[i].declaration()->context()->topContext();
 
-                if (ICore::self()) {
+                if (top->url() != IndexedString("PHPInternalFunctions") && ICore::self()) {
                     bool loadedProjectContainsUrl = false;
                     foreach(IProject *project, ICore::self()->projectController()->projects()) {
                         if (project->fileSet().contains(top->url())) {
