@@ -372,7 +372,9 @@ void TypeBuilder::visitStatement(StatementAst* node)
         if (StructureType::Ptr type = StructureType::Ptr::dynamicCast(v.result().type())) {
             ClassDeclaration *classDec = dynamic_cast<ClassDeclaration*>(type->declaration(currentContext()->topContext()));
             Q_ASSERT(classDec);
+            lock.unlock();
             Declaration* iteratorDecl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier("iterator"), 0);
+            lock.lock();
             Q_ASSERT(iteratorDecl);
             if (classDec->context()->imports(iteratorDecl->context())) {
                 foreach (Declaration *d, classDec->internalContext()->findDeclarations(QualifiedIdentifier("current"))) {
