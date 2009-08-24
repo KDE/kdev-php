@@ -28,7 +28,7 @@
 #include <language/duchain/ducontext.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/types/integraltype.h>
-#include <language/duchain/classdeclaration.h>
+#include "classdeclaration.h"
 #include "integraltypeextended.h"
 #include "structuretype.h"
 
@@ -373,10 +373,12 @@ void TypeBuilder::visitStatement(StatementAst* node)
             ClassDeclaration *classDec = dynamic_cast<ClassDeclaration*>(type->declaration(currentContext()->topContext()));
             Q_ASSERT(classDec);
             lock.unlock();
-            Declaration* iteratorDecl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier("iterator"), 0);
+            ClassDeclaration* iteratorDecl = dynamic_cast<ClassDeclaration*>(
+                findDeclarationImport(ClassDeclarationType, QualifiedIdentifier("iterator"), 0)
+            );
             lock.lock();
             Q_ASSERT(iteratorDecl);
-            if (classDec->context()->imports(iteratorDecl->context())) {
+            if (classDec->isPublicBaseClass(iteratorDecl, currentContext()->topContext())) {
                 foreach (Declaration *d, classDec->internalContext()->findDeclarations(QualifiedIdentifier("current"))) {
                     if (!dynamic_cast<ClassMethodDeclaration*>(d)) continue;
                     Q_ASSERT(d->type<FunctionType>());
