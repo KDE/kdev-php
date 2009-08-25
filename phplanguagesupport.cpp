@@ -129,11 +129,8 @@ QPair<QString, SimpleRange> LanguageSupport::wordUnderCursor(const KUrl& url, co
 
     QString line = doc->textDocument()->text(KTextEditor::Range(lineNumber, 0, lineNumber, lineLength));
 
-    kDebug() << line << position.column;
-
     int startCol = position.column;
     for ( ; startCol >= 0; --startCol ) {
-        kDebug() << line[startCol];
         if ( !line[startCol].isLetter() && line[startCol] != '_' ) {
             // don't include the wrong char
             if ( startCol != position.column ) {
@@ -144,14 +141,12 @@ QPair<QString, SimpleRange> LanguageSupport::wordUnderCursor(const KUrl& url, co
     }
     int endCol = position.column;
     for ( ; endCol <= lineLength; ++endCol ) {
-        kDebug() << line[endCol];
         if ( !line[endCol].isLetter() && line[endCol] != '_' ) {
             break;
         }
     }
     QString word = line.mid(startCol, endCol - startCol);
     SimpleRange range(lineNumber, startCol, lineNumber, endCol);
-    kDebug() << word << range.textRange();
     return qMakePair(word, range);
 }
 
