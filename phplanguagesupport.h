@@ -61,9 +61,14 @@ public:
     /*the code highlighter*/
     const KDevelop::ICodeHighlighting* codeHighlighting() const;
 
+    virtual QWidget* specialLanguageObjectNavigationWidget(const KUrl& url, const KDevelop::SimpleCursor& position);
+    virtual KDevelop::SimpleRange specialLanguageObjectRange(const KUrl& url, const KDevelop::SimpleCursor& position);
+
 private:
     KDevelop::CodeHighlighting* m_highlighting;
     static LanguageSupport* m_self;
+
+    QPair<QString, KDevelop::SimpleRange>  wordUnderCursor(const KUrl& url, const KDevelop::SimpleCursor& position);
 };
 
 }

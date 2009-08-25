@@ -34,6 +34,7 @@
 #include <kpluginfactory.h>
 #include <kpluginloader.h>
 #include <ktexteditor/smartinterface.h>
+#include <KTextEditor/Document>
 
 #include <interfaces/icore.h>
 #include <interfaces/ilanguagecontroller.h>
@@ -54,6 +55,8 @@
 #include <language/highlighting/codehighlighting.h>
 #include "completion/model.h"
 #include "completion/worker.h"
+
+#include "navigation/navigationwidget.h"
 
 using namespace KDevelop;
 
@@ -113,6 +116,78 @@ const KDevelop::ICodeHighlighting* LanguageSupport::codeHighlighting() const
 LanguageSupport *LanguageSupport::self()
 {
     return m_self;
+}
+
+QPair<QString, SimpleRange> LanguageSupport::wordUnderCursor(const KUrl& url, const SimpleCursor& position)
+{
+    KDevelop::IDocument* doc = core()->documentController()->documentForUrl(url);
+    if(!doc || !doc->textDocument() || !doc->textDocument()->activeView())
+        return qMakePair(QString(), SimpleRange::invalid());
+
+    int lineNumber = position.line;
+    int lineLength = doc->textDocument()->lineLength(lineNumber);
+
+    QString line = doc->textDocument()->text(KTextEditor::Range(lineNumber, 0, lineNumber, lineLength));
+
+    kDebug() << line << position.column;
+
+    int startCol = position.column;
+    for ( ; startCol >= 0; --startCol ) {
+        kDebug() << line[startCol];
+        if ( !line[startCol].isLetter() && line[startCol] != '_' ) {
+            // don't include the wrong char
+            if ( startCol != position.column ) {
+                ++startCol;
+            }
+            break;
+        }
+    }
+    int endCol = position.column;
+    for ( ; endCol <= lineLength; ++endCol ) {
+        kDebug() << line[endCol];
+        if ( !line[endCol].isLetter() && line[endCol] != '_' ) {
+            break;
+        }
+    }
+    QString word = line.mid(startCol, endCol - startCol);
+    SimpleRange range(lineNumber, startCol, lineNumber, endCol);
+    kDebug() << word << range.textRange();
+    return qMakePair(word, range);
+}
+
+bool isMagicConstant(QPair<QString, SimpleRange> word) {
+    if ( word.second.isValid() && !word.second.isEmpty() ) {
+        if ( word.first == "__FILE__" || word.first == "__LINE__" ||
+             word.first == "__METHOD__" || word.first == "__CLASS__" ||
+             word.first == "__FUNCTION__"
+             ///TODO: php 5.3: __DIR__, __NAMESPACE__
+           )
+        {
+            ///TODO: maybe we should use the tokenizer to really make sure this is such a token
+            ///      and we are not inside a string, comment or similar
+            ///      otoh, it doesn't hurt imo
+            return true;
+        }
+    }
+    return false;
+}
+
+QWidget* LanguageSupport::specialLanguageObjectNavigationWidget(const KUrl& url, const SimpleCursor& position)
+{
+    QPair<QString, SimpleRange> word = wordUnderCursor(url, position);
+    if ( isMagicConstant(word) ) {
+        return new NavigationWidget(TopDUContextPointer(standardContext(url)), position, word.first);
+    }
+    return ILanguageSupport::specialLanguageObjectNavigationWidget(url, position);
+}
+
+SimpleRange LanguageSupport::specialLanguageObjectRange(const KUrl& url, const SimpleCursor& position)
+{
+    QPair<QString, SimpleRange> word = wordUnderCursor(url, position);
+    if ( isMagicConstant(word) ) {
+        return word.second;
+    }
+    return ILanguageSupport::specialLanguageObjectRange(url, position);
 }
 
 }

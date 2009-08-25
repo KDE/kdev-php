@@ -19,6 +19,7 @@
 #include "navigationwidget.h"
 #include "declarationnavigationcontext.h"
 #include "includenavigationcontext.h"
+#include "magicconstantnavigationcontext.h"
 
 namespace Php
 {
@@ -46,6 +47,18 @@ NavigationWidget::NavigationWidget(const IncludeItem& includeItem, KDevelop::Top
   //The first context is registered so it is kept alive by the shared-pointer mechanism
   m_startContext = NavigationContextPointer(new IncludeNavigationContext(includeItem, m_topContext));
   m_startContext->setPrefixSuffix( htmlPrefix, htmlSuffix );
+  setContext( m_startContext );
+}
+
+NavigationWidget::NavigationWidget(TopDUContextPointer topContext, SimpleCursor position, const QString& constant)
+    : AbstractNavigationWidget()
+{
+  m_topContext = topContext;
+
+  initBrowser(200);
+
+  //The first context is registered so it is kept alive by the shared-pointer mechanism
+  m_startContext = NavigationContextPointer(new MagicConstantNavigationContext(topContext, position, constant));
   setContext( m_startContext );
 }
 
