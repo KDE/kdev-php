@@ -115,11 +115,10 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
         QString indendation;
         {
             QString currentLine = document->line(replaceRange.start().line());
+            indendation = getIndendation(currentLine);
 
-            int nonWhiteSpacePos = currentLine.indexOf(QRegExp("\\S"), 0);
-            indendation = currentLine.left(nonWhiteSpacePos);
-            if (nonWhiteSpacePos != -1 && nonWhiteSpacePos != replaceRange.start().column()) {
-                // since there's some non-whitespace in this line, skip to the next one
+            if ( !currentLine.isEmpty() && currentLine != indendation ) {
+                // since theres some non-whitespace in this line, skip to the enxt one
                 replText += '\n' + indendation;
             }
 

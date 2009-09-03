@@ -61,6 +61,17 @@ QString KDEVPHPCOMPLETION_EXPORT clearHashComments( QString str, QChar replaceme
 /// get a list of tokens which define a method at the end of the given text
 /// NOTE: result will contain "function" if it's the last token at the end of the text
 QStringList getMethodTokens(QString text);
+
+/**
+ * Get the indendation of a given line.
+ *
+ * You usually want to use it with something like the following:
+ *
+ * \code
+ * const QString indendation = getIndendation( document->line(replaceRange.start().line()) );
+ * \endcode
+ */
+QString KDEVPHPCOMPLETION_EXPORT getIndendation( const QString &line );
 }
 
 #endif

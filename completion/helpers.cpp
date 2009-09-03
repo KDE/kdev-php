@@ -317,4 +317,8 @@ QString clearHashComments( QString str, QChar replacement ) {
   return str;
 }
 
+QString getIndendation( const QString &line ) {
+    return line.left(line.indexOf(QRegExp("\\S"), 0));
+}
+
 }

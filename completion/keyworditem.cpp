@@ -32,6 +32,7 @@
 #include "classmethoddeclaration.h"
 
 #include <ktexteditor/document.h>
+#include <ktexteditor/view.h>
 #include <kicon.h>
 #include <klocalizedstring.h>
 
@@ -66,7 +67,55 @@ QVariant KeywordItem::data(const QModelIndex& index, int role, const CodeComplet
 
 void KeywordItem::execute(KTextEditor::Document* document, const KTextEditor::Range& word)
 {
-    document->replaceText(word, m_keyword + ' ');
+    if ( !m_replacement.isEmpty() ) {
+        QString replacement = m_replacement;
+        replacement = replacement.replace('\n', '\n' + getIndendation(document->line(word.start().line())));
+        ///TODO: use user-selected indendation
+        replacement = replacement.replace("%INDENT%", "    ");
+
+        int cursorPos = replacement.indexOf("%CURSOR%");
+        int selectionEnd = -1;
+        if ( cursorPos != -1 ) {
+            replacement.replace("%CURSOR%", "");
+        } else {
+            cursorPos = replacement.indexOf("%SELECT%");
+            if ( cursorPos != -1 ) {
+                replacement.replace("%SELECT%", "");
+                selectionEnd = replacement.indexOf("%ENDSELECT%", cursorPos + 1);
+                if ( selectionEnd == -1 ) {
+                    selectionEnd = replacement.length();
+                }
+                replacement.replace("%ENDSELECT%", "");
+            }
+        }
+
+        document->replaceText(word, replacement);
+
+        if ( cursorPos != -1 ) {
+            if ( KTextEditor::View* view = document->activeView() ) {
+                replacement = replacement.left(cursorPos);
+                KTextEditor::Cursor newPos(
+                    word.start().line() + replacement.count('\n'),
+                    word.start().column() + replacement.length() - replacement.lastIndexOf('\n') - 1
+                );
+                view->setCursorPosition(newPos);
+                if ( selectionEnd != -1 ) {
+                    ///TODO: maybe we want to support multi-line selections in the future?
+                    view->setSelection(
+                        KTextEditor::Range(
+                            newPos,
+                            KTextEditor::Cursor(
+                                newPos.line(),
+                                newPos.column() + selectionEnd - cursorPos
+                            )
+                        )
+                    );
+                }
+            }
+        }
+    } else {
+        document->replaceText(word, m_keyword + ' ');
+    }
 }
 
 }

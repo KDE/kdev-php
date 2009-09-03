@@ -32,11 +32,17 @@ namespace Php
 class KeywordItem : public NormalDeclarationCompletionItem
 {
 public:
-
+    /// Use @p customReplacement for additional power on how the keyword gets replaced.
+    /// Newlines will be indendet to the indendation level of the line we execute the item on.
+    /// To increase an indendation level, use %INDENT%. To place the cursor, use %CURSOR%.
+    /// Alternativly you can select a word with %SELECT%word%SELECT%
+    ///
+    /// NOTE: By default (i.e. when this function never gets called) @p keyword will be used as replacement.
     explicit KeywordItem(const QString &keyword,
-                KSharedPtr<KDevelop::CodeCompletionContext> context = KSharedPtr<KDevelop::CodeCompletionContext>())
+                KSharedPtr<KDevelop::CodeCompletionContext> context = KSharedPtr<KDevelop::CodeCompletionContext>(),
+                const QString &customReplacement = QString())
             : NormalDeclarationCompletionItem(KDevelop::DeclarationPointer(), context, 0),
-            m_keyword(keyword) {}
+            m_keyword(keyword), m_replacement(customReplacement) {}
 
     virtual void execute(KTextEditor::Document* document, const KTextEditor::Range& word);
 
@@ -44,6 +50,7 @@ public:
 
 private:
     const QString m_keyword;
+    QString m_replacement;
 };
 
 }
