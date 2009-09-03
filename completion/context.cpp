@@ -99,11 +99,11 @@ public:
 
     /// returns Token_INVALID if the position is invalid
     /// else returns the type of the current token
-    int type() const {
+    Parser::TokenType type() const {
         if ( m_pos == -1 ) {
             return Parser::Token_INVALID;
         } else {
-            return m_stream.token(m_pos).kind;
+            return (Parser::TokenType) m_stream.token(m_pos).kind;
         }
     }
 
@@ -272,29 +272,6 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     ifDebug(log(tokenText(lastToken.type()));)
 
     switch ( lastToken.type() ) {
-        ///TODO: sometime in the future we should do skeleton-completion, e.g. after T_IF create something like
-        ///      if (CURSOR) {...}, properly indented to the users style
-        case Parser::Token_IF:
-        case Parser::Token_WHILE:
-        case Parser::Token_ELSE:
-        case Parser::Token_ELSEIF:
-        case Parser::Token_FOREACH:
-        case Parser::Token_FOR:
-        case Parser::Token_DO:
-        case Parser::Token_ABSTRACT:
-        case Parser::Token_BREAK:
-        case Parser::Token_CLOSE_TAG:
-        case Parser::Token_RBRACKET:
-        case Parser::Token_RPAREN:
-        case Parser::Token_VAR:
-        case Parser::Token_CONST:
-        case Parser::Token_INLINE_HTML:
-        case Parser::Token_INVALID:
-        case Parser::Token_FUNCTION:
-        case Parser::Token_ARRAY:
-            ifDebug(log("no completion after this token");)
-            m_valid = false;
-            break;
         case Parser::Token_COMMENT:
             // don't offer code completion in comments, i.e. single line comments that don't end on \n
             // multi-line comments are handled above
@@ -496,7 +473,72 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_INSTANCEOF:
             m_memberAccessOperation = InstanceOfChoose;
             break;
-        default:
+        case Parser::Token_AND_ASSIGN:
+        case Parser::Token_ARRAY_CAST:
+        case Parser::Token_ASSIGN:
+        case Parser::Token_AT:
+        case Parser::Token_BANG:
+        case Parser::Token_BIT_AND:
+        case Parser::Token_BIT_OR:
+        case Parser::Token_BIT_XOR:
+        case Parser::Token_BOOLEAN_AND:
+        case Parser::Token_BOOLEAN_OR:
+        case Parser::Token_BOOL_CAST:
+        case Parser::Token_COLON:
+        case Parser::Token_CONCAT_ASSIGN:
+        case Parser::Token_CURLY_OPEN:
+        case Parser::Token_DEC:
+        case Parser::Token_DIV:
+        case Parser::Token_DIV_ASSIGN:
+        case Parser::Token_DOC_COMMENT:
+        case Parser::Token_DOLLAR_OPEN_CURLY_BRACES:
+        case Parser::Token_DOUBLE_ARROW:
+        case Parser::Token_DOUBLE_CAST:
+        case Parser::Token_DOUBLE_QUOTE:
+        case Parser::Token_ECHO:
+        case Parser::Token_ENCAPSED_AND_WHITESPACE:
+        case Parser::Token_EXIT:
+        case Parser::Token_INC:
+        case Parser::Token_INT_CAST:
+        case Parser::Token_IS_EQUAL:
+        case Parser::Token_IS_GREATER:
+        case Parser::Token_IS_GREATER_OR_EQUAL:
+        case Parser::Token_IS_IDENTICAL:
+        case Parser::Token_IS_NOT_EQUAL:
+        case Parser::Token_IS_NOT_IDENTICAL:
+        case Parser::Token_IS_SMALLER:
+        case Parser::Token_IS_SMALLER_OR_EQUAL:
+        case Parser::Token_LBRACE:
+        case Parser::Token_LBRACKET:
+        case Parser::Token_LOGICAL_AND:
+        case Parser::Token_LOGICAL_OR:
+        case Parser::Token_LOGICAL_XOR:
+        case Parser::Token_MINUS:
+        case Parser::Token_MINUS_ASSIGN:
+        case Parser::Token_MOD:
+        case Parser::Token_MOD_ASSIGN:
+        case Parser::Token_MUL:
+        case Parser::Token_MUL_ASSIGN:
+        case Parser::Token_OBJECT_CAST:
+        case Parser::Token_OPEN_TAG_WITH_ECHO:
+        case Parser::Token_OR_ASSIGN:
+        case Parser::Token_PLUS:
+        case Parser::Token_PLUS_ASSIGN:
+        case Parser::Token_PRINT:
+        case Parser::Token_QUESTION:
+        case Parser::Token_RBRACE:
+        case Parser::Token_RETURN:
+        case Parser::Token_SEMICOLON:
+        case Parser::Token_SL:
+        case Parser::Token_SL_ASSIGN:
+        case Parser::Token_SR:
+        case Parser::Token_SR_ASSIGN:
+        case Parser::Token_START_HEREDOC:
+        case Parser::Token_STRING:
+        case Parser::Token_STRING_CAST:
+        case Parser::Token_TILDE:
+        case Parser::Token_UNSET_CAST:
+        case Parser::Token_XOR_ASSIGN:
             // normal completion is valid
             if ( duContext() && duContext()->type() == DUContext::Class ) {
                 // when we are inside a class context, give overloadable members as completion
@@ -504,6 +546,81 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             } else {
                 m_memberAccessOperation = NoMemberAccess;
             }
+            break;
+        case Parser::Token_ABSTRACT:
+        case Parser::Token_CONST:
+        case Parser::Token_FINAL:
+        case Parser::Token_PUBLIC:
+        case Parser::Token_PRIVATE:
+        case Parser::Token_PROTECTED:
+        case Parser::Token_STATIC:
+        case Parser::Token_VAR:
+            if ( duContext() && duContext()->type() == DUContext::Class ) {
+                // when we are inside a class context, give overloadable members as completion
+                m_memberAccessOperation = ClassMemberChoose;
+            } else {
+                m_valid = false;
+            }
+            break;
+        case Parser::Token_ARRAY:
+        case Parser::Token_AS:
+        case Parser::Token_BACKTICK:
+        case Parser::Token_BREAK:
+        case Parser::Token_CASE:
+        case Parser::Token_CATCH:
+        case Parser::Token_CLASS:
+        case Parser::Token_CLASS_C:
+        case Parser::Token_CLONE:
+        case Parser::Token_CLOSE_TAG:
+        case Parser::Token_CONSTANT_ENCAPSED_STRING:
+        case Parser::Token_CONTINUE:
+        case Parser::Token_DECLARE:
+        case Parser::Token_DEFAULT:
+        case Parser::Token_DNUMBER:
+        case Parser::Token_DO:
+        case Parser::Token_DOLLAR:
+        case Parser::Token_ELSE:
+        case Parser::Token_ELSEIF:
+        case Parser::Token_EMPTY:
+        case Parser::Token_ENDDECLARE:
+        case Parser::Token_ENDFOR:
+        case Parser::Token_ENDFOREACH:
+        case Parser::Token_ENDIF:
+        case Parser::Token_ENDSWITCH:
+        case Parser::Token_ENDWHILE:
+        case Parser::Token_END_HEREDOC:
+        case Parser::Token_EOF:
+        case Parser::Token_EVAL:
+        case Parser::Token_FILE:
+        case Parser::Token_FOR:
+        case Parser::Token_FOREACH:
+        case Parser::Token_FUNCTION:
+        case Parser::Token_FUNC_C:
+        case Parser::Token_GLOBAL:
+        case Parser::Token_HALT_COMPILER:
+        case Parser::Token_IF:
+        case Parser::Token_INLINE_HTML:
+        case Parser::Token_INTERFACE:
+        case Parser::Token_INVALID:
+        case Parser::Token_ISSET:
+        case Parser::Token_LINE:
+        case Parser::Token_LIST:
+        case Parser::Token_LNUMBER:
+        case Parser::Token_METHOD_C:
+        case Parser::Token_NUM_STRING:
+        case Parser::Token_RBRACKET:
+        case Parser::Token_RPAREN:
+        case Parser::Token_STRING_VARNAME:
+        case Parser::Token_SWITCH:
+        case Parser::Token_TRY:
+        case Parser::Token_UNSET:
+        case Parser::Token_USE:
+        case Parser::Token_VARIABLE:
+        case Parser::Token_WHILE:
+        case Parser::Token_WHITESPACE:
+        case Parser::TokenTypeSize:
+            ifDebug(log("no completion after this token");)
+            m_valid = false;
             break;
     }
 
@@ -1273,8 +1390,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
         ADD_KEYWORD2("include_once", "include_once '%CURSOR%';\n");
         ADD_KEYWORD2("require", "require '%CURSOR%';\n");
         ADD_KEYWORD2("require_once", "require_once '%CURSOR%';\n");
-        ///TODO: only activate after variable with class type
-        ///TODO: only offer classes, interfaces etc.
+        ///TODO: binary operators must not start an expression, i.e. not after other operator, [({})],:?.
         ADD_KEYWORD("instanceof");
         ADD_KEYWORD2("isset", "isset(%CURSOR%)");
         ADD_KEYWORD2("list", "list(%CURSOR%)");
