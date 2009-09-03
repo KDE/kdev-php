@@ -1221,65 +1221,63 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
         }
     } while (parentContext);
 
-    /// items for language constructs
-
-    QMap<QString, QString> keywords;
-
-    ///TODO: function-like statements should just be handled as a function with declaration etc.
-    ///      e.g.: empty, eval, die, exit, isset, unset
-    ///      but _not_ echo, print, catch, include*, require*
-    ///TODO: use user's style for indendation etc.
-    ADD_KEYWORD2("abstract class", "abstract class %SELECT%NAME%ENDSELECT% {\n%INDENT%\n}\n");
-    ADD_KEYWORD2("final class", "final class %SELECT%NAME%ENDSELECT% {\n%INDENT%\n}\n");
-    ADD_KEYWORD2("class", "class %SELECT%NAME%ENDSELECT% {\n%INDENT%\n}\n");
-    ADD_KEYWORD2("interface", "interface %SELECT%NAME%ENDSELECT% {\n%INDENT%\n}\n");
-    ADD_KEYWORD2("array", "array(\n%INDENT%%CURSOR%\n)");
-    ADD_KEYWORD2("break", "break;\n");
-    ADD_KEYWORD2("case", "case %SELECT%CASE%ENDSELECT%:\n%INDENT%\n%INDENT%break;\n");
-    ADD_KEYWORD2("throw", "throw %CURSOR%;\n");
-    ADD_KEYWORD2("try", "try {\n%INDENT%%CURSOR%\n} catch() {\n$%INDENT%\n}\n");
-    ADD_KEYWORD2("catch", "catch(%CURSOR%) {\n%INDENT%\n}\n");
-    ADD_KEYWORD2("clone", "clone %CURSOR%;\n");
-    ADD_KEYWORD2("continue", "continue;\n");
-    ADD_KEYWORD2("declare", "declare(%CURSOR%);\n");
-    ADD_KEYWORD2("default", "default:\n%INDENT%%CURSOR%\n%INDENT%break;\n");
-    ADD_KEYWORD2("do", "do {\n%INDENT%%CURSOR%\n} while();\n");
-    ADD_KEYWORD2("echo", "echo %CURSOR%;\n");
-    ADD_KEYWORD2("else", "else {\n%INDENT%%CURSOR%\n}\n");
-    ADD_KEYWORD2("elseif", "elseif (%CURSOR%) {\n%INDENT%\n}\n");
-    ADD_KEYWORD2("endif", "endif;");
-    ADD_KEYWORD2("endforeach", "endforeach;");
-    ADD_KEYWORD2("endswitch", "endswitch;");
-    ADD_KEYWORD2("endwhile", "endwhile;");
-    ADD_KEYWORD2("endfor", "endfor;");
-    ADD_KEYWORD2("enddeclare", "enddeclare;");
-    ADD_KEYWORD2("empty", "empty(%CURSOR%)");
-    ADD_KEYWORD2("eval", "eval(%CURSOR%)");
-    ADD_KEYWORD2("die", "die(%CURSOR%);\n");
-    ADD_KEYWORD2("exit", "exit(%CURSOR%);\n");
-    ///TODO: only activate when after "class NAME "
-    ADD_KEYWORD("extends");
-    ADD_KEYWORD("implements");
-    ADD_KEYWORD2("for", "for(%CURSOR%;;) {\n%INDENT%\n}\n");
-    ADD_KEYWORD2("foreach", "foreach(%CURSOR%) {\n%INDENT%\n}\n");
-    ADD_KEYWORD2("function", "function %SELECT%NAME%ENDSELECT%() {\n%INDENT%\n}\n");
-    ADD_KEYWORD2("global", "global $%CURSOR%;");
-    ADD_KEYWORD2("if", "if (%CURSOR%) {\n%INDENT%\n}\n");
-    ADD_KEYWORD2("include", "include '%CURSOR%';\n");
-    ADD_KEYWORD2("include_once", "include_once '%CURSOR%';\n");
-    ADD_KEYWORD2("require", "require '%CURSOR%';\n");
-    ADD_KEYWORD2("require_once", "require_once '%CURSOR%';\n");
-    ///TODO: only activate after variable with class type
-    ///TODO: only offer classes, interfaces etc.
-    ADD_KEYWORD("instanceof");
-    ADD_KEYWORD2("isset", "isset(%CURSOR%)");
-    ADD_KEYWORD2("list", "list(%CURSOR%)");
-    ADD_KEYWORD2("print", "print %CURSOR%;\n");
-    ADD_KEYWORD2("return", "return %CURSOR%;\n");
-    ADD_KEYWORD2("static", "static $%CURSOR%%;\n");
-    ADD_KEYWORD2("unset", "unset(%CURSOR%);\n");
-    ADD_KEYWORD2("while", "while (%CURSOR%) {\n%INDENT%\n}\n");
-    ADD_KEYWORD2("switch", "switch (%CURSOR%) {\n%INDENT%\n}\n");
+    if ( m_memberAccessOperation == NoMemberAccess ) {
+        ///TODO: function-like statements should just be handled as a function with declaration etc.
+        ///      e.g.: empty, eval, die, exit, isset, unset
+        ///      but _not_ echo, print, catch, include*, require*
+        ///TODO: use user's style for indendation etc.
+        ADD_KEYWORD2("abstract class", "abstract class %SELECT%NAME%ENDSELECT% {\n%INDENT%\n}\n");
+        ADD_KEYWORD2("final class", "final class %SELECT%NAME%ENDSELECT% {\n%INDENT%\n}\n");
+        ADD_KEYWORD2("class", "class %SELECT%NAME%ENDSELECT% {\n%INDENT%\n}\n");
+        ADD_KEYWORD2("interface", "interface %SELECT%NAME%ENDSELECT% {\n%INDENT%\n}\n");
+        ADD_KEYWORD2("array", "array(\n%INDENT%%CURSOR%\n)");
+        ADD_KEYWORD2("break", "break;\n");
+        ADD_KEYWORD2("case", "case %SELECT%CASE%ENDSELECT%:\n%INDENT%\n%INDENT%break;\n");
+        ADD_KEYWORD2("throw", "throw %CURSOR%;\n");
+        ADD_KEYWORD2("try", "try {\n%INDENT%%CURSOR%\n} catch() {\n$%INDENT%\n}\n");
+        ADD_KEYWORD2("catch", "catch(%CURSOR%) {\n%INDENT%\n}\n");
+        ADD_KEYWORD2("clone", "clone %CURSOR%;\n");
+        ADD_KEYWORD2("continue", "continue;\n");
+        ADD_KEYWORD2("declare", "declare(%CURSOR%);\n");
+        ADD_KEYWORD2("default", "default:\n%INDENT%%CURSOR%\n%INDENT%break;\n");
+        ADD_KEYWORD2("do", "do {\n%INDENT%%CURSOR%\n} while();\n");
+        ADD_KEYWORD2("echo", "echo %CURSOR%;\n");
+        ADD_KEYWORD2("else", "else {\n%INDENT%%CURSOR%\n}\n");
+        ADD_KEYWORD2("elseif", "elseif (%CURSOR%) {\n%INDENT%\n}\n");
+        ADD_KEYWORD2("endif", "endif;");
+        ADD_KEYWORD2("endforeach", "endforeach;");
+        ADD_KEYWORD2("endswitch", "endswitch;");
+        ADD_KEYWORD2("endwhile", "endwhile;");
+        ADD_KEYWORD2("endfor", "endfor;");
+        ADD_KEYWORD2("enddeclare", "enddeclare;");
+        ADD_KEYWORD2("empty", "empty(%CURSOR%)");
+        ADD_KEYWORD2("eval", "eval(%CURSOR%)");
+        ADD_KEYWORD2("die", "die(%CURSOR%);\n");
+        ADD_KEYWORD2("exit", "exit(%CURSOR%);\n");
+        ///TODO: only activate when after "class NAME "
+        ADD_KEYWORD("extends");
+        ADD_KEYWORD("implements");
+        ADD_KEYWORD2("for", "for(%CURSOR%;;) {\n%INDENT%\n}\n");
+        ADD_KEYWORD2("foreach", "foreach(%CURSOR%) {\n%INDENT%\n}\n");
+        ADD_KEYWORD2("function", "function %SELECT%NAME%ENDSELECT%() {\n%INDENT%\n}\n");
+        ADD_KEYWORD2("global", "global $%CURSOR%;");
+        ADD_KEYWORD2("if", "if (%CURSOR%) {\n%INDENT%\n}\n");
+        ADD_KEYWORD2("include", "include '%CURSOR%';\n");
+        ADD_KEYWORD2("include_once", "include_once '%CURSOR%';\n");
+        ADD_KEYWORD2("require", "require '%CURSOR%';\n");
+        ADD_KEYWORD2("require_once", "require_once '%CURSOR%';\n");
+        ///TODO: only activate after variable with class type
+        ///TODO: only offer classes, interfaces etc.
+        ADD_KEYWORD("instanceof");
+        ADD_KEYWORD2("isset", "isset(%CURSOR%)");
+        ADD_KEYWORD2("list", "list(%CURSOR%)");
+        ADD_KEYWORD2("print", "print %CURSOR%;\n");
+        ADD_KEYWORD2("return", "return %CURSOR%;\n");
+        ADD_KEYWORD2("static", "static $%CURSOR%%;\n");
+        ADD_KEYWORD2("unset", "unset(%CURSOR%);\n");
+        ADD_KEYWORD2("while", "while (%CURSOR%) {\n%INDENT%\n}\n");
+        ADD_KEYWORD2("switch", "switch (%CURSOR%) {\n%INDENT%\n}\n");
+    }
 
     return items;
 }
