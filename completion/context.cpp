@@ -493,6 +493,9 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 }
             }
             break;
+        case Parser::Token_INSTANCEOF:
+            m_memberAccessOperation = InstanceOfChoose;
+            break;
         default:
             // normal completion is valid
             if ( duContext() && duContext()->type() == DUContext::Class ) {
@@ -543,6 +546,9 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             case StaticMemberAccess:
                 log("StaticMemberAccess");
                 break;
+            case InstanceOfChoose:
+                log("InstanceOfChoose");
+                break;
         }
     )
 
@@ -563,6 +569,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case ExceptionInstanceChoose:
         case ClassExtendsChoose:
         case NoMemberAccess:
+        case InstanceOfChoose:
             ifDebug(log("returning early");)
             return;
         case FunctionCallAccess:
@@ -1300,7 +1307,8 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
     if (m_memberAccessOperation == ExceptionChoose
             || m_memberAccessOperation == NewClassChoose
             || m_memberAccessOperation == InterfaceChoose
-            || m_memberAccessOperation == ClassExtendsChoose) {
+            || m_memberAccessOperation == ClassExtendsChoose
+            || m_memberAccessOperation == InstanceOfChoose) {
         // filter current class
         if (!m_forbiddenIdentifiers.isEmpty() && m_forbiddenIdentifiers.contains(dec->qualifiedIdentifier().index())) {
             return false;
@@ -1328,6 +1336,9 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
         else if (m_memberAccessOperation == ClassExtendsChoose) {
             return !(classDec->classModifier() & ClassDeclarationData::Final)
                    && classDec->classType() == ClassDeclarationData::Class;
+        }
+        else if (m_memberAccessOperation == InstanceOfChoose) {
+            return true;
         }
     }
     if (m_memberAccessOperation == ExceptionInstanceChoose) {

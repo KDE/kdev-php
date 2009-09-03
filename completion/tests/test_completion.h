@@ -77,6 +77,7 @@ private slots:
     void outsidePhpContext();
     void nonGlobalInFunction();
     void fileCompletion();
+    void instanceof();
 };
 
 }

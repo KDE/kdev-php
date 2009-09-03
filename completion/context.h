@@ -80,6 +80,7 @@ public:
         NewClassChoose, /// after the "new" keyword any non-abstract classes (not interfaces) should be shown
         ClassExtendsChoose, /// after "class XYZ extends" any non-final classes should be shown
         InterfaceChoose, /// after the "implements" keyword or after "interface XYZ extends" any interfaces should be shown
+        InstanceOfChoose, /// after the "instanceof" operator, any class-type should be shown
         ExceptionChoose, /// after keywords "catch" and "throw new" only classes which extend Exception should be shown
         ExceptionInstanceChoose, /// after the "throw" keyword instancec of the exception class should be shown
         ClassMemberChoose, /// in class context show list of overloadable or implementable methods

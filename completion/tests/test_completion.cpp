@@ -906,6 +906,28 @@ void TestCompletion::fileCompletion()
     }
 }
 
+void TestCompletion::instanceof()
+{
+    TopDUContext* top = parse("<?php interface A{} class B{} abstract class C{} final class D{}", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    PhpCompletionTester tester(top, "$a instanceof ");
+
+    foreach ( const QString& name, QStringList() << "a" << "b" << "c" << "d" ) {
+        kDebug() << name;
+        QList<Declaration*> decs = top->findLocalDeclarations(Identifier(name));
+        QCOMPARE(decs.size(), 1);
+        ClassDeclaration* cdec = dynamic_cast<ClassDeclaration*>(decs.first());
+        QVERIFY(cdec);
+        QVERIFY(searchDeclaration(tester.items, cdec));
+    }
+
+    foreach ( CompletionTreeItemPointer item, tester.items ) {
+        QVERIFY(dynamic_cast<ClassDeclaration*>(item->declaration().data()));
+    }
+}
+
 }
 
 #include "test_completion.moc"
