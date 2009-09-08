@@ -78,6 +78,7 @@ private slots:
     void nonGlobalInFunction();
     void fileCompletion();
     void instanceof();
+    void afterFunctionArg();
 };
 
 }

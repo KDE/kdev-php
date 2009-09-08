@@ -928,6 +928,20 @@ void TestCompletion::instanceof()
     }
 }
 
+void TestCompletion::afterFunctionArg()
+{
+    TopDUContext* top = parse("<?php class A{ var $b; } $a = new A;", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    foreach ( const QString &code, QStringList() << "if ($a->" << "while ($a->" << "foobar($a->" ) {
+        kDebug() << code;
+        PhpCompletionTester tester(top, code);
+        QCOMPARE(tester.names.size(), 1);
+        QCOMPARE(tester.names.first(), QString("b"));
+    }
+}
+
 }
 
 #include "test_completion.moc"
