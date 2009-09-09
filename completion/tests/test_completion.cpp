@@ -892,6 +892,8 @@ void TestCompletion::fileCompletion()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
+    ///TODO: somehow offer files and check whether they work with relative sub-paths
+    ///TODO: make sure items after dirname(__FILE__) or similar start with a /
     foreach ( const QString& code, QStringList() << "include \"" << "include_once \"" << "require_once \""
                                                  << "require \"" << "include ( \""
                                                  << "include dirname(__FILE__) . \"/"
