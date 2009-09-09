@@ -44,7 +44,7 @@ void IncludeFileItem::execute(Document* document, const Range& _word)
     QChar closeChar;
     {
         const QString textBefore = document->text(Range(Cursor(0, 0), _word.start()));
-        QRegExp regexp("(?:include|require)(?:_once)?(\\s*)(\\(?)(\\s*)([\"'])", Qt::CaseInsensitive);
+        QRegExp regexp("(?:include|require)(?:_once)?(\\s*)(\\(?)(\\s*)(?:dirname\\s*\\(\\s*__FILE__\\s*\\)\\s*\\.\\s*)?([\"'])", Qt::CaseInsensitive);
 
         if ( regexp.lastIndexIn(textBefore) != -1 ) {
             closeChar = regexp.cap(4)[0];
@@ -93,7 +93,7 @@ void IncludeFileItem::execute(Document* document, const Range& _word)
     // when we complete a directory, move the cursor behind it so we can continue with auto-completion
     if ( includeItem.isDirectory ) {
         if ( View* view = document->activeView() ) {
-            view->setCursorPosition(Cursor(_word.start().line(), _word.start().column() + newText.length() - 2));
+            view->setCursorPosition(Cursor(_word.start().line(), _word.start().column() + includeItem.name.size() + 1));
         }
     }
 }
