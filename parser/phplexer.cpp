@@ -514,31 +514,43 @@ int Lexer::nextTokenKind()
                 it++;
                 m_curpos++;
             }
+            // if the string is never terminated, make sure we don't overflow the boundaries
+            if ( m_curpos == m_contentSize ) {
+                --m_curpos;
+            }
         } else if (it->unicode() == '"') {
             it++;
-            int i = 0;
+            m_curpos++;
+            int stringSize = 0;
             bool foundVar = false;
-            while (m_curpos + i < m_contentSize
-                    && (it->unicode() != '"' || isEscapedWithBackslash(it, m_curpos + i, m_curpos))) {
-                if (it->unicode() == '$'  && !isEscapedWithBackslash(it, m_curpos + i, m_curpos)
+            while (m_curpos + stringSize < m_contentSize
+                    && (it->unicode() != '"' || isEscapedWithBackslash(it, m_curpos + stringSize, m_curpos)))
+            {
+                if (it->unicode() == '$'  && !isEscapedWithBackslash(it, m_curpos + stringSize, m_curpos)
                         && ((it + 1)->unicode() == '{'
                             || (isValidVariableIdentifier(it + 1) && !(it + 1)->isDigit()))) {
                     foundVar = true;
                 }
                 it++;
-                i++;
+                stringSize++;
             }
             if (!foundVar) {
-                token = Parser::Token_CONSTANT_ENCAPSED_STRING;
-                it -= i + 1;
-                for (int j = 0; j < i; j++) {
-                    it++;
-                    if (it->unicode() == '\n') {
-                        createNewline(m_curpos + j + 1);
-                    }
+                // if the string is never terminated, make sure we don't overflow the boundaries
+                if ( m_curpos + stringSize == m_contentSize ) {
+                    m_curpos--;
                 }
-                m_curpos += i + 1;
+                token = Parser::Token_CONSTANT_ENCAPSED_STRING;
+                it -= stringSize;
+                for (int j = 0; j < stringSize; j++) {
+                    if (it->unicode() == '\n') {
+                        createNewline(m_curpos + j);
+                    }
+                    it++;
+                }
+                m_curpos += stringSize;
             } else {
+                // properly set the token pos to the starting double quote
+                m_curpos--;
                 token = Parser::Token_DOUBLE_QUOTE;
                 pushState(String);
             }

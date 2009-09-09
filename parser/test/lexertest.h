@@ -55,6 +55,8 @@ private slots:
     void testNewlineInStringWithVar2();
     void testMultiplePhpSections();
     void testHereDoc();
+    void testCommonStringTokens();
+    void testNonTerminatedStringWithVar();
 
 protected:
     TokenStream* tokenize(const QString& unit, bool debug = false, int initialState = Lexer::HtmlState);

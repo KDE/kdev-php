@@ -381,6 +381,48 @@ void LexerTest::testHereDoc()
     delete ts;
 }
 
+void LexerTest::testCommonStringTokens()
+{
+    // all these should have open_tag followed by constant encapsed string
+    foreach ( const QString& code, QStringList() << "<?php ''" << "<?php \"\"" << "<?php '" << "<?php \"" ) {
+        kDebug() << code;
+        TokenStream* ts = tokenize(code, true);
+
+        QCOMPARE((int)ts->size(), 2);
+
+        QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
+        compareStartPosition(ts, 0, 0, 0);
+        compareEndPosition(ts, 0, 0, 5);
+
+        QVERIFY(ts->token(1).kind == Parser::Token_CONSTANT_ENCAPSED_STRING);
+        compareStartPosition(ts, 1, 0, 6);
+        compareEndPosition(ts, 1, 0, code.size() - 1);
+
+        delete ts;
+    }
+}
+
+void LexerTest::testNonTerminatedStringWithVar()
+{
+    TokenStream* ts = tokenize("<?php \"$a", true);
+
+    QCOMPARE((int)ts->size(), 3);
+
+    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
+    compareStartPosition(ts, 0, 0, 0);
+    compareEndPosition(ts, 0, 0, 5);
+
+    QVERIFY(ts->token(1).kind == Parser::Token_DOUBLE_QUOTE);
+    compareStartPosition(ts, 1, 0, 6);
+    compareEndPosition(ts, 1, 0, 6);
+
+    QVERIFY(ts->token(2).kind == Parser::Token_VARIABLE);
+    compareStartPosition(ts, 2, 0, 7);
+    compareEndPosition(ts, 2, 0, 8);
+
+    delete ts;
+}
+
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
     TokenStream* tokenStream = new TokenStream;
