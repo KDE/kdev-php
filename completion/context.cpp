@@ -146,13 +146,14 @@ public:
     }
 
     /// check whether the current token is prepended by the list of tokens
-    bool prependedBy(const TokenList &list, bool skipWhitespace = false) const {
+    /// @return -1 when not prepended by the list, else the relative index-position
+    qint64 prependedBy(const TokenList &list, bool skipWhitespace = false ) const {
         // this would be useless, hence forbid it
         Q_ASSERT ( !list.isEmpty() );
 
         if ( m_pos < list.count() - 1 ) {
             // not enough tokens
-            return false;
+            return -1;
         } else {
             uint pos = 1;
             foreach ( const Parser::TokenType& type, list ) {
@@ -163,10 +164,10 @@ public:
                     ++pos;
                     continue;
                 } else {
-                    return false;
+                    return -1;
                 }
             }
-            return true;
+            return pos;
         }
     }
 
@@ -193,7 +194,7 @@ int completionRecursionDepth = 0;
 
 CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, const KDevelop::SimpleCursor& position, int depth)
         : KDevelop::CodeCompletionContext(context, text, position, depth)
-        , m_memberAccessOperation(NoMemberAccess), m_parentAccess(false)
+        , m_memberAccessOperation(NoMemberAccess), m_parentAccess(false), m_isFileCompletionAfterDirname(false)
 {
     m_valid = isValidPosition();
     if (!m_valid) {
@@ -250,25 +251,6 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         }
     }
 
-    if ( lastToken.type() == Parser::Token_LPAREN ) {
-        qint64 pos = -1;
-        if ( lastToken.typeAt(pos) == Parser::Token_WHITESPACE ) {
-            --pos;
-        }
-        switch ( lastToken.typeAt(pos) ) {
-            case Parser::Token_REQUIRE:
-            case Parser::Token_REQUIRE_ONCE:
-            case Parser::Token_INCLUDE:
-            case Parser::Token_INCLUDE_ONCE:
-                // we want file completion here (see below)
-                lastToken.moveTo(pos);
-                break;
-            default:
-                // nothing
-                break;
-        }
-    }
-
     ifDebug(log(tokenText(lastToken.type()));)
 
     switch ( lastToken.type() ) {
@@ -283,11 +265,11 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             break;
         case Parser::Token_EXTENDS:
             if ( lastToken.prependedBy(TokenList() << Parser::Token_WHITESPACE << Parser::Token_STRING
-                                                   << Parser::Token_WHITESPACE << Parser::Token_CLASS) ) {
+                                                   << Parser::Token_WHITESPACE << Parser::Token_CLASS) != -1 ) {
                 m_memberAccessOperation = ClassExtendsChoose;
                 forbidIdentifier(lastToken.stringAt(-2));
             } else if ( lastToken.prependedBy(TokenList() << Parser::Token_WHITESPACE << Parser::Token_STRING
-                                                   << Parser::Token_WHITESPACE << Parser::Token_INTERFACE) ) {
+                                                   << Parser::Token_WHITESPACE << Parser::Token_INTERFACE) != -1 ) {
                 m_memberAccessOperation = InterfaceChoose;
                 forbidIdentifier(lastToken.stringAt(-2));
             } else {
@@ -297,7 +279,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             break;
         case Parser::Token_IMPLEMENTS:
             if ( lastToken.prependedBy(TokenList() << Parser::Token_WHITESPACE << Parser::Token_STRING
-                                                   << Parser::Token_WHITESPACE << Parser::Token_CLASS) ) {
+                                                   << Parser::Token_WHITESPACE << Parser::Token_CLASS) != -1 ) {
                 m_memberAccessOperation = InterfaceChoose;
                 forbidIdentifier(lastToken.stringAt(-2));
             } else {
@@ -402,7 +384,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             }
             break;
         case Parser::Token_NEW:
-            if ( lastToken.prependedBy(TokenList() << Parser::Token_WHITESPACE << Parser::Token_THROW) ) {
+            if ( lastToken.prependedBy(TokenList() << Parser::Token_WHITESPACE << Parser::Token_THROW) != -1 ) {
                 m_memberAccessOperation = ExceptionChoose;
             } else {
                 m_memberAccessOperation = NewClassChoose;
@@ -411,63 +393,51 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_THROW:
             m_memberAccessOperation = ExceptionInstanceChoose;
             break;
-        case Parser::Token_CONCAT:
-            // check if we have something like
-            // include dirname(__FILE__) . "/
-            // or eventually
-            ///TODO: include __DIR__ . "/ (php 5.3)
+        case Parser::Token_CONSTANT_ENCAPSED_STRING:
             {
-            const QString existingText = m_text.mid( lastTokenEnd ).append(followingText).trimmed();
-            if ( ( existingText.startsWith("\"/") || existingText.startsWith("'/") ) &&
-                 lastToken.prependedBy(TokenList() << Parser::Token_RPAREN << Parser::Token_FILE
-                                                   << Parser::Token_LPAREN << Parser::Token_STRING, true) )
-            {
-                // find T_STRING (we skip whitespace)
-                qint64 relPos = -4;
-                while ( lastToken.typeAt(relPos) != Parser::Token_STRING ) {
+                // support something like `include dirname(__FILE__) . "/...`
+                ///TODO: include __DIR__ . "/ (php 5.3)
+                bool isAfterDirname = false;
+                //NOTE: prependedBy will return -1 on failure, this is what we need in these cases
+                //      on success it will return a positive number, we'll need to switch it's sign in that case
+                qint64 relPos = lastToken.prependedBy(TokenList() << Parser::Token_CONCAT << Parser::Token_RPAREN << Parser::Token_FILE
+                                                   << Parser::Token_LPAREN << Parser::Token_STRING, true);
+                if ( relPos != -1 ) {
+                    // switch sign
+                    relPos = -relPos;
+                    if ( lastToken.stringAt(relPos + 1).toLower() == "dirname" ) {
+                        isAfterDirname = true;
+                    }
+                }
+                if ( lastToken.typeAt(relPos) == Parser::Token_WHITESPACE ) {
                     --relPos;
                 }
-                if ( lastToken.stringAt(relPos).toLower() == "dirname" ) {
+                if ( lastToken.typeAt(relPos) == Parser::Token_LPAREN ) {
                     --relPos;
-                    if ( lastToken.typeAt(relPos) == Parser::Token_WHITESPACE ) {
-                        --relPos;
-                    }
-                    if ( lastToken.typeAt(relPos) == Parser::Token_LPAREN ) {
-                        --relPos;
-                        if ( lastToken.typeAt(relPos) == Parser::Token_WHITESPACE ) {
-                            --relPos;
+                }
+                if ( lastToken.typeAt(relPos) == Parser::Token_WHITESPACE ) {
+                    --relPos;
+                }
+                switch ( lastToken.typeAt(relPos) ) {
+                    case Parser::Token_REQUIRE:
+                    case Parser::Token_REQUIRE_ONCE:
+                    case Parser::Token_INCLUDE:
+                    case Parser::Token_INCLUDE_ONCE:
+                        m_memberAccessOperation = FileChoose;
+                        m_expression = m_text.mid( lastToken.tokenAt(0).begin + 1 ).append(followingText).trimmed();
+                        m_isFileCompletionAfterDirname = isAfterDirname;
+                        break;
+                    default:
+                        if ( m_text.at( lastToken.tokenAt(0).begin ).unicode() == '"' ) {
+                            ///TODO: only offer variable completion
+                            m_valid = false;
+                        } else {
+                            // in or after constant strings ('...') don't offer completion at all
+                            m_valid = false;
                         }
-                    }
-                    switch ( lastToken.typeAt(relPos) ) {
-                        case Parser::Token_REQUIRE:
-                        case Parser::Token_REQUIRE_ONCE:
-                        case Parser::Token_INCLUDE:
-                        case Parser::Token_INCLUDE_ONCE:
-                            // this really looks like we want to include something :)
-                            m_memberAccessOperation = FileChoose;
-                            m_expression = existingText.mid(2);
-                            break;
-                        default:
-                            break;
-                    }
+                        break;
                 }
-            }
-            }
-            break;
-        case Parser::Token_REQUIRE:
-        case Parser::Token_REQUIRE_ONCE:
-        case Parser::Token_INCLUDE:
-        case Parser::Token_INCLUDE_ONCE:
-            // check if we can do file completion
-            {
-                const QString existingText = m_text.mid( lastTokenEnd ).append(followingText).trimmed();
-
-                if ( existingText.startsWith('"') || existingText.startsWith('\'') ) {
-                    m_memberAccessOperation = FileChoose;
-                    m_expression = existingText.mid(1);
-                } else {
-                    m_valid = false;
-                }
+                break;
             }
             break;
         case Parser::Token_INSTANCEOF:
@@ -485,6 +455,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_BOOLEAN_OR:
         case Parser::Token_BOOL_CAST:
         case Parser::Token_COLON:
+        case Parser::Token_CONCAT:
         case Parser::Token_CONCAT_ASSIGN:
         case Parser::Token_CURLY_OPEN:
         case Parser::Token_DEC:
@@ -572,7 +543,6 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_CLASS_C:
         case Parser::Token_CLONE:
         case Parser::Token_CLOSE_TAG:
-        case Parser::Token_CONSTANT_ENCAPSED_STRING:
         case Parser::Token_CONTINUE:
         case Parser::Token_DECLARE:
         case Parser::Token_DEFAULT:
@@ -599,6 +569,8 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_GLOBAL:
         case Parser::Token_HALT_COMPILER:
         case Parser::Token_IF:
+        case Parser::Token_INCLUDE:
+        case Parser::Token_INCLUDE_ONCE:
         case Parser::Token_INLINE_HTML:
         case Parser::Token_INTERFACE:
         case Parser::Token_INVALID:
@@ -608,6 +580,8 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_LNUMBER:
         case Parser::Token_METHOD_C:
         case Parser::Token_NUM_STRING:
+        case Parser::Token_REQUIRE:
+        case Parser::Token_REQUIRE_ONCE:
         case Parser::Token_RBRACKET:
         case Parser::Token_RPAREN:
         case Parser::Token_STRING_VARNAME:
@@ -988,15 +962,30 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
             return items;
         }
         // file completion
-        KUrl path = getUrlForBase(m_expression, m_duContext->url().toUrl().upUrl());
-        KUrl base = path;
-        if ( !m_expression.isEmpty() && !m_expression.endsWith('/') ) {
-            base = base.upUrl();
+        KUrl path;
+        KUrl base;
+        if ( !m_isFileCompletionAfterDirname ) {
+            path = getUrlForBase(m_expression, m_duContext->url().toUrl().upUrl());
+            base = path;
+            if ( !m_expression.isEmpty() && !m_expression.endsWith('/') ) {
+                base = base.upUrl();
+            }
+        } else {
+            if ( m_expression.startsWith('/') ) {
+                path = getUrlForBase(m_expression.mid(1), m_duContext->url().toUrl().upUrl());
+            } else {
+                path = m_duContext->url().toUrl().upUrl();
+            }
+            base = path;
+            if ( !m_expression.isEmpty() && !m_expression.endsWith('/') && m_expression != "/" ) {
+                base = base.upUrl();
+            }
         }
         base.cleanPath();
         IProject* project = ICore::self()->projectController()->findProjectForUrl(base);
         if ( project && !abort ) {
             QList<KUrl> addedUrls;
+            bool addedParentDir = false;
             foreach ( ProjectFolderItem* folder, project->foldersForUrl(base) ) {
                 if ( abort ) {
                     break;
@@ -1014,6 +1003,9 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     item.isDirectory = false;
                     item.basePath = base;
                     item.name = subFile->fileName();
+                    if ( m_isFileCompletionAfterDirname && !m_expression.startsWith('/') ) {
+                        item.name.prepend('/');
+                    }
                     items << CompletionTreeItemPointer(new IncludeFileItem(item));
                 }
                 foreach ( ProjectFolderItem* subFolder, folder->folderList() ) {
@@ -1029,9 +1021,12 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     item.isDirectory = true;
                     item.basePath = base;
                     item.name = subFolder->folderName();
+                    if ( m_isFileCompletionAfterDirname && !m_expression.startsWith('/') ) {
+                        item.name.prepend('/');
+                    }
                     items << CompletionTreeItemPointer(new IncludeFileItem(item));
                 }
-                if ( !folder->isProjectRoot() ) {
+                if ( !folder->isProjectRoot() && !addedParentDir && m_expression.isEmpty() ) {
                     // expect a parent dir
                     IncludeItem item;
                     item.isDirectory = true;

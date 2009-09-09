@@ -123,6 +123,9 @@ private:
     ExpressionEvaluationResult m_expressionResult;
     QString m_expression;
     bool m_parentAccess;
+    /// If we do file completion after dirname(__FILE__) or in PHP 5.3 after __DIR__
+    /// relative URLS have to start with a /
+    bool m_isFileCompletionAfterDirname;
     /**
      * a list of indizes of identifiers which must not be added as completion items
      * examples:
