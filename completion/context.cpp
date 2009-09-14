@@ -1370,8 +1370,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
         ADD_KEYWORD2("include_once", "include_once '%CURSOR%';\n");
         ADD_KEYWORD2("require", "require '%CURSOR%';\n");
         ADD_KEYWORD2("require_once", "require_once '%CURSOR%';\n");
-        ///TODO: binary operators must not start an expression, i.e. not after other operator, [({})],:?.
-        ADD_KEYWORD("instanceof");
         ADD_KEYWORD2("isset", "isset(%CURSOR%)");
         ADD_KEYWORD2("list", "list(%CURSOR%)");
         ADD_KEYWORD2("print", "print %CURSOR%;\n");
