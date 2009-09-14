@@ -196,17 +196,18 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         : KDevelop::CodeCompletionContext(context, text, position, depth)
         , m_memberAccessOperation(NoMemberAccess), m_parentAccess(false), m_isFileCompletionAfterDirname(false)
 {
-    m_valid = isValidPosition();
-    if (!m_valid) {
-        log("position not valid for code-completion");
-        return;
-    }
-
     ifDebug(log("non-processed text: " + m_text);)
 
     if ( context->type() == DUContext::Class || context->type() == DUContext::Function || context->type() == DUContext::Other ) {
         ifDebug(log("added start tag: " + m_text);)
         m_text.prepend("<?php ");
+    }
+
+    m_valid = !m_text.isEmpty();
+
+    if (!m_valid) {
+        log("empty completion text");
+        return;
     }
 
     TokenAccess lastToken(this);
@@ -875,23 +876,6 @@ void CodeCompletionContext::forbidIdentifier(ClassDeclaration* klass)
 
 CodeCompletionContext::~CodeCompletionContext()
 {
-}
-
-bool CodeCompletionContext::isValidPosition() const
-{
-    if (m_text.isEmpty())
-        return true;
-
-    //If we are in a string or comment, we should not complete anything
-    /*  QString markedText = Utils::clearComments(m_text, '$');
-      markedText = Utils::clearStrings(markedText,'$');
-
-      if( markedText[markedText.length()-1] == '$' ) {
-        //We are within a comment or string
-        kDebug() << "code-completion position is invalid, marked text: \n\"" << markedText << "\"\n unmarked text:\n" << m_text << "\n";
-        return false;
-      }*/
-    return true;
 }
 
 CodeCompletionContext::MemberAccessOperation CodeCompletionContext::memberAccessOperation() const

@@ -70,8 +70,6 @@ public:
     ///@param Abort is checked regularly, and if it is false, the computation is aborted.
     virtual QList<KDevelop::CompletionTreeItemPointer> completionItems(bool& abort, bool fullCompletion = true);
 
-    bool isValidPosition() const;
-
     enum MemberAccessOperation {
         NoMemberAccess,  ///With NoMemberAccess, a global completion should be done
         MemberAccess,      ///klass->
