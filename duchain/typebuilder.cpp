@@ -44,6 +44,17 @@ using namespace KDevelop;
 namespace Php
 {
 
+TypeBuilder::TypeBuilder()
+    : TypeBuilderBase()
+    , m_gotTypeFromDocComment(false)
+    , m_gotReturnTypeFromDocComment(false)
+{
+}
+
+TypeBuilder::~TypeBuilder()
+{
+}
+
 AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
 {
     uint iType = 0;

@@ -43,6 +43,10 @@ typedef KDevelop::AbstractTypeBuilder<AstNode, IdentifierAst, ContextBuilder> Ty
  */
 class KDEVPHPDUCHAIN_EXPORT TypeBuilder: public TypeBuilderBase
 {
+public:
+    TypeBuilder();
+    ~TypeBuilder();
+
 protected:
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst* node);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
