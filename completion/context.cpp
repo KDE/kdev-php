@@ -705,7 +705,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
      * */
 
     ///Handle recursive contexts(Example: "ret = function1(param1, function2(" )
-    if (m_expression.isEmpty() && expressionPrefix.endsWith('(') || expressionPrefix.endsWith(',')) {
+    if (m_expression.isEmpty() && (expressionPrefix.endsWith('(') || expressionPrefix.endsWith(','))) {
         log(QString("Recursive function-call: Searching parent-context in \"%1\"").arg(expressionPrefix));
         //Our expression is within a function-call. We need to find out the possible argument-types we need to match, and show an argument-hint.
 
