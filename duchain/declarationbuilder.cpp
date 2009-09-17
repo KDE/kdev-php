@@ -930,8 +930,7 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
     DeclarationBuilderBase::visitUnaryExpression(node);
     IndexedString includeFile = getIncludeFileForNode(node, editor());
     if ( !includeFile.isEmpty() ) {
-        ///TODO: is there not a more elegant way to get a QualifiedIdentifier from a IndexedString?
-        QualifiedIdentifier identifier(QString::fromUtf8(includeFile.byteArray()));
+        QualifiedIdentifier identifier(includeFile.str());
 
         DUChainWriteLocker lock(DUChain::lock());
         foreach ( Declaration* dec, currentContext()->topContext()->findDeclarations(identifier) ) {
