@@ -1899,6 +1899,26 @@ void TestDUChain::testLateClassMembers()
     QCOMPARE(cmdec->accessPolicy(), Declaration::Private);
 }
 
+void TestDUChain::testList()
+{
+    foreach ( const QString& code, QStringList() << "list($i, $j, $k) = array(1,2,3);" << "$a = array(1,2,3); list($i,$j,$k) = $a"
+                                               << "function t() { return array(1,2,3); } list($i,$j,$k) = t();" )
+    {
+        //               0         1         2         3         4         5         6         7
+        //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+        TopDUContext* top = parse(code.toUtf8(), DumpAST);
+        DUChainReleaser releaseTop(top);
+        DUChainWriteLocker lock(DUChain::lock());
+
+        QList<Declaration*> decs = top->findDeclarations(Identifier("i"));
+        QCOMPARE(decs.size(), 1);
+        Declaration *dec = decs.first();
+        QVERIFY(dec->type<IntegralType>());
+        QCOMPARE(dec->type<IntegralType>()->dataType(), (uint) IntegralType::TypeMixed);
+        ///TODO: support arrays better and compare to actual type
+    }
+}
+
 }
 
 #include "test_duchain.moc"
