@@ -117,8 +117,10 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
     case Qt::DisplayRole:
         switch (index.column()) {
         case CodeCompletionModel::Prefix:
-            if (dec->kind() == Declaration::Type && !dec->type<FunctionType>() && !dec->isTypeAlias()) {
-                if (StructureType::Ptr classType =  dec->type<StructureType>()) {
+            if (dec->kind() == Declaration::Type && !dec->isTypeAlias()) {
+                if (FunctionType::Ptr funcType = dec->type<FunctionType>()) {
+                    return funcType->returnType()->toString();
+                } else if (StructureType::Ptr classType =  dec->type<StructureType>()) {
                     ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
                     if (classDec) {
                         if (classDec->classType() == ClassDeclarationData::Interface) {
