@@ -58,7 +58,7 @@ void IncludeBuilder::visitUnaryExpression(UnaryExpressionAst* node)
             QString str = m_editor->parseSession()->symbol(scalar->string);
             str = str.mid(1, str.length() - 2);
             if ( str != "." && str != ".." && !str.endsWith('/') ) {
-                IndexedString includeFile = findIncludeFileUrl(str, KUrl(m_document.str()));
+                IndexedString includeFile = findIncludeFileUrl(str, m_document.toUrl());
                 if (!includeFile.isEmpty()) {
                     m_includes[node] = includeFile;
                     return;
