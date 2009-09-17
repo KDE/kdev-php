@@ -50,6 +50,7 @@ private slots:
     void methodCall();
     void functionCall();
     void newObjectFromOtherFile();
+    void constantFromOtherFile();
     void baseClass();
     void extendsFromOtherFile();
     void globalClassFromOtherFile();

@@ -1190,8 +1190,11 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                 if (abort)
                     return items;
 
-                foreach(const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false)) {
-                    //If we have StaticMemberAccess, which means A::Bla, show only static members, except if we're within a class that derives from the container
+                foreach(const DeclarationDepthPair& decl, ctx->allDeclarations(
+                                                            ctx->range().end, m_duContext->topContext(), false))
+                {
+                    //If we have StaticMemberAccess, which means A::Bla, show only static members,
+                    //except if we're within a class that derives from the container
                     ClassMemberDeclaration* classMember = dynamic_cast<ClassMemberDeclaration*>(decl.first);
                     if (memberAccessOperation() != StaticMemberAccess) {
                         if (classMember && classMember->isStatic())
@@ -1239,7 +1242,14 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     }
 
                     if (!decl.first->identifier().isEmpty())
-                        items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl.first), KDevelop::CodeCompletionContext::Ptr(this), decl.second));
+                        items << CompletionTreeItemPointer(
+                                    new NormalDeclarationCompletionItem(
+                                            DeclarationPointer(
+                                                decl.first),
+                                                KDevelop::CodeCompletionContext::Ptr(this),
+                                                decl.second
+                                            )
+                                    );
                 }
             }
         } else {
@@ -1249,7 +1259,10 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
     } else {
         //Show all visible declarations
         QSet<uint> existingIdentifiers;
-        QList<DeclarationDepthPair> decls = m_duContext->allDeclarations(m_duContext->type() == DUContext::Class ? m_duContext->range().end : m_position, m_duContext->topContext());
+        QList<DeclarationDepthPair> decls = m_duContext->allDeclarations(
+            m_duContext->type() == DUContext::Class ? m_duContext->range().end : m_position,
+            m_duContext->topContext()
+        );
 
         kDebug() << "setContext: using all declarations visible:" << decls.size();
 
@@ -1273,7 +1286,13 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
             if (abort)
                 return items;
             if (!isValidCompletionItem(dec)) continue;
-            items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(dec), KDevelop::CodeCompletionContext::Ptr(this), decl.second));
+            items << CompletionTreeItemPointer(
+                        new NormalDeclarationCompletionItem(
+                                DeclarationPointer(dec),
+                                KDevelop::CodeCompletionContext::Ptr(this),
+                                decl.second
+                        )
+                    );
         }
         uint count = 0;
         const CodeModelItem* foundItems = 0;
@@ -1296,7 +1315,12 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                                     continue;
                                 }
                                 if (!isValidCompletionItem(decl)) continue;
-                                items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), KDevelop::CodeCompletionContext::Ptr(this)));
+                                items << CompletionTreeItemPointer(
+                                            new NormalDeclarationCompletionItem(
+                                                    DeclarationPointer(decl),
+                                                    KDevelop::CodeCompletionContext::Ptr(this)
+                                            )
+                                        );
                             }
                         }
                     }
@@ -1315,9 +1339,18 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
         if (parentContext) {
             if (parentContext->memberAccessOperation() == CodeCompletionContext::FunctionCallAccess) {
                 if (!parentContext->memberAccessContainer().allDeclarationIds().isEmpty()) {
-                    Declaration* decl = parentContext->memberAccessContainer().allDeclarationIds().first().getDeclaration(m_duContext->topContext());
-                    if (!isValidCompletionItem(decl)) continue;
-                    items << CompletionTreeItemPointer(new NormalDeclarationCompletionItem(DeclarationPointer(decl), KDevelop::CodeCompletionContext::Ptr::staticCast(parentContext)));
+                    Declaration* decl = parentContext->memberAccessContainer().allDeclarationIds().first()
+                                            .getDeclaration(m_duContext->topContext());
+
+                    if (!isValidCompletionItem(decl)) {
+                        continue;
+                    }
+                    items << CompletionTreeItemPointer(
+                                new NormalDeclarationCompletionItem(
+                                        DeclarationPointer(decl),
+                                        KDevelop::CodeCompletionContext::Ptr::staticCast(parentContext)
+                                )
+                            );
                 }
             } else {
                 kDebug() << "parent-context has non function-call access type";

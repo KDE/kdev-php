@@ -305,6 +305,28 @@ void TestCompletion::newObjectFromOtherFile()
     QCOMPARE(tester.items.first()->declaration().data(), addTop->childContexts().first()->localDeclarations().first());
 }
 
+void TestCompletion::constantFromOtherFile()
+{
+    TopDUContext* addTop = parseAdditionalFile(
+        IndexedString("/duchaintest/foo.php"),
+        "<?php define('FIND_ME', 1); "
+    );
+    DUChainReleaser releaseAddTop(addTop);
+
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? ");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(addTop->localDeclarations().size(), 1);
+    Declaration* findMe = addTop->localDeclarations().first();
+
+    PhpCompletionTester tester(top, "");
+    QVERIFY(searchDeclaration(tester.items, findMe));
+}
+
 void TestCompletion::baseClass()
 {
     QByteArray method("<? class A { public $avar; } class B extends A { public $bvar; } $a = new A(); $b = new B(); ");
