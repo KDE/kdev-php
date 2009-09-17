@@ -219,6 +219,7 @@ KUrl getUrlForBase(const QString &includeFile, const KUrl &baseUrl) {
     } else {
         url.addPath(includeFile);
     }
+    url.cleanPath();
     return url;
 }
 
