@@ -107,6 +107,7 @@ private slots:
     void testClassContextRange();
     void testLateClassMembers();
     void testList();
+    void testAlternateDocCommentTypeHints();
 };
 
 }

@@ -1919,6 +1919,24 @@ void TestDUChain::testList()
     }
 }
 
+void TestDUChain::testAlternateDocCommentTypeHints()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php class test {\n/// @var test\nprivate static $test;\n}", DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    ClassDeclaration* cdec = dynamic_cast<ClassDeclaration*>(top->localDeclarations().first());
+    QVERIFY(cdec);
+    QVERIFY(cdec->type<StructureType>());
+    QVector<Declaration*> decs = cdec->logicalInternalContext(top)->localDeclarations();
+    QCOMPARE(decs.size(), 1);
+    Declaration *dec = decs.first();
+    QVERIFY(dec->type<StructureType>());
+    QCOMPARE(dec->type<StructureType>()->declaration(top), cdec);
+}
+
 }
 
 #include "test_duchain.moc"
