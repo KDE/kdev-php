@@ -117,4 +117,13 @@ QualifiedIdentifier DeclarationNavigationContext::prettyQualifiedIdentifier( Dec
     return QualifiedIdentifier(prettyName(decl.data()));
 }
 
+void DeclarationNavigationContext::makeLink(const QString& name, DeclarationPointer declaration, NavigationAction::Type actionType)
+{
+    if ( actionType == NavigationAction::JumpToSource && declaration->url().str() == "PHPInternalFunctions" ) {
+        modifyHtml() += i18n("PHP internal");
+        return;
+    }
+    AbstractDeclarationNavigationContext::makeLink(name, declaration, actionType);
+}
+
 }
