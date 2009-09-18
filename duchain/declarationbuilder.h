@@ -83,6 +83,7 @@ protected:
     virtual void visitGlobalVar(GlobalVarAst* node);
     virtual void visitCatchItem(CatchItemAst *node);
     virtual void visitUnaryExpression( UnaryExpressionAst* node );
+    virtual void visitAssignmentListElement(AssignmentListElementAst* node);
 
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const Php::MethodBodyAst* body) const {
@@ -186,6 +187,20 @@ private:
      */
     void declareVariable(KDevelop::DUContext *parentCtx, KDevelop::AbstractType::Ptr type,
                             const KDevelop::QualifiedIdentifier& identifier, AstNode* node );
+
+    /**
+     * Wrapper that operates declares the found variable. It will declare it
+     * either as a class member or as a variable, depending whether a parent was found.
+     *
+     * It will also check whether that var also exists and if so, won't do anything.
+     *
+     * @param type When the var gets declared, this will be it's type.
+     *
+     * @see m_findVariable
+     * @see declareClassMeember
+     * @see declareVariable
+     */
+    void declareFoundVariable(KDevelop::AbstractType* type);
 };
 
 }

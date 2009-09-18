@@ -810,40 +810,9 @@ void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParam
             // this argument is referenced, so if the node contains undeclared variables we have
             // to declare them with a NULL type, see also:
             // http://de.php.net/manual/en/language.references.whatdo.php
-            ///TODO: support something like: foo($var[0])
-            if ( !m_variableIsArray ) {
-                DUContext *ctx = 0;
-                if ( m_variableParent.isEmpty() ) {
-                    ctx = currentContext();
-                } else {
-                    ctx = getClassContext(m_variableParent, currentContext());
-                }
-                if ( ctx ) {
-                    bool isDeclared = false;
-                    {
-                        DUChainWriteLocker lock(DUChain::lock());
-                        foreach ( Declaration* dec, ctx->findDeclarations(m_variable) ) {
-                            if ( dec->kind() == Declaration::Instance ) {
-                                isDeclared = true;
-                                break;
-                            }
-                        }
-                    }
-                    if ( !isDeclared && m_variableParent.isEmpty() ) {
-                        // check also for global vars
-                        isDeclared = findDeclarationImport(GlobalVariableDeclarationType, m_variable, m_variableNode);
-                    }
-                    if ( !isDeclared ) {
-                        // couldn't find the dec, declare it with NULL type, just like PHP does:
-                        AbstractType::Ptr newType(new IntegralType(IntegralType::TypeNull));
-                        if ( !m_variableParent.isEmpty() ) {
-                            declareClassMember(ctx, newType, m_variable, m_variableNode);
-                        } else {
-                            declareVariable(ctx, newType, m_variable, m_variableNode);
-                        }
-                    }
-                }
-            }
+
+            // declare with NULL type, just like PHP does
+            declareFoundVariable(new IntegralType(IntegralType::TypeNull));
         }
     }
 
@@ -854,6 +823,75 @@ void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParam
     m_variableNode = lastNode;
 
     ++m_functionCallParameterPos;
+}
+
+void DeclarationBuilder::visitAssignmentListElement(AssignmentListElementAst* node)
+{
+    bool lastFindVariable = m_findVariable;
+    QualifiedIdentifier lastVariable = m_variable;
+    QualifiedIdentifier lastVariableParent = m_variableParent;
+    bool lastIsArray = m_variableIsArray;
+    AstNode* lastNode = m_variableNode;
+
+    m_findVariable = true;
+    m_variable = QualifiedIdentifier();
+    m_variableParent = QualifiedIdentifier();
+    m_variableIsArray = false;
+    m_variableNode = 0;
+
+    DeclarationBuilderBase::DefaultVisitor::visitAssignmentListElement(node);
+
+    if ( m_variableNode ) {
+        ///TODO: get a proper type here, if possible
+        declareFoundVariable(new IntegralType(IntegralType::TypeMixed));
+    }
+
+    m_findVariable = lastFindVariable;
+    m_variable = lastVariable;
+    m_variableParent = lastVariableParent;
+    m_variableIsArray = lastIsArray;
+    m_variableNode = lastNode;
+
+}
+
+void DeclarationBuilder::declareFoundVariable(AbstractType* type)
+{
+    Q_ASSERT(m_variableNode);
+
+    ///TODO: support something like: foo($var[0])
+    if ( !m_variableIsArray ) {
+        DUContext *ctx = 0;
+        if ( m_variableParent.isEmpty() ) {
+            ctx = currentContext();
+        } else {
+            ctx = getClassContext(m_variableParent, currentContext());
+        }
+        if ( ctx ) {
+            bool isDeclared = false;
+            {
+                DUChainWriteLocker lock(DUChain::lock());
+                foreach ( Declaration* dec, ctx->findDeclarations(m_variable) ) {
+                    if ( dec->kind() == Declaration::Instance ) {
+                        isDeclared = true;
+                        break;
+                    }
+                }
+            }
+            if ( !isDeclared && m_variableParent.isEmpty() ) {
+                // check also for global vars
+                isDeclared = findDeclarationImport(GlobalVariableDeclarationType, m_variable, m_variableNode);
+            }
+            if ( !isDeclared ) {
+                // couldn't find the dec, declare it
+                AbstractType::Ptr newType(type);
+                if ( !m_variableParent.isEmpty() ) {
+                    declareClassMember(ctx, newType, m_variable, m_variableNode);
+                } else {
+                    declareVariable(ctx, newType, m_variable, m_variableNode);
+                }
+            }
+        }
+    }
 }
 
 void DeclarationBuilder::visitStatement(StatementAst* node)

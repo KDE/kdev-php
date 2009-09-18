@@ -1901,8 +1901,9 @@ void TestDUChain::testLateClassMembers()
 
 void TestDUChain::testList()
 {
-    foreach ( const QString& code, QStringList() << "list($i, $j, $k) = array(1,2,3);" << "$a = array(1,2,3); list($i,$j,$k) = $a"
-                                               << "function t() { return array(1,2,3); } list($i,$j,$k) = t();" )
+    foreach ( const QString& code, QStringList() << "<?php list($i, $j, $k) = array(1,2,3);"
+                                                 << "<?php $a = array(1,2,3); list($i,$j,$k) = $a;"
+                                                 << "<?php function t() { return array(1,2,3); } list($i,$j,$k) = t();" )
     {
         //               0         1         2         3         4         5         6         7
         //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1910,12 +1911,15 @@ void TestDUChain::testList()
         DUChainReleaser releaseTop(top);
         DUChainWriteLocker lock(DUChain::lock());
 
-        QList<Declaration*> decs = top->findDeclarations(Identifier("i"));
-        QCOMPARE(decs.size(), 1);
-        Declaration *dec = decs.first();
-        QVERIFY(dec->type<IntegralType>());
-        QCOMPARE(dec->type<IntegralType>()->dataType(), (uint) IntegralType::TypeMixed);
-        ///TODO: support arrays better and compare to actual type
+        foreach ( const QString& identifier, QStringList() << "i" << "j" << "k" ) {
+            kDebug() << "searching for declaration of " << identifier;
+            QList<Declaration*> decs = top->findDeclarations(Identifier(identifier));
+            QCOMPARE(decs.size(), 1);
+            Declaration *dec = decs.first();
+            QVERIFY(dec->type<IntegralType>());
+            QCOMPARE(dec->type<IntegralType>()->dataType(), (uint) IntegralType::TypeMixed);
+            ///TODO: support arrays better and compare to actual type
+        }
     }
 }
 
