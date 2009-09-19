@@ -61,6 +61,9 @@ protected:
     virtual void visitStaticVar(StaticVarAst *node);
     virtual void visitCatchItem(CatchItemAst *node);
 
+    /// The declaration builder implements this and updates
+    /// the type of the current declaration
+    virtual void updateCurrentType();
 private:
     KDevelop::FunctionType::Ptr m_currentFunctionType;
     QList<KDevelop::AbstractType::Ptr> m_currentFunctionParams;

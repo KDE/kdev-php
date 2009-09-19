@@ -97,6 +97,8 @@ protected:
     /// set m_currentModifers to your likings and reset it afterwards
     void openClassMemberDeclaration(Php::AstNode* node, const KDevelop::QualifiedIdentifier& name);
 
+    virtual void updateCurrentType();
+
 private:
     /// Set this to true if you want to catch any variable in the lower AST tree
     bool m_findVariable;

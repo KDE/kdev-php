@@ -984,4 +984,10 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
     }
 }
 
+void DeclarationBuilder::updateCurrentType()
+{
+    DUChainWriteLocker lock(DUChain::lock());
+    currentDeclaration()->setAbstractType(currentAbstractType());
+}
+
 }

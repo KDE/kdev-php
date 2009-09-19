@@ -342,6 +342,24 @@ void TestDUChain::testDeclarationReturnType()
     QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("a"));
 }
 
+void TestDUChain::testDeclarationReturnTypeInRecursingFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A {} /** @return A **/ function foo() { $i = foo(); } ");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QList< Declaration* > decs = top->childContexts().last()->findDeclarations(Identifier("i"));
+    QCOMPARE(decs.size(), 1);
+    Declaration* dec = decs.first();
+    StructureType::Ptr type = dec->type<StructureType>();
+    QVERIFY(type);
+    QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("a"));
+}
+
 void TestDUChain::testDeclarationMultipleReturnTypes()
 {
     //                 0         1         2         3         4         5         6         7

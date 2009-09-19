@@ -184,6 +184,7 @@ FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
 
     functionType->setReturnType(parseDocComment(node, "return"));
     m_gotReturnTypeFromDocComment = functionType->returnType();
+    updateCurrentType();
 
     return functionType;
 }
@@ -301,6 +302,8 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
     type->setReturnType(parseDocComment(node, "return"));
     m_gotReturnTypeFromDocComment = type->returnType();
 
+    updateCurrentType();
+
     TypeBuilderBase::visitFunctionDeclarationStatement(node);
 
     if (!type->returnType()) {
@@ -367,6 +370,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
         } else {
             ft->setReturnType(lastType());
         }
+        updateCurrentType();
     }
 
     AstNode *foreachNode = 0;
@@ -412,6 +416,10 @@ void TypeBuilder::visitCatchItem(Php::CatchItemAst *node)
 
 }
 
+void TypeBuilder::updateCurrentType()
+{
+    // do nothing
+}
 
 }
 

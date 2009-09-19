@@ -39,6 +39,7 @@ private slots:
     void testDeclareTypehintArrayFunction();
     void testReturnTypeClass();
     void testDeclarationReturnType();
+    void testDeclarationReturnTypeInRecursingFunction();
     void testDeclarationMultipleReturnTypes();
     void testDeclarationReturnTypeDocBlock();
     void testDeclarationReturnTypeDocBlockIntegral();
