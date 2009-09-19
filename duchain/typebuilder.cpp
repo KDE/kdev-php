@@ -124,7 +124,7 @@ AbstractType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& doc
     m_gotTypeFromDocComment = false;
     QString docComment = editor()->parseSession()->docComment(node->startToken);
     if (!docComment.isEmpty()) {
-        QRegExp rx("(?:\\*|///)\\s+@" + QRegExp::escape(docCommentName) + "\\s([^\\s]*)");
+        QRegExp rx("(?:\\*|///)\\s+@" + QRegExp::escape(docCommentName) + "\\s+([^\\s]*)");
         if (rx.indexIn(docComment) != -1) {
             AbstractType::Ptr type;
             if (rx.cap(1) == "$this") {
