@@ -1092,7 +1092,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     ADD_KEYWORD("const");
                 }
             }
-            kDebug() << showOverloadable;
             // complete overloadable methods from parents
             if (showOverloadable) {
                 // TODO: use m_duContext instead of ctx
@@ -1260,7 +1259,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
         //Show all visible declarations
         QSet<uint> existingIdentifiers;
         QList<DeclarationDepthPair> decls = m_duContext->allDeclarations(
-            m_duContext->type() == DUContext::Class ? m_duContext->range().end : m_position,
+            m_duContext->range().end,
             m_duContext->topContext()
         );
 
@@ -1489,6 +1488,10 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
         } else if ( ClassFunctionDeclaration* funDec = dynamic_cast<ClassFunctionDeclaration*>(dec) ) {
             if ( funDec->accessPolicy() == Declaration::Private
                     && memberDec->context() != m_duContext->parentContext() ) {
+                return false;
+            }
+        } else if ( !dec->isFunctionDeclaration() ) {
+            if ( m_position < dec->range().start ) {
                 return false;
             }
         }

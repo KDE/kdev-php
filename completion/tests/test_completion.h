@@ -80,6 +80,10 @@ private slots:
     void fileCompletion();
     void instanceof();
     void afterFunctionArg();
+    void functionBeforeDeclaration();
+    void classBeforeDeclaration();
+    void constantBeforeDeclaration();
+    void variableBeforeDeclaration();
 };
 
 }

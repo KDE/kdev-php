@@ -113,9 +113,10 @@ typedef CodeCompletionItemTester<CodeCompletionContext> BasePhpCompletionTester;
 class PhpCompletionTester : public BasePhpCompletionTester
 {
 public:
-    PhpCompletionTester(DUContext* context, QString text = "; ", QString followingText = "")
-        : BasePhpCompletionTester(context, text.startsWith("<?") ? text : text.prepend("<?php "), followingText)
+    PhpCompletionTester(DUContext* context, QString text = "; ", QString followingText = "", SimpleCursor position = SimpleCursor::invalid())
+        : BasePhpCompletionTester(context, text.startsWith("<?") ? text : text.prepend("<?php "), followingText, position)
     {
+
     }
 };
 
@@ -964,6 +965,62 @@ void TestCompletion::afterFunctionArg()
         QCOMPARE(tester.names.size(), 1);
         QCOMPARE(tester.names.first(), QString("b"));
     }
+}
+
+void TestCompletion::functionBeforeDeclaration()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php  function test() {}", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->localDeclarations().size(), 1);
+    PhpCompletionTester tester(top, "", "", SimpleCursor(0, 3));
+    // function _should_ be found
+    QVERIFY(searchDeclaration(tester.items, top->localDeclarations().first()));
+}
+
+void TestCompletion::classBeforeDeclaration()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php  function test() {}", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->localDeclarations().size(), 1);
+    PhpCompletionTester tester(top, "", "", SimpleCursor(0, 3));
+    // class _should_ be found
+    QVERIFY(searchDeclaration(tester.items, top->localDeclarations().first()));
+}
+
+void TestCompletion::constantBeforeDeclaration()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php  define('TEST', 1);", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->localDeclarations().size(), 1);
+    PhpCompletionTester tester(top, "", "", SimpleCursor(0, 3));
+    // constant should _not_ be found
+    QVERIFY(!searchDeclaration(tester.items, top->localDeclarations().first()));
+}
+
+void TestCompletion::variableBeforeDeclaration()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php  $test = 1;", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->localDeclarations().size(), 1);
+    PhpCompletionTester tester(top, "", "", SimpleCursor(0, 3));
+    // variable should _not_ be found
+    QVERIFY(!searchDeclaration(tester.items, top->localDeclarations().first()));
 }
 
 }

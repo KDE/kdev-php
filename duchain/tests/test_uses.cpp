@@ -662,6 +662,21 @@ void TestUses::caseInsensitiveClass()
                 );
 }
 
+void TestUses::functionUseBeforeDeclaration()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? test(); function test() {}");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVector<Declaration*> decs = top->localDeclarations();
+    QCOMPARE(decs.size(), 1);
+    QCOMPARE(decs.first()->range(), SimpleRange(0, 20, 0, 24));
+    compareUses(decs.first(), SimpleRange(0, 3, 0, 7));
+}
 
 }
 
