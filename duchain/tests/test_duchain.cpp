@@ -391,6 +391,28 @@ void TestDUChain::testDeclarationReturnTypeDocBlock()
     QVERIFY(fType);
     QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
     QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("a"));
+
+    //test hint in PHPInternalFunctions of a type that is added later on
+    // function
+    QList<Declaration*> decs = top->findDeclarations(Identifier("should_return_exception"));
+    QCOMPARE(decs.size(), 1);
+    dec = decs.first();
+    fType = dec->type<FunctionType>();
+    QVERIFY(fType);
+    QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
+    QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("exception"));
+    // method
+    decs = top->findDeclarations(Identifier("internal_test_class"));
+    QCOMPARE(decs.size(), 1);
+    ClassDeclaration* cdec = dynamic_cast<ClassDeclaration*>(decs.first());
+    QVERIFY(cdec);
+    decs = cdec->logicalInternalContext(top)->findDeclarations(Identifier("should_return_exception"));
+    QCOMPARE(decs.size(), 1);
+    dec = decs.first();
+    fType = dec->type<FunctionType>();
+    QVERIFY(fType);
+    QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
+    QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("exception"));
 }
 
 void TestDUChain::testDeclarationReturnTypeDocBlockIntegral()

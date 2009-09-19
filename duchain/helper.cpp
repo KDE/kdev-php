@@ -96,12 +96,8 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
         }
     } else {
         QList<Declaration*> foundDeclarations;
-        DUContext *searchContext = currentContext;
-        if (declarationType == GlobalVariableDeclarationType) {
-            searchContext = currentContext->topContext();
-        }
         DUChainReadLocker lock(DUChain::lock());
-        foundDeclarations = currentContext->findDeclarations(id);
+        foundDeclarations = currentContext->topContext()->findDeclarations(id);
         foreach(Declaration *declaration, foundDeclarations) {
             if (isMatch(declaration, declarationType)) {
                 return declaration;

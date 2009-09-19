@@ -51,7 +51,17 @@ void DUChainTestBase::initTestCase()
 {
     DUChain::self()->disablePersistentStorage();
 
-    QByteArray content("<?php function define() {} function substr() {} class stdClass {}\n/**\n * @superglobal\n **/\n$_GET = array();\nclass Exception {} interface testInterface {} ");
+    //yeah... adding a testcase here is kinda strange, but anyways - we have to check for special
+    //handling of file called PHPInternalFunctions
+    //see e.g. testDeclarationReturnTypeDocBlock
+    QByteArray content("<?php "
+                        //test start
+                        "/** @return Exception **/ function should_return_exception() {}\n"
+                       "class internal_test_class {/** @return Exception **/ function should_return_exception() {}}\n"
+                        // test end
+                       "function define() {} function substr() {} class stdClass {}\n"
+                       "/**\n * @superglobal\n **/\n$_GET = array();\n"
+                       "class Exception {} interface testInterface {}\n");
     content.append("interface Iterator { function rewind(); function current(); function key(); function next(); function valid(); } ");
     parseAdditionalFile(IndexedString("PHPInternalFunctions"), content);
 }
