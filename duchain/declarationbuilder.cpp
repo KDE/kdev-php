@@ -432,7 +432,6 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
                     return;
                 }
                 if ( cdec->abstractType()->indexed() == type->indexed() ) {
-                    kDebug() << "skipping redeclaration of" << cdec->toString();
                     return;
                 }
             }
@@ -648,7 +647,6 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                 // we expect that the list of declarations has the newest declaration at back
                 if ( dynamic_cast<VariableDeclaration*>( *it ) ) {
                     if ( (*it)->abstractType()->indexed() == type->indexed() ) {
-                        kDebug() << "skipping redeclaration of" << (*it)->toString();
                         return;
                     }
                     break;
