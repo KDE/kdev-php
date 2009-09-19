@@ -132,7 +132,8 @@ $classes['global']['functions'][] = array(
     'name' => "dir",
     'params' => array(array('name' => "path", 'type' => "string")),
     'type' => "Directory",
-    'desc' => "Return an instance of the Directory class"
+    'desc' => "Return an instance of the Directory class",
+    'isRef' => false
 );
 
 $skipFunctions = array();
