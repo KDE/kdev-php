@@ -93,7 +93,7 @@ $skipClasses = $m[2];
 $skipClasses[] = 'self';
 $skipClasses[] = 'parent';
 $skipClasses[] = 'exception'; //lowercase
-$skipClasses[] = '__PHP_Incomplete_Class';
+$skipClasses[] = '__php_incomplete_class';
 $skipClasses[] = 'php_user_filter';
 
 $dirs = array("reference", "appendices", "language/predefined/variables");
@@ -121,9 +121,7 @@ foreach (array_keys($constants) as $c) {
     if ($pos = strpos($c, '::')) {
         $class = substr($c, 0, $pos);
         if ($class == 'imagick') $class = 'Imagick';
-        if (!isset($classes[$class])) {
-            $classes[$class] = array('functions'=>array());
-        }
+        newClassEntry($class);
     }
 }
 
@@ -207,6 +205,7 @@ foreach ($classes as $class => $i) {
             $out .= "\n";
             $out .= " **/\n";
         }
+        $class = $i['prettyName'];
         $out .= "class $class";
         if (isset($i['extends'])) {
             $out .= " extends {$i['extends']}";
@@ -365,10 +364,12 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     }
     if ($list = $xml->xpath('//db:sect2[starts-with(@xml:id, "reserved.classes")]/db:variablelist/db:varlistentry')) {
         foreach ($list as $l) {
-            if (!isset($classes[(string)$l->term->classname])) {
-                $classes[(string)$l->term->classname] = array('functions'=>array());
+            $classname = newClassEntry((string)$l->term->classname);
+
+            $desc = trim(strip_tags($l->listitem->asXML()));
+            if ( !empty($desc) ) {
+               $classes[$classname]['desc'] = $desc;
             }
-            $classes[(string)$l->term->classname]['desc'] = trim(strip_tags($l->listitem->asXML()));
         }
     }
     $cEls = $xml->xpath('//db:classsynopsis/db:classsynopsisinfo');
@@ -377,9 +378,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             $class->registerXPathNamespace('db', 'http://docbook.org/ns/docbook');
             $className = (string)$class->ooclass->classname;
             if (!$className) continue;
-            if (!isset($classes[$className])) {
-                $classes[$className] = array('functions'=>array());
-            }
+            $className = newClassEntry($className);
             if ($extends = $class->xpath('//db:ooclass')) {
                 foreach ($extends as $c) {
                     if ($c->modifier == 'extends') {
@@ -467,9 +466,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     $desc = preg_replace('#  +#', ' ', $desc);
     $desc = preg_replace('#^ #m', '', $desc);
 
-    if (!isset($classes[$class])) {
-        $classes[$class] = array('functions'=>array());
-    }
+    $class = newClassEntry($class);
     $classes[$class]['functions'][] = array(
         'name'   => $funcOverload ? $funcOverload : $function,
         'params' => $params,
@@ -478,3 +475,28 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     );
     return true;
 } // end of function parseFile()
+
+/**
+ * Create a new class entry if it not exists.
+ *
+ * Key in $classes will be the lower-case @p $name.
+ * The prettyName member will be @p $name, if it contains non-lowercase chars.
+ *
+ * Returns the lower-cased @p $name
+ */
+function newClassEntry($name) {
+    global $classes;
+    $lower = strtolower($name);
+    if (!isset($classes[$lower])) {
+        $classes[$lower] = array(
+            'functions' => array(),
+            'prettyName' => $name,
+            'desc' => ''
+        );
+    } else {
+        if ( $lower != $name ) {
+            $classes[$lower]['prettyName'] = $name;
+        }
+    }
+    return $lower;
+}

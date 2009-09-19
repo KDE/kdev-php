@@ -2316,6 +2316,489 @@ class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator
     private $ref;
 }
 
+class AppendIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
+    /**
+     * Appends an iterator.
+     *
+     * @param Iterator
+     * @return void
+     **/
+    function append($iterator) {}
+
+    /**
+     * Gets the current value.
+     *
+     * @return void
+     **/
+    function current() {}
+
+    /**
+     * The getArrayIterator method
+     *
+     * @return void
+     **/
+    function getArrayIterator() {}
+
+    /**
+     * Get an inner iterator
+     *
+     * @return void
+     **/
+    function getInnerIterator() {}
+
+    /**
+     * Get an index of iterators.
+     *
+     * @return void
+     **/
+    function getIteratorIndex() {}
+
+    /**
+     * Get the current key
+     *
+     * @return void
+     **/
+    function key() {}
+
+    /**
+     * Moves to the next element. If this means to another Iterator
+     * then it rewinds that Iterator.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewind to the first element of the first inner Iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Checks validity of the current element.
+     *
+     * @return void
+     **/
+    function valid() {}
+
+    /**
+     * Constructs an AppendIterator.
+     *
+     **/
+    function __construct() {}
+
+}
+class ArrayIterator implements Iterator, Traversable, ArrayAccess, SeekableIterator, Countable {
+    /**
+     * Appends value as the last element.
+     *
+     * @param string
+     * @return void
+     **/
+    function append($value) {}
+
+    /**
+     * Sorts an array by values.
+     *
+     * @return void
+     **/
+    function asort() {}
+
+    /**
+     * Gets the number of elements in the array, or the number of
+     * public properties in the object.
+     *
+     * @return void
+     **/
+    function count() {}
+
+    /**
+     * Get the current array entry.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * Get a copy of an array.
+     *
+     * @return void
+     **/
+    function getArrayCopy() {}
+
+    /**
+     * Get the current flags.
+     *
+     * @return void
+     **/
+    function getFlags() {}
+
+    /**
+     * This function returns the current array key
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Sorts an array by the keys.
+     *
+     * @return void
+     **/
+    function ksort() {}
+
+    /**
+     * Sort the entries by values using a case insensitive "natural order" algorithm.
+     *
+     * @return void
+     **/
+    function natcasesort() {}
+
+    /**
+     * Sort the entries by values using "natural order" algorithm.
+     *
+     * @return void
+     **/
+    function natsort() {}
+
+    /**
+     * The iterator to the next entry.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Checks if the offset exists.
+     *
+     * @param string
+     * @return void
+     **/
+    function offsetExists($index) {}
+
+    /**
+     * This rewinds the iterator to the beginning.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function seek($position) {}
+
+    /**
+     * Checks if the array contains any more entries.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Constructs an ArrayIterator object.
+     *
+     * @param string
+     **/
+    function __construct($array) {}
+
+}
+class ArrayObject implements IteratorAggregate, Traversable, ArrayAccess, Serializable, Countable {
+    /**
+     * Appends a new value as the last element.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function append($value) {}
+
+    /**
+     * Sorts the entries such that the keys maintain
+     * their correlation with the entries they are associated
+     * with. This is used mainly when sorting associative arrays where
+     * the actual element order is significant.
+     *
+     * @return void
+     **/
+    function asort() {}
+
+    /**
+     * Get the number of public properties in the ArrayObject.
+     *
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Exchange the current array with another array or object.
+     *
+     * @param mixed
+     * @return array
+     **/
+    function exchangeArray($input) {}
+
+    /**
+     * Exports the ArrayObject to an array.
+     *
+     * @return array
+     **/
+    function getArrayCopy() {}
+
+    /**
+     * Gets the behavior flags of the ArrayObject. See the
+     * ArrayObject::setFlags
+     * method for a list of the available flags.
+     *
+     * @return int
+     **/
+    function getFlags() {}
+
+    /**
+     * Create a new iterator from an ArrayObject instance.
+     *
+     * @return ArrayIterator
+     **/
+    function getIterator() {}
+
+    /**
+     * Gets the classname of the array iterator that is used by
+     * ArrayObject::getIterator().
+     *
+     * @return int
+     **/
+    function getIteratorClass() {}
+
+    /**
+     * Sorts the entries by key, maintaining key to entry correlations. This is
+     * useful mainly for associative arrays.
+     *
+     * @return void
+     **/
+    function ksort() {}
+
+    /**
+     * This method is a case insensitive version of
+     * ArrayObject::natsort.
+     *
+     * @return void
+     **/
+    function natcasesort() {}
+
+    /**
+     * This method implements a sort algorithm that orders alphanumeric strings
+     * in the way a human being would while maintaining key/value associations.
+     * This is described as a "natural ordering". An example of the difference
+     * between this algorithm and the regular computer string sorting algorithms
+     * (used in ArrayObject::asort) method
+     * can be seen in the example below.
+     *
+     * @return void
+     **/
+    function natsort() {}
+
+    /**
+     * @param mixed
+     * @return bool
+     **/
+    function offsetExists($index) {}
+
+    /**
+     * @param mixed
+     * @return mixed
+     **/
+    function offsetGet($index) {}
+
+    /**
+     * Sets the value at the specified index to newval.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function offsetSet($index, $newval) {}
+
+    /**
+     * Unsets the value at the specified index.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function offsetUnset($index) {}
+
+    /**
+     * Serializes an ArrayObject.
+     *
+     * @return void
+     **/
+    function serialize() {}
+
+    /**
+     * Set the flags that change the behavior of the ArrayObject.
+     *
+     * @param int
+     * @return void
+     **/
+    function setFlags($flags) {}
+
+    /**
+     * Sets the classname of the array iterator that is used by
+     * ArrayObject::getIterator().
+     *
+     * @param string
+     * @return void
+     **/
+    function setIteratorClass($iterator_class) {}
+
+    /**
+     * This function sorts the entries such that keys maintain their
+     * correlation with the entry that they are associated with, using a
+     * user-defined comparison function.
+     *
+     * @param callback
+     * @return void
+     **/
+    function uasort($cmp_function) {}
+
+    /**
+     * This function sorts the keys of the entries using a user-supplied
+     * comparison function. The key to entry correlations will be maintained.
+     *
+     * @param callback
+     * @return void
+     **/
+    function uksort($cmp_function) {}
+
+    /**
+     * Unserializes a serialized ArrayObject.
+     *
+     * @param string
+     * @return void
+     **/
+    function unserialize($serialized) {}
+
+}
+class BadFunctionCallException extends LogicException {
+}
+class BadMethodCallException extends BadFunctionCallException {
+}
+class CachingIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator, ArrayAccess, Countable {
+    const CALL_TOSTRING = 0;
+    const CATCH_GET_CHILD = 0;
+    /**
+     * May return the number of elements in the iterator.
+     *
+     * @return void
+     **/
+    function count() {}
+
+    /**
+     * May return the current element in the iteration.
+     *
+     * @return void
+     **/
+    function current() {}
+
+    /**
+     * @return void
+     **/
+    function getCache() {}
+
+    /**
+     * Get the bitmask of the flags used for this CachingIterator instance.
+     *
+     * @return void
+     **/
+    function getFlags() {}
+
+    /**
+     * Returns the iterator sent to the constructor.
+     *
+     * @return void
+     **/
+    function getInnerIterator() {}
+
+    /**
+     * @return void
+     **/
+    function hasNext() {}
+
+    /**
+     * This method may return a key for the current element.
+     *
+     * @return void
+     **/
+    function key() {}
+
+    /**
+     * Move the iterator forward.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @param string
+     * @return void
+     **/
+    function offsetExists($index) {}
+
+    /**
+     * @param string
+     * @return void
+     **/
+    function offsetGet($index) {}
+
+    /**
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function offsetSet($index, $newval) {}
+
+    /**
+     * @param string
+     * @return void
+     **/
+    function offsetUnset($index) {}
+
+    /**
+     * Rewind the iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Set the flags for the CachingIterator object.
+     *
+     * @param bitmask
+     * @return void
+     **/
+    function setFlags($flags) {}
+
+    /**
+     * Check whether the current element is valid.
+     *
+     * @return void
+     **/
+    function valid() {}
+
+    /**
+     * @param Iterator
+     * @param string
+     **/
+    function __construct($iterator, $flags) {}
+
+    /**
+     * Get the string representation of the current element.
+     *
+     * @return void
+     **/
+    function __toString() {}
+
+}
 class Collator {
     /**
      * Object oriented style
@@ -2415,41 +2898,15 @@ class Collator {
     function sortWithSortKeys(&$arr) {}
 
 }
-class DOMAttr extends DOMNode {
-}
-class DOMCharacterData extends DOMNode {
-}
-class DOMComment extends DOMCharacterData {
-}
-class DOMDocument extends DOMNode {
-}
-class DOMDocumentFragment extends DOMNode {
-}
-class DOMDocumentType extends DOMNode {
-}
-class DOMElement extends DOMNode {
-}
-class DOMEntity extends DOMNode {
-}
-class DOMEntityReference extends DOMNode {
-}
-class DOMException extends Exception {
-}
-class DOMImplementation {
-}
-class DOMNamedNodeMap {
-}
-class DOMNode {
-}
-class DOMNodeList {
-}
-class DOMNotation extends DOMNode {
-}
-class DOMProcessingInstruction extends DOMNode {
-}
-class DOMText extends DOMCharacterData {
-}
-class DOMXPath {
+class Countable {
+    /**
+     * This method executed when using the count function on a
+     * object implementing Countable.
+     *
+     * @return int
+     **/
+    function count() {}
+
 }
 class DateInterval {
     /**
@@ -2705,7 +3162,219 @@ class Directory {
     function read() {}
 
 }
-class DomAttr {
+class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, SeekableIterator {
+    /**
+     * Get the current DirectoryIterator item.
+     *
+     * @return DirectoryIterator
+     **/
+    function current() {}
+
+    /**
+     * Get the last access time of the current
+     * DirectoryIterator item.
+     *
+     * @return int
+     **/
+    function getATime() {}
+
+    /**
+     * Get the base name of the current DirectoryIterator item.
+     *
+     * @param string
+     * @return string
+     **/
+    function getBasename($suffix) {}
+
+    /**
+     * Get the inode change time for the current
+     * DirectoryIterator item.
+     *
+     * @return int
+     **/
+    function getCTime() {}
+
+    /**
+     * Get the file name of the current DirectoryIterator item.
+     *
+     * @return string
+     **/
+    function getFilename() {}
+
+    /**
+     * Get the group id of the file.
+     *
+     * @return int
+     **/
+    function getGroup() {}
+
+    /**
+     * Get the inode number for the current 
+     * DirectoryIterator item.
+     *
+     * @return int
+     **/
+    function getInode() {}
+
+    /**
+     * Get the last modification time of the current
+     * DirectoryIterator item, as a Unix timestamp.
+     *
+     * @return int
+     **/
+    function getMTime() {}
+
+    /**
+     * Get the owner of the current 
+     * DirectoryIterator item,
+     * in numerical format.
+     *
+     * @return int
+     **/
+    function getOwner() {}
+
+    /**
+     * Get the path to the current DirectoryIterator item.
+     *
+     * @return string
+     **/
+    function getPath() {}
+
+    /**
+     * Get the path and file name of the current file.
+     *
+     * @return string
+     **/
+    function getPathname() {}
+
+    /**
+     * Get the permissions of the current DirectoryIterator item.
+     *
+     * @return int
+     **/
+    function getPerms() {}
+
+    /**
+     * Get the file size for the current 
+     * DirectoryIterator item.
+     *
+     * @return int
+     **/
+    function getSize() {}
+
+    /**
+     * Determines which file type the current DirectoryIterator
+     * item belongs to. One of file, link,
+     * or dir.
+     *
+     * @return string
+     **/
+    function getType() {}
+
+    /**
+     * Determines if the current DirectoryIterator
+     * item is a directory.
+     *
+     * @return bool
+     **/
+    function isDir() {}
+
+    /**
+     * Determines if the current DirectoryIterator
+     * item is a directory and either
+     * . or ...
+     *
+     * @return bool
+     **/
+    function isDot() {}
+
+    /**
+     * Determines if the current DirectoryIterator
+     * item is executable.
+     *
+     * @return bool
+     **/
+    function isExecutable() {}
+
+    /**
+     * Determines if the current DirectoryIterator
+     * item is a regular file.
+     *
+     * @return bool
+     **/
+    function isFile() {}
+
+    /**
+     * Determines if the current DirectoryIterator
+     * item is a symbolic link.
+     *
+     * @return bool
+     **/
+    function isLink() {}
+
+    /**
+     * Determines if the current DirectoryIterator
+     * item is readable.
+     *
+     * @return bool
+     **/
+    function isReadable() {}
+
+    /**
+     * Determines if the current DirectoryIterator
+     * item is writable.
+     *
+     * @return bool
+     **/
+    function isWritable() {}
+
+    /**
+     * Get the key for the current DirectoryIterator item.
+     *
+     * @return string
+     **/
+    function key() {}
+
+    /**
+     * Move forward to the next DirectoryIterator item.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewind the DirectoryIterator back to the start.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Seek to a given position in the DirectoryIterator.
+     *
+     * @param int
+     * @return void
+     **/
+    function seek($position) {}
+
+    /**
+     * Check whether current DirectoryIterator position is a valid file.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Get the file name of the current DirectoryIterator item.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class DomainException extends LogicException {
+}
+class DOMAttr extends DOMNode {
     /**
      * This function checks if the attribute is a defined ID.
      *
@@ -2758,7 +3427,7 @@ class DomAttribute {
     function value() {}
 
 }
-class DomCharacterData {
+class DOMCharacterData extends DOMNode {
     /**
      * Append the string data to the end of the character data of the node.
      *
@@ -2807,7 +3476,7 @@ class DomCharacterData {
     function substringData($offset, $count) {}
 
 }
-class DomComment {
+class DomComment extends DOMCharacterData {
     /**
      * Creates a new DOMComment object. This object is read only. 
      * It may be appended to a document, but additional nodes may not be appended to this node until 
@@ -2819,7 +3488,7 @@ class DomComment {
     function __construct($value) {}
 
 }
-class DomDocument {
+class DomDocument extends DOMNode {
     /**
      * Adds a root element node to a dom document and returns the new node.
      * The element name is given in the passed parameter.
@@ -3278,7 +3947,7 @@ class DomDocument {
     function __construct($version, $encoding) {}
 
 }
-class DomDocumentFragment {
+class DomDocumentFragment extends DOMNode {
     /**
      * Appends raw XML data to a DOMDocumentFragment.
      *
@@ -3288,7 +3957,7 @@ class DomDocumentFragment {
     function appendXML($data) {}
 
 }
-class DomDocumentType {
+class DomDocumentType extends DOMNode {
     /**
      * @return array
      **/
@@ -3326,7 +3995,7 @@ class DomDocumentType {
     function system_id() {}
 
 }
-class DomElement {
+class DomElement extends DOMNode {
     /**
      * Gets the value of the attribute with name name 
      * for the current node.
@@ -3581,7 +4250,9 @@ class DomElement {
     function __construct($name, $value, $namespaceURI) {}
 
 }
-class DomEntityReference {
+class DOMEntity extends DOMNode {
+}
+class DomEntityReference extends DOMNode {
     /**
      * Creates a new DOMEntityReference object.
      *
@@ -3590,7 +4261,9 @@ class DomEntityReference {
     function __construct($name) {}
 
 }
-class DomImplementation {
+class DOMException extends Exception {
+}
+class DOMImplementation {
     /**
      * Creates a DOMDocument object of the specified type
      * with its document element.
@@ -4152,7 +4825,9 @@ class DomNodelist {
     function item($index) {}
 
 }
-class DomProcessingInstruction {
+class DOMNotation extends DOMNode {
+}
+class DomProcessingInstruction extends DOMNode {
     /**
      * This method gets the data of the ProcessingInstruction node.
      *
@@ -4180,7 +4855,7 @@ class DomProcessingInstruction {
     function __construct($name, $value) {}
 
 }
-class DomText {
+class DOMText extends DOMCharacterData {
     /**
      * Indicates whether this text node contains whitespace. The text node is 
      * determined to contain whitespace in element content during the load of the 
@@ -4280,6 +4955,43 @@ class DomXsltStylesheet {
      * @return string
      **/
     function result_dump_mem($xmldoc) {}
+
+}
+class EmptyIterator implements Iterator, Traversable {
+    /**
+     * This function must not be called. It throws an exception upon access.
+     *
+     * @return void
+     **/
+    function current() {}
+
+    /**
+     * This function must not be called. It throws an exception upon access.
+     *
+     * @return void
+     **/
+    function key() {}
+
+    /**
+     * No operation, nothing to do.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * No operation, nothing to do.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * The EmptyIterator valid() method.
+     *
+     * @return void
+     **/
+    function valid() {}
 
 }
 class FilesystemIterator extends DirectoryIterator implements SeekableIterator, Traversable, Iterator {
@@ -4390,18159 +5102,6 @@ class FilterIterator extends IteratorIterator implements OuterIterator, Traversa
      * @param Iterator
      **/
     function __construct($iterator) {}
-
-}
-class GlobIterator extends FilesystemIterator implements Iterator, Traversable, SeekableIterator, Countable {
-    /**
-     * Gets the number of directories and files found by
-     * the glob expression.
-     *
-     * @return integer
-     **/
-    function count() {}
-
-    /**
-     * Constructs a new directory iterator from a glob expression.
-     *
-     * @param string
-     * @param integer
-     **/
-    function __construct($path, $flags) {}
-
-}
-class Gmagick {
-    const COLOR_ALPHA = 0;
-    const COLOR_BLACK = 0;
-    const COLOR_BLUE = 0;
-    const COLOR_CYAN = 0;
-    const COLOR_FUZZ = 0;
-    const COLOR_GREEN = 0;
-    const COLOR_MAGENTA = 0;
-    const COLOR_OPACITY = 0;
-    const COLOR_RED = 0;
-    const COLOR_YELLOW = 0;
-    /**
-     * Adds new image to Gmagick object from the current position of the source object. After the operation iterator position is moved at the end of the list.
-     *
-     * @param Gmagick
-     * @return void
-     **/
-    function addimage($Gmagick) {}
-
-    /**
-     * Adds random noise to the image.
-     *
-     * @param int
-     * @return void
-     **/
-    function addnoiseimage($NOISE) {}
-
-    /**
-     * Annotates an image with text.
-     *
-     * @param GmagickDraw
-     * @param int
-     * @param int
-     * @param float
-     * @param string
-     * @return void
-     **/
-    function annotateimage($GmagickDraw, $x, $y, $angle, $text) {}
-
-    /**
-     * Adds blur filter to image.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function blurimage($radius, $sigma) {}
-
-    /**
-     * Surrounds the image with a border of the color defined by the bordercolor GmagickPixel object or a color string.
-     *
-     * @param GmagickPixel
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function borderimage($color, $width, $height) {}
-
-    /**
-     * Simulates a charcoal drawing.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function charcoalimage($radius, $sigma) {}
-
-    /**
-     * Removes a region of an image and collapses the image to occupy the removed portion.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function chopimage($width, $height, $x, $y) {}
-
-    /**
-     * Clears all resources associated to Gmagick object
-     *
-     * @return void
-     **/
-    function clear() {}
-
-    /**
-     * Adds a comment to your image.
-     *
-     * @param string
-     * @return void
-     **/
-    function commentimage($comment) {}
-
-    /**
-     * Composite one image onto another at the specified offset.
-     *
-     * @param Gmagick
-     * @param int
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function compositeimage($source, $COMPOSE, $x, $y) {}
-
-    /**
-     * Extracts a region of the image.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function cropimage($x, $y, $width, $height) {}
-
-    /**
-     * Creates a fixed size thumbnail by first scaling the image down and cropping a specified area from the center.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function cropthumbnailimage($x, $y, $width, $height) {}
-
-    /**
-     * Returns reference to the current gmagick object with image pointer at the correct sequence.
-     *
-     * @return void
-     **/
-    function current() {}
-
-    /**
-     * Displaces an image's colormap by a given number of positions. If you cycle the colormap a number of times you can 
-     * produce a psychedelic effect.
-     *
-     * @param float
-     * @return void
-     **/
-    function cyclecolormapimage($displace) {}
-
-    /**
-     * Compares each image with the next in a sequence and returns the maximum bounding region of any pixel differences it discovers.
-     *
-     * @return void
-     **/
-    function deconstructimages() {}
-
-    /**
-     * Reduces the speckle noise in an image while preserving the edges of the original image.
-     *
-     * @return void
-     **/
-    function despeckleimage() {}
-
-    /**
-     * Destroys the Gmagick object and frees all resources associated with it
-     *
-     * @return void
-     **/
-    function destroy() {}
-
-    /**
-     * Renders the GmagickDraw object on the current image
-     *
-     * @param GmagickDraw
-     * @return void
-     **/
-    function drawimage($GmagickDraw) {}
-
-    /**
-     * Enhance edges within the image with a convolution filter of the given radius. Use radius 0 and it will be auto-selected.
-     *
-     * @param float
-     * @return void
-     **/
-    function edgeimage($radius) {}
-
-    /**
-     * Returns a grayscale image with a three-dimensional effect. We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma). For reasonable results, radius should be larger than sigma. Use a radius of 0 and it will choose a suitable radius for you.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function embossimage($radius, $sigma) {}
-
-    /**
-     * Applies a digital filter that improves the quality of a noisy image.
-     *
-     * @return void
-     **/
-    function enhanceimage() {}
-
-    /**
-     * Equalizes the image histogram.
-     *
-     * @return void
-     **/
-    function equalizeimage() {}
-
-    /**
-     * Creates a vertical mirror image by reflecting the pixels around the central x-axis.
-     *
-     * @return void
-     **/
-    function flipimage() {}
-
-    /**
-     * Creates a horizontal mirror image by reflecting the pixels around the central y-axis.
-     *
-     * @return void
-     **/
-    function flopimage() {}
-
-    /**
-     * Adds a simulated three-dimensional border around the image. The width and height specify the border width of the vertical and horizontal sides of the frame. The inner and outer bevels indicate the width of the inner and outer shadows of the frame.
-     *
-     * @param GmagickPixel
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function frameimage($color, $width, $height, $inner_bevel, $outer_bevel) {}
-
-    /**
-     * Gamma-corrects an image. The same image viewed on different devices will have perceptual differences in the way the image's intensities are represented on the screen. Specify individual gamma levels for the red, green, and blue channels, or adjust all three with the gamma parameter. Values typically range from 0.8 to 2.3.
-     *
-     * @param float
-     * @return void
-     **/
-    function gammaimage($gamma) {}
-
-    /**
-     * Returns the GraphicsMagick API copyright as a string.
-     *
-     * @return void
-     **/
-    function getcopyright() {}
-
-    /**
-     * Returns the filename associated with an image sequence.
-     *
-     * @return void
-     **/
-    function getfilename() {}
-
-    /**
-     * Returns the image background color.
-     *
-     * @return void
-     **/
-    function getimagebackgroundcolor() {}
-
-    /**
-     * Returns the chromaticity blue primary point for the image.
-     *
-     * @return void
-     **/
-    function getimageblueprimary() {}
-
-    /**
-     * Returns the image border color.
-     *
-     * @return void
-     **/
-    function getimagebordercolor() {}
-
-    /**
-     * Gets the depth for a particular image channel.
-     *
-     * @return void
-     **/
-    function getimagechanneldepth() {}
-
-    /**
-     * Returns the color of the specified colormap index.
-     *
-     * @return void
-     **/
-    function getimagecolors() {}
-
-    /**
-     * Gets the image colorspace.
-     *
-     * @return void
-     **/
-    function getimagecolorspace() {}
-
-    /**
-     * Returns the composite operator associated with the image.
-     *
-     * @return void
-     **/
-    function getimagecompose() {}
-
-    /**
-     * Gets the image delay
-     *
-     * @return void
-     **/
-    function getimagedelay() {}
-
-    /**
-     * Gets the depth of the image.
-     *
-     * @return void
-     **/
-    function getimagedepth() {}
-
-    /**
-     * Gets the image disposal method
-     *
-     * @return void
-     **/
-    function getimagedispose() {}
-
-    /**
-     * Returns an associative array with the keys "min" and "max".
-     *
-     * @return void
-     **/
-    function getimageextrema() {}
-
-    /**
-     * Returns the filename of a particular image in a sequence
-     *
-     * @return void
-     **/
-    function getimagefilename() {}
-
-    /**
-     * Returns the format of a particular image in a sequence.
-     *
-     * @return void
-     **/
-    function getimageformat() {}
-
-    /**
-     * Gets the image gamma
-     *
-     * @return void
-     **/
-    function getimagegamma() {}
-
-    /**
-     * Returns the chromaticity green primary point. Returns an array with the keys "x" and "y".
-     *
-     * @return void
-     **/
-    function getimagegreenprimary() {}
-
-    /**
-     * Returns the image height
-     *
-     * @return void
-     **/
-    function getimageheight() {}
-
-    /**
-     * Returns the image histogram as an array of GmagickPixel objects. Throw an GmagickException on error.
-     *
-     * @return void
-     **/
-    function getimagehistogram() {}
-
-    /**
-     * Returns the index of the current active image within the Gmagick object.
-     *
-     * @return void
-     **/
-    function getimageindex() {}
-
-    /**
-     * Gets the image interlace scheme.
-     *
-     * @return void
-     **/
-    function getimageinterlacescheme() {}
-
-    /**
-     * Gets the image iterations.
-     *
-     * @return void
-     **/
-    function getimageiterations() {}
-
-    /**
-     * Returns TRUE if the image has a matte channel otherwise false.
-     *
-     * @return void
-     **/
-    function getimagematte() {}
-
-    /**
-     * Returns GmagickPixel object on success. Throw an GmagickException on error.
-     *
-     * @return void
-     **/
-    function getimagemattecolor() {}
-
-    /**
-     * Returns the named image profile.
-     *
-     * @return void
-     **/
-    function getimageprofile() {}
-
-    /**
-     * Returns the chromaticity red primary point as an array with the keys "x" and "y".
-     *
-     * @return void
-     **/
-    function getimageredprimary() {}
-
-    /**
-     * Gets the image rendering intent
-     *
-     * @return void
-     **/
-    function getimagerenderingintent() {}
-
-    /**
-     * Returns the resolution as an array.
-     *
-     * @return void
-     **/
-    function getimageresolution() {}
-
-    /**
-     * Gets the image scene.
-     *
-     * @return void
-     **/
-    function getimagescene() {}
-
-    /**
-     * Generates an SHA-256 message digest for the image pixel stream.
-     *
-     * @return void
-     **/
-    function getimagesignature() {}
-
-    /**
-     * Gets the potential image type.
-     *
-     * @return void
-     **/
-    function getimagetype() {}
-
-    /**
-     * Gets the image units of resolution.
-     *
-     * @return void
-     **/
-    function getimageunits() {}
-
-    /**
-     * Returns the chromaticity white point as an associative array with the keys "x" and "y".
-     *
-     * @return void
-     **/
-    function getimagewhitepoint() {}
-
-    /**
-     * Returns the width of the image.
-     *
-     * @return void
-     **/
-    function getimagewidth() {}
-
-    /**
-     * Returns the GraphicsMagick package name.
-     *
-     * @return void
-     **/
-    function getpackagename() {}
-
-    /**
-     * Returns the Gmagick quantum depth as a string.
-     *
-     * @return void
-     **/
-    function getquantumdepth() {}
-
-    /**
-     * Returns the GraphicsMagick release date as a string.
-     *
-     * @return void
-     **/
-    function getreleasedate() {}
-
-    /**
-     * Gets the horizontal and vertical sampling factor.
-     *
-     * @return void
-     **/
-    function getsamplingfactors() {}
-
-    /**
-     * Returns the size associated with the Gmagick object as an array with the keys "columns" and "rows".
-     *
-     * @return void
-     **/
-    function getsize() {}
-
-    /**
-     * Returns the GraphicsMagick API version as a string and as a number.
-     *
-     * @return void
-     **/
-    function getversion() {}
-
-    /**
-     * Returns TRUE if the object has more images when traversing the list in the forward direction.
-     *
-     * @return void
-     **/
-    function hasnextimage() {}
-
-    /**
-     * Returns TRUE if the object has more images when traversing the list in the reverse direction
-     *
-     * @return void
-     **/
-    function haspreviousimage() {}
-
-    /**
-     * Creates a new image that is a copy of an existing one with the image pixels "imploded" by the specified percentage.
-     *
-     * @param float
-     * @return void
-     **/
-    function implodeimage($radius) {}
-
-    /**
-     * Adds a label to an image.
-     *
-     * @param string
-     * @return void
-     **/
-    function labelimage($label) {}
-
-    /**
-     * Adjusts the levels of an image by scaling the colors falling between specified white and black
-     * points to the full available quantum range. The parameters provided represent the black, mid, and 
-     * white points. The black point specifies the darkest color in the image. Colors darker than the black
-     * point are set to zero. Mid point specifies a gamma correction to apply to the image. White point
-     * specifies the lightest color in the image. Colors brighter than the white point are set to the
-     * maximum quantum value.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param int
-     * @return void
-     **/
-    function levelimage($blackPoint, $gamma, $whitePoint, $channel) {}
-
-    /**
-     * Conveniently scales an image proportionally to twice its original size.
-     *
-     * @return void
-     **/
-    function magnifyimage() {}
-
-    /**
-     * Replaces the colors of an image with the closest color from a reference image.
-     *
-     * @param gmagick
-     * @param int
-     * @return void
-     **/
-    function mapimage($gmagick, $dither) {}
-
-    /**
-     * Applies a digital filter that improves the quality of a noisy image. Each pixel is replaced by the median in a set of neighboring pixels as defined by radius.
-     *
-     * @param float
-     * @return void
-     **/
-    function medianfilterimage($radius) {}
-
-    /**
-     * A convenient method that scales an image proportionally to one-half its original size
-     *
-     * @return void
-     **/
-    function minifyimage() {}
-
-    /**
-     * Lets you control the brightness, saturation, and hue of an image. Hue is the 
-     * percentage of absolute rotation from the current position. For example 50 results 
-     * in a counter-clockwise rotation of 90 degrees, 150 results in a clockwise rotation
-     * of 90 degrees, with 0 and 200 both resulting in a rotation of 180 degrees.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function modulateimage($brightness, $saturation, $hue) {}
-
-    /**
-     * Simulates motion blur. We convolve the image with a Gaussian operator of the 
-     * given radius and standard deviation (sigma). For reasonable results, radius should be
-     * larger than sigma. Use a radius of 0 and MotionBlurImage() selects a suitable radius
-     * for you. Angle gives the angle of the blurring motion.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function motionblurimage($radius, $sigma, $angle) {}
-
-    /**
-     * Creates a new image with the specified background color
-     *
-     * @param int
-     * @param int
-     * @param mixed
-     * @param string
-     * @return void
-     **/
-    function newimage($width, $height, $background, $height) {}
-
-    /**
-     * Associates the next image in the image list with an Gmagick object.
-     *
-     * @return void
-     **/
-    function nextimage() {}
-
-    /**
-     * Enhances the contrast of a color image by adjusting the pixels color to span the entire range of colors available.
-     *
-     * @param int
-     * @return void
-     **/
-    function normalizeimage($channel) {}
-
-    /**
-     * Applies a special effect filter that simulates an oil painting. Each pixel is replaced by the most frequent color occurring in a circular region defined by radius.
-     *
-     * @return void
-     **/
-    function oilpaintimage() {}
-
-    /**
-     * Assocates the previous image in an image list with the Gmagick object.
-     *
-     * @return void
-     **/
-    function previousimage() {}
-
-    /**
-     * Adds or removes a ICC, IPTC, or generic profile from an image. If the profile is NULL, it is removed from the image otherwise added. Use a name of '*' and a profile of NULL to remove all profiles from the image.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function profileimage($name, $profile) {}
-
-    /**
-     * Analyzes the colors within a reference image and chooses a fixed number of
-     * colors to represent the image. The goal of the algorithm is to minimize the 
-     * color difference between the input and output image while minimizing the processing time.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param bool
-     * @param bool
-     * @return void
-     **/
-    function quantizeimage($numColors, $colorspace, $treeDepth, $dither, $measureError) {}
-
-    /**
-     * Analyzes the colors within a sequence of images and chooses a fixed number of 
-     * colors to represent the image. The goal of the algorithm is to minimize the 
-     * color difference between the input and output image while minimizing the processing time.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param bool
-     * @param bool
-     * @return void
-     **/
-    function quantizeimages($numColors, $colorspace, $treeDepth, $dither, $measureError) {}
-
-    /**
-     * MagickQueryFontMetrics() returns an array representing the font metrics.
-     *
-     * @return void
-     **/
-    function queryfontmetrics() {}
-
-    /**
-     * Returns fonts supported by Gmagick.
-     *
-     * @return void
-     **/
-    function queryfonts() {}
-
-    /**
-     * Returns formats supported by Gmagick.
-     *
-     * @param string
-     * @return void
-     **/
-    function queryformats($pattern) {}
-
-    /**
-     * Radial blurs an image.
-     *
-     * @param float
-     * @param int
-     * @return void
-     **/
-    function radialblurimage($angle, $channel) {}
-
-    /**
-     * Creates a simulated three-dimensional button-like effect by lightening and darkening the edges of the image. Members width and height of raise_info define the width of the vertical and horizontal edge of the effect.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @param bool
-     * @return void
-     **/
-    function raiseimage($width, $height, $x, $y, $raise) {}
-
-    /**
-     * Reads image from filename.
-     *
-     * @param string
-     * @return void
-     **/
-    function read($filename) {}
-
-    /**
-     * Reads image from filename.
-     *
-     * @param string
-     * @return void
-     **/
-    function readimage($filename) {}
-
-    /**
-     * Reads image from a binary string.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function readimageblob($imageContents, $filename) {}
-
-    /**
-     * Reads an image or image sequence from an open file descriptor.
-     *
-     * @param string
-     * @return void
-     **/
-    function readimagefile($fp) {}
-
-    /**
-     * Smooths the contours of an image while still preserving edge information. The algorithm works by replacing each pixel with its neighbor closest in value. A neighbor is defined by radius. Use a radius of 0 and Gmagick::reduceNoiseImage() selects a suitable radius for you.
-     *
-     * @param float
-     * @return void
-     **/
-    function reducenoiseimage($radius) {}
-
-    /**
-     * Removes an image from the image list.
-     *
-     * @return void
-     **/
-    function removeimage() {}
-
-    /**
-     * Removes the named image profile and returns it.
-     *
-     * @param string
-     * @return void
-     **/
-    function removeimageprofile($name) {}
-
-    /**
-     * Resample image to desired resolution.
-     *
-     * @param float
-     * @param float
-     * @param int
-     * @param float
-     * @return void
-     **/
-    function resampleimage($xResolution, $yResolution, $filter, $blur) {}
-
-    /**
-     * Scales an image to the desired dimensions with a filter.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param float
-     * @param bool
-     * @return void
-     **/
-    function resizeimage($width, $height, $filter, $blur, $fit) {}
-
-    /**
-     * Offsets an image as defined by x and y.
-     *
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function rollimage($x, $y) {}
-
-    /**
-     * Rotates an image the specified number of degrees. Empty triangles left over from rotating the image are filled with the background color.
-     *
-     * @param mixed
-     * @param float
-     * @return void
-     **/
-    function rotateimage($color, $degrees) {}
-
-    /**
-     * Scales the size of an image to the given dimensions. The other parameter will be calculated if 0 is passed as either param.
-     *
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function scaleimage($width, $height) {}
-
-    /**
-     * Separates a channel from the image and returns a grayscale image. A channel is a particular color component of each pixel in the image.
-     *
-     * @param int
-     * @return void
-     **/
-    function separateimagechannel($channel) {}
-
-    /**
-     * Sets the filename before you read or write an image file.
-     *
-     * @param string
-     * @return void
-     **/
-    function setfilename($filename) {}
-
-    /**
-     * Sets the image background color.
-     *
-     * @param GmagickPixel
-     * @return void
-     **/
-    function setimagebackgroundcolor($color) {}
-
-    /**
-     * Sets the image chromaticity blue primary point.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function setimageblueprimary($x, $y) {}
-
-    /**
-     * Sets the image border color.
-     *
-     * @param GmagickPixel
-     * @return void
-     **/
-    function setimagebordercolor($color) {}
-
-    /**
-     * Sets the depth of a particular image channel.
-     *
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function setimagechanneldepth($channel, $depth) {}
-
-    /**
-     * Sets the image colorspace.
-     *
-     * @param int
-     * @return void
-     **/
-    function setimagecolorspace($colorspace) {}
-
-    /**
-     * Sets the image composite operator.
-     *
-     * @param int
-     * @return void
-     **/
-    function setimagecompose($composite) {}
-
-    /**
-     * Sets the image delay
-     *
-     * @param int
-     * @return void
-     **/
-    function setimagedelay($delay) {}
-
-    /**
-     * Sets the image depth
-     *
-     * @param float
-     * @return void
-     **/
-    function setimagedepth($depth) {}
-
-    /**
-     * Sets the image disposal method.
-     *
-     * @param int
-     * @return void
-     **/
-    function setimagedispose($disposeType) {}
-
-    /**
-     * Sets the filename of a particular image in a sequence.
-     *
-     * @param string
-     * @return void
-     **/
-    function setimagefilename($filename) {}
-
-    /**
-     * Sets the format of a particular image in a sequence.
-     *
-     * @param string
-     * @return void
-     **/
-    function setimageformat($imageFormat) {}
-
-    /**
-     * Sets the image gamma.
-     *
-     * @param float
-     * @return void
-     **/
-    function setimagegamma($gamma) {}
-
-    /**
-     * Sets the image chromaticity green primary point.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function setimagegreenprimary($x, $y) {}
-
-    /**
-     * Set the iterator to the position in the image list specified with the index parameter.
-     *
-     * @param int
-     * @return void
-     **/
-    function setimageindex($index) {}
-
-    /**
-     * Sets the interlace scheme of the image.
-     *
-     * @param int
-     * @return void
-     **/
-    function setimageinterlacescheme($interlace) {}
-
-    /**
-     * Sets the image iterations.
-     *
-     * @param int
-     * @return void
-     **/
-    function setimageiterations($iterations) {}
-
-    /**
-     * Adds a named profile to the Gmagick object. If a profile with the same name already exists, it is replaced.
-     * This method differs from the Gmagick::ProfileImage() method in that it does not apply any CMS color profiles.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function setimageprofile($name, $profile) {}
-
-    /**
-     * Sets the image chromaticity red primary point.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function setimageredprimary($x, $y) {}
-
-    /**
-     * Sets the image rendering intent.
-     *
-     * @param int
-     * @return void
-     **/
-    function setimagerenderingintent($rendering_intent) {}
-
-    /**
-     * Sets the image resolution.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function setimageresolution($xResolution, $yResolution) {}
-
-    /**
-     * Sets the image scene.
-     *
-     * @param string
-     * @return void
-     **/
-    function setimagescene($scene) {}
-
-    /**
-     * Sets the image type.
-     *
-     * @param string
-     * @return void
-     **/
-    function setimagetype($imgType) {}
-
-    /**
-     * Sets the image units of resolution.
-     *
-     * @param int
-     * @return void
-     **/
-    function setimageunits($resolution) {}
-
-    /**
-     * Sets the image chromaticity white point.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function setimagewhitepoint($x, $y) {}
-
-    /**
-     * Sets the image sampling factors.
-     *
-     * @param array
-     * @return void
-     **/
-    function setsamplingfactors($factors) {}
-
-    /**
-     * Sets the size of the Gmagick object. Set it before you read a raw image format such as RGB, GRAY, or CMYK.
-     *
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function setsize($columns, $rows) {}
-
-    /**
-     * Slides one edge of an image along the X or Y axis, creating a parallelogram.
-     * An X direction shear slides an edge along the X axis, while a Y direction shear slides an edge along the Y axis. 
-     * The amount of the shear is controlled by a shear angle. For X direction shears, x_shear is measured relative to the
-     * Y axis, and similarly, for Y direction shears y_shear is measured relative to the X axis. Empty triangles left over
-     * from shearing the image are filled with the background color.
-     *
-     * @param mixed
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function shearimage($color, $xShear, $yShear) {}
-
-    /**
-     * Applies a special effect to the image, similar to the effect achieved in a 
-     * photo darkroom by selectively exposing areas of photo sensitive paper to light. 
-     * Threshold ranges from 0 to QuantumRange and is a measure of the extent of the solarization.
-     *
-     * @param float
-     * @return void
-     **/
-    function solarizeimage($threshold) {}
-
-    /**
-     * Special effects method that randomly displaces each pixel in a block defined by the radius parameter.
-     *
-     * @param float
-     * @return void
-     **/
-    function spreadimage($radius) {}
-
-    /**
-     * Strips an image of all profiles and comments.
-     *
-     * @return void
-     **/
-    function stripimage() {}
-
-    /**
-     * Swirls the pixels about the center of the image, where degrees indicates the sweep of the arc through which each pixel is moved. You get a more dramatic effect as the degrees move from 1 to 360.
-     *
-     * @param float
-     * @return void
-     **/
-    function swirlimage($degrees) {}
-
-    /**
-     * Changes the size of an image to the given dimensions and removes any associated profiles. 
-     * The goal is to produce small low cost thumbnail images suited for display on the Web. 
-     * If TRUE is given as a third parameter then columns and rows parameters are used as maximums
-     * for each side. Both sides will be scaled down until the match or are smaller than the parameter given for the side.
-     *
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function thumbnailimage($width, $height) {}
-
-    /**
-     * Remove edges that are the background color from the image.
-     *
-     * @param float
-     * @return void
-     **/
-    function trimimage($fuzz) {}
-
-    /**
-     * Writes an image to the specified filename. If the filename parameter is NULL, 
-     * the image is written to the filename set by Gmagick::ReadImage() or Gmagick::SetImageFilename().
-     *
-     * @param string
-     * @return void
-     **/
-    function write($filename) {}
-
-    /**
-     * Writes an image to the specified filename. If the filename parameter is NULL, 
-     * the image is written to the filename set by Gmagick::ReadImage() or Gmagick::SetImageFilename().
-     *
-     * @param string
-     * @return void
-     **/
-    function writeimage($filename) {}
-
-    /**
-     * The Gmagick constructor.
-     *
-     * @param string
-     **/
-    function __construct($filename) {}
-
-}
-class GmagickDraw {
-    /**
-     * Draws text on the image.
-     *
-     * @param float
-     * @param float
-     * @param string
-     * @return void
-     **/
-    function annotate($x, $y, $text) {}
-
-    /**
-     * Draws an arc falling within a specified bounding rectangle on the image.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function arc($sx, $sy, $ex, $ey, $sd, $ed) {}
-
-    /**
-     * Draws a bezier curve through a set of points on the image.
-     *
-     * @param array
-     * @return void
-     **/
-    function bezier($coordinate_array) {}
-
-    /**
-     * Draws an ellipse on the image.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function ellipse($ox, $oy, $rx, $ry, $start, $end) {}
-
-    /**
-     * Returns the fill color used for drawing filled objects.
-     *
-     * @return void
-     **/
-    function getfillcolor() {}
-
-    /**
-     * Returns the opacity used when drawing
-     *
-     * @return void
-     **/
-    function getfillopacity() {}
-
-    /**
-     * Returns a string specifying the font used when annotating with text.
-     *
-     * @return void
-     **/
-    function getfont() {}
-
-    /**
-     * Returns the font pointsize used when annotating with text.
-     *
-     * @return void
-     **/
-    function getfontsize() {}
-
-    /**
-     * Returns the font style used when annotating with text.
-     *
-     * @return void
-     **/
-    function getfontstyle() {}
-
-    /**
-     * Returns the font weight used when annotating with text.
-     *
-     * @return void
-     **/
-    function getfontweight() {}
-
-    /**
-     * Returns the color used for stroking object outlines.
-     *
-     * @return void
-     **/
-    function getstrokecolor() {}
-
-    /**
-     * Returns the opacity of stroked object outlines.
-     *
-     * @return void
-     **/
-    function getstrokeopacity() {}
-
-    /**
-     * Returns the width of the stroke used to draw object outlines.
-     *
-     * @return void
-     **/
-    function getstrokewidth() {}
-
-    /**
-     * Returns the decoration applied when annotating with text.
-     *
-     * @return void
-     **/
-    function gettextdecoration() {}
-
-    /**
-     * Returns a string which specifies the code set used for text annotations.
-     *
-     * @return void
-     **/
-    function gettextencoding() {}
-
-    /**
-     * Draws a line on the image using the current stroke color, stroke opacity, and stroke width.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function line($sx, $sy, $ex, $ey) {}
-
-    /**
-     * Draws a point using the current stroke color and stroke thickness at the specified coordinates.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function point($x, $y) {}
-
-    /**
-     * Draws a polygon using the current stroke, stroke width, and fill color or texture, using the specified array of coordinates.
-     *
-     * @param array
-     * @return void
-     **/
-    function polygon($coordinates) {}
-
-    /**
-     * Draws a polyline using the current stroke, stroke width, and fill color or texture, using the specified array of coordinates.
-     *
-     * @param array
-     * @return void
-     **/
-    function polyline($coordinate_array) {}
-
-    /**
-     * Draws a rectangle given two coordinates and using the current stroke, stroke width, and fill settings.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function rectangle($x1, $y1, $x2, $y2) {}
-
-    /**
-     * Applies the specified rotation to the current coordinate space.
-     *
-     * @param float
-     * @return void
-     **/
-    function rotate($degrees) {}
-
-    /**
-     * Draws a rounded rectangle given two coordinates, x and y corner radiuses and using the current stroke, stroke width, and fill settings.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function roundrectangle($x1, $y1, $x2, $y2, $rx, $ry) {}
-
-    /**
-     * Adjusts the scaling factor to apply in the horizontal and vertical directions to the current coordinate space.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function scale($x, $y) {}
-
-    /**
-     * Sets the fill color to be used for drawing filled objects.
-     *
-     * @param string
-     * @return void
-     **/
-    function setfillcolor($color) {}
-
-    /**
-     * Sets the opacity to use when drawing using the fill color or fill texture. Setting it to 1.0 will make
-     * fill full opaque.
-     *
-     * @param float
-     * @return void
-     **/
-    function setfillopacity($fill_opacity) {}
-
-    /**
-     * Sets the fully-specified font to use when annotating with text
-     *
-     * @param string
-     * @return void
-     **/
-    function setfont($font) {}
-
-    /**
-     * Sets the font pointsize to use when annotating with text.
-     *
-     * @param float
-     * @return void
-     **/
-    function setfontsize($pointsize) {}
-
-    /**
-     * Sets the font style to use when annotating with text. The AnyStyle enumeration acts as a wild-card "don't care" option.
-     *
-     * @param string
-     * @return void
-     **/
-    function setfontstyle($style) {}
-
-    /**
-     * Sets the font weight to use when annotating with text.
-     *
-     * @param int
-     * @return void
-     **/
-    function setfontweight($weight) {}
-
-    /**
-     * Sets the color used for stroking object outlines.
-     *
-     * @param GmagickPixel
-     * @return void
-     **/
-    function setstrokecolor($color) {}
-
-    /**
-     * Specifies the opacity of stroked object outlines.
-     *
-     * @param float
-     * @return void
-     **/
-    function setstrokeopacity($stroke_opacity) {}
-
-    /**
-     * Sets the width of the stroke used to draw object outlines
-     *
-     * @param float
-     * @return void
-     **/
-    function setstrokewidth($width) {}
-
-    /**
-     * Specifies a decoration to be applied when annotating with text.
-     *
-     * @param int
-     * @return void
-     **/
-    function settextdecoration($decoration) {}
-
-    /**
-     * Specifies specifies the code set to use for text annotations. The only character 
-     * encoding which may be specified at this time is "UTF-8" for representing Unicode as 
-     * a sequence of bytes. Specify an empty string to set text encoding to the system's default. 
-     * Successful text annotation using Unicode may require fonts designed to support Unicode.
-     *
-     * @param string
-     * @return void
-     **/
-    function settextencoding($encoding) {}
-
-}
-class GmagickException extends Exception {
-}
-class GmagickPixel {
-    /**
-     * Returns the color described by the GmagickPixel object, as an array. If the color has an opacity channel set, this is provided as a fourth value in the list.
-     *
-     * @param bool
-     * @param bool
-     * @return void
-     **/
-    function getcolor($as_array, $normalize_array) {}
-
-    /**
-     * Returns the color count associated with this color
-     *
-     * @param bool
-     * @param bool
-     * @return void
-     **/
-    function getcolorcount($as_array, $normalize_array) {}
-
-    /**
-     * Retrieves the value of the color channel specified, as a floating-point number between 0 and 1.
-     *
-     * @param int
-     * @return void
-     **/
-    function getcolorvalue($color) {}
-
-    /**
-     * Sets the color described by the GmagickPixel object, with a string (e.g. "blue", "#0000ff", "rgb(0,0,255)", "cmyk(100,100,100,10)", etc.).
-     *
-     * @param string
-     * @return void
-     **/
-    function setcolor($color) {}
-
-    /**
-     * Sets the value of the specified channel of this object to the provided value, which should be between 0 and 1. This function can be used to provide an opacity channel to a GmagickPixel object.
-     *
-     * @param int
-     * @param float
-     * @return void
-     **/
-    function setcolorvalue($color, $value) {}
-
-    /**
-     * Constructs an GmagickPixel object. If a color is specified, the object is constructed and then initialised with that color before being returned.
-     *
-     * @param string
-     **/
-    function __construct($color) {}
-
-}
-class GmagickPixelException extends Exception {
-}
-class HaruAnnotation {
-    /**
-     * Defines the style of the border of the annotation.
-     * This function may be used with link annotations only.
-     *
-     * @param float
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setBorderStyle($width, $dash_on, $dash_off) {}
-
-    /**
-     * Defines the appearance of the annotation when clicked.
-     * This function may be used with link annotations only.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setHighlightMode($mode) {}
-
-    /**
-     * Defines the style of the annotation icon.
-     * This function may be used with text annotations only.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setIcon($icon) {}
-
-    /**
-     * Defines whether the annotation is initially displayed open.
-     * This function may be used with text annotations only.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function setOpened($opened) {}
-
-}
-class HaruDestination {
-    /**
-     * Defines the appearance of the page to fit the window.
-     *
-     * @return bool
-     **/
-    function setFit() {}
-
-    /**
-     * Defines the appearance of the page to fit the bounding box of the page within
-     * the window.
-     *
-     * @return bool
-     **/
-    function setFitB() {}
-
-    /**
-     * Defines the appearance of the page to magnifying to fit the width of the
-     * bounding box and setting the top position of the page to the value of
-     * top.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setFitBH($top) {}
-
-    /**
-     * Defines the appearance of the page to magnifying to fit the height of the
-     * bounding box and setting the left position of the page to the value of
-     * left.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setFitBV($left) {}
-
-    /**
-     * Defines the appearance of the page to fit the window width and sets the top
-     * position of the page to the value of top.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setFitH($top) {}
-
-    /**
-     * Defines the appearance of the page to fit the rectangle by the parameters.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setFitR($left, $bottom, $right, $top) {}
-
-    /**
-     * Defines the appearance of the page to fit the window height.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setFitV($left) {}
-
-    /**
-     * Defines the appearance of the page using three parameters:
-     * left, top and
-     * zoom.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setXYZ($left, $top, $zoom) {}
-
-}
-class HaruDoc {
-    /**
-     * Adds a new page to the document.
-     *
-     * @return object
-     **/
-    function addPage() {}
-
-    /**
-     * Set the numbering style for the specified range of pages.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param string
-     * @return bool
-     **/
-    function addPageLabel($first_page, $style, $first_num, $prefix) {}
-
-    /**
-     * Create a HaruOutline instance.
-     *
-     * @param string
-     * @param object
-     * @param object
-     * @return object
-     **/
-    function createOutline($title, $parent_outline, $encoder) {}
-
-    /**
-     * Get the HaruEncoder currently used in the document.
-     *
-     * @return object
-     **/
-    function getCurrentEncoder() {}
-
-    /**
-     * Get current page of the document.
-     *
-     * @return object
-     **/
-    function getCurrentPage() {}
-
-    /**
-     * Get the HaruEncoder instance for the specified encoding.
-     *
-     * @param string
-     * @return object
-     **/
-    function getEncoder($encoding) {}
-
-    /**
-     * Get a HaruFont instance.
-     *
-     * @param string
-     * @param string
-     * @return object
-     **/
-    function getFont($fontname, $encoding) {}
-
-    /**
-     * Get the current value of the specified document attribute.
-     *
-     * @param int
-     * @return string
-     **/
-    function getInfoAttr($type) {}
-
-    /**
-     * Get the current page layout. 
-     * See HaruDoc::setPageLayout
-     * for the list of possible values.
-     *
-     * @return int
-     **/
-    function getPageLayout() {}
-
-    /**
-     * Get the current page mode. 
-     * See HaruDoc::setPageMode
-     * for the list of possible values.
-     *
-     * @return int
-     **/
-    function getPageMode() {}
-
-    /**
-     * Get the size of the temporary stream.
-     *
-     * @return int
-     **/
-    function getStreamSize() {}
-
-    /**
-     * Creates a new page and inserts just before the specified page.
-     *
-     * @param object
-     * @return object
-     **/
-    function insertPage($page) {}
-
-    /**
-     * Loads the specified JPEG image.
-     *
-     * @param string
-     * @return object
-     **/
-    function loadJPEG($filename) {}
-
-    /**
-     * Loads a PNG image.
-     *
-     * @param string
-     * @param bool
-     * @return object
-     **/
-    function loadPNG($filename, $deferred) {}
-
-    /**
-     * Loads a RAW image.
-     *
-     * @param string
-     * @param int
-     * @param int
-     * @param int
-     * @return object
-     **/
-    function loadRaw($filename, $width, $height, $color_space) {}
-
-    /**
-     * Loads the TrueType font with the specified index from a TrueType collection
-     * file.
-     *
-     * @param string
-     * @param int
-     * @param bool
-     * @return string
-     **/
-    function loadTTC($fontfile, $index, $embed) {}
-
-    /**
-     * Loads the given TTF file and (optionally) embed its data into the document.
-     *
-     * @param string
-     * @param bool
-     * @return string
-     **/
-    function loadTTF($fontfile, $embed) {}
-
-    /**
-     * Loads Type1 font from the given file and registers it in the PDF document.
-     *
-     * @param string
-     * @param string
-     * @return string
-     **/
-    function loadType1($afmfile, $pfmfile) {}
-
-    /**
-     * Writes the document data into standard output.
-     *
-     * @return bool
-     **/
-    function output() {}
-
-    /**
-     * Read data from the temporary stream.
-     *
-     * @param int
-     * @return string
-     **/
-    function readFromStream($bytes) {}
-
-    /**
-     * Once an error code is set, most of the operations, including I/O processing
-     * functions cannot be performed. In case if you want to continue after the cause 
-     * of the error has been fixed, you have to invoke this function in order to
-     * reset the document error state.
-     *
-     * @return bool
-     **/
-    function resetError() {}
-
-    /**
-     * Rewinds the temporary stream of the document.
-     *
-     * @return bool
-     **/
-    function resetStream() {}
-
-    /**
-     * Saves the document into the specified file.
-     *
-     * @param string
-     * @return bool
-     **/
-    function save($file) {}
-
-    /**
-     * Saves the document data into a temporary stream.
-     *
-     * @return bool
-     **/
-    function saveToStream() {}
-
-    /**
-     * Defines compression mode for the document. In case when libharu was
-     * compiled without Zlib support this function will always throw
-     * HaruException.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setCompressionMode($mode) {}
-
-    /**
-     * Defines the encoder currently used in the document.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setCurrentEncoder($encoding) {}
-
-    /**
-     * Defines encryption mode for the document. The encryption mode cannot be set
-     * before setting the password.
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setEncryptionMode($mode, $key_len) {}
-
-    /**
-     * Defines an info attribute. Uses the current encoding of the document.
-     *
-     * @param int
-     * @param string
-     * @return bool
-     **/
-    function setInfoAttr($type, $info) {}
-
-    /**
-     * Sets the datetime info attributes of the document.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @param string
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setInfoDateAttr($type, $year, $month, $day, $hour, $min, $sec, $ind, $off_hour, $off_min) {}
-
-    /**
-     * Defines which page should be shown when the document is opened.
-     *
-     * @param object
-     * @return bool
-     **/
-    function setOpenAction($destination) {}
-
-    /**
-     * Defines how pages should be displayed.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setPageLayout($layout) {}
-
-    /**
-     * Defines how the document should be displayed.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setPageMode($mode) {}
-
-    /**
-     * By default the document has one pages object as a root for all pages.
-     * All page objects are create as branches of this object. One pages object
-     * can contain only 8191, therefore the maximum number of pages per document
-     * is 8191. But you can change that fact by setting
-     * page_per_pages parameter, so that the root pages
-     * object contains 8191 more pages (not page) objects, which in turn contain
-     * 8191 pages each. So the maximum number of pages in the document becomes
-     * 8191*page_per_pages.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setPagesConfiguration($page_per_pages) {}
-
-    /**
-     * Defines owner and user passwords for the document.
-     * Setting the passwords makes the document contents encrypted.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function setPassword($owner_password, $user_password) {}
-
-    /**
-     * Defines permissions for the document.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setPermission($permission) {}
-
-    /**
-     * Enables Chinese simplified encodings.
-     *
-     * @return bool
-     **/
-    function useCNSEncodings() {}
-
-    /**
-     * Enables builtin Chinese simplified fonts.
-     *
-     * @return bool
-     **/
-    function useCNSFonts() {}
-
-    /**
-     * Enables Chinese traditional encodings.
-     *
-     * @return bool
-     **/
-    function useCNTEncodings() {}
-
-    /**
-     * Enables builtin Chinese traditional fonts.
-     *
-     * @return bool
-     **/
-    function useCNTFonts() {}
-
-    /**
-     * Enables Japanese encodings.
-     *
-     * @return bool
-     **/
-    function useJPEncodings() {}
-
-    /**
-     * Enables builtin Japanese fonts.
-     *
-     * @return bool
-     **/
-    function useJPFonts() {}
-
-    /**
-     * Enables Korean encodings.
-     *
-     * @return bool
-     **/
-    function useKREncodings() {}
-
-    /**
-     * Enables builtin Korean fonts.
-     *
-     * @return bool
-     **/
-    function useKRFonts() {}
-
-    /**
-     * Constructs new HaruDoc instance.
-     *
-     * @return void
-     **/
-    function __construct() {}
-
-}
-class HaruEncoder {
-    /**
-     * Get the type of the byte in the text.
-     *
-     * @param string
-     * @param int
-     * @return int
-     **/
-    function getByteType($text, $index) {}
-
-    /**
-     * Get the type of the encoder.
-     *
-     * @return int
-     **/
-    function getType() {}
-
-    /**
-     * Converts the specified character to unicode.
-     *
-     * @param int
-     * @return int
-     **/
-    function getUnicode($character) {}
-
-    /**
-     * Get the writing mode of the encoder.
-     *
-     * @return int
-     **/
-    function getWritingMode() {}
-
-}
-class HaruException extends Exception {
-}
-class HaruFont {
-    /**
-     * Get the vertical ascent of the font.
-     *
-     * @return int
-     **/
-    function getAscent() {}
-
-    /**
-     * Get the distance from the baseline of uppercase letters.
-     *
-     * @return int
-     **/
-    function getCapHeight() {}
-
-    /**
-     * Get the vertical descent of the font.
-     *
-     * @return int
-     **/
-    function getDescent() {}
-
-    /**
-     * Get the name of the font encoding.
-     *
-     * @return string
-     **/
-    function getEncodingName() {}
-
-    /**
-     * Get the name of the font.
-     *
-     * @return string
-     **/
-    function getFontName() {}
-
-    /**
-     * Get the total width of the text, number of characters, number of words and
-     * number of spaces.
-     *
-     * @param string
-     * @return array
-     **/
-    function getTextWidth($text) {}
-
-    /**
-     * Get the width of the character in the font.
-     *
-     * @param int
-     * @return int
-     **/
-    function getUnicodeWidth($character) {}
-
-    /**
-     * Gets the distance from the baseline of lowercase letters.
-     *
-     * @return int
-     **/
-    function getXHeight() {}
-
-    /**
-     * Calculate the number of characters which can be included within the
-     * specified width.
-     *
-     * @param string
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param bool
-     * @return int
-     **/
-    function measureText($text, $width, $font_size, $char_space, $word_space, $word_wrap) {}
-
-}
-class HaruImage {
-    /**
-     * Gets the number of bits used to describe each color component of the
-     * image.
-     *
-     * @return int
-     **/
-    function getBitsPerComponent() {}
-
-    /**
-     * Get the name of the color space.
-     *
-     * @return string
-     **/
-    function getColorSpace() {}
-
-    /**
-     * Get the height of the image.
-     *
-     * @return int
-     **/
-    function getHeight() {}
-
-    /**
-     * Get the size of the image.
-     *
-     * @return array
-     **/
-    function getSize() {}
-
-    /**
-     * Get the width of the image.
-     *
-     * @return int
-     **/
-    function getWidth() {}
-
-    /**
-     * Defines the transparent color of the image using the RGB range values.
-     * The color within the range is displayed as a transparent color.
-     * The color space of the image must be RGB.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setColorMask($rmin, $rmax, $gmin, $gmax, $bmin, $bmax) {}
-
-    /**
-     * Sets the image used as image-mask. It must be 1bit gray-scale color image.
-     *
-     * @param object
-     * @return bool
-     **/
-    function setMaskImage($mask_image) {}
-
-}
-class HaruOutline {
-    /**
-     * Sets a destination object which becomes a target to jump to when the
-     * outline is clicked.
-     *
-     * @param object
-     * @return bool
-     **/
-    function setDestination($destination) {}
-
-    /**
-     * Defines whether this node is opened or not when the outline is
-     * displayed for the first time.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function setOpened($opened) {}
-
-}
-class HaruPage {
-    /**
-     * Appends an arc to the current path.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function arc($x, $y, $ray, $ang1, $ang2) {}
-
-    /**
-     * Begins new text object and sets the current text position to (0,0).
-     *
-     * @return bool
-     **/
-    function beginText() {}
-
-    /**
-     * Appends a circle to the current path.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function circle($x, $y, $ray) {}
-
-    /**
-     * Appends a straight line from the current point to the start point of the
-     * path.
-     *
-     * @return bool
-     **/
-    function closePath() {}
-
-    /**
-     * Concatenates current transformation matrix of the page and the specified
-     * matrix.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function concat($a, $b, $c, $d, $x, $y) {}
-
-    /**
-     * Create a new HaruDestination instance.
-     *
-     * @return object
-     **/
-    function createDestination() {}
-
-    /**
-     * Creates a new HaruAnnotation instance.
-     *
-     * @param array
-     * @param object
-     * @return object
-     **/
-    function createLinkAnnotation($rectangle, $destination) {}
-
-    /**
-     * Creates a new HaruAnnotation instance.
-     *
-     * @param array
-     * @param string
-     * @param object
-     * @return object
-     **/
-    function createTextAnnotation($rectangle, $text, $encoder) {}
-
-    /**
-     * Creates a new HaruAnnotation instance.
-     *
-     * @param array
-     * @param string
-     * @return object
-     **/
-    function createURLAnnotation($rectangle, $url) {}
-
-    /**
-     * Append a Bezier curve to the current path.
-     * The point (x1, y1) and the point (x2, y2) are used as the control points
-     * for a Bezier curve and current point is moved to the point (x3, y3).
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function curveTo($x1, $y1, $x2, $y2, $x3, $y3) {}
-
-    /**
-     * Appends a Bezier curve to the current path.
-     * The current point and the point (x2, y2) are used as the control points for
-     * the Bezier curve and current point is moved to the point (x3, y3).
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function curveTo2($x2, $y2, $x3, $y3) {}
-
-    /**
-     * Appends a Bezier curve to the current path.
-     * The point (x1, y1) and the point (x3, y3) are used as the control points
-     * for a Bezier curve and current point is moved to the point (x3, y3).
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function curveTo3($x1, $y1, $x3, $y3) {}
-
-    /**
-     * Show image at the page.
-     *
-     * @param object
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function drawImage($image, $x, $y, $width, $height) {}
-
-    /**
-     * Appends an ellipse to the current path.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function ellipse($x, $y, $xray, $yray) {}
-
-    /**
-     * Ends current path object without performing filling and painting operations.
-     *
-     * @return bool
-     **/
-    function endPath() {}
-
-    /**
-     * Finalizes current text object.
-     *
-     * @return bool
-     **/
-    function endText() {}
-
-    /**
-     * Fills current path using even-odd rule.
-     *
-     * @return bool
-     **/
-    function eofill() {}
-
-    /**
-     * Fills current path using even-odd rule, then paints the path.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function eoFillStroke($close_path) {}
-
-    /**
-     * Fills current path using nonzero winding number rule.
-     *
-     * @return bool
-     **/
-    function fill() {}
-
-    /**
-     * Fills current path using nonzero winding number rule, then paints the path.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function fillStroke($close_path) {}
-
-    /**
-     * Get the current value of character spacing.
-     *
-     * @return float
-     **/
-    function getCharSpace() {}
-
-    /**
-     * Returns the current filling color.
-     *
-     * @return array
-     **/
-    function getCMYKFill() {}
-
-    /**
-     * Get the current stroking color.
-     *
-     * @return array
-     **/
-    function getCMYKStroke() {}
-
-    /**
-     * Get the currently used font.
-     *
-     * @return object
-     **/
-    function getCurrentFont() {}
-
-    /**
-     * Get the current font size.
-     *
-     * @return float
-     **/
-    function getCurrentFontSize() {}
-
-    /**
-     * Get the current position for path painting.
-     *
-     * @return array
-     **/
-    function getCurrentPos() {}
-
-    /**
-     * Get the current position for text printing.
-     *
-     * @return array
-     **/
-    function getCurrentTextPos() {}
-
-    /**
-     * Get the current dash pattern. See 
-     * HaruPage::setDash 
-     * for more information on dash patterns.
-     *
-     * @return array
-     **/
-    function getDash() {}
-
-    /**
-     * Get the current filling color space.
-     *
-     * @return int
-     **/
-    function getFillingColorSpace() {}
-
-    /**
-     * Get the flatness of the page.
-     *
-     * @return float
-     **/
-    function getFlatness() {}
-
-    /**
-     * Get the current graphics mode.
-     *
-     * @return int
-     **/
-    function getGMode() {}
-
-    /**
-     * Get the current filling color.
-     *
-     * @return float
-     **/
-    function getGrayFill() {}
-
-    /**
-     * Get the current stroking color.
-     *
-     * @return float
-     **/
-    function getGrayStroke() {}
-
-    /**
-     * Get the height of the page.
-     *
-     * @return float
-     **/
-    function getHeight() {}
-
-    /**
-     * Get the current value of the horizontal scaling.
-     *
-     * @return float
-     **/
-    function getHorizontalScaling() {}
-
-    /**
-     * Get the current line cap style.
-     *
-     * @return int
-     **/
-    function getLineCap() {}
-
-    /**
-     * Get the current line join style.
-     *
-     * @return int
-     **/
-    function getLineJoin() {}
-
-    /**
-     * Get the current line width.
-     *
-     * @return float
-     **/
-    function getLineWidth() {}
-
-    /**
-     * Get the value of the miter limit.
-     *
-     * @return float
-     **/
-    function getMiterLimit() {}
-
-    /**
-     * Get the current filling color.
-     *
-     * @return array
-     **/
-    function getRGBFill() {}
-
-    /**
-     * Get the current stroking color.
-     *
-     * @return array
-     **/
-    function getRGBStroke() {}
-
-    /**
-     * Get the current stroking color space.
-     *
-     * @return int
-     **/
-    function getStrokingColorSpace() {}
-
-    /**
-     * Get the current value of line spacing.
-     *
-     * @return float
-     **/
-    function getTextLeading() {}
-
-    /**
-     * Get the current text transformation matrix of the page.
-     *
-     * @return array
-     **/
-    function getTextMatrix() {}
-
-    /**
-     * Get the current text rendering mode.
-     *
-     * @return int
-     **/
-    function getTextRenderingMode() {}
-
-    /**
-     * Get the current value of text rising.
-     *
-     * @return float
-     **/
-    function getTextRise() {}
-
-    /**
-     * Get the width of the text using current fontsize, character spacing and word spacing
-     *
-     * @param string
-     * @return float
-     **/
-    function getTextWidth($text) {}
-
-    /**
-     * Get the current transformation matrix of the page.
-     *
-     * @return array
-     **/
-    function getTransMatrix() {}
-
-    /**
-     * Get the width of the page.
-     *
-     * @return float
-     **/
-    function getWidth() {}
-
-    /**
-     * Get the current value of word spacing.
-     *
-     * @return float
-     **/
-    function getWordSpace() {}
-
-    /**
-     * Draws a line from the current point to the specified point.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function lineTo($x, $y) {}
-
-    /**
-     * Get the number of characters which can be included within the specified width.
-     *
-     * @param string
-     * @param float
-     * @param bool
-     * @return int
-     **/
-    function measureText($text, $width, $wordwrap) {}
-
-    /**
-     * Moves text position to the specified offset. If the start position of the current 
-     * line is (x1, y1), the start of the next line is (x1 + x, 
-     * y1 + y).
-     *
-     * @param float
-     * @param float
-     * @param bool
-     * @return bool
-     **/
-    function moveTextPos($x, $y, $set_leading) {}
-
-    /**
-     * Defines starting point for new drawing path.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function moveTo($x, $y) {}
-
-    /**
-     * Moves text position to the start of the next line.
-     *
-     * @return bool
-     **/
-    function moveToNextLine() {}
-
-    /**
-     * Appends a rectangle to the current drawing path.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function rectangle($x, $y, $width, $height) {}
-
-    /**
-     * Defines character spacing for the page.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setCharSpace($char_space) {}
-
-    /**
-     * Defines filling color for the page.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setCMYKFill($c, $m, $y, $k) {}
-
-    /**
-     * Defines stroking color for the page.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setCMYKStroke($c, $m, $y, $k) {}
-
-    /**
-     * Defines the dash pattern for the page.
-     *
-     * @param array
-     * @param int
-     * @return bool
-     **/
-    function setDash($pattern, $phase) {}
-
-    /**
-     * Defines flatness for the page.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setFlatness($flatness) {}
-
-    /**
-     * Defines current font and its size for the page.
-     *
-     * @param object
-     * @param float
-     * @return bool
-     **/
-    function setFontAndSize($font, $size) {}
-
-    /**
-     * Defines filling color for the page.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setGrayFill($value) {}
-
-    /**
-     * Defines stroking color for the page.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setGrayStroke($value) {}
-
-    /**
-     * Defines height of the page.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setHeight($height) {}
-
-    /**
-     * Set the horizontal scaling for the page.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setHorizontalScaling($scaling) {}
-
-    /**
-     * Defines the shape to be used at the ends of lines.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setLineCap($cap) {}
-
-    /**
-     * Defines line join style for the page.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setLineJoin($join) {}
-
-    /**
-     * Defines line width for the page.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setLineWidth($width) {}
-
-    /**
-     * Set the current value of the miter limit of the page.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setMiterLimit($limit) {}
-
-    /**
-     * Defines filling color for the page. All values must be between 0 and 1.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setRGBFill($r, $g, $b) {}
-
-    /**
-     * Defines stroking color for the page. All values must be between 0 and 1.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setRGBStroke($r, $g, $b) {}
-
-    /**
-     * Defines rotation angle of the page.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setRotate($angle) {}
-
-    /**
-     * Changes size and direction of the page to a predefined format.
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setSize($size, $direction) {}
-
-    /**
-     * Defines transition style for the page.
-     *
-     * @param int
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setSlideShow($type, $disp_time, $trans_time) {}
-
-    /**
-     * Set the text leading (line spacing) for the page.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setTextLeading($text_leading) {}
-
-    /**
-     * Defines the text transformation matrix of the page.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setTextMatrix($a, $b, $c, $d, $x, $y) {}
-
-    /**
-     * Defines text rendering mode for the page.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setTextRenderingMode($mode) {}
-
-    /**
-     * Set the current value of text rising.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setTextRise($rise) {}
-
-    /**
-     * Set the width of the page.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setWidth($width) {}
-
-    /**
-     * Set the word spacing for the page.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setWordSpace($word_space) {}
-
-    /**
-     * Prints out the text at the current position of the page.
-     *
-     * @param string
-     * @return bool
-     **/
-    function showText($text) {}
-
-    /**
-     * Moves the current position to the start of the next line and print out the text.
-     *
-     * @param string
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function showTextNextLine($text, $word_space, $char_space) {}
-
-    /**
-     * Paints the current path.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function stroke($close_path) {}
-
-    /**
-     * Prints the text on the specified position.
-     *
-     * @param float
-     * @param float
-     * @param string
-     * @return bool
-     **/
-    function textOut($x, $y, $text) {}
-
-    /**
-     * Prints the text inside the specified region.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param string
-     * @param int
-     * @return bool
-     **/
-    function textRect($left, $top, $right, $bottom, $text, $align) {}
-
-}
-class HttpDeflateStream {
-    /**
-     * Creates a new HttpDeflateStream object instance.
-     *
-     * @param int
-     * @param string
-     * @return HttpDeflateStream
-     **/
-    function factory($flags, $class_name) {}
-
-    /**
-     * Finalizes the deflate stream. The deflate stream can be reused after finalizing.
-     *
-     * @param string
-     * @return string
-     **/
-    function finish($data) {}
-
-    /**
-     * Flushes the deflate stream.
-     *
-     * @param string
-     * @return string
-     **/
-    function flush($data) {}
-
-    /**
-     * Passes more data through the deflate stream.
-     *
-     * @param string
-     * @return string
-     **/
-    function update($data) {}
-
-    /**
-     * Creates a new HttpDeflateStream object instance.
-     *
-     * @param int
-     * @return void
-     **/
-    function __construct($flags) {}
-
-}
-class HttpInflateStream {
-    /**
-     * Creates a new HttpInflateStream object instance.
-     *
-     * @param int
-     * @param string
-     * @return HttpInflateStream
-     **/
-    function factory($flags, $class_name) {}
-
-    /**
-     * Finalizes the inflate stream. The inflate stream can be reused after finalizing.
-     *
-     * @param string
-     * @return string
-     **/
-    function finish($data) {}
-
-    /**
-     * Flushes the inflate stream.
-     *
-     * @param string
-     * @return string
-     **/
-    function flush($data) {}
-
-    /**
-     * Passes more data through the inflate stream.
-     *
-     * @param string
-     * @return string
-     **/
-    function update($data) {}
-
-    /**
-     * Creates a new HttpInflateStream object instance.
-     *
-     * @param int
-     * @return void
-     **/
-    function __construct($flags) {}
-
-}
-class HttpMessage implements Iterator, Countable, Serializable {
-    /**
-     * Add headers. If append is true, headers with the same name will be separated, else overwritten.
-     *
-     * @param array
-     * @param bool
-     * @return void
-     **/
-    function addHeaders($headers, $append) {}
-
-    /**
-     * Returns a clone of an HttpMessage object detached from any parent messages.
-     *
-     * @return HttpMessage
-     **/
-    function detach() {}
-
-    /**
-     * Create an HttpMessage object from a string.
-     *
-     * @param string
-     * @param string
-     * @return HttpMessage
-     **/
-    function factory($raw_message, $class_name) {}
-
-    /**
-     * Create an HttpMessage object from script environment.
-     *
-     * @param int
-     * @param string
-     * @return HttpMessage
-     **/
-    function fromEnv($message_type, $class_name) {}
-
-    /**
-     * Create an HttpMessage object from a string.
-     *
-     * @param string
-     * @param string
-     * @return HttpMessage
-     **/
-    function fromString($raw_message, $class_name) {}
-
-    /**
-     * Get the body of the parsed HttpMessage.
-     *
-     * @return string
-     **/
-    function getBody() {}
-
-    /**
-     * Get message header.
-     *
-     * @param string
-     * @return string
-     **/
-    function getHeader($header) {}
-
-    /**
-     * Get message headers.
-     *
-     * @return array
-     **/
-    function getHeaders() {}
-
-    /**
-     * Get the HTTP Protocol Version of the Message.
-     *
-     * @return string
-     **/
-    function getHttpVersion() {}
-
-    /**
-     * Get parent Message.
-     *
-     * @return HttpMessage
-     **/
-    function getParentMessage() {}
-
-    /**
-     * Get the Request Method of the Message.
-     *
-     * @return string
-     **/
-    function getRequestMethod() {}
-
-    /**
-     * Get the Request URL of the Message.
-     *
-     * @return string
-     **/
-    function getRequestUrl() {}
-
-    /**
-     * Get the Response Code of the Message.
-     *
-     * @return int
-     **/
-    function getResponseCode() {}
-
-    /**
-     * Get the Response Status of the message (i.e. the string following the response code).
-     *
-     * @return string
-     **/
-    function getResponseStatus() {}
-
-    /**
-     * Get Message Type.
-     * Either HTTP_MSG_NONE, HTTP_MSG_REQUEST or HTTP_MSG_RESPONSE.
-     *
-     * @return int
-     **/
-    function getType() {}
-
-    /**
-     * Attempts to guess the content type of the message body through libmagic.
-     *
-     * @param string
-     * @param int
-     * @return string
-     **/
-    function guessContentType($magic_file, $magic_mode) {}
-
-    /**
-     * Prepends message(s) to the HTTP message.
-     *
-     * @param HttpMessage
-     * @param bool
-     * @return void
-     **/
-    function prepend($message, $top) {}
-
-    /**
-     * Reorders the message chain in reverse order.
-     *
-     * @return HttpMessage
-     **/
-    function reverse() {}
-
-    /**
-     * Send the Message according to its type as Response or Request.
-     *
-     * @return bool
-     **/
-    function send() {}
-
-    /**
-     * Set the body of the HttpMessage.
-     *
-     * @param string
-     * @return void
-     **/
-    function setBody($body) {}
-
-    /**
-     * Sets new headers.
-     *
-     * @param array
-     * @return void
-     **/
-    function setHeaders($headers) {}
-
-    /**
-     * Set the HTTP Protocol version of the Message.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setHttpVersion($version) {}
-
-    /**
-     * Set the Request Method of the HTTP Message.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setRequestMethod($method) {}
-
-    /**
-     * Set the Request URL of the HTTP Message.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setRequestUrl($url) {}
-
-    /**
-     * Set the response code of an HTTP Response Message.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setResponseCode($code) {}
-
-    /**
-     * Set the Response Status of the HTTP message (i.e. the string following the response code).
-     *
-     * @param string
-     * @return bool
-     **/
-    function setResponseStatus($status) {}
-
-    /**
-     * Set Message Type.
-     * Either HTTP_MSG_NONE, HTTP_MSG_REQUEST or HTTP_MSG_RESPONSE.
-     *
-     * @param int
-     * @return void
-     **/
-    function setType($type) {}
-
-    /**
-     * Creates an object regarding to the type of the message.
-     *
-     * @return HttpRequest|HttpResponse
-     **/
-    function toMessageTypeObject() {}
-
-    /**
-     * Get the string representation of the Message.
-     *
-     * @param bool
-     * @return string
-     **/
-    function toString($include_parent) {}
-
-    /**
-     * Instantiate a new HttpMessage object.
-     *
-     * @param string
-     * @return void
-     **/
-    function __construct($message) {}
-
-}
-class HttpQueryString implements ArrayAccess, Serializable {
-    /**
-     * Get (part of) the query string.
-     *
-     * @param string
-     * @param mixed
-     * @param mixed
-     * @param bool
-     * @return mixed
-     **/
-    function get($key, $type, $defval, $delete) {}
-
-    /**
-     * Copies the query string object and sets provided params at the clone.
-     *
-     * @param mixed
-     * @return HttpQueryString
-     **/
-    function mod($params) {}
-
-    /**
-     * Set query string entry/entries. NULL values will unset the variable.
-     *
-     * @param mixed
-     * @return string
-     **/
-    function set($params) {}
-
-    /**
-     * Get a single instance (differentiates between the global setting).
-     *
-     * @param bool
-     * @return HttpQueryString
-     **/
-    function singleton($global) {}
-
-    /**
-     * Get the query string represented as associative array.
-     *
-     * @return array
-     **/
-    function toArray() {}
-
-    /**
-     * Get the query string.
-     *
-     * @return string
-     **/
-    function toString() {}
-
-    /**
-     * Converts the query string from the source encoding ie to the target encoding oe.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function xlate($ie, $oe) {}
-
-    /**
-     * Creates a new HttpQueryString object instance.
-     *
-     * @param bool
-     * @param mixed
-     * @return void
-     **/
-    function __construct($global, $add) {}
-
-}
-class HttpRequest {
-    /**
-     * Add custom cookies.
-     *
-     * @param array
-     * @return bool
-     **/
-    function addCookies($cookies) {}
-
-    /**
-     * Add request header name/value pairs.
-     *
-     * @param array
-     * @return bool
-     **/
-    function addHeaders($headers) {}
-
-    /**
-     * Adds POST data entries, leaving previously set unchanged, unless a
-     * post entry with the same name already exists.
-     *
-     * @param array
-     * @return bool
-     **/
-    function addPostFields($post_data) {}
-
-    /**
-     * Add a file to the POST request, leaving previously set files unchanged.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function addPostFile($name, $file, $content_type) {}
-
-    /**
-     * Add PUT data, leaving previously set PUT data unchanged.
-     *
-     * @param string
-     * @return bool
-     **/
-    function addPutData($put_data) {}
-
-    /**
-     * Add parameters to the query parameter list, leaving previously set unchanged.
-     *
-     * @param array
-     * @return bool
-     **/
-    function addQueryData($query_params) {}
-
-    /**
-     * Add raw post data, leaving previously set raw post data unchanged.
-     *
-     * @param string
-     * @return bool
-     **/
-    function addRawPostData($raw_post_data) {}
-
-    /**
-     * Set additional SSL options.
-     *
-     * @param array
-     * @return bool
-     **/
-    function addSslOptions($options) {}
-
-    /**
-     * Clears all history messages.
-     *
-     * @return void
-     **/
-    function clearHistory() {}
-
-    /**
-     * Enable automatic sending of received cookies.
-     *
-     * @return bool
-     **/
-    function enableCookies() {}
-
-    /**
-     * Get the previously set content type.
-     *
-     * @return string
-     **/
-    function getContentType() {}
-
-    /**
-     * Get previously set cookies.
-     *
-     * @return array
-     **/
-    function getCookies() {}
-
-    /**
-     * Get previously set request headers.
-     *
-     * @return array
-     **/
-    function getHeaders() {}
-
-    /**
-     * Get all sent requests and received responses as an HttpMessage object.
-     *
-     * @return HttpMessage
-     **/
-    function getHistory() {}
-
-    /**
-     * Get the previously set request method.
-     *
-     * @return int
-     **/
-    function getMethod() {}
-
-    /**
-     * Get currently set options.
-     *
-     * @return array
-     **/
-    function getOptions() {}
-
-    /**
-     * Get previously set POST data.
-     *
-     * @return array
-     **/
-    function getPostFields() {}
-
-    /**
-     * Get all previously added POST files.
-     *
-     * @return array
-     **/
-    function getPostFiles() {}
-
-    /**
-     * Get previously set PUT data.
-     *
-     * @return string
-     **/
-    function getPutData() {}
-
-    /**
-     * Get previously set put file.
-     *
-     * @return string
-     **/
-    function getPutFile() {}
-
-    /**
-     * Get the current query data in form of an urlencoded query string.
-     *
-     * @return string
-     **/
-    function getQueryData() {}
-
-    /**
-     * Get previously set raw post data.
-     *
-     * @return string
-     **/
-    function getRawPostData() {}
-
-    /**
-     * Get sent HTTP message.
-     *
-     * @return string
-     **/
-    function getRawRequestMessage() {}
-
-    /**
-     * Get the entire HTTP response.
-     *
-     * @return string
-     **/
-    function getRawResponseMessage() {}
-
-    /**
-     * Get sent HTTP message.
-     *
-     * @return HttpMessage
-     **/
-    function getRequestMessage() {}
-
-    /**
-     * Get the response body after the request has been sent.
-     *
-     * @return string
-     **/
-    function getResponseBody() {}
-
-    /**
-     * Get the response code after the request has been sent.
-     *
-     * @return int
-     **/
-    function getResponseCode() {}
-
-    /**
-     * Get response cookie(s) after the request has been sent.
-     *
-     * @param int
-     * @param array
-     * @return array
-     **/
-    function getResponseCookies($flags, $allowed_extras) {}
-
-    /**
-     * * Get all response data after the request has been sent.
-     *
-     * @return array
-     **/
-    function getResponseData() {}
-
-    /**
-     * Get response header(s) after the request has been sent.
-     *
-     * @param string
-     * @return mixed
-     **/
-    function getResponseHeader($name) {}
-
-    /**
-     * Get response info after the request has been sent.
-     *
-     * @param string
-     * @return mixed
-     **/
-    function getResponseInfo($name) {}
-
-    /**
-     * Get the full response as HttpMessage object after the request has been sent.
-     *
-     * @return HttpMessage
-     **/
-    function getResponseMessage() {}
-
-    /**
-     * Get the response status (i.e. the string after the response code) after the message has been sent.
-     *
-     * @return string
-     **/
-    function getResponseStatus() {}
-
-    /**
-     * Get previously set SSL options.
-     *
-     * @return array
-     **/
-    function getSslOptions() {}
-
-    /**
-     * Get the previously set request URL.
-     *
-     * @return string
-     **/
-    function getUrl() {}
-
-    /**
-     * Reset all automatically received/sent cookies.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function resetCookies($session_only) {}
-
-    /**
-     * Send the HTTP request.
-     *
-     * @return HttpMessage
-     **/
-    function send() {}
-
-    /**
-     * Set the content type the post request should have.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setContentType($content_type) {}
-
-    /**
-     * Set custom cookies.
-     *
-     * @param array
-     * @return bool
-     **/
-    function setCookies($cookies) {}
-
-    /**
-     * Set request header name/value pairs.
-     *
-     * @param array
-     * @return bool
-     **/
-    function setHeaders($headers) {}
-
-    /**
-     * Set the request method.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setMethod($request_method) {}
-
-    /**
-     * Set the request options to use.
-     *
-     * @param array
-     * @return bool
-     **/
-    function setOptions($options) {}
-
-    /**
-     * Set the POST data entries, overwriting previously set POST data.
-     *
-     * @param array
-     * @return bool
-     **/
-    function setPostFields($post_data) {}
-
-    /**
-     * Set files to post, overwriting previously set post files.
-     *
-     * @param array
-     * @return bool
-     **/
-    function setPostFiles($post_files) {}
-
-    /**
-     * Set PUT data to send, overwriting previously set PUT data.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setPutData($put_data) {}
-
-    /**
-     * Set file to put. Affects only PUT requests.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setPutFile($file) {}
-
-    /**
-     * Set the URL query parameters to use, overwriting previously set query parameters.
-     *
-     * @param mixed
-     * @return bool
-     **/
-    function setQueryData($query_data) {}
-
-    /**
-     * Set raw post data to send, overwriting previously set raw post data. Don't 
-     * forget to specify a content type. Affects only POST and custom requests.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setRawPostData($raw_post_data) {}
-
-    /**
-     * Set SSL options.
-     *
-     * @param array
-     * @return bool
-     **/
-    function setSslOptions($options) {}
-
-    /**
-     * Set the request URL.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setUrl($url) {}
-
-    /**
-     * Instantiate a new HttpRequest object.
-     *
-     * @param string
-     * @param int
-     * @param array
-     * @return void
-     **/
-    function __construct($url, $request_method, $options) {}
-
-}
-class HttpRequestPool implements Iterator, Countable {
-    /**
-     * Attach an HttpRequest object to this HttpRequestPool.
-     *
-     * @param HttpRequest
-     * @return bool
-     **/
-    function attach($request) {}
-
-    /**
-     * Detach an HttpRequest object from this HttpRequestPool.
-     *
-     * @param HttpRequest
-     * @return bool
-     **/
-    function detach($request) {}
-
-    /**
-     * Get attached HttpRequest objects.
-     *
-     * @return array
-     **/
-    function getAttachedRequests() {}
-
-    /**
-     * Get attached HttpRequest objects that already have finished their work.
-     *
-     * @return array
-     **/
-    function getFinishedRequests() {}
-
-    /**
-     * Detach all attached HttpRequest objects.
-     *
-     * @return void
-     **/
-    function reset() {}
-
-    /**
-     * Send all attached HttpRequest objects in parallel.
-     *
-     * @return bool
-     **/
-    function send() {}
-
-    /**
-     * Returns TRUE until each request has finished its transaction.
-     *
-     * @return bool
-     **/
-    function socketPerform() {}
-
-    /**
-     * @return bool
-     **/
-    function socketSelect() {}
-
-    /**
-     * Instantiate a new HttpRequestPool object. An HttpRequestPool is
-     * able to send several HttpRequests in parallel.
-     *
-     * @param HttpRequest
-     * @return void
-     **/
-    function __construct($request) {}
-
-    /**
-     * Clean up HttpRequestPool object.
-     *
-     * @return void
-     **/
-    function __destruct() {}
-
-}
-class HttpResponse {
-    /**
-     * Capture script output.
-     *
-     * @return void
-     **/
-    function capture() {}
-
-    /**
-     * Get current buffer size.
-     *
-     * @return int
-     **/
-    function getBufferSize() {}
-
-    /**
-     * Get current caching setting.
-     *
-     * @return bool
-     **/
-    function getCache() {}
-
-    /**
-     * Get current Cache-Control header setting.
-     *
-     * @return string
-     **/
-    function getCacheControl() {}
-
-    /**
-     * Get current Content-Disposition setting.
-     *
-     * @return string
-     **/
-    function getContentDisposition() {}
-
-    /**
-     * Get current Content-Type header setting.
-     *
-     * @return string
-     **/
-    function getContentType() {}
-
-    /**
-     * Get the previously set data to be sent.
-     *
-     * @return string
-     **/
-    function getData() {}
-
-    /**
-     * Get calculated or previously set custom ETag.
-     *
-     * @return string
-     **/
-    function getETag() {}
-
-    /**
-     * Get the previously set file to be sent.
-     *
-     * @return string
-     **/
-    function getFile() {}
-
-    /**
-     * Get current gzip'ing setting.
-     *
-     * @return bool
-     **/
-    function getGzip() {}
-
-    /**
-     * Get header(s) about to be sent.
-     *
-     * @param string
-     * @return mixed
-     **/
-    function getHeader($name) {}
-
-    /**
-     * Get calculated or previously set custom Last-Modified date.
-     *
-     * @return int
-     **/
-    function getLastModified() {}
-
-    /**
-     * http_get_request_body.
-     *
-     * @return string
-     **/
-    function getRequestBody() {}
-
-    /**
-     * http_get_request_body_stream.
-     *
-     * @return resource
-     **/
-    function getRequestBodyStream() {}
-
-    /**
-     * http_get_request_headers.
-     *
-     * @return array
-     **/
-    function getRequestHeaders() {}
-
-    /**
-     * Get the previously set resource to be sent.
-     *
-     * @return resource
-     **/
-    function getStream() {}
-
-    /**
-     * Get the current throttle delay.
-     *
-     * @return double
-     **/
-    function getThrottleDelay() {}
-
-    /**
-     * Attempts to guess the content type of supplied payload through libmagic.
-     *
-     * @param string
-     * @param int
-     * @return string
-     **/
-    function guessContentType($magic_file, $magic_mode) {}
-
-    /**
-     * http_redirect.
-     *
-     * @param string
-     * @param array
-     * @param bool
-     * @param int
-     * @return void
-     **/
-    function redirect($url, $params, $session, $status) {}
-
-    /**
-     * Finally send the entity.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function send($clean_ob) {}
-
-    /**
-     * Sets the send buffer size of the throttling mechanism.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setBufferSize($bytes) {}
-
-    /**
-     * Whether it should be attempted to cache the entity.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function setCache($cache) {}
-
-    /**
-     * Define a custom Cache-Control header, usually being private or public;
-     *
-     * @param string
-     * @param int
-     * @param bool
-     * @return bool
-     **/
-    function setCacheControl($control, $max_age, $must_revalidate) {}
-
-    /**
-     * Set the Content-Disposition.
-     *
-     * @param string
-     * @param bool
-     * @return bool
-     **/
-    function setContentDisposition($filename, $inline) {}
-
-    /**
-     * Set the Content-Type of the sent entity.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setContentType($content_type) {}
-
-    /**
-     * Set the data to be sent.
-     *
-     * @param mixed
-     * @return bool
-     **/
-    function setData($data) {}
-
-    /**
-     * Set a custom ETag. Use this only if you know what you're doing.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setETag($etag) {}
-
-    /**
-     * Set the file to be sent.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setFile($file) {}
-
-    /**
-     * Enable on-thy-fly gzip'ing of the sent entity.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function setGzip($gzip) {}
-
-    /**
-     * Send an HTTP header.
-     *
-     * @param string
-     * @param mixed
-     * @param bool
-     * @return bool
-     **/
-    function setHeader($name, $value, $replace) {}
-
-    /**
-     * Set a custom Last-Modified date.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setLastModified($timestamp) {}
-
-    /**
-     * Set the resource to be sent.
-     *
-     * @param resource
-     * @return bool
-     **/
-    function setStream($stream) {}
-
-    /**
-     * Sets the throttle delay.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setThrottleDelay($seconds) {}
-
-    /**
-     * http_send_status.
-     *
-     * @param int
-     * @return bool
-     **/
-    function status($status) {}
-
-}
-class Imagick implements Iterator, Traversable {
-    /**
-     * Adds an adaptive blur filter to image. The intensity of an adaptive blur
-     * depends is dramatically decreased at edge of the image, whereas a standard
-     * blur is uniform across the image.
-     *
-     * @param float
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function adaptiveBlurImage($radius, $sigma, $channel) {}
-
-    /**
-     * Adaptively resize image with data-dependent triangulation. Avoids
-     * blurring across sharp color changes. Most useful when used to shrink
-     * images slightly to a slightly smaller "web size"; may not look good
-     * when a full-sized image is adaptively resized to a thumbnail.
-     *
-     * @param int
-     * @param int
-     * @param bool
-     * @return bool
-     **/
-    function adaptiveResizeImage($columns, $rows, $fit) {}
-
-    /**
-     * Adaptively sharpen the image by sharpening more intensely
-     * near image edges and less intensely far from edges.
-     *
-     * @param float
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function adaptiveSharpenImage($radius, $sigma, $channel) {}
-
-    /**
-     * Selects an individual threshold for each pixel based on the
-     * range of intensity values in its local neighborhood. This
-     * allows for thresholding of an image whose global intensity
-     * histogram doesn't contain distinctive peaks.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function adaptiveThresholdImage($width, $height, $offset) {}
-
-    /**
-     * Adds new image to Imagick object from the current position of the source object.
-     * After the operation iterator position is moved at the end of the list.
-     *
-     * @param Imagick
-     * @return bool
-     **/
-    function addImage($source) {}
-
-    /**
-     * Adds random noise to the image.
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function addNoiseImage($noise_type, $channel) {}
-
-    /**
-     * Transforms an image as dictated by the affine matrix.
-     *
-     * @param ImagickDraw
-     * @return bool
-     **/
-    function affineTransformImage($matrix) {}
-
-    /**
-     * This method animates the image onto a local or remote X server. This method
-     * is not available on Windows.
-     *
-     * @param string
-     * @return bool
-     **/
-    function animateImages($x_server) {}
-
-    /**
-     * Annotates an image with text.
-     *
-     * @param ImagickDraw
-     * @param float
-     * @param float
-     * @param float
-     * @param string
-     * @return bool
-     **/
-    function annotateImage($draw_settings, $x, $y, $angle, $text) {}
-
-    /**
-     * Append a set of images.
-     *
-     * @param bool
-     * @return Imagick
-     **/
-    function appendImages($stack) {}
-
-    /**
-     * Average a set of images.
-     *
-     * @return Imagick
-     **/
-    function averageImages() {}
-
-    /**
-     * Is like Imagick::thresholdImage() but forces all pixels below the threshold
-     * into black while leaving all pixels above the threshold unchanged.
-     *
-     * @param mixed
-     * @return bool
-     **/
-    function blackThresholdImage($threshold) {}
-
-    /**
-     * Adds blur filter to image. Optional third parameter to blur a specific
-     * channel.
-     *
-     * @param float
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function blurImage($radius, $sigma, $channel) {}
-
-    /**
-     * Surrounds the image with a border of the color defined by the bordercolor ImagickPixel object.
-     *
-     * @param mixed
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function borderImage($bordercolor, $width, $height) {}
-
-    /**
-     * Simulates a charcoal drawing.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function charcoalImage($radius, $sigma) {}
-
-    /**
-     * Removes a region of an image and collapses the image to occupy the removed portion.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function chopImage($width, $height, $x, $y) {}
-
-    /**
-     * Clears all resources associated to Imagick object
-     *
-     * @return bool
-     **/
-    function clear() {}
-
-    /**
-     * Clips along the first path from the 8BIM profile, if present.
-     *
-     * @return bool
-     **/
-    function clipImage() {}
-
-    /**
-     * Clips along the named paths from the 8BIM profile, if
-     * present. Later operations take effect inside the path.
-     * It may be a number if preceded with #, to work on a
-     * numbered path, e.g., "#1" to use the first path.
-     *
-     * @param string
-     * @param bool
-     * @return bool
-     **/
-    function clipPathImage($pathname, $inside) {}
-
-    /**
-     * Replaces colors in the image from a color lookup table. Optional second
-     * parameter to replace colors in a specific channel.
-     *
-     * @param Imagick
-     * @param float
-     * @return bool
-     **/
-    function clutImage($lookup_table, $channel) {}
-
-    /**
-     * Composites a set of images while respecting any page offsets
-     * and disposal methods. GIF, MIFF, and MNG animation sequences
-     * typically start with an image background and each subsequent
-     * image varies in size and offset. Returns a new Imagick object
-     * where each image in the sequence is the same size as the first
-     * and composited with the next image in the sequence.
-     *
-     * @return Imagick
-     **/
-    function coalesceImages() {}
-
-    /**
-     * Changes the color value of any pixel that matches target and is an
-     * immediate neighbor.
-     *
-     * @param mixed
-     * @param float
-     * @param mixed
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function colorFloodfillImage($fill, $fuzz, $bordercolor, $x, $y) {}
-
-    /**
-     * Blends the fill color with each pixel in the image.
-     *
-     * @param mixed
-     * @param mixed
-     * @return bool
-     **/
-    function colorizeImage($colorize, $opacity) {}
-
-    /**
-     * Combines one or more images into a single image. The grayscale
-     * value of the pixels of each image in the sequence is assigned
-     * in order to the specified channels of the combined image. The
-     * typical ordering would be image 1 = Red, 2 = Green,
-     * 3 = Blue, etc.
-     *
-     * @param int
-     * @return Imagick
-     **/
-    function combineImages($channelType) {}
-
-    /**
-     * Adds a comment to your image.
-     *
-     * @param string
-     * @return bool
-     **/
-    function commentImage($comment) {}
-
-    /**
-     * Compares one or more images and returns the difference image.
-     *
-     * @param Imagick
-     * @param int
-     * @param int
-     * @return array
-     **/
-    function compareImageChannels($image, $channelType, $metricType) {}
-
-    /**
-     * Compares each image with the next in a sequence and returns the
-     * maximum bounding region of any pixel differences it discovers.
-     *
-     * @param int
-     * @return Imagick
-     **/
-    function compareImageLayers($method) {}
-
-    /**
-     * Returns an array containing a reconstructed image and the difference between images.
-     *
-     * @param Imagick
-     * @param int
-     * @return array
-     **/
-    function compareImages($compare, $metric) {}
-
-    /**
-     * Composite one image onto another at the specified offset.
-     *
-     * @param Imagick
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function compositeImage($composite_object, $composite, $x, $y, $channel) {}
-
-    /**
-     * Enhances the intensity differences between the lighter and
-     * darker elements of the image. Set sharpen to a value other
-     * than 0 to increase the image contrast otherwise the contrast
-     * is reduced.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function contrastImage($sharpen) {}
-
-    /**
-     * Enhances the contrast of a color image by adjusting the pixels
-     * color to span the entire range of colors available.
-     *
-     * @param float
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function contrastStretchImage($black_point, $white_point, $channel) {}
-
-    /**
-     * Applies a custom convolution kernel to the image.
-     *
-     * @param array
-     * @param int
-     * @return bool
-     **/
-    function convolveImage($kernel, $channel) {}
-
-    /**
-     * Extracts a region of the image.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function cropImage($width, $height, $x, $y) {}
-
-    /**
-     * Creates a fixed size thumbnail by first scaling the image down and cropping a specified
-     * area from the center.
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function cropThumbnailImage($width, $height) {}
-
-    /**
-     * Returns reference to the current imagick object with image pointer at the correct sequence.
-     *
-     * @return Imagick
-     **/
-    function current() {}
-
-    /**
-     * Displaces an image's colormap by a given number of positions. If you
-     * cycle the colormap a number of times you can produce a psychedelic
-     * effect.
-     *
-     * @param int
-     * @return bool
-     **/
-    function cycleColormapImage($displace) {}
-
-    /**
-     * Deciphers image that has been enciphered before. The image must be enciphered
-     * using Imagick::encipherImage.
-     *
-     * @param string
-     * @return bool
-     **/
-    function decipherImage($passphrase) {}
-
-    /**
-     * Compares each image with the next in a sequence and returns the maximum
-     * bounding region of any pixel differences it discovers.
-     *
-     * @return bool
-     **/
-    function deconstructImages() {}
-
-    /**
-     * Reduces the speckle noise in an image while preserving the edges of the original image.
-     *
-     * @return bool
-     **/
-    function despeckleImage() {}
-
-    /**
-     * Destroys the Imagick object and frees all resources associated with it.
-     *
-     * @return bool
-     **/
-    function destroy() {}
-
-    /**
-     * This method displays an image on a X server.
-     *
-     * @param string
-     * @return bool
-     **/
-    function displayImage($servername) {}
-
-    /**
-     * Displays an image or image sequence on a X server.
-     *
-     * @param string
-     * @return bool
-     **/
-    function displayImages($servername) {}
-
-    /**
-     * Distorts an image using various distortion methods, by mapping color
-     * lookups of the source image to a new destination image usually of the same
-     * size as the source image, unless 'bestfit' is set to .
-     *
-     * @param int
-     * @param array
-     * @param bool
-     * @return bool
-     **/
-    function distortImage($method, $arguments, $bestfit) {}
-
-    /**
-     * Renders the ImagickDraw object on the current image.
-     *
-     * @param ImagickDraw
-     * @return bool
-     **/
-    function drawImage($draw) {}
-
-    /**
-     * Enhance edges within the image with a convolution filter of the given
-     * radius. Use radius 0 and it will be auto-selected.
-     *
-     * @param float
-     * @return bool
-     **/
-    function edgeImage($radius) {}
-
-    /**
-     * Returns a grayscale image with a three-dimensional effect. We convolve
-     * the image with a Gaussian operator of the given radius and standard 
-     * deviation (sigma). For reasonable results, radius should be larger than 
-     * sigma. Use a radius of 0 and it will choose a suitable radius for you.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function embossImage($radius, $sigma) {}
-
-    /**
-     * Converts plain pixels to enciphered pixels. The image is not readable
-     * until it has been deciphered using Imagick::decipherImage
-     *
-     * @param string
-     * @return bool
-     **/
-    function encipherImage($passphrase) {}
-
-    /**
-     * Applies a digital filter that improves the quality of a noisy image.
-     *
-     * @return bool
-     **/
-    function enhanceImage() {}
-
-    /**
-     * Equalizes the image histogram.
-     *
-     * @return bool
-     **/
-    function equalizeImage() {}
-
-    /**
-     * Applys an arithmetic, relational, or logical expression to an image. Use
-     * these operators to lighten or darken an image, to increase or decrease
-     * contrast in an image, or to produce the "negative" of an image.
-     *
-     * @param int
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function evaluateImage($op, $constant, $channel) {}
-
-    /**
-     * Comfortability method for setting image size. The method sets the image size and allows
-     * setting x,y coordinates where the new area begins.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function extentImage($width, $height, $x, $y) {}
-
-    /**
-     * Merges a sequence of images. This is useful for combining Photoshop layers into a single image.
-     *
-     * @return Imagick
-     **/
-    function flattenImages() {}
-
-    /**
-     * Creates a vertical mirror image by reflecting the pixels around the central x-axis.
-     *
-     * @return bool
-     **/
-    function flipImage() {}
-
-    /**
-     * Changes the color value of any pixel that matches target and is an
-     * immediate neighbor. This method is a replacement for deprecated 
-     * Imagick::paintFloodFillImage.
-     *
-     * @param mixed
-     * @param float
-     * @param mixed
-     * @param int
-     * @param int
-     * @param bool
-     * @param int
-     * @return bool
-     **/
-    function floodFillPaintImage($fill, $fuzz, $bordercolor, $x, $y, $invert, $channel) {}
-
-    /**
-     * Creates a horizontal mirror image by reflecting the pixels around the central y-axis.
-     *
-     * @return bool
-     **/
-    function flopImage() {}
-
-    /**
-     * Adds a simulated three-dimensional border around the image.
-     * The width and height specify the border width of the vertical
-     * and horizontal sides of the frame. The inner and outer
-     * bevels indicate the width of the inner and outer shadows of
-     * the frame.
-     *
-     * @param mixed
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function frameImage($matte_color, $width, $height, $inner_bevel, $outer_bevel) {}
-
-    /**
-     * Evaluate expression for each pixel in the image. Consult The Fx Special Effects Image
-     * Operator for more information.
-     *
-     * @param string
-     * @param int
-     * @return Imagick
-     **/
-    function fxImage($expression, $channel) {}
-
-    /**
-     * Gamma-corrects an image. The same image viewed on different devices will
-     * have perceptual differences in the way the image's intensities are
-     * represented on the screen. Specify individual gamma levels for the red,
-     * green, and blue channels, or adjust all three with the gamma parameter.
-     * Values typically range from 0.8 to 2.3.
-     *
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function gammaImage($gamma, $channel) {}
-
-    /**
-     * Blurs an image. We convolve the image with a Gaussian operator of the
-     * given radius and standard deviation (sigma). For reasonable results, the
-     * radius should be larger than sigma. Use a radius of 0 and selects a
-     * suitable radius for you.
-     *
-     * @param float
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function gaussianBlurImage($radius, $sigma, $channel) {}
-
-    /**
-     * Gets the object compression type.
-     *
-     * @return int
-     **/
-    function getCompression() {}
-
-    /**
-     * Gets the object compression quality.
-     *
-     * @return int
-     **/
-    function getCompressionQuality() {}
-
-    /**
-     * Returns the ImageMagick API copyright as a string.
-     *
-     * @return string
-     **/
-    function getCopyright() {}
-
-    /**
-     * Returns the filename associated with an image sequence.
-     *
-     * @return string
-     **/
-    function getFilename() {}
-
-    /**
-     * Returns the objects font property.
-     *
-     * @return string
-     **/
-    function getFont() {}
-
-    /**
-     * Returns the format of the Imagick object.
-     *
-     * @return string
-     **/
-    function getFormat() {}
-
-    /**
-     * Gets the global gravity property for the Imagick object.
-     *
-     * @return bool
-     **/
-    function getGravity() {}
-
-    /**
-     * Returns the ImageMagick home URL.
-     *
-     * @return string
-     **/
-    function getHomeURL() {}
-
-    /**
-     * Returns a new Imagick object with the current image sequence.
-     *
-     * @return Imagick
-     **/
-    function getImage() {}
-
-    /**
-     * Gets the image alpha channel value. The returned value is one of the 
-     * alpha channel constants.
-     *
-     * @return int
-     **/
-    function getImageAlphaChannel() {}
-
-    /**
-     * Returns the image background color.
-     *
-     * @return ImagickPixel
-     **/
-    function getImageBackgroundColor() {}
-
-    /**
-     * Implements direct to memory image formats. It returns the image
-     * sequence as a string. The format of the image determines the
-     * format of the returned blob (GIF, JPEG, PNG, etc.). To return a
-     * different image format, use Imagick::setImageFormat().
-     *
-     * @return string
-     **/
-    function getImageBlob() {}
-
-    /**
-     * Returns the chromaticity blue primary point for the image.
-     *
-     * @param float
-     * @param float
-     * @return array
-     **/
-    function getImageBluePrimary($x, $y) {}
-
-    /**
-     * Returns the image border color.
-     *
-     * @return ImagickPixel
-     **/
-    function getImageBorderColor() {}
-
-    /**
-     * Gets the depth for a particular image channel.
-     *
-     * @param int
-     * @return int
-     **/
-    function getImageChannelDepth($channel) {}
-
-    /**
-     * Compares one or more image channels of an image to a reconstructed image
-     * and returns the specified distortion metric.
-     *
-     * @param Imagick
-     * @param int
-     * @param int
-     * @return float
-     **/
-    function getImageChannelDistortion($reference, $channel, $metric) {}
-
-    /**
-     * Compares one or more image channels of an image to a reconstructed image and returns the specified distortion metrics
-     *
-     * @param Imagick
-     * @param int
-     * @param int
-     * @return double
-     **/
-    function getImageChannelDistortions($reference, $metric, $channel) {}
-
-    /**
-     * Gets the extrema for one or more image channels. Return value is an
-     * associative array with the keys "minima" and "maxima".
-     *
-     * @param int
-     * @return array
-     **/
-    function getImageChannelExtrema($channel) {}
-
-    /**
-     * Gets the mean and standard deviation of one or more image channels.
-     * Return value is an associative array with the keys "mean" and
-     * "standardDeviation".
-     *
-     * @param int
-     * @return array
-     **/
-    function getImageChannelMean($channel) {}
-
-    /**
-     * Gets the range for one or more image channels.
-     *
-     * @param int
-     * @return bool
-     **/
-    function getImageChannelRange($channel) {}
-
-    /**
-     * Returns statistics for each channel in the image. The statistics include
-     * the channel depth, its minima and maxima, the mean, and the standard
-     * deviation. You can access the red channel mean, for example, like this:
-     *
-     * @return array
-     **/
-    function getImageChannelStatistics() {}
-
-    /**
-     * Returns the image clip mask. The clip mask is an Imagick object containing the clip mask.
-     *
-     * @return Imagick
-     **/
-    function getImageClipMask() {}
-
-    /**
-     * Returns the color of the specified colormap index.
-     *
-     * @param int
-     * @return ImagickPixel
-     **/
-    function getImageColormapColor($index) {}
-
-    /**
-     * Gets the number of unique colors in the image.
-     *
-     * @return int
-     **/
-    function getImageColors() {}
-
-    /**
-     * Gets the image colorspace.
-     *
-     * @return int
-     **/
-    function getImageColorspace() {}
-
-    /**
-     * Returns the composite operator associated with the image.
-     *
-     * @return int
-     **/
-    function getImageCompose() {}
-
-    /**
-     * Gets the current image's compression type.
-     *
-     * @return int
-     **/
-    function getImageCompression() {}
-
-    /**
-     * Gets the image delay.
-     *
-     * @return int
-     **/
-    function getImageDelay() {}
-
-    /**
-     * Gets the image depth.
-     *
-     * @return int
-     **/
-    function getImageDepth() {}
-
-    /**
-     * Gets the image disposal method.
-     *
-     * @return int
-     **/
-    function getImageDispose() {}
-
-    /**
-     * Compares an image to a reconstructed image and returns the specified distortion
-     * metric.
-     *
-     * @param MagickWand
-     * @param int
-     * @return float
-     **/
-    function getImageDistortion($reference, $metric) {}
-
-    /**
-     * Gets the extrema for the image. Returns an associative array with the keys "min" and "max".
-     *
-     * @return array
-     **/
-    function getImageExtrema() {}
-
-    /**
-     * Returns the filename of a particular image in a sequence.
-     *
-     * @return string
-     **/
-    function getImageFilename() {}
-
-    /**
-     * Returns the format of a particular image in a sequence.
-     *
-     * @return string
-     **/
-    function getImageFormat() {}
-
-    /**
-     * Gets the image gamma.
-     *
-     * @return float
-     **/
-    function getImageGamma() {}
-
-    /**
-     * Returns the width and height as an associative array.
-     *
-     * @return array
-     **/
-    function getImageGeometry() {}
-
-    /**
-     * Returns the chromaticity green primary point. Returns an array with the keys "x" and "y".
-     *
-     * @return array
-     **/
-    function getImageGreenPrimary() {}
-
-    /**
-     * Returns the image height.
-     *
-     * @return int
-     **/
-    function getImageHeight() {}
-
-    /**
-     * Returns the image histogram as an array of ImagickPixel objects.
-     *
-     * @return array
-     **/
-    function getImageHistogram() {}
-
-    /**
-     * Returns the index of the current active image within the Imagick object.
-     * This method has been deprecated. See Imagick::getIteratorIndex
-     *
-     * @return int
-     **/
-    function getImageIndex() {}
-
-    /**
-     * Gets the image interlace scheme.
-     *
-     * @return int
-     **/
-    function getImageInterlaceScheme() {}
-
-    /**
-     * Returns the interpolation method for the specified image. The method is one of 
-     * the Imagick::INTERPOLATE_* constants.
-     *
-     * @return int
-     **/
-    function getImageInterpolateMethod() {}
-
-    /**
-     * Gets the image iterations.
-     *
-     * @return int
-     **/
-    function getImageIterations() {}
-
-    /**
-     * Returns the image length in bytes
-     *
-     * @return int
-     **/
-    function getImageLength() {}
-
-    /**
-     * Returns a string containing the ImageMagick license
-     *
-     * @return string
-     **/
-    function getImageMagickLicense() {}
-
-    /**
-     * Returns if the image has a matte channel otherwise false.
-     *
-     * @return int
-     **/
-    function getImageMatte() {}
-
-    /**
-     * Returns the image matte color.
-     *
-     * @return ImagickPixel
-     **/
-    function getImageMatteColor() {}
-
-    /**
-     * Gets the image orientation. The return value is one of the orientation constants.
-     *
-     * @return int
-     **/
-    function getImageOrientation() {}
-
-    /**
-     * Returns the page geometry associated with the image in an array with the
-     * keys "width", "height", "x", and "y".
-     *
-     * @return array
-     **/
-    function getImagePage() {}
-
-    /**
-     * Returns the color of the specified pixel.
-     *
-     * @param int
-     * @param int
-     * @return ImagickPixel
-     **/
-    function getImagePixelColor($x, $y) {}
-
-    /**
-     * Returns the named image profile.
-     *
-     * @param string
-     * @return string
-     **/
-    function getImageProfile($name) {}
-
-    /**
-     * Returns all associated profiles that match the pattern. If is passed as second parameter
-     * only the profile names are returned.
-     *
-     * @param string
-     * @param bool
-     * @return array
-     **/
-    function getImageProfiles($pattern, $only_names) {}
-
-    /**
-     * Returns all associated properties that match the pattern. If is passed as second parameter
-     * only the property names are returned.
-     *
-     * @param string
-     * @param bool
-     * @return array
-     **/
-    function getImageProperties($pattern, $only_names) {}
-
-    /**
-     * Returns the named image profile.
-     *
-     * @param string
-     * @return string
-     **/
-    function getImageProperty($name) {}
-
-    /**
-     * Returns the chromaticity red primary point as an array with the keys "x" and "y".
-     *
-     * @return array
-     **/
-    function getImageRedPrimary() {}
-
-    /**
-     * Extracts a region of the image and returns it as a a new Imagick object.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return Imagick
-     **/
-    function getImageRegion($width, $height, $x, $y) {}
-
-    /**
-     * Gets the image rendering intent.
-     *
-     * @return int
-     **/
-    function getImageRenderingIntent() {}
-
-    /**
-     * Gets the image X and Y resolution.
-     *
-     * @return array
-     **/
-    function getImageResolution() {}
-
-    /**
-     * Implements direct to memory image formats. It returns all image
-     * sequences as a string. The format of the image determines the
-     * format of the returned blob (GIF, JPEG, PNG, etc.). To return a
-     * different image format, use Imagick::setImageFormat().
-     *
-     * @return string
-     **/
-    function getImagesBlob() {}
-
-    /**
-     * Gets the image scene.
-     *
-     * @return int
-     **/
-    function getImageScene() {}
-
-    /**
-     * Generates an SHA-256 message digest for the image pixel stream.
-     *
-     * @return string
-     **/
-    function getImageSignature() {}
-
-    /**
-     * Returns the image length in bytes
-     *
-     * @return int
-     **/
-    function getImageSize() {}
-
-    /**
-     * Gets the image ticks-per-second.
-     *
-     * @return int
-     **/
-    function getImageTicksPerSecond() {}
-
-    /**
-     * Gets the image total ink density.
-     *
-     * @return float
-     **/
-    function getImageTotalInkDensity() {}
-
-    /**
-     * Gets the potential image type.
-     *
-     * @return int
-     **/
-    function getImageType() {}
-
-    /**
-     * Gets the image units of resolution.
-     *
-     * @return int
-     **/
-    function getImageUnits() {}
-
-    /**
-     * Returns the virtual pixel method for the specified image.
-     *
-     * @return int
-     **/
-    function getImageVirtualPixelMethod() {}
-
-    /**
-     * Returns the chromaticity white point as an associative array with the keys "x" and "y".
-     *
-     * @return array
-     **/
-    function getImageWhitePoint() {}
-
-    /**
-     * Returns the image width.
-     *
-     * @return int
-     **/
-    function getImageWidth() {}
-
-    /**
-     * Gets the object interlace scheme.
-     *
-     * @return int
-     **/
-    function getInterlaceScheme() {}
-
-    /**
-     * Returns the index of the current active image within the Imagick object.
-     *
-     * @return int
-     **/
-    function getIteratorIndex() {}
-
-    /**
-     * Returns the number of images associated with Imagick object.
-     *
-     * @return int
-     **/
-    function getNumberImages() {}
-
-    /**
-     * Returns a value associated within the object for the specified key.
-     *
-     * @param string
-     * @return string
-     **/
-    function getOption($key) {}
-
-    /**
-     * Returns the ImageMagick package name.
-     *
-     * @return string
-     **/
-    function getPackageName() {}
-
-    /**
-     * Returns the page geometry associated with the Imagick object in
-     * an associative array with the keys "width", "height", "x", and "y".
-     *
-     * @return array
-     **/
-    function getPage() {}
-
-    /**
-     * Returns a MagickPixelIterator.
-     *
-     * @return ImagickPixelIterator
-     **/
-    function getPixelIterator() {}
-
-    /**
-     * Get an ImagickPixelIterator for an image section.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return ImagickPixelIterator
-     **/
-    function getPixelRegionIterator($x, $y, $columns, $rows) {}
-
-    /**
-     * Returns the objects point size property.
-     *
-     * @return string
-     **/
-    function getPointSize() {}
-
-    /**
-     * Returns the Imagick quantum depth as a string.
-     *
-     * @return array
-     **/
-    function getQuantumDepth() {}
-
-    /**
-     * Returns the Imagick quantum range as a string.
-     *
-     * @return array
-     **/
-    function getQuantumRange() {}
-
-    /**
-     * Returns the ImageMagick release date as a string.
-     *
-     * @return string
-     **/
-    function getReleaseDate() {}
-
-    /**
-     * Returns the specified resource's memory usage in megabytes.
-     *
-     * @param int
-     * @return int
-     **/
-    function getResource($type) {}
-
-    /**
-     * Returns the specified resource limit in megabytes.
-     *
-     * @param int
-     * @return int
-     **/
-    function getResourceLimit($type) {}
-
-    /**
-     * Gets the horizontal and vertical sampling factor.
-     *
-     * @return array
-     **/
-    function getSamplingFactors() {}
-
-    /**
-     * Returns the size associated with the Imagick object as an array with the
-     * keys "columns" and "rows".
-     *
-     * @return array
-     **/
-    function getSize() {}
-
-    /**
-     * Returns the size offset associated with the Imagick object.
-     *
-     * @return int
-     **/
-    function getSizeOffset() {}
-
-    /**
-     * Returns the ImageMagick API version as a string and as a number.
-     *
-     * @return array
-     **/
-    function getVersion() {}
-
-    /**
-     * Returns if the object has more images when traversing the list in the forward direction.
-     *
-     * @return bool
-     **/
-    function hasNextImage() {}
-
-    /**
-     * Returns if the object has more images when traversing the list in the reverse direction
-     *
-     * @return bool
-     **/
-    function hasPreviousImage() {}
-
-    /**
-     * Identifies an image and returns the attributes. Attributes include
-     * the image width, height, size, and others.
-     *
-     * @param bool
-     * @return array
-     **/
-    function identifyImage($appendRawOutput) {}
-
-    /**
-     * Creates a new image that is a copy of an existing one with the image pixels
-     * "imploded" by the specified percentage.
-     *
-     * @param float
-     * @return bool
-     **/
-    function implodeImage($radius) {}
-
-    /**
-     * Adds a label to an image.
-     *
-     * @param string
-     * @return bool
-     **/
-    function labelImage($label) {}
-
-    /**
-     * Adjusts the levels of an image by scaling the colors falling
-     * between specified white and black points to the full
-     * available quantum range. The parameters provided represent
-     * the black, mid, and white points. The black point specifies
-     * the darkest color in the image. Colors darker than the black
-     * point are set to zero. Mid point specifies a gamma
-     * correction to apply to the image. White point specifies the
-     * lightest color in the image. Colors brighter than the white
-     * point are set to the maximum quantum value.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function levelImage($blackPoint, $gamma, $whitePoint, $channel) {}
-
-    /**
-     * Stretches with saturation the image intensity.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function linearStretchImage($blackPoint, $whitePoint) {}
-
-    /**
-     * This method scales the images using liquid rescaling method. This method
-     * is an implementation of a technique called seam carving. In order for this
-     * method to work as expected ImageMagick must be compiled with liblqr support.
-     *
-     * @param int
-     * @param int
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function liquidRescaleImage($width, $height, $delta_x, $rigidity) {}
-
-    /**
-     * Is a convenience method that scales an image proportionally to twice its original size.
-     *
-     * @return bool
-     **/
-    function magnifyImage() {}
-
-    /**
-     * @param Imagick
-     * @param bool
-     * @return bool
-     **/
-    function mapImage($map, $dither) {}
-
-    /**
-     * Changes the transparency value of any pixel that matches
-     * target and is an immediate neighbor. If the method
-     * FillToBorderMethod is specified, the transparency value
-     * is changed for any neighbor pixel that does not match
-     * the bordercolor member of image.
-     *
-     * @param float
-     * @param float
-     * @param mixed
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function matteFloodfillImage($alpha, $fuzz, $bordercolor, $x, $y) {}
-
-    /**
-     * Applies a digital filter that improves the quality of a
-     * noisy image. Each pixel is replaced by the median in a
-     * set of neighboring pixels as defined by radius.
-     *
-     * @param float
-     * @return bool
-     **/
-    function medianFilterImage($radius) {}
-
-    /**
-     * Merges image layers into one. This method is useful when working with image
-     * formats that use multiple layers such as PSD. The merging is controlled using
-     * the layer_method which defines how the layers are merged.
-     *
-     * @param int
-     * @return bool
-     **/
-    function mergeImageLayers($layer_method) {}
-
-    /**
-     * Is a convenience method that scales an image proportionally to one-half its original size
-     *
-     * @return bool
-     **/
-    function minifyImage() {}
-
-    /**
-     * Lets you control the brightness, saturation, and hue of an image. Hue
-     * is the percentage of absolute rotation from the current position. For
-     * example 50 results in a counter-clockwise rotation of 90 degrees, 150
-     * results in a clockwise rotation of 90 degrees, with 0 and 200 both
-     * resulting in a rotation of 180 degrees.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function modulateImage($brightness, $saturation, $hue) {}
-
-    /**
-     * Creates a composite image by combining several separate images.
-     * he images are tiled on the composite image with the name of the
-     * image optionally appearing just below the individual tile.
-     *
-     * @param ImagickDraw
-     * @param string
-     * @param string
-     * @param int
-     * @param string
-     * @return Imagick
-     **/
-    function montageImage($draw, $tile_geometry, $thumbnail_geometry, $mode, $frame) {}
-
-    /**
-     * Method morphs a set of images. Both the image pixels and size
-     * are linearly interpolated to give the appearance of a
-     * meta-morphosis from one image to the next.
-     *
-     * @param int
-     * @return Imagick
-     **/
-    function morphImages($number_frames) {}
-
-    /**
-     * Inlays an image sequence to form a single coherent picture. It
-     * returns a wand with each image in the sequence composited at
-     * the location defined by the page offset of the image.
-     *
-     * @return Imagick
-     **/
-    function mosaicImages() {}
-
-    /**
-     * Simulates motion blur. We convolve the image with a Gaussian
-     * operator of the given radius and standard deviation (sigma).
-     * For reasonable results, radius should be larger than sigma.
-     * Use a radius of 0 and MotionBlurImage() selects a suitable
-     * radius for you. Angle gives the angle of the blurring motion.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function motionBlurImage($radius, $sigma, $angle, $channel) {}
-
-    /**
-     * Negates the colors in the reference image. The Grayscale
-     * option means that only grayscale values within the image
-     * are negated.
-     *
-     * @param bool
-     * @param int
-     * @return bool
-     **/
-    function negateImage($gray, $channel) {}
-
-    /**
-     * Creates a new image and associates ImagickPixel value as background color
-     *
-     * @param int
-     * @param int
-     * @param mixed
-     * @param string
-     * @return bool
-     **/
-    function newImage($cols, $rows, $background, $format) {}
-
-    /**
-     * Creates a new image using ImageMagick pseudo-formats.
-     *
-     * @param int
-     * @param int
-     * @param string
-     * @return bool
-     **/
-    function newPseudoImage($columns, $rows, $pseudoString) {}
-
-    /**
-     * Associates the next image in the image list with an Imagick object.
-     *
-     * @return bool
-     **/
-    function nextImage() {}
-
-    /**
-     * Enhances the contrast of a color image by adjusting the pixels
-     * color to span the entire range of colors available.
-     *
-     * @param int
-     * @return bool
-     **/
-    function normalizeImage($channel) {}
-
-    /**
-     * Applies a special effect filter that simulates an oil painting.
-     * Each pixel is replaced by the most frequent color occurring in
-     * a circular region defined by radius.
-     *
-     * @param float
-     * @return bool
-     **/
-    function oilPaintImage($radius) {}
-
-    /**
-     * Changes any pixel that matches color with the color defined by fill.
-     *
-     * @param mixed
-     * @param mixed
-     * @param float
-     * @param bool
-     * @param int
-     * @return bool
-     **/
-    function opaquePaintImage($target, $fill, $fuzz, $invert, $channel) {}
-
-    /**
-     * Compares each image the GIF disposed forms of the previous image
-     * in the sequence. From this it attempts to select the smallest
-     * cropped image to replace each frame, while preserving the results
-     * of the animation.
-     *
-     * @return bool
-     **/
-    function optimizeImageLayers() {}
-
-    /**
-     * Performs an ordered dither based on a number of pre-defined dithering threshold maps, 
-     * but over multiple intensity levels, which can be different for different channels, 
-     * according to the input arguments.
-     *
-     * @param string
-     * @param int
-     * @return bool
-     **/
-    function orderedPosterizeImage($threshold_map, $channel) {}
-
-    /**
-     * Changes the color value of any pixel that matches target and is an
-     * immediate neighbor. As of ImageMagick 6.3.8 this method has been deprecated
-     * and Imagick::floodfillPaintImage should be used instead.
-     *
-     * @param mixed
-     * @param float
-     * @param mixed
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function paintFloodfillImage($fill, $fuzz, $bordercolor, $x, $y, $channel) {}
-
-    /**
-     * Changes any pixel that matches color with the color defined by fill.
-     *
-     * @param mixed
-     * @param mixed
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function paintOpaqueImage($target, $fill, $fuzz, $channel) {}
-
-    /**
-     * Changes any pixel that matches color with the color defined by fill.
-     *
-     * @param mixed
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function paintTransparentImage($target, $alpha, $fuzz) {}
-
-    /**
-     * This method can be used to query image width, height, size, and
-     * format without reading the whole image in to memory.
-     *
-     * @param string
-     * @return bool
-     **/
-    function pingImage($filename) {}
-
-    /**
-     * This method can be used to query image width, height, size, and
-     * format without reading the whole image to memory.
-     *
-     * @param string
-     * @return bool
-     **/
-    function pingImageBlob($image) {}
-
-    /**
-     * This method can be used to query image width, height, size, and
-     * format without reading the whole image to memory.
-     *
-     * @param resource
-     * @param string
-     * @return bool
-     **/
-    function pingImageFile($filehandle, $fileName) {}
-
-    /**
-     * Simulates a Polaroid picture.
-     *
-     * @param ImagickDraw
-     * @param float
-     * @return bool
-     **/
-    function polaroidImage($properties, $angle) {}
-
-    /**
-     * Reduces the image to a limited number of color level.
-     *
-     * @param int
-     * @param bool
-     * @return bool
-     **/
-    function posterizeImage($levels, $dither) {}
-
-    /**
-     * Tiles 9 thumbnails of the specified image with an image processing
-     * operation applied at varying strengths. This is helpful to quickly
-     * pin-point an appropriate parameter for an image processing operation.
-     *
-     * @param int
-     * @return bool
-     **/
-    function previewImages($preview) {}
-
-    /**
-     * Assocates the previous image in an image list with the Imagick object.
-     *
-     * @return bool
-     **/
-    function previousImage() {}
-
-    /**
-     * Adds or removes a ICC, IPTC, or generic profile from an image.
-     * If the profile is NULL, it is removed from the image otherwise
-     * added. Use a name of '*' and a profile of NULL to remove all
-     * profiles from the image.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function profileImage($name, $profile) {}
-
-    /**
-     * @param int
-     * @param int
-     * @param int
-     * @param bool
-     * @param bool
-     * @return bool
-     **/
-    function quantizeImage($numberColors, $colorspace, $treedepth, $dither, $measureError) {}
-
-    /**
-     * @param int
-     * @param int
-     * @param int
-     * @param bool
-     * @param bool
-     * @return bool
-     **/
-    function quantizeImages($numberColors, $colorspace, $treedepth, $dither, $measureError) {}
-
-    /**
-     * Returns a multi-dimensional array representing the font metrics.
-     *
-     * @param ImagickDraw
-     * @param string
-     * @param bool
-     * @return array
-     **/
-    function queryFontMetrics($properties, $text, $multiline) {}
-
-    /**
-     * Returns formats supported by Imagick.
-     *
-     * @param string
-     * @return array
-     **/
-    function queryFonts($pattern) {}
-
-    /**
-     * Returns formats supported by Imagick.
-     *
-     * @param string
-     * @return array
-     **/
-    function queryFormats($pattern) {}
-
-    /**
-     * Radial blurs an image.
-     *
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function radialBlurImage($angle, $channel) {}
-
-    /**
-     * Creates a simulated three-dimensional button-like effect
-     * by lightening and darkening the edges of the image.
-     * Members width and height of raise_info define the width
-     * of the vertical and horizontal edge of the effect.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @param bool
-     * @return bool
-     **/
-    function raiseImage($width, $height, $x, $y, $raise) {}
-
-    /**
-     * Changes the value of individual pixels based on the
-     * intensity of each pixel compared to threshold. The
-     * result is a high-contrast, two color image.
-     *
-     * @param float
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function randomThresholdImage($low, $high, $channel) {}
-
-    /**
-     * Reads image from filename
-     *
-     * @param string
-     * @return bool
-     **/
-    function readImage($filename) {}
-
-    /**
-     * Reads image from a binary string
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function readImageBlob($image, $filename) {}
-
-    /**
-     * Reads image from open filehandle
-     *
-     * @param resource
-     * @param string
-     * @return bool
-     **/
-    function readImageFile($filehandle, $fileName) {}
-
-    /**
-     * Smooths the contours of an image while still preserving edge
-     * information. The algorithm works by replacing each pixel with
-     * its neighbor closest in value. A neighbor is defined by radius.
-     * Use a radius of 0 and Imagick::reduceNoiseImage() selects a
-     * suitable radius for you.
-     *
-     * @param float
-     * @return bool
-     **/
-    function reduceNoiseImage($radius) {}
-
-    /**
-     * Removes an image from the image list.
-     *
-     * @return bool
-     **/
-    function removeImage() {}
-
-    /**
-     * Removes the named image profile and returns it.
-     *
-     * @param string
-     * @return string
-     **/
-    function removeImageProfile($name) {}
-
-    /**
-     * Renders all preceding drawing commands.
-     *
-     * @return bool
-     **/
-    function render() {}
-
-    /**
-     * Resample image to desired resolution.
-     *
-     * @param float
-     * @param float
-     * @param int
-     * @param float
-     * @return bool
-     **/
-    function resampleImage($x_resolution, $y_resolution, $filter, $blur) {}
-
-    /**
-     * The page definition as a string. The string is in format WxH+x+y.
-     *
-     * @param string
-     * @return bool
-     **/
-    function resetImagePage($page) {}
-
-    /**
-     * Scales an image to the desired dimensions with a
-     * filter.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param float
-     * @param bool
-     * @return bool
-     **/
-    function resizeImage($columns, $rows, $filter, $blur, $fit) {}
-
-    /**
-     * Offsets an image as defined by x and y.
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function rollImage($x, $y) {}
-
-    /**
-     * Rotates an image the specified number of degrees. Empty
-     * triangles left over from rotating the image are filled
-     * with the background color.
-     *
-     * @param mixed
-     * @param float
-     * @return bool
-     **/
-    function rotateImage($background, $degrees) {}
-
-    /**
-     * Rounds image corners. The first two parameters control the amount 
-     * of rounding and the three last parameters can be used to fine-tune 
-     * the rounding process.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function roundCorners($x_rounding, $y_rounding, $stroke_width, $displace, $size_correction) {}
-
-    /**
-     * Scales an image to the desired dimensions with pixel sampling.
-     * Unlike other scaling methods, this method does not introduce
-     * any additional color into the scaled image.
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function sampleImage($columns, $rows) {}
-
-    /**
-     * Scales the size of an image to the given dimensions. The other parameter
-     * will be calculated if 0 is passed as either param.
-     *
-     * @param int
-     * @param int
-     * @param bool
-     * @return bool
-     **/
-    function scaleImage($cols, $rows, $fit) {}
-
-    /**
-     * Separates a channel from the image and returns a grayscale image. A channel
-     * is a particular color component of each pixel in the image.
-     *
-     * @param int
-     * @return bool
-     **/
-    function separateImageChannel($channel) {}
-
-    /**
-     * Applies a special effect to the image, similar to the effect achieved
-     * in a photo darkroom by sepia toning. Threshold ranges from 0 to
-     * QuantumRange and is a measure of the extent of the sepia toning. A
-     * threshold of 80 is a good starting point for a reasonable tone.
-     *
-     * @param float
-     * @return bool
-     **/
-    function sepiaToneImage($threshold) {}
-
-    /**
-     * Sets the object's default background color.
-     *
-     * @param mixed
-     * @return bool
-     **/
-    function setBackgroundColor($background) {}
-
-    /**
-     * Sets the object's default compression type
-     *
-     * @param int
-     * @return bool
-     **/
-    function setCompression($compression) {}
-
-    /**
-     * Sets the object's default compression quality.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setCompressionQuality($quality) {}
-
-    /**
-     * Sets the filename before you read or write an image file.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setFilename($filename) {}
-
-    /**
-     * Sets the Imagick iterator to the first image.
-     *
-     * @return bool
-     **/
-    function setFirstIterator() {}
-
-    /**
-     * Sets object's font property. This method can be used for example to set font for 
-     * caption: pseudo-format. The font needs to be configured in ImageMagick confiration
-     * or a file by the name of font must exist. This method should
-     * not be confused with ImagickDraw::setFont which sets the font
-     * for a specific ImagickDraw object.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setFont($font) {}
-
-    /**
-     * Sets the format of the Imagick object.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setFormat($format) {}
-
-    /**
-     * Sets the global gravity property for the Imagick object.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setGravity($gravity) {}
-
-    /**
-     * Replaces the current image sequence with the image from replace object.
-     *
-     * @param Imagick
-     * @return bool
-     **/
-    function setImage($replace) {}
-
-    /**
-     * Activate or deactivate image alpha channel. The mode 
-     * is one of the Imagick::ALPHACHANNEL_* constants.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageAlphaChannel($mode) {}
-
-    /**
-     * Sets the image background color.
-     *
-     * @param mixed
-     * @return bool
-     **/
-    function setImageBackgroundColor($background) {}
-
-    /**
-     * Sets the image bias for any method that convolves an image (e.g. Imagick::ConvolveImage()).
-     *
-     * @param float
-     * @return bool
-     **/
-    function setImageBias($bias) {}
-
-    /**
-     * Sets the image chromaticity blue primary point.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setImageBluePrimary($x, $y) {}
-
-    /**
-     * Sets the image border color.
-     *
-     * @param mixed
-     * @return bool
-     **/
-    function setImageBorderColor($border) {}
-
-    /**
-     * Sets the depth of a particular image channel.
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setImageChannelDepth($channel, $depth) {}
-
-    /**
-     * Sets image clip mask from another Imagick object.
-     *
-     * @param Imagick
-     * @return bool
-     **/
-    function setImageClipMask($clip_mask) {}
-
-    /**
-     * Sets the color of the specified colormap index.
-     *
-     * @param int
-     * @param ImagickPixel
-     * @return bool
-     **/
-    function setImageColormapColor($index, $color) {}
-
-    /**
-     * Sets the image colorspace.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageColorspace($colorspace) {}
-
-    /**
-     * Sets the image composite operator, useful for specifying how
-     * to composite the image thumbnail when using the
-     * Imagick::montageImage() method.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageCompose($compose) {}
-
-    /**
-     * @param int
-     * @return bool
-     **/
-    function setImageCompression($compression) {}
-
-    /**
-     * Sets the image compression quality.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageCompressionQuality($quality) {}
-
-    /**
-     * Sets the image delay.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageDelay($delay) {}
-
-    /**
-     * Sets the image depth.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageDepth($depth) {}
-
-    /**
-     * Sets the image disposal method.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageDispose($dispose) {}
-
-    /**
-     * Sets the image size (i.e. columns rows).
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setImageExtent($columns, $rows) {}
-
-    /**
-     * Sets the filename of a particular image in a sequence.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setImageFilename($filename) {}
-
-    /**
-     * Sets the format of a particular image in a sequence.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setImageFormat($format) {}
-
-    /**
-     * Sets the image gamma.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setImageGamma($gamma) {}
-
-    /**
-     * Sets the image chromaticity green primary point.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setImageGreenPrimary($x, $y) {}
-
-    /**
-     * Set the iterator to the position in the image list specified with the index
-     * parameter.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageIndex($index) {}
-
-    /**
-     * Sets the image compression.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageInterlaceScheme($interlace_scheme) {}
-
-    /**
-     * Sets the image interpolate pixel method.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageInterpolateMethod($method) {}
-
-    /**
-     * Sets the image iterations.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageIterations($iterations) {}
-
-    /**
-     * Sets the image matte channel.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function setImageMatte($matte) {}
-
-    /**
-     * Sets the image matte color.
-     *
-     * @param mixed
-     * @return bool
-     **/
-    function setImageMatteColor($matte) {}
-
-    /**
-     * Sets the image to the specified opacity level.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setImageOpacity($opacity) {}
-
-    /**
-     * Sets the image orientation.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageOrientation($orientation) {}
-
-    /**
-     * Sets the page geometry of the image.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setImagePage($width, $height, $x, $y) {}
-
-    /**
-     * Adds a named profile to the Imagick object. If a profile
-     * with the same name already exists, it is replaced. This
-     * method differs from the Imagick::ProfileImage() method in
-     * that it does not apply any CMS color profiles.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function setImageProfile($name, $profile) {}
-
-    /**
-     * Sets a named property to the image.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function setImageProperty($name, $value) {}
-
-    /**
-     * Sets the image chromaticity red primary point.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setImageRedPrimary($x, $y) {}
-
-    /**
-     * Sets the image rendering intent.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageRenderingIntent($rendering_intent) {}
-
-    /**
-     * Sets the image resolution.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setImageResolution($x_resolution, $y_resolution) {}
-
-    /**
-     * Sets the image scene.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageScene($scene) {}
-
-    /**
-     * Sets the image ticks-per-second.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageTicksPerSecond($ticks_persecond) {}
-
-    /**
-     * Sets the image type.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageType($image_type) {}
-
-    /**
-     * Sets the image units of resolution.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageUnits($units) {}
-
-    /**
-     * Sets the image virtual pixel method.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setImageVirtualPixelMethod($method) {}
-
-    /**
-     * Sets the image chromaticity white point.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setImageWhitePoint($x, $y) {}
-
-    /**
-     * Sets the image compression.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setInterlaceScheme($interlace_scheme) {}
-
-    /**
-     * Set the iterator to the position in the image list specified with the index parameter.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setIteratorIndex($index) {}
-
-    /**
-     * Sets the Imagick iterator to the last image.
-     *
-     * @return bool
-     **/
-    function setLastIterator() {}
-
-    /**
-     * Associates one or options with the wand.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function setOption($key, $value) {}
-
-    /**
-     * Sets the page geometry of the Imagick object.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setPage($width, $height, $x, $y) {}
-
-    /**
-     * Sets object's point size property. This method can be used for example to set font size for 
-     * caption: pseudo-format.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setPointSize($point_size) {}
-
-    /**
-     * Sets the image resolution.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setResolution($x_resolution, $y_resolution) {}
-
-    /**
-     * Sets the limit for a particular resource in megabytes.
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setResourceLimit($type, $limit) {}
-
-    /**
-     * Sets the image sampling factors.
-     *
-     * @param array
-     * @return bool
-     **/
-    function setSamplingFactors($factors) {}
-
-    /**
-     * Sets the size of the Imagick object. Set it before you read a raw image
-     * format such as RGB, GRAY, or CMYK.
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setSize($columns, $rows) {}
-
-    /**
-     * Sets the size and offset of the Imagick object. Set it before you read a
-     * raw image format such as RGB, GRAY, or CMYK.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setSizeOffset($columns, $rows, $offset) {}
-
-    /**
-     * Sets the image type attribute.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setType($image_type) {}
-
-    /**
-     * Shines a distant light on an image to create a three-dimensional effect.
-     * You control the positioning of the light with azimuth and elevation;
-     * azimuth is measured in degrees off the x axis and elevation is measured
-     * in pixels above the Z axis.
-     *
-     * @param bool
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function shadeImage($gray, $azimuth, $elevation) {}
-
-    /**
-     * Simulates an image shadow.
-     *
-     * @param float
-     * @param float
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function shadowImage($opacity, $sigma, $x, $y) {}
-
-    /**
-     * Sharpens an image. We convolve the image with a Gaussian operator
-     * of the given radius and standard deviation (sigma). For reasonable
-     * results, the radius should be larger than sigma. Use a radius of
-     * 0 and selects a suitable radius for you.
-     *
-     * @param float
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function sharpenImage($radius, $sigma, $channel) {}
-
-    /**
-     * Shaves pixels from the image edges. It allocates the memory necessary for
-     * the new Image structure and returns a pointer to the new image.
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function shaveImage($columns, $rows) {}
-
-    /**
-     * Slides one edge of an image along the X or Y axis, creating a parallelogram.
-     * An X direction shear slides an edge along the X axis, while a Y direction
-     * shear slides an edge along the Y axis. The amount of the shear is controlled
-     * by a shear angle. For X direction shears, x_shear is measured relative to
-     * the Y axis, and similarly, for Y direction shears y_shear is measured
-     * relative to the X axis. Empty triangles left over from shearing the image
-     * are filled with the background color.
-     *
-     * @param mixed
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function shearImage($background, $x_shear, $y_shear) {}
-
-    /**
-     * Adjusts the contrast of an image with a non-linear sigmoidal contrast
-     * algorithm. Increase the contrast of the image using a sigmoidal transfer
-     * function without saturating highlights or shadows. Contrast indicates
-     * how much to increase the contrast (0 is none; 3 is typical; 20 is
-     * pushing it); mid-point indicates where midtones fall in the resultant
-     * image (0 is white; 50 is middle-gray; 100 is black). Set sharpen to
-     * to increase the image contrast otherwise the contrast is reduced.
-     *
-     * @param bool
-     * @param float
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function sigmoidalContrastImage($sharpen, $alpha, $beta, $channel) {}
-
-    /**
-     * Simulates a pencil sketch. We convolve the image with a Gaussian operator
-     * of the given radius and standard deviation (sigma). For reasonable
-     * results, radius should be larger than sigma. Use a radius of 0 and
-     * Imagick::sketchImage() selects a suitable radius for you. Angle gives the
-     * angle of the blurring motion.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function sketchImage($radius, $sigma, $angle) {}
-
-    /**
-     * Applies a special effect to the image, similar to the effect achieved in
-     * a photo darkroom by selectively exposing areas of photo sensitive paper
-     * to light. Threshold ranges from 0 to QuantumRange and is a measure of the
-     * extent of the solarization.
-     *
-     * @param int
-     * @return bool
-     **/
-    function solarizeImage($threshold) {}
-
-    /**
-     * Splices a solid color into the image.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function spliceImage($width, $height, $x, $y) {}
-
-    /**
-     * Special effects method that randomly displaces each pixel in a block
-     * defined by the radius parameter.
-     *
-     * @param float
-     * @return bool
-     **/
-    function spreadImage($radius) {}
-
-    /**
-     * Hides a digital watermark within the image. Recover the hidden watermark
-     * later to prove that the authenticity of an image. Offset defines the start
-     * position within the image to hide the watermark.
-     *
-     * @param Imagick
-     * @param int
-     * @return Imagick
-     **/
-    function steganoImage($watermark_wand, $offset) {}
-
-    /**
-     * Composites two images and produces a single image that is the composite
-     * of a left and right image of a stereo pair.
-     *
-     * @param Imagick
-     * @return bool
-     **/
-    function stereoImage($offset_wand) {}
-
-    /**
-     * Strips an image of all profiles and comments.
-     *
-     * @return bool
-     **/
-    function stripImage() {}
-
-    /**
-     * Swirls the pixels about the center of the image, where degrees indicates
-     * the sweep of the arc through which each pixel is moved. You get a more
-     * dramatic effect as the degrees move from 1 to 360.
-     *
-     * @param float
-     * @return bool
-     **/
-    function swirlImage($degrees) {}
-
-    /**
-     * Repeatedly tiles the texture image across and down the image canvas.
-     *
-     * @param Imagick
-     * @return bool
-     **/
-    function textureImage($texture_wand) {}
-
-    /**
-     * Changes the value of individual pixels based on the intensity of each pixel
-     * compared to threshold. The result is a high-contrast, two color image.
-     *
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function thresholdImage($threshold, $channel) {}
-
-    /**
-     * Changes the size of an image to the given dimensions and removes any
-     * associated profiles. The goal is to produce small low cost thumbnail
-     * images suited for display on the Web. 
-     * 
-     * If is given as a third parameter then columns and rows parameters
-     * are used as maximums for each side. Both sides will be scaled down until
-     * the match or are smaller than the parameter given for the side.
-     *
-     * @param int
-     * @param int
-     * @param bool
-     * @return bool
-     **/
-    function thumbnailImage($columns, $rows, $fit) {}
-
-    /**
-     * Applies a color vector to each pixel in the image. The length of the vector
-     * is 0 for black and white and at its maximum for the midtones. The vector
-     * weighing function is f(x)=(1-(4.0*((x-0.5)*(x-0.5)))).
-     *
-     * @param mixed
-     * @param mixed
-     * @return bool
-     **/
-    function tintImage($tint, $opacity) {}
-
-    /**
-     * A convenience method for setting crop size and the image geometry from strings.
-     *
-     * @param string
-     * @param string
-     * @return Imagick
-     **/
-    function transformImage($crop, $geometry) {}
-
-    /**
-     * Paints pixels matching the target color transparent.
-     *
-     * @param mixed
-     * @param float
-     * @param float
-     * @param bool
-     * @return bool
-     **/
-    function transparentPaintImage($target, $alpha, $fuzz, $invert) {}
-
-    /**
-     * Creates a vertical mirror image by reflecting the pixels 
-     * around the central x-axis while rotating them 90-degrees.
-     *
-     * @return bool
-     **/
-    function transposeImage() {}
-
-    /**
-     * Creates a horizontal mirror image by reflecting the pixels around the
-     * central y-axis while rotating them 270-degrees.
-     *
-     * @return bool
-     **/
-    function transverseImage() {}
-
-    /**
-     * Remove edges that are the background color from the image.
-     *
-     * @param float
-     * @return bool
-     **/
-    function trimImage($fuzz) {}
-
-    /**
-     * Discards all but one of any pixel color.
-     *
-     * @return bool
-     **/
-    function uniqueImageColors() {}
-
-    /**
-     * Sharpens an image. We convolve the image with a Gaussian operator of the given
-     * radius and standard deviation (sigma). For reasonable results, radius should be
-     * larger than sigma. Use a radius of 0 and Imagick::UnsharpMaskImage() selects a
-     * suitable radius for you.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function unsharpMaskImage($radius, $sigma, $amount, $threshold, $channel) {}
-
-    /**
-     * Checks if the current item is valid.
-     *
-     * @return bool
-     **/
-    function valid() {}
-
-    /**
-     * Softens the edges of the image in vignette style.
-     *
-     * @param float
-     * @param float
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function vignetteImage($blackPoint, $whitePoint, $x, $y) {}
-
-    /**
-     * Applies a wave filter to the image.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function waveImage($amplitude, $length) {}
-
-    /**
-     * Is like Imagick::ThresholdImage() but force all pixels above the threshold
-     * into white while leaving all pixels below the threshold unchanged.
-     *
-     * @param mixed
-     * @return bool
-     **/
-    function whiteThresholdImage($threshold) {}
-
-    /**
-     * Writes an image to the specified filename. If the filename parameter is NULL,
-     * the image is written to the filename set by Imagick::ReadImage() or
-     * Imagick::SetImageFilename().
-     *
-     * @param string
-     * @return bool
-     **/
-    function writeImage($filename) {}
-
-    /**
-     * Writes the image sequence to an open filehandle. The handle must be opened with
-     * for example fopen.
-     *
-     * @param resource
-     * @return bool
-     **/
-    function writeImageFile($filehandle) {}
-
-    /**
-     * Writes an image or image sequence.
-     *
-     * @param string
-     * @param bool
-     * @return bool
-     **/
-    function writeImages($filename, $adjoin) {}
-
-    /**
-     * Writes all image frames into an open filehandle. This method can be used to write
-     * animated gifs or other multiframe images into open filehandle.
-     *
-     * @param resource
-     * @return bool
-     **/
-    function writeImagesFile($filehandle) {}
-
-    /**
-     * The Imagick constructor
-     *
-     * @param mixed
-     * @return Imagick
-     **/
-    function __construct($files) {}
-
-}
-class ImagickDraw {
-    /**
-     * Adjusts the current affine transformation matrix with the specified affine
-     * transformation matrix.
-     *
-     * @param array
-     * @return bool
-     **/
-    function affine($affine) {}
-
-    /**
-     * Draws text on the image.
-     *
-     * @param float
-     * @param float
-     * @param string
-     * @return bool
-     **/
-    function annotation($x, $y, $text) {}
-
-    /**
-     * Draws an arc falling within a specified bounding rectangle on the image.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function arc($sx, $sy, $ex, $ey, $sd, $ed) {}
-
-    /**
-     * Draws a bezier curve through a set of points on the image.
-     *
-     * @param array
-     * @return bool
-     **/
-    function bezier($coordinates) {}
-
-    /**
-     * Draws a circle on the image.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function circle($ox, $oy, $px, $py) {}
-
-    /**
-     * Clears the ImagickDraw object of any accumulated commands, and resets the
-     * settings it contains to their defaults.
-     *
-     * @return bool
-     **/
-    function clear() {}
-
-    /**
-     * Draws color on image using the current fill color, starting at specified
-     * position, and using specified paint method.
-     *
-     * @param float
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function color($x, $y, $paintMethod) {}
-
-    /**
-     * Adds a comment to a vector output stream.
-     *
-     * @param string
-     * @return bool
-     **/
-    function comment($comment) {}
-
-    /**
-     * Composites an image onto the current image, using the specified
-     * composition operator, specified position, and at the specified size.
-     *
-     * @param int
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param Imagick
-     * @return bool
-     **/
-    function composite($compose, $x, $y, $width, $height, $compositeWand) {}
-
-    /**
-     * Frees all resources associated with the ImagickDraw object.
-     *
-     * @return bool
-     **/
-    function destroy() {}
-
-    /**
-     * Draws an ellipse on the image.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function ellipse($ox, $oy, $rx, $ry, $start, $end) {}
-
-    /**
-     * Obtains the current clipping path ID.
-     *
-     * @return string
-     **/
-    function getClipPath() {}
-
-    /**
-     * Returns the current polygon fill rule to be used by the clipping path.
-     *
-     * @return int
-     **/
-    function getClipRule() {}
-
-    /**
-     * Returns the interpretation of clip path units.
-     *
-     * @return int
-     **/
-    function getClipUnits() {}
-
-    /**
-     * Returns the fill color used for drawing filled objects.
-     *
-     * @return ImagickPixel
-     **/
-    function getFillColor() {}
-
-    /**
-     * Returns the opacity used when drawing using the fill color or fill
-     * texture. Fully opaque is 1.0.
-     *
-     * @return float
-     **/
-    function getFillOpacity() {}
-
-    /**
-     * Returns the fill rule used while drawing polygons.
-     *
-     * @return int
-     **/
-    function getFillRule() {}
-
-    /**
-     * Returns a string specifying the font used when annotating with text.
-     *
-     * @return string
-     **/
-    function getFont() {}
-
-    /**
-     * Returns the font family to use when annotating with text.
-     *
-     * @return string
-     **/
-    function getFontFamily() {}
-
-    /**
-     * Returns the font pointsize used when annotating with text.
-     *
-     * @return float
-     **/
-    function getFontSize() {}
-
-    /**
-     * Returns the font style used when annotating with text.
-     *
-     * @return int
-     **/
-    function getFontStyle() {}
-
-    /**
-     * Returns the font weight used when annotating with text.
-     *
-     * @return int
-     **/
-    function getFontWeight() {}
-
-    /**
-     * Returns the text placement gravity used when annotating with text.
-     *
-     * @return int
-     **/
-    function getGravity() {}
-
-    /**
-     * Returns the current stroke antialias setting. Stroked outlines are
-     * antialiased by default. When antialiasing is disabled stroked pixels are
-     * thresholded to determine if the stroke color or underlying canvas color
-     * should be used.
-     *
-     * @return bool
-     **/
-    function getStrokeAntialias() {}
-
-    /**
-     * Returns the color used for stroking object outlines.
-     *
-     * @param ImagickPixel
-     * @return ImagickPixel
-     **/
-    function getStrokeColor($stroke_color) {}
-
-    /**
-     * Returns an array representing the pattern of dashes and gaps used to
-     * stroke paths.
-     *
-     * @return array
-     **/
-    function getStrokeDashArray() {}
-
-    /**
-     * Returns the offset into the dash pattern to start the dash.
-     *
-     * @return float
-     **/
-    function getStrokeDashOffset() {}
-
-    /**
-     * Returns the shape to be used at the end of open subpaths when they are
-     * stroked.
-     *
-     * @return int
-     **/
-    function getStrokeLineCap() {}
-
-    /**
-     * Returns the shape to be used at the corners of paths (or other vector
-     * shapes) when they are stroked.
-     *
-     * @return int
-     **/
-    function getStrokeLineJoin() {}
-
-    /**
-     * Returns the miter limit. When two line segments meet at a sharp angle and
-     * miter joins have been specified for 'lineJoin', it is possible for the
-     * miter to extend far beyond the thickness of the line stroking the path.
-     * The miterLimit' imposes a limit on the ratio of the miter length to the
-     * 'lineWidth'.
-     *
-     * @return int
-     **/
-    function getStrokeMiterLimit() {}
-
-    /**
-     * Returns the opacity of stroked object outlines.
-     *
-     * @return float
-     **/
-    function getStrokeOpacity() {}
-
-    /**
-     * Returns the width of the stroke used to draw object outlines.
-     *
-     * @return float
-     **/
-    function getStrokeWidth() {}
-
-    /**
-     * Returns the alignment applied when annotating with text.
-     *
-     * @return int
-     **/
-    function getTextAlignment() {}
-
-    /**
-     * Returns the current text antialias setting, which determines whether text
-     * is antialiased. Text is antialiased by default.
-     *
-     * @return bool
-     **/
-    function getTextAntialias() {}
-
-    /**
-     * Returns the decoration applied when annotating with text.
-     *
-     * @return int
-     **/
-    function getTextDecoration() {}
-
-    /**
-     * Returns a string which specifies the code set used for text annotations.
-     *
-     * @return string
-     **/
-    function getTextEncoding() {}
-
-    /**
-     * Returns the color of a background rectangle to place under text annotations.
-     *
-     * @return ImagickPixel
-     **/
-    function getTextUnderColor() {}
-
-    /**
-     * Returns a string which specifies the vector graphics generated by any
-     * graphics calls made since the ImagickDraw object was instantiated.
-     *
-     * @return string
-     **/
-    function getVectorGraphics() {}
-
-    /**
-     * Draws a line on the image using the current stroke color, stroke opacity, and stroke width.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function line($sx, $sy, $ex, $ey) {}
-
-    /**
-     * Paints on the image's opacity channel in order to set effected pixels to
-     * transparent. to influence the opacity of pixels.
-     *
-     * @param float
-     * @param float
-     * @param int
-     * @return bool
-     **/
-    function matte($x, $y, $paintMethod) {}
-
-    /**
-     * Adds a path element to the current path which closes the current subpath
-     * by drawing a straight line from the current point to the current subpath's
-     * most recent starting point (usually, the most recent moveto point).
-     *
-     * @return bool
-     **/
-    function pathClose() {}
-
-    /**
-     * Draws a cubic Bezier curve from the current point to (x,y) using (x1,y1)
-     * as the control point at the beginning of the curve and (x2,y2) as the
-     * control point at the end of the curve using absolute coordinates. At the
-     * end of the command, the new current point becomes the final (x,y)
-     * coordinate pair used in the polybezier.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathCurveToAbsolute($x1, $y1, $x2, $y2, $x, $y) {}
-
-    /**
-     * Draws a quadratic Bezier curve from the current point to (x,y) using
-     * (x1,y1) as the control point using absolute coordinates. At the end of the
-     * command, the new current point becomes the final (x,y) coordinate pair
-     * used in the polybezier.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathCurveToQuadraticBezierAbsolute($x1, $y1, $x, $y) {}
-
-    /**
-     * Draws a quadratic Bezier curve from the current point to (x,y) using
-     * (x1,y1) as the control point using relative coordinates. At the end of the
-     * command, the new current point becomes the final (x,y) coordinate pair
-     * used in the polybezier.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathCurveToQuadraticBezierRelative($x1, $y1, $x, $y) {}
-
-    /**
-     * Draws a quadratic Bezier curve (using relative coordinates) from the
-     * current point to (x,y). The control point is assumed to be the reflection
-     * of the control point on the previous command relative to the current point.
-     * (If there is no previous command or if the previous command was not a
-     * DrawPathCurveToQuadraticBezierAbsolute,
-     * DrawPathCurveToQuadraticBezierRelative,
-     * DrawPathCurveToQuadraticBezierSmoothAbsolut or
-     * DrawPathCurveToQuadraticBezierSmoothRelative, assume the control point is
-     * coincident with the current point.). At the end of the command, the new
-     * current point becomes the final (x,y) coordinate pair used in the polybezier.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathCurveToQuadraticBezierSmoothAbsolute($x, $y) {}
-
-    /**
-     * Draws a quadratic Bezier curve (using relative coordinates) from the
-     * current point to (x, y). The control point is assumed to be the reflection
-     * of the control point on the previous command relative to the current point.
-     * (If there is no previous command or if the previous command was not a
-     * DrawPathCurveToQuadraticBezierAbsolute, 
-     * DrawPathCurveToQuadraticBezierRelative, 
-     * DrawPathCurveToQuadraticBezierSmoothAbsolut or 
-     * DrawPathCurveToQuadraticBezierSmoothRelative, assume the control point is
-     * coincident with the current point). At the end of the command, the new
-     * current point becomes the final (x, y) coordinate pair used in the
-     * polybezier.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathCurveToQuadraticBezierSmoothRelative($x, $y) {}
-
-    /**
-     * Draws a cubic Bezier curve from the current point to (x,y) using (x1,y1)
-     * as the control point at the beginning of the curve and (x2,y2) as the
-     * control point at the end of the curve using relative coordinates. At the
-     * end of the command, the new current point becomes the final (x,y) 
-     * coordinate pair used in the polybezier.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathCurveToRelative($x1, $y1, $x2, $y2, $x, $y) {}
-
-    /**
-     * Draws a cubic Bezier curve from the current point to (x,y) using absolute
-     * coordinates. The first control point is assumed to be the reflection of the
-     * second control point on the previous command relative to the current point.
-     * (If there is no previous command or if the previous command was not an 
-     * DrawPathCurveToAbsolute, DrawPathCurveToRelative, 
-     * DrawPathCurveToSmoothAbsolute or DrawPathCurveToSmoothRelative, assume the
-     * first control point is coincident with the current point.) (x2,y2) is the
-     * second control point (i.e., the control point at the end of the curve).
-     * At the end of the command, the new current point becomes the final (x,y)
-     * coordinate pair used in the polybezier.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathCurveToSmoothAbsolute($x2, $y2, $x, $y) {}
-
-    /**
-     * Draws a cubic Bezier curve from the current point to (x,y) using relative
-     * coordinates. The first control point is assumed to be the reflection of
-     * the second control point on the previous command relative to the current
-     * point. (If there is no previous command or if the previous command was not
-     * an DrawPathCurveToAbsolute, DrawPathCurveToRelative, 
-     * DrawPathCurveToSmoothAbsolute or DrawPathCurveToSmoothRelative, assume the
-     * first control point is coincident with the current point.) (x2,y2) is the
-     * second control point (i.e., the control point at the end of the curve). At
-     * the end of the command, the new current point becomes the final (x,y)
-     * coordinate pair used in the polybezier.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathCurveToSmoothRelative($x2, $y2, $x, $y) {}
-
-    /**
-     * Draws an elliptical arc from the current point to (x, y) using absolute
-     * coordinates. The size and orientation of the ellipse are defined by two
-     * radii (rx, ry) and an xAxisRotation, which indicates how the ellipse as
-     * a whole is rotated relative to the current coordinate system. The center
-     * (cx, cy) of the ellipse is calculated automatically to satisfy the
-     * constraints imposed by the other parameters. largeArcFlag and sweepFlag
-     * contribute to the automatic calculations and help determine how the arc
-     * is drawn. If largeArcFlag is then draw the larger of the available
-     * arcs. If sweepFlag is true, then draw the arc matching a clock-wise
-     * rotation.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param bool
-     * @param bool
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathEllipticArcAbsolute($rx, $ry, $x_axis_rotation, $large_arc_flag, $sweep_flag, $x, $y) {}
-
-    /**
-     * Draws an elliptical arc from the current point to (x, y) using relative
-     * coordinates. The size and orientation of the ellipse are defined by two
-     * radii (rx, ry) and an xAxisRotation, which indicates how the ellipse as
-     * a whole is rotated relative to the current coordinate system. The center
-     * (cx, cy) of the ellipse is calculated automatically to satisfy the
-     * constraints imposed by the other parameters. largeArcFlag and sweepFlag
-     * contribute to the automatic calculations and help determine how the arc
-     * is drawn. If largeArcFlag is then draw the larger of the available
-     * arcs. If sweepFlag is true, then draw the arc matching a clock-wise
-     * rotation.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param bool
-     * @param bool
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathEllipticArcRelative($rx, $ry, $x_axis_rotation, $large_arc_flag, $sweep_flag, $x, $y) {}
-
-    /**
-     * Terminates the current path.
-     *
-     * @return bool
-     **/
-    function pathFinish() {}
-
-    /**
-     * Draws a line path from the current point to the given coordinate using
-     * absolute coordinates. The coordinate then becomes the new current point.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathLineToAbsolute($x, $y) {}
-
-    /**
-     * Draws a horizontal line path from the current point to the target point
-     * using absolute coordinates. The target point then becomes the new
-     * current point.
-     *
-     * @param float
-     * @return bool
-     **/
-    function pathLineToHorizontalAbsolute($x) {}
-
-    /**
-     * Draws a horizontal line path from the current point to the target point
-     * using relative coordinates. The target point then becomes the new
-     * current point.
-     *
-     * @param float
-     * @return bool
-     **/
-    function pathLineToHorizontalRelative($x) {}
-
-    /**
-     * Draws a line path from the current point to the given coordinate using
-     * relative coordinates. The coordinate then becomes the new current point.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathLineToRelative($x, $y) {}
-
-    /**
-     * Draws a vertical line path from the current point to the target point using
-     * absolute coordinates. The target point then becomes the new current point.
-     *
-     * @param float
-     * @return bool
-     **/
-    function pathLineToVerticalAbsolute($y) {}
-
-    /**
-     * Draws a vertical line path from the current point to the target point using
-     * relative coordinates. The target point then becomes the new current point.
-     *
-     * @param float
-     * @return bool
-     **/
-    function pathLineToVerticalRelative($y) {}
-
-    /**
-     * Starts a new sub-path at the given coordinate using absolute coordinates.
-     * The current point then becomes the specified coordinate.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathMoveToAbsolute($x, $y) {}
-
-    /**
-     * Starts a new sub-path at the given coordinate using relative coordinates.
-     * The current point then becomes the specified coordinate.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pathMoveToRelative($x, $y) {}
-
-    /**
-     * Declares the start of a path drawing list which is terminated by a matching
-     * DrawPathFinish() command. All other DrawPath commands must be enclosed
-     * between a and a DrawPathFinish() command. This is because path drawing
-     * commands are subordinate commands and they do not function by themselves.
-     *
-     * @return bool
-     **/
-    function pathStart() {}
-
-    /**
-     * Draws a point using the current stroke color and stroke thickness at the specified coordinates.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function point($x, $y) {}
-
-    /**
-     * Draws a polygon using the current stroke, stroke width, and fill color or
-     * texture, using the specified array of coordinates.
-     *
-     * @param array
-     * @return bool
-     **/
-    function polygon($coordinates) {}
-
-    /**
-     * Draws a polyline using the current stroke, stroke width, and fill color or
-     * texture, using the specified array of coordinates.
-     *
-     * @param array
-     * @return bool
-     **/
-    function polyline($coordinates) {}
-
-    /**
-     * Destroys the current ImagickDraw in the stack, and returns to the
-     * previously pushed ImagickDraw. Multiple ImagickDraws may exist. It is an
-     * error to attempt to pop more ImagickDraws than have been pushed, and it is
-     * proper form to pop all ImagickDraws which have been pushed.
-     *
-     * @return bool
-     **/
-    function pop() {}
-
-    /**
-     * Terminates a clip path definition.
-     *
-     * @return bool
-     **/
-    function popClipPath() {}
-
-    /**
-     * Terminates a definition list.
-     *
-     * @return bool
-     **/
-    function popDefs() {}
-
-    /**
-     * Terminates a pattern definition.
-     *
-     * @return bool
-     **/
-    function popPattern() {}
-
-    /**
-     * Clones the current ImagickDraw to create a new ImagickDraw, which is then
-     * added to the ImagickDraw stack. The original drawing ImagickDraw(s) may be
-     * returned to by invoking pop(). The ImagickDraws are stored on a
-     * ImagickDraw stack. For every Pop there must have already been an equivalent
-     * Push.
-     *
-     * @return bool
-     **/
-    function push() {}
-
-    /**
-     * Starts a clip path definition which is comprised of any number of drawing
-     * commands and terminated by a ImagickDraw::popClipPath() command.
-     *
-     * @param string
-     * @return bool
-     **/
-    function pushClipPath($clip_mask_id) {}
-
-    /**
-     * Indicates that commands up to a terminating ImagickDraw::popDefs()
-     * command create named elements (e.g. clip-paths, textures, etc.) which
-     * may safely be processed earlier for the sake of efficiency.
-     *
-     * @return bool
-     **/
-    function pushDefs() {}
-
-    /**
-     * Indicates that subsequent commands up to a DrawPopPattern() command
-     * comprise the definition of a named pattern. The pattern space is assigned
-     * top left corner coordinates, a width and height, and becomes its own
-     * drawing space. Anything which can be drawn may be used in a pattern
-     * definition. Named patterns may be used as stroke or brush definitions.
-     *
-     * @param string
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function pushPattern($pattern_id, $x, $y, $width, $height) {}
-
-    /**
-     * Draws a rectangle given two coordinates and using the current stroke,
-     * stroke width, and fill settings.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function rectangle($x1, $y1, $x2, $y2) {}
-
-    /**
-     * Renders all preceding drawing commands onto the image.
-     *
-     * @return bool
-     **/
-    function render() {}
-
-    /**
-     * Applies the specified rotation to the current coordinate space.
-     *
-     * @param float
-     * @return bool
-     **/
-    function rotate($degrees) {}
-
-    /**
-     * Draws a rounded rectangle given two coordinates, x y corner radiuses
-     * and using the current stroke, stroke width, and fill settings.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function roundRectangle($x1, $y1, $x2, $y2, $rx, $ry) {}
-
-    /**
-     * Adjusts the scaling factor to apply in the horizontal and vertical
-     * directions to the current coordinate space.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function scale($x, $y) {}
-
-    /**
-     * Associates a named clipping path with the image. Only the areas drawn on
-     * by the clipping path will be modified as long as it remains in effect.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setClipPath($clip_mask) {}
-
-    /**
-     * Set the polygon fill rule to be used by the clipping path.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setClipRule($fill_rule) {}
-
-    /**
-     * Sets the interpretation of clip path units.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setClipUnits($clip_units) {}
-
-    /**
-     * Sets the opacity to use when drawing using the fill color or fill texture.
-     * Fully opaque is 1.0.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setFillAlpha($opacity) {}
-
-    /**
-     * Sets the fill color to be used for drawing filled objects.
-     *
-     * @param ImagickPixel
-     * @return bool
-     **/
-    function setFillColor($fill_pixel) {}
-
-    /**
-     * Sets the opacity to use when drawing using the fill color or fill texture.
-     * Fully opaque is 1.0.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setFillOpacity($fillOpacity) {}
-
-    /**
-     * Sets the URL to use as a fill pattern for filling objects. Only local URLs
-     * ("#identifier") are supported at this time. These local URLs are normally
-     * created by defining a named fill pattern with DrawPushPattern/DrawPopPattern.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setFillPatternURL($fill_url) {}
-
-    /**
-     * Sets the fill rule to use while drawing polygons.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setFillRule($fill_rule) {}
-
-    /**
-     * Sets the fully-specified font to use when annotating with text.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setFont($font_name) {}
-
-    /**
-     * Sets the font family to use when annotating with text.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setFontFamily($font_family) {}
-
-    /**
-     * Sets the font pointsize to use when annotating with text.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setFontSize($pointsize) {}
-
-    /**
-     * Sets the font stretch to use when annotating with text. The AnyStretch
-     * enumeration acts as a wild-card "don't care" option.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setFontStretch($fontStretch) {}
-
-    /**
-     * Sets the font style to use when annotating with text. The AnyStyle
-     * enumeration acts as a wild-card "don't care" option.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setFontStyle($style) {}
-
-    /**
-     * Sets the font weight to use when annotating with text.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setFontWeight($font_weight) {}
-
-    /**
-     * Sets the text placement gravity to use when annotating with text.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setGravity($gravity) {}
-
-    /**
-     * Specifies the opacity of stroked object outlines.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setStrokeAlpha($opacity) {}
-
-    /**
-     * Controls whether stroked outlines are antialiased. Stroked outlines are
-     * antialiased by default. When antialiasing is disabled stroked pixels are
-     * thresholded to determine if the stroke color or underlying canvas color
-     * should be used.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function setStrokeAntialias($stroke_antialias) {}
-
-    /**
-     * Sets the color used for stroking object outlines.
-     *
-     * @param ImagickPixel
-     * @return bool
-     **/
-    function setStrokeColor($stroke_pixel) {}
-
-    /**
-     * Specifies the pattern of dashes and gaps used to stroke paths. The
-     * strokeDashArray represents an array of numbers that specify the lengths of
-     * alternating dashes and gaps in pixels. If an odd number of values is
-     * provided, then the list of values is repeated to yield an even number of
-     * values. To remove an existing dash array, pass a zero number_elements
-     * argument and null dash_array. A typical strokeDashArray_ array might
-     * contain the members 5 3 2.
-     *
-     * @param array
-     * @return bool
-     **/
-    function setStrokeDashArray($dashArray) {}
-
-    /**
-     * Specifies the offset into the dash pattern to start the dash.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setStrokeDashOffset($dash_offset) {}
-
-    /**
-     * Specifies the shape to be used at the end of open subpaths when they
-     * are stroked.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setStrokeLineCap($linecap) {}
-
-    /**
-     * Specifies the shape to be used at the corners of paths (or other vector 
-     * shapes) when they are stroked.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setStrokeLineJoin($linejoin) {}
-
-    /**
-     * Specifies the miter limit. When two line segments meet at a sharp angle
-     * and miter joins have been specified for 'lineJoin', it is possible for
-     * the miter to extend far beyond the thickness of the line stroking the 
-     * path. The miterLimit' imposes a limit on the ratio of the miter length to
-     * the 'lineWidth'.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setStrokeMiterLimit($miterlimit) {}
-
-    /**
-     * Specifies the opacity of stroked object outlines.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setStrokeOpacity($stroke_opacity) {}
-
-    /**
-     * Sets the pattern used for stroking object outlines.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setStrokePatternURL($stroke_url) {}
-
-    /**
-     * Sets the width of the stroke used to draw object outlines.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setStrokeWidth($stroke_width) {}
-
-    /**
-     * Specifies a text alignment to be applied when annotating with text.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setTextAlignment($alignment) {}
-
-    /**
-     * Controls whether text is antialiased. Text is antialiased by default.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function setTextAntialias($antiAlias) {}
-
-    /**
-     * Specifies a decoration to be applied when annotating with text.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setTextDecoration($decoration) {}
-
-    /**
-     * Specifies specifies the code set to use for text annotations. The only
-     * character encoding which may be specified at this time is "UTF-8" for
-     * representing Unicode as a sequence of bytes. Specify an empty string to
-     * set text encoding to the system's default. Successful text annotation
-     * using Unicode may require fonts designed to support Unicode.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setTextEncoding($encoding) {}
-
-    /**
-     * Specifies the color of a background rectangle to place under text annotations.
-     *
-     * @param ImagickPixel
-     * @return bool
-     **/
-    function setTextUnderColor($under_color) {}
-
-    /**
-     * Sets the vector graphics associated with the specified ImagickDraw
-     * object. Use this method with ImagickDraw::getVectorGraphics() as a method
-     * to persist the vector graphics state.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setVectorGraphics($xml) {}
-
-    /**
-     * Sets the overall canvas size to be recorded with the drawing vector data.
-     * Usually this will be specified using the same size as the canvas image.
-     * When the vector data is saved to SVG or MVG formats, the viewbox is use to
-     * specify the size of the canvas image that a viewer will render the vector
-     * data on.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setViewbox($x1, $y1, $x2, $y2) {}
-
-    /**
-     * Skews the current coordinate system in the horizontal direction.
-     *
-     * @param float
-     * @return bool
-     **/
-    function skewX($degrees) {}
-
-    /**
-     * Skews the current coordinate system in the vertical direction.
-     *
-     * @param float
-     * @return bool
-     **/
-    function skewY($degrees) {}
-
-    /**
-     * Applies a translation to the current coordinate system which moves the
-     * coordinate system origin to the specified coordinate.
-     *
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function translate($x, $y) {}
-
-    /**
-     * The ImagickDraw constructor
-     *
-     * @return ImagickDraw
-     **/
-    function __construct() {}
-
-}
-class ImagickPixel {
-    /**
-     * Clears the ImagickPixel object, leaving it in a fresh state. This also
-     * unsets any color associated with the object.
-     *
-     * @return bool
-     **/
-    function clear() {}
-
-    /**
-     * Deallocates any resources used by the ImagickPixel object, and unsets any
-     * associated color. The object should not be used after the destroy function
-     * has been called.
-     *
-     * @return bool
-     **/
-    function destroy() {}
-
-    /**
-     * Returns the color described by the ImagickPixel object, as an array. If the color has an
-     * opacity channel set, this is provided as a fourth value in the list.
-     *
-     * @param bool
-     * @return array
-     **/
-    function getColor($normalized) {}
-
-    /**
-     * Returns the color of the ImagickPixel object as a string.
-     *
-     * @return string
-     **/
-    function getColorAsString() {}
-
-    /**
-     * Returns the color count associated with this color.
-     *
-     * @return int
-     **/
-    function getColorCount() {}
-
-    /**
-     * Retrieves the value of the color channel specified, as a floating-point
-     * number between 0 and 1.
-     *
-     * @param int
-     * @return float
-     **/
-    function getColorValue($color) {}
-
-    /**
-     * Returns the normalized HSL color described by the ImagickPixel object,
-     * with each of the three values as floating point numbers between 0.0
-     * and 1.0.
-     *
-     * @return array
-     **/
-    function getHSL() {}
-
-    /**
-     * Checks the distance between the color described by this ImagickPixel
-     * object and that of the provided object, by plotting their RGB values
-     * on the color cube. If the distance between the two points is less than
-     * the fuzz value given, the colors are similar.
-     *
-     * @param ImagickPixel
-     * @param float
-     * @return bool
-     **/
-    function isSimilar($color, $fuzz) {}
-
-    /**
-     * Sets the color described by the ImagickPixel object, with a string
-     * (e.g. "blue", "#0000ff", "rgb(0,0,255)", "cmyk(100,100,100,10)", etc.).
-     *
-     * @param string
-     * @return bool
-     **/
-    function setColor($color) {}
-
-    /**
-     * Sets the value of the specified channel of this object to the provided
-     * value, which should be between 0 and 1. This function can be used to
-     * provide an opacity channel to an ImagickPixel object.
-     *
-     * @param int
-     * @param float
-     * @return bool
-     **/
-    function setColorValue($color, $value) {}
-
-    /**
-     * Sets the color described by the ImagickPixel object using normalized
-     * values for hue, saturation and luminosity.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setHSL($hue, $saturation, $luminosity) {}
-
-    /**
-     * Constructs an ImagickPixel object. If a color is specified, the object is
-     * constructed and then initialised with that color before being returned.
-     *
-     * @param string
-     * @return ImagickPixel
-     **/
-    function __construct($color) {}
-
-}
-class ImagickPixelIterator {
-    /**
-     * Clear resources associated with a PixelIterator.
-     *
-     * @return bool
-     **/
-    function clear() {}
-
-    /**
-     * Deallocates resources associated with a PixelIterator.
-     *
-     * @return bool
-     **/
-    function destroy() {}
-
-    /**
-     * Returns the current row as an array of ImagickPixel objects from the pixel iterator.
-     *
-     * @return array
-     **/
-    function getCurrentIteratorRow() {}
-
-    /**
-     * Returns the current pixel iterator row.
-     *
-     * @return int
-     **/
-    function getIteratorRow() {}
-
-    /**
-     * Returns the next row as an array of pixel wands from the pixel iterator.
-     *
-     * @return array
-     **/
-    function getNextIteratorRow() {}
-
-    /**
-     * Returns the previous row as an array of pixel wands from the pixel iterator.
-     *
-     * @return array
-     **/
-    function getPreviousIteratorRow() {}
-
-    /**
-     * Returns a new pixel iterator.
-     *
-     * @param Imagick
-     * @return bool
-     **/
-    function newPixelIterator($wand) {}
-
-    /**
-     * Returns a new pixel iterator.
-     *
-     * @param Imagick
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function newPixelRegionIterator($wand, $x, $y, $columns, $rows) {}
-
-    /**
-     * Resets the pixel iterator. Use it in conjunction with
-     * ImagickPixelIterator::getNextIteratorRow() to iterate over all the pixels
-     * in a pixel container.
-     *
-     * @return bool
-     **/
-    function resetIterator() {}
-
-    /**
-     * Sets the pixel iterator to the first pixel row.
-     *
-     * @return bool
-     **/
-    function setIteratorFirstRow() {}
-
-    /**
-     * Sets the pixel iterator to the last pixel row.
-     *
-     * @return bool
-     **/
-    function setIteratorLastRow() {}
-
-    /**
-     * Set the pixel iterator row.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setIteratorRow($row) {}
-
-    /**
-     * Syncs the pixel iterator.
-     *
-     * @return bool
-     **/
-    function syncIterator() {}
-
-    /**
-     * The ImagickPixelIterator constructor
-     *
-     * @param Imagick
-     * @return ImagickPixelIterator
-     **/
-    function __construct($wand) {}
-
-}
-class IntlDateFormatter {
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param int
-     * @param int
-     * @param string
-     * @param int
-     * @param string
-     * @return IntlDateFormatter
-     **/
-    function create($locale, $datetype, $timetype, $timezone, $calendar, $pattern) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param mixed
-     * @return string
-     **/
-    function format($value) {}
-
-    /**
-     * Object oriented style
-     *
-     * @return int
-     **/
-    function getCalendar() {}
-
-    /**
-     * Object oriented style
-     *
-     * @return int
-     **/
-    function getDateType() {}
-
-    /**
-     * Object oriented style
-     *
-     * @return int
-     **/
-    function getErrorCode() {}
-
-    /**
-     * Object oriented style
-     *
-     * @return string
-     **/
-    function getErrorMessage() {}
-
-    /**
-     * Object oriented style
-     *
-     * @param int
-     * @return string
-     **/
-    function getLocale($which) {}
-
-    /**
-     * Object oriented style
-     *
-     * @return string
-     **/
-    function getPattern() {}
-
-    /**
-     * Object oriented style
-     *
-     * @return int
-     **/
-    function getTimeType() {}
-
-    /**
-     * Object oriented style
-     *
-     * @return string
-     **/
-    function getTimeZoneId() {}
-
-    /**
-     * Object oriented style
-     *
-     * @return bool
-     **/
-    function isLenient() {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param int
-     * @return array
-     **/
-    function localtime($value, &$position) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param int
-     * @return int
-     **/
-    function parse($value, &$position) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param int
-     * @return bool
-     **/
-    function setCalendar($which) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param bool
-     * @return bool
-     **/
-    function setLenient($lenient) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @return bool
-     **/
-    function setPattern($pattern) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @return bool
-     **/
-    function setTimeZoneId($zone) {}
-
-}
-class KTagLib_ID3v2_Frame extends KTagLib_ID3v2_Frame {
-}
-class KTagLib_MPEG_File {
-}
-class KTagLib_Tag extends KTagLib_Tag {
-}
-class KTaglib_ID3v2_AttachedPictureFrame {
-    const Artist = 0;
-    const BackCover = 0;
-    const Band = 0;
-    const BandLogo = 0;
-    const ColouredFish = 0;
-    const Composer = 0;
-    const Conductor = 0;
-    const DuringPerformance = 0;
-    const DuringRecording = 0;
-    const FileIcon = 0;
-    const FrontCover = 0;
-    const Illustration = 0;
-    const LeadArtist = 0;
-    const LeafletPage = 0;
-    const Lyricist = 0;
-    const Media = 0;
-    const MovieScreenCapture = 0;
-    const Other = 0;
-    const OtherFileIcon = 0;
-    const RecordingLocation = 0;
-    /**
-     * Returns the attached description for a picture frame in an ID3v2.x frame.
-     *
-     * @return string
-     **/
-    function getDescription() {}
-
-    /**
-     * Sets the mime type of the image. This should in most cases be "image/png" or "image/jpeg".
-     *
-     * @param string
-     * @return string
-     **/
-    function getMimeType($type) {}
-
-    /**
-     * Returns the type of the image.
-     *
-     * @return int
-     **/
-    function getType() {}
-
-    /**
-     * Saves the attached picture to the given filename.
-     *
-     * @param string
-     * @return bool
-     **/
-    function savePicture($filename) {}
-
-    /**
-     * Sets the picture to the give image. The image is loaded from the given filename.
-     * 	Please note that the picture is not saved unless you call the save method of the
-     * 	corresponding file object.
-     *
-     * @param string
-     * @return void
-     **/
-    function setPicture($filename) {}
-
-    /**
-     * Sets the type of the image. This can be e.g. FrontCover or FileIcon. Please refer to the KTaglib_ID3v2_AttachedPictureFrame class description for a list of available types and their constant mappings.
-     *
-     * @param int
-     * @return void
-     **/
-    function setType($type) {}
-
-}
-class KTaglib_ID3v2_Frame {
-    /**
-     * Returns the size of the frame in bytes. Please refer to id3.org to see what
-     * ID3v2 frames are and how they are defined.
-     *
-     * @return int
-     **/
-    function getSize() {}
-
-    /**
-     * Returns a string representation of the frame. This might be just the
-     * frame id, but might contain more information. Please see the ktaglib
-     * documentation for more information
-     *
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class KTaglib_ID3v2_Tag {
-    /**
-     * Adds a frame to the ID3v2 tag. The frame must be a valid KTagLib_ID3v2_Frame object.
-     * 	To save the tag, the save function needs to be invoked.
-     *
-     * @param KTagLib_ID3v2_Frame
-     * @return bool
-     **/
-    function addFrame($frame) {}
-
-    /**
-     * Returns an array of ID3v2 frames, associated with the ID3v2 tag.
-     *
-     * @return array
-     **/
-    function getFrameList() {}
-
-}
-class KTaglib_MPEG_AudioProperties {
-    /**
-     * Returns the bitrate of the MPEG file
-     *
-     * @return int
-     **/
-    function getBitrate() {}
-
-    /**
-     * Returns the amount of channels of the MPEG file
-     *
-     * @return int
-     **/
-    function getChannels() {}
-
-    /**
-     * Returns the layer of the MPEG file (usually 3 for MP3).
-     *
-     * @return int
-     **/
-    function getLayer() {}
-
-    /**
-     * Returns the length of the MPEG file
-     *
-     * @return int
-     **/
-    function getLength() {}
-
-    /**
-     * Returns the sample bitrate of the MPEG file
-     *
-     * @return int
-     **/
-    function getSampleBitrate() {}
-
-    /**
-     * Returns the version of the MPEG file header. The possible versions are
-     * 	defined in Tag_MPEG_Header (Version1, Version2, Version2.5).
-     *
-     * @return int
-     **/
-    function getVersion() {}
-
-    /**
-     * Returns true if the MPEG file is copyrighted
-     *
-     * @return bool
-     **/
-    function isCopyrighted() {}
-
-    /**
-     * Returns true if the file is marked as the original file
-     *
-     * @return bool
-     **/
-    function isOriginal() {}
-
-    /**
-     * Returns true if protection mechanism (like DRM) are enabled for this file
-     *
-     * @return bool
-     **/
-    function isProtectionEnabled() {}
-
-}
-class KTaglib_MPEG_File {
-    /**
-     * Returns an object that provides access to the audio properties of
-     * the mpeg file.
-     *
-     * @return KTaglib_MPEG_File:
-     **/
-    function getAudioProperties() {}
-
-    /**
-     * Returns an object that represents an ID3v1 tag, which can be used
-     * to get information about the ID3v1 tag.
-     *
-     * @param bool
-     * @return KTaglib_ID3v1_Tag
-     **/
-    function getID3v1Tag($create) {}
-
-    /**
-     * Returns a ID3v2 object for the mpeg file. If no ID3v2 Tag is present, an
-     * KTaglib_TagNotFoundException is thrown.
-     *
-     * @param bool
-     * @return KTaglib_ID3v2_Tag
-     **/
-    function getID3v2Tag($create) {}
-
-}
-class KTaglib_MPEG_Header {
-    const Version1 = 0;
-    const Version2 = 0;
-    const Version2_5 = 0;
-}
-class KTaglib_Tag {
-    /**
-     * Returns the album string of an ID3 tag. This method is implemented
-     * in ID3v1 and ID3v2 tags.
-     *
-     * @return string
-     **/
-    function getAlbum() {}
-
-    /**
-     * Returns the artist string of an ID3 tag. This method is implemented
-     * in ID3v1 and ID3v2 tags.
-     *
-     * @return string
-     **/
-    function getArtist() {}
-
-    /**
-     * Returns the comment of an ID3 tag. This method is implemented
-     * in ID3v1 and ID3v2 tags.
-     *
-     * @return string
-     **/
-    function getComment() {}
-
-    /**
-     * Returns the genre of an ID3 tag. This method is implemented
-     * in ID3v1 and ID3v2 tags.
-     *
-     * @return string
-     **/
-    function getGenre() {}
-
-    /**
-     * Returns the title string of an ID3 tag. This method is implemented
-     * in ID3v1 and ID3v2 tags.
-     *
-     * @return string
-     **/
-    function getTitle() {}
-
-    /**
-     * Returns the track number of an ID3 tag. This method is implemented
-     * in ID3v1 and ID3v2 tags.
-     *
-     * @return int
-     **/
-    function getTrack() {}
-
-    /**
-     * Returns the year of an ID3 tag. This method is implemented
-     * in ID3v1 and ID3v2 tags.
-     *
-     * @return int
-     **/
-    function getYear() {}
-
-    /**
-     * Returns true if the tag exists, but is empty. This method is implemented
-     * in ID3v1 and ID3v2 tags.
-     *
-     * @return bool
-     **/
-    function isEmpty() {}
-
-}
-class Locale {
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @return string
-     **/
-    function acceptFromHttp($header) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param array
-     * @return string
-     **/
-    function composeLocale($subtags) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param string
-     * @param bool
-     * @return bool
-     **/
-    function filterMatches($langtag, $locale, $canonicalize) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @return array
-     **/
-    function getAllVariants($locale) {}
-
-    /**
-     * Object oriented style
-     *
-     * @return string
-     **/
-    function getDefault() {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param string
-     * @return string
-     **/
-    function getDisplayLanguage($locale, $in_locale) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param string
-     * @return string
-     **/
-    function getDisplayName($locale, $in_locale) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param string
-     * @return string
-     **/
-    function getDisplayRegion($locale, $in_locale) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param string
-     * @return string
-     **/
-    function getDisplayScript($locale, $in_locale) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param string
-     * @return string
-     **/
-    function getDisplayVariant($locale, $in_locale) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @return array
-     **/
-    function getKeywords($locale) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @return string
-     **/
-    function getPrimaryLanguage($locale) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @return string
-     **/
-    function getRegion($locale) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @return string
-     **/
-    function getScript($locale) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param array
-     * @param string
-     * @param bool
-     * @param string
-     * @return string
-     **/
-    function lookup($langtag, $locale, $canonicalize, $default) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @return array
-     **/
-    function parseLocale($locale) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @return bool
-     **/
-    function setDefault($locale) {}
-
-}
-class Memcache {
-    /**
-     * Memcache::add stores variable
-     * var with key only if such 
-     * key doesn't exist at the server yet.
-     * Also you can use memcache_add function.
-     *
-     * @param string
-     * @param mixed
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function add($key, $var, $flag, $expire) {}
-
-    /**
-     * Memcache::addServer adds a server to the connection 
-     * pool. The connection, which was opened using Memcache::addServer 
-     * will be automatically closed at the end of script execution, you can also close it 
-     * manually with Memcache::close. 
-     * You can also use the memcache_add_server function.
-     *
-     * @param string
-     * @param int
-     * @param bool
-     * @param int
-     * @param int
-     * @param int
-     * @param bool
-     * @param callback
-     * @param int
-     * @return bool
-     **/
-    function addServer($host, $port, $persistent, $weight, $timeout, $retry_interval, $status, $failure_callback, $timeoutms) {}
-
-    /**
-     * Memcache::close closes connection to memcached
-     * server. This function doesn't close persistent connections, which are
-     * closed only during web-server shutdown/restart.
-     * Also you can use memcache_close function.
-     *
-     * @return bool
-     **/
-    function close() {}
-
-    /**
-     * Memcache::connect establishes a connection to the
-     * memcached server.
-     * The connection, which was opened using
-     * Memcache::connect will be automatically closed at the
-     * end of script execution. Also you can close it with
-     * Memcache::close.
-     * Also you can use memcache_connect function.
-     *
-     * @param string
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function connect($host, $port, $timeout) {}
-
-    /**
-     * Memcache::decrement decrements value of the 
-     * item by value. Similarly to 
-     * Memcache::increment, current value of the item is
-     * being converted to numerical and after that value
-     * is substracted. 
-     * 
-     * 
-     * New item's value will not be less than zero.
-     * 
-     * 
-     * 
-     * 
-     * Do not use Memcache::decrement with item, which was
-     * stored compressed, because consequent call to 
-     * Memcache::get will fail.
-     * 
-     * 
-     * Memcache::decrement does not
-     * create an item if it didn't exist.
-     * Also you can use memcache_decrement function.
-     *
-     * @param string
-     * @param int
-     * @return int
-     **/
-    function decrement($key, $value) {}
-
-    /**
-     * Memcache::delete deletes item with the 
-     * key. If parameter timeout
-     * is specified, the item will expire after
-     * timeout seconds.
-     * Also you can use memcache_delete function.
-     *
-     * @param string
-     * @param int
-     * @return bool
-     **/
-    function delete($key, $timeout) {}
-
-    /**
-     * Memcache::flush immediately invalidates all 
-     * existing items. Memcache::flush doesn't
-     * actually free any resources, it only marks all the items as expired, so
-     * occupied memory will be overwritten by new items.
-     * Also you can use memcache_flush function.
-     *
-     * @return bool
-     **/
-    function flush() {}
-
-    /**
-     * Memcache::get returns previously stored data if
-     * an item with such key exists on the server at this
-     * moment.
-     *
-     * @param string
-     * @param int
-     * @return string
-     **/
-    function get($key, &$flags) {}
-
-    /**
-     * Memcache::getExtendedStats returns a two-dimensional
-     * associative array with server statistics. Array keys correspond to 
-     * host:port of server and values contain the individual server statistics.
-     * A failed server will have its corresponding entry set to .
-     * You can also use the memcache_get_extended_stats function.
-     *
-     * @param string
-     * @param int
-     * @param int
-     * @return array
-     **/
-    function getExtendedStats($type, $slabid, $limit) {}
-
-    /**
-     * Memcache::getServerStatus returns a the servers 
-     * online/offline status. You can also use memcache_get_server_status 
-     * function.
-     *
-     * @param string
-     * @param int
-     * @return int
-     **/
-    function getServerStatus($host, $port) {}
-
-    /**
-     * Memcache::getStats returns an associative array 
-     * with server's statistics. Array keys correspond to stats parameters and 
-     * values to parameter's values.
-     * Also you can use memcache_get_stats function.
-     *
-     * @param string
-     * @param int
-     * @param int
-     * @return array
-     **/
-    function getStats($type, $slabid, $limit) {}
-
-    /**
-     * Memcache::getVersion returns a string with server's
-     * version number.
-     * Also you can use memcache_get_version function.
-     *
-     * @return string
-     **/
-    function getVersion() {}
-
-    /**
-     * Memcache::increment increments value of the item on
-     * the specified value. If item with key 
-     * key was not numeric and cannot be converted to
-     * number, it will change it's value to value.
-     * Memcache::increment does not
-     * create an item if it didn't exist.
-     * 
-     * 
-     * Do not use Memcache::increment with item, which was 
-     * stored compressed, because consequent call to 
-     * Memcache::get will fail.
-     * 
-     * 
-     * Also you can use memcache_increment function.
-     *
-     * @param string
-     * @param int
-     * @return int
-     **/
-    function increment($key, $value) {}
-
-    /**
-     * Memcache::pconnect is similar to
-     * Memcache::connect with the difference, that 
-     * the connection it establishes is persistent.
-     * This connection is not closed after the end of script execution and 
-     * by Memcache::close function.
-     * Also you can use memcache_pconnect function.
-     *
-     * @param string
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function pconnect($host, $port, $timeout) {}
-
-    /**
-     * Memcache::replace should be used to replace value of
-     * existing item with key. In case if item with such
-     * key doesn't exists, Memcache::replace returns
-     * . For the rest Memcache::replace behaves
-     * similarly to Memcache::set.
-     * Also you can use memcache_replace function.
-     *
-     * @param string
-     * @param mixed
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function replace($key, $var, $flag, $expire) {}
-
-    /**
-     * Memcache::set stores an item 
-     * var with key on the 
-     * memcached server. Parameter expire is expiration 
-     * time in seconds. If it's 0, the item never expires (but memcached server 
-     * doesn't guarantee this item to be stored all the time, it could be deleted 
-     * from the cache to make place for other items).
-     * You can use MEMCACHE_COMPRESSED constant as 
-     * flag value if you want to use on-the-fly
-     * compression (uses zlib).
-     * 
-     * 
-     * Remember that resource variables (i.e. file and connection descriptors)
-     * cannot be stored in the cache, because they cannot be adequately
-     * represented in serialized state.
-     * 
-     * 
-     * Also you can use memcache_set function.
-     *
-     * @param string
-     * @param mixed
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function set($key, $var, $flag, $expire) {}
-
-    /**
-     * Memcache::setCompressThreshold enables automatic
-     * compression of large values.
-     * You can also use the memcache_set_compress_threshold function.
-     *
-     * @param int
-     * @param float
-     * @return bool
-     **/
-    function setCompressThreshold($threshold, $min_savings) {}
-
-    /**
-     * Memcache::setServerParams changes server parameters at runtime.
-     * You can also use the memcache_set_server_params function.
-     *
-     * @param string
-     * @param int
-     * @param int
-     * @param int
-     * @param bool
-     * @param callback
-     * @return bool
-     **/
-    function setServerParams($host, $port, $timeout, $retry_interval, $status, $failure_callback) {}
-
-}
-class Memcached {
-    const DISTRIBUTION_CONSISTENT = 0;
-    const DISTRIBUTION_MODULA = 0;
-    const GET_PRESERVE_ORDER = 0;
-    const HASH_CRC = 0;
-    const HASH_DEFAULT = 0;
-    const HASH_FNV1A_32 = 0;
-    const HASH_FNV1A_64 = 0;
-    const HASH_FNV1_32 = 0;
-    const HASH_FNV1_64 = 0;
-    const HASH_HSIEH = 0;
-    const HASH_MD5 = 0;
-    const HASH_MURMUR = 0;
-    const HAVE_IGBINARY = 0;
-    const HAVE_JSON = 0;
-    const OPT_BINARY_PROTOCOL = 0;
-    const OPT_BUFFER_WRITES = 0;
-    const OPT_CACHE_LOOKUPS = 0;
-    const OPT_COMPRESSION = 0;
-    const OPT_CONNECT_TIMEOUT = 0;
-    const OPT_DISTRIBUTION = 0;
-    const OPT_HASH = 0;
-    const OPT_LIBKETAMA_COMPATIBLE = 0;
-    const OPT_NO_BLOCK = 0;
-    const OPT_POLL_TIMEOUT = 0;
-    const OPT_PREFIX_KEY = 0;
-    const OPT_RECV_TIMEOUT = 0;
-    const OPT_RETRY_TIMEOUT = 0;
-    const OPT_SEND_TIMEOUT = 0;
-    const OPT_SERIALIZER = 0;
-    const OPT_SERVER_FAILURE_LIMIT = 0;
-    const OPT_SOCKET_RECV_SIZE = 0;
-    const OPT_SOCKET_SEND_SIZE = 0;
-    const OPT_TCP_NODELAY = 0;
-    const RES_BAD_KEY_PROVIDED = 0;
-    const RES_BUFFERED = 0;
-    const RES_CLIENT_ERROR = 0;
-    const RES_CONNECTION_SOCKET_CREATE_FAILURE = 0;
-    const RES_DATA_EXISTS = 0;
-    const RES_END = 0;
-    const RES_ERRNO = 0;
-    const RES_FAILURE = 0;
-    const RES_HOST_LOOKUP_FAILURE = 0;
-    const RES_NOTFOUND = 0;
-    const RES_NOTSTORED = 0;
-    const RES_NO_SERVERS = 0;
-    const RES_PARTIAL_READ = 0;
-    const RES_PAYLOAD_FAILURE = 0;
-    const RES_PROTOCOL_ERROR = 0;
-    const RES_SERVER_ERROR = 0;
-    const RES_SOME_ERRORS = 0;
-    const RES_SUCCESS = 0;
-    const RES_TIMEOUT = 0;
-    const RES_UNKNOWN_READ_FAILURE = 0;
-    const RES_WRITE_FAILURE = 0;
-    const SERIALIZER_IGBINARY = 0;
-    const SERIALIZER_JSON = 0;
-    const SERIALIZER_PHP = 0;
-    /**
-     * Memcached::add is similar to
-     * Memcached::set, but the operation fails if the
-     * key already exists on the server.
-     *
-     * @param string
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function add($key, $value, $expiration) {}
-
-    /**
-     * Memcached::addByKey is functionally equivalent to
-     * Memcached::add, except that the free-form
-     * server_key can be used to map the
-     * key to a specific server. This is useful if you need
-     * to keep a bunch of related keys on a certain server.
-     *
-     * @param string
-     * @param string
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function addByKey($server_key, $key, $value, $expiration) {}
-
-    /**
-     * Memcached::addServer adds the specified server to the
-     * server pool. No connection is established to the server at this time, but
-     * if you are using consistent key distribution option (via
-     * Memcached::DISTRIBUTION_CONSISTENT or
-     * Memcached::OPT_LIBKETAMA_COMPATIBLE), some of the
-     * internal data structures will have to be updated. Thus, if you need to add
-     * multiple servers, it is better to use
-     * Memcached::addServers as the update then happens
-     * only once.
-     *
-     * @param string
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function addServer($host, $port, $weight) {}
-
-    /**
-     * Memcached::addServers adds
-     * servers to the server pool. Each entry in
-     * servers is supposed to an array containing hostname,
-     * port, and, optionally, weight of the server. No connection is established
-     * to the servers at this time.
-     *
-     * @param array
-     * @return bool
-     **/
-    function addServers($servers) {}
-
-    /**
-     * Memcached::append appends the given
-     * value string to the value of an existing item. The
-     * reason that value is forced to be a string is
-     * that appending mixed types is not well-defined.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function append($key, $value) {}
-
-    /**
-     * Memcached::appendByKey is functionally equivalent to
-     * Memcached::append, except that the free-form
-     * server_key can be used to map the
-     * key to a specific server.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function appendByKey($server_key, $key, $value) {}
-
-    /**
-     * Memcached::cas performs a "check and set" operation,
-     * so that the item will be stored only if no other client has updated it
-     * since it was last fetched by this client. The check is done via the
-     * cas_token parameter which is a unique 64-bit
-     * value assigned to the existing item by memcache. See the documentation for 
-     * Memcached::get* methods for how to obtain this
-     * token. Note that the token is represented as a double due to the
-     * limitations of PHP's integer space.
-     *
-     * @param double
-     * @param string
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function cas($cas_token, $key, $value, $expiration) {}
-
-    /**
-     * Memcached::casByKey is functionally equivalent to
-     * Memcached::cas, except that the free-form
-     * server_key can be used to map the
-     * key to a specific server. This is useful if you need
-     * to keep a bunch of related keys on a certain server.
-     *
-     * @param double
-     * @param string
-     * @param string
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function casByKey($cas_token, $server_key, $key, $value, $expiration) {}
-
-    /**
-     * Memcached::decrement decrements a numeric item's value
-     * by the specified offset. If the item's value is not
-     * numeric, it is treated as if the value were 0. If the operation would
-     * decrease the value below 0, the new value will be 0.
-     * Memcached::decrement will fail if the item does not
-     * exist.
-     *
-     * @param string
-     * @param int
-     * @return int
-     **/
-    function decrement($key, $offset) {}
-
-    /**
-     * Memcached::delete deletes the
-     * key from the server. The time
-     * parameter is the amount of time in seconds (or Unix time until which) the
-     * client wishes the server to refuse add and
-     * replace commands for this key. For this amount of time,
-     * the item is put into a delete queue, which means that it won't possible to
-     * retrieve it by the get command, but
-     * add and replace command with this key
-     * will also fail (the set command will succeed, however).
-     * After the time passes, the item is finally deleted from server memory. The
-     * parameter time defaults to 0 (which means that the
-     * item will be deleted immediately and further storage commands with this key
-     * will succeed).
-     *
-     * @param string
-     * @param int
-     * @return bool
-     **/
-    function delete($key, $time) {}
-
-    /**
-     * Memcached::deleteByKey is functionally equivalent to
-     * Memcached::delete, except that the free-form
-     * server_key can be used to map the
-     * key to a specific server.
-     *
-     * @param string
-     * @param string
-     * @param int
-     * @return bool
-     **/
-    function deleteByKey($server_key, $key, $time) {}
-
-    /**
-     * Memcached::fetch retrieves the next result from the
-     * last request.
-     *
-     * @return mixed
-     **/
-    function fetch() {}
-
-    /**
-     * Memcached::fetchAll retrieves all the remaining
-     * results from the last request.
-     *
-     * @return mixed
-     **/
-    function fetchAll() {}
-
-    /**
-     * Memcached::flush invalidates all existing cache items
-     * immediately (by default) or after the delay
-     * specified. After invalidation none of the items will be returned in
-     * response to a retrieval command (unless it's stored again under the same
-     * key after Memcached::flush has invalidated the items).
-     * The flush does not actually free all the memory taken up by the existing
-     * items; that will happen gradually as new items are stored.
-     *
-     * @param int
-     * @return bool
-     **/
-    function flush($delay) {}
-
-    /**
-     * Memcached::get returns the item that was previously
-     * stored under the key. If the item is found and
-     * cas_token variable is provided, it will contain the
-     * CAS token value for the item. See
-     * Memcached::cas for how to use CAS tokens. Read-through caching callback may be
-     * specified via cache_cb parameter.
-     *
-     * @param string
-     * @param callback
-     * @param double
-     * @return mixed
-     **/
-    function get($key, $cache_cb, &$cas_token) {}
-
-    /**
-     * Memcached::getByKey is functionally equivalent to
-     * Memcached::get, except that the free-form
-     * server_key can be used to map the
-     * key to a specific server.
-     *
-     * @param string
-     * @param string
-     * @param callback
-     * @param double
-     * @return mixed
-     **/
-    function getByKey($server_key, $key, $cache_cb, &$cas_token) {}
-
-    /**
-     * Memcached::getDelayed issues a request to memcache for
-     * multiple items the keys of which are specified in the
-     * keys array. The method does not wait for response
-     * and returns right away. When you are ready to collect the items, call
-     * either Memcached::fetch or
-     * Memcached::fetchAll. If with_cas
-     * is true, the CAS token values will also be requested.
-     *
-     * @param array
-     * @param bool
-     * @param callback
-     * @return bool
-     **/
-    function getDelayed($keys, $with_cas, $value_cb) {}
-
-    /**
-     * Memcached::getDelayedByKey is functionally equivalent to
-     * Memcached::getDelayed, except that the free-form
-     * server_key can be used to map the
-     * keys to a specific server.
-     *
-     * @param string
-     * @param array
-     * @param bool
-     * @param callback
-     * @return bool
-     **/
-    function getDelayedByKey($server_key, $keys, $with_cas, $value_cb) {}
-
-    /**
-     * Memcached::getMulti is similar to
-     * Memcached::get, but instead of a single key
-     * item, it retrievess multiple items the keys of which are specified in the
-     * keys array. If cas_tokens
-     * variable is provided, it is filled with the CAS token values for the found
-     * items.
-     * 
-     * 
-     * Unlike Memcached::get it is not possible to
-     * specify a read-through cache callback for
-     * Memcached::getMulti, because the memcache protocol
-     * does not provide information on which keys were not found in the multi-key
-     * request.
-     *
-     * @param array
-     * @param array
-     * @param integer
-     * @return mixed
-     **/
-    function getMulti($keys, &$cas_tokens, $flags) {}
-
-    /**
-     * Memcached::getMultiByKey is functionally equivalent to
-     * Memcached::getMulti, except that the free-form
-     * server_key can be used to map the
-     * keys to a specific server.
-     *
-     * @param string
-     * @param array
-     * @param string
-     * @param integer
-     * @return void
-     **/
-    function getMultiByKey($server_key, $keys, &$cas_tokens, $flags) {}
-
-    /**
-     * This method returns the value of a Memcached option. Some options
-     * correspond to the ones defined by libmemcached, and some are specific to
-     * the extension. See Memcached
-     * Constants for more information.
-     *
-     * @param int
-     * @return void
-     **/
-    function getOption($option) {}
-
-    /**
-     * Memcached::getResultCode returns one of the
-     * Memcached::RES_* constants that is the result of the
-     * last executed Memcached method.
-     *
-     * @return int
-     **/
-    function getResultCode() {}
-
-    /**
-     * Memcached::getResultMessage returns a string that
-     * describes the result code of the last executed Memcached method.
-     *
-     * @return string
-     **/
-    function getResultMessage() {}
-
-    /**
-     * Memcached::getServerByKey returns the server that
-     * would be selected by a particular server_key in all
-     * the Memcached::*ByKey operations.
-     *
-     * @param string
-     * @return array
-     **/
-    function getServerByKey($server_key) {}
-
-    /**
-     * Memcached::getServerList returns the list of all
-     * servers that are in its server pool.
-     *
-     * @return array
-     **/
-    function getServerList() {}
-
-    /**
-     * Memcached::getStats returns an array containing the
-     * state of all available memcache servers. See memcache protocol specification
-     * for details on these statistics.
-     *
-     * @return array
-     **/
-    function getStats() {}
-
-    /**
-     * Memcached::getVersion returns an array containing the
-     * version info for all available memcache servers.
-     *
-     * @return array
-     **/
-    function getVersion() {}
-
-    /**
-     * Memcached::increment increments a numeric item's value
-     * by the specified offset. If the item's value is not
-     * numeric, it is treated as if the value were 0.
-     * Memcached::increment will fail if the item does not
-     * exist.
-     *
-     * @param string
-     * @param int
-     * @return int
-     **/
-    function increment($key, $offset) {}
-
-    /**
-     * Memcached::prepend prepends the given
-     * value string to the value of an existing item. The
-     * reason that value is forced to be a string is
-     * that prepending mixed types is not well-defined.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function prepend($key, $value) {}
-
-    /**
-     * Memcached::prependByKey is functionally equivalent to
-     * Memcached::prepend, except that the free-form
-     * server_key can be used to map the
-     * key to a specific server.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function prependByKey($server_key, $key, $value) {}
-
-    /**
-     * Memcached::replace is similar to
-     * Memcached::set, but the operation fails if the
-     * key does not exist on the server.
-     *
-     * @param string
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function replace($key, $value, $expiration) {}
-
-    /**
-     * Memcached::replaceByKey is functionally equivalent to
-     * Memcached::replace, except that the free-form
-     * server_key can be used to map the
-     * key to a specific server. This is useful if you need
-     * to keep a bunch of related keys on a certain server.
-     *
-     * @param string
-     * @param string
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function replaceByKey($server_key, $key, $value, $expiration) {}
-
-    /**
-     * Memcached::set stores the value
-     * on a memcache server under the specified key. The
-     * expiration parameter can be used to control when the
-     * value is considered expired.
-     *
-     * @param string
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function set($key, $value, $expiration) {}
-
-    /**
-     * Memcached::setByKey is functionally equivalent to
-     * Memcached::set, except that the free-form
-     * server_key can be used to map the
-     * key to a specific server. This is useful if you need
-     * to keep a bunch of related keys on a certain server.
-     *
-     * @param string
-     * @param string
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function setByKey($server_key, $key, $value, $expiration) {}
-
-    /**
-     * Memcached::setMulti is similar to
-     * Memcached::set, but instead of a single key/value
-     * item, it works on multiple items specified in
-     * items. The expiration time
-     * applies to all the items at once.
-     *
-     * @param array
-     * @param int
-     * @return bool
-     **/
-    function setMulti($items, $expiration) {}
-
-    /**
-     * Memcached::setMultiByKey is functionally equivalent to
-     * Memcached::setMulti, except that the free-form
-     * server_key can be used to map the keys from
-     * items to a specific server. This is useful if you
-     * need to keep a bunch of related keys on a certain server.
-     *
-     * @param string
-     * @param array
-     * @param int
-     * @return bool
-     **/
-    function setMultiByKey($server_key, $items, $expiration) {}
-
-    /**
-     * This method sets the value of a Memcached option.
-     * Some options correspond to the ones defined by libmemcached, and some are
-     * specific to the extension. See Memcached Constants for more
-     * information.
-     *
-     * @param int
-     * @param mixed
-     * @return bool
-     **/
-    function setOption($option, $value) {}
-
-}
-class MemcachedException extends RuntimeException {
-}
-class MessageFormatter {
-    /**
-     * Object oriented style (method)
-     *
-     * @param string
-     * @param string
-     * @return MessageFormatter
-     **/
-    function create($locale, $pattern) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param array
-     * @return string
-     **/
-    function format($args) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param string
-     * @param array
-     * @return string
-     **/
-    function formatMessage($locale, $pattern, $args) {}
-
-    /**
-     * Object oriented style
-     *
-     * @return int
-     **/
-    function getErrorCode() {}
-
-    /**
-     * Object oriented style
-     *
-     * @return string
-     **/
-    function getErrorMessage() {}
-
-    /**
-     * Object oriented style
-     *
-     * @return string
-     **/
-    function getLocale() {}
-
-    /**
-     * Object oriented style
-     *
-     * @return string
-     **/
-    function getPattern() {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @return array
-     **/
-    function parse($value) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param string
-     * @return array
-     **/
-    function parseMessage($locale, $value) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @return bool
-     **/
-    function setPattern($pattern) {}
-
-}
-class Mongo {
-    const DEFAULT_HOST = '';
-    const DEFAULT_PORT = 0;
-    /**
-     * @return boolean
-     **/
-    function close() {}
-
-    /**
-     * @return boolean
-     **/
-    function connect() {}
-
-    /**
-     * @param string
-     * @param string
-     * @return boolean
-     **/
-    function connectUtil($username, $password) {}
-
-    /**
-     * @param mixed
-     * @return array
-     **/
-    function dropDB($db) {}
-
-    /**
-     * Use MongoDB::forceError instead.
-     *
-     * @return bool
-     **/
-    function forceError() {}
-
-    /**
-     * Use MongoDB::lastError instead.
-     *
-     * @return array
-     **/
-    function lastError() {}
-
-    /**
-     * To successfully create a paired connection, $this-&gt;server must be a string
-     * of the form "server1,server2".
-     *
-     * @return boolean
-     **/
-    function pairConnect() {}
-
-    /**
-     * @param string
-     * @param string
-     * @return boolean
-     **/
-    function pairPersistConnect($username, $password) {}
-
-    /**
-     * @param string
-     * @param string
-     * @return boolean
-     **/
-    function persistConnect($username, $password) {}
-
-    /**
-     * Use MongoDB::prevError instead.
-     *
-     * @return array
-     **/
-    function prevError() {}
-
-    /**
-     * @param MongoDB
-     * @param boolean
-     * @param boolean
-     * @return array
-     **/
-    function repairDB($db, $preserve_cloned_files, $backup_original_files) {}
-
-    /**
-     * Use MongoDB::resetError instead.
-     *
-     * @return array
-     **/
-    function resetError() {}
-
-    /**
-     * @param string|MongoDB
-     * @param string
-     * @return MongoCollection
-     **/
-    function selectCollection($db, $collection) {}
-
-    /**
-     * @param string
-     * @return MongoDB
-     **/
-    function selectDB($dbname) {}
-
-    /**
-     * @param string
-     * @param boolean
-     * @param boolean
-     * @param boolean
-     **/
-    function __construct($server, $connect, $persistent, $paired) {}
-
-    /**
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class MongoBinData {
-    /**
-     * Creates a new binary data object.
-     *
-     * @param string
-     * @param int
-     **/
-    function __construct($data, $type) {}
-
-    /**
-     * Returns the string representing this binary data object.
-     *
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class MongoCode {
-    /**
-     * @param string
-     * @param array
-     **/
-    function __construct($code, $scope) {}
-
-    /**
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class MongoCollection extends MongoCollection {
-    /**
-     * @param array
-     * @return boolean
-     **/
-    function batchInsert($a) {}
-
-    /**
-     * @param array
-     * @param array
-     * @return int
-     **/
-    function count($query, $fields) {}
-
-    /**
-     * @param array
-     * @return array
-     **/
-    function createDBRef($a) {}
-
-    /**
-     * @param string|array
-     * @return array
-     **/
-    function deleteIndex($keys) {}
-
-    /**
-     * @return array
-     **/
-    function deleteIndexes() {}
-
-    /**
-     * Drops this collection and deletes its indices.
-     *
-     * @return array
-     **/
-    function drop() {}
-
-    /**
-     * @param string|array
-     * @return boolean
-     **/
-    function ensureIndex($keys) {}
-
-    /**
-     * @param array
-     * @param array
-     * @return MongoCursor
-     **/
-    function find($query, $fields) {}
-
-    /**
-     * @param array
-     * @param array
-     * @return array
-     **/
-    function findOne($query, $fields) {}
-
-    /**
-     * @param array
-     * @return array
-     **/
-    function getDBRef($ref) {}
-
-    /**
-     * @return array
-     **/
-    function getIndexInfo() {}
-
-    /**
-     * @return string
-     **/
-    function getName() {}
-
-    /**
-     * @param array
-     * @param array
-     * @param string
-     * @param array
-     * @return array
-     **/
-    function group($keys, $initial, $reduce, $condition) {}
-
-    /**
-     * @param array
-     * @return boolean
-     **/
-    function insert($a) {}
-
-    /**
-     * @param array
-     * @param boolean
-     * @return boolean
-     **/
-    function remove($criteria, $justOne) {}
-
-    /**
-     * If the object is from the database, update the existing database object, otherwise 
-     * insert this object.
-     *
-     * @param array
-     * @return boolean
-     **/
-    function save($a) {}
-
-    /**
-     * @param array
-     * @param array
-     * @param boolean
-     * @return boolean
-     **/
-    function update($criteria, $newobj, $upsert) {}
-
-    /**
-     * @param bool
-     * @return array
-     **/
-    function validate($scan_data) {}
-
-    /**
-     * @param MongoDB
-     * @param string
-     **/
-    function __construct($db, $name) {}
-
-    /**
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class MongoCursor extends MongoCursor {
-    /**
-     * @return int
-     **/
-    function count() {}
-
-    /**
-     * @return array
-     **/
-    function current() {}
-
-    /**
-     * @return void
-     **/
-    function doQuery() {}
-
-    /**
-     * @return array
-     **/
-    function explain() {}
-
-    /**
-     * @return array
-     **/
-    function getNext() {}
-
-    /**
-     * @return boolean
-     **/
-    function hasNext() {}
-
-    /**
-     * @param array
-     * @return MongoCursor
-     **/
-    function hint($key_pattern) {}
-
-    /**
-     * @return string
-     **/
-    function key() {}
-
-    /**
-     * @param int
-     * @return MongoCursor
-     **/
-    function limit($num) {}
-
-    /**
-     * @return void
-     **/
-    function next() {}
-
-    /**
-     * @return void
-     **/
-    function reset() {}
-
-    /**
-     * @return void
-     **/
-    function rewind() {}
-
-    /**
-     * @param int
-     * @return MongoCursor
-     **/
-    function skip($num) {}
-
-    /**
-     * This method will override the static class variable slaveOkay.
-     *
-     * @param boolean
-     * @return MongoCursor
-     **/
-    function slaveOkay($okay) {}
-
-    /**
-     * @param array
-     * @return MongoCursor
-     **/
-    function sort($fields) {}
-
-    /**
-     * Mongo has a feature known as tailable cursors which are similar to the Unix "tail -f" command.
-     *
-     * @param boolean
-     * @return MongoCursor
-     **/
-    function tailable($tail) {}
-
-    /**
-     * @return boolean
-     **/
-    function valid() {}
-
-    /**
-     * @param resource
-     * @param string
-     * @param array
-     * @param array
-     **/
-    function __construct($connection, $ns, $query, $fields) {}
-
-}
-class MongoDB {
-    const PROFILING_OFF = 0;
-    const PROFILING_ON = 0;
-    const PROFILING_SLOW = 0;
-    /**
-     * @param array
-     * @return array
-     **/
-    function command($data) {}
-
-    /**
-     * @param string
-     * @param bool
-     * @param int
-     * @param int
-     * @return MongoCollection
-     **/
-    function createCollection($name, $capped, $size, $max) {}
-
-    /**
-     * @param mixed
-     * @param mixed
-     * @return array
-     **/
-    function createDBRef($ns, $a) {}
-
-    /**
-     * @return array
-     **/
-    function drop() {}
-
-    /**
-     * @param mixed
-     * @return array
-     **/
-    function dropCollection($coll) {}
-
-    /**
-     * @param mixed
-     * @param array
-     * @return array
-     **/
-    function execute($code, $args) {}
-
-    /**
-     * @return bool
-     **/
-    function forceError() {}
-
-    /**
-     * @return array
-     **/
-    function getCursorInfo() {}
-
-    /**
-     * @param array
-     * @return array
-     **/
-    function getDBRef($ref) {}
-
-    /**
-     * @param string
-     * @param string
-     * @return MongoGridFS
-     **/
-    function getGridFS($arg1, $arg2) {}
-
-    /**
-     * @return int
-     **/
-    function getProfilingLevel() {}
-
-    /**
-     * @return array
-     **/
-    function lastError() {}
-
-    /**
-     * @return array
-     **/
-    function listCollections() {}
-
-    /**
-     * @return array
-     **/
-    function prevError() {}
-
-    /**
-     * @param bool
-     * @param bool
-     * @return array
-     **/
-    function repair($preserve_cloned_files, $backup_original_files) {}
-
-    /**
-     * @return array
-     **/
-    function resetError() {}
-
-    /**
-     * @param string
-     * @return MongoCollection
-     **/
-    function selectCollection($name) {}
-
-    /**
-     * @param int
-     * @return int
-     **/
-    function setProfilingLevel($level) {}
-
-    /**
-     * @param Mongo
-     * @param string
-     **/
-    function __construct($conn, $name) {}
-
-    /**
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class MongoDBRef {
-    /**
-     * @param string
-     * @param mixed
-     * @return array
-     **/
-    function create($ns, $id) {}
-
-    /**
-     * @param MongoDB
-     * @param array
-     * @return array
-     **/
-    function get($db, $ref) {}
-
-    /**
-     * @param array
-     * @return boolean
-     **/
-    function isRef($ref) {}
-
-}
-class MongoDate {
-    /**
-     * Creates a new date. If no parameters are given, the current time is used.
-     *
-     * @param long
-     * @param long
-     **/
-    function __construct($sec, $usec) {}
-
-    /**
-     * Returns a string representation of this date, similar to the representation returned by microtime().
-     *
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class MongoEmptyObj {
-}
-class MongoException extends MongoException {
-}
-class MongoGridFS {
-    /**
-     * @return array
-     **/
-    function drop() {}
-
-    /**
-     * @param array
-     * @param array
-     * @return MongoGridFSCursor
-     **/
-    function find($query, $fields) {}
-
-    /**
-     * @param mixed
-     * @return MongoGridFSFile
-     **/
-    function findOne($query) {}
-
-    /**
-     * @param array
-     * @param boolean
-     * @return boolean
-     **/
-    function remove($criteria, $just_one) {}
-
-    /**
-     * @param string
-     * @param array
-     * @return mixed
-     **/
-    function storeBytes($bytes, $extra) {}
-
-    /**
-     * @param string
-     * @param array
-     * @return mixed
-     **/
-    function storeFile($filename, $extra) {}
-
-    /**
-     * @param string
-     * @param string
-     * @return mixed
-     **/
-    function storeUpload($name, $filename) {}
-
-    /**
-     * Files as stored across two collections, the first containing file meta information, the
-     * second containing chunks of the actual file. By default, fs.files and fs.chunks are the
-     * collection names used.
-     *
-     * @param MongoDB
-     * @param string
-     * @param string
-     **/
-    function __construct($db, $files, $chunks) {}
-
-}
-class MongoGridFSCursor {
-    /**
-     * @return MongoGridFSFile
-     **/
-    function current() {}
-
-    /**
-     * @return MongoGridFSFile
-     **/
-    function getNext() {}
-
-    /**
-     * @return string
-     **/
-    function key() {}
-
-    /**
-     * @param MongoGridFS
-     * @param resource
-     * @param string
-     * @param array
-     * @param array
-     **/
-    function __construct($gridfs, $connection, $ns, $query, $fields) {}
-
-}
-class MongoGridFSFile {
-    /**
-     * Warning: this will load the file into memory. If the file is bigger than
-     * your memory, this will cause problems!
-     *
-     * @return string
-     **/
-    function getBytes() {}
-
-    /**
-     * @return string
-     **/
-    function getFilename() {}
-
-    /**
-     * @return int
-     **/
-    function getSize() {}
-
-    /**
-     * @param string
-     * @return int
-     **/
-    function write($filename) {}
-
-}
-class MongoGridfsFile {
-    /**
-     * @param MongoGridFS
-     * @param array
-     **/
-    function __construct($gridfs, $file) {}
-
-}
-class MongoId {
-    /**
-     * @param string
-     **/
-    function __construct($id) {}
-
-    /**
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class MongoRegex {
-    /**
-     * Creates a new regular expression.
-     *
-     * @param string
-     **/
-    function __construct($regex) {}
-
-    /**
-     * Returns a string representation of this regular expression.
-     *
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class MongoUtil {
-    const ASC = 0;
-    const BIN_ARRAY = 0;
-    const BIN_CUSTOM = 0;
-    const BIN_MD5 = 0;
-    const BIN_UUID = 0;
-    const DESC = 0;
-    const GT = '';
-    const GTE = '';
-    const IN = '';
-    const LT = '';
-    const LTE = '';
-    const NE = '';
-    /**
-     * @param string|array
-     * @return string
-     **/
-    function toIndexString($keys) {}
-
-}
-class MultipleIterator implements Iterator, Traversable {
-    /**
-     * Attaches iterator information.
-     *
-     * @param Iterator
-     * @param string
-     * @return void
-     **/
-    function attachIterator($iterator, $infos) {}
-
-    /**
-     * Checks if an iterator is attached or not.
-     *
-     * @param Iterator
-     * @return void
-     **/
-    function containsIterator($iterator) {}
-
-    /**
-     * Gets the number of attached iterator instances.
-     *
-     * @return void
-     **/
-    function countIterators() {}
-
-    /**
-     * Get the registered iterator instances.
-     *
-     * @return void
-     **/
-    function current() {}
-
-    /**
-     * Detaches an iterator.
-     *
-     * @param Iterator
-     * @return void
-     **/
-    function detachIterator($iterator) {}
-
-    /**
-     * Gets information about the flags.
-     *
-     * @return void
-     **/
-    function getFlags() {}
-
-    /**
-     * Get the registered iterator instances.
-     *
-     * @return void
-     **/
-    function key() {}
-
-    /**
-     * Moves all attached iterator instances forward.
-     *
-     * @return void
-     **/
-    function next() {}
-
-    /**
-     * Rewinds all attached iterator instances.
-     *
-     * @return void
-     **/
-    function rewind() {}
-
-    /**
-     * Sets flags.
-     *
-     * @param integer
-     * @return void
-     **/
-    function setFlags($flags) {}
-
-    /**
-     * Checks the validity of sub iterators.
-     *
-     * @return void
-     **/
-    function valid() {}
-
-    /**
-     * Construct a new MultipleIterator.
-     *
-     * @param integer
-     **/
-    function __construct($flags) {}
-
-}
-class MySQLi {
-}
-class MySQLi_Driver {
-}
-class MySQLi_Result {
-}
-class MySQLi_STMT {
-}
-class Normalizer {
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function isNormalized($input, $form) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param string
-     * @return string
-     **/
-    function normalize($input, $form) {}
-
-}
-class NumberFormatter {
-    /**
-     * Object oriented style (method)
-     *
-     * @param string
-     * @param int
-     * @param string
-     * @return NumberFormatter
-     **/
-    function create($locale, $style, $pattern) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param number
-     * @param int
-     * @return string
-     **/
-    function format($value, $type) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param float
-     * @param string
-     * @return string
-     **/
-    function formatCurrency($value, $currency) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param int
-     * @return int
-     **/
-    function getAttribute($attr) {}
-
-    /**
-     * Object oriented style
-     *
-     * @return int
-     **/
-    function getErrorCode() {}
-
-    /**
-     * Object oriented style
-     *
-     * @return string
-     **/
-    function getErrorMessage() {}
-
-    /**
-     * Object oriented style
-     *
-     * @param int
-     * @return string
-     **/
-    function getLocale($type) {}
-
-    /**
-     * Object oriented style
-     *
-     * @return string
-     **/
-    function getPattern() {}
-
-    /**
-     * Object oriented style
-     *
-     * @param int
-     * @return string
-     **/
-    function getSymbol($attr) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param int
-     * @return string
-     **/
-    function getTextAttribute($attr) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param int
-     * @param int
-     * @return mixed
-     **/
-    function parse($value, $type, &$position) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @param string
-     * @param int
-     * @return float
-     **/
-    function parseCurrency($value, &$currency, &$position) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setAttribute($attr, $value) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param string
-     * @return bool
-     **/
-    function setPattern($pattern) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param int
-     * @param string
-     * @return bool
-     **/
-    function setSymbol($attr, $value) {}
-
-    /**
-     * Object oriented style
-     *
-     * @param int
-     * @param string
-     * @return bool
-     **/
-    function setTextAttribute($attr, $value) {}
-
-}
-class OAuth {
-    /**
-     * Turns off verbose request information (off by default).
-     * Alternatively, the debug member can be set
-     * to a value to turn debug off.
-     *
-     * @return bool
-     **/
-    function disableDebug() {}
-
-    /**
-     * Turns off the usual SSL peer certificate and host checks,
-     * this is not for production environments. Alternatively, the
-     * sslChecks member can be set to 
-     * to turn SSL checks off.
-     *
-     * @return bool
-     **/
-    function disableSSLChecks() {}
-
-    /**
-     * Turns on verbose request information useful for debugging,
-     * the debug information is stored in the debugInfo
-     * member. Alternatively, the debug member can 
-     * be set to a non- value to turn debug on.
-     *
-     * @return bool
-     **/
-    function enableDebug() {}
-
-    /**
-     * Turns on the usual SSL peer certificate and host checks (enabled by default). Alternatively, the sslChecks member can be set to a non- value to turn SSL checks off.
-     *
-     * @return bool
-     **/
-    function enableSSLChecks() {}
-
-    /**
-     * Fetch a resource.
-     *
-     * @param string
-     * @param array
-     * @param int
-     * @param array
-     * @return bool
-     **/
-    function fetch($protected_resource_url, $extra_parameters, $http_method, $http_headers) {}
-
-    /**
-     * Fetch an access token, secret and any additional response parameters from the service provider.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @return array
-     **/
-    function getAccessToken($access_token_url, $auth_session_handle, $verifier_token) {}
-
-    /**
-     * Get the raw response of the most recent request.
-     *
-     * @return string
-     **/
-    function getLastResponse() {}
-
-    /**
-     * Get HTTP information about the last response.
-     *
-     * @return array
-     **/
-    function getLastResponseInfo() {}
-
-    /**
-     * Fetch a request token, secret and any additional response parameters from the service provider.
-     *
-     * @param string
-     * @param string
-     * @return array
-     **/
-    function getRequestToken($request_token_url, $callback_url) {}
-
-    /**
-     * Set where the OAuth parameters should be passed.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setAuthType($auth_type) {}
-
-    /**
-     * Sets the nonce for all subsequent requests.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setNonce($nonce) {}
-
-    /**
-     * Set the token and secret for subsequent requests.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function setToken($token, $token_secret) {}
-
-    /**
-     * Sets the OAuth version for subsequent requests
-     *
-     * @param string
-     * @return bool
-     **/
-    function setVersion($version) {}
-
-    /**
-     * Creates a new OAuth object
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     **/
-    function __construct($consumer_key, $consumer_secret, $signature_method, $auth_type) {}
-
-}
-class OAuthException extends Exception {
-}
-class PDO {
-    const ATTR_AUTOCOMMIT = 0;
-    const ATTR_CASE = 0;
-    const ATTR_CLIENT_VERSION = 0;
-    const ATTR_CONNECTION_STATUS = 0;
-    const ATTR_CURSOR = 0;
-    const ATTR_CURSOR_NAME = 0;
-    const ATTR_DEFAULT_FETCH_MODE = 0;
-    const ATTR_DRIVER_NAME = '';
-    const ATTR_EMULATE_PREPARES = 0;
-    const ATTR_ERRMODE = 0;
-    const ATTR_FETCH_CATALOG_NAMES = 0;
-    const ATTR_FETCH_TABLE_NAMES = 0;
-    const ATTR_MAX_COLUMN_LEN = 0;
-    const ATTR_ORACLE_NULLS = 0;
-    const ATTR_PERSISTENT = 0;
-    const ATTR_PREFETCH = 0;
-    const ATTR_SERVER_INFO = 0;
-    const ATTR_SERVER_VERSION = 0;
-    const ATTR_STATEMENT_CLASS = 0;
-    const ATTR_STRINGIFY_FETCHES = 0;
-    const ATTR_TIMEOUT = 0;
-    const CASE_LOWER = 0;
-    const CASE_NATURAL = 0;
-    const CASE_UPPER = 0;
-    const CURSOR_FWDONLY = 0;
-    const CURSOR_SCROLL = 0;
-    const ERRMODE_EXCEPTION = 0;
-    const ERRMODE_SILENT = 0;
-    const ERRMODE_WARNING = 0;
-    const ERR_NONE = '';
-    const FB_ATTR_DATE_FORMAT = 0;
-    const FB_ATTR_TIMESTAMP_FORMAT = 0;
-    const FB_ATTR_TIME_FORMAT = 0;
-    const FETCH_ASSOC = 0;
-    const FETCH_BOTH = 0;
-    const FETCH_BOUND = 0;
-    const FETCH_CLASS = 0;
-    const FETCH_CLASSTYPE = 0;
-    const FETCH_COLUMN = 0;
-    const FETCH_FUNC = 0;
-    const FETCH_GROUP = 0;
-    const FETCH_INTO = 0;
-    const FETCH_KEY_PAIR = 0;
-    const FETCH_LAZY = 0;
-    const FETCH_NAMED = 0;
-    const FETCH_NUM = 0;
-    const FETCH_OBJ = 0;
-    const FETCH_ORI_ABS = 0;
-    const FETCH_ORI_FIRST = 0;
-    const FETCH_ORI_LAST = 0;
-    const FETCH_ORI_NEXT = 0;
-    const FETCH_ORI_PRIOR = 0;
-    const FETCH_ORI_REL = 0;
-    const FETCH_PROPS_LATE = 0;
-    const FETCH_SERIALIZE = 0;
-    const FETCH_UNIQUE = 0;
-    const MYSQL_ATTR_DIRECT_QUERY = 0;
-    const MYSQL_ATTR_INIT_COMMAND = 0;
-    const MYSQL_ATTR_LOCAL_INFILE = 0;
-    const MYSQL_ATTR_MAX_BUFFER_SIZE = 0;
-    const MYSQL_ATTR_READ_DEFAULT_FILE = 0;
-    const MYSQL_ATTR_READ_DEFAULT_GROUP = 0;
-    const MYSQL_ATTR_USE_BUFFERED_QUERY = 0;
-    const NULL_EMPTY_STRING = 0;
-    const NULL_NATURAL = 0;
-    const NULL_TO_STRING = 0;
-    const PARAM_BOOL = 0;
-    const PARAM_EVT_ALLOC = 0;
-    const PARAM_EVT_EXEC_POST = 0;
-    const PARAM_EVT_EXEC_PRE = 0;
-    const PARAM_EVT_FETCH_POST = 0;
-    const PARAM_EVT_FETCH_PRE = 0;
-    const PARAM_EVT_FREE = 0;
-    const PARAM_EVT_NORMALIZE = 0;
-    const PARAM_INPUT_OUTPUT = 0;
-    const PARAM_INT = 0;
-    const PARAM_LOB = 0;
-    const PARAM_NULL = 0;
-    const PARAM_STMT = 0;
-    const PARAM_STR = 0;
-    /**
-     * Turns off autocommit mode. While autocommit mode is turned off, changes
-     * made to the database via the PDO object instance are not committed until
-     * you end the transaction by calling PDO::commit.
-     * Calling PDO::rollBack will roll back all changes to
-     * the database and return the connection to autocommit mode.
-     *
-     * @return bool
-     **/
-    function beginTransaction() {}
-
-    /**
-     * Commits a transaction, returning the database connection to autocommit
-     * mode until the next call to PDO::beginTransaction
-     * starts a new transaction.
-     *
-     * @return bool
-     **/
-    function commit() {}
-
-    /**
-     * @return mixed
-     **/
-    function errorCode() {}
-
-    /**
-     * @return array
-     **/
-    function errorInfo() {}
-
-    /**
-     * PDO::exec executes an SQL statement in
-     * a single function call, returning the number of rows affected by the
-     * statement.
-     *
-     * @param string
-     * @return int
-     **/
-    function exec($statement) {}
-
-    /**
-     * This function returns the value of a database connection attribute. To
-     * retrieve PDOStatement attributes, refer to
-     * PDOStatement::getAttribute.
-     *
-     * @param int
-     * @return mixed
-     **/
-    function getAttribute($attribute) {}
-
-    /**
-     * This function returns all currently available PDO drivers which can be used
-     * in DSN parameter of
-     * PDO::__construct. This is a static method.
-     *
-     * @return array
-     **/
-    function getAvailableDrivers() {}
-
-    /**
-     * Returns the ID of the last inserted row, or the last value from a
-     * sequence object, depending on the underlying driver. For example,
-     * PDO_PGSQL requires you to specify the name of
-     * a sequence object for the name parameter.
-     *
-     * @param string
-     * @return string
-     **/
-    function lastInsertId($name) {}
-
-    /**
-     * PDO::pgsqlLOBCreate creates a large object and
-     * returns the OID of that object. You may then open a stream on the object
-     * using PDO::pgsqlLOBOpen to read or write data to
-     * it. The OID can be stored in columns of type OID and be used to reference
-     * the large object, without causing the row to grow arbitrarily large.
-     * The large object will continue to live in the database until it
-     * is removed by calling PDO::pgsqlLOBUnlink.
-     *
-     * @return string
-     **/
-    function pgsqlLOBCreate() {}
-
-    /**
-     * PDO::pgsqlLOBOpen opens a stream to access the data
-     * referenced by oid. If mode
-     * is r, the stream is opened for reading, if
-     * mode is w, then the stream will
-     * be opened for writing. You can use all the usual filesystem functions,
-     * such as fread, fwrite and
-     * fgets to manipulate the contents of the stream.
-     *
-     * @param string
-     * @param string
-     * @return resource
-     **/
-    function pgsqlLOBOpen($oid, $mode) {}
-
-    /**
-     * Deletes a large object from the database identified by OID.
-     *
-     * @param string
-     * @return bool
-     **/
-    function pgsqlLOBUnlink($oid) {}
-
-    /**
-     * Prepares an SQL statement to be executed by the
-     * PDOStatement::execute method. The SQL statement can
-     * contain zero or more named (:name) or question mark (?) parameter markers
-     * for which real values will be substituted when the statement is executed.
-     * You cannot use both named and question mark parameter markers within the same
-     * SQL statement; pick one or the other parameter style.
-     *
-     * @param string
-     * @param array
-     * @return PDOStatement
-     **/
-    function prepare($statement, $driver_options) {}
-
-    /**
-     * PDO::query executes an SQL statement in
-     * a single function call, returning the result set (if any) returned by the
-     * statement as a PDOStatement object.
-     *
-     * @param string
-     * @return PDOStatement
-     **/
-    function query($statement) {}
-
-    /**
-     * PDO::quote places quotes around the input string (if
-     * required) and escapes special characters within the input string, using a
-     * quoting style appropriate to the underlying driver.
-     *
-     * @param string
-     * @param int
-     * @return string
-     **/
-    function quote($string, $parameter_type) {}
-
-    /**
-     * Rolls back the current transaction, as initiated by
-     * PDO::beginTransaction. It is an error to call this
-     * method if no transaction is active.
-     *
-     * @return bool
-     **/
-    function rollBack() {}
-
-    /**
-     * Sets an attribute on the database handle. Some of the available generic
-     * attributes are listed below; some drivers may make use of
-     * additional driver specific attributes.
-     * 
-     * 
-     * PDO::ATTR_CASE: Force column names to a specific case.
-     * 
-     * 
-     * PDO::CASE_LOWER: Force column names to lower case.
-     * 
-     * 
-     * PDO::CASE_NATURAL: Leave column names as returned by
-     * the database driver.
-     * 
-     * 
-     * PDO::CASE_UPPER: Force column names to upper case.
-     * 
-     * 
-     * 
-     * PDO::ATTR_ERRMODE: Error reporting.
-     * 
-     * PDO::ERRMODE_SILENT:
-     * Just set error codes.
-     * PDO::ERRMODE_WARNING:
-     * Raise E_WARNING.
-     * PDO::ERRMODE_EXCEPTION:
-     * Throw exceptions.
-     * 
-     * 
-     * PDO::ATTR_ORACLE_NULLS
-     * (available with all drivers, not just Oracle):
-     * Conversion of NULL and empty strings.
-     * 
-     * PDO::NULL_NATURAL:
-     * No conversion.
-     * PDO::NULL_EMPTY_STRING:
-     * Empty string is converted to .
-     * PDO::NULL_TO_STRING:
-     * NULL is converted to an empty string.
-     * 
-     * 
-     * PDO::ATTR_STRINGIFY_FETCHES:
-     * Convert numeric values to strings when fetching.
-     * Requires bool.
-     * 
-     * PDO::ATTR_STATEMENT_CLASS:
-     * Set user-supplied statement class derived from PDOStatement.
-     * Cannot be used with persistent PDO instances.
-     * Requires array(string classname, array(mixed constructor_args)).
-     * 
-     * PDO::ATTR_AUTOCOMMIT
-     * (available in OCI, Firebird and MySQL):
-     * Whether to autocommit every single statement.
-     * 
-     * PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
-     * (available in MySQL):
-     * Use buffered queries.
-     *
-     * @param int
-     * @param mixed
-     * @return bool
-     **/
-    function setAttribute($attribute, $value) {}
-
-    /**
-     * This method is similar to except that it registers functions that can be used to calculate a
-     * result aggregated across all the rows of a query.
-     *
-     * @param string
-     * @param callback
-     * @param callback
-     * @param int
-     * @return bool
-     **/
-    function sqliteCreateAggregate($function_name, $step_func, $finalize_func, $num_args) {}
-
-    /**
-     * This method allows you to register a PHP function with SQLite as an 
-     * UDF (User Defined Function), so that it can be called
-     * from within your SQL statements.
-     *
-     * @param string
-     * @param callback
-     * @param int
-     * @return bool
-     **/
-    function sqliteCreateFunction($function_name, $callback, $num_args) {}
-
-}
-class PDOException extends RuntimeException {
-}
-class PDOStatement implements Traversable {
-    /**
-     * PDOStatement::bindColumn arranges to have a
-     * particular variable bound to a given column in the result-set from a
-     * query. Each call to PDOStatement::fetch or
-     * PDOStatement::fetchAll will update all the variables
-     * that are bound to columns.
-     *
-     * @param mixed
-     * @param mixed
-     * @param int
-     * @param int
-     * @param mixed
-     * @return bool
-     **/
-    function bindColumn($column, &$param, $type, $maxlen, $driverdata) {}
-
-    /**
-     * Binds a PHP variable to a corresponding named or question mark placeholder
-     * in the SQL statement that was use to prepare the statement. Unlike
-     * PDOStatement::bindValue, the variable is bound as a
-     * reference and will only be evaluated at the time that
-     * PDOStatement::execute is called.
-     *
-     * @param mixed
-     * @param mixed
-     * @param int
-     * @param int
-     * @param mixed
-     * @return bool
-     **/
-    function bindParam($parameter, &$variable, $data_type, $length, $driver_options) {}
-
-    /**
-     * Binds a value to a corresponding named or question mark placeholder
-     * in the SQL statement that was use to prepare the statement.
-     *
-     * @param mixed
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function bindValue($parameter, $value, $data_type) {}
-
-    /**
-     * PDOStatement::closeCursor frees up the connection
-     * to the server so that other SQL statements may be issued, but leaves the
-     * statement in a state that enables it to be executed again.
-     *
-     * @return bool
-     **/
-    function closeCursor() {}
-
-    /**
-     * Use PDOStatement::columnCount to return the number
-     * of columns in the result set represented by the PDOStatement object.
-     *
-     * @return int
-     **/
-    function columnCount() {}
-
-    /**
-     * Dumps the informations contained by a prepared statement directly on the
-     * output. It will provide the SQL query in use, the 
-     * number of parameters used (Params), the list
-     * of parameters, with their name, type (paramtype) as
-     * an integer, their key name or position, the value, and the position
-     * in the query (if this is supported by the PDO driver, otherwise, it will
-     * be -1).
-     *
-     * @return bool
-     **/
-    function debugDumpParams() {}
-
-    /**
-     * @return string
-     **/
-    function errorCode() {}
-
-    /**
-     * @return array
-     **/
-    function errorInfo() {}
-
-    /**
-     * Execute the prepared statement. If the prepared statement included
-     * parameter markers, you must either:
-     * 
-     * call PDOStatement::bindParam to bind PHP variables
-     * to the parameter markers: bound variables pass their value as input and receive the
-     * output value, if any, of their associated parameter markers
-     * or pass an array of input-only parameter values
-     *
-     * @param array
-     * @return bool
-     **/
-    function execute($input_parameters) {}
-
-    /**
-     * Fetches a row from a result set associated with a PDOStatement object. The
-     * fetch_style parameter determines how PDO returns
-     * the row.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @return mixed
-     **/
-    function fetch($fetch_style, $cursor_orientation, $cursor_offset) {}
-
-    /**
-     * @param int
-     * @param int
-     * @param array
-     * @return array
-     **/
-    function fetchAll($fetch_style, $column_index, $ctor_args) {}
-
-    /**
-     * Returns a single column from the next row of a result set or if
-     * there are no more rows.
-     *
-     * @param int
-     * @return string
-     **/
-    function fetchColumn($column_number) {}
-
-    /**
-     * Fetches the next row and returns it as an object. This function is an
-     * alternative to PDOStatement::fetch with
-     * PDO::FETCH_CLASS or
-     * PDO::FETCH_OBJ style.
-     *
-     * @param string
-     * @param array
-     * @return mixed
-     **/
-    function fetchObject($class_name, $ctor_args) {}
-
-    /**
-     * Gets an attribute of the statement. Currently, no generic attributes exist but only driver specific:
-     * 
-     * PDO::ATTR_CURSOR_NAME
-     * (Firebird and ODBC specific):
-     * Get the name of cursor for UPDATE ... WHERE CURRENT OF.
-     *
-     * @param int
-     * @return mixed
-     **/
-    function getAttribute($attribute) {}
-
-    /**
-     * Retrieves the metadata for a 0-indexed column in a result set as an
-     * associative array.
-     *
-     * @param int
-     * @return array
-     **/
-    function getColumnMeta($column) {}
-
-    /**
-     * Some database servers support stored procedures that return more than one
-     * rowset (also known as a result set).
-     * PDOStatement::nextRowset enables you to access the
-     * second and subsequent rowsets associated with a PDOStatement object. Each
-     * rowset can have a different set of columns from the preceding rowset.
-     *
-     * @return bool
-     **/
-    function nextRowset() {}
-
-    /**
-     * PDOStatement::rowCount returns the number of
-     * rows affected by the last DELETE, INSERT, or UPDATE statement
-     * executed by the corresponding PDOStatement object.
-     *
-     * @return int
-     **/
-    function rowCount() {}
-
-    /**
-     * Sets an attribute on the statement. Currently, no generic attributes are set but only driver specific:
-     * 
-     * PDO::ATTR_CURSOR_NAME
-     * (Firebird and ODBC specific):
-     * Set the name of cursor for UPDATE ... WHERE CURRENT OF.
-     *
-     * @param int
-     * @param mixed
-     * @return bool
-     **/
-    function setAttribute($attribute, $value) {}
-
-    /**
-     * @param int
-     * @return bool
-     **/
-    function setFetchMode($mode) {}
-
-}
-class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess {
-    const BZ2 = 0;
-    const COMPRESSED = 0;
-    const GZ = 0;
-    const MD5 = 0;
-    const NONE = 0;
-    const OPENSSL = 0;
-    const PHAR = 0;
-    const PHP = 0;
-    const PHPS = 0;
-    const SAME = 0;
-    const SHA1 = 0;
-    const SHA256 = 0;
-    const SHA512 = 0;
-    const TAR = 0;
-    const ZIP = 0;
-    /**
-     * With this method, an empty directory is created with path dirname.
-     * This method is similar to ZipArchive::addEmptyDir.
-     *
-     * @param string
-     * @return void
-     **/
-    function addEmptyDir($dirname) {}
-
-    /**
-     * With this method, any file or URL can be added to the phar archive. If
-     * the optional second parameter localname is specified,
-     * the file will be stored in the archive with that name, otherwise the
-     * file parameter is used as the path to store within
-     * the archive. URLs must have a localname or an exception is thrown.
-     * This method is similar to ZipArchive::addFile.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function addFile($file, $localname) {}
-
-    /**
-     * With this method, any string can be added to the phar archive.
-     * The file will be stored in the archive with localname as its
-     * path. This method is similar to ZipArchive::addFromString.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function addFromString($localname, $contents) {}
-
-    /**
-     * Return the API version of the phar file format that will be
-     * used when creating phars. The Phar extension supports reading API
-     * version 1.0.0 or newer. API version 1.1.0 is required for SHA-256 and SHA-512
-     * hash, and API version 1.1.1 is required to store empty directories.
-     *
-     * @return string
-     **/
-    function apiVersion() {}
-
-    /**
-     * Populate a phar archive from directory contents. The optional second
-     * parameter is a regular expression (pcre) that is used to exclude files.
-     * Any filename that matches the regular expression will be included, all others will be
-     * excluded. For more fine-grained control, use Phar::buildFromIterator.
-     *
-     * @param string
-     * @param string
-     * @return array
-     **/
-    function buildFromDirectory($base_dir, $regex) {}
-
-    /**
-     * Populate a phar archive from an iterator. Two styles of iterators are supported,
-     * iterators that map the filename within the phar to the name of a file on disk,
-     * and iterators like DirectoryIterator that return
-     * SplFileInfo objects. For iterators that return SplFileInfo objects, the second
-     * parameter is required.
-     *
-     * @param Iterator
-     * @param string
-     * @return array
-     **/
-    function buildFromIterator($iter, $base_directory) {}
-
-    /**
-     * This should be used to test whether compression is possible prior to
-     * loading a phar archive containing compressed files.
-     *
-     * @param int
-     * @return bool
-     **/
-    function canCompress($type) {}
-
-    /**
-     * This static method determines whether write access has been disabled in
-     * the system php.ini via the phar.readonly
-     * ini variable.
-     *
-     * @return bool
-     **/
-    function canWrite() {}
-
-    /**
-     * For tar-based and phar-based phar archives, this method compresses the entire archive using
-     * gzip compression or bzip2 compression. The resulting file can be processed with the
-     * gunzip command/bunzip command, or accessed directly and transparently with the Phar
-     * extension.
-     *
-     * @param int
-     * @param string
-     * @return object
-     **/
-    function compress($compression, $extension) {}
-
-    /**
-     * This method compresses all files in the Phar archive using bzip2 compression.
-     * The bzip2 extension must be enabled to take
-     * advantage of this feature. In addition, if any files are already compressed using
-     * gzip compression, the zlib extension must be enabled in order
-     * to decompress the files prior to re-compressing with bzip2 compression.
-     * As with all functionality that modifies the contents of
-     * a phar, the phar.readonly INI variable
-     * must be off in order to succeed.
-     *
-     * @return bool
-     **/
-    function compressAllFilesBZIP2() {}
-
-    /**
-     * For tar-based phar archives, this method compresses the entire archive using
-     * gzip compression. The resulting file can be processed with the gunzip command, or
-     * accessed directly and transparently with the Phar extension.
-     *
-     * @return bool
-     **/
-    function compressAllFilesGZ() {}
-
-    /**
-     * For tar-based phar archives, this method throws a
-     * BadMethodCallException, as compression of individual
-     * files within a tar archive is not supported by the file format. Use
-     * Phar::compress to compress an entire tar-based phar archive.
-     *
-     * @param int
-     * @return void
-     **/
-    function compressFiles($compression) {}
-
-    /**
-     * This method is used to convert an executable phar archive to either a
-     * tar or zip file. To make the tar or zip non-executable, the phar
-     * stub and phar alias files are removed from the newly created archive.
-     *
-     * @param int
-     * @param int
-     * @param string
-     * @return PharData
-     **/
-    function convertToData($format, $compression, $extension) {}
-
-    /**
-     * This method is used to convert a phar archive to another file format. For instance,
-     * it can be used to create a tar-based executable phar archive from a zip-based
-     * executable phar archive, or from an executable phar archive in the phar file format. In
-     * addition, it can be used to apply whole-archive compression to a tar or phar-based
-     * archive.
-     *
-     * @param int
-     * @param int
-     * @param string
-     * @return Phar
-     **/
-    function convertToExecutable($format, $compression, $extension) {}
-
-    /**
-     * Copy a file internal to the phar archive to another new file within the phar.
-     * This is an object-oriented alternative to using copy with
-     * the phar stream wrapper.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function copy($oldfile, $newfile) {}
-
-    /**
-     * @return int
-     **/
-    function count() {}
-
-    /**
-     * This method is intended for creation of phar-file format-specific stubs, and is
-     * not intended for use with tar- or zip-based phar archives.
-     *
-     * @param string
-     * @param string
-     * @return string
-     **/
-    function createDefaultStub($indexfile, $webindexfile) {}
-
-    /**
-     * For tar-based and phar-based phar archives, this method decompresses the entire archive.
-     *
-     * @param string
-     * @return object
-     **/
-    function decompress($extension) {}
-
-    /**
-     * For tar-based phar archives, this method throws a
-     * BadMethodCallException, as compression of individual
-     * files within a tar archive is not supported by the file format. Use
-     * Phar::compress to compress an entire tar-based phar archive.
-     *
-     * @return bool
-     **/
-    function decompressFiles() {}
-
-    /**
-     * Delete a file within an archive. This is the functional equivalent of
-     * calling unlink on the stream wrapper equivalent,
-     * as shown in the example below.
-     *
-     * @param string
-     * @return bool
-     **/
-    function delete($entry) {}
-
-    /**
-     * Deletes the global metadata of the phar
-     *
-     * @return bool
-     **/
-    function delMetadata() {}
-
-    /**
-     * Extract all files within a phar archive to disk. Extracted files and directories preserve
-     * permissions as stored in the archive. The optional parameters allow optional control over
-     * which files are extracted, and whether existing files on disk can be overwritten.
-     * The second parameter files can be either the name of a file or
-     * directory to extract, or an array of names of files and directories to extract. By
-     * default, this method will not overwrite existing files, the third parameter can be
-     * set to true to enable overwriting of files.
-     * This method is similar to ZipArchive::extractTo.
-     *
-     * @param string
-     * @param string|array
-     * @param bool
-     * @return bool
-     **/
-    function extractTo($pathto, $files, $overwrite) {}
-
-    /**
-     * Retrieve archive meta-data. Meta-data can be any PHP variable that can be serialized.
-     *
-     * @return mixed
-     **/
-    function getMetaData() {}
-
-    /**
-     * This method can be used to determine whether a phar has either
-     * had an internal file deleted, or contents of a file changed in
-     * some way.
-     *
-     * @return bool
-     **/
-    function getModified() {}
-
-    /**
-     * Returns the verification signature of a phar archive in a hexadecimal string.
-     *
-     * @return array
-     **/
-    function getSignature() {}
-
-    /**
-     * Phar archives contain a bootstrap loader, or stub
-     * written in PHP that is executed when the archive is executed in PHP either via
-     * include:
-     * 
-     * 
-     * 
-     * or by simple execution:
-     *
-     * @return string
-     **/
-    function getStub() {}
-
-    /**
-     * @return array
-     **/
-    function getSupportedCompression() {}
-
-    /**
-     * Return array of supported signature types
-     *
-     * @return array
-     **/
-    function getSupportedSignatures() {}
-
-    /**
-     * Returns the API version of an opened Phar archive.
-     *
-     * @return string
-     **/
-    function getVersion() {}
-
-    /**
-     * Returns whether phar has global meta-data set.
-     *
-     * @return bool
-     **/
-    function hasMetadata() {}
-
-    /**
-     * instructs phar to intercept fopen, readfile,
-     * file_get_contents, opendir, and all of
-     * the stat-related functions. If any of these functions is called from within
-     * a phar archive with a relative path, the call is modified to access a file
-     * within the phar archive. Absolute paths are assumed to be attempts to load
-     * external files from the filesystem.
-     *
-     * @return void
-     **/
-    function interceptFileFuncs() {}
-
-    /**
-     * This method can be used to determine whether a Phar will save changes
-     * to disk immediately, or whether a call to Phar-stopBuffering
-     * is needed to enable saving changes.
-     *
-     * @return bool
-     **/
-    function isBuffering() {}
-
-    /**
-     * Returns Phar::GZ or PHAR::BZ2 if the entire phar archive is compressed
-     * (.tar.gz/tar.bz and so on). Zip-based phar archives cannot be compressed as a
-     * file, and so this method will always return if a zip-based phar archive is queried.
-     *
-     * @return mixed
-     **/
-    function isCompressed() {}
-
-    /**
-     * @param int
-     * @return bool
-     **/
-    function isFileFormat($format) {}
-
-    /**
-     * Returns whether the given filename is a valid phar filename that will be recognized
-     * as a phar archive by the phar extension. This can be used to test a name without
-     * having to instantiate a phar archive and catch the inevitable Exception that will be
-     * thrown if an invalid name is specified.
-     *
-     * @param string
-     * @param bool
-     * @return bool
-     **/
-    function isValidPharFilename($filename, $executable) {}
-
-    /**
-     * This method returns if phar.readonly is 0,
-     * and the actual phar archive on disk is not read-only.
-     *
-     * @return bool
-     **/
-    function isWritable() {}
-
-    /**
-     * This can be used to read the contents of an external Phar archive. This
-     * is most useful for assigning an alias to a phar so that subsequent references
-     * to the phar can use the shorter alias, or for loading Phar archives that
-     * only contain data and are not intended for execution/inclusion in PHP scripts.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function loadPhar($filename, $alias) {}
-
-    /**
-     * This static method can only be used inside a Phar archive's loader stub
-     * in order to initialize the phar when it is directly executed, or when
-     * it is included in another script.
-     *
-     * @param string
-     * @param int
-     * @return bool
-     **/
-    function mapPhar($alias, $dataoffset) {}
-
-    /**
-     * Much like the unix file system concept of mounting external devices to paths within the
-     * directory tree, Phar::mount allows referring to external files
-     * and directories as if they were inside of an archive. This allows powerful
-     * abstraction such as referring to external configuration files as if they were
-     * inside the archive.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function mount($pharpath, $externalpath) {}
-
-    /**
-     * Phar::mungServer should only be called within the
-     * stub of a phar archive.
-     *
-     * @param array
-     * @return void
-     **/
-    function mungServer($munglist) {}
-
-    /**
-     * This is an implementation of the ArrayAccess interface allowing
-     * direct manipulation of the contents of a Phar archive using
-     * array access brackets.
-     *
-     * @param string
-     * @return bool
-     **/
-    function offsetExists($offset) {}
-
-    /**
-     * This is an implementation of the ArrayAccess
-     * interface allowing direct manipulation of the contents of a Phar archive using
-     * array access brackets. Phar::offsetGet is used 
-     * for retrieving files from a Phar archive.
-     *
-     * @param string
-     * @return int
-     **/
-    function offsetGet($offset) {}
-
-    /**
-     * This is an implementation of the ArrayAccess interface allowing
-     * direct manipulation of the contents of a Phar archive using
-     * array access brackets. offsetSet is used for modifying an
-     * existing file, or adding a new file to a Phar archive.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function offsetSet($offset, $value) {}
-
-    /**
-     * This is an implementation of the ArrayAccess interface allowing
-     * direct manipulation of the contents of a Phar archive using
-     * array access brackets. offsetUnset is used for deleting an
-     * existing file, and is called by the unset
-     * language construct.
-     *
-     * @param string
-     * @return bool
-     **/
-    function offsetUnset($offset) {}
-
-    /**
-     * Returns the full path to the running phar archive. This is intended for use much
-     * like the __FILE__ magic constant, and only has effect inside
-     * an executing phar archive.
-     *
-     * @param bool
-     * @return string
-     **/
-    function running($retphar) {}
-
-    /**
-     * Set the alias for the Phar archive, and write it as the permanent alias
-     * for this phar archive. An alias can be used internally to a phar archive to
-     * ensure that use of the phar stream wrapper to access internal
-     * files always works regardless of the location of the phar archive on the
-     * filesystem. Another alternative is to rely upon Phar's interception of
-     * include or to use Phar::interceptFileFuncs
-     * and use relative paths.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setAlias($alias) {}
-
-    /**
-     * This method is a convenience method that combines the functionality of
-     * Phar::createDefaultStub and Phar::setStub.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function setDefaultStub($index, $webindex) {}
-
-    /**
-     * Phar::setMetadata should be used to store customized data
-     * that describes something about the phar archive as a complete entity.
-     * PharFileInfo::setMetadata should be used for file-specific meta-data.
-     * Meta-data can slow down the performance of loading a phar archive if the data is large.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function setMetadata($metadata) {}
-
-    /**
-     * set the signature algorithm for a phar and apply it. The
-     * signature algorithm must be one of Phar::MD5,
-     * Phar::SHA1, Phar::SHA256,
-     * Phar::SHA512, or Phar::OPENSSL.
-     *
-     * @param int
-     * @param string
-     * @return void
-     **/
-    function setSignatureAlgorithm($sigtype, $privatekey) {}
-
-    /**
-     * This method is used to add a PHP bootstrap loader stub to a new Phar archive, or
-     * to replace the loader stub in an existing Phar archive.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setStub($stub) {}
-
-    /**
-     * Although technically unnecessary, the Phar::startBuffering method
-     * can provide a significant performance boost when creating or modifying a
-     * Phar archive with a large number of files. Ordinarily, every time a file
-     * within a Phar archive is created or modified in any way, the entire Phar
-     * archive will be recreated with the changes. In this way, the archive will
-     * be up-to-date with the activity performed on it.
-     *
-     * @return void
-     **/
-    function startBuffering() {}
-
-    /**
-     * Phar::stopBuffering is used in conjunction with the
-     * Phar::startBuffering method. Phar::startBuffering
-     * can provide a significant performance boost when creating or modifying a
-     * Phar archive with a large number of files. Ordinarily, every time a file
-     * within a Phar archive is created or modified in any way, the entire Phar
-     * archive will be recreated with the changes. In this way, the archive will
-     * be up-to-date with the activity performed on it.
-     *
-     * @return void
-     **/
-    function stopBuffering() {}
-
-    /**
-     * This method decompresses all files in the Phar archive.
-     * If any files are already compressed using
-     * gzip compression, the zlib extension must be enabled in order
-     * to decompress the files, and any files compressed using bzip2 compression
-     * require the bzip2 extension to decompress the files.
-     * As with all functionality that modifies the contents of
-     * a phar, the phar.readonly INI variable
-     * must be off in order to succeed.
-     *
-     * @return bool
-     **/
-    function uncompressAllFiles() {}
-
-    /**
-     * Removes a phar archive for disk and memory.
-     *
-     * @param string
-     * @return bool
-     **/
-    function unlinkArchive($archive) {}
-
-    /**
-     * Phar::mapPhar for web-based phars. This method parses
-     * $_SERVER['REQUEST_URI'] and routes a request from a web
-     * browser to an internal file within the phar archive. In essence, it simulates
-     * a web server, routing requests to the correct file, echoing the correct headers
-     * and parsing PHP files as needed. This powerful method is part of what makes it easy
-     * to convert an existing PHP application into a phar archive. Combined with
-     * Phar::mungServer and Phar::interceptFileFuncs,
-     * any web application can be used unmodified from a phar archive.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @param array
-     * @param array
-     * @return void
-     **/
-    function webPhar($alias, $index, $f404, $mimetypes, $rewrites) {}
-
-    /**
-     * @param string
-     * @param int
-     * @param string
-     * @return void
-     **/
-    function __construct($fname, $flags, $alias) {}
-
-}
-class PharData extends Phar {
-    /**
-     * With this method, an empty directory is created with path dirname.
-     * This method is similar to ZipArchive::addEmptyDir.
-     *
-     * @param string
-     * @return bool
-     **/
-    function addEmptyDir($dirname) {}
-
-    /**
-     * With this method, any string can be added to the tar/zip archive.
-     * The file will be stored in the archive with localname as its
-     * path. This method is similar to ZipArchive::addFromString.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function addFromString($localname, $contents) {}
-
-    /**
-     * Populate a tar or zip archive from an iterator. Two styles of iterators are supported,
-     * iterators that map the filename within the tar/zip to the name of a file on disk,
-     * and iterators like DirectoryIterator that return
-     * SplFileInfo objects. For iterators that return SplFileInfo objects, the second
-     * parameter is required.
-     *
-     * @param Iterator
-     * @param string
-     * @return array
-     **/
-    function buildFromIterator($iter, $base_directory) {}
-
-    /**
-     * For tar archives, this method compresses the entire archive using
-     * gzip compression or bzip2 compression. The resulting file can be processed with the
-     * gunzip command/bunzip command, or accessed directly and transparently with the Phar
-     * extension.
-     *
-     * @param int
-     * @param string
-     * @return object
-     **/
-    function compress($compression, $extension) {}
-
-    /**
-     * For tar-based archives, this method throws a
-     * BadMethodCallException, as compression of individual
-     * files within a tar archive is not supported by the file format. Use
-     * PharData::compress to compress an entire tar-based archive.
-     *
-     * @param int
-     * @return bool
-     **/
-    function compressFiles($compression) {}
-
-    /**
-     * This method is used to convert a non-executable tar or zip archive to another
-     * non-executable format.
-     *
-     * @param int
-     * @param int
-     * @param string
-     * @return PharData
-     **/
-    function convertToData($format, $compression, $extension) {}
-
-    /**
-     * This method is used to convert a non-executable tar or zip archive to an
-     * executable phar archive. Any of the three executable file formats
-     * (phar, tar or zip) can be used, and whole-archive compression can also be performed.
-     *
-     * @param int
-     * @param int
-     * @param string
-     * @return Phar
-     **/
-    function convertToExecutable($format, $compression, $extension) {}
-
-    /**
-     * Copy a file internal to the tar/zip archive to another new file within the same archive.
-     * This is an object-oriented alternative to using copy with
-     * the phar stream wrapper.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function copy($oldfile, $newfile) {}
-
-    /**
-     * For tar-based archives, this method decompresses the entire archive.
-     *
-     * @param string
-     * @return object
-     **/
-    function decompress($extension) {}
-
-    /**
-     * For tar-based archives, this method throws a
-     * BadMethodCallException, as compression of individual
-     * files within a tar archive is not supported by the file format. Use
-     * PharData::compress to compress an entire tar-based archive.
-     *
-     * @return bool
-     **/
-    function decompressFiles() {}
-
-    /**
-     * Delete a file within an archive. This is the functional equivalent of
-     * calling unlink on the stream wrapper equivalent,
-     * as shown in the example below.
-     *
-     * @param string
-     * @return int
-     **/
-    function delete($entry) {}
-
-    /**
-     * Deletes the global metadata of the zip archive
-     *
-     * @return int
-     **/
-    function delMetadata() {}
-
-    /**
-     * Extract all files within a tar/zip archive to disk. Extracted files and directories preserve
-     * permissions as stored in the archive. The optional parameters allow optional control over
-     * which files are extracted, and whether existing files on disk can be overwritten.
-     * The second parameter files can be either the name of a file or
-     * directory to extract, or an array of names of files and directories to extract. By
-     * default, this method will not overwrite existing files, the third parameter can be
-     * set to true to enable overwriting of files.
-     * This method is similar to ZipArchive::extractTo.
-     *
-     * @param string
-     * @param string|array
-     * @param bool
-     * @return int
-     **/
-    function extractTo($pathto, $files, $overwrite) {}
-
-    /**
-     * This method returns if the tar/zip archive on disk is not read-only.
-     * Unlike Phar::isWritable, data-only tar/zip archives
-     * can be modified even if phar.readonly is set to 1.
-     *
-     * @return bool
-     **/
-    function isWritable() {}
-
-    /**
-     * This is an implementation of the ArrayAccess interface allowing
-     * direct manipulation of the contents of a tar/zip archive using
-     * array access brackets. offsetSet is used for modifying an
-     * existing file, or adding a new file to a tar/zip archive.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function offsetSet($offset, $value) {}
-
-    /**
-     * This is an implementation of the ArrayAccess interface allowing
-     * direct manipulation of the contents of a tar/zip archive using
-     * array access brackets. offsetUnset is used for deleting an
-     * existing file, and is called by the unset
-     * language construct.
-     *
-     * @param string
-     * @return bool
-     **/
-    function offsetUnset($offset) {}
-
-    /**
-     * Non-executable tar/zip archives cannot have an alias, so this method simply
-     * throws an exception.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setAlias($alias) {}
-
-    /**
-     * Non-executable tar/zip archives cannot have a stub, so this method simply
-     * throws an exception.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function setDefaultStub($index, $webindex) {}
-
-    /**
-     * Non-executable tar/zip archives cannot have a stub, so this method simply
-     * throws an exception.
-     *
-     * @param string
-     * @return void
-     **/
-    function setStub($stub) {}
-
-    /**
-     * @param string
-     * @param int
-     * @return void
-     **/
-    function __construct($fname, $flags) {}
-
-}
-class PharException extends Exception {
-}
-class PharFileInfo extends SplFileInfo {
-    /**
-     * PharFileInfo::chmod allows setting of the executable
-     * file permissions bit, as well as read-only bits. Writeable bits are
-     * ignored, and set at runtime based on the
-     * phar.readonly INI variable.
-     * As with all functionality that modifies the contents of
-     * a phar, the phar.readonly INI variable
-     * must be off in order to succeed if the file is within a Phar
-     * archive. Files within PharData archives do not have
-     * this restriction.
-     *
-     * @param int
-     * @return void
-     **/
-    function chmod($permissions) {}
-
-    /**
-     * This method compresses the file inside the Phar archive using either bzip2 compression
-     * or zlib compression.
-     * The bzip2 or zlib
-     * extension must be enabled to take
-     * advantage of this feature. In addition, if the file is already compressed,
-     * the respective extension must be enabled in order
-     * to decompress the file. As with all functionality that modifies the contents of
-     * a phar, the phar.readonly INI variable
-     * must be off in order to succeed if the file is within a Phar
-     * archive. Files within PharData archives do not have
-     * this restriction.
-     *
-     * @param int
-     * @return bool
-     **/
-    function compress($compression) {}
-
-    /**
-     * This method decompresses the file inside the Phar archive.
-     * Depending on how the file is compressed, the bzip2
-     * or zlib extensions must be enabled to take
-     * advantage of this feature. As with all functionality that modifies the contents of
-     * a phar, the phar.readonly INI variable
-     * must be off in order to succeed if the file is within a Phar
-     * archive. Files within PharData archives do not have
-     * this restriction.
-     *
-     * @return bool
-     **/
-    function decompress() {}
-
-    /**
-     * Deletes the metadata of the entry, if any.
-     *
-     * @return bool
-     **/
-    function delMetadata() {}
-
-    /**
-     * This returns the size of the file within the Phar archive. Uncompressed files will return
-     * the same value for getCompressedSize as they will with filesize
-     *
-     * @return int
-     **/
-    function getCompressedSize() {}
-
-    /**
-     * This returns the crc32 checksum of the file
-     * within the Phar archive.
-     *
-     * @return int
-     **/
-    function getCRC32() {}
-
-    /**
-     * Return meta-data that was saved in the Phar archive's manifest for this file.
-     *
-     * @return mixed
-     **/
-    function getMetaData() {}
-
-    /**
-     * This returns the flags set in the manifest for a Phar. This will always
-     * return 0 in the current implementation.
-     *
-     * @return int
-     **/
-    function getPharFlags() {}
-
-    /**
-     * Returns the metadata of a file within a phar archive.
-     *
-     * @return bool
-     **/
-    function hasMetadata() {}
-
-    /**
-     * This returns whether a file is compressed within a Phar archive
-     * with either Gzip or Bzip2 compression.
-     *
-     * @param int
-     * @return bool
-     **/
-    function isCompressed($compression_type) {}
-
-    /**
-     * This returns whether a file is compressed within a Phar archive
-     * with Bzip2 compression.
-     *
-     * @return bool
-     **/
-    function isCompressedBZIP2() {}
-
-    /**
-     * This returns whether a file is compressed within a Phar archive
-     * with Gzip compression.
-     *
-     * @return bool
-     **/
-    function isCompressedGZ() {}
-
-    /**
-     * This returns whether a file within a Phar archive
-     * has had its CRC verified.
-     *
-     * @return bool
-     **/
-    function isCRCChecked() {}
-
-    /**
-     * This method compresses the file inside the Phar archive using bzip2 compression.
-     * The bzip2 extension must be enabled to take
-     * advantage of this feature. In addition, if the file is already compressed using
-     * gzip compression, the zlib extension must be enabled in order
-     * to decompress the file. As with all functionality that modifies the contents of
-     * a phar, the phar.readonly INI variable
-     * must be off in order to succeed.
-     *
-     * @return bool
-     **/
-    function setCompressedBZIP2() {}
-
-    /**
-     * This method compresses the file inside the Phar archive using gzip compression.
-     * The zlib extension must be enabled to take
-     * advantage of this feature. In addition, if the file is already compressed using
-     * bzip2 compression, the bzip2 extension must be enabled in order
-     * to decompress the file. As with all functionality that modifies the contents of
-     * a phar, the phar.readonly INI variable
-     * must be off in order to succeed.
-     *
-     * @return bool
-     **/
-    function setCompressedGZ() {}
-
-    /**
-     * PharFileInfo::setMetaData should only be used to store customized data in a file
-     * that cannot be represented with existing information stored with a file.
-     * Meta-data can significantly slow down the performance of loading a phar
-     * archive if the data is large, or if there are many files containing meta-data.
-     * It is important to note that file permissions are natively supported inside a
-     * phar; it is possible to set them with the
-     * PharFileInfo::chmod method. As with all functionality that modifies the contents of
-     * a phar, the phar.readonly INI variable
-     * must be off in order to succeed if the file is within a Phar
-     * archive. Files within PharData archives do not have
-     * this restriction.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function setMetaData($metadata) {}
-
-    /**
-     * This method decompresses the file inside the Phar archive.
-     * Depending on how the file is compressed, the bzip2
-     * or zlib extensions must be enabled to take
-     * advantage of this feature. As with all functionality that modifies the contents of
-     * a phar, the phar.readonly INI variable
-     * must be off in order to succeed.
-     *
-     * @return bool
-     **/
-    function setUncompressed() {}
-
-    /**
-     * This should not be called directly. Instead, a PharFileInfo object
-     * is initialized by calling Phar::offsetGet
-     * through array access.
-     *
-     * @param string
-     * @return void
-     **/
-    function __construct($entry) {}
-
-}
-class Rar {
-    /**
-     * Rar::extract extracts entry's data to the
-     * dir. It will create new file in the specified
-     * dir with the name identical to the entry's name.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function extract($dir, $filepath) {}
-
-    /**
-     * Rar::getAttr returns attributes of the archive
-     * entry.
-     *
-     * @return int
-     **/
-    function getAttr() {}
-
-    /**
-     * Rar::getCrc returns CRC of the archive entry.
-     *
-     * @return int
-     **/
-    function getCrc() {}
-
-    /**
-     * Gets entry last modification time.
-     *
-     * @return string
-     **/
-    function getFileTime() {}
-
-    /**
-     * Rar::getHostOs return code of the host OS of the
-     * archive entry.
-     *
-     * @return int
-     **/
-    function getHostOs() {}
-
-    /**
-     * Rar::getMethod returns number of the method used when adding
-     * current archive entry.
-     *
-     * @return int
-     **/
-    function getMethod() {}
-
-    /**
-     * Rar::getName returns full name of the archive entry.
-     *
-     * @return string
-     **/
-    function getName() {}
-
-    /**
-     * Get packed size of the archive entry.
-     *
-     * @return int
-     **/
-    function getPackedSize() {}
-
-    /**
-     * Get unpacked size of the archive entry.
-     *
-     * @return int
-     **/
-    function getUnpackedSize() {}
-
-    /**
-     * Get version of the archiver used to add the archive entry.
-     *
-     * @return int
-     **/
-    function getVersion() {}
-
-}
-class RecursiveFilterIterator extends FilterIterator implements Iterator, Traversable, OuterIterator, RecursiveIterator {
-    /**
-     * Return the inner iterator's children contained in a RecursiveFilterIterator.
-     *
-     * @return void
-     **/
-    function getChildren() {}
-
-    /**
-     * Check whether the inner iterator's current element has children.
-     *
-     * @return void
-     **/
-    function hasChildren() {}
-
-    /**
-     * Create a RecursiveFilterIterator from a RecursiveIterator.
-     *
-     * @param RecursiveIterator
-     **/
-    function __construct($iterator) {}
-
-}
-class Reflection {
-    /**
-     * Exports a reflection.
-     *
-     * @param Reflector
-     * @param string
-     * @return void
-     **/
-    function export($reflector, $return) {}
-
-    /**
-     * Gets modifier names.
-     *
-     * @param int
-     * @return array
-     **/
-    function getModifierNames($modifiers) {}
-
-}
-class ReflectionClass implements Reflector {
-    /**
-     * Exports a reflected class.
-     *
-     * @param mixed
-     * @param bool
-     * @return string
-     **/
-    function export($argument, $return) {}
-
-    /**
-     * Gets the defined constants.
-     *
-     * @param string
-     * @return mixed
-     **/
-    function getConstant($name) {}
-
-    /**
-     * Gets defined constants from a class.
-     *
-     * @return array
-     **/
-    function getConstants() {}
-
-    /**
-     * Gets the constructor from a class.
-     *
-     * @return object
-     **/
-    function getConstructor() {}
-
-    /**
-     * Gets default properties from a class.
-     *
-     * @return array
-     **/
-    function getDefaultProperties() {}
-
-    /**
-     * Gets doc comments from a class.
-     *
-     * @return string
-     **/
-    function getDocComment() {}
-
-    /**
-     * Gets end line number from a user-defined class definition.
-     *
-     * @return int
-     **/
-    function getEndLine() {}
-
-    /**
-     * Gets an extensions ReflectionExtension object.
-     *
-     * @return ReflectionExtension
-     **/
-    function getExtension() {}
-
-    /**
-     * Gets an extensions name.
-     *
-     * @return string
-     **/
-    function getExtensionName() {}
-
-    /**
-     * Gets a filename.
-     *
-     * @return string
-     **/
-    function getFileName() {}
-
-    /**
-     * Get the interface names.
-     *
-     * @return array
-     **/
-    function getInterfaceNames() {}
-
-    /**
-     * Gets the interfaces.
-     *
-     * @return array
-     **/
-    function getInterfaces() {}
-
-    /**
-     * Gets a ReflectionMethod about a method.
-     *
-     * @param string
-     * @return object
-     **/
-    function getMethod($name) {}
-
-    /**
-     * Gets a list of methods.
-     *
-     * @param string
-     * @return array
-     **/
-    function getMethods($filter) {}
-
-    /**
-     * @return int
-     **/
-    function getModifiers() {}
-
-    /**
-     * Gets the class name.
-     *
-     * @return string
-     **/
-    function getName() {}
-
-    /**
-     * Gets the namespace name.
-     *
-     * @return string
-     **/
-    function getNamespaceName() {}
-
-    /**
-     * @return object
-     **/
-    function getParentClass() {}
-
-    /**
-     * Gets the properties.
-     *
-     * @param string
-     * @return ReflectionProperty
-     **/
-    function getProperties($filter) {}
-
-    /**
-     * Gets a property.
-     *
-     * @param string
-     * @return ReflectionProperty
-     **/
-    function getProperty($name) {}
-
-    /**
-     * Gets the short name of the class, the part without the namespace.
-     *
-     * @return string
-     **/
-    function getShortName() {}
-
-    /**
-     * Get the starting line number.
-     *
-     * @return int
-     **/
-    function getStartLine() {}
-
-    /**
-     * Get the static properties.
-     *
-     * @return array
-     **/
-    function getStaticProperties() {}
-
-    /**
-     * Gets the static property values.
-     *
-     * @param string
-     * @param string
-     * @return mixed
-     **/
-    function getStaticPropertyValue($name, $default) {}
-
-    /**
-     * Checks whether the class has a specific constant defined or not.
-     *
-     * @param string
-     * @return bool
-     **/
-    function hasConstant($name) {}
-
-    /**
-     * Checks whether a specific method is defined in a class.
-     *
-     * @param string
-     * @return bool
-     **/
-    function hasMethod($name) {}
-
-    /**
-     * Checks whether the specified property is defined.
-     *
-     * @param string
-     * @return bool
-     **/
-    function hasProperty($name) {}
-
-    /**
-     * Checks whether it implements an interface.
-     *
-     * @param string
-     * @return bool
-     **/
-    function implementsInterface($interface) {}
-
-    /**
-     * Checks if this class is defined in a namespace.
-     *
-     * @return bool
-     **/
-    function inNamespace() {}
-
-    /**
-     * Checks if the class is abstract.
-     *
-     * @return bool
-     **/
-    function isAbstract() {}
-
-    /**
-     * Checks if a class is final.
-     *
-     * @return bool
-     **/
-    function isFinal() {}
-
-    /**
-     * Checks if a class is an instance of an object.
-     *
-     * @param string
-     * @return bool
-     **/
-    function isInstance($object) {}
-
-    /**
-     * Checks if the class is instanciable.
-     *
-     * @return bool
-     **/
-    function isInstantiable() {}
-
-    /**
-     * Checks whether the class is an interface.
-     *
-     * @return bool
-     **/
-    function isInterface() {}
-
-    /**
-     * Checks whether the class is internal, as opposed to user-defined.
-     *
-     * @return bool
-     **/
-    function isInternal() {}
-
-    /**
-     * Checks whether the class is iterateable.
-     *
-     * @return bool
-     **/
-    function isIterateable() {}
-
-    /**
-     * Checks if the class is a subclass of a specified class.
-     *
-     * @param string
-     * @return bool
-     **/
-    function isSubclassOf($class) {}
-
-    /**
-     * Checks whether the class is user-defined, as opposed to internal.
-     *
-     * @return bool
-     **/
-    function isUserDefined() {}
-
-    /**
-     * A new instance.
-     *
-     * @param mixed
-     * @return object
-     **/
-    function newInstance($args) {}
-
-    /**
-     * New instance args.
-     *
-     * @param array
-     * @return object
-     **/
-    function newInstanceArgs($args) {}
-
-    /**
-     * Sets static property value.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function setStaticPropertyValue($name, $value) {}
-
-    /**
-     * Clones.
-     *
-     * @return void
-     **/
-    function __clone() {}
-
-    /**
-     * Constructs a new ReflectionClass object.
-     *
-     * @param string
-     **/
-    function __construct($argument) {}
-
-    /**
-     * To a string.
-     *
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class ReflectionException extends Exception {
-}
-class ReflectionExtension implements Reflector {
-    /**
-     * Exports a reflected extension.
-     *
-     * @param string
-     * @param string
-     * @return string
-     **/
-    function export($name, $return) {}
-
-    /**
-     * Gets a list of classes from an extension.
-     *
-     * @return array
-     **/
-    function getClasses() {}
-
-    /**
-     * Gets a listing of class names as defined in the extension.
-     *
-     * @return array
-     **/
-    function getClassNames() {}
-
-    /**
-     * Get defined constants from an extension.
-     *
-     * @return array
-     **/
-    function getConstants() {}
-
-    /**
-     * Gets dependencies, by listing both required and conflicting dependencies.
-     *
-     * @return array
-     **/
-    function getDependencies() {}
-
-    /**
-     * Get defined functions from an extension.
-     *
-     * @return array
-     **/
-    function getFunctions() {}
-
-    /**
-     * Get the ini entries for an extension.
-     *
-     * @return array
-     **/
-    function getINIEntries() {}
-
-    /**
-     * Gets the extensions name.
-     *
-     * @return string
-     **/
-    function getName() {}
-
-    /**
-     * Gets the version of the extension.
-     *
-     * @return string
-     **/
-    function getVersion() {}
-
-    /**
-     * Gets information about an extension.
-     *
-     * @return string
-     **/
-    function info() {}
-
-    /**
-     * Clones.
-     *
-     * @return void
-     **/
-    function __clone() {}
-
-    /**
-     * Construct a ReflectionExtension object.
-     *
-     * @param string
-     **/
-    function __construct($name) {}
-
-    /**
-     * To a string.
-     *
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class ReflectionFunction extends ReflectionFunctionAbstract implements Reflector {
-    /**
-     * Exports a Reflected function.
-     *
-     * @param string
-     * @param string
-     * @return string
-     **/
-    function export($name, $return) {}
-
-    /**
-     * Invokes a reflected function.
-     *
-     * @param string
-     * @return mixed
-     **/
-    function invoke($args) {}
-
-    /**
-     * Invokes args.
-     *
-     * @param array
-     * @return mixed
-     **/
-    function invokeArgs($args) {}
-
-    /**
-     * Checks if the function is disabled, via the 
-     * disable_functions
-     * directive.
-     *
-     * @return bool
-     **/
-    function isDisabled() {}
-
-    /**
-     * Constructs a ReflectionFunction object.
-     *
-     * @param string
-     **/
-    function __construct($name) {}
-
-    /**
-     * To string.
-     *
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class ReflectionFunctionAbstract implements Reflector {
-    /**
-     * Get a Doc comment from a function.
-     *
-     * @return string
-     **/
-    function getDocComment() {}
-
-    /**
-     * Get the ending line number.
-     *
-     * @return int
-     **/
-    function getEndLine() {}
-
-    /**
-     * Get the extension information of a function.
-     *
-     * @return ReflectionExtension
-     **/
-    function getExtension() {}
-
-    /**
-     * Get the extensions name.
-     *
-     * @return string
-     **/
-    function getExtensionName() {}
-
-    /**
-     * Gets the file name from a user-defined function.
-     *
-     * @return string
-     **/
-    function getFileName() {}
-
-    /**
-     * Get the name of the function.
-     *
-     * @return string
-     **/
-    function getName() {}
-
-    /**
-     * Get the namespace name where the class is defined.
-     *
-     * @return string
-     **/
-    function getNamespaceName() {}
-
-    /**
-     * Get the number of parameters that a function defines, both optional
-     * and required.
-     *
-     * @return int
-     **/
-    function getNumberOfParameters() {}
-
-    /**
-     * Get the number of required parameters that a function defines.
-     *
-     * @return int
-     **/
-    function getNumberOfRequiredParameters() {}
-
-    /**
-     * Get the parameters.
-     *
-     * @return ReflectionParameter
-     **/
-    function getParameters() {}
-
-    /**
-     * Get the short name of the function (without the namespace part).
-     *
-     * @return string
-     **/
-    function getShortName() {}
-
-    /**
-     * Gets the starting line number of the function.
-     *
-     * @return int
-     **/
-    function getStartLine() {}
-
-    /**
-     * Get the static variables.
-     *
-     * @return array
-     **/
-    function getStaticVariables() {}
-
-    /**
-     * Checks whether a function is defined in a namespace.
-     *
-     * @return bool
-     **/
-    function inNamespace() {}
-
-    /**
-     * Checks whether it's a closure.
-     *
-     * @return bool
-     **/
-    function isClosure() {}
-
-    /**
-     * Checks whether the function is deprecated.
-     *
-     * @return bool
-     **/
-    function isDeprecated() {}
-
-    /**
-     * Checks whether the function is internal, as opposed to user-defined.
-     *
-     * @return bool
-     **/
-    function isInternal() {}
-
-    /**
-     * Checks whether the function is user-defined, as opposed to internal.
-     *
-     * @return bool
-     **/
-    function isUserDefined() {}
-
-    /**
-     * Checks whether the function returns a reference.
-     *
-     * @return bool
-     **/
-    function returnsReference() {}
-
-    /**
-     * Clones a function.
-     *
-     * @return void
-     **/
-    function __clone() {}
-
-    /**
-     * To string.
-     *
-     * @return void
-     **/
-    function __toString() {}
-
-}
-class ReflectionMethod extends ReflectionFunctionAbstract implements Reflector {
-    /**
-     * Exports a ReflectionMethod.
-     *
-     * @param string
-     * @param string
-     * @param bool
-     * @return string
-     **/
-    function export($class, $name, $return) {}
-
-    /**
-     * Gets the declaring class.
-     *
-     * @return ReflectionClass
-     **/
-    function getDeclaringClass() {}
-
-    /**
-     * Gets the modifiers.
-     *
-     * @return int
-     **/
-    function getModifiers() {}
-
-    /**
-     * Gets the methods prototype.
-     *
-     * @return void
-     **/
-    function getPrototype() {}
-
-    /**
-     * Invokes a reflected method.
-     *
-     * @param object
-     * @param string
-     * @return mixed
-     **/
-    function invoke($object, $args) {}
-
-    /**
-     * Invoke arguments.
-     *
-     * @param string
-     * @param array
-     * @return mixed
-     **/
-    function invokeArgs($object, $args) {}
-
-    /**
-     * Checks if the method is abstract.
-     *
-     * @return bool
-     **/
-    function isAbstract() {}
-
-    /**
-     * Checks if the method is a constructor.
-     *
-     * @return bool
-     **/
-    function isConstructor() {}
-
-    /**
-     * Checks if the method is a destructor.
-     *
-     * @return bool
-     **/
-    function isDestructor() {}
-
-    /**
-     * Checks if the method is final.
-     *
-     * @return bool
-     **/
-    function isFinal() {}
-
-    /**
-     * Checks if the method is private.
-     *
-     * @return bool
-     **/
-    function isPrivate() {}
-
-    /**
-     * Checks if the method is protected.
-     *
-     * @return bool
-     **/
-    function isProtected() {}
-
-    /**
-     * Checks if the method is public.
-     *
-     * @return bool
-     **/
-    function isPublic() {}
-
-    /**
-     * Checks if the method is static.
-     *
-     * @return bool
-     **/
-    function isStatic() {}
-
-    /**
-     * Sets a method to be accessible. For example, it may allow protected
-     * and private methods to be invoked.
-     *
-     * @param bool
-     * @return void
-     **/
-    function setAccessible($accessible) {}
-
-    /**
-     * Constructs a new ReflectionMethod.
-     *
-     * @param string
-     * @param string
-     **/
-    function __construct($class_or_method, $name) {}
-
-    /**
-     * To string.
-     *
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class ReflectionObject extends ReflectionClass implements Reflector {
-    /**
-     * Exports a reflection.
-     *
-     * @param string
-     * @param bool
-     * @return string
-     **/
-    function export($argument, $return) {}
-
-    /**
-     * Constructs a ReflectionObject.
-     *
-     * @param object
-     **/
-    function __construct($argument) {}
-
-}
-class ReflectionParameter implements Reflector {
-    /**
-     * Checks whether the parameter allows .
-     *
-     * @return bool
-     **/
-    function allowsNull() {}
-
-    /**
-     * Exports.
-     *
-     * @param string
-     * @param string
-     * @param bool
-     * @return string
-     **/
-    function export($function, $parameter, $return) {}
-
-    /**
-     * Gets a class.
-     *
-     * @return ReflectionClass
-     **/
-    function getClass() {}
-
-    /**
-     * Gets the declaring class.
-     *
-     * @return ReflectionClass
-     **/
-    function getDeclaringClass() {}
-
-    /**
-     * Gets the declaring function.
-     *
-     * @return ReflectionFunction
-     **/
-    function getDeclaringFunction() {}
-
-    /**
-     * Gets the parameters default value.
-     *
-     * @return mixed
-     **/
-    function getDefaultValue() {}
-
-    /**
-     * Gets the name of the parameter.
-     *
-     * @return string
-     **/
-    function getName() {}
-
-    /**
-     * Gets the position of the parameter.
-     *
-     * @return int
-     **/
-    function getPosition() {}
-
-    /**
-     * Checks if the parameter expects an array.
-     *
-     * @return bool
-     **/
-    function isArray() {}
-
-    /**
-     * Checks if a default value for the parameter is available.
-     *
-     * @return bool
-     **/
-    function isDefaultValueAvailable() {}
-
-    /**
-     * Checks if the parameter is optional.
-     *
-     * @return bool
-     **/
-    function isOptional() {}
-
-    /**
-     * Checks if the parameter is passed in by reference.
-     *
-     * @return bool
-     **/
-    function isPassedByReference() {}
-
-    /**
-     * Clones.
-     *
-     * @return void
-     **/
-    function __clone() {}
-
-    /**
-     * Constructs a ReflectionParameter class.
-     *
-     * @param string
-     * @param string
-     **/
-    function __construct($function, $parameter) {}
-
-    /**
-     * To string.
-     *
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class ReflectionProperty implements Reflector {
-    /**
-     * Exports a reflection.
-     *
-     * @param mixed
-     * @param string
-     * @param bool
-     * @return string
-     **/
-    function export($class, $name, $return) {}
-
-    /**
-     * Gets the declaring class.
-     *
-     * @return ReflectionClass
-     **/
-    function getDeclaringClass() {}
-
-    /**
-     * Gets the doc comment.
-     *
-     * @return string
-     **/
-    function getDocComment() {}
-
-    /**
-     * Gets the modifiers.
-     *
-     * @return int
-     **/
-    function getModifiers() {}
-
-    /**
-     * Gets the properties name.
-     *
-     * @return string
-     **/
-    function getName() {}
-
-    /**
-     * Gets the properties value.
-     *
-     * @param string
-     * @return mixed
-     **/
-    function getValue($object) {}
-
-    /**
-     * Checks whether the property is the default.
-     *
-     * @return bool
-     **/
-    function isDefault() {}
-
-    /**
-     * Checks whether the property is private.
-     *
-     * @return bool
-     **/
-    function isPrivate() {}
-
-    /**
-     * Checks whether the property is protected.
-     *
-     * @return bool
-     **/
-    function isProtected() {}
-
-    /**
-     * Checks whether the property is public.
-     *
-     * @return bool
-     **/
-    function isPublic() {}
-
-    /**
-     * Checks whether the property is static.
-     *
-     * @return bool
-     **/
-    function isStatic() {}
-
-    /**
-     * Sets a property to be accessible. For example, it may allow protected
-     * and private properties to be accessed.
-     *
-     * @param bool
-     * @return void
-     **/
-    function setAccessible($accessible) {}
-
-    /**
-     * Sets (changes) a properties value.
-     *
-     * @param object
-     * @param mixed
-     * @return void
-     **/
-    function setValue($object, $value) {}
-
-    /**
-     * Clones.
-     *
-     * @return void
-     **/
-    function __clone() {}
-
-    /**
-     * @param mixed
-     * @param string
-     **/
-    function __construct($class, $name) {}
-
-    /**
-     * To string.
-     *
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class Reflector {
-    /**
-     * Exports.
-     *
-     * @return string
-     **/
-    function export() {}
-
-    /**
-     * To string.
-     *
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class Runkit_Sandbox_Parent {
-    /**
-     * Instantiating the Runkit_Sandbox_Parent
-     * class from within a sandbox environment created from the
-     * Runkit_Sandbox class provides some
-     * (controlled) means for a sandbox child to access its parent.
-     *
-     * @return void
-     **/
-    function __construct() {}
-
-}
-class SAMConnection {
-    /**
-     * Calling the "commit" method on a Connection object commits (completes) all
-     * in-flight transactions that are part of the current unit of work.
-     *
-     * @return bool
-     **/
-    function commit() {}
-
-    /**
-     * Calling the "connect" method on a SAMConnection object connects the PHP
-     * script to a messaging server. No messages can be sent or received until a
-     * connection is made.
-     *
-     * @param string
-     * @param array
-     * @return bool
-     **/
-    function connect($protocol, $properties) {}
-
-    /**
-     * Calling the "disconnect" method on a SAMConnection object disconnects the
-     * PHP script from a messaging server. No messages can be sent or received
-     * after a connection has been disconnected.
-     *
-     * @return bool
-     **/
-    function disconnect() {}
-
-    /**
-     * Calling the "isConnected" method on a Connection object will check whether
-     * the PHP script is connected to a messaging server. No messages can be sent
-     * or received unless a connection has been established with a Messaging
-     * server.
-     *
-     * @return bool
-     **/
-    function isConnected() {}
-
-    /**
-     * @param string
-     * @param array
-     * @return SAMMessage
-     **/
-    function peek($target, $properties) {}
-
-    /**
-     * @param string
-     * @param array
-     * @return array
-     **/
-    function peekAll($target, $properties) {}
-
-    /**
-     * @param string
-     * @param array
-     * @return SAMMessage
-     **/
-    function receive($target, $properties) {}
-
-    /**
-     * Removes a message from a queue.
-     *
-     * @param string
-     * @param array
-     * @return SAMMessage
-     **/
-    function remove($target, $properties) {}
-
-    /**
-     * Rolls back an in-flight unit of work.
-     *
-     * @return bool
-     **/
-    function rollback() {}
-
-    /**
-     * The "send" method is used to send a message to a specific queue or to
-     * publish to a specific topic. The method returns a correlation id that can
-     * be used as a selector to identify reply or response messages when these
-     * are requested.
-     *
-     * @param string
-     * @param SAMMessage
-     * @param array
-     * @return string
-     **/
-    function send($target, $msg, $properties) {}
-
-    /**
-     * The "setdebug" method is used to turn on or off additional debugging output. The SAM framework will provide method/function
-     * entry and exit trace data plus additional information. Protocol specific implementations also provide extra output.
-     *
-     * @param bool
-     * @return void
-     **/
-    function setDebug($switch) {}
-
-    /**
-     * The "subscribe" method is used to create a new subscription to a specified topic.
-     *
-     * @param string
-     * @return string
-     **/
-    function subscribe($targetTopic) {}
-
-    /**
-     * The "unsubscribe" method is used to delete an existing subscription to a
-     * specified topic.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function unsubscribe($subscriptionId, $targetTopic) {}
-
-}
-class SCA {
-    /**
-     * This method is used inside an SCA component that needs to create
-     * an SDO to return. The parameters are the desired SDO's namespace URI
-     * and type name. The namespace and type must be defined in one of the
-     * schema files which are specified on the @types annotation within the
-     * component.
-     *
-     * @param string
-     * @param string
-     * @return SDO_DataObject
-     **/
-    function createDataObject($type_namespace_uri, $type_name) {}
-
-    /**
-     * Examine the target and initialize and return a proxy of the appropriate 
-     * sort. If the target is for a local PHP component the returned proxy will be an 
-     * SCA_LocalProxy. If the target is for a WSDL file, the returned proxy will be a 
-     * SCA_SoapProxy.
-     *
-     * @param string
-     * @param string
-     * @param array
-     * @return mixed
-     **/
-    function getService($target, $binding, $config) {}
-
-}
-class SCA_LocalProxy {
-    /**
-     * This method is used inside either an ordinary PHP script or an SCA
-     * component that needs to create an SDO to pass to a local service. The
-     * parameters are the desired SDO's namespace URI and type name. The
-     * namespace and type must be defined in the interface of the component
-     * that is to be called, so the namespace and type must be defined in one of
-     * the schema files which are specified on the @types annotation within
-     * the component for which the SCA_LocalProxy object is a proxy.
-     *
-     * @param string
-     * @param string
-     * @return SDO_DataObject
-     **/
-    function createDataObject($type_namespace_uri, $type_name) {}
-
-}
-class SCA_SoapProxy {
-    /**
-     * This method is used inside either an ordinary PHP script or an SCA
-     * component that needs to create an SDO to pass to a web service. The
-     * parameters are the desired SDO's namespace URI and type name. The
-     * namespace and type must be defined in the interface of the component
-     * that is to be called, so the namespace and type must be defined within
-     * the WSDL for the web service. If the web service is also an SCA component
-     * then the types will have been defined within one of the schema files
-     * which are specified on the @types annotation within the component for
-     * which the SCA_SoapProxy object is a proxy.
-     *
-     * @param string
-     * @param string
-     * @return SDO_DataObject
-     **/
-    function createDataObject($type_namespace_uri, $type_name) {}
-
-}
-class SDO_DAS_ChangeSummary {
-    const ADDITION = 0;
-    const DELETION = 0;
-    const MODIFICATION = 0;
-    const NONE = 0;
-    /**
-     * Begin logging changes made to the SDO_DataObject.
-     *
-     * @return void
-     **/
-    function beginLogging() {}
-
-    /**
-     * End logging changes made to an SDO_DataObject.
-     *
-     * @return void
-     **/
-    function endLogging() {}
-
-    /**
-     * Get an SDO_List of the SDO_DataObjects which have been changed.
-     * These data objects can then be used to identify the types 
-     * of change made to each, along with the old values.
-     *
-     * @return SDO_List
-     **/
-    function getChangedDataObjects() {}
-
-    /**
-     * Get the type of change which has been made to the supplied SDO_DataObject.
-     *
-     * @param SDO_DataObject
-     * @return int
-     **/
-    function getChangeType($dataObject) {}
-
-    /**
-     * Get the old container (SDO_DataObject) for a deleted SDO_DataObject.
-     *
-     * @param SDO_DataObject
-     * @return SDO_DataObject
-     **/
-    function getOldContainer($data_object) {}
-
-    /**
-     * Get a list of the old values for a given changed SDO_DataObject.
-     * Returns a list of SDO_DAS_Settings describing the old values for 
-     * the changed properties of the SDO_DataObject.
-     *
-     * @param SDO_DataObject
-     * @return SDO_List
-     **/
-    function getOldValues($data_object) {}
-
-    /**
-     * Test to see whether change logging is switched on.
-     *
-     * @return bool
-     **/
-    function isLogging() {}
-
-}
-class SDO_DAS_DataFactory {
-    /**
-     * Adds a property to a type. The type must already be known to the
-     * SDO_DAS_DataFactory (i.e. have been added using addType()). The property
-     * becomes a property of the type. This is how the graph model for the
-     * structure of an SDO_DataObject is built.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param array
-     * @return void
-     **/
-    function addPropertyToType($parent_type_namespace_uri, $parent_type_name, $property_name, $type_namespace_uri, $type_name, $options) {}
-
-    /**
-     * Add a new type to the SDO_DAS_DataFactory, 
-     * defined by its namespace and type name.
-     * The type becomes part of the model of data objects 
-     * that the data factory can create.
-     *
-     * @param string
-     * @param string
-     * @param array
-     * @return void
-     **/
-    function addType($type_namespace_uri, $type_name, $options) {}
-
-    /**
-     * Static method to get an instance of an SDO_DAS_DataFactory. 
-     * This instance is initially only configured with the basic SDO types. 
-     * A Data Access Service is responsible for populating
-     * the data factory model and then allowing PHP applications 
-     * to create SDOs based on the model through the SDO_DataFactory interface.
-     * PHP applications should always obtain a data factory from a 
-     * configured Data Access Service, not through this interface.
-     *
-     * @return SDO_DAS_DataFactory
-     **/
-    function getDataFactory() {}
-
-}
-class SDO_DAS_DataObject {
-    /**
-     * Get the SDO_DAS_ChangeSummary for an SDO_DAS_DataObject, 
-     * or NULL if it does not have one.
-     *
-     * @return SDO_DAS_ChangeSummary
-     **/
-    function getChangeSummary() {}
-
-}
-class SDO_DAS_Relational {
-    /**
-     * Given a PDO database handle and the special root object of a data graph, 
-     * examine the change summary in the datagraph and applies the changes 
-     * to the database.
-     * The changes that it can apply can be creations of data objects, 
-     * deletes of data objects, and modifications to properties of data objects.
-     *
-     * @param PDO
-     * @param SDODataObject
-     * @return void
-     **/
-    function applyChanges($database_handle, $root_data_object) {}
-
-    /**
-     * Returns the special root object at the top of an otherwise 
-     * empty data graph.
-     * This call is used when the application wants to create a 
-     * data graph from scratch, without having called
-     * executeQuery
-     * to create a data graph.
-     *
-     * @return SDODataObject
-     **/
-    function createRootDataObject() {}
-
-    /**
-     * Executes a given query against the relational database, 
-     * using the supplied PDO database handle.
-     * Differs from the simpler 
-     * executeQuery
-     * in that it takes a prepared statement and a list of values.
-     * This is the appropriate call to use either when the statement is 
-     * to executed a number of times with different arguments, and there
-     * is therefore a performance benefit to be had from preparing the 
-     * statement only once, or when the SQL statement is to contain 
-     * varying values taken from a source that cannot be completely trusted.
-     * In this latter case it may be unsafe to construct the SQL statement
-     * by simply concatenating the parts of the statement together, 
-     * since the values may contain pieces of SQL. 
-     * To guard against this, a so-called SQL injection attack,
-     * it is safer to prepare the SQL statement with placeholders 
-     * (also known as parameter markers, denoted by '?') and supply a 
-     * list of the values to be substituted as a separate argument. 
-     * Otherwise this function is the same as 
-     * executeQuery in that 
-     * it uses the model that it built from the metadata 
-     * to interpret the result set and returns a data graph.
-     *
-     * @param PDO
-     * @param PDOStatement
-     * @param array
-     * @param array
-     * @return SDODataObject
-     **/
-    function executePreparedQuery($database_handle, $prepared_statement, $value_list, $column_specifier) {}
-
-    /**
-     * Executes a given query against the relational database, 
-     * using the supplied PDO database handle.
-     * Uses the model that it built from the metadata 
-     * to interpret the result set.
-     * Returns a data graph.
-     *
-     * @param PDO
-     * @param string
-     * @param array
-     * @return SDODataObject
-     **/
-    function executeQuery($database_handle, $SQL_statement, $column_specifier) {}
-
-    /**
-     * Constructs an instance of a Relational Data Access Service 
-     * from the passed metadata.
-     *
-     * @param array
-     * @param string
-     * @param array
-     * @return SDO_DAS_Relational
-     **/
-    function __construct($database_metadata, $application_root_type, $SDO_containment_references_metadata) {}
-
-}
-class SDO_DAS_Setting {
-    /**
-     * Get the list index for a modification made to an element of a 
-     * many-valued property. 
-     * For example, if we modified the third element of a 
-     * many-valued property
-     * we could obtain an SDO_DAS_Setting from the 
-     * change summary corresponding to that modification.
-     * A call to
-     * getListIndex
-     * on that setting would return the value 2 (lists are indexed from zero).
-     *
-     * @return int
-     **/
-    function getListIndex() {}
-
-    /**
-     * Returns the property index for the changed property. 
-     * This index identifies the property which was modified in data object.
-     *
-     * @return int
-     **/
-    function getPropertyIndex() {}
-
-    /**
-     * Returns the property name for the changed property. 
-     * This name identifies the property which was modified in data object.
-     *
-     * @return string
-     **/
-    function getPropertyName() {}
-
-    /**
-     * Returns the old value for the changed property.
-     * This can be used by a Data Access Service when 
-     * writing updates to a data source.
-     * The DAS uses the old value to detect conflicts by comparing 
-     * it with the current value in the data source.
-     * If they do not match, then the data source has been updated 
-     * since the data object was originally populated, and therefore
-     * writing any new updates risks compromising the integrity of the data.
-     *
-     * @return mixed
-     **/
-    function getValue() {}
-
-}
-class SDO_DAS_XML {
-    /**
-     * Load a second or subsequent schema file to an XML DAS that has already
-     * been created with the static method create.
-     * Although the file may be any valid schema file, a likely reason for 
-     * using this method is to add a schema file containing definitions of 
-     * extra complex types, hence the name. See Example 4 of the parent document 
-     * for an example.
-     *
-     * @param string
-     * @return void
-     **/
-    function addTypes($xsd_file) {}
-
-    /**
-     * This is the only static method of SDO_DAS_XML class. 
-     * Used to instantiate SDO_DAS_XML object.
-     *
-     * @param mixed
-     * @param string
-     * @return SDO_DAS_XML
-     **/
-    function create($xsd_file, $key) {}
-
-    /**
-     * Creates SDO_DataObject for a given namespace URI and type name. 
-     * The type should be defined in the underlying model 
-     * otherwise SDO_TypeNotFoundException will be thrown.
-     *
-     * @param string
-     * @param string
-     * @return SDO_DataObject
-     **/
-    function createDataObject($namespace_uri, $type_name) {}
-
-    /**
-     * Creates an XML Document object. This will contain just one empty root element
-     * on which none of the properties will have been set.
-     * The purpose of this call is to allow an application to create 
-     * an XML document from scratch without the need to load a 
-     * document from a file or string. The document that is created 
-     * will be as if a document had been loaded that contained just a single
-     * empty document element with no attributes set or elements within it.
-     *
-     * @param string
-     * @return SDO_DAS_XML_Document
-     **/
-    function createDocument($document_element_name) {}
-
-    /**
-     * Constructs the tree of SDO_DataObjects from the given address 
-     * to xml instance document. 
-     * Returns SDO_DAS_XML_Document Object. 
-     * Use SDO_DAS_XML_Document::getRootDataObject 
-     * method to get root data object.
-     *
-     * @param string
-     * @return SDO_XMLDocument
-     **/
-    function loadFile($xml_file) {}
-
-    /**
-     * Constructs the tree of SDO_DataObjects from the given xml instance string. 
-     * Returns SDO_DAS_XML_Document Object. 
-     * Use SDO_DAS_XML_Document::getRootDataObject method to get root data object.
-     *
-     * @param string
-     * @return SDO_DAS_XML_Document
-     **/
-    function loadString($xml_string) {}
-
-    /**
-     * Saves the SDO_DAS_XML_Document object to a file.
-     *
-     * @param SDO_XMLDocument
-     * @param string
-     * @param int
-     * @return void
-     **/
-    function saveFile($xdoc, $xml_file, $indent) {}
-
-    /**
-     * Saves the SDO_DAS_XML_Document object to string.
-     *
-     * @param SDO_XMLDocument
-     * @param int
-     * @return string
-     **/
-    function saveString($xdoc, $indent) {}
-
-}
-class SDO_DAS_XML_Document {
-    /**
-     * Returns the root SDO_DataObject.
-     *
-     * @return SDO_DataObject
-     **/
-    function getRootDataObject() {}
-
-    /**
-     * Returns root element's name.
-     *
-     * @return string
-     **/
-    function getRootElementName() {}
-
-    /**
-     * Returns root element's URI string.
-     *
-     * @return string
-     **/
-    function getRootElementURI() {}
-
-    /**
-     * Sets the given string as encoding.
-     *
-     * @param string
-     * @return void
-     **/
-    function setEncoding($encoding) {}
-
-    /**
-     * Controls whether an XML declaration will be generated at the start of the 
-     * XML document. Set to to generate the XML declaration,
-     * or to suppress it.
-     *
-     * @param bool
-     * @return void
-     **/
-    function setXMLDeclaration($xmlDeclatation) {}
-
-    /**
-     * Sets the given string as xml version.
-     *
-     * @param string
-     * @return void
-     **/
-    function setXMLVersion($xmlVersion) {}
-
-}
-class SDO_DataFactory {
-    /**
-     * Create a new SDO_DataObject given the data object's 
-     * namespace URI and type name.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function create($type_namespace_uri, $type_name) {}
-
-}
-class SDO_DataObject {
-    /**
-     * Clear an SDO_DataObject's properties. 
-     * Read-only properties are unaffected.
-     * Subsequent calls to isset() for the data object will return .
-     *
-     * @return void
-     **/
-    function clear() {}
-
-    /**
-     * Create a child SDO_DataObject of the default type for the 
-     * property identified.
-     * The data object is automatically inserted into the tree 
-     * and a reference to it is returned.
-     *
-     * @param mixed
-     * @return SDO_DataObject
-     **/
-    function createDataObject($identifier) {}
-
-    /**
-     * Get the data object which contains this data object.
-     *
-     * @return SDO_DataObject
-     **/
-    function getContainer() {}
-
-    /**
-     * Return the SDO_Sequence for this SDO_DataObject. 
-     * Accessing the SDO_DataObject through the SDO_Sequence interface 
-     * acts on the same SDO_DataObject instance data, 
-     * but preserves ordering across properties.
-     *
-     * @return SDO_Sequence
-     **/
-    function getSequence() {}
-
-    /**
-     * Return the name of the type for a data object.
-     * A convenience method corresponding to 
-     * SDO_Model_ReflectionDataObject::getType().getName().
-     *
-     * @return string
-     **/
-    function getTypeName() {}
-
-    /**
-     * Return the namespace URI of the type for a data object.
-     * A convenience method corresponding to 
-     * SDO_Model_ReflectionDataObject::getType().getNamespaceURI().
-     *
-     * @return string
-     **/
-    function getTypeNamespaceURI() {}
-
-}
-class SDO_Exception {
-    /**
-     * Returns the cause of this exception or NULL if the cause is nonexistent or unknown.
-     * Typically the cause will be an SDO_CPPException object, which may
-     * be used to obtain additional diagnostic information.
-     *
-     * @return mixed
-     **/
-    function getCause() {}
-
-}
-class SDO_List {
-    /**
-     * Insert a new element at a specified position in the list.
-     * All subsequent list items are moved up.
-     *
-     * @param mixed
-     * @param int
-     * @return void
-     **/
-    function insert($value, $index) {}
-
-}
-class SDO_Model_Property {
-    /**
-     * Returns the SDO_Model_Type which contains this property.
-     *
-     * @return SDO_Model_Type
-     **/
-    function getContainingType() {}
-
-    /**
-     * Returns the default value for the property.
-     * Only primitive data type properties can have default values.
-     *
-     * @return mixed
-     **/
-    function getDefault() {}
-
-    /**
-     * Returns the name of the SDO_Model_Property.
-     *
-     * @return string
-     **/
-    function getName() {}
-
-    /**
-     * Get the SDO_Model_Type of the property.
-     * The SDO_Model_Type describes the type information for the property, such 
-     * as its type name, namespace URI, whether it is a primitive data type, 
-     * and so on.
-     *
-     * @return SDO_Model_Type
-     **/
-    function getType() {}
-
-    /**
-     * Test to see if the property corresponds to a containment relationship.
-     * Returns if the property defines a containment relationship,
-     * or if it is reference.
-     *
-     * @return bool
-     **/
-    function isContainment() {}
-
-    /**
-     * Test to see if the property is many-valued. 
-     * Returns if this is a many-valued property, otherwise returns 
-     * .
-     *
-     * @return bool
-     **/
-    function isMany() {}
-
-}
-class SDO_Model_ReflectionDataObject {
-    /**
-     * Get a string describing the SDO_DataObject.
-     * The default behaviour is to print the output, but
-     * if is specified for return, it is returned as a string.
-     *
-     * @param SDO_Model_ReflectionDataObject
-     * @param bool
-     * @return mixed
-     **/
-    function export($rdo, $return) {}
-
-    /**
-     * Get the SDO_Model_Property that contains the SDO_DataObject. 
-     * This method is used to navigate up to the parent's property which 
-     * contains the data object which has been reflected upon.
-     *
-     * @return SDO_Model_Property
-     **/
-    function getContainmentProperty() {}
-
-    /**
-     * Get the instance properties for the SDO_DataObject. The instance 
-     * properties consist of all the properties defined on the data object's 
-     * type, plus any instance properties from open content (if the data object
-     * is an open type).
-     *
-     * @return array
-     **/
-    function getInstanceProperties() {}
-
-    /**
-     * Returns the SDO_Model_Type for the SDO_DataObject. The SDO_Model_Type
-     * holds all the information about the data object's type, such as namespace 
-     * URI, type name, whether it is a primitive data type, and so on.
-     *
-     * @return SDO_Model_Type
-     **/
-    function getType() {}
-
-    /**
-     * Construct an SDO_Model_ReflectionDataObject to reflect on an 
-     * SDO_DataObject. Reflecting on an SDO_DataObject gives access to 
-     * information about its model. The model contains information such as 
-     * the data object's type, and whether that type is sequenced
-     * (preserves ordering across properties) or open (each instance can have 
-     * its model extended). The model also holds information about the data 
-     * object's properties, any default values they may have, and so on.
-     *
-     * @param SDO_DataObject
-     * @return SDO_Model_ReflectionDataObject
-     **/
-    function __construct($data_object) {}
-
-}
-class SDO_Model_Type {
-    /**
-     * Get the base type for this type.
-     * Returns the SDO_Model_Type for the base type if this type inherits from 
-     * another, otherwise returns . An example of when base types occur 
-     * is when a type defined in XML schema inherits from another type by using 
-     * .
-     *
-     * @return SDO_Model_Type
-     **/
-    function getBaseType() {}
-
-    /**
-     * Returns the name of the type. The combination of type name and namespace 
-     * URI is used to uniquely identify the type.
-     *
-     * @return string
-     **/
-    function getName() {}
-
-    /**
-     * Returns the namespace URI of the type. The combination of namespace URI 
-     * and type name is used to uniquely identify the type.
-     *
-     * @return string
-     **/
-    function getNamespaceURI() {}
-
-    /**
-     * Get an array of SDO_Model_Property objects describing the properties 
-     * defined for the SDO_Model_Type. Each SDO_Model_Property holds 
-     * information such as the property name, default value, and so on.
-     *
-     * @return array
-     **/
-    function getProperties() {}
-
-    /**
-     * Get an SDO_Model_Property of the type, identified by its property index 
-     * or property name.
-     *
-     * @param mixed
-     * @return SDO_Model_Property
-     **/
-    function getProperty($identifier) {}
-
-    /**
-     * Test to see if this SDO_Model_Type is an abstract data type.
-     * Returns if this type is abstract, that is, no SDO_DataObject
-     * of this type can be instantiated, though other types may inherit
-     * from it.
-     *
-     * @return bool
-     **/
-    function isAbstractType() {}
-
-    /**
-     * Test to see if this SDO_Model_Type is a primitive data type.
-     * Returns if this type is a primitive data type, otherwise returns 
-     * .
-     *
-     * @return bool
-     **/
-    function isDataType() {}
-
-    /**
-     * Test for an SDO_DataObject being an instance of this SDO_Model_Type.
-     * Returns if the SDO_DataObject provided is an instance of this 
-     * SDO_Model_Type, or a derived type, otherwise returns .
-     *
-     * @param SDO_DataObject
-     * @return bool
-     **/
-    function isInstance($data_object) {}
-
-    /**
-     * Test to see if this type is open.
-     * Returns if this type is open, otherwise returns . An 
-     * SDO_DataObject whose type is open can have properties added to them which 
-     * are not described by the type. This capability is used to support 
-     * working with XML documents whose schema support open content, such as that 
-     * defined by an element.
-     *
-     * @return bool
-     **/
-    function isOpenType() {}
-
-    /**
-     * Test to see if this is a sequenced type. Returns if this type is 
-     * sequence, otherwise returns .
-     * Sequenced types can have the ordering across properties preserved and can 
-     * contain unstructured text. For more information on sequenced types see 
-     * the section on 
-     * Working with Sequenced Data
-     * Objects.
-     *
-     * @return bool
-     **/
-    function isSequencedType() {}
-
-}
-class SDO_Sequence {
-    /**
-     * Return the property for the specified sequence index.
-     *
-     * @param int
-     * @return SDO_Model_Property
-     **/
-    function getProperty($sequence_index) {}
-
-    /**
-     * Insert a new element at a specified position in the sequence. 
-     * All subsequent sequence items are moved up.
-     *
-     * @param mixed
-     * @param int
-     * @param mixed
-     * @return void
-     **/
-    function insert($value, $sequenceIndex, $propertyIdentifier) {}
-
-    /**
-     * Modify the position of the item in the sequence, 
-     * without altering the value of the property in the SDO_DataObject.
-     *
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function move($toIndex, $fromIndex) {}
-
-}
-class SQLite3 {
-    /**
-     * Returns the number of database rows that were changed (or inserted or
-     * deleted) by the most recent SQL statement.
-     *
-     * @return int
-     **/
-    function changes() {}
-
-    /**
-     * Closes the database connection.
-     *
-     * @return bool
-     **/
-    function close() {}
-
-    /**
-     * Registers a PHP function or user-defined function for use as an SQL
-     * aggregate function for use within SQL statements.
-     *
-     * @param string
-     * @param mixed
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function createAggregate($name, $step_callback, $final_callback, $argument_count) {}
-
-    /**
-     * Registers a PHP function or user-defined function for use as an SQL scalar
-     * function for use within SQL statements.
-     *
-     * @param string
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function createFunction($name, $callback, $argument_count) {}
-
-    /**
-     * Returns a string that has been properly escaped for safe inclusion in an
-     * SQL statement.
-     *
-     * @param string
-     * @return string
-     **/
-    function escapeString($value) {}
-
-    /**
-     * Executes a result-less query against a given database.
-     *
-     * @param string
-     * @return bool
-     **/
-    function exec($query) {}
-
-    /**
-     * Returns the numeric result code of the most recent failed SQLite request.
-     *
-     * @return int
-     **/
-    function lastErrorCode() {}
-
-    /**
-     * Returns English text describing the most recent failed SQLite request.
-     *
-     * @return string
-     **/
-    function lastErrorMsg() {}
-
-    /**
-     * Returns the row ID of the most recent INSERT into the database.
-     *
-     * @return int
-     **/
-    function lastInsertRowID() {}
-
-    /**
-     * Attempts to load an SQLite extension library.
-     *
-     * @param string
-     * @return bool
-     **/
-    function loadExtension($shared_library) {}
-
-    /**
-     * Opens an SQLite 3 Database. If the build includes encryption, then it will
-     * attempt to use the key.
-     *
-     * @param string
-     * @param int
-     * @param string
-     * @return bool
-     **/
-    function open($filename, $flags, $encryption_key) {}
-
-    /**
-     * Prepares an SQL statement for execution and returns an SQLite3Stmt object.
-     *
-     * @param string
-     * @return SQLite3Stmt
-     **/
-    function prepare($query) {}
-
-    /**
-     * Executes an SQL query, returning an SQLite3Result object if the query
-     * returns results.
-     *
-     * @param string
-     * @return SQLite3Result
-     **/
-    function query($query) {}
-
-    /**
-     * Executes a query and returns a single result.
-     *
-     * @param string
-     * @param bool
-     * @return mixed
-     **/
-    function querySingle($query, $entire_row) {}
-
-    /**
-     * Returns the SQLite3 library version as a string constant and as a number.
-     *
-     * @return array
-     **/
-    function version() {}
-
-    /**
-     * Instantiates an SQLite3 object and opens a connection to an
-     * SQLite 3 database. If the build includes encryption, then it will attempt
-     * to use the key.
-     *
-     * @param string
-     * @param int
-     * @param string
-     **/
-    function __construct($filename, $flags, $encryption_key) {}
-
-}
-class SQLite3Result {
-    /**
-     * Returns the name of the column specified by the
-     * column_number.
-     *
-     * @param int
-     * @return string
-     **/
-    function columnName($column_number) {}
-
-    /**
-     * Returns the type of the column identified by
-     * column_number.
-     *
-     * @param int
-     * @return int
-     **/
-    function columnType($column_number) {}
-
-    /**
-     * Fetches a result row as an associative or numerically indexed array or both.
-     * By default, fetches as both.
-     *
-     * @param int
-     * @return array
-     **/
-    function fetchArray($mode) {}
-
-    /**
-     * Closes the result set.
-     *
-     * @return bool
-     **/
-    function finalize() {}
-
-    /**
-     * Returns the number of columns in the result set.
-     *
-     * @return int
-     **/
-    function numColumns() {}
-
-    /**
-     * Resets the result set back to the first row.
-     *
-     * @return bool
-     **/
-    function reset() {}
-
-}
-class SQLite3Stmt {
-    /**
-     * Binds a parameter to a statement variable.
-     *
-     * @param string
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function bindParam($sql_param, &$param, $type) {}
-
-    /**
-     * Binds the value of a parameter to a statement variable.
-     *
-     * @param string
-     * @param mixed
-     * @param int
-     * @return bool
-     **/
-    function bindValue($sql_param, $value, $type) {}
-
-    /**
-     * Clears all current bound parameters.
-     *
-     * @return bool
-     **/
-    function clear() {}
-
-    /**
-     * Closes the prepared statement.
-     *
-     * @return bool
-     **/
-    function close() {}
-
-    /**
-     * Executes a prepared statement and returns a result set object.
-     *
-     * @return SQLite3Result
-     **/
-    function execute() {}
-
-    /**
-     * Returns the number of parameters within the prepared statement.
-     *
-     * @return int
-     **/
-    function paramCount() {}
-
-    /**
-     * Resets the prepared statement to its state prior to execution. All bindings
-     * remain intact after reset.
-     *
-     * @return bool
-     **/
-    function reset() {}
-
-}
-class SWFAction {
-    /**
-     * Creates a new SWFAction and compiles the given script
-     * in it.
-     *
-     * @param string
-     * @return SWFAction
-     **/
-    function __construct($script) {}
-
-}
-class SWFBitmap {
-    /**
-     * Returns the bitmap's height.
-     *
-     * @return float
-     **/
-    function getHeight() {}
-
-    /**
-     * Returns the bitmap's width.
-     *
-     * @return float
-     **/
-    function getWidth() {}
-
-    /**
-     * Creates the new SWFBitmap object from the given
-     * file.
-     *
-     * @param mixed
-     * @param mixed
-     * @return SWFBitmap
-     **/
-    function __construct($file, $alphafile) {}
-
-}
-class SWFButton {
-    /**
-     * Adds the given action to the button for the given
-     * conditions.
-     *
-     * @param SWFAction
-     * @param int
-     * @return void
-     **/
-    function addAction($action, $flags) {}
-
-    /**
-     * @param SWFSound
-     * @param int
-     * @return SWFSoundInstance
-     **/
-    function addASound($sound, $flags) {}
-
-    /**
-     * Adds the given shape to the button.
-     *
-     * @param SWFShape
-     * @param int
-     * @return void
-     **/
-    function addShape($shape, $flags) {}
-
-    /**
-     * Sets the action to be performed when the button is clicked.
-     *
-     * @param SWFAction
-     * @return void
-     **/
-    function setAction($action) {}
-
-    /**
-     * swfbutton-&gt;setdown alias for addShape(shape, SWFBUTTON_DOWN).
-     *
-     * @param SWFShape
-     * @return void
-     **/
-    function setDown($shape) {}
-
-    /**
-     * swfbutton-&gt;sethit alias for addShape(shape, SWFBUTTON_HIT).
-     *
-     * @param SWFShape
-     * @return void
-     **/
-    function setHit($shape) {}
-
-    /**
-     * @param int
-     * @return void
-     **/
-    function setMenu($flag) {}
-
-    /**
-     * swfbutton-&gt;setover alias for addShape(shape, SWFBUTTON_OVER).
-     *
-     * @param SWFShape
-     * @return void
-     **/
-    function setOver($shape) {}
-
-    /**
-     * swfbutton-&gt;setup alias for addShape(shape, SWFBUTTON_UP).
-     *
-     * @param SWFShape
-     * @return void
-     **/
-    function setUp($shape) {}
-
-    /**
-     * Creates a new Button.
-     *
-     * @return SWFButton
-     **/
-    function __construct() {}
-
-}
-class SWFDisplayItem {
-    /**
-     * @param SWFAction
-     * @param int
-     * @return void
-     **/
-    function addAction($action, $flags) {}
-
-    /**
-     * swfdisplayitem-&gt;addcolor adds the color to 
-     * this item's color transform. The color is given in its RGB form.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function addColor($red, $green, $blue, $a) {}
-
-    /**
-     * @return void
-     **/
-    function endMask() {}
-
-    /**
-     * @return float
-     **/
-    function getRot() {}
-
-    /**
-     * @return float
-     **/
-    function getX() {}
-
-    /**
-     * @return float
-     **/
-    function getXScale() {}
-
-    /**
-     * @return float
-     **/
-    function getXSkew() {}
-
-    /**
-     * @return float
-     **/
-    function getY() {}
-
-    /**
-     * @return float
-     **/
-    function getYScale() {}
-
-    /**
-     * @return float
-     **/
-    function getYSkew() {}
-
-    /**
-     * swfdisplayitem-&gt;move moves the current object by 
-     * (dx,dy) from its
-     * current position.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function move($dx, $dy) {}
-
-    /**
-     * swfdisplayitem-&gt;moveto moves the current object to 
-     * (x,y) in global coordinates.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function moveTo($x, $y) {}
-
-    /**
-     * swfdisplayitem-&gt;multcolor multiplies the item's 
-     * color transform by the given values.
-     *
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function multColor($red, $green, $blue, $a) {}
-
-    /**
-     * swfdisplayitem-&gt;remove removes this object from
-     * the movie's display list.
-     *
-     * @return void
-     **/
-    function remove() {}
-
-    /**
-     * swfdisplayitem-&gt;rotate rotates the current object
-     * by angle degrees from its current rotation.
-     *
-     * @param float
-     * @return void
-     **/
-    function rotate($angle) {}
-
-    /**
-     * swfdisplayitem-&gt;rotateto set the current object
-     * rotation to angle degrees in global coordinates.
-     *
-     * @param float
-     * @return void
-     **/
-    function rotateTo($angle) {}
-
-    /**
-     * swfdisplayitem-&gt;scale scales the current object by 
-     * (dx,dy) from its
-     * current size.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function scale($dx, $dy) {}
-
-    /**
-     * swfdisplayitem-&gt;scaleto scales the current object to 
-     * (x,y) in global coordinates.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function scaleTo($x, $y) {}
-
-    /**
-     * swfdisplayitem-&gt;setdepth sets the object's
-     * z-order to depth. Depth defaults to the 
-     * order in which instances are created (by adding a shape/text to 
-     * a movie)- newer ones are on top of older ones. If two objects are 
-     * given the same depth, only the later-defined one can be moved.
-     *
-     * @param int
-     * @return void
-     **/
-    function setDepth($depth) {}
-
-    /**
-     * @param int
-     * @return void
-     **/
-    function setMaskLevel($level) {}
-
-    /**
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function setMatrix($a, $b, $c, $d, $x, $y) {}
-
-    /**
-     * swfdisplayitem-&gt;setname sets the object's name to 
-     * name, for targetting with action script. 
-     * Only useful on sprites.
-     *
-     * @param string
-     * @return void
-     **/
-    function setName($name) {}
-
-    /**
-     * swfdisplayitem-&gt;setratio sets the object's ratio
-     * to ratio. Obviously only useful for morphs.
-     *
-     * @param float
-     * @return void
-     **/
-    function setRatio($ratio) {}
-
-    /**
-     * swfdisplayitem-&gt;skewx adds ddegrees
-     * to current x-skew.
-     *
-     * @param float
-     * @return void
-     **/
-    function skewX($ddegrees) {}
-
-    /**
-     * swfdisplayitem-&gt;skewxto sets the
-     * x-skew to degrees. For degrees
-     * is 1.0, it means a 45-degree forward slant. More is more forward, 
-     * less is more backward.
-     *
-     * @param float
-     * @return void
-     **/
-    function skewXTo($degrees) {}
-
-    /**
-     * swfdisplayitem-&gt;skewy adds ddegrees
-     * to current y-skew.
-     *
-     * @param float
-     * @return void
-     **/
-    function skewY($ddegrees) {}
-
-    /**
-     * swfdisplayitem-&gt;skewyto sets the
-     * y-skew to degrees. For degrees
-     * is 1.0, it means a 45-degree forward slant. More is more upward, 
-     * less is more downward.
-     *
-     * @param float
-     * @return void
-     **/
-    function skewYTo($degrees) {}
-
-}
-class SWFFill {
-    /**
-     * Moves the fill origin to the given global coordinates.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function moveTo($x, $y) {}
-
-    /**
-     * Sets the fill rotation to the given angle.
-     *
-     * @param float
-     * @return void
-     **/
-    function rotateTo($angle) {}
-
-    /**
-     * Sets the fill scale to the given coordinates.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function scaleTo($x, $y) {}
-
-    /**
-     * Sets the fill x-skew to x.
-     *
-     * @param float
-     * @return void
-     **/
-    function skewXTo($x) {}
-
-    /**
-     * Sets the fill y-skew to y.
-     *
-     * @param float
-     * @return void
-     **/
-    function skewYTo($y) {}
-
-}
-class SWFFont {
-    /**
-     * @return float
-     **/
-    function getAscent() {}
-
-    /**
-     * @return float
-     **/
-    function getDescent() {}
-
-    /**
-     * @return float
-     **/
-    function getLeading() {}
-
-    /**
-     * @param int
-     * @return string
-     **/
-    function getShape($code) {}
-
-    /**
-     * @param string
-     * @return float
-     **/
-    function getUTF8Width($string) {}
-
-    /**
-     * swffont-&gt;getwidth returns the string 
-     * string's width, using font's default scaling. 
-     * You'll probably want to use the swftext version of this method which
-     * uses the text object's scale.
-     *
-     * @param string
-     * @return float
-     **/
-    function getWidth($string) {}
-
-    /**
-     * If filename is the name of an FDB file 
-     * (i.e., it ends in ".fdb"), load the font definition found in said 
-     * file. Otherwise, create a browser-defined font reference.
-     *
-     * @param string
-     * @return SWFFont
-     **/
-    function __construct($filename) {}
-
-}
-class SWFFontChar {
-    /**
-     * @param string
-     * @return void
-     **/
-    function addChars($char) {}
-
-    /**
-     * @param string
-     * @return void
-     **/
-    function addUTF8Chars($char) {}
-
-}
-class SWFGradient {
-    /**
-     * swfgradient-&gt;addentry adds an entry to the gradient list. 
-     * ratio is a number between 0 and 1 indicating where in 
-     * the gradient this color appears. Thou shalt add entries in order of increasing ratio.
-     *
-     * @param float
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function addEntry($ratio, $red, $green, $blue, $alpha) {}
-
-    /**
-     * swfgradient creates a new SWFGradient object.
-     *
-     * @return SWFGradient
-     **/
-    function __construct() {}
-
-}
-class SWFMorph {
-    /**
-     * Gets the morph's starting shape.
-     *
-     * @return SWFShape
-     **/
-    function getShape1() {}
-
-    /**
-     * Gets the morph's ending shape.
-     *
-     * @return SWFShape
-     **/
-    function getShape2() {}
-
-    /**
-     * Creates a new SWFMorph object.
-     *
-     * @return SWFMorph
-     **/
-    function __construct() {}
-
-}
-class SWFMovie {
-    /**
-     * Adds an SWF object instance to the current movie.
-     *
-     * @param object
-     * @return mixed
-     **/
-    function add($instance) {}
-
-    /**
-     * @param SWFCharacter
-     * @param string
-     * @return void
-     **/
-    function addExport($char, $name) {}
-
-    /**
-     * @param SWFFont
-     * @return mixed
-     **/
-    function addFont($font) {}
-
-    /**
-     * @param string
-     * @param string
-     * @return SWFSprite
-     **/
-    function importChar($libswf, $name) {}
-
-    /**
-     * @param string
-     * @param string
-     * @return SWFFontChar
-     **/
-    function importFont($libswf, $name) {}
-
-    /**
-     * @param string
-     * @return void
-     **/
-    function labelFrame($label) {}
-
-    /**
-     * Moves to the next frame of the animation.
-     *
-     * @return void
-     **/
-    function nextFrame() {}
-
-    /**
-     * Dumps the SWFMovie.
-     *
-     * @param int
-     * @return int
-     **/
-    function output($compression) {}
-
-    /**
-     * Removes the given object instance from the display
-     * list.
-     *
-     * @param object
-     * @return void
-     **/
-    function remove($instance) {}
-
-    /**
-     * Saves the SWF movie to the specified filename.
-     *
-     * @param string
-     * @param int
-     * @return int
-     **/
-    function save($filename, $compression) {}
-
-    /**
-     * @param resource
-     * @param int
-     * @return int
-     **/
-    function saveToFile($x, $compression) {}
-
-    /**
-     * Sets the background color.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function setbackground($red, $green, $blue) {}
-
-    /**
-     * Sets the movie's dimension to the specified width
-     * and height.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function setDimension($width, $height) {}
-
-    /**
-     * Sets the total number of frames in the animation to the given 
-     * number.
-     *
-     * @param int
-     * @return void
-     **/
-    function setFrames($number) {}
-
-    /**
-     * Sets the frame rate to the specified rate.
-     *
-     * @param float
-     * @return void
-     **/
-    function setRate($rate) {}
-
-    /**
-     * @param SWFSound
-     * @return SWFSoundInstance
-     **/
-    function startSound($sound) {}
-
-    /**
-     * @param SWFSound
-     * @return void
-     **/
-    function stopSound($sound) {}
-
-    /**
-     * Streams the given MP3 file mp3file.
-     *
-     * @param mixed
-     * @param float
-     * @return int
-     **/
-    function streamMP3($mp3file, $skip) {}
-
-    /**
-     * @return void
-     **/
-    function writeExports() {}
-
-    /**
-     * Creates a new movie object, representing an SWF movie.
-     *
-     * @param int
-     * @return SWFMovie
-     **/
-    function __construct($version) {}
-
-}
-class SWFPrebuiltClip {
-    /**
-     * @param mixed
-     * @return SWFPrebuiltClip
-     **/
-    function __construct($file) {}
-
-}
-class SWFShape {
-    /**
-     * SWFShape-&gt;addFill adds a solid fill to the shape's list 
-     * of fill styles. SWFShape-&gt;addFill accepts three different
-     * types of arguments.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return SWFFill
-     **/
-    function addFill($red, $green, $blue, $alpha) {}
-
-    /**
-     * @param float
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function drawArc($r, $startAngle, $endAngle) {}
-
-    /**
-     * @param float
-     * @return void
-     **/
-    function drawCircle($r) {}
-
-    /**
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return int
-     **/
-    function drawCubic($bx, $by, $cx, $cy, $dx, $dy) {}
-
-    /**
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return int
-     **/
-    function drawCubicTo($bx, $by, $cx, $cy, $dx, $dy) {}
-
-    /**
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return int
-     **/
-    function drawCurve($controldx, $controldy, $anchordx, $anchordy, $targetdx, $targetdy) {}
-
-    /**
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @param float
-     * @return int
-     **/
-    function drawCurveTo($controlx, $controly, $anchorx, $anchory, $targetx, $targety) {}
-
-    /**
-     * @param SWFFont
-     * @param string
-     * @param int
-     * @return void
-     **/
-    function drawGlyph($font, $character, $size) {}
-
-    /**
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function drawLine($dx, $dy) {}
-
-    /**
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function drawLineTo($x, $y) {}
-
-    /**
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function movePen($dx, $dy) {}
-
-    /**
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function movePenTo($x, $y) {}
-
-    /**
-     * What this nonsense is about is, every edge segment borders at most two fills. 
-     * When rasterizing the object, it's pretty handy to know what those fills are 
-     * ahead of time, so the swf format requires these to be specified.
-     *
-     * @param SWFGradient
-     * @return void
-     **/
-    function setLeftFill($fill) {}
-
-    /**
-     * swfshape-&gt;setline sets the shape's line style. 
-     * width is the line's width. If width
-     * is 0, the line's style is removed (then, all other arguments are ignored).
-     * If width &gt; 0, then line's color is set to
-     * red, green, blue.
-     * Last parameter a is optional.
-     *
-     * @param SWFShape
-     * @return void
-     **/
-    function setLine($shape) {}
-
-    /**
-     * @param SWFGradient
-     * @return void
-     **/
-    function setRightFill($fill) {}
-
-    /**
-     * Created a new SWFShape object.
-     *
-     * @return SWFShape
-     **/
-    function __construct() {}
-
-}
-class SWFSound {
-    /**
-     * @param string
-     * @param int
-     * @return SWFSound
-     **/
-    function __construct($filename, $flags) {}
-
-}
-class SWFSoundInstance {
-    /**
-     * @param int
-     * @return void
-     **/
-    function loopCount($point) {}
-
-    /**
-     * @param int
-     * @return void
-     **/
-    function loopInPoint($point) {}
-
-    /**
-     * @param int
-     * @return void
-     **/
-    function loopOutPoint($point) {}
-
-    /**
-     * @return void
-     **/
-    function noMultiple() {}
-
-}
-class SWFSprite {
-    /**
-     * swfsprite-&gt;add adds a swfshape, a 
-     * swfbutton, a swftext, 
-     * a swfaction or a swfsprite object.
-     *
-     * @param object
-     * @return void
-     **/
-    function add($object) {}
-
-    /**
-     * @param string
-     * @return void
-     **/
-    function labelFrame($label) {}
-
-    /**
-     * swfsprite-&gt;setframes moves to the next frame of 
-     * the animation.
-     *
-     * @return void
-     **/
-    function nextFrame() {}
-
-    /**
-     * swfsprite-&gt;remove remove a swfshape, a 
-     * swfbutton, a swftext, 
-     * a swfaction or a swfsprite object
-     * from the sprite.
-     *
-     * @param object
-     * @return void
-     **/
-    function remove($object) {}
-
-    /**
-     * swfsprite-&gt;setframes sets the total number of frames 
-     * in the animation to numberofframes.
-     *
-     * @param int
-     * @return void
-     **/
-    function setFrames($number) {}
-
-    /**
-     * @param SWFSound
-     * @return SWFSoundInstance
-     **/
-    function startSound($sount) {}
-
-    /**
-     * @param SWFSound
-     * @return void
-     **/
-    function stopSound($sount) {}
-
-    /**
-     * Creates a new SWFSprite object.
-     *
-     * @return SWFSprite
-     **/
-    function __construct() {}
-
-}
-class SWFText {
-    /**
-     * swftext-&gt;addstring draws the string string
-     * at the current pen (cursor) location. Pen is at the baseline of the text; 
-     * i.e., ascending text is in the -y direction.
-     *
-     * @param string
-     * @return void
-     **/
-    function addString($string) {}
-
-    /**
-     * @param string
-     * @return void
-     **/
-    function addUTF8String($text) {}
-
-    /**
-     * @return float
-     **/
-    function getAscent() {}
-
-    /**
-     * @return float
-     **/
-    function getDescent() {}
-
-    /**
-     * @return float
-     **/
-    function getLeading() {}
-
-    /**
-     * @param string
-     * @return float
-     **/
-    function getUTF8Width($string) {}
-
-    /**
-     * Returns the rendered width of the string at the
-     * text object's current font, scale, and spacing settings.
-     *
-     * @param string
-     * @return float
-     **/
-    function getWidth($string) {}
-
-    /**
-     * swftext-&gt;moveto moves the pen (or cursor, if 
-     * that makes more sense) to (x,y)
-     * in text object's coordinate space. If either is zero, though, value 
-     * in that dimension stays the same. Annoying, should be fixed.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function moveTo($x, $y) {}
-
-    /**
-     * Changes the current text color.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function setColor($red, $green, $blue, $a) {}
-
-    /**
-     * swftext-&gt;setfont sets the current font to 
-     * font.
-     *
-     * @param SWFFont
-     * @return void
-     **/
-    function setFont($font) {}
-
-    /**
-     * swftext-&gt;setheight sets the current font height to 
-     * height. Default is 240.
-     *
-     * @param float
-     * @return void
-     **/
-    function setHeight($height) {}
-
-    /**
-     * swftext-&gt;setspacing sets the current font spacing to 
-     * spacing. Default is 1.0. 
-     * 0 is all of the letters written at the same point. This doesn't really work 
-     * that well because it inflates the advance across the letter, doesn't add 
-     * the same amount of spacing between the letters. I should try and explain 
-     * that better, prolly. Or just fix the damn thing to do constant spacing. 
-     * This was really just a way to figure out how letter advances work, 
-     * anyway.. So nyah.
-     *
-     * @param float
-     * @return void
-     **/
-    function setSpacing($spacing) {}
-
-    /**
-     * Creates a new SWFText object, fresh for 
-     * manipulating.
-     *
-     * @return void
-     **/
-    function __construct() {}
-
-}
-class SWFTextField {
-    /**
-     * @param string
-     * @return void
-     **/
-    function addChars($chars) {}
-
-    /**
-     * swftextfield-&gt;setname concatenates the string
-     * string to the text field.
-     *
-     * @param string
-     * @return void
-     **/
-    function addString($string) {}
-
-    /**
-     * swftextfield-&gt;align sets the text field alignment
-     * to alignement. Valid values for 
-     * alignement are : SWFTEXTFIELD_ALIGN_LEFT, 
-     * SWFTEXTFIELD_ALIGN_RIGHT, SWFTEXTFIELD_ALIGN_CENTER and 
-     * SWFTEXTFIELD_ALIGN_JUSTIFY.
-     *
-     * @param int
-     * @return void
-     **/
-    function align($alignement) {}
-
-    /**
-     * swftextfield-&gt;setbounds sets the text field width 
-     * to width and height to height.
-     * If you don't set the bounds yourself, Ming makes a poor guess at what 
-     * the bounds are.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function setBounds($width, $height) {}
-
-    /**
-     * swftextfield-&gt;setcolor sets the color of the text field. 
-     * Default is fully opaque black. Color is represented using RGB system.
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function setColor($red, $green, $blue, $a) {}
-
-    /**
-     * swftextfield-&gt;setfont sets the text field font to 
-     * the [browser-defined?] font font.
-     *
-     * @param SWFFont
-     * @return void
-     **/
-    function setFont($font) {}
-
-    /**
-     * swftextfield-&gt;setheight sets the font height of this text field
-     * font to the given height height. Default is 240.
-     *
-     * @param float
-     * @return void
-     **/
-    function setHeight($height) {}
-
-    /**
-     * swftextfield-&gt;setindentation sets the indentation of 
-     * the first line in the text field, to width.
-     *
-     * @param float
-     * @return void
-     **/
-    function setIndentation($width) {}
-
-    /**
-     * swftextfield-&gt;setleftmargin sets the left margin width
-     * of the text field to width. Default is 0.
-     *
-     * @param float
-     * @return void
-     **/
-    function setLeftMargin($width) {}
-
-    /**
-     * swftextfield-&gt;setlinespacing sets the line spacing
-     * of the text field to the height of height. Default is 40.
-     *
-     * @param float
-     * @return void
-     **/
-    function setLineSpacing($height) {}
-
-    /**
-     * swftextfield-&gt;setmargins set both margins at once, 
-     * for the man on the go.
-     *
-     * @param float
-     * @param float
-     * @return void
-     **/
-    function setMargins($left, $right) {}
-
-    /**
-     * swftextfield-&gt;setname sets the variable name of this
-     * text field to name, for form posting and action 
-     * scripting purposes.
-     *
-     * @param string
-     * @return void
-     **/
-    function setName($name) {}
-
-    /**
-     * @param float
-     * @return void
-     **/
-    function setPadding($padding) {}
-
-    /**
-     * swftextfield-&gt;setrightmargin sets the right margin width
-     * of the text field to width. Default is 0.
-     *
-     * @param float
-     * @return void
-     **/
-    function setRightMargin($width) {}
-
-    /**
-     * swftextfield creates a new text field object. 
-     * Text Fields are less flexible than swftext objects- 
-     * they can't be rotated, scaled non-proportionally, or skewed, but they can
-     * be used as form entries, and they can use browser-defined fonts.
-     *
-     * @param int
-     * @return SWFTextField
-     **/
-    function __construct($flags) {}
-
-}
-class SWFVideoStream {
-    /**
-     * This function returns the number of video-frames of a SWFVideoStream.
-     *
-     * @return int
-     **/
-    function getNumFrames() {}
-
-    /**
-     * Sets the width and height for streamed videos.
-     *
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function setDimension($x, $y) {}
-
-    /**
-     * @param string
-     * @return SWFVideoStream
-     **/
-    function __construct($file) {}
-
-}
-class SimpleXMLElement {
-    /**
-     * Adds an attribute to the SimpleXML element.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function addAttribute($name, $value, $namespace) {}
-
-    /**
-     * Adds a child element to the node and returns a SimpleXMLElement of the child.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @return SimpleXMLElement
-     **/
-    function addChild($name, $value, $namespace) {}
-
-    /**
-     * The asXML method formats the parent object's data
-     * in XML version 1.0.
-     *
-     * @param string
-     * @return mixed
-     **/
-    function asXML($filename) {}
-
-    /**
-     * This function provides the attributes and values defined within an xml tag.
-     *
-     * @param string
-     * @param bool
-     * @return SimpleXMLElement
-     **/
-    function attributes($ns, $is_prefix) {}
-
-    /**
-     * This method finds the children of the element of which it is a member. The result
-     * follows normal iteration rules.
-     *
-     * @param string
-     * @param bool
-     * @return SimpleXMLElement
-     **/
-    function children($ns, $is_prefix) {}
-
-    /**
-     * Returns namespaces declared in document
-     *
-     * @param bool
-     * @return array
-     **/
-    function getDocNamespaces($recursive) {}
-
-    /**
-     * Gets the name of the XML element.
-     *
-     * @return string
-     **/
-    function getName() {}
-
-    /**
-     * Returns namespaces used in document
-     *
-     * @param bool
-     * @return array
-     **/
-    function getNamespaces($recursive) {}
-
-    /**
-     * Creates a prefix/ns context for the next XPath query. In particular, this is
-     * helpful if the provider of the given XML document alters the namespace
-     * prefixes. registerXPathNamespace will create a prefix for
-     * the associated namespace, allowing one to access nodes in that namespace 
-     * without the need to change code to allow for the new prefixes dictated by the
-     * provider.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function registerXPathNamespace($prefix, $ns) {}
-
-    /**
-     * The xpath method searches the SimpleXML node for
-     * children matching the XPath path.
-     *
-     * @param string
-     * @return array
-     **/
-    function xpath($path) {}
-
-}
-class SoapClient {
-    /**
-     * This constructor creates SoapClient objects 
-     * in WSDL or non-WSDL mode.
-     *
-     * @param mixed
-     * @param array
-     **/
-    function SoapClient($wsdl, $options) {}
-
-    /**
-     * This method is deprecated. Use instead of it.
-     *
-     * @param string
-     * @param string
-     * @return mixed
-     **/
-    function __call($function_name, $arguments) {}
-
-    /**
-     * Performs SOAP request over HTTP.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @param int
-     * @param int
-     * @return string
-     **/
-    function __doRequest($request, $location, $action, $version, $one_way) {}
-
-    /**
-     * Returns a list of available SOAP functions.
-     *
-     * @return array
-     **/
-    function __getFunctions() {}
-
-    /**
-     * Returns the XML sent in the last SOAP request.
-     *
-     * @return string
-     **/
-    function __getLastRequest() {}
-
-    /**
-     * Returns the SOAP headers from the last request.
-     *
-     * @return string
-     **/
-    function __getLastRequestHeaders() {}
-
-    /**
-     * Returns the XML sent in the last SOAP response.
-     *
-     * @return string
-     **/
-    function __getLastResponse() {}
-
-    /**
-     * Returns the SOAP headers from the last response.
-     *
-     * @return string
-     **/
-    function __getLastResponseHeaders() {}
-
-    /**
-     * Returns an array of types described in the WSDL for the Web service.
-     *
-     * @return array
-     **/
-    function __getTypes() {}
-
-    /**
-     * Defines a cookie to be sent along with the SOAP requests.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function __setCookie($name, $value) {}
-
-    /**
-     * Sets the endpoint URL that will be touched by following SOAP requests. This is equivalent to 
-     * specifying the location option when constructing the SoapClient.
-     *
-     * @param string
-     * @return string
-     **/
-    function __setLocation($new_location) {}
-
-    /**
-     * Defines headers to be sent along with the SOAP requests.
-     *
-     * @param mixed
-     * @return bool
-     **/
-    function __setSoapHeaders($soapheaders) {}
-
-    /**
-     * This is a low level API function that is used to make a SOAP call. Usually,
-     * in WSDL mode, SOAP functions can be called as methods of the
-     * SoapClient object. This method is useful in non-WSDL
-     * mode when soapaction is unknown, uri
-     * differs from the default or when sending and/or receiving SOAP Headers.
-     *
-     * @param string
-     * @param array
-     * @param array
-     * @param mixed
-     * @param array
-     * @return mixed
-     **/
-    function __soapCall($function_name, $arguments, $options, $input_headers, &$output_headers) {}
-
-}
-class SoapFault extends Exception {
-    /**
-     * This class is used to send SOAP fault responses from the PHP handler.
-     * faultcode, faultstring,
-     * faultactor and details are
-     * standard elements of a SOAP Fault.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     **/
-    function SoapFault($faultcode, $faultstring, $faultactor, $detail, $faultname, $headerfault) {}
-
-    /**
-     * SoapFault::SoapFault
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     **/
-    function __construct($faultcode, $faultstring, $faultactor, $detail, $faultname, $headerfault) {}
-
-    /**
-     * Returns a string representation of the SoapFault.
-     *
-     * @return string
-     **/
-    function __toString() {}
-
-}
-class SoapHeader {
-    /**
-     * Constructs a new SoapHeader object.
-     *
-     * @param string
-     * @param string
-     * @param mixed
-     * @param bool
-     * @param string
-     **/
-    function SoapHeader($namespace, $name, $data, $mustunderstand, $actor) {}
-
-    /**
-     * SoapHeader::SoapHeader
-     *
-     * @param string
-     * @param string
-     * @param mixed
-     * @param bool
-     * @param string
-     **/
-    function __construct($namespace, $name, $data, $mustunderstand, $actor) {}
-
-}
-class SoapParam {
-    /**
-     * Constructs a new SoapParam object.
-     *
-     * @param mixed
-     * @param string
-     **/
-    function SoapParam($data, $name) {}
-
-    /**
-     * SoapParam::SoapParam
-     *
-     * @param mixed
-     * @param string
-     **/
-    function __construct($data, $name) {}
-
-}
-class SoapServer {
-    /**
-     * Exports one or more functions for remote clients
-     *
-     * @param string
-     * @return void
-     **/
-    function addFunction($functions) {}
-
-    /**
-     * Adds a SOAP header to be returned with the response to the current request.
-     *
-     * @param string
-     * @return void
-     **/
-    function addSoapHeader($object) {}
-
-    /**
-     * Sends a response to the client of the current request indicating an error.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function fault($code, $string, $actor, $details, $name) {}
-
-    /**
-     * Returns a list of the defined functions in the SoapServer object.
-     * This method returns the list of all functions added by 
-     * SoapServer::addFunction or 
-     * SoapServer::setClass.
-     *
-     * @return array
-     **/
-    function getFunctions() {}
-
-    /**
-     * Processes a SOAP request, calls necessary functions, and sends a response 
-     * back.
-     *
-     * @param string
-     * @return void
-     **/
-    function handle($soap_request) {}
-
-    /**
-     * Exports all methods from specified class.
-     *
-     * @param string
-     * @param string
-     * @return void
-     **/
-    function setClass($class_name, $args) {}
-
-    /**
-     * This sets a specific object as the handler for SOAP requests, rather than just a class as in
-     * SoapServer::setClass.
-     *
-     * @param string
-     * @return void
-     **/
-    function setObject($object) {}
-
-    /**
-     * This function allows saving data between requests in a PHP session. It works only
-     * with a server that exports functions from a class with SoapServer::setClass
-     * or SoapServer::setObject.
-     *
-     * @param string
-     * @return void
-     **/
-    function setPersistence($mode) {}
-
-    /**
-     * This constructor allows the creation of SoapServer
-     * objects in WSDL or non-WSDL mode.
-     *
-     * @param mixed
-     * @param array
-     **/
-    function SoapServer($wsdl, $options) {}
-
-    /**
-     * SoapServer::SoapServer
-     *
-     * @param mixed
-     * @param array
-     **/
-    function __construct($wsdl, $options) {}
-
-}
-class SoapVar {
-    /**
-     * Constructs a new SoapVar object.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     **/
-    function SoapVar($data, $encoding, $type_name, $type_namespace, $node_name, $node_namespace) {}
-
-    /**
-     * SoapVar::SoapVar
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     **/
-    function __construct($data, $encoding, $type_name, $type_namespace, $node_name, $node_namespace) {}
-
-}
-class SphinxClient {
-    /**
-     * Adds query with the current settings to multi-query batch. This method
-     * doesn't affect current settings (sorting, filtering, grouping etc.) in any way.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @return int
-     **/
-    function addQuery($query, $index, $comment) {}
-
-    /**
-     * Connects to searchd, requests it to generate excerpts (snippets) from the
-     * given documents, and returns the results.
-     *
-     * @param array
-     * @param string
-     * @param string
-     * @param array
-     * @return array
-     **/
-    function buildExcerpts($docs, $index, $words, $opts) {}
-
-    /**
-     * Extracts keywords from query using tokenizer 
-     * settings for the given index, optionally with
-     * per-keyword occurrence statistics.
-     *
-     * @param string
-     * @param string
-     * @param bool
-     * @return array
-     **/
-    function buildKeywords($query, $index, $hits) {}
-
-    /**
-     * Escapes characters that are treated as special operators by the query
-     * language parser.
-     *
-     * @param string
-     * @return string
-     **/
-    function escapeString($string) {}
-
-    /**
-     * Returns string with the last error message. If there were no errors during
-     * the previous API call, empty string is returned. This method doesn't reset
-     * the error message, so you can safely call it several times.
-     *
-     * @return string
-     **/
-    function getLastError() {}
-
-    /**
-     * Returns last warning message. If there were no warnings during 
-     * the previous API call, empty string is returned. This method doesn't reset
-     * the warning, so you can safely call it several times.
-     *
-     * @return string
-     **/
-    function getLastWarning() {}
-
-    /**
-     * Connects to searchd server, runs the given search query with the current settings,
-     * obtains and returns the result set.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @return array
-     **/
-    function query($query, $index, $comment) {}
-
-    /**
-     * Clears all currently set filters. This call is normally required when
-     * using multi-queries. You might want to set different filters for different
-     * queries in the batch. To do that, you should call
-     * SphinxClient::resetFilters and add new filters using 
-     * the respective calls.
-     *
-     * @return void
-     **/
-    function resetFilters() {}
-
-    /**
-     * Clears all currently group-by settings, and disables group-by. 
-     * This call is normally required only when using multi-queries.
-     *
-     * @return void
-     **/
-    function resetGroupBy() {}
-
-    /**
-     * Connects to searchd, runs a batch of all queries added using , obtains and returns the result sets.
-     *
-     * @return array
-     **/
-    function runQueries() {}
-
-    /**
-     * Controls the format of search results set arrays (whether matches should
-     * be returned as an array or a hash).
-     * If array_result is (default value), matches
-     * are returned as a hash with document IDs as keys, and other information (weight,
-     * attributes) as values. If array_result is , matches 
-     * are eturned as a plain array with complete per-match information including
-     * document IDs.
-     *
-     * @param bool
-     * @return bool
-     **/
-    function setArrayResult($array_result) {}
-
-    /**
-     * Sets connection timeout (in seconds) for searchd connection.
-     *
-     * @param float
-     * @return bool
-     **/
-    function setConnectTimeout($timeout) {}
-
-    /**
-     * Binds per-field weights by name.
-     *
-     * @param array
-     * @return bool
-     **/
-    function setFieldWeights($weights) {}
-
-    /**
-     * Adds new integer values set filter to the existing list of filters.
-     *
-     * @param string
-     * @param array
-     * @param bool
-     * @return bool
-     **/
-    function setFilter($attribute, $values, $exclude) {}
-
-    /**
-     * Adds new float range filter to the existing list of filters.
-     * Only those documents which have attribute 
-     * value stored in the index between min and
-     * max (including values that are exactly equal 
-     * to min or max) will 
-     * be matched (or rejected, if exclude is ).
-     *
-     * @param string
-     * @param float
-     * @param float
-     * @param bool
-     * @return bool
-     **/
-    function setFilterFloatRange($attribute, $min, $max, $exclude) {}
-
-    /**
-     * Adds new integer range filter to the existing list of filters.
-     * Only those documents which have attribute 
-     * value stored in the index between min and
-     * max (including values that are exactly equal 
-     * to min or max) will 
-     * be matched (or rejected, if exclude is ).
-     *
-     * @param string
-     * @param int
-     * @param int
-     * @param bool
-     * @return bool
-     **/
-    function setFilterRange($attribute, $min, $max, $exclude) {}
-
-    /**
-     * Sets anchor point for a geosphere distance (geodistance) calculations
-     * and enables them.
-     *
-     * @param string
-     * @param string
-     * @param float
-     * @param float
-     * @return bool
-     **/
-    function setGeoAnchor($attrlat, $attrlong, $latitude, $longitude) {}
-
-    /**
-     * Sets grouping attribute, function, and group sorting mode, and enables
-     * grouping.
-     *
-     * @param string
-     * @param int
-     * @param string
-     * @return bool
-     **/
-    function setGroupBy($attribute, $func, $groupsort) {}
-
-    /**
-     * Sets attribute name for per-group distinct values count calculations. Only
-     * available for grouping queries. For each group, all values of
-     * attribute will be stored, then the amount of
-     * distinct values will be calculated and returned to the client. This feature
-     * is similar to COUNT(DISTINCT) clause in SQL.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setGroupDistinct($attribute) {}
-
-    /**
-     * Sets an accepted range of document IDs. Default range is from 0 to 0, i.e.
-     * no limit. Only those records that have document ID between
-     * min and max 
-     * (including IDs exactly equal to min or
-     * max) will be matched.
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setIDRange($min, $max) {}
-
-    /**
-     * Sets per-index weights and enables weighted summing of match weights across
-     * different indexes.
-     *
-     * @param array
-     * @return bool
-     **/
-    function setIndexWeights($weights) {}
-
-    /**
-     * Sets offset into server-side result set and amount
-     * of matches to return to client starting from that offset
-     * (limit). Can additionally control maximum
-     * server-side result set size for current query
-     * (max_matches) and the threshold amount of matches
-     * to stop searching at (cutoff).
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setLimits($offset, $limit, $max_matches, $cutoff) {}
-
-    /**
-     * Sets full-text query matching mode. mode is one of
-     * the constants listed below.
-     * 
-     * Match modes
-     * 
-     * 
-     * 
-     * Constant
-     * Description
-     * 
-     * 
-     * 
-     * 
-     * SPH_MATCH_ALL
-     * Match all query words (default mode).
-     * 
-     * 
-     * SPH_MATCH_ANY
-     * Match any of query words.
-     * 
-     * 
-     * SPH_MATCH_PHRASE
-     * Match query as a phrase, requiring perfect match.
-     * 
-     * 
-     * SPH_MATCH_BOOLEAN
-     * Match query as a boolean expression.
-     * 
-     * 
-     * SPH_MATCH_EXTENDED
-     * Match query as an expression in Sphinx internal query language.
-     * 
-     * 
-     * SPH_MATCH_FULLSCAN
-     * Enables fullscan.
-     * 
-     * 
-     * SPH_MATCH_EXTENDED2
-     * The same as SPH_MATCH_EXTENDED plus ranking
-     * and quorum searching support.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setMatchMode($mode) {}
-
-    /**
-     * Sets maximum search query time, in milliseconds. qtime must be a
-     * non-negative integer. Default value is 0, i.e. no limit.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setMaxQueryTime($qtime) {}
-
-    /**
-     * Sets ranking mode. Only available in
-     * SPH_MATCH_EXTENDED2 matching mode.
-     * 
-     * Ranking modes
-     * 
-     * 
-     * 
-     * Constant
-     * Description
-     * 
-     * 
-     * 
-     * 
-     * SPH_RANK_PROXIMITY_BM25
-     * Default ranking mode which uses both proximity and BM25
-     * ranking.
-     * 
-     * 
-     * SPH_RANK_BM25
-     * Statistical ranking mode which uses BM25 ranking only (similar
-     * to most of other full-text engines). This mode is faster, but may result
-     * in worse quality on queries which contain more than 1 keyword.
-     * 
-     * 
-     * SPH_RANK_NONE
-     * Disables ranking. This mode is the fastest. It is essentially
-     * equivalent to boolean searching, a weight of 1 is assigned to all
-     * matches.
-     *
-     * @param int
-     * @return bool
-     **/
-    function setRankingMode($ranker) {}
-
-    /**
-     * Sets distributed retry count and delay.
-     *
-     * @param int
-     * @param int
-     * @return bool
-     **/
-    function setRetries($count, $delay) {}
-
-    /**
-     * Sets searchd host name and TCP port. All subsequent requests will use the
-     * new host and port settings. Default host and port are 'localhost' and 3312,
-     * respectively.
-     *
-     * @param string
-     * @param int
-     * @return bool
-     **/
-    function setServer($server, $port) {}
-
-    /**
-     * Sets matches sorting mode. See available modes below.
-     * 
-     * Sorting modes
-     * 
-     * 
-     * 
-     * Constant
-     * Description
-     * 
-     * 
-     * 
-     * 
-     * SPH_SORT_RELEVANCE
-     * Sort by relevance in descending order (best matches first).
-     * 
-     * 
-     * SPH_SORT_ATTR_DESC
-     * Sort by an attribute in descending order (bigger attribute
-     * values first).
-     * 
-     * 
-     * SPH_SORT_ATTR_ASC
-     * Sort by an attribute in ascending order (smaller attribute
-     * values first).
-     * 
-     * 
-     * SPH_SORT_TIME_SEGMENTS
-     * Sort by time segments (last hour/day/week/month) in descending
-     * order, and then by relevance in descending order.
-     * 
-     * 
-     * SPH_SORT_EXTENDED
-     * Sort by SQL-like combination of columns in ASC/DESC order.
-     * 
-     * 
-     * SPH_SORT_EXPR
-     * Sort by an arithmetic expression.
-     *
-     * @param int
-     * @param string
-     * @return bool
-     **/
-    function setSortMode($mode, $sortby) {}
-
-    /**
-     * Instantly updates given attribute values in given documents.
-     *
-     * @param string
-     * @param array
-     * @param array
-     * @return int
-     **/
-    function updateAttributes($index, $attributes, $values) {}
-
-    /**
-     * Creates a new SphinxClient object.
-     *
-     **/
-    function __construct() {}
-
-}
-class SplBool {
-}
-class SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
-    /**
-     * @return mixed
-     **/
-    function bottom() {}
-
-    /**
-     * @return int
-     **/
-    function count() {}
-
-    /**
-     * Get the current doubly linked list node.
-     *
-     * @return mixed
-     **/
-    function current() {}
-
-    /**
-     * @return int
-     **/
-    function getIteratorMode() {}
-
-    /**
-     * @return bool
-     **/
-    function isEmpty() {}
-
-    /**
-     * This function returns the current node index
-     *
-     * @return mixed
-     **/
-    function key() {}
-
-    /**
-     * Move the iterator to the next node.
-     *
-     * @return void
-     **/
-    function next() {}
-
-    /**
-     * @param mixed
-     * @return bool
-     **/
-    function offsetExists($index) {}
-
-    /**
-     * @param mixed
-     * @return mixed
-     **/
-    function offsetGet($index) {}
-
-    /**
-     * Sets the value at the specified index to newval.
-     *
-     * @param mixed
-     * @param mixed
-     * @return void
-     **/
-    function offsetSet($index, $newval) {}
-
-    /**
-     * Unsets the value at the specified index.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function offsetUnset($index) {}
-
-    /**
-     * @return mixed
-     **/
-    function pop() {}
-
-    /**
-     * Move the iterator to the previous node.
-     *
-     * @return void
-     **/
-    function prev() {}
-
-    /**
-     * Pushes value at the end of the doubly linked list.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function push($value) {}
-
-    /**
-     * This rewinds the iterator to the beginning.
-     *
-     * @return void
-     **/
-    function rewind() {}
-
-    /**
-     * @param int
-     * @return void
-     **/
-    function setIteratorMode($mode) {}
-
-    /**
-     * @return mixed
-     **/
-    function shift() {}
-
-    /**
-     * @return mixed
-     **/
-    function top() {}
-
-    /**
-     * Prepends value at the beginning of the doubly linked list.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function unshift($value) {}
-
-    /**
-     * Checks if the doubly linked list contains any more nodes.
-     *
-     * @return bool
-     **/
-    function valid() {}
-
-}
-class SplEnum {
-}
-class SplFixedArray implements Iterator, ArrayAccess, Countable {
-    /**
-     * Returns the size of the array.
-     *
-     * @return int
-     **/
-    function count() {}
-
-    /**
-     * Get the current array element.
-     *
-     * @return mixed
-     **/
-    function current() {}
-
-    /**
-     * Import the PHP array array 
-     * in a new SplFixedArray instance
-     *
-     * @param array
-     * @param boolean
-     * @return SplFixedArray
-     **/
-    function fromArray($array, $save_indexes) {}
-
-    /**
-     * Gets the size of the array.
-     *
-     * @return int
-     **/
-    function getSize() {}
-
-    /**
-     * Returns the current array index.
-     *
-     * @return int
-     **/
-    function key() {}
-
-    /**
-     * Move the iterator to the next array entry.
-     *
-     * @return void
-     **/
-    function next() {}
-
-    /**
-     * Checks whether the requested index index 
-     * exists.
-     *
-     * @param int
-     * @return bool
-     **/
-    function offsetExists($index) {}
-
-    /**
-     * Returns the value at the index index.
-     *
-     * @param int
-     * @return mixed
-     **/
-    function offsetGet($index) {}
-
-    /**
-     * Sets the value at the specified index to newval.
-     *
-     * @param int
-     * @param mixed
-     * @return void
-     **/
-    function offsetSet($index, $newval) {}
-
-    /**
-     * Unsets the value at the specified index.
-     *
-     * @param int
-     * @return void
-     **/
-    function offsetUnset($index) {}
-
-    /**
-     * Rewinds the iterator to the beginning.
-     *
-     * @return void
-     **/
-    function rewind() {}
-
-    /**
-     * Change the size of an array to the new size of size.
-     *
-     * @param int
-     * @return int
-     **/
-    function setSize($size) {}
-
-    /**
-     * Returns a PHP array from the fixed array.
-     *
-     * @return array
-     **/
-    function toArray() {}
-
-    /**
-     * Checks if the array contains any more elements.
-     *
-     * @return bool
-     **/
-    function valid() {}
-
-}
-class SplFloat {
-}
-class SplHeap implements Iterator, Countable {
-    /**
-     * Compare value1 with value2.
-     *
-     * @param mixed
-     * @param mixed
-     * @return int
-     **/
-    function compare($value1, $value2) {}
-
-    /**
-     * @return int
-     **/
-    function count() {}
-
-    /**
-     * Get the current datastructure node.
-     *
-     * @return mixed
-     **/
-    function current() {}
-
-    /**
-     * @return mixed
-     **/
-    function extract() {}
-
-    /**
-     * Insert value in the heap.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function insert($value) {}
-
-    /**
-     * @return bool
-     **/
-    function isEmpty() {}
-
-    /**
-     * This function returns the current node index
-     *
-     * @return mixed
-     **/
-    function key() {}
-
-    /**
-     * Extracts the top node from the heap.
-     *
-     * @return void
-     **/
-    function next() {}
-
-    /**
-     * @return void
-     **/
-    function recoverFromCorruption() {}
-
-    /**
-     * This rewinds the iterator to the beginning. This is a no-op for heaps
-     * as the iterator is virtual and in fact never moves from the top of the 
-     * heap.
-     *
-     * @return void
-     **/
-    function rewind() {}
-
-    /**
-     * @return mixed
-     **/
-    function top() {}
-
-    /**
-     * Checks if the heap contains any more nodes.
-     *
-     * @return bool
-     **/
-    function valid() {}
-
-}
-class SplInt {
-}
-class SplMaxHeap extends SplHeap implements Iterator, Countable {
-    /**
-     * Compare value1 with value2.
-     *
-     * @param mixed
-     * @param mixed
-     * @return void
-     **/
-    function compare($value1, $value2) {}
-
-}
-class SplMinHeap extends SplHeap implements Iterator, Countable {
-    /**
-     * Compare value1 with value2.
-     *
-     * @param mixed
-     * @param mixed
-     * @return void
-     **/
-    function compare($value1, $value2) {}
-
-}
-class SplPriorityQueue implements Iterator, Countable {
-    /**
-     * Compare priority1 with priority2.
-     *
-     * @param mixed
-     * @param mixed
-     * @return void
-     **/
-    function compare($priority1, $priority2) {}
-
-    /**
-     * @return int
-     **/
-    function count() {}
-
-    /**
-     * Get the current datastructure node.
-     *
-     * @return mixed
-     **/
-    function current() {}
-
-    /**
-     * @return mixed
-     **/
-    function extract() {}
-
-    /**
-     * Insert value with the priority priority in the queue.
-     *
-     * @param mixed
-     * @param mixed
-     * @return void
-     **/
-    function insert($value, $priority) {}
-
-    /**
-     * @return bool
-     **/
-    function isEmpty() {}
-
-    /**
-     * This function returns the current node index
-     *
-     * @return mixed
-     **/
-    function key() {}
-
-    /**
-     * Extracts the top node from the queue.
-     *
-     * @return void
-     **/
-    function next() {}
-
-    /**
-     * @return void
-     **/
-    function recoverFromCorruption() {}
-
-    /**
-     * This rewinds the iterator to the beginning. This is a no-op for heaps
-     * as the iterator is virtual and in fact never moves from the top of the 
-     * heap.
-     *
-     * @return void
-     **/
-    function rewind() {}
-
-    /**
-     * @param int
-     * @return void
-     **/
-    function setExtractFlags($flags) {}
-
-    /**
-     * @return mixed
-     **/
-    function top() {}
-
-    /**
-     * Checks if the queue contains any more nodes.
-     *
-     * @return bool
-     **/
-    function valid() {}
-
-}
-class SplQueue extends SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
-    /**
-     * Dequeues value from the top of of the queue.
-     *
-     * @return mixed
-     **/
-    function dequeue() {}
-
-    /**
-     * Enqueues value at the end of the queue.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function enqueue($value) {}
-
-    /**
-     * @param int
-     * @return void
-     **/
-    function setIteratorMode($mode) {}
-
-}
-class SplStack extends SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
-    /**
-     * @param int
-     * @return void
-     **/
-    function setIteratorMode($mode) {}
-
-}
-class SplString {
-}
-class SplTempFileObject extends SplFileObject implements SeekableIterator, Iterator, Traversable, RecursiveIterator {
-    /**
-     * Construct a new temporary file object.
-     *
-     * @param integer
-     **/
-    function __construct($max_memory) {}
-
-}
-class Swish {
-    const IN_ALL = 0;
-    const IN_BODY = 0;
-    const IN_BODY_BIT = 0;
-    const IN_COMMENTS = 0;
-    const IN_COMMENTS_BIT = 0;
-    const IN_EMPHASIZED = 0;
-    const IN_EMPHASIZED_BIT = 0;
-    const IN_FILE = 0;
-    const IN_FILE_BIT = 0;
-    const IN_HEAD = 0;
-    const IN_HEADER = 0;
-    const IN_HEADER_BIT = 0;
-    const IN_HEAD_BIT = 0;
-    const IN_META = 0;
-    const IN_META_BIT = 0;
-    const IN_TITLE = 0;
-    const IN_TITLE_BIT = 0;
-    const META_TYPE_DATE = 0;
-    const META_TYPE_STRING = 0;
-    const META_TYPE_ULONG = 0;
-    const META_TYPE_UNDEF = 0;
-    /**
-     * @param string
-     * @return void
-     **/
-    function __construct($index_names) {}
-
-}
-class Tidy {
-}
-class TidyNode {
-}
-class TokyoTyrant {
-    /**
-     * Adds to an int or double value. This increments the value by the given amount
-     * and returns the new value. If the key does not exist a new key is created with
-     * initial value of the increment parameter.
-     *
-     * @param string
-     * @param number
-     * @param string
-     * @return number
-     **/
-    function add($key, $increment, $type) {}
-
-    /**
-     * Connects to a remote database
-     *
-     * @param string
-     * @param int
-     * @param array
-     * @return TokyoTyrant
-     **/
-    function connect($host, $port, $options) {}
-
-    /**
-     * Connects to a database using an uri
-     *
-     * @param string
-     * @return TokyoTyrant
-     **/
-    function connectUri($uri) {}
-
-    /**
-     * Makes a copy of the current database
-     *
-     * @param string
-     * @return TokyoTyrant
-     **/
-    function copy($path) {}
-
-    /**
-     * Executes a remote script extension.
-     *
-     * @param string
-     * @param int
-     * @param string
-     * @param string
-     * @return string
-     **/
-    function ext($name, $options, $key, $value) {}
-
-    /**
-     * Returns the forward matching keys from the database
-     *
-     * @param string
-     * @param int
-     * @return array
-     **/
-    function fwmKeys($prefix, $max_recs) {}
-
-    /**
-     * This method is used to return a value or multiple values. This method accepts a string
-     * or an array as a value.
-     *
-     * @param mixed
-     * @return mixed
-     **/
-    function get($keys) {}
-
-    /**
-     * Returns the number of records in the database
-     *
-     * @return int
-     **/
-    function num() {}
-
-    /**
-     * Removes a record or multiple records. This method accepts a string for a single key
-     * or an array of keys for multiple records.
-     *
-     * @param mixed
-     * @return TokyoTyrant
-     **/
-    function out($keys) {}
-
-    /**
-     * Puts a key-value pair into the database or multiple key-value pairs. If keys is
-     * string then the second parameter value defines the value. 
-     * The second parameter is mandatory if keys is a string. If the key exists the value
-     * will be replaced with new value.
-     *
-     * @param mixed
-     * @param string
-     * @return TokyoTyrant
-     **/
-    function put($keys, $value) {}
-
-    /**
-     * Appends a value into existing key or multiple values if keys is an array.
-     * The second parameter is mandatory if keys is a string. If the record does 
-     * not exist a new record is created.
-     *
-     * @param mixed
-     * @param string
-     * @return TokyoTyrant
-     **/
-    function putCat($keys, $value) {}
-
-    /**
-     * Puts a key-value pair into the database or multiple key-value pairs. If keys is
-     * string then the second parameter value defines the value. 
-     * The second parameter is mandatory if keys is a string. If the key already 
-     * exists this method throws an exception indicating that the records exists.
-     *
-     * @param mixed
-     * @param string
-     * @return TokyoTyrant
-     **/
-    function putKeep($keys, $value) {}
-
-    /**
-     * Puts a key-value pair into the database or multiple key-value pairs. If keys is
-     * string then the second parameter value defines the value. 
-     * The second parameter is mandatory if keys is a string. This method does not wait
-     * for the response from the server.
-     *
-     * @param mixed
-     * @param string
-     * @return TokyoTyrant
-     **/
-    function putNr($keys, $value) {}
-
-    /**
-     * Concatenate to a record and shift to left.
-     *
-     * @param string
-     * @param string
-     * @param int
-     * @return void
-     **/
-    function putShl($key, $value, $width) {}
-
-    /**
-     * Restore the database from the update log.
-     *
-     * @param string
-     * @param int
-     * @param bool
-     * @return void
-     **/
-    function restore($log_dir, $timestamp, $check_consistency) {}
-
-    /**
-     * Sets the replication master of the database
-     *
-     * @param string
-     * @param int
-     * @param int
-     * @param bool
-     * @return void
-     **/
-    function setMaster($host, $port, $timestamp, $check_consistency) {}
-
-    /**
-     * Returns the size of a value by key
-     *
-     * @param string
-     * @return int
-     **/
-    function size($key) {}
-
-    /**
-     * Returns statistics of the remote database
-     *
-     * @return array
-     **/
-    function stat() {}
-
-    /**
-     * Synchronizes the database on to the physical device
-     *
-     * @return void
-     **/
-    function sync() {}
-
-    /**
-     * Tunes database connection options.
-     *
-     * @param float
-     * @param int
-     * @return TokyoTyrant
-     **/
-    function tune($timeout, $options) {}
-
-    /**
-     * Empties a remote database
-     *
-     * @return void
-     **/
-    function vanish() {}
-
-    /**
-     * Constructs a new TokyoTyrant object and optionally connects to the database
-     *
-     * @param string
-     * @param int
-     * @param array
-     **/
-    function __construct($host, $port, $options) {}
-
-}
-class TokyoTyrantQuery implements Iterator, Traversable {
-    /**
-     * Adds a condition to the query. Condition can be something like: get all keys which value
-     * matches expr.
-     *
-     * @param string
-     * @param int
-     * @param string
-     * @return void
-     **/
-    function addCond($name, $op, $expr) {}
-
-    /**
-     * Returns a count of how many records a query returns.
-     *
-     * @return int
-     **/
-    function count() {}
-
-    /**
-     * Returns the current element. Part of Iterator interface
-     *
-     * @return array
-     **/
-    function current() {}
-
-    /**
-     * Get the hint string of the query. The hint string contains information about an executed query and
-     * it could be compared to for example MySQL EXPLAIN statement.
-     *
-     * @return string
-     **/
-    function hint() {}
-
-    /**
-     * Returns the current key. Part of the Iterator interface
-     *
-     * @return int
-     **/
-    function key() {}
-
-    /**
-     * Executes multiple queries on a database and returns matching records. The current object
-     * is always the left most object in the search.
-     *
-     * @return array
-     **/
-    function metaSearch() {}
-
-    /**
-     * Returns the next result in the resultset. Part of the Iterator interface.
-     *
-     * @return array
-     **/
-    function next() {}
-
-    /**
-     * Removes all records that match the query. Works exactly like search but removes the records instead
-     * of returning them.
-     *
-     * @return TokyoTyrantQuery
-     **/
-    function out() {}
-
-    /**
-     * Rewind the resultset and executes the query if it has not been executed. Part of the Iterator interface.
-     *
-     * @return boolean
-     **/
-    function rewind() {}
-
-    /**
-     * Executes a search on the table database. Returns an array of arrays containing the matching records.
-     * In the returned array the first level is the primary key of the data and the second level is the row data.
-     *
-     * @return array
-     **/
-    function search() {}
-
-    /**
-     * Set the maximum amount of records to return on a query.
-     *
-     * @param int
-     * @param int
-     * @return void
-     **/
-    function setLimit($max, $skip) {}
-
-    /**
-     * Checks if the current item is valid. Part of the Iterator interface
-     *
-     * @return void
-     **/
-    function valid() {}
-
-    /**
-     * Construct a new query object
-     *
-     * @param TokyoTyrantTable
-     **/
-    function __construct($table) {}
-
-}
-class TokyoTyrantTable extends TokyoTyrant {
-    /**
-     * This method is not supported with table databases.
-     *
-     * @param string
-     * @param mixed
-     * @param string
-     * @return int
-     **/
-    function add($key, $increment, $type) {}
-
-    /**
-     * Generates an unique id inside the table database. In table databases rows are referenced
-     * using a numeric primary key.
-     *
-     * @return int
-     **/
-    function genUid() {}
-
-    /**
-     * Gets a row from table database. keys is a single integer for 
-     * the primary key of the row or an array of integers for multiple rows.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function get($keys) {}
-
-    /**
-     * Get a query object to execute searches on the database
-     *
-     * @return TokyoTyrantQuery
-     **/
-    function getQuery() {}
-
-    /**
-     * Removes records from a table database.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function out($keys) {}
-
-    /**
-     * Puts a new row into the database. This method parameters are key which is 
-     * the primary key of the row, passing will generate a new unique id. value
-     * is an array containing the row contents which is usually key value pairs.
-     *
-     * @param mixed
-     * @param array
-     * @return int
-     **/
-    function put($key, $columns) {}
-
-    /**
-     * This method can be used to add new columns to existing records. Existing keys will be left unmodified
-     * but any new columns will be appended to the row. Passing null as key will generate a new row.
-     *
-     * @param mixed
-     * @param array
-     * @return void
-     **/
-    function putCat($key, $columns) {}
-
-    /**
-     * Puts a new record into the database. If the key already exists this method throws an exception
-     * indicating that the records exists.
-     *
-     * @param mixed
-     * @param array
-     * @return void
-     **/
-    function putKeep($key, $columns) {}
-
-    /**
-     * This method is not supported on table databases. Calling this method through TokyoTyrantTable 
-     * is considered an error and an TokyoTyrantException will be thrown.
-     *
-     * @param mixed
-     * @param string
-     * @return void
-     **/
-    function putNr($keys, $value) {}
-
-    /**
-     * This method is not supported on table databases. Calling this method through TokyoTyrantTable 
-     * is considered an error and an TokyoTyrantException will be thrown.
-     *
-     * @param string
-     * @param string
-     * @param int
-     * @return void
-     **/
-    function putShl($key, $value, $width) {}
-
-    /**
-     * Sets an index on a specified column. The index type is one of the TokyoTyrant::RDBIT_* constants.
-     * Passing TokyoTyrant::RDBIT_VOID removes the index.
-     *
-     * @param string
-     * @param int
-     * @return void
-     **/
-    function setIndex($column, $type) {}
-
-}
-class XMLReader {
-    const ATTRIBUTE = 0;
-    const CDATA = 0;
-    const COMMENT = 0;
-    const DEFAULTATTRS = 0;
-    const DOC = 0;
-    const DOC_FRAGMENT = 0;
-    const DOC_TYPE = 0;
-    const ELEMENT = 0;
-    const END_ELEMENT = 0;
-    const END_ENTITY = 0;
-    const ENTITY = 0;
-    const ENTITY_REF = 0;
-    const LOADDTD = 0;
-    const NONE = 0;
-    const NOTATION = 0;
-    const PI = 0;
-    const SIGNIFICANT_WHITESPACE = 0;
-    const SUBST_ENTITIES = 0;
-    const TEXT = 0;
-    const VALIDATE = 0;
-    const WHITESPACE = 0;
-    const XML_DECLARATION = 0;
-    /**
-     * Closes the input the XMLReader object is currently parsing.
-     *
-     * @return bool
-     **/
-    function close() {}
-
-    /**
-     * This method copies the current node and returns the appropriate DOM object.
-     *
-     * @return DOMNode
-     **/
-    function expand() {}
-
-    /**
-     * Returns the value of a named attribute or an empty string if 
-     * attribute does not exist or not positioned on an element node.
-     *
-     * @param string
-     * @return string
-     **/
-    function getAttribute($name) {}
-
-    /**
-     * Returns the value of an attribute based on its position or an 
-     * empty string if attribute does not exist or not positioned on 
-     * an element node.
-     *
-     * @param int
-     * @return string
-     **/
-    function getAttributeNo($index) {}
-
-    /**
-     * Returns the value of an attribute by name and namespace URI or an empty 
-     * string if attribute does not exist or not positioned on an element node.
-     *
-     * @param string
-     * @param string
-     * @return string
-     **/
-    function getAttributeNs($localName, $namespaceURI) {}
-
-    /**
-     * Indicates if specified property has been set.
-     *
-     * @param int
-     * @return bool
-     **/
-    function getParserProperty($property) {}
-
-    /**
-     * Returns a boolean indicating if the document being parsed is currently valid.
-     *
-     * @return bool
-     **/
-    function isValid() {}
-
-    /**
-     * Lookup in scope namespace for a given prefix.
-     *
-     * @param string
-     * @return bool
-     **/
-    function lookupNamespace($prefix) {}
-
-    /**
-     * Positions cursor on the named attribute.
-     *
-     * @param string
-     * @return bool
-     **/
-    function moveToAttribute($name) {}
-
-    /**
-     * Positions cursor on attribute based on its position.
-     *
-     * @param int
-     * @return bool
-     **/
-    function moveToAttributeNo($index) {}
-
-    /**
-     * Positions cursor on the named attribute in specified namespace.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function moveToAttributeNs($localName, $namespaceURI) {}
-
-    /**
-     * Moves cursor to the parent Element of current Attribute.
-     *
-     * @return bool
-     **/
-    function moveToElement() {}
-
-    /**
-     * Moves cursor to the first Attribute.
-     *
-     * @return bool
-     **/
-    function moveToFirstAttribute() {}
-
-    /**
-     * Moves cursor to the next Attribute if positioned on an Attribute or 
-     * moves to first attribute if positioned on an Element.
-     *
-     * @return bool
-     **/
-    function moveToNextAttribute() {}
-
-    /**
-     * Positions cursor on the next node skipping all subtrees.
-     *
-     * @param string
-     * @return bool
-     **/
-    function next($localname) {}
-
-    /**
-     * Set the URI containing the XML document to be parsed.
-     *
-     * @param string
-     * @param string
-     * @param int
-     * @return bool
-     **/
-    function open($URI, $encoding, $options) {}
-
-    /**
-     * Moves cursor to the next node in the document.
-     *
-     * @return bool
-     **/
-    function read() {}
-
-    /**
-     * Reads the contents of the current node, including child nodes and markup.
-     *
-     * @return string
-     **/
-    function readInnerXML() {}
-
-    /**
-     * Reads the contents of the current node, including the node itself.
-     *
-     * @return string
-     **/
-    function readOuterXML() {}
-
-    /**
-     * Reads the contents of the current node as an string.
-     *
-     * @return string
-     **/
-    function readString() {}
-
-    /**
-     * Set or Unset parser option for the parser. The options must be set 
-     * after xmlreader-open or 
-     * xmlreader-xml are called and before 
-     * the first xmlreader-read call.
-     *
-     * @param int
-     * @param bool
-     * @return bool
-     **/
-    function setParserProperty($property, $value) {}
-
-    /**
-     * Set the filename or URI for the RelaxNG Schema to use for validation.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setRelaxNGSchema($filename) {}
-
-    /**
-     * Set the data containing a RelaxNG Schema to use for validation.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setRelaxNGSchemaSource($source) {}
-
-    /**
-     * Use W3C XSD schema to validate the document as it is processed. Activation
-     * is only possible before the first Read().
-     *
-     * @param string
-     * @return bool
-     **/
-    function setSchema($filename) {}
-
-    /**
-     * Set the data containing the XML to parse.
-     *
-     * @param string
-     * @param string
-     * @param int
-     * @return bool
-     **/
-    function xml($source, $encoding, $options) {}
-
-}
-class XSLTProcessor {
-    /**
-     * Gets a parameter if previously set by
-     * XSLTProcessor::setParameter.
-     *
-     * @param string
-     * @param string
-     * @return string
-     **/
-    function getParameter($namespaceURI, $localName) {}
-
-    /**
-     * This method determine if PHP was built with the EXSLT library.
-     *
-     * @return bool
-     **/
-    function hasExsltSupport() {}
-
-    /**
-     * This method import the stylesheet into the 
-     * XSLTProcessor for transformations.
-     *
-     * @param DOMDocument
-     * @return void
-     **/
-    function importStylesheet($stylesheet) {}
-
-    /**
-     * This method enables the ability to use PHP functions as XSLT functions
-     * within XSL stylesheets.
-     *
-     * @param mixed
-     * @return void
-     **/
-    function registerPHPFunctions($restrict) {}
-
-    /**
-     * Removes a parameter, if set. This will make the processor use the
-     * default value for the parameter as specified in the stylesheet.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function removeParameter($namespaceURI, $localName) {}
-
-    /**
-     * Sets the value of one or more parameters to be used in subsequent 
-     * transformations with XSLTProcessor. If the 
-     * parameter doesn't exist in the stylesheet it will be ignored.
-     *
-     * @param string
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function setParameter($namespace, $name, $value) {}
-
-    /**
-     * Sets the file to output profiling information when processing 
-     * a stylesheet.
-     *
-     * @param string
-     * @return bool
-     **/
-    function setProfiling($filename) {}
-
-    /**
-     * Transforms the source node to a DOMDocument applying
-     * the stylesheet given by the
-     * XSLTProcessor::importStylesheet method.
-     *
-     * @param DOMNode
-     * @return DOMDocument
-     **/
-    function transformToDoc($doc) {}
-
-    /**
-     * Transforms the source node to an URI applying the stylesheet given by the
-     * XSLTProcessor::importStylesheet method.
-     *
-     * @param DOMDocument
-     * @param string
-     * @return int
-     **/
-    function transformToURI($doc, $uri) {}
-
-    /**
-     * Transforms the source node to a string applying the stylesheet given by
-     * the xsltprocessor::importStylesheet method.
-     *
-     * @param DOMDocument
-     * @return string
-     **/
-    function transformToXML($doc) {}
-
-}
-class ZIPARCHIVE {
-    const CHECKCONS = 0;
-    const CM_BZIP2 = 0;
-    const CM_DEFAULT = 0;
-    const CM_DEFLATE = 0;
-    const CM_DEFLATE64 = 0;
-    const CM_IMPLODE = 0;
-    const CM_PKWARE_IMPLODE = 0;
-    const CM_REDUCE_1 = 0;
-    const CM_REDUCE_2 = 0;
-    const CM_REDUCE_3 = 0;
-    const CM_REDUCE_4 = 0;
-    const CM_SHRINK = 0;
-    const CM_STORE = 0;
-    const CREATE = 0;
-    const ER_CHANGED = '';
-    const ER_CLOSE = 0;
-    const ER_COMPNOTSUPP = 0;
-    const ER_CRC = 0;
-    const ER_DELETED = 0;
-    const ER_EOF = 0;
-    const ER_EXISTS = 0;
-    const ER_INCONS = 0;
-    const ER_INTERNAL = 0;
-    const ER_INVAL = 0;
-    const ER_MEMORY = 0;
-    const ER_MULTIDISK = 0;
-    const ER_NOENT = 0;
-    const ER_NOZIP = 0;
-    const ER_OK = 0;
-    const ER_OPEN = 0;
-    const ER_READ = 0;
-    const ER_REMOVE = 0;
-    const ER_RENAME = 0;
-    const ER_SEEK = 0;
-    const ER_TMPOPEN = 0;
-    const ER_WRITE = 0;
-    const ER_ZIPCLOSED = 0;
-    const ER_ZLIB = 0;
-    const EXCL = 0;
-    const FL_COMPRESSED = 0;
-    const FL_NOCASE = 0;
-    const FL_NODIR = 0;
-    const FL_UNCHANGED = 0;
-    const OVERWRITE = 0;
-}
-class ZipArchive {
-    /**
-     * Adds an empty directory in the archive.
-     *
-     * @param string
-     * @return bool
-     **/
-    function addEmptyDir($dirname) {}
-
-    /**
-     * Adds a file to a ZIP archive from a given path
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function addFile($filename, $localname) {}
-
-    /**
-     * Add a file to a ZIP archive using its contents.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function addFromString($localname, $contents) {}
-
-    /**
-     * Close opened or created archive and save changes. This method is
-     * automatically called at the end of the script.
-     *
-     * @return bool
-     **/
-    function close() {}
-
-    /**
-     * Delete an entry in the archive using its index.
-     *
-     * @param int
-     * @return bool
-     **/
-    function deleteIndex($index) {}
-
-    /**
-     * Delete an entry in the archive using its name.
-     *
-     * @param string
-     * @return bool
-     **/
-    function deleteName($name) {}
-
-    /**
-     * Extract the complete archive or the given files to the specified
-     * destination.
-     *
-     * @param string
-     * @param mixed
-     * @return bool
-     **/
-    function extractTo($destination, $entries) {}
-
-    /**
-     * Returns the Zip archive comment.
-     *
-     * @return string
-     **/
-    function getArchiveComment() {}
-
-    /**
-     * Returns the comment of an entry using the entry index.
-     *
-     * @param int
-     * @param int
-     * @return string
-     **/
-    function getCommentIndex($index, $flags) {}
-
-    /**
-     * Returns the comment of an entry using the entry name.
-     *
-     * @param string
-     * @param int
-     * @return string
-     **/
-    function getCommentName($name, $flags) {}
-
-    /**
-     * Returns the entry contents using its index.
-     *
-     * @param int
-     * @param int
-     * @return mixed
-     **/
-    function getFromIndex($index, $flags) {}
-
-    /**
-     * Returns the entry contents using its name.
-     *
-     * @param string
-     * @param int
-     * @return mixed
-     **/
-    function getFromName($name, $flags) {}
-
-    /**
-     * Returns the name of an entry using its index.
-     *
-     * @param int
-     * @return string
-     **/
-    function getNameIndex($index) {}
-
-    /**
-     * Returns the status error message, system and/or zip messages.
-     *
-     * @return string
-     **/
-    function getStatusString() {}
-
-    /**
-     * Get a file handler to the entry defined by its name. For now it only
-     * supports read operations.
-     *
-     * @param string
-     * @return resource
-     **/
-    function getStream($name) {}
-
-    /**
-     * Locates an entry using its name.
-     *
-     * @param string
-     * @param int
-     * @return mixed
-     **/
-    function locateName($name, $flags) {}
-
-    /**
-     * Opens a new zip archive for reading, writing or modifying.
-     *
-     * @param string
-     * @param int
-     * @return mixed
-     **/
-    function open($filename, $flags) {}
-
-    /**
-     * Renames an entry defined by its index.
-     *
-     * @param int
-     * @param string
-     * @return bool
-     **/
-    function renameIndex($index, $newname) {}
-
-    /**
-     * Renames an entry defined by its name.
-     *
-     * @param string
-     * @param string
-     * @return bool
-     **/
-    function renameName($name, $newname) {}
-
-    /**
-     * Set the comment of a ZIP archive.
-     *
-     * @param string
-     * @return mixed
-     **/
-    function setArchiveComment($comment) {}
-
-    /**
-     * Set the comment of an entry defined by its index.
-     *
-     * @param int
-     * @param string
-     * @return mixed
-     **/
-    function setCommentIndex($index, $comment) {}
-
-    /**
-     * Set the comment of an entry defined by its name.
-     *
-     * @param string
-     * @param string
-     * @return mixed
-     **/
-    function setCommentName($name, $comment) {}
-
-    /**
-     * The function obtains information about the entry defined by its
-     * index.
-     *
-     * @param int
-     * @param int
-     * @return mixed
-     **/
-    function statIndex($index, $flags) {}
-
-    /**
-     * The function obtains information about the entry defined by its
-     * name.
-     *
-     * @param name
-     * @param int
-     * @return mixed
-     **/
-    function statName($name, $flags) {}
-
-    /**
-     * Undo all changes done in the archive.
-     *
-     * @return mixed
-     **/
-    function unchangeAll() {}
-
-    /**
-     * Revert all global changes to the archive archive. For now, this
-     * only reverts archive comment changes.
-     *
-     * @return mixed
-     **/
-    function unchangeArchive() {}
-
-    /**
-     * Revert all changes done to an entry at the given index.
-     *
-     * @param int
-     * @return mixed
-     **/
-    function unchangeIndex($index) {}
-
-    /**
-     * Revert all changes done to an entry.
-     *
-     * @param string
-     * @return mixed
-     **/
-    function unchangeName($name) {}
 
 }
 /**
@@ -61777,6 +44336,4092 @@ function zip_read($zip) {}
  **/
 function zlib_get_coding_type() {}
 
+class GlobIterator extends FilesystemIterator implements Iterator, Traversable, SeekableIterator, Countable {
+    /**
+     * Gets the number of directories and files found by
+     * the glob expression.
+     *
+     * @return integer
+     **/
+    function count() {}
+
+    /**
+     * Constructs a new directory iterator from a glob expression.
+     *
+     * @param string
+     * @param integer
+     **/
+    function __construct($path, $flags) {}
+
+}
+class Gmagick {
+    const COLOR_ALPHA = 0;
+    const COLOR_BLACK = 0;
+    const COLOR_BLUE = 0;
+    const COLOR_CYAN = 0;
+    const COLOR_FUZZ = 0;
+    const COLOR_GREEN = 0;
+    const COLOR_MAGENTA = 0;
+    const COLOR_OPACITY = 0;
+    const COLOR_RED = 0;
+    const COLOR_YELLOW = 0;
+    /**
+     * Adds new image to Gmagick object from the current position of the source object. After the operation iterator position is moved at the end of the list.
+     *
+     * @param Gmagick
+     * @return void
+     **/
+    function addimage($Gmagick) {}
+
+    /**
+     * Adds random noise to the image.
+     *
+     * @param int
+     * @return void
+     **/
+    function addnoiseimage($NOISE) {}
+
+    /**
+     * Annotates an image with text.
+     *
+     * @param GmagickDraw
+     * @param int
+     * @param int
+     * @param float
+     * @param string
+     * @return void
+     **/
+    function annotateimage($GmagickDraw, $x, $y, $angle, $text) {}
+
+    /**
+     * Adds blur filter to image.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function blurimage($radius, $sigma) {}
+
+    /**
+     * Surrounds the image with a border of the color defined by the bordercolor GmagickPixel object or a color string.
+     *
+     * @param GmagickPixel
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function borderimage($color, $width, $height) {}
+
+    /**
+     * Simulates a charcoal drawing.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function charcoalimage($radius, $sigma) {}
+
+    /**
+     * Removes a region of an image and collapses the image to occupy the removed portion.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function chopimage($width, $height, $x, $y) {}
+
+    /**
+     * Clears all resources associated to Gmagick object
+     *
+     * @return void
+     **/
+    function clear() {}
+
+    /**
+     * Adds a comment to your image.
+     *
+     * @param string
+     * @return void
+     **/
+    function commentimage($comment) {}
+
+    /**
+     * Composite one image onto another at the specified offset.
+     *
+     * @param Gmagick
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function compositeimage($source, $COMPOSE, $x, $y) {}
+
+    /**
+     * Extracts a region of the image.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function cropimage($x, $y, $width, $height) {}
+
+    /**
+     * Creates a fixed size thumbnail by first scaling the image down and cropping a specified area from the center.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function cropthumbnailimage($x, $y, $width, $height) {}
+
+    /**
+     * Returns reference to the current gmagick object with image pointer at the correct sequence.
+     *
+     * @return void
+     **/
+    function current() {}
+
+    /**
+     * Displaces an image's colormap by a given number of positions. If you cycle the colormap a number of times you can 
+     * produce a psychedelic effect.
+     *
+     * @param float
+     * @return void
+     **/
+    function cyclecolormapimage($displace) {}
+
+    /**
+     * Compares each image with the next in a sequence and returns the maximum bounding region of any pixel differences it discovers.
+     *
+     * @return void
+     **/
+    function deconstructimages() {}
+
+    /**
+     * Reduces the speckle noise in an image while preserving the edges of the original image.
+     *
+     * @return void
+     **/
+    function despeckleimage() {}
+
+    /**
+     * Destroys the Gmagick object and frees all resources associated with it
+     *
+     * @return void
+     **/
+    function destroy() {}
+
+    /**
+     * Renders the GmagickDraw object on the current image
+     *
+     * @param GmagickDraw
+     * @return void
+     **/
+    function drawimage($GmagickDraw) {}
+
+    /**
+     * Enhance edges within the image with a convolution filter of the given radius. Use radius 0 and it will be auto-selected.
+     *
+     * @param float
+     * @return void
+     **/
+    function edgeimage($radius) {}
+
+    /**
+     * Returns a grayscale image with a three-dimensional effect. We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma). For reasonable results, radius should be larger than sigma. Use a radius of 0 and it will choose a suitable radius for you.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function embossimage($radius, $sigma) {}
+
+    /**
+     * Applies a digital filter that improves the quality of a noisy image.
+     *
+     * @return void
+     **/
+    function enhanceimage() {}
+
+    /**
+     * Equalizes the image histogram.
+     *
+     * @return void
+     **/
+    function equalizeimage() {}
+
+    /**
+     * Creates a vertical mirror image by reflecting the pixels around the central x-axis.
+     *
+     * @return void
+     **/
+    function flipimage() {}
+
+    /**
+     * Creates a horizontal mirror image by reflecting the pixels around the central y-axis.
+     *
+     * @return void
+     **/
+    function flopimage() {}
+
+    /**
+     * Adds a simulated three-dimensional border around the image. The width and height specify the border width of the vertical and horizontal sides of the frame. The inner and outer bevels indicate the width of the inner and outer shadows of the frame.
+     *
+     * @param GmagickPixel
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function frameimage($color, $width, $height, $inner_bevel, $outer_bevel) {}
+
+    /**
+     * Gamma-corrects an image. The same image viewed on different devices will have perceptual differences in the way the image's intensities are represented on the screen. Specify individual gamma levels for the red, green, and blue channels, or adjust all three with the gamma parameter. Values typically range from 0.8 to 2.3.
+     *
+     * @param float
+     * @return void
+     **/
+    function gammaimage($gamma) {}
+
+    /**
+     * Returns the GraphicsMagick API copyright as a string.
+     *
+     * @return void
+     **/
+    function getcopyright() {}
+
+    /**
+     * Returns the filename associated with an image sequence.
+     *
+     * @return void
+     **/
+    function getfilename() {}
+
+    /**
+     * Returns the image background color.
+     *
+     * @return void
+     **/
+    function getimagebackgroundcolor() {}
+
+    /**
+     * Returns the chromaticity blue primary point for the image.
+     *
+     * @return void
+     **/
+    function getimageblueprimary() {}
+
+    /**
+     * Returns the image border color.
+     *
+     * @return void
+     **/
+    function getimagebordercolor() {}
+
+    /**
+     * Gets the depth for a particular image channel.
+     *
+     * @return void
+     **/
+    function getimagechanneldepth() {}
+
+    /**
+     * Returns the color of the specified colormap index.
+     *
+     * @return void
+     **/
+    function getimagecolors() {}
+
+    /**
+     * Gets the image colorspace.
+     *
+     * @return void
+     **/
+    function getimagecolorspace() {}
+
+    /**
+     * Returns the composite operator associated with the image.
+     *
+     * @return void
+     **/
+    function getimagecompose() {}
+
+    /**
+     * Gets the image delay
+     *
+     * @return void
+     **/
+    function getimagedelay() {}
+
+    /**
+     * Gets the depth of the image.
+     *
+     * @return void
+     **/
+    function getimagedepth() {}
+
+    /**
+     * Gets the image disposal method
+     *
+     * @return void
+     **/
+    function getimagedispose() {}
+
+    /**
+     * Returns an associative array with the keys "min" and "max".
+     *
+     * @return void
+     **/
+    function getimageextrema() {}
+
+    /**
+     * Returns the filename of a particular image in a sequence
+     *
+     * @return void
+     **/
+    function getimagefilename() {}
+
+    /**
+     * Returns the format of a particular image in a sequence.
+     *
+     * @return void
+     **/
+    function getimageformat() {}
+
+    /**
+     * Gets the image gamma
+     *
+     * @return void
+     **/
+    function getimagegamma() {}
+
+    /**
+     * Returns the chromaticity green primary point. Returns an array with the keys "x" and "y".
+     *
+     * @return void
+     **/
+    function getimagegreenprimary() {}
+
+    /**
+     * Returns the image height
+     *
+     * @return void
+     **/
+    function getimageheight() {}
+
+    /**
+     * Returns the image histogram as an array of GmagickPixel objects. Throw an GmagickException on error.
+     *
+     * @return void
+     **/
+    function getimagehistogram() {}
+
+    /**
+     * Returns the index of the current active image within the Gmagick object.
+     *
+     * @return void
+     **/
+    function getimageindex() {}
+
+    /**
+     * Gets the image interlace scheme.
+     *
+     * @return void
+     **/
+    function getimageinterlacescheme() {}
+
+    /**
+     * Gets the image iterations.
+     *
+     * @return void
+     **/
+    function getimageiterations() {}
+
+    /**
+     * Returns TRUE if the image has a matte channel otherwise false.
+     *
+     * @return void
+     **/
+    function getimagematte() {}
+
+    /**
+     * Returns GmagickPixel object on success. Throw an GmagickException on error.
+     *
+     * @return void
+     **/
+    function getimagemattecolor() {}
+
+    /**
+     * Returns the named image profile.
+     *
+     * @return void
+     **/
+    function getimageprofile() {}
+
+    /**
+     * Returns the chromaticity red primary point as an array with the keys "x" and "y".
+     *
+     * @return void
+     **/
+    function getimageredprimary() {}
+
+    /**
+     * Gets the image rendering intent
+     *
+     * @return void
+     **/
+    function getimagerenderingintent() {}
+
+    /**
+     * Returns the resolution as an array.
+     *
+     * @return void
+     **/
+    function getimageresolution() {}
+
+    /**
+     * Gets the image scene.
+     *
+     * @return void
+     **/
+    function getimagescene() {}
+
+    /**
+     * Generates an SHA-256 message digest for the image pixel stream.
+     *
+     * @return void
+     **/
+    function getimagesignature() {}
+
+    /**
+     * Gets the potential image type.
+     *
+     * @return void
+     **/
+    function getimagetype() {}
+
+    /**
+     * Gets the image units of resolution.
+     *
+     * @return void
+     **/
+    function getimageunits() {}
+
+    /**
+     * Returns the chromaticity white point as an associative array with the keys "x" and "y".
+     *
+     * @return void
+     **/
+    function getimagewhitepoint() {}
+
+    /**
+     * Returns the width of the image.
+     *
+     * @return void
+     **/
+    function getimagewidth() {}
+
+    /**
+     * Returns the GraphicsMagick package name.
+     *
+     * @return void
+     **/
+    function getpackagename() {}
+
+    /**
+     * Returns the Gmagick quantum depth as a string.
+     *
+     * @return void
+     **/
+    function getquantumdepth() {}
+
+    /**
+     * Returns the GraphicsMagick release date as a string.
+     *
+     * @return void
+     **/
+    function getreleasedate() {}
+
+    /**
+     * Gets the horizontal and vertical sampling factor.
+     *
+     * @return void
+     **/
+    function getsamplingfactors() {}
+
+    /**
+     * Returns the size associated with the Gmagick object as an array with the keys "columns" and "rows".
+     *
+     * @return void
+     **/
+    function getsize() {}
+
+    /**
+     * Returns the GraphicsMagick API version as a string and as a number.
+     *
+     * @return void
+     **/
+    function getversion() {}
+
+    /**
+     * Returns TRUE if the object has more images when traversing the list in the forward direction.
+     *
+     * @return void
+     **/
+    function hasnextimage() {}
+
+    /**
+     * Returns TRUE if the object has more images when traversing the list in the reverse direction
+     *
+     * @return void
+     **/
+    function haspreviousimage() {}
+
+    /**
+     * Creates a new image that is a copy of an existing one with the image pixels "imploded" by the specified percentage.
+     *
+     * @param float
+     * @return void
+     **/
+    function implodeimage($radius) {}
+
+    /**
+     * Adds a label to an image.
+     *
+     * @param string
+     * @return void
+     **/
+    function labelimage($label) {}
+
+    /**
+     * Adjusts the levels of an image by scaling the colors falling between specified white and black
+     * points to the full available quantum range. The parameters provided represent the black, mid, and 
+     * white points. The black point specifies the darkest color in the image. Colors darker than the black
+     * point are set to zero. Mid point specifies a gamma correction to apply to the image. White point
+     * specifies the lightest color in the image. Colors brighter than the white point are set to the
+     * maximum quantum value.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param int
+     * @return void
+     **/
+    function levelimage($blackPoint, $gamma, $whitePoint, $channel) {}
+
+    /**
+     * Conveniently scales an image proportionally to twice its original size.
+     *
+     * @return void
+     **/
+    function magnifyimage() {}
+
+    /**
+     * Replaces the colors of an image with the closest color from a reference image.
+     *
+     * @param gmagick
+     * @param int
+     * @return void
+     **/
+    function mapimage($gmagick, $dither) {}
+
+    /**
+     * Applies a digital filter that improves the quality of a noisy image. Each pixel is replaced by the median in a set of neighboring pixels as defined by radius.
+     *
+     * @param float
+     * @return void
+     **/
+    function medianfilterimage($radius) {}
+
+    /**
+     * A convenient method that scales an image proportionally to one-half its original size
+     *
+     * @return void
+     **/
+    function minifyimage() {}
+
+    /**
+     * Lets you control the brightness, saturation, and hue of an image. Hue is the 
+     * percentage of absolute rotation from the current position. For example 50 results 
+     * in a counter-clockwise rotation of 90 degrees, 150 results in a clockwise rotation
+     * of 90 degrees, with 0 and 200 both resulting in a rotation of 180 degrees.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function modulateimage($brightness, $saturation, $hue) {}
+
+    /**
+     * Simulates motion blur. We convolve the image with a Gaussian operator of the 
+     * given radius and standard deviation (sigma). For reasonable results, radius should be
+     * larger than sigma. Use a radius of 0 and MotionBlurImage() selects a suitable radius
+     * for you. Angle gives the angle of the blurring motion.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function motionblurimage($radius, $sigma, $angle) {}
+
+    /**
+     * Creates a new image with the specified background color
+     *
+     * @param int
+     * @param int
+     * @param mixed
+     * @param string
+     * @return void
+     **/
+    function newimage($width, $height, $background, $height) {}
+
+    /**
+     * Associates the next image in the image list with an Gmagick object.
+     *
+     * @return void
+     **/
+    function nextimage() {}
+
+    /**
+     * Enhances the contrast of a color image by adjusting the pixels color to span the entire range of colors available.
+     *
+     * @param int
+     * @return void
+     **/
+    function normalizeimage($channel) {}
+
+    /**
+     * Applies a special effect filter that simulates an oil painting. Each pixel is replaced by the most frequent color occurring in a circular region defined by radius.
+     *
+     * @return void
+     **/
+    function oilpaintimage() {}
+
+    /**
+     * Assocates the previous image in an image list with the Gmagick object.
+     *
+     * @return void
+     **/
+    function previousimage() {}
+
+    /**
+     * Adds or removes a ICC, IPTC, or generic profile from an image. If the profile is NULL, it is removed from the image otherwise added. Use a name of '*' and a profile of NULL to remove all profiles from the image.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function profileimage($name, $profile) {}
+
+    /**
+     * Analyzes the colors within a reference image and chooses a fixed number of
+     * colors to represent the image. The goal of the algorithm is to minimize the 
+     * color difference between the input and output image while minimizing the processing time.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param bool
+     * @param bool
+     * @return void
+     **/
+    function quantizeimage($numColors, $colorspace, $treeDepth, $dither, $measureError) {}
+
+    /**
+     * Analyzes the colors within a sequence of images and chooses a fixed number of 
+     * colors to represent the image. The goal of the algorithm is to minimize the 
+     * color difference between the input and output image while minimizing the processing time.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param bool
+     * @param bool
+     * @return void
+     **/
+    function quantizeimages($numColors, $colorspace, $treeDepth, $dither, $measureError) {}
+
+    /**
+     * MagickQueryFontMetrics() returns an array representing the font metrics.
+     *
+     * @return void
+     **/
+    function queryfontmetrics() {}
+
+    /**
+     * Returns fonts supported by Gmagick.
+     *
+     * @return void
+     **/
+    function queryfonts() {}
+
+    /**
+     * Returns formats supported by Gmagick.
+     *
+     * @param string
+     * @return void
+     **/
+    function queryformats($pattern) {}
+
+    /**
+     * Radial blurs an image.
+     *
+     * @param float
+     * @param int
+     * @return void
+     **/
+    function radialblurimage($angle, $channel) {}
+
+    /**
+     * Creates a simulated three-dimensional button-like effect by lightening and darkening the edges of the image. Members width and height of raise_info define the width of the vertical and horizontal edge of the effect.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param bool
+     * @return void
+     **/
+    function raiseimage($width, $height, $x, $y, $raise) {}
+
+    /**
+     * Reads image from filename.
+     *
+     * @param string
+     * @return void
+     **/
+    function read($filename) {}
+
+    /**
+     * Reads image from filename.
+     *
+     * @param string
+     * @return void
+     **/
+    function readimage($filename) {}
+
+    /**
+     * Reads image from a binary string.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function readimageblob($imageContents, $filename) {}
+
+    /**
+     * Reads an image or image sequence from an open file descriptor.
+     *
+     * @param string
+     * @return void
+     **/
+    function readimagefile($fp) {}
+
+    /**
+     * Smooths the contours of an image while still preserving edge information. The algorithm works by replacing each pixel with its neighbor closest in value. A neighbor is defined by radius. Use a radius of 0 and Gmagick::reduceNoiseImage() selects a suitable radius for you.
+     *
+     * @param float
+     * @return void
+     **/
+    function reducenoiseimage($radius) {}
+
+    /**
+     * Removes an image from the image list.
+     *
+     * @return void
+     **/
+    function removeimage() {}
+
+    /**
+     * Removes the named image profile and returns it.
+     *
+     * @param string
+     * @return void
+     **/
+    function removeimageprofile($name) {}
+
+    /**
+     * Resample image to desired resolution.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @param float
+     * @return void
+     **/
+    function resampleimage($xResolution, $yResolution, $filter, $blur) {}
+
+    /**
+     * Scales an image to the desired dimensions with a filter.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param float
+     * @param bool
+     * @return void
+     **/
+    function resizeimage($width, $height, $filter, $blur, $fit) {}
+
+    /**
+     * Offsets an image as defined by x and y.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function rollimage($x, $y) {}
+
+    /**
+     * Rotates an image the specified number of degrees. Empty triangles left over from rotating the image are filled with the background color.
+     *
+     * @param mixed
+     * @param float
+     * @return void
+     **/
+    function rotateimage($color, $degrees) {}
+
+    /**
+     * Scales the size of an image to the given dimensions. The other parameter will be calculated if 0 is passed as either param.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function scaleimage($width, $height) {}
+
+    /**
+     * Separates a channel from the image and returns a grayscale image. A channel is a particular color component of each pixel in the image.
+     *
+     * @param int
+     * @return void
+     **/
+    function separateimagechannel($channel) {}
+
+    /**
+     * Sets the filename before you read or write an image file.
+     *
+     * @param string
+     * @return void
+     **/
+    function setfilename($filename) {}
+
+    /**
+     * Sets the image background color.
+     *
+     * @param GmagickPixel
+     * @return void
+     **/
+    function setimagebackgroundcolor($color) {}
+
+    /**
+     * Sets the image chromaticity blue primary point.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setimageblueprimary($x, $y) {}
+
+    /**
+     * Sets the image border color.
+     *
+     * @param GmagickPixel
+     * @return void
+     **/
+    function setimagebordercolor($color) {}
+
+    /**
+     * Sets the depth of a particular image channel.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setimagechanneldepth($channel, $depth) {}
+
+    /**
+     * Sets the image colorspace.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimagecolorspace($colorspace) {}
+
+    /**
+     * Sets the image composite operator.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimagecompose($composite) {}
+
+    /**
+     * Sets the image delay
+     *
+     * @param int
+     * @return void
+     **/
+    function setimagedelay($delay) {}
+
+    /**
+     * Sets the image depth
+     *
+     * @param float
+     * @return void
+     **/
+    function setimagedepth($depth) {}
+
+    /**
+     * Sets the image disposal method.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimagedispose($disposeType) {}
+
+    /**
+     * Sets the filename of a particular image in a sequence.
+     *
+     * @param string
+     * @return void
+     **/
+    function setimagefilename($filename) {}
+
+    /**
+     * Sets the format of a particular image in a sequence.
+     *
+     * @param string
+     * @return void
+     **/
+    function setimageformat($imageFormat) {}
+
+    /**
+     * Sets the image gamma.
+     *
+     * @param float
+     * @return void
+     **/
+    function setimagegamma($gamma) {}
+
+    /**
+     * Sets the image chromaticity green primary point.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setimagegreenprimary($x, $y) {}
+
+    /**
+     * Set the iterator to the position in the image list specified with the index parameter.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimageindex($index) {}
+
+    /**
+     * Sets the interlace scheme of the image.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimageinterlacescheme($interlace) {}
+
+    /**
+     * Sets the image iterations.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimageiterations($iterations) {}
+
+    /**
+     * Adds a named profile to the Gmagick object. If a profile with the same name already exists, it is replaced.
+     * This method differs from the Gmagick::ProfileImage() method in that it does not apply any CMS color profiles.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setimageprofile($name, $profile) {}
+
+    /**
+     * Sets the image chromaticity red primary point.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setimageredprimary($x, $y) {}
+
+    /**
+     * Sets the image rendering intent.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimagerenderingintent($rendering_intent) {}
+
+    /**
+     * Sets the image resolution.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setimageresolution($xResolution, $yResolution) {}
+
+    /**
+     * Sets the image scene.
+     *
+     * @param string
+     * @return void
+     **/
+    function setimagescene($scene) {}
+
+    /**
+     * Sets the image type.
+     *
+     * @param string
+     * @return void
+     **/
+    function setimagetype($imgType) {}
+
+    /**
+     * Sets the image units of resolution.
+     *
+     * @param int
+     * @return void
+     **/
+    function setimageunits($resolution) {}
+
+    /**
+     * Sets the image chromaticity white point.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setimagewhitepoint($x, $y) {}
+
+    /**
+     * Sets the image sampling factors.
+     *
+     * @param array
+     * @return void
+     **/
+    function setsamplingfactors($factors) {}
+
+    /**
+     * Sets the size of the Gmagick object. Set it before you read a raw image format such as RGB, GRAY, or CMYK.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setsize($columns, $rows) {}
+
+    /**
+     * Slides one edge of an image along the X or Y axis, creating a parallelogram.
+     * An X direction shear slides an edge along the X axis, while a Y direction shear slides an edge along the Y axis. 
+     * The amount of the shear is controlled by a shear angle. For X direction shears, x_shear is measured relative to the
+     * Y axis, and similarly, for Y direction shears y_shear is measured relative to the X axis. Empty triangles left over
+     * from shearing the image are filled with the background color.
+     *
+     * @param mixed
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function shearimage($color, $xShear, $yShear) {}
+
+    /**
+     * Applies a special effect to the image, similar to the effect achieved in a 
+     * photo darkroom by selectively exposing areas of photo sensitive paper to light. 
+     * Threshold ranges from 0 to QuantumRange and is a measure of the extent of the solarization.
+     *
+     * @param float
+     * @return void
+     **/
+    function solarizeimage($threshold) {}
+
+    /**
+     * Special effects method that randomly displaces each pixel in a block defined by the radius parameter.
+     *
+     * @param float
+     * @return void
+     **/
+    function spreadimage($radius) {}
+
+    /**
+     * Strips an image of all profiles and comments.
+     *
+     * @return void
+     **/
+    function stripimage() {}
+
+    /**
+     * Swirls the pixels about the center of the image, where degrees indicates the sweep of the arc through which each pixel is moved. You get a more dramatic effect as the degrees move from 1 to 360.
+     *
+     * @param float
+     * @return void
+     **/
+    function swirlimage($degrees) {}
+
+    /**
+     * Changes the size of an image to the given dimensions and removes any associated profiles. 
+     * The goal is to produce small low cost thumbnail images suited for display on the Web. 
+     * If TRUE is given as a third parameter then columns and rows parameters are used as maximums
+     * for each side. Both sides will be scaled down until the match or are smaller than the parameter given for the side.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function thumbnailimage($width, $height) {}
+
+    /**
+     * Remove edges that are the background color from the image.
+     *
+     * @param float
+     * @return void
+     **/
+    function trimimage($fuzz) {}
+
+    /**
+     * Writes an image to the specified filename. If the filename parameter is NULL, 
+     * the image is written to the filename set by Gmagick::ReadImage() or Gmagick::SetImageFilename().
+     *
+     * @param string
+     * @return void
+     **/
+    function write($filename) {}
+
+    /**
+     * Writes an image to the specified filename. If the filename parameter is NULL, 
+     * the image is written to the filename set by Gmagick::ReadImage() or Gmagick::SetImageFilename().
+     *
+     * @param string
+     * @return void
+     **/
+    function writeimage($filename) {}
+
+    /**
+     * The Gmagick constructor.
+     *
+     * @param string
+     **/
+    function __construct($filename) {}
+
+}
+class GmagickDraw {
+    /**
+     * Draws text on the image.
+     *
+     * @param float
+     * @param float
+     * @param string
+     * @return void
+     **/
+    function annotate($x, $y, $text) {}
+
+    /**
+     * Draws an arc falling within a specified bounding rectangle on the image.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function arc($sx, $sy, $ex, $ey, $sd, $ed) {}
+
+    /**
+     * Draws a bezier curve through a set of points on the image.
+     *
+     * @param array
+     * @return void
+     **/
+    function bezier($coordinate_array) {}
+
+    /**
+     * Draws an ellipse on the image.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function ellipse($ox, $oy, $rx, $ry, $start, $end) {}
+
+    /**
+     * Returns the fill color used for drawing filled objects.
+     *
+     * @return void
+     **/
+    function getfillcolor() {}
+
+    /**
+     * Returns the opacity used when drawing
+     *
+     * @return void
+     **/
+    function getfillopacity() {}
+
+    /**
+     * Returns a string specifying the font used when annotating with text.
+     *
+     * @return void
+     **/
+    function getfont() {}
+
+    /**
+     * Returns the font pointsize used when annotating with text.
+     *
+     * @return void
+     **/
+    function getfontsize() {}
+
+    /**
+     * Returns the font style used when annotating with text.
+     *
+     * @return void
+     **/
+    function getfontstyle() {}
+
+    /**
+     * Returns the font weight used when annotating with text.
+     *
+     * @return void
+     **/
+    function getfontweight() {}
+
+    /**
+     * Returns the color used for stroking object outlines.
+     *
+     * @return void
+     **/
+    function getstrokecolor() {}
+
+    /**
+     * Returns the opacity of stroked object outlines.
+     *
+     * @return void
+     **/
+    function getstrokeopacity() {}
+
+    /**
+     * Returns the width of the stroke used to draw object outlines.
+     *
+     * @return void
+     **/
+    function getstrokewidth() {}
+
+    /**
+     * Returns the decoration applied when annotating with text.
+     *
+     * @return void
+     **/
+    function gettextdecoration() {}
+
+    /**
+     * Returns a string which specifies the code set used for text annotations.
+     *
+     * @return void
+     **/
+    function gettextencoding() {}
+
+    /**
+     * Draws a line on the image using the current stroke color, stroke opacity, and stroke width.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function line($sx, $sy, $ex, $ey) {}
+
+    /**
+     * Draws a point using the current stroke color and stroke thickness at the specified coordinates.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function point($x, $y) {}
+
+    /**
+     * Draws a polygon using the current stroke, stroke width, and fill color or texture, using the specified array of coordinates.
+     *
+     * @param array
+     * @return void
+     **/
+    function polygon($coordinates) {}
+
+    /**
+     * Draws a polyline using the current stroke, stroke width, and fill color or texture, using the specified array of coordinates.
+     *
+     * @param array
+     * @return void
+     **/
+    function polyline($coordinate_array) {}
+
+    /**
+     * Draws a rectangle given two coordinates and using the current stroke, stroke width, and fill settings.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function rectangle($x1, $y1, $x2, $y2) {}
+
+    /**
+     * Applies the specified rotation to the current coordinate space.
+     *
+     * @param float
+     * @return void
+     **/
+    function rotate($degrees) {}
+
+    /**
+     * Draws a rounded rectangle given two coordinates, x and y corner radiuses and using the current stroke, stroke width, and fill settings.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function roundrectangle($x1, $y1, $x2, $y2, $rx, $ry) {}
+
+    /**
+     * Adjusts the scaling factor to apply in the horizontal and vertical directions to the current coordinate space.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function scale($x, $y) {}
+
+    /**
+     * Sets the fill color to be used for drawing filled objects.
+     *
+     * @param string
+     * @return void
+     **/
+    function setfillcolor($color) {}
+
+    /**
+     * Sets the opacity to use when drawing using the fill color or fill texture. Setting it to 1.0 will make
+     * fill full opaque.
+     *
+     * @param float
+     * @return void
+     **/
+    function setfillopacity($fill_opacity) {}
+
+    /**
+     * Sets the fully-specified font to use when annotating with text
+     *
+     * @param string
+     * @return void
+     **/
+    function setfont($font) {}
+
+    /**
+     * Sets the font pointsize to use when annotating with text.
+     *
+     * @param float
+     * @return void
+     **/
+    function setfontsize($pointsize) {}
+
+    /**
+     * Sets the font style to use when annotating with text. The AnyStyle enumeration acts as a wild-card "don't care" option.
+     *
+     * @param string
+     * @return void
+     **/
+    function setfontstyle($style) {}
+
+    /**
+     * Sets the font weight to use when annotating with text.
+     *
+     * @param int
+     * @return void
+     **/
+    function setfontweight($weight) {}
+
+    /**
+     * Sets the color used for stroking object outlines.
+     *
+     * @param GmagickPixel
+     * @return void
+     **/
+    function setstrokecolor($color) {}
+
+    /**
+     * Specifies the opacity of stroked object outlines.
+     *
+     * @param float
+     * @return void
+     **/
+    function setstrokeopacity($stroke_opacity) {}
+
+    /**
+     * Sets the width of the stroke used to draw object outlines
+     *
+     * @param float
+     * @return void
+     **/
+    function setstrokewidth($width) {}
+
+    /**
+     * Specifies a decoration to be applied when annotating with text.
+     *
+     * @param int
+     * @return void
+     **/
+    function settextdecoration($decoration) {}
+
+    /**
+     * Specifies specifies the code set to use for text annotations. The only character 
+     * encoding which may be specified at this time is "UTF-8" for representing Unicode as 
+     * a sequence of bytes. Specify an empty string to set text encoding to the system's default. 
+     * Successful text annotation using Unicode may require fonts designed to support Unicode.
+     *
+     * @param string
+     * @return void
+     **/
+    function settextencoding($encoding) {}
+
+}
+class GmagickException extends Exception {
+}
+class GmagickPixel {
+    /**
+     * Returns the color described by the GmagickPixel object, as an array. If the color has an opacity channel set, this is provided as a fourth value in the list.
+     *
+     * @param bool
+     * @param bool
+     * @return void
+     **/
+    function getcolor($as_array, $normalize_array) {}
+
+    /**
+     * Returns the color count associated with this color
+     *
+     * @param bool
+     * @param bool
+     * @return void
+     **/
+    function getcolorcount($as_array, $normalize_array) {}
+
+    /**
+     * Retrieves the value of the color channel specified, as a floating-point number between 0 and 1.
+     *
+     * @param int
+     * @return void
+     **/
+    function getcolorvalue($color) {}
+
+    /**
+     * Sets the color described by the GmagickPixel object, with a string (e.g. "blue", "#0000ff", "rgb(0,0,255)", "cmyk(100,100,100,10)", etc.).
+     *
+     * @param string
+     * @return void
+     **/
+    function setcolor($color) {}
+
+    /**
+     * Sets the value of the specified channel of this object to the provided value, which should be between 0 and 1. This function can be used to provide an opacity channel to a GmagickPixel object.
+     *
+     * @param int
+     * @param float
+     * @return void
+     **/
+    function setcolorvalue($color, $value) {}
+
+    /**
+     * Constructs an GmagickPixel object. If a color is specified, the object is constructed and then initialised with that color before being returned.
+     *
+     * @param string
+     **/
+    function __construct($color) {}
+
+}
+class GmagickPixelException extends Exception {
+}
+class HaruAnnotation {
+    /**
+     * Defines the style of the border of the annotation.
+     * This function may be used with link annotations only.
+     *
+     * @param float
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setBorderStyle($width, $dash_on, $dash_off) {}
+
+    /**
+     * Defines the appearance of the annotation when clicked.
+     * This function may be used with link annotations only.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setHighlightMode($mode) {}
+
+    /**
+     * Defines the style of the annotation icon.
+     * This function may be used with text annotations only.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setIcon($icon) {}
+
+    /**
+     * Defines whether the annotation is initially displayed open.
+     * This function may be used with text annotations only.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function setOpened($opened) {}
+
+}
+class HaruDestination {
+    /**
+     * Defines the appearance of the page to fit the window.
+     *
+     * @return bool
+     **/
+    function setFit() {}
+
+    /**
+     * Defines the appearance of the page to fit the bounding box of the page within
+     * the window.
+     *
+     * @return bool
+     **/
+    function setFitB() {}
+
+    /**
+     * Defines the appearance of the page to magnifying to fit the width of the
+     * bounding box and setting the top position of the page to the value of
+     * top.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setFitBH($top) {}
+
+    /**
+     * Defines the appearance of the page to magnifying to fit the height of the
+     * bounding box and setting the left position of the page to the value of
+     * left.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setFitBV($left) {}
+
+    /**
+     * Defines the appearance of the page to fit the window width and sets the top
+     * position of the page to the value of top.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setFitH($top) {}
+
+    /**
+     * Defines the appearance of the page to fit the rectangle by the parameters.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setFitR($left, $bottom, $right, $top) {}
+
+    /**
+     * Defines the appearance of the page to fit the window height.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setFitV($left) {}
+
+    /**
+     * Defines the appearance of the page using three parameters:
+     * left, top and
+     * zoom.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setXYZ($left, $top, $zoom) {}
+
+}
+class HaruDoc {
+    /**
+     * Adds a new page to the document.
+     *
+     * @return object
+     **/
+    function addPage() {}
+
+    /**
+     * Set the numbering style for the specified range of pages.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function addPageLabel($first_page, $style, $first_num, $prefix) {}
+
+    /**
+     * Create a HaruOutline instance.
+     *
+     * @param string
+     * @param object
+     * @param object
+     * @return object
+     **/
+    function createOutline($title, $parent_outline, $encoder) {}
+
+    /**
+     * Get the HaruEncoder currently used in the document.
+     *
+     * @return object
+     **/
+    function getCurrentEncoder() {}
+
+    /**
+     * Get current page of the document.
+     *
+     * @return object
+     **/
+    function getCurrentPage() {}
+
+    /**
+     * Get the HaruEncoder instance for the specified encoding.
+     *
+     * @param string
+     * @return object
+     **/
+    function getEncoder($encoding) {}
+
+    /**
+     * Get a HaruFont instance.
+     *
+     * @param string
+     * @param string
+     * @return object
+     **/
+    function getFont($fontname, $encoding) {}
+
+    /**
+     * Get the current value of the specified document attribute.
+     *
+     * @param int
+     * @return string
+     **/
+    function getInfoAttr($type) {}
+
+    /**
+     * Get the current page layout. 
+     * See HaruDoc::setPageLayout
+     * for the list of possible values.
+     *
+     * @return int
+     **/
+    function getPageLayout() {}
+
+    /**
+     * Get the current page mode. 
+     * See HaruDoc::setPageMode
+     * for the list of possible values.
+     *
+     * @return int
+     **/
+    function getPageMode() {}
+
+    /**
+     * Get the size of the temporary stream.
+     *
+     * @return int
+     **/
+    function getStreamSize() {}
+
+    /**
+     * Creates a new page and inserts just before the specified page.
+     *
+     * @param object
+     * @return object
+     **/
+    function insertPage($page) {}
+
+    /**
+     * Loads the specified JPEG image.
+     *
+     * @param string
+     * @return object
+     **/
+    function loadJPEG($filename) {}
+
+    /**
+     * Loads a PNG image.
+     *
+     * @param string
+     * @param bool
+     * @return object
+     **/
+    function loadPNG($filename, $deferred) {}
+
+    /**
+     * Loads a RAW image.
+     *
+     * @param string
+     * @param int
+     * @param int
+     * @param int
+     * @return object
+     **/
+    function loadRaw($filename, $width, $height, $color_space) {}
+
+    /**
+     * Loads the TrueType font with the specified index from a TrueType collection
+     * file.
+     *
+     * @param string
+     * @param int
+     * @param bool
+     * @return string
+     **/
+    function loadTTC($fontfile, $index, $embed) {}
+
+    /**
+     * Loads the given TTF file and (optionally) embed its data into the document.
+     *
+     * @param string
+     * @param bool
+     * @return string
+     **/
+    function loadTTF($fontfile, $embed) {}
+
+    /**
+     * Loads Type1 font from the given file and registers it in the PDF document.
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function loadType1($afmfile, $pfmfile) {}
+
+    /**
+     * Writes the document data into standard output.
+     *
+     * @return bool
+     **/
+    function output() {}
+
+    /**
+     * Read data from the temporary stream.
+     *
+     * @param int
+     * @return string
+     **/
+    function readFromStream($bytes) {}
+
+    /**
+     * Once an error code is set, most of the operations, including I/O processing
+     * functions cannot be performed. In case if you want to continue after the cause 
+     * of the error has been fixed, you have to invoke this function in order to
+     * reset the document error state.
+     *
+     * @return bool
+     **/
+    function resetError() {}
+
+    /**
+     * Rewinds the temporary stream of the document.
+     *
+     * @return bool
+     **/
+    function resetStream() {}
+
+    /**
+     * Saves the document into the specified file.
+     *
+     * @param string
+     * @return bool
+     **/
+    function save($file) {}
+
+    /**
+     * Saves the document data into a temporary stream.
+     *
+     * @return bool
+     **/
+    function saveToStream() {}
+
+    /**
+     * Defines compression mode for the document. In case when libharu was
+     * compiled without Zlib support this function will always throw
+     * HaruException.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setCompressionMode($mode) {}
+
+    /**
+     * Defines the encoder currently used in the document.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setCurrentEncoder($encoding) {}
+
+    /**
+     * Defines encryption mode for the document. The encryption mode cannot be set
+     * before setting the password.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setEncryptionMode($mode, $key_len) {}
+
+    /**
+     * Defines an info attribute. Uses the current encoding of the document.
+     *
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function setInfoAttr($type, $info) {}
+
+    /**
+     * Sets the datetime info attributes of the document.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param string
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setInfoDateAttr($type, $year, $month, $day, $hour, $min, $sec, $ind, $off_hour, $off_min) {}
+
+    /**
+     * Defines which page should be shown when the document is opened.
+     *
+     * @param object
+     * @return bool
+     **/
+    function setOpenAction($destination) {}
+
+    /**
+     * Defines how pages should be displayed.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setPageLayout($layout) {}
+
+    /**
+     * Defines how the document should be displayed.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setPageMode($mode) {}
+
+    /**
+     * By default the document has one pages object as a root for all pages.
+     * All page objects are create as branches of this object. One pages object
+     * can contain only 8191, therefore the maximum number of pages per document
+     * is 8191. But you can change that fact by setting
+     * page_per_pages parameter, so that the root pages
+     * object contains 8191 more pages (not page) objects, which in turn contain
+     * 8191 pages each. So the maximum number of pages in the document becomes
+     * 8191*page_per_pages.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setPagesConfiguration($page_per_pages) {}
+
+    /**
+     * Defines owner and user passwords for the document.
+     * Setting the passwords makes the document contents encrypted.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function setPassword($owner_password, $user_password) {}
+
+    /**
+     * Defines permissions for the document.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setPermission($permission) {}
+
+    /**
+     * Enables Chinese simplified encodings.
+     *
+     * @return bool
+     **/
+    function useCNSEncodings() {}
+
+    /**
+     * Enables builtin Chinese simplified fonts.
+     *
+     * @return bool
+     **/
+    function useCNSFonts() {}
+
+    /**
+     * Enables Chinese traditional encodings.
+     *
+     * @return bool
+     **/
+    function useCNTEncodings() {}
+
+    /**
+     * Enables builtin Chinese traditional fonts.
+     *
+     * @return bool
+     **/
+    function useCNTFonts() {}
+
+    /**
+     * Enables Japanese encodings.
+     *
+     * @return bool
+     **/
+    function useJPEncodings() {}
+
+    /**
+     * Enables builtin Japanese fonts.
+     *
+     * @return bool
+     **/
+    function useJPFonts() {}
+
+    /**
+     * Enables Korean encodings.
+     *
+     * @return bool
+     **/
+    function useKREncodings() {}
+
+    /**
+     * Enables builtin Korean fonts.
+     *
+     * @return bool
+     **/
+    function useKRFonts() {}
+
+    /**
+     * Constructs new HaruDoc instance.
+     *
+     * @return void
+     **/
+    function __construct() {}
+
+}
+class HaruEncoder {
+    /**
+     * Get the type of the byte in the text.
+     *
+     * @param string
+     * @param int
+     * @return int
+     **/
+    function getByteType($text, $index) {}
+
+    /**
+     * Get the type of the encoder.
+     *
+     * @return int
+     **/
+    function getType() {}
+
+    /**
+     * Converts the specified character to unicode.
+     *
+     * @param int
+     * @return int
+     **/
+    function getUnicode($character) {}
+
+    /**
+     * Get the writing mode of the encoder.
+     *
+     * @return int
+     **/
+    function getWritingMode() {}
+
+}
+class HaruException extends Exception {
+}
+class HaruFont {
+    /**
+     * Get the vertical ascent of the font.
+     *
+     * @return int
+     **/
+    function getAscent() {}
+
+    /**
+     * Get the distance from the baseline of uppercase letters.
+     *
+     * @return int
+     **/
+    function getCapHeight() {}
+
+    /**
+     * Get the vertical descent of the font.
+     *
+     * @return int
+     **/
+    function getDescent() {}
+
+    /**
+     * Get the name of the font encoding.
+     *
+     * @return string
+     **/
+    function getEncodingName() {}
+
+    /**
+     * Get the name of the font.
+     *
+     * @return string
+     **/
+    function getFontName() {}
+
+    /**
+     * Get the total width of the text, number of characters, number of words and
+     * number of spaces.
+     *
+     * @param string
+     * @return array
+     **/
+    function getTextWidth($text) {}
+
+    /**
+     * Get the width of the character in the font.
+     *
+     * @param int
+     * @return int
+     **/
+    function getUnicodeWidth($character) {}
+
+    /**
+     * Gets the distance from the baseline of lowercase letters.
+     *
+     * @return int
+     **/
+    function getXHeight() {}
+
+    /**
+     * Calculate the number of characters which can be included within the
+     * specified width.
+     *
+     * @param string
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param bool
+     * @return int
+     **/
+    function measureText($text, $width, $font_size, $char_space, $word_space, $word_wrap) {}
+
+}
+class HaruImage {
+    /**
+     * Gets the number of bits used to describe each color component of the
+     * image.
+     *
+     * @return int
+     **/
+    function getBitsPerComponent() {}
+
+    /**
+     * Get the name of the color space.
+     *
+     * @return string
+     **/
+    function getColorSpace() {}
+
+    /**
+     * Get the height of the image.
+     *
+     * @return int
+     **/
+    function getHeight() {}
+
+    /**
+     * Get the size of the image.
+     *
+     * @return array
+     **/
+    function getSize() {}
+
+    /**
+     * Get the width of the image.
+     *
+     * @return int
+     **/
+    function getWidth() {}
+
+    /**
+     * Defines the transparent color of the image using the RGB range values.
+     * The color within the range is displayed as a transparent color.
+     * The color space of the image must be RGB.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setColorMask($rmin, $rmax, $gmin, $gmax, $bmin, $bmax) {}
+
+    /**
+     * Sets the image used as image-mask. It must be 1bit gray-scale color image.
+     *
+     * @param object
+     * @return bool
+     **/
+    function setMaskImage($mask_image) {}
+
+}
+class HaruOutline {
+    /**
+     * Sets a destination object which becomes a target to jump to when the
+     * outline is clicked.
+     *
+     * @param object
+     * @return bool
+     **/
+    function setDestination($destination) {}
+
+    /**
+     * Defines whether this node is opened or not when the outline is
+     * displayed for the first time.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function setOpened($opened) {}
+
+}
+class HaruPage {
+    /**
+     * Appends an arc to the current path.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function arc($x, $y, $ray, $ang1, $ang2) {}
+
+    /**
+     * Begins new text object and sets the current text position to (0,0).
+     *
+     * @return bool
+     **/
+    function beginText() {}
+
+    /**
+     * Appends a circle to the current path.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function circle($x, $y, $ray) {}
+
+    /**
+     * Appends a straight line from the current point to the start point of the
+     * path.
+     *
+     * @return bool
+     **/
+    function closePath() {}
+
+    /**
+     * Concatenates current transformation matrix of the page and the specified
+     * matrix.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function concat($a, $b, $c, $d, $x, $y) {}
+
+    /**
+     * Create a new HaruDestination instance.
+     *
+     * @return object
+     **/
+    function createDestination() {}
+
+    /**
+     * Creates a new HaruAnnotation instance.
+     *
+     * @param array
+     * @param object
+     * @return object
+     **/
+    function createLinkAnnotation($rectangle, $destination) {}
+
+    /**
+     * Creates a new HaruAnnotation instance.
+     *
+     * @param array
+     * @param string
+     * @param object
+     * @return object
+     **/
+    function createTextAnnotation($rectangle, $text, $encoder) {}
+
+    /**
+     * Creates a new HaruAnnotation instance.
+     *
+     * @param array
+     * @param string
+     * @return object
+     **/
+    function createURLAnnotation($rectangle, $url) {}
+
+    /**
+     * Append a Bezier curve to the current path.
+     * The point (x1, y1) and the point (x2, y2) are used as the control points
+     * for a Bezier curve and current point is moved to the point (x3, y3).
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function curveTo($x1, $y1, $x2, $y2, $x3, $y3) {}
+
+    /**
+     * Appends a Bezier curve to the current path.
+     * The current point and the point (x2, y2) are used as the control points for
+     * the Bezier curve and current point is moved to the point (x3, y3).
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function curveTo2($x2, $y2, $x3, $y3) {}
+
+    /**
+     * Appends a Bezier curve to the current path.
+     * The point (x1, y1) and the point (x3, y3) are used as the control points
+     * for a Bezier curve and current point is moved to the point (x3, y3).
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function curveTo3($x1, $y1, $x3, $y3) {}
+
+    /**
+     * Show image at the page.
+     *
+     * @param object
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function drawImage($image, $x, $y, $width, $height) {}
+
+    /**
+     * Appends an ellipse to the current path.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function ellipse($x, $y, $xray, $yray) {}
+
+    /**
+     * Ends current path object without performing filling and painting operations.
+     *
+     * @return bool
+     **/
+    function endPath() {}
+
+    /**
+     * Finalizes current text object.
+     *
+     * @return bool
+     **/
+    function endText() {}
+
+    /**
+     * Fills current path using even-odd rule.
+     *
+     * @return bool
+     **/
+    function eofill() {}
+
+    /**
+     * Fills current path using even-odd rule, then paints the path.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function eoFillStroke($close_path) {}
+
+    /**
+     * Fills current path using nonzero winding number rule.
+     *
+     * @return bool
+     **/
+    function fill() {}
+
+    /**
+     * Fills current path using nonzero winding number rule, then paints the path.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function fillStroke($close_path) {}
+
+    /**
+     * Get the current value of character spacing.
+     *
+     * @return float
+     **/
+    function getCharSpace() {}
+
+    /**
+     * Returns the current filling color.
+     *
+     * @return array
+     **/
+    function getCMYKFill() {}
+
+    /**
+     * Get the current stroking color.
+     *
+     * @return array
+     **/
+    function getCMYKStroke() {}
+
+    /**
+     * Get the currently used font.
+     *
+     * @return object
+     **/
+    function getCurrentFont() {}
+
+    /**
+     * Get the current font size.
+     *
+     * @return float
+     **/
+    function getCurrentFontSize() {}
+
+    /**
+     * Get the current position for path painting.
+     *
+     * @return array
+     **/
+    function getCurrentPos() {}
+
+    /**
+     * Get the current position for text printing.
+     *
+     * @return array
+     **/
+    function getCurrentTextPos() {}
+
+    /**
+     * Get the current dash pattern. See 
+     * HaruPage::setDash 
+     * for more information on dash patterns.
+     *
+     * @return array
+     **/
+    function getDash() {}
+
+    /**
+     * Get the current filling color space.
+     *
+     * @return int
+     **/
+    function getFillingColorSpace() {}
+
+    /**
+     * Get the flatness of the page.
+     *
+     * @return float
+     **/
+    function getFlatness() {}
+
+    /**
+     * Get the current graphics mode.
+     *
+     * @return int
+     **/
+    function getGMode() {}
+
+    /**
+     * Get the current filling color.
+     *
+     * @return float
+     **/
+    function getGrayFill() {}
+
+    /**
+     * Get the current stroking color.
+     *
+     * @return float
+     **/
+    function getGrayStroke() {}
+
+    /**
+     * Get the height of the page.
+     *
+     * @return float
+     **/
+    function getHeight() {}
+
+    /**
+     * Get the current value of the horizontal scaling.
+     *
+     * @return float
+     **/
+    function getHorizontalScaling() {}
+
+    /**
+     * Get the current line cap style.
+     *
+     * @return int
+     **/
+    function getLineCap() {}
+
+    /**
+     * Get the current line join style.
+     *
+     * @return int
+     **/
+    function getLineJoin() {}
+
+    /**
+     * Get the current line width.
+     *
+     * @return float
+     **/
+    function getLineWidth() {}
+
+    /**
+     * Get the value of the miter limit.
+     *
+     * @return float
+     **/
+    function getMiterLimit() {}
+
+    /**
+     * Get the current filling color.
+     *
+     * @return array
+     **/
+    function getRGBFill() {}
+
+    /**
+     * Get the current stroking color.
+     *
+     * @return array
+     **/
+    function getRGBStroke() {}
+
+    /**
+     * Get the current stroking color space.
+     *
+     * @return int
+     **/
+    function getStrokingColorSpace() {}
+
+    /**
+     * Get the current value of line spacing.
+     *
+     * @return float
+     **/
+    function getTextLeading() {}
+
+    /**
+     * Get the current text transformation matrix of the page.
+     *
+     * @return array
+     **/
+    function getTextMatrix() {}
+
+    /**
+     * Get the current text rendering mode.
+     *
+     * @return int
+     **/
+    function getTextRenderingMode() {}
+
+    /**
+     * Get the current value of text rising.
+     *
+     * @return float
+     **/
+    function getTextRise() {}
+
+    /**
+     * Get the width of the text using current fontsize, character spacing and word spacing
+     *
+     * @param string
+     * @return float
+     **/
+    function getTextWidth($text) {}
+
+    /**
+     * Get the current transformation matrix of the page.
+     *
+     * @return array
+     **/
+    function getTransMatrix() {}
+
+    /**
+     * Get the width of the page.
+     *
+     * @return float
+     **/
+    function getWidth() {}
+
+    /**
+     * Get the current value of word spacing.
+     *
+     * @return float
+     **/
+    function getWordSpace() {}
+
+    /**
+     * Draws a line from the current point to the specified point.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function lineTo($x, $y) {}
+
+    /**
+     * Get the number of characters which can be included within the specified width.
+     *
+     * @param string
+     * @param float
+     * @param bool
+     * @return int
+     **/
+    function measureText($text, $width, $wordwrap) {}
+
+    /**
+     * Moves text position to the specified offset. If the start position of the current 
+     * line is (x1, y1), the start of the next line is (x1 + x, 
+     * y1 + y).
+     *
+     * @param float
+     * @param float
+     * @param bool
+     * @return bool
+     **/
+    function moveTextPos($x, $y, $set_leading) {}
+
+    /**
+     * Defines starting point for new drawing path.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function moveTo($x, $y) {}
+
+    /**
+     * Moves text position to the start of the next line.
+     *
+     * @return bool
+     **/
+    function moveToNextLine() {}
+
+    /**
+     * Appends a rectangle to the current drawing path.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function rectangle($x, $y, $width, $height) {}
+
+    /**
+     * Defines character spacing for the page.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setCharSpace($char_space) {}
+
+    /**
+     * Defines filling color for the page.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setCMYKFill($c, $m, $y, $k) {}
+
+    /**
+     * Defines stroking color for the page.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setCMYKStroke($c, $m, $y, $k) {}
+
+    /**
+     * Defines the dash pattern for the page.
+     *
+     * @param array
+     * @param int
+     * @return bool
+     **/
+    function setDash($pattern, $phase) {}
+
+    /**
+     * Defines flatness for the page.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setFlatness($flatness) {}
+
+    /**
+     * Defines current font and its size for the page.
+     *
+     * @param object
+     * @param float
+     * @return bool
+     **/
+    function setFontAndSize($font, $size) {}
+
+    /**
+     * Defines filling color for the page.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setGrayFill($value) {}
+
+    /**
+     * Defines stroking color for the page.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setGrayStroke($value) {}
+
+    /**
+     * Defines height of the page.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setHeight($height) {}
+
+    /**
+     * Set the horizontal scaling for the page.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setHorizontalScaling($scaling) {}
+
+    /**
+     * Defines the shape to be used at the ends of lines.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setLineCap($cap) {}
+
+    /**
+     * Defines line join style for the page.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setLineJoin($join) {}
+
+    /**
+     * Defines line width for the page.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setLineWidth($width) {}
+
+    /**
+     * Set the current value of the miter limit of the page.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setMiterLimit($limit) {}
+
+    /**
+     * Defines filling color for the page. All values must be between 0 and 1.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setRGBFill($r, $g, $b) {}
+
+    /**
+     * Defines stroking color for the page. All values must be between 0 and 1.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setRGBStroke($r, $g, $b) {}
+
+    /**
+     * Defines rotation angle of the page.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setRotate($angle) {}
+
+    /**
+     * Changes size and direction of the page to a predefined format.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setSize($size, $direction) {}
+
+    /**
+     * Defines transition style for the page.
+     *
+     * @param int
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setSlideShow($type, $disp_time, $trans_time) {}
+
+    /**
+     * Set the text leading (line spacing) for the page.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setTextLeading($text_leading) {}
+
+    /**
+     * Defines the text transformation matrix of the page.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setTextMatrix($a, $b, $c, $d, $x, $y) {}
+
+    /**
+     * Defines text rendering mode for the page.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setTextRenderingMode($mode) {}
+
+    /**
+     * Set the current value of text rising.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setTextRise($rise) {}
+
+    /**
+     * Set the width of the page.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setWidth($width) {}
+
+    /**
+     * Set the word spacing for the page.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setWordSpace($word_space) {}
+
+    /**
+     * Prints out the text at the current position of the page.
+     *
+     * @param string
+     * @return bool
+     **/
+    function showText($text) {}
+
+    /**
+     * Moves the current position to the start of the next line and print out the text.
+     *
+     * @param string
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function showTextNextLine($text, $word_space, $char_space) {}
+
+    /**
+     * Paints the current path.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function stroke($close_path) {}
+
+    /**
+     * Prints the text on the specified position.
+     *
+     * @param float
+     * @param float
+     * @param string
+     * @return bool
+     **/
+    function textOut($x, $y, $text) {}
+
+    /**
+     * Prints the text inside the specified region.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function textRect($left, $top, $right, $bottom, $text, $align) {}
+
+}
+class HttpDeflateStream {
+    /**
+     * Creates a new HttpDeflateStream object instance.
+     *
+     * @param int
+     * @param string
+     * @return HttpDeflateStream
+     **/
+    function factory($flags, $class_name) {}
+
+    /**
+     * Finalizes the deflate stream. The deflate stream can be reused after finalizing.
+     *
+     * @param string
+     * @return string
+     **/
+    function finish($data) {}
+
+    /**
+     * Flushes the deflate stream.
+     *
+     * @param string
+     * @return string
+     **/
+    function flush($data) {}
+
+    /**
+     * Passes more data through the deflate stream.
+     *
+     * @param string
+     * @return string
+     **/
+    function update($data) {}
+
+    /**
+     * Creates a new HttpDeflateStream object instance.
+     *
+     * @param int
+     * @return void
+     **/
+    function __construct($flags) {}
+
+}
+class HttpInflateStream {
+    /**
+     * Creates a new HttpInflateStream object instance.
+     *
+     * @param int
+     * @param string
+     * @return HttpInflateStream
+     **/
+    function factory($flags, $class_name) {}
+
+    /**
+     * Finalizes the inflate stream. The inflate stream can be reused after finalizing.
+     *
+     * @param string
+     * @return string
+     **/
+    function finish($data) {}
+
+    /**
+     * Flushes the inflate stream.
+     *
+     * @param string
+     * @return string
+     **/
+    function flush($data) {}
+
+    /**
+     * Passes more data through the inflate stream.
+     *
+     * @param string
+     * @return string
+     **/
+    function update($data) {}
+
+    /**
+     * Creates a new HttpInflateStream object instance.
+     *
+     * @param int
+     * @return void
+     **/
+    function __construct($flags) {}
+
+}
+class HttpMessage implements Iterator, Countable, Serializable {
+    /**
+     * Add headers. If append is true, headers with the same name will be separated, else overwritten.
+     *
+     * @param array
+     * @param bool
+     * @return void
+     **/
+    function addHeaders($headers, $append) {}
+
+    /**
+     * Returns a clone of an HttpMessage object detached from any parent messages.
+     *
+     * @return HttpMessage
+     **/
+    function detach() {}
+
+    /**
+     * Create an HttpMessage object from a string.
+     *
+     * @param string
+     * @param string
+     * @return HttpMessage
+     **/
+    function factory($raw_message, $class_name) {}
+
+    /**
+     * Create an HttpMessage object from script environment.
+     *
+     * @param int
+     * @param string
+     * @return HttpMessage
+     **/
+    function fromEnv($message_type, $class_name) {}
+
+    /**
+     * Create an HttpMessage object from a string.
+     *
+     * @param string
+     * @param string
+     * @return HttpMessage
+     **/
+    function fromString($raw_message, $class_name) {}
+
+    /**
+     * Get the body of the parsed HttpMessage.
+     *
+     * @return string
+     **/
+    function getBody() {}
+
+    /**
+     * Get message header.
+     *
+     * @param string
+     * @return string
+     **/
+    function getHeader($header) {}
+
+    /**
+     * Get message headers.
+     *
+     * @return array
+     **/
+    function getHeaders() {}
+
+    /**
+     * Get the HTTP Protocol Version of the Message.
+     *
+     * @return string
+     **/
+    function getHttpVersion() {}
+
+    /**
+     * Get parent Message.
+     *
+     * @return HttpMessage
+     **/
+    function getParentMessage() {}
+
+    /**
+     * Get the Request Method of the Message.
+     *
+     * @return string
+     **/
+    function getRequestMethod() {}
+
+    /**
+     * Get the Request URL of the Message.
+     *
+     * @return string
+     **/
+    function getRequestUrl() {}
+
+    /**
+     * Get the Response Code of the Message.
+     *
+     * @return int
+     **/
+    function getResponseCode() {}
+
+    /**
+     * Get the Response Status of the message (i.e. the string following the response code).
+     *
+     * @return string
+     **/
+    function getResponseStatus() {}
+
+    /**
+     * Get Message Type.
+     * Either HTTP_MSG_NONE, HTTP_MSG_REQUEST or HTTP_MSG_RESPONSE.
+     *
+     * @return int
+     **/
+    function getType() {}
+
+    /**
+     * Attempts to guess the content type of the message body through libmagic.
+     *
+     * @param string
+     * @param int
+     * @return string
+     **/
+    function guessContentType($magic_file, $magic_mode) {}
+
+    /**
+     * Prepends message(s) to the HTTP message.
+     *
+     * @param HttpMessage
+     * @param bool
+     * @return void
+     **/
+    function prepend($message, $top) {}
+
+    /**
+     * Reorders the message chain in reverse order.
+     *
+     * @return HttpMessage
+     **/
+    function reverse() {}
+
+    /**
+     * Send the Message according to its type as Response or Request.
+     *
+     * @return bool
+     **/
+    function send() {}
+
+    /**
+     * Set the body of the HttpMessage.
+     *
+     * @param string
+     * @return void
+     **/
+    function setBody($body) {}
+
+    /**
+     * Sets new headers.
+     *
+     * @param array
+     * @return void
+     **/
+    function setHeaders($headers) {}
+
+    /**
+     * Set the HTTP Protocol version of the Message.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setHttpVersion($version) {}
+
+    /**
+     * Set the Request Method of the HTTP Message.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setRequestMethod($method) {}
+
+    /**
+     * Set the Request URL of the HTTP Message.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setRequestUrl($url) {}
+
+    /**
+     * Set the response code of an HTTP Response Message.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setResponseCode($code) {}
+
+    /**
+     * Set the Response Status of the HTTP message (i.e. the string following the response code).
+     *
+     * @param string
+     * @return bool
+     **/
+    function setResponseStatus($status) {}
+
+    /**
+     * Set Message Type.
+     * Either HTTP_MSG_NONE, HTTP_MSG_REQUEST or HTTP_MSG_RESPONSE.
+     *
+     * @param int
+     * @return void
+     **/
+    function setType($type) {}
+
+    /**
+     * Creates an object regarding to the type of the message.
+     *
+     * @return HttpRequest|HttpResponse
+     **/
+    function toMessageTypeObject() {}
+
+    /**
+     * Get the string representation of the Message.
+     *
+     * @param bool
+     * @return string
+     **/
+    function toString($include_parent) {}
+
+    /**
+     * Instantiate a new HttpMessage object.
+     *
+     * @param string
+     * @return void
+     **/
+    function __construct($message) {}
+
+}
+class HttpQueryString implements ArrayAccess, Serializable {
+    /**
+     * Get (part of) the query string.
+     *
+     * @param string
+     * @param mixed
+     * @param mixed
+     * @param bool
+     * @return mixed
+     **/
+    function get($key, $type, $defval, $delete) {}
+
+    /**
+     * Copies the query string object and sets provided params at the clone.
+     *
+     * @param mixed
+     * @return HttpQueryString
+     **/
+    function mod($params) {}
+
+    /**
+     * Set query string entry/entries. NULL values will unset the variable.
+     *
+     * @param mixed
+     * @return string
+     **/
+    function set($params) {}
+
+    /**
+     * Get a single instance (differentiates between the global setting).
+     *
+     * @param bool
+     * @return HttpQueryString
+     **/
+    function singleton($global) {}
+
+    /**
+     * Get the query string represented as associative array.
+     *
+     * @return array
+     **/
+    function toArray() {}
+
+    /**
+     * Get the query string.
+     *
+     * @return string
+     **/
+    function toString() {}
+
+    /**
+     * Converts the query string from the source encoding ie to the target encoding oe.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function xlate($ie, $oe) {}
+
+    /**
+     * Creates a new HttpQueryString object instance.
+     *
+     * @param bool
+     * @param mixed
+     * @return void
+     **/
+    function __construct($global, $add) {}
+
+}
+class HttpRequest {
+    /**
+     * Add custom cookies.
+     *
+     * @param array
+     * @return bool
+     **/
+    function addCookies($cookies) {}
+
+    /**
+     * Add request header name/value pairs.
+     *
+     * @param array
+     * @return bool
+     **/
+    function addHeaders($headers) {}
+
+    /**
+     * Adds POST data entries, leaving previously set unchanged, unless a
+     * post entry with the same name already exists.
+     *
+     * @param array
+     * @return bool
+     **/
+    function addPostFields($post_data) {}
+
+    /**
+     * Add a file to the POST request, leaving previously set files unchanged.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function addPostFile($name, $file, $content_type) {}
+
+    /**
+     * Add PUT data, leaving previously set PUT data unchanged.
+     *
+     * @param string
+     * @return bool
+     **/
+    function addPutData($put_data) {}
+
+    /**
+     * Add parameters to the query parameter list, leaving previously set unchanged.
+     *
+     * @param array
+     * @return bool
+     **/
+    function addQueryData($query_params) {}
+
+    /**
+     * Add raw post data, leaving previously set raw post data unchanged.
+     *
+     * @param string
+     * @return bool
+     **/
+    function addRawPostData($raw_post_data) {}
+
+    /**
+     * Set additional SSL options.
+     *
+     * @param array
+     * @return bool
+     **/
+    function addSslOptions($options) {}
+
+    /**
+     * Clears all history messages.
+     *
+     * @return void
+     **/
+    function clearHistory() {}
+
+    /**
+     * Enable automatic sending of received cookies.
+     *
+     * @return bool
+     **/
+    function enableCookies() {}
+
+    /**
+     * Get the previously set content type.
+     *
+     * @return string
+     **/
+    function getContentType() {}
+
+    /**
+     * Get previously set cookies.
+     *
+     * @return array
+     **/
+    function getCookies() {}
+
+    /**
+     * Get previously set request headers.
+     *
+     * @return array
+     **/
+    function getHeaders() {}
+
+    /**
+     * Get all sent requests and received responses as an HttpMessage object.
+     *
+     * @return HttpMessage
+     **/
+    function getHistory() {}
+
+    /**
+     * Get the previously set request method.
+     *
+     * @return int
+     **/
+    function getMethod() {}
+
+    /**
+     * Get currently set options.
+     *
+     * @return array
+     **/
+    function getOptions() {}
+
+    /**
+     * Get previously set POST data.
+     *
+     * @return array
+     **/
+    function getPostFields() {}
+
+    /**
+     * Get all previously added POST files.
+     *
+     * @return array
+     **/
+    function getPostFiles() {}
+
+    /**
+     * Get previously set PUT data.
+     *
+     * @return string
+     **/
+    function getPutData() {}
+
+    /**
+     * Get previously set put file.
+     *
+     * @return string
+     **/
+    function getPutFile() {}
+
+    /**
+     * Get the current query data in form of an urlencoded query string.
+     *
+     * @return string
+     **/
+    function getQueryData() {}
+
+    /**
+     * Get previously set raw post data.
+     *
+     * @return string
+     **/
+    function getRawPostData() {}
+
+    /**
+     * Get sent HTTP message.
+     *
+     * @return string
+     **/
+    function getRawRequestMessage() {}
+
+    /**
+     * Get the entire HTTP response.
+     *
+     * @return string
+     **/
+    function getRawResponseMessage() {}
+
+    /**
+     * Get sent HTTP message.
+     *
+     * @return HttpMessage
+     **/
+    function getRequestMessage() {}
+
+    /**
+     * Get the response body after the request has been sent.
+     *
+     * @return string
+     **/
+    function getResponseBody() {}
+
+    /**
+     * Get the response code after the request has been sent.
+     *
+     * @return int
+     **/
+    function getResponseCode() {}
+
+    /**
+     * Get response cookie(s) after the request has been sent.
+     *
+     * @param int
+     * @param array
+     * @return array
+     **/
+    function getResponseCookies($flags, $allowed_extras) {}
+
+    /**
+     * * Get all response data after the request has been sent.
+     *
+     * @return array
+     **/
+    function getResponseData() {}
+
+    /**
+     * Get response header(s) after the request has been sent.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function getResponseHeader($name) {}
+
+    /**
+     * Get response info after the request has been sent.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function getResponseInfo($name) {}
+
+    /**
+     * Get the full response as HttpMessage object after the request has been sent.
+     *
+     * @return HttpMessage
+     **/
+    function getResponseMessage() {}
+
+    /**
+     * Get the response status (i.e. the string after the response code) after the message has been sent.
+     *
+     * @return string
+     **/
+    function getResponseStatus() {}
+
+    /**
+     * Get previously set SSL options.
+     *
+     * @return array
+     **/
+    function getSslOptions() {}
+
+    /**
+     * Get the previously set request URL.
+     *
+     * @return string
+     **/
+    function getUrl() {}
+
+    /**
+     * Reset all automatically received/sent cookies.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function resetCookies($session_only) {}
+
+    /**
+     * Send the HTTP request.
+     *
+     * @return HttpMessage
+     **/
+    function send() {}
+
+    /**
+     * Set the content type the post request should have.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setContentType($content_type) {}
+
+    /**
+     * Set custom cookies.
+     *
+     * @param array
+     * @return bool
+     **/
+    function setCookies($cookies) {}
+
+    /**
+     * Set request header name/value pairs.
+     *
+     * @param array
+     * @return bool
+     **/
+    function setHeaders($headers) {}
+
+    /**
+     * Set the request method.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setMethod($request_method) {}
+
+    /**
+     * Set the request options to use.
+     *
+     * @param array
+     * @return bool
+     **/
+    function setOptions($options) {}
+
+    /**
+     * Set the POST data entries, overwriting previously set POST data.
+     *
+     * @param array
+     * @return bool
+     **/
+    function setPostFields($post_data) {}
+
+    /**
+     * Set files to post, overwriting previously set post files.
+     *
+     * @param array
+     * @return bool
+     **/
+    function setPostFiles($post_files) {}
+
+    /**
+     * Set PUT data to send, overwriting previously set PUT data.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setPutData($put_data) {}
+
+    /**
+     * Set file to put. Affects only PUT requests.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setPutFile($file) {}
+
+    /**
+     * Set the URL query parameters to use, overwriting previously set query parameters.
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function setQueryData($query_data) {}
+
+    /**
+     * Set raw post data to send, overwriting previously set raw post data. Don't 
+     * forget to specify a content type. Affects only POST and custom requests.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setRawPostData($raw_post_data) {}
+
+    /**
+     * Set SSL options.
+     *
+     * @param array
+     * @return bool
+     **/
+    function setSslOptions($options) {}
+
+    /**
+     * Set the request URL.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setUrl($url) {}
+
+    /**
+     * Instantiate a new HttpRequest object.
+     *
+     * @param string
+     * @param int
+     * @param array
+     * @return void
+     **/
+    function __construct($url, $request_method, $options) {}
+
+}
+class HttpRequestPool implements Iterator, Countable {
+    /**
+     * Attach an HttpRequest object to this HttpRequestPool.
+     *
+     * @param HttpRequest
+     * @return bool
+     **/
+    function attach($request) {}
+
+    /**
+     * Detach an HttpRequest object from this HttpRequestPool.
+     *
+     * @param HttpRequest
+     * @return bool
+     **/
+    function detach($request) {}
+
+    /**
+     * Get attached HttpRequest objects.
+     *
+     * @return array
+     **/
+    function getAttachedRequests() {}
+
+    /**
+     * Get attached HttpRequest objects that already have finished their work.
+     *
+     * @return array
+     **/
+    function getFinishedRequests() {}
+
+    /**
+     * Detach all attached HttpRequest objects.
+     *
+     * @return void
+     **/
+    function reset() {}
+
+    /**
+     * Send all attached HttpRequest objects in parallel.
+     *
+     * @return bool
+     **/
+    function send() {}
+
+    /**
+     * Returns TRUE until each request has finished its transaction.
+     *
+     * @return bool
+     **/
+    function socketPerform() {}
+
+    /**
+     * @return bool
+     **/
+    function socketSelect() {}
+
+    /**
+     * Instantiate a new HttpRequestPool object. An HttpRequestPool is
+     * able to send several HttpRequests in parallel.
+     *
+     * @param HttpRequest
+     * @return void
+     **/
+    function __construct($request) {}
+
+    /**
+     * Clean up HttpRequestPool object.
+     *
+     * @return void
+     **/
+    function __destruct() {}
+
+}
+class HttpResponse {
+    /**
+     * Capture script output.
+     *
+     * @return void
+     **/
+    function capture() {}
+
+    /**
+     * Get current buffer size.
+     *
+     * @return int
+     **/
+    function getBufferSize() {}
+
+    /**
+     * Get current caching setting.
+     *
+     * @return bool
+     **/
+    function getCache() {}
+
+    /**
+     * Get current Cache-Control header setting.
+     *
+     * @return string
+     **/
+    function getCacheControl() {}
+
+    /**
+     * Get current Content-Disposition setting.
+     *
+     * @return string
+     **/
+    function getContentDisposition() {}
+
+    /**
+     * Get current Content-Type header setting.
+     *
+     * @return string
+     **/
+    function getContentType() {}
+
+    /**
+     * Get the previously set data to be sent.
+     *
+     * @return string
+     **/
+    function getData() {}
+
+    /**
+     * Get calculated or previously set custom ETag.
+     *
+     * @return string
+     **/
+    function getETag() {}
+
+    /**
+     * Get the previously set file to be sent.
+     *
+     * @return string
+     **/
+    function getFile() {}
+
+    /**
+     * Get current gzip'ing setting.
+     *
+     * @return bool
+     **/
+    function getGzip() {}
+
+    /**
+     * Get header(s) about to be sent.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function getHeader($name) {}
+
+    /**
+     * Get calculated or previously set custom Last-Modified date.
+     *
+     * @return int
+     **/
+    function getLastModified() {}
+
+    /**
+     * http_get_request_body.
+     *
+     * @return string
+     **/
+    function getRequestBody() {}
+
+    /**
+     * http_get_request_body_stream.
+     *
+     * @return resource
+     **/
+    function getRequestBodyStream() {}
+
+    /**
+     * http_get_request_headers.
+     *
+     * @return array
+     **/
+    function getRequestHeaders() {}
+
+    /**
+     * Get the previously set resource to be sent.
+     *
+     * @return resource
+     **/
+    function getStream() {}
+
+    /**
+     * Get the current throttle delay.
+     *
+     * @return double
+     **/
+    function getThrottleDelay() {}
+
+    /**
+     * Attempts to guess the content type of supplied payload through libmagic.
+     *
+     * @param string
+     * @param int
+     * @return string
+     **/
+    function guessContentType($magic_file, $magic_mode) {}
+
+    /**
+     * http_redirect.
+     *
+     * @param string
+     * @param array
+     * @param bool
+     * @param int
+     * @return void
+     **/
+    function redirect($url, $params, $session, $status) {}
+
+    /**
+     * Finally send the entity.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function send($clean_ob) {}
+
+    /**
+     * Sets the send buffer size of the throttling mechanism.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setBufferSize($bytes) {}
+
+    /**
+     * Whether it should be attempted to cache the entity.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function setCache($cache) {}
+
+    /**
+     * Define a custom Cache-Control header, usually being private or public;
+     *
+     * @param string
+     * @param int
+     * @param bool
+     * @return bool
+     **/
+    function setCacheControl($control, $max_age, $must_revalidate) {}
+
+    /**
+     * Set the Content-Disposition.
+     *
+     * @param string
+     * @param bool
+     * @return bool
+     **/
+    function setContentDisposition($filename, $inline) {}
+
+    /**
+     * Set the Content-Type of the sent entity.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setContentType($content_type) {}
+
+    /**
+     * Set the data to be sent.
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function setData($data) {}
+
+    /**
+     * Set a custom ETag. Use this only if you know what you're doing.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setETag($etag) {}
+
+    /**
+     * Set the file to be sent.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setFile($file) {}
+
+    /**
+     * Enable on-thy-fly gzip'ing of the sent entity.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function setGzip($gzip) {}
+
+    /**
+     * Send an HTTP header.
+     *
+     * @param string
+     * @param mixed
+     * @param bool
+     * @return bool
+     **/
+    function setHeader($name, $value, $replace) {}
+
+    /**
+     * Set a custom Last-Modified date.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setLastModified($timestamp) {}
+
+    /**
+     * Set the resource to be sent.
+     *
+     * @param resource
+     * @return bool
+     **/
+    function setStream($stream) {}
+
+    /**
+     * Sets the throttle delay.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setThrottleDelay($seconds) {}
+
+    /**
+     * http_send_status.
+     *
+     * @param int
+     * @return bool
+     **/
+    function status($status) {}
+
+}
 class hw_api {
     /**
      * This function checks in an object or a whole hierarchy of objects.
@@ -62259,9 +48904,6499 @@ class hw_api_reason {
     function type() {}
 
 }
+class Imagick implements Iterator, Traversable {
+    /**
+     * Adds an adaptive blur filter to image. The intensity of an adaptive blur
+     * depends is dramatically decreased at edge of the image, whereas a standard
+     * blur is uniform across the image.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function adaptiveBlurImage($radius, $sigma, $channel) {}
+
+    /**
+     * Adaptively resize image with data-dependent triangulation. Avoids
+     * blurring across sharp color changes. Most useful when used to shrink
+     * images slightly to a slightly smaller "web size"; may not look good
+     * when a full-sized image is adaptively resized to a thumbnail.
+     *
+     * @param int
+     * @param int
+     * @param bool
+     * @return bool
+     **/
+    function adaptiveResizeImage($columns, $rows, $fit) {}
+
+    /**
+     * Adaptively sharpen the image by sharpening more intensely
+     * near image edges and less intensely far from edges.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function adaptiveSharpenImage($radius, $sigma, $channel) {}
+
+    /**
+     * Selects an individual threshold for each pixel based on the
+     * range of intensity values in its local neighborhood. This
+     * allows for thresholding of an image whose global intensity
+     * histogram doesn't contain distinctive peaks.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function adaptiveThresholdImage($width, $height, $offset) {}
+
+    /**
+     * Adds new image to Imagick object from the current position of the source object.
+     * After the operation iterator position is moved at the end of the list.
+     *
+     * @param Imagick
+     * @return bool
+     **/
+    function addImage($source) {}
+
+    /**
+     * Adds random noise to the image.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function addNoiseImage($noise_type, $channel) {}
+
+    /**
+     * Transforms an image as dictated by the affine matrix.
+     *
+     * @param ImagickDraw
+     * @return bool
+     **/
+    function affineTransformImage($matrix) {}
+
+    /**
+     * This method animates the image onto a local or remote X server. This method
+     * is not available on Windows.
+     *
+     * @param string
+     * @return bool
+     **/
+    function animateImages($x_server) {}
+
+    /**
+     * Annotates an image with text.
+     *
+     * @param ImagickDraw
+     * @param float
+     * @param float
+     * @param float
+     * @param string
+     * @return bool
+     **/
+    function annotateImage($draw_settings, $x, $y, $angle, $text) {}
+
+    /**
+     * Append a set of images.
+     *
+     * @param bool
+     * @return Imagick
+     **/
+    function appendImages($stack) {}
+
+    /**
+     * Average a set of images.
+     *
+     * @return Imagick
+     **/
+    function averageImages() {}
+
+    /**
+     * Is like Imagick::thresholdImage() but forces all pixels below the threshold
+     * into black while leaving all pixels above the threshold unchanged.
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function blackThresholdImage($threshold) {}
+
+    /**
+     * Adds blur filter to image. Optional third parameter to blur a specific
+     * channel.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function blurImage($radius, $sigma, $channel) {}
+
+    /**
+     * Surrounds the image with a border of the color defined by the bordercolor ImagickPixel object.
+     *
+     * @param mixed
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function borderImage($bordercolor, $width, $height) {}
+
+    /**
+     * Simulates a charcoal drawing.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function charcoalImage($radius, $sigma) {}
+
+    /**
+     * Removes a region of an image and collapses the image to occupy the removed portion.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function chopImage($width, $height, $x, $y) {}
+
+    /**
+     * Clears all resources associated to Imagick object
+     *
+     * @return bool
+     **/
+    function clear() {}
+
+    /**
+     * Clips along the first path from the 8BIM profile, if present.
+     *
+     * @return bool
+     **/
+    function clipImage() {}
+
+    /**
+     * Clips along the named paths from the 8BIM profile, if
+     * present. Later operations take effect inside the path.
+     * It may be a number if preceded with #, to work on a
+     * numbered path, e.g., "#1" to use the first path.
+     *
+     * @param string
+     * @param bool
+     * @return bool
+     **/
+    function clipPathImage($pathname, $inside) {}
+
+    /**
+     * Replaces colors in the image from a color lookup table. Optional second
+     * parameter to replace colors in a specific channel.
+     *
+     * @param Imagick
+     * @param float
+     * @return bool
+     **/
+    function clutImage($lookup_table, $channel) {}
+
+    /**
+     * Composites a set of images while respecting any page offsets
+     * and disposal methods. GIF, MIFF, and MNG animation sequences
+     * typically start with an image background and each subsequent
+     * image varies in size and offset. Returns a new Imagick object
+     * where each image in the sequence is the same size as the first
+     * and composited with the next image in the sequence.
+     *
+     * @return Imagick
+     **/
+    function coalesceImages() {}
+
+    /**
+     * Changes the color value of any pixel that matches target and is an
+     * immediate neighbor.
+     *
+     * @param mixed
+     * @param float
+     * @param mixed
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function colorFloodfillImage($fill, $fuzz, $bordercolor, $x, $y) {}
+
+    /**
+     * Blends the fill color with each pixel in the image.
+     *
+     * @param mixed
+     * @param mixed
+     * @return bool
+     **/
+    function colorizeImage($colorize, $opacity) {}
+
+    /**
+     * Combines one or more images into a single image. The grayscale
+     * value of the pixels of each image in the sequence is assigned
+     * in order to the specified channels of the combined image. The
+     * typical ordering would be image 1 = Red, 2 = Green,
+     * 3 = Blue, etc.
+     *
+     * @param int
+     * @return Imagick
+     **/
+    function combineImages($channelType) {}
+
+    /**
+     * Adds a comment to your image.
+     *
+     * @param string
+     * @return bool
+     **/
+    function commentImage($comment) {}
+
+    /**
+     * Compares one or more images and returns the difference image.
+     *
+     * @param Imagick
+     * @param int
+     * @param int
+     * @return array
+     **/
+    function compareImageChannels($image, $channelType, $metricType) {}
+
+    /**
+     * Compares each image with the next in a sequence and returns the
+     * maximum bounding region of any pixel differences it discovers.
+     *
+     * @param int
+     * @return Imagick
+     **/
+    function compareImageLayers($method) {}
+
+    /**
+     * Returns an array containing a reconstructed image and the difference between images.
+     *
+     * @param Imagick
+     * @param int
+     * @return array
+     **/
+    function compareImages($compare, $metric) {}
+
+    /**
+     * Composite one image onto another at the specified offset.
+     *
+     * @param Imagick
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function compositeImage($composite_object, $composite, $x, $y, $channel) {}
+
+    /**
+     * Enhances the intensity differences between the lighter and
+     * darker elements of the image. Set sharpen to a value other
+     * than 0 to increase the image contrast otherwise the contrast
+     * is reduced.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function contrastImage($sharpen) {}
+
+    /**
+     * Enhances the contrast of a color image by adjusting the pixels
+     * color to span the entire range of colors available.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function contrastStretchImage($black_point, $white_point, $channel) {}
+
+    /**
+     * Applies a custom convolution kernel to the image.
+     *
+     * @param array
+     * @param int
+     * @return bool
+     **/
+    function convolveImage($kernel, $channel) {}
+
+    /**
+     * Extracts a region of the image.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function cropImage($width, $height, $x, $y) {}
+
+    /**
+     * Creates a fixed size thumbnail by first scaling the image down and cropping a specified
+     * area from the center.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function cropThumbnailImage($width, $height) {}
+
+    /**
+     * Returns reference to the current imagick object with image pointer at the correct sequence.
+     *
+     * @return Imagick
+     **/
+    function current() {}
+
+    /**
+     * Displaces an image's colormap by a given number of positions. If you
+     * cycle the colormap a number of times you can produce a psychedelic
+     * effect.
+     *
+     * @param int
+     * @return bool
+     **/
+    function cycleColormapImage($displace) {}
+
+    /**
+     * Deciphers image that has been enciphered before. The image must be enciphered
+     * using Imagick::encipherImage.
+     *
+     * @param string
+     * @return bool
+     **/
+    function decipherImage($passphrase) {}
+
+    /**
+     * Compares each image with the next in a sequence and returns the maximum
+     * bounding region of any pixel differences it discovers.
+     *
+     * @return bool
+     **/
+    function deconstructImages() {}
+
+    /**
+     * Reduces the speckle noise in an image while preserving the edges of the original image.
+     *
+     * @return bool
+     **/
+    function despeckleImage() {}
+
+    /**
+     * Destroys the Imagick object and frees all resources associated with it.
+     *
+     * @return bool
+     **/
+    function destroy() {}
+
+    /**
+     * This method displays an image on a X server.
+     *
+     * @param string
+     * @return bool
+     **/
+    function displayImage($servername) {}
+
+    /**
+     * Displays an image or image sequence on a X server.
+     *
+     * @param string
+     * @return bool
+     **/
+    function displayImages($servername) {}
+
+    /**
+     * Distorts an image using various distortion methods, by mapping color
+     * lookups of the source image to a new destination image usually of the same
+     * size as the source image, unless 'bestfit' is set to .
+     *
+     * @param int
+     * @param array
+     * @param bool
+     * @return bool
+     **/
+    function distortImage($method, $arguments, $bestfit) {}
+
+    /**
+     * Renders the ImagickDraw object on the current image.
+     *
+     * @param ImagickDraw
+     * @return bool
+     **/
+    function drawImage($draw) {}
+
+    /**
+     * Enhance edges within the image with a convolution filter of the given
+     * radius. Use radius 0 and it will be auto-selected.
+     *
+     * @param float
+     * @return bool
+     **/
+    function edgeImage($radius) {}
+
+    /**
+     * Returns a grayscale image with a three-dimensional effect. We convolve
+     * the image with a Gaussian operator of the given radius and standard 
+     * deviation (sigma). For reasonable results, radius should be larger than 
+     * sigma. Use a radius of 0 and it will choose a suitable radius for you.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function embossImage($radius, $sigma) {}
+
+    /**
+     * Converts plain pixels to enciphered pixels. The image is not readable
+     * until it has been deciphered using Imagick::decipherImage
+     *
+     * @param string
+     * @return bool
+     **/
+    function encipherImage($passphrase) {}
+
+    /**
+     * Applies a digital filter that improves the quality of a noisy image.
+     *
+     * @return bool
+     **/
+    function enhanceImage() {}
+
+    /**
+     * Equalizes the image histogram.
+     *
+     * @return bool
+     **/
+    function equalizeImage() {}
+
+    /**
+     * Applys an arithmetic, relational, or logical expression to an image. Use
+     * these operators to lighten or darken an image, to increase or decrease
+     * contrast in an image, or to produce the "negative" of an image.
+     *
+     * @param int
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function evaluateImage($op, $constant, $channel) {}
+
+    /**
+     * Comfortability method for setting image size. The method sets the image size and allows
+     * setting x,y coordinates where the new area begins.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function extentImage($width, $height, $x, $y) {}
+
+    /**
+     * Merges a sequence of images. This is useful for combining Photoshop layers into a single image.
+     *
+     * @return Imagick
+     **/
+    function flattenImages() {}
+
+    /**
+     * Creates a vertical mirror image by reflecting the pixels around the central x-axis.
+     *
+     * @return bool
+     **/
+    function flipImage() {}
+
+    /**
+     * Changes the color value of any pixel that matches target and is an
+     * immediate neighbor. This method is a replacement for deprecated 
+     * Imagick::paintFloodFillImage.
+     *
+     * @param mixed
+     * @param float
+     * @param mixed
+     * @param int
+     * @param int
+     * @param bool
+     * @param int
+     * @return bool
+     **/
+    function floodFillPaintImage($fill, $fuzz, $bordercolor, $x, $y, $invert, $channel) {}
+
+    /**
+     * Creates a horizontal mirror image by reflecting the pixels around the central y-axis.
+     *
+     * @return bool
+     **/
+    function flopImage() {}
+
+    /**
+     * Adds a simulated three-dimensional border around the image.
+     * The width and height specify the border width of the vertical
+     * and horizontal sides of the frame. The inner and outer
+     * bevels indicate the width of the inner and outer shadows of
+     * the frame.
+     *
+     * @param mixed
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function frameImage($matte_color, $width, $height, $inner_bevel, $outer_bevel) {}
+
+    /**
+     * Evaluate expression for each pixel in the image. Consult The Fx Special Effects Image
+     * Operator for more information.
+     *
+     * @param string
+     * @param int
+     * @return Imagick
+     **/
+    function fxImage($expression, $channel) {}
+
+    /**
+     * Gamma-corrects an image. The same image viewed on different devices will
+     * have perceptual differences in the way the image's intensities are
+     * represented on the screen. Specify individual gamma levels for the red,
+     * green, and blue channels, or adjust all three with the gamma parameter.
+     * Values typically range from 0.8 to 2.3.
+     *
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function gammaImage($gamma, $channel) {}
+
+    /**
+     * Blurs an image. We convolve the image with a Gaussian operator of the
+     * given radius and standard deviation (sigma). For reasonable results, the
+     * radius should be larger than sigma. Use a radius of 0 and selects a
+     * suitable radius for you.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function gaussianBlurImage($radius, $sigma, $channel) {}
+
+    /**
+     * Gets the object compression type.
+     *
+     * @return int
+     **/
+    function getCompression() {}
+
+    /**
+     * Gets the object compression quality.
+     *
+     * @return int
+     **/
+    function getCompressionQuality() {}
+
+    /**
+     * Returns the ImageMagick API copyright as a string.
+     *
+     * @return string
+     **/
+    function getCopyright() {}
+
+    /**
+     * Returns the filename associated with an image sequence.
+     *
+     * @return string
+     **/
+    function getFilename() {}
+
+    /**
+     * Returns the objects font property.
+     *
+     * @return string
+     **/
+    function getFont() {}
+
+    /**
+     * Returns the format of the Imagick object.
+     *
+     * @return string
+     **/
+    function getFormat() {}
+
+    /**
+     * Gets the global gravity property for the Imagick object.
+     *
+     * @return bool
+     **/
+    function getGravity() {}
+
+    /**
+     * Returns the ImageMagick home URL.
+     *
+     * @return string
+     **/
+    function getHomeURL() {}
+
+    /**
+     * Returns a new Imagick object with the current image sequence.
+     *
+     * @return Imagick
+     **/
+    function getImage() {}
+
+    /**
+     * Gets the image alpha channel value. The returned value is one of the 
+     * alpha channel constants.
+     *
+     * @return int
+     **/
+    function getImageAlphaChannel() {}
+
+    /**
+     * Returns the image background color.
+     *
+     * @return ImagickPixel
+     **/
+    function getImageBackgroundColor() {}
+
+    /**
+     * Implements direct to memory image formats. It returns the image
+     * sequence as a string. The format of the image determines the
+     * format of the returned blob (GIF, JPEG, PNG, etc.). To return a
+     * different image format, use Imagick::setImageFormat().
+     *
+     * @return string
+     **/
+    function getImageBlob() {}
+
+    /**
+     * Returns the chromaticity blue primary point for the image.
+     *
+     * @param float
+     * @param float
+     * @return array
+     **/
+    function getImageBluePrimary($x, $y) {}
+
+    /**
+     * Returns the image border color.
+     *
+     * @return ImagickPixel
+     **/
+    function getImageBorderColor() {}
+
+    /**
+     * Gets the depth for a particular image channel.
+     *
+     * @param int
+     * @return int
+     **/
+    function getImageChannelDepth($channel) {}
+
+    /**
+     * Compares one or more image channels of an image to a reconstructed image
+     * and returns the specified distortion metric.
+     *
+     * @param Imagick
+     * @param int
+     * @param int
+     * @return float
+     **/
+    function getImageChannelDistortion($reference, $channel, $metric) {}
+
+    /**
+     * Compares one or more image channels of an image to a reconstructed image and returns the specified distortion metrics
+     *
+     * @param Imagick
+     * @param int
+     * @param int
+     * @return double
+     **/
+    function getImageChannelDistortions($reference, $metric, $channel) {}
+
+    /**
+     * Gets the extrema for one or more image channels. Return value is an
+     * associative array with the keys "minima" and "maxima".
+     *
+     * @param int
+     * @return array
+     **/
+    function getImageChannelExtrema($channel) {}
+
+    /**
+     * Gets the mean and standard deviation of one or more image channels.
+     * Return value is an associative array with the keys "mean" and
+     * "standardDeviation".
+     *
+     * @param int
+     * @return array
+     **/
+    function getImageChannelMean($channel) {}
+
+    /**
+     * Gets the range for one or more image channels.
+     *
+     * @param int
+     * @return bool
+     **/
+    function getImageChannelRange($channel) {}
+
+    /**
+     * Returns statistics for each channel in the image. The statistics include
+     * the channel depth, its minima and maxima, the mean, and the standard
+     * deviation. You can access the red channel mean, for example, like this:
+     *
+     * @return array
+     **/
+    function getImageChannelStatistics() {}
+
+    /**
+     * Returns the image clip mask. The clip mask is an Imagick object containing the clip mask.
+     *
+     * @return Imagick
+     **/
+    function getImageClipMask() {}
+
+    /**
+     * Returns the color of the specified colormap index.
+     *
+     * @param int
+     * @return ImagickPixel
+     **/
+    function getImageColormapColor($index) {}
+
+    /**
+     * Gets the number of unique colors in the image.
+     *
+     * @return int
+     **/
+    function getImageColors() {}
+
+    /**
+     * Gets the image colorspace.
+     *
+     * @return int
+     **/
+    function getImageColorspace() {}
+
+    /**
+     * Returns the composite operator associated with the image.
+     *
+     * @return int
+     **/
+    function getImageCompose() {}
+
+    /**
+     * Gets the current image's compression type.
+     *
+     * @return int
+     **/
+    function getImageCompression() {}
+
+    /**
+     * Gets the image delay.
+     *
+     * @return int
+     **/
+    function getImageDelay() {}
+
+    /**
+     * Gets the image depth.
+     *
+     * @return int
+     **/
+    function getImageDepth() {}
+
+    /**
+     * Gets the image disposal method.
+     *
+     * @return int
+     **/
+    function getImageDispose() {}
+
+    /**
+     * Compares an image to a reconstructed image and returns the specified distortion
+     * metric.
+     *
+     * @param MagickWand
+     * @param int
+     * @return float
+     **/
+    function getImageDistortion($reference, $metric) {}
+
+    /**
+     * Gets the extrema for the image. Returns an associative array with the keys "min" and "max".
+     *
+     * @return array
+     **/
+    function getImageExtrema() {}
+
+    /**
+     * Returns the filename of a particular image in a sequence.
+     *
+     * @return string
+     **/
+    function getImageFilename() {}
+
+    /**
+     * Returns the format of a particular image in a sequence.
+     *
+     * @return string
+     **/
+    function getImageFormat() {}
+
+    /**
+     * Gets the image gamma.
+     *
+     * @return float
+     **/
+    function getImageGamma() {}
+
+    /**
+     * Returns the width and height as an associative array.
+     *
+     * @return array
+     **/
+    function getImageGeometry() {}
+
+    /**
+     * Returns the chromaticity green primary point. Returns an array with the keys "x" and "y".
+     *
+     * @return array
+     **/
+    function getImageGreenPrimary() {}
+
+    /**
+     * Returns the image height.
+     *
+     * @return int
+     **/
+    function getImageHeight() {}
+
+    /**
+     * Returns the image histogram as an array of ImagickPixel objects.
+     *
+     * @return array
+     **/
+    function getImageHistogram() {}
+
+    /**
+     * Returns the index of the current active image within the Imagick object.
+     * This method has been deprecated. See Imagick::getIteratorIndex
+     *
+     * @return int
+     **/
+    function getImageIndex() {}
+
+    /**
+     * Gets the image interlace scheme.
+     *
+     * @return int
+     **/
+    function getImageInterlaceScheme() {}
+
+    /**
+     * Returns the interpolation method for the specified image. The method is one of 
+     * the Imagick::INTERPOLATE_* constants.
+     *
+     * @return int
+     **/
+    function getImageInterpolateMethod() {}
+
+    /**
+     * Gets the image iterations.
+     *
+     * @return int
+     **/
+    function getImageIterations() {}
+
+    /**
+     * Returns the image length in bytes
+     *
+     * @return int
+     **/
+    function getImageLength() {}
+
+    /**
+     * Returns a string containing the ImageMagick license
+     *
+     * @return string
+     **/
+    function getImageMagickLicense() {}
+
+    /**
+     * Returns if the image has a matte channel otherwise false.
+     *
+     * @return int
+     **/
+    function getImageMatte() {}
+
+    /**
+     * Returns the image matte color.
+     *
+     * @return ImagickPixel
+     **/
+    function getImageMatteColor() {}
+
+    /**
+     * Gets the image orientation. The return value is one of the orientation constants.
+     *
+     * @return int
+     **/
+    function getImageOrientation() {}
+
+    /**
+     * Returns the page geometry associated with the image in an array with the
+     * keys "width", "height", "x", and "y".
+     *
+     * @return array
+     **/
+    function getImagePage() {}
+
+    /**
+     * Returns the color of the specified pixel.
+     *
+     * @param int
+     * @param int
+     * @return ImagickPixel
+     **/
+    function getImagePixelColor($x, $y) {}
+
+    /**
+     * Returns the named image profile.
+     *
+     * @param string
+     * @return string
+     **/
+    function getImageProfile($name) {}
+
+    /**
+     * Returns all associated profiles that match the pattern. If is passed as second parameter
+     * only the profile names are returned.
+     *
+     * @param string
+     * @param bool
+     * @return array
+     **/
+    function getImageProfiles($pattern, $only_names) {}
+
+    /**
+     * Returns all associated properties that match the pattern. If is passed as second parameter
+     * only the property names are returned.
+     *
+     * @param string
+     * @param bool
+     * @return array
+     **/
+    function getImageProperties($pattern, $only_names) {}
+
+    /**
+     * Returns the named image profile.
+     *
+     * @param string
+     * @return string
+     **/
+    function getImageProperty($name) {}
+
+    /**
+     * Returns the chromaticity red primary point as an array with the keys "x" and "y".
+     *
+     * @return array
+     **/
+    function getImageRedPrimary() {}
+
+    /**
+     * Extracts a region of the image and returns it as a a new Imagick object.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return Imagick
+     **/
+    function getImageRegion($width, $height, $x, $y) {}
+
+    /**
+     * Gets the image rendering intent.
+     *
+     * @return int
+     **/
+    function getImageRenderingIntent() {}
+
+    /**
+     * Gets the image X and Y resolution.
+     *
+     * @return array
+     **/
+    function getImageResolution() {}
+
+    /**
+     * Implements direct to memory image formats. It returns all image
+     * sequences as a string. The format of the image determines the
+     * format of the returned blob (GIF, JPEG, PNG, etc.). To return a
+     * different image format, use Imagick::setImageFormat().
+     *
+     * @return string
+     **/
+    function getImagesBlob() {}
+
+    /**
+     * Gets the image scene.
+     *
+     * @return int
+     **/
+    function getImageScene() {}
+
+    /**
+     * Generates an SHA-256 message digest for the image pixel stream.
+     *
+     * @return string
+     **/
+    function getImageSignature() {}
+
+    /**
+     * Returns the image length in bytes
+     *
+     * @return int
+     **/
+    function getImageSize() {}
+
+    /**
+     * Gets the image ticks-per-second.
+     *
+     * @return int
+     **/
+    function getImageTicksPerSecond() {}
+
+    /**
+     * Gets the image total ink density.
+     *
+     * @return float
+     **/
+    function getImageTotalInkDensity() {}
+
+    /**
+     * Gets the potential image type.
+     *
+     * @return int
+     **/
+    function getImageType() {}
+
+    /**
+     * Gets the image units of resolution.
+     *
+     * @return int
+     **/
+    function getImageUnits() {}
+
+    /**
+     * Returns the virtual pixel method for the specified image.
+     *
+     * @return int
+     **/
+    function getImageVirtualPixelMethod() {}
+
+    /**
+     * Returns the chromaticity white point as an associative array with the keys "x" and "y".
+     *
+     * @return array
+     **/
+    function getImageWhitePoint() {}
+
+    /**
+     * Returns the image width.
+     *
+     * @return int
+     **/
+    function getImageWidth() {}
+
+    /**
+     * Gets the object interlace scheme.
+     *
+     * @return int
+     **/
+    function getInterlaceScheme() {}
+
+    /**
+     * Returns the index of the current active image within the Imagick object.
+     *
+     * @return int
+     **/
+    function getIteratorIndex() {}
+
+    /**
+     * Returns the number of images associated with Imagick object.
+     *
+     * @return int
+     **/
+    function getNumberImages() {}
+
+    /**
+     * Returns a value associated within the object for the specified key.
+     *
+     * @param string
+     * @return string
+     **/
+    function getOption($key) {}
+
+    /**
+     * Returns the ImageMagick package name.
+     *
+     * @return string
+     **/
+    function getPackageName() {}
+
+    /**
+     * Returns the page geometry associated with the Imagick object in
+     * an associative array with the keys "width", "height", "x", and "y".
+     *
+     * @return array
+     **/
+    function getPage() {}
+
+    /**
+     * Returns a MagickPixelIterator.
+     *
+     * @return ImagickPixelIterator
+     **/
+    function getPixelIterator() {}
+
+    /**
+     * Get an ImagickPixelIterator for an image section.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return ImagickPixelIterator
+     **/
+    function getPixelRegionIterator($x, $y, $columns, $rows) {}
+
+    /**
+     * Returns the objects point size property.
+     *
+     * @return string
+     **/
+    function getPointSize() {}
+
+    /**
+     * Returns the Imagick quantum depth as a string.
+     *
+     * @return array
+     **/
+    function getQuantumDepth() {}
+
+    /**
+     * Returns the Imagick quantum range as a string.
+     *
+     * @return array
+     **/
+    function getQuantumRange() {}
+
+    /**
+     * Returns the ImageMagick release date as a string.
+     *
+     * @return string
+     **/
+    function getReleaseDate() {}
+
+    /**
+     * Returns the specified resource's memory usage in megabytes.
+     *
+     * @param int
+     * @return int
+     **/
+    function getResource($type) {}
+
+    /**
+     * Returns the specified resource limit in megabytes.
+     *
+     * @param int
+     * @return int
+     **/
+    function getResourceLimit($type) {}
+
+    /**
+     * Gets the horizontal and vertical sampling factor.
+     *
+     * @return array
+     **/
+    function getSamplingFactors() {}
+
+    /**
+     * Returns the size associated with the Imagick object as an array with the
+     * keys "columns" and "rows".
+     *
+     * @return array
+     **/
+    function getSize() {}
+
+    /**
+     * Returns the size offset associated with the Imagick object.
+     *
+     * @return int
+     **/
+    function getSizeOffset() {}
+
+    /**
+     * Returns the ImageMagick API version as a string and as a number.
+     *
+     * @return array
+     **/
+    function getVersion() {}
+
+    /**
+     * Returns if the object has more images when traversing the list in the forward direction.
+     *
+     * @return bool
+     **/
+    function hasNextImage() {}
+
+    /**
+     * Returns if the object has more images when traversing the list in the reverse direction
+     *
+     * @return bool
+     **/
+    function hasPreviousImage() {}
+
+    /**
+     * Identifies an image and returns the attributes. Attributes include
+     * the image width, height, size, and others.
+     *
+     * @param bool
+     * @return array
+     **/
+    function identifyImage($appendRawOutput) {}
+
+    /**
+     * Creates a new image that is a copy of an existing one with the image pixels
+     * "imploded" by the specified percentage.
+     *
+     * @param float
+     * @return bool
+     **/
+    function implodeImage($radius) {}
+
+    /**
+     * Adds a label to an image.
+     *
+     * @param string
+     * @return bool
+     **/
+    function labelImage($label) {}
+
+    /**
+     * Adjusts the levels of an image by scaling the colors falling
+     * between specified white and black points to the full
+     * available quantum range. The parameters provided represent
+     * the black, mid, and white points. The black point specifies
+     * the darkest color in the image. Colors darker than the black
+     * point are set to zero. Mid point specifies a gamma
+     * correction to apply to the image. White point specifies the
+     * lightest color in the image. Colors brighter than the white
+     * point are set to the maximum quantum value.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function levelImage($blackPoint, $gamma, $whitePoint, $channel) {}
+
+    /**
+     * Stretches with saturation the image intensity.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function linearStretchImage($blackPoint, $whitePoint) {}
+
+    /**
+     * This method scales the images using liquid rescaling method. This method
+     * is an implementation of a technique called seam carving. In order for this
+     * method to work as expected ImageMagick must be compiled with liblqr support.
+     *
+     * @param int
+     * @param int
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function liquidRescaleImage($width, $height, $delta_x, $rigidity) {}
+
+    /**
+     * Is a convenience method that scales an image proportionally to twice its original size.
+     *
+     * @return bool
+     **/
+    function magnifyImage() {}
+
+    /**
+     * @param Imagick
+     * @param bool
+     * @return bool
+     **/
+    function mapImage($map, $dither) {}
+
+    /**
+     * Changes the transparency value of any pixel that matches
+     * target and is an immediate neighbor. If the method
+     * FillToBorderMethod is specified, the transparency value
+     * is changed for any neighbor pixel that does not match
+     * the bordercolor member of image.
+     *
+     * @param float
+     * @param float
+     * @param mixed
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function matteFloodfillImage($alpha, $fuzz, $bordercolor, $x, $y) {}
+
+    /**
+     * Applies a digital filter that improves the quality of a
+     * noisy image. Each pixel is replaced by the median in a
+     * set of neighboring pixels as defined by radius.
+     *
+     * @param float
+     * @return bool
+     **/
+    function medianFilterImage($radius) {}
+
+    /**
+     * Merges image layers into one. This method is useful when working with image
+     * formats that use multiple layers such as PSD. The merging is controlled using
+     * the layer_method which defines how the layers are merged.
+     *
+     * @param int
+     * @return bool
+     **/
+    function mergeImageLayers($layer_method) {}
+
+    /**
+     * Is a convenience method that scales an image proportionally to one-half its original size
+     *
+     * @return bool
+     **/
+    function minifyImage() {}
+
+    /**
+     * Lets you control the brightness, saturation, and hue of an image. Hue
+     * is the percentage of absolute rotation from the current position. For
+     * example 50 results in a counter-clockwise rotation of 90 degrees, 150
+     * results in a clockwise rotation of 90 degrees, with 0 and 200 both
+     * resulting in a rotation of 180 degrees.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function modulateImage($brightness, $saturation, $hue) {}
+
+    /**
+     * Creates a composite image by combining several separate images.
+     * he images are tiled on the composite image with the name of the
+     * image optionally appearing just below the individual tile.
+     *
+     * @param ImagickDraw
+     * @param string
+     * @param string
+     * @param int
+     * @param string
+     * @return Imagick
+     **/
+    function montageImage($draw, $tile_geometry, $thumbnail_geometry, $mode, $frame) {}
+
+    /**
+     * Method morphs a set of images. Both the image pixels and size
+     * are linearly interpolated to give the appearance of a
+     * meta-morphosis from one image to the next.
+     *
+     * @param int
+     * @return Imagick
+     **/
+    function morphImages($number_frames) {}
+
+    /**
+     * Inlays an image sequence to form a single coherent picture. It
+     * returns a wand with each image in the sequence composited at
+     * the location defined by the page offset of the image.
+     *
+     * @return Imagick
+     **/
+    function mosaicImages() {}
+
+    /**
+     * Simulates motion blur. We convolve the image with a Gaussian
+     * operator of the given radius and standard deviation (sigma).
+     * For reasonable results, radius should be larger than sigma.
+     * Use a radius of 0 and MotionBlurImage() selects a suitable
+     * radius for you. Angle gives the angle of the blurring motion.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function motionBlurImage($radius, $sigma, $angle, $channel) {}
+
+    /**
+     * Negates the colors in the reference image. The Grayscale
+     * option means that only grayscale values within the image
+     * are negated.
+     *
+     * @param bool
+     * @param int
+     * @return bool
+     **/
+    function negateImage($gray, $channel) {}
+
+    /**
+     * Creates a new image and associates ImagickPixel value as background color
+     *
+     * @param int
+     * @param int
+     * @param mixed
+     * @param string
+     * @return bool
+     **/
+    function newImage($cols, $rows, $background, $format) {}
+
+    /**
+     * Creates a new image using ImageMagick pseudo-formats.
+     *
+     * @param int
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function newPseudoImage($columns, $rows, $pseudoString) {}
+
+    /**
+     * Associates the next image in the image list with an Imagick object.
+     *
+     * @return bool
+     **/
+    function nextImage() {}
+
+    /**
+     * Enhances the contrast of a color image by adjusting the pixels
+     * color to span the entire range of colors available.
+     *
+     * @param int
+     * @return bool
+     **/
+    function normalizeImage($channel) {}
+
+    /**
+     * Applies a special effect filter that simulates an oil painting.
+     * Each pixel is replaced by the most frequent color occurring in
+     * a circular region defined by radius.
+     *
+     * @param float
+     * @return bool
+     **/
+    function oilPaintImage($radius) {}
+
+    /**
+     * Changes any pixel that matches color with the color defined by fill.
+     *
+     * @param mixed
+     * @param mixed
+     * @param float
+     * @param bool
+     * @param int
+     * @return bool
+     **/
+    function opaquePaintImage($target, $fill, $fuzz, $invert, $channel) {}
+
+    /**
+     * Compares each image the GIF disposed forms of the previous image
+     * in the sequence. From this it attempts to select the smallest
+     * cropped image to replace each frame, while preserving the results
+     * of the animation.
+     *
+     * @return bool
+     **/
+    function optimizeImageLayers() {}
+
+    /**
+     * Performs an ordered dither based on a number of pre-defined dithering threshold maps, 
+     * but over multiple intensity levels, which can be different for different channels, 
+     * according to the input arguments.
+     *
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function orderedPosterizeImage($threshold_map, $channel) {}
+
+    /**
+     * Changes the color value of any pixel that matches target and is an
+     * immediate neighbor. As of ImageMagick 6.3.8 this method has been deprecated
+     * and Imagick::floodfillPaintImage should be used instead.
+     *
+     * @param mixed
+     * @param float
+     * @param mixed
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function paintFloodfillImage($fill, $fuzz, $bordercolor, $x, $y, $channel) {}
+
+    /**
+     * Changes any pixel that matches color with the color defined by fill.
+     *
+     * @param mixed
+     * @param mixed
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function paintOpaqueImage($target, $fill, $fuzz, $channel) {}
+
+    /**
+     * Changes any pixel that matches color with the color defined by fill.
+     *
+     * @param mixed
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function paintTransparentImage($target, $alpha, $fuzz) {}
+
+    /**
+     * This method can be used to query image width, height, size, and
+     * format without reading the whole image in to memory.
+     *
+     * @param string
+     * @return bool
+     **/
+    function pingImage($filename) {}
+
+    /**
+     * This method can be used to query image width, height, size, and
+     * format without reading the whole image to memory.
+     *
+     * @param string
+     * @return bool
+     **/
+    function pingImageBlob($image) {}
+
+    /**
+     * This method can be used to query image width, height, size, and
+     * format without reading the whole image to memory.
+     *
+     * @param resource
+     * @param string
+     * @return bool
+     **/
+    function pingImageFile($filehandle, $fileName) {}
+
+    /**
+     * Simulates a Polaroid picture.
+     *
+     * @param ImagickDraw
+     * @param float
+     * @return bool
+     **/
+    function polaroidImage($properties, $angle) {}
+
+    /**
+     * Reduces the image to a limited number of color level.
+     *
+     * @param int
+     * @param bool
+     * @return bool
+     **/
+    function posterizeImage($levels, $dither) {}
+
+    /**
+     * Tiles 9 thumbnails of the specified image with an image processing
+     * operation applied at varying strengths. This is helpful to quickly
+     * pin-point an appropriate parameter for an image processing operation.
+     *
+     * @param int
+     * @return bool
+     **/
+    function previewImages($preview) {}
+
+    /**
+     * Assocates the previous image in an image list with the Imagick object.
+     *
+     * @return bool
+     **/
+    function previousImage() {}
+
+    /**
+     * Adds or removes a ICC, IPTC, or generic profile from an image.
+     * If the profile is NULL, it is removed from the image otherwise
+     * added. Use a name of '*' and a profile of NULL to remove all
+     * profiles from the image.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function profileImage($name, $profile) {}
+
+    /**
+     * @param int
+     * @param int
+     * @param int
+     * @param bool
+     * @param bool
+     * @return bool
+     **/
+    function quantizeImage($numberColors, $colorspace, $treedepth, $dither, $measureError) {}
+
+    /**
+     * @param int
+     * @param int
+     * @param int
+     * @param bool
+     * @param bool
+     * @return bool
+     **/
+    function quantizeImages($numberColors, $colorspace, $treedepth, $dither, $measureError) {}
+
+    /**
+     * Returns a multi-dimensional array representing the font metrics.
+     *
+     * @param ImagickDraw
+     * @param string
+     * @param bool
+     * @return array
+     **/
+    function queryFontMetrics($properties, $text, $multiline) {}
+
+    /**
+     * Returns formats supported by Imagick.
+     *
+     * @param string
+     * @return array
+     **/
+    function queryFonts($pattern) {}
+
+    /**
+     * Returns formats supported by Imagick.
+     *
+     * @param string
+     * @return array
+     **/
+    function queryFormats($pattern) {}
+
+    /**
+     * Radial blurs an image.
+     *
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function radialBlurImage($angle, $channel) {}
+
+    /**
+     * Creates a simulated three-dimensional button-like effect
+     * by lightening and darkening the edges of the image.
+     * Members width and height of raise_info define the width
+     * of the vertical and horizontal edge of the effect.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param bool
+     * @return bool
+     **/
+    function raiseImage($width, $height, $x, $y, $raise) {}
+
+    /**
+     * Changes the value of individual pixels based on the
+     * intensity of each pixel compared to threshold. The
+     * result is a high-contrast, two color image.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function randomThresholdImage($low, $high, $channel) {}
+
+    /**
+     * Reads image from filename
+     *
+     * @param string
+     * @return bool
+     **/
+    function readImage($filename) {}
+
+    /**
+     * Reads image from a binary string
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function readImageBlob($image, $filename) {}
+
+    /**
+     * Reads image from open filehandle
+     *
+     * @param resource
+     * @param string
+     * @return bool
+     **/
+    function readImageFile($filehandle, $fileName) {}
+
+    /**
+     * Smooths the contours of an image while still preserving edge
+     * information. The algorithm works by replacing each pixel with
+     * its neighbor closest in value. A neighbor is defined by radius.
+     * Use a radius of 0 and Imagick::reduceNoiseImage() selects a
+     * suitable radius for you.
+     *
+     * @param float
+     * @return bool
+     **/
+    function reduceNoiseImage($radius) {}
+
+    /**
+     * Removes an image from the image list.
+     *
+     * @return bool
+     **/
+    function removeImage() {}
+
+    /**
+     * Removes the named image profile and returns it.
+     *
+     * @param string
+     * @return string
+     **/
+    function removeImageProfile($name) {}
+
+    /**
+     * Renders all preceding drawing commands.
+     *
+     * @return bool
+     **/
+    function render() {}
+
+    /**
+     * Resample image to desired resolution.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @param float
+     * @return bool
+     **/
+    function resampleImage($x_resolution, $y_resolution, $filter, $blur) {}
+
+    /**
+     * The page definition as a string. The string is in format WxH+x+y.
+     *
+     * @param string
+     * @return bool
+     **/
+    function resetImagePage($page) {}
+
+    /**
+     * Scales an image to the desired dimensions with a
+     * filter.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param float
+     * @param bool
+     * @return bool
+     **/
+    function resizeImage($columns, $rows, $filter, $blur, $fit) {}
+
+    /**
+     * Offsets an image as defined by x and y.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function rollImage($x, $y) {}
+
+    /**
+     * Rotates an image the specified number of degrees. Empty
+     * triangles left over from rotating the image are filled
+     * with the background color.
+     *
+     * @param mixed
+     * @param float
+     * @return bool
+     **/
+    function rotateImage($background, $degrees) {}
+
+    /**
+     * Rounds image corners. The first two parameters control the amount 
+     * of rounding and the three last parameters can be used to fine-tune 
+     * the rounding process.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function roundCorners($x_rounding, $y_rounding, $stroke_width, $displace, $size_correction) {}
+
+    /**
+     * Scales an image to the desired dimensions with pixel sampling.
+     * Unlike other scaling methods, this method does not introduce
+     * any additional color into the scaled image.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function sampleImage($columns, $rows) {}
+
+    /**
+     * Scales the size of an image to the given dimensions. The other parameter
+     * will be calculated if 0 is passed as either param.
+     *
+     * @param int
+     * @param int
+     * @param bool
+     * @return bool
+     **/
+    function scaleImage($cols, $rows, $fit) {}
+
+    /**
+     * Separates a channel from the image and returns a grayscale image. A channel
+     * is a particular color component of each pixel in the image.
+     *
+     * @param int
+     * @return bool
+     **/
+    function separateImageChannel($channel) {}
+
+    /**
+     * Applies a special effect to the image, similar to the effect achieved
+     * in a photo darkroom by sepia toning. Threshold ranges from 0 to
+     * QuantumRange and is a measure of the extent of the sepia toning. A
+     * threshold of 80 is a good starting point for a reasonable tone.
+     *
+     * @param float
+     * @return bool
+     **/
+    function sepiaToneImage($threshold) {}
+
+    /**
+     * Sets the object's default background color.
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function setBackgroundColor($background) {}
+
+    /**
+     * Sets the object's default compression type
+     *
+     * @param int
+     * @return bool
+     **/
+    function setCompression($compression) {}
+
+    /**
+     * Sets the object's default compression quality.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setCompressionQuality($quality) {}
+
+    /**
+     * Sets the filename before you read or write an image file.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setFilename($filename) {}
+
+    /**
+     * Sets the Imagick iterator to the first image.
+     *
+     * @return bool
+     **/
+    function setFirstIterator() {}
+
+    /**
+     * Sets object's font property. This method can be used for example to set font for 
+     * caption: pseudo-format. The font needs to be configured in ImageMagick confiration
+     * or a file by the name of font must exist. This method should
+     * not be confused with ImagickDraw::setFont which sets the font
+     * for a specific ImagickDraw object.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setFont($font) {}
+
+    /**
+     * Sets the format of the Imagick object.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setFormat($format) {}
+
+    /**
+     * Sets the global gravity property for the Imagick object.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setGravity($gravity) {}
+
+    /**
+     * Replaces the current image sequence with the image from replace object.
+     *
+     * @param Imagick
+     * @return bool
+     **/
+    function setImage($replace) {}
+
+    /**
+     * Activate or deactivate image alpha channel. The mode 
+     * is one of the Imagick::ALPHACHANNEL_* constants.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageAlphaChannel($mode) {}
+
+    /**
+     * Sets the image background color.
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function setImageBackgroundColor($background) {}
+
+    /**
+     * Sets the image bias for any method that convolves an image (e.g. Imagick::ConvolveImage()).
+     *
+     * @param float
+     * @return bool
+     **/
+    function setImageBias($bias) {}
+
+    /**
+     * Sets the image chromaticity blue primary point.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setImageBluePrimary($x, $y) {}
+
+    /**
+     * Sets the image border color.
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function setImageBorderColor($border) {}
+
+    /**
+     * Sets the depth of a particular image channel.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setImageChannelDepth($channel, $depth) {}
+
+    /**
+     * Sets image clip mask from another Imagick object.
+     *
+     * @param Imagick
+     * @return bool
+     **/
+    function setImageClipMask($clip_mask) {}
+
+    /**
+     * Sets the color of the specified colormap index.
+     *
+     * @param int
+     * @param ImagickPixel
+     * @return bool
+     **/
+    function setImageColormapColor($index, $color) {}
+
+    /**
+     * Sets the image colorspace.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageColorspace($colorspace) {}
+
+    /**
+     * Sets the image composite operator, useful for specifying how
+     * to composite the image thumbnail when using the
+     * Imagick::montageImage() method.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageCompose($compose) {}
+
+    /**
+     * @param int
+     * @return bool
+     **/
+    function setImageCompression($compression) {}
+
+    /**
+     * Sets the image compression quality.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageCompressionQuality($quality) {}
+
+    /**
+     * Sets the image delay.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageDelay($delay) {}
+
+    /**
+     * Sets the image depth.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageDepth($depth) {}
+
+    /**
+     * Sets the image disposal method.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageDispose($dispose) {}
+
+    /**
+     * Sets the image size (i.e. columns rows).
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setImageExtent($columns, $rows) {}
+
+    /**
+     * Sets the filename of a particular image in a sequence.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setImageFilename($filename) {}
+
+    /**
+     * Sets the format of a particular image in a sequence.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setImageFormat($format) {}
+
+    /**
+     * Sets the image gamma.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setImageGamma($gamma) {}
+
+    /**
+     * Sets the image chromaticity green primary point.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setImageGreenPrimary($x, $y) {}
+
+    /**
+     * Set the iterator to the position in the image list specified with the index
+     * parameter.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageIndex($index) {}
+
+    /**
+     * Sets the image compression.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageInterlaceScheme($interlace_scheme) {}
+
+    /**
+     * Sets the image interpolate pixel method.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageInterpolateMethod($method) {}
+
+    /**
+     * Sets the image iterations.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageIterations($iterations) {}
+
+    /**
+     * Sets the image matte channel.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function setImageMatte($matte) {}
+
+    /**
+     * Sets the image matte color.
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function setImageMatteColor($matte) {}
+
+    /**
+     * Sets the image to the specified opacity level.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setImageOpacity($opacity) {}
+
+    /**
+     * Sets the image orientation.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageOrientation($orientation) {}
+
+    /**
+     * Sets the page geometry of the image.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setImagePage($width, $height, $x, $y) {}
+
+    /**
+     * Adds a named profile to the Imagick object. If a profile
+     * with the same name already exists, it is replaced. This
+     * method differs from the Imagick::ProfileImage() method in
+     * that it does not apply any CMS color profiles.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function setImageProfile($name, $profile) {}
+
+    /**
+     * Sets a named property to the image.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function setImageProperty($name, $value) {}
+
+    /**
+     * Sets the image chromaticity red primary point.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setImageRedPrimary($x, $y) {}
+
+    /**
+     * Sets the image rendering intent.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageRenderingIntent($rendering_intent) {}
+
+    /**
+     * Sets the image resolution.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setImageResolution($x_resolution, $y_resolution) {}
+
+    /**
+     * Sets the image scene.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageScene($scene) {}
+
+    /**
+     * Sets the image ticks-per-second.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageTicksPerSecond($ticks_persecond) {}
+
+    /**
+     * Sets the image type.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageType($image_type) {}
+
+    /**
+     * Sets the image units of resolution.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageUnits($units) {}
+
+    /**
+     * Sets the image virtual pixel method.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageVirtualPixelMethod($method) {}
+
+    /**
+     * Sets the image chromaticity white point.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setImageWhitePoint($x, $y) {}
+
+    /**
+     * Sets the image compression.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setInterlaceScheme($interlace_scheme) {}
+
+    /**
+     * Set the iterator to the position in the image list specified with the index parameter.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setIteratorIndex($index) {}
+
+    /**
+     * Sets the Imagick iterator to the last image.
+     *
+     * @return bool
+     **/
+    function setLastIterator() {}
+
+    /**
+     * Associates one or options with the wand.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function setOption($key, $value) {}
+
+    /**
+     * Sets the page geometry of the Imagick object.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setPage($width, $height, $x, $y) {}
+
+    /**
+     * Sets object's point size property. This method can be used for example to set font size for 
+     * caption: pseudo-format.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setPointSize($point_size) {}
+
+    /**
+     * Sets the image resolution.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setResolution($x_resolution, $y_resolution) {}
+
+    /**
+     * Sets the limit for a particular resource in megabytes.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setResourceLimit($type, $limit) {}
+
+    /**
+     * Sets the image sampling factors.
+     *
+     * @param array
+     * @return bool
+     **/
+    function setSamplingFactors($factors) {}
+
+    /**
+     * Sets the size of the Imagick object. Set it before you read a raw image
+     * format such as RGB, GRAY, or CMYK.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setSize($columns, $rows) {}
+
+    /**
+     * Sets the size and offset of the Imagick object. Set it before you read a
+     * raw image format such as RGB, GRAY, or CMYK.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setSizeOffset($columns, $rows, $offset) {}
+
+    /**
+     * Sets the image type attribute.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setType($image_type) {}
+
+    /**
+     * Shines a distant light on an image to create a three-dimensional effect.
+     * You control the positioning of the light with azimuth and elevation;
+     * azimuth is measured in degrees off the x axis and elevation is measured
+     * in pixels above the Z axis.
+     *
+     * @param bool
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function shadeImage($gray, $azimuth, $elevation) {}
+
+    /**
+     * Simulates an image shadow.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function shadowImage($opacity, $sigma, $x, $y) {}
+
+    /**
+     * Sharpens an image. We convolve the image with a Gaussian operator
+     * of the given radius and standard deviation (sigma). For reasonable
+     * results, the radius should be larger than sigma. Use a radius of
+     * 0 and selects a suitable radius for you.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function sharpenImage($radius, $sigma, $channel) {}
+
+    /**
+     * Shaves pixels from the image edges. It allocates the memory necessary for
+     * the new Image structure and returns a pointer to the new image.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function shaveImage($columns, $rows) {}
+
+    /**
+     * Slides one edge of an image along the X or Y axis, creating a parallelogram.
+     * An X direction shear slides an edge along the X axis, while a Y direction
+     * shear slides an edge along the Y axis. The amount of the shear is controlled
+     * by a shear angle. For X direction shears, x_shear is measured relative to
+     * the Y axis, and similarly, for Y direction shears y_shear is measured
+     * relative to the X axis. Empty triangles left over from shearing the image
+     * are filled with the background color.
+     *
+     * @param mixed
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function shearImage($background, $x_shear, $y_shear) {}
+
+    /**
+     * Adjusts the contrast of an image with a non-linear sigmoidal contrast
+     * algorithm. Increase the contrast of the image using a sigmoidal transfer
+     * function without saturating highlights or shadows. Contrast indicates
+     * how much to increase the contrast (0 is none; 3 is typical; 20 is
+     * pushing it); mid-point indicates where midtones fall in the resultant
+     * image (0 is white; 50 is middle-gray; 100 is black). Set sharpen to
+     * to increase the image contrast otherwise the contrast is reduced.
+     *
+     * @param bool
+     * @param float
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function sigmoidalContrastImage($sharpen, $alpha, $beta, $channel) {}
+
+    /**
+     * Simulates a pencil sketch. We convolve the image with a Gaussian operator
+     * of the given radius and standard deviation (sigma). For reasonable
+     * results, radius should be larger than sigma. Use a radius of 0 and
+     * Imagick::sketchImage() selects a suitable radius for you. Angle gives the
+     * angle of the blurring motion.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function sketchImage($radius, $sigma, $angle) {}
+
+    /**
+     * Applies a special effect to the image, similar to the effect achieved in
+     * a photo darkroom by selectively exposing areas of photo sensitive paper
+     * to light. Threshold ranges from 0 to QuantumRange and is a measure of the
+     * extent of the solarization.
+     *
+     * @param int
+     * @return bool
+     **/
+    function solarizeImage($threshold) {}
+
+    /**
+     * Splices a solid color into the image.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function spliceImage($width, $height, $x, $y) {}
+
+    /**
+     * Special effects method that randomly displaces each pixel in a block
+     * defined by the radius parameter.
+     *
+     * @param float
+     * @return bool
+     **/
+    function spreadImage($radius) {}
+
+    /**
+     * Hides a digital watermark within the image. Recover the hidden watermark
+     * later to prove that the authenticity of an image. Offset defines the start
+     * position within the image to hide the watermark.
+     *
+     * @param Imagick
+     * @param int
+     * @return Imagick
+     **/
+    function steganoImage($watermark_wand, $offset) {}
+
+    /**
+     * Composites two images and produces a single image that is the composite
+     * of a left and right image of a stereo pair.
+     *
+     * @param Imagick
+     * @return bool
+     **/
+    function stereoImage($offset_wand) {}
+
+    /**
+     * Strips an image of all profiles and comments.
+     *
+     * @return bool
+     **/
+    function stripImage() {}
+
+    /**
+     * Swirls the pixels about the center of the image, where degrees indicates
+     * the sweep of the arc through which each pixel is moved. You get a more
+     * dramatic effect as the degrees move from 1 to 360.
+     *
+     * @param float
+     * @return bool
+     **/
+    function swirlImage($degrees) {}
+
+    /**
+     * Repeatedly tiles the texture image across and down the image canvas.
+     *
+     * @param Imagick
+     * @return bool
+     **/
+    function textureImage($texture_wand) {}
+
+    /**
+     * Changes the value of individual pixels based on the intensity of each pixel
+     * compared to threshold. The result is a high-contrast, two color image.
+     *
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function thresholdImage($threshold, $channel) {}
+
+    /**
+     * Changes the size of an image to the given dimensions and removes any
+     * associated profiles. The goal is to produce small low cost thumbnail
+     * images suited for display on the Web. 
+     * 
+     * If is given as a third parameter then columns and rows parameters
+     * are used as maximums for each side. Both sides will be scaled down until
+     * the match or are smaller than the parameter given for the side.
+     *
+     * @param int
+     * @param int
+     * @param bool
+     * @return bool
+     **/
+    function thumbnailImage($columns, $rows, $fit) {}
+
+    /**
+     * Applies a color vector to each pixel in the image. The length of the vector
+     * is 0 for black and white and at its maximum for the midtones. The vector
+     * weighing function is f(x)=(1-(4.0*((x-0.5)*(x-0.5)))).
+     *
+     * @param mixed
+     * @param mixed
+     * @return bool
+     **/
+    function tintImage($tint, $opacity) {}
+
+    /**
+     * A convenience method for setting crop size and the image geometry from strings.
+     *
+     * @param string
+     * @param string
+     * @return Imagick
+     **/
+    function transformImage($crop, $geometry) {}
+
+    /**
+     * Paints pixels matching the target color transparent.
+     *
+     * @param mixed
+     * @param float
+     * @param float
+     * @param bool
+     * @return bool
+     **/
+    function transparentPaintImage($target, $alpha, $fuzz, $invert) {}
+
+    /**
+     * Creates a vertical mirror image by reflecting the pixels 
+     * around the central x-axis while rotating them 90-degrees.
+     *
+     * @return bool
+     **/
+    function transposeImage() {}
+
+    /**
+     * Creates a horizontal mirror image by reflecting the pixels around the
+     * central y-axis while rotating them 270-degrees.
+     *
+     * @return bool
+     **/
+    function transverseImage() {}
+
+    /**
+     * Remove edges that are the background color from the image.
+     *
+     * @param float
+     * @return bool
+     **/
+    function trimImage($fuzz) {}
+
+    /**
+     * Discards all but one of any pixel color.
+     *
+     * @return bool
+     **/
+    function uniqueImageColors() {}
+
+    /**
+     * Sharpens an image. We convolve the image with a Gaussian operator of the given
+     * radius and standard deviation (sigma). For reasonable results, radius should be
+     * larger than sigma. Use a radius of 0 and Imagick::UnsharpMaskImage() selects a
+     * suitable radius for you.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function unsharpMaskImage($radius, $sigma, $amount, $threshold, $channel) {}
+
+    /**
+     * Checks if the current item is valid.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Softens the edges of the image in vignette style.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function vignetteImage($blackPoint, $whitePoint, $x, $y) {}
+
+    /**
+     * Applies a wave filter to the image.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function waveImage($amplitude, $length) {}
+
+    /**
+     * Is like Imagick::ThresholdImage() but force all pixels above the threshold
+     * into white while leaving all pixels below the threshold unchanged.
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function whiteThresholdImage($threshold) {}
+
+    /**
+     * Writes an image to the specified filename. If the filename parameter is NULL,
+     * the image is written to the filename set by Imagick::ReadImage() or
+     * Imagick::SetImageFilename().
+     *
+     * @param string
+     * @return bool
+     **/
+    function writeImage($filename) {}
+
+    /**
+     * Writes the image sequence to an open filehandle. The handle must be opened with
+     * for example fopen.
+     *
+     * @param resource
+     * @return bool
+     **/
+    function writeImageFile($filehandle) {}
+
+    /**
+     * Writes an image or image sequence.
+     *
+     * @param string
+     * @param bool
+     * @return bool
+     **/
+    function writeImages($filename, $adjoin) {}
+
+    /**
+     * Writes all image frames into an open filehandle. This method can be used to write
+     * animated gifs or other multiframe images into open filehandle.
+     *
+     * @param resource
+     * @return bool
+     **/
+    function writeImagesFile($filehandle) {}
+
+    /**
+     * The Imagick constructor
+     *
+     * @param mixed
+     * @return Imagick
+     **/
+    function __construct($files) {}
+
+}
+class ImagickDraw {
+    /**
+     * Adjusts the current affine transformation matrix with the specified affine
+     * transformation matrix.
+     *
+     * @param array
+     * @return bool
+     **/
+    function affine($affine) {}
+
+    /**
+     * Draws text on the image.
+     *
+     * @param float
+     * @param float
+     * @param string
+     * @return bool
+     **/
+    function annotation($x, $y, $text) {}
+
+    /**
+     * Draws an arc falling within a specified bounding rectangle on the image.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function arc($sx, $sy, $ex, $ey, $sd, $ed) {}
+
+    /**
+     * Draws a bezier curve through a set of points on the image.
+     *
+     * @param array
+     * @return bool
+     **/
+    function bezier($coordinates) {}
+
+    /**
+     * Draws a circle on the image.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function circle($ox, $oy, $px, $py) {}
+
+    /**
+     * Clears the ImagickDraw object of any accumulated commands, and resets the
+     * settings it contains to their defaults.
+     *
+     * @return bool
+     **/
+    function clear() {}
+
+    /**
+     * Draws color on image using the current fill color, starting at specified
+     * position, and using specified paint method.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function color($x, $y, $paintMethod) {}
+
+    /**
+     * Adds a comment to a vector output stream.
+     *
+     * @param string
+     * @return bool
+     **/
+    function comment($comment) {}
+
+    /**
+     * Composites an image onto the current image, using the specified
+     * composition operator, specified position, and at the specified size.
+     *
+     * @param int
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param Imagick
+     * @return bool
+     **/
+    function composite($compose, $x, $y, $width, $height, $compositeWand) {}
+
+    /**
+     * Frees all resources associated with the ImagickDraw object.
+     *
+     * @return bool
+     **/
+    function destroy() {}
+
+    /**
+     * Draws an ellipse on the image.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function ellipse($ox, $oy, $rx, $ry, $start, $end) {}
+
+    /**
+     * Obtains the current clipping path ID.
+     *
+     * @return string
+     **/
+    function getClipPath() {}
+
+    /**
+     * Returns the current polygon fill rule to be used by the clipping path.
+     *
+     * @return int
+     **/
+    function getClipRule() {}
+
+    /**
+     * Returns the interpretation of clip path units.
+     *
+     * @return int
+     **/
+    function getClipUnits() {}
+
+    /**
+     * Returns the fill color used for drawing filled objects.
+     *
+     * @return ImagickPixel
+     **/
+    function getFillColor() {}
+
+    /**
+     * Returns the opacity used when drawing using the fill color or fill
+     * texture. Fully opaque is 1.0.
+     *
+     * @return float
+     **/
+    function getFillOpacity() {}
+
+    /**
+     * Returns the fill rule used while drawing polygons.
+     *
+     * @return int
+     **/
+    function getFillRule() {}
+
+    /**
+     * Returns a string specifying the font used when annotating with text.
+     *
+     * @return string
+     **/
+    function getFont() {}
+
+    /**
+     * Returns the font family to use when annotating with text.
+     *
+     * @return string
+     **/
+    function getFontFamily() {}
+
+    /**
+     * Returns the font pointsize used when annotating with text.
+     *
+     * @return float
+     **/
+    function getFontSize() {}
+
+    /**
+     * Returns the font style used when annotating with text.
+     *
+     * @return int
+     **/
+    function getFontStyle() {}
+
+    /**
+     * Returns the font weight used when annotating with text.
+     *
+     * @return int
+     **/
+    function getFontWeight() {}
+
+    /**
+     * Returns the text placement gravity used when annotating with text.
+     *
+     * @return int
+     **/
+    function getGravity() {}
+
+    /**
+     * Returns the current stroke antialias setting. Stroked outlines are
+     * antialiased by default. When antialiasing is disabled stroked pixels are
+     * thresholded to determine if the stroke color or underlying canvas color
+     * should be used.
+     *
+     * @return bool
+     **/
+    function getStrokeAntialias() {}
+
+    /**
+     * Returns the color used for stroking object outlines.
+     *
+     * @param ImagickPixel
+     * @return ImagickPixel
+     **/
+    function getStrokeColor($stroke_color) {}
+
+    /**
+     * Returns an array representing the pattern of dashes and gaps used to
+     * stroke paths.
+     *
+     * @return array
+     **/
+    function getStrokeDashArray() {}
+
+    /**
+     * Returns the offset into the dash pattern to start the dash.
+     *
+     * @return float
+     **/
+    function getStrokeDashOffset() {}
+
+    /**
+     * Returns the shape to be used at the end of open subpaths when they are
+     * stroked.
+     *
+     * @return int
+     **/
+    function getStrokeLineCap() {}
+
+    /**
+     * Returns the shape to be used at the corners of paths (or other vector
+     * shapes) when they are stroked.
+     *
+     * @return int
+     **/
+    function getStrokeLineJoin() {}
+
+    /**
+     * Returns the miter limit. When two line segments meet at a sharp angle and
+     * miter joins have been specified for 'lineJoin', it is possible for the
+     * miter to extend far beyond the thickness of the line stroking the path.
+     * The miterLimit' imposes a limit on the ratio of the miter length to the
+     * 'lineWidth'.
+     *
+     * @return int
+     **/
+    function getStrokeMiterLimit() {}
+
+    /**
+     * Returns the opacity of stroked object outlines.
+     *
+     * @return float
+     **/
+    function getStrokeOpacity() {}
+
+    /**
+     * Returns the width of the stroke used to draw object outlines.
+     *
+     * @return float
+     **/
+    function getStrokeWidth() {}
+
+    /**
+     * Returns the alignment applied when annotating with text.
+     *
+     * @return int
+     **/
+    function getTextAlignment() {}
+
+    /**
+     * Returns the current text antialias setting, which determines whether text
+     * is antialiased. Text is antialiased by default.
+     *
+     * @return bool
+     **/
+    function getTextAntialias() {}
+
+    /**
+     * Returns the decoration applied when annotating with text.
+     *
+     * @return int
+     **/
+    function getTextDecoration() {}
+
+    /**
+     * Returns a string which specifies the code set used for text annotations.
+     *
+     * @return string
+     **/
+    function getTextEncoding() {}
+
+    /**
+     * Returns the color of a background rectangle to place under text annotations.
+     *
+     * @return ImagickPixel
+     **/
+    function getTextUnderColor() {}
+
+    /**
+     * Returns a string which specifies the vector graphics generated by any
+     * graphics calls made since the ImagickDraw object was instantiated.
+     *
+     * @return string
+     **/
+    function getVectorGraphics() {}
+
+    /**
+     * Draws a line on the image using the current stroke color, stroke opacity, and stroke width.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function line($sx, $sy, $ex, $ey) {}
+
+    /**
+     * Paints on the image's opacity channel in order to set effected pixels to
+     * transparent. to influence the opacity of pixels.
+     *
+     * @param float
+     * @param float
+     * @param int
+     * @return bool
+     **/
+    function matte($x, $y, $paintMethod) {}
+
+    /**
+     * Adds a path element to the current path which closes the current subpath
+     * by drawing a straight line from the current point to the current subpath's
+     * most recent starting point (usually, the most recent moveto point).
+     *
+     * @return bool
+     **/
+    function pathClose() {}
+
+    /**
+     * Draws a cubic Bezier curve from the current point to (x,y) using (x1,y1)
+     * as the control point at the beginning of the curve and (x2,y2) as the
+     * control point at the end of the curve using absolute coordinates. At the
+     * end of the command, the new current point becomes the final (x,y)
+     * coordinate pair used in the polybezier.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathCurveToAbsolute($x1, $y1, $x2, $y2, $x, $y) {}
+
+    /**
+     * Draws a quadratic Bezier curve from the current point to (x,y) using
+     * (x1,y1) as the control point using absolute coordinates. At the end of the
+     * command, the new current point becomes the final (x,y) coordinate pair
+     * used in the polybezier.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathCurveToQuadraticBezierAbsolute($x1, $y1, $x, $y) {}
+
+    /**
+     * Draws a quadratic Bezier curve from the current point to (x,y) using
+     * (x1,y1) as the control point using relative coordinates. At the end of the
+     * command, the new current point becomes the final (x,y) coordinate pair
+     * used in the polybezier.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathCurveToQuadraticBezierRelative($x1, $y1, $x, $y) {}
+
+    /**
+     * Draws a quadratic Bezier curve (using relative coordinates) from the
+     * current point to (x,y). The control point is assumed to be the reflection
+     * of the control point on the previous command relative to the current point.
+     * (If there is no previous command or if the previous command was not a
+     * DrawPathCurveToQuadraticBezierAbsolute,
+     * DrawPathCurveToQuadraticBezierRelative,
+     * DrawPathCurveToQuadraticBezierSmoothAbsolut or
+     * DrawPathCurveToQuadraticBezierSmoothRelative, assume the control point is
+     * coincident with the current point.). At the end of the command, the new
+     * current point becomes the final (x,y) coordinate pair used in the polybezier.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathCurveToQuadraticBezierSmoothAbsolute($x, $y) {}
+
+    /**
+     * Draws a quadratic Bezier curve (using relative coordinates) from the
+     * current point to (x, y). The control point is assumed to be the reflection
+     * of the control point on the previous command relative to the current point.
+     * (If there is no previous command or if the previous command was not a
+     * DrawPathCurveToQuadraticBezierAbsolute, 
+     * DrawPathCurveToQuadraticBezierRelative, 
+     * DrawPathCurveToQuadraticBezierSmoothAbsolut or 
+     * DrawPathCurveToQuadraticBezierSmoothRelative, assume the control point is
+     * coincident with the current point). At the end of the command, the new
+     * current point becomes the final (x, y) coordinate pair used in the
+     * polybezier.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathCurveToQuadraticBezierSmoothRelative($x, $y) {}
+
+    /**
+     * Draws a cubic Bezier curve from the current point to (x,y) using (x1,y1)
+     * as the control point at the beginning of the curve and (x2,y2) as the
+     * control point at the end of the curve using relative coordinates. At the
+     * end of the command, the new current point becomes the final (x,y) 
+     * coordinate pair used in the polybezier.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathCurveToRelative($x1, $y1, $x2, $y2, $x, $y) {}
+
+    /**
+     * Draws a cubic Bezier curve from the current point to (x,y) using absolute
+     * coordinates. The first control point is assumed to be the reflection of the
+     * second control point on the previous command relative to the current point.
+     * (If there is no previous command or if the previous command was not an 
+     * DrawPathCurveToAbsolute, DrawPathCurveToRelative, 
+     * DrawPathCurveToSmoothAbsolute or DrawPathCurveToSmoothRelative, assume the
+     * first control point is coincident with the current point.) (x2,y2) is the
+     * second control point (i.e., the control point at the end of the curve).
+     * At the end of the command, the new current point becomes the final (x,y)
+     * coordinate pair used in the polybezier.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathCurveToSmoothAbsolute($x2, $y2, $x, $y) {}
+
+    /**
+     * Draws a cubic Bezier curve from the current point to (x,y) using relative
+     * coordinates. The first control point is assumed to be the reflection of
+     * the second control point on the previous command relative to the current
+     * point. (If there is no previous command or if the previous command was not
+     * an DrawPathCurveToAbsolute, DrawPathCurveToRelative, 
+     * DrawPathCurveToSmoothAbsolute or DrawPathCurveToSmoothRelative, assume the
+     * first control point is coincident with the current point.) (x2,y2) is the
+     * second control point (i.e., the control point at the end of the curve). At
+     * the end of the command, the new current point becomes the final (x,y)
+     * coordinate pair used in the polybezier.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathCurveToSmoothRelative($x2, $y2, $x, $y) {}
+
+    /**
+     * Draws an elliptical arc from the current point to (x, y) using absolute
+     * coordinates. The size and orientation of the ellipse are defined by two
+     * radii (rx, ry) and an xAxisRotation, which indicates how the ellipse as
+     * a whole is rotated relative to the current coordinate system. The center
+     * (cx, cy) of the ellipse is calculated automatically to satisfy the
+     * constraints imposed by the other parameters. largeArcFlag and sweepFlag
+     * contribute to the automatic calculations and help determine how the arc
+     * is drawn. If largeArcFlag is then draw the larger of the available
+     * arcs. If sweepFlag is true, then draw the arc matching a clock-wise
+     * rotation.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param bool
+     * @param bool
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathEllipticArcAbsolute($rx, $ry, $x_axis_rotation, $large_arc_flag, $sweep_flag, $x, $y) {}
+
+    /**
+     * Draws an elliptical arc from the current point to (x, y) using relative
+     * coordinates. The size and orientation of the ellipse are defined by two
+     * radii (rx, ry) and an xAxisRotation, which indicates how the ellipse as
+     * a whole is rotated relative to the current coordinate system. The center
+     * (cx, cy) of the ellipse is calculated automatically to satisfy the
+     * constraints imposed by the other parameters. largeArcFlag and sweepFlag
+     * contribute to the automatic calculations and help determine how the arc
+     * is drawn. If largeArcFlag is then draw the larger of the available
+     * arcs. If sweepFlag is true, then draw the arc matching a clock-wise
+     * rotation.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param bool
+     * @param bool
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathEllipticArcRelative($rx, $ry, $x_axis_rotation, $large_arc_flag, $sweep_flag, $x, $y) {}
+
+    /**
+     * Terminates the current path.
+     *
+     * @return bool
+     **/
+    function pathFinish() {}
+
+    /**
+     * Draws a line path from the current point to the given coordinate using
+     * absolute coordinates. The coordinate then becomes the new current point.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathLineToAbsolute($x, $y) {}
+
+    /**
+     * Draws a horizontal line path from the current point to the target point
+     * using absolute coordinates. The target point then becomes the new
+     * current point.
+     *
+     * @param float
+     * @return bool
+     **/
+    function pathLineToHorizontalAbsolute($x) {}
+
+    /**
+     * Draws a horizontal line path from the current point to the target point
+     * using relative coordinates. The target point then becomes the new
+     * current point.
+     *
+     * @param float
+     * @return bool
+     **/
+    function pathLineToHorizontalRelative($x) {}
+
+    /**
+     * Draws a line path from the current point to the given coordinate using
+     * relative coordinates. The coordinate then becomes the new current point.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathLineToRelative($x, $y) {}
+
+    /**
+     * Draws a vertical line path from the current point to the target point using
+     * absolute coordinates. The target point then becomes the new current point.
+     *
+     * @param float
+     * @return bool
+     **/
+    function pathLineToVerticalAbsolute($y) {}
+
+    /**
+     * Draws a vertical line path from the current point to the target point using
+     * relative coordinates. The target point then becomes the new current point.
+     *
+     * @param float
+     * @return bool
+     **/
+    function pathLineToVerticalRelative($y) {}
+
+    /**
+     * Starts a new sub-path at the given coordinate using absolute coordinates.
+     * The current point then becomes the specified coordinate.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathMoveToAbsolute($x, $y) {}
+
+    /**
+     * Starts a new sub-path at the given coordinate using relative coordinates.
+     * The current point then becomes the specified coordinate.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pathMoveToRelative($x, $y) {}
+
+    /**
+     * Declares the start of a path drawing list which is terminated by a matching
+     * DrawPathFinish() command. All other DrawPath commands must be enclosed
+     * between a and a DrawPathFinish() command. This is because path drawing
+     * commands are subordinate commands and they do not function by themselves.
+     *
+     * @return bool
+     **/
+    function pathStart() {}
+
+    /**
+     * Draws a point using the current stroke color and stroke thickness at the specified coordinates.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function point($x, $y) {}
+
+    /**
+     * Draws a polygon using the current stroke, stroke width, and fill color or
+     * texture, using the specified array of coordinates.
+     *
+     * @param array
+     * @return bool
+     **/
+    function polygon($coordinates) {}
+
+    /**
+     * Draws a polyline using the current stroke, stroke width, and fill color or
+     * texture, using the specified array of coordinates.
+     *
+     * @param array
+     * @return bool
+     **/
+    function polyline($coordinates) {}
+
+    /**
+     * Destroys the current ImagickDraw in the stack, and returns to the
+     * previously pushed ImagickDraw. Multiple ImagickDraws may exist. It is an
+     * error to attempt to pop more ImagickDraws than have been pushed, and it is
+     * proper form to pop all ImagickDraws which have been pushed.
+     *
+     * @return bool
+     **/
+    function pop() {}
+
+    /**
+     * Terminates a clip path definition.
+     *
+     * @return bool
+     **/
+    function popClipPath() {}
+
+    /**
+     * Terminates a definition list.
+     *
+     * @return bool
+     **/
+    function popDefs() {}
+
+    /**
+     * Terminates a pattern definition.
+     *
+     * @return bool
+     **/
+    function popPattern() {}
+
+    /**
+     * Clones the current ImagickDraw to create a new ImagickDraw, which is then
+     * added to the ImagickDraw stack. The original drawing ImagickDraw(s) may be
+     * returned to by invoking pop(). The ImagickDraws are stored on a
+     * ImagickDraw stack. For every Pop there must have already been an equivalent
+     * Push.
+     *
+     * @return bool
+     **/
+    function push() {}
+
+    /**
+     * Starts a clip path definition which is comprised of any number of drawing
+     * commands and terminated by a ImagickDraw::popClipPath() command.
+     *
+     * @param string
+     * @return bool
+     **/
+    function pushClipPath($clip_mask_id) {}
+
+    /**
+     * Indicates that commands up to a terminating ImagickDraw::popDefs()
+     * command create named elements (e.g. clip-paths, textures, etc.) which
+     * may safely be processed earlier for the sake of efficiency.
+     *
+     * @return bool
+     **/
+    function pushDefs() {}
+
+    /**
+     * Indicates that subsequent commands up to a DrawPopPattern() command
+     * comprise the definition of a named pattern. The pattern space is assigned
+     * top left corner coordinates, a width and height, and becomes its own
+     * drawing space. Anything which can be drawn may be used in a pattern
+     * definition. Named patterns may be used as stroke or brush definitions.
+     *
+     * @param string
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function pushPattern($pattern_id, $x, $y, $width, $height) {}
+
+    /**
+     * Draws a rectangle given two coordinates and using the current stroke,
+     * stroke width, and fill settings.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function rectangle($x1, $y1, $x2, $y2) {}
+
+    /**
+     * Renders all preceding drawing commands onto the image.
+     *
+     * @return bool
+     **/
+    function render() {}
+
+    /**
+     * Applies the specified rotation to the current coordinate space.
+     *
+     * @param float
+     * @return bool
+     **/
+    function rotate($degrees) {}
+
+    /**
+     * Draws a rounded rectangle given two coordinates, x y corner radiuses
+     * and using the current stroke, stroke width, and fill settings.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function roundRectangle($x1, $y1, $x2, $y2, $rx, $ry) {}
+
+    /**
+     * Adjusts the scaling factor to apply in the horizontal and vertical
+     * directions to the current coordinate space.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function scale($x, $y) {}
+
+    /**
+     * Associates a named clipping path with the image. Only the areas drawn on
+     * by the clipping path will be modified as long as it remains in effect.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setClipPath($clip_mask) {}
+
+    /**
+     * Set the polygon fill rule to be used by the clipping path.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setClipRule($fill_rule) {}
+
+    /**
+     * Sets the interpretation of clip path units.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setClipUnits($clip_units) {}
+
+    /**
+     * Sets the opacity to use when drawing using the fill color or fill texture.
+     * Fully opaque is 1.0.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setFillAlpha($opacity) {}
+
+    /**
+     * Sets the fill color to be used for drawing filled objects.
+     *
+     * @param ImagickPixel
+     * @return bool
+     **/
+    function setFillColor($fill_pixel) {}
+
+    /**
+     * Sets the opacity to use when drawing using the fill color or fill texture.
+     * Fully opaque is 1.0.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setFillOpacity($fillOpacity) {}
+
+    /**
+     * Sets the URL to use as a fill pattern for filling objects. Only local URLs
+     * ("#identifier") are supported at this time. These local URLs are normally
+     * created by defining a named fill pattern with DrawPushPattern/DrawPopPattern.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setFillPatternURL($fill_url) {}
+
+    /**
+     * Sets the fill rule to use while drawing polygons.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setFillRule($fill_rule) {}
+
+    /**
+     * Sets the fully-specified font to use when annotating with text.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setFont($font_name) {}
+
+    /**
+     * Sets the font family to use when annotating with text.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setFontFamily($font_family) {}
+
+    /**
+     * Sets the font pointsize to use when annotating with text.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setFontSize($pointsize) {}
+
+    /**
+     * Sets the font stretch to use when annotating with text. The AnyStretch
+     * enumeration acts as a wild-card "don't care" option.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setFontStretch($fontStretch) {}
+
+    /**
+     * Sets the font style to use when annotating with text. The AnyStyle
+     * enumeration acts as a wild-card "don't care" option.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setFontStyle($style) {}
+
+    /**
+     * Sets the font weight to use when annotating with text.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setFontWeight($font_weight) {}
+
+    /**
+     * Sets the text placement gravity to use when annotating with text.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setGravity($gravity) {}
+
+    /**
+     * Specifies the opacity of stroked object outlines.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setStrokeAlpha($opacity) {}
+
+    /**
+     * Controls whether stroked outlines are antialiased. Stroked outlines are
+     * antialiased by default. When antialiasing is disabled stroked pixels are
+     * thresholded to determine if the stroke color or underlying canvas color
+     * should be used.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function setStrokeAntialias($stroke_antialias) {}
+
+    /**
+     * Sets the color used for stroking object outlines.
+     *
+     * @param ImagickPixel
+     * @return bool
+     **/
+    function setStrokeColor($stroke_pixel) {}
+
+    /**
+     * Specifies the pattern of dashes and gaps used to stroke paths. The
+     * strokeDashArray represents an array of numbers that specify the lengths of
+     * alternating dashes and gaps in pixels. If an odd number of values is
+     * provided, then the list of values is repeated to yield an even number of
+     * values. To remove an existing dash array, pass a zero number_elements
+     * argument and null dash_array. A typical strokeDashArray_ array might
+     * contain the members 5 3 2.
+     *
+     * @param array
+     * @return bool
+     **/
+    function setStrokeDashArray($dashArray) {}
+
+    /**
+     * Specifies the offset into the dash pattern to start the dash.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setStrokeDashOffset($dash_offset) {}
+
+    /**
+     * Specifies the shape to be used at the end of open subpaths when they
+     * are stroked.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setStrokeLineCap($linecap) {}
+
+    /**
+     * Specifies the shape to be used at the corners of paths (or other vector 
+     * shapes) when they are stroked.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setStrokeLineJoin($linejoin) {}
+
+    /**
+     * Specifies the miter limit. When two line segments meet at a sharp angle
+     * and miter joins have been specified for 'lineJoin', it is possible for
+     * the miter to extend far beyond the thickness of the line stroking the 
+     * path. The miterLimit' imposes a limit on the ratio of the miter length to
+     * the 'lineWidth'.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setStrokeMiterLimit($miterlimit) {}
+
+    /**
+     * Specifies the opacity of stroked object outlines.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setStrokeOpacity($stroke_opacity) {}
+
+    /**
+     * Sets the pattern used for stroking object outlines.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setStrokePatternURL($stroke_url) {}
+
+    /**
+     * Sets the width of the stroke used to draw object outlines.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setStrokeWidth($stroke_width) {}
+
+    /**
+     * Specifies a text alignment to be applied when annotating with text.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setTextAlignment($alignment) {}
+
+    /**
+     * Controls whether text is antialiased. Text is antialiased by default.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function setTextAntialias($antiAlias) {}
+
+    /**
+     * Specifies a decoration to be applied when annotating with text.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setTextDecoration($decoration) {}
+
+    /**
+     * Specifies specifies the code set to use for text annotations. The only
+     * character encoding which may be specified at this time is "UTF-8" for
+     * representing Unicode as a sequence of bytes. Specify an empty string to
+     * set text encoding to the system's default. Successful text annotation
+     * using Unicode may require fonts designed to support Unicode.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setTextEncoding($encoding) {}
+
+    /**
+     * Specifies the color of a background rectangle to place under text annotations.
+     *
+     * @param ImagickPixel
+     * @return bool
+     **/
+    function setTextUnderColor($under_color) {}
+
+    /**
+     * Sets the vector graphics associated with the specified ImagickDraw
+     * object. Use this method with ImagickDraw::getVectorGraphics() as a method
+     * to persist the vector graphics state.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setVectorGraphics($xml) {}
+
+    /**
+     * Sets the overall canvas size to be recorded with the drawing vector data.
+     * Usually this will be specified using the same size as the canvas image.
+     * When the vector data is saved to SVG or MVG formats, the viewbox is use to
+     * specify the size of the canvas image that a viewer will render the vector
+     * data on.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setViewbox($x1, $y1, $x2, $y2) {}
+
+    /**
+     * Skews the current coordinate system in the horizontal direction.
+     *
+     * @param float
+     * @return bool
+     **/
+    function skewX($degrees) {}
+
+    /**
+     * Skews the current coordinate system in the vertical direction.
+     *
+     * @param float
+     * @return bool
+     **/
+    function skewY($degrees) {}
+
+    /**
+     * Applies a translation to the current coordinate system which moves the
+     * coordinate system origin to the specified coordinate.
+     *
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function translate($x, $y) {}
+
+    /**
+     * The ImagickDraw constructor
+     *
+     * @return ImagickDraw
+     **/
+    function __construct() {}
+
+}
+class ImagickPixel {
+    /**
+     * Clears the ImagickPixel object, leaving it in a fresh state. This also
+     * unsets any color associated with the object.
+     *
+     * @return bool
+     **/
+    function clear() {}
+
+    /**
+     * Deallocates any resources used by the ImagickPixel object, and unsets any
+     * associated color. The object should not be used after the destroy function
+     * has been called.
+     *
+     * @return bool
+     **/
+    function destroy() {}
+
+    /**
+     * Returns the color described by the ImagickPixel object, as an array. If the color has an
+     * opacity channel set, this is provided as a fourth value in the list.
+     *
+     * @param bool
+     * @return array
+     **/
+    function getColor($normalized) {}
+
+    /**
+     * Returns the color of the ImagickPixel object as a string.
+     *
+     * @return string
+     **/
+    function getColorAsString() {}
+
+    /**
+     * Returns the color count associated with this color.
+     *
+     * @return int
+     **/
+    function getColorCount() {}
+
+    /**
+     * Retrieves the value of the color channel specified, as a floating-point
+     * number between 0 and 1.
+     *
+     * @param int
+     * @return float
+     **/
+    function getColorValue($color) {}
+
+    /**
+     * Returns the normalized HSL color described by the ImagickPixel object,
+     * with each of the three values as floating point numbers between 0.0
+     * and 1.0.
+     *
+     * @return array
+     **/
+    function getHSL() {}
+
+    /**
+     * Checks the distance between the color described by this ImagickPixel
+     * object and that of the provided object, by plotting their RGB values
+     * on the color cube. If the distance between the two points is less than
+     * the fuzz value given, the colors are similar.
+     *
+     * @param ImagickPixel
+     * @param float
+     * @return bool
+     **/
+    function isSimilar($color, $fuzz) {}
+
+    /**
+     * Sets the color described by the ImagickPixel object, with a string
+     * (e.g. "blue", "#0000ff", "rgb(0,0,255)", "cmyk(100,100,100,10)", etc.).
+     *
+     * @param string
+     * @return bool
+     **/
+    function setColor($color) {}
+
+    /**
+     * Sets the value of the specified channel of this object to the provided
+     * value, which should be between 0 and 1. This function can be used to
+     * provide an opacity channel to an ImagickPixel object.
+     *
+     * @param int
+     * @param float
+     * @return bool
+     **/
+    function setColorValue($color, $value) {}
+
+    /**
+     * Sets the color described by the ImagickPixel object using normalized
+     * values for hue, saturation and luminosity.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setHSL($hue, $saturation, $luminosity) {}
+
+    /**
+     * Constructs an ImagickPixel object. If a color is specified, the object is
+     * constructed and then initialised with that color before being returned.
+     *
+     * @param string
+     * @return ImagickPixel
+     **/
+    function __construct($color) {}
+
+}
+class ImagickPixelIterator {
+    /**
+     * Clear resources associated with a PixelIterator.
+     *
+     * @return bool
+     **/
+    function clear() {}
+
+    /**
+     * Deallocates resources associated with a PixelIterator.
+     *
+     * @return bool
+     **/
+    function destroy() {}
+
+    /**
+     * Returns the current row as an array of ImagickPixel objects from the pixel iterator.
+     *
+     * @return array
+     **/
+    function getCurrentIteratorRow() {}
+
+    /**
+     * Returns the current pixel iterator row.
+     *
+     * @return int
+     **/
+    function getIteratorRow() {}
+
+    /**
+     * Returns the next row as an array of pixel wands from the pixel iterator.
+     *
+     * @return array
+     **/
+    function getNextIteratorRow() {}
+
+    /**
+     * Returns the previous row as an array of pixel wands from the pixel iterator.
+     *
+     * @return array
+     **/
+    function getPreviousIteratorRow() {}
+
+    /**
+     * Returns a new pixel iterator.
+     *
+     * @param Imagick
+     * @return bool
+     **/
+    function newPixelIterator($wand) {}
+
+    /**
+     * Returns a new pixel iterator.
+     *
+     * @param Imagick
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function newPixelRegionIterator($wand, $x, $y, $columns, $rows) {}
+
+    /**
+     * Resets the pixel iterator. Use it in conjunction with
+     * ImagickPixelIterator::getNextIteratorRow() to iterate over all the pixels
+     * in a pixel container.
+     *
+     * @return bool
+     **/
+    function resetIterator() {}
+
+    /**
+     * Sets the pixel iterator to the first pixel row.
+     *
+     * @return bool
+     **/
+    function setIteratorFirstRow() {}
+
+    /**
+     * Sets the pixel iterator to the last pixel row.
+     *
+     * @return bool
+     **/
+    function setIteratorLastRow() {}
+
+    /**
+     * Set the pixel iterator row.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setIteratorRow($row) {}
+
+    /**
+     * Syncs the pixel iterator.
+     *
+     * @return bool
+     **/
+    function syncIterator() {}
+
+    /**
+     * The ImagickPixelIterator constructor
+     *
+     * @param Imagick
+     * @return ImagickPixelIterator
+     **/
+    function __construct($wand) {}
+
+}
+class InfiniteIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
+    /**
+     * Moves the inner Iterator forward to its next element, or rewind it.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Constructs an infinite iterator.
+     *
+     * @param Iterator
+     **/
+    function __construct($iterator) {}
+
+}
+class IntlDateFormatter {
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param int
+     * @param int
+     * @param string
+     * @param int
+     * @param string
+     * @return IntlDateFormatter
+     **/
+    function create($locale, $datetype, $timetype, $timezone, $calendar, $pattern) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param mixed
+     * @return string
+     **/
+    function format($value) {}
+
+    /**
+     * Object oriented style
+     *
+     * @return int
+     **/
+    function getCalendar() {}
+
+    /**
+     * Object oriented style
+     *
+     * @return int
+     **/
+    function getDateType() {}
+
+    /**
+     * Object oriented style
+     *
+     * @return int
+     **/
+    function getErrorCode() {}
+
+    /**
+     * Object oriented style
+     *
+     * @return string
+     **/
+    function getErrorMessage() {}
+
+    /**
+     * Object oriented style
+     *
+     * @param int
+     * @return string
+     **/
+    function getLocale($which) {}
+
+    /**
+     * Object oriented style
+     *
+     * @return string
+     **/
+    function getPattern() {}
+
+    /**
+     * Object oriented style
+     *
+     * @return int
+     **/
+    function getTimeType() {}
+
+    /**
+     * Object oriented style
+     *
+     * @return string
+     **/
+    function getTimeZoneId() {}
+
+    /**
+     * Object oriented style
+     *
+     * @return bool
+     **/
+    function isLenient() {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param int
+     * @return array
+     **/
+    function localtime($value, &$position) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param int
+     * @return int
+     **/
+    function parse($value, &$position) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param int
+     * @return bool
+     **/
+    function setCalendar($which) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param bool
+     * @return bool
+     **/
+    function setLenient($lenient) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @return bool
+     **/
+    function setPattern($pattern) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @return bool
+     **/
+    function setTimeZoneId($zone) {}
+
+}
+class InvalidArgumentException extends LogicException {
+}
+class Iterator {
+}
+class IteratorIterator implements Iterator, Traversable, OuterIterator {
+    /**
+     * Get the value of the current element.
+     *
+     * @return void
+     **/
+    function current() {}
+
+    /**
+     * Get the inner iterator.
+     *
+     * @return void
+     **/
+    function getInnerIterator() {}
+
+    /**
+     * Get the key of the current element.
+     *
+     * @return void
+     **/
+    function key() {}
+
+    /**
+     * Forward to the next element.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds to the first element.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Checks if the iterator is valid.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Creates an iterator from anything that is traversable.
+     *
+     * @param Traversable
+     **/
+    function __construct($iterator) {}
+
+}
+class KTaglib_ID3v2_AttachedPictureFrame {
+    const Artist = 0;
+    const BackCover = 0;
+    const Band = 0;
+    const BandLogo = 0;
+    const ColouredFish = 0;
+    const Composer = 0;
+    const Conductor = 0;
+    const DuringPerformance = 0;
+    const DuringRecording = 0;
+    const FileIcon = 0;
+    const FrontCover = 0;
+    const Illustration = 0;
+    const LeadArtist = 0;
+    const LeafletPage = 0;
+    const Lyricist = 0;
+    const Media = 0;
+    const MovieScreenCapture = 0;
+    const Other = 0;
+    const OtherFileIcon = 0;
+    const RecordingLocation = 0;
+    /**
+     * Returns the attached description for a picture frame in an ID3v2.x frame.
+     *
+     * @return string
+     **/
+    function getDescription() {}
+
+    /**
+     * Sets the mime type of the image. This should in most cases be "image/png" or "image/jpeg".
+     *
+     * @param string
+     * @return string
+     **/
+    function getMimeType($type) {}
+
+    /**
+     * Returns the type of the image.
+     *
+     * @return int
+     **/
+    function getType() {}
+
+    /**
+     * Saves the attached picture to the given filename.
+     *
+     * @param string
+     * @return bool
+     **/
+    function savePicture($filename) {}
+
+    /**
+     * Sets the picture to the give image. The image is loaded from the given filename.
+     * 	Please note that the picture is not saved unless you call the save method of the
+     * 	corresponding file object.
+     *
+     * @param string
+     * @return void
+     **/
+    function setPicture($filename) {}
+
+    /**
+     * Sets the type of the image. This can be e.g. FrontCover or FileIcon. Please refer to the KTaglib_ID3v2_AttachedPictureFrame class description for a list of available types and their constant mappings.
+     *
+     * @param int
+     * @return void
+     **/
+    function setType($type) {}
+
+}
+class KTagLib_ID3v2_Frame extends KTagLib_ID3v2_Frame {
+    /**
+     * Returns the size of the frame in bytes. Please refer to id3.org to see what
+     * ID3v2 frames are and how they are defined.
+     *
+     * @return int
+     **/
+    function getSize() {}
+
+    /**
+     * Returns a string representation of the frame. This might be just the
+     * frame id, but might contain more information. Please see the ktaglib
+     * documentation for more information
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class KTaglib_ID3v2_Tag {
+    /**
+     * Adds a frame to the ID3v2 tag. The frame must be a valid KTagLib_ID3v2_Frame object.
+     * 	To save the tag, the save function needs to be invoked.
+     *
+     * @param KTagLib_ID3v2_Frame
+     * @return bool
+     **/
+    function addFrame($frame) {}
+
+    /**
+     * Returns an array of ID3v2 frames, associated with the ID3v2 tag.
+     *
+     * @return array
+     **/
+    function getFrameList() {}
+
+}
+class KTaglib_MPEG_AudioProperties {
+    /**
+     * Returns the bitrate of the MPEG file
+     *
+     * @return int
+     **/
+    function getBitrate() {}
+
+    /**
+     * Returns the amount of channels of the MPEG file
+     *
+     * @return int
+     **/
+    function getChannels() {}
+
+    /**
+     * Returns the layer of the MPEG file (usually 3 for MP3).
+     *
+     * @return int
+     **/
+    function getLayer() {}
+
+    /**
+     * Returns the length of the MPEG file
+     *
+     * @return int
+     **/
+    function getLength() {}
+
+    /**
+     * Returns the sample bitrate of the MPEG file
+     *
+     * @return int
+     **/
+    function getSampleBitrate() {}
+
+    /**
+     * Returns the version of the MPEG file header. The possible versions are
+     * 	defined in Tag_MPEG_Header (Version1, Version2, Version2.5).
+     *
+     * @return int
+     **/
+    function getVersion() {}
+
+    /**
+     * Returns true if the MPEG file is copyrighted
+     *
+     * @return bool
+     **/
+    function isCopyrighted() {}
+
+    /**
+     * Returns true if the file is marked as the original file
+     *
+     * @return bool
+     **/
+    function isOriginal() {}
+
+    /**
+     * Returns true if protection mechanism (like DRM) are enabled for this file
+     *
+     * @return bool
+     **/
+    function isProtectionEnabled() {}
+
+}
+class KTaglib_MPEG_File {
+    /**
+     * Returns an object that provides access to the audio properties of
+     * the mpeg file.
+     *
+     * @return KTaglib_MPEG_File:
+     **/
+    function getAudioProperties() {}
+
+    /**
+     * Returns an object that represents an ID3v1 tag, which can be used
+     * to get information about the ID3v1 tag.
+     *
+     * @param bool
+     * @return KTaglib_ID3v1_Tag
+     **/
+    function getID3v1Tag($create) {}
+
+    /**
+     * Returns a ID3v2 object for the mpeg file. If no ID3v2 Tag is present, an
+     * KTaglib_TagNotFoundException is thrown.
+     *
+     * @param bool
+     * @return KTaglib_ID3v2_Tag
+     **/
+    function getID3v2Tag($create) {}
+
+}
+class KTaglib_MPEG_Header {
+    const Version1 = 0;
+    const Version2 = 0;
+    const Version2_5 = 0;
+}
+class KTagLib_Tag extends KTagLib_Tag {
+    /**
+     * Returns the album string of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return string
+     **/
+    function getAlbum() {}
+
+    /**
+     * Returns the artist string of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return string
+     **/
+    function getArtist() {}
+
+    /**
+     * Returns the comment of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return string
+     **/
+    function getComment() {}
+
+    /**
+     * Returns the genre of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return string
+     **/
+    function getGenre() {}
+
+    /**
+     * Returns the title string of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return string
+     **/
+    function getTitle() {}
+
+    /**
+     * Returns the track number of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return int
+     **/
+    function getTrack() {}
+
+    /**
+     * Returns the year of an ID3 tag. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return int
+     **/
+    function getYear() {}
+
+    /**
+     * Returns true if the tag exists, but is empty. This method is implemented
+     * in ID3v1 and ID3v2 tags.
+     *
+     * @return bool
+     **/
+    function isEmpty() {}
+
+}
+class LengthException extends LogicException {
+}
 class libXMLError {
 }
-class mysqli {
+class LimitIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
+    /**
+     * @return int
+     **/
+    function getPosition() {}
+
+    /**
+     * Moves the iterator forward.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds the iterator to the specified starting offset.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function seek($position) {}
+
+    /**
+     * Checks whether the current element is valid.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Constructs a new LimitIterator, which consists of
+     * a passed in iterator with limits applied to it.
+     *
+     * @param Iterator
+     * @param string
+     * @param string
+     **/
+    function __construct($iterator, $offset, $count) {}
+
+}
+class Locale {
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @return string
+     **/
+    function acceptFromHttp($header) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param array
+     * @return string
+     **/
+    function composeLocale($subtags) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param string
+     * @param bool
+     * @return bool
+     **/
+    function filterMatches($langtag, $locale, $canonicalize) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @return array
+     **/
+    function getAllVariants($locale) {}
+
+    /**
+     * Object oriented style
+     *
+     * @return string
+     **/
+    function getDefault() {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function getDisplayLanguage($locale, $in_locale) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function getDisplayName($locale, $in_locale) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function getDisplayRegion($locale, $in_locale) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function getDisplayScript($locale, $in_locale) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function getDisplayVariant($locale, $in_locale) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @return array
+     **/
+    function getKeywords($locale) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @return string
+     **/
+    function getPrimaryLanguage($locale) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @return string
+     **/
+    function getRegion($locale) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @return string
+     **/
+    function getScript($locale) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param array
+     * @param string
+     * @param bool
+     * @param string
+     * @return string
+     **/
+    function lookup($langtag, $locale, $canonicalize, $default) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @return array
+     **/
+    function parseLocale($locale) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @return bool
+     **/
+    function setDefault($locale) {}
+
+}
+class LogicException extends Exception {
+}
+class Memcache {
+    /**
+     * Memcache::add stores variable
+     * var with key only if such 
+     * key doesn't exist at the server yet.
+     * Also you can use memcache_add function.
+     *
+     * @param string
+     * @param mixed
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function add($key, $var, $flag, $expire) {}
+
+    /**
+     * Memcache::addServer adds a server to the connection 
+     * pool. The connection, which was opened using Memcache::addServer 
+     * will be automatically closed at the end of script execution, you can also close it 
+     * manually with Memcache::close. 
+     * You can also use the memcache_add_server function.
+     *
+     * @param string
+     * @param int
+     * @param bool
+     * @param int
+     * @param int
+     * @param int
+     * @param bool
+     * @param callback
+     * @param int
+     * @return bool
+     **/
+    function addServer($host, $port, $persistent, $weight, $timeout, $retry_interval, $status, $failure_callback, $timeoutms) {}
+
+    /**
+     * Memcache::close closes connection to memcached
+     * server. This function doesn't close persistent connections, which are
+     * closed only during web-server shutdown/restart.
+     * Also you can use memcache_close function.
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * Memcache::connect establishes a connection to the
+     * memcached server.
+     * The connection, which was opened using
+     * Memcache::connect will be automatically closed at the
+     * end of script execution. Also you can close it with
+     * Memcache::close.
+     * Also you can use memcache_connect function.
+     *
+     * @param string
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function connect($host, $port, $timeout) {}
+
+    /**
+     * Memcache::decrement decrements value of the 
+     * item by value. Similarly to 
+     * Memcache::increment, current value of the item is
+     * being converted to numerical and after that value
+     * is substracted. 
+     * 
+     * 
+     * New item's value will not be less than zero.
+     * 
+     * 
+     * 
+     * 
+     * Do not use Memcache::decrement with item, which was
+     * stored compressed, because consequent call to 
+     * Memcache::get will fail.
+     * 
+     * 
+     * Memcache::decrement does not
+     * create an item if it didn't exist.
+     * Also you can use memcache_decrement function.
+     *
+     * @param string
+     * @param int
+     * @return int
+     **/
+    function decrement($key, $value) {}
+
+    /**
+     * Memcache::delete deletes item with the 
+     * key. If parameter timeout
+     * is specified, the item will expire after
+     * timeout seconds.
+     * Also you can use memcache_delete function.
+     *
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function delete($key, $timeout) {}
+
+    /**
+     * Memcache::flush immediately invalidates all 
+     * existing items. Memcache::flush doesn't
+     * actually free any resources, it only marks all the items as expired, so
+     * occupied memory will be overwritten by new items.
+     * Also you can use memcache_flush function.
+     *
+     * @return bool
+     **/
+    function flush() {}
+
+    /**
+     * Memcache::get returns previously stored data if
+     * an item with such key exists on the server at this
+     * moment.
+     *
+     * @param string
+     * @param int
+     * @return string
+     **/
+    function get($key, &$flags) {}
+
+    /**
+     * Memcache::getExtendedStats returns a two-dimensional
+     * associative array with server statistics. Array keys correspond to 
+     * host:port of server and values contain the individual server statistics.
+     * A failed server will have its corresponding entry set to .
+     * You can also use the memcache_get_extended_stats function.
+     *
+     * @param string
+     * @param int
+     * @param int
+     * @return array
+     **/
+    function getExtendedStats($type, $slabid, $limit) {}
+
+    /**
+     * Memcache::getServerStatus returns a the servers 
+     * online/offline status. You can also use memcache_get_server_status 
+     * function.
+     *
+     * @param string
+     * @param int
+     * @return int
+     **/
+    function getServerStatus($host, $port) {}
+
+    /**
+     * Memcache::getStats returns an associative array 
+     * with server's statistics. Array keys correspond to stats parameters and 
+     * values to parameter's values.
+     * Also you can use memcache_get_stats function.
+     *
+     * @param string
+     * @param int
+     * @param int
+     * @return array
+     **/
+    function getStats($type, $slabid, $limit) {}
+
+    /**
+     * Memcache::getVersion returns a string with server's
+     * version number.
+     * Also you can use memcache_get_version function.
+     *
+     * @return string
+     **/
+    function getVersion() {}
+
+    /**
+     * Memcache::increment increments value of the item on
+     * the specified value. If item with key 
+     * key was not numeric and cannot be converted to
+     * number, it will change it's value to value.
+     * Memcache::increment does not
+     * create an item if it didn't exist.
+     * 
+     * 
+     * Do not use Memcache::increment with item, which was 
+     * stored compressed, because consequent call to 
+     * Memcache::get will fail.
+     * 
+     * 
+     * Also you can use memcache_increment function.
+     *
+     * @param string
+     * @param int
+     * @return int
+     **/
+    function increment($key, $value) {}
+
+    /**
+     * Memcache::pconnect is similar to
+     * Memcache::connect with the difference, that 
+     * the connection it establishes is persistent.
+     * This connection is not closed after the end of script execution and 
+     * by Memcache::close function.
+     * Also you can use memcache_pconnect function.
+     *
+     * @param string
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function pconnect($host, $port, $timeout) {}
+
+    /**
+     * Memcache::replace should be used to replace value of
+     * existing item with key. In case if item with such
+     * key doesn't exists, Memcache::replace returns
+     * . For the rest Memcache::replace behaves
+     * similarly to Memcache::set.
+     * Also you can use memcache_replace function.
+     *
+     * @param string
+     * @param mixed
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function replace($key, $var, $flag, $expire) {}
+
+    /**
+     * Memcache::set stores an item 
+     * var with key on the 
+     * memcached server. Parameter expire is expiration 
+     * time in seconds. If it's 0, the item never expires (but memcached server 
+     * doesn't guarantee this item to be stored all the time, it could be deleted 
+     * from the cache to make place for other items).
+     * You can use MEMCACHE_COMPRESSED constant as 
+     * flag value if you want to use on-the-fly
+     * compression (uses zlib).
+     * 
+     * 
+     * Remember that resource variables (i.e. file and connection descriptors)
+     * cannot be stored in the cache, because they cannot be adequately
+     * represented in serialized state.
+     * 
+     * 
+     * Also you can use memcache_set function.
+     *
+     * @param string
+     * @param mixed
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function set($key, $var, $flag, $expire) {}
+
+    /**
+     * Memcache::setCompressThreshold enables automatic
+     * compression of large values.
+     * You can also use the memcache_set_compress_threshold function.
+     *
+     * @param int
+     * @param float
+     * @return bool
+     **/
+    function setCompressThreshold($threshold, $min_savings) {}
+
+    /**
+     * Memcache::setServerParams changes server parameters at runtime.
+     * You can also use the memcache_set_server_params function.
+     *
+     * @param string
+     * @param int
+     * @param int
+     * @param int
+     * @param bool
+     * @param callback
+     * @return bool
+     **/
+    function setServerParams($host, $port, $timeout, $retry_interval, $status, $failure_callback) {}
+
+}
+class Memcached {
+    const DISTRIBUTION_CONSISTENT = 0;
+    const DISTRIBUTION_MODULA = 0;
+    const GET_PRESERVE_ORDER = 0;
+    const HASH_CRC = 0;
+    const HASH_DEFAULT = 0;
+    const HASH_FNV1A_32 = 0;
+    const HASH_FNV1A_64 = 0;
+    const HASH_FNV1_32 = 0;
+    const HASH_FNV1_64 = 0;
+    const HASH_HSIEH = 0;
+    const HASH_MD5 = 0;
+    const HASH_MURMUR = 0;
+    const HAVE_IGBINARY = 0;
+    const HAVE_JSON = 0;
+    const OPT_BINARY_PROTOCOL = 0;
+    const OPT_BUFFER_WRITES = 0;
+    const OPT_CACHE_LOOKUPS = 0;
+    const OPT_COMPRESSION = 0;
+    const OPT_CONNECT_TIMEOUT = 0;
+    const OPT_DISTRIBUTION = 0;
+    const OPT_HASH = 0;
+    const OPT_LIBKETAMA_COMPATIBLE = 0;
+    const OPT_NO_BLOCK = 0;
+    const OPT_POLL_TIMEOUT = 0;
+    const OPT_PREFIX_KEY = 0;
+    const OPT_RECV_TIMEOUT = 0;
+    const OPT_RETRY_TIMEOUT = 0;
+    const OPT_SEND_TIMEOUT = 0;
+    const OPT_SERIALIZER = 0;
+    const OPT_SERVER_FAILURE_LIMIT = 0;
+    const OPT_SOCKET_RECV_SIZE = 0;
+    const OPT_SOCKET_SEND_SIZE = 0;
+    const OPT_TCP_NODELAY = 0;
+    const RES_BAD_KEY_PROVIDED = 0;
+    const RES_BUFFERED = 0;
+    const RES_CLIENT_ERROR = 0;
+    const RES_CONNECTION_SOCKET_CREATE_FAILURE = 0;
+    const RES_DATA_EXISTS = 0;
+    const RES_END = 0;
+    const RES_ERRNO = 0;
+    const RES_FAILURE = 0;
+    const RES_HOST_LOOKUP_FAILURE = 0;
+    const RES_NOTFOUND = 0;
+    const RES_NOTSTORED = 0;
+    const RES_NO_SERVERS = 0;
+    const RES_PARTIAL_READ = 0;
+    const RES_PAYLOAD_FAILURE = 0;
+    const RES_PROTOCOL_ERROR = 0;
+    const RES_SERVER_ERROR = 0;
+    const RES_SOME_ERRORS = 0;
+    const RES_SUCCESS = 0;
+    const RES_TIMEOUT = 0;
+    const RES_UNKNOWN_READ_FAILURE = 0;
+    const RES_WRITE_FAILURE = 0;
+    const SERIALIZER_IGBINARY = 0;
+    const SERIALIZER_JSON = 0;
+    const SERIALIZER_PHP = 0;
+    /**
+     * Memcached::add is similar to
+     * Memcached::set, but the operation fails if the
+     * key already exists on the server.
+     *
+     * @param string
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function add($key, $value, $expiration) {}
+
+    /**
+     * Memcached::addByKey is functionally equivalent to
+     * Memcached::add, except that the free-form
+     * server_key can be used to map the
+     * key to a specific server. This is useful if you need
+     * to keep a bunch of related keys on a certain server.
+     *
+     * @param string
+     * @param string
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function addByKey($server_key, $key, $value, $expiration) {}
+
+    /**
+     * Memcached::addServer adds the specified server to the
+     * server pool. No connection is established to the server at this time, but
+     * if you are using consistent key distribution option (via
+     * Memcached::DISTRIBUTION_CONSISTENT or
+     * Memcached::OPT_LIBKETAMA_COMPATIBLE), some of the
+     * internal data structures will have to be updated. Thus, if you need to add
+     * multiple servers, it is better to use
+     * Memcached::addServers as the update then happens
+     * only once.
+     *
+     * @param string
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function addServer($host, $port, $weight) {}
+
+    /**
+     * Memcached::addServers adds
+     * servers to the server pool. Each entry in
+     * servers is supposed to an array containing hostname,
+     * port, and, optionally, weight of the server. No connection is established
+     * to the servers at this time.
+     *
+     * @param array
+     * @return bool
+     **/
+    function addServers($servers) {}
+
+    /**
+     * Memcached::append appends the given
+     * value string to the value of an existing item. The
+     * reason that value is forced to be a string is
+     * that appending mixed types is not well-defined.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function append($key, $value) {}
+
+    /**
+     * Memcached::appendByKey is functionally equivalent to
+     * Memcached::append, except that the free-form
+     * server_key can be used to map the
+     * key to a specific server.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function appendByKey($server_key, $key, $value) {}
+
+    /**
+     * Memcached::cas performs a "check and set" operation,
+     * so that the item will be stored only if no other client has updated it
+     * since it was last fetched by this client. The check is done via the
+     * cas_token parameter which is a unique 64-bit
+     * value assigned to the existing item by memcache. See the documentation for 
+     * Memcached::get* methods for how to obtain this
+     * token. Note that the token is represented as a double due to the
+     * limitations of PHP's integer space.
+     *
+     * @param double
+     * @param string
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function cas($cas_token, $key, $value, $expiration) {}
+
+    /**
+     * Memcached::casByKey is functionally equivalent to
+     * Memcached::cas, except that the free-form
+     * server_key can be used to map the
+     * key to a specific server. This is useful if you need
+     * to keep a bunch of related keys on a certain server.
+     *
+     * @param double
+     * @param string
+     * @param string
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function casByKey($cas_token, $server_key, $key, $value, $expiration) {}
+
+    /**
+     * Memcached::decrement decrements a numeric item's value
+     * by the specified offset. If the item's value is not
+     * numeric, it is treated as if the value were 0. If the operation would
+     * decrease the value below 0, the new value will be 0.
+     * Memcached::decrement will fail if the item does not
+     * exist.
+     *
+     * @param string
+     * @param int
+     * @return int
+     **/
+    function decrement($key, $offset) {}
+
+    /**
+     * Memcached::delete deletes the
+     * key from the server. The time
+     * parameter is the amount of time in seconds (or Unix time until which) the
+     * client wishes the server to refuse add and
+     * replace commands for this key. For this amount of time,
+     * the item is put into a delete queue, which means that it won't possible to
+     * retrieve it by the get command, but
+     * add and replace command with this key
+     * will also fail (the set command will succeed, however).
+     * After the time passes, the item is finally deleted from server memory. The
+     * parameter time defaults to 0 (which means that the
+     * item will be deleted immediately and further storage commands with this key
+     * will succeed).
+     *
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function delete($key, $time) {}
+
+    /**
+     * Memcached::deleteByKey is functionally equivalent to
+     * Memcached::delete, except that the free-form
+     * server_key can be used to map the
+     * key to a specific server.
+     *
+     * @param string
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function deleteByKey($server_key, $key, $time) {}
+
+    /**
+     * Memcached::fetch retrieves the next result from the
+     * last request.
+     *
+     * @return mixed
+     **/
+    function fetch() {}
+
+    /**
+     * Memcached::fetchAll retrieves all the remaining
+     * results from the last request.
+     *
+     * @return mixed
+     **/
+    function fetchAll() {}
+
+    /**
+     * Memcached::flush invalidates all existing cache items
+     * immediately (by default) or after the delay
+     * specified. After invalidation none of the items will be returned in
+     * response to a retrieval command (unless it's stored again under the same
+     * key after Memcached::flush has invalidated the items).
+     * The flush does not actually free all the memory taken up by the existing
+     * items; that will happen gradually as new items are stored.
+     *
+     * @param int
+     * @return bool
+     **/
+    function flush($delay) {}
+
+    /**
+     * Memcached::get returns the item that was previously
+     * stored under the key. If the item is found and
+     * cas_token variable is provided, it will contain the
+     * CAS token value for the item. See
+     * Memcached::cas for how to use CAS tokens. Read-through caching callback may be
+     * specified via cache_cb parameter.
+     *
+     * @param string
+     * @param callback
+     * @param double
+     * @return mixed
+     **/
+    function get($key, $cache_cb, &$cas_token) {}
+
+    /**
+     * Memcached::getByKey is functionally equivalent to
+     * Memcached::get, except that the free-form
+     * server_key can be used to map the
+     * key to a specific server.
+     *
+     * @param string
+     * @param string
+     * @param callback
+     * @param double
+     * @return mixed
+     **/
+    function getByKey($server_key, $key, $cache_cb, &$cas_token) {}
+
+    /**
+     * Memcached::getDelayed issues a request to memcache for
+     * multiple items the keys of which are specified in the
+     * keys array. The method does not wait for response
+     * and returns right away. When you are ready to collect the items, call
+     * either Memcached::fetch or
+     * Memcached::fetchAll. If with_cas
+     * is true, the CAS token values will also be requested.
+     *
+     * @param array
+     * @param bool
+     * @param callback
+     * @return bool
+     **/
+    function getDelayed($keys, $with_cas, $value_cb) {}
+
+    /**
+     * Memcached::getDelayedByKey is functionally equivalent to
+     * Memcached::getDelayed, except that the free-form
+     * server_key can be used to map the
+     * keys to a specific server.
+     *
+     * @param string
+     * @param array
+     * @param bool
+     * @param callback
+     * @return bool
+     **/
+    function getDelayedByKey($server_key, $keys, $with_cas, $value_cb) {}
+
+    /**
+     * Memcached::getMulti is similar to
+     * Memcached::get, but instead of a single key
+     * item, it retrievess multiple items the keys of which are specified in the
+     * keys array. If cas_tokens
+     * variable is provided, it is filled with the CAS token values for the found
+     * items.
+     * 
+     * 
+     * Unlike Memcached::get it is not possible to
+     * specify a read-through cache callback for
+     * Memcached::getMulti, because the memcache protocol
+     * does not provide information on which keys were not found in the multi-key
+     * request.
+     *
+     * @param array
+     * @param array
+     * @param integer
+     * @return mixed
+     **/
+    function getMulti($keys, &$cas_tokens, $flags) {}
+
+    /**
+     * Memcached::getMultiByKey is functionally equivalent to
+     * Memcached::getMulti, except that the free-form
+     * server_key can be used to map the
+     * keys to a specific server.
+     *
+     * @param string
+     * @param array
+     * @param string
+     * @param integer
+     * @return void
+     **/
+    function getMultiByKey($server_key, $keys, &$cas_tokens, $flags) {}
+
+    /**
+     * This method returns the value of a Memcached option. Some options
+     * correspond to the ones defined by libmemcached, and some are specific to
+     * the extension. See Memcached
+     * Constants for more information.
+     *
+     * @param int
+     * @return void
+     **/
+    function getOption($option) {}
+
+    /**
+     * Memcached::getResultCode returns one of the
+     * Memcached::RES_* constants that is the result of the
+     * last executed Memcached method.
+     *
+     * @return int
+     **/
+    function getResultCode() {}
+
+    /**
+     * Memcached::getResultMessage returns a string that
+     * describes the result code of the last executed Memcached method.
+     *
+     * @return string
+     **/
+    function getResultMessage() {}
+
+    /**
+     * Memcached::getServerByKey returns the server that
+     * would be selected by a particular server_key in all
+     * the Memcached::*ByKey operations.
+     *
+     * @param string
+     * @return array
+     **/
+    function getServerByKey($server_key) {}
+
+    /**
+     * Memcached::getServerList returns the list of all
+     * servers that are in its server pool.
+     *
+     * @return array
+     **/
+    function getServerList() {}
+
+    /**
+     * Memcached::getStats returns an array containing the
+     * state of all available memcache servers. See memcache protocol specification
+     * for details on these statistics.
+     *
+     * @return array
+     **/
+    function getStats() {}
+
+    /**
+     * Memcached::getVersion returns an array containing the
+     * version info for all available memcache servers.
+     *
+     * @return array
+     **/
+    function getVersion() {}
+
+    /**
+     * Memcached::increment increments a numeric item's value
+     * by the specified offset. If the item's value is not
+     * numeric, it is treated as if the value were 0.
+     * Memcached::increment will fail if the item does not
+     * exist.
+     *
+     * @param string
+     * @param int
+     * @return int
+     **/
+    function increment($key, $offset) {}
+
+    /**
+     * Memcached::prepend prepends the given
+     * value string to the value of an existing item. The
+     * reason that value is forced to be a string is
+     * that prepending mixed types is not well-defined.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function prepend($key, $value) {}
+
+    /**
+     * Memcached::prependByKey is functionally equivalent to
+     * Memcached::prepend, except that the free-form
+     * server_key can be used to map the
+     * key to a specific server.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function prependByKey($server_key, $key, $value) {}
+
+    /**
+     * Memcached::replace is similar to
+     * Memcached::set, but the operation fails if the
+     * key does not exist on the server.
+     *
+     * @param string
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function replace($key, $value, $expiration) {}
+
+    /**
+     * Memcached::replaceByKey is functionally equivalent to
+     * Memcached::replace, except that the free-form
+     * server_key can be used to map the
+     * key to a specific server. This is useful if you need
+     * to keep a bunch of related keys on a certain server.
+     *
+     * @param string
+     * @param string
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function replaceByKey($server_key, $key, $value, $expiration) {}
+
+    /**
+     * Memcached::set stores the value
+     * on a memcache server under the specified key. The
+     * expiration parameter can be used to control when the
+     * value is considered expired.
+     *
+     * @param string
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function set($key, $value, $expiration) {}
+
+    /**
+     * Memcached::setByKey is functionally equivalent to
+     * Memcached::set, except that the free-form
+     * server_key can be used to map the
+     * key to a specific server. This is useful if you need
+     * to keep a bunch of related keys on a certain server.
+     *
+     * @param string
+     * @param string
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function setByKey($server_key, $key, $value, $expiration) {}
+
+    /**
+     * Memcached::setMulti is similar to
+     * Memcached::set, but instead of a single key/value
+     * item, it works on multiple items specified in
+     * items. The expiration time
+     * applies to all the items at once.
+     *
+     * @param array
+     * @param int
+     * @return bool
+     **/
+    function setMulti($items, $expiration) {}
+
+    /**
+     * Memcached::setMultiByKey is functionally equivalent to
+     * Memcached::setMulti, except that the free-form
+     * server_key can be used to map the keys from
+     * items to a specific server. This is useful if you
+     * need to keep a bunch of related keys on a certain server.
+     *
+     * @param string
+     * @param array
+     * @param int
+     * @return bool
+     **/
+    function setMultiByKey($server_key, $items, $expiration) {}
+
+    /**
+     * This method sets the value of a Memcached option.
+     * Some options correspond to the ones defined by libmemcached, and some are
+     * specific to the extension. See Memcached Constants for more
+     * information.
+     *
+     * @param int
+     * @param mixed
+     * @return bool
+     **/
+    function setOption($option, $value) {}
+
+}
+class MemcachedException extends RuntimeException {
+}
+class MessageFormatter {
+    /**
+     * Object oriented style (method)
+     *
+     * @param string
+     * @param string
+     * @return MessageFormatter
+     **/
+    function create($locale, $pattern) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param array
+     * @return string
+     **/
+    function format($args) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param string
+     * @param array
+     * @return string
+     **/
+    function formatMessage($locale, $pattern, $args) {}
+
+    /**
+     * Object oriented style
+     *
+     * @return int
+     **/
+    function getErrorCode() {}
+
+    /**
+     * Object oriented style
+     *
+     * @return string
+     **/
+    function getErrorMessage() {}
+
+    /**
+     * Object oriented style
+     *
+     * @return string
+     **/
+    function getLocale() {}
+
+    /**
+     * Object oriented style
+     *
+     * @return string
+     **/
+    function getPattern() {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @return array
+     **/
+    function parse($value) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param string
+     * @return array
+     **/
+    function parseMessage($locale, $value) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @return bool
+     **/
+    function setPattern($pattern) {}
+
+}
+class Mongo {
+    const DEFAULT_HOST = '';
+    const DEFAULT_PORT = 0;
+    /**
+     * @return boolean
+     **/
+    function close() {}
+
+    /**
+     * @return boolean
+     **/
+    function connect() {}
+
+    /**
+     * @param string
+     * @param string
+     * @return boolean
+     **/
+    function connectUtil($username, $password) {}
+
+    /**
+     * @param mixed
+     * @return array
+     **/
+    function dropDB($db) {}
+
+    /**
+     * Use MongoDB::forceError instead.
+     *
+     * @return bool
+     **/
+    function forceError() {}
+
+    /**
+     * Use MongoDB::lastError instead.
+     *
+     * @return array
+     **/
+    function lastError() {}
+
+    /**
+     * To successfully create a paired connection, $this-&gt;server must be a string
+     * of the form "server1,server2".
+     *
+     * @return boolean
+     **/
+    function pairConnect() {}
+
+    /**
+     * @param string
+     * @param string
+     * @return boolean
+     **/
+    function pairPersistConnect($username, $password) {}
+
+    /**
+     * @param string
+     * @param string
+     * @return boolean
+     **/
+    function persistConnect($username, $password) {}
+
+    /**
+     * Use MongoDB::prevError instead.
+     *
+     * @return array
+     **/
+    function prevError() {}
+
+    /**
+     * @param MongoDB
+     * @param boolean
+     * @param boolean
+     * @return array
+     **/
+    function repairDB($db, $preserve_cloned_files, $backup_original_files) {}
+
+    /**
+     * Use MongoDB::resetError instead.
+     *
+     * @return array
+     **/
+    function resetError() {}
+
+    /**
+     * @param string|MongoDB
+     * @param string
+     * @return MongoCollection
+     **/
+    function selectCollection($db, $collection) {}
+
+    /**
+     * @param string
+     * @return MongoDB
+     **/
+    function selectDB($dbname) {}
+
+    /**
+     * @param string
+     * @param boolean
+     * @param boolean
+     * @param boolean
+     **/
+    function __construct($server, $connect, $persistent, $paired) {}
+
+    /**
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class MongoBinData {
+    /**
+     * Creates a new binary data object.
+     *
+     * @param string
+     * @param int
+     **/
+    function __construct($data, $type) {}
+
+    /**
+     * Returns the string representing this binary data object.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class MongoCode {
+    /**
+     * @param string
+     * @param array
+     **/
+    function __construct($code, $scope) {}
+
+    /**
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class MongoCollection extends MongoCollection {
+    /**
+     * @param array
+     * @return boolean
+     **/
+    function batchInsert($a) {}
+
+    /**
+     * @param array
+     * @param array
+     * @return int
+     **/
+    function count($query, $fields) {}
+
+    /**
+     * @param array
+     * @return array
+     **/
+    function createDBRef($a) {}
+
+    /**
+     * @param string|array
+     * @return array
+     **/
+    function deleteIndex($keys) {}
+
+    /**
+     * @return array
+     **/
+    function deleteIndexes() {}
+
+    /**
+     * Drops this collection and deletes its indices.
+     *
+     * @return array
+     **/
+    function drop() {}
+
+    /**
+     * @param string|array
+     * @return boolean
+     **/
+    function ensureIndex($keys) {}
+
+    /**
+     * @param array
+     * @param array
+     * @return MongoCursor
+     **/
+    function find($query, $fields) {}
+
+    /**
+     * @param array
+     * @param array
+     * @return array
+     **/
+    function findOne($query, $fields) {}
+
+    /**
+     * @param array
+     * @return array
+     **/
+    function getDBRef($ref) {}
+
+    /**
+     * @return array
+     **/
+    function getIndexInfo() {}
+
+    /**
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * @param array
+     * @param array
+     * @param string
+     * @param array
+     * @return array
+     **/
+    function group($keys, $initial, $reduce, $condition) {}
+
+    /**
+     * @param array
+     * @return boolean
+     **/
+    function insert($a) {}
+
+    /**
+     * @param array
+     * @param boolean
+     * @return boolean
+     **/
+    function remove($criteria, $justOne) {}
+
+    /**
+     * If the object is from the database, update the existing database object, otherwise 
+     * insert this object.
+     *
+     * @param array
+     * @return boolean
+     **/
+    function save($a) {}
+
+    /**
+     * @param array
+     * @param array
+     * @param boolean
+     * @return boolean
+     **/
+    function update($criteria, $newobj, $upsert) {}
+
+    /**
+     * @param bool
+     * @return array
+     **/
+    function validate($scan_data) {}
+
+    /**
+     * @param MongoDB
+     * @param string
+     **/
+    function __construct($db, $name) {}
+
+    /**
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class MongoCursor extends MongoCursor {
+    /**
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * @return array
+     **/
+    function current() {}
+
+    /**
+     * @return void
+     **/
+    function doQuery() {}
+
+    /**
+     * @return array
+     **/
+    function explain() {}
+
+    /**
+     * @return array
+     **/
+    function getNext() {}
+
+    /**
+     * @return boolean
+     **/
+    function hasNext() {}
+
+    /**
+     * @param array
+     * @return MongoCursor
+     **/
+    function hint($key_pattern) {}
+
+    /**
+     * @return string
+     **/
+    function key() {}
+
+    /**
+     * @param int
+     * @return MongoCursor
+     **/
+    function limit($num) {}
+
+    /**
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @return void
+     **/
+    function reset() {}
+
+    /**
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @param int
+     * @return MongoCursor
+     **/
+    function skip($num) {}
+
+    /**
+     * This method will override the static class variable slaveOkay.
+     *
+     * @param boolean
+     * @return MongoCursor
+     **/
+    function slaveOkay($okay) {}
+
+    /**
+     * @param array
+     * @return MongoCursor
+     **/
+    function sort($fields) {}
+
+    /**
+     * Mongo has a feature known as tailable cursors which are similar to the Unix "tail -f" command.
+     *
+     * @param boolean
+     * @return MongoCursor
+     **/
+    function tailable($tail) {}
+
+    /**
+     * @return boolean
+     **/
+    function valid() {}
+
+    /**
+     * @param resource
+     * @param string
+     * @param array
+     * @param array
+     **/
+    function __construct($connection, $ns, $query, $fields) {}
+
+}
+class MongoDate {
+    /**
+     * Creates a new date. If no parameters are given, the current time is used.
+     *
+     * @param long
+     * @param long
+     **/
+    function __construct($sec, $usec) {}
+
+    /**
+     * Returns a string representation of this date, similar to the representation returned by microtime().
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class MongoDB {
+    const PROFILING_OFF = 0;
+    const PROFILING_ON = 0;
+    const PROFILING_SLOW = 0;
+    /**
+     * @param array
+     * @return array
+     **/
+    function command($data) {}
+
+    /**
+     * @param string
+     * @param bool
+     * @param int
+     * @param int
+     * @return MongoCollection
+     **/
+    function createCollection($name, $capped, $size, $max) {}
+
+    /**
+     * @param mixed
+     * @param mixed
+     * @return array
+     **/
+    function createDBRef($ns, $a) {}
+
+    /**
+     * @return array
+     **/
+    function drop() {}
+
+    /**
+     * @param mixed
+     * @return array
+     **/
+    function dropCollection($coll) {}
+
+    /**
+     * @param mixed
+     * @param array
+     * @return array
+     **/
+    function execute($code, $args) {}
+
+    /**
+     * @return bool
+     **/
+    function forceError() {}
+
+    /**
+     * @return array
+     **/
+    function getCursorInfo() {}
+
+    /**
+     * @param array
+     * @return array
+     **/
+    function getDBRef($ref) {}
+
+    /**
+     * @param string
+     * @param string
+     * @return MongoGridFS
+     **/
+    function getGridFS($arg1, $arg2) {}
+
+    /**
+     * @return int
+     **/
+    function getProfilingLevel() {}
+
+    /**
+     * @return array
+     **/
+    function lastError() {}
+
+    /**
+     * @return array
+     **/
+    function listCollections() {}
+
+    /**
+     * @return array
+     **/
+    function prevError() {}
+
+    /**
+     * @param bool
+     * @param bool
+     * @return array
+     **/
+    function repair($preserve_cloned_files, $backup_original_files) {}
+
+    /**
+     * @return array
+     **/
+    function resetError() {}
+
+    /**
+     * @param string
+     * @return MongoCollection
+     **/
+    function selectCollection($name) {}
+
+    /**
+     * @param int
+     * @return int
+     **/
+    function setProfilingLevel($level) {}
+
+    /**
+     * @param Mongo
+     * @param string
+     **/
+    function __construct($conn, $name) {}
+
+    /**
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class MongoDBRef {
+    /**
+     * @param string
+     * @param mixed
+     * @return array
+     **/
+    function create($ns, $id) {}
+
+    /**
+     * @param MongoDB
+     * @param array
+     * @return array
+     **/
+    function get($db, $ref) {}
+
+    /**
+     * @param array
+     * @return boolean
+     **/
+    function isRef($ref) {}
+
+}
+class MongoEmptyObj {
+}
+class MongoException extends MongoException {
+}
+class MongoGridFS {
+    /**
+     * @return array
+     **/
+    function drop() {}
+
+    /**
+     * @param array
+     * @param array
+     * @return MongoGridFSCursor
+     **/
+    function find($query, $fields) {}
+
+    /**
+     * @param mixed
+     * @return MongoGridFSFile
+     **/
+    function findOne($query) {}
+
+    /**
+     * @param array
+     * @param boolean
+     * @return boolean
+     **/
+    function remove($criteria, $just_one) {}
+
+    /**
+     * @param string
+     * @param array
+     * @return mixed
+     **/
+    function storeBytes($bytes, $extra) {}
+
+    /**
+     * @param string
+     * @param array
+     * @return mixed
+     **/
+    function storeFile($filename, $extra) {}
+
+    /**
+     * @param string
+     * @param string
+     * @return mixed
+     **/
+    function storeUpload($name, $filename) {}
+
+    /**
+     * Files as stored across two collections, the first containing file meta information, the
+     * second containing chunks of the actual file. By default, fs.files and fs.chunks are the
+     * collection names used.
+     *
+     * @param MongoDB
+     * @param string
+     * @param string
+     **/
+    function __construct($db, $files, $chunks) {}
+
+}
+class MongoGridFSCursor {
+    /**
+     * @return MongoGridFSFile
+     **/
+    function current() {}
+
+    /**
+     * @return MongoGridFSFile
+     **/
+    function getNext() {}
+
+    /**
+     * @return string
+     **/
+    function key() {}
+
+    /**
+     * @param MongoGridFS
+     * @param resource
+     * @param string
+     * @param array
+     * @param array
+     **/
+    function __construct($gridfs, $connection, $ns, $query, $fields) {}
+
+}
+class MongoGridFSFile {
+    /**
+     * Warning: this will load the file into memory. If the file is bigger than
+     * your memory, this will cause problems!
+     *
+     * @return string
+     **/
+    function getBytes() {}
+
+    /**
+     * @return string
+     **/
+    function getFilename() {}
+
+    /**
+     * @return int
+     **/
+    function getSize() {}
+
+    /**
+     * @param string
+     * @return int
+     **/
+    function write($filename) {}
+
+    /**
+     * @param MongoGridFS
+     * @param array
+     **/
+    function __construct($gridfs, $file) {}
+
+}
+class MongoId {
+    /**
+     * @param string
+     **/
+    function __construct($id) {}
+
+    /**
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class MongoRegex {
+    /**
+     * Creates a new regular expression.
+     *
+     * @param string
+     **/
+    function __construct($regex) {}
+
+    /**
+     * Returns a string representation of this regular expression.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class MongoUtil {
+    const ASC = 0;
+    const BIN_ARRAY = 0;
+    const BIN_CUSTOM = 0;
+    const BIN_MD5 = 0;
+    const BIN_UUID = 0;
+    const DESC = 0;
+    const GT = '';
+    const GTE = '';
+    const IN = '';
+    const LT = '';
+    const LTE = '';
+    const NE = '';
+    /**
+     * @param string|array
+     * @return string
+     **/
+    function toIndexString($keys) {}
+
+}
+class MultipleIterator implements Iterator, Traversable {
+    /**
+     * Attaches iterator information.
+     *
+     * @param Iterator
+     * @param string
+     * @return void
+     **/
+    function attachIterator($iterator, $infos) {}
+
+    /**
+     * Checks if an iterator is attached or not.
+     *
+     * @param Iterator
+     * @return void
+     **/
+    function containsIterator($iterator) {}
+
+    /**
+     * Gets the number of attached iterator instances.
+     *
+     * @return void
+     **/
+    function countIterators() {}
+
+    /**
+     * Get the registered iterator instances.
+     *
+     * @return void
+     **/
+    function current() {}
+
+    /**
+     * Detaches an iterator.
+     *
+     * @param Iterator
+     * @return void
+     **/
+    function detachIterator($iterator) {}
+
+    /**
+     * Gets information about the flags.
+     *
+     * @return void
+     **/
+    function getFlags() {}
+
+    /**
+     * Get the registered iterator instances.
+     *
+     * @return void
+     **/
+    function key() {}
+
+    /**
+     * Moves all attached iterator instances forward.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds all attached iterator instances.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Sets flags.
+     *
+     * @param integer
+     * @return void
+     **/
+    function setFlags($flags) {}
+
+    /**
+     * Checks the validity of sub iterators.
+     *
+     * @return void
+     **/
+    function valid() {}
+
+    /**
+     * Construct a new MultipleIterator.
+     *
+     * @param integer
+     **/
+    function __construct($flags) {}
+
+}
+class MySQLi {
     /**
      * Object oriented style (method)
      *
@@ -62546,7 +55681,7 @@ class mysqli {
     function use_result() {}
 
 }
-class mysqli_driver {
+class MySQLi_Driver {
     /**
      * @return void
      **/
@@ -62561,7 +55696,7 @@ class mysqli_driver {
     function embedded_server_start($start, $arguments, $groups) {}
 
 }
-class mysqli_result {
+class MySQLi_Result {
     /**
      * Object oriented style (method):
      *
@@ -62647,7 +55782,7 @@ class mysqli_result {
     function free() {}
 
 }
-class mysqli_stmt {
+class MySQLi_STMT {
     /**
      * Object oriented style (method):
      *
@@ -62761,6 +55896,6343 @@ class mysqli_stmt {
      * @return bool
      **/
     function store_result() {}
+
+}
+class NoRewindIterator extends IteratorIterator {
+    /**
+     * Prevents the rewind operation on the inner iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+}
+class Normalizer {
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function isNormalized($input, $form) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function normalize($input, $form) {}
+
+}
+class NumberFormatter {
+    /**
+     * Object oriented style (method)
+     *
+     * @param string
+     * @param int
+     * @param string
+     * @return NumberFormatter
+     **/
+    function create($locale, $style, $pattern) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param number
+     * @param int
+     * @return string
+     **/
+    function format($value, $type) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param float
+     * @param string
+     * @return string
+     **/
+    function formatCurrency($value, $currency) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param int
+     * @return int
+     **/
+    function getAttribute($attr) {}
+
+    /**
+     * Object oriented style
+     *
+     * @return int
+     **/
+    function getErrorCode() {}
+
+    /**
+     * Object oriented style
+     *
+     * @return string
+     **/
+    function getErrorMessage() {}
+
+    /**
+     * Object oriented style
+     *
+     * @param int
+     * @return string
+     **/
+    function getLocale($type) {}
+
+    /**
+     * Object oriented style
+     *
+     * @return string
+     **/
+    function getPattern() {}
+
+    /**
+     * Object oriented style
+     *
+     * @param int
+     * @return string
+     **/
+    function getSymbol($attr) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param int
+     * @return string
+     **/
+    function getTextAttribute($attr) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param int
+     * @param int
+     * @return mixed
+     **/
+    function parse($value, $type, &$position) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @param string
+     * @param int
+     * @return float
+     **/
+    function parseCurrency($value, &$currency, &$position) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setAttribute($attr, $value) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param string
+     * @return bool
+     **/
+    function setPattern($pattern) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function setSymbol($attr, $value) {}
+
+    /**
+     * Object oriented style
+     *
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function setTextAttribute($attr, $value) {}
+
+}
+class OAuth {
+    /**
+     * Turns off verbose request information (off by default).
+     * Alternatively, the debug member can be set
+     * to a value to turn debug off.
+     *
+     * @return bool
+     **/
+    function disableDebug() {}
+
+    /**
+     * Turns off the usual SSL peer certificate and host checks,
+     * this is not for production environments. Alternatively, the
+     * sslChecks member can be set to 
+     * to turn SSL checks off.
+     *
+     * @return bool
+     **/
+    function disableSSLChecks() {}
+
+    /**
+     * Turns on verbose request information useful for debugging,
+     * the debug information is stored in the debugInfo
+     * member. Alternatively, the debug member can 
+     * be set to a non- value to turn debug on.
+     *
+     * @return bool
+     **/
+    function enableDebug() {}
+
+    /**
+     * Turns on the usual SSL peer certificate and host checks (enabled by default). Alternatively, the sslChecks member can be set to a non- value to turn SSL checks off.
+     *
+     * @return bool
+     **/
+    function enableSSLChecks() {}
+
+    /**
+     * Fetch a resource.
+     *
+     * @param string
+     * @param array
+     * @param int
+     * @param array
+     * @return bool
+     **/
+    function fetch($protected_resource_url, $extra_parameters, $http_method, $http_headers) {}
+
+    /**
+     * Fetch an access token, secret and any additional response parameters from the service provider.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return array
+     **/
+    function getAccessToken($access_token_url, $auth_session_handle, $verifier_token) {}
+
+    /**
+     * Get the raw response of the most recent request.
+     *
+     * @return string
+     **/
+    function getLastResponse() {}
+
+    /**
+     * Get HTTP information about the last response.
+     *
+     * @return array
+     **/
+    function getLastResponseInfo() {}
+
+    /**
+     * Fetch a request token, secret and any additional response parameters from the service provider.
+     *
+     * @param string
+     * @param string
+     * @return array
+     **/
+    function getRequestToken($request_token_url, $callback_url) {}
+
+    /**
+     * Set where the OAuth parameters should be passed.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setAuthType($auth_type) {}
+
+    /**
+     * Sets the nonce for all subsequent requests.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setNonce($nonce) {}
+
+    /**
+     * Set the token and secret for subsequent requests.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function setToken($token, $token_secret) {}
+
+    /**
+     * Sets the OAuth version for subsequent requests
+     *
+     * @param string
+     * @return bool
+     **/
+    function setVersion($version) {}
+
+    /**
+     * Creates a new OAuth object
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function __construct($consumer_key, $consumer_secret, $signature_method, $auth_type) {}
+
+}
+class OAuthException extends Exception {
+}
+class OuterIterator extends Iterator {
+    /**
+     * Returns the inner iterator for the current iterator entry.
+     *
+     * @return Iterator
+     **/
+    function getInnerIterator() {}
+
+}
+class OutOfBoundsException extends RuntimeException {
+}
+class OutOfRangeException extends LogicException {
+}
+class OverflowException extends RuntimeException {
+}
+class ParentIterator extends RecursiveFilterIterator implements RecursiveIterator, OuterIterator, Traversable, Iterator {
+    /**
+     * Get the inner iterator's children contained in a ParentIterator.
+     *
+     * @return ParentIterator
+     **/
+    function getChildren() {}
+
+    /**
+     * Check whether the inner iterator's current element has children.
+     *
+     * @return bool
+     **/
+    function hasChildren() {}
+
+    /**
+     * Moves the iterator forward.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds the iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+}
+class PDO {
+    const ATTR_AUTOCOMMIT = 0;
+    const ATTR_CASE = 0;
+    const ATTR_CLIENT_VERSION = 0;
+    const ATTR_CONNECTION_STATUS = 0;
+    const ATTR_CURSOR = 0;
+    const ATTR_CURSOR_NAME = 0;
+    const ATTR_DEFAULT_FETCH_MODE = 0;
+    const ATTR_DRIVER_NAME = '';
+    const ATTR_EMULATE_PREPARES = 0;
+    const ATTR_ERRMODE = 0;
+    const ATTR_FETCH_CATALOG_NAMES = 0;
+    const ATTR_FETCH_TABLE_NAMES = 0;
+    const ATTR_MAX_COLUMN_LEN = 0;
+    const ATTR_ORACLE_NULLS = 0;
+    const ATTR_PERSISTENT = 0;
+    const ATTR_PREFETCH = 0;
+    const ATTR_SERVER_INFO = 0;
+    const ATTR_SERVER_VERSION = 0;
+    const ATTR_STATEMENT_CLASS = 0;
+    const ATTR_STRINGIFY_FETCHES = 0;
+    const ATTR_TIMEOUT = 0;
+    const CASE_LOWER = 0;
+    const CASE_NATURAL = 0;
+    const CASE_UPPER = 0;
+    const CURSOR_FWDONLY = 0;
+    const CURSOR_SCROLL = 0;
+    const ERRMODE_EXCEPTION = 0;
+    const ERRMODE_SILENT = 0;
+    const ERRMODE_WARNING = 0;
+    const ERR_NONE = '';
+    const FB_ATTR_DATE_FORMAT = 0;
+    const FB_ATTR_TIMESTAMP_FORMAT = 0;
+    const FB_ATTR_TIME_FORMAT = 0;
+    const FETCH_ASSOC = 0;
+    const FETCH_BOTH = 0;
+    const FETCH_BOUND = 0;
+    const FETCH_CLASS = 0;
+    const FETCH_CLASSTYPE = 0;
+    const FETCH_COLUMN = 0;
+    const FETCH_FUNC = 0;
+    const FETCH_GROUP = 0;
+    const FETCH_INTO = 0;
+    const FETCH_KEY_PAIR = 0;
+    const FETCH_LAZY = 0;
+    const FETCH_NAMED = 0;
+    const FETCH_NUM = 0;
+    const FETCH_OBJ = 0;
+    const FETCH_ORI_ABS = 0;
+    const FETCH_ORI_FIRST = 0;
+    const FETCH_ORI_LAST = 0;
+    const FETCH_ORI_NEXT = 0;
+    const FETCH_ORI_PRIOR = 0;
+    const FETCH_ORI_REL = 0;
+    const FETCH_PROPS_LATE = 0;
+    const FETCH_SERIALIZE = 0;
+    const FETCH_UNIQUE = 0;
+    const MYSQL_ATTR_DIRECT_QUERY = 0;
+    const MYSQL_ATTR_INIT_COMMAND = 0;
+    const MYSQL_ATTR_LOCAL_INFILE = 0;
+    const MYSQL_ATTR_MAX_BUFFER_SIZE = 0;
+    const MYSQL_ATTR_READ_DEFAULT_FILE = 0;
+    const MYSQL_ATTR_READ_DEFAULT_GROUP = 0;
+    const MYSQL_ATTR_USE_BUFFERED_QUERY = 0;
+    const NULL_EMPTY_STRING = 0;
+    const NULL_NATURAL = 0;
+    const NULL_TO_STRING = 0;
+    const PARAM_BOOL = 0;
+    const PARAM_EVT_ALLOC = 0;
+    const PARAM_EVT_EXEC_POST = 0;
+    const PARAM_EVT_EXEC_PRE = 0;
+    const PARAM_EVT_FETCH_POST = 0;
+    const PARAM_EVT_FETCH_PRE = 0;
+    const PARAM_EVT_FREE = 0;
+    const PARAM_EVT_NORMALIZE = 0;
+    const PARAM_INPUT_OUTPUT = 0;
+    const PARAM_INT = 0;
+    const PARAM_LOB = 0;
+    const PARAM_NULL = 0;
+    const PARAM_STMT = 0;
+    const PARAM_STR = 0;
+    /**
+     * Turns off autocommit mode. While autocommit mode is turned off, changes
+     * made to the database via the PDO object instance are not committed until
+     * you end the transaction by calling PDO::commit.
+     * Calling PDO::rollBack will roll back all changes to
+     * the database and return the connection to autocommit mode.
+     *
+     * @return bool
+     **/
+    function beginTransaction() {}
+
+    /**
+     * Commits a transaction, returning the database connection to autocommit
+     * mode until the next call to PDO::beginTransaction
+     * starts a new transaction.
+     *
+     * @return bool
+     **/
+    function commit() {}
+
+    /**
+     * @return mixed
+     **/
+    function errorCode() {}
+
+    /**
+     * @return array
+     **/
+    function errorInfo() {}
+
+    /**
+     * PDO::exec executes an SQL statement in
+     * a single function call, returning the number of rows affected by the
+     * statement.
+     *
+     * @param string
+     * @return int
+     **/
+    function exec($statement) {}
+
+    /**
+     * This function returns the value of a database connection attribute. To
+     * retrieve PDOStatement attributes, refer to
+     * PDOStatement::getAttribute.
+     *
+     * @param int
+     * @return mixed
+     **/
+    function getAttribute($attribute) {}
+
+    /**
+     * This function returns all currently available PDO drivers which can be used
+     * in DSN parameter of
+     * PDO::__construct. This is a static method.
+     *
+     * @return array
+     **/
+    function getAvailableDrivers() {}
+
+    /**
+     * Returns the ID of the last inserted row, or the last value from a
+     * sequence object, depending on the underlying driver. For example,
+     * PDO_PGSQL requires you to specify the name of
+     * a sequence object for the name parameter.
+     *
+     * @param string
+     * @return string
+     **/
+    function lastInsertId($name) {}
+
+    /**
+     * PDO::pgsqlLOBCreate creates a large object and
+     * returns the OID of that object. You may then open a stream on the object
+     * using PDO::pgsqlLOBOpen to read or write data to
+     * it. The OID can be stored in columns of type OID and be used to reference
+     * the large object, without causing the row to grow arbitrarily large.
+     * The large object will continue to live in the database until it
+     * is removed by calling PDO::pgsqlLOBUnlink.
+     *
+     * @return string
+     **/
+    function pgsqlLOBCreate() {}
+
+    /**
+     * PDO::pgsqlLOBOpen opens a stream to access the data
+     * referenced by oid. If mode
+     * is r, the stream is opened for reading, if
+     * mode is w, then the stream will
+     * be opened for writing. You can use all the usual filesystem functions,
+     * such as fread, fwrite and
+     * fgets to manipulate the contents of the stream.
+     *
+     * @param string
+     * @param string
+     * @return resource
+     **/
+    function pgsqlLOBOpen($oid, $mode) {}
+
+    /**
+     * Deletes a large object from the database identified by OID.
+     *
+     * @param string
+     * @return bool
+     **/
+    function pgsqlLOBUnlink($oid) {}
+
+    /**
+     * Prepares an SQL statement to be executed by the
+     * PDOStatement::execute method. The SQL statement can
+     * contain zero or more named (:name) or question mark (?) parameter markers
+     * for which real values will be substituted when the statement is executed.
+     * You cannot use both named and question mark parameter markers within the same
+     * SQL statement; pick one or the other parameter style.
+     *
+     * @param string
+     * @param array
+     * @return PDOStatement
+     **/
+    function prepare($statement, $driver_options) {}
+
+    /**
+     * PDO::query executes an SQL statement in
+     * a single function call, returning the result set (if any) returned by the
+     * statement as a PDOStatement object.
+     *
+     * @param string
+     * @return PDOStatement
+     **/
+    function query($statement) {}
+
+    /**
+     * PDO::quote places quotes around the input string (if
+     * required) and escapes special characters within the input string, using a
+     * quoting style appropriate to the underlying driver.
+     *
+     * @param string
+     * @param int
+     * @return string
+     **/
+    function quote($string, $parameter_type) {}
+
+    /**
+     * Rolls back the current transaction, as initiated by
+     * PDO::beginTransaction. It is an error to call this
+     * method if no transaction is active.
+     *
+     * @return bool
+     **/
+    function rollBack() {}
+
+    /**
+     * Sets an attribute on the database handle. Some of the available generic
+     * attributes are listed below; some drivers may make use of
+     * additional driver specific attributes.
+     * 
+     * 
+     * PDO::ATTR_CASE: Force column names to a specific case.
+     * 
+     * 
+     * PDO::CASE_LOWER: Force column names to lower case.
+     * 
+     * 
+     * PDO::CASE_NATURAL: Leave column names as returned by
+     * the database driver.
+     * 
+     * 
+     * PDO::CASE_UPPER: Force column names to upper case.
+     * 
+     * 
+     * 
+     * PDO::ATTR_ERRMODE: Error reporting.
+     * 
+     * PDO::ERRMODE_SILENT:
+     * Just set error codes.
+     * PDO::ERRMODE_WARNING:
+     * Raise E_WARNING.
+     * PDO::ERRMODE_EXCEPTION:
+     * Throw exceptions.
+     * 
+     * 
+     * PDO::ATTR_ORACLE_NULLS
+     * (available with all drivers, not just Oracle):
+     * Conversion of NULL and empty strings.
+     * 
+     * PDO::NULL_NATURAL:
+     * No conversion.
+     * PDO::NULL_EMPTY_STRING:
+     * Empty string is converted to .
+     * PDO::NULL_TO_STRING:
+     * NULL is converted to an empty string.
+     * 
+     * 
+     * PDO::ATTR_STRINGIFY_FETCHES:
+     * Convert numeric values to strings when fetching.
+     * Requires bool.
+     * 
+     * PDO::ATTR_STATEMENT_CLASS:
+     * Set user-supplied statement class derived from PDOStatement.
+     * Cannot be used with persistent PDO instances.
+     * Requires array(string classname, array(mixed constructor_args)).
+     * 
+     * PDO::ATTR_AUTOCOMMIT
+     * (available in OCI, Firebird and MySQL):
+     * Whether to autocommit every single statement.
+     * 
+     * PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
+     * (available in MySQL):
+     * Use buffered queries.
+     *
+     * @param int
+     * @param mixed
+     * @return bool
+     **/
+    function setAttribute($attribute, $value) {}
+
+    /**
+     * This method is similar to except that it registers functions that can be used to calculate a
+     * result aggregated across all the rows of a query.
+     *
+     * @param string
+     * @param callback
+     * @param callback
+     * @param int
+     * @return bool
+     **/
+    function sqliteCreateAggregate($function_name, $step_func, $finalize_func, $num_args) {}
+
+    /**
+     * This method allows you to register a PHP function with SQLite as an 
+     * UDF (User Defined Function), so that it can be called
+     * from within your SQL statements.
+     *
+     * @param string
+     * @param callback
+     * @param int
+     * @return bool
+     **/
+    function sqliteCreateFunction($function_name, $callback, $num_args) {}
+
+}
+class PDOException extends RuntimeException {
+}
+class PDOStatement implements Traversable {
+    /**
+     * PDOStatement::bindColumn arranges to have a
+     * particular variable bound to a given column in the result-set from a
+     * query. Each call to PDOStatement::fetch or
+     * PDOStatement::fetchAll will update all the variables
+     * that are bound to columns.
+     *
+     * @param mixed
+     * @param mixed
+     * @param int
+     * @param int
+     * @param mixed
+     * @return bool
+     **/
+    function bindColumn($column, &$param, $type, $maxlen, $driverdata) {}
+
+    /**
+     * Binds a PHP variable to a corresponding named or question mark placeholder
+     * in the SQL statement that was use to prepare the statement. Unlike
+     * PDOStatement::bindValue, the variable is bound as a
+     * reference and will only be evaluated at the time that
+     * PDOStatement::execute is called.
+     *
+     * @param mixed
+     * @param mixed
+     * @param int
+     * @param int
+     * @param mixed
+     * @return bool
+     **/
+    function bindParam($parameter, &$variable, $data_type, $length, $driver_options) {}
+
+    /**
+     * Binds a value to a corresponding named or question mark placeholder
+     * in the SQL statement that was use to prepare the statement.
+     *
+     * @param mixed
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function bindValue($parameter, $value, $data_type) {}
+
+    /**
+     * PDOStatement::closeCursor frees up the connection
+     * to the server so that other SQL statements may be issued, but leaves the
+     * statement in a state that enables it to be executed again.
+     *
+     * @return bool
+     **/
+    function closeCursor() {}
+
+    /**
+     * Use PDOStatement::columnCount to return the number
+     * of columns in the result set represented by the PDOStatement object.
+     *
+     * @return int
+     **/
+    function columnCount() {}
+
+    /**
+     * Dumps the informations contained by a prepared statement directly on the
+     * output. It will provide the SQL query in use, the 
+     * number of parameters used (Params), the list
+     * of parameters, with their name, type (paramtype) as
+     * an integer, their key name or position, the value, and the position
+     * in the query (if this is supported by the PDO driver, otherwise, it will
+     * be -1).
+     *
+     * @return bool
+     **/
+    function debugDumpParams() {}
+
+    /**
+     * @return string
+     **/
+    function errorCode() {}
+
+    /**
+     * @return array
+     **/
+    function errorInfo() {}
+
+    /**
+     * Execute the prepared statement. If the prepared statement included
+     * parameter markers, you must either:
+     * 
+     * call PDOStatement::bindParam to bind PHP variables
+     * to the parameter markers: bound variables pass their value as input and receive the
+     * output value, if any, of their associated parameter markers
+     * or pass an array of input-only parameter values
+     *
+     * @param array
+     * @return bool
+     **/
+    function execute($input_parameters) {}
+
+    /**
+     * Fetches a row from a result set associated with a PDOStatement object. The
+     * fetch_style parameter determines how PDO returns
+     * the row.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @return mixed
+     **/
+    function fetch($fetch_style, $cursor_orientation, $cursor_offset) {}
+
+    /**
+     * @param int
+     * @param int
+     * @param array
+     * @return array
+     **/
+    function fetchAll($fetch_style, $column_index, $ctor_args) {}
+
+    /**
+     * Returns a single column from the next row of a result set or if
+     * there are no more rows.
+     *
+     * @param int
+     * @return string
+     **/
+    function fetchColumn($column_number) {}
+
+    /**
+     * Fetches the next row and returns it as an object. This function is an
+     * alternative to PDOStatement::fetch with
+     * PDO::FETCH_CLASS or
+     * PDO::FETCH_OBJ style.
+     *
+     * @param string
+     * @param array
+     * @return mixed
+     **/
+    function fetchObject($class_name, $ctor_args) {}
+
+    /**
+     * Gets an attribute of the statement. Currently, no generic attributes exist but only driver specific:
+     * 
+     * PDO::ATTR_CURSOR_NAME
+     * (Firebird and ODBC specific):
+     * Get the name of cursor for UPDATE ... WHERE CURRENT OF.
+     *
+     * @param int
+     * @return mixed
+     **/
+    function getAttribute($attribute) {}
+
+    /**
+     * Retrieves the metadata for a 0-indexed column in a result set as an
+     * associative array.
+     *
+     * @param int
+     * @return array
+     **/
+    function getColumnMeta($column) {}
+
+    /**
+     * Some database servers support stored procedures that return more than one
+     * rowset (also known as a result set).
+     * PDOStatement::nextRowset enables you to access the
+     * second and subsequent rowsets associated with a PDOStatement object. Each
+     * rowset can have a different set of columns from the preceding rowset.
+     *
+     * @return bool
+     **/
+    function nextRowset() {}
+
+    /**
+     * PDOStatement::rowCount returns the number of
+     * rows affected by the last DELETE, INSERT, or UPDATE statement
+     * executed by the corresponding PDOStatement object.
+     *
+     * @return int
+     **/
+    function rowCount() {}
+
+    /**
+     * Sets an attribute on the statement. Currently, no generic attributes are set but only driver specific:
+     * 
+     * PDO::ATTR_CURSOR_NAME
+     * (Firebird and ODBC specific):
+     * Set the name of cursor for UPDATE ... WHERE CURRENT OF.
+     *
+     * @param int
+     * @param mixed
+     * @return bool
+     **/
+    function setAttribute($attribute, $value) {}
+
+    /**
+     * @param int
+     * @return bool
+     **/
+    function setFetchMode($mode) {}
+
+}
+class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess {
+    const BZ2 = 0;
+    const COMPRESSED = 0;
+    const GZ = 0;
+    const MD5 = 0;
+    const NONE = 0;
+    const OPENSSL = 0;
+    const PHAR = 0;
+    const PHP = 0;
+    const PHPS = 0;
+    const SAME = 0;
+    const SHA1 = 0;
+    const SHA256 = 0;
+    const SHA512 = 0;
+    const TAR = 0;
+    const ZIP = 0;
+    /**
+     * With this method, an empty directory is created with path dirname.
+     * This method is similar to ZipArchive::addEmptyDir.
+     *
+     * @param string
+     * @return void
+     **/
+    function addEmptyDir($dirname) {}
+
+    /**
+     * With this method, any file or URL can be added to the phar archive. If
+     * the optional second parameter localname is specified,
+     * the file will be stored in the archive with that name, otherwise the
+     * file parameter is used as the path to store within
+     * the archive. URLs must have a localname or an exception is thrown.
+     * This method is similar to ZipArchive::addFile.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function addFile($file, $localname) {}
+
+    /**
+     * With this method, any string can be added to the phar archive.
+     * The file will be stored in the archive with localname as its
+     * path. This method is similar to ZipArchive::addFromString.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function addFromString($localname, $contents) {}
+
+    /**
+     * Return the API version of the phar file format that will be
+     * used when creating phars. The Phar extension supports reading API
+     * version 1.0.0 or newer. API version 1.1.0 is required for SHA-256 and SHA-512
+     * hash, and API version 1.1.1 is required to store empty directories.
+     *
+     * @return string
+     **/
+    function apiVersion() {}
+
+    /**
+     * Populate a phar archive from directory contents. The optional second
+     * parameter is a regular expression (pcre) that is used to exclude files.
+     * Any filename that matches the regular expression will be included, all others will be
+     * excluded. For more fine-grained control, use Phar::buildFromIterator.
+     *
+     * @param string
+     * @param string
+     * @return array
+     **/
+    function buildFromDirectory($base_dir, $regex) {}
+
+    /**
+     * Populate a phar archive from an iterator. Two styles of iterators are supported,
+     * iterators that map the filename within the phar to the name of a file on disk,
+     * and iterators like DirectoryIterator that return
+     * SplFileInfo objects. For iterators that return SplFileInfo objects, the second
+     * parameter is required.
+     *
+     * @param Iterator
+     * @param string
+     * @return array
+     **/
+    function buildFromIterator($iter, $base_directory) {}
+
+    /**
+     * This should be used to test whether compression is possible prior to
+     * loading a phar archive containing compressed files.
+     *
+     * @param int
+     * @return bool
+     **/
+    function canCompress($type) {}
+
+    /**
+     * This static method determines whether write access has been disabled in
+     * the system php.ini via the phar.readonly
+     * ini variable.
+     *
+     * @return bool
+     **/
+    function canWrite() {}
+
+    /**
+     * For tar-based and phar-based phar archives, this method compresses the entire archive using
+     * gzip compression or bzip2 compression. The resulting file can be processed with the
+     * gunzip command/bunzip command, or accessed directly and transparently with the Phar
+     * extension.
+     *
+     * @param int
+     * @param string
+     * @return object
+     **/
+    function compress($compression, $extension) {}
+
+    /**
+     * This method compresses all files in the Phar archive using bzip2 compression.
+     * The bzip2 extension must be enabled to take
+     * advantage of this feature. In addition, if any files are already compressed using
+     * gzip compression, the zlib extension must be enabled in order
+     * to decompress the files prior to re-compressing with bzip2 compression.
+     * As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed.
+     *
+     * @return bool
+     **/
+    function compressAllFilesBZIP2() {}
+
+    /**
+     * For tar-based phar archives, this method compresses the entire archive using
+     * gzip compression. The resulting file can be processed with the gunzip command, or
+     * accessed directly and transparently with the Phar extension.
+     *
+     * @return bool
+     **/
+    function compressAllFilesGZ() {}
+
+    /**
+     * For tar-based phar archives, this method throws a
+     * BadMethodCallException, as compression of individual
+     * files within a tar archive is not supported by the file format. Use
+     * Phar::compress to compress an entire tar-based phar archive.
+     *
+     * @param int
+     * @return void
+     **/
+    function compressFiles($compression) {}
+
+    /**
+     * This method is used to convert an executable phar archive to either a
+     * tar or zip file. To make the tar or zip non-executable, the phar
+     * stub and phar alias files are removed from the newly created archive.
+     *
+     * @param int
+     * @param int
+     * @param string
+     * @return PharData
+     **/
+    function convertToData($format, $compression, $extension) {}
+
+    /**
+     * This method is used to convert a phar archive to another file format. For instance,
+     * it can be used to create a tar-based executable phar archive from a zip-based
+     * executable phar archive, or from an executable phar archive in the phar file format. In
+     * addition, it can be used to apply whole-archive compression to a tar or phar-based
+     * archive.
+     *
+     * @param int
+     * @param int
+     * @param string
+     * @return Phar
+     **/
+    function convertToExecutable($format, $compression, $extension) {}
+
+    /**
+     * Copy a file internal to the phar archive to another new file within the phar.
+     * This is an object-oriented alternative to using copy with
+     * the phar stream wrapper.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function copy($oldfile, $newfile) {}
+
+    /**
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * This method is intended for creation of phar-file format-specific stubs, and is
+     * not intended for use with tar- or zip-based phar archives.
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function createDefaultStub($indexfile, $webindexfile) {}
+
+    /**
+     * For tar-based and phar-based phar archives, this method decompresses the entire archive.
+     *
+     * @param string
+     * @return object
+     **/
+    function decompress($extension) {}
+
+    /**
+     * For tar-based phar archives, this method throws a
+     * BadMethodCallException, as compression of individual
+     * files within a tar archive is not supported by the file format. Use
+     * Phar::compress to compress an entire tar-based phar archive.
+     *
+     * @return bool
+     **/
+    function decompressFiles() {}
+
+    /**
+     * Delete a file within an archive. This is the functional equivalent of
+     * calling unlink on the stream wrapper equivalent,
+     * as shown in the example below.
+     *
+     * @param string
+     * @return bool
+     **/
+    function delete($entry) {}
+
+    /**
+     * Deletes the global metadata of the phar
+     *
+     * @return bool
+     **/
+    function delMetadata() {}
+
+    /**
+     * Extract all files within a phar archive to disk. Extracted files and directories preserve
+     * permissions as stored in the archive. The optional parameters allow optional control over
+     * which files are extracted, and whether existing files on disk can be overwritten.
+     * The second parameter files can be either the name of a file or
+     * directory to extract, or an array of names of files and directories to extract. By
+     * default, this method will not overwrite existing files, the third parameter can be
+     * set to true to enable overwriting of files.
+     * This method is similar to ZipArchive::extractTo.
+     *
+     * @param string
+     * @param string|array
+     * @param bool
+     * @return bool
+     **/
+    function extractTo($pathto, $files, $overwrite) {}
+
+    /**
+     * Retrieve archive meta-data. Meta-data can be any PHP variable that can be serialized.
+     *
+     * @return mixed
+     **/
+    function getMetaData() {}
+
+    /**
+     * This method can be used to determine whether a phar has either
+     * had an internal file deleted, or contents of a file changed in
+     * some way.
+     *
+     * @return bool
+     **/
+    function getModified() {}
+
+    /**
+     * Returns the verification signature of a phar archive in a hexadecimal string.
+     *
+     * @return array
+     **/
+    function getSignature() {}
+
+    /**
+     * Phar archives contain a bootstrap loader, or stub
+     * written in PHP that is executed when the archive is executed in PHP either via
+     * include:
+     * 
+     * 
+     * 
+     * or by simple execution:
+     *
+     * @return string
+     **/
+    function getStub() {}
+
+    /**
+     * @return array
+     **/
+    function getSupportedCompression() {}
+
+    /**
+     * Return array of supported signature types
+     *
+     * @return array
+     **/
+    function getSupportedSignatures() {}
+
+    /**
+     * Returns the API version of an opened Phar archive.
+     *
+     * @return string
+     **/
+    function getVersion() {}
+
+    /**
+     * Returns whether phar has global meta-data set.
+     *
+     * @return bool
+     **/
+    function hasMetadata() {}
+
+    /**
+     * instructs phar to intercept fopen, readfile,
+     * file_get_contents, opendir, and all of
+     * the stat-related functions. If any of these functions is called from within
+     * a phar archive with a relative path, the call is modified to access a file
+     * within the phar archive. Absolute paths are assumed to be attempts to load
+     * external files from the filesystem.
+     *
+     * @return void
+     **/
+    function interceptFileFuncs() {}
+
+    /**
+     * This method can be used to determine whether a Phar will save changes
+     * to disk immediately, or whether a call to Phar-stopBuffering
+     * is needed to enable saving changes.
+     *
+     * @return bool
+     **/
+    function isBuffering() {}
+
+    /**
+     * Returns Phar::GZ or PHAR::BZ2 if the entire phar archive is compressed
+     * (.tar.gz/tar.bz and so on). Zip-based phar archives cannot be compressed as a
+     * file, and so this method will always return if a zip-based phar archive is queried.
+     *
+     * @return mixed
+     **/
+    function isCompressed() {}
+
+    /**
+     * @param int
+     * @return bool
+     **/
+    function isFileFormat($format) {}
+
+    /**
+     * Returns whether the given filename is a valid phar filename that will be recognized
+     * as a phar archive by the phar extension. This can be used to test a name without
+     * having to instantiate a phar archive and catch the inevitable Exception that will be
+     * thrown if an invalid name is specified.
+     *
+     * @param string
+     * @param bool
+     * @return bool
+     **/
+    function isValidPharFilename($filename, $executable) {}
+
+    /**
+     * This method returns if phar.readonly is 0,
+     * and the actual phar archive on disk is not read-only.
+     *
+     * @return bool
+     **/
+    function isWritable() {}
+
+    /**
+     * This can be used to read the contents of an external Phar archive. This
+     * is most useful for assigning an alias to a phar so that subsequent references
+     * to the phar can use the shorter alias, or for loading Phar archives that
+     * only contain data and are not intended for execution/inclusion in PHP scripts.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function loadPhar($filename, $alias) {}
+
+    /**
+     * This static method can only be used inside a Phar archive's loader stub
+     * in order to initialize the phar when it is directly executed, or when
+     * it is included in another script.
+     *
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function mapPhar($alias, $dataoffset) {}
+
+    /**
+     * Much like the unix file system concept of mounting external devices to paths within the
+     * directory tree, Phar::mount allows referring to external files
+     * and directories as if they were inside of an archive. This allows powerful
+     * abstraction such as referring to external configuration files as if they were
+     * inside the archive.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function mount($pharpath, $externalpath) {}
+
+    /**
+     * Phar::mungServer should only be called within the
+     * stub of a phar archive.
+     *
+     * @param array
+     * @return void
+     **/
+    function mungServer($munglist) {}
+
+    /**
+     * This is an implementation of the ArrayAccess interface allowing
+     * direct manipulation of the contents of a Phar archive using
+     * array access brackets.
+     *
+     * @param string
+     * @return bool
+     **/
+    function offsetExists($offset) {}
+
+    /**
+     * This is an implementation of the ArrayAccess
+     * interface allowing direct manipulation of the contents of a Phar archive using
+     * array access brackets. Phar::offsetGet is used 
+     * for retrieving files from a Phar archive.
+     *
+     * @param string
+     * @return int
+     **/
+    function offsetGet($offset) {}
+
+    /**
+     * This is an implementation of the ArrayAccess interface allowing
+     * direct manipulation of the contents of a Phar archive using
+     * array access brackets. offsetSet is used for modifying an
+     * existing file, or adding a new file to a Phar archive.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function offsetSet($offset, $value) {}
+
+    /**
+     * This is an implementation of the ArrayAccess interface allowing
+     * direct manipulation of the contents of a Phar archive using
+     * array access brackets. offsetUnset is used for deleting an
+     * existing file, and is called by the unset
+     * language construct.
+     *
+     * @param string
+     * @return bool
+     **/
+    function offsetUnset($offset) {}
+
+    /**
+     * Returns the full path to the running phar archive. This is intended for use much
+     * like the __FILE__ magic constant, and only has effect inside
+     * an executing phar archive.
+     *
+     * @param bool
+     * @return string
+     **/
+    function running($retphar) {}
+
+    /**
+     * Set the alias for the Phar archive, and write it as the permanent alias
+     * for this phar archive. An alias can be used internally to a phar archive to
+     * ensure that use of the phar stream wrapper to access internal
+     * files always works regardless of the location of the phar archive on the
+     * filesystem. Another alternative is to rely upon Phar's interception of
+     * include or to use Phar::interceptFileFuncs
+     * and use relative paths.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setAlias($alias) {}
+
+    /**
+     * This method is a convenience method that combines the functionality of
+     * Phar::createDefaultStub and Phar::setStub.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function setDefaultStub($index, $webindex) {}
+
+    /**
+     * Phar::setMetadata should be used to store customized data
+     * that describes something about the phar archive as a complete entity.
+     * PharFileInfo::setMetadata should be used for file-specific meta-data.
+     * Meta-data can slow down the performance of loading a phar archive if the data is large.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function setMetadata($metadata) {}
+
+    /**
+     * set the signature algorithm for a phar and apply it. The
+     * signature algorithm must be one of Phar::MD5,
+     * Phar::SHA1, Phar::SHA256,
+     * Phar::SHA512, or Phar::OPENSSL.
+     *
+     * @param int
+     * @param string
+     * @return void
+     **/
+    function setSignatureAlgorithm($sigtype, $privatekey) {}
+
+    /**
+     * This method is used to add a PHP bootstrap loader stub to a new Phar archive, or
+     * to replace the loader stub in an existing Phar archive.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setStub($stub) {}
+
+    /**
+     * Although technically unnecessary, the Phar::startBuffering method
+     * can provide a significant performance boost when creating or modifying a
+     * Phar archive with a large number of files. Ordinarily, every time a file
+     * within a Phar archive is created or modified in any way, the entire Phar
+     * archive will be recreated with the changes. In this way, the archive will
+     * be up-to-date with the activity performed on it.
+     *
+     * @return void
+     **/
+    function startBuffering() {}
+
+    /**
+     * Phar::stopBuffering is used in conjunction with the
+     * Phar::startBuffering method. Phar::startBuffering
+     * can provide a significant performance boost when creating or modifying a
+     * Phar archive with a large number of files. Ordinarily, every time a file
+     * within a Phar archive is created or modified in any way, the entire Phar
+     * archive will be recreated with the changes. In this way, the archive will
+     * be up-to-date with the activity performed on it.
+     *
+     * @return void
+     **/
+    function stopBuffering() {}
+
+    /**
+     * This method decompresses all files in the Phar archive.
+     * If any files are already compressed using
+     * gzip compression, the zlib extension must be enabled in order
+     * to decompress the files, and any files compressed using bzip2 compression
+     * require the bzip2 extension to decompress the files.
+     * As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed.
+     *
+     * @return bool
+     **/
+    function uncompressAllFiles() {}
+
+    /**
+     * Removes a phar archive for disk and memory.
+     *
+     * @param string
+     * @return bool
+     **/
+    function unlinkArchive($archive) {}
+
+    /**
+     * Phar::mapPhar for web-based phars. This method parses
+     * $_SERVER['REQUEST_URI'] and routes a request from a web
+     * browser to an internal file within the phar archive. In essence, it simulates
+     * a web server, routing requests to the correct file, echoing the correct headers
+     * and parsing PHP files as needed. This powerful method is part of what makes it easy
+     * to convert an existing PHP application into a phar archive. Combined with
+     * Phar::mungServer and Phar::interceptFileFuncs,
+     * any web application can be used unmodified from a phar archive.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param array
+     * @param array
+     * @return void
+     **/
+    function webPhar($alias, $index, $f404, $mimetypes, $rewrites) {}
+
+    /**
+     * @param string
+     * @param int
+     * @param string
+     * @return void
+     **/
+    function __construct($fname, $flags, $alias) {}
+
+}
+class PharData extends Phar {
+    /**
+     * With this method, an empty directory is created with path dirname.
+     * This method is similar to ZipArchive::addEmptyDir.
+     *
+     * @param string
+     * @return bool
+     **/
+    function addEmptyDir($dirname) {}
+
+    /**
+     * With this method, any string can be added to the tar/zip archive.
+     * The file will be stored in the archive with localname as its
+     * path. This method is similar to ZipArchive::addFromString.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function addFromString($localname, $contents) {}
+
+    /**
+     * Populate a tar or zip archive from an iterator. Two styles of iterators are supported,
+     * iterators that map the filename within the tar/zip to the name of a file on disk,
+     * and iterators like DirectoryIterator that return
+     * SplFileInfo objects. For iterators that return SplFileInfo objects, the second
+     * parameter is required.
+     *
+     * @param Iterator
+     * @param string
+     * @return array
+     **/
+    function buildFromIterator($iter, $base_directory) {}
+
+    /**
+     * For tar archives, this method compresses the entire archive using
+     * gzip compression or bzip2 compression. The resulting file can be processed with the
+     * gunzip command/bunzip command, or accessed directly and transparently with the Phar
+     * extension.
+     *
+     * @param int
+     * @param string
+     * @return object
+     **/
+    function compress($compression, $extension) {}
+
+    /**
+     * For tar-based archives, this method throws a
+     * BadMethodCallException, as compression of individual
+     * files within a tar archive is not supported by the file format. Use
+     * PharData::compress to compress an entire tar-based archive.
+     *
+     * @param int
+     * @return bool
+     **/
+    function compressFiles($compression) {}
+
+    /**
+     * This method is used to convert a non-executable tar or zip archive to another
+     * non-executable format.
+     *
+     * @param int
+     * @param int
+     * @param string
+     * @return PharData
+     **/
+    function convertToData($format, $compression, $extension) {}
+
+    /**
+     * This method is used to convert a non-executable tar or zip archive to an
+     * executable phar archive. Any of the three executable file formats
+     * (phar, tar or zip) can be used, and whole-archive compression can also be performed.
+     *
+     * @param int
+     * @param int
+     * @param string
+     * @return Phar
+     **/
+    function convertToExecutable($format, $compression, $extension) {}
+
+    /**
+     * Copy a file internal to the tar/zip archive to another new file within the same archive.
+     * This is an object-oriented alternative to using copy with
+     * the phar stream wrapper.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function copy($oldfile, $newfile) {}
+
+    /**
+     * For tar-based archives, this method decompresses the entire archive.
+     *
+     * @param string
+     * @return object
+     **/
+    function decompress($extension) {}
+
+    /**
+     * For tar-based archives, this method throws a
+     * BadMethodCallException, as compression of individual
+     * files within a tar archive is not supported by the file format. Use
+     * PharData::compress to compress an entire tar-based archive.
+     *
+     * @return bool
+     **/
+    function decompressFiles() {}
+
+    /**
+     * Delete a file within an archive. This is the functional equivalent of
+     * calling unlink on the stream wrapper equivalent,
+     * as shown in the example below.
+     *
+     * @param string
+     * @return int
+     **/
+    function delete($entry) {}
+
+    /**
+     * Deletes the global metadata of the zip archive
+     *
+     * @return int
+     **/
+    function delMetadata() {}
+
+    /**
+     * Extract all files within a tar/zip archive to disk. Extracted files and directories preserve
+     * permissions as stored in the archive. The optional parameters allow optional control over
+     * which files are extracted, and whether existing files on disk can be overwritten.
+     * The second parameter files can be either the name of a file or
+     * directory to extract, or an array of names of files and directories to extract. By
+     * default, this method will not overwrite existing files, the third parameter can be
+     * set to true to enable overwriting of files.
+     * This method is similar to ZipArchive::extractTo.
+     *
+     * @param string
+     * @param string|array
+     * @param bool
+     * @return int
+     **/
+    function extractTo($pathto, $files, $overwrite) {}
+
+    /**
+     * This method returns if the tar/zip archive on disk is not read-only.
+     * Unlike Phar::isWritable, data-only tar/zip archives
+     * can be modified even if phar.readonly is set to 1.
+     *
+     * @return bool
+     **/
+    function isWritable() {}
+
+    /**
+     * This is an implementation of the ArrayAccess interface allowing
+     * direct manipulation of the contents of a tar/zip archive using
+     * array access brackets. offsetSet is used for modifying an
+     * existing file, or adding a new file to a tar/zip archive.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function offsetSet($offset, $value) {}
+
+    /**
+     * This is an implementation of the ArrayAccess interface allowing
+     * direct manipulation of the contents of a tar/zip archive using
+     * array access brackets. offsetUnset is used for deleting an
+     * existing file, and is called by the unset
+     * language construct.
+     *
+     * @param string
+     * @return bool
+     **/
+    function offsetUnset($offset) {}
+
+    /**
+     * Non-executable tar/zip archives cannot have an alias, so this method simply
+     * throws an exception.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setAlias($alias) {}
+
+    /**
+     * Non-executable tar/zip archives cannot have a stub, so this method simply
+     * throws an exception.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setDefaultStub($index, $webindex) {}
+
+    /**
+     * Non-executable tar/zip archives cannot have a stub, so this method simply
+     * throws an exception.
+     *
+     * @param string
+     * @return void
+     **/
+    function setStub($stub) {}
+
+    /**
+     * @param string
+     * @param int
+     * @return void
+     **/
+    function __construct($fname, $flags) {}
+
+}
+class PharException extends Exception {
+}
+class PharFileInfo extends SplFileInfo {
+    /**
+     * PharFileInfo::chmod allows setting of the executable
+     * file permissions bit, as well as read-only bits. Writeable bits are
+     * ignored, and set at runtime based on the
+     * phar.readonly INI variable.
+     * As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed if the file is within a Phar
+     * archive. Files within PharData archives do not have
+     * this restriction.
+     *
+     * @param int
+     * @return void
+     **/
+    function chmod($permissions) {}
+
+    /**
+     * This method compresses the file inside the Phar archive using either bzip2 compression
+     * or zlib compression.
+     * The bzip2 or zlib
+     * extension must be enabled to take
+     * advantage of this feature. In addition, if the file is already compressed,
+     * the respective extension must be enabled in order
+     * to decompress the file. As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed if the file is within a Phar
+     * archive. Files within PharData archives do not have
+     * this restriction.
+     *
+     * @param int
+     * @return bool
+     **/
+    function compress($compression) {}
+
+    /**
+     * This method decompresses the file inside the Phar archive.
+     * Depending on how the file is compressed, the bzip2
+     * or zlib extensions must be enabled to take
+     * advantage of this feature. As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed if the file is within a Phar
+     * archive. Files within PharData archives do not have
+     * this restriction.
+     *
+     * @return bool
+     **/
+    function decompress() {}
+
+    /**
+     * Deletes the metadata of the entry, if any.
+     *
+     * @return bool
+     **/
+    function delMetadata() {}
+
+    /**
+     * This returns the size of the file within the Phar archive. Uncompressed files will return
+     * the same value for getCompressedSize as they will with filesize
+     *
+     * @return int
+     **/
+    function getCompressedSize() {}
+
+    /**
+     * This returns the crc32 checksum of the file
+     * within the Phar archive.
+     *
+     * @return int
+     **/
+    function getCRC32() {}
+
+    /**
+     * Return meta-data that was saved in the Phar archive's manifest for this file.
+     *
+     * @return mixed
+     **/
+    function getMetaData() {}
+
+    /**
+     * This returns the flags set in the manifest for a Phar. This will always
+     * return 0 in the current implementation.
+     *
+     * @return int
+     **/
+    function getPharFlags() {}
+
+    /**
+     * Returns the metadata of a file within a phar archive.
+     *
+     * @return bool
+     **/
+    function hasMetadata() {}
+
+    /**
+     * This returns whether a file is compressed within a Phar archive
+     * with either Gzip or Bzip2 compression.
+     *
+     * @param int
+     * @return bool
+     **/
+    function isCompressed($compression_type) {}
+
+    /**
+     * This returns whether a file is compressed within a Phar archive
+     * with Bzip2 compression.
+     *
+     * @return bool
+     **/
+    function isCompressedBZIP2() {}
+
+    /**
+     * This returns whether a file is compressed within a Phar archive
+     * with Gzip compression.
+     *
+     * @return bool
+     **/
+    function isCompressedGZ() {}
+
+    /**
+     * This returns whether a file within a Phar archive
+     * has had its CRC verified.
+     *
+     * @return bool
+     **/
+    function isCRCChecked() {}
+
+    /**
+     * This method compresses the file inside the Phar archive using bzip2 compression.
+     * The bzip2 extension must be enabled to take
+     * advantage of this feature. In addition, if the file is already compressed using
+     * gzip compression, the zlib extension must be enabled in order
+     * to decompress the file. As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed.
+     *
+     * @return bool
+     **/
+    function setCompressedBZIP2() {}
+
+    /**
+     * This method compresses the file inside the Phar archive using gzip compression.
+     * The zlib extension must be enabled to take
+     * advantage of this feature. In addition, if the file is already compressed using
+     * bzip2 compression, the bzip2 extension must be enabled in order
+     * to decompress the file. As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed.
+     *
+     * @return bool
+     **/
+    function setCompressedGZ() {}
+
+    /**
+     * PharFileInfo::setMetaData should only be used to store customized data in a file
+     * that cannot be represented with existing information stored with a file.
+     * Meta-data can significantly slow down the performance of loading a phar
+     * archive if the data is large, or if there are many files containing meta-data.
+     * It is important to note that file permissions are natively supported inside a
+     * phar; it is possible to set them with the
+     * PharFileInfo::chmod method. As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed if the file is within a Phar
+     * archive. Files within PharData archives do not have
+     * this restriction.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function setMetaData($metadata) {}
+
+    /**
+     * This method decompresses the file inside the Phar archive.
+     * Depending on how the file is compressed, the bzip2
+     * or zlib extensions must be enabled to take
+     * advantage of this feature. As with all functionality that modifies the contents of
+     * a phar, the phar.readonly INI variable
+     * must be off in order to succeed.
+     *
+     * @return bool
+     **/
+    function setUncompressed() {}
+
+    /**
+     * This should not be called directly. Instead, a PharFileInfo object
+     * is initialized by calling Phar::offsetGet
+     * through array access.
+     *
+     * @param string
+     * @return void
+     **/
+    function __construct($entry) {}
+
+}
+class RangeException extends RuntimeException {
+}
+class Rar {
+    /**
+     * Rar::extract extracts entry's data to the
+     * dir. It will create new file in the specified
+     * dir with the name identical to the entry's name.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function extract($dir, $filepath) {}
+
+    /**
+     * Rar::getAttr returns attributes of the archive
+     * entry.
+     *
+     * @return int
+     **/
+    function getAttr() {}
+
+    /**
+     * Rar::getCrc returns CRC of the archive entry.
+     *
+     * @return int
+     **/
+    function getCrc() {}
+
+    /**
+     * Gets entry last modification time.
+     *
+     * @return string
+     **/
+    function getFileTime() {}
+
+    /**
+     * Rar::getHostOs return code of the host OS of the
+     * archive entry.
+     *
+     * @return int
+     **/
+    function getHostOs() {}
+
+    /**
+     * Rar::getMethod returns number of the method used when adding
+     * current archive entry.
+     *
+     * @return int
+     **/
+    function getMethod() {}
+
+    /**
+     * Rar::getName returns full name of the archive entry.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Get packed size of the archive entry.
+     *
+     * @return int
+     **/
+    function getPackedSize() {}
+
+    /**
+     * Get unpacked size of the archive entry.
+     *
+     * @return int
+     **/
+    function getUnpackedSize() {}
+
+    /**
+     * Get version of the archiver used to add the archive entry.
+     *
+     * @return int
+     **/
+    function getVersion() {}
+
+}
+class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator {
+    /**
+     * Returns an iterator for the current iterator entry.
+     *
+     * @return RecursiveArrayIterator
+     **/
+    function getChildren() {}
+
+    /**
+     * Returns whether current entry is an array or an object for
+     * which an iterator can be obtained via
+     * RecursiveArrayIterator::getChildren.
+     *
+     * @return bool
+     **/
+    function hasChildren() {}
+
+}
+class RecursiveCachingIterator extends CachingIterator implements Countable, ArrayAccess, Iterator, Traversable, OuterIterator, RecursiveIterator {
+    /**
+     * @return RecursiveCachingIterator
+     **/
+    function getChildren() {}
+
+    /**
+     * @return bool
+     **/
+    function hasChildren() {}
+
+    /**
+     * Constructs a new RecursiveCachingIterator,
+     * which consists of a passed in iterator.
+     *
+     * @param Iterator
+     * @param string
+     **/
+    function __construct($iterator, $flags) {}
+
+}
+class RecursiveDirectoryIterator extends DirectoryIterator implements Traversable, Iterator, RecursiveIterator {
+    /**
+     * @return object
+     **/
+    function getChildren() {}
+
+    /**
+     * @param bool
+     * @return bool
+     **/
+    function hasChildren($allow_links) {}
+
+    /**
+     * @return string
+     **/
+    function key() {}
+
+    /**
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @return void
+     **/
+    function rewind() {}
+
+}
+class RecursiveFilterIterator extends FilterIterator implements Iterator, Traversable, OuterIterator, RecursiveIterator {
+    /**
+     * Return the inner iterator's children contained in a RecursiveFilterIterator.
+     *
+     * @return void
+     **/
+    function getChildren() {}
+
+    /**
+     * Check whether the inner iterator's current element has children.
+     *
+     * @return void
+     **/
+    function hasChildren() {}
+
+    /**
+     * Create a RecursiveFilterIterator from a RecursiveIterator.
+     *
+     * @param RecursiveIterator
+     **/
+    function __construct($iterator) {}
+
+}
+class RecursiveIterator extends Iterator {
+    /**
+     * Returns an iterator for the current iterator entry.
+     *
+     * @return RecursiveIterator
+     **/
+    function getChildren() {}
+
+    /**
+     * Returns if an iterator can be created fot the current entry.
+     * RecursiveIterator::getChildren.
+     *
+     * @return bool
+     **/
+    function hasChildren() {}
+
+}
+class RecursiveIteratorIterator implements OuterIterator, Traversable, Iterator {
+    const CHILD_FIRST = 0;
+    const LEAVES_ONLY = 0;
+    const SELF_FIRST = 0;
+    /**
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * @return int
+     **/
+    function getDepth() {}
+
+    /**
+     * @return RecursiveIterator
+     **/
+    function getSubIterator() {}
+
+    /**
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator {
+    /**
+     * Returns an iterator for the current iterator entry.
+     *
+     * @return RecursiveRegexIterator
+     **/
+    function getChildren() {}
+
+    /**
+     * Returns whether an iterator can be obtained for the current entry. This iterator can be
+     * obtained via RecursiveRegexIterator::getChildren.
+     *
+     * @return bool
+     **/
+    function hasChildren() {}
+
+}
+class Reflection {
+    /**
+     * Exports a reflection.
+     *
+     * @param Reflector
+     * @param string
+     * @return void
+     **/
+    function export($reflector, $return) {}
+
+    /**
+     * Gets modifier names.
+     *
+     * @param int
+     * @return array
+     **/
+    function getModifierNames($modifiers) {}
+
+}
+class ReflectionClass implements Reflector {
+    /**
+     * Exports a reflected class.
+     *
+     * @param mixed
+     * @param bool
+     * @return string
+     **/
+    function export($argument, $return) {}
+
+    /**
+     * Gets the defined constants.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function getConstant($name) {}
+
+    /**
+     * Gets defined constants from a class.
+     *
+     * @return array
+     **/
+    function getConstants() {}
+
+    /**
+     * Gets the constructor from a class.
+     *
+     * @return object
+     **/
+    function getConstructor() {}
+
+    /**
+     * Gets default properties from a class.
+     *
+     * @return array
+     **/
+    function getDefaultProperties() {}
+
+    /**
+     * Gets doc comments from a class.
+     *
+     * @return string
+     **/
+    function getDocComment() {}
+
+    /**
+     * Gets end line number from a user-defined class definition.
+     *
+     * @return int
+     **/
+    function getEndLine() {}
+
+    /**
+     * Gets an extensions ReflectionExtension object.
+     *
+     * @return ReflectionExtension
+     **/
+    function getExtension() {}
+
+    /**
+     * Gets an extensions name.
+     *
+     * @return string
+     **/
+    function getExtensionName() {}
+
+    /**
+     * Gets a filename.
+     *
+     * @return string
+     **/
+    function getFileName() {}
+
+    /**
+     * Get the interface names.
+     *
+     * @return array
+     **/
+    function getInterfaceNames() {}
+
+    /**
+     * Gets the interfaces.
+     *
+     * @return array
+     **/
+    function getInterfaces() {}
+
+    /**
+     * Gets a ReflectionMethod about a method.
+     *
+     * @param string
+     * @return object
+     **/
+    function getMethod($name) {}
+
+    /**
+     * Gets a list of methods.
+     *
+     * @param string
+     * @return array
+     **/
+    function getMethods($filter) {}
+
+    /**
+     * @return int
+     **/
+    function getModifiers() {}
+
+    /**
+     * Gets the class name.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Gets the namespace name.
+     *
+     * @return string
+     **/
+    function getNamespaceName() {}
+
+    /**
+     * @return object
+     **/
+    function getParentClass() {}
+
+    /**
+     * Gets the properties.
+     *
+     * @param string
+     * @return ReflectionProperty
+     **/
+    function getProperties($filter) {}
+
+    /**
+     * Gets a property.
+     *
+     * @param string
+     * @return ReflectionProperty
+     **/
+    function getProperty($name) {}
+
+    /**
+     * Gets the short name of the class, the part without the namespace.
+     *
+     * @return string
+     **/
+    function getShortName() {}
+
+    /**
+     * Get the starting line number.
+     *
+     * @return int
+     **/
+    function getStartLine() {}
+
+    /**
+     * Get the static properties.
+     *
+     * @return array
+     **/
+    function getStaticProperties() {}
+
+    /**
+     * Gets the static property values.
+     *
+     * @param string
+     * @param string
+     * @return mixed
+     **/
+    function getStaticPropertyValue($name, $default) {}
+
+    /**
+     * Checks whether the class has a specific constant defined or not.
+     *
+     * @param string
+     * @return bool
+     **/
+    function hasConstant($name) {}
+
+    /**
+     * Checks whether a specific method is defined in a class.
+     *
+     * @param string
+     * @return bool
+     **/
+    function hasMethod($name) {}
+
+    /**
+     * Checks whether the specified property is defined.
+     *
+     * @param string
+     * @return bool
+     **/
+    function hasProperty($name) {}
+
+    /**
+     * Checks whether it implements an interface.
+     *
+     * @param string
+     * @return bool
+     **/
+    function implementsInterface($interface) {}
+
+    /**
+     * Checks if this class is defined in a namespace.
+     *
+     * @return bool
+     **/
+    function inNamespace() {}
+
+    /**
+     * Checks if the class is abstract.
+     *
+     * @return bool
+     **/
+    function isAbstract() {}
+
+    /**
+     * Checks if a class is final.
+     *
+     * @return bool
+     **/
+    function isFinal() {}
+
+    /**
+     * Checks if a class is an instance of an object.
+     *
+     * @param string
+     * @return bool
+     **/
+    function isInstance($object) {}
+
+    /**
+     * Checks if the class is instanciable.
+     *
+     * @return bool
+     **/
+    function isInstantiable() {}
+
+    /**
+     * Checks whether the class is an interface.
+     *
+     * @return bool
+     **/
+    function isInterface() {}
+
+    /**
+     * Checks whether the class is internal, as opposed to user-defined.
+     *
+     * @return bool
+     **/
+    function isInternal() {}
+
+    /**
+     * Checks whether the class is iterateable.
+     *
+     * @return bool
+     **/
+    function isIterateable() {}
+
+    /**
+     * Checks if the class is a subclass of a specified class.
+     *
+     * @param string
+     * @return bool
+     **/
+    function isSubclassOf($class) {}
+
+    /**
+     * Checks whether the class is user-defined, as opposed to internal.
+     *
+     * @return bool
+     **/
+    function isUserDefined() {}
+
+    /**
+     * A new instance.
+     *
+     * @param mixed
+     * @return object
+     **/
+    function newInstance($args) {}
+
+    /**
+     * New instance args.
+     *
+     * @param array
+     * @return object
+     **/
+    function newInstanceArgs($args) {}
+
+    /**
+     * Sets static property value.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setStaticPropertyValue($name, $value) {}
+
+    /**
+     * Clones.
+     *
+     * @return void
+     **/
+    function __clone() {}
+
+    /**
+     * Constructs a new ReflectionClass object.
+     *
+     * @param string
+     **/
+    function __construct($argument) {}
+
+    /**
+     * To a string.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class ReflectionException extends Exception {
+}
+class ReflectionExtension implements Reflector {
+    /**
+     * Exports a reflected extension.
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function export($name, $return) {}
+
+    /**
+     * Gets a list of classes from an extension.
+     *
+     * @return array
+     **/
+    function getClasses() {}
+
+    /**
+     * Gets a listing of class names as defined in the extension.
+     *
+     * @return array
+     **/
+    function getClassNames() {}
+
+    /**
+     * Get defined constants from an extension.
+     *
+     * @return array
+     **/
+    function getConstants() {}
+
+    /**
+     * Gets dependencies, by listing both required and conflicting dependencies.
+     *
+     * @return array
+     **/
+    function getDependencies() {}
+
+    /**
+     * Get defined functions from an extension.
+     *
+     * @return array
+     **/
+    function getFunctions() {}
+
+    /**
+     * Get the ini entries for an extension.
+     *
+     * @return array
+     **/
+    function getINIEntries() {}
+
+    /**
+     * Gets the extensions name.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Gets the version of the extension.
+     *
+     * @return string
+     **/
+    function getVersion() {}
+
+    /**
+     * Gets information about an extension.
+     *
+     * @return string
+     **/
+    function info() {}
+
+    /**
+     * Clones.
+     *
+     * @return void
+     **/
+    function __clone() {}
+
+    /**
+     * Construct a ReflectionExtension object.
+     *
+     * @param string
+     **/
+    function __construct($name) {}
+
+    /**
+     * To a string.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class ReflectionFunction extends ReflectionFunctionAbstract implements Reflector {
+    /**
+     * Exports a Reflected function.
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function export($name, $return) {}
+
+    /**
+     * Invokes a reflected function.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function invoke($args) {}
+
+    /**
+     * Invokes args.
+     *
+     * @param array
+     * @return mixed
+     **/
+    function invokeArgs($args) {}
+
+    /**
+     * Checks if the function is disabled, via the 
+     * disable_functions
+     * directive.
+     *
+     * @return bool
+     **/
+    function isDisabled() {}
+
+    /**
+     * Constructs a ReflectionFunction object.
+     *
+     * @param string
+     **/
+    function __construct($name) {}
+
+    /**
+     * To string.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class ReflectionFunctionAbstract implements Reflector {
+    /**
+     * Get a Doc comment from a function.
+     *
+     * @return string
+     **/
+    function getDocComment() {}
+
+    /**
+     * Get the ending line number.
+     *
+     * @return int
+     **/
+    function getEndLine() {}
+
+    /**
+     * Get the extension information of a function.
+     *
+     * @return ReflectionExtension
+     **/
+    function getExtension() {}
+
+    /**
+     * Get the extensions name.
+     *
+     * @return string
+     **/
+    function getExtensionName() {}
+
+    /**
+     * Gets the file name from a user-defined function.
+     *
+     * @return string
+     **/
+    function getFileName() {}
+
+    /**
+     * Get the name of the function.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Get the namespace name where the class is defined.
+     *
+     * @return string
+     **/
+    function getNamespaceName() {}
+
+    /**
+     * Get the number of parameters that a function defines, both optional
+     * and required.
+     *
+     * @return int
+     **/
+    function getNumberOfParameters() {}
+
+    /**
+     * Get the number of required parameters that a function defines.
+     *
+     * @return int
+     **/
+    function getNumberOfRequiredParameters() {}
+
+    /**
+     * Get the parameters.
+     *
+     * @return ReflectionParameter
+     **/
+    function getParameters() {}
+
+    /**
+     * Get the short name of the function (without the namespace part).
+     *
+     * @return string
+     **/
+    function getShortName() {}
+
+    /**
+     * Gets the starting line number of the function.
+     *
+     * @return int
+     **/
+    function getStartLine() {}
+
+    /**
+     * Get the static variables.
+     *
+     * @return array
+     **/
+    function getStaticVariables() {}
+
+    /**
+     * Checks whether a function is defined in a namespace.
+     *
+     * @return bool
+     **/
+    function inNamespace() {}
+
+    /**
+     * Checks whether it's a closure.
+     *
+     * @return bool
+     **/
+    function isClosure() {}
+
+    /**
+     * Checks whether the function is deprecated.
+     *
+     * @return bool
+     **/
+    function isDeprecated() {}
+
+    /**
+     * Checks whether the function is internal, as opposed to user-defined.
+     *
+     * @return bool
+     **/
+    function isInternal() {}
+
+    /**
+     * Checks whether the function is user-defined, as opposed to internal.
+     *
+     * @return bool
+     **/
+    function isUserDefined() {}
+
+    /**
+     * Checks whether the function returns a reference.
+     *
+     * @return bool
+     **/
+    function returnsReference() {}
+
+    /**
+     * Clones a function.
+     *
+     * @return void
+     **/
+    function __clone() {}
+
+    /**
+     * To string.
+     *
+     * @return void
+     **/
+    function __toString() {}
+
+}
+class ReflectionMethod extends ReflectionFunctionAbstract implements Reflector {
+    /**
+     * Exports a ReflectionMethod.
+     *
+     * @param string
+     * @param string
+     * @param bool
+     * @return string
+     **/
+    function export($class, $name, $return) {}
+
+    /**
+     * Gets the declaring class.
+     *
+     * @return ReflectionClass
+     **/
+    function getDeclaringClass() {}
+
+    /**
+     * Gets the modifiers.
+     *
+     * @return int
+     **/
+    function getModifiers() {}
+
+    /**
+     * Gets the methods prototype.
+     *
+     * @return void
+     **/
+    function getPrototype() {}
+
+    /**
+     * Invokes a reflected method.
+     *
+     * @param object
+     * @param string
+     * @return mixed
+     **/
+    function invoke($object, $args) {}
+
+    /**
+     * Invoke arguments.
+     *
+     * @param string
+     * @param array
+     * @return mixed
+     **/
+    function invokeArgs($object, $args) {}
+
+    /**
+     * Checks if the method is abstract.
+     *
+     * @return bool
+     **/
+    function isAbstract() {}
+
+    /**
+     * Checks if the method is a constructor.
+     *
+     * @return bool
+     **/
+    function isConstructor() {}
+
+    /**
+     * Checks if the method is a destructor.
+     *
+     * @return bool
+     **/
+    function isDestructor() {}
+
+    /**
+     * Checks if the method is final.
+     *
+     * @return bool
+     **/
+    function isFinal() {}
+
+    /**
+     * Checks if the method is private.
+     *
+     * @return bool
+     **/
+    function isPrivate() {}
+
+    /**
+     * Checks if the method is protected.
+     *
+     * @return bool
+     **/
+    function isProtected() {}
+
+    /**
+     * Checks if the method is public.
+     *
+     * @return bool
+     **/
+    function isPublic() {}
+
+    /**
+     * Checks if the method is static.
+     *
+     * @return bool
+     **/
+    function isStatic() {}
+
+    /**
+     * Sets a method to be accessible. For example, it may allow protected
+     * and private methods to be invoked.
+     *
+     * @param bool
+     * @return void
+     **/
+    function setAccessible($accessible) {}
+
+    /**
+     * Constructs a new ReflectionMethod.
+     *
+     * @param string
+     * @param string
+     **/
+    function __construct($class_or_method, $name) {}
+
+    /**
+     * To string.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class ReflectionObject extends ReflectionClass implements Reflector {
+    /**
+     * Exports a reflection.
+     *
+     * @param string
+     * @param bool
+     * @return string
+     **/
+    function export($argument, $return) {}
+
+    /**
+     * Constructs a ReflectionObject.
+     *
+     * @param object
+     **/
+    function __construct($argument) {}
+
+}
+class ReflectionParameter implements Reflector {
+    /**
+     * Checks whether the parameter allows .
+     *
+     * @return bool
+     **/
+    function allowsNull() {}
+
+    /**
+     * Exports.
+     *
+     * @param string
+     * @param string
+     * @param bool
+     * @return string
+     **/
+    function export($function, $parameter, $return) {}
+
+    /**
+     * Gets a class.
+     *
+     * @return ReflectionClass
+     **/
+    function getClass() {}
+
+    /**
+     * Gets the declaring class.
+     *
+     * @return ReflectionClass
+     **/
+    function getDeclaringClass() {}
+
+    /**
+     * Gets the declaring function.
+     *
+     * @return ReflectionFunction
+     **/
+    function getDeclaringFunction() {}
+
+    /**
+     * Gets the parameters default value.
+     *
+     * @return mixed
+     **/
+    function getDefaultValue() {}
+
+    /**
+     * Gets the name of the parameter.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Gets the position of the parameter.
+     *
+     * @return int
+     **/
+    function getPosition() {}
+
+    /**
+     * Checks if the parameter expects an array.
+     *
+     * @return bool
+     **/
+    function isArray() {}
+
+    /**
+     * Checks if a default value for the parameter is available.
+     *
+     * @return bool
+     **/
+    function isDefaultValueAvailable() {}
+
+    /**
+     * Checks if the parameter is optional.
+     *
+     * @return bool
+     **/
+    function isOptional() {}
+
+    /**
+     * Checks if the parameter is passed in by reference.
+     *
+     * @return bool
+     **/
+    function isPassedByReference() {}
+
+    /**
+     * Clones.
+     *
+     * @return void
+     **/
+    function __clone() {}
+
+    /**
+     * Constructs a ReflectionParameter class.
+     *
+     * @param string
+     * @param string
+     **/
+    function __construct($function, $parameter) {}
+
+    /**
+     * To string.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class ReflectionProperty implements Reflector {
+    /**
+     * Exports a reflection.
+     *
+     * @param mixed
+     * @param string
+     * @param bool
+     * @return string
+     **/
+    function export($class, $name, $return) {}
+
+    /**
+     * Gets the declaring class.
+     *
+     * @return ReflectionClass
+     **/
+    function getDeclaringClass() {}
+
+    /**
+     * Gets the doc comment.
+     *
+     * @return string
+     **/
+    function getDocComment() {}
+
+    /**
+     * Gets the modifiers.
+     *
+     * @return int
+     **/
+    function getModifiers() {}
+
+    /**
+     * Gets the properties name.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Gets the properties value.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function getValue($object) {}
+
+    /**
+     * Checks whether the property is the default.
+     *
+     * @return bool
+     **/
+    function isDefault() {}
+
+    /**
+     * Checks whether the property is private.
+     *
+     * @return bool
+     **/
+    function isPrivate() {}
+
+    /**
+     * Checks whether the property is protected.
+     *
+     * @return bool
+     **/
+    function isProtected() {}
+
+    /**
+     * Checks whether the property is public.
+     *
+     * @return bool
+     **/
+    function isPublic() {}
+
+    /**
+     * Checks whether the property is static.
+     *
+     * @return bool
+     **/
+    function isStatic() {}
+
+    /**
+     * Sets a property to be accessible. For example, it may allow protected
+     * and private properties to be accessed.
+     *
+     * @param bool
+     * @return void
+     **/
+    function setAccessible($accessible) {}
+
+    /**
+     * Sets (changes) a properties value.
+     *
+     * @param object
+     * @param mixed
+     * @return void
+     **/
+    function setValue($object, $value) {}
+
+    /**
+     * Clones.
+     *
+     * @return void
+     **/
+    function __clone() {}
+
+    /**
+     * @param mixed
+     * @param string
+     **/
+    function __construct($class, $name) {}
+
+    /**
+     * To string.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class Reflector {
+    /**
+     * Exports.
+     *
+     * @return string
+     **/
+    function export() {}
+
+    /**
+     * To string.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class RegexIterator extends FilterIterator {
+    /**
+     * Returns the special flags, see RegexIterator::setFlags
+     * for the list of special flags.
+     *
+     * @return int
+     **/
+    function getFlags() {}
+
+    /**
+     * Returns the operation mode, see RegexIterator::setMode
+     * for the list of operation modes.
+     *
+     * @return int
+     **/
+    function getMode() {}
+
+    /**
+     * Returns the special flags, see RegexIterator::__construct
+     * for the list of flags.
+     *
+     * @return int
+     **/
+    function getPregFlags() {}
+
+    /**
+     * Sets the special flags.
+     *
+     * @param int
+     * @return void
+     **/
+    function setFlags($flags) {}
+
+    /**
+     * Sets the operation mode.
+     *
+     * @param int
+     * @return void
+     **/
+    function setMode($mode) {}
+
+    /**
+     * Sets the regular expression flags.
+     *
+     * @param int
+     * @return void
+     **/
+    function setPregFlags($preg_flags) {}
+
+}
+class Runkit_Sandbox_Parent {
+    /**
+     * Instantiating the Runkit_Sandbox_Parent
+     * class from within a sandbox environment created from the
+     * Runkit_Sandbox class provides some
+     * (controlled) means for a sandbox child to access its parent.
+     *
+     * @return void
+     **/
+    function __construct() {}
+
+}
+class RuntimeException extends Exception {
+}
+class SAMConnection {
+    /**
+     * Calling the "commit" method on a Connection object commits (completes) all
+     * in-flight transactions that are part of the current unit of work.
+     *
+     * @return bool
+     **/
+    function commit() {}
+
+    /**
+     * Calling the "connect" method on a SAMConnection object connects the PHP
+     * script to a messaging server. No messages can be sent or received until a
+     * connection is made.
+     *
+     * @param string
+     * @param array
+     * @return bool
+     **/
+    function connect($protocol, $properties) {}
+
+    /**
+     * Calling the "disconnect" method on a SAMConnection object disconnects the
+     * PHP script from a messaging server. No messages can be sent or received
+     * after a connection has been disconnected.
+     *
+     * @return bool
+     **/
+    function disconnect() {}
+
+    /**
+     * Calling the "isConnected" method on a Connection object will check whether
+     * the PHP script is connected to a messaging server. No messages can be sent
+     * or received unless a connection has been established with a Messaging
+     * server.
+     *
+     * @return bool
+     **/
+    function isConnected() {}
+
+    /**
+     * @param string
+     * @param array
+     * @return SAMMessage
+     **/
+    function peek($target, $properties) {}
+
+    /**
+     * @param string
+     * @param array
+     * @return array
+     **/
+    function peekAll($target, $properties) {}
+
+    /**
+     * @param string
+     * @param array
+     * @return SAMMessage
+     **/
+    function receive($target, $properties) {}
+
+    /**
+     * Removes a message from a queue.
+     *
+     * @param string
+     * @param array
+     * @return SAMMessage
+     **/
+    function remove($target, $properties) {}
+
+    /**
+     * Rolls back an in-flight unit of work.
+     *
+     * @return bool
+     **/
+    function rollback() {}
+
+    /**
+     * The "send" method is used to send a message to a specific queue or to
+     * publish to a specific topic. The method returns a correlation id that can
+     * be used as a selector to identify reply or response messages when these
+     * are requested.
+     *
+     * @param string
+     * @param SAMMessage
+     * @param array
+     * @return string
+     **/
+    function send($target, $msg, $properties) {}
+
+    /**
+     * The "setdebug" method is used to turn on or off additional debugging output. The SAM framework will provide method/function
+     * entry and exit trace data plus additional information. Protocol specific implementations also provide extra output.
+     *
+     * @param bool
+     * @return void
+     **/
+    function setDebug($switch) {}
+
+    /**
+     * The "subscribe" method is used to create a new subscription to a specified topic.
+     *
+     * @param string
+     * @return string
+     **/
+    function subscribe($targetTopic) {}
+
+    /**
+     * The "unsubscribe" method is used to delete an existing subscription to a
+     * specified topic.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function unsubscribe($subscriptionId, $targetTopic) {}
+
+}
+class SCA {
+    /**
+     * This method is used inside an SCA component that needs to create
+     * an SDO to return. The parameters are the desired SDO's namespace URI
+     * and type name. The namespace and type must be defined in one of the
+     * schema files which are specified on the @types annotation within the
+     * component.
+     *
+     * @param string
+     * @param string
+     * @return SDO_DataObject
+     **/
+    function createDataObject($type_namespace_uri, $type_name) {}
+
+    /**
+     * Examine the target and initialize and return a proxy of the appropriate 
+     * sort. If the target is for a local PHP component the returned proxy will be an 
+     * SCA_LocalProxy. If the target is for a WSDL file, the returned proxy will be a 
+     * SCA_SoapProxy.
+     *
+     * @param string
+     * @param string
+     * @param array
+     * @return mixed
+     **/
+    function getService($target, $binding, $config) {}
+
+}
+class SCA_LocalProxy {
+    /**
+     * This method is used inside either an ordinary PHP script or an SCA
+     * component that needs to create an SDO to pass to a local service. The
+     * parameters are the desired SDO's namespace URI and type name. The
+     * namespace and type must be defined in the interface of the component
+     * that is to be called, so the namespace and type must be defined in one of
+     * the schema files which are specified on the @types annotation within
+     * the component for which the SCA_LocalProxy object is a proxy.
+     *
+     * @param string
+     * @param string
+     * @return SDO_DataObject
+     **/
+    function createDataObject($type_namespace_uri, $type_name) {}
+
+}
+class SCA_SoapProxy {
+    /**
+     * This method is used inside either an ordinary PHP script or an SCA
+     * component that needs to create an SDO to pass to a web service. The
+     * parameters are the desired SDO's namespace URI and type name. The
+     * namespace and type must be defined in the interface of the component
+     * that is to be called, so the namespace and type must be defined within
+     * the WSDL for the web service. If the web service is also an SCA component
+     * then the types will have been defined within one of the schema files
+     * which are specified on the @types annotation within the component for
+     * which the SCA_SoapProxy object is a proxy.
+     *
+     * @param string
+     * @param string
+     * @return SDO_DataObject
+     **/
+    function createDataObject($type_namespace_uri, $type_name) {}
+
+}
+class SDO_DAS_ChangeSummary {
+    const ADDITION = 0;
+    const DELETION = 0;
+    const MODIFICATION = 0;
+    const NONE = 0;
+    /**
+     * Begin logging changes made to the SDO_DataObject.
+     *
+     * @return void
+     **/
+    function beginLogging() {}
+
+    /**
+     * End logging changes made to an SDO_DataObject.
+     *
+     * @return void
+     **/
+    function endLogging() {}
+
+    /**
+     * Get an SDO_List of the SDO_DataObjects which have been changed.
+     * These data objects can then be used to identify the types 
+     * of change made to each, along with the old values.
+     *
+     * @return SDO_List
+     **/
+    function getChangedDataObjects() {}
+
+    /**
+     * Get the type of change which has been made to the supplied SDO_DataObject.
+     *
+     * @param SDO_DataObject
+     * @return int
+     **/
+    function getChangeType($dataObject) {}
+
+    /**
+     * Get the old container (SDO_DataObject) for a deleted SDO_DataObject.
+     *
+     * @param SDO_DataObject
+     * @return SDO_DataObject
+     **/
+    function getOldContainer($data_object) {}
+
+    /**
+     * Get a list of the old values for a given changed SDO_DataObject.
+     * Returns a list of SDO_DAS_Settings describing the old values for 
+     * the changed properties of the SDO_DataObject.
+     *
+     * @param SDO_DataObject
+     * @return SDO_List
+     **/
+    function getOldValues($data_object) {}
+
+    /**
+     * Test to see whether change logging is switched on.
+     *
+     * @return bool
+     **/
+    function isLogging() {}
+
+}
+class SDO_DAS_DataFactory {
+    /**
+     * Adds a property to a type. The type must already be known to the
+     * SDO_DAS_DataFactory (i.e. have been added using addType()). The property
+     * becomes a property of the type. This is how the graph model for the
+     * structure of an SDO_DataObject is built.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param array
+     * @return void
+     **/
+    function addPropertyToType($parent_type_namespace_uri, $parent_type_name, $property_name, $type_namespace_uri, $type_name, $options) {}
+
+    /**
+     * Add a new type to the SDO_DAS_DataFactory, 
+     * defined by its namespace and type name.
+     * The type becomes part of the model of data objects 
+     * that the data factory can create.
+     *
+     * @param string
+     * @param string
+     * @param array
+     * @return void
+     **/
+    function addType($type_namespace_uri, $type_name, $options) {}
+
+    /**
+     * Static method to get an instance of an SDO_DAS_DataFactory. 
+     * This instance is initially only configured with the basic SDO types. 
+     * A Data Access Service is responsible for populating
+     * the data factory model and then allowing PHP applications 
+     * to create SDOs based on the model through the SDO_DataFactory interface.
+     * PHP applications should always obtain a data factory from a 
+     * configured Data Access Service, not through this interface.
+     *
+     * @return SDO_DAS_DataFactory
+     **/
+    function getDataFactory() {}
+
+}
+class SDO_DAS_DataObject {
+    /**
+     * Get the SDO_DAS_ChangeSummary for an SDO_DAS_DataObject, 
+     * or NULL if it does not have one.
+     *
+     * @return SDO_DAS_ChangeSummary
+     **/
+    function getChangeSummary() {}
+
+}
+class SDO_DAS_Relational {
+    /**
+     * Given a PDO database handle and the special root object of a data graph, 
+     * examine the change summary in the datagraph and applies the changes 
+     * to the database.
+     * The changes that it can apply can be creations of data objects, 
+     * deletes of data objects, and modifications to properties of data objects.
+     *
+     * @param PDO
+     * @param SDODataObject
+     * @return void
+     **/
+    function applyChanges($database_handle, $root_data_object) {}
+
+    /**
+     * Returns the special root object at the top of an otherwise 
+     * empty data graph.
+     * This call is used when the application wants to create a 
+     * data graph from scratch, without having called
+     * executeQuery
+     * to create a data graph.
+     *
+     * @return SDODataObject
+     **/
+    function createRootDataObject() {}
+
+    /**
+     * Executes a given query against the relational database, 
+     * using the supplied PDO database handle.
+     * Differs from the simpler 
+     * executeQuery
+     * in that it takes a prepared statement and a list of values.
+     * This is the appropriate call to use either when the statement is 
+     * to executed a number of times with different arguments, and there
+     * is therefore a performance benefit to be had from preparing the 
+     * statement only once, or when the SQL statement is to contain 
+     * varying values taken from a source that cannot be completely trusted.
+     * In this latter case it may be unsafe to construct the SQL statement
+     * by simply concatenating the parts of the statement together, 
+     * since the values may contain pieces of SQL. 
+     * To guard against this, a so-called SQL injection attack,
+     * it is safer to prepare the SQL statement with placeholders 
+     * (also known as parameter markers, denoted by '?') and supply a 
+     * list of the values to be substituted as a separate argument. 
+     * Otherwise this function is the same as 
+     * executeQuery in that 
+     * it uses the model that it built from the metadata 
+     * to interpret the result set and returns a data graph.
+     *
+     * @param PDO
+     * @param PDOStatement
+     * @param array
+     * @param array
+     * @return SDODataObject
+     **/
+    function executePreparedQuery($database_handle, $prepared_statement, $value_list, $column_specifier) {}
+
+    /**
+     * Executes a given query against the relational database, 
+     * using the supplied PDO database handle.
+     * Uses the model that it built from the metadata 
+     * to interpret the result set.
+     * Returns a data graph.
+     *
+     * @param PDO
+     * @param string
+     * @param array
+     * @return SDODataObject
+     **/
+    function executeQuery($database_handle, $SQL_statement, $column_specifier) {}
+
+    /**
+     * Constructs an instance of a Relational Data Access Service 
+     * from the passed metadata.
+     *
+     * @param array
+     * @param string
+     * @param array
+     * @return SDO_DAS_Relational
+     **/
+    function __construct($database_metadata, $application_root_type, $SDO_containment_references_metadata) {}
+
+}
+class SDO_DAS_Setting {
+    /**
+     * Get the list index for a modification made to an element of a 
+     * many-valued property. 
+     * For example, if we modified the third element of a 
+     * many-valued property
+     * we could obtain an SDO_DAS_Setting from the 
+     * change summary corresponding to that modification.
+     * A call to
+     * getListIndex
+     * on that setting would return the value 2 (lists are indexed from zero).
+     *
+     * @return int
+     **/
+    function getListIndex() {}
+
+    /**
+     * Returns the property index for the changed property. 
+     * This index identifies the property which was modified in data object.
+     *
+     * @return int
+     **/
+    function getPropertyIndex() {}
+
+    /**
+     * Returns the property name for the changed property. 
+     * This name identifies the property which was modified in data object.
+     *
+     * @return string
+     **/
+    function getPropertyName() {}
+
+    /**
+     * Returns the old value for the changed property.
+     * This can be used by a Data Access Service when 
+     * writing updates to a data source.
+     * The DAS uses the old value to detect conflicts by comparing 
+     * it with the current value in the data source.
+     * If they do not match, then the data source has been updated 
+     * since the data object was originally populated, and therefore
+     * writing any new updates risks compromising the integrity of the data.
+     *
+     * @return mixed
+     **/
+    function getValue() {}
+
+}
+class SDO_DAS_XML {
+    /**
+     * Load a second or subsequent schema file to an XML DAS that has already
+     * been created with the static method create.
+     * Although the file may be any valid schema file, a likely reason for 
+     * using this method is to add a schema file containing definitions of 
+     * extra complex types, hence the name. See Example 4 of the parent document 
+     * for an example.
+     *
+     * @param string
+     * @return void
+     **/
+    function addTypes($xsd_file) {}
+
+    /**
+     * This is the only static method of SDO_DAS_XML class. 
+     * Used to instantiate SDO_DAS_XML object.
+     *
+     * @param mixed
+     * @param string
+     * @return SDO_DAS_XML
+     **/
+    function create($xsd_file, $key) {}
+
+    /**
+     * Creates SDO_DataObject for a given namespace URI and type name. 
+     * The type should be defined in the underlying model 
+     * otherwise SDO_TypeNotFoundException will be thrown.
+     *
+     * @param string
+     * @param string
+     * @return SDO_DataObject
+     **/
+    function createDataObject($namespace_uri, $type_name) {}
+
+    /**
+     * Creates an XML Document object. This will contain just one empty root element
+     * on which none of the properties will have been set.
+     * The purpose of this call is to allow an application to create 
+     * an XML document from scratch without the need to load a 
+     * document from a file or string. The document that is created 
+     * will be as if a document had been loaded that contained just a single
+     * empty document element with no attributes set or elements within it.
+     *
+     * @param string
+     * @return SDO_DAS_XML_Document
+     **/
+    function createDocument($document_element_name) {}
+
+    /**
+     * Constructs the tree of SDO_DataObjects from the given address 
+     * to xml instance document. 
+     * Returns SDO_DAS_XML_Document Object. 
+     * Use SDO_DAS_XML_Document::getRootDataObject 
+     * method to get root data object.
+     *
+     * @param string
+     * @return SDO_XMLDocument
+     **/
+    function loadFile($xml_file) {}
+
+    /**
+     * Constructs the tree of SDO_DataObjects from the given xml instance string. 
+     * Returns SDO_DAS_XML_Document Object. 
+     * Use SDO_DAS_XML_Document::getRootDataObject method to get root data object.
+     *
+     * @param string
+     * @return SDO_DAS_XML_Document
+     **/
+    function loadString($xml_string) {}
+
+    /**
+     * Saves the SDO_DAS_XML_Document object to a file.
+     *
+     * @param SDO_XMLDocument
+     * @param string
+     * @param int
+     * @return void
+     **/
+    function saveFile($xdoc, $xml_file, $indent) {}
+
+    /**
+     * Saves the SDO_DAS_XML_Document object to string.
+     *
+     * @param SDO_XMLDocument
+     * @param int
+     * @return string
+     **/
+    function saveString($xdoc, $indent) {}
+
+}
+class SDO_DAS_XML_Document {
+    /**
+     * Returns the root SDO_DataObject.
+     *
+     * @return SDO_DataObject
+     **/
+    function getRootDataObject() {}
+
+    /**
+     * Returns root element's name.
+     *
+     * @return string
+     **/
+    function getRootElementName() {}
+
+    /**
+     * Returns root element's URI string.
+     *
+     * @return string
+     **/
+    function getRootElementURI() {}
+
+    /**
+     * Sets the given string as encoding.
+     *
+     * @param string
+     * @return void
+     **/
+    function setEncoding($encoding) {}
+
+    /**
+     * Controls whether an XML declaration will be generated at the start of the 
+     * XML document. Set to to generate the XML declaration,
+     * or to suppress it.
+     *
+     * @param bool
+     * @return void
+     **/
+    function setXMLDeclaration($xmlDeclatation) {}
+
+    /**
+     * Sets the given string as xml version.
+     *
+     * @param string
+     * @return void
+     **/
+    function setXMLVersion($xmlVersion) {}
+
+}
+class SDO_DataFactory {
+    /**
+     * Create a new SDO_DataObject given the data object's 
+     * namespace URI and type name.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function create($type_namespace_uri, $type_name) {}
+
+}
+class SDO_DataObject {
+    /**
+     * Clear an SDO_DataObject's properties. 
+     * Read-only properties are unaffected.
+     * Subsequent calls to isset() for the data object will return .
+     *
+     * @return void
+     **/
+    function clear() {}
+
+    /**
+     * Create a child SDO_DataObject of the default type for the 
+     * property identified.
+     * The data object is automatically inserted into the tree 
+     * and a reference to it is returned.
+     *
+     * @param mixed
+     * @return SDO_DataObject
+     **/
+    function createDataObject($identifier) {}
+
+    /**
+     * Get the data object which contains this data object.
+     *
+     * @return SDO_DataObject
+     **/
+    function getContainer() {}
+
+    /**
+     * Return the SDO_Sequence for this SDO_DataObject. 
+     * Accessing the SDO_DataObject through the SDO_Sequence interface 
+     * acts on the same SDO_DataObject instance data, 
+     * but preserves ordering across properties.
+     *
+     * @return SDO_Sequence
+     **/
+    function getSequence() {}
+
+    /**
+     * Return the name of the type for a data object.
+     * A convenience method corresponding to 
+     * SDO_Model_ReflectionDataObject::getType().getName().
+     *
+     * @return string
+     **/
+    function getTypeName() {}
+
+    /**
+     * Return the namespace URI of the type for a data object.
+     * A convenience method corresponding to 
+     * SDO_Model_ReflectionDataObject::getType().getNamespaceURI().
+     *
+     * @return string
+     **/
+    function getTypeNamespaceURI() {}
+
+}
+class SDO_Exception {
+    /**
+     * Returns the cause of this exception or NULL if the cause is nonexistent or unknown.
+     * Typically the cause will be an SDO_CPPException object, which may
+     * be used to obtain additional diagnostic information.
+     *
+     * @return mixed
+     **/
+    function getCause() {}
+
+}
+class SDO_List {
+    /**
+     * Insert a new element at a specified position in the list.
+     * All subsequent list items are moved up.
+     *
+     * @param mixed
+     * @param int
+     * @return void
+     **/
+    function insert($value, $index) {}
+
+}
+class SDO_Model_Property {
+    /**
+     * Returns the SDO_Model_Type which contains this property.
+     *
+     * @return SDO_Model_Type
+     **/
+    function getContainingType() {}
+
+    /**
+     * Returns the default value for the property.
+     * Only primitive data type properties can have default values.
+     *
+     * @return mixed
+     **/
+    function getDefault() {}
+
+    /**
+     * Returns the name of the SDO_Model_Property.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Get the SDO_Model_Type of the property.
+     * The SDO_Model_Type describes the type information for the property, such 
+     * as its type name, namespace URI, whether it is a primitive data type, 
+     * and so on.
+     *
+     * @return SDO_Model_Type
+     **/
+    function getType() {}
+
+    /**
+     * Test to see if the property corresponds to a containment relationship.
+     * Returns if the property defines a containment relationship,
+     * or if it is reference.
+     *
+     * @return bool
+     **/
+    function isContainment() {}
+
+    /**
+     * Test to see if the property is many-valued. 
+     * Returns if this is a many-valued property, otherwise returns 
+     * .
+     *
+     * @return bool
+     **/
+    function isMany() {}
+
+}
+class SDO_Model_ReflectionDataObject {
+    /**
+     * Get a string describing the SDO_DataObject.
+     * The default behaviour is to print the output, but
+     * if is specified for return, it is returned as a string.
+     *
+     * @param SDO_Model_ReflectionDataObject
+     * @param bool
+     * @return mixed
+     **/
+    function export($rdo, $return) {}
+
+    /**
+     * Get the SDO_Model_Property that contains the SDO_DataObject. 
+     * This method is used to navigate up to the parent's property which 
+     * contains the data object which has been reflected upon.
+     *
+     * @return SDO_Model_Property
+     **/
+    function getContainmentProperty() {}
+
+    /**
+     * Get the instance properties for the SDO_DataObject. The instance 
+     * properties consist of all the properties defined on the data object's 
+     * type, plus any instance properties from open content (if the data object
+     * is an open type).
+     *
+     * @return array
+     **/
+    function getInstanceProperties() {}
+
+    /**
+     * Returns the SDO_Model_Type for the SDO_DataObject. The SDO_Model_Type
+     * holds all the information about the data object's type, such as namespace 
+     * URI, type name, whether it is a primitive data type, and so on.
+     *
+     * @return SDO_Model_Type
+     **/
+    function getType() {}
+
+    /**
+     * Construct an SDO_Model_ReflectionDataObject to reflect on an 
+     * SDO_DataObject. Reflecting on an SDO_DataObject gives access to 
+     * information about its model. The model contains information such as 
+     * the data object's type, and whether that type is sequenced
+     * (preserves ordering across properties) or open (each instance can have 
+     * its model extended). The model also holds information about the data 
+     * object's properties, any default values they may have, and so on.
+     *
+     * @param SDO_DataObject
+     * @return SDO_Model_ReflectionDataObject
+     **/
+    function __construct($data_object) {}
+
+}
+class SDO_Model_Type {
+    /**
+     * Get the base type for this type.
+     * Returns the SDO_Model_Type for the base type if this type inherits from 
+     * another, otherwise returns . An example of when base types occur 
+     * is when a type defined in XML schema inherits from another type by using 
+     * .
+     *
+     * @return SDO_Model_Type
+     **/
+    function getBaseType() {}
+
+    /**
+     * Returns the name of the type. The combination of type name and namespace 
+     * URI is used to uniquely identify the type.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Returns the namespace URI of the type. The combination of namespace URI 
+     * and type name is used to uniquely identify the type.
+     *
+     * @return string
+     **/
+    function getNamespaceURI() {}
+
+    /**
+     * Get an array of SDO_Model_Property objects describing the properties 
+     * defined for the SDO_Model_Type. Each SDO_Model_Property holds 
+     * information such as the property name, default value, and so on.
+     *
+     * @return array
+     **/
+    function getProperties() {}
+
+    /**
+     * Get an SDO_Model_Property of the type, identified by its property index 
+     * or property name.
+     *
+     * @param mixed
+     * @return SDO_Model_Property
+     **/
+    function getProperty($identifier) {}
+
+    /**
+     * Test to see if this SDO_Model_Type is an abstract data type.
+     * Returns if this type is abstract, that is, no SDO_DataObject
+     * of this type can be instantiated, though other types may inherit
+     * from it.
+     *
+     * @return bool
+     **/
+    function isAbstractType() {}
+
+    /**
+     * Test to see if this SDO_Model_Type is a primitive data type.
+     * Returns if this type is a primitive data type, otherwise returns 
+     * .
+     *
+     * @return bool
+     **/
+    function isDataType() {}
+
+    /**
+     * Test for an SDO_DataObject being an instance of this SDO_Model_Type.
+     * Returns if the SDO_DataObject provided is an instance of this 
+     * SDO_Model_Type, or a derived type, otherwise returns .
+     *
+     * @param SDO_DataObject
+     * @return bool
+     **/
+    function isInstance($data_object) {}
+
+    /**
+     * Test to see if this type is open.
+     * Returns if this type is open, otherwise returns . An 
+     * SDO_DataObject whose type is open can have properties added to them which 
+     * are not described by the type. This capability is used to support 
+     * working with XML documents whose schema support open content, such as that 
+     * defined by an element.
+     *
+     * @return bool
+     **/
+    function isOpenType() {}
+
+    /**
+     * Test to see if this is a sequenced type. Returns if this type is 
+     * sequence, otherwise returns .
+     * Sequenced types can have the ordering across properties preserved and can 
+     * contain unstructured text. For more information on sequenced types see 
+     * the section on 
+     * Working with Sequenced Data
+     * Objects.
+     *
+     * @return bool
+     **/
+    function isSequencedType() {}
+
+}
+class SDO_Sequence {
+    /**
+     * Return the property for the specified sequence index.
+     *
+     * @param int
+     * @return SDO_Model_Property
+     **/
+    function getProperty($sequence_index) {}
+
+    /**
+     * Insert a new element at a specified position in the sequence. 
+     * All subsequent sequence items are moved up.
+     *
+     * @param mixed
+     * @param int
+     * @param mixed
+     * @return void
+     **/
+    function insert($value, $sequenceIndex, $propertyIdentifier) {}
+
+    /**
+     * Modify the position of the item in the sequence, 
+     * without altering the value of the property in the SDO_DataObject.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function move($toIndex, $fromIndex) {}
+
+}
+class SeekableIterator extends Iterator {
+    /**
+     * Seeks to a given position in the iterator.
+     *
+     * @param int
+     * @return void
+     **/
+    function seek($position) {}
+
+}
+class SimpleXMLElement {
+    /**
+     * Adds an attribute to the SimpleXML element.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function addAttribute($name, $value, $namespace) {}
+
+    /**
+     * Adds a child element to the node and returns a SimpleXMLElement of the child.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return SimpleXMLElement
+     **/
+    function addChild($name, $value, $namespace) {}
+
+    /**
+     * The asXML method formats the parent object's data
+     * in XML version 1.0.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function asXML($filename) {}
+
+    /**
+     * This function provides the attributes and values defined within an xml tag.
+     *
+     * @param string
+     * @param bool
+     * @return SimpleXMLElement
+     **/
+    function attributes($ns, $is_prefix) {}
+
+    /**
+     * This method finds the children of the element of which it is a member. The result
+     * follows normal iteration rules.
+     *
+     * @param string
+     * @param bool
+     * @return SimpleXMLElement
+     **/
+    function children($ns, $is_prefix) {}
+
+    /**
+     * Returns namespaces declared in document
+     *
+     * @param bool
+     * @return array
+     **/
+    function getDocNamespaces($recursive) {}
+
+    /**
+     * Gets the name of the XML element.
+     *
+     * @return string
+     **/
+    function getName() {}
+
+    /**
+     * Returns namespaces used in document
+     *
+     * @param bool
+     * @return array
+     **/
+    function getNamespaces($recursive) {}
+
+    /**
+     * Creates a prefix/ns context for the next XPath query. In particular, this is
+     * helpful if the provider of the given XML document alters the namespace
+     * prefixes. registerXPathNamespace will create a prefix for
+     * the associated namespace, allowing one to access nodes in that namespace 
+     * without the need to change code to allow for the new prefixes dictated by the
+     * provider.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function registerXPathNamespace($prefix, $ns) {}
+
+    /**
+     * The xpath method searches the SimpleXML node for
+     * children matching the XPath path.
+     *
+     * @param string
+     * @return array
+     **/
+    function xpath($path) {}
+
+}
+class SimpleXMLIterator extends SimpleXMLElement implements RecursiveIterator, Traversable, Iterator, Countable {
+    /**
+     * This method returns the current element as a SimpleXMLIterator object or .
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * This method returns a SimpleXMLIterator object
+     * containing sub-elements of the current SimpleXMLIterator
+     * element.
+     *
+     * @return object
+     **/
+    function getChildren() {}
+
+    /**
+     * This method checks whether the current SimpleXMLIterator element has sub-elements.
+     *
+     * @return bool
+     **/
+    function hasChildren() {}
+
+    /**
+     * This method gets the XML tag name of the current element.
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * This method moves the SimpleXMLIterator to the next element.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * This method rewinds the SimpleXMLIterator to the first element.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * This method checks if the current element is valid after calls to
+     * SimpleXMLIterator::rewind or
+     * SimpleXMLIterator::next.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class SoapClient {
+    /**
+     * This constructor creates SoapClient objects 
+     * in WSDL or non-WSDL mode.
+     *
+     * @param mixed
+     * @param array
+     **/
+    function SoapClient($wsdl, $options) {}
+
+    /**
+     * This method is deprecated. Use instead of it.
+     *
+     * @param string
+     * @param string
+     * @return mixed
+     **/
+    function __call($function_name, $arguments) {}
+
+    /**
+     * Performs SOAP request over HTTP.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param int
+     * @param int
+     * @return string
+     **/
+    function __doRequest($request, $location, $action, $version, $one_way) {}
+
+    /**
+     * Returns a list of available SOAP functions.
+     *
+     * @return array
+     **/
+    function __getFunctions() {}
+
+    /**
+     * Returns the XML sent in the last SOAP request.
+     *
+     * @return string
+     **/
+    function __getLastRequest() {}
+
+    /**
+     * Returns the SOAP headers from the last request.
+     *
+     * @return string
+     **/
+    function __getLastRequestHeaders() {}
+
+    /**
+     * Returns the XML sent in the last SOAP response.
+     *
+     * @return string
+     **/
+    function __getLastResponse() {}
+
+    /**
+     * Returns the SOAP headers from the last response.
+     *
+     * @return string
+     **/
+    function __getLastResponseHeaders() {}
+
+    /**
+     * Returns an array of types described in the WSDL for the Web service.
+     *
+     * @return array
+     **/
+    function __getTypes() {}
+
+    /**
+     * Defines a cookie to be sent along with the SOAP requests.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function __setCookie($name, $value) {}
+
+    /**
+     * Sets the endpoint URL that will be touched by following SOAP requests. This is equivalent to 
+     * specifying the location option when constructing the SoapClient.
+     *
+     * @param string
+     * @return string
+     **/
+    function __setLocation($new_location) {}
+
+    /**
+     * Defines headers to be sent along with the SOAP requests.
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function __setSoapHeaders($soapheaders) {}
+
+    /**
+     * This is a low level API function that is used to make a SOAP call. Usually,
+     * in WSDL mode, SOAP functions can be called as methods of the
+     * SoapClient object. This method is useful in non-WSDL
+     * mode when soapaction is unknown, uri
+     * differs from the default or when sending and/or receiving SOAP Headers.
+     *
+     * @param string
+     * @param array
+     * @param array
+     * @param mixed
+     * @param array
+     * @return mixed
+     **/
+    function __soapCall($function_name, $arguments, $options, $input_headers, &$output_headers) {}
+
+}
+class SoapFault extends Exception {
+    /**
+     * This class is used to send SOAP fault responses from the PHP handler.
+     * faultcode, faultstring,
+     * faultactor and details are
+     * standard elements of a SOAP Fault.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function SoapFault($faultcode, $faultstring, $faultactor, $detail, $faultname, $headerfault) {}
+
+    /**
+     * SoapFault::SoapFault
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function __construct($faultcode, $faultstring, $faultactor, $detail, $faultname, $headerfault) {}
+
+    /**
+     * Returns a string representation of the SoapFault.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class SoapHeader {
+    /**
+     * Constructs a new SoapHeader object.
+     *
+     * @param string
+     * @param string
+     * @param mixed
+     * @param bool
+     * @param string
+     **/
+    function SoapHeader($namespace, $name, $data, $mustunderstand, $actor) {}
+
+    /**
+     * SoapHeader::SoapHeader
+     *
+     * @param string
+     * @param string
+     * @param mixed
+     * @param bool
+     * @param string
+     **/
+    function __construct($namespace, $name, $data, $mustunderstand, $actor) {}
+
+}
+class SoapParam {
+    /**
+     * Constructs a new SoapParam object.
+     *
+     * @param mixed
+     * @param string
+     **/
+    function SoapParam($data, $name) {}
+
+    /**
+     * SoapParam::SoapParam
+     *
+     * @param mixed
+     * @param string
+     **/
+    function __construct($data, $name) {}
+
+}
+class SoapServer {
+    /**
+     * Exports one or more functions for remote clients
+     *
+     * @param string
+     * @return void
+     **/
+    function addFunction($functions) {}
+
+    /**
+     * Adds a SOAP header to be returned with the response to the current request.
+     *
+     * @param string
+     * @return void
+     **/
+    function addSoapHeader($object) {}
+
+    /**
+     * Sends a response to the client of the current request indicating an error.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function fault($code, $string, $actor, $details, $name) {}
+
+    /**
+     * Returns a list of the defined functions in the SoapServer object.
+     * This method returns the list of all functions added by 
+     * SoapServer::addFunction or 
+     * SoapServer::setClass.
+     *
+     * @return array
+     **/
+    function getFunctions() {}
+
+    /**
+     * Processes a SOAP request, calls necessary functions, and sends a response 
+     * back.
+     *
+     * @param string
+     * @return void
+     **/
+    function handle($soap_request) {}
+
+    /**
+     * Exports all methods from specified class.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setClass($class_name, $args) {}
+
+    /**
+     * This sets a specific object as the handler for SOAP requests, rather than just a class as in
+     * SoapServer::setClass.
+     *
+     * @param string
+     * @return void
+     **/
+    function setObject($object) {}
+
+    /**
+     * This function allows saving data between requests in a PHP session. It works only
+     * with a server that exports functions from a class with SoapServer::setClass
+     * or SoapServer::setObject.
+     *
+     * @param string
+     * @return void
+     **/
+    function setPersistence($mode) {}
+
+    /**
+     * This constructor allows the creation of SoapServer
+     * objects in WSDL or non-WSDL mode.
+     *
+     * @param mixed
+     * @param array
+     **/
+    function SoapServer($wsdl, $options) {}
+
+    /**
+     * SoapServer::SoapServer
+     *
+     * @param mixed
+     * @param array
+     **/
+    function __construct($wsdl, $options) {}
+
+}
+class SoapVar {
+    /**
+     * Constructs a new SoapVar object.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function SoapVar($data, $encoding, $type_name, $type_namespace, $node_name, $node_namespace) {}
+
+    /**
+     * SoapVar::SoapVar
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function __construct($data, $encoding, $type_name, $type_namespace, $node_name, $node_namespace) {}
+
+}
+class SphinxClient {
+    /**
+     * Adds query with the current settings to multi-query batch. This method
+     * doesn't affect current settings (sorting, filtering, grouping etc.) in any way.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return int
+     **/
+    function addQuery($query, $index, $comment) {}
+
+    /**
+     * Connects to searchd, requests it to generate excerpts (snippets) from the
+     * given documents, and returns the results.
+     *
+     * @param array
+     * @param string
+     * @param string
+     * @param array
+     * @return array
+     **/
+    function buildExcerpts($docs, $index, $words, $opts) {}
+
+    /**
+     * Extracts keywords from query using tokenizer 
+     * settings for the given index, optionally with
+     * per-keyword occurrence statistics.
+     *
+     * @param string
+     * @param string
+     * @param bool
+     * @return array
+     **/
+    function buildKeywords($query, $index, $hits) {}
+
+    /**
+     * Escapes characters that are treated as special operators by the query
+     * language parser.
+     *
+     * @param string
+     * @return string
+     **/
+    function escapeString($string) {}
+
+    /**
+     * Returns string with the last error message. If there were no errors during
+     * the previous API call, empty string is returned. This method doesn't reset
+     * the error message, so you can safely call it several times.
+     *
+     * @return string
+     **/
+    function getLastError() {}
+
+    /**
+     * Returns last warning message. If there were no warnings during 
+     * the previous API call, empty string is returned. This method doesn't reset
+     * the warning, so you can safely call it several times.
+     *
+     * @return string
+     **/
+    function getLastWarning() {}
+
+    /**
+     * Connects to searchd server, runs the given search query with the current settings,
+     * obtains and returns the result set.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return array
+     **/
+    function query($query, $index, $comment) {}
+
+    /**
+     * Clears all currently set filters. This call is normally required when
+     * using multi-queries. You might want to set different filters for different
+     * queries in the batch. To do that, you should call
+     * SphinxClient::resetFilters and add new filters using 
+     * the respective calls.
+     *
+     * @return void
+     **/
+    function resetFilters() {}
+
+    /**
+     * Clears all currently group-by settings, and disables group-by. 
+     * This call is normally required only when using multi-queries.
+     *
+     * @return void
+     **/
+    function resetGroupBy() {}
+
+    /**
+     * Connects to searchd, runs a batch of all queries added using , obtains and returns the result sets.
+     *
+     * @return array
+     **/
+    function runQueries() {}
+
+    /**
+     * Controls the format of search results set arrays (whether matches should
+     * be returned as an array or a hash).
+     * If array_result is (default value), matches
+     * are returned as a hash with document IDs as keys, and other information (weight,
+     * attributes) as values. If array_result is , matches 
+     * are eturned as a plain array with complete per-match information including
+     * document IDs.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function setArrayResult($array_result) {}
+
+    /**
+     * Sets connection timeout (in seconds) for searchd connection.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setConnectTimeout($timeout) {}
+
+    /**
+     * Binds per-field weights by name.
+     *
+     * @param array
+     * @return bool
+     **/
+    function setFieldWeights($weights) {}
+
+    /**
+     * Adds new integer values set filter to the existing list of filters.
+     *
+     * @param string
+     * @param array
+     * @param bool
+     * @return bool
+     **/
+    function setFilter($attribute, $values, $exclude) {}
+
+    /**
+     * Adds new float range filter to the existing list of filters.
+     * Only those documents which have attribute 
+     * value stored in the index between min and
+     * max (including values that are exactly equal 
+     * to min or max) will 
+     * be matched (or rejected, if exclude is ).
+     *
+     * @param string
+     * @param float
+     * @param float
+     * @param bool
+     * @return bool
+     **/
+    function setFilterFloatRange($attribute, $min, $max, $exclude) {}
+
+    /**
+     * Adds new integer range filter to the existing list of filters.
+     * Only those documents which have attribute 
+     * value stored in the index between min and
+     * max (including values that are exactly equal 
+     * to min or max) will 
+     * be matched (or rejected, if exclude is ).
+     *
+     * @param string
+     * @param int
+     * @param int
+     * @param bool
+     * @return bool
+     **/
+    function setFilterRange($attribute, $min, $max, $exclude) {}
+
+    /**
+     * Sets anchor point for a geosphere distance (geodistance) calculations
+     * and enables them.
+     *
+     * @param string
+     * @param string
+     * @param float
+     * @param float
+     * @return bool
+     **/
+    function setGeoAnchor($attrlat, $attrlong, $latitude, $longitude) {}
+
+    /**
+     * Sets grouping attribute, function, and group sorting mode, and enables
+     * grouping.
+     *
+     * @param string
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function setGroupBy($attribute, $func, $groupsort) {}
+
+    /**
+     * Sets attribute name for per-group distinct values count calculations. Only
+     * available for grouping queries. For each group, all values of
+     * attribute will be stored, then the amount of
+     * distinct values will be calculated and returned to the client. This feature
+     * is similar to COUNT(DISTINCT) clause in SQL.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setGroupDistinct($attribute) {}
+
+    /**
+     * Sets an accepted range of document IDs. Default range is from 0 to 0, i.e.
+     * no limit. Only those records that have document ID between
+     * min and max 
+     * (including IDs exactly equal to min or
+     * max) will be matched.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setIDRange($min, $max) {}
+
+    /**
+     * Sets per-index weights and enables weighted summing of match weights across
+     * different indexes.
+     *
+     * @param array
+     * @return bool
+     **/
+    function setIndexWeights($weights) {}
+
+    /**
+     * Sets offset into server-side result set and amount
+     * of matches to return to client starting from that offset
+     * (limit). Can additionally control maximum
+     * server-side result set size for current query
+     * (max_matches) and the threshold amount of matches
+     * to stop searching at (cutoff).
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setLimits($offset, $limit, $max_matches, $cutoff) {}
+
+    /**
+     * Sets full-text query matching mode. mode is one of
+     * the constants listed below.
+     * 
+     * Match modes
+     * 
+     * 
+     * 
+     * Constant
+     * Description
+     * 
+     * 
+     * 
+     * 
+     * SPH_MATCH_ALL
+     * Match all query words (default mode).
+     * 
+     * 
+     * SPH_MATCH_ANY
+     * Match any of query words.
+     * 
+     * 
+     * SPH_MATCH_PHRASE
+     * Match query as a phrase, requiring perfect match.
+     * 
+     * 
+     * SPH_MATCH_BOOLEAN
+     * Match query as a boolean expression.
+     * 
+     * 
+     * SPH_MATCH_EXTENDED
+     * Match query as an expression in Sphinx internal query language.
+     * 
+     * 
+     * SPH_MATCH_FULLSCAN
+     * Enables fullscan.
+     * 
+     * 
+     * SPH_MATCH_EXTENDED2
+     * The same as SPH_MATCH_EXTENDED plus ranking
+     * and quorum searching support.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setMatchMode($mode) {}
+
+    /**
+     * Sets maximum search query time, in milliseconds. qtime must be a
+     * non-negative integer. Default value is 0, i.e. no limit.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setMaxQueryTime($qtime) {}
+
+    /**
+     * Sets ranking mode. Only available in
+     * SPH_MATCH_EXTENDED2 matching mode.
+     * 
+     * Ranking modes
+     * 
+     * 
+     * 
+     * Constant
+     * Description
+     * 
+     * 
+     * 
+     * 
+     * SPH_RANK_PROXIMITY_BM25
+     * Default ranking mode which uses both proximity and BM25
+     * ranking.
+     * 
+     * 
+     * SPH_RANK_BM25
+     * Statistical ranking mode which uses BM25 ranking only (similar
+     * to most of other full-text engines). This mode is faster, but may result
+     * in worse quality on queries which contain more than 1 keyword.
+     * 
+     * 
+     * SPH_RANK_NONE
+     * Disables ranking. This mode is the fastest. It is essentially
+     * equivalent to boolean searching, a weight of 1 is assigned to all
+     * matches.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setRankingMode($ranker) {}
+
+    /**
+     * Sets distributed retry count and delay.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function setRetries($count, $delay) {}
+
+    /**
+     * Sets searchd host name and TCP port. All subsequent requests will use the
+     * new host and port settings. Default host and port are 'localhost' and 3312,
+     * respectively.
+     *
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function setServer($server, $port) {}
+
+    /**
+     * Sets matches sorting mode. See available modes below.
+     * 
+     * Sorting modes
+     * 
+     * 
+     * 
+     * Constant
+     * Description
+     * 
+     * 
+     * 
+     * 
+     * SPH_SORT_RELEVANCE
+     * Sort by relevance in descending order (best matches first).
+     * 
+     * 
+     * SPH_SORT_ATTR_DESC
+     * Sort by an attribute in descending order (bigger attribute
+     * values first).
+     * 
+     * 
+     * SPH_SORT_ATTR_ASC
+     * Sort by an attribute in ascending order (smaller attribute
+     * values first).
+     * 
+     * 
+     * SPH_SORT_TIME_SEGMENTS
+     * Sort by time segments (last hour/day/week/month) in descending
+     * order, and then by relevance in descending order.
+     * 
+     * 
+     * SPH_SORT_EXTENDED
+     * Sort by SQL-like combination of columns in ASC/DESC order.
+     * 
+     * 
+     * SPH_SORT_EXPR
+     * Sort by an arithmetic expression.
+     *
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function setSortMode($mode, $sortby) {}
+
+    /**
+     * Instantly updates given attribute values in given documents.
+     *
+     * @param string
+     * @param array
+     * @param array
+     * @return int
+     **/
+    function updateAttributes($index, $attributes, $values) {}
+
+    /**
+     * Creates a new SphinxClient object.
+     *
+     **/
+    function __construct() {}
+
+}
+class SplBool {
+}
+class SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
+    /**
+     * @return mixed
+     **/
+    function bottom() {}
+
+    /**
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Get the current doubly linked list node.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * @return int
+     **/
+    function getIteratorMode() {}
+
+    /**
+     * @return bool
+     **/
+    function isEmpty() {}
+
+    /**
+     * This function returns the current node index
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Move the iterator to the next node.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @param mixed
+     * @return bool
+     **/
+    function offsetExists($index) {}
+
+    /**
+     * @param mixed
+     * @return mixed
+     **/
+    function offsetGet($index) {}
+
+    /**
+     * Sets the value at the specified index to newval.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function offsetSet($index, $newval) {}
+
+    /**
+     * Unsets the value at the specified index.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function offsetUnset($index) {}
+
+    /**
+     * @return mixed
+     **/
+    function pop() {}
+
+    /**
+     * Move the iterator to the previous node.
+     *
+     * @return void
+     **/
+    function prev() {}
+
+    /**
+     * Pushes value at the end of the doubly linked list.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function push($value) {}
+
+    /**
+     * This rewinds the iterator to the beginning.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function setIteratorMode($mode) {}
+
+    /**
+     * @return mixed
+     **/
+    function shift() {}
+
+    /**
+     * @return mixed
+     **/
+    function top() {}
+
+    /**
+     * Prepends value at the beginning of the doubly linked list.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function unshift($value) {}
+
+    /**
+     * Checks if the doubly linked list contains any more nodes.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class SplEnum {
+}
+class SplFileInfo {
+    /**
+     * Gets the last access time for the file.
+     *
+     * @return int
+     **/
+    function getATime() {}
+
+    /**
+     * This method returns the base name of the file, directory, or link without
+     * path info.
+     *
+     * @param string
+     * @return string
+     **/
+    function getBasename($suffix) {}
+
+    /**
+     * Returns the inode change time for the file. The time returned is a Unix timestamp.
+     *
+     * @return int
+     **/
+    function getCTime() {}
+
+    /**
+     * This method gets an SplFileInfo object for the referenced file.
+     *
+     * @param string
+     * @return SplFileInfo
+     **/
+    function getFileInfo($class_name) {}
+
+    /**
+     * Gets the filename without any path information.
+     *
+     * @return string
+     **/
+    function getFilename() {}
+
+    /**
+     * Gets the file group. The group ID is returned in numerical format.
+     *
+     * @return int
+     **/
+    function getGroup() {}
+
+    /**
+     * Gets the inode number for the filesystem object.
+     *
+     * @return int
+     **/
+    function getInode() {}
+
+    /**
+     * Gets the target of a filesystem link.
+     *
+     * @return string
+     **/
+    function getLinkTarget() {}
+
+    /**
+     * Returns the time when the contents of the file were changed. The time returned is a Unix timestamp.
+     *
+     * @return int
+     **/
+    function getMTime() {}
+
+    /**
+     * Gets the file owner. The owner ID is returned in numerical format.
+     *
+     * @return int
+     **/
+    function getOwner() {}
+
+    /**
+     * Returns the path to the file, omitting the filename and any trailing slash.
+     *
+     * @return string
+     **/
+    function getPath() {}
+
+    /**
+     * Gets an SplFileInfo object for the parent of the current file.
+     *
+     * @param string
+     * @return SplFileInfo
+     **/
+    function getPathInfo($class_name) {}
+
+    /**
+     * Returns the path to the file.
+     *
+     * @return string
+     **/
+    function getPathname() {}
+
+    /**
+     * Gets the file permissions for the file.
+     *
+     * @return int
+     **/
+    function getPerms() {}
+
+    /**
+     * This method expands all symbolic links, resolves relative references and returns the real path to the file.
+     *
+     * @return string
+     **/
+    function getRealPath() {}
+
+    /**
+     * Returns the filesize in bytes for the file referenced.
+     *
+     * @return int
+     **/
+    function getSize() {}
+
+    /**
+     * Returns the type of the file referenced.
+     *
+     * @return string
+     **/
+    function getType() {}
+
+    /**
+     * This method can be used to determine if the file is a directory.
+     *
+     * @return bool
+     **/
+    function isDir() {}
+
+    /**
+     * Checks if the file is executable.
+     *
+     * @return bool
+     **/
+    function isExecutable() {}
+
+    /**
+     * Checks if the file referenced by this SplFileInfo object exists and is a regular file.
+     *
+     * @return bool
+     **/
+    function isFile() {}
+
+    /**
+     * Use this method to check if the file referenced by the SplFileInfo object
+     * is a link.
+     *
+     * @return bool
+     **/
+    function isLink() {}
+
+    /**
+     * Check if the file is readable.
+     *
+     * @return bool
+     **/
+    function isReadable() {}
+
+    /**
+     * Checks if the current entry is writable.
+     *
+     * @return bool
+     **/
+    function isWritable() {}
+
+    /**
+     * Creates an SplFileObject object of
+     * the file. This is useful because SplFileObject
+     * contains additional methods for manipulating the file whereas
+     * SplFileInfo is only useful for gaining information,
+     * like whether the file is writable.
+     *
+     * @param string
+     * @param bool
+     * @param resource
+     * @return SplFileObject
+     **/
+    function openFile($open_mode, $use_include_path, $context) {}
+
+    /**
+     * Set the class name which SplFileInfo will use to open files with when openFile() is called.
+     * The class name passed to this method must be derived from SplFileObject.
+     *
+     * @param string
+     * @return void
+     **/
+    function setFileClass($class_name) {}
+
+    /**
+     * Use this method to set a custom class which will be used when getFileInfo
+     * and getPathInfo are called.
+     * The class name passed to this method must be derived from SplFileInfo.
+     *
+     * @param string
+     * @return void
+     **/
+    function setInfoClass($class_name) {}
+
+    /**
+     * Creates a new SplFileInfo object for the file_name specified. The file
+     * does not need to exist, or be readable.
+     *
+     * @param string
+     **/
+    function __construct($file_name) {}
+
+    /**
+     * This method will return the file name of the referenced file.
+     *
+     * @return void
+     **/
+    function __toString() {}
+
+}
+class SplFileObject extends SplFileInfo implements RecursiveIterator, Traversable, Iterator, SeekableIterator {
+    /**
+     * Retrieves the current line of the file.
+     *
+     * @return string|array
+     **/
+    function current() {}
+
+    /**
+     * Determine whether the end of file has been reached
+     *
+     * @return boolean
+     **/
+    function eof() {}
+
+    /**
+     * Forces a write of all buffered output to the file.
+     *
+     * @return boolean
+     **/
+    function fflush() {}
+
+    /**
+     * Gets a character from the file.
+     *
+     * @return string
+     **/
+    function fgetc() {}
+
+    /**
+     * Gets a line from the file which is in CSV format and returns an array containing the fields read.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return array
+     **/
+    function fgetcsv($delimiter, $enclosure, $escape) {}
+
+    /**
+     * Gets a line from the file.
+     *
+     * @return string
+     **/
+    function fgets() {}
+
+    /**
+     * Identical to SplFileObject::fgets, except that
+     * SplFileObject::fgetss attempts to strip any HTML and PHP tags from
+     * the text it reads.
+     *
+     * @param string
+     * @return string
+     **/
+    function fgetss($allowable_tags) {}
+
+    /**
+     * Locks or unlocks the file in the same portable way as flock.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function flock($operation, &$wouldblock) {}
+
+    /**
+     * Reads to EOF on the given file pointer from the current position and
+     * writes the results to the output buffer.
+     *
+     * @return int
+     **/
+    function fpassthru() {}
+
+    /**
+     * Reads a line from the file and interprets it according to the specified format, which is
+     * described in the documentation for sprintf.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function fscanf($format) {}
+
+    /**
+     * Seek to a position in the file measured in bytes
+     * from the beginning of the file, obtained by adding
+     * offset to the position specified by
+     * whence.
+     *
+     * @param int
+     * @param int
+     * @return int
+     **/
+    function fseek($offset, $whence) {}
+
+    /**
+     * Gathers the statistics of the file. Behaves identically to fstat.
+     *
+     * @return array
+     **/
+    function fstat() {}
+
+    /**
+     * Returns the position of the file pointer which represents the current offset in the file stream.
+     *
+     * @return int
+     **/
+    function ftell() {}
+
+    /**
+     * Truncates the file to size bytes.
+     *
+     * @param int
+     * @return bool
+     **/
+    function ftruncate($size) {}
+
+    /**
+     * Writes the contents of string to the file
+     *
+     * @param string
+     * @param int
+     * @return int
+     **/
+    function fwrite($str, $length) {}
+
+    /**
+     * An SplFileObject does not have children so this method returns .
+     *
+     * @return void
+     **/
+    function getChildren() {}
+
+    /**
+     * Gets the delimiter and enclosure character used for parsing CSV fields.
+     *
+     * @return array
+     **/
+    function getCsvControl() {}
+
+    /**
+     * Gets the flags set for an instance of SplFileObject as an integer.
+     *
+     * @return int
+     **/
+    function getFlags() {}
+
+    /**
+     * Gets the maximum line length as set by SplFileObject::setMaxLineLen.
+     *
+     * @return int
+     **/
+    function getMaxLineLen() {}
+
+    /**
+     * An SplFileObject does not have children so this method always return .
+     *
+     * @return bool
+     **/
+    function hasChildren() {}
+
+    /**
+     * Gets the current line number.
+     *
+     * @return int
+     **/
+    function key() {}
+
+    /**
+     * Moves ahead to the next line in the file.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds the file back to the first line.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Seek to specified line in the file.
+     *
+     * @param int
+     * @return void
+     **/
+    function seek($line_pos) {}
+
+    /**
+     * Sets the delimiter and enclosure character for parsing CSV fields.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setCsvControl($delimiter, $enclosure, $escape) {}
+
+    /**
+     * Sets the flags to be used by the SplFileObject.
+     *
+     * @param int
+     * @return void
+     **/
+    function setFlags($flags) {}
+
+    /**
+     * Sets the maximum length of a line to be read.
+     *
+     * @param int
+     * @return void
+     **/
+    function setMaxLineLen($max_len) {}
+
+    /**
+     * Check whether EOF has been reached.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Construct a new file object.
+     *
+     * @param string
+     * @param string
+     * @param bool
+     * @param resource
+     **/
+    function __construct($filename, $open_mode, $use_include_path, $context) {}
+
+}
+class SplFixedArray implements Iterator, ArrayAccess, Countable {
+    /**
+     * Returns the size of the array.
+     *
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Get the current array element.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * Import the PHP array array 
+     * in a new SplFixedArray instance
+     *
+     * @param array
+     * @param boolean
+     * @return SplFixedArray
+     **/
+    function fromArray($array, $save_indexes) {}
+
+    /**
+     * Gets the size of the array.
+     *
+     * @return int
+     **/
+    function getSize() {}
+
+    /**
+     * Returns the current array index.
+     *
+     * @return int
+     **/
+    function key() {}
+
+    /**
+     * Move the iterator to the next array entry.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Checks whether the requested index index 
+     * exists.
+     *
+     * @param int
+     * @return bool
+     **/
+    function offsetExists($index) {}
+
+    /**
+     * Returns the value at the index index.
+     *
+     * @param int
+     * @return mixed
+     **/
+    function offsetGet($index) {}
+
+    /**
+     * Sets the value at the specified index to newval.
+     *
+     * @param int
+     * @param mixed
+     * @return void
+     **/
+    function offsetSet($index, $newval) {}
+
+    /**
+     * Unsets the value at the specified index.
+     *
+     * @param int
+     * @return void
+     **/
+    function offsetUnset($index) {}
+
+    /**
+     * Rewinds the iterator to the beginning.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Change the size of an array to the new size of size.
+     *
+     * @param int
+     * @return int
+     **/
+    function setSize($size) {}
+
+    /**
+     * Returns a PHP array from the fixed array.
+     *
+     * @return array
+     **/
+    function toArray() {}
+
+    /**
+     * Checks if the array contains any more elements.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class SplFloat {
+}
+class SplHeap implements Iterator, Countable {
+    /**
+     * Compare value1 with value2.
+     *
+     * @param mixed
+     * @param mixed
+     * @return int
+     **/
+    function compare($value1, $value2) {}
+
+    /**
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Get the current datastructure node.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * @return mixed
+     **/
+    function extract() {}
+
+    /**
+     * Insert value in the heap.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function insert($value) {}
+
+    /**
+     * @return bool
+     **/
+    function isEmpty() {}
+
+    /**
+     * This function returns the current node index
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Extracts the top node from the heap.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @return void
+     **/
+    function recoverFromCorruption() {}
+
+    /**
+     * This rewinds the iterator to the beginning. This is a no-op for heaps
+     * as the iterator is virtual and in fact never moves from the top of the 
+     * heap.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @return mixed
+     **/
+    function top() {}
+
+    /**
+     * Checks if the heap contains any more nodes.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class SplInt {
+}
+class SplMaxHeap extends SplHeap implements Iterator, Countable {
+    /**
+     * Compare value1 with value2.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function compare($value1, $value2) {}
+
+}
+class SplMinHeap extends SplHeap implements Iterator, Countable {
+    /**
+     * Compare value1 with value2.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function compare($value1, $value2) {}
+
+}
+class SplObjectStorage implements Countable, Iterator, Traversable, Serializable, ArrayAccess {
+    /**
+     * Adds all objects-data pairs from a different storage in the current storage.
+     *
+     * @param SplObjectStorage
+     * @return void
+     **/
+    function addAll($storage) {}
+
+    /**
+     * Adds an object inside the storage, and optionaly associate it to some data.
+     *
+     * @param object
+     * @param mixed
+     * @return void
+     **/
+    function attach($object, $data) {}
+
+    /**
+     * Checks if the storage contains the object provided.
+     *
+     * @param object
+     * @return boolean
+     **/
+    function contains($object) {}
+
+    /**
+     * Counts the number of objects in the storage.
+     *
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Returns the current storage entry.
+     *
+     * @return object
+     **/
+    function current() {}
+
+    /**
+     * Removes the object from the storage.
+     *
+     * @param object
+     * @return void
+     **/
+    function detach($object) {}
+
+    /**
+     * Returns the data, or info, associated with the object pointed by the current iterator position.
+     *
+     * @return mixed
+     **/
+    function getInfo() {}
+
+    /**
+     * Returns the index at which the iterator currently is.
+     *
+     * @return int
+     **/
+    function key() {}
+
+    /**
+     * Moves the iterator to the next object in the storage.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Checks whether an object exists in the storage.
+     *
+     * @param object
+     * @return boolean
+     **/
+    function offsetExists($object) {}
+
+    /**
+     * Returns the data associated with an object in the storage.
+     *
+     * @param object
+     * @return mixed
+     **/
+    function offsetGet($object) {}
+
+    /**
+     * Associate data to an object in the storage.
+     *
+     * @param object
+     * @param mixed
+     * @return void
+     **/
+    function offsetSet($object, $info) {}
+
+    /**
+     * Removes an object from the storage.
+     *
+     * @param object
+     * @return void
+     **/
+    function offsetUnset($object) {}
+
+    /**
+     * Removes objects contained in another storage from the current storage.
+     *
+     * @param SplObjectStorage
+     * @return void
+     **/
+    function removeAll($storage) {}
+
+    /**
+     * Rewind the iterator to the first storage element.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Returns a string representation of the storage.
+     *
+     * @return string
+     **/
+    function serialize() {}
+
+    /**
+     * Associates data, or info, with the object currently pointed to by the iterator.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function setInfo($data) {}
+
+    /**
+     * Unserializes storage entries and attach them to the current storage.
+     *
+     * @param string
+     * @return void
+     **/
+    function unserialize($serialized) {}
+
+    /**
+     * Returns if the current iterator entry is valid.
+     *
+     * @return boolean
+     **/
+    function valid() {}
+
+}
+class SplPriorityQueue implements Iterator, Countable {
+    /**
+     * Compare priority1 with priority2.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function compare($priority1, $priority2) {}
+
+    /**
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Get the current datastructure node.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * @return mixed
+     **/
+    function extract() {}
+
+    /**
+     * Insert value with the priority priority in the queue.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function insert($value, $priority) {}
+
+    /**
+     * @return bool
+     **/
+    function isEmpty() {}
+
+    /**
+     * This function returns the current node index
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Extracts the top node from the queue.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @return void
+     **/
+    function recoverFromCorruption() {}
+
+    /**
+     * This rewinds the iterator to the beginning. This is a no-op for heaps
+     * as the iterator is virtual and in fact never moves from the top of the 
+     * heap.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function setExtractFlags($flags) {}
+
+    /**
+     * @return mixed
+     **/
+    function top() {}
+
+    /**
+     * Checks if the queue contains any more nodes.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
+class SplQueue extends SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
+    /**
+     * Dequeues value from the top of of the queue.
+     *
+     * @return mixed
+     **/
+    function dequeue() {}
+
+    /**
+     * Enqueues value at the end of the queue.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function enqueue($value) {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function setIteratorMode($mode) {}
+
+}
+class SplStack extends SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
+    /**
+     * @param int
+     * @return void
+     **/
+    function setIteratorMode($mode) {}
+
+}
+class SplString {
+}
+class SplTempFileObject extends SplFileObject implements SeekableIterator, Iterator, Traversable, RecursiveIterator {
+    /**
+     * Construct a new temporary file object.
+     *
+     * @param integer
+     **/
+    function __construct($max_memory) {}
+
+}
+class SQLite3 {
+    /**
+     * Returns the number of database rows that were changed (or inserted or
+     * deleted) by the most recent SQL statement.
+     *
+     * @return int
+     **/
+    function changes() {}
+
+    /**
+     * Closes the database connection.
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * Registers a PHP function or user-defined function for use as an SQL
+     * aggregate function for use within SQL statements.
+     *
+     * @param string
+     * @param mixed
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function createAggregate($name, $step_callback, $final_callback, $argument_count) {}
+
+    /**
+     * Registers a PHP function or user-defined function for use as an SQL scalar
+     * function for use within SQL statements.
+     *
+     * @param string
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function createFunction($name, $callback, $argument_count) {}
+
+    /**
+     * Returns a string that has been properly escaped for safe inclusion in an
+     * SQL statement.
+     *
+     * @param string
+     * @return string
+     **/
+    function escapeString($value) {}
+
+    /**
+     * Executes a result-less query against a given database.
+     *
+     * @param string
+     * @return bool
+     **/
+    function exec($query) {}
+
+    /**
+     * Returns the numeric result code of the most recent failed SQLite request.
+     *
+     * @return int
+     **/
+    function lastErrorCode() {}
+
+    /**
+     * Returns English text describing the most recent failed SQLite request.
+     *
+     * @return string
+     **/
+    function lastErrorMsg() {}
+
+    /**
+     * Returns the row ID of the most recent INSERT into the database.
+     *
+     * @return int
+     **/
+    function lastInsertRowID() {}
+
+    /**
+     * Attempts to load an SQLite extension library.
+     *
+     * @param string
+     * @return bool
+     **/
+    function loadExtension($shared_library) {}
+
+    /**
+     * Opens an SQLite 3 Database. If the build includes encryption, then it will
+     * attempt to use the key.
+     *
+     * @param string
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function open($filename, $flags, $encryption_key) {}
+
+    /**
+     * Prepares an SQL statement for execution and returns an SQLite3Stmt object.
+     *
+     * @param string
+     * @return SQLite3Stmt
+     **/
+    function prepare($query) {}
+
+    /**
+     * Executes an SQL query, returning an SQLite3Result object if the query
+     * returns results.
+     *
+     * @param string
+     * @return SQLite3Result
+     **/
+    function query($query) {}
+
+    /**
+     * Executes a query and returns a single result.
+     *
+     * @param string
+     * @param bool
+     * @return mixed
+     **/
+    function querySingle($query, $entire_row) {}
+
+    /**
+     * Returns the SQLite3 library version as a string constant and as a number.
+     *
+     * @return array
+     **/
+    function version() {}
+
+    /**
+     * Instantiates an SQLite3 object and opens a connection to an
+     * SQLite 3 database. If the build includes encryption, then it will attempt
+     * to use the key.
+     *
+     * @param string
+     * @param int
+     * @param string
+     **/
+    function __construct($filename, $flags, $encryption_key) {}
+
+}
+class SQLite3Result {
+    /**
+     * Returns the name of the column specified by the
+     * column_number.
+     *
+     * @param int
+     * @return string
+     **/
+    function columnName($column_number) {}
+
+    /**
+     * Returns the type of the column identified by
+     * column_number.
+     *
+     * @param int
+     * @return int
+     **/
+    function columnType($column_number) {}
+
+    /**
+     * Fetches a result row as an associative or numerically indexed array or both.
+     * By default, fetches as both.
+     *
+     * @param int
+     * @return array
+     **/
+    function fetchArray($mode) {}
+
+    /**
+     * Closes the result set.
+     *
+     * @return bool
+     **/
+    function finalize() {}
+
+    /**
+     * Returns the number of columns in the result set.
+     *
+     * @return int
+     **/
+    function numColumns() {}
+
+    /**
+     * Resets the result set back to the first row.
+     *
+     * @return bool
+     **/
+    function reset() {}
+
+}
+class SQLite3Stmt {
+    /**
+     * Binds a parameter to a statement variable.
+     *
+     * @param string
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function bindParam($sql_param, &$param, $type) {}
+
+    /**
+     * Binds the value of a parameter to a statement variable.
+     *
+     * @param string
+     * @param mixed
+     * @param int
+     * @return bool
+     **/
+    function bindValue($sql_param, $value, $type) {}
+
+    /**
+     * Clears all current bound parameters.
+     *
+     * @return bool
+     **/
+    function clear() {}
+
+    /**
+     * Closes the prepared statement.
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * Executes a prepared statement and returns a result set object.
+     *
+     * @return SQLite3Result
+     **/
+    function execute() {}
+
+    /**
+     * Returns the number of parameters within the prepared statement.
+     *
+     * @return int
+     **/
+    function paramCount() {}
+
+    /**
+     * Resets the prepared statement to its state prior to execution. All bindings
+     * remain intact after reset.
+     *
+     * @return bool
+     **/
+    function reset() {}
 
 }
 class stdClass {
@@ -62990,7 +62462,1223 @@ class streamWrapper {
     function __construct() {}
 
 }
-class tidy {
+class SWFAction {
+    /**
+     * Creates a new SWFAction and compiles the given script
+     * in it.
+     *
+     * @param string
+     * @return SWFAction
+     **/
+    function __construct($script) {}
+
+}
+class SWFBitmap {
+    /**
+     * Returns the bitmap's height.
+     *
+     * @return float
+     **/
+    function getHeight() {}
+
+    /**
+     * Returns the bitmap's width.
+     *
+     * @return float
+     **/
+    function getWidth() {}
+
+    /**
+     * Creates the new SWFBitmap object from the given
+     * file.
+     *
+     * @param mixed
+     * @param mixed
+     * @return SWFBitmap
+     **/
+    function __construct($file, $alphafile) {}
+
+}
+class SWFButton {
+    /**
+     * Adds the given action to the button for the given
+     * conditions.
+     *
+     * @param SWFAction
+     * @param int
+     * @return void
+     **/
+    function addAction($action, $flags) {}
+
+    /**
+     * @param SWFSound
+     * @param int
+     * @return SWFSoundInstance
+     **/
+    function addASound($sound, $flags) {}
+
+    /**
+     * Adds the given shape to the button.
+     *
+     * @param SWFShape
+     * @param int
+     * @return void
+     **/
+    function addShape($shape, $flags) {}
+
+    /**
+     * Sets the action to be performed when the button is clicked.
+     *
+     * @param SWFAction
+     * @return void
+     **/
+    function setAction($action) {}
+
+    /**
+     * swfbutton-&gt;setdown alias for addShape(shape, SWFBUTTON_DOWN).
+     *
+     * @param SWFShape
+     * @return void
+     **/
+    function setDown($shape) {}
+
+    /**
+     * swfbutton-&gt;sethit alias for addShape(shape, SWFBUTTON_HIT).
+     *
+     * @param SWFShape
+     * @return void
+     **/
+    function setHit($shape) {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function setMenu($flag) {}
+
+    /**
+     * swfbutton-&gt;setover alias for addShape(shape, SWFBUTTON_OVER).
+     *
+     * @param SWFShape
+     * @return void
+     **/
+    function setOver($shape) {}
+
+    /**
+     * swfbutton-&gt;setup alias for addShape(shape, SWFBUTTON_UP).
+     *
+     * @param SWFShape
+     * @return void
+     **/
+    function setUp($shape) {}
+
+    /**
+     * Creates a new Button.
+     *
+     * @return SWFButton
+     **/
+    function __construct() {}
+
+}
+class SWFDisplayItem {
+    /**
+     * @param SWFAction
+     * @param int
+     * @return void
+     **/
+    function addAction($action, $flags) {}
+
+    /**
+     * swfdisplayitem-&gt;addcolor adds the color to 
+     * this item's color transform. The color is given in its RGB form.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function addColor($red, $green, $blue, $a) {}
+
+    /**
+     * @return void
+     **/
+    function endMask() {}
+
+    /**
+     * @return float
+     **/
+    function getRot() {}
+
+    /**
+     * @return float
+     **/
+    function getX() {}
+
+    /**
+     * @return float
+     **/
+    function getXScale() {}
+
+    /**
+     * @return float
+     **/
+    function getXSkew() {}
+
+    /**
+     * @return float
+     **/
+    function getY() {}
+
+    /**
+     * @return float
+     **/
+    function getYScale() {}
+
+    /**
+     * @return float
+     **/
+    function getYSkew() {}
+
+    /**
+     * swfdisplayitem-&gt;move moves the current object by 
+     * (dx,dy) from its
+     * current position.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function move($dx, $dy) {}
+
+    /**
+     * swfdisplayitem-&gt;moveto moves the current object to 
+     * (x,y) in global coordinates.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function moveTo($x, $y) {}
+
+    /**
+     * swfdisplayitem-&gt;multcolor multiplies the item's 
+     * color transform by the given values.
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function multColor($red, $green, $blue, $a) {}
+
+    /**
+     * swfdisplayitem-&gt;remove removes this object from
+     * the movie's display list.
+     *
+     * @return void
+     **/
+    function remove() {}
+
+    /**
+     * swfdisplayitem-&gt;rotate rotates the current object
+     * by angle degrees from its current rotation.
+     *
+     * @param float
+     * @return void
+     **/
+    function rotate($angle) {}
+
+    /**
+     * swfdisplayitem-&gt;rotateto set the current object
+     * rotation to angle degrees in global coordinates.
+     *
+     * @param float
+     * @return void
+     **/
+    function rotateTo($angle) {}
+
+    /**
+     * swfdisplayitem-&gt;scale scales the current object by 
+     * (dx,dy) from its
+     * current size.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function scale($dx, $dy) {}
+
+    /**
+     * swfdisplayitem-&gt;scaleto scales the current object to 
+     * (x,y) in global coordinates.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function scaleTo($x, $y) {}
+
+    /**
+     * swfdisplayitem-&gt;setdepth sets the object's
+     * z-order to depth. Depth defaults to the 
+     * order in which instances are created (by adding a shape/text to 
+     * a movie)- newer ones are on top of older ones. If two objects are 
+     * given the same depth, only the later-defined one can be moved.
+     *
+     * @param int
+     * @return void
+     **/
+    function setDepth($depth) {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function setMaskLevel($level) {}
+
+    /**
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setMatrix($a, $b, $c, $d, $x, $y) {}
+
+    /**
+     * swfdisplayitem-&gt;setname sets the object's name to 
+     * name, for targetting with action script. 
+     * Only useful on sprites.
+     *
+     * @param string
+     * @return void
+     **/
+    function setName($name) {}
+
+    /**
+     * swfdisplayitem-&gt;setratio sets the object's ratio
+     * to ratio. Obviously only useful for morphs.
+     *
+     * @param float
+     * @return void
+     **/
+    function setRatio($ratio) {}
+
+    /**
+     * swfdisplayitem-&gt;skewx adds ddegrees
+     * to current x-skew.
+     *
+     * @param float
+     * @return void
+     **/
+    function skewX($ddegrees) {}
+
+    /**
+     * swfdisplayitem-&gt;skewxto sets the
+     * x-skew to degrees. For degrees
+     * is 1.0, it means a 45-degree forward slant. More is more forward, 
+     * less is more backward.
+     *
+     * @param float
+     * @return void
+     **/
+    function skewXTo($degrees) {}
+
+    /**
+     * swfdisplayitem-&gt;skewy adds ddegrees
+     * to current y-skew.
+     *
+     * @param float
+     * @return void
+     **/
+    function skewY($ddegrees) {}
+
+    /**
+     * swfdisplayitem-&gt;skewyto sets the
+     * y-skew to degrees. For degrees
+     * is 1.0, it means a 45-degree forward slant. More is more upward, 
+     * less is more downward.
+     *
+     * @param float
+     * @return void
+     **/
+    function skewYTo($degrees) {}
+
+}
+class SWFFill {
+    /**
+     * Moves the fill origin to the given global coordinates.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function moveTo($x, $y) {}
+
+    /**
+     * Sets the fill rotation to the given angle.
+     *
+     * @param float
+     * @return void
+     **/
+    function rotateTo($angle) {}
+
+    /**
+     * Sets the fill scale to the given coordinates.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function scaleTo($x, $y) {}
+
+    /**
+     * Sets the fill x-skew to x.
+     *
+     * @param float
+     * @return void
+     **/
+    function skewXTo($x) {}
+
+    /**
+     * Sets the fill y-skew to y.
+     *
+     * @param float
+     * @return void
+     **/
+    function skewYTo($y) {}
+
+}
+class SWFFont {
+    /**
+     * @return float
+     **/
+    function getAscent() {}
+
+    /**
+     * @return float
+     **/
+    function getDescent() {}
+
+    /**
+     * @return float
+     **/
+    function getLeading() {}
+
+    /**
+     * @param int
+     * @return string
+     **/
+    function getShape($code) {}
+
+    /**
+     * @param string
+     * @return float
+     **/
+    function getUTF8Width($string) {}
+
+    /**
+     * swffont-&gt;getwidth returns the string 
+     * string's width, using font's default scaling. 
+     * You'll probably want to use the swftext version of this method which
+     * uses the text object's scale.
+     *
+     * @param string
+     * @return float
+     **/
+    function getWidth($string) {}
+
+    /**
+     * If filename is the name of an FDB file 
+     * (i.e., it ends in ".fdb"), load the font definition found in said 
+     * file. Otherwise, create a browser-defined font reference.
+     *
+     * @param string
+     * @return SWFFont
+     **/
+    function __construct($filename) {}
+
+}
+class SWFFontChar {
+    /**
+     * @param string
+     * @return void
+     **/
+    function addChars($char) {}
+
+    /**
+     * @param string
+     * @return void
+     **/
+    function addUTF8Chars($char) {}
+
+}
+class SWFGradient {
+    /**
+     * swfgradient-&gt;addentry adds an entry to the gradient list. 
+     * ratio is a number between 0 and 1 indicating where in 
+     * the gradient this color appears. Thou shalt add entries in order of increasing ratio.
+     *
+     * @param float
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function addEntry($ratio, $red, $green, $blue, $alpha) {}
+
+    /**
+     * swfgradient creates a new SWFGradient object.
+     *
+     * @return SWFGradient
+     **/
+    function __construct() {}
+
+}
+class SWFMorph {
+    /**
+     * Gets the morph's starting shape.
+     *
+     * @return SWFShape
+     **/
+    function getShape1() {}
+
+    /**
+     * Gets the morph's ending shape.
+     *
+     * @return SWFShape
+     **/
+    function getShape2() {}
+
+    /**
+     * Creates a new SWFMorph object.
+     *
+     * @return SWFMorph
+     **/
+    function __construct() {}
+
+}
+class SWFMovie {
+    /**
+     * Adds an SWF object instance to the current movie.
+     *
+     * @param object
+     * @return mixed
+     **/
+    function add($instance) {}
+
+    /**
+     * @param SWFCharacter
+     * @param string
+     * @return void
+     **/
+    function addExport($char, $name) {}
+
+    /**
+     * @param SWFFont
+     * @return mixed
+     **/
+    function addFont($font) {}
+
+    /**
+     * @param string
+     * @param string
+     * @return SWFSprite
+     **/
+    function importChar($libswf, $name) {}
+
+    /**
+     * @param string
+     * @param string
+     * @return SWFFontChar
+     **/
+    function importFont($libswf, $name) {}
+
+    /**
+     * @param string
+     * @return void
+     **/
+    function labelFrame($label) {}
+
+    /**
+     * Moves to the next frame of the animation.
+     *
+     * @return void
+     **/
+    function nextFrame() {}
+
+    /**
+     * Dumps the SWFMovie.
+     *
+     * @param int
+     * @return int
+     **/
+    function output($compression) {}
+
+    /**
+     * Removes the given object instance from the display
+     * list.
+     *
+     * @param object
+     * @return void
+     **/
+    function remove($instance) {}
+
+    /**
+     * Saves the SWF movie to the specified filename.
+     *
+     * @param string
+     * @param int
+     * @return int
+     **/
+    function save($filename, $compression) {}
+
+    /**
+     * @param resource
+     * @param int
+     * @return int
+     **/
+    function saveToFile($x, $compression) {}
+
+    /**
+     * Sets the background color.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setbackground($red, $green, $blue) {}
+
+    /**
+     * Sets the movie's dimension to the specified width
+     * and height.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setDimension($width, $height) {}
+
+    /**
+     * Sets the total number of frames in the animation to the given 
+     * number.
+     *
+     * @param int
+     * @return void
+     **/
+    function setFrames($number) {}
+
+    /**
+     * Sets the frame rate to the specified rate.
+     *
+     * @param float
+     * @return void
+     **/
+    function setRate($rate) {}
+
+    /**
+     * @param SWFSound
+     * @return SWFSoundInstance
+     **/
+    function startSound($sound) {}
+
+    /**
+     * @param SWFSound
+     * @return void
+     **/
+    function stopSound($sound) {}
+
+    /**
+     * Streams the given MP3 file mp3file.
+     *
+     * @param mixed
+     * @param float
+     * @return int
+     **/
+    function streamMP3($mp3file, $skip) {}
+
+    /**
+     * @return void
+     **/
+    function writeExports() {}
+
+    /**
+     * Creates a new movie object, representing an SWF movie.
+     *
+     * @param int
+     * @return SWFMovie
+     **/
+    function __construct($version) {}
+
+}
+class SWFPrebuiltClip {
+    /**
+     * @param mixed
+     * @return SWFPrebuiltClip
+     **/
+    function __construct($file) {}
+
+}
+class SWFShape {
+    /**
+     * SWFShape-&gt;addFill adds a solid fill to the shape's list 
+     * of fill styles. SWFShape-&gt;addFill accepts three different
+     * types of arguments.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return SWFFill
+     **/
+    function addFill($red, $green, $blue, $alpha) {}
+
+    /**
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function drawArc($r, $startAngle, $endAngle) {}
+
+    /**
+     * @param float
+     * @return void
+     **/
+    function drawCircle($r) {}
+
+    /**
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return int
+     **/
+    function drawCubic($bx, $by, $cx, $cy, $dx, $dy) {}
+
+    /**
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return int
+     **/
+    function drawCubicTo($bx, $by, $cx, $cy, $dx, $dy) {}
+
+    /**
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return int
+     **/
+    function drawCurve($controldx, $controldy, $anchordx, $anchordy, $targetdx, $targetdy) {}
+
+    /**
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return int
+     **/
+    function drawCurveTo($controlx, $controly, $anchorx, $anchory, $targetx, $targety) {}
+
+    /**
+     * @param SWFFont
+     * @param string
+     * @param int
+     * @return void
+     **/
+    function drawGlyph($font, $character, $size) {}
+
+    /**
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function drawLine($dx, $dy) {}
+
+    /**
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function drawLineTo($x, $y) {}
+
+    /**
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function movePen($dx, $dy) {}
+
+    /**
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function movePenTo($x, $y) {}
+
+    /**
+     * What this nonsense is about is, every edge segment borders at most two fills. 
+     * When rasterizing the object, it's pretty handy to know what those fills are 
+     * ahead of time, so the swf format requires these to be specified.
+     *
+     * @param SWFGradient
+     * @return void
+     **/
+    function setLeftFill($fill) {}
+
+    /**
+     * swfshape-&gt;setline sets the shape's line style. 
+     * width is the line's width. If width
+     * is 0, the line's style is removed (then, all other arguments are ignored).
+     * If width &gt; 0, then line's color is set to
+     * red, green, blue.
+     * Last parameter a is optional.
+     *
+     * @param SWFShape
+     * @return void
+     **/
+    function setLine($shape) {}
+
+    /**
+     * @param SWFGradient
+     * @return void
+     **/
+    function setRightFill($fill) {}
+
+    /**
+     * Created a new SWFShape object.
+     *
+     * @return SWFShape
+     **/
+    function __construct() {}
+
+}
+class SWFSound {
+    /**
+     * @param string
+     * @param int
+     * @return SWFSound
+     **/
+    function __construct($filename, $flags) {}
+
+}
+class SWFSoundInstance {
+    /**
+     * @param int
+     * @return void
+     **/
+    function loopCount($point) {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function loopInPoint($point) {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function loopOutPoint($point) {}
+
+    /**
+     * @return void
+     **/
+    function noMultiple() {}
+
+}
+class SWFSprite {
+    /**
+     * swfsprite-&gt;add adds a swfshape, a 
+     * swfbutton, a swftext, 
+     * a swfaction or a swfsprite object.
+     *
+     * @param object
+     * @return void
+     **/
+    function add($object) {}
+
+    /**
+     * @param string
+     * @return void
+     **/
+    function labelFrame($label) {}
+
+    /**
+     * swfsprite-&gt;setframes moves to the next frame of 
+     * the animation.
+     *
+     * @return void
+     **/
+    function nextFrame() {}
+
+    /**
+     * swfsprite-&gt;remove remove a swfshape, a 
+     * swfbutton, a swftext, 
+     * a swfaction or a swfsprite object
+     * from the sprite.
+     *
+     * @param object
+     * @return void
+     **/
+    function remove($object) {}
+
+    /**
+     * swfsprite-&gt;setframes sets the total number of frames 
+     * in the animation to numberofframes.
+     *
+     * @param int
+     * @return void
+     **/
+    function setFrames($number) {}
+
+    /**
+     * @param SWFSound
+     * @return SWFSoundInstance
+     **/
+    function startSound($sount) {}
+
+    /**
+     * @param SWFSound
+     * @return void
+     **/
+    function stopSound($sount) {}
+
+    /**
+     * Creates a new SWFSprite object.
+     *
+     * @return SWFSprite
+     **/
+    function __construct() {}
+
+}
+class SWFText {
+    /**
+     * swftext-&gt;addstring draws the string string
+     * at the current pen (cursor) location. Pen is at the baseline of the text; 
+     * i.e., ascending text is in the -y direction.
+     *
+     * @param string
+     * @return void
+     **/
+    function addString($string) {}
+
+    /**
+     * @param string
+     * @return void
+     **/
+    function addUTF8String($text) {}
+
+    /**
+     * @return float
+     **/
+    function getAscent() {}
+
+    /**
+     * @return float
+     **/
+    function getDescent() {}
+
+    /**
+     * @return float
+     **/
+    function getLeading() {}
+
+    /**
+     * @param string
+     * @return float
+     **/
+    function getUTF8Width($string) {}
+
+    /**
+     * Returns the rendered width of the string at the
+     * text object's current font, scale, and spacing settings.
+     *
+     * @param string
+     * @return float
+     **/
+    function getWidth($string) {}
+
+    /**
+     * swftext-&gt;moveto moves the pen (or cursor, if 
+     * that makes more sense) to (x,y)
+     * in text object's coordinate space. If either is zero, though, value 
+     * in that dimension stays the same. Annoying, should be fixed.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function moveTo($x, $y) {}
+
+    /**
+     * Changes the current text color.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setColor($red, $green, $blue, $a) {}
+
+    /**
+     * swftext-&gt;setfont sets the current font to 
+     * font.
+     *
+     * @param SWFFont
+     * @return void
+     **/
+    function setFont($font) {}
+
+    /**
+     * swftext-&gt;setheight sets the current font height to 
+     * height. Default is 240.
+     *
+     * @param float
+     * @return void
+     **/
+    function setHeight($height) {}
+
+    /**
+     * swftext-&gt;setspacing sets the current font spacing to 
+     * spacing. Default is 1.0. 
+     * 0 is all of the letters written at the same point. This doesn't really work 
+     * that well because it inflates the advance across the letter, doesn't add 
+     * the same amount of spacing between the letters. I should try and explain 
+     * that better, prolly. Or just fix the damn thing to do constant spacing. 
+     * This was really just a way to figure out how letter advances work, 
+     * anyway.. So nyah.
+     *
+     * @param float
+     * @return void
+     **/
+    function setSpacing($spacing) {}
+
+    /**
+     * Creates a new SWFText object, fresh for 
+     * manipulating.
+     *
+     * @return void
+     **/
+    function __construct() {}
+
+}
+class SWFTextField {
+    /**
+     * @param string
+     * @return void
+     **/
+    function addChars($chars) {}
+
+    /**
+     * swftextfield-&gt;setname concatenates the string
+     * string to the text field.
+     *
+     * @param string
+     * @return void
+     **/
+    function addString($string) {}
+
+    /**
+     * swftextfield-&gt;align sets the text field alignment
+     * to alignement. Valid values for 
+     * alignement are : SWFTEXTFIELD_ALIGN_LEFT, 
+     * SWFTEXTFIELD_ALIGN_RIGHT, SWFTEXTFIELD_ALIGN_CENTER and 
+     * SWFTEXTFIELD_ALIGN_JUSTIFY.
+     *
+     * @param int
+     * @return void
+     **/
+    function align($alignement) {}
+
+    /**
+     * swftextfield-&gt;setbounds sets the text field width 
+     * to width and height to height.
+     * If you don't set the bounds yourself, Ming makes a poor guess at what 
+     * the bounds are.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setBounds($width, $height) {}
+
+    /**
+     * swftextfield-&gt;setcolor sets the color of the text field. 
+     * Default is fully opaque black. Color is represented using RGB system.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setColor($red, $green, $blue, $a) {}
+
+    /**
+     * swftextfield-&gt;setfont sets the text field font to 
+     * the [browser-defined?] font font.
+     *
+     * @param SWFFont
+     * @return void
+     **/
+    function setFont($font) {}
+
+    /**
+     * swftextfield-&gt;setheight sets the font height of this text field
+     * font to the given height height. Default is 240.
+     *
+     * @param float
+     * @return void
+     **/
+    function setHeight($height) {}
+
+    /**
+     * swftextfield-&gt;setindentation sets the indentation of 
+     * the first line in the text field, to width.
+     *
+     * @param float
+     * @return void
+     **/
+    function setIndentation($width) {}
+
+    /**
+     * swftextfield-&gt;setleftmargin sets the left margin width
+     * of the text field to width. Default is 0.
+     *
+     * @param float
+     * @return void
+     **/
+    function setLeftMargin($width) {}
+
+    /**
+     * swftextfield-&gt;setlinespacing sets the line spacing
+     * of the text field to the height of height. Default is 40.
+     *
+     * @param float
+     * @return void
+     **/
+    function setLineSpacing($height) {}
+
+    /**
+     * swftextfield-&gt;setmargins set both margins at once, 
+     * for the man on the go.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function setMargins($left, $right) {}
+
+    /**
+     * swftextfield-&gt;setname sets the variable name of this
+     * text field to name, for form posting and action 
+     * scripting purposes.
+     *
+     * @param string
+     * @return void
+     **/
+    function setName($name) {}
+
+    /**
+     * @param float
+     * @return void
+     **/
+    function setPadding($padding) {}
+
+    /**
+     * swftextfield-&gt;setrightmargin sets the right margin width
+     * of the text field to width. Default is 0.
+     *
+     * @param float
+     * @return void
+     **/
+    function setRightMargin($width) {}
+
+    /**
+     * swftextfield creates a new text field object. 
+     * Text Fields are less flexible than swftext objects- 
+     * they can't be rotated, scaled non-proportionally, or skewed, but they can
+     * be used as form entries, and they can use browser-defined fonts.
+     *
+     * @param int
+     * @return SWFTextField
+     **/
+    function __construct($flags) {}
+
+}
+class SWFVideoStream {
+    /**
+     * This function returns the number of video-frames of a SWFVideoStream.
+     *
+     * @return int
+     **/
+    function getNumFrames() {}
+
+    /**
+     * Sets the width and height for streamed videos.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setDimension($x, $y) {}
+
+    /**
+     * @param string
+     * @return SWFVideoStream
+     **/
+    function __construct($file) {}
+
+}
+class Swish {
+    const IN_ALL = 0;
+    const IN_BODY = 0;
+    const IN_BODY_BIT = 0;
+    const IN_COMMENTS = 0;
+    const IN_COMMENTS_BIT = 0;
+    const IN_EMPHASIZED = 0;
+    const IN_EMPHASIZED_BIT = 0;
+    const IN_FILE = 0;
+    const IN_FILE_BIT = 0;
+    const IN_HEAD = 0;
+    const IN_HEADER = 0;
+    const IN_HEADER_BIT = 0;
+    const IN_HEAD_BIT = 0;
+    const IN_META = 0;
+    const IN_META_BIT = 0;
+    const IN_TITLE = 0;
+    const IN_TITLE_BIT = 0;
+    const META_TYPE_DATE = 0;
+    const META_TYPE_STRING = 0;
+    const META_TYPE_ULONG = 0;
+    const META_TYPE_UNDEF = 0;
+    /**
+     * @param string
+     * @return void
+     **/
+    function __construct($index_names) {}
+
+}
+class Tidy {
     /**
      * Constructs a new tidy object.
      *
@@ -63003,7 +63691,7 @@ class tidy {
     function __construct($filename, $config, $encoding, $use_include_path) {}
 
 }
-class tidyNode {
+class TidyNode {
     /**
      * Returns the parent node of the current node.
      *
@@ -63068,7 +63756,1043 @@ class tidyNode {
     function isText() {}
 
 }
+class TokyoTyrant {
+    /**
+     * Adds to an int or double value. This increments the value by the given amount
+     * and returns the new value. If the key does not exist a new key is created with
+     * initial value of the increment parameter.
+     *
+     * @param string
+     * @param number
+     * @param string
+     * @return number
+     **/
+    function add($key, $increment, $type) {}
+
+    /**
+     * Connects to a remote database
+     *
+     * @param string
+     * @param int
+     * @param array
+     * @return TokyoTyrant
+     **/
+    function connect($host, $port, $options) {}
+
+    /**
+     * Connects to a database using an uri
+     *
+     * @param string
+     * @return TokyoTyrant
+     **/
+    function connectUri($uri) {}
+
+    /**
+     * Makes a copy of the current database
+     *
+     * @param string
+     * @return TokyoTyrant
+     **/
+    function copy($path) {}
+
+    /**
+     * Executes a remote script extension.
+     *
+     * @param string
+     * @param int
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function ext($name, $options, $key, $value) {}
+
+    /**
+     * Returns the forward matching keys from the database
+     *
+     * @param string
+     * @param int
+     * @return array
+     **/
+    function fwmKeys($prefix, $max_recs) {}
+
+    /**
+     * This method is used to return a value or multiple values. This method accepts a string
+     * or an array as a value.
+     *
+     * @param mixed
+     * @return mixed
+     **/
+    function get($keys) {}
+
+    /**
+     * Returns the number of records in the database
+     *
+     * @return int
+     **/
+    function num() {}
+
+    /**
+     * Removes a record or multiple records. This method accepts a string for a single key
+     * or an array of keys for multiple records.
+     *
+     * @param mixed
+     * @return TokyoTyrant
+     **/
+    function out($keys) {}
+
+    /**
+     * Puts a key-value pair into the database or multiple key-value pairs. If keys is
+     * string then the second parameter value defines the value. 
+     * The second parameter is mandatory if keys is a string. If the key exists the value
+     * will be replaced with new value.
+     *
+     * @param mixed
+     * @param string
+     * @return TokyoTyrant
+     **/
+    function put($keys, $value) {}
+
+    /**
+     * Appends a value into existing key or multiple values if keys is an array.
+     * The second parameter is mandatory if keys is a string. If the record does 
+     * not exist a new record is created.
+     *
+     * @param mixed
+     * @param string
+     * @return TokyoTyrant
+     **/
+    function putCat($keys, $value) {}
+
+    /**
+     * Puts a key-value pair into the database or multiple key-value pairs. If keys is
+     * string then the second parameter value defines the value. 
+     * The second parameter is mandatory if keys is a string. If the key already 
+     * exists this method throws an exception indicating that the records exists.
+     *
+     * @param mixed
+     * @param string
+     * @return TokyoTyrant
+     **/
+    function putKeep($keys, $value) {}
+
+    /**
+     * Puts a key-value pair into the database or multiple key-value pairs. If keys is
+     * string then the second parameter value defines the value. 
+     * The second parameter is mandatory if keys is a string. This method does not wait
+     * for the response from the server.
+     *
+     * @param mixed
+     * @param string
+     * @return TokyoTyrant
+     **/
+    function putNr($keys, $value) {}
+
+    /**
+     * Concatenate to a record and shift to left.
+     *
+     * @param string
+     * @param string
+     * @param int
+     * @return void
+     **/
+    function putShl($key, $value, $width) {}
+
+    /**
+     * Restore the database from the update log.
+     *
+     * @param string
+     * @param int
+     * @param bool
+     * @return void
+     **/
+    function restore($log_dir, $timestamp, $check_consistency) {}
+
+    /**
+     * Sets the replication master of the database
+     *
+     * @param string
+     * @param int
+     * @param int
+     * @param bool
+     * @return void
+     **/
+    function setMaster($host, $port, $timestamp, $check_consistency) {}
+
+    /**
+     * Returns the size of a value by key
+     *
+     * @param string
+     * @return int
+     **/
+    function size($key) {}
+
+    /**
+     * Returns statistics of the remote database
+     *
+     * @return array
+     **/
+    function stat() {}
+
+    /**
+     * Synchronizes the database on to the physical device
+     *
+     * @return void
+     **/
+    function sync() {}
+
+    /**
+     * Tunes database connection options.
+     *
+     * @param float
+     * @param int
+     * @return TokyoTyrant
+     **/
+    function tune($timeout, $options) {}
+
+    /**
+     * Empties a remote database
+     *
+     * @return void
+     **/
+    function vanish() {}
+
+    /**
+     * Constructs a new TokyoTyrant object and optionally connects to the database
+     *
+     * @param string
+     * @param int
+     * @param array
+     **/
+    function __construct($host, $port, $options) {}
+
+}
 class tokyotyrantexception extends Exception {
+}
+class TokyoTyrantQuery implements Iterator, Traversable {
+    /**
+     * Adds a condition to the query. Condition can be something like: get all keys which value
+     * matches expr.
+     *
+     * @param string
+     * @param int
+     * @param string
+     * @return void
+     **/
+    function addCond($name, $op, $expr) {}
+
+    /**
+     * Returns a count of how many records a query returns.
+     *
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Returns the current element. Part of Iterator interface
+     *
+     * @return array
+     **/
+    function current() {}
+
+    /**
+     * Get the hint string of the query. The hint string contains information about an executed query and
+     * it could be compared to for example MySQL EXPLAIN statement.
+     *
+     * @return string
+     **/
+    function hint() {}
+
+    /**
+     * Returns the current key. Part of the Iterator interface
+     *
+     * @return int
+     **/
+    function key() {}
+
+    /**
+     * Executes multiple queries on a database and returns matching records. The current object
+     * is always the left most object in the search.
+     *
+     * @return array
+     **/
+    function metaSearch() {}
+
+    /**
+     * Returns the next result in the resultset. Part of the Iterator interface.
+     *
+     * @return array
+     **/
+    function next() {}
+
+    /**
+     * Removes all records that match the query. Works exactly like search but removes the records instead
+     * of returning them.
+     *
+     * @return TokyoTyrantQuery
+     **/
+    function out() {}
+
+    /**
+     * Rewind the resultset and executes the query if it has not been executed. Part of the Iterator interface.
+     *
+     * @return boolean
+     **/
+    function rewind() {}
+
+    /**
+     * Executes a search on the table database. Returns an array of arrays containing the matching records.
+     * In the returned array the first level is the primary key of the data and the second level is the row data.
+     *
+     * @return array
+     **/
+    function search() {}
+
+    /**
+     * Set the maximum amount of records to return on a query.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setLimit($max, $skip) {}
+
+    /**
+     * Checks if the current item is valid. Part of the Iterator interface
+     *
+     * @return void
+     **/
+    function valid() {}
+
+    /**
+     * Construct a new query object
+     *
+     * @param TokyoTyrantTable
+     **/
+    function __construct($table) {}
+
+}
+class TokyoTyrantTable extends TokyoTyrant {
+    /**
+     * This method is not supported with table databases.
+     *
+     * @param string
+     * @param mixed
+     * @param string
+     * @return int
+     **/
+    function add($key, $increment, $type) {}
+
+    /**
+     * Generates an unique id inside the table database. In table databases rows are referenced
+     * using a numeric primary key.
+     *
+     * @return int
+     **/
+    function genUid() {}
+
+    /**
+     * Gets a row from table database. keys is a single integer for 
+     * the primary key of the row or an array of integers for multiple rows.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function get($keys) {}
+
+    /**
+     * Get a query object to execute searches on the database
+     *
+     * @return TokyoTyrantQuery
+     **/
+    function getQuery() {}
+
+    /**
+     * Removes records from a table database.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function out($keys) {}
+
+    /**
+     * Puts a new row into the database. This method parameters are key which is 
+     * the primary key of the row, passing will generate a new unique id. value
+     * is an array containing the row contents which is usually key value pairs.
+     *
+     * @param mixed
+     * @param array
+     * @return int
+     **/
+    function put($key, $columns) {}
+
+    /**
+     * This method can be used to add new columns to existing records. Existing keys will be left unmodified
+     * but any new columns will be appended to the row. Passing null as key will generate a new row.
+     *
+     * @param mixed
+     * @param array
+     * @return void
+     **/
+    function putCat($key, $columns) {}
+
+    /**
+     * Puts a new record into the database. If the key already exists this method throws an exception
+     * indicating that the records exists.
+     *
+     * @param mixed
+     * @param array
+     * @return void
+     **/
+    function putKeep($key, $columns) {}
+
+    /**
+     * This method is not supported on table databases. Calling this method through TokyoTyrantTable 
+     * is considered an error and an TokyoTyrantException will be thrown.
+     *
+     * @param mixed
+     * @param string
+     * @return void
+     **/
+    function putNr($keys, $value) {}
+
+    /**
+     * This method is not supported on table databases. Calling this method through TokyoTyrantTable 
+     * is considered an error and an TokyoTyrantException will be thrown.
+     *
+     * @param string
+     * @param string
+     * @param int
+     * @return void
+     **/
+    function putShl($key, $value, $width) {}
+
+    /**
+     * Sets an index on a specified column. The index type is one of the TokyoTyrant::RDBIT_* constants.
+     * Passing TokyoTyrant::RDBIT_VOID removes the index.
+     *
+     * @param string
+     * @param int
+     * @return void
+     **/
+    function setIndex($column, $type) {}
+
+}
+class UnderflowException extends RuntimeException {
+}
+class UnexpectedValueException extends RuntimeException {
+}
+class XMLReader {
+    const ATTRIBUTE = 0;
+    const CDATA = 0;
+    const COMMENT = 0;
+    const DEFAULTATTRS = 0;
+    const DOC = 0;
+    const DOC_FRAGMENT = 0;
+    const DOC_TYPE = 0;
+    const ELEMENT = 0;
+    const END_ELEMENT = 0;
+    const END_ENTITY = 0;
+    const ENTITY = 0;
+    const ENTITY_REF = 0;
+    const LOADDTD = 0;
+    const NONE = 0;
+    const NOTATION = 0;
+    const PI = 0;
+    const SIGNIFICANT_WHITESPACE = 0;
+    const SUBST_ENTITIES = 0;
+    const TEXT = 0;
+    const VALIDATE = 0;
+    const WHITESPACE = 0;
+    const XML_DECLARATION = 0;
+    /**
+     * Closes the input the XMLReader object is currently parsing.
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * This method copies the current node and returns the appropriate DOM object.
+     *
+     * @return DOMNode
+     **/
+    function expand() {}
+
+    /**
+     * Returns the value of a named attribute or an empty string if 
+     * attribute does not exist or not positioned on an element node.
+     *
+     * @param string
+     * @return string
+     **/
+    function getAttribute($name) {}
+
+    /**
+     * Returns the value of an attribute based on its position or an 
+     * empty string if attribute does not exist or not positioned on 
+     * an element node.
+     *
+     * @param int
+     * @return string
+     **/
+    function getAttributeNo($index) {}
+
+    /**
+     * Returns the value of an attribute by name and namespace URI or an empty 
+     * string if attribute does not exist or not positioned on an element node.
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function getAttributeNs($localName, $namespaceURI) {}
+
+    /**
+     * Indicates if specified property has been set.
+     *
+     * @param int
+     * @return bool
+     **/
+    function getParserProperty($property) {}
+
+    /**
+     * Returns a boolean indicating if the document being parsed is currently valid.
+     *
+     * @return bool
+     **/
+    function isValid() {}
+
+    /**
+     * Lookup in scope namespace for a given prefix.
+     *
+     * @param string
+     * @return bool
+     **/
+    function lookupNamespace($prefix) {}
+
+    /**
+     * Positions cursor on the named attribute.
+     *
+     * @param string
+     * @return bool
+     **/
+    function moveToAttribute($name) {}
+
+    /**
+     * Positions cursor on attribute based on its position.
+     *
+     * @param int
+     * @return bool
+     **/
+    function moveToAttributeNo($index) {}
+
+    /**
+     * Positions cursor on the named attribute in specified namespace.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function moveToAttributeNs($localName, $namespaceURI) {}
+
+    /**
+     * Moves cursor to the parent Element of current Attribute.
+     *
+     * @return bool
+     **/
+    function moveToElement() {}
+
+    /**
+     * Moves cursor to the first Attribute.
+     *
+     * @return bool
+     **/
+    function moveToFirstAttribute() {}
+
+    /**
+     * Moves cursor to the next Attribute if positioned on an Attribute or 
+     * moves to first attribute if positioned on an Element.
+     *
+     * @return bool
+     **/
+    function moveToNextAttribute() {}
+
+    /**
+     * Positions cursor on the next node skipping all subtrees.
+     *
+     * @param string
+     * @return bool
+     **/
+    function next($localname) {}
+
+    /**
+     * Set the URI containing the XML document to be parsed.
+     *
+     * @param string
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function open($URI, $encoding, $options) {}
+
+    /**
+     * Moves cursor to the next node in the document.
+     *
+     * @return bool
+     **/
+    function read() {}
+
+    /**
+     * Reads the contents of the current node, including child nodes and markup.
+     *
+     * @return string
+     **/
+    function readInnerXML() {}
+
+    /**
+     * Reads the contents of the current node, including the node itself.
+     *
+     * @return string
+     **/
+    function readOuterXML() {}
+
+    /**
+     * Reads the contents of the current node as an string.
+     *
+     * @return string
+     **/
+    function readString() {}
+
+    /**
+     * Set or Unset parser option for the parser. The options must be set 
+     * after xmlreader-open or 
+     * xmlreader-xml are called and before 
+     * the first xmlreader-read call.
+     *
+     * @param int
+     * @param bool
+     * @return bool
+     **/
+    function setParserProperty($property, $value) {}
+
+    /**
+     * Set the filename or URI for the RelaxNG Schema to use for validation.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setRelaxNGSchema($filename) {}
+
+    /**
+     * Set the data containing a RelaxNG Schema to use for validation.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setRelaxNGSchemaSource($source) {}
+
+    /**
+     * Use W3C XSD schema to validate the document as it is processed. Activation
+     * is only possible before the first Read().
+     *
+     * @param string
+     * @return bool
+     **/
+    function setSchema($filename) {}
+
+    /**
+     * Set the data containing the XML to parse.
+     *
+     * @param string
+     * @param string
+     * @param int
+     * @return bool
+     **/
+    function xml($source, $encoding, $options) {}
+
+}
+class XSLTProcessor {
+    /**
+     * Gets a parameter if previously set by
+     * XSLTProcessor::setParameter.
+     *
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function getParameter($namespaceURI, $localName) {}
+
+    /**
+     * This method determine if PHP was built with the EXSLT library.
+     *
+     * @return bool
+     **/
+    function hasExsltSupport() {}
+
+    /**
+     * This method import the stylesheet into the 
+     * XSLTProcessor for transformations.
+     *
+     * @param DOMDocument
+     * @return void
+     **/
+    function importStylesheet($stylesheet) {}
+
+    /**
+     * This method enables the ability to use PHP functions as XSLT functions
+     * within XSL stylesheets.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function registerPHPFunctions($restrict) {}
+
+    /**
+     * Removes a parameter, if set. This will make the processor use the
+     * default value for the parameter as specified in the stylesheet.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function removeParameter($namespaceURI, $localName) {}
+
+    /**
+     * Sets the value of one or more parameters to be used in subsequent 
+     * transformations with XSLTProcessor. If the 
+     * parameter doesn't exist in the stylesheet it will be ignored.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function setParameter($namespace, $name, $value) {}
+
+    /**
+     * Sets the file to output profiling information when processing 
+     * a stylesheet.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setProfiling($filename) {}
+
+    /**
+     * Transforms the source node to a DOMDocument applying
+     * the stylesheet given by the
+     * XSLTProcessor::importStylesheet method.
+     *
+     * @param DOMNode
+     * @return DOMDocument
+     **/
+    function transformToDoc($doc) {}
+
+    /**
+     * Transforms the source node to an URI applying the stylesheet given by the
+     * XSLTProcessor::importStylesheet method.
+     *
+     * @param DOMDocument
+     * @param string
+     * @return int
+     **/
+    function transformToURI($doc, $uri) {}
+
+    /**
+     * Transforms the source node to a string applying the stylesheet given by
+     * the xsltprocessor::importStylesheet method.
+     *
+     * @param DOMDocument
+     * @return string
+     **/
+    function transformToXML($doc) {}
+
+}
+class ZIPARCHIVE {
+    const CHECKCONS = 0;
+    const CM_BZIP2 = 0;
+    const CM_DEFAULT = 0;
+    const CM_DEFLATE = 0;
+    const CM_DEFLATE64 = 0;
+    const CM_IMPLODE = 0;
+    const CM_PKWARE_IMPLODE = 0;
+    const CM_REDUCE_1 = 0;
+    const CM_REDUCE_2 = 0;
+    const CM_REDUCE_3 = 0;
+    const CM_REDUCE_4 = 0;
+    const CM_SHRINK = 0;
+    const CM_STORE = 0;
+    const CREATE = 0;
+    const ER_CHANGED = '';
+    const ER_CLOSE = 0;
+    const ER_COMPNOTSUPP = 0;
+    const ER_CRC = 0;
+    const ER_DELETED = 0;
+    const ER_EOF = 0;
+    const ER_EXISTS = 0;
+    const ER_INCONS = 0;
+    const ER_INTERNAL = 0;
+    const ER_INVAL = 0;
+    const ER_MEMORY = 0;
+    const ER_MULTIDISK = 0;
+    const ER_NOENT = 0;
+    const ER_NOZIP = 0;
+    const ER_OK = 0;
+    const ER_OPEN = 0;
+    const ER_READ = 0;
+    const ER_REMOVE = 0;
+    const ER_RENAME = 0;
+    const ER_SEEK = 0;
+    const ER_TMPOPEN = 0;
+    const ER_WRITE = 0;
+    const ER_ZIPCLOSED = 0;
+    const ER_ZLIB = 0;
+    const EXCL = 0;
+    const FL_COMPRESSED = 0;
+    const FL_NOCASE = 0;
+    const FL_NODIR = 0;
+    const FL_UNCHANGED = 0;
+    const OVERWRITE = 0;
+    /**
+     * Adds an empty directory in the archive.
+     *
+     * @param string
+     * @return bool
+     **/
+    function addEmptyDir($dirname) {}
+
+    /**
+     * Adds a file to a ZIP archive from a given path
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function addFile($filename, $localname) {}
+
+    /**
+     * Add a file to a ZIP archive using its contents.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function addFromString($localname, $contents) {}
+
+    /**
+     * Close opened or created archive and save changes. This method is
+     * automatically called at the end of the script.
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * Delete an entry in the archive using its index.
+     *
+     * @param int
+     * @return bool
+     **/
+    function deleteIndex($index) {}
+
+    /**
+     * Delete an entry in the archive using its name.
+     *
+     * @param string
+     * @return bool
+     **/
+    function deleteName($name) {}
+
+    /**
+     * Extract the complete archive or the given files to the specified
+     * destination.
+     *
+     * @param string
+     * @param mixed
+     * @return bool
+     **/
+    function extractTo($destination, $entries) {}
+
+    /**
+     * Returns the Zip archive comment.
+     *
+     * @return string
+     **/
+    function getArchiveComment() {}
+
+    /**
+     * Returns the comment of an entry using the entry index.
+     *
+     * @param int
+     * @param int
+     * @return string
+     **/
+    function getCommentIndex($index, $flags) {}
+
+    /**
+     * Returns the comment of an entry using the entry name.
+     *
+     * @param string
+     * @param int
+     * @return string
+     **/
+    function getCommentName($name, $flags) {}
+
+    /**
+     * Returns the entry contents using its index.
+     *
+     * @param int
+     * @param int
+     * @return mixed
+     **/
+    function getFromIndex($index, $flags) {}
+
+    /**
+     * Returns the entry contents using its name.
+     *
+     * @param string
+     * @param int
+     * @return mixed
+     **/
+    function getFromName($name, $flags) {}
+
+    /**
+     * Returns the name of an entry using its index.
+     *
+     * @param int
+     * @return string
+     **/
+    function getNameIndex($index) {}
+
+    /**
+     * Returns the status error message, system and/or zip messages.
+     *
+     * @return string
+     **/
+    function getStatusString() {}
+
+    /**
+     * Get a file handler to the entry defined by its name. For now it only
+     * supports read operations.
+     *
+     * @param string
+     * @return resource
+     **/
+    function getStream($name) {}
+
+    /**
+     * Locates an entry using its name.
+     *
+     * @param string
+     * @param int
+     * @return mixed
+     **/
+    function locateName($name, $flags) {}
+
+    /**
+     * Opens a new zip archive for reading, writing or modifying.
+     *
+     * @param string
+     * @param int
+     * @return mixed
+     **/
+    function open($filename, $flags) {}
+
+    /**
+     * Renames an entry defined by its index.
+     *
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function renameIndex($index, $newname) {}
+
+    /**
+     * Renames an entry defined by its name.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function renameName($name, $newname) {}
+
+    /**
+     * Set the comment of a ZIP archive.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function setArchiveComment($comment) {}
+
+    /**
+     * Set the comment of an entry defined by its index.
+     *
+     * @param int
+     * @param string
+     * @return mixed
+     **/
+    function setCommentIndex($index, $comment) {}
+
+    /**
+     * Set the comment of an entry defined by its name.
+     *
+     * @param string
+     * @param string
+     * @return mixed
+     **/
+    function setCommentName($name, $comment) {}
+
+    /**
+     * The function obtains information about the entry defined by its
+     * index.
+     *
+     * @param int
+     * @param int
+     * @return mixed
+     **/
+    function statIndex($index, $flags) {}
+
+    /**
+     * The function obtains information about the entry defined by its
+     * name.
+     *
+     * @param name
+     * @param int
+     * @return mixed
+     **/
+    function statName($name, $flags) {}
+
+    /**
+     * Undo all changes done in the archive.
+     *
+     * @return mixed
+     **/
+    function unchangeAll() {}
+
+    /**
+     * Revert all global changes to the archive archive. For now, this
+     * only reverts archive comment changes.
+     *
+     * @return mixed
+     **/
+    function unchangeArchive() {}
+
+    /**
+     * Revert all changes done to an entry at the given index.
+     *
+     * @param int
+     * @return mixed
+     **/
+    function unchangeIndex($index) {}
+
+    /**
+     * Revert all changes done to an entry.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function unchangeName($name) {}
+
 }
 define('ABDAY_1', 0);
 define('ABDAY_2', 0);
