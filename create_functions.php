@@ -26,7 +26,7 @@ if (!isset($_SERVER['argv'][1]) || !isset($_SERVER['argv'][2])) {
     $msg = "Usage:\n".$_SERVER['argv'][0]." [path to phpdoc] [path to php sources]\n";
     $msg .= "you may checkout from the php svn server using this command:\n";
     $msg .= "svn checkout http://svn.php.net/repository/phpdoc/en/trunk ./phpdoc-en\n";
-    $msg .= "svn checkout http://svn.php.net/repository/php/php-src/branches/PHP_5_3 php5\n";
+    $msg .= "svn checkout http://svn.php.net/repository/php/php-src/branches/PHP_5_2 php5\n";
     file_put_contents('php://stderr', $msg);
     exit(-1);
 }
@@ -277,7 +277,7 @@ echo "wrote ".$declarationCount." declarations\n";
 /**
  * Parse file
  *
- * @param   SplFileInfo  $file  File handler
+ * @param SplFileInfo  $file  File handler
  * @return  bool
  */
 function parseFile($file, $funcOverload="") {
