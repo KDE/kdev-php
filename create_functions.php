@@ -128,10 +128,9 @@ foreach (array_keys($constants) as $c) {
 // The dir function, which lacks parseable documentation...
 $classes['global']['functions'][] = array(
     'name' => "dir",
-    'params' => array(array('name' => "path", 'type' => "string")),
+    'params' => array(array('name' => "path", 'type' => "string", 'isRef' => false)),
     'type' => "Directory",
-    'desc' => "Return an instance of the Directory class",
-    'isRef' => false
+    'desc' => "Return an instance of the Directory class"
 );
 
 $skipFunctions = array();
