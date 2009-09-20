@@ -49,11 +49,16 @@ public:
     void setDeclarations(QList<KDevelop::Declaration*> declarations);
     void setType(KDevelop::AbstractType::Ptr type);
 
+    /// enable this and the setDeclaration(s) and setType methods won't have any affect
+    void setBlocked(bool isBlocked);
+
     KDevelop::AbstractType::Ptr type() const;
     QList<KDevelop::DeclarationId> allDeclarationIds() const;
     QList<KDevelop::Declaration*> allDeclarations() const;
 
-
+    /// whether types & declaration(s) results are blocked,
+    /// i.e. the set* methods won't have any effect.
+    bool blocked() const;
 
 private:
     QList<KDevelop::Declaration*> m_allDeclarations;
@@ -63,6 +68,7 @@ private:
     //bool isInstance; ///Whether the result of this expression is an instance(as it normally should be)
     //KDevelop::DeclarationId instanceDeclaration; ///If this expression is an instance of some type, this either contains the declaration of the instance, or the type
 
+    bool m_blocked;
 };
 
 }

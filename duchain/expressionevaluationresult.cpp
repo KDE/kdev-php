@@ -35,11 +35,15 @@ ExpressionEvaluationResult::~ExpressionEvaluationResult()
 }
 
 ExpressionEvaluationResult::ExpressionEvaluationResult()/* : isInstance(false)*/
+    : m_blocked(false)
 {
 }
 
 void ExpressionEvaluationResult::setDeclaration(Declaration* declaration)
 {
+    if ( m_blocked ) {
+        return;
+    }
     QList<Declaration*> decs;
     if (declaration) {
         decs << declaration;
@@ -49,24 +53,25 @@ void ExpressionEvaluationResult::setDeclaration(Declaration* declaration)
 
 void ExpressionEvaluationResult::setDeclarations(QList<Declaration*> declarations)
 {
+    if ( m_blocked ) {
+        return;
+    }
     m_allDeclarations = declarations;
     if (!m_allDeclarations.isEmpty()) {
-        m_type = m_allDeclarations.last()->abstractType();
+        setType(m_allDeclarations.last()->abstractType());
     } else {
-        m_type = AbstractType::Ptr();
+        setType(AbstractType::Ptr());
     }
     m_allDeclarationIds.clear();
     DUChainReadLocker lock(DUChain::lock());
     foreach(Declaration* dec, m_allDeclarations) {
         m_allDeclarationIds << dec->id();
     }
-
 }
 
 AbstractType::Ptr ExpressionEvaluationResult::type() const
 {
     return m_type;
-
 }
 
 QList<Declaration*> ExpressionEvaluationResult::allDeclarations() const
@@ -81,7 +86,20 @@ QList<DeclarationId> ExpressionEvaluationResult::allDeclarationIds() const
 
 void ExpressionEvaluationResult::setType(AbstractType::Ptr type)
 {
+    if ( m_blocked ) {
+        return;
+    }
     m_type = type;
+}
+
+void ExpressionEvaluationResult::setBlocked( bool isBlocked )
+{
+    m_blocked = isBlocked;
+}
+
+bool ExpressionEvaluationResult::blocked() const
+{
+    return m_blocked;
 }
 
 }

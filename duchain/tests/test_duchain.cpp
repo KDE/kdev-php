@@ -386,6 +386,55 @@ void TestDUChain::testDeclarationMultipleReturnTypes()
     QVERIFY(ut->types()[1].type<IntegralType>()->dataType() == IntegralType::TypeNull);
 }
 
+void TestDUChain::testReturnTypeViaMember()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class a { /** @return a **/ function fa() {} }\n"
+                      "class b { /** @var a **/ static $astatic; /** @var a **/ var $anormal;\n"
+                      "  function fb1($param) { $i = self::$astatic->fa($param); }\n"
+                      "  function fb2($param) { $i = $this->anormal->fa($param); } }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVector<Declaration*> decs = top->localDeclarations();
+    QCOMPARE(decs.size(), 2);
+
+    ClassDeclaration* aDec = dynamic_cast<ClassDeclaration*>(decs.first());
+    QVERIFY(aDec);
+
+    ClassDeclaration* bDec = dynamic_cast<ClassDeclaration*>(decs.last());
+    QVERIFY(bDec);
+    QCOMPARE(bDec->logicalInternalContext(top)->localDeclarations().size(), 4);
+
+    typedef QPair<QString, QString> idPair;
+    foreach ( const idPair & pair, QList< idPair >()
+                                        << qMakePair(QString("fb1"), QString("astatic"))
+                                        << qMakePair(QString("fb2"), QString("anormal")) )
+    {
+        kDebug() << pair.first << pair.second;
+        ClassMethodDeclaration* fDec = dynamic_cast<ClassMethodDeclaration*>(
+            bDec->logicalInternalContext(top)->findDeclarations(Identifier(pair.first)).first()
+        );
+        QVERIFY(fDec);
+
+        ClassMemberDeclaration* mDec = dynamic_cast<ClassMemberDeclaration*>(
+            bDec->logicalInternalContext(top)->findDeclarations(Identifier(pair.second)).first()
+        );
+        QVERIFY(mDec);
+        QVERIFY(mDec->type<StructureType>());
+        QCOMPARE(mDec->type<StructureType>()->declaration(top), aDec);
+
+        QCOMPARE(fDec->logicalInternalContext(top)->localDeclarations().size(), 1);
+        Declaration* iDec = fDec->logicalInternalContext(top)->localDeclarations().first();
+        QCOMPARE(iDec->identifier().toString(), QString("i"));
+        QVERIFY(iDec->type<StructureType>());
+        QCOMPARE(iDec->type<StructureType>()->declaration(top), aDec);
+    }
+}
+
 void TestDUChain::testDeclarationReturnTypeDocBlock()
 {
     //                 0         1         2         3         4         5         6         7

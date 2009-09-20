@@ -180,6 +180,16 @@ void ExpressionVisitor::visitVarExpressionNormal(VarExpressionNormalAst *node)
     }
 }
 
+void ExpressionVisitor::visitFunctionCallParameterList( FunctionCallParameterListAst* node )
+{
+    bool wasBlocked = m_result.blocked();
+    m_result.setBlocked(true);
+
+    DefaultVisitor::visitFunctionCallParameterList( node );
+
+    m_result.setBlocked(wasBlocked);
+}
+
 void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
 {
     DefaultVisitor::visitFunctionCall(node);
