@@ -3148,6 +3148,14 @@ class DateTimeZone {
  **/
 class Directory {
     /**
+     * @var resource
+     **/
+    var $handle;
+    /**
+     * @var string
+     **/
+    var $path;
+    /**
      * A pseudo-object oriented mechanism for reading a directory. The
      * given directory is opened. Two properties
      * are available once the directory has been opened. The handle
@@ -53693,6 +53701,86 @@ class Locale {
 }
 class LogicException extends Exception {
 }
+class maxdb {
+    /**
+     * Procedural style:
+     *
+     * @var int
+     **/
+    var $affected_rows;
+    /**
+     * Procedural style:
+     *
+     * @var int
+     **/
+    var $errno;
+    /**
+     * Procedural style:
+     *
+     * @var string
+     **/
+    var $error;
+    /**
+     * Procdural style:
+     *
+     * @var string
+     **/
+    var $host_info;
+    /**
+     * Procedural style:
+     *
+     * @var string
+     **/
+    var $info;
+    /**
+     * Procedural style:
+     *
+     * @var mixed
+     **/
+    var $insert_id;
+    /**
+     * Procedural style:
+     *
+     * @var int
+     **/
+    var $num_rows;
+    /**
+     * Procedural style:
+     *
+     * @var string
+     **/
+    var $protocol_version;
+    /**
+     * Procedural style:
+     *
+     * @var string
+     **/
+    var $server_info;
+    /**
+     * Procedural style:
+     *
+     * @var int
+     **/
+    var $server_version;
+    /**
+     * Procedural style:
+     *
+     * @var string
+     **/
+    var $sqlstate;
+    /**
+     * Procedural style:
+     *
+     * @var int
+     **/
+    var $thread_id;
+    /**
+     * Procedural style:
+     *
+     * @var int
+     **/
+    var $warning_count;
+}
 class Memcache {
     /**
      * Memcache::add stores variable
@@ -55398,6 +55486,92 @@ class MultipleIterator implements Iterator, Traversable {
 }
 class MySQLi {
     /**
+     * Object oriented style (property):
+     *
+     * @var int
+     **/
+    var $affected_rows;
+    /**
+     * Returns the last error code number from the last call to 
+     * mysqli_connect.
+     *
+     * @var string
+     **/
+    var $connect_errno;
+    /**
+     * Returns the last error message string from the last call to 
+     * mysqli_connect.
+     *
+     * @var string
+     **/
+    var $connect_error;
+    /**
+     * Object oriented style (property):
+     *
+     * @var int
+     **/
+    var $errno;
+    /**
+     * Object oriented style (property):
+     *
+     * @var string
+     **/
+    var $error;
+    /**
+     * Object oriented style (property):
+     *
+     * @var string
+     **/
+    var $host_info;
+    /**
+     * Object oriented style (property)
+     *
+     * @var string
+     **/
+    var $info;
+    /**
+     * Object oriented style (property):
+     *
+     * @var mixed
+     **/
+    var $insert_id;
+    /**
+     * Object oriented style (property):
+     *
+     * @var string
+     **/
+    var $protocol_version;
+    /**
+     * Object oriented style (property):
+     *
+     * @var string
+     **/
+    var $server_info;
+    /**
+     * Object oriented style (property):
+     *
+     * @var int
+     **/
+    var $server_version;
+    /**
+     * Object oriented style (property):
+     *
+     * @var string
+     **/
+    var $sqlstate;
+    /**
+     * Object oriented style (property):
+     *
+     * @var int
+     **/
+    var $thread_id;
+    /**
+     * Object oriented style (property):
+     *
+     * @var int
+     **/
+    var $warning_count;
+    /**
      * Object oriented style (method)
      *
      * @param bool
@@ -55698,6 +55872,36 @@ class MySQLi_Driver {
 }
 class MySQLi_Result {
     /**
+     * Object oriented style (property):
+     *
+     * @var int
+     **/
+    var $current_field;
+    /**
+     * Object oriented style (property):
+     *
+     * @var int
+     **/
+    var $field_count;
+    /**
+     * Object oriented style (property):
+     *
+     * @var int
+     **/
+    var $field_count;
+    /**
+     * Object oriented style (property):
+     *
+     * @var array
+     **/
+    var $lengths;
+    /**
+     * Object oriented style (property):
+     *
+     * @var int
+     **/
+    var $num_rows;
+    /**
      * Object oriented style (method):
      *
      * @param int
@@ -55783,6 +55987,50 @@ class MySQLi_Result {
 
 }
 class MySQLi_STMT {
+    /**
+     * Object oriented style (property):
+     *
+     * @var int
+     **/
+    var $affected_rows;
+    /**
+     * Object oriented style (property):
+     *
+     * @var int
+     **/
+    var $errno;
+    /**
+     * Object oriented style (property):
+     *
+     * @var string
+     **/
+    var $error;
+    /**
+     * @var int
+     **/
+    var $field_count;
+    /**
+     * @var int
+     **/
+    var $insert_id;
+    /**
+     * Object oriented style (property):
+     *
+     * @var int
+     **/
+    var $num_rows;
+    /**
+     * Object oriented style (property):
+     *
+     * @var int
+     **/
+    var $param_count;
+    /**
+     * Object oriented style (property):
+     *
+     * @var string
+     **/
+    var $sqlstate;
     /**
      * Object oriented style (method):
      *
@@ -59103,6 +59351,26 @@ class RegexIterator extends FilterIterator {
     function setPregFlags($preg_flags) {}
 
 }
+class result {
+    /**
+     * Procedural style:
+     *
+     * @var int
+     **/
+    var $current_field;
+    /**
+     * Procedural style:
+     *
+     * @var int
+     **/
+    var $field_count;
+    /**
+     * Procedural style:
+     *
+     * @var array
+     **/
+    var $lengths;
+}
 class Runkit_Sandbox_Parent {
     /**
      * Instantiating the Runkit_Sandbox_Parent
@@ -59118,6 +59386,22 @@ class Runkit_Sandbox_Parent {
 class RuntimeException extends Exception {
 }
 class SAMConnection {
+    /**
+     * Contains the numeric error code of the last executed SAM operation on this
+     * connection. If the last operation completed successfully this property
+     * contains 0.
+     *
+     * @var int
+     **/
+    var $errno;
+    /**
+     * Contains the text description of the last failed SAM operation on this
+     * connection. If the last operation completed successfully this property
+     * contains an empty string.
+     *
+     * @var string
+     **/
+    var $error;
     /**
      * Calling the "commit" method on a Connection object commits (completes) all
      * in-flight transactions that are part of the current unit of work.
@@ -59233,6 +59517,22 @@ class SAMConnection {
      **/
     function unsubscribe($subscriptionId, $targetTopic) {}
 
+}
+class SAMMessage {
+    /**
+     * The header property is a container for any system or
+     * user properties that area associated with the message.
+     *
+     * @var object
+     **/
+    var $header;
+    /**
+     * The "body" property contains the actual body of the message.
+     * It may not always be set.
+     *
+     * @var string
+     **/
+    var $nody;
 }
 class SCA {
     /**
@@ -62237,6 +62537,44 @@ class SQLite3Stmt {
 }
 class stdClass {
 }
+class stmt {
+    /**
+     * Procedural style :
+     *
+     * @var int
+     **/
+    var $affected_rows;
+    /**
+     * Procedural style :
+     *
+     * @var int
+     **/
+    var $errno;
+    /**
+     * Procedural style:
+     *
+     * @var string
+     **/
+    var $error;
+    /**
+     * Procedural style :
+     *
+     * @var int
+     **/
+    var $num_rows;
+    /**
+     * Procedural style:
+     *
+     * @var int
+     **/
+    var $param_count;
+    /**
+     * Procedural style:
+     *
+     * @var int
+     **/
+    var $param_count;
+}
 class streamWrapper {
     /**
      * This method is called in response to closedir.
@@ -63679,6 +64017,12 @@ class Swish {
 
 }
 class Tidy {
+    /**
+     * Procedural style:
+     *
+     * @var string
+     **/
+    var $errorBuffer;
     /**
      * Constructs a new tidy object.
      *

@@ -161,7 +161,7 @@ function prepareComment($comment) {
     return "/**\n * ".preg_replace("#^\s+#m", " * ", trim($comment))."\n **/\n";
 }
 
-function sortFunctions($a, $b) {
+function sortByName($a, $b) {
     return strnatcasecmp($a['name'], $b['name']);
 }
 
@@ -228,13 +228,32 @@ foreach ($classes as $class => $i) {
 
     $indent = '';
     if ($class != 'global') $indent = '    ';
-    usort($i['functions'], 'sortFunctions');
+
+    usort($i['properties'], 'sortByName');
+    foreach ($i['properties'] as $f) {
+        $out .= "$indent/**\n";
+        ///HACK the directory stuff has really bad documentation
+        if ($f['desc'] && $class != 'directory') {
+            $out .= "$indent * ";
+            $out .= str_replace("\n", "\n$indent * ", $f['desc']);
+            $out .= "\n";
+            $out .= "$indent *\n";
+        }
+        if ($f['type']) $out .= "$indent * @var $f[type]\n";
+        $out .= "$indent **/\n";
+        $out .= "{$indent}var $".$f['name'].";\n";
+        $declarationCount++;
+    }
+
+    usort($i['functions'], 'sortByName');
     foreach ($i['functions'] as $f) {
         if ( $class == 'global' && in_array($f['name'], $skipFunctions) ) {
             continue;
         }
         $out .= "$indent/**\n";
-        if ($f['desc']) {
+
+        ///HACK the directory stuff has really bad documentation
+        if ($f['desc'] && $class != 'directory') {
             $out .= "$indent * ";
             $out .= str_replace("\n", "\n$indent * ", $f['desc']);
             $out .= "\n";
@@ -394,13 +413,25 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     }
 
     if (!isset($xml->refsect1)) return false;
+
+    $desc = getDocumentation($xml);
+
+    // file could contain function + property
+    if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->fieldsynopsis)) {
+        $class = (string)$xml->refsect1->classsynopsis->ooclass->classname;
+
+        foreach ( $xml->refsect1->classsynopsis->fieldsynopsis as $synopsis ) {
+            newPropertyEntry($class, $synopsis->varname, $desc, $synopsis->type );
+        }
+    }
+
     if (isset($xml->refsect1->methodsynopsis)) {
         $methodsynopsis = $xml->refsect1->methodsynopsis;
         $function = (string)$methodsynopsis->methodname;
         $class = 'global';
     } else if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->methodsynopsis)) {
-        $methodsynopsis = $xml->refsect1->classsynopsis->methodsynopsis;
         $class = (string)$xml->refsect1->classsynopsis->ooclass->classname;
+        $methodsynopsis = $xml->refsect1->classsynopsis->methodsynopsis;
         $function = (string)$methodsynopsis->methodname;
     } elseif ( isset($xml->refnamediv->refpurpose->function) ) {
         // This is function alias
@@ -415,6 +446,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     } else {
         return false;
     }
+
     if (strpos($function, '::')) {
         $class = substr($function, 0, strpos($function, '::'));
         $function = substr($function, strpos($function, '::')+2);
@@ -460,10 +492,6 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             'isRef' => isset($param->parameter->attributes()->role) ? ($param->parameter->attributes()->role == "reference") : false
         );
     }
-    $desc = strip_tags($xml->refsect1->para->asXML());
-    $desc = trim($desc);
-    $desc = preg_replace('#  +#', ' ', $desc);
-    $desc = preg_replace('#^ #m', '', $desc);
 
     $class = newClassEntry($class);
     $classes[$class]['functions'][] = array(
@@ -489,6 +517,7 @@ function newClassEntry($name) {
     if (!isset($classes[$lower])) {
         $classes[$lower] = array(
             'functions' => array(),
+            'properties' => array(),
             'prettyName' => $name,
             'desc' => ''
         );
@@ -498,4 +527,30 @@ function newClassEntry($name) {
         }
     }
     return $lower;
+}
+
+/**
+ * get the documentation for an entry
+ * @return string
+ */
+function getDocumentation(SimpleXMLElement $xml) {
+    $desc = $xml->refsect1->para->asXML();
+    $desc = strip_tags($desc);
+    $desc = trim($desc);
+    $desc = preg_replace('#  +#', ' ', $desc);
+    $desc = preg_replace('#^ #m', '', $desc);
+    return $desc;
+}
+
+/**
+ * create a new property entry for @p $class
+ */
+function newPropertyEntry($class, $name, $desc, $type) {
+    global $classes;
+    $class = newClassEntry($class);
+    $classes[$class]['properties'][] = array(
+        'name' => (string) $name,
+        'desc' => (string) $desc,
+        'type' => (string) $type
+    );
 }
