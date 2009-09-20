@@ -104,7 +104,23 @@ const QByteArray testClassB(
     "} $instB = new B; "
 );
 
-typedef CodeCompletionItemTester<CodeCompletionContext> BasePhpCompletionTester;
+class TestCodeCompletionContext : public CodeCompletionContext
+{
+public:
+    TestCodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, const SimpleCursor &position, int depth = 0)
+            : CodeCompletionContext(context, text, followingText, position, depth) { }
+protected:
+    QList<QSet<IndexedString> > completionFiles() {
+        QList<QSet<IndexedString> > ret;
+        QSet<IndexedString> set;
+        set << IndexedString("file:///internal/projecttest0");
+        set << IndexedString("file:///internal/projecttest1");
+        ret << set;
+        return ret;
+    }
+};
+
+typedef CodeCompletionItemTester<TestCodeCompletionContext> BasePhpCompletionTester;
 
 /**
  * Automatically prepent the test string with "<?php " when it does not start with "<?" already-
@@ -309,8 +325,8 @@ void TestCompletion::newObjectFromOtherFile()
 void TestCompletion::constantFromOtherFile()
 {
     TopDUContext* addTop = parseAdditionalFile(
-        IndexedString("/duchaintest/foo.php"),
-        "<?php define('FIND_ME', 1); "
+        IndexedString("file:///internal/projecttest0"),
+        "<?php define('FIND_ME', 1); $dontFindMe = 1; "
     );
     DUChainReleaser releaseAddTop(addTop);
 
@@ -404,22 +420,6 @@ void TestCompletion::codeModel()
     QVERIFY(found);
 }
 
-class TestCodeCompletionContext : public CodeCompletionContext
-{
-public:
-    TestCodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, const SimpleCursor &position, int depth = 0)
-            : CodeCompletionContext(context, text, followingText, position, depth) { }
-protected:
-    QList<QSet<IndexedString> > completionFiles() {
-        QList<QSet<IndexedString> > ret;
-        QSet<IndexedString> set;
-        set << IndexedString("file:///internal/projecttest0");
-        set << IndexedString("file:///internal/projecttest1");
-        ret << set;
-        return ret;
-    }
-};
-
 void TestCompletion::projectFileClass()
 {
     TopDUContext* addTop = parseAdditionalFile(IndexedString("file:///internal/projecttest0"), "<? class B { function invisible() {} } ");
@@ -434,12 +434,12 @@ void TestCompletion::projectFileClass()
 
     {
         // outside of class foo
-        CodeCompletionItemTester<TestCodeCompletionContext> tester(top, "<?php ");
+        PhpCompletionTester tester(top, "<?php ");
         QVERIFY(searchDeclaration(tester.items, addTop->localDeclarations().first()));
     }
     {
         // inside of class foo, i.e. in its bar() method
-        CodeCompletionItemTester<TestCodeCompletionContext> tester(top->childContexts().first()->childContexts().first(), "<?php ");
+        PhpCompletionTester tester(top->childContexts().first()->childContexts().first(), "<?php ");
 
         kDebug() << tester.names;
         // we want to see the class
