@@ -119,7 +119,11 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
         case CodeCompletionModel::Prefix:
             if (dec->kind() == Declaration::Type && !dec->isTypeAlias()) {
                 if (FunctionType::Ptr funcType = dec->type<FunctionType>()) {
-                    return funcType->returnType()->toString();
+                    if ( funcType->returnType() ) {
+                        return funcType->returnType()->toString();
+                    } else {
+                        return "<notype>";
+                    }
                 } else if (StructureType::Ptr classType =  dec->type<StructureType>()) {
                     ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
                     if (classDec) {
