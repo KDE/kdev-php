@@ -5311,6 +5311,38 @@ class FilterIterator extends IteratorIterator implements OuterIterator, Traversa
     function __construct($iterator) {}
 
 }
+class finfo {
+    /**
+     * This function is used to get information about binary data in a
+     * string.
+     *
+     * @param string
+     * @param int
+     * @param resource
+     * @return string
+     **/
+    function buffer($string, $options, $context) {}
+
+    /**
+     * This function is used to get information about a file.
+     *
+     * @param string
+     * @param int
+     * @param resource
+     * @return string
+     **/
+    function file($file_name, $options, $context) {}
+
+    /**
+     * This function sets various Fileinfo options. Options can be set also
+     * directly in finfo_open or other Fileinfo functions.
+     *
+     * @param int
+     * @return bool
+     **/
+    function set_flags($options) {}
+
+}
 /**
  * Returns the absolute value of number.
  *
@@ -57803,6 +57835,385 @@ class maxdb {
      * @var int
      **/
     var $warning_count;
+    /**
+     * maxdb_autocommit is used to turn on or off auto-commit mode on queries
+     * for the database connection represented by the link resource.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function auto_commit($mode) {}
+
+    /**
+     * maxdb_change_user is used to change the user of the specified database
+     * connection as given by the link parameter and to set the current
+     * database to that specified by the database parameter.
+     * 
+     * In order to successfully change users a valid username and password
+     * parameters must be provided and that user must have sufficient
+     * permissions to access the desired database. If for any reason
+     * authorization fails, the current user authentication will remain.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function change_user($user, $password, $database) {}
+
+    /**
+     * Returns the current character set for the database connection
+     * specified by the link parameter.
+     *
+     * @return string
+     **/
+    function character_set_name() {}
+
+    /**
+     * The maxdb_close function closes a previously opened database
+     * connection specified by the link parameter.
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * Commits the current transaction for the database connection specified
+     * by the link parameter.
+     *
+     * @return bool
+     **/
+    function commit() {}
+
+    /**
+     * @return void
+     **/
+    function disable_reads_from_master() {}
+
+    /**
+     * Returns the number of columns for the most recent query on the
+     * connection represented by the link parameter. This function can be
+     * useful when using the maxdb_store_result function to determine if the
+     * query should have produced a non-empty result set or not without
+     * knowing the nature of the query.
+     *
+     * @return int
+     **/
+    function field_count() {}
+
+    /**
+     * This function is used to disconnect from a MaxDB server specified by
+     * the processid parameter.
+     *
+     * @param int
+     * @return bool
+     **/
+    function kill($processid) {}
+
+    /**
+     * Returns the current character set for the database connection
+     * specified by the link parameter.
+     *
+     * @return string
+     **/
+    function maxdb_client_encoding() {}
+
+    /**
+     * This function is used to create a legal SQL string that you can use in
+     * a SQL statement. The string escapestr is encoded to an escaped SQL
+     * string, taking into account the current character set of the
+     * connection.
+     * 
+     * Characters encoded are ', ".
+     *
+     * @param string
+     * @return string
+     **/
+    function maxdb_escape_string($escapestr) {}
+
+    /**
+     * maxdb_maxdb_set_opt can be used to set extra connect maxdb_set_opt and affect
+     * behavior for a connection.
+     * 
+     * This function may be called multiple times to set several maxdb_set_opt.
+     * 
+     * maxdb_maxdb_set_opt should be called after maxdb_init and before
+     * maxdb_real_connect.
+     * 
+     * The parameter option is the option that you want to set, the value is
+     * the value for the option. For detailed description of the maxdb_set_opt see
+     * The parameter option can be one of the following values:
+     * 
+     * Valid maxdb_set_opt
+     * 
+     * Name Description
+     * 
+     * MAXDB_COMPNAME The component name used to initialise the SQLDBC
+     * runtime environment.
+     * 
+     * MAXDB_APPLICATION The application to be connected to the database.
+     * 
+     * MAXDB_APPVERSION The version of the application.
+     * 
+     * MAXDB_SQLMODE
+     * 
+     * The SQL mode.
+     * 
+     * MAXDB_UNICODE
+     * 
+     * TRUE, if the connection is an unicode (UCS2) client or FALSE, if not.
+     * 
+     * MAXDB_TIMEOUT
+     * 
+     * The maximum allowed time of inactivity after which the connection to
+     * the database is closed by the system.
+     * 
+     * MAXDB_ISOLATIONLEVEL
+     * 
+     * Specifies whether and how shared locks and exclusive locks are
+     * implicitly requested or released.
+     * 
+     * MAXDB_PACKETCOUNT
+     * 
+     * The number of different request packets used for the connection.
+     * 
+     * MAXDB_STATEMENTCACHESIZE
+     * 
+     * The number of prepared statements to be cached for the connection for
+     * re-use.
+     * 
+     * MAXDB_CURSORPREFIX
+     * 
+     * The prefix to use for result tables that are automatically named.
+     *
+     * @param int
+     * @param mixed
+     * @return bool
+     **/
+    function maxdb_set_opt($option, $value) {}
+
+    /**
+     * The maxdb_multi_query works like the function maxdb_query. Multiple
+     * queries are not yet supported.
+     *
+     * @param string
+     * @return bool
+     **/
+    function multi_query($query) {}
+
+    /**
+     * maxdb_options can be used to set extra connect options and affect
+     * behavior for a connection.
+     * 
+     * This function may be called multiple times to set several options.
+     * 
+     * maxdb_options should be called after maxdb_init and before
+     * maxdb_real_connect.
+     * 
+     * The parameter option is the option that you want to set, the value is
+     * the value for the option. For detailed description of the options see
+     * The parameter option can be one of the following values:
+     * 
+     * Valid options
+     * 
+     * Name Description
+     * 
+     * MAXDB_COMPNAME The component name used to initialise the SQLDBC
+     * runtime environment.
+     * 
+     * MAXDB_APPLICATION The application to be connected to the database.
+     * 
+     * MAXDB_APPVERSION The version of the application.
+     * 
+     * MAXDB_SQLMODE
+     * 
+     * The SQL mode.
+     * 
+     * MAXDB_UNICODE
+     * 
+     * TRUE, if the connection is an unicode (UCS2) client or FALSE, if not.
+     * 
+     * MAXDB_TIMEOUT
+     * 
+     * The maximum allowed time of inactivity after which the connection to
+     * the database is closed by the system.
+     * 
+     * MAXDB_ISOLATIONLEVEL
+     * 
+     * Specifies whether and how shared locks and exclusive locks are
+     * implicitly requested or released.
+     * 
+     * MAXDB_PACKETCOUNT
+     * 
+     * The number of different request packets used for the connection.
+     * 
+     * MAXDB_STATEMENTCACHESIZE
+     * 
+     * The number of prepared statements to be cached for the connection for
+     * re-use.
+     * 
+     * MAXDB_CURSORPREFIX
+     * 
+     * The prefix to use for result tables that are automatically named.
+     *
+     * @param int
+     * @param mixed
+     * @return bool
+     **/
+    function options($option, $value) {}
+
+    /**
+     * Checks whether the connection to the server is working. If it has gone
+     * down, and global option maxdb.reconnect is enabled an automatic
+     * reconnection is attempted.
+     * 
+     * This function can be used by clients that remain idle for a long
+     * while, to check whether the server has closed the connection and
+     * reconnect if necessary.
+     *
+     * @return bool
+     **/
+    function ping() {}
+
+    /**
+     * The maxdb_query function is used to simplify the act of performing a
+     * query against the database represented by the link parameter.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function query($query) {}
+
+    /**
+     * maxdb_real_connect attempts to establish a connection to a MaxDB
+     * database engine running on hostname.
+     * 
+     * This function differs from maxdb_connect:
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function real_connect($hostname, $username, $passwd, $dbname, $port, $socket) {}
+
+    /**
+     * This function is used to create a legal SQL string that you can use in
+     * a SQL statement. The string escapestr is encoded to an escaped SQL
+     * string, taking into account the current character set of the
+     * connection.
+     * 
+     * Characters encoded are ', ".
+     *
+     * @param string
+     * @return string
+     **/
+    function real_escape_sring($escapestr) {}
+
+    /**
+     * The maxdb_real_query is functionally identical with the maxdb_query.
+     *
+     * @param string
+     * @return bool
+     **/
+    function real_query($query) {}
+
+    /**
+     * Rollbacks the current transaction for the database specified by the
+     * link parameter.
+     *
+     * @return bool
+     **/
+    function rollback() {}
+
+    /**
+     * @return int
+     **/
+    function rpl_query_type() {}
+
+    /**
+     * @param string
+     * @return bool
+     **/
+    function send_query($query) {}
+
+    /**
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function ssl_set($key, $cert, $ca, $capath, $cipher) {}
+
+    /**
+     * maxdb_stat returns a string containing several information about the
+     * MaxDB server running.
+     *
+     * @return string
+     **/
+    function stat() {}
+
+    /**
+     * Allocates and initializes a statement resource suitable for
+     * maxdb_stmt_prepare.
+     *
+     * @return object
+     **/
+    function stmt_init() {}
+
+    /**
+     * This function has no functionally effect.
+     *
+     * @return object
+     **/
+    function store_result() {}
+
+    /**
+     * maxdb_use_result has no effect.
+     *
+     * @return resource
+     **/
+    function use_result() {}
+
+}
+class maxdb_stmt {
+    /**
+     * Closes a prepared statement. maxdb_stmt_close also deallocates the
+     * statement handle pointed to by stmt. If the current statement has
+     * pending or unread results, this function cancels them so that the next
+     * query can be executed.
+     *
+     * @return bool
+     **/
+    function close() {}
+
+    /**
+     * This function has to be called after a sequence of
+     * maxdb_stmt_send_long_data, that was started after maxdb_execute.
+     * 
+     * param_nr indicates which parameter to associate the end of data with.
+     * Parameters are numbered beginning with 0.
+     *
+     * @return bool
+     **/
+    function close_long_data() {}
+
+    /**
+     * This function has to be called after a sequence of
+     * maxdb_stmt_send_long_data, that was started after maxdb_execute.
+     * 
+     * param_nr indicates which parameter to associate the end of data with.
+     * Parameters are numbered beginning with 0.
+     *
+     * @return bool
+     **/
+    function maxdb_close_long_data() {}
+
 }
 class Memcache {
     /**
@@ -59691,6 +60102,11 @@ class MySQLi {
     function debug($message) {}
 
     /**
+     * @return void
+     **/
+    function disable_reads_from_master() {}
+
+    /**
      * This function is designed to be executed by an user with the SUPER
      * privilege and is used to dump debugging information into the log for
      * the MySQL Server relating to the connection.
@@ -59922,6 +60338,16 @@ class MySQLi {
     function rollback() {}
 
     /**
+     * Returns MYSQLI_RPL_MASTER, MYSQLI_RPL_SLAVE or MYSQLI_RPL_ADMIN
+     * depending on a query type. INSERT, UPDATE and similar are master
+     * queries, SELECT is slave, and FLUSH, REPAIR and similar are admin.
+     *
+     * @param string
+     * @return int
+     **/
+    function rpl_query_type($query) {}
+
+    /**
      * Selects the default database to be used when performing queries
      * against the database connection.
      *
@@ -59931,6 +60357,12 @@ class MySQLi {
     function select_db($dbname) {}
 
     /**
+     * @param string
+     * @return bool
+     **/
+    function send_query($query) {}
+
+    /**
      * Sets the default character set to be used when sending data from and
      * to the database server.
      *
@@ -59938,6 +60370,21 @@ class MySQLi {
      * @return bool
      **/
     function set_charset($charset) {}
+
+    /**
+     * Set callback function for LOAD DATA LOCAL INFILE command
+     * 
+     * The callbacks task is to read input from the file specified in the
+     * LOAD DATA LOCAL INFILE and to reformat it into the format understood
+     * by LOAD DATA INFILE.
+     * 
+     * The returned data needs to match the format specified in the LOAD DATA
+     *
+     * @param mysqli
+     * @param callback
+     * @return bool
+     **/
+    function set_local_infile_handler($link, $read_func) {}
 
     /**
      * Used for establishing secure connections using SSL. It must be called
@@ -59967,6 +60414,14 @@ class MySQLi {
      * @return string
      **/
     function stat() {}
+
+    /**
+     * Allocates and initializes a statement object suitable for
+     * mysqli_stmt_prepare.
+     *
+     * @return mysqli_stmt
+     **/
+    function stmt_init() {}
 
     /**
      * Transfers the result set from the last query on the database
@@ -63931,6 +64386,148 @@ class result {
      * @var array
      **/
     var $lengths;
+    /**
+     * The maxdb_data_seek function seeks to an arbitrary result pointer
+     * specified by the offset in the result set represented by result. The
+     * offset parameter must be between zero and the total number of rows
+     * minus one (0..maxdb_num_rows - 1).
+     *
+     * @param int
+     * @return bool
+     **/
+    function data_seek($offset) {}
+
+    /**
+     * Returns an array that corresponds to the fetched row or if there are
+     * no more rows for the resultset represented by the result parameter.
+     * 
+     * maxdb_fetch_array is an extended version of the maxdb_fetch_row
+     * function. In addition to storing the data in the numeric indices of
+     * the result array, the maxdb_fetch_array function can also store the
+     * data in associative indices, using the field names of the result set
+     * as keys.
+     * 
+     * If two or more columns of the result have the same field names, the
+     * last column will take precedence and overwrite the earlier data. In
+     * order to access multiple columns with the same name, the numerically
+     * indexed version of the row must be used.
+     * 
+     * The optional second argument resulttype is a constant indicating what
+     * type of array should be produced from the current row data. The
+     * possible values for this parameter are the constants MAXDB_ASSOC,
+     * MAXDB_ASSOC_UPPER, MAXDB_ASSOC_LOWER, MAXDB_NUM, or MAXDB_BOTH. By
+     * default the maxdb_fetch_array function will assume MAXDB_BOTH, which
+     * is a combination of MAXDB_NUM and MAXDB_ASSOC for this parameter.
+     * 
+     * By using the MAXDB_ASSOC constant this function will behave
+     * identically to the maxdb_fetch_assoc, while MAXDB_NUM will behave
+     * identically to the maxdb_fetch_row function. The final option
+     * MAXDB_BOTH will create a single array with the attributes of both.
+     * 
+     * By using the MAXDB_ASSOC_UPPER constant, the behaviour of this
+     * function is identical to the use of MAXDB_ASSOC except the array index
+     * of a column is the fieldname in upper case.
+     * 
+     * By using the MAXDB_ASSOC_LOWER constant, the behaviour of this
+     * function is identical to the use of MAXDB_ASSOC except the array index
+     * of a column is the fieldname in lower case.
+     *
+     * @param int
+     * @return mixed
+     **/
+    function fetch_array($resulttype) {}
+
+    /**
+     * Returns an associative array that corresponds to the fetched row or if
+     * there are no more rows.
+     * 
+     * The maxdb_fetch_assoc function is used to return an associative array
+     * representing the next row in the result set for the result represented
+     * by the result parameter, where each key in the array represents the
+     * name of one of the result set's columns.
+     * 
+     * If two or more columns of the result have the same field names, the
+     * last column will take precedence. To access the other column(s) of the
+     * same name, you either need to access the result with numeric indices
+     * by using maxdb_fetch_row or add alias names.
+     *
+     * @return array
+     **/
+    function fetch_assoc() {}
+
+    /**
+     * The maxdb_fetch_field returns the definition of one column of a result
+     * set as an resource. Call this function repeatedly to retrieve
+     * information about all columns in the result set. maxdb_fetch_field
+     * returns when no more fields are left.
+     *
+     * @return mixed
+     **/
+    function fetch_field() {}
+
+    /**
+     * This function serves an identical purpose to the maxdb_fetch_field
+     * function with the single difference that, instead of returning one
+     * resource at a time for each field, the columns are returned as an
+     * array of resources.
+     *
+     * @return mixed
+     **/
+    function fetch_fields() {}
+
+    /**
+     * maxdb_fetch_field_direct returns an resource which contains field
+     * definition information from specified resultset. The value of fieldnr
+     * must be in the range from 0 to number of fields - 1.
+     *
+     * @param int
+     * @return mixed
+     **/
+    function fetch_field_direct($fieldnr) {}
+
+    /**
+     * The maxdb_fetch_object will return the current row result set as an
+     * object where the attributes of the object represent the names of the
+     * fields found within the result set. If no more rows exist in the
+     * current result set, is returned.
+     *
+     * @return object
+     **/
+    function fetch_object() {}
+
+    /**
+     * Returns an array that corresponds to the fetched row, or if there are
+     * no more rows.
+     * 
+     * maxdb_fetch_row fetches one row of data from the result set
+     * represented by result and returns it as an enumerated array, where
+     * each column is stored in an array offset starting from 0 (zero). Each
+     * subsequent call to the maxdb_fetch_row function will return the next
+     * row within the result set, or if there are no more rows.
+     *
+     * @return mixed
+     **/
+    function fetch_row() {}
+
+    /**
+     * Sets the field cursor to the given offset. The next call to
+     * maxdb_fetch_field will retrieve the field definition of the column
+     * associated with that offset.
+     *
+     * @param int
+     * @return bool
+     **/
+    function field_seek($fieldnr) {}
+
+    /**
+     * The maxdb_free_result function frees the memory associated with the
+     * result represented by the result parameter, which was allocated by
+     * maxdb_query, maxdb_store_result or maxdb_use_result.
+     *
+     * @return void
+     **/
+    function free() {}
+
 }
 class Runkit_Sandbox_Parent {
     /**
@@ -67217,6 +67814,302 @@ class SQLite3Stmt {
     function reset() {}
 
 }
+class SQLiteDatabase {
+    /**
+     * sqlite_array_query executes the given query and returns an array of
+     * the entire result set. It is similar to calling sqlite_query and then
+     * sqlite_fetch_array for each row in the result set. sqlite_array_query
+     * is significantly faster than the aforementioned.
+     *
+     * @param string
+     * @param int
+     * @param bool
+     * @return array
+     **/
+    function arrayQuery($query, $result_type, $decode_binary) {}
+
+    /**
+     * Set the maximum time, in milliseconds, that SQLite will wait for a
+     * dbhandle to become ready for use.
+     *
+     * @param int
+     * @return void
+     **/
+    function busyTimeout($milliseconds) {}
+
+    /**
+     * Returns the numbers of rows that were changed by the most recent SQL
+     * statement executed against the dbhandle database handle.
+     *
+     * @return int
+     **/
+    function changes() {}
+
+    /**
+     * sqlite_create_aggregate is similar to sqlite_create_function except
+     * that it registers functions that can be used to calculate a result
+     * aggregated across all the rows of a query.
+     * 
+     * The key difference between this function and sqlite_create_function is
+     * that two functions are required to manage the aggregate; step_func is
+     * called for each row of the result set. Your PHP function should
+     * accumulate the result and store it into the aggregation context. Once
+     * all the rows have been processed, finalize_func will be called and it
+     * should then take the data from the aggregation context and return the
+     * result. Callback functions should return a type understood by SQLite
+     * (i.e. scalar type).
+     *
+     * @param string
+     * @param callback
+     * @param callback
+     * @param int
+     * @return void
+     **/
+    function createAggregate($function_name, $step_func, $finalize_func, $num_args) {}
+
+    /**
+     * sqlite_create_function allows you to register a PHP function with
+     * SQLite as an UDF (User Defined Function), so that it can be called
+     * from within your SQL statements.
+     * 
+     * The UDF can be used in any SQL statement that can call functions, such
+     * as SELECT and UPDATE statements and also in triggers.
+     *
+     * @param string
+     * @param callback
+     * @param int
+     * @return void
+     **/
+    function createFunction($function_name, $callback, $num_args) {}
+
+    /**
+     * sqlite_fetch_column_types returns an array of column data types from
+     * the specified table_name table.
+     *
+     * @param string
+     * @param int
+     * @return array
+     **/
+    function fetchColumnTypes($table_name, $result_type) {}
+
+    /**
+     * Returns the error code from the last operation performed on dbhandle
+     * (the database handle), or 0 when no error occurred. A human readable
+     * description of the error code can be retrieved using
+     * sqlite_error_string.
+     *
+     * @return int
+     **/
+    function lastError() {}
+
+    /**
+     * Returns the rowid of the row that was most recently inserted into the
+     * database dbhandle, if it was created as an auto-increment field.
+     *
+     * @return int
+     **/
+    function lastInsertRowid() {}
+
+    /**
+     * Executes an SQL statement given by the query against a given database
+     * handle.
+     *
+     * @param string
+     * @param int
+     * @param string
+     * @return SQLiteResult
+     **/
+    function query($query, $result_type, &$error_msg) {}
+
+    /**
+     * Executes an SQL statement given by the query against a given database
+     * handle (specified by the dbhandle parameter).
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function queryExec($query, &$error_msg) {}
+
+    /**
+     * @param string
+     * @param bool
+     * @param bool
+     * @return array
+     **/
+    function singleQuery($query, $first_row_only, $decode_binary) {}
+
+    /**
+     * sqlite_unbuffered_query is identical to sqlite_query except that the
+     * result that is returned is a sequential forward-only result set that
+     * can only be used to read each row, one after the other.
+     * 
+     * This function is ideal for generating things such as HTML tables where
+     * you only need to process one row at a time and don't need to randomly
+     * access the row data.
+     *
+     * @param string
+     * @param int
+     * @param string
+     * @return SQLiteUnbuffered
+     **/
+    function unbufferedQuery($query, $result_type, &$error_msg) {}
+
+}
+class SQLiteResult {
+    /**
+     * Fetches the value of a column named index_or_name (if it is a string),
+     * or of the ordinal column numbered index_or_name (if it is an integer)
+     * from the current row of the query result handle result.
+     *
+     * @param mixed
+     * @param bool
+     * @return mixed
+     **/
+    function column($index_or_name, $decode_binary) {}
+
+    /**
+     * sqlite_current is identical to sqlite_fetch_array except that it does
+     * not advance to the next row prior to returning the data; it returns
+     * the data from the current position only.
+     *
+     * @param int
+     * @param bool
+     * @return array
+     **/
+    function current($result_type, $decode_binary) {}
+
+    /**
+     * Fetches the next row from the given result handle. If there are no
+     * more rows, returns , otherwise returns an associative array
+     * representing the row data.
+     *
+     * @param int
+     * @param bool
+     * @return array
+     **/
+    function fetch($result_type, $decode_binary) {}
+
+    /**
+     * sqlite_fetch_all returns an array of the entire result set from the
+     * result resource. It is similar to calling sqlite_query (or
+     * sqlite_unbuffered_query) and then sqlite_fetch_array for each row in
+     * the result set.
+     *
+     * @param int
+     * @param bool
+     * @return array
+     **/
+    function fetchAll($result_type, $decode_binary) {}
+
+    /**
+     * @param string
+     * @param array
+     * @param bool
+     * @return object
+     **/
+    function fetchObject($class_name, $ctor_params, $decode_binary) {}
+
+    /**
+     * sqlite_fetch_single is identical to sqlite_fetch_array except that it
+     * returns the value of the first column of the rowset.
+     * 
+     * This is the most optimal way to retrieve data when you are only
+     * interested in the values from a single column of data.
+     *
+     * @param bool
+     * @return string
+     **/
+    function fetchSingle($decode_binary) {}
+
+    /**
+     * Given the ordinal column number, field_index, sqlite_field_name
+     * returns the name of that field in the result set result.
+     *
+     * @param int
+     * @return string
+     **/
+    function fieldName($field_index) {}
+
+    /**
+     * Find whether there are more previous rows from the given result
+     * handle.
+     *
+     * @return bool
+     **/
+    function hasPrev() {}
+
+    /**
+     * sqlite_key returns the current row index of the buffered result set
+     * result.
+     *
+     * @return int
+     **/
+    function key() {}
+
+    /**
+     * sqlite_next advances the result handle result to the next row.
+     *
+     * @return bool
+     **/
+    function next() {}
+
+    /**
+     * Returns the number of fields in the result set.
+     *
+     * @return int
+     **/
+    function numFields() {}
+
+    /**
+     * Returns the number of rows in the buffered result set.
+     *
+     * @return int
+     **/
+    function numRows() {}
+
+    /**
+     * sqlite_prev seeks back the result handle to the previous row.
+     *
+     * @return bool
+     **/
+    function prev() {}
+
+    /**
+     * sqlite_rewind seeks back to the first row in the given result set.
+     *
+     * @return bool
+     **/
+    function rewind() {}
+
+    /**
+     * sqlite_seek seeks to the row given by the parameter rownum.
+     *
+     * @param int
+     * @return bool
+     **/
+    function seek($rownum) {}
+
+    /**
+     * sqlite_fetch_single is identical to sqlite_fetch_array except that it
+     * returns the value of the first column of the rowset.
+     * 
+     * This is the most optimal way to retrieve data when you are only
+     * interested in the values from a single column of data.
+     *
+     * @param bool
+     * @return string
+     **/
+    function sqlite_fetch_string($decode_binary) {}
+
+    /**
+     * Finds whether more rows are available from the given result handle.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+}
 class stdClass {
 }
 class stmt {
@@ -67264,6 +68157,268 @@ class stmt {
      * @var int
      **/
     var $param_count;
+    /**
+     * maxdb_stmt_bind_param is used to bind variables for the parameter
+     * markers in the SQL statement that was passed to maxdb_prepare. The
+     * string types contains one or more characters which specify the types
+     * for the corresponding bind variables.
+     * 
+     * The extended syntax of maxdb_stmt_bind_param allows to give the
+     * parameters as an array instead of a variable list of PHP variables to
+     * the function. If the array variable has not been used before calling
+     * maxdb_stmt_bind_param, it has to be initialized as an emtpy array. See
+     * the examples how to use maxdb_stmt_bind_param with extended syntax.
+     * 
+     * Variables for SELECT INTO SQL statements can also be bound using
+     * maxdb_stmt_bind_param. Parameters for database procedures can be bound
+     * using maxdb_stmt_bind_param. See the examples how to use
+     * maxdb_stmt_bind_param in this cases.
+     * 
+     * If a variable bound as INTO variable to a SQL statement was used
+     * before, the content of this variable is overwritten by the data of the
+     * SELECT INTO statement. A reference to this variable will be invalid
+     * after a call to maxdb_stmt_bind_param.
+     * 
+     * For INOUT parameters of database procedures the content of the bound
+     * INOUT variable is overwritten by the output value of the database
+     * procedure. A reference to this variable will be invalid after a call
+     * to maxdb_stmt_bind_param.
+     * 
+     * Type specification chars
+     * 
+     * Character Description
+     * 
+     * i corresponding variable has type integer
+     * 
+     * d corresponding variable has type double
+     * 
+     * s corresponding variable has type string
+     * 
+     * b corresponding variable is a blob and will be sent in packages
+     *
+     * @param string
+     * @param mixed
+     * @return bool
+     **/
+    function bind_param($types, &$var1) {}
+
+    /**
+     * maxdb_stmt_bind_result is used to associate (bind) columns in the
+     * result set to variables. When maxdb_stmt_fetch is called to fetch
+     * data, the MaxDB client/server protocol places the data for the bound
+     * columns into the specified variables var1, ....
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function bind_result(&$var1) {}
+
+    /**
+     * The maxdb_stmt_data_seek function seeks to an arbitrary result pointer
+     * specified by the offset in the statement result set represented by
+     * statement. The offset parameter must be between zero and the total
+     * number of rows minus one (0..maxdb_stmt_num_rows - 1).
+     *
+     * @param int
+     * @return bool
+     **/
+    function data_seek($offset) {}
+
+    /**
+     * The maxdb_stmt_execute function executes a query that has been
+     * previously prepared using the maxdb_prepare function represented by
+     * the stmt resource. When executed any parameter markers which exist
+     * will automatically be replaced with the appropiate data.
+     * 
+     * If the statement is UPDATE, DELETE, or INSERT, the total number of
+     * affected rows can be determined by using the maxdb_stmt_affected_rows
+     * function. Likewise, if the query yields a result set the maxdb_fetch
+     * function is used.
+     *
+     * @return bool
+     **/
+    function execute() {}
+
+    /**
+     * maxdb_stmt_fetch returns row data using the variables bound by
+     * maxdb_stmt_bind_result.
+     *
+     * @return bool
+     **/
+    function fetch() {}
+
+    /**
+     * The maxdb_stmt_free_result function frees the result memory associated
+     * with the statement represented by the stmt parameter, which was
+     * allocated by maxdb_stmt_store_result.
+     *
+     * @return void
+     **/
+    function free_result() {}
+
+    /**
+     * maxdb_stmt_maxdb_bind_param is used to bind variables for the parameter
+     * markers in the SQL statement that was passed to maxdb_prepare. The
+     * string types contains one or more characters which specify the types
+     * for the corresponding bind variables.
+     * 
+     * The extended syntax of maxdb_stmt_maxdb_bind_param allows to give the
+     * parameters as an array instead of a variable list of PHP variables to
+     * the function. If the array variable has not been used before calling
+     * maxdb_stmt_maxdb_bind_param, it has to be initialized as an emtpy array. See
+     * the examples how to use maxdb_stmt_maxdb_bind_param with extended syntax.
+     * 
+     * Variables for SELECT INTO SQL statements can also be bound using
+     * maxdb_stmt_maxdb_bind_param. Parameters for database procedures can be bound
+     * using maxdb_stmt_maxdb_bind_param. See the examples how to use
+     * maxdb_stmt_maxdb_bind_param in this cases.
+     * 
+     * If a variable bound as INTO variable to a SQL statement was used
+     * before, the content of this variable is overwritten by the data of the
+     * SELECT INTO statement. A reference to this variable will be invalid
+     * after a call to maxdb_stmt_maxdb_bind_param.
+     * 
+     * For INOUT parameters of database procedures the content of the bound
+     * INOUT variable is overwritten by the output value of the database
+     * procedure. A reference to this variable will be invalid after a call
+     * to maxdb_stmt_maxdb_bind_param.
+     * 
+     * Type specification chars
+     * 
+     * Character Description
+     * 
+     * i corresponding variable has type integer
+     * 
+     * d corresponding variable has type double
+     * 
+     * s corresponding variable has type string
+     * 
+     * b corresponding variable is a blob and will be sent in packages
+     *
+     * @param string
+     * @param mixed
+     * @return bool
+     **/
+    function maxdb_bind_param($types, &$var1) {}
+
+    /**
+     * maxdb_stmt_maxdb_bind_result is used to associate (bind) columns in the
+     * result set to variables. When maxdb_stmt_fetch is called to fetch
+     * data, the MaxDB client/server protocol places the data for the bound
+     * columns into the specified variables var1, ....
+     *
+     * @param mixed
+     * @return bool
+     **/
+    function maxdb_bind_result(&$var1) {}
+
+    /**
+     * The maxdb_stmt_maxdb_execute function maxdb_executes a query that has been
+     * previously prepared using the maxdb_prepare function represented by
+     * the stmt resource. When maxdb_executed any parameter markers which exist
+     * will automatically be replaced with the appropiate data.
+     * 
+     * If the statement is UPDATE, DELETE, or INSERT, the total number of
+     * affected rows can be determined by using the maxdb_stmt_affected_rows
+     * function. Likewise, if the query yields a result set the maxdb_fetch
+     * function is used.
+     *
+     * @return bool
+     **/
+    function maxdb_execute() {}
+
+    /**
+     * maxdb_stmt_maxdb_fetch returns row data using the variables bound by
+     * maxdb_stmt_bind_result.
+     *
+     * @return bool
+     **/
+    function maxdb_fetch() {}
+
+    /**
+     * If a statement passed to maxdb_prepare is one that produces a result
+     * set, maxdb_stmt_maxdb_get_metadata returns the result resource that can
+     * be used to process the meta information such as total number of fields
+     * and individual field information.
+     * 
+     * The result set structure should be freed when you are done with it,
+     * which you can do by passing it to maxdb_free_result
+     *
+     * @return resource
+     **/
+    function maxdb_get_metadata() {}
+
+    /**
+     * Allows to send parameter data to the server in pieces (or chunks).
+     * This function can be called multiple times to send the parts of a
+     * character or binary data value for a column, which must be one of the
+     * TEXT or BLOB datatypes.
+     * 
+     * param_nr indicates which parameter to associate the data with.
+     * Parameters are numbered beginning with 0. data is a string containing
+     * data to be sent.
+     *
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function maxdb_send_long_data($param_nr, $data) {}
+
+    /**
+     * Procedure style:
+     * 
+     * maxdb_stmt_prepare prepares the SQL query pointed to by the
+     * null-terminated string query. The statement resource has to be
+     * allocated by maxdb_stmt_init. The query must consist of a single SQL
+     * statement.
+     * 
+     * The parameter query can include one or more parameter markers in the
+     * SQL statement by embedding question mark (?) characters at the
+     * appropriate positions.
+     * 
+     * The parameter markers must be bound to application variables using
+     * maxdb_stmt_bind_param and/or maxdb_stmt_bind_result before executing
+     * the statement or fetching rows.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function prepare($query) {}
+
+    /**
+     * @return bool
+     **/
+    function reset() {}
+
+    /**
+     * If a statement passed to maxdb_prepare is one that produces a result
+     * set, maxdb_stmt_result_metadata returns the result resource that can
+     * be used to process the meta information such as total number of fields
+     * and individual field information.
+     * 
+     * The result set structure should be freed when you are done with it,
+     * which you can do by passing it to maxdb_free_result
+     *
+     * @return resource
+     **/
+    function result_metadata() {}
+
+    /**
+     * Allows to send parameter data to the server in pieces (or chunks).
+     * This function can be called multiple times to send the parts of a
+     * character or binary data value for a column, which must be one of the
+     * TEXT or BLOB datatypes.
+     * 
+     * param_nr indicates which parameter to associate the data with.
+     * Parameters are numbered beginning with 0. data is a string containing
+     * data to be sent.
+     *
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function stmt_send_long_data($param_nr, $data) {}
+
 }
 class streamWrapper {
     /**
@@ -69521,6 +70676,560 @@ class XMLReader {
      * @return bool
      **/
     function xml($source, $encoding, $options) {}
+
+}
+class XMLWriter {
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Ends the current attribute.
+     *
+     * @return bool
+     **/
+    function endAttribute() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Ends the current CDATA section.
+     *
+     * @return bool
+     **/
+    function endCData() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Ends the current comment.
+     *
+     * @return bool
+     **/
+    function endComment() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Ends the current document.
+     *
+     * @return bool
+     **/
+    function endDocument() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Ends the DTD of the document.
+     *
+     * @return bool
+     **/
+    function endDTD() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Ends the current DTD attribute list.
+     *
+     * @return bool
+     **/
+    function endDTDAttlist() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Ends the current DTD element.
+     *
+     * @return bool
+     **/
+    function endDTDElement() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Ends the current DTD entity.
+     *
+     * @return bool
+     **/
+    function endDTDEntity() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Ends the current element.
+     *
+     * @return bool
+     **/
+    function endElement() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Ends the current processing instruction.
+     *
+     * @return bool
+     **/
+    function endPI() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Flushes the current buffer.
+     *
+     * @param bool
+     * @return mixed
+     **/
+    function flush($empty) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * End the current xml element. Writes an end tag even if the element is
+     * empty.
+     *
+     * @return bool
+     **/
+    function fullEndElement() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Creates a new XMLWriter using memory for string output.
+     *
+     * @return bool
+     **/
+    function openMemory() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Creates a new XMLWriter using uri for the output.
+     *
+     * @param string
+     * @return bool
+     **/
+    function openURI($uri) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Returns the current buffer.
+     *
+     * @param bool
+     * @return string
+     **/
+    function outputMemory($flush) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Toggles indentation on or off.
+     *
+     * @param bool
+     * @return bool
+     **/
+    function setIndent($indent) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Sets the string which will be used to indent each element/attribute of
+     * the resulting xml.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setIndentString($indentString) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Starts an attribute.
+     *
+     * @param string
+     * @return bool
+     **/
+    function startAttribute($name) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Starts a namespaced attribute.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function startAttributeNS($prefix, $name, $uri) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Starts a CDATA.
+     *
+     * @return bool
+     **/
+    function startCData() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Starts a comment.
+     *
+     * @return bool
+     **/
+    function startComment() {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Starts a document.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function startDocument($version, $encoding, $standalone) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Starts a DTD.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function startDTD($qualifiedName, $publicId, $systemId) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Starts a DTD attribute list.
+     *
+     * @param string
+     * @return bool
+     **/
+    function startDTDAttlist($name) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Starts a DTD element.
+     *
+     * @param string
+     * @return bool
+     **/
+    function startDTDElement($qualifiedName) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Starts a DTD entity.
+     *
+     * @param string
+     * @param bool
+     * @return bool
+     **/
+    function startDTDEntity($name, $isparam) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Starts an element.
+     *
+     * @param string
+     * @return bool
+     **/
+    function startElement($name) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Starts a namespaced element.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function startElementNS($prefix, $name, $uri) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Starts a processing instruction tag.
+     *
+     * @param string
+     * @return bool
+     **/
+    function startPI($target) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Writes a text.
+     *
+     * @param string
+     * @return bool
+     **/
+    function text($content) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Writes a full attribute.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function writeAttribute($name, $value) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Writes a full namespaced attribute.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function writeAttributeNS($prefix, $name, $uri, $content) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Writes a full CDATA.
+     *
+     * @param string
+     * @return bool
+     **/
+    function writeCData($content) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Writes a full comment.
+     *
+     * @param string
+     * @return bool
+     **/
+    function writeComment($content) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Writes a full DTD.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function writeDTD($name, $publicId, $systemId, $subset) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Writes a DTD attribute list.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function writeDTDAttlist($name, $content) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Writes a full DTD element.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function writeDTDElement($name, $content) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Writes a full DTD entity.
+     *
+     * @param string
+     * @param string
+     * @param bool
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function writeDTDEntity($name, $content, $pe, $pubid, $sysid, $ndataid) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Writes a full element tag.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function writeElement($name, $content) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Writes a full namespaced element tag.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function writeElementNS($prefix, $name, $uri, $content) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Writes a processing instruction.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function writePI($target, $content) {}
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * Writes a raw xml text.
+     *
+     * @param string
+     * @return bool
+     **/
+    function writeRaw($content) {}
+
+}
+class XPathContext {
+    /**
+     * The optional contextnode can be specified for doing relative XPath
+     * queries.
+     * 
+     * See also xpath_new_context.
+     *
+     * @param string
+     * @param domnode
+     * @return XPathObject
+     **/
+    function xpath_eval($xpath_expression, $contextnode) {}
+
+    /**
+     * xpath_eval_expression Example
+     * 
+     * See also xpath_eval.
+     *
+     * @param string
+     * @param domnode
+     * @return XPathObject
+     **/
+    function xpath_eval_expression($expression, $contextnode) {}
+
+    /**
+     * @param string
+     * @param domnode
+     * @return int
+     **/
+    function xptr_eval($eval_str, $contextnode) {}
 
 }
 class XSLTProcessor {

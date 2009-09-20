@@ -416,24 +416,28 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
 
     $desc = getDocumentation($xml);
 
+    $addedSomething = false;
     // file could contain function + property
     if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->fieldsynopsis)) {
         $class = (string)$xml->refsect1->classsynopsis->ooclass->classname;
 
         foreach ( $xml->refsect1->classsynopsis->fieldsynopsis as $synopsis ) {
             newPropertyEntry($class, $synopsis->varname, $desc, $synopsis->type );
+            $addedSomething = true;
         }
     }
 
     if (isset($xml->refsect1->methodsynopsis)) {
         $methodsynopsis = $xml->refsect1->methodsynopsis;
-        $function = (string)$methodsynopsis->methodname;
-        $class = 'global';
-    } else if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->methodsynopsis)) {
-        $class = (string)$xml->refsect1->classsynopsis->ooclass->classname;
+        newMethodEntry('global', $methodsynopsis->methodname, $funcOverload, $methodsynopsis, $desc, $xml);
+        $addedSomething = true;
+    }
+    if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->methodsynopsis)) {
         $methodsynopsis = $xml->refsect1->classsynopsis->methodsynopsis;
-        $function = (string)$methodsynopsis->methodname;
-    } elseif ( isset($xml->refnamediv->refpurpose->function) ) {
+        newMethodEntry($xml->refsect1->classsynopsis->ooclass->classname, $methodsynopsis->methodname, $funcOverload, $methodsynopsis, $desc, $xml);
+        $addedSomething = true;
+    }
+    if ( !$addedSomething && isset($xml->refnamediv->refpurpose->function) ) {
         // This is function alias
         $functionName = (string)$xml->refnamediv->refname;
         $aliasName    = (string)$xml->refnamediv->refpurpose->function;
@@ -442,72 +446,10 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             return false;
         }
         parseFile(new SplFileInfo($baseFileName), $functionName);
-        return true;
-    } else {
-        return false;
+        $addedSomething = true;
     }
 
-    if (strpos($function, '::')) {
-        $class = substr($function, 0, strpos($function, '::'));
-        $function = substr($function, strpos($function, '::')+2);
-    } else if (strpos($function, '->')) {
-        $class = substr($function, 0, strpos($function, '->'));
-        $function = substr($function, strpos($function, '->')+2);
-    } else {
-        if ($function == '__halt_compiler') return false;
-        if ($function == 'exit') return false;
-        if ($function == 'die') return false;
-        if ($function == 'eval') return false;
-        if ($function == 'echo') return false;
-        if ($function == 'print') return false;
-        if ($function == 'array') return false;
-        if ($function == 'list') return false;
-        if ($function == 'isset') return false;
-        if ($function == 'unset') return false;
-        if ($function == 'empty') return false;
-    }
-
-    if (strpos($function, '-')) return false;
-    if (strpos($class, '-')) return false;
-    if ($function == 'isSet') return false; //todo: bug in lexer
-    if ($function == 'clone') return false; //todo: bug in lexer
-    if (substr($class, 0, 3) == 'DOM') $class = 'Dom'.substr($class, 3);
-    $class = trim($class);
-    if ($class == 'imagick') $class = 'Imagick';
-    if (in_array($class.'::'.($funcOverload ? $funcOverload : $function), $existingFunctions)) return false;
-    $existingFunctions[] = $class.'::'.($funcOverload ? $funcOverload : $function);
-
-    $params = array();
-    foreach ($methodsynopsis->methodparam as $param) {
-        $paramName = $param->parameter;
-        if (trim($paramName) == '...') continue;
-        if (!trim($paramName)) continue;
-        $paramName = str_replace('/', '', $paramName);
-        $paramName = str_replace('-', '', $paramName);
-        $paramName = trim(trim(trim($paramName), '*'), '&');
-        if (is_numeric(substr($paramName, 0, 1))) $paramName = '_'.$paramName;
-        $params[] = array(
-            'name' => $paramName,
-            'type' => (string)$param->type,
-            'isRef' => isset($param->parameter->attributes()->role) ? ($param->parameter->attributes()->role == "reference") : false
-        );
-    }
-
-    $class = newClassEntry($class);
-    if ( $class == 'collator' && $function == 'setStrength' ) {
-        foreach ($xml->refsect1->para as $p ) {
-            $p = strip_tags($p->asXML());
-            $p = trim($p);
-            var_dump($p);
-        }
-    }
-    $classes[$class]['functions'][] = array(
-        'name'   => $funcOverload ? $funcOverload : $function,
-        'params' => $params,
-        'type'   => (string)$methodsynopsis->type,
-        'desc'   => $funcOverload ? str_replace($function, $funcOverload, $desc) : $desc
-    );
-    return true;
+    return $addedSomething;
 } // end of function parseFile()
 
 /**
@@ -569,5 +511,69 @@ function newPropertyEntry($class, $name, $desc, $type) {
         'name' => (string) $name,
         'desc' => (string) $desc,
         'type' => (string) $type
+    );
+}
+
+/**
+ * create a new method entry for @p $class
+ */
+function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc, SimpleXMLElement $xml) {
+    global $existingFunctions, $classes;
+    $class = (string) $class;
+    $function = (string) $function;
+    $funcOverload = (string) $funcOverload;
+
+    if (strpos($function, '::')) {
+        $class = substr($function, 0, strpos($function, '::'));
+        $function = substr($function, strpos($function, '::')+2);
+    } else if (strpos($function, '->')) {
+        $class = substr($function, 0, strpos($function, '->'));
+        $function = substr($function, strpos($function, '->')+2);
+    } else {
+        if ($function == '__halt_compiler') return false;
+        if ($function == 'exit') return false;
+        if ($function == 'die') return false;
+        if ($function == 'eval') return false;
+        if ($function == 'echo') return false;
+        if ($function == 'print') return false;
+        if ($function == 'array') return false;
+        if ($function == 'list') return false;
+        if ($function == 'isset') return false;
+        if ($function == 'unset') return false;
+        if ($function == 'empty') return false;
+    }
+
+    if (strpos($function, '-')) return false;
+    if (strpos($class, '-')) return false;
+    if ($function == 'isSet') return false; //todo: bug in lexer
+    if ($function == 'clone') return false; //todo: bug in lexer
+    if (substr($class, 0, 3) == 'DOM') $class = 'Dom'.substr($class, 3);
+    $class = trim($class);
+    if ($class == 'imagick') $class = 'Imagick';
+    if (in_array($class.'::'.($funcOverload ? $funcOverload : $function), $existingFunctions)) return false;
+    $existingFunctions[] = $class.'::'.($funcOverload ? $funcOverload : $function);
+
+    $params = array();
+    foreach ($methodsynopsis->methodparam as $param) {
+        $paramName = $param->parameter;
+        if (trim($paramName) == '...') continue;
+        if (!trim($paramName)) continue;
+        $paramName = str_replace('/', '', $paramName);
+        $paramName = str_replace('-', '', $paramName);
+        $paramName = trim(trim(trim($paramName), '*'), '&');
+        if (is_numeric(substr($paramName, 0, 1))) $paramName = '_'.$paramName;
+        $params[] = array(
+            'name' => $paramName,
+            'type' => (string)$param->type,
+            'isRef' => isset($param->parameter->attributes()->role) ? ($param->parameter->attributes()->role == "reference") : false
+        );
+    }
+
+    $class = newClassEntry($class);
+    $classes[$class]['functions'][] = array(
+        'name'   => $funcOverload ? $funcOverload : $function,
+        'params' => $params,
+        'type'   => (string)$methodsynopsis->type,
+        'desc'   => $funcOverload ? str_replace($function, $funcOverload, $desc) : $desc
     );
 }
