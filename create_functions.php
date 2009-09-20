@@ -494,6 +494,13 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     }
 
     $class = newClassEntry($class);
+    if ( $class == 'collator' && $function == 'setStrength' ) {
+        foreach ($xml->refsect1->para as $p ) {
+            $p = strip_tags($p->asXML());
+            $p = trim($p);
+            var_dump($p);
+        }
+    }
     $classes[$class]['functions'][] = array(
         'name'   => $funcOverload ? $funcOverload : $function,
         'params' => $params,
@@ -534,12 +541,22 @@ function newClassEntry($name) {
  * @return string
  */
 function getDocumentation(SimpleXMLElement $xml) {
-    $desc = $xml->refsect1->para->asXML();
-    $desc = strip_tags($desc);
-    $desc = trim($desc);
-    $desc = preg_replace('#  +#', ' ', $desc);
-    $desc = preg_replace('#^ #m', '', $desc);
-    return $desc;
+    $descs = array();
+    foreach ($xml->refsect1->para as $p ) {
+        $p = strip_tags($p->asXML());
+        $p = trim($p);
+        $p = preg_replace('#  +#', ' ', $p);
+        $p = preg_replace('#^ | $#m', '', $p);
+        $p = preg_replace('#(?<=[^\n])\n(?=[^\n])#s', ' ', $p);
+        $p = preg_replace('#\n\n+#s', "\n\n", $p);
+        if ( stripos($p, 'procedural style') !== false || stripos($p, 'object oriented style') !== false ) {
+            // uninteresting
+            continue;
+        }
+        $p = wordwrap($p, 70, "\n", false);
+        $descs[] = $p;
+    }
+    return implode("\n\n", $descs);
 }
 
 /**
