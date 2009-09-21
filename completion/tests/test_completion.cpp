@@ -28,6 +28,7 @@
 #include <language/duchain/duchainpointer.h>
 #include <language/duchain/codemodel.h>
 #include <language/codecompletion/codecompletiontesthelper.h>
+#include <language/duchain/types/alltypes.h>
 #include "duchain/structuretype.h"
 
 #include "completion/context.h"
@@ -337,11 +338,13 @@ void TestCompletion::constantFromOtherFile()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QCOMPARE(addTop->localDeclarations().size(), 1);
+    QCOMPARE(addTop->localDeclarations().size(), 2);
     Declaration* findMe = addTop->localDeclarations().first();
+    Declaration* dontFindMe = addTop->localDeclarations().last();
 
     PhpCompletionTester tester(top, "");
     QVERIFY(searchDeclaration(tester.items, findMe));
+    QVERIFY(!searchDeclaration(tester.items, dontFindMe));
 }
 
 void TestCompletion::baseClass()
@@ -1023,6 +1026,31 @@ void TestCompletion::variableBeforeDeclaration()
     QVERIFY(!searchDeclaration(tester.items, top->localDeclarations().first()));
 }
 
+void TestCompletion::functionArguments()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php function foo($asdf, $bar) {}", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* fDec = top->localDeclarations().first();
+    QVERIFY(fDec);
+    FunctionType::Ptr fType = fDec->type<FunctionType>();
+    QVERIFY(fType);
+
+    // params
+    QVector< Declaration* > args = top->childContexts().first()->localDeclarations();
+    QCOMPARE(args.size(), 2);
+
+    PhpCompletionTester tester(top->childContexts().last(), "");
+    // should get two local and the func itself
+    QVERIFY(searchDeclaration(tester.items, fDec));
+    foreach( Declaration* dec, args ) {
+        kDebug() << dec->toString();
+        QVERIFY(searchDeclaration(tester.items, dec));
+    }
+}
 }
 
 #include "test_completion.moc"

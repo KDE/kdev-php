@@ -190,6 +190,10 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
     if (node->methodName) {
         //method declaration
         DUContext* parameters = openContext(node->parameters, DUContext::Function, node->methodName);
+        {
+            DUChainWriteLocker lock(DUChain::lock());
+            parameters->setInSymbolTable(false);
+        }
         visitNode(node->parameters);
         closeContext();
 
@@ -197,6 +201,7 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
         {
             DUChainWriteLocker lock(DUChain::lock());
             body->addImportedParentContext(parameters);
+            body->setInSymbolTable(false);
         }
         visitNode(node->methodBody);
         closeContext();
@@ -217,6 +222,10 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     visitNode(node->functionName);
 
     DUContext* parameters = openContext(node->parameters, DUContext::Function, node->functionName);
+    {
+        DUChainWriteLocker lock(DUChain::lock());
+        parameters->setInSymbolTable(false);
+    }
     visitNode(node->parameters);
     closeContext();
 
@@ -224,6 +233,7 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     {
         DUChainWriteLocker lock(DUChain::lock());
         body->addImportedParentContext(parameters);
+        body->setInSymbolTable(false);
     }
     visitNode(node->functionBody);
     closeContext();

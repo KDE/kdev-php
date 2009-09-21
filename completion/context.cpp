@@ -1272,7 +1272,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
             Declaration* dec = decl.first;
             if (dec->kind() == Declaration::Instance) {
                 // filter non-superglobal vars of other contexts
-                if (dec->context() != m_duContext.data()) {
+                if (dec->context() != m_duContext.data() && !m_duContext->imports(dec->context())) {
                     VariableDeclaration* vDec = dynamic_cast<VariableDeclaration*>(dec);
                     if ( vDec && !vDec->isSuperglobal() ) {
                         continue;
@@ -1299,7 +1299,8 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
             foreach(const IndexedString &url, urlSets) {
                 CodeModel::self().items(url, count, foundItems);
                 for (uint i = 0; i < count; ++i) {
-                    if (foundItems[i].kind == CodeModelItem::Class || foundItems[i].kind == CodeModelItem::Function) {
+                    if (foundItems[i].kind == CodeModelItem::Class || foundItems[i].kind == CodeModelItem::Function
+                            || foundItems[i].kind == CodeModelItem::Variable) {
                         foreach(ParsingEnvironmentFilePointer env, DUChain::self()->allEnvironmentFiles(url)) {
                             if (env->language() != IndexedString("Php")) continue;
                             TopDUContext* top = env->topContext();
@@ -1308,12 +1309,17 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                             QList<Declaration*> decls = top->findDeclarations(foundItems[i].id);
                             foreach(Declaration* decl, decls) {
                                 if (abort) return items;
-                                // we don't want to have class methods, just normal functions
-                                if ( foundItems[i].kind == CodeModelItem::Function &&
-                                     decl->context() && decl->context()->type() == DUContext::Class ) {
+                                // we don't want to have class methods/properties, just normal functions
+                                // and other global stuff
+                                if ( decl->context() && decl->context()->type() == DUContext::Class ) {
                                     continue;
                                 }
                                 if (!isValidCompletionItem(decl)) continue;
+                                if ( VariableDeclaration* vDec = dynamic_cast<VariableDeclaration*>(decl) ) {
+                                    if ( !vDec->isSuperglobal() ) {
+                                        continue;
+                                    }
+                                }
                                 items << CompletionTreeItemPointer(
                                             new NormalDeclarationCompletionItem(
                                                     DeclarationPointer(decl),

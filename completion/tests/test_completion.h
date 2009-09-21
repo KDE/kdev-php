@@ -84,6 +84,7 @@ private slots:
     void classBeforeDeclaration();
     void constantBeforeDeclaration();
     void variableBeforeDeclaration();
+    void functionArguments();
 };
 
 }
