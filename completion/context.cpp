@@ -199,8 +199,10 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     ifDebug(log("non-processed text: " + m_text);)
 
     if ( context->type() == DUContext::Class || context->type() == DUContext::Function || context->type() == DUContext::Other ) {
-        ifDebug(log("added start tag: " + m_text);)
-        m_text.prepend("<?php ");
+        if ( !m_parentContext && !m_text.startsWith("<?php ") ) {
+            ifDebug(log("added start tag: " + m_text);)
+            m_text.prepend("<?php ");
+        }
     }
 
     m_valid = !m_text.isEmpty();
