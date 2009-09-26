@@ -78,6 +78,9 @@ Declaration* ExpressionVisitor::processVariable(Php::VariableIdentifierAst* vari
     if (!ret) {
         //look for a function argument
         DUChainReadLocker lock(DUChain::lock());
+        ///TODO: why doesn't m_currentContext->findDeclarations() work?
+        ///      evaluate if the stuff below is fast enough (faster?) than findDeclarations()
+        ///see r1028306
         foreach(const DUContext::Import &import, m_currentContext->importedParentContexts() ) {
             if ( !import.isDirect() || import.position > position ) {
                 continue;
