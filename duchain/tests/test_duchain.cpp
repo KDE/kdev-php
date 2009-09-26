@@ -2044,10 +2044,11 @@ void TestDUChain::testFindFunctionArgs()
     QVERIFY(funcDec->internalFunctionContext());
     QVERIFY(funcDec->internalContext()->imports(funcDec->internalFunctionContext()));
 
+    QList<Declaration*> decs;
     foreach ( Declaration* arg, funcDec->internalFunctionContext()->localDeclarations() ) {
-        QList<Declaration*> decs = funcDec->internalContext()->findDeclarations(arg->identifier());
+        decs = funcDec->internalContext()->findDeclarations(arg->identifier());
         QCOMPARE(decs.size(), 1);
-        QList<Declaration*> decs = funcDec->internalContext()->findDeclarations(arg->qualifiedIdentifier());
+        decs = funcDec->internalContext()->findDeclarations(arg->qualifiedIdentifier());
         QCOMPARE(decs.size(), 1);
     }
 }
