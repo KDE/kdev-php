@@ -311,6 +311,40 @@ void TestExpressionParser::operations()
     QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
 }
 
+void TestExpressionParser::findArg()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A{} function foo($arg, &$bar, A &$a) {} ");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    ExpressionParser p(1, true);
+
+    QCOMPARE(top->childContexts().size(), 3);
+    QVERIFY(top->childContexts().at(0)->type() == DUContext::Class);
+    QVERIFY(top->childContexts().at(1)->type() == DUContext::Function);
+    QVERIFY(top->childContexts().at(2)->type() != DUContext::Function);
+
+    ExpressionEvaluationResult res = p.evaluateType(QByteArray("$arg"), DUContextPointer(top->childContexts().last()));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+
+    res = p.evaluateType(QByteArray("$bar"), DUContextPointer(top->childContexts().last()));
+    ReferenceType::Ptr type = ReferenceType::Ptr::dynamicCast(res.type());
+    QVERIFY(type);
+    QVERIFY(IntegralType::Ptr::dynamicCast(type->baseType()));
+    QCOMPARE(IntegralType::Ptr::staticCast(type->baseType())->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+
+    res = p.evaluateType(QByteArray("$a"), DUContextPointer(top->childContexts().last()));
+    type = ReferenceType::Ptr::dynamicCast(res.type());
+    QVERIFY(type);
+    QVERIFY(StructureType::Ptr::dynamicCast(type->baseType()));
+    QCOMPARE(StructureType::Ptr::staticCast(type->baseType())->declaration(top), top->localDeclarations().first());
+}
+
 }
 
 #include "test_expressionparser.moc"

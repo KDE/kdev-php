@@ -41,6 +41,7 @@ private slots:
     void newObject();
     void cast();
     void operations();
+    void findArg();
 };
 
 }

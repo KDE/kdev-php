@@ -1073,6 +1073,8 @@ void TestCompletion::referencedClass()
     FunctionDeclaration* funcDec = dynamic_cast<FunctionDeclaration*>(decs.first());
     QVERIFY(funcDec);
     QVERIFY(funcDec->internalContext());
+    QVERIFY(funcDec->internalFunctionContext());
+    QVERIFY(funcDec->internalContext()->imports(funcDec->internalFunctionContext()));
 
     PhpCompletionTester tester(funcDec->internalContext(), "$arg->");
     QVERIFY(tester.completionContext->memberAccessOperation() == CodeCompletionContext::MemberAccess);
