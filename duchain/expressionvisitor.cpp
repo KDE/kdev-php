@@ -78,10 +78,17 @@ Declaration* ExpressionVisitor::processVariable(Php::VariableIdentifierAst* vari
     if (!ret) {
         //look for a function argument
         DUChainReadLocker lock(DUChain::lock());
-        foreach(Declaration* dec, m_currentContext->findDeclarations(identifier, position)) {
-            if (dec->context()->type() == DUContext::Function) {
-                ret = dec;
-                break;
+        foreach(const DUContext::Import &import, m_currentContext->importedParentContexts() ) {
+            if ( !import.isDirect() || import.position > position ) {
+                continue;
+            }
+            DUContext* ctx = import.context(m_currentContext->topContext());
+            if ( ctx->type() == DUContext::Function ) {
+                QList<Declaration*> args = ctx->findLocalDeclarations(identifier);
+                if ( !args.isEmpty() ) {
+                    ret = args.first();
+                    break;
+                }
             }
         }
     }
