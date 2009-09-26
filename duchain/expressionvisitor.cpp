@@ -422,8 +422,20 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
                         propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
                     }
 
-                    m_result.setDeclarations(context->findDeclarations(propertyId));
+                    QList<Declaration*> decs;
+                    foreach ( Declaration* dec, context->findDeclarations(propertyId) ) {
+                        if ( node->isFunctionCall != -1 ) {
+                            if ( dec->isFunctionDeclaration() ) {
+                                decs << dec;
+                            }
+                        } else {
+                            if ( !dec->isFunctionDeclaration() ) {
+                                decs << dec;
+                            }
+                        }
+                    }
                     lock.unlock();
+                    m_result.setDeclarations(decs);
                     if (!m_result.allDeclarations().isEmpty()) {
                         if ( !m_isAssignmentExpressionEqual ) {
                             usingDeclaration(node->objectProperty->objectDimList->variableName, m_result.allDeclarations().last());

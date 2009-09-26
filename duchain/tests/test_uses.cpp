@@ -678,6 +678,42 @@ void TestUses::functionUseBeforeDeclaration()
     compareUses(decs.first(), SimpleRange(0, 3, 0, 7));
 }
 
+void TestUses::propertyAndMethodWithSameName()
+{
+
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class a{ function name1(){} public $name1; public $name2; function name2() {} }\n"
+                      "$a = new a;\n"
+                      "$a->name1(); $a->name1;\n"
+                      "$a->name2; $a->name2();");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVector<Declaration*> decs = top->childContexts().first()->localDeclarations();
+    QCOMPARE(decs.size(), 4);
+
+    // method name1
+    QVERIFY(decs[0]->identifier().nameEquals(Identifier("name1")));
+    QVERIFY(decs[0]->isFunctionDeclaration());
+    compareUses(decs[0], SimpleRange(2, 4, 2, 9));
+    // property name1
+    QVERIFY(decs[1]->identifier().nameEquals(Identifier("name1")));
+    QVERIFY(!decs[1]->isFunctionDeclaration());
+    compareUses(decs[1], SimpleRange(2, 17, 2, 22));
+
+    // property name2
+    QVERIFY(decs[2]->identifier().nameEquals(Identifier("name2")));
+    QVERIFY(!decs[2]->isFunctionDeclaration());
+    compareUses(decs[2], SimpleRange(3, 4, 3, 9));
+    // method name2
+    QVERIFY(decs[3]->identifier().nameEquals(Identifier("name2")));
+    QVERIFY(decs[3]->isFunctionDeclaration());
+    compareUses(decs[3], SimpleRange(3, 15, 3, 20));
+}
+
 }
 
 

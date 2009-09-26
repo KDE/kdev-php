@@ -69,6 +69,7 @@ private slots:
     void caseInsensitiveMethod();
     void caseInsensitiveClass();
     void functionUseBeforeDeclaration();
+    void propertyAndMethodWithSameName();
 };
 
 }
