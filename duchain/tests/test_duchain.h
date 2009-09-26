@@ -110,6 +110,7 @@ private slots:
     void testLateClassMembers();
     void testList();
     void testAlternateDocCommentTypeHints();
+    void testFindFunctionArgs();
 };
 
 }

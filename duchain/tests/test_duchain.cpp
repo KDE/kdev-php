@@ -2030,6 +2030,28 @@ void TestDUChain::testAlternateDocCommentTypeHints()
     QCOMPARE(dec->type<StructureType>()->declaration(top), cdec);
 }
 
+void TestDUChain::testFindFunctionArgs()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php function foo($bar, $asdf) {}", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionDeclaration* funcDec = dynamic_cast<FunctionDeclaration*>(top->localDeclarations().first());
+    QVERIFY(funcDec);
+    QVERIFY(funcDec->internalContext());
+    QVERIFY(funcDec->internalFunctionContext());
+    QVERIFY(funcDec->internalContext()->imports(funcDec->internalFunctionContext()));
+
+    foreach ( Declaration* arg, funcDec->internalFunctionContext()->localDeclarations() ) {
+        QList<Declaration*> decs = funcDec->internalContext()->findDeclarations(arg->identifier());
+        QCOMPARE(decs.size(), 1);
+        QList<Declaration*> decs = funcDec->internalContext()->findDeclarations(arg->qualifiedIdentifier());
+        QCOMPARE(decs.size(), 1);
+    }
+}
+
 }
 
 #include "test_duchain.moc"
