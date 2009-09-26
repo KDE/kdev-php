@@ -900,10 +900,12 @@ QList<DUContext*> CodeCompletionContext::memberAccessContainers() const
     QList<DUContext*> ret;
     QList<AbstractType::Ptr> types;
     AbstractType::Ptr expressionTarget = m_expressionResult.type();
-    if (expressionTarget.cast<UnsureType>()) {
-        FOREACH_FUNCTION(const IndexedType& t, expressionTarget.cast<UnsureType>()->types) {
+    if (UnsureType::Ptr unsureType = UnsureType::Ptr::dynamicCast(m_expressionResult.type())) {
+        FOREACH_FUNCTION(const IndexedType& t, unsureType->types) {
             types << t.abstractType();
         }
+    } else if (ReferenceType::Ptr referencedType = ReferenceType::Ptr::dynamicCast(m_expressionResult.type()) ) {
+        types << referencedType->baseType();
     } else {
         types << expressionTarget;
     }
