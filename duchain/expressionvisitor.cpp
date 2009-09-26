@@ -53,8 +53,8 @@ Declaration* ExpressionVisitor::processVariable(Php::VariableIdentifierAst* vari
     position.line += m_lineOffset;
 
     Declaration* ret = 0;
-    QualifiedIdentifier identifier = identifierForNode(variable);
-    if (identifier == QualifiedIdentifier("this")) {
+    Identifier identifier = identifierForNode(variable).last();
+    if (identifier.nameEquals(Identifier("this"))) {
         DUChainReadLocker lock(DUChain::lock());
         if (m_currentContext->parentContext()
                 && m_currentContext->parentContext()->type() == DUContext::Class
@@ -66,7 +66,7 @@ Declaration* ExpressionVisitor::processVariable(Php::VariableIdentifierAst* vari
         //DontSearchInParent-flag because (1) in Php global variables aren't available in function
         //context and (2) a function body consists of a single context (so this is no problem)
         QList<Declaration*> decls = m_currentContext->findDeclarations(identifier, position,
-                                    AbstractType::Ptr(), 0, DUContext::DontSearchInParent);
+                                                            0, DUContext::DontSearchInParent);
         for (int i = decls.count() - 1; i >= 0; i--) {
             Declaration *dec = decls.at(i);
             if (dec->kind() == Declaration::Instance && dynamic_cast<VariableDeclaration*>(dec)) {
@@ -96,7 +96,7 @@ Declaration* ExpressionVisitor::processVariable(Php::VariableIdentifierAst* vari
             }
         }
     }
-    if ( !m_isAssignmentExpressionEqual || identifier == QualifiedIdentifier("this")
+    if ( !m_isAssignmentExpressionEqual || identifier.nameEquals( Identifier("this") )
          // might be something like $s = $s . $s; in which case we have to add a use for the first $s
          || (ret && ret->range().end < position) ) {
         usingDeclaration(variable, ret);
