@@ -35,6 +35,7 @@
 #include "completion/item.h"
 #include "completion/helpers.h"
 #include "completion/model.h"
+#include "duchain/functiondeclaration.h"
 
 
 using namespace KTextEditor;
@@ -1051,6 +1052,33 @@ void TestCompletion::functionArguments()
         QVERIFY(searchDeclaration(tester.items, dec));
     }
 }
+
+void TestCompletion::referencedClass()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php " + testClassA + " function foo(A &$arg) {}", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QList<Declaration*> decs = top->findDeclarations(Identifier("a"));
+    QCOMPARE(decs.size(), 1);
+
+    ClassDeclaration* aDec = dynamic_cast<ClassDeclaration*>(decs.first());
+    QVERIFY(aDec);
+
+    decs = top->findDeclarations(Identifier("foo"));
+    QCOMPARE(decs.size(), 1);
+
+    FunctionDeclaration* funcDec = dynamic_cast<FunctionDeclaration*>(decs.first());
+    QVERIFY(funcDec);
+    QVERIFY(funcDec->internalContext());
+
+    PhpCompletionTester tester(funcDec->internalContext(), "$arg->");
+    QVERIFY(tester.completionContext->memberAccessOperation() == CodeCompletionContext::MemberAccess);
+    QCOMPARE(tester.names, QStringList() << "pubf" << "pub");
+}
+
 }
 
 #include "test_completion.moc"
