@@ -43,6 +43,8 @@ namespace Php
 class TokenStream;
 class StartAst;
 
+typedef QPair<KDevelop::DUContextPointer, KDevelop::SimpleRange> SimpleUse;
+
 class KDEVPHPPARSER_EXPORT ParseSession
 {
 public:
@@ -75,6 +77,13 @@ public:
     KDevelop::SimpleCursor positionAt(qint64 offset) const;
 
     QList<KDevelop::ProblemPointer> problems();
+
+    #warning implement this
+    void mapAstUse(AstNode* node, const SimpleUse& use)
+    {
+        Q_UNUSED(node);
+        Q_UNUSED(use);
+    }
 
 private:
     QString m_contents;

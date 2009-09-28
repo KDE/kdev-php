@@ -40,7 +40,7 @@ using namespace KDevelop;
 namespace Php
 {
 
-ContextBuilder::ContextBuilder() : m_reportErrors(true)
+ContextBuilder::ContextBuilder() : m_reportErrors(true), m_mapAst(false)
 {
 }
 ReferencedTopDUContext ContextBuilder::build(const KDevelop::IndexedString& url, AstNode* node,
