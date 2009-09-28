@@ -58,11 +58,17 @@ public:
     typedef KSharedPtr<CodeCompletionContext> Ptr;
 
     /**
-     * @param firstContext should be true for a context that has no parent. Such a context will never be a function-call context.
-     * @param text the text to analyze. It usually is the text in the range starting at the beginning of the context, and ending at the position where completion should start
-     * @warning The du-chain must be unlocked when this is called
+     * @param context The context in which code completion was requested.
+     * @param text The text before @p position. It usually is the text in the range starting at the beginning of the context, and ending at the position where completion should start.
+     * @param followingText When @p position is inside a word, followingText will contain the text that follows.
+     * @param position The position where code completion was requested.
+     * @param depth Simple recursion counter.
+     *
+     * @warning The du-chain must be unlocked when this is called.
      * */
-    CodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, const KDevelop::SimpleCursor& position, int depth = 0);
+    CodeCompletionContext(KDevelop::DUContextPointer context, const QString& text,
+                          const QString& followingText, const KDevelop::SimpleCursor& position,
+                          int depth = 0);
     ~CodeCompletionContext();
 
     ///Computes the full set of completion items, using the information retrieved earlier.

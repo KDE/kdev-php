@@ -46,7 +46,7 @@ public:
         return m_result;
     }
     void setCreateProblems(bool v);
-    void setLineOffset(int offs);
+    void setOffset(const KDevelop::SimpleCursor offset);
 
     virtual void visitNode(AstNode *node);
 
@@ -91,7 +91,7 @@ private:
     KDevelop::DUContext* findClassContext(IdentifierAst* className);
 
     bool m_createProblems;
-    int m_lineOffset;
+    KDevelop::SimpleCursor m_offset;
     KDevelop::DUContext* m_currentContext;
 
     ExpressionEvaluationResult m_result;

@@ -35,17 +35,39 @@ class KDEVPHPDUCHAIN_EXPORT ExpressionParser
 {
 public:
     /**
-    * @param strict When this is false, the expression-visitor tries to recover from problems. For example when it cannot find a matching function, it returns the first of the candidates.
-    * @param debug Enables additional output
-    * */
-    explicit ExpressionParser(int lineOffset, bool debug = false);
+     * @param debug Enables additional output
+     */
+    explicit ExpressionParser(bool debug = false);
 
+    /**
+     * By default, no problems are created at the top-ducontext.
+     */
     void setCreateProblems(bool v);
 
-    ExpressionEvaluationResult evaluateType(const QByteArray& expression, KDevelop::DUContextPointer context);
+    /**
+     * Evaluate the @p expression and find it's type and last-used declaration.
+     *
+     * @param offset Set this to the front-edge of the expression.
+     *               Used in the ExpressionVisitor to find visible declarations.
+     *
+     * @see ExpressionVisitor
+     */
+    ExpressionEvaluationResult evaluateType(const QByteArray& expression, KDevelop::DUContextPointer context,
+                                            const KDevelop::SimpleCursor &offset);
+    /**
+     * Sets up an ExpressionVisitor and returns it's result when visiting @p ast .
+     *
+     * @see ExpressionVisitor
+     */
     ExpressionEvaluationResult evaluateType(AstNode* ast, EditorIntegrator* editor);
+
 private:
-    int m_lineOffset;
+    /**
+     * This is private instead of reusing the method above with a default argument
+     * for the offset, because we _never_ want to use this directly.
+     */
+    ExpressionEvaluationResult evaluateType(AstNode* ast, EditorIntegrator* editor,
+                                            const KDevelop::SimpleCursor &offset);
     bool m_debug;
     bool m_createProblems;
 };

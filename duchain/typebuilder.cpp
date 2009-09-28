@@ -165,7 +165,7 @@ AbstractType::Ptr TypeBuilder::getTypeForNode(AstNode* node)
     AbstractType::Ptr type;
     if (node) {
         node->ducontext = currentContext();
-        ExpressionParser ep(true);
+        ExpressionParser ep;
         ep.setCreateProblems(true);
         ExpressionEvaluationResult res = ep.evaluateType(node, editor());
         type = res.type();

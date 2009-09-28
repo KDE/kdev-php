@@ -338,7 +338,28 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 }
             } else {
                 // else do function call completion
+                ///TODO: global, static etc. enumerations.
                 m_memberAccessOperation = FunctionCallAccess;
+
+                // remove all other arguments
+                int openLParen = 0;
+                do {
+                    lastToken.pop();
+                    if ( lastToken.type() == Parser::Token_RPAREN ) {
+                        ++openLParen;
+                    } else if ( lastToken.type() == Parser::Token_LPAREN ) {
+                        if ( openLParen == 0 ) {
+                            break;
+                        } else {
+                            --openLParen;
+                        }
+                    }
+                } while ( lastToken.type() != Parser::Token_INVALID );
+
+                if ( lastToken.type() == Parser::Token_INVALID ) {
+                    m_valid = false;
+                }
+
             }
             }
             break;
@@ -375,14 +396,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 ifDebug(log("returning early");)
                 return;
             } else {
-                if (depth == 0) {
-                    //The first context should never be a function-call context, so make this a NoMemberAccess context and the parent a function-call context.
-                    m_parentContext = new CodeCompletionContext(m_duContext, m_text, QString(), m_position, depth + 1);
-                    ifDebug(log("NoMemberAccess (created parentContext)");)
-                    return;
-                }
                 m_memberAccessOperation = FunctionCallAccess;
-                lastToken.pop();
             }
             }
             break;
@@ -601,10 +615,6 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             break;
     }
 
-    if ( m_memberAccessOperation == NoMemberAccess ) {
-        // hack: check if we actually want to
-    }
-
     ifDebug(
         switch ( m_memberAccessOperation ) {
             case FileChoose:
@@ -646,41 +656,53 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         }
     )
 
+    ifDebug(log(tokenText(lastToken.type()));)
+
     // if it's not valid, we should return early
     if ( !m_valid ) {
         ifDebug(log("invalid completion");)
         return;
     }
 
-    // check whether we need the expression or have everything we need and can return early
-    switch ( m_memberAccessOperation ) {
-        // these access operations don't need the previous expression evaluated
-        case FileChoose:
-        case ClassMemberChoose:
-        case InterfaceChoose:
-        case NewClassChoose:
-        case ExceptionChoose:
-        case ExceptionInstanceChoose:
-        case ClassExtendsChoose:
-        case NoMemberAccess:
-        case InstanceOfChoose:
-            ifDebug(log("returning early");)
-            return;
-        case FunctionCallAccess:
-        case MemberAccess:
-        case StaticMemberAccess:
-            // these types need the expression evaluated
-            break;
+    // trim the text to the end position of the current token
+    m_text = m_text.left(lastToken.tokenAt(0).end + 1).trimmed();
+    ifDebug(log("trimmed text: " + m_text);)
+
+    if ( depth == 0 ) {
+        // check whether we need the expression or have everything we need and can return early
+        switch ( m_memberAccessOperation ) {
+            // these access operations don't need the previous expression evaluated
+            case FileChoose:
+            case ClassMemberChoose:
+            case InterfaceChoose:
+            case NewClassChoose:
+            case ExceptionChoose:
+            case ExceptionInstanceChoose:
+            case ClassExtendsChoose:
+            case NoMemberAccess:
+            case InstanceOfChoose:
+                ifDebug(log("returning early");)
+                return;
+            case FunctionCallAccess:
+                //The first context should never be a function-call context,
+                //so make this a NoMemberAccess context and the parent a function-call context.
+                ifDebug(log("NoMemberAccess (creating parentContext)");)
+                m_memberAccessOperation = NoMemberAccess;
+                Q_ASSERT(m_text.endsWith('('));
+                m_parentContext = new CodeCompletionContext(m_duContext, m_text, QString(), m_position, depth + 1);
+                return;
+            case MemberAccess:
+            case StaticMemberAccess:
+                // these types need the expression evaluated
+                break;
+        }
     }
 
-    // Now find out where the expression starts
-
-    ifDebug(log(tokenText(lastToken.type()));)
-
-    m_text = m_text.left(lastToken.tokenAt(0).end + 1).trimmed();
-    ifDebug(log(m_text);)
-
     ///TODO: use the token stream here as well
+    // get the proper expression to evaluate for function calls
+    if ( m_depth && m_memberAccessOperation == FunctionCallAccess ) {
+        m_text += ')';
+    }
     int start_expr = expressionAt(m_text, m_text.length());
 
     m_expression = m_text.mid(start_expr).trimmed();
@@ -717,7 +739,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
 
         skipFunctionArguments(expressionPrefix, otherArguments, parentContextEnd);
 
-        QString parentContextText = expressionPrefix.left(parentContextEnd);
+        QString parentContextText = expressionPrefix.left(parentContextEnd - 1);
 
         if (parentContextText == text) {
             log(QString("Endless recursion spotted, this doesn't seem to be a valid position for a code completion."));
@@ -787,34 +809,20 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
 
             m_expressionResult.setDeclaration(findDeclarationImportHelper(duContext(), id, ClassDeclarationType, 0, 0));
         }
-        if (m_expressionResult.type()) {
-            ifDebug(kDebug() << "expression type: " << m_expressionResult.type()->toString();)
-        } else {
-            log(QString("expression \"%1\" could not be evaluated").arg(expr));
-            m_valid = false;
-            return;
-        }
     } else {
-
-        int offs = m_position.line - expr.count('\n');
-        ExpressionParser expressionParser(offs);
+        ExpressionParser expressionParser;
         if (!expr.trimmed().isEmpty()) {
-            m_expressionResult = expressionParser.evaluateType(expr.toUtf8(), m_duContext);
-            if (m_expressionResult.type()) {
-                LOCKDUCHAIN;
-                ifDebug(kDebug() << "expression type: " << m_expressionResult.type()->toString();)
-            } else {
-                log(QString("expression \"%1\" could not be evaluated").arg(expr));
-                m_valid = false;
-                return;
-            }
+            m_expressionResult = expressionParser.evaluateType(expr.toUtf8(), m_duContext, m_position);
         }
     }
 
-    if (m_memberAccessOperation == NoMemberAccess && !expr.trimmed().isEmpty()) {
-        //This should never happen, because the position-cursor should be chosen at the beginning of a possible completion-context(not in the middle of a string)
-        log(QString("Cannot complete \"%1\" because there is an expression without an access-operation").arg(expr));
-        m_valid  = false;
+    if (m_expressionResult.type()) {
+        LOCKDUCHAIN;
+        ifDebug(kDebug() << "expression type: " << m_expressionResult.type()->toString();)
+    } else {
+        log(QString("expression \"%1\" could not be evaluated").arg(expr));
+        m_valid = false;
+        return;
     }
 }
 
@@ -1501,7 +1509,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
                 return false;
             }
         } else if ( !dec->isFunctionDeclaration() ) {
-            if ( m_position < dec->range().start ) {
+            if ( m_duContext.data() == dec->context() && m_position < dec->range().start ) {
                 return false;
             }
         }

@@ -36,8 +36,8 @@ using namespace KDevelop;
 namespace Php
 {
 
-ExpressionParser::ExpressionParser(int lineOffset, bool debug)
-        : m_lineOffset(lineOffset), m_debug(debug), m_createProblems(false)
+ExpressionParser::ExpressionParser(bool debug)
+        : m_debug(debug), m_createProblems(false)
 {
 }
 
@@ -46,7 +46,8 @@ void ExpressionParser::setCreateProblems(bool v)
     m_createProblems = v;
 }
 
-ExpressionEvaluationResult ExpressionParser::evaluateType(const QByteArray& expression, DUContextPointer context)
+ExpressionEvaluationResult ExpressionParser::evaluateType(const QByteArray& expression, DUContextPointer context,
+                                                          const SimpleCursor &offset)
 {
     if (m_debug)
         kDebug() << "==== .Evaluating ..:" << endl << expression;
@@ -64,7 +65,7 @@ ExpressionEvaluationResult ExpressionParser::evaluateType(const QByteArray& expr
     ast->ducontext = dynamic_cast<DUContext*>(context.data());
 
     EditorIntegrator* editor = new EditorIntegrator(session);
-    ExpressionEvaluationResult ret = evaluateType(ast, editor);
+    ExpressionEvaluationResult ret = evaluateType(ast, editor, offset);
     delete editor;
     delete session;
     delete parser;
@@ -74,6 +75,12 @@ ExpressionEvaluationResult ExpressionParser::evaluateType(const QByteArray& expr
 
 ExpressionEvaluationResult ExpressionParser::evaluateType(AstNode* ast, EditorIntegrator* editor)
 {
+    return evaluateType(ast, editor, SimpleCursor::invalid());
+}
+
+ExpressionEvaluationResult ExpressionParser::evaluateType(AstNode* ast, EditorIntegrator* editor,
+                                                          const SimpleCursor &offset)
+{
     if (m_debug) {
         kDebug() << "===== AST:";
         DebugVisitor debugVisitor(editor->parseSession()->tokenStream(), editor->parseSession()->contents());
@@ -81,7 +88,7 @@ ExpressionEvaluationResult ExpressionParser::evaluateType(AstNode* ast, EditorIn
     }
 
     ExpressionVisitor v(editor);
-    v.setLineOffset(m_lineOffset);
+    v.setOffset(offset);
     v.setCreateProblems(m_createProblems);
     v.visitNode(ast);
 

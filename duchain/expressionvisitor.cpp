@@ -39,7 +39,7 @@ namespace Php
 
 ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor)
         : m_editor(editor), m_createProblems(false),
-          m_lineOffset(0), m_currentContext(0),
+          m_offset(SimpleCursor::invalid()), m_currentContext(0),
           m_isAssignmentExpressionEqual(false)
 {
 }
@@ -48,9 +48,12 @@ Declaration* ExpressionVisitor::processVariable(Php::VariableIdentifierAst* vari
 {
     Q_ASSERT(m_currentContext);
 
-    SimpleCursor position = SimpleCursor::invalid();
-    position = m_editor->findPosition(variable->variable, EditorIntegrator::BackEdge);
-    position.line += m_lineOffset;
+    SimpleCursor position = m_editor->findPosition(variable->variable, EditorIntegrator::BackEdge);
+
+    if ( m_offset.isValid() ) {
+        position.line += m_offset.line;
+        position.column += m_offset.column;
+    }
 
     Declaration* ret = 0;
     Identifier identifier = identifierForNode(variable).last();
@@ -574,9 +577,9 @@ void ExpressionVisitor::setCreateProblems(bool v)
     m_createProblems = v;
 }
 
-void ExpressionVisitor::setLineOffset(int offs)
+void ExpressionVisitor::setOffset(SimpleCursor offset)
 {
-    m_lineOffset = offs;
+    m_offset = offset;
 }
 
 Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
