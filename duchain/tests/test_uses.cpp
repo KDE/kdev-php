@@ -25,7 +25,8 @@
 
 #include "phpparsejob.h"
 #include "../constantdeclaration.h"
-
+#include "../classdeclaration.h"
+#include "../variabledeclaration.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -712,6 +713,53 @@ void TestUses::propertyAndMethodWithSameName()
     QVERIFY(decs[3]->identifier().nameEquals(Identifier("name2")));
     QVERIFY(decs[3]->isFunctionDeclaration());
     compareUses(decs[3], SimpleRange(3, 15, 3, 20));
+}
+
+void TestUses::nestedMethodCalls()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<?\n"
+                      "class a{ /** @return a **/ function a(){} }\n"
+                      "class b{ function b(){} }\n"
+                      "$a = new a;\n"
+                      "$b = new b;\n"
+                      "$a->a($b->b());");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVector<Declaration*> topDecs  = top->localDeclarations();
+    QCOMPARE(topDecs.size(), 4);
+
+    // class a
+    QVERIFY(topDecs[0]->identifier().nameEquals(Identifier("a")));
+    QVERIFY(dynamic_cast<ClassDeclaration*>(topDecs[0]));
+    compareUses(topDecs[0], SimpleRange(3, 9, 3, 10));
+    // class b
+    QVERIFY(topDecs[1]->identifier().nameEquals(Identifier("b")));
+    QVERIFY(dynamic_cast<ClassDeclaration*>(topDecs[1]));
+    compareUses(topDecs[1], SimpleRange(4, 9, 4, 10));
+
+    // $a
+    QVERIFY(topDecs[2]->identifier().nameEquals(Identifier("a")));
+    QVERIFY(dynamic_cast<VariableDeclaration*>(topDecs[2]));
+    compareUses(topDecs[2], SimpleRange(5, 0, 5, 2));
+    // $b
+    QVERIFY(topDecs[3]->identifier().nameEquals(Identifier("b")));
+    QVERIFY(dynamic_cast<VariableDeclaration*>(topDecs[3]));
+    compareUses(topDecs[3], SimpleRange(5, 6, 5, 8));
+
+    // function a
+    Declaration* methodADec = topDecs[0]->internalContext()->localDeclarations().first();
+    QVERIFY(methodADec->isFunctionDeclaration());
+    compareUses(methodADec, SimpleRange(5, 4, 5, 5));
+
+    // function b
+    Declaration* methodBDec = topDecs[1]->internalContext()->localDeclarations().first();
+    QVERIFY(methodBDec->isFunctionDeclaration());
+    compareUses(methodBDec, SimpleRange(5, 10, 5, 11));
 }
 
 }

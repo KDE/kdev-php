@@ -32,6 +32,8 @@
 #include <language/duchain/types/integraltype.h>
 #include "structuretype.h"
 
+#define ifDebug(x)
+
 using namespace KDevelop;
 
 namespace Php
@@ -57,6 +59,9 @@ Declaration* ExpressionVisitor::processVariable(Php::VariableIdentifierAst* vari
 
     Declaration* ret = 0;
     Identifier identifier = identifierForNode(variable).last();
+
+    ifDebug(kDebug() << "processing variable" << identifier.toString() << position.textCursor();)
+
     if (identifier.nameEquals(Identifier("this"))) {
         DUChainReadLocker lock(DUChain::lock());
         if (m_currentContext->parentContext()
@@ -114,6 +119,7 @@ Declaration* ExpressionVisitor::processVariable(Php::VariableIdentifierAst* vari
          || (ret && ret->range().end < position) ) {
         usingDeclaration(variable, ret);
     }
+    ifDebug(kDebug() << "found declaration:" << (ret ? ret->toString() : QString("no declaration found"));)
     return ret;
 }
 
@@ -195,12 +201,13 @@ void ExpressionVisitor::visitVarExpressionNormal(VarExpressionNormalAst *node)
 
 void ExpressionVisitor::visitFunctionCallParameterList( FunctionCallParameterListAst* node )
 {
-    bool wasBlocked = m_result.blocked();
-    m_result.setBlocked(true);
+    QList<Declaration*> decs = m_result.allDeclarations();
+    AbstractType::Ptr type = m_result.type();
 
     DefaultVisitor::visitFunctionCallParameterList( node );
 
-    m_result.setBlocked(wasBlocked);
+    m_result.setDeclarations(decs);
+    m_result.setType(type);
 }
 
 void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
@@ -403,6 +410,8 @@ void ExpressionVisitor::visitEncapsVar(EncapsVarAst *node)
 
 void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
 {
+    ifDebug(kDebug() << "node:" << m_editor->parseSession()->symbol(node)
+        << (node->isFunctionCall != -1 ? QString("is function call") : QString("is no function call"));)
     if (node->objectProperty->objectDimList) {
         //handle $foo->bar() and $foo->baz, $foo is m_result.type()
 
@@ -410,6 +419,7 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
             DUChainReadLocker lock(DUChain::lock());
             Declaration* declaration = StructureType::Ptr::staticCast(m_result.type())->declaration(m_currentContext->topContext());
             if (declaration) {
+                ifDebug(kDebug() << "parent:" << declaration->toString();)
                 DUContext* context = declaration->internalContext();
                 if (!context && m_currentContext->parentContext()) {
                     if (m_currentContext->parentContext()->localScopeIdentifier() == declaration->qualifiedIdentifier()) {
@@ -424,16 +434,19 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
                     } else {
                         propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
                     }
+                    ifDebug(kDebug() << "property id:" << propertyId.toString();)
 
                     QList<Declaration*> decs;
                     foreach ( Declaration* dec, context->findDeclarations(propertyId) ) {
                         if ( node->isFunctionCall != -1 ) {
                             if ( dec->isFunctionDeclaration() ) {
                                 decs << dec;
+                                ifDebug(kDebug() << "found:" << dec->toString();)
                             }
                         } else {
                             if ( !dec->isFunctionDeclaration() ) {
                                 decs << dec;
+                                ifDebug(kDebug() << "found:" << dec->toString();)
                             }
                         }
                     }

@@ -26,6 +26,8 @@
 #include <language/duchain/types/identifiedtype.h>
 #include <language/duchain/declaration.h>
 
+#define ifDebug(x)
+
 using namespace KDevelop;
 namespace Php
 {
@@ -35,15 +37,11 @@ ExpressionEvaluationResult::~ExpressionEvaluationResult()
 }
 
 ExpressionEvaluationResult::ExpressionEvaluationResult()/* : isInstance(false)*/
-    : m_blocked(false)
 {
 }
 
 void ExpressionEvaluationResult::setDeclaration(Declaration* declaration)
 {
-    if ( m_blocked ) {
-        return;
-    }
     QList<Declaration*> decs;
     if (declaration) {
         decs << declaration;
@@ -53,9 +51,8 @@ void ExpressionEvaluationResult::setDeclaration(Declaration* declaration)
 
 void ExpressionEvaluationResult::setDeclarations(QList<Declaration*> declarations)
 {
-    if ( m_blocked ) {
-        return;
-    }
+    ifDebug(kDebug() << "setting declarations" << declarations.size();)
+
     m_allDeclarations = declarations;
     if (!m_allDeclarations.isEmpty()) {
         setType(m_allDeclarations.last()->abstractType());
@@ -66,6 +63,7 @@ void ExpressionEvaluationResult::setDeclarations(QList<Declaration*> declaration
     DUChainReadLocker lock(DUChain::lock());
     foreach(Declaration* dec, m_allDeclarations) {
         m_allDeclarationIds << dec->id();
+        ifDebug(kDebug() << dec->toString();)
     }
 }
 
@@ -86,20 +84,9 @@ QList<DeclarationId> ExpressionEvaluationResult::allDeclarationIds() const
 
 void ExpressionEvaluationResult::setType(AbstractType::Ptr type)
 {
-    if ( m_blocked ) {
-        return;
-    }
+    ifDebug(kDebug() << "setting type" << (type ? type->toString() : QString("no type"));)
+
     m_type = type;
-}
-
-void ExpressionEvaluationResult::setBlocked( bool isBlocked )
-{
-    m_blocked = isBlocked;
-}
-
-bool ExpressionEvaluationResult::blocked() const
-{
-    return m_blocked;
 }
 
 }
