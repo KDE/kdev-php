@@ -86,6 +86,7 @@ private slots:
     void variableBeforeDeclaration();
     void functionArguments();
     void referencedClass();
+    void ctorCall();
 };
 
 }

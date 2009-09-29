@@ -705,6 +705,14 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     }
     int start_expr = expressionAt(m_text, m_text.length());
 
+    if ( m_depth && m_memberAccessOperation == FunctionCallAccess ) {
+        // check ctor call
+        qint64 pos = lastToken.prependedBy(TokenList() << Parser::Token_STRING << Parser::Token_WHITESPACE << Parser::Token_NEW );
+        if ( pos != -1 ) {
+            start_expr = (int) lastToken.tokenAt(-pos).end + 1;
+        }
+    }
+
     m_expression = m_text.mid(start_expr).trimmed();
     ifDebug(log("expression: " + m_expression));
 
@@ -1361,6 +1369,32 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
 
                     if (!isValidCompletionItem(decl)) {
                         continue;
+                    }
+                    if ( !decl->isFunctionDeclaration() ) {
+                        if ( ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(decl) ) {
+                            // search for ctor
+                            decl = 0;
+                            foreach ( Declaration* dec, classDec->internalContext()->findDeclarations(Identifier("__construct")) ) {
+                                if ( dec->isFunctionDeclaration() ) {
+                                    decl = dec;
+                                    break;
+                                }
+                            }
+                            if ( !decl ) {
+                                foreach ( Declaration* dec, classDec->internalContext()->findDeclarations(classDec->identifier()) ) {
+                                    if ( dec->isFunctionDeclaration() ) {
+                                        decl = dec;
+                                        break;
+                                    }
+                                }
+                            }
+                            if ( !decl ) {
+                                continue;
+                            }
+                        } else {
+                            kDebug() << "parent decl is neither function nor class, skipping" << decl->toString();
+                            continue;
+                        }
                     }
                     items << CompletionTreeItemPointer(
                                 new NormalDeclarationCompletionItem(

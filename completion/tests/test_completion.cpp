@@ -1081,6 +1081,52 @@ void TestCompletion::referencedClass()
     QCOMPARE(tester.names, QStringList() << "pubf" << "pub");
 }
 
+void TestCompletion::ctorCall()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { /** @param string $bar **/ public function __construct($bar) {} }\n"
+                      "class B { /** @param bool $asdf **/ public function B($asdf) {} }");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* aCtor = top->childContexts().first()->localDeclarations().first();
+    Declaration* bCtor = top->childContexts().last()->localDeclarations().first();
+
+    {
+        PhpCompletionTester tester(top, "new A(");
+        QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
+        QVERIFY(tester.completionContext->parentContext());
+        QCOMPARE(tester.completionContext->parentContext()->memberAccessOperation(),
+                 CodeCompletionContext::FunctionCallAccess);
+
+        CompletionTreeItemPointer item = searchDeclaration(tester.items, aCtor);
+        QVERIFY(item);
+        NormalDeclarationCompletionItem* item2 = dynamic_cast<NormalDeclarationCompletionItem*>(item.data());
+
+        QString ret;
+        createArgumentList(*item2, ret, 0);
+        QCOMPARE(ret, QString("(string $bar)"));
+    }
+    {
+        PhpCompletionTester tester(top, "new B(");
+        QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
+        QVERIFY(tester.completionContext->parentContext());
+        QCOMPARE(tester.completionContext->parentContext()->memberAccessOperation(),
+                 CodeCompletionContext::FunctionCallAccess);
+
+        CompletionTreeItemPointer item = searchDeclaration(tester.items, bCtor);
+        QVERIFY(item);
+        NormalDeclarationCompletionItem* item2 = dynamic_cast<NormalDeclarationCompletionItem*>(item.data());
+
+        QString ret;
+        createArgumentList(*item2, ret, 0);
+        QCOMPARE(ret, QString("(bool $asdf)"));
+    }
+}
+
 }
 
 #include "test_completion.moc"
