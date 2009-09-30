@@ -33,11 +33,6 @@ class QVariant;
 template<class T>
 class QList;
 
-namespace KDevelop
-{
-class Declaration;
-class DUContext;
-}
 namespace Php
 {
 class NormalDeclarationCompletionItem;
@@ -46,17 +41,6 @@ class NormalDeclarationCompletionItem;
  * @param phpTypeHinting set to true if you only want PHP-valid typehinting (i.e. only array and classes)
  */
 void KDEVPHPCOMPLETION_EXPORT createArgumentList(const NormalDeclarationCompletionItem& item, QString& ret, QList<QVariant>* highlighting, bool phpTypeHinting = false);
-int KDEVPHPCOMPLETION_EXPORT expressionAt(const QString& text, int index);
-
-
-/**
- * Fills all single line hash-style comments (i.e. starting with #) within the given code
- * with the given 'replacement' character.
- * Newlines are preserved.
- *
- * @note: Call this _after_ you called clearComments
- * */
-QString KDEVPHPCOMPLETION_EXPORT clearHashComments( QString str, QChar replacement = ' ' );
 
 /// get a list of tokens which define a method at the end of the given text
 /// NOTE: result will contain "function" if it's the last token at the end of the text

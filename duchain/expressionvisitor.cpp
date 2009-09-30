@@ -240,6 +240,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
         } else {
             //global function call foo();
             Declaration* dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionNameOrClass);
+            ifDebug(kDebug() << "function call of" << (dec ? dec->toString() : QString("function not found"));)
             m_result.setDeclaration(dec);
             usingDeclaration(node->stringFunctionNameOrClass, dec);
             if (dec) {

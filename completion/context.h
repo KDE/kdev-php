@@ -49,6 +49,9 @@ class SimpleCursor;
 
 namespace Php
 {
+
+class TokenAccess;
+
 /**
  * This class is responsible for finding out what kind of completion is needed, what expression should be evaluated for the container-class of the completion, what conversion will be applied to the result of the completion, etc.
  * */
@@ -58,6 +61,9 @@ public:
     typedef KSharedPtr<CodeCompletionContext> Ptr;
 
     /**
+     * To be used from the Worker. For parent/child contexts, use the private ctor that takes a TokenAccess.
+     * That way we don't have to reparse the text over and over again.
+     *
      * @param context The context in which code completion was requested.
      * @param text The text before @p position. It usually is the text in the range starting at the beginning of the context, and ending at the position where completion should start.
      * @param followingText When @p position is inside a word, followingText will contain the text that follows.
@@ -113,16 +119,26 @@ public:
 
     virtual CodeCompletionContext* parentContext();
 
-    /**
-     * Returns the code for the CodeCompletionContext.
-     */
-    const QString& code() const;
-
 protected:
     virtual QList<QSet<KDevelop::IndexedString> > completionFiles();
     inline bool isValidCompletionItem(KDevelop::Declaration* dec);
 
 private:
+    /**
+     * Internal ctor to use when you want to create parent contexts.
+     *
+     * NOTE: Since you pass the TokenAccess, it's not save to use
+     *       it afterwards. Probably you don't want to do that anyway.
+     *       Hence always return after creating the parent.
+     */
+    CodeCompletionContext(KDevelop::DUContextPointer context, const KDevelop::SimpleCursor& position,
+                            TokenAccess& lastToken, const int depth);
+
+    /**
+     * Evaluate expression for the given @p lastToken.
+     */
+    void evaluateExpression(TokenAccess& lastToken);
+
     MemberAccessOperation m_memberAccessOperation;
     ExpressionEvaluationResult m_expressionResult;
     QString m_expression;

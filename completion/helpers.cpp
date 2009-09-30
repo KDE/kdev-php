@@ -32,8 +32,6 @@
 #include <QTextFormat>
 #include <QStringList>
 #include <language/duchain/types/integraltype.h>
-#include <language/duchain/stringhelpers.h>
-#include <language/duchain/safetycounter.h>
 
 using namespace KDevelop;
 namespace Php
@@ -146,109 +144,6 @@ void createArgumentList(const NormalDeclarationCompletionItem& item, QString& re
     }
 }
 
-
-enum { T_ACCESS, T_PAREN, T_BRACKET, T_IDE, T_UNKNOWN, T_TEMP };
-/**
- * Copied from kdevelop-3.4, should be redone
- * @param index should be the index BEHIND the expression
- * */
-int expressionAt(const QString& text, int index)
-{
-
-    /* C++ style comments present issues with finding the expr so I'm
-      matching for them and replacing them with empty C style comments
-      of the same length for purposes of finding the expr. */
-
-    if (index == 0)
-        return 0;
-
-    int last = T_UNKNOWN;
-    int start = index;
-    --index;
-
-    while (index > 0) {
-
-        while (index > 0 && text[ index ].isSpace()) {
-            --index;
-        }
-
-        QChar ch = text[ index ];
-        QString ch2 = text.mid(index - 1, 2);
-
-        if ((last != T_IDE) && (ch.isLetterOrNumber() || ch == '_' || ch == '$')) {
-            while (index > 0 && (text[ index ].isLetterOrNumber() || text[ index ] == '_'  || text[ index ] == '$')) {
-                --index;
-            }
-            last = T_IDE;
-        } else if (last != T_IDE && ch == ')') {
-            int count = 0;
-            while (index > 0) {
-                QChar ch = text[ index ];
-                if (ch == '(') {
-                    ++count;
-                } else if (ch == ')') {
-                    --count;
-                } else if (count == 0) {
-                    //index;
-                    last = T_PAREN;
-                    break;
-                }
-                --index;
-            }
-        } else if (last != T_IDE && ch == '>' && ch2 != "->" && ch2 != "::") {
-            int count = 0;
-            while (index > 0) {
-                QChar ch = text[ index ];
-                if (ch == '<') {
-                    ++count;
-                } else if (ch == '>') {
-                    --count;
-                } else if (count == 0) {
-                    //--index;
-                    last = T_TEMP;
-                    break;
-                }
-                --index;
-            }
-        } else if (ch == ']') {
-            int count = 0;
-            while (index > 0) {
-                QChar ch = text[ index ];
-                if (ch == '[') {
-                    ++count;
-                } else if (ch == ']') {
-                    --count;
-                } else if (count == 0) {
-                    //--index;
-                    last = T_BRACKET;
-                    break;
-                }
-                --index;
-            }
-        } else if (ch2 == "::") {
-            index -= 2;
-            last = T_ACCESS;
-        } else if (ch2 == "->") {
-            index -= 2;
-            last = T_ACCESS;
-        } else {
-            if (start > index) {
-                ++index;
-            }
-            last = T_UNKNOWN;
-            break;
-        }
-    }
-
-    ///If we're at the first item, the above algorithm cannot be used safely,
-    ///so just determine whether the sign is valid for the beginning of an expression, if it isn't reject it.
-    if (index == 0 && start > index && !(text[ index ].isLetterOrNumber() || text[ index ] == '_' || text[ index ] == ':' || text[ index ] == '$')) {
-        ++index;
-    }
-
-    return index;
-}
-
 QStringList getMethodTokens(QString text)
 {
     QStringList tokens;
@@ -286,35 +181,6 @@ QStringList getMethodTokens(QString text)
     }
 
     return tokens;
-}
-
-///TODO: remove this once clearHashComments is moved to kdevplatform
-void fillString( QString& str, int start, int end, QChar replacement ) {
-  for( int a = start; a < end; a++) str[a] = replacement;
-}
-
-///TODO: move to kdevplatform since other language will need that as well
-QString clearHashComments( QString str, QChar replacement ) {
-  const QString withoutStrings = clearStrings(str, '$');
-
-  SafetyCounter s( 1000 );
-  int lastPos = 0;
-  int pos;
-  const int len = str.length();
-
-  while ( (pos = withoutStrings.indexOf( "#", lastPos )) != -1 ) {
-    if ( !s ) return str;
-    int i = withoutStrings.indexOf( '\n', pos );
-    if ( i != -1 && i < len ) {
-      fillString( str, pos, i+1, replacement );
-      lastPos = i+1;
-    } else {
-      fillString( str, pos, len, replacement );
-      break;
-    }
-  }
-
-  return str;
 }
 
 QString getIndendation( const QString &line ) {

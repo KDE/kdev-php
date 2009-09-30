@@ -39,7 +39,6 @@
 #include <language/duchain/ducontext.h>
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
-#include <language/duchain/stringhelpers.h>
 #include <language/duchain/types/identifiedtype.h>
 #include <language/interfaces/iproblem.h>
 #include <util/pushvalue.h>
@@ -80,12 +79,11 @@ typedef QList<Parser::TokenType> TokenList;
 class TokenAccess {
 public:
     /// Setup the token stream from the input code
-    TokenAccess(CodeCompletionContext* context)
-        : m_context(context)
+    TokenAccess(const QString &code)
+        : m_code(code)
     {
-        Q_ASSERT(m_context);
 
-        Lexer lexer(&m_stream, m_context->code());
+        Lexer lexer(&m_stream, code);
         int token;
         while ((token = lexer.nextTokenKind())) {
             Parser::Token &t = m_stream.next();
@@ -142,7 +140,7 @@ public:
     /// NOTE: Make sure you honor the boundaries.
     QString stringAt(const qint64 &relPos) const {
         Parser::Token token = tokenAt(relPos);
-        return m_context->code().mid(token.begin, token.end - token.begin + 1);
+        return m_code.mid(token.begin, token.end - token.begin + 1);
     }
 
     /// check whether the current token is prepended by the list of tokens
@@ -181,10 +179,43 @@ public:
     }
 
 private:
-    CodeCompletionContext* m_context;
+    const QString m_code;
     TokenStream m_stream;
     qint64 m_pos;
 };
+
+/**
+ * Pops all tokens from the @p lastToken and stops at the LPAREN.
+ */
+void removeOtherArguments(TokenAccess &lastToken)
+{
+    Q_ASSERT(lastToken.type() == Parser::Token_COMMA);
+
+    // remove all other arguments
+    int openLParen = 0;
+    do {
+        lastToken.pop();
+        if ( lastToken.type() == Parser::Token_RPAREN ) {
+            ++openLParen;
+        } else if ( lastToken.type() == Parser::Token_LPAREN ) {
+            if ( openLParen == 0 ) {
+                return;
+            } else {
+                --openLParen;
+            }
+        }
+    } while ( lastToken.type() != Parser::Token_INVALID );
+}
+
+/**
+ * if token at @p pos is whitespace, decrease pos by one.
+ */
+inline void skipWhiteSpace(const TokenAccess &lastToken, qint64 &pos)
+{
+    if ( lastToken.typeAt(pos) == Parser::Token_WHITESPACE ) {
+        --pos;
+    }
+}
 
 /// add keyword to list of completion items
 #define ADD_KEYWORD(x) items << CompletionTreeItemPointer( new KeywordItem( x, KDevelop::CodeCompletionContext::Ptr(this) ) )
@@ -196,7 +227,10 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         : KDevelop::CodeCompletionContext(context, text, position, depth)
         , m_memberAccessOperation(NoMemberAccess), m_parentAccess(false), m_isFileCompletionAfterDirname(false)
 {
-    ifDebug(log("non-processed text: " + m_text);)
+    // use other ctor for parents
+    Q_ASSERT(depth == 0);
+
+    ifDebug(log("non-processed text: " + text);)
 
     if ( context->type() == DUContext::Class || context->type() == DUContext::Function || context->type() == DUContext::Other ) {
         if ( !m_parentContext && !m_text.startsWith("<?php ") ) {
@@ -212,7 +246,9 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         return;
     }
 
-    TokenAccess lastToken(this);
+    TokenAccess lastToken(m_text);
+//     ifDebug(log("clearing completion text");)
+//     m_text.clear();
 
     /// even when we skip to some more meaning ful token, this will
     /// always be the end position of the last token
@@ -296,15 +332,11 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             qint64 relPos = -1;
             QList<qint64> identifierPositions;
             while ( true ) {
-                if ( lastToken.typeAt(relPos) == Parser::Token_WHITESPACE ) {
-                    --relPos;
-                    continue;
-                } else if ( lastToken.typeAt(relPos) == Parser::Token_STRING ) {
+                skipWhiteSpace(lastToken, relPos);
+                if ( lastToken.typeAt(relPos) == Parser::Token_STRING ) {
                     identifierPositions << relPos;
                     --relPos;
-                    if ( lastToken.typeAt(relPos) == Parser::Token_WHITESPACE ) {
-                        --relPos;
-                    }
+                    skipWhiteSpace(lastToken, relPos);
                             // interfaces may extend more than one interface
                     if ( ( lastToken.typeAt(relPos) == Parser::Token_EXTENDS &&
                             lastToken.typeAt(relPos - 1) == Parser::Token_WHITESPACE &&
@@ -338,28 +370,14 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 }
             } else {
                 // else do function call completion
-                ///TODO: global, static etc. enumerations.
                 m_memberAccessOperation = FunctionCallAccess;
 
-                // remove all other arguments
-                int openLParen = 0;
-                do {
-                    lastToken.pop();
-                    if ( lastToken.type() == Parser::Token_RPAREN ) {
-                        ++openLParen;
-                    } else if ( lastToken.type() == Parser::Token_LPAREN ) {
-                        if ( openLParen == 0 ) {
-                            break;
-                        } else {
-                            --openLParen;
-                        }
-                    }
-                } while ( lastToken.type() != Parser::Token_INVALID );
+                ///TODO: global, static etc. enumerations.
+                removeOtherArguments(lastToken);
 
                 if ( lastToken.type() == Parser::Token_INVALID ) {
                     m_valid = false;
                 }
-
             }
             }
             break;
@@ -385,9 +403,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_LPAREN:
             {
             qint64 pos = -1;
-            if ( lastToken.typeAt(pos) == Parser::Token_WHITESPACE ) {
-                --pos;
-            }
+            skipWhiteSpace(lastToken, pos);
             if ( lastToken.typeAt(pos) == Parser::Token_CATCH ) {
                 m_memberAccessOperation = ExceptionChoose;
             } else if ( lastToken.typeAt(pos) == Parser::Token_ARRAY ) {
@@ -426,15 +442,11 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                         isAfterDirname = true;
                     }
                 }
-                if ( lastToken.typeAt(relPos) == Parser::Token_WHITESPACE ) {
-                    --relPos;
-                }
+                skipWhiteSpace(lastToken, relPos);
                 if ( lastToken.typeAt(relPos) == Parser::Token_LPAREN ) {
                     --relPos;
                 }
-                if ( lastToken.typeAt(relPos) == Parser::Token_WHITESPACE ) {
-                    --relPos;
-                }
+                skipWhiteSpace(lastToken, relPos);
                 switch ( lastToken.typeAt(relPos) ) {
                     case Parser::Token_REQUIRE:
                     case Parser::Token_REQUIRE_ONCE:
@@ -668,129 +680,138 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     m_text = m_text.left(lastToken.tokenAt(0).end + 1).trimmed();
     ifDebug(log("trimmed text: " + m_text);)
 
-    if ( depth == 0 ) {
-        // check whether we need the expression or have everything we need and can return early
-        switch ( m_memberAccessOperation ) {
-            // these access operations don't need the previous expression evaluated
-            case FileChoose:
-            case ClassMemberChoose:
-            case InterfaceChoose:
-            case NewClassChoose:
-            case ExceptionChoose:
-            case ExceptionInstanceChoose:
-            case ClassExtendsChoose:
-            case NoMemberAccess:
-            case InstanceOfChoose:
-                ifDebug(log("returning early");)
-                return;
-            case FunctionCallAccess:
+    // check whether we need the expression or have everything we need and can return early
+    switch ( m_memberAccessOperation ) {
+        // these access operations don't need the previous expression evaluated
+        case FileChoose:
+        case ClassMemberChoose:
+        case InterfaceChoose:
+        case NewClassChoose:
+        case ExceptionChoose:
+        case ExceptionInstanceChoose:
+        case ClassExtendsChoose:
+        case NoMemberAccess:
+        case InstanceOfChoose:
+            ifDebug(log("returning early");)
+            return;
+        case FunctionCallAccess:
+            m_memberAccessOperation = NoMemberAccess;
+            Q_ASSERT(lastToken.type() == Parser::Token_LPAREN);
+            if ( lastToken.prependedBy(TokenList() << Parser::Token_STRING, true) == -1 ) {
+                // handle for, foreach, while, etc.
+                ifDebug(log("NoMemberAccess (no function call)");)
+            } else {
                 //The first context should never be a function-call context,
                 //so make this a NoMemberAccess context and the parent a function-call context.
-                ifDebug(log("NoMemberAccess (creating parentContext)");)
-                m_memberAccessOperation = NoMemberAccess;
-                Q_ASSERT(m_text.endsWith('('));
-                m_parentContext = new CodeCompletionContext(m_duContext, m_text, QString(), m_position, depth + 1);
-                return;
-            case MemberAccess:
-            case StaticMemberAccess:
-                // these types need the expression evaluated
-                break;
-        }
+                ifDebug(log("NoMemberAccess (creating parentContext for function call)");)
+                m_parentContext = new CodeCompletionContext(m_duContext, m_position, lastToken, depth + 1);
+            }
+            return;
+        case MemberAccess:
+        case StaticMemberAccess:
+            // these types need the expression evaluated
+            break;
     }
 
-    ///TODO: use the token stream here as well
-    // get the proper expression to evaluate for function calls
-    if ( m_depth && m_memberAccessOperation == FunctionCallAccess ) {
-        m_text += ')';
-    }
-    int start_expr = expressionAt(m_text, m_text.length());
+    evaluateExpression(lastToken);
+}
 
-    if ( m_depth && m_memberAccessOperation == FunctionCallAccess ) {
+CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context, const KDevelop::SimpleCursor& position,
+                                             TokenAccess& lastToken,  int depth)
+        : KDevelop::CodeCompletionContext(context, QString(), position, depth)
+        , m_memberAccessOperation(NoMemberAccess), m_parentAccess(false), m_isFileCompletionAfterDirname(false)
+{
+    switch ( lastToken.type() ) {
+        case Parser::Token_LPAREN:
+            m_memberAccessOperation = FunctionCallAccess;
+            break;
+        default:
+            kDebug() << "unhandled token type for parent context" << tokenText(lastToken.typeAt(0));
+            Q_ASSERT(false);
+            m_valid = false;
+            return;
+    }
+
+    evaluateExpression(lastToken);
+}
+
+void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
+{
+    /// token pos
+    qint64 startPos = 0;
+    int openLParen = 0;
+
+    if ( m_memberAccessOperation == FunctionCallAccess ) {
+        Q_ASSERT(lastToken.type() == Parser::Token_LPAREN);
         // check ctor call
-        qint64 pos = lastToken.prependedBy(TokenList() << Parser::Token_STRING << Parser::Token_WHITESPACE << Parser::Token_NEW );
+        qint64 pos = lastToken.prependedBy(TokenList() << Parser::Token_STRING << Parser::Token_NEW, true);
         if ( pos != -1 ) {
-            start_expr = (int) lastToken.tokenAt(-pos).end + 1;
+            startPos = -pos;
+            ifDebug(kDebug() << "ctor call";)
+        } else {
+            // simple function call, get it's expression
+            startPos = -1;
+            ifDebug(kDebug() << "simple function call";)
         }
     }
 
-    m_expression = m_text.mid(start_expr).trimmed();
-    ifDebug(log("expression: " + m_expression));
+    // find expression start
+    while ( lastToken.typeAt(startPos) != Parser::Token_COMMA &&
+            lastToken.typeAt(startPos) != Parser::Token_SEMICOLON &&
+            lastToken.typeAt(startPos) != Parser::Token_INVALID &&
+            lastToken.typeAt(startPos) != Parser::Token_OPEN_TAG &&
+            lastToken.typeAt(startPos) != Parser::Token_OPEN_TAG_WITH_ECHO &&
+            lastToken.typeAt(startPos) != Parser::Token_LBRACE &&
+            lastToken.typeAt(startPos) != Parser::Token_RBRACE &&
+            lastToken.typeAt(startPos) != Parser::Token_COMMENT &&
+            lastToken.typeAt(startPos) != Parser::Token_DOC_COMMENT )
+    {
+        if ( lastToken.typeAt(startPos) == Parser::Token_LPAREN ) {
+            --openLParen;
+            if ( openLParen <= 0 ) {
+                break;
+            }
+        } else if ( lastToken.typeAt(startPos) == Parser::Token_RPAREN ) {
+            ++openLParen;
+        }
+        --startPos;
+    }
 
-    QString expressionPrefix = stripFinalWhitespace(m_text.left(start_expr));
-    ifDebug(log("expressionPrefix: " + expressionPrefix);)
+    // we actually incorporate the not-wanted token, hence move forward
+    ++startPos;
 
-    /**
-     * Possible cases:
-     * a = exp; - partially handled
-     * ...
-     * return exp;
-     * throw exp;
-     * new Class;
-     * a=function(exp
-     * a = exp(
-     * ClassType instance(
-     *
-     * What else?
-     *
-     * When the left and right part are only separated by a whitespace,
-     * expressionAt returns both sides
-     * */
+    if ( lastToken.typeAt(startPos) == Parser::Token_WHITESPACE ) {
+        ++startPos;
+    }
 
-    ///Handle recursive contexts(Example: "ret = function1(param1, function2(" )
-    if (m_expression.isEmpty() && (expressionPrefix.endsWith('(') || expressionPrefix.endsWith(','))) {
-        log(QString("Recursive function-call: Searching parent-context in \"%1\"").arg(expressionPrefix));
-        //Our expression is within a function-call. We need to find out the possible argument-types we need to match, and show an argument-hint.
+    if ( lastToken.typeAt(startPos) == Parser::Token_RETURN ) {
+        ///TODO: match against function return type
+        ++startPos;
 
-        //Find out which argument-number this expression is, and compute the beginning of the parent function-call(parentContextLast)
-        QStringList otherArguments;
-        int parentContextEnd = expressionPrefix.length();
+        if ( lastToken.typeAt(startPos) == Parser::Token_WHITESPACE ) {
+            ++startPos;
+        }
+    }
 
-        skipFunctionArguments(expressionPrefix, otherArguments, parentContextEnd);
-
-        QString parentContextText = expressionPrefix.left(parentContextEnd - 1);
-
-        if (parentContextText == text) {
-            log(QString("Endless recursion spotted, this doesn't seem to be a valid position for a code completion."));
+    if ( m_memberAccessOperation == StaticMemberAccess ) {
+        if ( lastToken.typeAt(startPos) != Parser::Token_STRING ) {
+            ifDebug(kDebug() << "unsupported token for start member access:" << tokenText(lastToken.typeAt(startPos));)
             m_valid = false;
             return;
         }
 
-        log(QString("This argument-number: %1 Building parent-context from \"%2\"").arg(otherArguments.size()).arg(parentContextText));
+        const QString identifier(lastToken.stringAt(startPos).toLower());
 
-        m_parentContext = new CodeCompletionContext(m_duContext, parentContextText, QString(), m_position, depth + 1);
-
-        if (!m_parentContext->isValid()) {
-            m_parentContext = 0;
-            m_valid = false;
-            return;
-        }
-    }
-
-    // Now care about m_expression
-
-    /// When isReturn is true, we should match the result against the return-type of the current context-function
-    bool isReturn = false;
-
-    QString expr = m_expression.trimmed();
-
-    if (expr.startsWith(QString("return")))  {
-        isReturn = true;
-        expr = expr.right(expr.length() - 6);
-    }
-
-    ifDebug(kDebug() << "expression: " << expr;)
-
-    if (m_memberAccessOperation == StaticMemberAccess) {
-        if (expr == "self" || expr == "parent") {
+        if ( identifier == "self" || identifier == "parent" ) {
             // self and parent are only accessible from within a member function of a class
-            if (DUContext* parent = context->parentContext()) {
+            if (DUContext* parent = m_duContext->parentContext()) {
                 LOCKDUCHAIN;
                 ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(parent->owner());
                 if (classDec) {
-                    if (expr == "parent") {
+                    if (identifier == "parent") {
                         FOREACH_FUNCTION(const BaseClassInstance& base, classDec->baseClasses) {
                             if (StructureType::Ptr classType = base.baseClass.type<StructureType>()) {
-                                if (ClassDeclaration* baseClass = dynamic_cast<ClassDeclaration*>(classType->declaration(context->topContext()))) {
+                                if (ClassDeclaration* baseClass = dynamic_cast<ClassDeclaration*>(classType->declaration(m_duContext->topContext()))) {
                                     if (baseClass->classType() == ClassDeclarationData::Class
                                             && baseClass->classModifier() != ClassDeclarationData::Abstract) {
                                         ifDebug(kDebug() << "correction: parent can do MemberAccess");
@@ -813,30 +834,77 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 }
             }
         } else {
-            QualifiedIdentifier id(expr.toLower());
+            QualifiedIdentifier id(identifier);
 
             m_expressionResult.setDeclaration(findDeclarationImportHelper(duContext(), id, ClassDeclarationType, 0, 0));
         }
     } else {
-        ExpressionParser expressionParser;
-        if (!expr.trimmed().isEmpty()) {
-            m_expressionResult = expressionParser.evaluateType(expr.toUtf8(), m_duContext, m_position);
+        // Now get the string of the expression and evaluate it
+        Q_ASSERT(m_expression.isEmpty());
+
+        for (qint64 i = startPos; i <= 0; ++i ) {
+            m_expression += lastToken.stringAt(i);
+        }
+
+        m_expression = m_expression.trimmed();
+
+        if ( m_memberAccessOperation == FunctionCallAccess ) {
+            // make sure the expression is valid
+            Q_ASSERT(m_expression.endsWith('('));
+            m_expression.append(')');
+        }
+
+        ifDebug(kDebug() << "expression: " << m_expression;)
+
+        if ( !m_expression.isEmpty() ) {
+            ExpressionParser expressionParser;
+            m_expressionResult = expressionParser.evaluateType(m_expression.toUtf8(), m_duContext, m_position);
+        }
+
+        if (m_expressionResult.type()) {
+            LOCKDUCHAIN;
+            ifDebug(kDebug() << "expression type: " << m_expressionResult.type()->toString();)
+        } else {
+            ifDebug(log(QString("expression could not be evaluated")));
+            if ( m_memberAccessOperation == FunctionCallAccess ) {
+                ifDebug(log("function not found");)
+                return;
+            }
+            m_valid = false;
+            return;
         }
     }
 
-    if (m_expressionResult.type()) {
-        LOCKDUCHAIN;
-        ifDebug(kDebug() << "expression type: " << m_expressionResult.type()->toString();)
-    } else {
-        log(QString("expression \"%1\" could not be evaluated").arg(expr));
-        m_valid = false;
-        return;
-    }
-}
+    // Handle recursive contexts (Example: "ret = function1(param1, function2(" )
+    if ( lastToken.typeAt(startPos - 1) == Parser::Token_LPAREN ||
+         lastToken.typeAt(startPos - 1) == Parser::Token_COMMA ) {
+        //Our expression is within a function-call. We need to find out the possible argument-types we need to match, and show an argument-hint.
 
-const QString& CodeCompletionContext::code() const
-{
-    return m_text;
+        lastToken.moveTo(startPos - 1);
+        if ( lastToken.type() == Parser::Token_COMMA ) {
+            removeOtherArguments(lastToken);
+            if ( lastToken.type() == Parser::Token_INVALID ) {
+                ifDebug(log(QString("Could not find start position for parent function-call. Aborting."));)
+                m_valid = false;
+                return;
+            }
+        }
+
+        if ( lastToken.prependedBy(TokenList() << Parser::Token_STRING, true) == -1 ) {
+            // handle for, foreach, while, etc.
+            ifDebug(log("No real function call");)
+            return;
+        }
+
+        ifDebug(log(QString("Recursive function-call: creating parent context")));
+        m_parentContext = new CodeCompletionContext(m_duContext, m_position, lastToken, m_depth + 1);
+
+        if (!m_parentContext->isValid()) {
+            m_parentContext = 0;
+            m_valid = false;
+            return;
+        }
+    }
 }
 
 void CodeCompletionContext::forbidIdentifier(const QString& identifier)
@@ -1123,6 +1191,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                         return items;
                     }
                     QList<uint> alreadyImplemented;
+                    //TODO: use the token stream here as well
                     //TODO: always add __construct, __destruct and maby other magic functions
                     // get all visible declarations and add inherited to the completion items
                     foreach(const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false)) {
