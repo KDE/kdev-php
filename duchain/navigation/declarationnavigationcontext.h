@@ -36,6 +36,8 @@ protected:
     virtual void htmlClass();
 
     void makeLink( const QString& name, KDevelop::DeclarationPointer declaration, KDevelop::NavigationAction::Type actionType );
+
+    virtual QString declarationKind(KDevelop::DeclarationPointer decl);
 };
 
 }
