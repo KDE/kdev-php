@@ -23,6 +23,7 @@
 #include "helper.h"
 #include "constantdeclaration.h"
 #include "variabledeclaration.h"
+#include "classdeclaration.h"
 
 #include <language/duchain/topducontext.h>
 #include <language/duchain/duchain.h>
@@ -30,7 +31,6 @@
 #include <language/duchain/persistentsymboltable.h>
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/integraltype.h>
-#include "structuretype.h"
 
 #define ifDebug(x)
 
@@ -381,30 +381,24 @@ void ExpressionVisitor::visitEncapsVar(EncapsVarAst *node)
 {
     DefaultVisitor::visitEncapsVar(node);
     if (node->variable) {
+        // handle $foo
         Declaration* dec = processVariable(node->variable);
-        if (dec && node->propertyIdentifier) {
-            //$foo->bar inside a string
+        if (node->propertyIdentifier) {
+            // handle property in $foo->bar
+            Declaration* foundDec = 0;
             DUChainReadLocker lock(DUChain::lock());
-            StructureType::Ptr structType = dec->type<StructureType>();
-            if (structType) {
-                QualifiedIdentifier id = structType->qualifiedIdentifier();
-                QList<Declaration*> declarations = m_currentContext->findDeclarations(id);
-                if (!declarations.isEmpty()) {
-                    DUContext* context = declarations.first()->internalContext();
-                    if (!context && m_currentContext->parentContext()->localScopeIdentifier() == declarations.first()->qualifiedIdentifier()) {
-                        //class is currentClass (internalContext is not yet set)
-                        context = m_currentContext->parentContext();
-                    }
-                    QualifiedIdentifier propertyId = identifierForNode(node->propertyIdentifier);
-                    QList<Declaration*> found = context->findDeclarations(propertyId);
-                    lock.unlock();
-                    if (!found.isEmpty()) {
-                        usingDeclaration(node->propertyIdentifier, found.last());
-                    } else {
-                        usingDeclaration(node->propertyIdentifier, 0);
+            if ( StructureType::Ptr structType = dec->type<StructureType>() ) {
+                if ( ClassDeclaration* cdec = dynamic_cast<ClassDeclaration*>(structType->declaration(m_currentContext->topContext())) ) {
+                    foreach( Declaration* pdec, cdec->internalContext()->findDeclarations(identifierForNode(node->propertyIdentifier)) ) {
+                        if ( !pdec->isFunctionDeclaration() ) {
+                            foundDec = pdec;
+                            break;
+                        }
                     }
                 }
             }
+            lock.unlock();
+            usingDeclaration(node->propertyIdentifier, foundDec);
         }
     }
 }

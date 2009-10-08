@@ -2053,6 +2053,24 @@ void TestDUChain::testFindFunctionArgs()
     }
 }
 
+void TestDUChain::testUndeclaredPropertyInString()
+{
+    // testcase for bug 209814
+
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php class foo { var $foo; function bar() { \"$this->baz\"; } }", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->childContexts().size(), 1);
+    DUContext* classCtx = top->childContexts().first();
+    QVERIFY(classCtx->type() == DUContext::Class);
+    QCOMPARE(classCtx->localDeclarations().size(), 2);
+    QCOMPARE(classCtx->findDeclarations(Identifier("foo")).size(), 1);
+    QCOMPARE(classCtx->findDeclarations(Identifier("bar")).size(), 1);
+}
+
 }
 
 #include "test_duchain.moc"
