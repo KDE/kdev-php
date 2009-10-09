@@ -966,16 +966,23 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
     DeclarationBuilderBase::visitUnaryExpression(node);
     IndexedString includeFile = getIncludeFileForNode(node, editor());
     if ( !includeFile.isEmpty() ) {
+        TopDUContext* includedCtx = DUChain::self()->chainForDocument(includeFile);
+        if ( !includedCtx ) {
+            // invalid include
+            return;
+        }
+
         QualifiedIdentifier identifier(includeFile.str());
 
         DUChainWriteLocker lock(DUChain::lock());
-        foreach ( Declaration* dec, currentContext()->topContext()->findDeclarations(identifier) ) {
+
+        foreach ( Declaration* dec, includedCtx->findDeclarations(identifier, SimpleCursor(0, 1)) ) {
             if ( dec->kind() == Declaration::Namespace && dec->range().isEmpty() ) {
                 // nothing to do
                 return;
             }
         }
-        injectContext(editor()->smart(), currentContext()->topContext());
+        injectContext(editor()->smart(), includedCtx);
         openDefinition<Declaration>(identifier, SimpleRange(0, 0, 0, 0));
         currentDeclaration()->setKind(Declaration::Namespace);
         eventuallyAssignInternalContext();
