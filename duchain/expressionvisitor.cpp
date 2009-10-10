@@ -383,7 +383,7 @@ void ExpressionVisitor::visitEncapsVar(EncapsVarAst *node)
     if (node->variable) {
         // handle $foo
         Declaration* dec = processVariable(node->variable);
-        if (node->propertyIdentifier) {
+        if (dec && node->propertyIdentifier) {
             // handle property in $foo->bar
             Declaration* foundDec = 0;
             DUChainReadLocker lock(DUChain::lock());

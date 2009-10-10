@@ -112,6 +112,7 @@ private slots:
     void testAlternateDocCommentTypeHints();
     void testFindFunctionArgs();
     void testUndeclaredPropertyInString();
+    void testUndeclaredVarPropertyInString();
 };
 
 }
