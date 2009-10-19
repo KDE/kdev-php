@@ -40,7 +40,7 @@ QWidget* PhpDUContext<TopDUContext>::createNavigationWidget(Declaration* decl, T
 {
     if (decl == 0) {
         return 0;
-    } else if ( decl->kind() == Declaration::Namespace && decl->range().isEmpty() ) {
+    } else if ( decl->kind() == Declaration::Import ) {
         KUrl u( decl->identifier().toString() );
         IncludeItem i;
         i.pathNumber = -1;

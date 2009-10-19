@@ -977,14 +977,14 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
         DUChainWriteLocker lock(DUChain::lock());
 
         foreach ( Declaration* dec, includedCtx->findDeclarations(identifier, SimpleCursor(0, 1)) ) {
-            if ( dec->kind() == Declaration::Namespace && dec->range().isEmpty() ) {
+            if ( dec->kind() == Declaration::Import ) {
                 // nothing to do
                 return;
             }
         }
         injectContext(editor()->smart(), includedCtx);
         openDefinition<Declaration>(identifier, SimpleRange(0, 0, 0, 0));
-        currentDeclaration()->setKind(Declaration::Namespace);
+        currentDeclaration()->setKind(Declaration::Import);
         eventuallyAssignInternalContext();
         DeclarationBuilderBase::closeDeclaration();
         closeInjectedContext(editor()->smart());
