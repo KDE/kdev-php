@@ -20,7 +20,7 @@ kde4_add_unit_test(usestest ${usestest_SRCS})
 target_link_libraries(usestest
     kdev4phpduchain
     ${QT_QTTEST_LIBRARY}
-    ${KDEVPLATFORM_INTERFACES_LIBRARY}
+    ${KDEVPLATFORM_INTERFACES_LIBRARIES}
 )
 
 if ( NOT ${QTVERSION} VERSION_LESS "4.5.0" )
@@ -29,6 +29,6 @@ if ( NOT ${QTVERSION} VERSION_LESS "4.5.0" )
     target_link_libraries(benchmarks
         kdev4phpduchain
         ${QT_QTTEST_LIBRARY}
-        ${KDEVPLATFORM_INTERFACES_LIBRARY}
+        ${KDEVPLATFORM_INTERFACES_LIBRARIES}
     )
 endif ( NOT ${QTVERSION} VERSION_LESS "4.5.0" )
