@@ -39,6 +39,8 @@
 #include <language/duchain/dumpchain.h>
 #include <interfaces/ilanguage.h>
 #include <language/highlighting/codehighlighting.h>
+#include <interfaces/icore.h>
+#include <interfaces/ilanguagecontroller.h>
 
 // #include "phphighlighting.h"
 #include "editorintegrator.h"

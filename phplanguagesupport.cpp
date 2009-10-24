@@ -100,10 +100,17 @@ LanguageSupport::~LanguageSupport()
 void LanguageSupport::slotPluginLoaded( IPlugin* plugin )
 {
     if ( plugin == this ) {
+        {
+            DUChainReadLocker lock(DUChain::lock());
+            if ( DUChain::self()->chainForDocument(IndexedString("InternalFunctions.php")) ) {
+                m_internalFunctionsLoaded = true;
+                return;
+            }
+        }
         kDebug() << "locking parselock for writing and adding job for internal function file";
         language()->parseLock()->lockForWrite();
         core()->languageController()->backgroundParser()->addDocument(
-            KUrl("InternalFunctions.php"), KDevelop::TopDUContext::AllDeclarationsAndContexts, 10, this
+            KUrl("InternalFunctions.php"), KDevelop::TopDUContext::AllDeclarationsAndContexts, -10, this
         );
         disconnect(core()->pluginController(), SIGNAL(pluginLoaded(KDevelop::IPlugin*)),
                    this, SLOT(slotPluginLoaded(KDevelop::IPlugin*)));
