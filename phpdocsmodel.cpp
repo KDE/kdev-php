@@ -96,9 +96,12 @@ QVariant PhpDocsModel::data(const QModelIndex& index, int role) const
         case Qt::EditRole: {
             Declaration* dec = declarationForIndex(index);
             DUChainReadLocker lock(DUChain::self()->lock());
-            QString ret = dec->qualifiedIdentifier().toString();
+            QString ret = dec->toString();
             if ( dec->isFunctionDeclaration() ) {
-                ret += "()";
+                // remove function arguments
+                ret = ret.replace(QRegExp("\\(.+\\)"), "()");
+                // remove return type
+                ret = ret.remove(QRegExp("^[^ ]+ "));
             }
             return ret;
         }
