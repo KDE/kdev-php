@@ -65,4 +65,3 @@ install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR})
 
 install(FILES kdevphpsupport.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 install(FILES phpfunctions.php DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport)
-

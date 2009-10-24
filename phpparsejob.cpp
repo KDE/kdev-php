@@ -51,6 +51,8 @@
 #include "includebuilder.h"
 #include "phpducontext.h"
 
+#include <QtCore/QReadLocker>
+
 using namespace KDevelop;
 
 namespace Php
@@ -90,19 +92,11 @@ bool ParseJob::wasReadFromDisk() const
 
 void ParseJob::run()
 {
-    if (document() != IndexedString("PHPInternalFunctions") && !m_parentJob) {
-        QMutexLocker lock(&internalFunctionParseMutex);
-        TopDUContext *top = 0;
-        {
-            DUChainReadLocker lock(DUChain::lock());
-            top = DUChain::self()->chainForDocument(IndexedString("PHPInternalFunctions"));
-        }
-        if (!top) {
-            ParseJob job(KUrl(IndexedString("PHPInternalFunctions").str()));
-            job.run();
-        }
+    // make sure we loaded the internal file already
+    if ( document() != IndexedString("InternalFunctions.php") && !m_parentJob && !php()->internalFunctionsLoaded() ) {
+        kDebug() << "waiting for InternalFunctions.php to finish parsing";
+        QReadLocker(php()->language()->parseLock());
     }
-
     {
         DUChainReadLocker lock(DUChain::lock());
         bool needsUpdate = true;
@@ -126,7 +120,7 @@ void ParseJob::run()
 
     if (m_readFromDisk) {
         QString fileName = document().str();
-        if (fileName == "PHPInternalFunctions") {
+        if (fileName == "InternalFunctions.php") {
             fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
         }
         QFile file(fileName);
@@ -208,7 +202,10 @@ void ParseJob::run()
             }
         }
 
-        QReadLocker parseLock(php()->language()->parseLock());
+        if ( document() != IndexedString("InternalFunctions.php") ) {
+            // internal functions is already locked
+            QReadLocker parseLock(php()->language()->parseLock());
+        }
 
         DeclarationBuilder builder(&editor);
         KDevelop::ReferencedTopDUContext chain = builder.build(document(), m_ast);

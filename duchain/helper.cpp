@@ -103,7 +103,7 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                 return declaration;
             }
         }
-        if ( currentContext->url() == IndexedString("PHPInternalFunctions") ) {
+        if ( currentContext->url() == IndexedString("InternalFunctions.php") ) {
             // when compiling php internal functions, we don't need to ask the persistent symbol table for anything
             return 0;
         }
@@ -136,7 +136,7 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                 }
                 TopDUContext* top = declarations[i].declaration()->context()->topContext();
 
-                if (top->url() != IndexedString("PHPInternalFunctions") && ICore::self()) {
+                if (top->url() != IndexedString("InternalFunctions.php") && ICore::self()) {
                     bool loadedProjectContainsUrl = false;
                     foreach(IProject *project, ICore::self()->projectController()->projects()) {
                         if (project->fileSet().contains(top->url())) {

@@ -459,7 +459,7 @@ void TestDUChain::testDeclarationReturnTypeDocBlock()
     QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
     QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("a"));
 
-    //test hint in PHPInternalFunctions of a type that is added later on
+    //test hint in InternalFunctions.php of a type that is added later on
     // function
     QList<Declaration*> decs = top->findDeclarations(Identifier("should_return_exception"));
     QCOMPARE(decs.size(), 1);
@@ -924,8 +924,8 @@ void TestDUChain::testGlobalFunction()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->importedParentContexts().count(), 1);
-    QVERIFY(DUChain::self()->chainForDocument(IndexedString("PHPInternalFunctions")));
-    QCOMPARE(DUChain::self()->chainForDocument(IndexedString("PHPInternalFunctions")), top->importedParentContexts().first().context(top));
+    QVERIFY(DUChain::self()->chainForDocument(IndexedString("InternalFunctions.php")));
+    QCOMPARE(DUChain::self()->chainForDocument(IndexedString("InternalFunctions.php")), top->importedParentContexts().first().context(top));
 
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("substr")).count(), 1);
 }
@@ -941,8 +941,8 @@ void TestDUChain::testGlobalVariableFromInternalFunctions()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->importedParentContexts().count(), 1);
-    QVERIFY(DUChain::self()->chainForDocument(IndexedString("PHPInternalFunctions")));
-    QCOMPARE(DUChain::self()->chainForDocument(IndexedString("PHPInternalFunctions")), top->importedParentContexts().first().context(top));
+    QVERIFY(DUChain::self()->chainForDocument(IndexedString("InternalFunctions.php")));
+    QCOMPARE(DUChain::self()->chainForDocument(IndexedString("InternalFunctions.php")), top->importedParentContexts().first().context(top));
 
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("_GET")).count(), 1);
 }

@@ -122,7 +122,7 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
 
     // now skip through some things the DeclarationBuilderBase (ContextBuilder) would do,
     // most significantly don't clear imported parent contexts
-    m_reportErrors = (url != IndexedString("PHPInternalFunctions"));
+    m_reportErrors = (url != IndexedString("InternalFunctions.php"));
     return ContextBuilderBase::build(url, node, updateContext, useSmart);
 }
 
@@ -567,7 +567,7 @@ void DeclarationBuilder::reportRedeclarationError(Declaration* declaration, AstN
         return;
     }
     QString filename(declaration->context()->topContext()->url().str());
-    if (filename == "PHPInternalFunctions") {
+    if (filename == "InternalFunctions.php") {
         reportError(i18n("Cannot redeclare PHP internal %1.", declaration->toString()), node);
     } else {
         ///TODO: try to shorten the filename by removing the leading path to the current project

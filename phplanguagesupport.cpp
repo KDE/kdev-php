@@ -45,6 +45,7 @@
 #include <language/editor/editorintegrator.h>
 #include <language/backgroundparser/backgroundparser.h>
 #include <language/duchain/duchain.h>
+#include <language/duchain/duchainlock.h>
 #include <interfaces/idocumentcontroller.h>
 
 #include "phpparsejob.h"
@@ -70,7 +71,7 @@ LanguageSupport* LanguageSupport::m_self = 0;
 
 LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
         : KDevelop::IPlugin(KDevPhpSupportFactory::componentData(), parent),
-        KDevelop::ILanguageSupport()
+        KDevelop::ILanguageSupport(), m_internalFunctionsLoaded(false)
 {
     KDEV_USE_EXTENSION_INTERFACE(KDevelop::ILanguageSupport)
 
@@ -80,6 +81,9 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
 
     CodeCompletionModel* ccModel = new CodeCompletionModel(this);
     new KDevelop::CodeCompletion(this, ccModel, name());
+
+    connect(core()->pluginController(), SIGNAL(pluginLoaded(KDevelop::IPlugin*)),
+            this, SLOT(slotPluginLoaded(KDevelop::IPlugin*)));
 }
 
 LanguageSupport::~LanguageSupport()
@@ -91,6 +95,33 @@ LanguageSupport::~LanguageSupport()
 
     // Remove any documents waiting to be parsed from the background paser.
     core()->languageController()->backgroundParser()->clear(this);
+}
+
+void LanguageSupport::slotPluginLoaded( IPlugin* plugin )
+{
+    if ( plugin == this ) {
+        kDebug() << "locking parselock for writing and adding job for internal function file";
+        language()->parseLock()->lockForWrite();
+        core()->languageController()->backgroundParser()->addDocument(
+            KUrl("InternalFunctions.php"), KDevelop::TopDUContext::AllDeclarationsAndContexts, 10, this
+        );
+        disconnect(core()->pluginController(), SIGNAL(pluginLoaded(KDevelop::IPlugin*)),
+                   this, SLOT(slotPluginLoaded(KDevelop::IPlugin*)));
+    }
+}
+
+void LanguageSupport::updateReady( IndexedString url, ReferencedTopDUContext topContext )
+{
+    Q_ASSERT(url == IndexedString("InternalFunctions.php"));
+    Q_UNUSED(topContext);
+    kDebug() << "finished parsing internal function file, unlocking";
+    language()->parseLock()->unlock();
+    m_internalFunctionsLoaded = true;
+}
+
+bool LanguageSupport::internalFunctionsLoaded() const
+{
+    return m_internalFunctionsLoaded;
 }
 
 KDevelop::ParseJob *LanguageSupport::createParseJob(const KUrl &url)

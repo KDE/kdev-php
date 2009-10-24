@@ -34,6 +34,9 @@ namespace KDevelop
 class IDocument;
 class IProject;
 class CodeHighlighting;
+class ReferencedTopDUContext;
+class IndexedString;
+class ParseJob;
 }
 
 
@@ -42,6 +45,38 @@ namespace Php
 
 class Highlighting;
 
+/**
+ * \brief Language Support plugin for PHP
+ *
+ * All internal PHP declarations can be found in the document called InternalFunctions.php.
+ * It's real path is not important. To check whether the file was already loaded, use
+ * \p internalFunctionsLoaded. If it has not yet loaded, you have two options:
+ *
+ * 1) Block thread and wait for job to finish:
+ * \code
+ * if ( phpLangSupport->internalFunctionsLoaded ) {
+ *   QReadLocker(phpLangSupport->language()->parseLock());
+ * }
+ * // now you can get the ducontext
+ * \endcode
+ *
+ * 2) Wait for job to finish and get notified via signal:
+ * \code
+ *  connect(ICore::self()->languageController()->backgroundParser(), SIGNAL(parseJobFinished(KDevelop::ParseJob*)),
+ *           this, SLOT(slotParseJobFinished(KDevelop::ParseJob*)));
+ *  ...
+ *  void slotParseJobFinished(ParseJob* job) {
+ *    if ( job->document() == IndexedString("InternalFunctions.php") )
+ *      // now you can get the ducontext
+ *  }
+ * \endcode
+ *
+ * To access the docontext, use:
+ * \code
+ *  DUChainWriteLocker lock(DUChain::lock());
+ *  TopDUContext* ctx = DUChain::self()->chainForDocument(IndexedString("InternalFunctions.php"));
+ * \endcode
+ */
 class LanguageSupport : public KDevelop::IPlugin, public KDevelop::ILanguageSupport
 {
     Q_OBJECT
@@ -64,11 +99,28 @@ public:
     virtual QWidget* specialLanguageObjectNavigationWidget(const KUrl& url, const KDevelop::SimpleCursor& position);
     virtual KDevelop::SimpleRange specialLanguageObjectRange(const KUrl& url, const KDevelop::SimpleCursor& position);
 
+    /// returns true, if the internal function file has been loaded
+    /// to wait for it to finished, use a QReadLocker on the parse lock.
+    bool internalFunctionsLoaded() const;
+
+public slots:
+    /**
+     * Get notified by background parser when internal function file was loaded.
+     *
+     * \see loadedInternalFunctions
+     */
+    void updateReady(KDevelop::IndexedString url, KDevelop::ReferencedTopDUContext topContext);
+
+private slots:
+    void slotPluginLoaded(KDevelop::IPlugin* plugin);
+
 private:
     KDevelop::CodeHighlighting* m_highlighting;
     static LanguageSupport* m_self;
+    bool m_internalFunctionsLoaded;
 
     QPair<QString, KDevelop::SimpleRange>  wordUnderCursor(const KUrl& url, const KDevelop::SimpleCursor& position);
+
 };
 
 }
