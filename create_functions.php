@@ -99,6 +99,7 @@ $skipClasses[] = 'php_user_filter';
 ///TODO: re-enable them once they have their do() and echo() methods removed.
 $skipClasses[] = 'gearmanclient';
 $skipClasses[] = 'gearmanworker';
+$skipClasses[] = 'gearmantask';
 
 $dirs = array("reference", "appendices", "language/predefined/variables");
 
