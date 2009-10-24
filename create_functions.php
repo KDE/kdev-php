@@ -173,9 +173,9 @@ $declarationCount = 0;
 $out = $fileHeader;
 
 // make sure the output it somehow ordered to prevent huge svn diffs
-ksort($variables);
-ksort($classes);
-ksort($constants);
+uksort($variables, 'strnatcasecmp');
+uksort($classes, 'strnatcasecmp');
+uksort($constants, 'strnatcasecmp');
 
 foreach ($variables as $name=>$var) {
     $declarationCount++;

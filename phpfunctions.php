@@ -3,6 +3,16 @@
 // WARNING! All changes made in this file will be lost!
 
 /**
+ * The number of arguments passed to script
+ **/
+$argc = array();
+
+/**
+ * Array of arguments passed to script
+ **/
+$argv = array();
+
+/**
  * References all variables available in global scope
  * @superglobal
  **/
@@ -44,6 +54,11 @@ $HTTP_POST_VARS = array();
 $HTTP_RAW_POST_DATA = array();
 
 /**
+ * HTTP response headers
+ **/
+$http_response_header = array();
+
+/**
  * Server and execution environment information
  * @deprecated
  **/
@@ -54,6 +69,11 @@ $HTTP_SERVER_VARS = array();
  * @deprecated
  **/
 $HTTP_SESSION_VARS = array();
+
+/**
+ * The previous error message
+ **/
+$php_errormsg = array();
 
 /**
  * HTTP Cookies
@@ -102,26 +122,6 @@ $_SERVER = array();
  * @superglobal
  **/
 $_SESSION = array();
-
-/**
- * The number of arguments passed to script
- **/
-$argc = array();
-
-/**
- * Array of arguments passed to script
- **/
-$argv = array();
-
-/**
- * HTTP response headers
- **/
-$http_response_header = array();
-
-/**
- * The previous error message
- **/
-$php_errormsg = array();
 
 
 
@@ -1102,258 +1102,33 @@ interface SplSubject
 
 
 
-/**
- * @brief   Regular expression filter for iterators
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- *
- * This filter iterator assumes that the inner iterator 
- */
-class RegexIterator extends FilterIterator
-{
-    const USE_KEY     = 0x00000001; /**< If present in $flags the the key is 
-                                         used rather then the current value. */
-
-    const MATCH       = 0; /**< Mode: Executed a plain match only      */
-    const GET_MATCH   = 1; /**< Mode: Return the first matche (if any) */
-    const ALL_MATCHES = 2; /**< Mode: Return all matches (if any)      */
-    const SPLIT       = 3; /**< Mode: Return the split values (if any) */
-    const REPLACE     = 4; /**< Mode: Replace the input key or current */
-    
-    private $regex;     /**< the regular expression to match against */
-    private $mode;      /**< operation mode (one of self::MATCH, 
-                             self::GET_MATCH, self::ALL_MATCHES, self::SPLIT) */
-    private $flags;     /**< special flags (self::USE_KEY) */
-    private $preg_flags;/**< PREG_* flags, see preg_match(), preg_match_all(), 
-                             preg_split() */ 
-    private $key;       /**< the value used for key() */
-    private $current;   /**< the value used for current() */
-
-    /**
-     * Constructs a regular expression filter around an iterator whose 
-     * elemnts or keys are strings.
-     *
-     * @param it          inner iterator
-     * @param regex       the regular expression to match
-     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
-     *                    self::ALL_MATCHES, self::SPLIT)
-     * @param flags       special flags (self::USE_KEY)
-     * @param preg_flags  global PREG_* flags, see preg_match(), 
-     *                    preg_match_all(), preg_split()
-     */
-    function __construct(Iterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
-
-    /**
-     * Match current or key against regular expression using mode, flags and
-     * preg_flags.
-     *
-     * @return whether this is a match
-     *
-     * @warning never call this twice for the same state
-     */
-    function accept(){}
-
-    /** @return the key after accept has been called
-     */
-    function key(){}
-
-    /** @return the current value after accept has been called
-     */
-    function current(){}
-
-    /** @return current operation mode
-     */
-    function getMode(){}
-
-    /** @param mode new operaion mode
-     */
-    function setMode($mode){}
-
-    /** @return current operation flags
-     */
-    function getFlags(){}
-
-    /** @param flags new operaion flags
-     */
-    function setFlags($flags){}
-
-    /** @return current PREG flags
-     */
-    function getPregFlags(){}
-
-    /** @param preg_flags new PREG flags
-     */
-    function setPregFlags($preg_flags){}
-}
-
-
-
-
-
-/**
- * @brief   Cached recursive iteration over another Iterator
- * @author  Marcus Boerger
- * @version 1.2
- * @since PHP 5.1
- *
- * @see CachingIterator
- */
-class RecursiveCachingIterator extends CachingIterator implements RecursiveIterator
-{
-    private $hasChildren;
-    private $getChildren;
-
-    /** Construct from another iterator
-     *
-     * @param it    Iterator to cache
-     * @param flags Bitmask: 
-     *              - CALL_TOSTRING   (whether to call __toString() for every element)
-     *              - CATCH_GET_CHILD (whether to catch exceptions when trying to get childs)
-     */
-    function __construct(RecursiveIterator $it, $flags = self::CALL_TOSTRING){}
-
-    /** Rewind Iterator
-     */    
-    function rewind(){}
-
-    /** Forward to next element if necessary then an Iterator for the Children
-     * will be created.
-     */
-    function next(){}
-    
-    private $ref;
-
-    /** @return whether the current element has children
-     * @note The check whether the Iterator for the children can be created was
-     *       already executed. Hence when flag CATCH_GET_CHILD was given in
-     *       constructor this fucntion returns false so that getChildren does 
-     *       not try to access those children.
-     */
-    function hasChildren(){}
-
-    /** @return An Iterator for the children
-     */
-    function getChildren(){}
-}
-
-
-
-
-
 /** @ingroup SPL
- * @brief Basic Iterator wrapper
+ * @brief   An infinite Iterator
+ * @author  Marcus Boerger
+ * @version 1.1
  * @since PHP 5.1
  *
- * This iterator wrapper allows to convert anything that is traversable into 
- * an Iterator. It is very important to understand that most classes that do 
- * not implement Iterator have their reasone to. Most likely they do not allow
- * the full Iterator feature set. If so you need to provide techniques to
- * prevent missuse. If you do not you must expect exceptions or fatal erros.
+ * This Iterator takes another Iterator and infinitvely iterates it by
+ * rewinding it when its end is reached.
  *
- * It is also possible to derive the class and implement IteratorAggregate by
- * downcasting the instances returned in getIterator. See the following
- * example (assuming BaseClass implements Traversable):
- \code
- class SomeClass extends BaseClass implements IteratorAggregate
+ * \note Even an InfiniteIterator stops if its inner Iterator is empty.
+ *
+ \verbatim
+ $it       = new ArrayIterator(array(1,2,3));
+ $infinite = new InfiniteIterator($it);
+ $limit    = new LimitIterator($infinite, 0, 5);
+ foreach($limit as $val=>$key)
  {
-   function getIterator()
-   {
-     return new IteratorIterator($this, 'BaseClass');
-   }
+     echo "$val=>$key\n";
  }
- \endcode
- *
- * As you can see in the example this approach requires that the class to 
- * downcast to is actually a base class of the specified iterator to wrap.
- * Omitting the downcast in the above example would result in an endless loop
- * since IteratorIterator::__construct() would call SomeClass::getIterator().
+ \endverbatim
  */
-class IteratorIterator implements OuterIterator
+class InfiniteIterator extends IteratorIterator
 {
-    /** Construct an IteratorIterator from an Iterator or an IteratorAggregate.
-     *
-     * @param iterator  inner iterator
-     * @param classname optional class the iterator has to be downcasted to
-     */
-    function __construct(Traversable $iterator, $classname = null){}
-
-    /** \return the inner iterator as passed to the constructor
-     */
-    function getInnerIterator(){}
-
-    /** \return whether the iterator is valid
-     */
-    function valid(){}
-
-    /** \return current key
-     */
-    function key(){}
-
-    /** \return current value
-     */
-    function current(){}
-
-    /** forward to next element
+    /** Move the inner Iterator forward to its next element or rewind it.
+     * @return void
      */
     function next(){}
-
-    /** rewind to the first element
-     */
-    function rewind(){}
-
-    /** Aggregate the inner iterator
-     *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
-     */
-    function __call($func, $params){}
-
-    /** The inner iterator must be private because when this class will be
-     * converted to c code it won't no longer be available.
-     */
-    private $iterator;
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   Iterator to filter recursive iterators
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- *
- * Passes the RecursiveIterator interface to the inner Iterator and provides
- * the same functionality as FilterIterator. This allows you to skip parents
- * and all their childs before loading them all. You need to care about
- * function getChildren() because it may not always suit your needs. The 
- * builtin behavior uses reflection to return a new instance of the exact same
- * class it is called from. That is you extend RecursiveFilterIterator and
- * getChildren() will create instance of that class. The problem is that doing
- * this does not transport any state or control information of your accept()
- * implementation to the new instance. To overcome this problem you might 
- * need to overwrite getChildren(), call this implementation and pass the
- * control vaules manually.
- */
-abstract class RecursiveFilterIterator extends FilterIterator implements RecursiveIterator
-{
-    /** @param $it the RecursiveIterator to filter
-     */
-    function __construct(RecursiveIterator $it){}
-    
-    /** @return whether the current element has children
-     */
-    function hasChildren(){}
-
-    /** @return an iterator for the current elements children
-     *
-     * @note the returned iterator will be of the same class as $this
-     */
-    function getChildren(){}
-    
-    private $ref;
 }
 
 
@@ -1361,165 +1136,91 @@ abstract class RecursiveFilterIterator extends FilterIterator implements Recursi
 
 
 /**
- * @brief   Interface for recursive iteration with RecursiveIteratorIterator
+ * @brief   Abstract filter for iterators
  * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.0
- */
-interface RecursiveIterator extends Iterator
-{
-    /** @return whether the current element has children
-     */
-    function hasChildren();
-    
-    /** @return the sub iterator for the current element
-     * @note The returned object must implement RecursiveIterator.
-     */
-    function getChildren();
-}
-
-
-
-
-
-/**
- * @brief   Cached iteration over another Iterator
- * @author  Marcus Boerger
- * @version 1.2
+ * @version 1.1
  * @since PHP 5.0
  *
- * This iterator wrapper does a one ahead iteration. This way it knows whether
- * the inner iterator has one more element.
+ * Instances of this class act as a filter around iterators. In other words 
+ * you can put an iterator into the constructor and the instance will only 
+ * return selected (accepted) elements.
  *
- * @note If you want to convert the elements into strings and the inner 
- *       Iterator is an internal Iterator then you need to provide the 
- *       flag CALL_TOSTRING to do the conversion when the actual element
- *       is being fetched. Otherwise the conversion would happen with the
- *       already changed iterator. If you do not need this then it you should
- *       omit this flag because it costs unneccessary work and time.
+ * The only thing that needs to be done to make this work is implementing 
+ * method accept(). Typically this invloves reading the current element or 
+ * key of the inner Iterator and checking whether it is acceptable.
  */
-class CachingIterator implements OuterIterator
+abstract class FilterIterator implements OuterIterator
 {
-    const CALL_TOSTRING        = 0x00000001;
-    const CATCH_GET_CHILD      = 0x00000002;
-    const TOSTRING_USE_KEY     = 0x00000010;
-    const TOSTRING_USE_CURRENT = 0x00000020;
-
     private $it;
-    private $current;
-    private $key;
-    private $valid;
-    private $strValue;
 
-    /** Construct from another iterator
+    /**
+     * Constructs a filter around another iterator.
      *
-     * @param it    Iterator to cache
-     * @param flags Bitmask: 
-     *              - CALL_TOSTRING  (whether to call __toString() for every element)
+     * @param it     Iterator to filter
      */
-    function __construct(Iterator $it, $flags = self::CALL_TOSTRING){}
+    function __construct(Iterator $it){}
 
-    /** Rewind the Iterator
+    /**
+     * Rewind the inner iterator.
      */
-    function rewind(){}
-    
-    /** Forward to the next element
+    function rewind() {    
+        $this->it->rewind();
+        $this->fetch();
+    }
+
+    /**
+     * Accept function to decide whether an element of the inner iterator
+     * should be accessible through the Filteriterator.
+     *
+     * @return whether or not to expose the current element of the inner
+     *         iterator.
+     */
+    abstract function accept();
+
+    /**
+     * Fetch next element and store it.
+     *
+     * @return void
+     */
+    protected function fetch(){}
+
+    /**
+     * Move to next element
+     *
+     * @return void
      */
     function next(){}
     
-    /** @return whether teh iterator is valid
+    /**
+     * @return Whether more elements are available
      */
     function valid(){}
-
-    /** @return whether there is one more element
-     */
-    function hasNext(){}
     
-    /** @return the current element
-     */
-    function current(){}
-
-    /** @return the current key
+    /**
+     * @return The current key
      */
     function key(){}
+    
+    /**
+     * @return The current value
+     */
+    function current(){}
+    
+    /**
+     * hidden __clone
+     */
+    protected function __clone(){}
 
-    /** Aggregate the inner iterator
-     *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
-     */
-    function __call($func, $params){}
-    
-    /** @return the string represenatation that was generated for the current 
-     *          element
-     * @throw exception when CALL_TOSTRING was not specified in constructor
-     */
-    function __toString(){}
-    
     /**
      * @return The inner iterator
      */    
     function getInnerIterator(){}
-}
 
-
-
-
-
-/** @ingroup SPL
- * @brief   Iterator that iterates over several iterators one after the other
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- */
-class AppendIterator implements OuterIterator
-{
-    /** @internal array of inner iterators */
-    private $iterators;
-
-    /** Construct an empty AppendIterator
-     */
-    function __construct(){}
-
-    /** Append an Iterator
-     * @param $it Iterator to append
+    /** Aggregate the inner iterator
      *
-     * If the current state is invalid but the appended iterator is valid
-     * the the AppendIterator itself becomes valid. However there will be no
-     * call to $it->rewind(). Also if the current state is invalid the inner
-     * ArrayIterator will be rewound und forwarded to the appended element.
-     */    
-    function append(Iterator $it){}
-
-    /** @return the current inner Iterator
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
      */
-    function getInnerIterator(){}
-
-    /** Rewind to the first element of the first inner Iterator.
-     * @return void
-     */
-    function rewind(){}
-
-    /** @return whether the current element is valid
-      */
-    function valid(){}
-
-    /** @return the current value if it is valid or \c NULL
-     */
-    function current(){}
-
-    /** @return the current key if it is valid or \c NULL
-     */
-    function key(){}
-
-    /** Move to the next element. If this means to another Iterator that 
-     * rewind that Iterator.
-     * @return void
-     */
-    function next(){}
-
-    /** Aggregates the inner iterator
-     */    
     function __call($func, $params){}
 }
 
@@ -1760,287 +1461,72 @@ class SplFileObject extends SplFileInfo implements RecursiveIterator, SeekableIt
 
 
 
-/** @brief seekable iterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.0
- *
- * Turns a normal iterator ino a seekable iterator. When there is a way
- * to seek on an iterator LimitIterator can use this to efficiently rewind
- * to offset.
- */
-interface SeekableIterator extends Iterator
-{
-    /** Seek to an absolute position
-     *
-     * \param $index position to seek to
-     * \return void
-     *
-     * The method should throw an exception if it is not possible to seek to 
-     * the given position. Typically this exception should be of type 
-     * OutOfBoundsException.
-     \code
-    function seek($index);
-        $this->rewind();
-        $position = 0;
-        while($position < $index && $this->valid()) {
-            $this->next();
-            $position++;
-        }
-        if (!$this->valid()) {
-            throw new OutOfBoundsException('Invalid seek position');
-        }
-    }
-     \endcode
-     */
-    function seek($index);
-}
-
-
-
-
-
 /**
- * @brief   Recursive regular expression filter for iterators
+ * @brief   Cached recursive iteration over another Iterator
  * @author  Marcus Boerger
- * @version 1.0
+ * @version 1.2
  * @since PHP 5.1
  *
- * This filter iterator assumes that the inner iterator 
+ * @see CachingIterator
  */
-class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator
+class RecursiveCachingIterator extends CachingIterator implements RecursiveIterator
 {
-    /**
-     * Constructs a regular expression filter around an iterator whose 
-     * elemnts or keys are strings.
+    private $hasChildren;
+    private $getChildren;
+
+    /** Construct from another iterator
      *
-     * @param it          inner iterator
-     * @param regex       the regular expression to match
-     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
-     *                    self::ALL_MATCHES, self::SPLIT)
-     * @param flags       special flags (self::USE_KEY)
-     * @param preg_flags  global PREG_* flags, see preg_match(), 
-     *                    preg_match_all(), preg_split()
+     * @param it    Iterator to cache
+     * @param flags Bitmask: 
+     *              - CALL_TOSTRING   (whether to call __toString() for every element)
+     *              - CATCH_GET_CHILD (whether to catch exceptions when trying to get childs)
      */
-    function __construct(RecursiveIterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
+    function __construct(RecursiveIterator $it, $flags = self::CALL_TOSTRING){}
 
-    /** @return whether the current element has children
-     */
-    function hasChildren(){}
-
-    /** @return an iterator for the current elements children
-     *
-     * @note the returned iterator will be of the same class as $this
-     */
-    function getChildren(){}
-    
-    private $ref;
-}
-
-
-
-
-
-/**
- * @brief   Abstract filter for iterators
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.0
- *
- * Instances of this class act as a filter around iterators. In other words 
- * you can put an iterator into the constructor and the instance will only 
- * return selected (accepted) elements.
- *
- * The only thing that needs to be done to make this work is implementing 
- * method accept(). Typically this invloves reading the current element or 
- * key of the inner Iterator and checking whether it is acceptable.
- */
-abstract class FilterIterator implements OuterIterator
-{
-    private $it;
-
-    /**
-     * Constructs a filter around another iterator.
-     *
-     * @param it     Iterator to filter
-     */
-    function __construct(Iterator $it){}
-
-    /**
-     * Rewind the inner iterator.
-     */
-    function rewind() {    
-        $this->it->rewind();
-        $this->fetch();
-    }
-
-    /**
-     * Accept function to decide whether an element of the inner iterator
-     * should be accessible through the Filteriterator.
-     *
-     * @return whether or not to expose the current element of the inner
-     *         iterator.
-     */
-    abstract function accept();
-
-    /**
-     * Fetch next element and store it.
-     *
-     * @return void
-     */
-    protected function fetch(){}
-
-    /**
-     * Move to next element
-     *
-     * @return void
-     */
-    function next(){}
-    
-    /**
-     * @return Whether more elements are available
-     */
-    function valid(){}
-    
-    /**
-     * @return The current key
-     */
-    function key(){}
-    
-    /**
-     * @return The current value
-     */
-    function current(){}
-    
-    /**
-     * hidden __clone
-     */
-    protected function __clone(){}
-
-    /**
-     * @return The inner iterator
+    /** Rewind Iterator
      */    
-    function getInnerIterator(){}
-
-    /** Aggregate the inner iterator
-     *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
-     */
-    function __call($func, $params){}
-}
-
-
-
-
-
-/**
- * @brief   Limited Iteration over another Iterator
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.0
- *
- * A class that starts iteration at a certain offset and only iterates over
- * a specified amount of elements.
- *
- * This class uses SeekableIterator::seek() if available and rewind() plus
- * a skip loop otehrwise.
- */
-class LimitIterator implements OuterIterator
-{
-    private $it;
-    private $offset;
-    private $count;
-    private $pos;
-
-    /** Construct
-     *
-     * @param it     Iterator to limit
-     * @param offset Offset to first element
-     * @param count  Maximum number of elements to show or -1 for all
-     */
-    function __construct(Iterator $it, $offset = 0, $count = -1){}
-    
-    /** Seek to specified position
-     * @param position offset to seek to (relative to beginning not offset
-     *                 specified in constructor).
-     * @throw exception when position is invalid
-     */
-    function seek($position){}
-
-    /** Rewind to offset specified in constructor
-     */
     function rewind(){}
-    
-    /** @return whether iterator is valid
-     */
-    function valid(){}
-    
-    /** @return current key
-     */
-    function key(){}
 
-    /** @return current element
-     */
-    function current(){}
-
-    /** Forward to nect element
+    /** Forward to next element if necessary then an Iterator for the Children
+     * will be created.
      */
     function next(){}
+    
+    private $ref;
 
-    /** @return current position relative to zero (not to offset specified in 
-     *          constructor).
+    /** @return whether the current element has children
+     * @note The check whether the Iterator for the children can be created was
+     *       already executed. Hence when flag CATCH_GET_CHILD was given in
+     *       constructor this fucntion returns false so that getChildren does 
+     *       not try to access those children.
      */
-    function getPosition(){}
+    function hasChildren(){}
 
-    /**
-     * @return The inner iterator
-     */    
-    function getInnerIterator(){}
-
-    /** Aggregate the inner iterator
-     *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
+    /** @return An Iterator for the children
      */
-    function __call($func, $params){}
+    function getChildren(){}
 }
 
 
 
 
 
-/** @ingroup SPL
- * @brief   A recursive array iterator
+/**
+ * @brief   Interface for recursive iteration with RecursiveIteratorIterator
  * @author  Marcus Boerger
  * @version 1.0
- * @since PHP 5.1
- *
- * Passes the RecursiveIterator interface to the inner Iterator and provides
- * the same functionality as FilterIterator. This allows you to skip parents
- * and all their childs before loading them all. You need to care about
- * function getChildren() because it may not always suit your needs. The 
- * builtin behavior uses reflection to return a new instance of the exact same
- * class it is called from. That is you extend RecursiveFilterIterator and
- * getChildren() will create instance of that class. The problem is that doing
- * this does not transport any state or control information of your accept()
- * implementation to the new instance. To overcome this problem you might 
- * need to overwrite getChildren(), call this implementation and pass the
- * control vaules manually.
+ * @since PHP 5.0
  */
-class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator
+interface RecursiveIterator extends Iterator
 {
     /** @return whether the current element has children
      */
-    function hasChildren(){}
-
-    /** @return an iterator for the current elements children
-     *
-     * @note the returned iterator will be of the same class as $this
-     */
-    function getChildren(){}
+    function hasChildren();
     
-    private $ref;
+    /** @return the sub iterator for the current element
+     * @note The returned object must implement RecursiveIterator.
+     */
+    function getChildren();
 }
 
 
@@ -2153,6 +1639,350 @@ class RecursiveIteratorIterator implements OuterIterator
 
 
 /**
+ * @brief   Iterator to filter parents
+ * @author  Marcus Boerger
+ * @version 1.2
+ * @since PHP 5.1
+ *
+ * This extended FilterIterator allows a recursive iteration using 
+ * RecursiveIteratorIterator that only shows those elements which have 
+ * children.
+ */
+class ParentIterator extends RecursiveFilterIterator
+{
+    /** @return whetehr the current element has children
+     */
+    function accept(){}
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   Iterator to filter recursive iterators
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ *
+ * Passes the RecursiveIterator interface to the inner Iterator and provides
+ * the same functionality as FilterIterator. This allows you to skip parents
+ * and all their childs before loading them all. You need to care about
+ * function getChildren() because it may not always suit your needs. The 
+ * builtin behavior uses reflection to return a new instance of the exact same
+ * class it is called from. That is you extend RecursiveFilterIterator and
+ * getChildren() will create instance of that class. The problem is that doing
+ * this does not transport any state or control information of your accept()
+ * implementation to the new instance. To overcome this problem you might 
+ * need to overwrite getChildren(), call this implementation and pass the
+ * control vaules manually.
+ */
+abstract class RecursiveFilterIterator extends FilterIterator implements RecursiveIterator
+{
+    /** @param $it the RecursiveIterator to filter
+     */
+    function __construct(RecursiveIterator $it){}
+    
+    /** @return whether the current element has children
+     */
+    function hasChildren(){}
+
+    /** @return an iterator for the current elements children
+     *
+     * @note the returned iterator will be of the same class as $this
+     */
+    function getChildren(){}
+    
+    private $ref;
+}
+
+
+
+
+
+/**
+ * @brief   Regular expression filter for iterators
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ *
+ * This filter iterator assumes that the inner iterator 
+ */
+class RegexIterator extends FilterIterator
+{
+    const USE_KEY     = 0x00000001; /**< If present in $flags the the key is 
+                                         used rather then the current value. */
+
+    const MATCH       = 0; /**< Mode: Executed a plain match only      */
+    const GET_MATCH   = 1; /**< Mode: Return the first matche (if any) */
+    const ALL_MATCHES = 2; /**< Mode: Return all matches (if any)      */
+    const SPLIT       = 3; /**< Mode: Return the split values (if any) */
+    const REPLACE     = 4; /**< Mode: Replace the input key or current */
+    
+    private $regex;     /**< the regular expression to match against */
+    private $mode;      /**< operation mode (one of self::MATCH, 
+                             self::GET_MATCH, self::ALL_MATCHES, self::SPLIT) */
+    private $flags;     /**< special flags (self::USE_KEY) */
+    private $preg_flags;/**< PREG_* flags, see preg_match(), preg_match_all(), 
+                             preg_split() */ 
+    private $key;       /**< the value used for key() */
+    private $current;   /**< the value used for current() */
+
+    /**
+     * Constructs a regular expression filter around an iterator whose 
+     * elemnts or keys are strings.
+     *
+     * @param it          inner iterator
+     * @param regex       the regular expression to match
+     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
+     *                    self::ALL_MATCHES, self::SPLIT)
+     * @param flags       special flags (self::USE_KEY)
+     * @param preg_flags  global PREG_* flags, see preg_match(), 
+     *                    preg_match_all(), preg_split()
+     */
+    function __construct(Iterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
+
+    /**
+     * Match current or key against regular expression using mode, flags and
+     * preg_flags.
+     *
+     * @return whether this is a match
+     *
+     * @warning never call this twice for the same state
+     */
+    function accept(){}
+
+    /** @return the key after accept has been called
+     */
+    function key(){}
+
+    /** @return the current value after accept has been called
+     */
+    function current(){}
+
+    /** @return current operation mode
+     */
+    function getMode(){}
+
+    /** @param mode new operaion mode
+     */
+    function setMode($mode){}
+
+    /** @return current operation flags
+     */
+    function getFlags(){}
+
+    /** @param flags new operaion flags
+     */
+    function setFlags($flags){}
+
+    /** @return current PREG flags
+     */
+    function getPregFlags(){}
+
+    /** @param preg_flags new PREG flags
+     */
+    function setPregFlags($preg_flags){}
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   An empty Iterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ */
+class EmptyIterator implements Iterator
+{
+    /** No operation.
+     * @return void
+     */
+    function rewind(){}
+
+    /** @return \c false
+     */
+    function valid(){}
+
+    /** This function must not be called. It throws an exception upon access.
+     * @throw Exception
+     * @return void
+     */
+    function current(){}
+
+    /** This function must not be called. It throws an exception upon access.
+     * @throw Exception
+     * @return void
+     */
+    function key(){}
+
+    /** No operation.
+     * @return void
+     */
+    function next(){}
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief Basic Iterator wrapper
+ * @since PHP 5.1
+ *
+ * This iterator wrapper allows to convert anything that is traversable into 
+ * an Iterator. It is very important to understand that most classes that do 
+ * not implement Iterator have their reasone to. Most likely they do not allow
+ * the full Iterator feature set. If so you need to provide techniques to
+ * prevent missuse. If you do not you must expect exceptions or fatal erros.
+ *
+ * It is also possible to derive the class and implement IteratorAggregate by
+ * downcasting the instances returned in getIterator. See the following
+ * example (assuming BaseClass implements Traversable):
+ \code
+ class SomeClass extends BaseClass implements IteratorAggregate
+ {
+   function getIterator()
+   {
+     return new IteratorIterator($this, 'BaseClass');
+   }
+ }
+ \endcode
+ *
+ * As you can see in the example this approach requires that the class to 
+ * downcast to is actually a base class of the specified iterator to wrap.
+ * Omitting the downcast in the above example would result in an endless loop
+ * since IteratorIterator::__construct() would call SomeClass::getIterator().
+ */
+class IteratorIterator implements OuterIterator
+{
+    /** Construct an IteratorIterator from an Iterator or an IteratorAggregate.
+     *
+     * @param iterator  inner iterator
+     * @param classname optional class the iterator has to be downcasted to
+     */
+    function __construct(Traversable $iterator, $classname = null){}
+
+    /** \return the inner iterator as passed to the constructor
+     */
+    function getInnerIterator(){}
+
+    /** \return whether the iterator is valid
+     */
+    function valid(){}
+
+    /** \return current key
+     */
+    function key(){}
+
+    /** \return current value
+     */
+    function current(){}
+
+    /** forward to next element
+     */
+    function next(){}
+
+    /** rewind to the first element
+     */
+    function rewind(){}
+
+    /** Aggregate the inner iterator
+     *
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
+     */
+    function __call($func, $params){}
+
+    /** The inner iterator must be private because when this class will be
+     * converted to c code it won't no longer be available.
+     */
+    private $iterator;
+}
+
+
+
+
+
+/**
+ * @brief   Limited Iteration over another Iterator
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.0
+ *
+ * A class that starts iteration at a certain offset and only iterates over
+ * a specified amount of elements.
+ *
+ * This class uses SeekableIterator::seek() if available and rewind() plus
+ * a skip loop otehrwise.
+ */
+class LimitIterator implements OuterIterator
+{
+    private $it;
+    private $offset;
+    private $count;
+    private $pos;
+
+    /** Construct
+     *
+     * @param it     Iterator to limit
+     * @param offset Offset to first element
+     * @param count  Maximum number of elements to show or -1 for all
+     */
+    function __construct(Iterator $it, $offset = 0, $count = -1){}
+    
+    /** Seek to specified position
+     * @param position offset to seek to (relative to beginning not offset
+     *                 specified in constructor).
+     * @throw exception when position is invalid
+     */
+    function seek($position){}
+
+    /** Rewind to offset specified in constructor
+     */
+    function rewind(){}
+    
+    /** @return whether iterator is valid
+     */
+    function valid(){}
+    
+    /** @return current key
+     */
+    function key(){}
+
+    /** @return current element
+     */
+    function current(){}
+
+    /** Forward to nect element
+     */
+    function next(){}
+
+    /** @return current position relative to zero (not to offset specified in 
+     *          constructor).
+     */
+    function getPosition(){}
+
+    /**
+     * @return The inner iterator
+     */    
+    function getInnerIterator(){}
+
+    /** Aggregate the inner iterator
+     *
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
+     */
+    function __call($func, $params){}
+}
+
+
+
+
+
+/**
  * @brief   Object storage
  * @author  Marcus Boerger
  * @version 1.0
@@ -2211,99 +2041,6 @@ class SplObjectStorage implements Iterator, Countable
 
 
 /** @ingroup SPL
- * @brief   An infinite Iterator
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.1
- *
- * This Iterator takes another Iterator and infinitvely iterates it by
- * rewinding it when its end is reached.
- *
- * \note Even an InfiniteIterator stops if its inner Iterator is empty.
- *
- \verbatim
- $it       = new ArrayIterator(array(1,2,3));
- $infinite = new InfiniteIterator($it);
- $limit    = new LimitIterator($infinite, 0, 5);
- foreach($limit as $val=>$key)
- {
-     echo "$val=>$key\n";
- }
- \endverbatim
- */
-class InfiniteIterator extends IteratorIterator
-{
-    /** Move the inner Iterator forward to its next element or rewind it.
-     * @return void
-     */
-    function next(){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   An empty Iterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- */
-class EmptyIterator implements Iterator
-{
-    /** No operation.
-     * @return void
-     */
-    function rewind(){}
-
-    /** @return \c false
-     */
-    function valid(){}
-
-    /** This function must not be called. It throws an exception upon access.
-     * @throw Exception
-     * @return void
-     */
-    function current(){}
-
-    /** This function must not be called. It throws an exception upon access.
-     * @throw Exception
-     * @return void
-     */
-    function key(){}
-
-    /** No operation.
-     * @return void
-     */
-    function next(){}
-}
-
-
-
-
-
-/**
- * @brief   Iterator to filter parents
- * @author  Marcus Boerger
- * @version 1.2
- * @since PHP 5.1
- *
- * This extended FilterIterator allows a recursive iteration using 
- * RecursiveIteratorIterator that only shows those elements which have 
- * children.
- */
-class ParentIterator extends RecursiveFilterIterator
-{
-    /** @return whetehr the current element has children
-     */
-    function accept(){}
-}
-
-
-
-
-
-/** @ingroup SPL
  * @brief   An Iterator wrapper that doesn't call rewind
  * @author  Marcus Boerger
  * @version 1.1
@@ -2314,6 +2051,269 @@ class NoRewindIterator extends IteratorIterator
     /** Simply prevent execution of inner iterators rewind().
      */
     function rewind(){}
+}
+
+
+
+
+
+/**
+ * @brief   Recursive regular expression filter for iterators
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ *
+ * This filter iterator assumes that the inner iterator 
+ */
+class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator
+{
+    /**
+     * Constructs a regular expression filter around an iterator whose 
+     * elemnts or keys are strings.
+     *
+     * @param it          inner iterator
+     * @param regex       the regular expression to match
+     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
+     *                    self::ALL_MATCHES, self::SPLIT)
+     * @param flags       special flags (self::USE_KEY)
+     * @param preg_flags  global PREG_* flags, see preg_match(), 
+     *                    preg_match_all(), preg_split()
+     */
+    function __construct(RecursiveIterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
+
+    /** @return whether the current element has children
+     */
+    function hasChildren(){}
+
+    /** @return an iterator for the current elements children
+     *
+     * @note the returned iterator will be of the same class as $this
+     */
+    function getChildren(){}
+    
+    private $ref;
+}
+
+
+
+
+
+/**
+ * @brief   Cached iteration over another Iterator
+ * @author  Marcus Boerger
+ * @version 1.2
+ * @since PHP 5.0
+ *
+ * This iterator wrapper does a one ahead iteration. This way it knows whether
+ * the inner iterator has one more element.
+ *
+ * @note If you want to convert the elements into strings and the inner 
+ *       Iterator is an internal Iterator then you need to provide the 
+ *       flag CALL_TOSTRING to do the conversion when the actual element
+ *       is being fetched. Otherwise the conversion would happen with the
+ *       already changed iterator. If you do not need this then it you should
+ *       omit this flag because it costs unneccessary work and time.
+ */
+class CachingIterator implements OuterIterator
+{
+    const CALL_TOSTRING        = 0x00000001;
+    const CATCH_GET_CHILD      = 0x00000002;
+    const TOSTRING_USE_KEY     = 0x00000010;
+    const TOSTRING_USE_CURRENT = 0x00000020;
+
+    private $it;
+    private $current;
+    private $key;
+    private $valid;
+    private $strValue;
+
+    /** Construct from another iterator
+     *
+     * @param it    Iterator to cache
+     * @param flags Bitmask: 
+     *              - CALL_TOSTRING  (whether to call __toString() for every element)
+     */
+    function __construct(Iterator $it, $flags = self::CALL_TOSTRING){}
+
+    /** Rewind the Iterator
+     */
+    function rewind(){}
+    
+    /** Forward to the next element
+     */
+    function next(){}
+    
+    /** @return whether teh iterator is valid
+     */
+    function valid(){}
+
+    /** @return whether there is one more element
+     */
+    function hasNext(){}
+    
+    /** @return the current element
+     */
+    function current(){}
+
+    /** @return the current key
+     */
+    function key(){}
+
+    /** Aggregate the inner iterator
+     *
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
+     */
+    function __call($func, $params){}
+    
+    /** @return the string represenatation that was generated for the current 
+     *          element
+     * @throw exception when CALL_TOSTRING was not specified in constructor
+     */
+    function __toString(){}
+    
+    /**
+     * @return The inner iterator
+     */    
+    function getInnerIterator(){}
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   Iterator that iterates over several iterators one after the other
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ */
+class AppendIterator implements OuterIterator
+{
+    /** @internal array of inner iterators */
+    private $iterators;
+
+    /** Construct an empty AppendIterator
+     */
+    function __construct(){}
+
+    /** Append an Iterator
+     * @param $it Iterator to append
+     *
+     * If the current state is invalid but the appended iterator is valid
+     * the the AppendIterator itself becomes valid. However there will be no
+     * call to $it->rewind(). Also if the current state is invalid the inner
+     * ArrayIterator will be rewound und forwarded to the appended element.
+     */    
+    function append(Iterator $it){}
+
+    /** @return the current inner Iterator
+     */
+    function getInnerIterator(){}
+
+    /** Rewind to the first element of the first inner Iterator.
+     * @return void
+     */
+    function rewind(){}
+
+    /** @return whether the current element is valid
+      */
+    function valid(){}
+
+    /** @return the current value if it is valid or \c NULL
+     */
+    function current(){}
+
+    /** @return the current key if it is valid or \c NULL
+     */
+    function key(){}
+
+    /** Move to the next element. If this means to another Iterator that 
+     * rewind that Iterator.
+     * @return void
+     */
+    function next(){}
+
+    /** Aggregates the inner iterator
+     */    
+    function __call($func, $params){}
+}
+
+
+
+
+
+/** @brief seekable iterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.0
+ *
+ * Turns a normal iterator ino a seekable iterator. When there is a way
+ * to seek on an iterator LimitIterator can use this to efficiently rewind
+ * to offset.
+ */
+interface SeekableIterator extends Iterator
+{
+    /** Seek to an absolute position
+     *
+     * \param $index position to seek to
+     * \return void
+     *
+     * The method should throw an exception if it is not possible to seek to 
+     * the given position. Typically this exception should be of type 
+     * OutOfBoundsException.
+     \code
+    function seek($index);
+        $this->rewind();
+        $position = 0;
+        while($position < $index && $this->valid()) {
+            $this->next();
+            $position++;
+        }
+        if (!$this->valid()) {
+            throw new OutOfBoundsException('Invalid seek position');
+        }
+    }
+     \endcode
+     */
+    function seek($index);
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   A recursive array iterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ *
+ * Passes the RecursiveIterator interface to the inner Iterator and provides
+ * the same functionality as FilterIterator. This allows you to skip parents
+ * and all their childs before loading them all. You need to care about
+ * function getChildren() because it may not always suit your needs. The 
+ * builtin behavior uses reflection to return a new instance of the exact same
+ * class it is called from. That is you extend RecursiveFilterIterator and
+ * getChildren() will create instance of that class. The problem is that doing
+ * this does not transport any state or control information of your accept()
+ * implementation to the new instance. To overcome this problem you might 
+ * need to overwrite getChildren(), call this implementation and pass the
+ * control vaules manually.
+ */
+class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator
+{
+    /** @return whether the current element has children
+     */
+    function hasChildren(){}
+
+    /** @return an iterator for the current elements children
+     *
+     * @note the returned iterator will be of the same class as $this
+     */
+    function getChildren(){}
+    
+    private $ref;
 }
 
 class AppendIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
@@ -2937,12 +2937,12 @@ class CairoContext {
      * CairoContext::newSubPath or procedural cairo_new_sub_path before
      * calling CairoContext::arc or cairo_arc.
      * 
-     * Angles are measured in radians. An angle of 0.0 is in the direction of
-     * the positive X axis (in user space). An angle of M_PI/2.0 radians (90
-     * degrees) is in the direction of the positive Y axis (in user space).
-     * Angles increase in the direction from the positive X axis toward the
-     * positive Y axis. So with the default transformation matrix, angles
-     * increase in a clockwise direction.
+     * Angles are measured in radians. An angle of 0.0 is in the direction
+     * of the positive X axis (in user space). An angle of M_PI/2.0 radians
+     * (90 degrees) is in the direction of the positive Y axis (in user
+     * space). Angles increase in the direction from the positive X axis
+     * toward the positive Y axis. So with the default transformation matrix,
+     * angles increase in a clockwise direction.
      * 
      * (To convert from degrees to radians, use degrees * (M_PI / 180.).)
      * This function gives the arc in the direction of increasing angles; see
@@ -4820,10 +4820,10 @@ class Collator {
      * difference anywhere in the strings. This is also called the level2
      * strength.
      * 
-     * Note: In some languages (such as Danish), certain accented letters are
-     * considered to be separate base characters. In most languages, however,
-     * an accented letter only has a secondary difference from the unaccented
-     * version of that letter.
+     * Note: In some languages (such as Danish), certain accented letters
+     * are considered to be separate base characters. In most languages,
+     * however, an accented letter only has a secondary difference from the
+     * unaccented version of that letter.
      * 
      * Tertiary Level: Upper and lower case differences in characters are
      * distinguished at the tertiary level (for example, "ao" "Ao" "aò"). In
@@ -5436,7 +5436,7 @@ class DomAttribute {
     function value() {}
 
 }
-class DomCharacterData extends DOMNode {
+class DOMCharacterData extends DOMNode {
     /**
      * Append the string data to the end of the character data of the node.
      *
@@ -5483,7 +5483,7 @@ class DomCharacterData extends DOMNode {
     function substringData($offset, $count) {}
 
 }
-class DOMComment extends DOMCharacterData {
+class DomComment extends DOMCharacterData {
     /**
      * Creates a new DOMComment object. This object is read only. It may be
      * appended to a document, but additional nodes may not be appended to
@@ -6352,7 +6352,7 @@ class DomElement extends DOMNode {
 }
 class DOMEntity extends DOMNode {
 }
-class DOMEntityReference extends DOMNode {
+class DomEntityReference extends DOMNode {
     /**
      * Creates a new DOMEntityReference object.
      *
@@ -6937,7 +6937,7 @@ class DomNode {
     function unlink_node() {}
 
 }
-class DOMNodeList {
+class DomNodelist {
     /**
      * Retrieves a node specified by index within the DOMNodeList object.
      *
@@ -8098,12 +8098,12 @@ class GearmanWorker {
     function returnCode() {}
 
     /**
-     * Sets one or more options to the supplied value.
+     * Sets the interval of time to wait for socket I/O activity.
      *
      * @param integer
      * @return boolean
      **/
-    function setOptions($option) {}
+    function setOptions($timeout) {}
 
     /**
      * Returns the current time to wait, in milliseconds, for socket I/O
@@ -12288,8 +12288,8 @@ function db2_get_option($resource, $option) {}
  * 
  * The result of this function is not affected by any of the following:
  * 
- * A single row INSERT statement with a VALUES clause for a table without
- * an identity column.
+ * A single row INSERT statement with a VALUES clause for a table
+ * without an identity column.
  * 
  * A multiple row INSERT statement with a VALUES clause.
  * 
@@ -12402,11 +12402,12 @@ function db2_pconnect($database, $username, $password, $options) {}
  * There are three main advantages to using prepared statements in your
  * application:
  * 
- * Performance: when you prepare a statement, the database server creates
- * an optimized access plan for retrieving data with that statement.
- * Subsequently issuing the prepared statement with db2_execute enables
- * the statements to reuse that access plan and avoids the overhead of
- * dynamically creating a new access plan for every statement you issue.
+ * Performance: when you prepare a statement, the database server
+ * creates an optimized access plan for retrieving data with that
+ * statement. Subsequently issuing the prepared statement with
+ * db2_execute enables the statements to reuse that access plan and
+ * avoids the overhead of dynamically creating a new access plan for
+ * every statement you issue.
  * 
  * Security: when you prepare a statement, you can include parameter
  * markers for input values. When you execute a prepared statement with
@@ -12523,13 +12524,13 @@ function db2_rollback($connection) {}
  * 
  * RS
  * 
- * Read stability: a transaction can add or remove rows matching a search
- * condition or a pending transaction.
+ * Read stability: a transaction can add or remove rows matching a
+ * search condition or a pending transaction.
  * 
  * RR
  * 
- * Repeatable read: data affected by pending transaction is not available
- * to other transactions.
+ * Repeatable read: data affected by pending transaction is not
+ * available to other transactions.
  * 
  * NC
  * 
@@ -12539,8 +12540,8 @@ function db2_rollback($connection) {}
  * IDENTIFIER_QUOTE_CHAR string The character used to delimit an
  * identifier.
  * 
- * INST_NAME string The instance on the database server that contains the
- * database.
+ * INST_NAME string The instance on the database server that contains
+ * the database.
  * 
  * ISOLATION_OPTION array An array of the isolation options supported by
  * the database server. The isolation options are described in the
@@ -12574,12 +12575,12 @@ function db2_rollback($connection) {}
  * MAX_STATEMENT_LEN int Maximum length of an SQL statement supported by
  * the database server, expressed in bytes.
  * 
- * MAX_TABLE_NAME_LEN int Maximum length of a table name supported by the
- * database server, expressed in bytes.
+ * MAX_TABLE_NAME_LEN int Maximum length of a table name supported by
+ * the database server, expressed in bytes.
  * 
- * NON_NULLABLE_COLUMNS bool if the database server supports columns that
- * can be defined as NOT NULL, if the database server does not support
- * columns defined as NOT NULL.
+ * NON_NULLABLE_COLUMNS bool if the database server supports columns
+ * that can be defined as NOT NULL, if the database server does not
+ * support columns defined as NOT NULL.
  * 
  * PROCEDURES bool if the database server supports the use of the CALL
  * statement to call stored procedures, if the database server does not
@@ -20376,12 +20377,12 @@ function hw_mapid($connection, $server_id, $object_id) {}
  * 'Title' attribute. This comes in handy if you want to remove
  * attributes recursively.
  * 
- * If you need to delete all attributes with a certain name you will have
- * to pass an empty string as the attribute value.
+ * If you need to delete all attributes with a certain name you will
+ * have to pass an empty string as the attribute value.
  * 
- * Only the attributes 'Title', 'Description' and 'Keyword' will properly
- * handle the language prefix. If those attributes don't carry a language
- * prefix, the prefix 'xx' will be assigned.
+ * Only the attributes 'Title', 'Description' and 'Keyword' will
+ * properly handle the language prefix. If those attributes don't carry a
+ * language prefix, the prefix 'xx' will be assigned.
  * 
  * The 'Name' attribute is somewhat special. In some cases it cannot be
  * complete removed. You will get an error message 'Change of base
@@ -21061,8 +21062,8 @@ function iconv_mime_decode_headers($encoded_headers, $mode, $charset) {}
  * Composes and returns a string that represents a valid MIME header
  * field, which looks like the following:
  * 
- * In the above example, "Subject" is the field name and the portion that
- * begins with "=?ISO-8859-1?..." is the field value.
+ * In the above example, "Subject" is the field name and the portion
+ * that begins with "=?ISO-8859-1?..." is the field value.
  *
  * @param string
  * @param string
@@ -24818,8 +24819,8 @@ function jddayofweek($julianday, $mode) {}
  * 
  * Mode Meaning Values
  * 
- * 0 Gregorian - abbreviated Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep,
- * Oct, Nov, Dec
+ * 0 Gregorian - abbreviated Jan, Feb, Mar, Apr, May, Jun, Jul, Aug,
+ * Sep, Oct, Nov, Dec
  * 
  * 1 Gregorian January, February, March, April, May, June, July, August,
  * September, October, November, December
@@ -24830,12 +24831,12 @@ function jddayofweek($julianday, $mode) {}
  * 3 Julian January, February, March, April, May, June, July, August,
  * September, October, November, December
  * 
- * 4 Jewish Tishri, Heshvan, Kislev, Tevet, Shevat, AdarI, AdarII, Nisan,
- * Iyyar, Sivan, Tammuz, Av, Elul
+ * 4 Jewish Tishri, Heshvan, Kislev, Tevet, Shevat, AdarI, AdarII,
+ * Nisan, Iyyar, Sivan, Tammuz, Av, Elul
  * 
- * 5 French Republican Vendemiaire, Brumaire, Frimaire, Nivose, Pluviose,
- * Ventose, Germinal, Floreal, Prairial, Messidor, Thermidor, Fructidor,
- * Extra
+ * 5 French Republican Vendemiaire, Brumaire, Frimaire, Nivose,
+ * Pluviose, Ventose, Germinal, Floreal, Prairial, Messidor, Thermidor,
+ * Fructidor, Extra
  *
  * @param int
  * @param int
@@ -28321,9 +28322,9 @@ function mdecrypt_generic($td, $data) {}
  * memcache_debug turns on debug output if parameter on_off is equal to
  * and turns off if it's .
  * 
- * memcache_debug is accessible only if PHP was built with --enable-debug
- * option and always returns in this case. Otherwise, this function has
- * no effect and always returns .
+ * memcache_debug is accessible only if PHP was built with
+ * --enable-debug option and always returns in this case. Otherwise, this
+ * function has no effect and always returns .
  *
  * @param bool
  * @return bool
@@ -40974,8 +40975,8 @@ function ps_get_parameter($psdoc, $name, $modifier) {}
  * 
  * ascender
  * 
- * The ascender of the currently active font or the font whose identifier
- * is passed in parameter modifier.
+ * The ascender of the currently active font or the font whose
+ * identifier is passed in parameter modifier.
  * 
  * descender
  * 
@@ -56662,15 +56663,13 @@ class Imagick implements Iterator, Traversable {
     function affineTransformImage($matrix) {}
 
     /**
-     * Translate, scale, shear, or rotate image colors. This method supports
-     * variable sized matrices but normally 5x5 matrix is used for RGBA and
-     * 6x6 is used for CMYK. The last row should contain the normalized
-     * values.
+     * This method animates the image onto a local or remote X server. This
+     * method is not available on Windows.
      *
-     * @param array
+     * @param string
      * @return bool
      **/
-    function animateImages($matrix) {}
+    function animateImages($x_server) {}
 
     /**
      * Annotates an image with text.
@@ -57206,7 +57205,7 @@ class Imagick implements Iterator, Traversable {
     function getCompression() {}
 
     /**
-     * Gets the current image's compression quality
+     * Gets the object compression quality.
      *
      * @return int
      **/
@@ -61066,20 +61065,13 @@ class KTaglib_ID3v2_AttachedPictureFrame {
     function getDescription() {}
 
     /**
-     * Returns the mime type of the image represented by the attached picture
-     * frame.
-     * 
-     * Please notice that this method might return different types. While
-     * ID3v2.2 have a mime type that doesn't start with "image/", ID3v2.3 and
-     * v2.4 usually start with "image/". Therefore the method might return
-     * "image/png" for IDv2.3 frames and just "PNG" for ID3v2.2 frames.
-     * 
-     * Notice that even the frame is an attached picture, the mime type might
-     * not be set and therefore an empty string might be returned.
+     * Sets the mime type of the image. This should in most cases be
+     * "image/png" or "image/jpeg".
      *
+     * @param string
      * @return string
      **/
-    function getMimeType() {}
+    function getMimeType($type) {}
 
     /**
      * Returns the type of the image.
@@ -61227,7 +61219,7 @@ class KTaglib_MPEG_AudioProperties {
     function isProtectionEnabled() {}
 
 }
-class KTagLib_MPEG_File {
+class KTaglib_MPEG_File {
     /**
      * Returns an object that provides access to the audio properties of the
      * mpeg file.
@@ -61260,7 +61252,7 @@ class KTaglib_MPEG_Header {
     const Version2 = 0;
     const Version2_5 = 0;
 }
-class KTaglib_Tag extends KTagLib_Tag {
+class KTagLib_Tag extends KTagLib_Tag {
     /**
      * Returns the album string of an ID3 tag. This method is implemented in
      * ID3v1 and ID3v2 tags.
@@ -62147,8 +62139,8 @@ class Memcache {
      * 
      * New item's value will not be less than zero.
      * 
-     * Do not use Memcache::decrement with item, which was stored compressed,
-     * because consequent call to Memcache::get will fail.
+     * Do not use Memcache::decrement with item, which was stored
+     * compressed, because consequent call to Memcache::get will fail.
      * 
      * Memcache::decrement does not create an item if it didn't exist. Also
      * you can use memcache_decrement function.
@@ -62243,8 +62235,8 @@ class Memcache {
      * number, it will change it's value to value. Memcache::increment does
      * not create an item if it didn't exist.
      * 
-     * Do not use Memcache::increment with item, which was stored compressed,
-     * because consequent call to Memcache::get will fail.
+     * Do not use Memcache::increment with item, which was stored
+     * compressed, because consequent call to Memcache::get will fail.
      * 
      * Also you can use memcache_increment function.
      *
@@ -62855,7 +62847,8 @@ class Memcached {
      * 
      * Memcached::OPT_HASH requires Memcached::HASH_* values.
      * 
-     * Memcached::OPT_DISTRIBUTION requires Memcached::DISTRIBUTION_* values.
+     * Memcached::OPT_DISTRIBUTION requires Memcached::DISTRIBUTION_*
+     * values.
      *
      * @param int
      * @param mixed
@@ -65464,15 +65457,15 @@ class PDO {
      * 
      * PDO::ATTR_ERRMODE: Error reporting.
      * 
-     * PDO::ERRMODE_SILENT: Just set error codes. PDO::ERRMODE_WARNING: Raise
-     * E_WARNING. PDO::ERRMODE_EXCEPTION: Throw exceptions.
+     * PDO::ERRMODE_SILENT: Just set error codes. PDO::ERRMODE_WARNING:
+     * Raise E_WARNING. PDO::ERRMODE_EXCEPTION: Throw exceptions.
      * 
      * PDO::ATTR_ORACLE_NULLS (available with all drivers, not just Oracle):
      * Conversion of NULL and empty strings.
      * 
-     * PDO::NULL_NATURAL: No conversion. PDO::NULL_EMPTY_STRING: Empty string
-     * is converted to . PDO::NULL_TO_STRING: NULL is converted to an empty
-     * string.
+     * PDO::NULL_NATURAL: No conversion. PDO::NULL_EMPTY_STRING: Empty
+     * string is converted to . PDO::NULL_TO_STRING: NULL is converted to an
+     * empty string.
      * 
      * PDO::ATTR_STRINGIFY_FETCHES: Convert numeric values to strings when
      * fetching. Requires bool.
@@ -65787,10 +65780,10 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
     function addEmptyDir($dirname) {}
 
     /**
-     * With this method, any file or URL can be added to the tar/zip archive.
-     * If the optional second parameter localname is specified, the file will
-     * be stored in the archive with that name, otherwise the file parameter
-     * is used as the path to store within the archive. URLs must have a
+     * With this method, any file or URL can be added to the phar archive. If
+     * the optional second parameter localname is specified, the file will be
+     * stored in the archive with that name, otherwise the file parameter is
+     * used as the path to store within the archive. URLs must have a
      * localname or an exception is thrown. This method is similar to
      * ZipArchive::addFile.
      *
@@ -65822,11 +65815,11 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
     function apiVersion() {}
 
     /**
-     * Populate a tar/zip archive from directory contents. The optional
-     * second parameter is a regular expression (pcre) that is used to
-     * exclude files. Any filename that matches the regular expression will
-     * be included, all others will be excluded. For more fine-grained
-     * control, use PharData::buildFromIterator.
+     * Populate a phar archive from directory contents. The optional second
+     * parameter is a regular expression (pcre) that is used to exclude
+     * files. Any filename that matches the regular expression will be
+     * included, all others will be excluded. For more fine-grained control,
+     * use Phar::buildFromIterator.
      *
      * @param string
      * @param string
@@ -66384,13 +66377,18 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
     /**
      * set the signature algorithm for a phar and apply it. The signature
      * algorithm must be one of Phar::MD5, Phar::SHA1, Phar::SHA256,
-     * Phar::SHA512, or Phar::PGP (pgp not yet supported and falls back to
-     * SHA-1).
+     * Phar::SHA512, or Phar::OPENSSL.
+     * 
+     * Note that all executable phar archives have a signature created
+     * automatically, SHA1 by default. data tar- or zip-based archives
+     * (archives created with the PharData class) must have their signature
+     * created and set explicitly via Phar::setSignatureAlgorithm.
      *
      * @param int
+     * @param string
      * @return void
      **/
-    function setSignatureAlgorithm($sigtype) {}
+    function setSignatureAlgorithm($sigtype, $privatekey) {}
 
     /**
      * This method is used to add a PHP bootstrap loader stub to a new Phar
@@ -68950,8 +68948,8 @@ class SAMMessage {
      * 
      * SAM_FLOAT
      * 
-     * A short floating point value. SAM will attempt to convert the property
-     * value specified into a floating point value with 7 digits of
+     * A short floating point value. SAM will attempt to convert the
+     * property value specified into a floating point value with 7 digits of
      * precision. If a string value is passed an attempt will be made to
      * interpret the string as a numeric value. If the passed value cannot be
      * expressed as a 7 digit floating point value data may be lost in the
@@ -72790,8 +72788,8 @@ class SphinxClient {
      * 
      * Constant Description
      * 
-     * SPH_RANK_PROXIMITY_BM25 Default ranking mode which uses both proximity
-     * and BM25 ranking.
+     * SPH_RANK_PROXIMITY_BM25 Default ranking mode which uses both
+     * proximity and BM25 ranking.
      * 
      * SPH_RANK_BM25 Statistical ranking mode which uses BM25 ranking only
      * (similar to most of other full-text engines). This mode is faster, but
@@ -72839,8 +72837,8 @@ class SphinxClient {
      * 
      * Constant Description
      * 
-     * SPH_SORT_RELEVANCE Sort by relevance in descending order (best matches
-     * first).
+     * SPH_SORT_RELEVANCE Sort by relevance in descending order (best
+     * matches first).
      * 
      * SPH_SORT_ATTR_DESC Sort by an attribute in descending order (bigger
      * attribute values first).
@@ -74812,9 +74810,9 @@ class stmt {
     function maxdb_send_long_data($param_nr, $data) {}
 
     /**
-     * maxdb_prepare prepares the SQL query pointed to by the null-terminated
-     * string query, and returns a statement handle to be used for further
-     * operations on the statement. The query must consist of a single SQL
+     * maxdb_stmt_prepare prepares the SQL query pointed to by the
+     * null-terminated string query. The statement resource has to be
+     * allocated by maxdb_stmt_init. The query must consist of a single SQL
      * statement.
      * 
      * The parameter query can include one or more parameter markers in the
@@ -74826,7 +74824,7 @@ class stmt {
      * the statement or fetching rows.
      *
      * @param string
-     * @return resource
+     * @return mixed
      **/
     function prepare($query) {}
 
@@ -78064,9 +78062,6 @@ define('ABDAY_5', 0);
 define('ABDAY_6', 0);
 define('ABDAY_7', 0);
 define('ABMON_1', 0);
-define('ABMON_10', 0);
-define('ABMON_11', 0);
-define('ABMON_12', 0);
 define('ABMON_2', 0);
 define('ABMON_3', 0);
 define('ABMON_4', 0);
@@ -78075,6 +78070,9 @@ define('ABMON_6', 0);
 define('ABMON_7', 0);
 define('ABMON_8', 0);
 define('ABMON_9', 0);
+define('ABMON_10', 0);
+define('ABMON_11', 0);
+define('ABMON_12', 0);
 define('AF_INET', 0);
 define('AF_INET6', 0);
 define('AF_UNIX', 0);
@@ -78090,10 +78088,10 @@ define('AL_CONE_OUTER_ANGLE', 0);
 define('AL_CONE_OUTER_GAIN', 0);
 define('AL_DIRECTION', 0);
 define('AL_FALSE', 0);
-define('AL_FORMAT_MONO16', 0);
 define('AL_FORMAT_MONO8', 0);
-define('AL_FORMAT_STEREO16', 0);
+define('AL_FORMAT_MONO16', 0);
 define('AL_FORMAT_STEREO8', 0);
+define('AL_FORMAT_STEREO16', 0);
 define('AL_FREQUENCY', 0);
 define('AL_GAIN', 0);
 define('AL_INITIAL', 0);
@@ -78650,10 +78648,10 @@ define('FBSQL_STOPPED', 0);
 define('FBSQL_STOPPING', 0);
 define('FBSQL_UNKNOWN', 0);
 define('FDFAA', 0);
+define('FDFAction', 0);
 define('FDFAP', 0);
 define('FDFAPRef', 0);
 define('FDFAS', 0);
-define('FDFAction', 0);
 define('FDFCalculate', 0);
 define('FDFClearFf', 0);
 define('FDFClrF', 0);
@@ -78868,6 +78866,8 @@ define('ICONV_IMPL', 0);
 define('ICONV_MIME_DECODE_CONTINUE_ON_ERROR', 0);
 define('ICONV_MIME_DECODE_STRICT', 0);
 define('ICONV_VERSION', 0);
+define('IdletoOverDown', 0);
+define('IdletoOverUp', 0);
 define('IFX_HOLD', 0);
 define('IFX_LO_APPEND', 0);
 define('IFX_LO_BUFFER', 0);
@@ -79027,8 +79027,6 @@ define('IN_ONLYDIR', 0);
 define('IN_OPEN', 0);
 define('IN_Q_OVERFLOW', 0);
 define('IN_UNMOUNT', 0);
-define('IdletoOverDown', 0);
-define('IdletoOverUp', 0);
 define('JSON_ERROR_CTRL_CHAR', 0);
 define('JSON_ERROR_DEPTH', 0);
 define('JSON_ERROR_NONE', 0);
@@ -79105,8 +79103,8 @@ define('LOG_EMERG', 0);
 define('LOG_ERR', 0);
 define('LOG_INFO', 0);
 define('LOG_KERN', 0);
-define('LOG_LOCAL0', 0);
 define('LOG_LOCAL0 ... LOG_LOCAL7', 0);
+define('LOG_LOCAL0', 0);
 define('LOG_LOCAL1', 0);
 define('LOG_LOCAL2', 0);
 define('LOG_LOCAL3', 0);
@@ -79139,15 +79137,14 @@ define('MB_OVERLOAD_STRING', 0);
 define('MEMCACHE_COMPRESSED', 0);
 define('MEMCACHE_HAVE_SESSION', 0);
 define('MEMORY_TRACE', 0);
+define('MenuEnter', 0);
+define('MenuExit', 0);
 define('MING_NEW', 0);
 define('MING_ZLIB', 0);
 define('MK_E_UNAVAILABLE', 0);
 define('MOD_COLOR', 0);
 define('MOD_MATRIX', 0);
 define('MON_1', 0);
-define('MON_10', 0);
-define('MON_11', 0);
-define('MON_12', 0);
 define('MON_2', 0);
 define('MON_3', 0);
 define('MON_4', 0);
@@ -79156,6 +79153,9 @@ define('MON_6', 0);
 define('MON_7', 0);
 define('MON_8', 0);
 define('MON_9', 0);
+define('MON_10', 0);
+define('MON_11', 0);
+define('MON_12', 0);
 define('MON_DECIMAL_POINT', 0);
 define('MON_GROUPING', 0);
 define('MON_THOUSANDS_SEP', 0);
@@ -79186,11 +79186,11 @@ define('M_E', 0);
 define('M_ERROR', 0);
 define('M_EULER', 0);
 define('M_FAIL', 0);
-define('M_LN10', 0);
 define('M_LN2', 0);
+define('M_LN10', 0);
 define('M_LNPI', 0);
-define('M_LOG10E', 0);
 define('M_LOG2E', 0);
+define('M_LOG10E', 0);
 define('M_PENDING', 0);
 define('M_PI', 0);
 define('M_PI_2', 0);
@@ -79200,8 +79200,6 @@ define('M_SQRT2', 0);
 define('M_SQRT3', 0);
 define('M_SQRTPI', 0);
 define('M_SUCCESS', 0);
-define('MenuEnter', 0);
-define('MenuExit', 0);
 define('NAN', 0);
 define('NCURSES_ALL_MOUSE_EVENTS', 0);
 define('NCURSES_BUTTON1_CLICKED', 0);
@@ -79384,9 +79382,6 @@ define('NEWT_KEY_ENTER', 0);
 define('NEWT_KEY_ESCAPE', 0);
 define('NEWT_KEY_EXTRA_BASE', 0);
 define('NEWT_KEY_F1', 0);
-define('NEWT_KEY_F10', 0);
-define('NEWT_KEY_F11', 0);
-define('NEWT_KEY_F12', 0);
 define('NEWT_KEY_F2', 0);
 define('NEWT_KEY_F3', 0);
 define('NEWT_KEY_F4', 0);
@@ -79395,6 +79390,9 @@ define('NEWT_KEY_F6', 0);
 define('NEWT_KEY_F7', 0);
 define('NEWT_KEY_F8', 0);
 define('NEWT_KEY_F9', 0);
+define('NEWT_KEY_F10', 0);
+define('NEWT_KEY_F11', 0);
+define('NEWT_KEY_F12', 0);
 define('NEWT_KEY_HOME', 0);
 define('NEWT_KEY_INSERT', 0);
 define('NEWT_KEY_LEFT', 0);
@@ -79457,12 +79455,12 @@ define('ODBC_BINMODE_CONVERT', 0);
 define('ODBC_BINMODE_PASSTHRU', 0);
 define('ODBC_BINMODE_RETURN', 0);
 define('ODBC_TYPE', 0);
+define('OGGVORBIS_PCM_S8', 0);
 define('OGGVORBIS_PCM_S16_BE', 0);
 define('OGGVORBIS_PCM_S16_LE', 0);
-define('OGGVORBIS_PCM_S8', 0);
+define('OGGVORBIS_PCM_U8', 0);
 define('OGGVORBIS_PCM_U16_BE', 0);
 define('OGGVORBIS_PCM_U16_LE', 0);
-define('OGGVORBIS_PCM_U8', 0);
 define('OP_ANONYMOUS', 0);
 define('OP_DEBUG', 0);
 define('OP_EXPUNGE', 0);
@@ -79472,6 +79470,12 @@ define('OP_READONLY', 0);
 define('OP_SECURE', 0);
 define('OP_SHORTCACHE', 0);
 define('OP_SILENT', 0);
+define('OutDowntoIdle', 0);
+define('OutDowntoOverDown', 0);
+define('OverDowntoIdle', 0);
+define('OverDowntoOutDown', 0);
+define('OverUptoIdle', 0);
+define('OverUptoOverDown', 0);
 define('O_APPEND', 0);
 define('O_ASYNC', 0);
 define('O_CREAT', 0);
@@ -79484,12 +79488,6 @@ define('O_RDWR', 0);
 define('O_SYNC', 0);
 define('O_TRUNC', 0);
 define('O_WRONLY', 0);
-define('OutDowntoIdle', 0);
-define('OutDowntoOverDown', 0);
-define('OverDowntoIdle', 0);
-define('OverDowntoOutDown', 0);
-define('OverUptoIdle', 0);
-define('OverUptoOverDown', 0);
 define('PATHINFO_BASENAME', 0);
 define('PATHINFO_DIRNAME', 0);
 define('PATHINFO_EXTENSION', 0);
