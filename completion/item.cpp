@@ -40,7 +40,6 @@
 
 #include "completion/helpers.h"
 #include "../duchain/navigation/navigationwidget.h"
-#include "../duchain/constantdeclaration.h"
 #include "../duchain/variabledeclaration.h"
 #include "../duchain/helper.h"
 

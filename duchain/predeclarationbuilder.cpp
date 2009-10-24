@@ -34,7 +34,6 @@
 #include "phpast.h"
 #include "parsesession.h"
 #include "helper.h"
-#include "constantdeclaration.h"
 #include "classdeclaration.h"
 #include "functiondeclaration.h"
 #include "variabledeclaration.h"

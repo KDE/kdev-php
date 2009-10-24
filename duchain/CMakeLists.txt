@@ -20,7 +20,6 @@ set(duchain_SRCS
     expressionevaluationresult.cpp
     helper.cpp
     phpducontext.cpp
-    constantdeclaration.cpp
     variabledeclaration.cpp
     classmethoddeclaration.cpp
     classdeclaration.cpp

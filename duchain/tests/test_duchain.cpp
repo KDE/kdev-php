@@ -38,7 +38,6 @@
 #include <kstandarddirs.h>
 
 #include "phpparsejob.h"
-#include "../constantdeclaration.h"
 
 #include <variabledeclaration.h>
 
@@ -892,8 +891,8 @@ void TestDUChain::testDefine()
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("FOO")).first()->context(), top);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("BAR")).first()->context(), top);
 
-    QVERIFY(dynamic_cast<ConstantDeclaration*>(top->findDeclarations(QualifiedIdentifier("FOO")).first()));
-    QVERIFY(dynamic_cast<ConstantDeclaration*>(top->findDeclarations(QualifiedIdentifier("BAR")).first()));
+    QVERIFY(top->findDeclarations(QualifiedIdentifier("FOO")).first()->abstractType()->modifiers() & AbstractType::ConstModifier);
+    QVERIFY(top->findDeclarations(QualifiedIdentifier("BAR")).first()->abstractType()->modifiers() & AbstractType::ConstModifier);
 }
 void TestDUChain::testDefaultFunctionParam()
 {

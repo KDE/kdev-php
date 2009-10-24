@@ -38,7 +38,6 @@
 #include "../parser/parsesession.h"
 #include "phpast.h"
 #include "phpdefaultvisitor.h"
-#include "constantdeclaration.h"
 #include "classdeclaration.h"
 #include "classmethoddeclaration.h"
 #include "functiondeclaration.h"
@@ -62,12 +61,13 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
               ) {
         return true;
     } else if (declarationType == ConstantDeclarationType
-               && dynamic_cast<ConstantDeclaration*>(declaration)
+               && declaration->abstractType() && declaration->abstractType()->modifiers() & AbstractType::ConstModifier
+               && (!declaration->context() || declaration->context()->type() != DUContext::Class)
               ) {
         return true;
     } else if (declarationType == GlobalVariableDeclarationType
                && declaration->kind() == Declaration::Instance
-               && !dynamic_cast<ConstantDeclaration*>(declaration)
+               && !(declaration->abstractType() && declaration->abstractType()->modifiers() & AbstractType::ConstModifier)
               ) {
         return true;
     }

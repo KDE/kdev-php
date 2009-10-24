@@ -30,7 +30,6 @@
 #include <language/duchain/duchainutils.h>
 
 #include "classdeclaration.h"
-#include "constantdeclaration.h"
 #include "helper.h"
 
 namespace Php
@@ -129,10 +128,9 @@ void DeclarationNavigationContext::makeLink(const QString& name, DeclarationPoin
 
 QString DeclarationNavigationContext::declarationKind(DeclarationPointer decl)
 {
-    if ( decl->kind() == Declaration::Instance ) {
-        if ( dynamic_cast<ConstantDeclaration*>(decl.data()) ) {
-            return i18n("Constant");
-        }
+    if ( decl->kind() == Declaration::Instance && decl->abstractType()
+         && decl->abstractType()->modifiers() & AbstractType::ConstModifier ) {
+        return i18n("Constant");
     }
     return AbstractDeclarationNavigationContext::declarationKind(decl);
 }

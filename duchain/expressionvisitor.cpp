@@ -21,7 +21,6 @@
 #include "parsesession.h"
 #include "editorintegrator.h"
 #include "helper.h"
-#include "constantdeclaration.h"
 #include "variabledeclaration.h"
 #include "classdeclaration.h"
 

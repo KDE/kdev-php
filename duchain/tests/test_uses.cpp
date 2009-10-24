@@ -24,7 +24,6 @@
 #include <language/duchain/duchainlock.h>
 
 #include "phpparsejob.h"
-#include "../constantdeclaration.h"
 #include "../classdeclaration.h"
 #include "../variabledeclaration.h"
 

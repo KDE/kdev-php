@@ -35,7 +35,6 @@
 #include "phpast.h"
 #include "parsesession.h"
 #include "helper.h"
-#include "constantdeclaration.h"
 #include "variabledeclaration.h"
 #include "classmethoddeclaration.h"
 #include "classdeclaration.h"
@@ -765,8 +764,10 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                 injectContext(iface, currentContext()->topContext()); //constants are always global
                 QualifiedIdentifier identifier(constant);
                 isGlobalRedeclaration(identifier, scalar, ConstantDeclarationType);
-                openDefinition<ConstantDeclaration>(identifier, newRange);
+                openDefinition<Declaration>(identifier, newRange);
                 currentDeclaration()->setKind(Declaration::Instance);
+                Q_ASSERT(lastType());
+                lastType()->setModifiers(lastType()->modifiers() | AbstractType::ConstModifier);
                 closeDeclaration();
                 closeInjectedContext(iface);
             }
