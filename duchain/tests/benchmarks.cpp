@@ -25,6 +25,8 @@
 
 #include "phpparsejob.h"
 #include "parsesession.h"
+#include "declarationbuilder.h"
+#include "usebuilder.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -34,26 +36,73 @@ QTEST_MAIN(Php::Benchmarks)
 namespace Php
 {
 
-// makro defined by cmake
+// makro defined by cmake, points to the sourcedir of _this_ file
 const QString srcPath(KDESRCDIR);
 
 Benchmarks::Benchmarks()
 {
 }
 
-void Benchmarks::phpParser()
+void Benchmarks::initTestCase()
 {
-    // cmake defines the makro KDESRCDIR
-    QFile testFile(srcPath + "/../../create_functions.php");
-    QVERIFY(testFile.exists());
-    testFile.open(QIODevice::ReadOnly);
-    QVERIFY(!testFile.error());
-    QVERIFY(testFile.isReadable());
+    DUChain::self()->disablePersistentStorage();
+}
+
+QFile* Benchmarks::getInternalFile()
+{
+    QFile* file = new QFile(srcPath + "../../phpfunctions.php");
+    kDebug() << file->fileName();
+    Q_ASSERT(file->exists());
+    file->open(QIODevice::ReadOnly);
+    Q_ASSERT(!file->error());
+    Q_ASSERT(file->isReadable());
+    return file;
+}
+
+void Benchmarks::parser()
+{
+    QFile* file = getInternalFile();
     QBENCHMARK {
         ParseSession session = ParseSession();
-        session.setContents(testFile.readAll());
+        session.setContents(file->readAll());
         StartAst* ast = 0;
         session.parse(&ast);
+    }
+    delete file;
+}
+
+void Benchmarks::declarationBuilder()
+{
+    QFile* file = getInternalFile();
+    ParseSession session = ParseSession();
+    session.setContents(file->readAll());
+    delete file;
+    StartAst* ast = 0;
+    session.parse(&ast);
+    QBENCHMARK {
+        DeclarationBuilder builder(&session);
+        ReferencedTopDUContext top = builder.build(IndexedString("InternalFunctions.php"), ast);
+
+        if ( true ) {
+            DUChainWriteLocker lock(DUChain::lock());
+            kDebug() << top->localDeclarations().size();
+        }
+    }
+}
+
+void Benchmarks::useBuilder()
+{
+    QFile* file = getInternalFile();
+    ParseSession session = ParseSession();
+    session.setContents(file->readAll());
+    delete file;
+    StartAst* ast = 0;
+    session.parse(&ast);
+    DeclarationBuilder builder(&session);
+    KDevelop::ReferencedTopDUContext chain = builder.build(IndexedString("InternalFunctions.php"), ast);
+    QBENCHMARK {
+        UseBuilder useBuilder(&session);
+        useBuilder.buildUses(ast);
     }
 }
 

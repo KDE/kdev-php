@@ -18,19 +18,32 @@
 #ifndef BENCHMARKS_H
 #define BENCHMARKS_H
 
-#include "duchain/tests/duchaintestbase.h"
+#include <QtCore/QObject>
+#include <QtCore/QFile>
 
 namespace Php
 {
-class Benchmarks : public DUChainTestBase
+class Benchmarks : public QObject
 {
     Q_OBJECT
 
 public:
     Benchmarks();
 
+public slots:
+    void initTestCase();
+
 private slots:
-    void phpParser();
+    /// benchmarks the parser
+    void parser();
+    /// benchmarks the declaration builder
+    void declarationBuilder();
+    /// benchmarks the use-builder
+    void useBuilder();
+
+private:
+    /// returns a QFile for the phpfunctions.php file
+    QFile* getInternalFile();
 };
 
 }

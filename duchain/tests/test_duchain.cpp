@@ -37,8 +37,6 @@
 
 #include <kstandarddirs.h>
 
-#include "phpparsejob.h"
-
 #include <variabledeclaration.h>
 
 
