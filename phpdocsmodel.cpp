@@ -73,6 +73,10 @@ void PhpDocsModel::fillModel()
     kDebug() << "filling model";
     typedef QPair<Declaration*, int> DeclDepthPair;
     foreach ( const DeclDepthPair& declpair, top->allDeclarations(top->range().end, top) ) {
+        if ( declpair.first->abstractType() && declpair.first->abstractType()->modifiers() & AbstractType::ConstModifier ) {
+            // filter global constants, since they are hard to find in the documentation
+            continue;
+        }
         m_declarations << declpair.first;
 
         if ( StructureType::Ptr type = declpair.first->type<StructureType>() ) {
