@@ -96,6 +96,10 @@ $skipClasses[] = 'exception'; //lowercase
 $skipClasses[] = '__php_incomplete_class';
 $skipClasses[] = 'php_user_filter';
 
+///TODO: re-enable them once they have their do() and echo() methods removed.
+$skipClasses[] = 'gearmanclient';
+$skipClasses[] = 'gearmanworker';
+
 $dirs = array("reference", "appendices", "language/predefined/variables");
 
 $classes = array();
