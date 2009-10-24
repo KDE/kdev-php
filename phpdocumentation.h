@@ -31,19 +31,22 @@
 class QWidget;
 class KHTMLPart;
 
+class PhpDocsPlugin;
+
 class PhpDocumentation : public QObject, public KDevelop::IDocumentation
 {
   Q_OBJECT
 
   public:
-    explicit PhpDocumentation(const KUrl& url, const QString& name, const QByteArray& description);
+    explicit PhpDocumentation(const KUrl& url, const QString& name, const QByteArray& description, PhpDocsPlugin* parent);
 
     ~PhpDocumentation();
 
-    virtual QString description() const;
-    virtual QWidget* documentationWidget(QWidget* parent = 0);
     virtual QString name() const;
+    virtual QString description() const;
     virtual bool providesWidget() const;
+    virtual QWidget* documentationWidget(QWidget* parent = 0);
+    virtual KDevelop::IDocumentationProvider* provider();
 
   private slots:
     /// used to inject some custom CSS to alter the remote php.net site
@@ -54,6 +57,7 @@ class PhpDocumentation : public QObject, public KDevelop::IDocumentation
     const QString m_name;
     const QByteArray m_description;
     KHTMLPart *m_part;
+    PhpDocsPlugin* m_parent;
 };
 
 #endif // PHPDOCUMENTATION_H

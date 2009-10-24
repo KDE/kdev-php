@@ -19,16 +19,22 @@
 */
 
 #include "phpdocumentation.h"
+#include "phpdocsplugin.h"
 
 #include <KHTMLPart>
 
-PhpDocumentation::PhpDocumentation(const KUrl& url, const QString& name, const QByteArray& description)
-    : m_url(url), m_name(name), m_description(description)
+PhpDocumentation::PhpDocumentation(const KUrl& url, const QString& name, const QByteArray& description, PhpDocsPlugin* parent)
+    : m_url(url), m_name(name), m_description(description), m_parent(parent)
 {
 }
 
 PhpDocumentation::~PhpDocumentation()
 {
+}
+
+KDevelop::IDocumentationProvider* PhpDocumentation::provider()
+{
+    return m_parent;
 }
 
 QString PhpDocumentation::description() const

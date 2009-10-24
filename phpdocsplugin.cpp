@@ -19,6 +19,7 @@
 */
 
 #include "phpdocsplugin.h"
+#include "phpdocsmodel.h"
 
 #include <KPluginFactory>
 #include <KPluginLoader>
@@ -26,6 +27,7 @@
 #include <KMimeType>
 #include <KSettings/Dispatcher>
 #include <KUrl>
+#include <KIcon>
 
 #include <interfaces/idocumentation.h>
 
@@ -50,7 +52,7 @@ K_PLUGIN_FACTORY(PhpDocsFactory, registerPlugin<PhpDocsPlugin>(); )
 K_EXPORT_PLUGIN(PhpDocsFactory(KAboutData("kdevphpdocs","kdevphpdocs", ki18n("PhpDocs"), "0.1", ki18n("Check PHP.net documentation"), KAboutData::License_GPL).addAuthor(ki18n("Milian Wolff"), ki18n("Maintainer"), "mail@milianw.de", "http://milianw.de")))
 
 PhpDocsPlugin::PhpDocsPlugin(QObject* parent, const QVariantList& args)
-    : IPlugin(PhpDocsFactory::componentData(), parent)
+    : IPlugin(PhpDocsFactory::componentData(), parent), m_model(new PhpDocsModel(this))
 {
     Q_UNUSED(args);
 
@@ -58,6 +60,21 @@ PhpDocsPlugin::PhpDocsPlugin(QObject* parent, const QVariantList& args)
 
     KSettings::Dispatcher::registerComponent( KComponentData("kdevphpdocs_config"),
                                               this, "readConfig" );
+}
+
+PhpDocsPlugin::~PhpDocsPlugin()
+{
+}
+
+QString PhpDocsPlugin::name() const
+{
+    return QString("PHP");
+}
+
+QIcon PhpDocsPlugin::icon() const
+{
+    static KIcon icon("application-x-php");;
+    return icon;
 }
 
 void PhpDocsPlugin::readConfig()
@@ -68,44 +85,45 @@ void PhpDocsPlugin::readConfig()
 }
 
 ///TODO: possibly return multiple filenames (i.e. fallbacks) when doing local lookups
-QString PhpDocsPlugin::getDocumentationFilename( KDevelop::Declaration* dec ) const
+QString PhpDocsPlugin::getDocumentationFilename( KDevelop::Declaration* dec, const bool& isLocal ) const
 {
     QString fname;
 
     //TODO: most of the SPL stuff is not found for me in the deb package php-doc
     //      => check newer documentation or give a fallback to ref.spl.html
     if ( ClassFunctionDeclaration* fdec = dynamic_cast<ClassFunctionDeclaration*>( dec ) ) {
-        // class methods -> php.net/function.CLASS-METHOD
+        // class methods -> php.net/CLASS.METHOD
+        // local: either CLASS.METHOD.html or function.CLASS-METHOD.html... really sucks :-/
+        //        for now, use the latter...
         if ( dec->context() && dec->context()->type() == DUContext::Class && dec->context()->owner() ) {
             QString className = dec->context()->owner()->identifier().toString();
 
-            if ( fdec->isConstructor() ) {
-                fname = "construct";
-            } else if ( fdec->isDestructor() ) {
-                fname = "destruct";
+            if ( !isLocal ) {
+                fname = className + '.' + fdec->identifier().toString();
             } else {
-                fname = fdec->identifier().toString();
+                if ( fdec->isConstructor() ) {
+                    fname = "construct";
+                } else if ( fdec->isDestructor() ) {
+                    fname = "destruct";
+                } else {
+                    fname = fdec->identifier().toString();
+                }
+                //TODO: CLASS.METHOD.html e.g. for xmlreader etc. pp.
+                fname = "function." + className + '-' + fname;
             }
-
-            fname = "function." + className + fname;
         }
     } else if ( dynamic_cast<ClassDeclaration*>(dec) ) {
-        ///TODO: check with current documentation
-        fname = "ref." + dec->identifier().toString();
+        fname = "class." + dec->identifier().toString();
     } else if ( dynamic_cast<FunctionDeclaration*>(dec) ) {
         fname = "function." + dec->identifier().toString();
     }
-    // check for superglobals
+    // check for superglobals / reserved variables
     else if ( dec->identifier() == Identifier("GLOBALS") ||
                 dec->identifier() == Identifier("php_errormsg") ||
                 dec->identifier() == Identifier("HTTP_RAW_POST_DATA") ||
                 dec->identifier() == Identifier("http_response_header") ||
                 dec->identifier() == Identifier("argc") ||
-                dec->identifier() == Identifier("argv") ) {
-        ///TODO: check with current documentation
-//         fname = QString("reserved.variables.") + dec->identifier().toString();
-        fname = "reserved.variables.html";
-    } else if ( dec->identifier() == Identifier("_SERVER") ||
+                dec->identifier() == Identifier("argv") ||
                 dec->identifier() == Identifier("_GET") ||
                 dec->identifier() == Identifier("_POST") ||
                 dec->identifier() == Identifier("_FILES") ||
@@ -113,12 +131,16 @@ QString PhpDocsPlugin::getDocumentationFilename( KDevelop::Declaration* dec ) co
                 dec->identifier() == Identifier("_SESSION") ||
                 dec->identifier() == Identifier("_ENV") ||
                 dec->identifier() == Identifier("_COOKIE") ) {
-//         fname = QString("reserved.variables.") + dec->identifier().toString().mid(1);
-        ///TODO: check with current documentation
-        fname = "reserved.variables.html";
+        if ( isLocal ) {
+            fname = QString("reserved.variables.") + dec->identifier().toString().remove('_');
+        } else {
+            fname = dec->identifier().toString();
+        }
     }
 
-    if ( !fname.isEmpty() ) {
+    kDebug() << fname;
+
+    if ( !fname.isEmpty() && isLocal ) {
         fname = fname.toLower();
         fname.replace('_', '-');
         fname.append(".html");
@@ -133,28 +155,40 @@ KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForDeclaration( Declara
         DUChainReadLocker lock( DUChain::lock() );
 
         // filter non global or non-php declarations
-        if ( dec->topContext()->url() != IndexedString("PHPInternalFunctions") ) {
-            return KSharedPtr<IDocumentation>();
-        }
-
-        QString file = getDocumentationFilename( dec );
-        if ( file.isEmpty() ) {
+        if ( dec->topContext()->url() != IndexedString("InternalFunctions.php") ) {
             return KSharedPtr<IDocumentation>();
         }
 
         KUrl url = PhpDocsSettings::phpDocLocation();
         kDebug() << url;
-        kDebug() << PhpDocsSettings::self();
+
+        QString file = getDocumentationFilename( dec, url.isLocalFile() );
+        if ( file.isEmpty() ) {
+            kDebug() << "no documentation pattern found for" << dec->toString();
+            return KSharedPtr<IDocumentation>();
+        }
+
         url.addPath( file );
         if ( url.isLocalFile() && !QFile::exists( url.toLocalFile() ) ) {
-            kDebug() << "bad path" << url << "for documentation of" << dec->toString() << "falling back to http://php.net/";
-            url.setUrl("http://php.net/" + file);
+            kDebug() << "bad path" << url << "for documentation of" << dec->toString() << " - aborting";
+            return KSharedPtr<IDocumentation>();
         }
 
         kDebug() << "php documentation located at " << url << "for" << dec->toString();
-        return KSharedPtr<IDocumentation>(new PhpDocumentation( url, dec->qualifiedIdentifier().toString(), dec->comment() ));
+        return KSharedPtr<IDocumentation>(new PhpDocumentation( url, dec->qualifiedIdentifier().toString(), dec->comment(), this ));
     }
 
     return KSharedPtr<IDocumentation>();
 }
 
+QAbstractListModel* PhpDocsPlugin::indexModel()
+{
+    return m_model;
+}
+
+KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForIndex(const QModelIndex& index)
+{
+    return documentationForDeclaration(static_cast<Declaration*>(
+        index.data(PhpDocsModel::DeclarationRole).value<void *>()
+    ));
+}

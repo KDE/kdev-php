@@ -24,6 +24,8 @@
 #include <interfaces/idocumentationprovider.h>
 #include <QVariantList>
 
+class PhpDocsModel;
+
 class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationProvider
 {
   Q_OBJECT
@@ -32,10 +34,17 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
 
   public:
     PhpDocsPlugin(QObject *parent, const QVariantList & args= QVariantList());
-    virtual KSharedPtr< KDevelop::IDocumentation > documentationForDeclaration (KDevelop::Declaration*);
+    ~PhpDocsPlugin();
+
+    virtual KSharedPtr< KDevelop::IDocumentation > documentationForDeclaration (KDevelop::Declaration* dec);
+    virtual QAbstractListModel* indexModel();
+    virtual KSharedPtr< KDevelop::IDocumentation > documentationForIndex(const QModelIndex& index);
+    virtual QIcon icon() const;
+    virtual QString name() const;
 
   private:
-    QString getDocumentationFilename(KDevelop::Declaration*) const;
+    QString getDocumentationFilename(KDevelop::Declaration* dec, const bool& isLocal) const;
+    PhpDocsModel* m_model;
 
   private slots:
     void readConfig();
