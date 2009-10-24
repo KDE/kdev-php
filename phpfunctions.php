@@ -1102,33 +1102,89 @@ interface SplSubject
 
 
 
-/** @ingroup SPL
- * @brief   An infinite Iterator
+/**
+ * @brief   Regular expression filter for iterators
  * @author  Marcus Boerger
- * @version 1.1
+ * @version 1.0
  * @since PHP 5.1
  *
- * This Iterator takes another Iterator and infinitvely iterates it by
- * rewinding it when its end is reached.
- *
- * \note Even an InfiniteIterator stops if its inner Iterator is empty.
- *
- \verbatim
- $it       = new ArrayIterator(array(1,2,3));
- $infinite = new InfiniteIterator($it);
- $limit    = new LimitIterator($infinite, 0, 5);
- foreach($limit as $val=>$key)
- {
-     echo "$val=>$key\n";
- }
- \endverbatim
+ * This filter iterator assumes that the inner iterator 
  */
-class InfiniteIterator extends IteratorIterator
+class RegexIterator extends FilterIterator
 {
-    /** Move the inner Iterator forward to its next element or rewind it.
-     * @return void
+    const USE_KEY     = 0x00000001; /**< If present in $flags the the key is 
+                                         used rather then the current value. */
+
+    const MATCH       = 0; /**< Mode: Executed a plain match only      */
+    const GET_MATCH   = 1; /**< Mode: Return the first matche (if any) */
+    const ALL_MATCHES = 2; /**< Mode: Return all matches (if any)      */
+    const SPLIT       = 3; /**< Mode: Return the split values (if any) */
+    const REPLACE     = 4; /**< Mode: Replace the input key or current */
+    
+    private $regex;     /**< the regular expression to match against */
+    private $mode;      /**< operation mode (one of self::MATCH, 
+                             self::GET_MATCH, self::ALL_MATCHES, self::SPLIT) */
+    private $flags;     /**< special flags (self::USE_KEY) */
+    private $preg_flags;/**< PREG_* flags, see preg_match(), preg_match_all(), 
+                             preg_split() */ 
+    private $key;       /**< the value used for key() */
+    private $current;   /**< the value used for current() */
+
+    /**
+     * Constructs a regular expression filter around an iterator whose 
+     * elemnts or keys are strings.
+     *
+     * @param it          inner iterator
+     * @param regex       the regular expression to match
+     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
+     *                    self::ALL_MATCHES, self::SPLIT)
+     * @param flags       special flags (self::USE_KEY)
+     * @param preg_flags  global PREG_* flags, see preg_match(), 
+     *                    preg_match_all(), preg_split()
      */
-    function next(){}
+    function __construct(Iterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
+
+    /**
+     * Match current or key against regular expression using mode, flags and
+     * preg_flags.
+     *
+     * @return whether this is a match
+     *
+     * @warning never call this twice for the same state
+     */
+    function accept(){}
+
+    /** @return the key after accept has been called
+     */
+    function key(){}
+
+    /** @return the current value after accept has been called
+     */
+    function current(){}
+
+    /** @return current operation mode
+     */
+    function getMode(){}
+
+    /** @param mode new operaion mode
+     */
+    function setMode($mode){}
+
+    /** @return current operation flags
+     */
+    function getFlags(){}
+
+    /** @param flags new operaion flags
+     */
+    function setFlags($flags){}
+
+    /** @return current PREG flags
+     */
+    function getPregFlags(){}
+
+    /** @param preg_flags new PREG flags
+     */
+    function setPregFlags($preg_flags){}
 }
 
 
@@ -1136,91 +1192,334 @@ class InfiniteIterator extends IteratorIterator
 
 
 /**
- * @brief   Abstract filter for iterators
+ * @brief   Cached recursive iteration over another Iterator
  * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.0
+ * @version 1.2
+ * @since PHP 5.1
  *
- * Instances of this class act as a filter around iterators. In other words 
- * you can put an iterator into the constructor and the instance will only 
- * return selected (accepted) elements.
- *
- * The only thing that needs to be done to make this work is implementing 
- * method accept(). Typically this invloves reading the current element or 
- * key of the inner Iterator and checking whether it is acceptable.
+ * @see CachingIterator
  */
-abstract class FilterIterator implements OuterIterator
+class RecursiveCachingIterator extends CachingIterator implements RecursiveIterator
 {
-    private $it;
+    private $hasChildren;
+    private $getChildren;
 
-    /**
-     * Constructs a filter around another iterator.
+    /** Construct from another iterator
      *
-     * @param it     Iterator to filter
+     * @param it    Iterator to cache
+     * @param flags Bitmask: 
+     *              - CALL_TOSTRING   (whether to call __toString() for every element)
+     *              - CATCH_GET_CHILD (whether to catch exceptions when trying to get childs)
      */
-    function __construct(Iterator $it){}
+    function __construct(RecursiveIterator $it, $flags = self::CALL_TOSTRING){}
 
-    /**
-     * Rewind the inner iterator.
-     */
-    function rewind() {    
-        $this->it->rewind();
-        $this->fetch();
-    }
+    /** Rewind Iterator
+     */    
+    function rewind(){}
 
-    /**
-     * Accept function to decide whether an element of the inner iterator
-     * should be accessible through the Filteriterator.
-     *
-     * @return whether or not to expose the current element of the inner
-     *         iterator.
-     */
-    abstract function accept();
-
-    /**
-     * Fetch next element and store it.
-     *
-     * @return void
-     */
-    protected function fetch(){}
-
-    /**
-     * Move to next element
-     *
-     * @return void
+    /** Forward to next element if necessary then an Iterator for the Children
+     * will be created.
      */
     function next(){}
     
-    /**
-     * @return Whether more elements are available
+    private $ref;
+
+    /** @return whether the current element has children
+     * @note The check whether the Iterator for the children can be created was
+     *       already executed. Hence when flag CATCH_GET_CHILD was given in
+     *       constructor this fucntion returns false so that getChildren does 
+     *       not try to access those children.
+     */
+    function hasChildren(){}
+
+    /** @return An Iterator for the children
+     */
+    function getChildren(){}
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief Basic Iterator wrapper
+ * @since PHP 5.1
+ *
+ * This iterator wrapper allows to convert anything that is traversable into 
+ * an Iterator. It is very important to understand that most classes that do 
+ * not implement Iterator have their reasone to. Most likely they do not allow
+ * the full Iterator feature set. If so you need to provide techniques to
+ * prevent missuse. If you do not you must expect exceptions or fatal erros.
+ *
+ * It is also possible to derive the class and implement IteratorAggregate by
+ * downcasting the instances returned in getIterator. See the following
+ * example (assuming BaseClass implements Traversable):
+ \code
+ class SomeClass extends BaseClass implements IteratorAggregate
+ {
+   function getIterator()
+   {
+     return new IteratorIterator($this, 'BaseClass');
+   }
+ }
+ \endcode
+ *
+ * As you can see in the example this approach requires that the class to 
+ * downcast to is actually a base class of the specified iterator to wrap.
+ * Omitting the downcast in the above example would result in an endless loop
+ * since IteratorIterator::__construct() would call SomeClass::getIterator().
+ */
+class IteratorIterator implements OuterIterator
+{
+    /** Construct an IteratorIterator from an Iterator or an IteratorAggregate.
+     *
+     * @param iterator  inner iterator
+     * @param classname optional class the iterator has to be downcasted to
+     */
+    function __construct(Traversable $iterator, $classname = null){}
+
+    /** \return the inner iterator as passed to the constructor
+     */
+    function getInnerIterator(){}
+
+    /** \return whether the iterator is valid
      */
     function valid(){}
-    
-    /**
-     * @return The current key
+
+    /** \return current key
      */
     function key(){}
-    
-    /**
-     * @return The current value
+
+    /** \return current value
      */
     function current(){}
-    
-    /**
-     * hidden __clone
-     */
-    protected function __clone(){}
 
-    /**
-     * @return The inner iterator
-     */    
-    function getInnerIterator(){}
+    /** forward to next element
+     */
+    function next(){}
+
+    /** rewind to the first element
+     */
+    function rewind(){}
 
     /** Aggregate the inner iterator
      *
      * @param func    Name of method to invoke
      * @param params  Array of parameters to pass to method
      */
+    function __call($func, $params){}
+
+    /** The inner iterator must be private because when this class will be
+     * converted to c code it won't no longer be available.
+     */
+    private $iterator;
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   Iterator to filter recursive iterators
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ *
+ * Passes the RecursiveIterator interface to the inner Iterator and provides
+ * the same functionality as FilterIterator. This allows you to skip parents
+ * and all their childs before loading them all. You need to care about
+ * function getChildren() because it may not always suit your needs. The 
+ * builtin behavior uses reflection to return a new instance of the exact same
+ * class it is called from. That is you extend RecursiveFilterIterator and
+ * getChildren() will create instance of that class. The problem is that doing
+ * this does not transport any state or control information of your accept()
+ * implementation to the new instance. To overcome this problem you might 
+ * need to overwrite getChildren(), call this implementation and pass the
+ * control vaules manually.
+ */
+abstract class RecursiveFilterIterator extends FilterIterator implements RecursiveIterator
+{
+    /** @param $it the RecursiveIterator to filter
+     */
+    function __construct(RecursiveIterator $it){}
+    
+    /** @return whether the current element has children
+     */
+    function hasChildren(){}
+
+    /** @return an iterator for the current elements children
+     *
+     * @note the returned iterator will be of the same class as $this
+     */
+    function getChildren(){}
+    
+    private $ref;
+}
+
+
+
+
+
+/**
+ * @brief   Interface for recursive iteration with RecursiveIteratorIterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.0
+ */
+interface RecursiveIterator extends Iterator
+{
+    /** @return whether the current element has children
+     */
+    function hasChildren();
+    
+    /** @return the sub iterator for the current element
+     * @note The returned object must implement RecursiveIterator.
+     */
+    function getChildren();
+}
+
+
+
+
+
+/**
+ * @brief   Cached iteration over another Iterator
+ * @author  Marcus Boerger
+ * @version 1.2
+ * @since PHP 5.0
+ *
+ * This iterator wrapper does a one ahead iteration. This way it knows whether
+ * the inner iterator has one more element.
+ *
+ * @note If you want to convert the elements into strings and the inner 
+ *       Iterator is an internal Iterator then you need to provide the 
+ *       flag CALL_TOSTRING to do the conversion when the actual element
+ *       is being fetched. Otherwise the conversion would happen with the
+ *       already changed iterator. If you do not need this then it you should
+ *       omit this flag because it costs unneccessary work and time.
+ */
+class CachingIterator implements OuterIterator
+{
+    const CALL_TOSTRING        = 0x00000001;
+    const CATCH_GET_CHILD      = 0x00000002;
+    const TOSTRING_USE_KEY     = 0x00000010;
+    const TOSTRING_USE_CURRENT = 0x00000020;
+
+    private $it;
+    private $current;
+    private $key;
+    private $valid;
+    private $strValue;
+
+    /** Construct from another iterator
+     *
+     * @param it    Iterator to cache
+     * @param flags Bitmask: 
+     *              - CALL_TOSTRING  (whether to call __toString() for every element)
+     */
+    function __construct(Iterator $it, $flags = self::CALL_TOSTRING){}
+
+    /** Rewind the Iterator
+     */
+    function rewind(){}
+    
+    /** Forward to the next element
+     */
+    function next(){}
+    
+    /** @return whether teh iterator is valid
+     */
+    function valid(){}
+
+    /** @return whether there is one more element
+     */
+    function hasNext(){}
+    
+    /** @return the current element
+     */
+    function current(){}
+
+    /** @return the current key
+     */
+    function key(){}
+
+    /** Aggregate the inner iterator
+     *
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
+     */
+    function __call($func, $params){}
+    
+    /** @return the string represenatation that was generated for the current 
+     *          element
+     * @throw exception when CALL_TOSTRING was not specified in constructor
+     */
+    function __toString(){}
+    
+    /**
+     * @return The inner iterator
+     */    
+    function getInnerIterator(){}
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   Iterator that iterates over several iterators one after the other
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ */
+class AppendIterator implements OuterIterator
+{
+    /** @internal array of inner iterators */
+    private $iterators;
+
+    /** Construct an empty AppendIterator
+     */
+    function __construct(){}
+
+    /** Append an Iterator
+     * @param $it Iterator to append
+     *
+     * If the current state is invalid but the appended iterator is valid
+     * the the AppendIterator itself becomes valid. However there will be no
+     * call to $it->rewind(). Also if the current state is invalid the inner
+     * ArrayIterator will be rewound und forwarded to the appended element.
+     */    
+    function append(Iterator $it){}
+
+    /** @return the current inner Iterator
+     */
+    function getInnerIterator(){}
+
+    /** Rewind to the first element of the first inner Iterator.
+     * @return void
+     */
+    function rewind(){}
+
+    /** @return whether the current element is valid
+      */
+    function valid(){}
+
+    /** @return the current value if it is valid or \c NULL
+     */
+    function current(){}
+
+    /** @return the current key if it is valid or \c NULL
+     */
+    function key(){}
+
+    /** Move to the next element. If this means to another Iterator that 
+     * rewind that Iterator.
+     * @return void
+     */
+    function next(){}
+
+    /** Aggregates the inner iterator
+     */    
     function __call($func, $params){}
 }
 
@@ -1461,50 +1760,40 @@ class SplFileObject extends SplFileInfo implements RecursiveIterator, SeekableIt
 
 
 
-/**
- * @brief   Cached recursive iteration over another Iterator
+/** @brief seekable iterator
  * @author  Marcus Boerger
- * @version 1.2
- * @since PHP 5.1
+ * @version 1.0
+ * @since PHP 5.0
  *
- * @see CachingIterator
+ * Turns a normal iterator ino a seekable iterator. When there is a way
+ * to seek on an iterator LimitIterator can use this to efficiently rewind
+ * to offset.
  */
-class RecursiveCachingIterator extends CachingIterator implements RecursiveIterator
+interface SeekableIterator extends Iterator
 {
-    private $hasChildren;
-    private $getChildren;
-
-    /** Construct from another iterator
+    /** Seek to an absolute position
      *
-     * @param it    Iterator to cache
-     * @param flags Bitmask: 
-     *              - CALL_TOSTRING   (whether to call __toString() for every element)
-     *              - CATCH_GET_CHILD (whether to catch exceptions when trying to get childs)
+     * \param $index position to seek to
+     * \return void
+     *
+     * The method should throw an exception if it is not possible to seek to 
+     * the given position. Typically this exception should be of type 
+     * OutOfBoundsException.
+     \code
+    function seek($index);
+        $this->rewind();
+        $position = 0;
+        while($position < $index && $this->valid()) {
+            $this->next();
+            $position++;
+        }
+        if (!$this->valid()) {
+            throw new OutOfBoundsException('Invalid seek position');
+        }
+    }
+     \endcode
      */
-    function __construct(RecursiveIterator $it, $flags = self::CALL_TOSTRING){}
-
-    /** Rewind Iterator
-     */    
-    function rewind(){}
-
-    /** Forward to next element if necessary then an Iterator for the Children
-     * will be created.
-     */
-    function next(){}
-    
-    private $ref;
-
-    /** @return whether the current element has children
-     * @note The check whether the Iterator for the children can be created was
-     *       already executed. Hence when flag CATCH_GET_CHILD was given in
-     *       constructor this fucntion returns false so that getChildren does 
-     *       not try to access those children.
-     */
-    function hasChildren(){}
-
-    /** @return An Iterator for the children
-     */
-    function getChildren(){}
+    function seek($index);
 }
 
 
@@ -1512,21 +1801,246 @@ class RecursiveCachingIterator extends CachingIterator implements RecursiveItera
 
 
 /**
- * @brief   Interface for recursive iteration with RecursiveIteratorIterator
+ * @brief   Recursive regular expression filter for iterators
  * @author  Marcus Boerger
  * @version 1.0
- * @since PHP 5.0
+ * @since PHP 5.1
+ *
+ * This filter iterator assumes that the inner iterator 
  */
-interface RecursiveIterator extends Iterator
+class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator
+{
+    /**
+     * Constructs a regular expression filter around an iterator whose 
+     * elemnts or keys are strings.
+     *
+     * @param it          inner iterator
+     * @param regex       the regular expression to match
+     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
+     *                    self::ALL_MATCHES, self::SPLIT)
+     * @param flags       special flags (self::USE_KEY)
+     * @param preg_flags  global PREG_* flags, see preg_match(), 
+     *                    preg_match_all(), preg_split()
+     */
+    function __construct(RecursiveIterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
+
+    /** @return whether the current element has children
+     */
+    function hasChildren(){}
+
+    /** @return an iterator for the current elements children
+     *
+     * @note the returned iterator will be of the same class as $this
+     */
+    function getChildren(){}
+    
+    private $ref;
+}
+
+
+
+
+
+/**
+ * @brief   Abstract filter for iterators
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.0
+ *
+ * Instances of this class act as a filter around iterators. In other words 
+ * you can put an iterator into the constructor and the instance will only 
+ * return selected (accepted) elements.
+ *
+ * The only thing that needs to be done to make this work is implementing 
+ * method accept(). Typically this invloves reading the current element or 
+ * key of the inner Iterator and checking whether it is acceptable.
+ */
+abstract class FilterIterator implements OuterIterator
+{
+    private $it;
+
+    /**
+     * Constructs a filter around another iterator.
+     *
+     * @param it     Iterator to filter
+     */
+    function __construct(Iterator $it){}
+
+    /**
+     * Rewind the inner iterator.
+     */
+    function rewind() {    
+        $this->it->rewind();
+        $this->fetch();
+    }
+
+    /**
+     * Accept function to decide whether an element of the inner iterator
+     * should be accessible through the Filteriterator.
+     *
+     * @return whether or not to expose the current element of the inner
+     *         iterator.
+     */
+    abstract function accept();
+
+    /**
+     * Fetch next element and store it.
+     *
+     * @return void
+     */
+    protected function fetch(){}
+
+    /**
+     * Move to next element
+     *
+     * @return void
+     */
+    function next(){}
+    
+    /**
+     * @return Whether more elements are available
+     */
+    function valid(){}
+    
+    /**
+     * @return The current key
+     */
+    function key(){}
+    
+    /**
+     * @return The current value
+     */
+    function current(){}
+    
+    /**
+     * hidden __clone
+     */
+    protected function __clone(){}
+
+    /**
+     * @return The inner iterator
+     */    
+    function getInnerIterator(){}
+
+    /** Aggregate the inner iterator
+     *
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
+     */
+    function __call($func, $params){}
+}
+
+
+
+
+
+/**
+ * @brief   Limited Iteration over another Iterator
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.0
+ *
+ * A class that starts iteration at a certain offset and only iterates over
+ * a specified amount of elements.
+ *
+ * This class uses SeekableIterator::seek() if available and rewind() plus
+ * a skip loop otehrwise.
+ */
+class LimitIterator implements OuterIterator
+{
+    private $it;
+    private $offset;
+    private $count;
+    private $pos;
+
+    /** Construct
+     *
+     * @param it     Iterator to limit
+     * @param offset Offset to first element
+     * @param count  Maximum number of elements to show or -1 for all
+     */
+    function __construct(Iterator $it, $offset = 0, $count = -1){}
+    
+    /** Seek to specified position
+     * @param position offset to seek to (relative to beginning not offset
+     *                 specified in constructor).
+     * @throw exception when position is invalid
+     */
+    function seek($position){}
+
+    /** Rewind to offset specified in constructor
+     */
+    function rewind(){}
+    
+    /** @return whether iterator is valid
+     */
+    function valid(){}
+    
+    /** @return current key
+     */
+    function key(){}
+
+    /** @return current element
+     */
+    function current(){}
+
+    /** Forward to nect element
+     */
+    function next(){}
+
+    /** @return current position relative to zero (not to offset specified in 
+     *          constructor).
+     */
+    function getPosition(){}
+
+    /**
+     * @return The inner iterator
+     */    
+    function getInnerIterator(){}
+
+    /** Aggregate the inner iterator
+     *
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
+     */
+    function __call($func, $params){}
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   A recursive array iterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ *
+ * Passes the RecursiveIterator interface to the inner Iterator and provides
+ * the same functionality as FilterIterator. This allows you to skip parents
+ * and all their childs before loading them all. You need to care about
+ * function getChildren() because it may not always suit your needs. The 
+ * builtin behavior uses reflection to return a new instance of the exact same
+ * class it is called from. That is you extend RecursiveFilterIterator and
+ * getChildren() will create instance of that class. The problem is that doing
+ * this does not transport any state or control information of your accept()
+ * implementation to the new instance. To overcome this problem you might 
+ * need to overwrite getChildren(), call this implementation and pass the
+ * control vaules manually.
+ */
+class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator
 {
     /** @return whether the current element has children
      */
-    function hasChildren();
-    
-    /** @return the sub iterator for the current element
-     * @note The returned object must implement RecursiveIterator.
+    function hasChildren(){}
+
+    /** @return an iterator for the current elements children
+     *
+     * @note the returned iterator will be of the same class as $this
      */
-    function getChildren();
+    function getChildren(){}
+    
+    private $ref;
 }
 
 
@@ -1639,350 +2153,6 @@ class RecursiveIteratorIterator implements OuterIterator
 
 
 /**
- * @brief   Iterator to filter parents
- * @author  Marcus Boerger
- * @version 1.2
- * @since PHP 5.1
- *
- * This extended FilterIterator allows a recursive iteration using 
- * RecursiveIteratorIterator that only shows those elements which have 
- * children.
- */
-class ParentIterator extends RecursiveFilterIterator
-{
-    /** @return whetehr the current element has children
-     */
-    function accept(){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   Iterator to filter recursive iterators
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- *
- * Passes the RecursiveIterator interface to the inner Iterator and provides
- * the same functionality as FilterIterator. This allows you to skip parents
- * and all their childs before loading them all. You need to care about
- * function getChildren() because it may not always suit your needs. The 
- * builtin behavior uses reflection to return a new instance of the exact same
- * class it is called from. That is you extend RecursiveFilterIterator and
- * getChildren() will create instance of that class. The problem is that doing
- * this does not transport any state or control information of your accept()
- * implementation to the new instance. To overcome this problem you might 
- * need to overwrite getChildren(), call this implementation and pass the
- * control vaules manually.
- */
-abstract class RecursiveFilterIterator extends FilterIterator implements RecursiveIterator
-{
-    /** @param $it the RecursiveIterator to filter
-     */
-    function __construct(RecursiveIterator $it){}
-    
-    /** @return whether the current element has children
-     */
-    function hasChildren(){}
-
-    /** @return an iterator for the current elements children
-     *
-     * @note the returned iterator will be of the same class as $this
-     */
-    function getChildren(){}
-    
-    private $ref;
-}
-
-
-
-
-
-/**
- * @brief   Regular expression filter for iterators
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- *
- * This filter iterator assumes that the inner iterator 
- */
-class RegexIterator extends FilterIterator
-{
-    const USE_KEY     = 0x00000001; /**< If present in $flags the the key is 
-                                         used rather then the current value. */
-
-    const MATCH       = 0; /**< Mode: Executed a plain match only      */
-    const GET_MATCH   = 1; /**< Mode: Return the first matche (if any) */
-    const ALL_MATCHES = 2; /**< Mode: Return all matches (if any)      */
-    const SPLIT       = 3; /**< Mode: Return the split values (if any) */
-    const REPLACE     = 4; /**< Mode: Replace the input key or current */
-    
-    private $regex;     /**< the regular expression to match against */
-    private $mode;      /**< operation mode (one of self::MATCH, 
-                             self::GET_MATCH, self::ALL_MATCHES, self::SPLIT) */
-    private $flags;     /**< special flags (self::USE_KEY) */
-    private $preg_flags;/**< PREG_* flags, see preg_match(), preg_match_all(), 
-                             preg_split() */ 
-    private $key;       /**< the value used for key() */
-    private $current;   /**< the value used for current() */
-
-    /**
-     * Constructs a regular expression filter around an iterator whose 
-     * elemnts or keys are strings.
-     *
-     * @param it          inner iterator
-     * @param regex       the regular expression to match
-     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
-     *                    self::ALL_MATCHES, self::SPLIT)
-     * @param flags       special flags (self::USE_KEY)
-     * @param preg_flags  global PREG_* flags, see preg_match(), 
-     *                    preg_match_all(), preg_split()
-     */
-    function __construct(Iterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
-
-    /**
-     * Match current or key against regular expression using mode, flags and
-     * preg_flags.
-     *
-     * @return whether this is a match
-     *
-     * @warning never call this twice for the same state
-     */
-    function accept(){}
-
-    /** @return the key after accept has been called
-     */
-    function key(){}
-
-    /** @return the current value after accept has been called
-     */
-    function current(){}
-
-    /** @return current operation mode
-     */
-    function getMode(){}
-
-    /** @param mode new operaion mode
-     */
-    function setMode($mode){}
-
-    /** @return current operation flags
-     */
-    function getFlags(){}
-
-    /** @param flags new operaion flags
-     */
-    function setFlags($flags){}
-
-    /** @return current PREG flags
-     */
-    function getPregFlags(){}
-
-    /** @param preg_flags new PREG flags
-     */
-    function setPregFlags($preg_flags){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   An empty Iterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- */
-class EmptyIterator implements Iterator
-{
-    /** No operation.
-     * @return void
-     */
-    function rewind(){}
-
-    /** @return \c false
-     */
-    function valid(){}
-
-    /** This function must not be called. It throws an exception upon access.
-     * @throw Exception
-     * @return void
-     */
-    function current(){}
-
-    /** This function must not be called. It throws an exception upon access.
-     * @throw Exception
-     * @return void
-     */
-    function key(){}
-
-    /** No operation.
-     * @return void
-     */
-    function next(){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief Basic Iterator wrapper
- * @since PHP 5.1
- *
- * This iterator wrapper allows to convert anything that is traversable into 
- * an Iterator. It is very important to understand that most classes that do 
- * not implement Iterator have their reasone to. Most likely they do not allow
- * the full Iterator feature set. If so you need to provide techniques to
- * prevent missuse. If you do not you must expect exceptions or fatal erros.
- *
- * It is also possible to derive the class and implement IteratorAggregate by
- * downcasting the instances returned in getIterator. See the following
- * example (assuming BaseClass implements Traversable):
- \code
- class SomeClass extends BaseClass implements IteratorAggregate
- {
-   function getIterator()
-   {
-     return new IteratorIterator($this, 'BaseClass');
-   }
- }
- \endcode
- *
- * As you can see in the example this approach requires that the class to 
- * downcast to is actually a base class of the specified iterator to wrap.
- * Omitting the downcast in the above example would result in an endless loop
- * since IteratorIterator::__construct() would call SomeClass::getIterator().
- */
-class IteratorIterator implements OuterIterator
-{
-    /** Construct an IteratorIterator from an Iterator or an IteratorAggregate.
-     *
-     * @param iterator  inner iterator
-     * @param classname optional class the iterator has to be downcasted to
-     */
-    function __construct(Traversable $iterator, $classname = null){}
-
-    /** \return the inner iterator as passed to the constructor
-     */
-    function getInnerIterator(){}
-
-    /** \return whether the iterator is valid
-     */
-    function valid(){}
-
-    /** \return current key
-     */
-    function key(){}
-
-    /** \return current value
-     */
-    function current(){}
-
-    /** forward to next element
-     */
-    function next(){}
-
-    /** rewind to the first element
-     */
-    function rewind(){}
-
-    /** Aggregate the inner iterator
-     *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
-     */
-    function __call($func, $params){}
-
-    /** The inner iterator must be private because when this class will be
-     * converted to c code it won't no longer be available.
-     */
-    private $iterator;
-}
-
-
-
-
-
-/**
- * @brief   Limited Iteration over another Iterator
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.0
- *
- * A class that starts iteration at a certain offset and only iterates over
- * a specified amount of elements.
- *
- * This class uses SeekableIterator::seek() if available and rewind() plus
- * a skip loop otehrwise.
- */
-class LimitIterator implements OuterIterator
-{
-    private $it;
-    private $offset;
-    private $count;
-    private $pos;
-
-    /** Construct
-     *
-     * @param it     Iterator to limit
-     * @param offset Offset to first element
-     * @param count  Maximum number of elements to show or -1 for all
-     */
-    function __construct(Iterator $it, $offset = 0, $count = -1){}
-    
-    /** Seek to specified position
-     * @param position offset to seek to (relative to beginning not offset
-     *                 specified in constructor).
-     * @throw exception when position is invalid
-     */
-    function seek($position){}
-
-    /** Rewind to offset specified in constructor
-     */
-    function rewind(){}
-    
-    /** @return whether iterator is valid
-     */
-    function valid(){}
-    
-    /** @return current key
-     */
-    function key(){}
-
-    /** @return current element
-     */
-    function current(){}
-
-    /** Forward to nect element
-     */
-    function next(){}
-
-    /** @return current position relative to zero (not to offset specified in 
-     *          constructor).
-     */
-    function getPosition(){}
-
-    /**
-     * @return The inner iterator
-     */    
-    function getInnerIterator(){}
-
-    /** Aggregate the inner iterator
-     *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
-     */
-    function __call($func, $params){}
-}
-
-
-
-
-
-/**
  * @brief   Object storage
  * @author  Marcus Boerger
  * @version 1.0
@@ -2041,6 +2211,99 @@ class SplObjectStorage implements Iterator, Countable
 
 
 /** @ingroup SPL
+ * @brief   An infinite Iterator
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.1
+ *
+ * This Iterator takes another Iterator and infinitvely iterates it by
+ * rewinding it when its end is reached.
+ *
+ * \note Even an InfiniteIterator stops if its inner Iterator is empty.
+ *
+ \verbatim
+ $it       = new ArrayIterator(array(1,2,3));
+ $infinite = new InfiniteIterator($it);
+ $limit    = new LimitIterator($infinite, 0, 5);
+ foreach($limit as $val=>$key)
+ {
+     echo "$val=>$key\n";
+ }
+ \endverbatim
+ */
+class InfiniteIterator extends IteratorIterator
+{
+    /** Move the inner Iterator forward to its next element or rewind it.
+     * @return void
+     */
+    function next(){}
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   An empty Iterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ */
+class EmptyIterator implements Iterator
+{
+    /** No operation.
+     * @return void
+     */
+    function rewind(){}
+
+    /** @return \c false
+     */
+    function valid(){}
+
+    /** This function must not be called. It throws an exception upon access.
+     * @throw Exception
+     * @return void
+     */
+    function current(){}
+
+    /** This function must not be called. It throws an exception upon access.
+     * @throw Exception
+     * @return void
+     */
+    function key(){}
+
+    /** No operation.
+     * @return void
+     */
+    function next(){}
+}
+
+
+
+
+
+/**
+ * @brief   Iterator to filter parents
+ * @author  Marcus Boerger
+ * @version 1.2
+ * @since PHP 5.1
+ *
+ * This extended FilterIterator allows a recursive iteration using 
+ * RecursiveIteratorIterator that only shows those elements which have 
+ * children.
+ */
+class ParentIterator extends RecursiveFilterIterator
+{
+    /** @return whetehr the current element has children
+     */
+    function accept(){}
+}
+
+
+
+
+
+/** @ingroup SPL
  * @brief   An Iterator wrapper that doesn't call rewind
  * @author  Marcus Boerger
  * @version 1.1
@@ -2051,269 +2314,6 @@ class NoRewindIterator extends IteratorIterator
     /** Simply prevent execution of inner iterators rewind().
      */
     function rewind(){}
-}
-
-
-
-
-
-/**
- * @brief   Recursive regular expression filter for iterators
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- *
- * This filter iterator assumes that the inner iterator 
- */
-class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator
-{
-    /**
-     * Constructs a regular expression filter around an iterator whose 
-     * elemnts or keys are strings.
-     *
-     * @param it          inner iterator
-     * @param regex       the regular expression to match
-     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
-     *                    self::ALL_MATCHES, self::SPLIT)
-     * @param flags       special flags (self::USE_KEY)
-     * @param preg_flags  global PREG_* flags, see preg_match(), 
-     *                    preg_match_all(), preg_split()
-     */
-    function __construct(RecursiveIterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
-
-    /** @return whether the current element has children
-     */
-    function hasChildren(){}
-
-    /** @return an iterator for the current elements children
-     *
-     * @note the returned iterator will be of the same class as $this
-     */
-    function getChildren(){}
-    
-    private $ref;
-}
-
-
-
-
-
-/**
- * @brief   Cached iteration over another Iterator
- * @author  Marcus Boerger
- * @version 1.2
- * @since PHP 5.0
- *
- * This iterator wrapper does a one ahead iteration. This way it knows whether
- * the inner iterator has one more element.
- *
- * @note If you want to convert the elements into strings and the inner 
- *       Iterator is an internal Iterator then you need to provide the 
- *       flag CALL_TOSTRING to do the conversion when the actual element
- *       is being fetched. Otherwise the conversion would happen with the
- *       already changed iterator. If you do not need this then it you should
- *       omit this flag because it costs unneccessary work and time.
- */
-class CachingIterator implements OuterIterator
-{
-    const CALL_TOSTRING        = 0x00000001;
-    const CATCH_GET_CHILD      = 0x00000002;
-    const TOSTRING_USE_KEY     = 0x00000010;
-    const TOSTRING_USE_CURRENT = 0x00000020;
-
-    private $it;
-    private $current;
-    private $key;
-    private $valid;
-    private $strValue;
-
-    /** Construct from another iterator
-     *
-     * @param it    Iterator to cache
-     * @param flags Bitmask: 
-     *              - CALL_TOSTRING  (whether to call __toString() for every element)
-     */
-    function __construct(Iterator $it, $flags = self::CALL_TOSTRING){}
-
-    /** Rewind the Iterator
-     */
-    function rewind(){}
-    
-    /** Forward to the next element
-     */
-    function next(){}
-    
-    /** @return whether teh iterator is valid
-     */
-    function valid(){}
-
-    /** @return whether there is one more element
-     */
-    function hasNext(){}
-    
-    /** @return the current element
-     */
-    function current(){}
-
-    /** @return the current key
-     */
-    function key(){}
-
-    /** Aggregate the inner iterator
-     *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
-     */
-    function __call($func, $params){}
-    
-    /** @return the string represenatation that was generated for the current 
-     *          element
-     * @throw exception when CALL_TOSTRING was not specified in constructor
-     */
-    function __toString(){}
-    
-    /**
-     * @return The inner iterator
-     */    
-    function getInnerIterator(){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   Iterator that iterates over several iterators one after the other
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- */
-class AppendIterator implements OuterIterator
-{
-    /** @internal array of inner iterators */
-    private $iterators;
-
-    /** Construct an empty AppendIterator
-     */
-    function __construct(){}
-
-    /** Append an Iterator
-     * @param $it Iterator to append
-     *
-     * If the current state is invalid but the appended iterator is valid
-     * the the AppendIterator itself becomes valid. However there will be no
-     * call to $it->rewind(). Also if the current state is invalid the inner
-     * ArrayIterator will be rewound und forwarded to the appended element.
-     */    
-    function append(Iterator $it){}
-
-    /** @return the current inner Iterator
-     */
-    function getInnerIterator(){}
-
-    /** Rewind to the first element of the first inner Iterator.
-     * @return void
-     */
-    function rewind(){}
-
-    /** @return whether the current element is valid
-      */
-    function valid(){}
-
-    /** @return the current value if it is valid or \c NULL
-     */
-    function current(){}
-
-    /** @return the current key if it is valid or \c NULL
-     */
-    function key(){}
-
-    /** Move to the next element. If this means to another Iterator that 
-     * rewind that Iterator.
-     * @return void
-     */
-    function next(){}
-
-    /** Aggregates the inner iterator
-     */    
-    function __call($func, $params){}
-}
-
-
-
-
-
-/** @brief seekable iterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.0
- *
- * Turns a normal iterator ino a seekable iterator. When there is a way
- * to seek on an iterator LimitIterator can use this to efficiently rewind
- * to offset.
- */
-interface SeekableIterator extends Iterator
-{
-    /** Seek to an absolute position
-     *
-     * \param $index position to seek to
-     * \return void
-     *
-     * The method should throw an exception if it is not possible to seek to 
-     * the given position. Typically this exception should be of type 
-     * OutOfBoundsException.
-     \code
-    function seek($index);
-        $this->rewind();
-        $position = 0;
-        while($position < $index && $this->valid()) {
-            $this->next();
-            $position++;
-        }
-        if (!$this->valid()) {
-            throw new OutOfBoundsException('Invalid seek position');
-        }
-    }
-     \endcode
-     */
-    function seek($index);
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   A recursive array iterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- *
- * Passes the RecursiveIterator interface to the inner Iterator and provides
- * the same functionality as FilterIterator. This allows you to skip parents
- * and all their childs before loading them all. You need to care about
- * function getChildren() because it may not always suit your needs. The 
- * builtin behavior uses reflection to return a new instance of the exact same
- * class it is called from. That is you extend RecursiveFilterIterator and
- * getChildren() will create instance of that class. The problem is that doing
- * this does not transport any state or control information of your accept()
- * implementation to the new instance. To overcome this problem you might 
- * need to overwrite getChildren(), call this implementation and pass the
- * control vaules manually.
- */
-class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator
-{
-    /** @return whether the current element has children
-     */
-    function hasChildren(){}
-
-    /** @return an iterator for the current elements children
-     *
-     * @note the returned iterator will be of the same class as $this
-     */
-    function getChildren(){}
-    
-    private $ref;
 }
 
 class AppendIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
@@ -2479,6 +2479,31 @@ class ArrayIterator implements Iterator, Traversable, ArrayAccess, SeekableItera
     function offsetExists($index) {}
 
     /**
+     * Gets the value from the provided offset.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function offsetGet($index) {}
+
+    /**
+     * Sets a value for a given offset.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function offsetSet($index, $newval) {}
+
+    /**
+     * Unsets a value for an offset.
+     *
+     * @param string
+     * @return void
+     **/
+    function offsetUnset($index) {}
+
+    /**
      * This rewinds the iterator to the beginning.
      *
      * @return void
@@ -2492,6 +2517,45 @@ class ArrayIterator implements Iterator, Traversable, ArrayAccess, SeekableItera
     function seek($position) {}
 
     /**
+     * Serialize.
+     *
+     * @return string
+     **/
+    function serialize() {}
+
+    /**
+     * Sets behaviour flags.
+     *
+     * @param string
+     * @return void
+     **/
+    function setFlags($flags) {}
+
+    /**
+     * Sort the entries by values using user defined function.
+     *
+     * @param string
+     * @return void
+     **/
+    function uasort($cmp_function) {}
+
+    /**
+     * Sort the entries by key using user defined function.
+     *
+     * @param string
+     * @return void
+     **/
+    function uksort($cmp_function) {}
+
+    /**
+     * Unserialize.
+     *
+     * @param string
+     * @return string
+     **/
+    function unserialize($serialized) {}
+
+    /**
      * Checks if the array contains any more entries.
      *
      * @return bool
@@ -2501,7 +2565,7 @@ class ArrayIterator implements Iterator, Traversable, ArrayAccess, SeekableItera
     /**
      * Constructs an ArrayIterator object.
      *
-     * @param string
+     * @param mixed
      **/
     function __construct($array) {}
 
@@ -2804,6 +2868,1865 @@ class CachingIterator extends IteratorIterator implements OuterIterator, Travers
     function __toString() {}
 
 }
+class Cairo {
+    /**
+     * Returns an array with the available font backends
+     *
+     * @return array
+     **/
+    function availableFonts() {}
+
+    /**
+     * Returns an array with the available surface backends
+     *
+     * @return array
+     **/
+    function availableSurfaces() {}
+
+    /**
+     * Retrieves the current status as a readable string
+     *
+     * @param int
+     * @return void
+     **/
+    function statusToString($status) {}
+
+    /**
+     * Retrieves the current version of the cairo library as an integer value
+     *
+     * @return integer
+     **/
+    function version() {}
+
+    /**
+     * Retrieves the current cairo library version as a string.
+     *
+     * @return string
+     **/
+    function versionString() {}
+
+}
+class CairoAntialias {
+}
+class CairoContent {
+}
+class CairoContext {
+    /**
+     * Appends the path onto the current path. The path may be either the
+     * return value from one of CairoContext::copyPath or
+     * CairoContext::copyPathFlat;
+     * 
+     * if path is not a valid CairoPath instance a CairoException will be
+     * thrown
+     *
+     * @param CairoPath
+     * @return void
+     **/
+    function appendPath($path) {}
+
+    /**
+     * Adds a circular arc of the given radius to the current path. The arc
+     * is centered at (x, y), begins at angle1 and proceeds in the direction
+     * of increasing angles to end at angle2. If angle2 is less than angle1
+     * it will be progressively increased by 2*M_PI until it is greater than
+     * angle1.
+     * 
+     * If there is a current point, an initial line segment will be added to
+     * the path to connect the current point to the beginning of the arc. If
+     * this initial line is undesired, it can be avoided by calling
+     * CairoContext::newSubPath or procedural cairo_new_sub_path before
+     * calling CairoContext::arc or cairo_arc.
+     * 
+     * Angles are measured in radians. An angle of 0.0 is in the direction of
+     * the positive X axis (in user space). An angle of M_PI/2.0 radians (90
+     * degrees) is in the direction of the positive Y axis (in user space).
+     * Angles increase in the direction from the positive X axis toward the
+     * positive Y axis. So with the default transformation matrix, angles
+     * increase in a clockwise direction.
+     * 
+     * (To convert from degrees to radians, use degrees * (M_PI / 180.).)
+     * This function gives the arc in the direction of increasing angles; see
+     * CairoContext::arcNegative or cairo_arc_negative to get the arc in the
+     * direction of decreasing angles.
+     *
+     * @param double
+     * @param double
+     * @param double
+     * @param double
+     * @param double
+     * @return void
+     **/
+    function arc($x, $y, $radius, $angle1, $angle2) {}
+
+    /**
+     * Adds a circular arc of the given radius to the current path. The arc
+     * is centered at (x, y), begins at angle1 and proceeds in the direction
+     * of decreasing angles to end at angle2. If angle2 is greater than
+     * angle1 it will be progressively decreased by 2*M_PI until it is less
+     * than angle1.
+     * 
+     * See CairoContext::arc or cairo_arc for more details. This function
+     * differs only in the direction of the arc between the two angles.
+     *
+     * @param double
+     * @param double
+     * @param double
+     * @param double
+     * @param double
+     * @return void
+     **/
+    function arcNegative($x, $y, $radius, $angle1, $angle2) {}
+
+    /**
+     * Establishes a new clip region by intersecting the current clip region
+     * with the current path as it would be filled by CairoContext::fill or
+     * cairo_fill and according to the current fill rule (see
+     * CairoContext::setFillRule or cairo_set_fill_rule).
+     * 
+     * After CairoContext::clip or cairo_clip, the current path will be
+     * cleared from the cairo context.
+     * 
+     * The current clip region affects all drawing operations by effectively
+     * masking out any changes to the surface that are outside the current
+     * clip region.
+     * 
+     * Calling CairoContext::clip or cairo_clip can only make the clip region
+     * smaller, never larger. But the current clip is part of the graphics
+     * state, so a temporary restriction of the clip region can be achieved
+     * by calling CairoContext::clip or cairo_clip within a
+     * CairoContext::save/CairoContext::restore or cairo_save/cairo_restore
+     * pair. The only other means of increasing the size of the clip region
+     * is CairoContext::resetClip or procedural cairo_reset_clip.
+     *
+     * @return void
+     **/
+    function clip() {}
+
+    /**
+     * Computes a bounding box in user coordinates covering the area inside
+     * the current clip.
+     *
+     * @return array
+     **/
+    function clipExtents() {}
+
+    /**
+     * Establishes a new clip region by intersecting the current clip region
+     * with the current path as it would be filled by Context.fill and
+     * according to the current FILL RULE (see CairoContext::setFillRule or
+     * cairo_set_fill_rule).
+     * 
+     * Unlike CairoContext::clip, CairoContext::clipPreserve preserves the
+     * path within the Context. The current clip region affects all drawing
+     * operations by effectively masking out any changes to the surface that
+     * are outside the current clip region.
+     * 
+     * Calling CairoContext::clipPreserve can only make the clip region
+     * smaller, never larger. But the current clip is part of the graphics
+     * state, so a temporary restriction of the clip region can be achieved
+     * by calling CairoContext::clipPreserve within a
+     * CairoContext::save/CairoContext::restore pair. The only other means of
+     * increasing the size of the clip region is CairoContext::resetClip.
+     *
+     * @return void
+     **/
+    function clipPreserve() {}
+
+    /**
+     * Returns a list-type array with the current clip region as a list of
+     * rectangles in user coordinates
+     *
+     * @return array
+     **/
+    function clipRectangleList() {}
+
+    /**
+     * Adds a line segment to the path from the current point to the
+     * beginning of the current sub-path, (the most recent point passed to
+     * CairoContext::moveTo), and closes this sub-path. After this call the
+     * current point will be at the joined endpoint of the sub-path.
+     * 
+     * The behavior of close_path() is distinct from simply calling
+     * CairoContext::lineTo with the equivalent coordinate in the case of
+     * stroking. When a closed sub-path is stroked, there are no caps on the
+     * ends of the sub-path. Instead, there is a line join connecting the
+     * final and initial segments of the sub-path.
+     * 
+     * If there is no current point before the call to
+     * CairoContext::closePath, this function will have no effect.
+     *
+     * @return void
+     **/
+    function closePath() {}
+
+    /**
+     * Emits the current page for backends that support multiple pages, but
+     * doesn’t clear it, so, the contents of the current page will be
+     * retained for the next page too. Use CairoContext::showPage if you want
+     * to get an empty page after the emission.
+     * 
+     * This is a convenience function that simply calls
+     * CairoSurface::copyPage on CairoContext’s target.
+     *
+     * @return void
+     **/
+    function copyPage() {}
+
+    /**
+     * Creates a copy of the current path and returns it to the user as a
+     * CairoPath. See CairoPath for hints on how to iterate over the returned
+     * data structure.
+     * 
+     * This function will always return a valid CairoPath object, but the
+     * result will have no data, if either of the following conditions hold:
+     * 
+     * 1. If there is insufficient memory to copy the path. In this case
+     * CairoPath-&gt;status will be set to CAIRO_STATUS_NO_MEMORY. 2. If
+     * context is already in an error state. In this case
+     * CairoPath-&gt;status will contain the same status that would be
+     * returned by cairo_status.
+     * 
+     * In either case, CairoPath-&gt;status will be set to
+     * CAIRO_STATUS_NO_MEMORY (regardless of what the error status in cr
+     * might have been).
+     *
+     * @return CairoPath
+     **/
+    function copyPath() {}
+
+    /**
+     * Description here.
+     *
+     * @return CairoPath
+     **/
+    function copyPathFlat() {}
+
+    /**
+     * Adds a cubic Bezier spline to the path from the current point to
+     * position x3 ,y3 in user-space coordinates, using x1, y1 and x2, y2 as
+     * the control points. After this call the current point will be x3, y3.
+     * 
+     * If there is no current point before the call to CairoContext::curveTo
+     * this function will behave as if preceded by a call to
+     * CairoContext::moveTo (x1, y1).
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function curveTo($x1, $y1, $x2, $y2, $x3, $y3) {}
+
+    /**
+     * Transform a coordinate from device space to user space by multiplying
+     * the given point by the inverse of the current transformation matrix
+     * (CTM).
+     *
+     * @param float
+     * @param float
+     * @return array
+     **/
+    function deviceToUser($x, $y) {}
+
+    /**
+     * Transform a distance vector from device space to user space. This
+     * function is similar to CairoContext::deviceToUser or
+     * cairo_device_to_user except that the translation components of the
+     * inverse Cairo Transformation Matrix will be ignored when transforming
+     * (x,y).
+     *
+     * @param float
+     * @param float
+     * @return array
+     **/
+    function deviceToUserDistance($x, $y) {}
+
+    /**
+     * A drawing operator that fills the current path according to the
+     * current CairoFillRule, (each sub-path is implicitly closed before
+     * being filled). After CairoContext::fill or cairo_fill, the current
+     * path will be cleared from the CairoContext.
+     *
+     * @return void
+     **/
+    function fill() {}
+
+    /**
+     * Computes a bounding box in user coordinates covering the area that
+     * would be affected, (the “inked” area), by a CairoContext::fill
+     * operation given the current path and fill parameters. If the current
+     * path is empty, returns an empty rectangle (0,0,0,0). Surface
+     * dimensions and clipping are not taken into account.
+     * 
+     * Contrast with CairoContext::pathExtents, which is similar, but returns
+     * non-zero extents for some paths with no inked area, (such as a simple
+     * line segment).
+     * 
+     * Note that CairoContext::fillExtents must necessarily do more work to
+     * compute the precise inked areas in light of the fill rule, so
+     * CairoContext::pathExtents may be more desirable for sake of
+     * performance if the non-inked path extents are desired.
+     *
+     * @return array
+     **/
+    function fillExtents() {}
+
+    /**
+     * A drawing operator that fills the current path according to the
+     * current CairoFillRule, (each sub-path is implicitly closed before
+     * being filled). Unlike CairoContext::fill, CairoContext::fillPreserve
+     * (Procedural cairo_fill, cairo_fill_preserve, respectively) preserves
+     * the path within the Context.
+     *
+     * @return void
+     **/
+    function fillPreserve() {}
+
+    /**
+     * Gets the font extents for the currently selected font.
+     *
+     * @return array
+     **/
+    function fontExtents() {}
+
+    /**
+     * Returns the current CairoAntialias mode, as set by
+     * CairoContext::setAntialias.
+     *
+     * @return integer
+     **/
+    function getAntialias() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getCurrentPoint() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getDash() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getDashCount() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getFillRule() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getFontFace() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getFontMatrix() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getFontOptions() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getGroupTarget() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getLineCap() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getLineJoin() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getLineWidth() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getMatrix() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getMiterLimit() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getOperator() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getScaledFont() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getSource() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getTarget() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getTolerance() {}
+
+    /**
+     * Description here.
+     *
+     * @param array
+     * @return void
+     **/
+    function glyphPath($glyphs) {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function hasCurrentPoint() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function identityMatrix() {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function inFill($x, $y) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function inStroke($x, $y) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function lineTo($x, $y) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function mask($pattern) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function maskSurface($surface, $x, $y) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function moveTo($x, $y) {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function newPath() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function newSubPath() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function paint() {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function paintWithAlpha($alpha) {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function pathExtents() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function popGroup() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function popGroupToSource() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function pushGroup() {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function pushGroupWithContent($content) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function rectangle($x, $y, $width, $height) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function relCurveTo($x1, $y1, $x2, $y2, $x3, $y3) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function relLineTo($x, $y) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function relMoveTo($x, $y) {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function resetClip() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function restore() {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function rotate($angle) {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function save() {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function scale($x, $y) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function selectFontFace($family, $slant, $weight) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setAntialias($antialias) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setDash($dashes, $offset) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setFillRule($setting) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setFontFace($fontface) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setFontMatrix($matrix) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setFontOptions($fontoptions) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setFontSize($size) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setLineCap($setting) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setLineJoin($setting) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setLineWidth($width) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setMatrix($matrix) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setMiterLimit($limit) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setOperator($setting) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setScaledFont($scaledfont) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setSource($pattern) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setSourceRGB($red, $green, $blue) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setSourceRGBA($red, $green, $blue, $alpha) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setSourceSurface($surface, $x, $y) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setTolerance($tolerance) {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function showPage() {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function showText($text) {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function status() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function stroke() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function strokeExtents() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function strokePreserve() {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function textExtents($text) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function textPath($string) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function transform($matrix) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function translate($x, $y) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function userToDevice($x, $y) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function userToDeviceDistance($x, $y) {}
+
+    /**
+     * Creates a new CairoContext object to draw
+     *
+     * @param CairoSurface
+     **/
+    function __construct($surface) {}
+
+}
+class CairoException extends Exception {
+}
+class CairoExtend {
+}
+class CairoFillRule {
+}
+class CairoFilter {
+}
+class CairoFontFace {
+    /**
+     * This function returns the type of the backend used to create a font
+     * face. See CairoFontType class constants for available types.
+     *
+     * @return void
+     **/
+    function getType() {}
+
+    /**
+     * Checks whether an error has previously occurred for this font face
+     *
+     * @return void
+     **/
+    function status() {}
+
+    /**
+     * CairoFontFace class represents a particular font at a particular
+     * weight, slant, and other characteristic but no transformation or size.
+     * 
+     * Note: This class can't be instantiated directly it is created by
+     * CairoContext::getFontFace or cairo_scaled_font_get_font_face
+     *
+     **/
+    function __construct() {}
+
+}
+class CairoFontOptions {
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function equal($other) {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getAntialias() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getHintMetrics() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getHintStyle() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getSubpixelOrder() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function hash() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function merge($other) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setAntialias($antialias) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setHintMetrics($hint_metrics) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setHintStyle($hint_style) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setSubpixelOrder($subpixel_order) {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function status() {}
+
+    /**
+     * The method description goes here.
+     *
+     **/
+    function __construct() {}
+
+}
+class CairoFontSlant {
+}
+class CairoFontType {
+}
+class CairoFontWeight {
+}
+class CairoFormat {
+    /**
+     * This method provides a stride value that will respect all alignment
+     * requirements of the accelerated image-rendering code within cairo.
+     *
+     * @param long
+     * @param integer
+     * @return integer
+     **/
+    function strideForWidth($format, $width) {}
+
+}
+class CairoGradientPattern extends CairoPattern {
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function addColorStopRgb($offset, $red, $green, $blue) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function addColorStopRgba($offset, $red, $green, $blue, $alpha) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getColorStopCount() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function getColorStopRgba($index) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getExtend() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setExtend($extend) {}
+
+}
+class CairoHintMetrics {
+}
+class CairoHintStyle {
+}
+class CairoImageSurface extends CairoSurface {
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @param integer
+     * @param integer
+     * @param string
+     * @return void
+     **/
+    function createForData($data, $format, $width, $height, $stride) {}
+
+    /**
+     * Creates a new CairoImageSurface form a png image file
+     * 
+     * This method should be called static
+     *
+     * @param string
+     * @return CairoImageSurface
+     **/
+    function createFromPng($file) {}
+
+    /**
+     * Returns the image data of this surface or NULL if surface is not an
+     * image surface, or if CairoContext::finish, procedural :
+     * cairo_surface_finish, has been called.
+     *
+     * @return string
+     **/
+    function getData() {}
+
+    /**
+     * Retrieves the image format, as one of the CairoFormat defined
+     *
+     * @return integer
+     **/
+    function getFormat() {}
+
+    /**
+     * This methods returns the CairoImageSurface height.
+     *
+     * @return integer
+     **/
+    function getHeight() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getStride() {}
+
+    /**
+     * Gets the width of the CairoImageSurface
+     *
+     * @return integer
+     **/
+    function getWidth() {}
+
+    /**
+     * Creates a new CairoImageSuface object of type format
+     *
+     * @param string
+     * @param integer
+     * @param integer
+     **/
+    function __construct($format, $width, $height) {}
+
+}
+class CairoLinearGradient extends CairoGradientPattern {
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getPoints() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function __construct($x0, $y0, $x1, $y1) {}
+
+}
+class CairoLineCap {
+}
+class CairoLineJoin {
+}
+class CairoMatrix {
+    /**
+     * Creates a new matrix that is an identity transformation. An identity
+     * transformation means the source data is copied into the destination
+     * data without change
+     *
+     * @return void
+     **/
+    function initIdentity() {}
+
+    /**
+     * Creats a new matrix to a transformation that rotates by radians
+     * provided
+     *
+     * @param float
+     * @return void
+     **/
+    function initRotate($radians) {}
+
+    /**
+     * Creates a new matrix to a transformation that scales by sx and sy in
+     * the X and Y dimensions, respectively.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function initScale($sx, $sy) {}
+
+    /**
+     * Creates a new matrix to a transformation that translates by tx and ty
+     * in the X and Y dimensions, respectively.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function initTranslate($tx, $ty) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function invert() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function multiply($matrix1, $matrix2) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function rotate($sx, $sy) {}
+
+    /**
+     * Applies scaling by sx, sy to the transformation in the matrix. The
+     * effect of the new transformation is to first scale the coordinates by
+     * sx and sy, then apply the original transformation to the coordinates.
+     *
+     * @param float
+     * @param float
+     * @return void
+     **/
+    function scale($sx, $sy) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function transformDistance($dx, $dy) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function transformPoint($dx, $dy) {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function translate($tx, $ty) {}
+
+    /**
+     * Returns new CairoMatrix object. Matrices are used throughout cairo to
+     * convert between different coordinate spaces. Sets matrix to be the
+     * affine transformation given by xx, yx, xy, yy, x0, y0. The
+     * transformation is given by: x_new = xx * x + xy * y + x0; and y_new =
+     * yx * x + yy * y + y0;
+     *
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     **/
+    function __construct($xx, $yx, $xy, $yy, $x0, $y0) {}
+
+}
+class CairoOperator {
+}
+class CairoPath {
+}
+class CairoPattern {
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getMatrix() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getType() {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setMatrix($matrix) {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function status() {}
+
+    /**
+     * The method description goes here.
+     *
+     **/
+    function __construct() {}
+
+}
+class CairoPatternType {
+}
+class CairoPdfSurface extends CairoSurface {
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setSize($width, $height) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function __construct($file, $width, $height) {}
+
+}
+class CairoPsLevel {
+}
+class CairoPsSurface extends CairoSurface {
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function dscBeginPageSetup() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function dscBeginSetup() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function dscComment($comment) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getEps() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getLevels() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function levelToString($level) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function restrictToLevel($level) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setEps($level) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setSize($width, $height) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function __construct($file, $width, $height) {}
+
+}
+class CairoRadialGradient extends CairoGradientPattern {
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getCircles() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function __construct($x0, $y0, $r0, $x1, $y1, $r1) {}
+
+}
+class CairoScaledFont {
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function extents() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getCtm() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getFontFace() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getFontMatrix() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getFontOptions() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getScaleMatrix() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getType() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function glyphExtents($glyphs) {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function status() {}
+
+    /**
+     * Description here.
+     *
+     * @param string
+     * @return void
+     **/
+    function textExtents($text) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function __construct($font_face, $matrix, $ctm, $options) {}
+
+}
+class CairoSolidPattern extends CairoPattern {
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getRgba() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function __construct($red, $green, $blue, $alpha) {}
+
+}
+class CairoStatus {
+}
+class CairoSubpixelOrder {
+}
+class CairoSurface {
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function copyPage() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function createSimilar($content, $width, $height) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function finish() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function flush() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getContent() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getDeviceOffset() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function getFontOptions() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getType() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function markDirty() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function markDirtyRectangle($x, $y, $width, $height) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setDeviceOffset($x, $y) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setFallbackResolution($x, $y) {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function showPage() {}
+
+    /**
+     * Description here.
+     *
+     * @return void
+     **/
+    function status() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function writeToPng($file) {}
+
+    /**
+     * The method description goes here.
+     *
+     **/
+    function __construct() {}
+
+}
+class CairoSurfacePattern extends CairoPattern {
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getExtend() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getFilter() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @return void
+     **/
+    function getSurface() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setExtend($extend) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function setFilter($filter) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     **/
+    function __construct($surface) {}
+
+}
+class CairoSurfaceType {
+}
+class CairoSvgSurface extends CairoSurface {
+    /**
+     * Returns a numerically indexed array of currently available
+     * CairoSvgVersion constants. In order to retreive the string values for
+     * each item, use CairoSvgSurface::versionToString.
+     *
+     * @return array
+     **/
+    function getVersions() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function restrictToVersion($version) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @return void
+     **/
+    function versionToString($version) {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function __construct($file, $width, $height) {}
+
+}
+class CairoSvgVersion {
+}
+class CairoToyFontFace extends CairoFontFace {
+}
 class Collator {
     /**
      * This function sorts an array such that array indices maintain their
@@ -2897,10 +4820,10 @@ class Collator {
      * difference anywhere in the strings. This is also called the level2
      * strength.
      * 
-     * Note: In some languages (such as Danish), certain accented letters
-     * are considered to be separate base characters. In most languages,
-     * however, an accented letter only has a secondary difference from the
-     * unaccented version of that letter.
+     * Note: In some languages (such as Danish), certain accented letters are
+     * considered to be separate base characters. In most languages, however,
+     * an accented letter only has a secondary difference from the unaccented
+     * version of that letter.
      * 
      * Tertiary Level: Upper and lower case differences in characters are
      * distinguished at the tertiary level (for example, "ao" "Ao" "aò"). In
@@ -2971,7 +4894,7 @@ class Collator {
 }
 class Countable {
     /**
-     * This method executed when using the count function on a object
+     * This method is executed when using the count function on an object
      * implementing Countable.
      *
      * @return int
@@ -3022,7 +4945,7 @@ class DateTime {
      * Adds the specified DateInterval object to the specified DateTime
      * object.
      *
-     * @param string
+     * @param DateInterval
      * @return DateTime
      **/
     function add($interval) {}
@@ -3513,7 +5436,7 @@ class DomAttribute {
     function value() {}
 
 }
-class DOMCharacterData extends DOMNode {
+class DomCharacterData extends DOMNode {
     /**
      * Append the string data to the end of the character data of the node.
      *
@@ -3560,7 +5483,7 @@ class DOMCharacterData extends DOMNode {
     function substringData($offset, $count) {}
 
 }
-class DomComment extends DOMCharacterData {
+class DOMComment extends DOMCharacterData {
     /**
      * Creates a new DOMComment object. This object is read only. It may be
      * appended to a document, but additional nodes may not be appended to
@@ -4429,7 +6352,7 @@ class DomElement extends DOMNode {
 }
 class DOMEntity extends DOMNode {
 }
-class DomEntityReference extends DOMNode {
+class DOMEntityReference extends DOMNode {
     /**
      * Creates a new DOMEntityReference object.
      *
@@ -5014,7 +6937,7 @@ class DomNode {
     function unlink_node() {}
 
 }
-class DomNodelist {
+class DOMNodeList {
     /**
      * Retrieves a node specified by index within the DOMNodeList object.
      *
@@ -5341,6 +7264,894 @@ class finfo {
      * @return bool
      **/
     function set_flags($options) {}
+
+}
+class GearmanClient {
+    /**
+     * Adds one or more options to those already set.
+     *
+     * @param integer
+     * @return boolean
+     **/
+    function addOptions($options) {}
+
+    /**
+     * Adds a job server to a list of servers that can be used to run a task.
+     * No socket I/O happens here; the server is simply added to the list.
+     *
+     * @param string
+     * @param int
+     * @return boolean
+     **/
+    function addServer($host, $port) {}
+
+    /**
+     * Adds a list of job servers that can be used to run a task. No socket
+     * I/O happens here; the servers are simply added to the full list of
+     * servers.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function addServers($servers) {}
+
+    /**
+     * Adds a task to be run in parallel with other tasks. Call this method
+     * for all the tasks to be run in parallel, then call
+     * GearmanClient::runTasks to perform the work. Note that enough workers
+     * need to be available for the tasks to all run in parallel.
+     *
+     * @param string
+     * @param string
+     * @param mixed
+     * @param string
+     * @return GearmanTask
+     **/
+    function addTask($function_name, $workload, &$context, $unique) {}
+
+    /**
+     * Adds a background task to be run in parallel with other tasks. Call
+     * this method for all the tasks to be run in parallel, then call
+     * GearmanClient::runTasks to perform the work.
+     *
+     * @param string
+     * @param string
+     * @param mixed
+     * @param string
+     * @return GearmanTask
+     **/
+    function addTaskBackground($function_name, $workload, &$context, $unique) {}
+
+    /**
+     * Adds a high priority task to be run in parallel with other tasks. Call
+     * this method for all the high priority tasks to be run in parallel,
+     * then call GearmanClient::runTasks to perform the work. Tasks with a
+     * high priority will be selected from the queue before those of normal
+     * or low priority.
+     *
+     * @param string
+     * @param string
+     * @param mixed
+     * @param string
+     * @return GearmanTask
+     **/
+    function addTaskHigh($function_name, $workload, &$context, $unique) {}
+
+    /**
+     * Adds a high priority background task to be run in parallel with other
+     * tasks. Call this method for all the tasks to be run in parallel, then
+     * call GearmanClient::runTasks to perform the work. Tasks with a high
+     * priority will be selected from the queue before those of normal or low
+     * priority.
+     *
+     * @param string
+     * @param string
+     * @param mixed
+     * @param string
+     * @return GearmanTask
+     **/
+    function addTaskHighBackground($function_name, $workload, &$context, $unique) {}
+
+    /**
+     * Adds a low priority background task to be run in parallel with other
+     * tasks. Call this method for all the tasks to be run in parallel, then
+     * call GearmanClient::runTasks to perform the work. Tasks with a low
+     * priority will be selected from the queue after those of normal or low
+     * priority.
+     *
+     * @param string
+     * @param string
+     * @param mixed
+     * @param string
+     * @return GearmanTask
+     **/
+    function addTaskLow($function_name, $workload, &$context, $unique) {}
+
+    /**
+     * Adds a low priority background task to be run in parallel with other
+     * tasks. Call this method for all the tasks to be run in parallel, then
+     * call GearmanClient::runTasks to perform the work. Tasks with a low
+     * priority will be selected from the queue after those of normal or high
+     * priority.
+     *
+     * @param string
+     * @param string
+     * @param mixed
+     * @param string
+     * @return GearmanTask
+     **/
+    function addTaskLowBackground($function_name, $workload, &$context, $unique) {}
+
+    /**
+     * Used to request status information from the Gearman server, which will
+     * call the specified status callback (set using
+     * GearmanClient::setStatusCallback).
+     *
+     * @param string
+     * @param string
+     * @return GearmanTask
+     **/
+    function addTaskStatus($job_handle, &$context) {}
+
+    /**
+     * Clears all the task callback functions that have previously been set.
+     *
+     * @return boolean
+     **/
+    function clearCallbacks() {}
+
+    /**
+     * Get the application context previously set with
+     * GearmanClient::setContext.
+     *
+     * @return string
+     **/
+    function context() {}
+
+    /**
+     * Get the application data previously set with GearmanClient::setData.
+     *
+     * @return string
+     **/
+    function data() {}
+
+    /**
+     * Runs a single task and returns a string representation of the result.
+     * It is up to the GearmanClient and GearmanWorker to agree on the format
+     * of the result.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function do($function_name, $workload, $unique) {}
+
+    /**
+     * Runs a task in the background, returning a job handle which can be
+     * used to get the status of the running task.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function doBackground($function_name, $workload, $unique) {}
+
+    /**
+     * Runs a single high priority task and returns a string representation
+     * of the result. It is up to the GearmanClient and GearmanWorker to
+     * agree on the format of the result. High priority tasks will get
+     * precedence over normal and low priority tasks in the job queue.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function doHigh($function_name, $workload, $unique) {}
+
+    /**
+     * Runs a high priority task in the background, returning a job handle
+     * which can be used to get the status of the running task. High priority
+     * tasks take precedence over normal and low priority tasks in the job
+     * queue.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function doHighBackground($function_name, $workload, $unique) {}
+
+    /**
+     * Gets that job handle for a running task. This should be used between
+     * repeated GearmanClient::do calls. The job handle can then be used to
+     * get information on the task.
+     *
+     * @return string
+     **/
+    function doJobHandle() {}
+
+    /**
+     * Runs a single low priority task and returns a string representation of
+     * the result. It is up to the GearmanClient and GearmanWorker to agree
+     * on the format of the result. Normal and high priority tasks will get
+     * precedence over low priority tasks in the job queue.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function doLow($function_name, $workload, $unique) {}
+
+    /**
+     * Runs a low priority task in the background, returning a job handle
+     * which can be used to get the status of the running task. Normal and
+     * high priority tasks take precedence over low priority tasks in the job
+     * queue.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return string
+     **/
+    function doLowBackground($function_name, $workload, $unique) {}
+
+    /**
+     * Returns the status for the running task. This should be used between
+     * repeated GearmanClient::do calls.
+     *
+     * @return array
+     **/
+    function doStatus() {}
+
+    /**
+     * Sends some arbitrary data to all job servers to see if they echo it
+     * back. The data sent is not used or processed in any other way.
+     * Primarily used for testing and debugging.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function echo($workload) {}
+
+    /**
+     * Returns an error string for the last error encountered.
+     *
+     * @return void
+     **/
+    function error() {}
+
+    /**
+     * Value of errno in the case of a GEARMAN_ERRNO return value.
+     *
+     * @return integer
+     **/
+    function getErrno() {}
+
+    /**
+     * Gets the status for a background job given a job handle. The status
+     * information will specify whether the job is known, whether the job is
+     * currently running, and the percentage completion.
+     *
+     * @param string
+     * @return array
+     **/
+    function jobStatus($job_handle) {}
+
+    /**
+     * Removes (unsets) one or more options.
+     *
+     * @param integer
+     * @return boolean
+     **/
+    function removeOptions($options) {}
+
+    /**
+     * Returns the last Gearman return code.
+     *
+     * @return integer
+     **/
+    function returnCode() {}
+
+    /**
+     * For a set of tasks previously added with GearmanClient::addTask,
+     * GearmanClient::addTaskHigh, GearmanClient::addTaskLow,
+     * GearmanClient::addTaskBackground,
+     * GearmanClient::addTaskHighBackground, or
+     * GearmanClient::addTaskLowBackground, this call starts running the
+     * tasks in parallel.
+     *
+     * @return boolean
+     **/
+    function runTasks() {}
+
+    /**
+     * Sets the callback function for accepting data packets for a task. The
+     * callback function should take a single argument, a GearmanTask object.
+     *
+     * @param callback
+     * @return void
+     **/
+    function setClientCallback($callback) {}
+
+    /**
+     * Use to set a function to be called when a task is completed. The
+     * callback function should accept a single argument, a GearmanTask
+     * oject.
+     *
+     * @param callback
+     * @return boolean
+     **/
+    function setCompleteCallback($callback) {}
+
+    /**
+     * Sets an arbitrary string to provide application context that can later
+     * be retrieved by GearmanClient::context.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function setContext($context) {}
+
+    /**
+     * Sets a function to be called when a task is received and queued by the
+     * Gearman job server. The callback should accept a single argument, a
+     * GearmanClient oject.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function setCreatedCallback($callback) {}
+
+    /**
+     * Sets some arbitrary application data that can later be retrieved by
+     * GearmanClient::data.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function setData($data) {}
+
+    /**
+     * Sets the callback function for accepting data packets for a task. The
+     * callback function should take a single argument, a GearmanTask object.
+     *
+     * @param callback
+     * @return void
+     **/
+    function setDataCallback($callback) {}
+
+    /**
+     * Specifies a function to call when a worker for a task sends an
+     * exception.
+     *
+     * @param callback
+     * @return boolean
+     **/
+    function setExceptionCallback($callback) {}
+
+    /**
+     * Sets the callback function to be used when a task does not complete
+     * successfully. The function should accept a single argument, a
+     * GearmanTask object.
+     *
+     * @param callback
+     * @return boolean
+     **/
+    function setFailCallback($callback) {}
+
+    /**
+     * Sets one or more client options.
+     *
+     * @param integer
+     * @return boolean
+     **/
+    function setOptions($options) {}
+
+    /**
+     * Sets a callback function used for getting updated status information
+     * from a worker. The function should accept a single argument, a
+     * GearmanTask object.
+     *
+     * @param callback
+     * @return boolean
+     **/
+    function setStatusCallback($callback) {}
+
+    /**
+     * Sets the timeout for socket I/O activity.
+     *
+     * @param int
+     * @return boolean
+     **/
+    function setTimeout($timeout) {}
+
+    /**
+     * Sets a function to be called when a worker sends a warning. The
+     * callback should accept a single argument, a GearmanTask object.
+     *
+     * @param callback
+     * @return boolean
+     **/
+    function setWarningCallback($callback) {}
+
+    /**
+     * Sets a function to be called when a worker needs to send back data
+     * prior to job completion. A worker can do this when it needs to send
+     * updates, send partial results, or flush data during long running jobs.
+     * The callback should accept a single argument, a GearmanTask object.
+     *
+     * @param callback
+     * @return boolean
+     **/
+    function setWorkloadCallback($callback) {}
+
+    /**
+     * Returns the timeout in milliseconds to wait for I/O activity.
+     *
+     * @return integer
+     **/
+    function timeout() {}
+
+    /**
+     * Creates a GearmanClient instance representing a client that connects
+     * to the job server and submits tasks to complete.
+     *
+     **/
+    function __construct() {}
+
+}
+class GearmanException extends Exception {
+}
+class GearmanJob {
+    /**
+     * Sends result data and the complete status update for this job.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function complete($result) {}
+
+    /**
+     * Sends data to the job server (and any listening clients) for this job.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function data($data) {}
+
+    /**
+     * Sends the supplied exception when this job is running.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function exception($exception) {}
+
+    /**
+     * Sends failure status for this job, indicating that the job failed in a
+     * known way (as opposed to failing due to a thrown exception).
+     *
+     * @return boolean
+     **/
+    function fail() {}
+
+    /**
+     * Returns the function name for this job. This is the function the work
+     * will execute to perform the job.
+     *
+     * @return string
+     **/
+    function functionName() {}
+
+    /**
+     * Returns the opaque job handle assigned by the job server.
+     *
+     * @return string
+     **/
+    function handle() {}
+
+    /**
+     * Returns the last return code issued by the job server.
+     *
+     * @return integer
+     **/
+    function returnCode() {}
+
+    /**
+     * Sends result data and the complete status update for this job.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function sendComplete($result) {}
+
+    /**
+     * Sends data to the job server (and any listening clients) for this job.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function sendData($data) {}
+
+    /**
+     * Sends the supplied exception when this job is running.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function sendException($exception) {}
+
+    /**
+     * Sends failure status for this job, indicating that the job failed in a
+     * known way (as opposed to failing due to a thrown exception).
+     *
+     * @return boolean
+     **/
+    function sendFail() {}
+
+    /**
+     * Sends status information to the job server and any listening clients.
+     * Use this to specify what percentage of the job has been completed.
+     *
+     * @param integer
+     * @param integer
+     * @return boolean
+     **/
+    function sendStatus($numerator, $denominator) {}
+
+    /**
+     * Sends a warning for this job while it is running.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function sendWarning($warning) {}
+
+    /**
+     * Sets the return value for this job, indicates how the job completed.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function setReturn($gearman_return_t) {}
+
+    /**
+     * Sends status information to the job server and any listening clients.
+     * Use this to specify what percentage of the job has been completed.
+     *
+     * @param integer
+     * @param integer
+     * @return boolean
+     **/
+    function status($numerator, $denominator) {}
+
+    /**
+     * Returns the unique identifiter for this job. The identifier is
+     * assigned by the client.
+     *
+     * @return string
+     **/
+    function unique() {}
+
+    /**
+     * Sends a warning for this job while it is running.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function warning($warning) {}
+
+    /**
+     * Returns the workload for the job. This is serialized data that is to
+     * be processed by the worker.
+     *
+     * @return string
+     **/
+    function workload() {}
+
+    /**
+     * Returns the size of the job's work load (the data the worker is to
+     * process) in bytes.
+     *
+     * @return integer
+     **/
+    function workloadSize() {}
+
+    /**
+     * Creates a GearmanJob instance representing a job the worker is to
+     * complete.
+     *
+     **/
+    function __construct() {}
+
+}
+class GearmanTask {
+    /**
+     * Returns a new GearmanTask object.
+     *
+     * @return GearmanTask
+     **/
+    function create() {}
+
+    /**
+     * Returns data being returned for a task by a worker.
+     *
+     * @return string
+     **/
+    function data() {}
+
+    /**
+     * Returns the size of the data being returned for a task.
+     *
+     * @return integer
+     **/
+    function dataSize() {}
+
+    /**
+     * Returns the name of the function this task is associated with, i.e.,
+     * the function the Gearman worker calls.
+     *
+     * @return string
+     **/
+    function function() {}
+
+    /**
+     * Returns the name of the function this task is associated with, i.e.,
+     * the function the Gearman worker calls.
+     *
+     * @return string
+     **/
+    function functionName() {}
+
+    /**
+     * Gets the status information for whether or not this task is known to
+     * the job server.
+     *
+     * @return boolean
+     **/
+    function isKnown() {}
+
+    /**
+     * Indicates whether or not this task is currently running.
+     *
+     * @return boolean
+     **/
+    function isRunning() {}
+
+    /**
+     * Returns the job handle for this task.
+     *
+     * @return string
+     **/
+    function jobHandle() {}
+
+    /**
+     * @param integer
+     * @return array
+     **/
+    function recvData($data_len) {}
+
+    /**
+     * Returns the last Gearman return code for this task.
+     *
+     * @return integer
+     **/
+    function returnCode() {}
+
+    /**
+     * @param string
+     * @return integer
+     **/
+    function sendData($data) {}
+
+    /**
+     * @param string
+     * @return integer
+     **/
+    function sendWorkload($data) {}
+
+    /**
+     * Returns the denominator of the percentage of the task that is complete
+     * expressed as a fraction.
+     *
+     * @return integer
+     **/
+    function taskDenominator() {}
+
+    /**
+     * Returns the numerator of the percentage of the task that is complete
+     * expressed as a fraction.
+     *
+     * @return integer
+     **/
+    function taskNumerator() {}
+
+    /**
+     * Returns the unique identifier for this task. This is assigned by the
+     * GearmanClient, as opposed to the job handle which is set by the
+     * Gearman job server.
+     *
+     * @return string
+     **/
+    function unique() {}
+
+    /**
+     * Returns the unique identifier for this task. This is assigned by the
+     * GearmanClient, as opposed to the job handle which is set by the
+     * Gearman job server.
+     *
+     * @return string
+     **/
+    function uuid() {}
+
+    /**
+     * Creates a GearmanTask instance representing a task to be submitted to
+     * a job server.
+     *
+     **/
+    function __construct() {}
+
+}
+class GearmanWorker {
+    /**
+     * Registers a function name with the job server and specifies a callback
+     * corresponding to that function. Optionally specify extra application
+     * context data to be used when the callback is called and a timeout.
+     *
+     * @param string
+     * @param callback
+     * @param mixed
+     * @param integer
+     * @return boolean
+     **/
+    function addFunction($function_name, $function, &$context, $timeout) {}
+
+    /**
+     * Adds one or more options to the options previously set.
+     *
+     * @param integer
+     * @return boolean
+     **/
+    function addOptions($option) {}
+
+    /**
+     * Adds a job server to this worker. This goes into a list of servers
+     * than can be used to run jobs. No socket I/O happens here. If no host
+     * is specified, localhost is used. The default Gearman server port is
+     * 4730.
+     *
+     * @param string
+     * @param integer
+     * @return boolean
+     **/
+    function addServer($host, $port) {}
+
+    /**
+     * Adds one or more job servers to this worker. These go into a list of
+     * servers that can be used to run jobs. No socket I/O happens here.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function addServers($servers) {}
+
+    /**
+     * Sends data to all job servers to see if they echo it back. This is a
+     * test function to see if job servers are responding properly.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function echo($workload) {}
+
+    /**
+     * Returns and error string for the last error encountered.
+     *
+     * @return string
+     **/
+    function error() {}
+
+    /**
+     * Returns the value of errno in the case of a GEARMAN_ERRNO return
+     * value.
+     *
+     * @return integer
+     **/
+    function getErrno() {}
+
+    /**
+     * Gets the options previously set for the worker.
+     *
+     * @return integer
+     **/
+    function options() {}
+
+    /**
+     * Registers a function name with the job server with an optional
+     * timeout. The timeout specifies how many seconds the server will wait
+     * before marking a job as failed. If the timeout is set to zero, there
+     * is no timeout.
+     *
+     * @param string
+     * @param integer
+     * @return boolean
+     **/
+    function register($function_name, $timeout) {}
+
+    /**
+     * Removes (unsets) one or more worker options.
+     *
+     * @param integer
+     * @return boolean
+     **/
+    function removeOptions($option) {}
+
+    /**
+     * Returns the last Gearman return code.
+     *
+     * @return integer
+     **/
+    function returnCode() {}
+
+    /**
+     * Sets one or more options to the supplied value.
+     *
+     * @param integer
+     * @return boolean
+     **/
+    function setOptions($option) {}
+
+    /**
+     * Returns the current time to wait, in milliseconds, for socket I/O
+     * activity.
+     *
+     * @return integer
+     **/
+    function timeout() {}
+
+    /**
+     * Unregisters a function name with the job servers ensuring that no more
+     * jobs (for that function) are sent to this worker.
+     *
+     * @param string
+     * @return boolean
+     **/
+    function unregister($function_name) {}
+
+    /**
+     * Unregisters all previously registered functions, ensuring that no more
+     * jobs are sent to this worker.
+     *
+     * @return boolean
+     **/
+    function unregisterAll() {}
+
+    /**
+     * Causes the worker to wait for activity from one of the Gearman job
+     * servers when operating in non-blocking I/O mode.
+     *
+     * @return boolean
+     **/
+    function wait() {}
+
+    /**
+     * Waits for a job to be assigned and then calls the appropriate callback
+     * function.
+     *
+     * @return boolean
+     **/
+    function work() {}
+
+    /**
+     * Creates a GearmanWorker instance representing a worker that connects
+     * to the job server and accepts tasks to run.
+     *
+     **/
+    function __construct() {}
 
 }
 /**
@@ -5680,7 +8491,7 @@ function apc_delete($key) {}
 /**
  * Fetchs a stored variable from the cache.
  *
- * @param string
+ * @param mixed
  * @param bool
  * @return mixed
  **/
@@ -6976,6 +9787,18 @@ function bindtextdomain($domain, $directory) {}
 function bind_textdomain_codeset($domain, $codeset) {}
 
 /**
+ * @param string
+ * @return array
+ **/
+function bson_decode($bson) {}
+
+/**
+ * @param mixed
+ * @return string
+ **/
+function bson_encode($anything) {}
+
+/**
  * Closes the given bzip2 file pointer.
  *
  * @param resource
@@ -7069,6 +9892,827 @@ function bzread($bz, $length) {}
  * @return int
  **/
 function bzwrite($bz, $data, $length) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @return ReturnType
+ **/
+function cairo_create($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontFace
+ * @return ReturnType
+ **/
+function cairo_font_face_get_type($fontface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontFace
+ * @return ReturnType
+ **/
+function cairo_font_face_status($fontface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @return ReturnType
+ **/
+function cairo_font_options_create() {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontOptions
+ * @param CairoFontOptions
+ * @return ReturnType
+ **/
+function cairo_font_options_equal($options, $other) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontOptions
+ * @return ReturnType
+ **/
+function cairo_font_options_get_antialias($options) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontOptions
+ * @return ReturnType
+ **/
+function cairo_font_options_get_hint_metrics($options) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontOptions
+ * @return ReturnType
+ **/
+function cairo_font_options_get_hint_style($options) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontOptions
+ * @return ReturnType
+ **/
+function cairo_font_options_get_subpixel_order($options) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontOptions
+ * @return ReturnType
+ **/
+function cairo_font_options_hash($options) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontOptions
+ * @param CairoFontOptions
+ * @return ReturnType
+ **/
+function cairo_font_options_merge($options, $other) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontOptions
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_font_options_set_antialias($options, $antialias) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontOptions
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_font_options_set_hint_metrics($options, $hint_metrics) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontOptions
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_font_options_set_hint_style($options, $hint_style) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontOptions
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_font_options_set_subpixel_order($options, $subpixel_order) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontOptions
+ * @return ReturnType
+ **/
+function cairo_font_options_status($options) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_format_stride_for_width($format, $width) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_image_surface_create($format, $width, $height) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_image_surface_create_for_data($data, $format, $width, $height, $stride) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_image_surface_create_from_png($file) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoImageSurface
+ * @return ReturnType
+ **/
+function cairo_image_surface_get_data($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoImageSurface
+ * @return ReturnType
+ **/
+function cairo_image_surface_get_format($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoImageSurface
+ * @return ReturnType
+ **/
+function cairo_image_surface_get_height($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoImageSurface
+ * @return ReturnType
+ **/
+function cairo_image_surface_get_stride($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoImageSurface
+ * @return ReturnType
+ **/
+function cairo_image_surface_get_width($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoMatrix
+ * @return ReturnType
+ **/
+function cairo_matrix_invert($matrix) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param array
+ * @param array
+ * @return ReturnType
+ **/
+function cairo_matrix_multiply($matrix1, $matrix2) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoMatrix
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_matrix_rotate($matrix, $radians) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoMatrix
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_matrix_transform_distance($matrix, $dx, $dy) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoMatrix
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_matrix_transform_point($matrix, $dx, $dy) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoMatrix
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_matrix_translate($matrix, $tx, $ty) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoGradientPattern
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_pattern_add_color_stop_rgb($pattern, $offset, $red, $green, $blue) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoGradientPattern
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_pattern_add_color_stop_rgba($pattern, $offset, $red, $green, $blue, $alpha) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @return ReturnType
+ **/
+function cairo_pattern_create_for_surface($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_pattern_create_linear($x0, $y0, $x1, $y1) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_pattern_create_radial($x0, $y0, $r0, $x1, $y1, $r1) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_pattern_create_rgb($red, $green, $blue) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_pattern_create_rgba($red, $green, $blue, $alpha) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoGradientPattern
+ * @return ReturnType
+ **/
+function cairo_pattern_get_color_stop_count($pattern) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoGradientPattern
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_pattern_get_color_stop_rgba($pattern, $index) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_pattern_get_extend($pattern) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurfacePattern
+ * @return ReturnType
+ **/
+function cairo_pattern_get_filter($pattern) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoLinearGradient
+ * @return ReturnType
+ **/
+function cairo_pattern_get_linear_points($pattern) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoPattern
+ * @return ReturnType
+ **/
+function cairo_pattern_get_matrix($pattern) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoRadialGradient
+ * @return ReturnType
+ **/
+function cairo_pattern_get_radial_circles($pattern) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSolidPattern
+ * @return ReturnType
+ **/
+function cairo_pattern_get_rgba($pattern) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurfacePattern
+ * @return ReturnType
+ **/
+function cairo_pattern_get_surface($pattern) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoPattern
+ * @return ReturnType
+ **/
+function cairo_pattern_get_type($pattern) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_pattern_set_extend($pattern, $extend) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurfacePattern
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_pattern_set_filter($pattern, $filter) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoPattern
+ * @param CairoMatrix
+ * @return ReturnType
+ **/
+function cairo_pattern_set_matrix($pattern, $matrix) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoPattern
+ * @return ReturnType
+ **/
+function cairo_pattern_status($pattern) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_pdf_surface_create($file, $width, $height) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoPdfSurface
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_pdf_surface_set_size($surface, $width, $height) {}
+
+/**
+ * The function description goes here.
+ *
+ * @return ReturnType
+ **/
+function cairo_ps_get_levels() {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_ps_level_to_string($level) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_ps_surface_create($file, $width, $height) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoPsSurface
+ * @return ReturnType
+ **/
+function cairo_ps_surface_dsc_begin_page_setup($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoPsSurface
+ * @return ReturnType
+ **/
+function cairo_ps_surface_dsc_begin_setup($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoPsSurface
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_ps_surface_dsc_comment($surface, $comment) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoPsSurface
+ * @return ReturnType
+ **/
+function cairo_ps_surface_get_eps($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoPsSurface
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_ps_surface_restrict_to_level($surface, $level) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoPsSurface
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_ps_surface_set_eps($surface, $level) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoPsSurface
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_ps_surface_set_size($surface, $width, $height) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoFontFace
+ * @param CairoMatrix
+ * @param CairoMatrix
+ * @param CairoFontOptions
+ * @return ReturnType
+ **/
+function cairo_scaled_font_create($fontface, $matrix, $ctm, $fontoptions) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoScaledFont
+ * @return ReturnType
+ **/
+function cairo_scaled_font_extents($scaledfont) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoScaledFont
+ * @return ReturnType
+ **/
+function cairo_scaled_font_get_ctm($scaledfont) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoScaledFont
+ * @return ReturnType
+ **/
+function cairo_scaled_font_get_font_face($scaledfont) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoScaledFont
+ * @return ReturnType
+ **/
+function cairo_scaled_font_get_font_matrix($scaledfont) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoScaledFont
+ * @return ReturnType
+ **/
+function cairo_scaled_font_get_font_options($scaledfont) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoScaledFont
+ * @return ReturnType
+ **/
+function cairo_scaled_font_get_scale_matrix($scaledfont) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoScaledFont
+ * @return ReturnType
+ **/
+function cairo_scaled_font_get_type($scaledfont) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoScaledFont
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_scaled_font_glyph_extents($scaledfont, $glyphs) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoScaledFont
+ * @return ReturnType
+ **/
+function cairo_scaled_font_status($scaledfont) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoScaledFont
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_scaled_font_text_extents($scaledfont, $text) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @return ReturnType
+ **/
+function cairo_surface_copy_page($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @param string
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_surface_create_similar($surface, $content, $width, $height) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @return ReturnType
+ **/
+function cairo_surface_finish($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @return ReturnType
+ **/
+function cairo_surface_flush($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @return ReturnType
+ **/
+function cairo_surface_get_content($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @return ReturnType
+ **/
+function cairo_surface_get_device_offset($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @return ReturnType
+ **/
+function cairo_surface_get_font_options($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @return ReturnType
+ **/
+function cairo_surface_get_type($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @return ReturnType
+ **/
+function cairo_surface_mark_dirty($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @param string
+ * @param string
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_surface_mark_dirty_rectangle($surface, $x, $y, $width, $height) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_surface_set_device_offset($surface, $x, $y) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_surface_set_fallback_resolution($surface, $x, $y) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @return ReturnType
+ **/
+function cairo_surface_show_page($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @return ReturnType
+ **/
+function cairo_surface_status($surface) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSurface
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_surface_write_to_png($surface, $x, $y) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @param string
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_svg_surface_create($file, $width, $height) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param CairoSvgSurface
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_svg_surface_restrict_to_version($surface, $version) {}
+
+/**
+ * The function description goes here.
+ *
+ * @param string
+ * @return ReturnType
+ **/
+function cairo_svg_version_to_string($version) {}
 
 /**
  * @param string
@@ -8644,8 +12288,8 @@ function db2_get_option($resource, $option) {}
  * 
  * The result of this function is not affected by any of the following:
  * 
- * A single row INSERT statement with a VALUES clause for a table
- * without an identity column.
+ * A single row INSERT statement with a VALUES clause for a table without
+ * an identity column.
  * 
  * A multiple row INSERT statement with a VALUES clause.
  * 
@@ -8758,12 +12402,11 @@ function db2_pconnect($database, $username, $password, $options) {}
  * There are three main advantages to using prepared statements in your
  * application:
  * 
- * Performance: when you prepare a statement, the database server
- * creates an optimized access plan for retrieving data with that
- * statement. Subsequently issuing the prepared statement with
- * db2_execute enables the statements to reuse that access plan and
- * avoids the overhead of dynamically creating a new access plan for
- * every statement you issue.
+ * Performance: when you prepare a statement, the database server creates
+ * an optimized access plan for retrieving data with that statement.
+ * Subsequently issuing the prepared statement with db2_execute enables
+ * the statements to reuse that access plan and avoids the overhead of
+ * dynamically creating a new access plan for every statement you issue.
  * 
  * Security: when you prepare a statement, you can include parameter
  * markers for input values. When you execute a prepared statement with
@@ -8880,13 +12523,13 @@ function db2_rollback($connection) {}
  * 
  * RS
  * 
- * Read stability: a transaction can add or remove rows matching a
- * search condition or a pending transaction.
+ * Read stability: a transaction can add or remove rows matching a search
+ * condition or a pending transaction.
  * 
  * RR
  * 
- * Repeatable read: data affected by pending transaction is not
- * available to other transactions.
+ * Repeatable read: data affected by pending transaction is not available
+ * to other transactions.
  * 
  * NC
  * 
@@ -8896,8 +12539,8 @@ function db2_rollback($connection) {}
  * IDENTIFIER_QUOTE_CHAR string The character used to delimit an
  * identifier.
  * 
- * INST_NAME string The instance on the database server that contains
- * the database.
+ * INST_NAME string The instance on the database server that contains the
+ * database.
  * 
  * ISOLATION_OPTION array An array of the isolation options supported by
  * the database server. The isolation options are described in the
@@ -8931,12 +12574,12 @@ function db2_rollback($connection) {}
  * MAX_STATEMENT_LEN int Maximum length of an SQL statement supported by
  * the database server, expressed in bytes.
  * 
- * MAX_TABLE_NAME_LEN int Maximum length of a table name supported by
- * the database server, expressed in bytes.
+ * MAX_TABLE_NAME_LEN int Maximum length of a table name supported by the
+ * database server, expressed in bytes.
  * 
- * NON_NULLABLE_COLUMNS bool if the database server supports columns
- * that can be defined as NOT NULL, if the database server does not
- * support columns defined as NOT NULL.
+ * NON_NULLABLE_COLUMNS bool if the database server supports columns that
+ * can be defined as NOT NULL, if the database server does not support
+ * columns defined as NOT NULL.
  * 
  * PROCEDURES bool if the database server supports the use of the CALL
  * statement to call stored procedures, if the database server does not
@@ -16733,12 +20376,12 @@ function hw_mapid($connection, $server_id, $object_id) {}
  * 'Title' attribute. This comes in handy if you want to remove
  * attributes recursively.
  * 
- * If you need to delete all attributes with a certain name you will
- * have to pass an empty string as the attribute value.
+ * If you need to delete all attributes with a certain name you will have
+ * to pass an empty string as the attribute value.
  * 
- * Only the attributes 'Title', 'Description' and 'Keyword' will
- * properly handle the language prefix. If those attributes don't carry a
- * language prefix, the prefix 'xx' will be assigned.
+ * Only the attributes 'Title', 'Description' and 'Keyword' will properly
+ * handle the language prefix. If those attributes don't carry a language
+ * prefix, the prefix 'xx' will be assigned.
  * 
  * The 'Name' attribute is somewhat special. In some cases it cannot be
  * complete removed. You will get an error message 'Change of base
@@ -17418,8 +21061,8 @@ function iconv_mime_decode_headers($encoded_headers, $mode, $charset) {}
  * Composes and returns a string that represents a valid MIME header
  * field, which looks like the following:
  * 
- * In the above example, "Subject" is the field name and the portion
- * that begins with "=?ISO-8859-1?..." is the field value.
+ * In the above example, "Subject" is the field name and the portion that
+ * begins with "=?ISO-8859-1?..." is the field value.
  *
  * @param string
  * @param string
@@ -21175,8 +24818,8 @@ function jddayofweek($julianday, $mode) {}
  * 
  * Mode Meaning Values
  * 
- * 0 Gregorian - abbreviated Jan, Feb, Mar, Apr, May, Jun, Jul, Aug,
- * Sep, Oct, Nov, Dec
+ * 0 Gregorian - abbreviated Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep,
+ * Oct, Nov, Dec
  * 
  * 1 Gregorian January, February, March, April, May, June, July, August,
  * September, October, November, December
@@ -21187,12 +24830,12 @@ function jddayofweek($julianday, $mode) {}
  * 3 Julian January, February, March, April, May, June, July, August,
  * September, October, November, December
  * 
- * 4 Jewish Tishri, Heshvan, Kislev, Tevet, Shevat, AdarI, AdarII,
- * Nisan, Iyyar, Sivan, Tammuz, Av, Elul
+ * 4 Jewish Tishri, Heshvan, Kislev, Tevet, Shevat, AdarI, AdarII, Nisan,
+ * Iyyar, Sivan, Tammuz, Av, Elul
  * 
- * 5 French Republican Vendemiaire, Brumaire, Frimaire, Nivose,
- * Pluviose, Ventose, Germinal, Floreal, Prairial, Messidor, Thermidor,
- * Fructidor, Extra
+ * 5 French Republican Vendemiaire, Brumaire, Frimaire, Nivose, Pluviose,
+ * Ventose, Germinal, Floreal, Prairial, Messidor, Thermidor, Fructidor,
+ * Extra
  *
  * @param int
  * @param int
@@ -22067,7 +25710,7 @@ function libxml_use_internal_errors($use_errors) {}
  * @param string
  * @return bool
  **/
-function link($to_path, $from_path) {}
+function link($from_path, $to_path) {}
 
 /**
  * Gets information about a link.
@@ -23107,8 +26750,6 @@ function maxdb_param_count($stmt) {}
 function maxdb_ping($link) {}
 
 /**
- * Procedure style:
- * 
  * maxdb_prepare prepares the SQL query pointed to by the null-terminated
  * string query, and returns a statement handle to be used for further
  * operations on the statement. The query must consist of a single SQL
@@ -23537,8 +27178,6 @@ function maxdb_stmt_num_rows($stmt) {}
 function maxdb_stmt_param_count($stmt) {}
 
 /**
- * Procedure style:
- * 
  * maxdb_stmt_prepare prepares the SQL query pointed to by the
  * null-terminated string query. The statement resource has to be
  * allocated by maxdb_stmt_init. The query must consist of a single SQL
@@ -24682,9 +28321,9 @@ function mdecrypt_generic($td, $data) {}
  * memcache_debug turns on debug output if parameter on_off is equal to
  * and turns off if it's .
  * 
- * memcache_debug is accessible only if PHP was built with
- * --enable-debug option and always returns in this case. Otherwise, this
- * function has no effect and always returns .
+ * memcache_debug is accessible only if PHP was built with --enable-debug
+ * option and always returns in this case. Otherwise, this function has
+ * no effect and always returns .
  *
  * @param bool
  * @return bool
@@ -26258,6 +29897,22 @@ function mysqli_field_count($link) {}
 function mysqli_field_tell($result) {}
 
 /**
+ * Returns a string that represents the MySQL client library version.
+ *
+ * @param mysqli
+ * @return string
+ **/
+function mysqli_get_client_info($link) {}
+
+/**
+ * Returns client version number as an integer.
+ *
+ * @param mysqli
+ * @return int
+ **/
+function mysqli_get_client_version($link) {}
+
+/**
  * Returns a string describing the connection represented by the link
  * parameter (including the server host name).
  *
@@ -26349,7 +30004,7 @@ function mysqli_num_fields($result) {}
  * 
  * The use of mysqli_num_rows depends on whether you use buffered or
  * unbuffered result sets. In case you use unbuffered resultsets
- * mysqli_num_rows will not correct the correct number of rows until all
+ * mysqli_num_rows will not return the correct number of rows until all
  * the rows in the result have been retrieved.
  *
  * @param mysqli_result
@@ -27108,14 +30763,15 @@ function mysql_tablename($result, $i) {}
 function mysql_thread_id($link_identifier) {}
 
 /**
- * mysql_unbuffered_query sends a SQL query query to MySQL, without
- * fetching and buffering the result rows automatically, as mysql_query
- * does. On the one hand, this saves a considerable amount of memory with
- * SQL queries that produce large result sets. On the other hand, you can
- * start working on the result set immediately after the first row has
- * been retrieved: you don't have to wait until the complete SQL query
- * has been performed. When using multiple DB-connects, you have to
- * specify the optional parameter link_identifier.
+ * mysql_unbuffered_query sends the SQL query query to MySQL without
+ * automatically fetching and buffering the result rows as mysql_query
+ * does. This saves a considerable amount of memory with SQL queries that
+ * produce large result sets, and you can start working on the result set
+ * immediately after the first row has been retrieved as you don't have
+ * to wait until the complete SQL query has been performed. To use
+ * mysql_unbuffered_query while multiple database connections are open,
+ * you must specify the optional parameter link_identifier to identify
+ * which connection you want to use.
  *
  * @param string
  * @param resource
@@ -30758,6 +34414,108 @@ function oci_rollback($connection) {}
  * @return string
  **/
 function oci_server_version($connection) {}
+
+/**
+ * Sets the action name for Oracle tracing.
+ * 
+ * The action name is registered with the database when the next
+ * 'roundtrip' from PHP to the database occurs, typically when a SQL
+ * statement is executed.
+ * 
+ * The action name can subsequently be queried from database
+ * administration views such as V$SESSION. It can be used for tracing and
+ * monitoring such as with V$SQLAREA and
+ * DBMS_MONITOR.SERV_MOD_ACT_STAT_ENABLE.
+ * 
+ * The value may be retained across persistent connections.
+ *
+ * @param resource
+ * @param string
+ * @return bool
+ **/
+function oci_set_action($connection, $action_name) {}
+
+/**
+ * Sets the client identifier used by various database components to
+ * identify lightweight application users who authenticate as the same
+ * database user.
+ * 
+ * The client identifier is registered with the database when the next
+ * 'roundtrip' from PHP to the database occurs, typically when a SQL
+ * statement is executed.
+ * 
+ * The identifier can subsequently be queried from database
+ * administration views such as V$SESSION. It can be used with
+ * DBMS_MONITOR.CLIENT_ID_TRACE_ENABLE for tracing. It can be used for
+ * auditing.
+ * 
+ * The value may be retained across persistent connections.
+ *
+ * @param resource
+ * @param string
+ * @return bool
+ **/
+function oci_set_client_identifier($connection, $client_identifier) {}
+
+/**
+ * Sets the client information for Oracle tracing.
+ * 
+ * The client information is registered with the database when the next
+ * 'roundtrip' from PHP to the database occurs, typically when a SQL
+ * statement is executed.
+ * 
+ * The client information can subsequently be queried from database
+ * administration views such as V$SESSION.
+ * 
+ * The value may be retained across persistent connections.
+ *
+ * @param resource
+ * @param string
+ * @return bool
+ **/
+function oci_set_client_info($connection, $client_info) {}
+
+/**
+ * Sets the database "edition" of objects to be used by a subsequent
+ * connections.
+ * 
+ * Oracle Editions allow concurrent versions of applications to run using
+ * the same schema and object names. This is useful for upgrading live
+ * systems.
+ * 
+ * Call oci_set_edition before calling oci_connect, oci_pconnect or
+ * oci_new_connect.
+ * 
+ * If an edition is set that is not valid in the database, connection
+ * will fail even if oci_set_edition returns success.
+ * 
+ * When using persistent connections, if a connection with the requested
+ * edition setting already exists, it is reused. Otherwise, a different
+ * persistent connection is created
+ *
+ * @param string
+ * @return bool
+ **/
+function oci_set_edition($edition) {}
+
+/**
+ * Sets the module name for Oracle tracing.
+ * 
+ * The module name is registered with the database when the next
+ * 'roundtrip' from PHP to the database occurs, typically when a SQL
+ * statement is executed.
+ * 
+ * The name can subsequently be queried from database administration
+ * views such as V$SESSION. It can be used for tracing and monitoring
+ * such as with V$SQLAREA and DBMS_MONITOR.SERV_MOD_ACT_STAT_ENABLE.
+ * 
+ * The value may be retained across persistent connections.
+ *
+ * @param resource
+ * @param string
+ * @return bool
+ **/
+function oci_set_module_name($connection, $module_name) {}
 
 /**
  * Sets the number of rows to be prefetched after successful call to
@@ -37216,8 +40974,8 @@ function ps_get_parameter($psdoc, $name, $modifier) {}
  * 
  * ascender
  * 
- * The ascender of the currently active font or the font whose
- * identifier is passed in parameter modifier.
+ * The ascender of the currently active font or the font whose identifier
+ * is passed in parameter modifier.
  * 
  * descender
  * 
@@ -40431,6 +44189,14 @@ function socket_strerror($errno) {}
 function socket_write($socket, $buffer, $length) {}
 
 /**
+ * This function returns the current version of the extension as a
+ * string.
+ *
+ * @return string
+ **/
+function solr_get_version() {}
+
+/**
  * This function sorts an array. Elements will be arranged from lowest to
  * highest when this function has completed.
  *
@@ -42672,12 +46438,19 @@ function strripos($haystack, $needle, $offset) {}
 function strrpos($haystack, $needle, $offset) {}
 
 /**
- * Finds the length of the initial segment matching mask.
+ * Returns the length of the first group of consecutive characters from
+ * mask found in subject.
+ * 
+ * If start and length are omitted, then all of subject will be examined.
+ * If they are included, then the effect will be the same as calling
+ * strspn(substr($subject, $start, $length), $mask) (see for more
+ * information).
  * 
  * The line of code:
  * 
- * will assign 2 to $var, because the string "42" will be the longest
- * segment containing characters from "1234567890".
+ * will assign 2 to $var, because the string "42" is the first segment
+ * from subject to consist only of characters contained within
+ * "1234567890".
  *
  * @param string
  * @param string
@@ -42685,7 +46458,7 @@ function strrpos($haystack, $needle, $offset) {}
  * @param int
  * @return int
  **/
-function strspn($str1, $str2, $start, $length) {}
+function strspn($subject, $mask, $start, $length) {}
 
 /**
  * Returns part of haystack string from the first occurrence of needle to
@@ -48181,7 +51954,7 @@ class Gmagick {
      * @param int
      * @return void
      **/
-    function cropimage($x, $y, $width, $height) {}
+    function cropimage($width, $height, $x, $y) {}
 
     /**
      * Creates a fixed size thumbnail by first scaling the image down and
@@ -48189,11 +51962,9 @@ class Gmagick {
      *
      * @param int
      * @param int
-     * @param int
-     * @param int
      * @return void
      **/
-    function cropthumbnailimage($x, $y, $width, $height) {}
+    function cropthumbnailimage($width, $height) {}
 
     /**
      * Returns reference to the current gmagick object with image pointer at
@@ -48734,7 +52505,7 @@ class Gmagick {
      * @param string
      * @return void
      **/
-    function newimage($width, $height, $background, $height) {}
+    function newimage($width, $height, $background, $format) {}
 
     /**
      * Associates the next image in the image list with an Gmagick object.
@@ -48757,9 +52528,10 @@ class Gmagick {
      * pixel is replaced by the most frequent color occurring in a circular
      * region defined by radius.
      *
+     * @param float
      * @return void
      **/
-    function oilpaintimage() {}
+    function oilpaintimage($radius) {}
 
     /**
      * Assocates the previous image in an image list with the Gmagick object.
@@ -52890,13 +56662,15 @@ class Imagick implements Iterator, Traversable {
     function affineTransformImage($matrix) {}
 
     /**
-     * This method animates the image onto a local or remote X server. This
-     * method is not available on Windows.
+     * Translate, scale, shear, or rotate image colors. This method supports
+     * variable sized matrices but normally 5x5 matrix is used for RGBA and
+     * 6x6 is used for CMYK. The last row should contain the normalized
+     * values.
      *
-     * @param string
+     * @param array
      * @return bool
      **/
-    function animateImages($x_server) {}
+    function animateImages($matrix) {}
 
     /**
      * Annotates an image with text.
@@ -52911,7 +56685,7 @@ class Imagick implements Iterator, Traversable {
     function annotateImage($draw_settings, $x, $y, $angle, $text) {}
 
     /**
-     * Append a set of images.
+     * Append a set of images into one larger image.
      *
      * @param bool
      * @return Imagick
@@ -53194,6 +56968,15 @@ class Imagick implements Iterator, Traversable {
     function deconstructImages() {}
 
     /**
+     * This method can be used to remove skew from for example scanned images
+     * where the paper was not properly placed on the scanning surface.
+     *
+     * @param float
+     * @return void
+     **/
+    function deskewImage($threshold) {}
+
+    /**
      * Reduces the speckle noise in an image while preserving the edges of
      * the original image.
      *
@@ -53354,7 +57137,7 @@ class Imagick implements Iterator, Traversable {
      * @param int
      * @return bool
      **/
-    function floodFillPaintImage($fill, $fuzz, $bordercolor, $x, $y, $invert, $channel) {}
+    function floodFillPaintImage($fill, $fuzz, $target, $x, $y, $invert, $channel) {}
 
     /**
      * Creates a horizontal mirror image by reflecting the pixels around the
@@ -53423,7 +57206,7 @@ class Imagick implements Iterator, Traversable {
     function getCompression() {}
 
     /**
-     * Gets the object compression quality.
+     * Gets the current image's compression quality
      *
      * @return int
      **/
@@ -53696,6 +57479,15 @@ class Imagick implements Iterator, Traversable {
      * @return array
      **/
     function getImageGeometry() {}
+
+    /**
+     * Gets the current gravity value of the image. Unlike
+     * Imagick::getGravity, this method returns the gravity defined for the
+     * current image sequence.
+     *
+     * @return bool
+     **/
+    function getImageGravity() {}
 
     /**
      * Returns the chromaticity green primary point. Returns an array with
@@ -54122,6 +57914,23 @@ class Imagick implements Iterator, Traversable {
      * @return bool
      **/
     function implodeImage($radius) {}
+
+    /**
+     * Imports pixels from an array into an image. The map is usually 'RGB'.
+     * This method imposes the following constraints for the parameters:
+     * amount of pixels in the array must match width x height x length of
+     * the map.
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param string
+     * @param int
+     * @param array
+     * @return bool
+     **/
+    function importImagePixels($x, $y, $width, $height, $map, $storage, $pixels) {}
 
     /**
      * Adds a label to an image.
@@ -54724,6 +58533,17 @@ class Imagick implements Iterator, Traversable {
     function scaleImage($cols, $rows, $fit) {}
 
     /**
+     * Analyses the image and identifies units that are similar.
+     *
+     * @param int
+     * @param float
+     * @param float
+     * @param boolean
+     * @return void
+     **/
+    function segmentImage($COLORSPACE, $cluster_threshold, $smooth_threshold, $verbose) {}
+
+    /**
      * Separates a channel from the image and returns a grayscale image. A
      * channel is a particular color component of each pixel in the image.
      *
@@ -54976,6 +58796,15 @@ class Imagick implements Iterator, Traversable {
      * @return bool
      **/
     function setImageGamma($gamma) {}
+
+    /**
+     * Sets the gravity property for the current image. This method can be
+     * used to set the gravity property for a single image sequence.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setImageGravity($gravity) {}
 
     /**
      * Sets the image chromaticity green primary point.
@@ -56993,14 +60822,15 @@ class ImagickPixelIterator {
 }
 class InfiniteIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
     /**
-     * Moves the inner Iterator forward to its next element, or rewind it.
+     * Moves the inner Iterator forward to its next element if there is one,
+     * otherwise rewinds the inner Iterator back to the beginning.
      *
      * @return void
      **/
     function next() {}
 
     /**
-     * Constructs an infinite iterator.
+     * Constructs an InfiniteIterator from an Iterator.
      *
      * @param Iterator
      **/
@@ -57236,13 +61066,20 @@ class KTaglib_ID3v2_AttachedPictureFrame {
     function getDescription() {}
 
     /**
-     * Sets the mime type of the image. This should in most cases be
-     * "image/png" or "image/jpeg".
+     * Returns the mime type of the image represented by the attached picture
+     * frame.
+     * 
+     * Please notice that this method might return different types. While
+     * ID3v2.2 have a mime type that doesn't start with "image/", ID3v2.3 and
+     * v2.4 usually start with "image/". Therefore the method might return
+     * "image/png" for IDv2.3 frames and just "PNG" for ID3v2.2 frames.
+     * 
+     * Notice that even the frame is an attached picture, the mime type might
+     * not be set and therefore an empty string might be returned.
      *
-     * @param string
      * @return string
      **/
-    function getMimeType($type) {}
+    function getMimeType() {}
 
     /**
      * Returns the type of the image.
@@ -57390,7 +61227,7 @@ class KTaglib_MPEG_AudioProperties {
     function isProtectionEnabled() {}
 
 }
-class KTaglib_MPEG_File {
+class KTagLib_MPEG_File {
     /**
      * Returns an object that provides access to the audio properties of the
      * mpeg file.
@@ -57423,7 +61260,7 @@ class KTaglib_MPEG_Header {
     const Version2 = 0;
     const Version2_5 = 0;
 }
-class KTagLib_Tag extends KTagLib_Tag {
+class KTaglib_Tag extends KTagLib_Tag {
     /**
      * Returns the album string of an ID3 tag. This method is implemented in
      * ID3v1 and ID3v2 tags.
@@ -57495,9 +61332,30 @@ class libXMLError {
 }
 class LimitIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
     /**
+     * Gets the current element.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * Gets the inner iterator.
+     *
+     * @return Iterator
+     **/
+    function getInnerIterator() {}
+
+    /**
      * @return int
      **/
     function getPosition() {}
+
+    /**
+     * Gets the current key
+     *
+     * @return mixed
+     **/
+    function key() {}
 
     /**
      * Moves the iterator forward.
@@ -58289,8 +62147,8 @@ class Memcache {
      * 
      * New item's value will not be less than zero.
      * 
-     * Do not use Memcache::decrement with item, which was stored
-     * compressed, because consequent call to Memcache::get will fail.
+     * Do not use Memcache::decrement with item, which was stored compressed,
+     * because consequent call to Memcache::get will fail.
      * 
      * Memcache::decrement does not create an item if it didn't exist. Also
      * you can use memcache_decrement function.
@@ -58385,8 +62243,8 @@ class Memcache {
      * number, it will change it's value to value. Memcache::increment does
      * not create an item if it didn't exist.
      * 
-     * Do not use Memcache::increment with item, which was stored
-     * compressed, because consequent call to Memcache::get will fail.
+     * Do not use Memcache::increment with item, which was stored compressed,
+     * because consequent call to Memcache::get will fail.
      * 
      * Also you can use memcache_increment function.
      *
@@ -58997,8 +62855,7 @@ class Memcached {
      * 
      * Memcached::OPT_HASH requires Memcached::HASH_* values.
      * 
-     * Memcached::OPT_DISTRIBUTION requires Memcached::DISTRIBUTION_*
-     * values.
+     * Memcached::OPT_DISTRIBUTION requires Memcached::DISTRIBUTION_* values.
      *
      * @param int
      * @param mixed
@@ -59323,9 +63180,10 @@ class MongoCollection extends MongoCollection {
 
     /**
      * @param array
-     * @return boolean
+     * @param boolean
+     * @return mixed
      **/
-    function insert($a) {}
+    function insert($a, $safe) {}
 
     /**
      * @param array
@@ -59445,6 +63303,23 @@ class MongoCursor extends MongoCursor {
      * @return MongoCursor
      **/
     function slaveOkay($okay) {}
+
+    /**
+     * Use snapshot mode for the query. Snapshot mode assures no duplicates
+     * are returned, or objects missed, which were present at both the start
+     * and end of the query's execution (if an object is new during the
+     * query, or deleted during the query, it may or may not be returned,
+     * even with snapshot mode).
+     * 
+     * Note that short query responses (less than 1MB) are always effectively
+     * snapshotted.
+     * 
+     * Currently, snapshot mode may not be used with sorting or explicit
+     * hints.
+     *
+     * @return MongoCursor
+     **/
+    function snapshot() {}
 
     /**
      * @param array
@@ -59927,6 +63802,24 @@ class MySQLi {
      **/
     var $affected_rows;
     /**
+     * Returns a string that represents the MySQL client library version.
+     *
+     * @var string
+     **/
+    var $client_info;
+    /**
+     * Returns client version number as an integer.
+     *
+     * @var int
+     **/
+    var $client_version;
+    /**
+     * Returns client version number as an integer.
+     *
+     * @var int
+     **/
+    var $client_version;
+    /**
      * Returns the last error code number from the last call to
      * mysqli_connect.
      *
@@ -60142,8 +64035,7 @@ class MySQLi {
     function get_charset() {}
 
     /**
-     * The mysqli_get_client_info function is used to return a string
-     * representing the client version being used in the MySQLi extension.
+     * Returns a string that represents the MySQL client library version.
      *
      * @return string
      **/
@@ -60155,13 +64047,6 @@ class MySQLi {
      * @return bool
      **/
     function get_client_stats() {}
-
-    /**
-     * Returns client version number as an integer.
-     *
-     * @return int
-     **/
-    function get_client_version() {}
 
     /**
      * Returns statistics about the client connection.
@@ -60266,8 +64151,6 @@ class MySQLi {
     function poll(&$read, &$error, &$reject, $sec, $usec) {}
 
     /**
-     * Procedure style:
-     * 
      * Prepares the SQL query pointed to by the null-terminated string query,
      * and returns a statement handle to be used for further operations on
      * the statement. The query must consist of a single SQL statement.
@@ -60499,7 +64382,7 @@ class MySQLi_Result {
      * 
      * The use of mysqli_num_rows depends on whether you use buffered or
      * unbuffered result sets. In case you use unbuffered resultsets
-     * mysqli_num_rows will not correct the correct number of rows until all
+     * mysqli_num_rows will not return the correct number of rows until all
      * the rows in the result have been retrieved.
      *
      * @var int
@@ -60515,8 +64398,6 @@ class MySQLi_Result {
     function data_seek($offset) {}
 
     /**
-     * 
-     * 
      * mysqli_fetch_all fetches all result rows and returns the result set as
      * an associative array, a numeric array, or both.
      *
@@ -60787,8 +64668,6 @@ class MySQLi_STMT {
     function get_warnings($stmt) {}
 
     /**
-     * Procedure style:
-     * 
      * Prepares the SQL query pointed to by the null-terminated string query.
      * 
      * The parameter markers must be bound to application variables using
@@ -60855,11 +64734,53 @@ class MySQLi_STMT {
 }
 class NoRewindIterator extends IteratorIterator {
     /**
+     * Gets the current value.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * Gets the inner iterator, that was passed in to NoRewindIterator.
+     *
+     * @return iterator
+     **/
+    function getInnerIterator() {}
+
+    /**
+     * Gets the current key.
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Forwards to the next element.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
      * Prevents the rewind operation on the inner iterator.
      *
      * @return void
      **/
     function rewind() {}
+
+    /**
+     * Checks whether the iterator is valid.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Constructs a NoRewindIterator.
+     *
+     * @param Iterator
+     **/
+    function __construct($iterator) {}
 
 }
 class Normalizer {
@@ -61186,6 +65107,13 @@ class OverflowException extends RuntimeException {
 }
 class ParentIterator extends RecursiveFilterIterator implements RecursiveIterator, OuterIterator, Traversable, Iterator {
     /**
+     * Determines if the the current element has children.
+     *
+     * @return bool
+     **/
+    function accept() {}
+
+    /**
      * Get the inner iterator's children contained in a ParentIterator.
      *
      * @return ParentIterator
@@ -61212,6 +65140,13 @@ class ParentIterator extends RecursiveFilterIterator implements RecursiveIterato
      * @return void
      **/
     function rewind() {}
+
+    /**
+     * Constructs a ParentIterator on an iterator.
+     *
+     * @param RecursiveIterator
+     **/
+    function __construct($iterator) {}
 
 }
 class PDO {
@@ -61529,15 +65464,15 @@ class PDO {
      * 
      * PDO::ATTR_ERRMODE: Error reporting.
      * 
-     * PDO::ERRMODE_SILENT: Just set error codes. PDO::ERRMODE_WARNING:
-     * Raise E_WARNING. PDO::ERRMODE_EXCEPTION: Throw exceptions.
+     * PDO::ERRMODE_SILENT: Just set error codes. PDO::ERRMODE_WARNING: Raise
+     * E_WARNING. PDO::ERRMODE_EXCEPTION: Throw exceptions.
      * 
      * PDO::ATTR_ORACLE_NULLS (available with all drivers, not just Oracle):
      * Conversion of NULL and empty strings.
      * 
-     * PDO::NULL_NATURAL: No conversion. PDO::NULL_EMPTY_STRING: Empty
-     * string is converted to . PDO::NULL_TO_STRING: NULL is converted to an
-     * empty string.
+     * PDO::NULL_NATURAL: No conversion. PDO::NULL_EMPTY_STRING: Empty string
+     * is converted to . PDO::NULL_TO_STRING: NULL is converted to an empty
+     * string.
      * 
      * PDO::ATTR_STRINGIFY_FETCHES: Convert numeric values to strings when
      * fetching. Requires bool.
@@ -61852,10 +65787,10 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
     function addEmptyDir($dirname) {}
 
     /**
-     * With this method, any file or URL can be added to the phar archive. If
-     * the optional second parameter localname is specified, the file will be
-     * stored in the archive with that name, otherwise the file parameter is
-     * used as the path to store within the archive. URLs must have a
+     * With this method, any file or URL can be added to the tar/zip archive.
+     * If the optional second parameter localname is specified, the file will
+     * be stored in the archive with that name, otherwise the file parameter
+     * is used as the path to store within the archive. URLs must have a
      * localname or an exception is thrown. This method is similar to
      * ZipArchive::addFile.
      *
@@ -61887,11 +65822,11 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
     function apiVersion() {}
 
     /**
-     * Populate a phar archive from directory contents. The optional second
-     * parameter is a regular expression (pcre) that is used to exclude
-     * files. Any filename that matches the regular expression will be
-     * included, all others will be excluded. For more fine-grained control,
-     * use Phar::buildFromIterator.
+     * Populate a tar/zip archive from directory contents. The optional
+     * second parameter is a regular expression (pcre) that is used to
+     * exclude files. Any filename that matches the regular expression will
+     * be included, all others will be excluded. For more fine-grained
+     * control, use PharData::buildFromIterator.
      *
      * @param string
      * @param string
@@ -62449,18 +66384,13 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
     /**
      * set the signature algorithm for a phar and apply it. The signature
      * algorithm must be one of Phar::MD5, Phar::SHA1, Phar::SHA256,
-     * Phar::SHA512, or Phar::OPENSSL.
-     * 
-     * Note that all executable phar archives have a signature created
-     * automatically, SHA1 by default. data tar- or zip-based archives
-     * (archives created with the PharData class) must have their signature
-     * created and set explicitly via Phar::setSignatureAlgorithm.
+     * Phar::SHA512, or Phar::PGP (pgp not yet supported and falls back to
+     * SHA-1).
      *
      * @param int
-     * @param string
      * @return void
      **/
-    function setSignatureAlgorithm($sigtype, $privatekey) {}
+    function setSignatureAlgorithm($sigtype) {}
 
     /**
      * This method is used to add a PHP bootstrap loader stub to a new Phar
@@ -63153,6 +67083,20 @@ class RecursiveDirectoryIterator extends DirectoryIterator implements Traversabl
     function getChildren() {}
 
     /**
+     * Gets the sub path.
+     *
+     * @return string
+     **/
+    function getSubPath() {}
+
+    /**
+     * Gets the sub path and filename.
+     *
+     * @return string
+     **/
+    function getSubPathname() {}
+
+    /**
      * @param bool
      * @return bool
      **/
@@ -63172,6 +67116,14 @@ class RecursiveDirectoryIterator extends DirectoryIterator implements Traversabl
      * @return void
      **/
     function rewind() {}
+
+    /**
+     * Constructs a RecursiveDirectoryIterator.
+     *
+     * @param string
+     * @param string
+     **/
+    function __construct($path, $flags) {}
 
 }
 class RecursiveFilterIterator extends FilterIterator implements Iterator, Traversable, OuterIterator, RecursiveIterator {
@@ -63220,14 +67172,73 @@ class RecursiveIteratorIterator implements OuterIterator, Traversable, Iterator 
     const LEAVES_ONLY = 0;
     const SELF_FIRST = 0;
     /**
+     * Is called after calling RecursiveIteratorIterator::getChildren, and
+     * its associated RecursiveIteratorIterator::rewind.
+     *
+     * @return void
+     **/
+    function beginChildren() {}
+
+    /**
+     * Called when iteration begins (after the first
+     * RecursiveIteratorIterator::rewind call.
+     *
+     * @return void
+     **/
+    function beginIteration() {}
+
+    /**
+     * Get children of the current element.
+     *
+     * @return RecursiveIterator
+     **/
+    function callGetChildren() {}
+
+    /**
+     * Called for each element to test whether it has children.
+     *
+     * @return bool
+     **/
+    function callHasChildren() {}
+
+    /**
      * @return mixed
      **/
     function current() {}
 
     /**
+     * Called when end recursing one level.
+     *
+     * @return void
+     **/
+    function endChildren() {}
+
+    /**
+     * Called when the iteration ends (when RecursiveIteratorIterator::valid
+     * first returns .
+     *
+     * @return void
+     **/
+    function endIteration() {}
+
+    /**
      * @return int
      **/
     function getDepth() {}
+
+    /**
+     * Gets the current active sub iterator.
+     *
+     * @return iterator
+     **/
+    function getInnerIterator() {}
+
+    /**
+     * Gets the maximum allowable depth.
+     *
+     * @return mixed
+     **/
+    function getMaxDepth() {}
 
     /**
      * @return RecursiveIterator
@@ -63245,14 +67256,38 @@ class RecursiveIteratorIterator implements OuterIterator, Traversable, Iterator 
     function next() {}
 
     /**
+     * Called when the next element is available.
+     *
+     * @return void
+     **/
+    function nextElement() {}
+
+    /**
      * @return void
      **/
     function rewind() {}
 
     /**
+     * Set the maximum allowed depth. Defaults to -1, which is any depth.
+     *
+     * @param string
+     * @return void
+     **/
+    function setMaxDepth($max_depth) {}
+
+    /**
      * @return bool
      **/
     function valid() {}
+
+    /**
+     * Creates a RecursiveIteratorIterator from a RecursiveIterator.
+     *
+     * @param Traversable
+     * @param int
+     * @param int
+     **/
+    function __construct($iterator, $mode, $flags) {}
 
 }
 class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator {
@@ -63270,6 +67305,136 @@ class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator 
      * @return bool
      **/
     function hasChildren() {}
+
+}
+class RecursiveTreeIterator extends RecursiveIteratorIterator implements OuterIterator, Traversable, Iterator {
+    /**
+     * Called when recursing one level down.
+     *
+     * @return void
+     **/
+    function beginChildren() {}
+
+    /**
+     * Called when iteration begins (after the first
+     * RecursiveTreeIterator::rewind call).
+     *
+     * @return RecursiveIterator
+     **/
+    function beginIteration() {}
+
+    /**
+     * Gets children of the current element.
+     *
+     * @return RecursiveIterator
+     **/
+    function callGetChildren() {}
+
+    /**
+     * Called for each element to test whether it has children.
+     *
+     * @return bool
+     **/
+    function callHasChildren() {}
+
+    /**
+     * Gets the current element prefixed and postfixed.
+     *
+     * @return string
+     **/
+    function current() {}
+
+    /**
+     * Called when end recursing one level.
+     *
+     * @return void
+     **/
+    function endChildren() {}
+
+    /**
+     * Called when the iteration ends (when RecursiveTreeIterator::valid
+     * first returns )
+     *
+     * @return void
+     **/
+    function endIteration() {}
+
+    /**
+     * Gets the part of the tree built for the current element.
+     *
+     * @return string
+     **/
+    function getEntry() {}
+
+    /**
+     * Gets the string to place after the current element.
+     *
+     * @return void
+     **/
+    function getPostfix() {}
+
+    /**
+     * Gets the string to place in front of current element
+     *
+     * @return string
+     **/
+    function getPrefix() {}
+
+    /**
+     * Gets the current key prefixed and postfixed.
+     *
+     * @return string
+     **/
+    function key() {}
+
+    /**
+     * Moves forward to the next element.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Called when the next element is available.
+     *
+     * @return void
+     **/
+    function nextElement() {}
+
+    /**
+     * Rewinds the iterator to the first element of the top level inner
+     * iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Sets a part of the prefix used in the graphic tree.
+     *
+     * @param int
+     * @param string
+     * @return void
+     **/
+    function setPrefixPart($part, $value) {}
+
+    /**
+     * Check whether the current position is valid.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Constructs a new RecursiveTreeIterator from the supplied recursive
+     * iterator.
+     *
+     * @param RecursiveIterator|IteratorAggregate
+     * @param int
+     * @param int
+     * @param int
+     **/
+    function __construct($it, $flags, $cit_flags, $mode) {}
 
 }
 class Reflection {
@@ -63829,9 +67994,9 @@ class ReflectionFunctionAbstract implements Reflector {
     function getNumberOfRequiredParameters() {}
 
     /**
-     * Get the parameters.
+     * Get the parameters as an array of ReflectionParameter.
      *
-     * @return ReflectionParameter
+     * @return array
      **/
     function getParameters() {}
 
@@ -64312,6 +68477,13 @@ class Reflector {
 }
 class RegexIterator extends FilterIterator {
     /**
+     * Match (string) RegexIterator::current against a regular expression.
+     *
+     * @return bool
+     **/
+    function accept() {}
+
+    /**
      * Returns the special flags, see RegexIterator::setFlags for the list of
      * special flags.
      *
@@ -64684,6 +68856,13 @@ class SAMConnection {
 }
 class SAMMessage {
     /**
+     * The "body" property contains the actual body of the message. It may
+     * not always be set.
+     *
+     * @var string
+     **/
+    var $body;
+    /**
      * The header property is a container for any system or user properties
      * that area associated with the message.
      * 
@@ -64771,8 +68950,8 @@ class SAMMessage {
      * 
      * SAM_FLOAT
      * 
-     * A short floating point value. SAM will attempt to convert the
-     * property value specified into a floating point value with 7 digits of
+     * A short floating point value. SAM will attempt to convert the property
+     * value specified into a floating point value with 7 digits of
      * precision. If a string value is passed an attempt will be made to
      * interpret the string as a numeric value. If the passed value cannot be
      * expressed as a 7 digit floating point value data may be lost in the
@@ -64804,13 +68983,6 @@ class SAMMessage {
      * @var object
      **/
     var $header;
-    /**
-     * The "body" property contains the actual body of the message. It may
-     * not always be set.
-     *
-     * @var string
-     **/
-    var $nody;
 }
 class SCA {
     /**
@@ -66078,6 +70250,2244 @@ class SoapVar {
     function __construct($data, $encoding, $type_name, $type_namespace, $node_name, $node_namespace) {}
 
 }
+class SolrClient {
+    /**
+     * This method adds a document to the index.
+     *
+     * @param SolrInputDocument
+     * @param bool
+     * @param int
+     * @return SolrUpdateResponse
+     **/
+    function addDocument(&$doc, $allowDups, $commitWithin) {}
+
+    /**
+     * Adds a collection of documents to the index.
+     *
+     * @param array
+     * @param bool
+     * @param int
+     * @return void
+     **/
+    function addDocuments(&$docs, $allowDups, $commitWithin) {}
+
+    /**
+     * This method finalizes all add/deletes made to the index.
+     *
+     * @param int
+     * @param bool
+     * @param bool
+     * @return SolrUpdateResponse
+     **/
+    function commit($maxSegments, $waitFlush, $waitSearcher) {}
+
+    /**
+     * Deletes the document with the specified ID. Where ID is the value of
+     * the uniqueKey field declared in the schema
+     *
+     * @param string
+     * @return SolrUpdateResponse
+     **/
+    function deleteById($id) {}
+
+    /**
+     * Deletes a collection of documents with the specified set of ids.
+     *
+     * @param array
+     * @return SolrUpdateResponse
+     **/
+    function deleteByIds($ids) {}
+
+    /**
+     * Removes all documents matching any of the queries
+     *
+     * @param array
+     * @return SolrUpdateResponse
+     **/
+    function deleteByQueries($queries) {}
+
+    /**
+     * Deletes all documents matching the given query.
+     *
+     * @param string
+     * @return SolrUpdateResponse
+     **/
+    function deleteByQuery($query) {}
+
+    /**
+     * Defragments the index for faster search performance.
+     *
+     * @param int
+     * @param bool
+     * @param bool
+     * @return SolrUpdateResponse
+     **/
+    function optimize($maxSegments, $waitFlush, $waitSearcher) {}
+
+    /**
+     * Checks if the Solr server is still alive. Sends a HEAD request to the
+     * Apache Solr server.
+     *
+     * @return SolrPingResponse
+     **/
+    function ping() {}
+
+    /**
+     * Sends a query to the server.
+     *
+     * @param SolrParams
+     * @return SolrQueryResponse
+     **/
+    function query(&$query) {}
+
+    /**
+     * Sends a raw XML update request to the server
+     *
+     * @param string
+     * @return void
+     **/
+    function request($raw_request) {}
+
+    /**
+     * Rollbacks all add/deletes made to the index since the last commit. It
+     * neither calls any event listeners nor creates a new searcher.
+     *
+     * @return SolrUpdateResponse
+     **/
+    function rollback() {}
+
+    /**
+     * Changes the specified servlet type to a new value
+     *
+     * @param int
+     * @param string
+     * @return bool
+     **/
+    function setServlet($type, $value) {}
+
+    /**
+     * Checks the threads status
+     *
+     * @return void
+     **/
+    function threads() {}
+
+    /**
+     * Constructor for the SolrClient object
+     *
+     * @param array
+     **/
+    function __construct($clientOptions) {}
+
+    /**
+     * Destructor
+     *
+     * @return void
+     **/
+    function __destruct() {}
+
+}
+class SolrClientException extends SolrException {
+    /**
+     * Returns internal information where the Exception was thrown.
+     *
+     * @return array
+     **/
+    function getInternalInfo() {}
+
+}
+class SolrDocument implements ArrayAccess, Iterator, Traversable, Serializable {
+    /**
+     * This method adds a field to the SolrDocument instance.
+     *
+     * @param string
+     * @param string
+     * @return bool
+     **/
+    function addField($fieldName, $fieldValue) {}
+
+    /**
+     * Resets the current object. Discards all the fields and resets the
+     * document boost to zero.
+     *
+     * @return bool
+     **/
+    function clear() {}
+
+    /**
+     * Retrieves the current field
+     *
+     * @return SolrDocumentField
+     **/
+    function current() {}
+
+    /**
+     * Removes a field from the document.
+     *
+     * @param string
+     * @return bool
+     **/
+    function deleteField($fieldName) {}
+
+    /**
+     * Checks if the requested field as a valid fieldname in the document.
+     *
+     * @param string
+     * @return bool
+     **/
+    function fieldExists($fieldName) {}
+
+    /**
+     * Retrieves a field by name.
+     *
+     * @param string
+     * @return SolrDocumentField
+     **/
+    function getField($fieldName) {}
+
+    /**
+     * Returns the number of fields in this document. Multi-value fields are
+     * only counted once.
+     *
+     * @return int
+     **/
+    function getFieldCount() {}
+
+    /**
+     * Returns an array of fields names in the document.
+     *
+     * @return array
+     **/
+    function getFieldNames() {}
+
+    /**
+     * Returns a SolrInputDocument equivalent of the object. This is useful
+     * if one wishes to resubmit/update a document retrieved from a query.
+     *
+     * @return SolrInputDocument
+     **/
+    function getInputDocument() {}
+
+    /**
+     * Retrieves the current key.
+     *
+     * @return string
+     **/
+    function key() {}
+
+    /**
+     * Merges source to the current SolrDocument.
+     *
+     * @param SolrDocument
+     * @param bool
+     * @return void
+     **/
+    function merge(&$sourceDoc, $overwrite) {}
+
+    /**
+     * Moves the internal pointer to the next field.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Checks if a particular field exists. This is used when the object is
+     * treated as an array.
+     *
+     * @param string
+     * @return bool
+     **/
+    function offsetExists($fieldName) {}
+
+    /**
+     * This is used to retrieve the field when the object is treated as an
+     * array.
+     *
+     * @param string
+     * @return SolrDocumentField
+     **/
+    function offsetGet($fieldName) {}
+
+    /**
+     * Used when the object is treated as an array to add a field to the
+     * document.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function offsetSet($fieldName, $fieldValue) {}
+
+    /**
+     * Removes a field from the document.
+     *
+     * @param string
+     * @return void
+     **/
+    function offsetUnset($fieldName) {}
+
+    /**
+     * This is an alias to SolrDocument::clear()
+     *
+     * @return bool
+     **/
+    function reset() {}
+
+    /**
+     * Resets the internal pointer to the beginning.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Used for custom serialization.
+     *
+     * @return string
+     **/
+    function serialize() {}
+
+    /**
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function sort($sortOrderBy, $sortDirection) {}
+
+    /**
+     * Returns an array representation of the document.
+     *
+     * @return array
+     **/
+    function toArray() {}
+
+    /**
+     * Custom serialization of SolrDocument objects
+     *
+     * @param string
+     * @return void
+     **/
+    function unserialize($serialized) {}
+
+    /**
+     * Checks if the current position internally is still valid. It is used
+     * during foreach operations.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Creates a copy of a SolrDocument object. Not to be called directly.
+     *
+     * @return void
+     **/
+    function __clone() {}
+
+    /**
+     * Constructor for SolrDocument
+     *
+     **/
+    function __construct() {}
+
+    /**
+     * Destructor for SolrDocument.
+     *
+     * @return void
+     **/
+    function __destruct() {}
+
+    /**
+     * Magic method for accessing the field as a property.
+     *
+     * @param string
+     * @return SolrDocumentField
+     **/
+    function __get($fieldName) {}
+
+    /**
+     * Checks if a field exists
+     *
+     * @param string
+     * @return bool
+     **/
+    function __isset($fieldName) {}
+
+    /**
+     * Adds another field to the document. Used to set the fields as new
+     * properties.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function __set($fieldName, $fieldValue) {}
+
+    /**
+     * Removes a field from the document when the field is access as an
+     * object property.
+     *
+     * @param string
+     * @return void
+     **/
+    function __unset($fieldName) {}
+
+}
+class SolrDocumentField {
+    /**
+     * Constructor.
+     *
+     **/
+    function __construct() {}
+
+    /**
+     * Destructor.
+     *
+     * @return void
+     **/
+    function __destruct() {}
+
+}
+class SolrException extends Exception {
+    /**
+     * Returns internal information where the Exception was thrown.
+     *
+     * @return array
+     **/
+    function getInternalInfo() {}
+
+}
+class SolrGenericResponse extends SolrResponse {
+    /**
+     * Constructor
+     *
+     **/
+    function __construct() {}
+
+    /**
+     * Destructor.
+     *
+     * @return void
+     **/
+    function __destruct() {}
+
+}
+class SolrIllegalArgumentException extends SolrException {
+    /**
+     * Returns internal information where the Exception was thrown.
+     *
+     * @return array
+     **/
+    function getInternalInfo() {}
+
+}
+class SolrIllegalOperationException extends SolrException {
+    /**
+     * Returns internal information where the Exception was thrown.
+     *
+     * @return array
+     **/
+    function getInternalInfo() {}
+
+}
+class SolrInputDocument {
+    /**
+     * For multi-value fields, if a valid boost value is specified, the
+     * specified value will be multiplied by the current boost value for this
+     * field.
+     *
+     * @param string
+     * @param string
+     * @param float
+     * @return bool
+     **/
+    function addField($fieldName, $fieldValue, $fieldBoostValue) {}
+
+    /**
+     * Resets the document by dropping all the fields and resets the document
+     * boost to zero.
+     *
+     * @return bool
+     **/
+    function clear() {}
+
+    /**
+     * Removes a field from the document.
+     *
+     * @param string
+     * @return bool
+     **/
+    function deleteField($fieldName) {}
+
+    /**
+     * Checks if a field exists
+     *
+     * @param string
+     * @return bool
+     **/
+    function fieldExists($fieldName) {}
+
+    /**
+     * Retrieves the current boost value for the document.
+     *
+     * @return float
+     **/
+    function getBoost() {}
+
+    /**
+     * Retrieves a field in the document.
+     *
+     * @param string
+     * @return SolrDocumentField
+     **/
+    function getField($fieldName) {}
+
+    /**
+     * Retrieves the boost value for a particular field.
+     *
+     * @param string
+     * @return float
+     **/
+    function getFieldBoost($fieldName) {}
+
+    /**
+     * Returns the number of fields in the document.
+     *
+     * @return int
+     **/
+    function getFieldCount() {}
+
+    /**
+     * Returns an array containing all the fields in the document.
+     *
+     * @return array
+     **/
+    function getFieldNames() {}
+
+    /**
+     * Merges one input document into another.
+     *
+     * @param SolrInputDocument
+     * @param bool
+     * @return bool
+     **/
+    function merge(&$sourceDoc, $overwrite) {}
+
+    /**
+     * This is an alias of SolrInputDocument::clear
+     *
+     * @return bool
+     **/
+    function reset() {}
+
+    /**
+     * Sets the boost value for this document.
+     *
+     * @param float
+     * @return bool
+     **/
+    function setBoost($documentBoostValue) {}
+
+    /**
+     * Sets the index-time boost value for a field. This replaces the current
+     * boost value for this field.
+     *
+     * @param string
+     * @param float
+     * @return bool
+     **/
+    function setFieldBoost($fieldName, $fieldBoostValue) {}
+
+    /**
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function sort($sortOrderBy, $sortDirection) {}
+
+    /**
+     * Returns an array representation of the input document.
+     *
+     * @return void
+     **/
+    function toArray() {}
+
+    /**
+     * Should not be called directly. It is used to create a deep copy of a
+     * SolrInputDocument.
+     *
+     * @return void
+     **/
+    function __clone() {}
+
+    /**
+     * Constructor.
+     *
+     **/
+    function __construct() {}
+
+    /**
+     * Destructor
+     *
+     * @return void
+     **/
+    function __destruct() {}
+
+}
+class SolrModifiableParams extends SolrParams implements Serializable {
+    /**
+     * Constructor
+     *
+     **/
+    function __construct() {}
+
+    /**
+     * Destructor
+     *
+     * @return void
+     **/
+    function __destruct() {}
+
+}
+class SolrObject implements ArrayAccess {
+    /**
+     * Returns an array of all the names of the properties
+     *
+     * @return array
+     **/
+    function getPropertyNames() {}
+
+    /**
+     * Checks if the property exists. This is used when the object is treated
+     * as an array.
+     *
+     * @param string
+     * @return bool
+     **/
+    function offsetExists($property_name) {}
+
+    /**
+     * Used to get the value of a property. This is used when the object is
+     * treated as an array.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function offsetGet($property_name) {}
+
+    /**
+     * Sets the value for a property. This is used when the object is treated
+     * as an array. This object is read-only. This should never be attempted.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function offsetSet($property_name, $property_value) {}
+
+    /**
+     * Sets the value for the property. This is used when the object is
+     * treated as an array. This object is read-only. This should never be
+     * attempted.
+     *
+     * @param string
+     * @return void
+     **/
+    function offsetUnset($property_name) {}
+
+    /**
+     * The method description goes here.
+     *
+     **/
+    function __construct() {}
+
+    /**
+     * The destructor
+     *
+     * @return void
+     **/
+    function __destruct() {}
+
+}
+class SolrParams implements Serializable {
+    /**
+     * This is an alias for SolrParams::addParam
+     *
+     * @param string
+     * @param string
+     * @return SolrParams
+     **/
+    function add($name, $value) {}
+
+    /**
+     * Adds a parameter to the object. This is used for parameters that can
+     * be specified multiple times.
+     *
+     * @param string
+     * @param string
+     * @return SolrParams
+     **/
+    function addParam($name, $value) {}
+
+    /**
+     * This is an alias for SolrParams::getParam
+     *
+     * @param string
+     * @return mixed
+     **/
+    function get($param_name) {}
+
+    /**
+     * Returns a parameter with name param_name
+     *
+     * @param string
+     * @return mixed
+     **/
+    function getParam($param_name) {}
+
+    /**
+     * Returns an array of non URL-encoded parameters
+     *
+     * @return array
+     **/
+    function getParams() {}
+
+    /**
+     * Returns an array on URL-encoded parameters
+     *
+     * @return array
+     **/
+    function getPreparedParams() {}
+
+    /**
+     * Used for custom serialization
+     *
+     * @return string
+     **/
+    function serialize() {}
+
+    /**
+     * An alias of SolrParams::setParam
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function set($name, $value) {}
+
+    /**
+     * Sets the query parameter to the specified value. This is used for
+     * parameters that can only be specified once. Subsequent calls with the
+     * same parameter name will override the existing value
+     *
+     * @param string
+     * @param string
+     * @return SolrParams
+     **/
+    function setParam($name, $value) {}
+
+    /**
+     * Returns all the name-value pair parameters in the object
+     *
+     * @param bool
+     * @return string
+     **/
+    function toString($url_encode) {}
+
+    /**
+     * Used for custom serialization
+     *
+     * @param string
+     * @return void
+     **/
+    function unserialize($serialized) {}
+
+}
+class SolrPingResponse extends SolrResponse {
+    /**
+     * Returns the response from the server. This should be empty because the
+     * request as a HEAD request.
+     *
+     * @return string
+     **/
+    function getResponse() {}
+
+    /**
+     * Constructor
+     *
+     **/
+    function __construct() {}
+
+    /**
+     * Destructor
+     *
+     * @return void
+     **/
+    function __destruct() {}
+
+}
+class SolrQuery extends SolrModifiableParams implements Serializable {
+    /**
+     * This method allows you to specify a field which should be treated as a
+     * facet.
+     * 
+     * It can be used multiple times with different field names to indicate
+     * multiple facet fields
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function addFacetDateField($dateField) {}
+
+    /**
+     * Sets the facet.date.other parameter. Accepts an optional field
+     * override
+     *
+     * @param string
+     * @param string
+     * @return SolrQuery
+     **/
+    function addFacetDateOther($value, $field_override) {}
+
+    /**
+     * Adds another field to the facet
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function addFacetField($field) {}
+
+    /**
+     * Adds a facet query
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function addFacetQuery($facetQuery) {}
+
+    /**
+     * This method is used to used to specify a set of fields to return,
+     * thereby restricting the amount of data returned in the response.
+     * 
+     * It should be called multiple time, once for each field name.
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function addField($field) {}
+
+    /**
+     * Specifies a filter query
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function addFilterQuery($fq) {}
+
+    /**
+     * Maps to hl.fl. This is used to specify that highlighted snippets
+     * should be generated for a particular field
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function addHighlightField($field) {}
+
+    /**
+     * Maps to mlt.fl. It specifies that a field should be used for
+     * similarity.
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function addMltField($field) {}
+
+    /**
+     * Maps to mlt.qf. It is used to specify query fields and their boosts
+     *
+     * @param string
+     * @param float
+     * @return SolrQuery
+     **/
+    function addMltQueryField($field, $boost) {}
+
+    /**
+     * Used to control how the results should be sorted.
+     *
+     * @param string
+     * @param int
+     * @return SolrQuery
+     **/
+    function addSortField($field, $order) {}
+
+    /**
+     * Requests a return of sub results for values within the given facet.
+     * Maps to the stats.facet field
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function addStatsFacet($field) {}
+
+    /**
+     * Maps to stats.field parameter This methods adds another stats.field
+     * parameter.
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function addStatsField($field) {}
+
+    /**
+     * Returns the value of the facet parameter.
+     *
+     * @return bool
+     **/
+    function getFacet() {}
+
+    /**
+     * Returns the value for the facet.date.end parameter. This method
+     * accepts an optional field override
+     *
+     * @param string
+     * @return string
+     **/
+    function getFacetDateEnd($field_override) {}
+
+    /**
+     * Returns all the facet.date fields
+     *
+     * @return array
+     **/
+    function getFacetDateFields() {}
+
+    /**
+     * Returns the value of the facet.date.gap parameter. It accepts an
+     * optional field override
+     *
+     * @param string
+     * @return string
+     **/
+    function getFacetDateGap($field_override) {}
+
+    /**
+     * Returns the value of the facet.date.hardend parameter. Accepts an
+     * optional field override
+     *
+     * @param string
+     * @return string
+     **/
+    function getFacetDateHardEnd($field_override) {}
+
+    /**
+     * Returns the value for the facet.date.other parameter. This method
+     * accepts an optional field override.
+     *
+     * @param string
+     * @return string
+     **/
+    function getFacetDateOther($field_override) {}
+
+    /**
+     * Returns the lower bound for the first date range for all date faceting
+     * on this field. Accepts an optional field override
+     *
+     * @param string
+     * @return string
+     **/
+    function getFacetDateStart($field_override) {}
+
+    /**
+     * Returns all the facet fields
+     *
+     * @return array
+     **/
+    function getFacetFields() {}
+
+    /**
+     * Returns the maximum number of constraint counts that should be
+     * returned for the facet fields. This method accepts an optional field
+     * override
+     *
+     * @param string
+     * @return int
+     **/
+    function getFacetLimit($field_override) {}
+
+    /**
+     * Returns the value of the facet.method parameter. This accepts an
+     * optional field override.
+     *
+     * @param string
+     * @return string
+     **/
+    function getFacetMethod($field_override) {}
+
+    /**
+     * Returns the minimum counts for facet fields should be included in the
+     * response. It accepts an optional field override
+     *
+     * @param string
+     * @return int
+     **/
+    function getFacetMinCount($field_override) {}
+
+    /**
+     * Returns the current state of the facet.missing parameter. This accepts
+     * an optional field override
+     *
+     * @param string
+     * @return bool
+     **/
+    function getFacetMissing($field_override) {}
+
+    /**
+     * Returns an offset into the list of constraints to be used for
+     * pagination. Accepts an optional field override
+     *
+     * @param string
+     * @return int
+     **/
+    function getFacetOffset($field_override) {}
+
+    /**
+     * Returns the facet prefix
+     *
+     * @param string
+     * @return string
+     **/
+    function getFacetPrefix($field_override) {}
+
+    /**
+     * Returns all the facet queries
+     *
+     * @return array
+     **/
+    function getFacetQueries() {}
+
+    /**
+     * Returns an integer (SolrQuery::FACET_SORT_INDEX or
+     * SolrQuery::FACET_SORT_COUNT)
+     *
+     * @param string
+     * @return int
+     **/
+    function getFacetSort($field_override) {}
+
+    /**
+     * Returns the list of fields that will be returned in the response
+     *
+     * @return array
+     **/
+    function getFields() {}
+
+    /**
+     * Returns an array of filter queries. These are queries that can be used
+     * to restrict the super set of documents that can be returned, without
+     * influencing score
+     *
+     * @return array
+     **/
+    function getFilterQueries() {}
+
+    /**
+     * Returns a boolean indicating whether or not to enable highlighted
+     * snippets to be generated in the query response.
+     *
+     * @return bool
+     **/
+    function getHighlight() {}
+
+    /**
+     * Returns the highlight field to use as backup or default. It accepts an
+     * optional override.
+     *
+     * @param string
+     * @return string
+     **/
+    function getHighlightAlternateField($field_override) {}
+
+    /**
+     * Returns all the fields that Solr should generate highlighted snippets
+     * for
+     *
+     * @return array
+     **/
+    function getHighlightFields() {}
+
+    /**
+     * Returns the formatter for the highlighted output
+     *
+     * @param string
+     * @return string
+     **/
+    function getHighlightFormatter($field_override) {}
+
+    /**
+     * Returns the text snippet generator for highlighted text. Accepts an
+     * optional field override.
+     *
+     * @param string
+     * @return string
+     **/
+    function getHighlightFragmenter($field_override) {}
+
+    /**
+     * Returns the number of characters of fragments to consider for
+     * highlighting. Zero implies no fragmenting. The entire field should be
+     * used.
+     *
+     * @param string
+     * @return int
+     **/
+    function getHighlightFragsize($field_override) {}
+
+    /**
+     * Returns whether or not to enable highlighting for
+     * range/wildcard/fuzzy/prefix queries
+     *
+     * @return bool
+     **/
+    function getHighlightHighlightMultiTerm() {}
+
+    /**
+     * Returns the maximum number of characters of the field to return
+     *
+     * @param string
+     * @return int
+     **/
+    function getHighlightMaxAlternateFieldLength($field_override) {}
+
+    /**
+     * Returns the maximum number of characters into a document to look for
+     * suitable snippets
+     *
+     * @return int
+     **/
+    function getHighlightMaxAnalyzedChars() {}
+
+    /**
+     * Returns whether or not the collapse contiguous fragments into a single
+     * fragment. Accepts an optional field override.
+     *
+     * @param string
+     * @return bool
+     **/
+    function getHighlightMergeContiguous($field_override) {}
+
+    /**
+     * Returns the maximum number of characters from a field when using the
+     * regex fragmenter
+     *
+     * @return int
+     **/
+    function getHighlightRegexMaxAnalyzedChars() {}
+
+    /**
+     * Returns the regular expression used for fragmenting
+     *
+     * @return string
+     **/
+    function getHighlightRegexPattern() {}
+
+    /**
+     * Returns the factor by which the regex fragmenter can deviate from the
+     * ideal fragment size to accomodate the regular expression
+     *
+     * @return float
+     **/
+    function getHighlightRegexSlop() {}
+
+    /**
+     * Returns if a field will only be highlighted if the query matched in
+     * this particular field.
+     *
+     * @return bool
+     **/
+    function getHighlightRequireFieldMatch() {}
+
+    /**
+     * Returns the text which appears after a highlighted term. Accepts an
+     * optional field override
+     *
+     * @param string
+     * @return string
+     **/
+    function getHighlightSimplePost($field_override) {}
+
+    /**
+     * Returns the text which appears before a highlighted term. Accepts an
+     * optional field override
+     *
+     * @param string
+     * @return string
+     **/
+    function getHighlightSimplePre($field_override) {}
+
+    /**
+     * Returns the maximum number of highlighted snippets to generate per
+     * field. Accepts an optional field override
+     *
+     * @param string
+     * @return int
+     **/
+    function getHighlightSnippets($field_override) {}
+
+    /**
+     * Returns whether or not to use SpanScorer to highlight phrase terms
+     * only when they appear within the query phrase in the document.
+     *
+     * @return bool
+     **/
+    function getHighlightUsePhraseHighlighter() {}
+
+    /**
+     * Returns whether or not MoreLikeThis results should be enabled
+     *
+     * @return bool
+     **/
+    function getMlt() {}
+
+    /**
+     * Returns whether or not the query will be boosted by the interesting
+     * term relevance
+     *
+     * @return bool
+     **/
+    function getMltBoost() {}
+
+    /**
+     * Returns the number of similar documents to return for each result
+     *
+     * @return int
+     **/
+    function getMltCount() {}
+
+    /**
+     * Returns all the fields to use for similarity
+     *
+     * @return array
+     **/
+    function getMltFields() {}
+
+    /**
+     * Returns the maximum number of query terms that will be included in any
+     * generated query
+     *
+     * @return int
+     **/
+    function getMltMaxNumQueryTerms() {}
+
+    /**
+     * Returns the maximum number of tokens to parse in each document field
+     * that is not stored with TermVector support
+     *
+     * @return int
+     **/
+    function getMltMaxNumTokens() {}
+
+    /**
+     * Returns the maximum word length above which words will be ignored
+     *
+     * @return int
+     **/
+    function getMltMaxWordLength() {}
+
+    /**
+     * Returns the treshold frequency at which words will be ignored which do
+     * not occur in at least this many docs
+     *
+     * @return int
+     **/
+    function getMltMinDocFrequency() {}
+
+    /**
+     * Returns the frequency below which terms will be ignored in the source
+     * document
+     *
+     * @return int
+     **/
+    function getMltMinTermFrequency() {}
+
+    /**
+     * Returns the minimum word length below which words will be ignored
+     *
+     * @return int
+     **/
+    function getMltMinWordLength() {}
+
+    /**
+     * Returns the query fields and their boosts
+     *
+     * @return array
+     **/
+    function getMltQueryFields() {}
+
+    /**
+     * Returns the main search query
+     *
+     * @return string
+     **/
+    function getQuery() {}
+
+    /**
+     * Returns the maximum number of documents from the complete result set
+     * to return to the client for every request
+     *
+     * @return int
+     **/
+    function getRows() {}
+
+    /**
+     * Returns all the sort fields
+     *
+     * @return array
+     **/
+    function getSortFields() {}
+
+    /**
+     * Returns the offset in the complete result set for the queries where
+     * the set of returned documents should begin.
+     *
+     * @return int
+     **/
+    function getStart() {}
+
+    /**
+     * Returns whether or not stats is enabled
+     *
+     * @return bool
+     **/
+    function getStats() {}
+
+    /**
+     * Returns all the stats facets that were set
+     *
+     * @return array
+     **/
+    function getStatsFacets() {}
+
+    /**
+     * Returns all the statistics fields
+     *
+     * @return array
+     **/
+    function getStatsFields() {}
+
+    /**
+     * Returns whether or not the TermsComponent is enabled
+     *
+     * @return bool
+     **/
+    function getTerms() {}
+
+    /**
+     * Returns the field from which the terms are retrieved
+     *
+     * @return string
+     **/
+    function getTermsField() {}
+
+    /**
+     * Returns whether or not to include the lower bound in the result set
+     *
+     * @return bool
+     **/
+    function getTermsIncludeLowerBound() {}
+
+    /**
+     * Returns whether or not to include the upper bound term in the result
+     * set
+     *
+     * @return bool
+     **/
+    function getTermsIncludeUpperBound() {}
+
+    /**
+     * Returns the maximum number of terms Solr should return
+     *
+     * @return int
+     **/
+    function getTermsLimit() {}
+
+    /**
+     * Returns the term to start at
+     *
+     * @return string
+     **/
+    function getTermsLowerBound() {}
+
+    /**
+     * Returns the maximum document frequency
+     *
+     * @return int
+     **/
+    function getTermsMaxCount() {}
+
+    /**
+     * Returns the minimum document frequency to return in order to be
+     * included
+     *
+     * @return int
+     **/
+    function getTermsMinCount() {}
+
+    /**
+     * Returns the prefix to which matching terms must be restricted. This
+     * will restrict matches to only terms that start with the prefix
+     *
+     * @return string
+     **/
+    function getTermsPrefix() {}
+
+    /**
+     * Returns a boolean indicating whether or not to return the raw
+     * characters of the indexed term, regardless of if it is human readable
+     *
+     * @return bool
+     **/
+    function getTermsReturnRaw() {}
+
+    /**
+     * SolrQuery::TERMS_SORT_INDEX indicates that the terms are returned by
+     * index order. SolrQuery::TERMS_SORT_COUNT implies that the terms are
+     * sorted by term frequency (highest count first)
+     *
+     * @return int
+     **/
+    function getTermsSort() {}
+
+    /**
+     * Returns the term to stop at
+     *
+     * @return string
+     **/
+    function getTermsUpperBound() {}
+
+    /**
+     * Returns the time in milliseconds allowed for the query to finish.
+     *
+     * @return int
+     **/
+    function getTimeAllowed() {}
+
+    /**
+     * The name of the field
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function removeFacetDateField($field) {}
+
+    /**
+     * Removes one of the facet.date.other parameters
+     *
+     * @param string
+     * @param string
+     * @return SolrQuery
+     **/
+    function removeFacetDateOther($value, $field_override) {}
+
+    /**
+     * Removes one of the facet.date parameters
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function removeFacetField($field) {}
+
+    /**
+     * Removes one of the facet.query parameters.
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function removeFacetQuery($value) {}
+
+    /**
+     * Removes a field from the list of fields
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function removeField($field) {}
+
+    /**
+     * Removes a filter query.
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function removeFilterQuery($fq) {}
+
+    /**
+     * Removes one of the fields used for highlighting.
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function removeHighlightField($field) {}
+
+    /**
+     * Removes one of the moreLikeThis fields.
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function removeMltField($field) {}
+
+    /**
+     * Removes one of the moreLikeThis query fields.
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function removeMltQueryField($queryField) {}
+
+    /**
+     * Removes one of the sort fields
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function removeSortField($field) {}
+
+    /**
+     * Removes one of the stats.facet parameters
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function removeStatsFacet($value) {}
+
+    /**
+     * Removes one of the stats.field parameters
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function removeStatsField($field) {}
+
+    /**
+     * If set to true, Solr places the name of the handle used in the
+     * response to the client for debugging purposes.
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setEchoHandler($flag) {}
+
+    /**
+     * Instructs Solr what kinds of Request parameters should be included in
+     * the response for debugging purposes, legal values include:
+     * 
+     * 
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function setEchoParams($type) {}
+
+    /**
+     * Sets the explainOther common query parameter
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function setExplainOther($query) {}
+
+    /**
+     * Enables or disables faceting.
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setFacet($flag) {}
+
+    /**
+     * Maps to facet.date.end
+     *
+     * @param string
+     * @param string
+     * @return SolrQuery
+     **/
+    function setFacetDateEnd($value, $field_override) {}
+
+    /**
+     * Maps to facet.date.gap
+     *
+     * @param string
+     * @param string
+     * @return SolrQuery
+     **/
+    function setFacetDateGap($value, $field_override) {}
+
+    /**
+     * Maps to facet.date.hardend
+     *
+     * @param string
+     * @param string
+     * @return SolrQuery
+     **/
+    function setFacetDateHardEnd($value, $field_override) {}
+
+    /**
+     * Maps to facet.date.start
+     *
+     * @param string
+     * @param string
+     * @return SolrQuery
+     **/
+    function setFacetDateStart($value, $field_override) {}
+
+    /**
+     * Sets the minimum document frequency used for determining term count
+     *
+     * @param int
+     * @param string
+     * @return SolrQuery
+     **/
+    function setFacetEnumCacheMinDefaultFrequency($frequency, $field_override) {}
+
+    /**
+     * Maps to facet.limit. Sets the maximum number of constraint counts that
+     * should be returned for the facet fields.
+     *
+     * @param int
+     * @param string
+     * @return SolrQuery
+     **/
+    function setFacetLimit($limit, $field_override) {}
+
+    /**
+     * Specifies the type of algorithm to use when faceting a field. This
+     * method accepts optional field override.
+     *
+     * @param string
+     * @param string
+     * @return SolrQuery
+     **/
+    function setFacetMethod($method, $field_override) {}
+
+    /**
+     * Sets the minimum counts for facet fields that should be included in
+     * the response
+     *
+     * @param int
+     * @param string
+     * @return SolrQuery
+     **/
+    function setFacetMinCount($mincount, $field_override) {}
+
+    /**
+     * Used to indicate that in addition to the Term-based constraints of a
+     * facet field, a count of all matching results which have no value for
+     * the field should be computed
+     *
+     * @param bool
+     * @param string
+     * @return SolrQuery
+     **/
+    function setFacetMissing($flag, $field_override) {}
+
+    /**
+     * Sets the offset into the list of constraints to allow for pagination.
+     *
+     * @param int
+     * @param string
+     * @return SolrQuery
+     **/
+    function setFacetOffset($offset, $field_override) {}
+
+    /**
+     * Specifies a string prefix with which to limits the terms on which to
+     * facet.
+     *
+     * @param string
+     * @param string
+     * @return SolrQuery
+     **/
+    function setFacetPrefix($prefix, $field_override) {}
+
+    /**
+     * Determines the ordering of the facet field constraints
+     *
+     * @param int
+     * @param string
+     * @return SolrQuery
+     **/
+    function setFacetSort($facetSort, $field_override) {}
+
+    /**
+     * Setting it to enables highlighted snippets to be generated in the
+     * query response.
+     * 
+     * Setting it to disables highlighting
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setHighlight($flag) {}
+
+    /**
+     * If a snippet cannot be generated because there were no matching terms,
+     * one can specify a field to use as the backup or default summary
+     *
+     * @param string
+     * @param string
+     * @return SolrQuery
+     **/
+    function setHighlightAlternateField($field, $field_override) {}
+
+    /**
+     * Specify a formatter for the highlight output.
+     *
+     * @param string
+     * @param string
+     * @return SolrQuery
+     **/
+    function setHighlightFormatter($formatter, $field_override) {}
+
+    /**
+     * Specify a text snippet generator for highlighted text.
+     *
+     * @param string
+     * @param string
+     * @return SolrQuery
+     **/
+    function setHighlightFragmenter($fragmenter, $field_override) {}
+
+    /**
+     * Sets the size, in characters, of fragments to consider for
+     * highlighting. "0" indicates that the whole field value should be used
+     * (no fragmenting).
+     *
+     * @param int
+     * @param string
+     * @return SolrQuery
+     **/
+    function setHighlightFragsize($size, $field_override) {}
+
+    /**
+     * Use SpanScorer to highlight phrase terms only when they appear within
+     * the query phrase in the document.
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setHighlightHighlightMultiTerm($flag) {}
+
+    /**
+     * If SolrQuery::setHighlightAlternateField() was passed the value , this
+     * parameter specifies the maximum number of characters of the field to
+     * return
+     * 
+     * Any value less than or equal to 0 means unlimited.
+     *
+     * @param int
+     * @param string
+     * @return SolrQuery
+     **/
+    function setHighlightMaxAlternateFieldLength($fieldLength, $field_override) {}
+
+    /**
+     * Specifies the number of characters into a document to look for
+     * suitable snippets
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setHighlightMaxAnalyzedChars($value) {}
+
+    /**
+     * Whether or not to collapse contiguous fragments into a single fragment
+     *
+     * @param bool
+     * @param string
+     * @return SolrQuery
+     **/
+    function setHighlightMergeContiguous($flag, $field_override) {}
+
+    /**
+     * Specify the maximum number of characters to analyze from a field when
+     * using the regex fragmenter
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setHighlightRegexMaxAnalyzedChars($maxAnalyzedChars) {}
+
+    /**
+     * Specifies the regular expression for fragmenting. This could be used
+     * to extract sentences
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function setHighlightRegexPattern($value) {}
+
+    /**
+     * The factor by which the regex fragmenter can stray from the ideal
+     * fragment size ( specfied by SolrQuery::setHighlightFragsize )to
+     * accomodate the regular expression
+     *
+     * @param float
+     * @return SolrQuery
+     **/
+    function setHighlightRegexSlop($factor) {}
+
+    /**
+     * If , then a field will only be highlighted if the query matched in
+     * this particular field.
+     * 
+     * This will only work if SolrQuery::setHighlightUsePhraseHighlighter()
+     * was set to
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setHighlightRequireFieldMatch($flag) {}
+
+    /**
+     * Sets the text which appears before a highlighted term
+     *
+     * @param string
+     * @param string
+     * @return SolrQuery
+     **/
+    function setHighlightSimplePost($simplePost, $field_override) {}
+
+    /**
+     * Sets the text which appears before a highlighted term
+     * 
+     * 
+     *
+     * @param string
+     * @param string
+     * @return SolrQuery
+     **/
+    function setHighlightSimplePre($simplePre, $field_override) {}
+
+    /**
+     * Sets the maximum number of highlighted snippets to generate per field
+     *
+     * @param int
+     * @param string
+     * @return SolrQuery
+     **/
+    function setHighlightSnippets($value, $field_override) {}
+
+    /**
+     * Sets whether or not to use SpanScorer to highlight phrase terms only
+     * when they appear within the query phrase in the document
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setHighlightUsePhraseHighlighter($flag) {}
+
+    /**
+     * Enables or disables moreLikeThis
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setMlt($flag) {}
+
+    /**
+     * Set if the query will be boosted by the interesting term relevance
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setMltBoost($flag) {}
+
+    /**
+     * Set the number of similar documents to return for each result
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setMltCount($count) {}
+
+    /**
+     * Sets the maximum number of query terms that will be included in any
+     * generated query.
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setMltMaxNumQueryTerms($value) {}
+
+    /**
+     * Specifies the maximum number of tokens to parse in each example doc
+     * field that is not stored with TermVector support.
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setMltMaxNumTokens($value) {}
+
+    /**
+     * Sets the maximum word length above which words will be ignored.
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setMltMaxWordLength($maxWordLength) {}
+
+    /**
+     * The frequency at which words will be ignored which do not occur in at
+     * least this many docs.
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setMltMinDocFrequency($minDocFrequency) {}
+
+    /**
+     * Sets the frequency below which terms will be ignored in the source
+     * docs
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setMltMinTermFrequency($minTermFrequency) {}
+
+    /**
+     * Sets the minimum word length below which words will be ignored.
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setMltMinWordLength($minWordLength) {}
+
+    /**
+     * Exclude the header from the returned results.
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setOmitHeader($flag) {}
+
+    /**
+     * Sets the search query.
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function setQuery($query) {}
+
+    /**
+     * Specifies the maximum number of rows to return in the result
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setRows($rows) {}
+
+    /**
+     * Whether to show debug info
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setShowDebugInfo($flag) {}
+
+    /**
+     * Specifies the number of rows to skip. Useful in pagination of results.
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setStart($start) {}
+
+    /**
+     * Enables or disables the Stats component.
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setStats($flag) {}
+
+    /**
+     * Enables or disables the TermsComponent
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setTerms($flag) {}
+
+    /**
+     * Sets the name of the field to get the terms from
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function setTermsField($fieldname) {}
+
+    /**
+     * Include the lower bound term in the result set.
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setTermsIncludeLowerBound($flag) {}
+
+    /**
+     * Include the upper bound term in the result set.
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setTermsIncludeUpperBound($flag) {}
+
+    /**
+     * Sets the maximum number of terms to return
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setTermsLimit($limit) {}
+
+    /**
+     * Specifies the Term to start from
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function setTermsLowerBound($lowerBound) {}
+
+    /**
+     * Sets the maximum document frequency.
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setTermsMaxCount($frequency) {}
+
+    /**
+     * Sets the minimum doc frequency to return in order to be included
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setTermsMinCount($frequency) {}
+
+    /**
+     * Restrict matches to terms that start with the prefix
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function setTermsPrefix($prefix) {}
+
+    /**
+     * If true, return the raw characters of the indexed term, regardless of
+     * if it is human readable
+     *
+     * @param bool
+     * @return SolrQuery
+     **/
+    function setTermsReturnRaw($flag) {}
+
+    /**
+     * If SolrQuery::TERMS_SORT_COUNT, sorts the terms by the term frequency
+     * (highest count first). If SolrQuery::TERMS_SORT_INDEX, returns the
+     * terms in index order
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setTermsSort($sortType) {}
+
+    /**
+     * Sets the term to stop at
+     *
+     * @param string
+     * @return SolrQuery
+     **/
+    function setTermsUpperBound($upperBound) {}
+
+    /**
+     * The time allowed for a search to finish. This value only applies to
+     * the search and not to requests in general. Time is in milliseconds.
+     * Values less than or equal to zero implies no time restriction. Partial
+     * results may be returned, if there are any.
+     *
+     * @param int
+     * @return SolrQuery
+     **/
+    function setTimeAllowed($timeAllowed) {}
+
+    /**
+     * Constructor.
+     *
+     * @param string
+     **/
+    function __construct($q) {}
+
+    /**
+     * Destructor
+     *
+     * @return void
+     **/
+    function __destruct() {}
+
+}
+class SolrQueryResponse extends SolrResponse {
+    /**
+     * Constructor
+     *
+     **/
+    function __construct() {}
+
+    /**
+     * Destructor.
+     *
+     * @return void
+     **/
+    function __destruct() {}
+
+}
+class SolrResponse {
+    /**
+     * Returns the XML response as serialized PHP data
+     *
+     * @return string
+     **/
+    function getDigestedResponse() {}
+
+    /**
+     * Returns the HTTP status of the response.
+     *
+     * @return int
+     **/
+    function getHttpStatus() {}
+
+    /**
+     * Returns more details on the HTTP status.
+     *
+     * @return string
+     **/
+    function getHttpStatusMessage() {}
+
+    /**
+     * Returns the raw request sent to the Solr server.
+     *
+     * @return string
+     **/
+    function getRawRequest() {}
+
+    /**
+     * Returns the raw request headers sent to the Solr server.
+     *
+     * @return string
+     **/
+    function getRawRequestHeaders() {}
+
+    /**
+     * Returns the raw response from the server.
+     *
+     * @return string
+     **/
+    function getRawResponse() {}
+
+    /**
+     * Returns the raw response headers from the server.
+     *
+     * @return string
+     **/
+    function getRawResponseHeaders() {}
+
+    /**
+     * Returns the full URL the request was sent to.
+     *
+     * @return string
+     **/
+    function getRequestUrl() {}
+
+    /**
+     * Returns a SolrObject representing the XML response from the server.
+     *
+     * @return SolrObject
+     **/
+    function getResponse() {}
+
+    /**
+     * The method description goes here.
+     *
+     * @param int
+     * @return bool
+     **/
+    function setParseMode($parser_mode) {}
+
+    /**
+     * Used to check if the request to the server was successful.
+     *
+     * @return bool
+     **/
+    function success() {}
+
+}
+class SolrUpdateResponse extends SolrResponse {
+    /**
+     * Constructor
+     *
+     **/
+    function __construct() {}
+
+    /**
+     * Destructor
+     *
+     * @return void
+     **/
+    function __destruct() {}
+
+}
+class SolrUtils {
+    /**
+     * This method parses an response XML string from the Apache Solr server
+     * into a SolrObject. It throws a SolrException if there was an error.
+     *
+     * @param string
+     * @param int
+     * @return SolrObject
+     **/
+    function digestXmlResponse($xmlresponse, $parse_mode) {}
+
+    /**
+     * Lucene supports escaping special characters that are part of the query
+     * syntax.
+     * 
+     * The current list special characters are:
+     * 
+     * 
+     * 
+     * These characters are part of the query syntax and must be escaped
+     *
+     * @param string
+     * @return string
+     **/
+    function escapeQueryChars($str) {}
+
+    /**
+     * Returns the current Solr version.
+     *
+     * @return string
+     **/
+    function getSolrVersion() {}
+
+    /**
+     * Prepares a phrase from an unescaped lucene string.
+     *
+     * @param string
+     * @return string
+     **/
+    function queryPhrase($str) {}
+
+}
 class SphinxClient {
     /**
      * Adds query with the current settings to multi-query batch. This method
@@ -66380,8 +72790,8 @@ class SphinxClient {
      * 
      * Constant Description
      * 
-     * SPH_RANK_PROXIMITY_BM25 Default ranking mode which uses both
-     * proximity and BM25 ranking.
+     * SPH_RANK_PROXIMITY_BM25 Default ranking mode which uses both proximity
+     * and BM25 ranking.
      * 
      * SPH_RANK_BM25 Statistical ranking mode which uses BM25 ranking only
      * (similar to most of other full-text engines). This mode is faster, but
@@ -66429,8 +72839,8 @@ class SphinxClient {
      * 
      * Constant Description
      * 
-     * SPH_SORT_RELEVANCE Sort by relevance in descending order (best
-     * matches first).
+     * SPH_SORT_RELEVANCE Sort by relevance in descending order (best matches
+     * first).
      * 
      * SPH_SORT_ATTR_DESC Sort by an attribute in descending order (bigger
      * attribute values first).
@@ -67434,6 +73844,17 @@ class SplObjectStorage implements Countable, Iterator, Traversable, Serializable
     function valid() {}
 
 }
+class SplObserver {
+    /**
+     * This method is called when any SplSubject to which the observer is
+     * attached calls SplSubject::notify.
+     *
+     * @param SplSubject
+     * @return void
+     **/
+    function update($subject) {}
+
+}
 class SplPriorityQueue implements Iterator, Countable {
     /**
      * Compare priority1 with priority2.
@@ -67554,6 +73975,32 @@ class SplStack extends SplDoublyLinkedList implements Iterator, ArrayAccess, Cou
 
 }
 class SplString {
+}
+class SplSubject {
+    /**
+     * Attaches an SplObserver so that it can be notified of updates.
+     *
+     * @param SplObserver
+     * @return void
+     **/
+    function attach($observer) {}
+
+    /**
+     * Detaches an observer from the subject to no longer notify it of
+     * updates.
+     *
+     * @param SplObserver
+     * @return void
+     **/
+    function detach($observer) {}
+
+    /**
+     * Notifies all attached observers.
+     *
+     * @return void
+     **/
+    function notify() {}
+
 }
 class SplTempFileObject extends SplFileObject implements SeekableIterator, Iterator, Traversable, RecursiveIterator {
     /**
@@ -68365,11 +74812,9 @@ class stmt {
     function maxdb_send_long_data($param_nr, $data) {}
 
     /**
-     * Procedure style:
-     * 
-     * maxdb_stmt_prepare prepares the SQL query pointed to by the
-     * null-terminated string query. The statement resource has to be
-     * allocated by maxdb_stmt_init. The query must consist of a single SQL
+     * maxdb_prepare prepares the SQL query pointed to by the null-terminated
+     * string query, and returns a statement handle to be used for further
+     * operations on the statement. The query must consist of a single SQL
      * statement.
      * 
      * The parameter query can include one or more parameter markers in the
@@ -68381,7 +74826,7 @@ class stmt {
      * the statement or fetching rows.
      *
      * @param string
-     * @return mixed
+     * @return resource
      **/
     function prepare($query) {}
 

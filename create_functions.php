@@ -491,7 +491,8 @@ function getDocumentation(SimpleXMLElement $xml) {
         $p = preg_replace('#^ | $#m', '', $p);
         $p = preg_replace('#(?<=[^\n])\n(?=[^\n])#s', ' ', $p);
         $p = preg_replace('#\n\n+#s', "\n\n", $p);
-        if ( stripos($p, 'procedural style') !== false || stripos($p, 'object oriented style') !== false ) {
+        if ( stripos($p, 'procedural style') !== false || stripos($p, 'procedure style') !== false
+            || stripos($p, 'object oriented style') !== false ) {
             // uninteresting
             continue;
         }
