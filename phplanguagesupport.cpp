@@ -89,7 +89,7 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
 LanguageSupport::~LanguageSupport()
 {
     ILanguage* lang = language();
-    if ( lang() && m_internalFunctionsLoaded ) {
+    if ( lang && m_internalFunctionsLoaded ) {
         lang->parseLock()->lockForWrite();
         m_self = 0; //By locking the parse-mutexes, we make sure that parse- and preprocess-jobs get a chance to finish in a good state
         lang->parseLock()->unlock();
