@@ -48,6 +48,8 @@ QWidget* PhpDocumentation::documentationWidget( QWidget* parent )
     connect( m_part, SIGNAL(docCreated()),
              this, SLOT(documentLoaded()) );
 
+    connect( m_part->browserExtension(), SIGNAL(openUrlRequest(KUrl,KParts::OpenUrlArguments, KParts::BrowserArguments)),
+             m_part, SLOT(openUrl(KUrl)) );
     m_part->openUrl( m_url );
     return m_part->widget();
 }
