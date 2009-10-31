@@ -88,15 +88,15 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
 
 LanguageSupport::~LanguageSupport()
 {
+    // Remove any documents waiting to be parsed from the background paser.
+    core()->languageController()->backgroundParser()->clear(this);
+
     ILanguage* lang = language();
-    if ( lang && m_internalFunctionsLoaded ) {
+    if ( lang ) {
         lang->parseLock()->lockForWrite();
         m_self = 0; //By locking the parse-mutexes, we make sure that parse- and preprocess-jobs get a chance to finish in a good state
         lang->parseLock()->unlock();
     }
-
-    // Remove any documents waiting to be parsed from the background paser.
-    core()->languageController()->backgroundParser()->clear(this);
 }
 
 void LanguageSupport::slotPluginLoaded( IPlugin* plugin )
@@ -109,8 +109,8 @@ void LanguageSupport::slotPluginLoaded( IPlugin* plugin )
                 return;
             }
         }
-        kDebug() << "locking parselock for writing and adding job for internal function file";
-        language()->parseLock()->lockForWrite();
+        kDebug() << "adding job for internal function file";
+        m_internalFunctionsLock.lockForWrite();
         core()->languageController()->backgroundParser()->addDocument(
             KUrl("InternalFunctions.php"), KDevelop::TopDUContext::AllDeclarationsAndContexts, -10, this
         );
@@ -123,14 +123,19 @@ void LanguageSupport::updateReady( IndexedString url, ReferencedTopDUContext top
 {
     Q_ASSERT(url == IndexedString("InternalFunctions.php"));
     Q_UNUSED(topContext);
-    kDebug() << "finished parsing internal function file, unlocking";
-    language()->parseLock()->unlock();
+    kDebug() << "finished parsing internal function file";
     m_internalFunctionsLoaded = true;
+    m_internalFunctionsLock.unlock();
 }
 
 bool LanguageSupport::internalFunctionsLoaded() const
 {
     return m_internalFunctionsLoaded;
+}
+
+QReadWriteLock* LanguageSupport::internalFunctionsLock()
+{
+    return &m_internalFunctionsLock;
 }
 
 KDevelop::ParseJob *LanguageSupport::createParseJob(const KUrl &url)

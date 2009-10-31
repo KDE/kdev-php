@@ -97,7 +97,7 @@ void ParseJob::run()
     // make sure we loaded the internal file already
     if ( document() != IndexedString("InternalFunctions.php") && !m_parentJob && !php()->internalFunctionsLoaded() ) {
         kDebug() << "waiting for InternalFunctions.php to finish parsing";
-        QReadLocker(php()->language()->parseLock());
+        QReadLocker(php()->internalFunctionsLock());
     }
     {
         DUChainReadLocker lock(DUChain::lock());
@@ -167,8 +167,9 @@ void ParseJob::run()
     // 2) parse
     bool matched = m_session->parse(&m_ast);
 
-    if (abortRequested())
+    if (abortRequested()) {
         return abortJob();
+    }
 
     if (matched) {
         EditorIntegrator editor(m_session);
@@ -181,6 +182,9 @@ void ParseJob::run()
             QMapIterator<Php::AstNode*, QString> i(includeBuilder.badIncludes());
             while (i.hasNext()) {
                 i.next();
+                if (abortRequested()) {
+                    return abortJob();
+                }
                 includeProblems << createProblem(i18n("Included file %1 could not be found.", i.value()), i.key(),
                                                  &editor, ProblemData::Preprocessor);
                 continue;
@@ -190,8 +194,9 @@ void ParseJob::run()
             QMapIterator<Php::AstNode*, IndexedString> i(includeBuilder.includes());
             while (i.hasNext()) {
                 i.next();
-                if (abortRequested())
+                if (abortRequested()) {
                     return abortJob();
+                }
                 if (hasParentDocument(i.value())) {
                     includeProblems << createProblem(i18n("File %1 includes itself.", i.value().str()), i.key(),
                                                      &editor, ProblemData::Preprocessor);
@@ -204,22 +209,32 @@ void ParseJob::run()
             }
         }
 
-        if ( document() != IndexedString("InternalFunctions.php") ) {
-            // internal functions is already locked
-            QReadLocker parseLock(php()->language()->parseLock());
-        }
+        QReadLocker parseLock(php()->language()->parseLock());
 
         DeclarationBuilder builder(&editor);
         KDevelop::ReferencedTopDUContext chain = builder.build(document(), m_ast);
+
+        if (abortRequested()) {
+            return abortJob();
+        }
+
         setDuChain(chain);
 
         UseBuilder useBuilder(&editor);
         useBuilder.buildUses(m_ast);
 
-        if (!abortRequested() && editor.smart() && KDevelop::EditorIntegrator::documentForUrl(document())) {
+        if (abortRequested()) {
+            return abortJob();
+        }
+
+        if (editor.smart() && KDevelop::EditorIntegrator::documentForUrl(document())) {
             if (php() && php()->codeHighlighting()) {
                 php()->codeHighlighting()->highlightDUChain(chain);
             }
+        }
+
+        if (abortRequested()) {
+            return abortJob();
         }
 
         DUChainWriteLocker lock(DUChain::lock());

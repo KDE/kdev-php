@@ -28,6 +28,7 @@
 #include <interfaces/iplugin.h>
 #include <language/interfaces/ilanguagesupport.h>
 #include <QtCore/QVariant>
+#include <QReadWriteLock>
 
 namespace KDevelop
 {
@@ -55,7 +56,7 @@ class Highlighting;
  * 1) Block thread and wait for job to finish:
  * \code
  * if ( phpLangSupport->internalFunctionsLoaded ) {
- *   QReadLocker(phpLangSupport->language()->parseLock());
+ *   QReadLocker(phpLangSupport->internalFunctionsLock());
  * }
  * // now you can get the ducontext
  * \endcode
@@ -71,7 +72,7 @@ class Highlighting;
  *  }
  * \endcode
  *
- * To access the docontext, use:
+ * To access the DUContext, use:
  * \code
  *  DUChainWriteLocker lock(DUChain::lock());
  *  TopDUContext* ctx = DUChain::self()->chainForDocument(IndexedString("InternalFunctions.php"));
@@ -101,7 +102,12 @@ public:
 
     /// returns true, if the internal function file has been loaded
     /// to wait for it to finished, use a QReadLocker on the parse lock.
+    /// @see internalFunctionsLock()
     bool internalFunctionsLoaded() const;
+    /// returns a pointer to the internal functions lock, lock it for reading to wait for the
+    /// internal functions to get loaded.
+    /// @see internalFunctionsLoaded()
+    QReadWriteLock* internalFunctionsLock();
 
 public slots:
     /**
@@ -118,6 +124,7 @@ private:
     KDevelop::CodeHighlighting* m_highlighting;
     static LanguageSupport* m_self;
     bool m_internalFunctionsLoaded;
+    QReadWriteLock m_internalFunctionsLock;
 
     QPair<QString, KDevelop::SimpleRange>  wordUnderCursor(const KUrl& url, const KDevelop::SimpleCursor& position);
 
