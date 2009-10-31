@@ -60,8 +60,6 @@ using namespace KDevelop;
 namespace Php
 {
 
-QMutex internalFunctionParseMutex;
-
 ParseJob::ParseJob(const KUrl &url, QObject *parent)
         : KDevelop::ParseJob(url, parent)
         , m_session(new ParseSession)
