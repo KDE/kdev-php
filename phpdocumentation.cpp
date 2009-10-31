@@ -60,7 +60,8 @@ void PhpDocumentation::documentLoaded() const
         return;
     }
     m_part->setUserStyleSheet( QString( "#headnav,#headsearch,#footnav,#leftbar{display:none !important;}"
-                                        "body{font-size:90% !important;}"
+                                        "body{font-size:80% !important;}"
+                                        "option,select{font-size:80% !important;}"
                                         "#layout_2,#layout_3{background: none !important;}"
                                         "#content{margin:0 !important}") );
 }
