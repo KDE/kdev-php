@@ -54,11 +54,47 @@
 #include "phpducontext.h"
 
 #include <QtCore/QReadLocker>
+#include <QtCore/QThread>
 
 using namespace KDevelop;
 
 namespace Php
 {
+
+///TODO: push this into kdevplatform - copied from cpp for now
+
+///Facilities to prevent multiple parse-jobs from processing the same url.
+QMutex urlParseMutex;
+QMap<IndexedString, QPair<Qt::HANDLE, uint> > parsingUrls;
+
+struct UrlParseLock {
+    UrlParseLock(IndexedString url) : m_url(url) {
+        QMutexLocker lock(&urlParseMutex);
+        while (parsingUrls.contains(m_url) && parsingUrls[m_url].first != QThread::currentThreadId()) {
+            //Wait here until no other thread is updating parsing the url
+            lock.unlock();
+            sleep(1);
+            lock.relock();
+        }
+        if (parsingUrls.contains(m_url)) {
+            ++parsingUrls[m_url].second;
+        } else {
+            parsingUrls.insert(m_url, qMakePair(QThread::currentThreadId(), 1u));
+        }
+    }
+
+    ~UrlParseLock() {
+        QMutexLocker lock(&urlParseMutex);
+        Q_ASSERT(parsingUrls.contains(m_url));
+        Q_ASSERT(parsingUrls[m_url].first == QThread::currentThreadId());
+        --parsingUrls[m_url].second;
+        if (parsingUrls[m_url].second == 0) {
+            parsingUrls.remove(m_url);
+        }
+    }
+
+    IndexedString m_url;
+};
 
 ParseJob::ParseJob(const KUrl &url, QObject *parent)
         : KDevelop::ParseJob(url, parent)
@@ -97,6 +133,9 @@ void ParseJob::run()
         kDebug() << "waiting for InternalFunctions.php to finish parsing";
         QReadLocker(php()->internalFunctionsLock());
     }
+
+    UrlParseLock urlLock(document());
+
     {
         DUChainReadLocker lock(DUChain::lock());
         bool needsUpdate = true;
