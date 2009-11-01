@@ -1,5 +1,6 @@
 PROJECT(phpdocs)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${phpdocs_SOURCE_DIR}/cmake/)
 enable_testing()
 
 find_package(KDE4 REQUIRED)
