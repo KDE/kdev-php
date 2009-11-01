@@ -1,5 +1,6 @@
 PROJECT(php)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${php_SOURCE_DIR}/cmake/)
 enable_testing()
 
 #To properly find kdevelop-pg add -DKDEVPG_DATA_DIR=<kdevpg-install-path>/share to the
