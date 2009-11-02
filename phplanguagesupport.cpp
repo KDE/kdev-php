@@ -140,7 +140,7 @@ QReadWriteLock* LanguageSupport::internalFunctionsLock()
 
 KDevelop::ParseJob *LanguageSupport::createParseJob(const KUrl &url)
 {
-    return new ParseJob(url, this);
+    return new ParseJob(url);
 }
 
 QString LanguageSupport::name() const

@@ -96,8 +96,8 @@ struct UrlParseLock {
     IndexedString m_url;
 };
 
-ParseJob::ParseJob(const KUrl &url, QObject *parent)
-        : KDevelop::ParseJob(url, parent)
+ParseJob::ParseJob(const KUrl &url)
+        : KDevelop::ParseJob(url)
         , m_session(new ParseSession)
         , m_ast(0)
         , m_readFromDisk(false)
@@ -240,7 +240,7 @@ void ParseJob::run()
                     continue;
                 }
                 kDebug() << "parse included file" << i.value().str();
-                ParseJob job(i.value().toUrl(), 0);
+                ParseJob job(i.value().toUrl());
                 job.setParentJob(this);
                 job.run();
             }

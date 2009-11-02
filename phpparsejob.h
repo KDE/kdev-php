@@ -53,7 +53,7 @@ class ParseJob : public KDevelop::ParseJob
     Q_OBJECT
 
 public:
-    explicit ParseJob(const KUrl &url, QObject* parent = 0);
+    explicit ParseJob(const KUrl &url);
     virtual ~ParseJob();
 
     void setAST(StartAst* ast);
