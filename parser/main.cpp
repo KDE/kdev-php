@@ -143,7 +143,10 @@ int main(int argc, char* argv[])
         QString arg(argv[i]);
         if (arg.startsWith(QString("--"))) {
             arg = arg.mid(2);
-            if (arg == "debug") {
+            if (arg == "help") {
+                showUsage(argv);
+                return 0;
+            } else if (arg == "debug") {
                 debug = true;
             } else if (arg == "print-tokens") {
                 printTokens = true;
