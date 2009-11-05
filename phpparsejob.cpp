@@ -108,6 +108,7 @@ ParseJob::ParseJob(const KUrl &url)
 
 ParseJob::~ParseJob()
 {
+     delete m_session;
 }
 
 LanguageSupport *ParseJob::php() const
