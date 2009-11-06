@@ -192,3 +192,9 @@ KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForIndex(const QModelIn
         index.data(PhpDocsModel::DeclarationRole).value<void *>()
     ));
 }
+
+void PhpDocsPlugin::jumpedTo( const KUrl& url )
+{
+    KSharedPtr<KDevelop::IDocumentation> doc(new PhpDocumentation( url, QString(), QByteArray(), this));
+    emit addHistory(doc);
+}

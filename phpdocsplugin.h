@@ -26,6 +26,8 @@
 
 class PhpDocsModel;
 
+class KUrl;
+
 class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationProvider
 {
   Q_OBJECT
@@ -41,6 +43,12 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
     virtual KSharedPtr< KDevelop::IDocumentation > documentationForIndex(const QModelIndex& index);
     virtual QIcon icon() const;
     virtual QString name() const;
+
+  signals:
+    virtual void addHistory( const KSharedPtr< KDevelop::IDocumentation >& doc );
+
+  public slots:
+    virtual void jumpedTo( const KUrl& url );
 
   private:
     QString getDocumentationFilename(KDevelop::Declaration* dec, const bool& isLocal) const;
