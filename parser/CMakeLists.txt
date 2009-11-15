@@ -6,7 +6,7 @@ set(parser_STAT_SRCS
     )
 
 if(KDEVPGQT_FOUND)
-     kdevpgqt_generate(_kdevpgList php NAMESPACE Php DEBUG_VISITOR
+     kdevpgqt_generate(_kdevpgList php NAMESPACE Php DEBUG_VISITOR TOKEN_TEXT
         "${php_SOURCE_DIR}/parser/php.g"
         "${php_SOURCE_DIR}/parser/phplexer.h"
     )
@@ -45,6 +45,7 @@ add_custom_target( copy-generated
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${php_BINARY_DIR}/parser/phpdefaultvisitor.h" "${php_SOURCE_DIR}/parser/generated/phpdefaultvisitor.h"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${php_BINARY_DIR}/parser/phpdefaultvisitor.cpp" "${php_SOURCE_DIR}/parser/generated/phpdefaultvisitor.cpp"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${php_BINARY_DIR}/parser/phpdebugvisitor.h" "${php_SOURCE_DIR}/parser/generated/phpdebugvisitor.h"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${php_BINARY_DIR}/parser/phptokentext.h" "${php_SOURCE_DIR}/parser/generated/phptokentext.h"
     DEPENDS "${php_BINARY_DIR}/parser/phpparser.cpp"
     DEPENDS "${php_BINARY_DIR}/parser/phpparser.h"
     DEPENDS "${php_BINARY_DIR}/parser/phpvisitor.cpp"
@@ -53,4 +54,5 @@ add_custom_target( copy-generated
     DEPENDS "${php_BINARY_DIR}/parser/phpdefaultvisitor.h"
     DEPENDS "${php_BINARY_DIR}/parser/phpast.h"
     DEPENDS "${php_BINARY_DIR}/parser/phpdebugvisitor.h"
+    DEPENDS "${php_BINARY_DIR}/parser/phptokentext.h"
     )

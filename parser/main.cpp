@@ -25,7 +25,7 @@
 #include "phpdebugvisitor.h"
 #include "phpast.h"
 #include "tokenstream.h"
-#include "tokentext.h"
+#include "phptokentext.h"
 
 #include <QFile>
 #include <QString>
@@ -122,7 +122,7 @@ private:
         int begin = lexer.tokenBegin();
         int end = lexer.tokenEnd();
         qout << m_session.contents().mid(begin, end - begin + 1).replace('\n', "\\n")
-        << tokenText(token) << endl;
+        << " "+tokenText(token) << endl;
     }
 
     Php::ParseSession m_session;

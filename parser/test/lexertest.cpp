@@ -23,7 +23,7 @@
 
 #include "parsesession.h"
 #include "phplexer.h"
-#include "tokentext.h"
+#include "phptokentext.h"
 
 QTEST_MAIN(Php::LexerTest)
 namespace Php

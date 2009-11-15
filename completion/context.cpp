@@ -31,7 +31,7 @@
 #include "keyworditem.h"
 
 #include "../parser/generated/phpparser.h"
-#include "../parser/tokentext.h"
+#include "../parser/phptokentext.h"
 
 #include <ktexteditor/view.h>
 #include <ktexteditor/document.h>
