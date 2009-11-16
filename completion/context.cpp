@@ -30,8 +30,8 @@
 #include "implementationitem.h"
 #include "keyworditem.h"
 
-#include "../parser/generated/phpparser.h"
-#include "../parser/phptokentext.h"
+#include "phpparser.h"
+#include "phptokentext.h"
 
 #include <ktexteditor/view.h>
 #include <ktexteditor/document.h>
