@@ -78,7 +78,7 @@ public:
 
     QList<KDevelop::ProblemPointer> problems();
 
-    #warning implement this
+    /// @TODO implement this
     void mapAstUse(AstNode* node, const SimpleUse& use)
     {
         Q_UNUSED(node);
