@@ -242,6 +242,7 @@ void ParseJob::run()
                 }
                 kDebug() << "parse included file" << i.value().str();
                 ParseJob job(i.value().toUrl());
+                job.setMinimumFeatures(minimumFeatures());
                 job.setParentJob(this);
                 job.run();
             }
