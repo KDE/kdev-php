@@ -258,8 +258,12 @@ void ParseJob::run()
 
         setDuChain(chain);
 
-        UseBuilder useBuilder(&editor);
-        useBuilder.buildUses(m_ast);
+        if ( minimumFeatures() & TopDUContext::AllDeclarationsContextsAndUses
+                && document() != IndexedString("InternalFunctions.php") )
+        {
+            UseBuilder useBuilder(&editor);
+            useBuilder.buildUses(m_ast);
+        }
 
         if (abortRequested()) {
             return abortJob();
@@ -281,7 +285,7 @@ void ParseJob::run()
             chain->addProblem(p);
         }
 
-        chain->setFeatures(TopDUContext::AllDeclarationsContextsAndUses);
+        chain->setFeatures(minimumFeatures());
         ParsingEnvironmentFilePointer file = chain->parsingEnvironmentFile();
 
         QFileInfo fileInfo(document().str());
