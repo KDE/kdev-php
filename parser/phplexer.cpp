@@ -530,6 +530,7 @@ int Lexer::nextTokenKind()
                         && ((it + 1)->unicode() == '{'
                             || (isValidVariableIdentifier(it + 1) && !(it + 1)->isDigit()))) {
                     foundVar = true;
+                    break;
                 }
                 it++;
                 stringSize++;
