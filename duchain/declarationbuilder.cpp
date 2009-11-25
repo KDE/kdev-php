@@ -407,7 +407,6 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
                                                 AstNode* node )
 {
     if ( m_upcomingClassVariables.contains(identifier) ) {
-        kDebug() << "not adding class member because it will be added eventually.";
         return;
     }
 
