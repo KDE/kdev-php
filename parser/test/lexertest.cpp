@@ -292,6 +292,39 @@ void LexerTest::testNewlineInStringWithVar2()
     delete ts;
 }
 
+void LexerTest::testNewlineInStringWithVar3()
+{
+    //0            1
+    //012345 6 789 0123456789
+    TokenStream* ts = tokenize("<?php \"{$$a}\";", true);
+    QCOMPARE((int)ts->size(), 7);
+
+    QVERIFY(ts->token(1).kind == Parser::Token_DOUBLE_QUOTE);
+    compareStartPosition(ts, 1, 0, 6);
+    compareEndPosition(ts, 1, 0, 6);
+
+    QVERIFY(ts->token(2).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
+    compareStartPosition(ts, 2, 0, 7);
+    compareEndPosition(ts, 2, 0, 8);
+
+    QVERIFY(ts->token(3).kind == Parser::Token_VARIABLE);
+    compareStartPosition(ts, 3, 0, 9);
+    compareEndPosition(ts, 3, 0, 10);
+
+    QVERIFY(ts->token(4).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
+    compareStartPosition(ts, 4, 0, 11);
+    compareEndPosition(ts, 4, 0, 11);
+
+    QVERIFY(ts->token(5).kind == Parser::Token_DOUBLE_QUOTE);
+    compareStartPosition(ts, 5, 0, 12);
+    compareEndPosition(ts, 5, 0, 12);
+
+    QVERIFY(ts->token(6).kind == Parser::Token_SEMICOLON);
+    compareStartPosition(ts, 6, 0, 13);
+    compareEndPosition(ts, 6, 0, 13);
+    delete ts;
+}
+
 void LexerTest::testMultiplePhpSections()
 {
 

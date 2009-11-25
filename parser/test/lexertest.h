@@ -53,6 +53,7 @@ private slots:
     void testNewlineInString2();
     void testNewlineInStringWithVar();
     void testNewlineInStringWithVar2();
+    void testNewlineInStringWithVar3();
     void testMultiplePhpSections();
     void testHereDoc();
     void testCommonStringTokens();

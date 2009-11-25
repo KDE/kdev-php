@@ -764,10 +764,9 @@ int Lexer::nextTokenKind()
             token = Parser::Token_ENCAPSED_AND_WHITESPACE;
             int startPos = m_curpos;
             while (m_curpos < m_contentSize) {
-
                 if (!isEscapedWithBackslash(it, m_curpos, startPos) &&
                         ((it->unicode() == '$' && (it + 1)->unicode() == '{') ||
-                         (it->unicode() == '{' && (it + 1)->unicode() == '$') ||
+                         (it->unicode() == '{' && (it + 1)->unicode() == '$' && isValidVariableIdentifier(it + 2)) ||
                          (it->unicode() == '$' && isValidVariableIdentifier(it + 1) && !(it + 1)->isDigit()))) {
                     //variable is next ${var} or {$var}
                     break;
