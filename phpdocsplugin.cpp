@@ -198,3 +198,14 @@ void PhpDocsPlugin::jumpedTo( const KUrl& url )
     KSharedPtr<KDevelop::IDocumentation> doc(new PhpDocumentation( url, QString(), QByteArray(), this));
     emit addHistory(doc);
 }
+
+KSharedPtr< KDevelop::IDocumentation > PhpDocsPlugin::homePage() const
+{
+    KUrl url = PhpDocsSettings::phpDocLocation();
+    if ( url.isLocalFile() ) {
+        url.addPath("index.html");
+    } else {
+        url.addPath("manual");
+    }
+    return KSharedPtr<KDevelop::IDocumentation>(new PhpDocumentation( url, QString(), QByteArray(), const_cast<PhpDocsPlugin*>(this)));
+}

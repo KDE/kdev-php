@@ -43,6 +43,7 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
     virtual KSharedPtr< KDevelop::IDocumentation > documentationForIndex(const QModelIndex& index);
     virtual QIcon icon() const;
     virtual QString name() const;
+    virtual KSharedPtr< KDevelop::IDocumentation > homePage() const;
 
   signals:
     virtual void addHistory( const KSharedPtr< KDevelop::IDocumentation >& doc );
