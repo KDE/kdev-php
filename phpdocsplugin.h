@@ -38,9 +38,9 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
     PhpDocsPlugin(QObject *parent, const QVariantList & args= QVariantList());
     ~PhpDocsPlugin();
 
-    virtual KSharedPtr< KDevelop::IDocumentation > documentationForDeclaration (KDevelop::Declaration* dec);
-    virtual QAbstractListModel* indexModel();
-    virtual KSharedPtr< KDevelop::IDocumentation > documentationForIndex(const QModelIndex& index);
+    virtual KSharedPtr< KDevelop::IDocumentation > documentationForDeclaration (KDevelop::Declaration* dec) const;
+    virtual QAbstractListModel* indexModel() const;
+    virtual KSharedPtr< KDevelop::IDocumentation > documentationForIndex(const QModelIndex& index) const;
     virtual QIcon icon() const;
     virtual QString name() const;
     virtual KSharedPtr< KDevelop::IDocumentation > homePage() const;
@@ -49,7 +49,7 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
     virtual void addHistory( const KSharedPtr< KDevelop::IDocumentation >& doc );
 
   public slots:
-    void loadUrl(const KUrl &url);
+    void loadUrl(const KUrl &url) const;
 
   private:
     KSharedPtr< KDevelop::IDocumentation > documentationForUrl(

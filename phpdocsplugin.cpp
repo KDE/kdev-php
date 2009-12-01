@@ -151,7 +151,7 @@ QString PhpDocsPlugin::getDocumentationFilename( KDevelop::Declaration* dec, con
     return fname;
 }
 
-KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForDeclaration( Declaration* dec )
+KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForDeclaration( Declaration* dec ) const
 {
     if ( dec ) {
         DUChainReadLocker lock( DUChain::lock() );
@@ -183,19 +183,19 @@ KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForDeclaration( Declara
     return KSharedPtr<IDocumentation>();
 }
 
-QAbstractListModel* PhpDocsPlugin::indexModel()
+QAbstractListModel* PhpDocsPlugin::indexModel() const
 {
     return m_model;
 }
 
-KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForIndex(const QModelIndex& index)
+KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForIndex(const QModelIndex& index) const
 {
     return documentationForDeclaration(static_cast<Declaration*>(
         index.data(PhpDocsModel::DeclarationRole).value<void *>()
     ));
 }
 
-void PhpDocsPlugin::loadUrl(const KUrl& url)
+void PhpDocsPlugin::loadUrl(const KUrl& url) const
 {
     kDebug() << "loading URL" << url;
     KSharedPtr<IDocumentation> doc = documentationForUrl(url, QString());
