@@ -46,7 +46,7 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
     virtual KSharedPtr< KDevelop::IDocumentation > homePage() const;
 
   signals:
-    virtual void addHistory( const KSharedPtr< KDevelop::IDocumentation >& doc );
+    virtual void addHistory( const KSharedPtr< KDevelop::IDocumentation >& doc ) const;
 
   public slots:
     void loadUrl(const KUrl &url) const;
