@@ -31,7 +31,7 @@ PhpDocumentation::~PhpDocumentation()
 {
 }
 
-KDevelop::IDocumentationProvider* PhpDocumentation::provider()
+KDevelop::IDocumentationProvider* PhpDocumentation::provider() const
 {
     return m_parent;
 }
