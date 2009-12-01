@@ -18,40 +18,30 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "phpdocumentation.h"
-#include "phpdocumentationwidget.h"
-#include "phpdocsplugin.h"
+#ifndef PHPDOCUMENTATIONWIDGET_H
+#define PHPDOCUMENTATIONWIDGET_H
 
-PhpDocumentation::PhpDocumentation(const KUrl& url, const QString& name, const QByteArray& description, PhpDocsPlugin* parent)
-    : m_url(url), m_name(name), m_description(description), m_parent(parent)
-{
-}
+#include <QtGui/QStackedWidget>
 
-PhpDocumentation::~PhpDocumentation()
-{
-}
+#include <KUrl>
 
-KDevelop::IDocumentationProvider* PhpDocumentation::provider()
-{
-    return m_parent;
-}
+class KHTMLPart;
+class PhpDocsPlugin;
 
-QString PhpDocumentation::description() const
+class PhpDocumentationWidget : public QStackedWidget
 {
-    return QString::fromUtf8( m_description );
-}
+    Q_OBJECT
 
-QWidget* PhpDocumentation::documentationWidget( QWidget* parent )
-{
-    return new PhpDocumentationWidget(m_url, m_parent, parent);
-}
+public:
+    explicit PhpDocumentationWidget(const KUrl &url, PhpDocsPlugin* provider, QWidget* parent = 0);
 
-QString PhpDocumentation::name() const
-{
-    return m_name;
-}
+private slots:
+    /// used to inject some custom CSS to alter the remote php.net site
+    void documentLoaded();
 
-bool PhpDocumentation::providesWidget() const
-{
-    return true;
-}
+private:
+    KHTMLPart* m_part;
+    QWidget* m_loading;
+};
+
+#endif // PHPDOCUMENTATIONWIDGET_H

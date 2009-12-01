@@ -45,6 +45,8 @@
 
 #include "phpdocumentation.h"
 #include "phpdocssettings.h"
+#include <interfaces/icore.h>
+#include <interfaces/idocumentationcontroller.h>
 
 using namespace KDevelop;
 
@@ -175,7 +177,7 @@ KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForDeclaration( Declara
         }
 
         kDebug() << "php documentation located at " << url << "for" << dec->toString();
-        return KSharedPtr<IDocumentation>(new PhpDocumentation( url, dec->qualifiedIdentifier().toString(), dec->comment(), this ));
+        return documentationForUrl(url, dec->qualifiedIdentifier().toString(), dec->comment());
     }
 
     return KSharedPtr<IDocumentation>();
@@ -193,13 +195,19 @@ KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForIndex(const QModelIn
     ));
 }
 
-void PhpDocsPlugin::jumpedTo( const KUrl& url )
+void PhpDocsPlugin::loadUrl(const KUrl& url)
 {
-    KSharedPtr<KDevelop::IDocumentation> doc(new PhpDocumentation( url, QString(), QByteArray(), this));
-    emit addHistory(doc);
+    kDebug() << "loading URL" << url;
+    KSharedPtr<IDocumentation> doc = documentationForUrl(url, QString());
+    ICore::self()->documentationController()->showDocumentation(doc);
 }
 
-KSharedPtr< KDevelop::IDocumentation > PhpDocsPlugin::homePage() const
+KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForUrl(const KUrl& url, const QString& name, const QByteArray& description) const
+{
+    return KSharedPtr<IDocumentation>(new PhpDocumentation( url, name, description, const_cast<PhpDocsPlugin*>(this)));
+}
+
+KSharedPtr< IDocumentation > PhpDocsPlugin::homePage() const
 {
     KUrl url = PhpDocsSettings::phpDocLocation();
     if ( url.isLocalFile() ) {
@@ -207,5 +215,7 @@ KSharedPtr< KDevelop::IDocumentation > PhpDocsPlugin::homePage() const
     } else {
         url.addPath("manual");
     }
-    return KSharedPtr<KDevelop::IDocumentation>(new PhpDocumentation( url, QString(), QByteArray(), const_cast<PhpDocsPlugin*>(this)));
+    return documentationForUrl(url, i18n("PHP Documentation"));
 }
+
+#include "phpdocsplugin.h"

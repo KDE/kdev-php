@@ -49,9 +49,13 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
     virtual void addHistory( const KSharedPtr< KDevelop::IDocumentation >& doc );
 
   public slots:
-    virtual void jumpedTo( const KUrl& url );
+    void loadUrl(const KUrl &url);
 
   private:
+    KSharedPtr< KDevelop::IDocumentation > documentationForUrl(
+        const KUrl& url, const QString& name, const QByteArray& description = QByteArray()
+    ) const;
+
     QString getDocumentationFilename(KDevelop::Declaration* dec, const bool& isLocal) const;
     PhpDocsModel* m_model;
 

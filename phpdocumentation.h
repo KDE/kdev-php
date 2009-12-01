@@ -29,17 +29,15 @@
 #include <QtCore/QString>
 
 class QWidget;
+class QStackedWidget;
 class KHTMLPart;
 
 class PhpDocsPlugin;
 
-class PhpDocumentation : public QObject, public KDevelop::IDocumentation
+class PhpDocumentation : public KDevelop::IDocumentation
 {
-  Q_OBJECT
-
   public:
     explicit PhpDocumentation(const KUrl& url, const QString& name, const QByteArray& description, PhpDocsPlugin* parent);
-
     ~PhpDocumentation();
 
     virtual QString name() const;
@@ -48,15 +46,10 @@ class PhpDocumentation : public QObject, public KDevelop::IDocumentation
     virtual QWidget* documentationWidget(QWidget* parent = 0);
     virtual KDevelop::IDocumentationProvider* provider();
 
-  private slots:
-    /// used to inject some custom CSS to alter the remote php.net site
-    void documentLoaded() const;
-
   private:
     const KUrl m_url;
     const QString m_name;
     const QByteArray m_description;
-    KHTMLPart *m_part;
     PhpDocsPlugin* m_parent;
 };
 

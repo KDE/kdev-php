@@ -29,6 +29,7 @@ install(FILES phpdocssettings.kcfg DESTINATION ${KCFG_INSTALL_DIR})
 ########## Documentation Plugin #####
 
 set(kdevphpdocs_SRCS
+    phpdocumentationwidget.cpp
     phpdocumentation.cpp
     phpdocsplugin.cpp
     phpdocsmodel.cpp
