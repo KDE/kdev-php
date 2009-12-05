@@ -18,8 +18,8 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef PHPDOCSMODULE_H
-#define PHPDOCSMODULE_H
+#ifndef PHPDOCSMODEL_H
+#define PHPDOCSMODEL_H
 
 #include <QtGui/QStringListModel>
 
@@ -64,4 +64,4 @@ public slots:
     void slotParseJobFinished( KDevelop::ParseJob* job );
 };
 
-#endif // PHPDOCSMODULE_H
+#endif // PHPDOCSMODEL_H
