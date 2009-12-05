@@ -35,7 +35,7 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
   Q_INTERFACES( KDevelop::IDocumentationProvider )
 
   public:
-    PhpDocsPlugin(QObject *parent, const QVariantList & args= QVariantList());
+    explicit PhpDocsPlugin(QObject *parent, const QVariantList & args= QVariantList());
     ~PhpDocsPlugin();
 
     virtual KSharedPtr< KDevelop::IDocumentation > documentationForDeclaration (KDevelop::Declaration* dec) const;
