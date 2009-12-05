@@ -60,7 +60,7 @@ void createArgumentList(const NormalDeclarationCompletionItem& item, QString& re
 
         int firstDefaultParam = parameters.count() - decl->defaultParametersSize();
 
-        ret = "(";
+        ret = '(';
         bool first = true;
         int num = 0;
 

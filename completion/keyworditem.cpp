@@ -76,16 +76,16 @@ void KeywordItem::execute(KTextEditor::Document* document, const KTextEditor::Ra
         int cursorPos = replacement.indexOf("%CURSOR%");
         int selectionEnd = -1;
         if ( cursorPos != -1 ) {
-            replacement.replace("%CURSOR%", "");
+            replacement.remove("%CURSOR%");
         } else {
             cursorPos = replacement.indexOf("%SELECT%");
             if ( cursorPos != -1 ) {
-                replacement.replace("%SELECT%", "");
+                replacement.remove("%SELECT%");
                 selectionEnd = replacement.indexOf("%ENDSELECT%", cursorPos + 1);
                 if ( selectionEnd == -1 ) {
                     selectionEnd = replacement.length();
                 }
-                replacement.replace("%ENDSELECT%", "");
+                replacement.remove("%ENDSELECT%");
             }
         }
 

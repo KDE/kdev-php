@@ -59,7 +59,7 @@ QString MagicConstantNavigationContext::html(bool shorten)
 {
     QString html = "<html><body><p><small><small>";
     html += typeHighlight(i18n("magic constant"));
-    html += " ";
+    html += ' ';
     html += nameHighlight(Qt::escape(m_constant));
     html += "<br/>\n";
 
