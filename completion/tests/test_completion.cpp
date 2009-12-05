@@ -952,7 +952,7 @@ void TestCompletion::instanceof()
         QVERIFY(searchDeclaration(tester.items, cdec));
     }
 
-    foreach ( CompletionTreeItemPointer item, tester.items ) {
+    foreach ( const CompletionTreeItemPointer &item, tester.items ) {
         QVERIFY(dynamic_cast<ClassDeclaration*>(item->declaration().data()));
     }
 }

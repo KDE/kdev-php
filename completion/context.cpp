@@ -1390,7 +1390,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                 for (uint i = 0; i < count; ++i) {
                     if (foundItems[i].kind == CodeModelItem::Class || foundItems[i].kind == CodeModelItem::Function
                             || foundItems[i].kind == CodeModelItem::Variable) {
-                        foreach(ParsingEnvironmentFilePointer env, DUChain::self()->allEnvironmentFiles(url)) {
+                        foreach(const ParsingEnvironmentFilePointer &env, DUChain::self()->allEnvironmentFiles(url)) {
                             if (env->language() != IndexedString("Php")) continue;
                             TopDUContext* top = env->topContext();
                             if(!top) continue;
