@@ -130,7 +130,7 @@ QString DeclarationNavigationContext::declarationKind(DeclarationPointer decl)
 {
     if ( decl->kind() == Declaration::Instance && decl->abstractType()
          && decl->abstractType()->modifiers() & AbstractType::ConstModifier ) {
-        return i18n("Constant");
+        return i18nc("kind of a php-constant, as shown in the declaration tooltip", "Constant");
     }
     return AbstractDeclarationNavigationContext::declarationKind(decl);
 }
