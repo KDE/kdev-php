@@ -233,7 +233,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     ifDebug(log("non-processed text: " + text);)
 
     if ( context->type() == DUContext::Class || context->type() == DUContext::Function || context->type() == DUContext::Other ) {
-        if ( !m_parentContext && !m_text.startsWith("<?php ") ) {
+        if ( !m_parentContext && !m_text.startsWith(QLatin1String("<?php ")) ) {
             ifDebug(log("added start tag: " + m_text);)
             m_text.prepend("<?php ");
         }
@@ -297,7 +297,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             // don't offer code completion in comments, i.e. single line comments that don't end on \n
             // multi-line comments are handled above
             if ( !lastWasWhitespace && !lastToken.stringAt(0).endsWith('\n')
-                    && !lastToken.stringAt(0).startsWith("/*") ) {
+                    && !lastToken.stringAt(0).startsWith(QLatin1String("/*")) ) {
                 ifDebug(log("no completion in comments");)
                 m_valid = false;
             }

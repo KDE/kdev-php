@@ -226,7 +226,8 @@ IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &current
     }
 
     // check remote files
-    if ( includeFile.startsWith("http://", Qt::CaseInsensitive) || includeFile.startsWith("ftp://", Qt::CaseInsensitive) ) {
+    if ( includeFile.startsWith(QLatin1String("http://"), Qt::CaseInsensitive)
+            || includeFile.startsWith(QLatin1String("ftp://"), Qt::CaseInsensitive) ) {
         // always expect remote includes to exist
         return IndexedString(includeFile);
     }
