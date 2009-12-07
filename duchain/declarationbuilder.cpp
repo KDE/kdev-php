@@ -966,6 +966,7 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
     DeclarationBuilderBase::visitUnaryExpression(node);
     IndexedString includeFile = getIncludeFileForNode(node, editor());
     if ( !includeFile.isEmpty() ) {
+        DUChainWriteLocker lock;
         TopDUContext* includedCtx = DUChain::self()->chainForDocument(includeFile);
         if ( !includedCtx ) {
             // invalid include
@@ -973,8 +974,6 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
         }
 
         QualifiedIdentifier identifier(includeFile.str());
-
-        DUChainWriteLocker lock(DUChain::lock());
 
         foreach ( Declaration* dec, includedCtx->findDeclarations(identifier, SimpleCursor(0, 1)) ) {
             if ( dec->kind() == Declaration::Import ) {
