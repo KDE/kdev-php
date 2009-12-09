@@ -143,11 +143,9 @@ void ExpressionVisitor::visitAssignmentExpression(AssignmentExpressionAst *node)
     visitNode(node->assignmentExpression);
 
     if (node->operation == OperationPlus || node->operation == OperationMinus || node->operation == OperationMul || node->operation == OperationDiv) {
-        IntegralType::Ptr integral(new IntegralType(IntegralType::TypeInt));
-        m_result.setType(AbstractType::Ptr::staticCast(integral));
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeInt)));
     } else if (node->operation == OperationConcat) {
-        IntegralType::Ptr integral(new IntegralType(IntegralType::TypeString));
-        m_result.setType(AbstractType::Ptr::staticCast(integral));
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeString)));
     }
 }
 
@@ -291,11 +289,9 @@ void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
     } else if (node->constant) {
         QString str(stringForNode(node->constant).toLower());
         if (str == "true" || str == "false") {
-            IntegralType::Ptr integral(new IntegralType(IntegralType::TypeBoolean));
-            m_result.setType(AbstractType::Ptr::staticCast(integral));
+            m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean)));
         } else if (str == "null") {
-            IntegralType::Ptr integral(new IntegralType(IntegralType::TypeNull));
-            m_result.setType(AbstractType::Ptr::staticCast(integral));
+            m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeNull)));
         } else {
             //constant (created with declare('foo', 'bar'))
             Declaration* declaration = findDeclarationImport(ConstantDeclarationType, node->constant);
@@ -363,8 +359,7 @@ void ExpressionVisitor::visitStaticScalar(StaticScalarAst *node)
         type = IntegralType::TypeArray;
     }
     if (type != IntegralType::TypeVoid) {
-        IntegralType::Ptr integral(new IntegralType(type));
-        m_result.setType(AbstractType::Ptr::staticCast(integral));
+        m_result.setType(AbstractType::Ptr(new IntegralType(type)));
     }
 }
 
