@@ -326,15 +326,12 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
             type = IntegralType::TypeString;
             break;
         }
-        IntegralType::Ptr integral(new IntegralType(type));
-        m_result.setType(AbstractType::Ptr::staticCast(integral));
+        m_result.setType(AbstractType::Ptr(new IntegralType(type)));
     } else if (node->varname != -1) {
         //STRING_VARNAME-Token, probably the type of varname should be used
-        IntegralType::Ptr integral(new IntegralType(IntegralType::TypeString));
-        m_result.setType(AbstractType::Ptr::staticCast(integral));
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeString)));
     } else if (node->encapsList) {
-        IntegralType::Ptr integral(new IntegralType(IntegralType::TypeString));
-        m_result.setType(AbstractType::Ptr::staticCast(integral));
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeString)));
     }
 }
 
