@@ -43,6 +43,11 @@ namespace Php
 ContextBuilder::ContextBuilder() : m_reportErrors(true), m_mapAst(false)
 {
 }
+
+ContextBuilder::~ContextBuilder()
+{
+}
+
 ReferencedTopDUContext ContextBuilder::build(const KDevelop::IndexedString& url, AstNode* node,
         KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
 {
@@ -73,10 +78,6 @@ void ContextBuilder::setEditor(ParseSession* session)
 {
     EditorIntegrator* e = new EditorIntegrator(session);
     ContextBuilderBase::setEditor(e, true);
-}
-
-ContextBuilder::~ContextBuilder()
-{
 }
 
 void ContextBuilder::startVisiting(AstNode* node)
