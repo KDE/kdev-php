@@ -520,8 +520,7 @@ void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
             break;
         }
         if (type) {
-            IntegralType::Ptr integral(new IntegralType(type));
-            m_result.setType(AbstractType::Ptr::staticCast(integral));
+            m_result.setType(AbstractType::Ptr(new IntegralType(type)));
         }
     }
 }
@@ -530,11 +529,9 @@ void ExpressionVisitor::visitAdditiveExpressionRest(AdditiveExpressionRestAst* n
 {
     DefaultVisitor::visitAdditiveExpressionRest(node);
     if (node->operation == OperationPlus || node->operation == OperationMinus) {
-        IntegralType::Ptr integral(new IntegralType(IntegralType::TypeInt));
-        m_result.setType(AbstractType::Ptr::staticCast(integral));
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeInt)));
     } else if (node->operation == OperationConcat) {
-        IntegralType::Ptr integral(new IntegralType(IntegralType::TypeString));
-        m_result.setType(AbstractType::Ptr::staticCast(integral));
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeString)));
     }
 }
 
