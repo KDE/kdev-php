@@ -70,7 +70,6 @@ protected:
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst*);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
     virtual void visitClassStatement(ClassStatementAst *node);
-    virtual void visitTopStatement(TopStatementAst* node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
     virtual void visitUnaryExpression(UnaryExpressionAst* node);
 

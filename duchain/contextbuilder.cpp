@@ -210,12 +210,6 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
     }
 }
 
-
-void ContextBuilder::visitTopStatement(TopStatementAst* node)
-{
-    DefaultVisitor::visitTopStatement(node);
-}
-
 void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
     visitNode(node->functionName);
