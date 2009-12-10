@@ -49,13 +49,6 @@ public:
     PreDeclarationBuilder(QHash<qint64, Php::ClassDeclaration*>* types,
                           QHash<qint64, Php::FunctionDeclaration*>* functions,
                           QList<KDevelop::QualifiedIdentifier>* upcomingClassVariables,
-                          ParseSession* session)
-            : m_types(types), m_functions(functions), m_upcomingClassVariables(upcomingClassVariables) {
-        setEditor(session);
-    }
-    PreDeclarationBuilder(QHash<qint64, Php::ClassDeclaration*>* types,
-                          QHash<qint64, Php::FunctionDeclaration*>* functions,
-                          QList<KDevelop::QualifiedIdentifier>* upcomingClassVariables,
                           EditorIntegrator* editor)
             : m_types(types), m_functions(functions), m_upcomingClassVariables(upcomingClassVariables) {
         setEditor(editor);
