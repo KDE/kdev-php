@@ -49,32 +49,6 @@ PreDeclarationBuilder::~PreDeclarationBuilder()
 {
 }
 
-/*
-void PreDeclarationBuilder::visitNode(Php::AstNode* node) {
-    // AstNode is computer generated and the enum is sorted alphabetically
-    // filter out some kinds which cannot include class or function declarations
-    if ( node->kind >= AstNode::AdditiveExpressionKind && node->kind <= AstNode::BooleanOrExpressionKind ) {
-        return;
-    }
-    if ( node->kind == AstNode::ClassConstantDeclarationKind ) {
-        return;
-    }
-    if ( node->kind == AstNode::ClassExtendsKind || node->kind == AstNode::ClassImplementsKind ) {
-        return;
-    }
-    if ( node->kind >= AstNode::ClassVariableDeclarationKind && node->kind <= AstNode::CtorArgumentsKind ) {
-        return;
-    }
-    if ( node->kind == AstNode::ShiftExpressionKind || node->kind == AstNode::ShiftExpressionRestKind ) {
-        return;
-    }
-    if ( node->kind >= AstNode::UnaryExpressionKind && node->kind <= AstNode::VariableWithoutObjectsKind ) {
-        return;
-    }
-    DefaultVisitor::visitNode(node);
-}
-*/
-
 void PreDeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
 {
     setComment(formatComment(node, editor()));
