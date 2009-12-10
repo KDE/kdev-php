@@ -61,6 +61,8 @@ public:
             KDevelop::ReferencedTopDUContext updateContext
             = KDevelop::ReferencedTopDUContext(), bool useSmart = true);
 
+    virtual void startVisiting(AstNode* node);
+
 protected:
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
@@ -100,6 +102,10 @@ protected:
     virtual void updateCurrentType();
 
 private:
+    /// because the predeclarationbuilder runs before us,
+    /// we always "think" that we are recompiling, while this is not neccessarily true
+    bool m_actuallyRecompiling;
+
     /// Set this to true if you want to catch any variable in the lower AST tree
     bool m_findVariable;
     /// If the found variable is accessed as an array ($var[...]) this is set to true.

@@ -117,12 +117,19 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
     {
         PreDeclarationBuilder prebuilder(&m_types, &m_functions, &m_upcomingClassVariables, editor());
         updateContext = prebuilder.build(url, node, updateContext, useSmart);
+        m_actuallyRecompiling = prebuilder.didRecompile();
     }
 
     // now skip through some things the DeclarationBuilderBase (ContextBuilder) would do,
     // most significantly don't clear imported parent contexts
     m_reportErrors = (url != IndexedString("InternalFunctions.php"));
     return ContextBuilderBase::build(url, node, updateContext, useSmart);
+}
+
+void DeclarationBuilder::startVisiting(AstNode* node)
+{
+    setRecompiling(m_actuallyRecompiling);
+    DeclarationBuilderBase::startVisiting(node);
 }
 
 void DeclarationBuilder::closeDeclaration()

@@ -56,6 +56,9 @@ public:
 
     virtual ~PreDeclarationBuilder();
 
+    /// make it accessible to the declaration builder
+    bool didRecompile() { return recompiling(); }
+
 protected:
 //     virtual void visitNode(Php::AstNode* node);
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
