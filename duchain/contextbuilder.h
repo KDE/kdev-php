@@ -97,9 +97,6 @@ protected:
     bool m_reportErrors;
     ///TODO: push this into kdevplatform
     bool m_mapAst;
-
-private:
-    bool processInclude(const KUrl& url);
 };
 
 }
