@@ -380,7 +380,7 @@ int Lexer::nextTokenKind()
                     token = Parser::Token_COMMENT;
                 }
                 while (m_curpos < m_contentSize &&
-                        !((it + 1)->unicode() == '?' && (it + 2)->unicode() == '>')) {
+                        !((it)->unicode() == '?' && (it + 1)->unicode() == '>')) {
                     if ( it->unicode() == '\n' ) {
                         createNewline(m_curpos);
                         if ( token == Parser::Token_COMMENT ) {

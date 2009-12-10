@@ -58,6 +58,7 @@ private slots:
     void testHereDoc();
     void testCommonStringTokens();
     void testNonTerminatedStringWithVar();
+    void testPhpBlockWithComment();
 
 protected:
     TokenStream* tokenize(const QString& unit, bool debug = false, int initialState = Lexer::HtmlState);

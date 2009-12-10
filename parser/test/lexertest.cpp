@@ -456,6 +456,38 @@ void LexerTest::testNonTerminatedStringWithVar()
     delete ts;
 }
 
+void LexerTest::testPhpBlockWithComment()
+{
+    TokenStream* ts = tokenize(
+        "<?php\n"
+        "//asdf\n"
+        "?>\n"
+        "<?php\n"
+    , true);
+
+    QCOMPARE((int)ts->size(), 5);
+
+    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
+    compareStartPosition(ts, 0, 0, 0);
+    compareEndPosition(ts, 0, 0, 5);
+
+    QVERIFY(ts->token(1).kind == Parser::Token_COMMENT);
+    compareStartPosition(ts, 1, 1, 0);
+    compareEndPosition(ts, 1, 1, 6);
+
+    QVERIFY(ts->token(2).kind == Parser::Token_CLOSE_TAG);
+    compareStartPosition(ts, 2, 2, 0);
+    compareEndPosition(ts, 2, 2, 1);
+
+    QVERIFY(ts->token(3).kind == Parser::Token_INLINE_HTML);
+    compareStartPosition(ts, 3, 2, 2);
+    compareEndPosition(ts, 3, 2, 2);
+
+    QVERIFY(ts->token(4).kind == Parser::Token_OPEN_TAG);
+    compareStartPosition(ts, 4, 3, 0);
+    compareEndPosition(ts, 4, 3, 5);
+}
+
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
     TokenStream* tokenStream = new TokenStream;
