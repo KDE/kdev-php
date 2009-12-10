@@ -190,10 +190,8 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
     if (node->methodName) {
         //method declaration
         DUContext* parameters = openContext(node->parameters, DUContext::Function, node->methodName);
-        {
-            DUChainWriteLocker lock(DUChain::lock());
-            parameters->setInSymbolTable(false);
-        }
+        Q_ASSERT(!parameters->inSymbolTable());
+
         visitNode(node->parameters);
         closeContext();
 
@@ -216,10 +214,8 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     visitNode(node->functionName);
 
     DUContext* parameters = openContext(node->parameters, DUContext::Function, node->functionName);
-    {
-        DUChainWriteLocker lock(DUChain::lock());
-        parameters->setInSymbolTable(false);
-    }
+    Q_ASSERT(!parameters->inSymbolTable());
+
     visitNode(node->parameters);
     closeContext();
 
