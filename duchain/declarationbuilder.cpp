@@ -754,7 +754,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
     }
 
     if (node->stringFunctionNameOrClass && !node->stringFunctionName && !node->varFunctionName) {
-        if (identifierForNode(node->stringFunctionNameOrClass) == QualifiedIdentifier("define")
+        if (stringForNode(node->stringFunctionNameOrClass).compare("define", Qt::CaseInsensitive) == 0
                 && node->stringParameterList && node->stringParameterList->parametersSequence
                 && node->stringParameterList->parametersSequence->count() > 0) {
             //constant, defined through define-function

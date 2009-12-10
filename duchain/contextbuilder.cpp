@@ -142,13 +142,13 @@ QualifiedIdentifier ContextBuilder::identifierForNode(IdentifierAst* id)
     if (!id)
         return QualifiedIdentifier();
 
-    return QualifiedIdentifier(editor()->parseSession()->symbol(id->string));
+    return QualifiedIdentifier(stringForNode(id));
 }
 QualifiedIdentifier ContextBuilder::identifierForNode(VariableIdentifierAst* id)
 {
     if (!id)
         return QualifiedIdentifier();
-    QString ret(editor()->parseSession()->symbol(id->variable));
+    QString ret(stringForNode(id));
     ret = ret.mid(1); //cut off $
     return QualifiedIdentifier(ret);
 }
@@ -158,9 +158,18 @@ IdentifierPair ContextBuilder::identifierPairForNode( IdentifierAst* id )
     if (!id) {
         return qMakePair(QString(), QualifiedIdentifier());
     }
-    const QString ret(editor()->parseSession()->symbol(id->string));
+    const QString ret = stringForNode(id);
 
     return qMakePair(ret, QualifiedIdentifier(ret.toLower()));
+}
+
+QString ContextBuilder::stringForNode(IdentifierAst* node) const
+{
+    return editor()->parseSession()->symbol(node->string);
+}
+QString ContextBuilder::stringForNode(VariableIdentifierAst* node) const
+{
+    return editor()->parseSession()->symbol(node->variable);
 }
 
 void ContextBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst* node)

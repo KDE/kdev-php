@@ -66,6 +66,8 @@ protected:
     virtual KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
     IdentifierPair identifierPairForNode(IdentifierAst* id);
+    QString stringForNode(IdentifierAst* node) const;
+    QString stringForNode(VariableIdentifierAst* node) const;
 
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst*);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
