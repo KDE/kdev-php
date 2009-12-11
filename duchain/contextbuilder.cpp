@@ -26,6 +26,10 @@
 #include <language/duchain/declaration.h>
 #include <language/duchain/classdeclaration.h>
 
+#include <interfaces/icore.h>
+#include <interfaces/ilanguagecontroller.h>
+#include <interfaces/icompletionsettings.h>
+
 #include <klocalizedstring.h>
 
 #include "parsesession.h"
@@ -40,7 +44,7 @@ using namespace KDevelop;
 namespace Php
 {
 
-ContextBuilder::ContextBuilder() : m_reportErrors(true), m_mapAst(false)
+ContextBuilder::ContextBuilder() : m_isInternalFunctions(false), m_reportErrors(true), m_mapAst(false)
 {
 }
 
@@ -51,7 +55,13 @@ ContextBuilder::~ContextBuilder()
 ReferencedTopDUContext ContextBuilder::build(const KDevelop::IndexedString& url, AstNode* node,
         KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
 {
-    m_reportErrors = (url != IndexedString("InternalFunctions.php"));
+    m_isInternalFunctions = (url != IndexedString("InternalFunctions.php"));
+    if ( m_isInternalFunctions ) {
+        m_reportErrors = false;
+    } else {
+        m_reportErrors = ICore::self()->languageController()->completionSettings()->highlightSemanticProblems();
+    }
+
     if (!updateContext) {
         DUChainReadLocker lock(DUChain::lock());
         updateContext = DUChain::self()->chainForDocument(url);

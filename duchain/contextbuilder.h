@@ -95,7 +95,9 @@ protected:
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, const KDevelop::QualifiedIdentifier &identifier, AstNode* node);
 
-    /// InternalFunctions.php should not be checked for errors
+    /// InternalFunctions.php should not be checked for errors and can get some optimizations
+    bool m_isInternalFunctions;
+    /// Whether semantic problems should get reported
     bool m_reportErrors;
     ///TODO: push this into kdevplatform
     bool m_mapAst;

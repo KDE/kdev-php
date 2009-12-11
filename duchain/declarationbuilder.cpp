@@ -30,6 +30,10 @@
 #include <language/duchain/aliasdeclaration.h>
 #include <language/duchain/types/integraltype.h>
 
+#include <interfaces/icore.h>
+#include <interfaces/ilanguagecontroller.h>
+#include <interfaces/icompletionsettings.h>
+
 #include <klocalizedstring.h>
 
 #include "phpast.h"
@@ -122,7 +126,12 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
 
     // now skip through some things the DeclarationBuilderBase (ContextBuilder) would do,
     // most significantly don't clear imported parent contexts
-    m_reportErrors = (url != IndexedString("InternalFunctions.php"));
+    m_isInternalFunctions = (url != IndexedString("InternalFunctions.php"));
+    if ( m_isInternalFunctions ) {
+        m_reportErrors = false;
+    } else {
+        m_reportErrors = ICore::self()->languageController()->completionSettings()->highlightSemanticProblems();
+    }
     return ContextBuilderBase::build(url, node, updateContext, useSmart);
 }
 
