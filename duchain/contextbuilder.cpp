@@ -55,7 +55,7 @@ ContextBuilder::~ContextBuilder()
 ReferencedTopDUContext ContextBuilder::build(const KDevelop::IndexedString& url, AstNode* node,
         KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
 {
-    m_isInternalFunctions = (url != IndexedString("InternalFunctions.php"));
+    m_isInternalFunctions = url == IndexedString("InternalFunctions.php");
     if ( m_isInternalFunctions ) {
         m_reportErrors = false;
     } else if ( ICore::self() ) {

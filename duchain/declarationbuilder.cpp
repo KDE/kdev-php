@@ -126,7 +126,7 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
 
     // now skip through some things the DeclarationBuilderBase (ContextBuilder) would do,
     // most significantly don't clear imported parent contexts
-    m_isInternalFunctions = (url != IndexedString("InternalFunctions.php"));
+    m_isInternalFunctions = url == IndexedString("InternalFunctions.php");
     if ( m_isInternalFunctions ) {
         m_reportErrors = false;
     } else if ( ICore::self() ) {
