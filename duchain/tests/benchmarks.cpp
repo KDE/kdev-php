@@ -99,7 +99,7 @@ void Benchmarks::useBuilder()
     StartAst* ast = 0;
     session.parse(&ast);
     DeclarationBuilder builder(&session);
-    KDevelop::ReferencedTopDUContext chain = builder.build(IndexedString("InternalFunctions.php"), ast);
+    KDevelop::ReferencedTopDUContext chain = builder.build(IndexedString("BigTestFile.php"), ast);
     QBENCHMARK {
         UseBuilder useBuilder(&session);
         useBuilder.buildUses(ast);

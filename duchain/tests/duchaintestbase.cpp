@@ -101,8 +101,10 @@ TopDUContext* DUChainTestBase::parseAdditionalFile(IndexedString fileName, QByte
     DeclarationBuilder declarationBuilder(session);
     TopDUContext* top = declarationBuilder.build(fileName, ast);
 
-    UseBuilder useBuilder(session);
-    useBuilder.buildUses(ast);
+    if ( fileName != IndexedString("InternalFunctions.php") ) {
+        UseBuilder useBuilder(session);
+        useBuilder.buildUses(ast);
+    }
 
     delete session;
 
@@ -135,8 +137,10 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QSt
     DeclarationBuilder declarationBuilder(session);
     TopDUContext* top = declarationBuilder.build(IndexedString(url), ast);
 
-    UseBuilder useBuilder(session);
-    useBuilder.buildUses(ast);
+    if ( IndexedString(url) != IndexedString("InternalFunctions.php") ) {
+        UseBuilder useBuilder(session);
+        useBuilder.buildUses(ast);
+    }
 
     if (dump & DumpDUChain) {
         kDebug() << "===== DUChain:";

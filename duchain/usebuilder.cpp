@@ -57,6 +57,15 @@ UseBuilder::UseBuilder(EditorIntegrator* editor)
     setEditor(editor);
 }
 
+ReferencedTopDUContext UseBuilder::build ( const KDevelop::IndexedString& url, AstNode* node, ReferencedTopDUContext updateContext, bool useSmart )
+{
+    // just for safety purposes: running the UseBuilder on the InternalFunction file
+    // will lead to undefined behavior due to the amount of optimization it has received
+    // (esp. in the contextbuilder)
+    Q_ASSERT(url != IndexedString("InternalFunctions.php"));
+    return UseBuilderBase::build ( url, node, updateContext, useSmart );
+}
+
 void UseBuilder::visitParameter(ParameterAst *node)
 {
     UseBuilderBase::visitParameter(node);

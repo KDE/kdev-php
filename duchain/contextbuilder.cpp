@@ -214,14 +214,17 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
         visitNode(node->parameters);
         closeContext();
 
-        DUContext* body = openContext(node->methodBody, DUContext::Other, node->methodName);
-        {
-            DUChainWriteLocker lock(DUChain::lock());
-            body->addImportedParentContext(parameters);
-            body->setInSymbolTable(false);
+        if ( !m_isInternalFunctions ) {
+            // the internal functions file has only empty method bodies, so skip them
+            DUContext* body = openContext(node->methodBody, DUContext::Other, node->methodName);
+            {
+                DUChainWriteLocker lock(DUChain::lock());
+                body->addImportedParentContext(parameters);
+                body->setInSymbolTable(false);
+            }
+            visitNode(node->methodBody);
+            closeContext();
         }
-        visitNode(node->methodBody);
-        closeContext();
     } else {
         //member-variable or const
         DefaultVisitor::visitClassStatement(node);
@@ -238,14 +241,17 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     visitNode(node->parameters);
     closeContext();
 
-    DUContext* body = openContext(node->functionBody, DUContext::Other, node->functionName);
-    {
-        DUChainWriteLocker lock(DUChain::lock());
-        body->addImportedParentContext(parameters);
-        body->setInSymbolTable(false);
+    if ( !m_isInternalFunctions ) {
+        // the internal functions file has only empty method bodies, so skip them
+        DUContext* body = openContext(node->functionBody, DUContext::Other, node->functionName);
+        {
+            DUChainWriteLocker lock(DUChain::lock());
+            body->addImportedParentContext(parameters);
+            body->setInSymbolTable(false);
+        }
+        visitNode(node->functionBody);
+        closeContext();
     }
-    visitNode(node->functionBody);
-    closeContext();
 }
 
 void ContextBuilder::addBaseType(IdentifierAst * identifier)

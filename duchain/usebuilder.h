@@ -46,6 +46,10 @@ public:
 
     void newCheckedUse(AstNode* node, KDevelop::Declaration* declaration);
 
+    virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
+        KDevelop::ReferencedTopDUContext updateContext
+        = KDevelop::ReferencedTopDUContext(), bool useSmart = true);
+
 protected:
     virtual void visitParameter(ParameterAst *node);
     virtual void visitClassImplements(ClassImplementsAst *node);
