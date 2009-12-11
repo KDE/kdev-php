@@ -129,7 +129,7 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
     m_isInternalFunctions = (url != IndexedString("InternalFunctions.php"));
     if ( m_isInternalFunctions ) {
         m_reportErrors = false;
-    } else {
+    } else if ( ICore::self() ) {
         m_reportErrors = ICore::self()->languageController()->completionSettings()->highlightSemanticProblems();
     }
     return ContextBuilderBase::build(url, node, updateContext, useSmart);
