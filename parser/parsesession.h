@@ -1,5 +1,4 @@
 /*****************************************************************************
- * Copyright (c) 2007 Andreas Pakulat <apaku@gmx.de>                         *
  * Copyright (c) 2007 Piyush verma <piyush.verma@gmail.com>                  *
  * Copyright (c) 2008 Niko Sams <niko.sams@gmail.com>                        *
  *                                                                           *
