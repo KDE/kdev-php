@@ -37,7 +37,7 @@ GenericName[x-test]=xxPHP Documentationxx
 ServiceTypes=KDevelop/Plugin
 
 X-KDE-Library=kdevphpdocs
-X-KDevelop-Version=7
+X-KDevelop-Version=8
 X-KDevelop-Category=Global
 X-KDE-PluginInfo-Name=KDevPhpDocs
 X-KDE-PluginInfo-Author=Milian Wolff
