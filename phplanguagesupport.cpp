@@ -55,7 +55,7 @@
 using namespace KDevelop;
 
 K_PLUGIN_FACTORY(KDevPhpSupportFactory, registerPlugin<Php::LanguageSupport>();)
-K_EXPORT_PLUGIN(KDevPhpSupportFactory("kdevphpsupport"))
+K_EXPORT_PLUGIN(KDevPhpSupportFactory("kdevphpsupport", "kdevphp"))
 
 namespace Php
 {
