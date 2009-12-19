@@ -29,17 +29,10 @@
 #include <ksharedptr.h>
 #include <ktexteditor/range.h>
 
-#include <language/duchain/duchainpointer.h>
-#include <language/duchain/topducontext.h>
-
-
 namespace Php
 {
 
 class LanguageSupport;
-
-class ParseSession;
-
 class EditorIntegrator;
 
 class ParseJob : public KDevelop::ParseJob
@@ -50,14 +43,9 @@ public:
     explicit ParseJob(const KUrl &url);
     virtual ~ParseJob();
 
-    void setAST(StartAst* ast);
-    virtual StartAst *ast() const;
-
     const KTextEditor::Range& textRangeToParse() const;
 
     LanguageSupport* php() const;
-    ParseSession* parseSession() const;
-    bool wasReadFromDisk() const;
 
     void setParentJob(ParseJob *job);
 
@@ -65,10 +53,6 @@ protected:
     virtual void run();
 
 private:
-    ParseSession *m_session;
-    StartAst *m_ast;
-    bool m_readFromDisk;
-    KDevelop::ReferencedTopDUContext m_duContext;
     KUrl m_url;
     KTextEditor::Range m_textRangeToParse;
     ParseJob *m_parentJob; ///< parent job if this one is an include

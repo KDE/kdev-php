@@ -92,9 +92,6 @@ struct UrlParseLock {
 
 ParseJob::ParseJob(const KUrl &url)
         : KDevelop::ParseJob(url)
-        , m_session(new ParseSession)
-        , m_ast(0)
-        , m_readFromDisk(false)
         , m_url(url)
         , m_parentJob(0)
 {
@@ -102,23 +99,11 @@ ParseJob::ParseJob(const KUrl &url)
 
 ParseJob::~ParseJob()
 {
-     delete m_session;
 }
 
 LanguageSupport *ParseJob::php() const
 {
     return LanguageSupport::self();
-}
-
-StartAst *ParseJob::ast() const
-{
-    Q_ASSERT(isFinished() && m_ast);
-    return m_ast;
-}
-
-bool ParseJob::wasReadFromDisk() const
-{
-    return m_readFromDisk;
 }
 
 void ParseJob::run()
@@ -150,9 +135,11 @@ void ParseJob::run()
 
     kDebug() << "parsing" << document().str();
 
-    m_readFromDisk = !contentsAvailableFromEditor();
+    bool readFromDisk = !contentsAvailableFromEditor();
 
-    if (m_readFromDisk) {
+    ParseSession session;
+
+    if (readFromDisk) {
         QString fileName = document().str();
         if (fileName == "InternalFunctions.php") {
             fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
@@ -188,26 +175,27 @@ void ParseJob::run()
 
 //         if( codec )
 //             s.setCodec( QTextCodec::codecForName(codec) );
-        m_session->setContents(s.readAll());
+        session.setContents(s.readAll());
         file.close();
     } else {
-        m_session->setContents(contentsFromEditor());
-        m_session->setCurrentDocument(document().str());
+        session.setContents(contentsFromEditor());
+        session.setCurrentDocument(document().str());
     }
 
 
     // 2) parse
-    bool matched = m_session->parse(&m_ast);
+    StartAst* ast = 0;
+    bool matched = session.parse(&ast);
 
     if (abortRequested()) {
         return abortJob();
     }
 
     if (matched) {
-        EditorIntegrator editor(m_session);
+        EditorIntegrator editor(&session);
 
         IncludeBuilder includeBuilder(&editor);
-        includeBuilder.build(document(), m_ast);
+        includeBuilder.build(document(), ast);
 
         QList<ProblemPointer> includeProblems;
         {
@@ -245,7 +233,7 @@ void ParseJob::run()
         QReadLocker parseLock(php()->language()->parseLock());
 
         DeclarationBuilder builder(&editor);
-        KDevelop::ReferencedTopDUContext chain = builder.build(document(), m_ast);
+        KDevelop::ReferencedTopDUContext chain = builder.build(document(), ast);
 
         if (abortRequested()) {
             return abortJob();
@@ -257,7 +245,7 @@ void ParseJob::run()
                 && document() != IndexedString("InternalFunctions.php") )
         {
             UseBuilder useBuilder(&editor);
-            useBuilder.buildUses(m_ast);
+            useBuilder.buildUses(ast);
         }
 
         if (abortRequested()) {
@@ -285,7 +273,7 @@ void ParseJob::run()
 
         QFileInfo fileInfo(document().str());
         QDateTime lastModified = fileInfo.lastModified();
-        if (m_readFromDisk) {
+        if (readFromDisk) {
             file->setModificationRevision(KDevelop::ModificationRevision(lastModified));
         } else {
             file->setModificationRevision(KDevelop::ModificationRevision(lastModified, revisionToken()));
@@ -312,7 +300,7 @@ void ParseJob::run()
             DUChain::self()->addDocumentChain(top);
         }
         setDuChain(top);
-        foreach(const ProblemPointer &p, m_session->problems()) {
+        foreach(const ProblemPointer &p, session.problems()) {
             DUChainWriteLocker lock(DUChain::lock());
             top->addProblem(p);
         }
@@ -323,11 +311,6 @@ void ParseJob::run()
         }
         return;
     }
-}
-
-ParseSession *ParseJob::parseSession() const
-{
-    return m_session;
 }
 
 void ParseJob::setParentJob(ParseJob *job)
