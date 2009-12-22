@@ -888,6 +888,7 @@ void DeclarationBuilder::declareFoundVariable(AbstractType* type)
                 foreach ( Declaration* dec, ctx->findDeclarations(m_variable) ) {
                     if ( dec->kind() == Declaration::Instance ) {
                         isDeclared = true;
+                        setEncountered(dec);
                         break;
                     }
                 }
