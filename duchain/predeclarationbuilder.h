@@ -63,10 +63,10 @@ protected:
 //     virtual void visitNode(Php::AstNode* node);
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
-    virtual void visitClassStatement(ClassStatementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst* node);
 
+    virtual void closeContext();
 private:
     QHash<qint64, Php::ClassDeclaration*>* m_types;
     QHash<qint64, Php::FunctionDeclaration*>* m_functions;

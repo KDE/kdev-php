@@ -446,6 +446,7 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
                     return;
                 }
                 if ( cdec->abstractType()->indexed() == type->indexed() ) {
+                    setEncountered(cdec);
                     return;
                 }
             }
@@ -651,7 +652,6 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
     }
 
     DUChainWriteLocker lock(DUChain::lock());
-
     // check if this variable is already declared
     {
         QList< Declaration* > decs = parentCtx->findLocalDeclarations(identifier.first());
@@ -661,6 +661,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                 // we expect that the list of declarations has the newest declaration at back
                 if ( dynamic_cast<VariableDeclaration*>( *it ) ) {
                     if ( (*it)->abstractType()->indexed() == type->indexed() ) {
+                        setEncountered(*it);
                         return;
                     }
                     break;
@@ -956,10 +957,23 @@ void DeclarationBuilder::visitGlobalVar(GlobalVarAst* node)
 {
     DeclarationBuilderBase::visitGlobalVar(node);
     if (node->var) {
+        QualifiedIdentifier id = identifierForNode(node->var);
+        if ( recompiling() ) {
+            DUChainWriteLocker lock(DUChain::lock());
+            // sadly we can't use findLocalDeclarations() here, since it un-aliases declarations
+            foreach ( Declaration* dec, currentContext()->localDeclarations() ) {
+                if ( dynamic_cast<AliasDeclaration*>(dec) && dec->identifier() == id.first() ) {
+                    // don't redeclare but reuse the existing declaration
+                    setEncountered(dec);
+                    return;
+                }
+            }
+        }
+        // no existing declaration found, create one
         Declaration* aliasedDeclaration = findDeclarationImport(GlobalVariableDeclarationType, node->var);
         if (aliasedDeclaration) {
             DUChainWriteLocker lock(DUChain::lock());
-            AliasDeclaration* dec = openDefinition<AliasDeclaration>(identifierForNode(node->var), editor()->findRange(node->var));
+            AliasDeclaration* dec = openDefinition<AliasDeclaration>(id, editor()->findRange(node->var));
             dec->setAliasedDeclaration(aliasedDeclaration);
             closeDeclaration();
         }
@@ -994,6 +1008,7 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
         foreach ( Declaration* dec, includedCtx->findDeclarations(identifier, SimpleCursor(0, 1)) ) {
             if ( dec->kind() == Declaration::Import ) {
                 // nothing to do
+                setEncountered(dec);
                 return;
             }
         }
@@ -1010,6 +1025,24 @@ void DeclarationBuilder::updateCurrentType()
 {
     DUChainWriteLocker lock(DUChain::lock());
     currentDeclaration()->setAbstractType(currentAbstractType());
+}
+
+void DeclarationBuilder::supportBuild(AstNode* node, DUContext* context)
+{
+    // generally we are the second pass through the doc (see PreDeclarationBuilder)
+    // so notify our base about it
+    setCompilingContexts(false);
+    DeclarationBuilderBase::supportBuild(node, context);
+}
+
+void DeclarationBuilder::closeContext()
+{
+    // We don't want the first pass to clean up stuff, since
+    // there is lots of stuff we visit/encounter here first.
+    // So we clean things up here.
+    setCompilingContexts(true);
+    DeclarationBuilderBase::closeContext();
+    setCompilingContexts(false);
 }
 
 }

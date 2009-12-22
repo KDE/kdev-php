@@ -26,7 +26,6 @@
 #include <ktexteditor/smartinterface.h>
 
 #include <language/duchain/stringhelpers.h>
-#include <language/duchain/aliasdeclaration.h>
 #include <language/duchain/types/functiontype.h>
 
 #include <klocalizedstring.h>
@@ -85,8 +84,7 @@ void PreDeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationState
         m_types->insert(node->className->string, dec);
     }
 
-    // only visit the body to look for other function declarations inside the methods
-    visitNode(node->body);
+    PreDeclarationBuilderBase::visitClassDeclarationStatement(node);
 
     closeDeclaration();
 }
@@ -112,19 +110,9 @@ void PreDeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarat
         m_types->insert(node->interfaceName->string, dec);
     }
 
-    // don't evaluate the body or extends of interfaces in PreDeclarationBuilder
+    PreDeclarationBuilderBase::visitInterfaceDeclarationStatement(node);
 
     closeDeclaration();
-}
-
-void PreDeclarationBuilder::visitClassStatement(ClassStatementAst* node)
-{
-    // we are only looking for function declarations inside methods
-    if (node->methodBody) {
-        visitNode(node->methodBody);
-    } else {
-        PreDeclarationBuilderBase::visitClassStatement(node);
-    }
 }
 
 void PreDeclarationBuilder::visitClassVariable(ClassVariableAst* node)
@@ -149,10 +137,18 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
 
         m_functions->insert(node->functionName->string, dec);
     }
-    // only visit the body to look for other function declarations
-    visitNode(node->functionBody);
+
+    PreDeclarationBuilderBase::visitFunctionDeclarationStatement(node);
 
     closeDeclaration();
+}
+
+void PreDeclarationBuilder::closeContext()
+{
+    // we don't want to cleanup here, see DeclarationBuilder::closeContext()
+    setCompilingContexts(false);
+    PreDeclarationBuilderBase::closeContext();
+    setCompilingContexts(true);
 }
 
 }

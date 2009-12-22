@@ -95,6 +95,9 @@ protected:
     virtual void closeDeclaration();
     void classContextOpened(KDevelop::DUContext* context);
 
+    virtual void supportBuild(AstNode* node, KDevelop::DUContext* context = 0);
+    virtual void closeContext();
+
     /// don't forget to closeDeclaration() afterwards
     /// set m_currentModifers to your likings and reset it afterwards
     void openClassMemberDeclaration(Php::AstNode* node, const KDevelop::QualifiedIdentifier& name);
