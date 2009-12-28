@@ -37,3 +37,4 @@ X-KDevelop-Interfaces=ILanguageSupport
 X-KDevelop-SupportedMimeTypes=application/x-php
 X-KDE-PluginInfo-Name=KDevPhpSupport
 X-KDevelop-Mode=NoGUI
+X-KDevelop-LoadMode=AlwaysOn
