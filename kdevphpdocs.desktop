@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Comment=This plugin integrates PHP.net online documentation.
+Comment[el]=Αυτό το πρόσθετο ενσωματώνει διαδικτυακή τεκμηρίωση PHP.net
 Comment[en_GB]=This plugin integrates PHP.net online documentation.
 Comment[et]=See plugin lõimib PHP veebidokumentatsiooni.
 Comment[gl]=Esta extensión integra a documentación en liña de PHP.net.
@@ -10,6 +11,7 @@ Comment[uk]=За допомогою цього додатка можна інт�
 Comment[x-test]=xxThis plugin integrates PHP.net online documentation.xx
 Comment[zh_TW]=此外掛程式整合 PHP.net 線上文件。
 Name=KDevPhpDocs
+Name[el]=KDevPhpDocs
 Name[en_GB]=KDevPhpDocs
 Name[et]=KDevPhpDocs
 Name[gl]=KDevPhpDocs
@@ -20,6 +22,7 @@ Name[uk]=KDevPhpDocs
 Name[x-test]=xxKDevPhpDocsxx
 Name[zh_TW]=KDevPhpDocs
 GenericName=PHP Documentation
+GenericName[el]=PHP Τεκμηρίωση
 GenericName[en_GB]=PHP Documentation
 GenericName[et]=PHP dokumentatsioon
 GenericName[gl]=Documentación de PHP
