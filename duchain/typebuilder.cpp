@@ -81,6 +81,11 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         iType = IntegralType::TypeNull;
     } else if (lType == "void") {
         iType = IntegralType::TypeVoid;
+    } else if (lType == "self" || lType == "this") {
+        DUChainReadLocker lock(DUChain::lock());
+        if ( currentContext()->type() == DUContext::Class && currentContext()->owner() ) {
+            return currentContext()->owner()->abstractType();
+        }
     } else {
         //don't use openTypeFromName as it uses cursor for findDeclarations
         Declaration* decl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier(type.toLower()), node);

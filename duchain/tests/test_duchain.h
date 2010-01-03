@@ -44,6 +44,7 @@ private slots:
     void testDeclarationMultipleReturnTypes();
     void testDeclarationReturnTypeDocBlock();
     void testDeclarationReturnTypeDocBlockIntegral();
+    void testDeclarationReturnTypeClassChain();
     void testClassImplementsInterface();
     void testClassExtends();
     void testStaticMethod();

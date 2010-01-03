@@ -506,6 +506,25 @@ void TestDUChain::testDeclarationReturnTypeDocBlockIntegral()
     QVERIFY(IntegralType::Ptr::dynamicCast(fType->returnType())->dataType() == IntegralType::TypeInt);
 }
 
+void TestDUChain::testDeclarationReturnTypeClassChain()
+{
+    QByteArray method("<? class A { /** @return this **/ function a() {} /** @return self **/ function b() {} }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    // class a
+    DUContext* ctx = top->childContexts().first();
+    QCOMPARE(ctx->type(), DUContext::Class);
+    QVERIFY(ctx->owner());
+    QVERIFY(StructureType::Ptr::dynamicCast(ctx->owner()->abstractType()));
+
+    //function a
+    QVERIFY(/* func a (this) */ ctx->localDeclarations().at(0)->type<FunctionType>() == ctx->owner()->abstractType());
+    QVERIFY(/* func b (self) */ ctx->localDeclarations().at(1)->type<FunctionType>() == ctx->owner()->abstractType());
+}
+
 void TestDUChain::testDeclareTypehintFunction()
 {
     //                 0         1         2         3         4         5         6         7
