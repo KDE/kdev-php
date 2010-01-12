@@ -124,21 +124,95 @@ AbstractType::Ptr TypeBuilder::injectParseType(QString type, AstNode* node)
     return ret;
 }
 
+/**
+ * Find all (or only one - see @p docCommentName) values for a given needle
+ * in a doc-comment. Needle has to start a line in the doccomment,
+ * i.e.:
+ *
+ *  * @docCommentName value
+ *
+ * or
+ *
+ *  /// @docCommentName value
+ */
+QStringList findInDocComment(const QString &docComment, const QString &docCommentName, const bool onlyOne)
+{
+    QStringList matches;
+    // optimization that does not require potentially slow regexps
+    // old code was something like this:
+    /*
+    if (!docComment.isEmpty()) {
+        QRegExp rx("\\*\\s+@param\\s([^\\s]*)");
+        int pos = 0;
+        while ((pos = rx.indexIn(docComment, pos)) != -1) {
+            ret << parseType(rx.cap(1), node);
+            pos += rx.matchedLength();
+        }
+    }
+    */
+
+    for ( int i = 0, size = docComment.size(); i < size; ++i ) {
+        if ( docComment[i].isSpace() || docComment[i] == '*' || docComment[i] == '/' ) {
+            // skip whitespace and comment-marker at beginning of line
+            continue;
+        } else if ( docComment[i] == '@' && docComment.midRef(i + 1, docCommentName.size()) == docCommentName ) {
+            // find @return or similar
+            i += docCommentName.size() + 1;
+            // skip whitespace (at least one is required)
+            if ( i >= size || !docComment[i].isSpace() ) {
+                // skip to next line
+                i = docComment.indexOf('\n', i);
+                if ( i == -1 ) {
+                    break;
+                }
+                continue;
+            } else if ( docComment[i] == '\n' ) {
+                continue;
+            }
+            ++i; // at least one whitespace
+            while ( i < size && docComment[i].isSpace() ) {
+                ++i;
+            }
+            // finally get the typename
+            int pos = i;
+            while ( pos < size && !docComment[pos].isSpace() ) {
+                ++pos;
+            }
+            if ( pos > i ) {
+                matches << docComment.mid(i, pos - i);
+                if ( onlyOne ) {
+                    break;
+                } else {
+                    i = pos;
+                }
+            }
+        }
+        // skip to next line
+        i = docComment.indexOf('\n', i);
+        if ( i == -1 ) {
+            break;
+        }
+    }
+
+    return matches;
+}
+
 AbstractType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& docCommentName)
 {
     m_gotTypeFromDocComment = false;
-    QString docComment = editor()->parseSession()->docComment(node->startToken);
-    if (!docComment.isEmpty()) {
-        QRegExp rx("(?:\\*|///)\\s+@" + QRegExp::escape(docCommentName) + "\\s+([^\\s]*)");
-        if (rx.indexIn(docComment) != -1) {
+    const QString& docComment = editor()->parseSession()->docComment(node->startToken);
+
+    if ( !docComment.isEmpty() ) {
+        const QStringList& matches = findInDocComment(docComment, docCommentName, true);
+        if ( !matches.isEmpty() ) {
             AbstractType::Ptr type;
-            if (rx.cap(1) == "$this") {
+            if (matches.first() == "$this") {
                 DUChainReadLocker lock(DUChain::lock());
                 if (currentContext()->owner()) {
                     type = currentContext()->owner()->abstractType();
                 }
             } else {
-                type = injectParseType(rx.cap(1), node);
+                type = injectParseType(matches.first(), node);
             }
             if (type) {
                 m_gotTypeFromDocComment = true;
@@ -149,17 +223,16 @@ AbstractType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& doc
     return AbstractType::Ptr();
 }
 
-
 QList<AbstractType::Ptr> TypeBuilder::parseDocCommentParams(AstNode* node)
 {
     QList<AbstractType::Ptr> ret;
     QString docComment = editor()->parseSession()->docComment(node->startToken);
-    if (!docComment.isEmpty()) {
-        QRegExp rx("\\*\\s+@param\\s([^\\s]*)");
-        int pos = 0;
-        while ((pos = rx.indexIn(docComment, pos)) != -1) {
-            ret << parseType(rx.cap(1), node);
-            pos += rx.matchedLength();
+    if ( !docComment.isEmpty() ) {
+        const QStringList& matches = findInDocComment(docComment, "param", false);
+        if ( !matches.isEmpty() ) {
+            foreach ( const QString& type, matches ) {
+                ret << parseType(type, node);
+            }
         }
     }
     return ret;
