@@ -2,19 +2,25 @@
 Type=Service
 Comment=This plugin integrates PHP.net online documentation.
 Comment[en_GB]=This plugin integrates PHP.net online documentation.
+Comment[es]=Este complemento integra la documentación en línea de PHP.net.
 Comment[pt]=Este 'plugin' integra a documentação 'online' do PHP.net.
 Comment[sv]=Insticksprogrammet integrerar PHP.net nätdokumentation.
 Comment[uk]=За допомогою цього додатка можна інтегрувати документацію PHP.net.
+Comment[zh_TW]=此外掛程式整合 PHP.net 線上文件。
 Name=KDevPhpDocs
 Name[en_GB]=KDevPhpDocs
+Name[es]=KDevPhpDocs
 Name[pt]=KDevPhpDocs
 Name[sv]=KDevelop PHP-dokument
 Name[uk]=KDevPhpDocs
+Name[zh_TW]=KDevPhpDocs
 GenericName=PHP Documentation
 GenericName[en_GB]=PHP Documentation
+GenericName[es]=Documentación PHP
 GenericName[pt]=Documentação de PHP
 GenericName[sv]=PHP-dokumentation
 GenericName[uk]=Документація з PHP
+GenericName[zh_TW]=PHP 文件
 ServiceTypes=KDevelop/Plugin
 
 X-KDE-Library=kdevphpdocs
