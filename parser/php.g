@@ -804,7 +804,7 @@ identifier=identifier
 #classStatements=classStatement*
 -> classBody ;;
 
-    CONST consts=classConstantDeclaration @ COMMA SEMICOLON
+    CONST #consts=classConstantDeclaration @ COMMA SEMICOLON
   | VAR variable=classVariableDeclaration SEMICOLON
   | modifiers=optionalModifiers
     ( variable=classVariableDeclaration SEMICOLON

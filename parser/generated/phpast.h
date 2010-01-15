@@ -495,7 +495,7 @@ struct KDEVPHPPARSER_EXPORT ClassStatementAst: public AstNode
 {
     enum { KIND = ClassStatementKind };
 
-    ClassConstantDeclarationAst *consts;
+    const KDevPG::ListNode<ClassConstantDeclarationAst *> *constsSequence;
     ClassVariableDeclarationAst *variable;
     OptionalModifiersAst *modifiers;
     IdentifierAst *methodName;

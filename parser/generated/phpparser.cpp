@@ -2465,7 +2465,7 @@ bool Parser::parseClassStatement(ClassStatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->consts = __node_52;
+            (*yynode)->constsSequence = snoc((*yynode)->constsSequence, __node_52, memoryPool);
 
             while (yytoken == Token_COMMA)
             {
@@ -2488,7 +2488,7 @@ bool Parser::parseClassStatement(ClassStatementAst **yynode)
                     }
                     return false;
                 }
-                (*yynode)->consts = __node_53;
+                (*yynode)->constsSequence = snoc((*yynode)->constsSequence, __node_53, memoryPool);
 
             }
             if (yytoken != Token_SEMICOLON)

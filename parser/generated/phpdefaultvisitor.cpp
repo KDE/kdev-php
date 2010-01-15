@@ -245,7 +245,16 @@ void DefaultVisitor::visitClassNameReference(ClassNameReferenceAst *node)
 
 void DefaultVisitor::visitClassStatement(ClassStatementAst *node)
 {
-    visitNode(node->consts);
+    if (node->constsSequence)
+    {
+        const KDevPG::ListNode<ClassConstantDeclarationAst*> *__it = node->constsSequence->front(), *__end = __it;
+        do
+        {
+            visitNode(__it->element);
+            __it = __it->next;
+        }
+        while (__it != __end);
+    }
     visitNode(node->variable);
     visitNode(node->modifiers);
     visitNode(node->methodName);

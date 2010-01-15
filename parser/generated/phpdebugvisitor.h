@@ -355,7 +355,16 @@ public:
     virtual void visitClassStatement(ClassStatementAst *node)
     {
         if (!m_indent) printToken(node, "classStatement");
-        if (node->consts) printToken(node->consts, "classConstantDeclaration", "consts");
+        if (node->constsSequence)
+        {
+            const KDevPG::ListNode<ClassConstantDeclarationAst*> *__it = node->constsSequence->front(), *__end = __it;
+            do
+            {
+                printToken(__it->element, "classConstantDeclaration", "consts[]");
+                __it = __it->next;
+            }
+            while (__it != __end);
+        }
         if (node->variable) printToken(node->variable, "classVariableDeclaration", "variable");
         if (node->modifiers) printToken(node->modifiers, "optionalModifiers", "modifiers");
         if (node->methodName) printToken(node->methodName, "identifier", "methodName");
