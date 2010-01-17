@@ -1135,110 +1135,41 @@ class InfiniteIterator extends IteratorIterator
 
 
 
-/**
- * @brief   Abstract filter for iterators
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.0
- *
- * Instances of this class act as a filter around iterators. In other words 
- * you can put an iterator into the constructor and the instance will only 
- * return selected (accepted) elements.
- *
- * The only thing that needs to be done to make this work is implementing 
- * method accept(). Typically this invloves reading the current element or 
- * key of the inner Iterator and checking whether it is acceptable.
- */
-abstract class FilterIterator implements OuterIterator
-{
-    private $it;
-
-    /**
-     * Constructs a filter around another iterator.
-     *
-     * @param it     Iterator to filter
-     */
-    function __construct(Iterator $it){}
-
-    /**
-     * Rewind the inner iterator.
-     */
-    function rewind() {    
-        $this->it->rewind();
-        $this->fetch();
-    }
-
-    /**
-     * Accept function to decide whether an element of the inner iterator
-     * should be accessible through the Filteriterator.
-     *
-     * @return whether or not to expose the current element of the inner
-     *         iterator.
-     */
-    abstract function accept();
-
-    /**
-     * Fetch next element and store it.
-     *
-     * @return void
-     */
-    protected function fetch(){}
-
-    /**
-     * Move to next element
-     *
-     * @return void
-     */
-    function next(){}
-    
-    /**
-     * @return Whether more elements are available
-     */
-    function valid(){}
-    
-    /**
-     * @return The current key
-     */
-    function key(){}
-    
-    /**
-     * @return The current value
-     */
-    function current(){}
-    
-    /**
-     * hidden __clone
-     */
-    protected function __clone(){}
-
-    /**
-     * @return The inner iterator
-     */    
-    function getInnerIterator(){}
-
-    /** Aggregate the inner iterator
-     *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
-     */
-    function __call($func, $params){}
-}
-
-
-
-
-
-/**
- * @brief   Interface to access the current inner iteraor of iterator wrappers
+/** @ingroup SPL
+ * @brief   Iterator to filter recursive iterators
  * @author  Marcus Boerger
  * @version 1.0
  * @since PHP 5.1
+ *
+ * Passes the RecursiveIterator interface to the inner Iterator and provides
+ * the same functionality as FilterIterator. This allows you to skip parents
+ * and all their childs before loading them all. You need to care about
+ * function getChildren() because it may not always suit your needs. The 
+ * builtin behavior uses reflection to return a new instance of the exact same
+ * class it is called from. That is you extend RecursiveFilterIterator and
+ * getChildren() will create instance of that class. The problem is that doing
+ * this does not transport any state or control information of your accept()
+ * implementation to the new instance. To overcome this problem you might 
+ * need to overwrite getChildren(), call this implementation and pass the
+ * control vaules manually.
  */
-interface OuterIterator extends Iterator
+abstract class RecursiveFilterIterator extends FilterIterator implements RecursiveIterator
 {
-    /** @return inner iterator
+    /** @param $it the RecursiveIterator to filter
      */
-    function getInnerIterator();
+    function __construct(RecursiveIterator $it){}
+    
+    /** @return whether the current element has children
+     */
+    function hasChildren(){}
+
+    /** @return an iterator for the current elements children
+     *
+     * @note the returned iterator will be of the same class as $this
+     */
+    function getChildren(){}
+    
+    private $ref;
 }
 
 
@@ -1462,78 +1393,6 @@ class SplFileObject extends SplFileInfo implements RecursiveIterator, SeekableIt
 
 
 /**
- * @brief   Cached recursive iteration over another Iterator
- * @author  Marcus Boerger
- * @version 1.2
- * @since PHP 5.1
- *
- * @see CachingIterator
- */
-class RecursiveCachingIterator extends CachingIterator implements RecursiveIterator
-{
-    private $hasChildren;
-    private $getChildren;
-
-    /** Construct from another iterator
-     *
-     * @param it    Iterator to cache
-     * @param flags Bitmask: 
-     *              - CALL_TOSTRING   (whether to call __toString() for every element)
-     *              - CATCH_GET_CHILD (whether to catch exceptions when trying to get childs)
-     */
-    function __construct(RecursiveIterator $it, $flags = self::CALL_TOSTRING){}
-
-    /** Rewind Iterator
-     */    
-    function rewind(){}
-
-    /** Forward to next element if necessary then an Iterator for the Children
-     * will be created.
-     */
-    function next(){}
-    
-    private $ref;
-
-    /** @return whether the current element has children
-     * @note The check whether the Iterator for the children can be created was
-     *       already executed. Hence when flag CATCH_GET_CHILD was given in
-     *       constructor this fucntion returns false so that getChildren does 
-     *       not try to access those children.
-     */
-    function hasChildren(){}
-
-    /** @return An Iterator for the children
-     */
-    function getChildren(){}
-}
-
-
-
-
-
-/**
- * @brief   Interface for recursive iteration with RecursiveIteratorIterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.0
- */
-interface RecursiveIterator extends Iterator
-{
-    /** @return whether the current element has children
-     */
-    function hasChildren();
-    
-    /** @return the sub iterator for the current element
-     * @note The returned object must implement RecursiveIterator.
-     */
-    function getChildren();
-}
-
-
-
-
-
-/**
  * @brief   Iterates through recursive iterators
  * @author  Marcus Boerger
  * @version 1.2
@@ -1639,50 +1498,29 @@ class RecursiveIteratorIterator implements OuterIterator
 
 
 /**
- * @brief   Iterator to filter parents
- * @author  Marcus Boerger
- * @version 1.2
- * @since PHP 5.1
- *
- * This extended FilterIterator allows a recursive iteration using 
- * RecursiveIteratorIterator that only shows those elements which have 
- * children.
- */
-class ParentIterator extends RecursiveFilterIterator
-{
-    /** @return whetehr the current element has children
-     */
-    function accept(){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   Iterator to filter recursive iterators
+ * @brief   Recursive regular expression filter for iterators
  * @author  Marcus Boerger
  * @version 1.0
  * @since PHP 5.1
  *
- * Passes the RecursiveIterator interface to the inner Iterator and provides
- * the same functionality as FilterIterator. This allows you to skip parents
- * and all their childs before loading them all. You need to care about
- * function getChildren() because it may not always suit your needs. The 
- * builtin behavior uses reflection to return a new instance of the exact same
- * class it is called from. That is you extend RecursiveFilterIterator and
- * getChildren() will create instance of that class. The problem is that doing
- * this does not transport any state or control information of your accept()
- * implementation to the new instance. To overcome this problem you might 
- * need to overwrite getChildren(), call this implementation and pass the
- * control vaules manually.
+ * This filter iterator assumes that the inner iterator 
  */
-abstract class RecursiveFilterIterator extends FilterIterator implements RecursiveIterator
+class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator
 {
-    /** @param $it the RecursiveIterator to filter
+    /**
+     * Constructs a regular expression filter around an iterator whose 
+     * elemnts or keys are strings.
+     *
+     * @param it          inner iterator
+     * @param regex       the regular expression to match
+     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
+     *                    self::ALL_MATCHES, self::SPLIT)
+     * @param flags       special flags (self::USE_KEY)
+     * @param preg_flags  global PREG_* flags, see preg_match(), 
+     *                    preg_match_all(), preg_split()
      */
-    function __construct(RecursiveIterator $it){}
-    
+    function __construct(RecursiveIterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
+
     /** @return whether the current element has children
      */
     function hasChildren(){}
@@ -1694,6 +1532,67 @@ abstract class RecursiveFilterIterator extends FilterIterator implements Recursi
     function getChildren(){}
     
     private $ref;
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   An empty Iterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ */
+class EmptyIterator implements Iterator
+{
+    /** No operation.
+     * @return void
+     */
+    function rewind(){}
+
+    /** @return \c false
+     */
+    function valid(){}
+
+    /** This function must not be called. It throws an exception upon access.
+     * @throw Exception
+     * @return void
+     */
+    function current(){}
+
+    /** This function must not be called. It throws an exception upon access.
+     * @throw Exception
+     * @return void
+     */
+    function key(){}
+
+    /** No operation.
+     * @return void
+     */
+    function next(){}
+}
+
+
+
+
+
+/**
+ * @brief   Interface for recursive iteration with RecursiveIteratorIterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.0
+ */
+interface RecursiveIterator extends Iterator
+{
+    /** @return whether the current element has children
+     */
+    function hasChildren();
+    
+    /** @return the sub iterator for the current element
+     * @note The returned object must implement RecursiveIterator.
+     */
+    function getChildren();
 }
 
 
@@ -1790,45 +1689,6 @@ class RegexIterator extends FilterIterator
 
 
 /** @ingroup SPL
- * @brief   An empty Iterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- */
-class EmptyIterator implements Iterator
-{
-    /** No operation.
-     * @return void
-     */
-    function rewind(){}
-
-    /** @return \c false
-     */
-    function valid(){}
-
-    /** This function must not be called. It throws an exception upon access.
-     * @throw Exception
-     * @return void
-     */
-    function current(){}
-
-    /** This function must not be called. It throws an exception upon access.
-     * @throw Exception
-     * @return void
-     */
-    function key(){}
-
-    /** No operation.
-     * @return void
-     */
-    function next(){}
-}
-
-
-
-
-
-/** @ingroup SPL
  * @brief Basic Iterator wrapper
  * @since PHP 5.1
  *
@@ -1907,63 +1767,80 @@ class IteratorIterator implements OuterIterator
 
 
 /**
- * @brief   Limited Iteration over another Iterator
+ * @brief   Abstract filter for iterators
  * @author  Marcus Boerger
  * @version 1.1
  * @since PHP 5.0
  *
- * A class that starts iteration at a certain offset and only iterates over
- * a specified amount of elements.
+ * Instances of this class act as a filter around iterators. In other words 
+ * you can put an iterator into the constructor and the instance will only 
+ * return selected (accepted) elements.
  *
- * This class uses SeekableIterator::seek() if available and rewind() plus
- * a skip loop otehrwise.
+ * The only thing that needs to be done to make this work is implementing 
+ * method accept(). Typically this invloves reading the current element or 
+ * key of the inner Iterator and checking whether it is acceptable.
  */
-class LimitIterator implements OuterIterator
+abstract class FilterIterator implements OuterIterator
 {
     private $it;
-    private $offset;
-    private $count;
-    private $pos;
 
-    /** Construct
+    /**
+     * Constructs a filter around another iterator.
      *
-     * @param it     Iterator to limit
-     * @param offset Offset to first element
-     * @param count  Maximum number of elements to show or -1 for all
+     * @param it     Iterator to filter
      */
-    function __construct(Iterator $it, $offset = 0, $count = -1){}
-    
-    /** Seek to specified position
-     * @param position offset to seek to (relative to beginning not offset
-     *                 specified in constructor).
-     * @throw exception when position is invalid
-     */
-    function seek($position){}
+    function __construct(Iterator $it){}
 
-    /** Rewind to offset specified in constructor
+    /**
+     * Rewind the inner iterator.
      */
-    function rewind(){}
+    function rewind() {    
+        $this->it->rewind();
+        $this->fetch();
+    }
+
+    /**
+     * Accept function to decide whether an element of the inner iterator
+     * should be accessible through the Filteriterator.
+     *
+     * @return whether or not to expose the current element of the inner
+     *         iterator.
+     */
+    abstract function accept();
+
+    /**
+     * Fetch next element and store it.
+     *
+     * @return void
+     */
+    protected function fetch(){}
+
+    /**
+     * Move to next element
+     *
+     * @return void
+     */
+    function next(){}
     
-    /** @return whether iterator is valid
+    /**
+     * @return Whether more elements are available
      */
     function valid(){}
     
-    /** @return current key
+    /**
+     * @return The current key
      */
     function key(){}
-
-    /** @return current element
+    
+    /**
+     * @return The current value
      */
     function current(){}
-
-    /** Forward to nect element
+    
+    /**
+     * hidden __clone
      */
-    function next(){}
-
-    /** @return current position relative to zero (not to offset specified in 
-     *          constructor).
-     */
-    function getPosition(){}
+    protected function __clone(){}
 
     /**
      * @return The inner iterator
@@ -2034,64 +1911,6 @@ class SplObjectStorage implements Iterator, Countable
     /** @param $obj object to remove from storage
      */
     function detach($obj){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   An Iterator wrapper that doesn't call rewind
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.1
- */
-class NoRewindIterator extends IteratorIterator
-{
-    /** Simply prevent execution of inner iterators rewind().
-     */
-    function rewind(){}
-}
-
-
-
-
-
-/**
- * @brief   Recursive regular expression filter for iterators
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- *
- * This filter iterator assumes that the inner iterator 
- */
-class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator
-{
-    /**
-     * Constructs a regular expression filter around an iterator whose 
-     * elemnts or keys are strings.
-     *
-     * @param it          inner iterator
-     * @param regex       the regular expression to match
-     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
-     *                    self::ALL_MATCHES, self::SPLIT)
-     * @param flags       special flags (self::USE_KEY)
-     * @param preg_flags  global PREG_* flags, see preg_match(), 
-     *                    preg_match_all(), preg_split()
-     */
-    function __construct(RecursiveIterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
-
-    /** @return whether the current element has children
-     */
-    function hasChildren(){}
-
-    /** @return an iterator for the current elements children
-     *
-     * @note the returned iterator will be of the same class as $this
-     */
-    function getChildren(){}
-    
-    private $ref;
 }
 
 
@@ -2182,6 +2001,60 @@ class CachingIterator implements OuterIterator
 
 
 
+/**
+ * @brief   Interface to access the current inner iteraor of iterator wrappers
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ */
+interface OuterIterator extends Iterator
+{
+    /** @return inner iterator
+     */
+    function getInnerIterator();
+}
+
+
+
+
+
+/** @ingroup SPL
+ * @brief   A recursive array iterator
+ * @author  Marcus Boerger
+ * @version 1.0
+ * @since PHP 5.1
+ *
+ * Passes the RecursiveIterator interface to the inner Iterator and provides
+ * the same functionality as FilterIterator. This allows you to skip parents
+ * and all their childs before loading them all. You need to care about
+ * function getChildren() because it may not always suit your needs. The 
+ * builtin behavior uses reflection to return a new instance of the exact same
+ * class it is called from. That is you extend RecursiveFilterIterator and
+ * getChildren() will create instance of that class. The problem is that doing
+ * this does not transport any state or control information of your accept()
+ * implementation to the new instance. To overcome this problem you might 
+ * need to overwrite getChildren(), call this implementation and pass the
+ * control vaules manually.
+ */
+class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator
+{
+    /** @return whether the current element has children
+     */
+    function hasChildren(){}
+
+    /** @return an iterator for the current elements children
+     *
+     * @note the returned iterator will be of the same class as $this
+     */
+    function getChildren(){}
+    
+    private $ref;
+}
+
+
+
+
+
 /** @ingroup SPL
  * @brief   Iterator that iterates over several iterators one after the other
  * @author  Marcus Boerger
@@ -2243,6 +2116,23 @@ class AppendIterator implements OuterIterator
 
 
 
+/** @ingroup SPL
+ * @brief   An Iterator wrapper that doesn't call rewind
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.1
+ */
+class NoRewindIterator extends IteratorIterator
+{
+    /** Simply prevent execution of inner iterators rewind().
+     */
+    function rewind(){}
+}
+
+
+
+
+
 /** @brief seekable iterator
  * @author  Marcus Boerger
  * @version 1.0
@@ -2283,37 +2173,147 @@ interface SeekableIterator extends Iterator
 
 
 
-/** @ingroup SPL
- * @brief   A recursive array iterator
+/**
+ * @brief   Cached recursive iteration over another Iterator
  * @author  Marcus Boerger
- * @version 1.0
+ * @version 1.2
  * @since PHP 5.1
  *
- * Passes the RecursiveIterator interface to the inner Iterator and provides
- * the same functionality as FilterIterator. This allows you to skip parents
- * and all their childs before loading them all. You need to care about
- * function getChildren() because it may not always suit your needs. The 
- * builtin behavior uses reflection to return a new instance of the exact same
- * class it is called from. That is you extend RecursiveFilterIterator and
- * getChildren() will create instance of that class. The problem is that doing
- * this does not transport any state or control information of your accept()
- * implementation to the new instance. To overcome this problem you might 
- * need to overwrite getChildren(), call this implementation and pass the
- * control vaules manually.
+ * @see CachingIterator
  */
-class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator
+class RecursiveCachingIterator extends CachingIterator implements RecursiveIterator
 {
+    private $hasChildren;
+    private $getChildren;
+
+    /** Construct from another iterator
+     *
+     * @param it    Iterator to cache
+     * @param flags Bitmask: 
+     *              - CALL_TOSTRING   (whether to call __toString() for every element)
+     *              - CATCH_GET_CHILD (whether to catch exceptions when trying to get childs)
+     */
+    function __construct(RecursiveIterator $it, $flags = self::CALL_TOSTRING){}
+
+    /** Rewind Iterator
+     */    
+    function rewind(){}
+
+    /** Forward to next element if necessary then an Iterator for the Children
+     * will be created.
+     */
+    function next(){}
+    
+    private $ref;
+
     /** @return whether the current element has children
+     * @note The check whether the Iterator for the children can be created was
+     *       already executed. Hence when flag CATCH_GET_CHILD was given in
+     *       constructor this fucntion returns false so that getChildren does 
+     *       not try to access those children.
      */
     function hasChildren(){}
 
-    /** @return an iterator for the current elements children
-     *
-     * @note the returned iterator will be of the same class as $this
+    /** @return An Iterator for the children
      */
     function getChildren(){}
+}
+
+
+
+
+
+/**
+ * @brief   Limited Iteration over another Iterator
+ * @author  Marcus Boerger
+ * @version 1.1
+ * @since PHP 5.0
+ *
+ * A class that starts iteration at a certain offset and only iterates over
+ * a specified amount of elements.
+ *
+ * This class uses SeekableIterator::seek() if available and rewind() plus
+ * a skip loop otehrwise.
+ */
+class LimitIterator implements OuterIterator
+{
+    private $it;
+    private $offset;
+    private $count;
+    private $pos;
+
+    /** Construct
+     *
+     * @param it     Iterator to limit
+     * @param offset Offset to first element
+     * @param count  Maximum number of elements to show or -1 for all
+     */
+    function __construct(Iterator $it, $offset = 0, $count = -1){}
     
-    private $ref;
+    /** Seek to specified position
+     * @param position offset to seek to (relative to beginning not offset
+     *                 specified in constructor).
+     * @throw exception when position is invalid
+     */
+    function seek($position){}
+
+    /** Rewind to offset specified in constructor
+     */
+    function rewind(){}
+    
+    /** @return whether iterator is valid
+     */
+    function valid(){}
+    
+    /** @return current key
+     */
+    function key(){}
+
+    /** @return current element
+     */
+    function current(){}
+
+    /** Forward to nect element
+     */
+    function next(){}
+
+    /** @return current position relative to zero (not to offset specified in 
+     *          constructor).
+     */
+    function getPosition(){}
+
+    /**
+     * @return The inner iterator
+     */    
+    function getInnerIterator(){}
+
+    /** Aggregate the inner iterator
+     *
+     * @param func    Name of method to invoke
+     * @param params  Array of parameters to pass to method
+     */
+    function __call($func, $params){}
+}
+
+
+
+
+
+/**
+ * @brief   Iterator to filter parents
+ * @author  Marcus Boerger
+ * @version 1.2
+ * @since PHP 5.1
+ *
+ * This extended FilterIterator allows a recursive iteration using 
+ * RecursiveIteratorIterator that only shows those elements which have 
+ * children.
+ */
+class ParentIterator extends RecursiveFilterIterator
+{
+    /** @return whetehr the current element has children
+     */
+    function accept(){}
 }
 
 class AppendIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
@@ -2887,14 +2887,14 @@ class Cairo {
      * Retrieves the current status as a readable string
      *
      * @param int
-     * @return void
+     * @return string
      **/
     function statusToString($status) {}
 
     /**
      * Retrieves the current version of the cairo library as an integer value
      *
-     * @return integer
+     * @return int
      **/
     function version() {}
 
@@ -2937,23 +2937,23 @@ class CairoContext {
      * CairoContext::newSubPath or procedural cairo_new_sub_path before
      * calling CairoContext::arc or cairo_arc.
      * 
-     * Angles are measured in radians. An angle of 0.0 is in the direction
-     * of the positive X axis (in user space). An angle of M_PI/2.0 radians
-     * (90 degrees) is in the direction of the positive Y axis (in user
-     * space). Angles increase in the direction from the positive X axis
-     * toward the positive Y axis. So with the default transformation matrix,
-     * angles increase in a clockwise direction.
+     * Angles are measured in radians. An angle of 0.0 is in the direction of
+     * the positive X axis (in user space). An angle of M_PI/2.0 radians (90
+     * degrees) is in the direction of the positive Y axis (in user space).
+     * Angles increase in the direction from the positive X axis toward the
+     * positive Y axis. So with the default transformation matrix, angles
+     * increase in a clockwise direction.
      * 
      * (To convert from degrees to radians, use degrees * (M_PI / 180.).)
      * This function gives the arc in the direction of increasing angles; see
      * CairoContext::arcNegative or cairo_arc_negative to get the arc in the
      * direction of decreasing angles.
      *
-     * @param double
-     * @param double
-     * @param double
-     * @param double
-     * @param double
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
      * @return void
      **/
     function arc($x, $y, $radius, $angle1, $angle2) {}
@@ -2968,11 +2968,11 @@ class CairoContext {
      * See CairoContext::arc or cairo_arc for more details. This function
      * differs only in the direction of the arc between the two angles.
      *
-     * @param double
-     * @param double
-     * @param double
-     * @param double
-     * @param double
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
      * @return void
      **/
     function arcNegative($x, $y, $radius, $angle1, $angle2) {}
@@ -3196,35 +3196,35 @@ class CairoContext {
      * Returns the current CairoAntialias mode, as set by
      * CairoContext::setAntialias.
      *
-     * @return integer
+     * @return int
      **/
     function getAntialias() {}
 
     /**
      * Description here.
      *
-     * @return void
+     * @return array
      **/
     function getCurrentPoint() {}
 
     /**
      * Description here.
      *
-     * @return void
+     * @return array
      **/
     function getDash() {}
 
     /**
      * Description here.
      *
-     * @return void
+     * @return int
      **/
     function getDashCount() {}
 
     /**
      * Description here.
      *
-     * @return void
+     * @return int
      **/
     function getFillRule() {}
 
@@ -3259,21 +3259,21 @@ class CairoContext {
     /**
      * Description here.
      *
-     * @return void
+     * @return int
      **/
     function getLineCap() {}
 
     /**
      * Description here.
      *
-     * @return void
+     * @return int
      **/
     function getLineJoin() {}
 
     /**
      * Description here.
      *
-     * @return void
+     * @return float
      **/
     function getLineWidth() {}
 
@@ -3287,14 +3287,14 @@ class CairoContext {
     /**
      * Description here.
      *
-     * @return void
+     * @return float
      **/
     function getMiterLimit() {}
 
     /**
      * Description here.
      *
-     * @return void
+     * @return int
      **/
     function getOperator() {}
 
@@ -3322,7 +3322,7 @@ class CairoContext {
     /**
      * Description here.
      *
-     * @return void
+     * @return float
      **/
     function getTolerance() {}
 
@@ -3337,7 +3337,7 @@ class CairoContext {
     /**
      * Description here.
      *
-     * @return void
+     * @return bool
      **/
     function hasCurrentPoint() {}
 
@@ -3353,7 +3353,7 @@ class CairoContext {
      *
      * @param string
      * @param string
-     * @return void
+     * @return bool
      **/
     function inFill($x, $y) {}
 
@@ -3362,7 +3362,7 @@ class CairoContext {
      *
      * @param string
      * @param string
-     * @return void
+     * @return bool
      **/
     function inStroke($x, $y) {}
 
@@ -3434,7 +3434,7 @@ class CairoContext {
     /**
      * Description here.
      *
-     * @return void
+     * @return array
      **/
     function pathExtents() {}
 
@@ -3735,7 +3735,7 @@ class CairoContext {
     /**
      * Description here.
      *
-     * @return void
+     * @return int
      **/
     function status() {}
 
@@ -3749,7 +3749,7 @@ class CairoContext {
     /**
      * Description here.
      *
-     * @return void
+     * @return array
      **/
     function strokeExtents() {}
 
@@ -3764,7 +3764,7 @@ class CairoContext {
      * Description here.
      *
      * @param string
-     * @return void
+     * @return array
      **/
     function textExtents($text) {}
 
@@ -3798,7 +3798,7 @@ class CairoContext {
      *
      * @param string
      * @param string
-     * @return void
+     * @return array
      **/
     function userToDevice($x, $y) {}
 
@@ -3807,7 +3807,7 @@ class CairoContext {
      *
      * @param string
      * @param string
-     * @return void
+     * @return array
      **/
     function userToDeviceDistance($x, $y) {}
 
@@ -3832,14 +3832,14 @@ class CairoFontFace {
      * This function returns the type of the backend used to create a font
      * face. See CairoFontType class constants for available types.
      *
-     * @return void
+     * @return int
      **/
     function getType() {}
 
     /**
      * Checks whether an error has previously occurred for this font face
      *
-     * @return void
+     * @return int
      **/
     function status() {}
 
@@ -3859,42 +3859,42 @@ class CairoFontOptions {
      * The method description goes here.
      *
      * @param string
-     * @return void
+     * @return bool
      **/
     function equal($other) {}
 
     /**
      * Description here.
      *
-     * @return void
+     * @return int
      **/
     function getAntialias() {}
 
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return int
      **/
     function getHintMetrics() {}
 
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return int
      **/
     function getHintStyle() {}
 
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return int
      **/
     function getSubpixelOrder() {}
 
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return int
      **/
     function hash() {}
 
@@ -3941,7 +3941,7 @@ class CairoFontOptions {
     /**
      * Description here.
      *
-     * @return void
+     * @return int
      **/
     function status() {}
 
@@ -3963,9 +3963,9 @@ class CairoFormat {
      * This method provides a stride value that will respect all alignment
      * requirements of the accelerated image-rendering code within cairo.
      *
-     * @param long
-     * @param integer
-     * @return integer
+     * @param int
+     * @param int
+     * @return int
      **/
     function strideForWidth($format, $width) {}
 
@@ -3997,7 +3997,7 @@ class CairoGradientPattern extends CairoPattern {
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return int
      **/
     function getColorStopCount() {}
 
@@ -4005,21 +4005,21 @@ class CairoGradientPattern extends CairoPattern {
      * The method description goes here.
      *
      * @param string
-     * @return void
+     * @return array
      **/
     function getColorStopRgba($index) {}
 
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return int
      **/
     function getExtend() {}
 
     /**
      * The method description goes here.
      *
-     * @param string
+     * @param int
      * @return void
      **/
     function setExtend($extend) {}
@@ -4034,10 +4034,10 @@ class CairoImageSurface extends CairoSurface {
      * The method description goes here.
      *
      * @param string
-     * @param string
-     * @param integer
-     * @param integer
-     * @param string
+     * @param int
+     * @param int
+     * @param int
+     * @param int
      * @return void
      **/
     function createForData($data, $format, $width, $height, $stride) {}
@@ -4064,37 +4064,37 @@ class CairoImageSurface extends CairoSurface {
     /**
      * Retrieves the image format, as one of the CairoFormat defined
      *
-     * @return integer
+     * @return int
      **/
     function getFormat() {}
 
     /**
      * This methods returns the CairoImageSurface height.
      *
-     * @return integer
+     * @return int
      **/
     function getHeight() {}
 
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return int
      **/
     function getStride() {}
 
     /**
      * Gets the width of the CairoImageSurface
      *
-     * @return integer
+     * @return int
      **/
     function getWidth() {}
 
     /**
      * Creates a new CairoImageSuface object of type format
      *
-     * @param string
-     * @param integer
-     * @param integer
+     * @param int
+     * @param int
+     * @param int
      **/
     function __construct($format, $width, $height) {}
 
@@ -4103,17 +4103,17 @@ class CairoLinearGradient extends CairoGradientPattern {
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return array
      **/
     function getPoints() {}
 
     /**
      * The method description goes here.
      *
-     * @param string
-     * @param string
-     * @param string
-     * @param string
+     * @param float
+     * @param float
+     * @param float
+     * @param float
      **/
     function __construct($x0, $y0, $x1, $y1) {}
 
@@ -4171,9 +4171,9 @@ class CairoMatrix {
     /**
      * The method description goes here.
      *
-     * @param string
-     * @param string
-     * @return void
+     * @param CairoMatrix
+     * @param CairoMatrix
+     * @return CairoMatrix
      **/
     function multiply($matrix1, $matrix2) {}
 
@@ -4202,7 +4202,7 @@ class CairoMatrix {
      *
      * @param string
      * @param string
-     * @return void
+     * @return array
      **/
     function transformDistance($dx, $dy) {}
 
@@ -4211,7 +4211,7 @@ class CairoMatrix {
      *
      * @param string
      * @param string
-     * @return void
+     * @return array
      **/
     function transformPoint($dx, $dy) {}
 
@@ -4256,7 +4256,7 @@ class CairoPattern {
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return int
      **/
     function getType() {}
 
@@ -4271,7 +4271,7 @@ class CairoPattern {
     /**
      * Description here.
      *
-     * @return void
+     * @return int
      **/
     function status() {}
 
@@ -4298,8 +4298,8 @@ class CairoPdfSurface extends CairoSurface {
      * The method description goes here.
      *
      * @param string
-     * @param string
-     * @param string
+     * @param float
+     * @param float
      **/
     function __construct($file, $width, $height) {}
 
@@ -4332,14 +4332,14 @@ class CairoPsSurface extends CairoSurface {
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return bool
      **/
     function getEps() {}
 
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return array
      **/
     function getLevels() {}
 
@@ -4347,7 +4347,7 @@ class CairoPsSurface extends CairoSurface {
      * The method description goes here.
      *
      * @param string
-     * @return void
+     * @return string
      **/
     function levelToString($level) {}
 
@@ -4380,8 +4380,8 @@ class CairoPsSurface extends CairoSurface {
      * The method description goes here.
      *
      * @param string
-     * @param string
-     * @param string
+     * @param float
+     * @param float
      **/
     function __construct($file, $width, $height) {}
 
@@ -4390,19 +4390,19 @@ class CairoRadialGradient extends CairoGradientPattern {
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return array
      **/
     function getCircles() {}
 
     /**
      * The method description goes here.
      *
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
+     * @param float
      **/
     function __construct($x0, $y0, $r0, $x1, $y1, $r1) {}
 
@@ -4411,14 +4411,14 @@ class CairoScaledFont {
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return array
      **/
     function extents() {}
 
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return CairoMatrix
      **/
     function getCtm() {}
 
@@ -4453,7 +4453,7 @@ class CairoScaledFont {
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return int
      **/
     function getType() {}
 
@@ -4461,14 +4461,14 @@ class CairoScaledFont {
      * The method description goes here.
      *
      * @param string
-     * @return void
+     * @return array
      **/
     function glyphExtents($glyphs) {}
 
     /**
      * Description here.
      *
-     * @return void
+     * @return int
      **/
     function status() {}
 
@@ -4476,17 +4476,17 @@ class CairoScaledFont {
      * Description here.
      *
      * @param string
-     * @return void
+     * @return array
      **/
     function textExtents($text) {}
 
     /**
      * The method description goes here.
      *
-     * @param string
-     * @param string
-     * @param string
-     * @param string
+     * @param CairoFontFace
+     * @param CairoMatrix
+     * @param CairoMatrix
+     * @param CairoFontOptions
      **/
     function __construct($font_face, $matrix, $ctm, $options) {}
 
@@ -4495,17 +4495,17 @@ class CairoSolidPattern extends CairoPattern {
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return array
      **/
     function getRgba() {}
 
     /**
      * The method description goes here.
      *
-     * @param string
-     * @param string
-     * @param string
-     * @param string
+     * @param float
+     * @param float
+     * @param float
+     * @param float
      **/
     function __construct($red, $green, $blue, $alpha) {}
 
@@ -4549,14 +4549,14 @@ class CairoSurface {
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return int
      **/
     function getContent() {}
 
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return array
      **/
     function getDeviceOffset() {}
 
@@ -4570,7 +4570,7 @@ class CairoSurface {
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return int
      **/
     function getType() {}
 
@@ -4620,7 +4620,7 @@ class CairoSurface {
     /**
      * Description here.
      *
-     * @return void
+     * @return int
      **/
     function status() {}
 
@@ -4643,14 +4643,14 @@ class CairoSurfacePattern extends CairoPattern {
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return int
      **/
     function getExtend() {}
 
     /**
      * The method description goes here.
      *
-     * @return void
+     * @return int
      **/
     function getFilter() {}
 
@@ -4664,7 +4664,7 @@ class CairoSurfacePattern extends CairoPattern {
     /**
      * The method description goes here.
      *
-     * @param string
+     * @param int
      * @return void
      **/
     function setExtend($extend) {}
@@ -4680,7 +4680,7 @@ class CairoSurfacePattern extends CairoPattern {
     /**
      * The method description goes here.
      *
-     * @param string
+     * @param CairoSurface
      **/
     function __construct($surface) {}
 
@@ -4708,8 +4708,8 @@ class CairoSvgSurface extends CairoSurface {
     /**
      * The method description goes here.
      *
-     * @param string
-     * @return void
+     * @param int
+     * @return string
      **/
     function versionToString($version) {}
 
@@ -4717,8 +4717,8 @@ class CairoSvgSurface extends CairoSurface {
      * The method description goes here.
      *
      * @param string
-     * @param string
-     * @param string
+     * @param float
+     * @param float
      **/
     function __construct($file, $width, $height) {}
 
@@ -4789,6 +4789,14 @@ class Collator {
     function getLocale($type) {}
 
     /**
+     * Return collation key for a string.
+     *
+     * @param string
+     * @return string
+     **/
+    function getSortKey($str) {}
+
+    /**
      * @return int
      **/
     function getStrength() {}
@@ -4820,10 +4828,10 @@ class Collator {
      * difference anywhere in the strings. This is also called the level2
      * strength.
      * 
-     * Note: In some languages (such as Danish), certain accented letters
-     * are considered to be separate base characters. In most languages,
-     * however, an accented letter only has a secondary difference from the
-     * unaccented version of that letter.
+     * Note: In some languages (such as Danish), certain accented letters are
+     * considered to be separate base characters. In most languages, however,
+     * an accented letter only has a secondary difference from the unaccented
+     * version of that letter.
      * 
      * Tertiary Level: Upper and lower case differences in characters are
      * distinguished at the tertiary level (for example, "ao" "Ao" "aò"). In
@@ -5379,7 +5387,7 @@ class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, Se
 }
 class DomainException extends LogicException {
 }
-class DOMAttr extends DOMNode {
+class DomAttr extends DOMNode {
     /**
      * This function checks if the attribute is a defined ID.
      * 
@@ -5495,7 +5503,7 @@ class DomComment extends DOMCharacterData {
     function __construct($value) {}
 
 }
-class DomDocument extends DOMNode {
+class DOMDocument extends DOMNode {
     /**
      * Adds a root element node to a dom document and returns the new node.
      * The element name is given in the passed parameter.
@@ -6028,12 +6036,15 @@ class DomDocument extends DOMNode {
     function validate() {}
 
     /**
-     * This method substitutes XIncludes in a DOMDocument object.
+     * This function substitutes XIncludes in a DomDocument object.
+     * 
+     * Substituting Xincludes
+     * 
+     * If include.xml doesn't exist, you'll see:
      *
-     * @param int
      * @return int
      **/
-    function xinclude($options) {}
+    function xinclude() {}
 
     /**
      * Creates a new DOMDocument object.
@@ -6044,7 +6055,7 @@ class DomDocument extends DOMNode {
     function __construct($version, $encoding) {}
 
 }
-class DomDocumentFragment extends DOMNode {
+class DOMDocumentFragment extends DOMNode {
     /**
      * Appends raw XML data to a DOMDocumentFragment.
      * 
@@ -6062,7 +6073,7 @@ class DomDocumentFragment extends DOMNode {
     function appendXML($data) {}
 
 }
-class DomDocumentType extends DOMNode {
+class DOMDocumentType extends DOMNode {
     /**
      * @return array
      **/
@@ -6100,7 +6111,7 @@ class DomDocumentType extends DOMNode {
     function system_id() {}
 
 }
-class DomElement extends DOMNode {
+class DOMElement extends DOMNode {
     /**
      * Gets the value of the attribute with name name for the current node.
      *
@@ -6406,7 +6417,7 @@ class DOMImplementation {
     function __construct() {}
 
 }
-class DomNamedNodeMap {
+class DOMNamedNodeMap {
     /**
      * Retrieves a node specified by its nodeName.
      *
@@ -6433,7 +6444,7 @@ class DomNamedNodeMap {
     function item($index) {}
 
 }
-class DomNode {
+class DOMNode {
     /**
      * This method adds a namespace declaration to a node.
      *
@@ -6949,7 +6960,7 @@ class DomNodelist {
 }
 class DOMNotation extends DOMNode {
 }
-class DomProcessingInstruction extends DOMNode {
+class DOMProcessingInstruction extends DOMNode {
     /**
      * This method gets the data of the ProcessingInstruction node.
      *
@@ -7008,7 +7019,7 @@ class DOMText extends DOMCharacterData {
     function __construct($value) {}
 
 }
-class DomXPath {
+class DOMXPath {
     /**
      * Executes the given XPath expression and returns a typed result if
      * possible.
@@ -7036,6 +7047,15 @@ class DomXPath {
      * @return bool
      **/
     function registerNamespace($prefix, $namespaceURI) {}
+
+    /**
+     * This method enables the ability to use PHP functions within XPath
+     * expressions.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function registerPhpFunctions($restrict) {}
 
     /**
      * Creates a new DOMXPath object.
@@ -7273,7 +7293,7 @@ class GearmanJob {
      * Sends result data and the complete status update for this job.
      *
      * @param string
-     * @return boolean
+     * @return bool
      **/
     function complete($result) {}
 
@@ -7281,7 +7301,7 @@ class GearmanJob {
      * Sends data to the job server (and any listening clients) for this job.
      *
      * @param string
-     * @return boolean
+     * @return bool
      **/
     function data($data) {}
 
@@ -7289,7 +7309,7 @@ class GearmanJob {
      * Sends the supplied exception when this job is running.
      *
      * @param string
-     * @return boolean
+     * @return bool
      **/
     function exception($exception) {}
 
@@ -7297,7 +7317,7 @@ class GearmanJob {
      * Sends failure status for this job, indicating that the job failed in a
      * known way (as opposed to failing due to a thrown exception).
      *
-     * @return boolean
+     * @return bool
      **/
     function fail() {}
 
@@ -7319,7 +7339,7 @@ class GearmanJob {
     /**
      * Returns the last return code issued by the job server.
      *
-     * @return integer
+     * @return int
      **/
     function returnCode() {}
 
@@ -7327,7 +7347,7 @@ class GearmanJob {
      * Sends result data and the complete status update for this job.
      *
      * @param string
-     * @return boolean
+     * @return bool
      **/
     function sendComplete($result) {}
 
@@ -7335,7 +7355,7 @@ class GearmanJob {
      * Sends data to the job server (and any listening clients) for this job.
      *
      * @param string
-     * @return boolean
+     * @return bool
      **/
     function sendData($data) {}
 
@@ -7343,7 +7363,7 @@ class GearmanJob {
      * Sends the supplied exception when this job is running.
      *
      * @param string
-     * @return boolean
+     * @return bool
      **/
     function sendException($exception) {}
 
@@ -7351,7 +7371,7 @@ class GearmanJob {
      * Sends failure status for this job, indicating that the job failed in a
      * known way (as opposed to failing due to a thrown exception).
      *
-     * @return boolean
+     * @return bool
      **/
     function sendFail() {}
 
@@ -7359,9 +7379,9 @@ class GearmanJob {
      * Sends status information to the job server and any listening clients.
      * Use this to specify what percentage of the job has been completed.
      *
-     * @param integer
-     * @param integer
-     * @return boolean
+     * @param int
+     * @param int
+     * @return bool
      **/
     function sendStatus($numerator, $denominator) {}
 
@@ -7369,7 +7389,7 @@ class GearmanJob {
      * Sends a warning for this job while it is running.
      *
      * @param string
-     * @return boolean
+     * @return bool
      **/
     function sendWarning($warning) {}
 
@@ -7377,7 +7397,7 @@ class GearmanJob {
      * Sets the return value for this job, indicates how the job completed.
      *
      * @param string
-     * @return boolean
+     * @return bool
      **/
     function setReturn($gearman_return_t) {}
 
@@ -7385,9 +7405,9 @@ class GearmanJob {
      * Sends status information to the job server and any listening clients.
      * Use this to specify what percentage of the job has been completed.
      *
-     * @param integer
-     * @param integer
-     * @return boolean
+     * @param int
+     * @param int
+     * @return bool
      **/
     function status($numerator, $denominator) {}
 
@@ -7403,7 +7423,7 @@ class GearmanJob {
      * Sends a warning for this job while it is running.
      *
      * @param string
-     * @return boolean
+     * @return bool
      **/
     function warning($warning) {}
 
@@ -7419,7 +7439,7 @@ class GearmanJob {
      * Returns the size of the job's work load (the data the worker is to
      * process) in bytes.
      *
-     * @return integer
+     * @return int
      **/
     function workloadSize() {}
 
@@ -8089,8 +8109,8 @@ function array_intersect($array1, $array2) {}
 function array_intersect_assoc($array1, $array2) {}
 
 /**
- * array_intersect_key returns an array containing all the values of
- * array1 which have matching keys that are present in all the arguments.
+ * array_intersect_key returns an array containing all the entries of
+ * array1 which have keys that are present in all the arguments.
  *
  * @param array
  * @param array
@@ -8544,17 +8564,6 @@ function array_walk_recursive(&$input, $funcname, $userdata) {}
  * @return bool
  **/
 function arsort(&$array, $sort_flags) {}
-
-/**
- * ascii2ebcdic is an Apache-specific function which is available only on
- * EBCDIC based operating systems (OS/390, BS2000). It translates the
- * ASCII encoded string ascii_str to its equivalent EBCDIC representation
- * (binary safe), and returns the result.
- *
- * @param string
- * @return int
- **/
-function ascii2ebcdic($ascii_str) {}
 
 /**
  * Returns the arc sine of arg in radians. asin is the complementary
@@ -9174,7 +9183,7 @@ function bzwrite($bz, $data, $length) {}
  * The function description goes here.
  *
  * @param CairoSurface
- * @return ReturnType
+ * @return Cairo
  **/
 function cairo_create($surface) {}
 
@@ -9182,7 +9191,7 @@ function cairo_create($surface) {}
  * The function description goes here.
  *
  * @param CairoFontFace
- * @return ReturnType
+ * @return int
  **/
 function cairo_font_face_get_type($fontface) {}
 
@@ -9190,14 +9199,14 @@ function cairo_font_face_get_type($fontface) {}
  * The function description goes here.
  *
  * @param CairoFontFace
- * @return ReturnType
+ * @return int
  **/
 function cairo_font_face_status($fontface) {}
 
 /**
  * The function description goes here.
  *
- * @return ReturnType
+ * @return CairoFontOptions
  **/
 function cairo_font_options_create() {}
 
@@ -9206,7 +9215,7 @@ function cairo_font_options_create() {}
  *
  * @param CairoFontOptions
  * @param CairoFontOptions
- * @return ReturnType
+ * @return bool
  **/
 function cairo_font_options_equal($options, $other) {}
 
@@ -9214,7 +9223,7 @@ function cairo_font_options_equal($options, $other) {}
  * The function description goes here.
  *
  * @param CairoFontOptions
- * @return ReturnType
+ * @return int
  **/
 function cairo_font_options_get_antialias($options) {}
 
@@ -9222,7 +9231,7 @@ function cairo_font_options_get_antialias($options) {}
  * The function description goes here.
  *
  * @param CairoFontOptions
- * @return ReturnType
+ * @return int
  **/
 function cairo_font_options_get_hint_metrics($options) {}
 
@@ -9230,7 +9239,7 @@ function cairo_font_options_get_hint_metrics($options) {}
  * The function description goes here.
  *
  * @param CairoFontOptions
- * @return ReturnType
+ * @return int
  **/
 function cairo_font_options_get_hint_style($options) {}
 
@@ -9238,7 +9247,7 @@ function cairo_font_options_get_hint_style($options) {}
  * The function description goes here.
  *
  * @param CairoFontOptions
- * @return ReturnType
+ * @return int
  **/
 function cairo_font_options_get_subpixel_order($options) {}
 
@@ -9246,7 +9255,7 @@ function cairo_font_options_get_subpixel_order($options) {}
  * The function description goes here.
  *
  * @param CairoFontOptions
- * @return ReturnType
+ * @return int
  **/
 function cairo_font_options_hash($options) {}
 
@@ -9255,7 +9264,7 @@ function cairo_font_options_hash($options) {}
  *
  * @param CairoFontOptions
  * @param CairoFontOptions
- * @return ReturnType
+ * @return void
  **/
 function cairo_font_options_merge($options, $other) {}
 
@@ -9264,7 +9273,7 @@ function cairo_font_options_merge($options, $other) {}
  *
  * @param CairoFontOptions
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_font_options_set_antialias($options, $antialias) {}
 
@@ -9273,7 +9282,7 @@ function cairo_font_options_set_antialias($options, $antialias) {}
  *
  * @param CairoFontOptions
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_font_options_set_hint_metrics($options, $hint_metrics) {}
 
@@ -9282,7 +9291,7 @@ function cairo_font_options_set_hint_metrics($options, $hint_metrics) {}
  *
  * @param CairoFontOptions
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_font_options_set_hint_style($options, $hint_style) {}
 
@@ -9291,7 +9300,7 @@ function cairo_font_options_set_hint_style($options, $hint_style) {}
  *
  * @param CairoFontOptions
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_font_options_set_subpixel_order($options, $subpixel_order) {}
 
@@ -9299,26 +9308,26 @@ function cairo_font_options_set_subpixel_order($options, $subpixel_order) {}
  * The function description goes here.
  *
  * @param CairoFontOptions
- * @return ReturnType
+ * @return int
  **/
 function cairo_font_options_status($options) {}
 
 /**
  * The function description goes here.
  *
- * @param string
- * @param string
- * @return ReturnType
+ * @param int
+ * @param int
+ * @return int
  **/
 function cairo_format_stride_for_width($format, $width) {}
 
 /**
  * The function description goes here.
  *
- * @param string
- * @param string
- * @param string
- * @return ReturnType
+ * @param int
+ * @param int
+ * @param int
+ * @return CairoImageSurface
  **/
 function cairo_image_surface_create($format, $width, $height) {}
 
@@ -9326,11 +9335,11 @@ function cairo_image_surface_create($format, $width, $height) {}
  * The function description goes here.
  *
  * @param string
- * @param string
- * @param string
- * @param string
- * @param string
- * @return ReturnType
+ * @param int
+ * @param int
+ * @param int
+ * @param int
+ * @return CairoImageSurface
  **/
 function cairo_image_surface_create_for_data($data, $format, $width, $height, $stride) {}
 
@@ -9338,7 +9347,7 @@ function cairo_image_surface_create_for_data($data, $format, $width, $height, $s
  * The function description goes here.
  *
  * @param string
- * @return ReturnType
+ * @return CairoImageSurface
  **/
 function cairo_image_surface_create_from_png($file) {}
 
@@ -9346,7 +9355,7 @@ function cairo_image_surface_create_from_png($file) {}
  * The function description goes here.
  *
  * @param CairoImageSurface
- * @return ReturnType
+ * @return string
  **/
 function cairo_image_surface_get_data($surface) {}
 
@@ -9354,7 +9363,7 @@ function cairo_image_surface_get_data($surface) {}
  * The function description goes here.
  *
  * @param CairoImageSurface
- * @return ReturnType
+ * @return int
  **/
 function cairo_image_surface_get_format($surface) {}
 
@@ -9362,7 +9371,7 @@ function cairo_image_surface_get_format($surface) {}
  * The function description goes here.
  *
  * @param CairoImageSurface
- * @return ReturnType
+ * @return int
  **/
 function cairo_image_surface_get_height($surface) {}
 
@@ -9370,7 +9379,7 @@ function cairo_image_surface_get_height($surface) {}
  * The function description goes here.
  *
  * @param CairoImageSurface
- * @return ReturnType
+ * @return int
  **/
 function cairo_image_surface_get_stride($surface) {}
 
@@ -9378,7 +9387,7 @@ function cairo_image_surface_get_stride($surface) {}
  * The function description goes here.
  *
  * @param CairoImageSurface
- * @return ReturnType
+ * @return int
  **/
 function cairo_image_surface_get_width($surface) {}
 
@@ -9386,16 +9395,16 @@ function cairo_image_surface_get_width($surface) {}
  * The function description goes here.
  *
  * @param CairoMatrix
- * @return ReturnType
+ * @return void
  **/
 function cairo_matrix_invert($matrix) {}
 
 /**
  * The function description goes here.
  *
- * @param array
- * @param array
- * @return ReturnType
+ * @param CairoMatrix
+ * @param CairoMatrix
+ * @return CairoMatrix
  **/
 function cairo_matrix_multiply($matrix1, $matrix2) {}
 
@@ -9404,7 +9413,7 @@ function cairo_matrix_multiply($matrix1, $matrix2) {}
  *
  * @param CairoMatrix
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_matrix_rotate($matrix, $radians) {}
 
@@ -9414,7 +9423,7 @@ function cairo_matrix_rotate($matrix, $radians) {}
  * @param CairoMatrix
  * @param string
  * @param string
- * @return ReturnType
+ * @return array
  **/
 function cairo_matrix_transform_distance($matrix, $dx, $dy) {}
 
@@ -9424,7 +9433,7 @@ function cairo_matrix_transform_distance($matrix, $dx, $dy) {}
  * @param CairoMatrix
  * @param string
  * @param string
- * @return ReturnType
+ * @return array
  **/
 function cairo_matrix_transform_point($matrix, $dx, $dy) {}
 
@@ -9434,7 +9443,7 @@ function cairo_matrix_transform_point($matrix, $dx, $dy) {}
  * @param CairoMatrix
  * @param string
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_matrix_translate($matrix, $tx, $ty) {}
 
@@ -9446,7 +9455,7 @@ function cairo_matrix_translate($matrix, $tx, $ty) {}
  * @param string
  * @param string
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_pattern_add_color_stop_rgb($pattern, $offset, $red, $green, $blue) {}
 
@@ -9459,7 +9468,7 @@ function cairo_pattern_add_color_stop_rgb($pattern, $offset, $red, $green, $blue
  * @param string
  * @param string
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_pattern_add_color_stop_rgba($pattern, $offset, $red, $green, $blue, $alpha) {}
 
@@ -9467,52 +9476,52 @@ function cairo_pattern_add_color_stop_rgba($pattern, $offset, $red, $green, $blu
  * The function description goes here.
  *
  * @param CairoSurface
- * @return ReturnType
+ * @return CairoPattern
  **/
 function cairo_pattern_create_for_surface($surface) {}
 
 /**
  * The function description goes here.
  *
- * @param string
- * @param string
- * @param string
- * @param string
- * @return ReturnType
+ * @param float
+ * @param float
+ * @param float
+ * @param float
+ * @return CairoPattern
  **/
 function cairo_pattern_create_linear($x0, $y0, $x1, $y1) {}
 
 /**
  * The function description goes here.
  *
- * @param string
- * @param string
- * @param string
- * @param string
- * @param string
- * @param string
- * @return ReturnType
+ * @param float
+ * @param float
+ * @param float
+ * @param float
+ * @param float
+ * @param float
+ * @return CairoPattern
  **/
 function cairo_pattern_create_radial($x0, $y0, $r0, $x1, $y1, $r1) {}
 
 /**
  * The function description goes here.
  *
- * @param string
- * @param string
- * @param string
- * @return ReturnType
+ * @param float
+ * @param float
+ * @param float
+ * @return CairoPattern
  **/
 function cairo_pattern_create_rgb($red, $green, $blue) {}
 
 /**
  * The function description goes here.
  *
- * @param string
- * @param string
- * @param string
- * @param string
- * @return ReturnType
+ * @param float
+ * @param float
+ * @param float
+ * @param float
+ * @return CairoPattern
  **/
 function cairo_pattern_create_rgba($red, $green, $blue, $alpha) {}
 
@@ -9520,7 +9529,7 @@ function cairo_pattern_create_rgba($red, $green, $blue, $alpha) {}
  * The function description goes here.
  *
  * @param CairoGradientPattern
- * @return ReturnType
+ * @return int
  **/
 function cairo_pattern_get_color_stop_count($pattern) {}
 
@@ -9529,7 +9538,7 @@ function cairo_pattern_get_color_stop_count($pattern) {}
  *
  * @param CairoGradientPattern
  * @param string
- * @return ReturnType
+ * @return array
  **/
 function cairo_pattern_get_color_stop_rgba($pattern, $index) {}
 
@@ -9537,7 +9546,7 @@ function cairo_pattern_get_color_stop_rgba($pattern, $index) {}
  * The function description goes here.
  *
  * @param string
- * @return ReturnType
+ * @return int
  **/
 function cairo_pattern_get_extend($pattern) {}
 
@@ -9545,7 +9554,7 @@ function cairo_pattern_get_extend($pattern) {}
  * The function description goes here.
  *
  * @param CairoSurfacePattern
- * @return ReturnType
+ * @return int
  **/
 function cairo_pattern_get_filter($pattern) {}
 
@@ -9553,7 +9562,7 @@ function cairo_pattern_get_filter($pattern) {}
  * The function description goes here.
  *
  * @param CairoLinearGradient
- * @return ReturnType
+ * @return array
  **/
 function cairo_pattern_get_linear_points($pattern) {}
 
@@ -9561,7 +9570,7 @@ function cairo_pattern_get_linear_points($pattern) {}
  * The function description goes here.
  *
  * @param CairoPattern
- * @return ReturnType
+ * @return CairoMatrix
  **/
 function cairo_pattern_get_matrix($pattern) {}
 
@@ -9569,7 +9578,7 @@ function cairo_pattern_get_matrix($pattern) {}
  * The function description goes here.
  *
  * @param CairoRadialGradient
- * @return ReturnType
+ * @return array
  **/
 function cairo_pattern_get_radial_circles($pattern) {}
 
@@ -9577,7 +9586,7 @@ function cairo_pattern_get_radial_circles($pattern) {}
  * The function description goes here.
  *
  * @param CairoSolidPattern
- * @return ReturnType
+ * @return array
  **/
 function cairo_pattern_get_rgba($pattern) {}
 
@@ -9585,7 +9594,7 @@ function cairo_pattern_get_rgba($pattern) {}
  * The function description goes here.
  *
  * @param CairoSurfacePattern
- * @return ReturnType
+ * @return CairoSurface
  **/
 function cairo_pattern_get_surface($pattern) {}
 
@@ -9593,7 +9602,7 @@ function cairo_pattern_get_surface($pattern) {}
  * The function description goes here.
  *
  * @param CairoPattern
- * @return ReturnType
+ * @return int
  **/
 function cairo_pattern_get_type($pattern) {}
 
@@ -9602,7 +9611,7 @@ function cairo_pattern_get_type($pattern) {}
  *
  * @param string
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_pattern_set_extend($pattern, $extend) {}
 
@@ -9611,7 +9620,7 @@ function cairo_pattern_set_extend($pattern, $extend) {}
  *
  * @param CairoSurfacePattern
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_pattern_set_filter($pattern, $filter) {}
 
@@ -9620,7 +9629,7 @@ function cairo_pattern_set_filter($pattern, $filter) {}
  *
  * @param CairoPattern
  * @param CairoMatrix
- * @return ReturnType
+ * @return void
  **/
 function cairo_pattern_set_matrix($pattern, $matrix) {}
 
@@ -9628,7 +9637,7 @@ function cairo_pattern_set_matrix($pattern, $matrix) {}
  * The function description goes here.
  *
  * @param CairoPattern
- * @return ReturnType
+ * @return int
  **/
 function cairo_pattern_status($pattern) {}
 
@@ -9636,9 +9645,9 @@ function cairo_pattern_status($pattern) {}
  * The function description goes here.
  *
  * @param string
- * @param string
- * @param string
- * @return ReturnType
+ * @param float
+ * @param float
+ * @return CairoPdfSurface
  **/
 function cairo_pdf_surface_create($file, $width, $height) {}
 
@@ -9648,14 +9657,14 @@ function cairo_pdf_surface_create($file, $width, $height) {}
  * @param CairoPdfSurface
  * @param string
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_pdf_surface_set_size($surface, $width, $height) {}
 
 /**
  * The function description goes here.
  *
- * @return ReturnType
+ * @return array
  **/
 function cairo_ps_get_levels() {}
 
@@ -9663,7 +9672,7 @@ function cairo_ps_get_levels() {}
  * The function description goes here.
  *
  * @param string
- * @return ReturnType
+ * @return string
  **/
 function cairo_ps_level_to_string($level) {}
 
@@ -9671,9 +9680,9 @@ function cairo_ps_level_to_string($level) {}
  * The function description goes here.
  *
  * @param string
- * @param string
- * @param string
- * @return ReturnType
+ * @param float
+ * @param float
+ * @return CairoPsSurface
  **/
 function cairo_ps_surface_create($file, $width, $height) {}
 
@@ -9681,7 +9690,7 @@ function cairo_ps_surface_create($file, $width, $height) {}
  * The function description goes here.
  *
  * @param CairoPsSurface
- * @return ReturnType
+ * @return void
  **/
 function cairo_ps_surface_dsc_begin_page_setup($surface) {}
 
@@ -9689,7 +9698,7 @@ function cairo_ps_surface_dsc_begin_page_setup($surface) {}
  * The function description goes here.
  *
  * @param CairoPsSurface
- * @return ReturnType
+ * @return void
  **/
 function cairo_ps_surface_dsc_begin_setup($surface) {}
 
@@ -9698,7 +9707,7 @@ function cairo_ps_surface_dsc_begin_setup($surface) {}
  *
  * @param CairoPsSurface
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_ps_surface_dsc_comment($surface, $comment) {}
 
@@ -9706,7 +9715,7 @@ function cairo_ps_surface_dsc_comment($surface, $comment) {}
  * The function description goes here.
  *
  * @param CairoPsSurface
- * @return ReturnType
+ * @return bool
  **/
 function cairo_ps_surface_get_eps($surface) {}
 
@@ -9715,7 +9724,7 @@ function cairo_ps_surface_get_eps($surface) {}
  *
  * @param CairoPsSurface
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_ps_surface_restrict_to_level($surface, $level) {}
 
@@ -9724,7 +9733,7 @@ function cairo_ps_surface_restrict_to_level($surface, $level) {}
  *
  * @param CairoPsSurface
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_ps_surface_set_eps($surface, $level) {}
 
@@ -9734,7 +9743,7 @@ function cairo_ps_surface_set_eps($surface, $level) {}
  * @param CairoPsSurface
  * @param string
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_ps_surface_set_size($surface, $width, $height) {}
 
@@ -9745,7 +9754,7 @@ function cairo_ps_surface_set_size($surface, $width, $height) {}
  * @param CairoMatrix
  * @param CairoMatrix
  * @param CairoFontOptions
- * @return ReturnType
+ * @return CairoScaledFont
  **/
 function cairo_scaled_font_create($fontface, $matrix, $ctm, $fontoptions) {}
 
@@ -9753,7 +9762,7 @@ function cairo_scaled_font_create($fontface, $matrix, $ctm, $fontoptions) {}
  * The function description goes here.
  *
  * @param CairoScaledFont
- * @return ReturnType
+ * @return array
  **/
 function cairo_scaled_font_extents($scaledfont) {}
 
@@ -9761,7 +9770,7 @@ function cairo_scaled_font_extents($scaledfont) {}
  * The function description goes here.
  *
  * @param CairoScaledFont
- * @return ReturnType
+ * @return CairoMatrix
  **/
 function cairo_scaled_font_get_ctm($scaledfont) {}
 
@@ -9769,7 +9778,7 @@ function cairo_scaled_font_get_ctm($scaledfont) {}
  * The function description goes here.
  *
  * @param CairoScaledFont
- * @return ReturnType
+ * @return CairoFontFace
  **/
 function cairo_scaled_font_get_font_face($scaledfont) {}
 
@@ -9777,7 +9786,7 @@ function cairo_scaled_font_get_font_face($scaledfont) {}
  * The function description goes here.
  *
  * @param CairoScaledFont
- * @return ReturnType
+ * @return CairoFontOptions
  **/
 function cairo_scaled_font_get_font_matrix($scaledfont) {}
 
@@ -9785,7 +9794,7 @@ function cairo_scaled_font_get_font_matrix($scaledfont) {}
  * The function description goes here.
  *
  * @param CairoScaledFont
- * @return ReturnType
+ * @return CairoFontOptions
  **/
 function cairo_scaled_font_get_font_options($scaledfont) {}
 
@@ -9793,7 +9802,7 @@ function cairo_scaled_font_get_font_options($scaledfont) {}
  * The function description goes here.
  *
  * @param CairoScaledFont
- * @return ReturnType
+ * @return CairoMatrix
  **/
 function cairo_scaled_font_get_scale_matrix($scaledfont) {}
 
@@ -9801,7 +9810,7 @@ function cairo_scaled_font_get_scale_matrix($scaledfont) {}
  * The function description goes here.
  *
  * @param CairoScaledFont
- * @return ReturnType
+ * @return int
  **/
 function cairo_scaled_font_get_type($scaledfont) {}
 
@@ -9810,7 +9819,7 @@ function cairo_scaled_font_get_type($scaledfont) {}
  *
  * @param CairoScaledFont
  * @param string
- * @return ReturnType
+ * @return array
  **/
 function cairo_scaled_font_glyph_extents($scaledfont, $glyphs) {}
 
@@ -9818,7 +9827,7 @@ function cairo_scaled_font_glyph_extents($scaledfont, $glyphs) {}
  * The function description goes here.
  *
  * @param CairoScaledFont
- * @return ReturnType
+ * @return int
  **/
 function cairo_scaled_font_status($scaledfont) {}
 
@@ -9827,7 +9836,7 @@ function cairo_scaled_font_status($scaledfont) {}
  *
  * @param CairoScaledFont
  * @param string
- * @return ReturnType
+ * @return array
  **/
 function cairo_scaled_font_text_extents($scaledfont, $text) {}
 
@@ -9835,7 +9844,7 @@ function cairo_scaled_font_text_extents($scaledfont, $text) {}
  * The function description goes here.
  *
  * @param CairoSurface
- * @return ReturnType
+ * @return void
  **/
 function cairo_surface_copy_page($surface) {}
 
@@ -9846,7 +9855,7 @@ function cairo_surface_copy_page($surface) {}
  * @param string
  * @param string
  * @param string
- * @return ReturnType
+ * @return CairoSurface
  **/
 function cairo_surface_create_similar($surface, $content, $width, $height) {}
 
@@ -9854,7 +9863,7 @@ function cairo_surface_create_similar($surface, $content, $width, $height) {}
  * The function description goes here.
  *
  * @param CairoSurface
- * @return ReturnType
+ * @return void
  **/
 function cairo_surface_finish($surface) {}
 
@@ -9862,7 +9871,7 @@ function cairo_surface_finish($surface) {}
  * The function description goes here.
  *
  * @param CairoSurface
- * @return ReturnType
+ * @return void
  **/
 function cairo_surface_flush($surface) {}
 
@@ -9870,7 +9879,7 @@ function cairo_surface_flush($surface) {}
  * The function description goes here.
  *
  * @param CairoSurface
- * @return ReturnType
+ * @return int
  **/
 function cairo_surface_get_content($surface) {}
 
@@ -9878,7 +9887,7 @@ function cairo_surface_get_content($surface) {}
  * The function description goes here.
  *
  * @param CairoSurface
- * @return ReturnType
+ * @return array
  **/
 function cairo_surface_get_device_offset($surface) {}
 
@@ -9886,7 +9895,7 @@ function cairo_surface_get_device_offset($surface) {}
  * The function description goes here.
  *
  * @param CairoSurface
- * @return ReturnType
+ * @return CairoFontOptions
  **/
 function cairo_surface_get_font_options($surface) {}
 
@@ -9894,7 +9903,7 @@ function cairo_surface_get_font_options($surface) {}
  * The function description goes here.
  *
  * @param CairoSurface
- * @return ReturnType
+ * @return int
  **/
 function cairo_surface_get_type($surface) {}
 
@@ -9902,7 +9911,7 @@ function cairo_surface_get_type($surface) {}
  * The function description goes here.
  *
  * @param CairoSurface
- * @return ReturnType
+ * @return void
  **/
 function cairo_surface_mark_dirty($surface) {}
 
@@ -9914,7 +9923,7 @@ function cairo_surface_mark_dirty($surface) {}
  * @param string
  * @param string
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_surface_mark_dirty_rectangle($surface, $x, $y, $width, $height) {}
 
@@ -9924,7 +9933,7 @@ function cairo_surface_mark_dirty_rectangle($surface, $x, $y, $width, $height) {
  * @param CairoSurface
  * @param string
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_surface_set_device_offset($surface, $x, $y) {}
 
@@ -9934,7 +9943,7 @@ function cairo_surface_set_device_offset($surface, $x, $y) {}
  * @param CairoSurface
  * @param string
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_surface_set_fallback_resolution($surface, $x, $y) {}
 
@@ -9942,7 +9951,7 @@ function cairo_surface_set_fallback_resolution($surface, $x, $y) {}
  * The function description goes here.
  *
  * @param CairoSurface
- * @return ReturnType
+ * @return void
  **/
 function cairo_surface_show_page($surface) {}
 
@@ -9950,7 +9959,7 @@ function cairo_surface_show_page($surface) {}
  * The function description goes here.
  *
  * @param CairoSurface
- * @return ReturnType
+ * @return int
  **/
 function cairo_surface_status($surface) {}
 
@@ -9960,7 +9969,7 @@ function cairo_surface_status($surface) {}
  * @param CairoSurface
  * @param string
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_surface_write_to_png($surface, $x, $y) {}
 
@@ -9968,9 +9977,9 @@ function cairo_surface_write_to_png($surface, $x, $y) {}
  * The function description goes here.
  *
  * @param string
- * @param string
- * @param string
- * @return ReturnType
+ * @param float
+ * @param float
+ * @return CairoSvgSurface
  **/
 function cairo_svg_surface_create($file, $width, $height) {}
 
@@ -9979,15 +9988,15 @@ function cairo_svg_surface_create($file, $width, $height) {}
  *
  * @param CairoSvgSurface
  * @param string
- * @return ReturnType
+ * @return void
  **/
 function cairo_svg_surface_restrict_to_version($surface, $version) {}
 
 /**
  * The function description goes here.
  *
- * @param string
- * @return ReturnType
+ * @param int
+ * @return string
  **/
 function cairo_svg_version_to_string($version) {}
 
@@ -10281,7 +10290,7 @@ function classkit_method_remove($classname, $methodname) {}
 function classkit_method_rename($classname, $methodname, $newname) {}
 
 /**
- * Creates an alias named alias base on the defined class original. The
+ * Creates an alias named alias based on the defined class original. The
  * aliased class is exactly the same as the original class.
  *
  * @param string
@@ -10853,7 +10862,7 @@ function curl_error($ch) {}
 function curl_exec($ch) {}
 
 /**
- * Gets information about the last transfer,
+ * Gets information about the last transfer.
  *
  * @param resource
  * @param int
@@ -11565,8 +11574,8 @@ function db2_get_option($resource, $option) {}
  * 
  * The result of this function is not affected by any of the following:
  * 
- * A single row INSERT statement with a VALUES clause for a table
- * without an identity column.
+ * A single row INSERT statement with a VALUES clause for a table without
+ * an identity column.
  * 
  * A multiple row INSERT statement with a VALUES clause.
  * 
@@ -11679,12 +11688,11 @@ function db2_pconnect($database, $username, $password, $options) {}
  * There are three main advantages to using prepared statements in your
  * application:
  * 
- * Performance: when you prepare a statement, the database server
- * creates an optimized access plan for retrieving data with that
- * statement. Subsequently issuing the prepared statement with
- * db2_execute enables the statements to reuse that access plan and
- * avoids the overhead of dynamically creating a new access plan for
- * every statement you issue.
+ * Performance: when you prepare a statement, the database server creates
+ * an optimized access plan for retrieving data with that statement.
+ * Subsequently issuing the prepared statement with db2_execute enables
+ * the statements to reuse that access plan and avoids the overhead of
+ * dynamically creating a new access plan for every statement you issue.
  * 
  * Security: when you prepare a statement, you can include parameter
  * markers for input values. When you execute a prepared statement with
@@ -11801,13 +11809,13 @@ function db2_rollback($connection) {}
  * 
  * RS
  * 
- * Read stability: a transaction can add or remove rows matching a
- * search condition or a pending transaction.
+ * Read stability: a transaction can add or remove rows matching a search
+ * condition or a pending transaction.
  * 
  * RR
  * 
- * Repeatable read: data affected by pending transaction is not
- * available to other transactions.
+ * Repeatable read: data affected by pending transaction is not available
+ * to other transactions.
  * 
  * NC
  * 
@@ -11817,8 +11825,8 @@ function db2_rollback($connection) {}
  * IDENTIFIER_QUOTE_CHAR string The character used to delimit an
  * identifier.
  * 
- * INST_NAME string The instance on the database server that contains
- * the database.
+ * INST_NAME string The instance on the database server that contains the
+ * database.
  * 
  * ISOLATION_OPTION array An array of the isolation options supported by
  * the database server. The isolation options are described in the
@@ -11852,12 +11860,12 @@ function db2_rollback($connection) {}
  * MAX_STATEMENT_LEN int Maximum length of an SQL statement supported by
  * the database server, expressed in bytes.
  * 
- * MAX_TABLE_NAME_LEN int Maximum length of a table name supported by
- * the database server, expressed in bytes.
+ * MAX_TABLE_NAME_LEN int Maximum length of a table name supported by the
+ * database server, expressed in bytes.
  * 
- * NON_NULLABLE_COLUMNS bool if the database server supports columns
- * that can be defined as NOT NULL, if the database server does not
- * support columns defined as NOT NULL.
+ * NON_NULLABLE_COLUMNS bool if the database server supports columns that
+ * can be defined as NOT NULL, if the database server does not support
+ * columns defined as NOT NULL.
  * 
  * PROCEDURES bool if the database server supports the use of the CALL
  * statement to call stored procedures, if the database server does not
@@ -13257,17 +13265,6 @@ function easter_date($year) {}
 function easter_days($year, $method) {}
 
 /**
- * ebcdic2ascii is an Apache-specific function which is available only on
- * EBCDIC based operating systems (OS/390, BS2000). It translates the
- * EBCDIC encoded string ebcdic_str to its equivalent ASCII
- * representation (binary safe), and returns the result.
- *
- * @param string
- * @return int
- **/
-function ebcdic2ascii($ebcdic_str) {}
-
-/**
  * Enumerates the Enchant providers and tells you some rudimentary
  * information about them. The same info is provided through phpinfo().
  *
@@ -13509,7 +13506,9 @@ function error_log($message, $message_type, $destination, $extra_headers) {}
 /**
  * The error_reporting function sets the error_reporting directive at
  * runtime. PHP has many levels of errors, using this function sets that
- * level for the duration (runtime) of your script.
+ * level for the duration (runtime) of your script. If the optional level
+ * is not set, error_reporting will just return the current error
+ * reporting level.
  *
  * @param int
  * @return int
@@ -16488,6 +16487,21 @@ function geoip_time_zone_by_country_and_region($country_code, $region_code) {}
 function getallheaders() {}
 
 /**
+ * Returns the OS-dependent attributes of the archive entry.
+ *
+ * @return int
+ **/
+function getAttr() {}
+
+/**
+ * Returns an hexadecimal string representation of the CRC of the archive
+ * entry.
+ *
+ * @return string
+ **/
+function getCrc() {}
+
+/**
  * Gets the current working directory.
  *
  * @return string
@@ -16515,6 +16529,13 @@ function getdate($timestamp) {}
  * @return string
  **/
 function getenv($varname) {}
+
+/**
+ * Gets entry last modification time.
+ *
+ * @return string
+ **/
+function getFileTime() {}
 
 /**
  * Returns the host name of the Internet host specified by ip_address.
@@ -16549,6 +16570,13 @@ function gethostbynamel($hostname) {}
 function gethostname() {}
 
 /**
+ * Returns the code of the host OS of the archive entry.
+ *
+ * @return int
+ **/
+function getHostOs() {}
+
+/**
  * The getimagesize function will determine the size of any given image
  * file and return the dimensions along with the file type and a
  * height/width text string to be used inside a normal HTML IMG tag and
@@ -16572,6 +16600,14 @@ function getimagesize($filename, &$imageinfo) {}
  * @return int
  **/
 function getlastmod() {}
+
+/**
+ * RarEntry::getMethod returns number of the method used when adding
+ * current archive entry.
+ *
+ * @return int
+ **/
+function getMethod() {}
 
 /**
  * Searches DNS for MX records corresponding to hostname.
@@ -16608,6 +16644,13 @@ function getmypid() {}
 function getmyuid() {}
 
 /**
+ * Returns the name (with path) of the archive entry.
+ *
+ * @return string
+ **/
+function getName() {}
+
+/**
  * Parses options passed to the script.
  *
  * @param string
@@ -16615,6 +16658,13 @@ function getmyuid() {}
  * @return array
  **/
 function getopt($options, $longopts) {}
+
+/**
+ * Get packed size of the archive entry.
+ *
+ * @return int
+ **/
+function getPackedSize() {}
 
 /**
  * getprotobyname returns the protocol number associated with the
@@ -16692,6 +16742,21 @@ function gettimeofday($return_float) {}
  * @return string
  **/
 function gettype($var) {}
+
+/**
+ * Get unpacked size of the archive entry.
+ *
+ * @return int
+ **/
+function getUnpackedSize() {}
+
+/**
+ * Returns minimum version of RAR program (e.g. WinRAR) required to
+ * unpack the entry. It is encoded as 10 * major version + minor version.
+ *
+ * @return int
+ **/
+function getVersion() {}
 
 /**
  * Attempts to determine the capabilities of the user's browser, by
@@ -16815,7 +16880,8 @@ function get_headers($url, $format) {}
 
 /**
  * get_html_translation_table will return the translation table that is
- * used internally for htmlspecialchars and htmlentities.
+ * used internally for htmlspecialchars and htmlentities with the default
+ * charset.
  *
  * @param int
  * @param int
@@ -16848,8 +16914,8 @@ function get_loaded_extensions($zend_extensions) {}
 /**
  * Returns the current configuration setting of magic_quotes_gpc
  * 
- * Keep in mind that the setting magic_quotes_gpc will not work at
- * runtime.
+ * Keep in mind that attempting to set magic_quotes_gpc at runtime will
+ * not work.
  * 
  * For more information about magic_quotes, see this security section.
  *
@@ -17710,12 +17776,13 @@ function gupnp_context_set_subscription_timeout($context, $timeout) {}
 /**
  * Sets a function to be called at regular intervals.
  *
+ * @param resource
  * @param int
  * @param mixed
  * @param mixed
  * @return bool
  **/
-function gupnp_context_timeout_add($timeout, $callback, $arg) {}
+function gupnp_context_timeout_add($context, $timeout, $callback, $arg) {}
 
 /**
  * Stop hosting the file or folder at server_path.
@@ -17940,7 +18007,7 @@ function gupnp_service_notify($service, $name, $type, $value) {}
  * @param string
  * @param string
  * @param int
- * @return bool
+ * @return mixed
  **/
 function gupnp_service_proxy_action_get($proxy, $action, $name, $type) {}
 
@@ -17952,7 +18019,7 @@ function gupnp_service_proxy_action_get($proxy, $action, $name, $type) {}
  * @param string
  * @param string
  * @param mixed
- * @param string
+ * @param int
  * @return bool
  **/
 function gupnp_service_proxy_action_set($proxy, $action, $name, $value, $type) {}
@@ -18006,7 +18073,7 @@ function gupnp_service_proxy_remove_notify($proxy, $value) {}
  * @param string
  * @param array
  * @param array
- * @return bool
+ * @return array
  **/
 function gupnp_service_proxy_send_action($proxy, $action, $in_params, $out_params) {}
 
@@ -19654,12 +19721,12 @@ function hw_mapid($connection, $server_id, $object_id) {}
  * 'Title' attribute. This comes in handy if you want to remove
  * attributes recursively.
  * 
- * If you need to delete all attributes with a certain name you will
- * have to pass an empty string as the attribute value.
+ * If you need to delete all attributes with a certain name you will have
+ * to pass an empty string as the attribute value.
  * 
- * Only the attributes 'Title', 'Description' and 'Keyword' will
- * properly handle the language prefix. If those attributes don't carry a
- * language prefix, the prefix 'xx' will be assigned.
+ * Only the attributes 'Title', 'Description' and 'Keyword' will properly
+ * handle the language prefix. If those attributes don't carry a language
+ * prefix, the prefix 'xx' will be assigned.
  * 
  * The 'Name' attribute is somewhat special. In some cases it cannot be
  * complete removed. You will get an error message 'Change of base
@@ -20339,8 +20406,8 @@ function iconv_mime_decode_headers($encoded_headers, $mode, $charset) {}
  * Composes and returns a string that represents a valid MIME header
  * field, which looks like the following:
  * 
- * In the above example, "Subject" is the field name and the portion
- * that begins with "=?ISO-8859-1?..." is the field value.
+ * In the above example, "Subject" is the field name and the portion that
+ * begins with "=?ISO-8859-1?..." is the field value.
  *
  * @param string
  * @param string
@@ -20522,15 +20589,14 @@ function idate($format, $timestamp) {}
 function idn_strerror($errorcode) {}
 
 /**
- * This function converts a UTF-8 encoded domain name to ASCII according
- * to the IDNA toUnicode() specification. If the input has non-ASCII
- * characters, the output will be in the "xn--" ACE notation.
+ * This function converts Unicode domain name to IDNA ASCII-compatible
+ * format.
  *
  * @param string
  * @param int
  * @return string
  **/
-function idn_to_ascii($utf8_domain, &$errorcode) {}
+function idn_to_ascii($domain, $options) {}
 
 /**
  * This function converts Unicode domain name from IDNA ASCII-compatible
@@ -20543,14 +20609,14 @@ function idn_to_ascii($utf8_domain, &$errorcode) {}
 function idn_to_unicode($domain, $options) {}
 
 /**
- * This function converts a ASCII encoded domain name to its original
- * UTF-8 version.
+ * This function converts Unicode domain name from IDNA ASCII-compatible
+ * format to plain Unicode.
  *
  * @param string
  * @param int
  * @return string
  **/
-function idn_to_utf8($ascii_domain, &$errorcode) {}
+function idn_to_utf8($domain, $options) {}
 
 /**
  * Deletes the slob object on the given slob object-id bid.
@@ -20979,6 +21045,10 @@ function ifx_update_char($bid, $content) {}
 
 /**
  * Sets whether a client disconnect should cause a script to be aborted.
+ * 
+ * When running PHP as a command line script, and the script's tty goes
+ * away without the script being terminated then the script will die the
+ * next time it tries to write anything, unless value is set to
  *
  * @param string
  * @return int
@@ -23287,6 +23357,24 @@ function ingres_execute($result, $params, $types) {}
 function ingres_fetch_array($result, $result_type) {}
 
 /**
+ * This function is stores the data fetched from a query executed using
+ * ingres_query in an associative array, using the field names as keys.
+ * 
+ * With regard to speed, the function is identical to
+ * ingres_fetch_object, and almost as quick as ingres_fetch_row (the
+ * difference is insignificant).
+ * 
+ * By default, arrays created by ingres_fetch_assoc start from position 1
+ * and not 0 as with other DBMS extensions. The starting position can be
+ * adjusted to 0 using the configuration parameter
+ * ingres.array_index_start.
+ *
+ * @param resource
+ * @return array
+ **/
+function ingres_fetch_assoc($result) {}
+
+/**
  * This function is similar to ingres_fetch_array, with one difference -
  * an object is returned instead of an array. Indirectly, this means that
  * you can access the data only by the field names and not by their
@@ -23684,7 +23772,8 @@ function intl_is_failure($error_code) {}
 
 /**
  * Returns the integer value of var, using the specified base for the
- * conversion (the default is base 10).
+ * conversion (the default is base 10). intval should not be used on
+ * objects, as doing so will emit an E_NOTICE level error and return 1.
  *
  * @param mixed
  * @param int
@@ -23731,6 +23820,13 @@ function iptcembed($iptcdata, $jpeg_file_name, $spool) {}
  * @return array
  **/
 function iptcparse($iptcblock) {}
+
+/**
+ * Tests whether the current entry is a directory.
+ *
+ * @return bool
+ **/
+function isDirectory() {}
 
 /**
  * Checks if the given object is of this class or has this class as one
@@ -23913,7 +24009,7 @@ function is_numeric($var) {}
 function is_object($var) {}
 
 /**
- * Tells whether the filename is readable.
+ * Tells whether a file exists and is readable.
  *
  * @param string
  * @return bool
@@ -24096,8 +24192,8 @@ function jddayofweek($julianday, $mode) {}
  * 
  * Mode Meaning Values
  * 
- * 0 Gregorian - abbreviated Jan, Feb, Mar, Apr, May, Jun, Jul, Aug,
- * Sep, Oct, Nov, Dec
+ * 0 Gregorian - abbreviated Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep,
+ * Oct, Nov, Dec
  * 
  * 1 Gregorian January, February, March, April, May, June, July, August,
  * September, October, November, December
@@ -24108,12 +24204,12 @@ function jddayofweek($julianday, $mode) {}
  * 3 Julian January, February, March, April, May, June, July, August,
  * September, October, November, December
  * 
- * 4 Jewish Tishri, Heshvan, Kislev, Tevet, Shevat, AdarI, AdarII,
- * Nisan, Iyyar, Sivan, Tammuz, Av, Elul
+ * 4 Jewish Tishri, Heshvan, Kislev, Tevet, Shevat, AdarI, AdarII, Nisan,
+ * Iyyar, Sivan, Tammuz, Av, Elul
  * 
- * 5 French Republican Vendemiaire, Brumaire, Frimaire, Nivose,
- * Pluviose, Ventose, Germinal, Floreal, Prairial, Messidor, Thermidor,
- * Fructidor, Extra
+ * 5 French Republican Vendemiaire, Brumaire, Frimaire, Nivose, Pluviose,
+ * Ventose, Germinal, Floreal, Prairial, Messidor, Thermidor, Fructidor,
+ * Extra
  *
  * @param int
  * @param int
@@ -25423,7 +25519,7 @@ function maxdb_commit($link) {}
  * Server running on host which can be either a host name or an IP
  * address. Passing the string "localhost" to this parameter, the local
  * host is assumed. If successful, the maxdb_connect will return an
- * resource representing the connection to the database, or on failure.
+ * resource representing the connection to the database.
  * 
  * The username and password parameters specify the username and password
  * under which to connect to the MaxDB server. If the password is not
@@ -25684,8 +25780,7 @@ function maxdb_fetch_field_direct($result, $fieldnr) {}
  * The maxdb_fetch_lengths function returns an array containing the
  * lengths of every column of the current row within the result set
  * represented by the result parameter. If successful, a numerically
- * indexed array representing the lengths of each column is returned or
- * on failure.
+ * indexed array representing the lengths of each column is returned.
  *
  * @param resource
  * @return array
@@ -27599,9 +27694,9 @@ function mdecrypt_generic($td, $data) {}
  * memcache_debug turns on debug output if parameter on_off is equal to
  * and turns off if it's .
  * 
- * memcache_debug is accessible only if PHP was built with
- * --enable-debug option and always returns in this case. Otherwise, this
- * function has no effect and always returns .
+ * memcache_debug is accessible only if PHP was built with --enable-debug
+ * option and always returns in this case. Otherwise, this function has
+ * no effect and always returns .
  *
  * @param bool
  * @return bool
@@ -29175,12 +29270,26 @@ function mysqli_field_count($link) {}
 function mysqli_field_tell($result) {}
 
 /**
+ * Returns client Zval cache statistics.
+ *
+ * @return array
+ **/
+function mysqli_get_cache_stats() {}
+
+/**
  * Returns a string that represents the MySQL client library version.
  *
  * @param mysqli
  * @return string
  **/
 function mysqli_get_client_info($link) {}
+
+/**
+ * Returns client per-process statistics.
+ *
+ * @return array
+ **/
+function mysqli_get_client_stats() {}
 
 /**
  * Returns client version number as an integer.
@@ -29502,23 +29611,6 @@ function mysqli_warning_count($link) {}
 function mysql_affected_rows($link_identifier) {}
 
 /**
- * mysql_change_user changes the logged in user of the current active
- * connection, or the connection given by the optional link_identifier
- * parameter. If a database is specified, this will be the current
- * database after the user has been changed. If the new user and password
- * authorization fails, the current connected user stays active.
- * 
- * This function is deprecated and no longer exists in PHP.
- *
- * @param string
- * @param string
- * @param string
- * @param resource
- * @return int
- **/
-function mysql_change_user($user, $password, $database, $link_identifier) {}
-
-/**
  * Retrieves the character_set variable from MySQL.
  *
  * @param resource
@@ -29836,7 +29928,7 @@ function mysql_info($link_identifier) {}
 
 /**
  * Retrieves the ID generated for an AUTO_INCREMENT column by the
- * previous INSERT query.
+ * previous query (usually INSERT).
  *
  * @param resource
  * @return int
@@ -32942,149 +33034,6 @@ function ob_start($output_callback, $chunk_size, $erase) {}
 function ob_tidyhandler($input, $mode) {}
 
 /**
- * Binds the PHP variable variable to the Oracle placeholder ph_name.
- * Whether it will be used for input or output will be determined at
- * run-time and the necessary storage space will be allocated.
- *
- * @param resource
- * @param string
- * @param mixed
- * @param int
- * @param int
- * @return bool
- **/
-function ocibindbyname($statement, $ph_name, &$variable, $maxlength, $type) {}
-
-/**
- * Invalidates a cursor, freeing all associated resources and cancels the
- * ability to read from it.
- *
- * @param resource
- * @return bool
- **/
-function ocicancel($statement) {}
-
-/**
- * Checks if the given field from the statement is .
- *
- * @param resource
- * @param mixed
- * @return bool
- **/
-function ocicolumnisnull($statement, $field) {}
-
-/**
- * Returns the name of the field.
- *
- * @param resource
- * @param int
- * @return string
- **/
-function ocicolumnname($statement, $field) {}
-
-/**
- * Returns precision of the field.
- * 
- * For FLOAT columns, precision is nonzero and scale is -127. If
- * precision is 0, then column is NUMBER. Else it's NUMBER(precision,
- * scale).
- *
- * @param resource
- * @param int
- * @return int
- **/
-function ocicolumnprecision($statement, $field) {}
-
-/**
- * Returns the scale of the column with field index.
- * 
- * For FLOAT columns, precision is nonzero and scale is -127. If
- * precision is 0, then column is NUMBER. Else it's NUMBER(precision,
- * scale).
- *
- * @param resource
- * @param int
- * @return int
- **/
-function ocicolumnscale($statement, $field) {}
-
-/**
- * Returns the size of a field.
- *
- * @param resource
- * @param mixed
- * @return int
- **/
-function ocicolumnsize($statement, $field) {}
-
-/**
- * Returns a field's data type.
- *
- * @param resource
- * @param int
- * @return mixed
- **/
-function ocicolumntype($statement, $field) {}
-
-/**
- * Returns Oracle's raw data type of the field.
- * 
- * However, if you want to get field's type, then oci_field_type will
- * suit you better.
- *
- * @param resource
- * @param int
- * @return int
- **/
-function ocicolumntyperaw($statement, $field) {}
-
-/**
- * Commits all outstanding statements for the active transaction on the
- * Oracle connection.
- *
- * @param resource
- * @return bool
- **/
-function ocicommit($connection) {}
-
-/**
- * Defines PHP variables for fetches of SQL-Columns.
- *
- * @param resource
- * @param string
- * @param mixed
- * @param int
- * @return bool
- **/
-function ocidefinebyname($statement, $column_name, &$variable, $type) {}
-
-/**
- * Returns the last error found.
- *
- * @param resource
- * @return array
- **/
-function ocierror($source) {}
-
-/**
- * Executes a previously parsed statement.
- *
- * @param resource
- * @param int
- * @return bool
- **/
-function ociexecute($statement, $mode) {}
-
-/**
- * Fetches the next row (for SELECT statements) into the internal
- * result-buffer.
- *
- * @param resource
- * @return bool
- **/
-function ocifetch($statement) {}
-
-/**
  * This function is deprecated. Recommended alternatives:
  * oci_fetch_array, oci_fetch_object, oci_fetch_assoc and oci_fetch_row.
  *
@@ -33094,197 +33043,6 @@ function ocifetch($statement) {}
  * @return int
  **/
 function ocifetchinto($statement, &$result, $mode) {}
-
-/**
- * Fetches all the rows from a result into a user-defined array.
- *
- * @param resource
- * @param array
- * @param int
- * @param int
- * @param int
- * @return int
- **/
-function ocifetchstatement($statement, &$output, $skip, $maxrows, $flags) {}
-
-/**
- * Frees resources associated with Oracle's cursor or statement, which
- * was received from as a result of oci_parse or obtained from Oracle.
- *
- * @param resource
- * @return bool
- **/
-function ocifreecursor($statement) {}
-
-/**
- * Frees resources associated with Oracle's cursor or statement, which
- * was received from as a result of oci_parse or obtained from Oracle.
- *
- * @param resource
- * @return bool
- **/
-function ocifreestatement($statement) {}
-
-/**
- * Enables or disables internal debug output.
- *
- * @param bool
- * @return void
- **/
-function ociinternaldebug($onoff) {}
-
-/**
- * Closes the Oracle connection.
- *
- * @param resource
- * @return bool
- **/
-function ocilogoff($connection) {}
-
-/**
- * Returns a connection identifier needed for most other OCI calls.
- *
- * @param string
- * @param string
- * @param string
- * @param string
- * @param int
- * @return resource
- **/
-function ocilogon($username, $password, $db, $charset, $session_mode) {}
-
-/**
- * Allocates a new collection object.
- *
- * @param resource
- * @param string
- * @param string
- * @return OCI-Collection
- **/
-function ocinewcollection($connection, $tdo, $schema) {}
-
-/**
- * Allocates a new statement handle on the specified connection.
- *
- * @param resource
- * @return resource
- **/
-function ocinewcursor($connection) {}
-
-/**
- * Allocates resources to hold descriptor or LOB locator.
- *
- * @param resource
- * @param int
- * @return OCI-Lob
- **/
-function ocinewdescriptor($connection, $type) {}
-
-/**
- * Establishes a new connection to an Oracle server and logs on.
- * 
- * Unlike oci_connect and oci_pconnect, ocinlogon does not cache
- * connections and will always return a brand-new freshly opened
- * connection handle. This is useful if your application needs
- * transactional isolation between two sets of queries.
- *
- * @param string
- * @param string
- * @param string
- * @param string
- * @param int
- * @return resource
- **/
-function ocinlogon($username, $password, $db, $charset, $session_mode) {}
-
-/**
- * Gets the number of columns in the given statement.
- *
- * @param resource
- * @return int
- **/
-function ocinumcols($statement) {}
-
-/**
- * Prepares the queryusing connection and returns the statement
- * identifier, which can be used with oci_bind_by_name, oci_execute and
- * other functions.
- *
- * @param resource
- * @param string
- * @return resource
- **/
-function ociparse($connection, $query) {}
-
-/**
- * Creates a persistent connection to an Oracle server and logs on.
- * 
- * Persistent connections are cached and re-used between requests,
- * resulting in reduced overhead on each page load; a typical PHP
- * application will have a single persistent connection open against an
- * Oracle server per Apache child process (or PHP FastCGI/CGI process).
- * See the Persistent Database Connections section for more information.
- *
- * @param string
- * @param string
- * @param string
- * @param string
- * @param int
- * @return resource
- **/
-function ociplogon($username, $password, $db, $charset, $session_mode) {}
-
-/**
- * Returns the data from field in the current row, fetched by oci_fetch.
- *
- * @param resource
- * @param mixed
- * @return mixed
- **/
-function ociresult($statement, $field) {}
-
-/**
- * Rolls back all outstanding statements for the Oracle connection.
- *
- * @param resource
- * @return bool
- **/
-function ocirollback($connection) {}
-
-/**
- * Gets the number of rows affected during statement execution.
- *
- * @param resource
- * @return int
- **/
-function ocirowcount($statement) {}
-
-/**
- * Returns a string with version information of the Oracle server, which
- * uses the provided connection.
- *
- * @param resource
- * @return string
- **/
-function ociserverversion($connection) {}
-
-/**
- * Sets the number of rows to be prefetched after successful call to
- * oci_execute.
- *
- * @param resource
- * @param int
- * @return bool
- **/
-function ocisetprefetch($statement, $rows) {}
-
-/**
- * Returns the type of the provided OCI statement.
- *
- * @param resource
- * @return string
- **/
-function ocistatementtype($statement) {}
 
 /**
  * Binds the PHP array var_array to the Oracle placeholder name, which
@@ -33302,9 +33060,50 @@ function ocistatementtype($statement) {}
 function oci_bind_array_by_name($statement, $name, &$var_array, $max_table_length, $max_item_length, $type) {}
 
 /**
- * Binds the PHP variable variable to the Oracle placeholder ph_name.
- * Whether it will be used for input or output will be determined at
- * run-time and the necessary storage space will be allocated.
+ * Binds a PHP variable variable to the Oracle bind variable placeholder
+ * bv_name. Binding is important for Oracle database performance and also
+ * as a way to avoid SQL Injection security issues.
+ * 
+ * Binding allows the database to reuse the statement context and caches
+ * from previous executions of the statement, even if another user or
+ * process originally executed it. Binding reduces SQL Injection concerns
+ * because the data associated with a bind variable is never treated as
+ * part of the SQL statement. It does not need quoting or escaping.
+ * 
+ * PHP variables that have been bound can be changed and the statement
+ * re-executed without needing to re-parse the statement or re-bind.
+ * 
+ * In Oracle, bind variables are commonly divided into IN binds for
+ * values that are passed into the database, and OUT binds for values
+ * that are returned to PHP. A bind variable may be both IN and OUT.
+ * Whether a bind variable will be used for input or output is determined
+ * at run-time.
+ * 
+ * You must specify maxlength when using an OUT bind so that PHP
+ * allocates enough memory to hold the returned value.
+ * 
+ * For IN binds it is recommended to set the maxlength length if the
+ * statement is re-executed multiple times with different values for the
+ * PHP variable. Otherwise Oracle may truncate data to the length of the
+ * initial PHP variable value. If you don't know what the maximum length
+ * will be, then re-call oci_bind_by_name with the current data size
+ * prior to each oci_execute call. Binding an unnecessarily large length
+ * will have an impact on process memory in the database.
+ * 
+ * A bind call tells Oracle which memory address to read data from. For
+ * IN binds that address needs to contain valid data when oci_execute is
+ * called. This means that the variable bound must remain in scope until
+ * execution. If it doesn't, unexpected results or errors such as
+ * "ORA-01460: unimplemented or unreasonable conversion requested" may
+ * occur. For OUT binds one symptom is no value being set in the PHP
+ * variable.
+ * 
+ * For a statement that is repeatedly executed, binding values that never
+ * change may reduce the ability of the Oracle optimizer to choose the
+ * best statement execution plan. Long running statements that are rarely
+ * re-executed may not benefit from binding. However in both cases,
+ * binding might be safer than joining strings into a SQL statement, as
+ * this can be a security risk if unfiltered user text is concatenated.
  *
  * @param resource
  * @param string
@@ -33313,7 +33112,7 @@ function oci_bind_array_by_name($statement, $name, &$var_array, $max_table_lengt
  * @param int
  * @return bool
  **/
-function oci_bind_by_name($statement, $ph_name, &$variable, $maxlength, $type) {}
+function oci_bind_by_name($statement, $bv_name, &$variable, $maxlength, $type) {}
 
 /**
  * Invalidates a cursor, freeing all associated resources and cancels the
@@ -33325,7 +33124,12 @@ function oci_bind_by_name($statement, $ph_name, &$variable, $maxlength, $type) {
 function oci_cancel($statement) {}
 
 /**
- * Closes the Oracle connection.
+ * Unsets connection. The underlying database connection is closed if no
+ * other resources are using it and if it was created with oci_connect or
+ * oci_new_connect.
+ * 
+ * It is recommended to close connections that are no longer needed
+ * because this makes database resources available for other users.
  *
  * @param resource
  * @return bool
@@ -33333,8 +33137,19 @@ function oci_cancel($statement) {}
 function oci_close($connection) {}
 
 /**
- * Commits all outstanding statements for the active transaction on the
- * Oracle connection.
+ * Commits the outstanding transaction for the Oracle connection. A
+ * commit ends the current transaction and makes permanent all changes.
+ * It releases all locks held.
+ * 
+ * A transaction begins when the first SQL statement that changes data is
+ * executed with oci_execute using the OCI_NO_AUTO_COMMIT flag. Further
+ * data changes made by other statements become part of the same
+ * transaction. Data changes made in a transaction are temporary until
+ * the transaction is committed or rolled back. Other users of the
+ * database will not see the changes until they are committed.
+ * 
+ * When inserting or updating data, using transactions is recommended for
+ * relational data consistency and for performance reasons.
  *
  * @param resource
  * @return bool
@@ -33342,7 +33157,20 @@ function oci_close($connection) {}
 function oci_commit($connection) {}
 
 /**
- * Returns a connection identifier needed for most other OCI calls.
+ * Returns a connection identifier needed for most other OCI8 operations.
+ * 
+ * See Connection Handling for general information on connection
+ * management and connection pooling.
+ * 
+ * From PHP 5.1.2 (PECL OCI8 1.1) oci_close can be used to close the
+ * connection.
+ * 
+ * The second and subsequent calls to oci_connect with the same
+ * parameters will return the connection handle returned from the first
+ * call. This means that transactions in one handle are also in the other
+ * handles, because they use the same underlying database connection. If
+ * two handles need to be transactionally isolated from each other, use
+ * oci_new_connect instead.
  *
  * @param string
  * @param string
@@ -33351,10 +33179,13 @@ function oci_commit($connection) {}
  * @param int
  * @return resource
  **/
-function oci_connect($username, $password, $db, $charset, $session_mode) {}
+function oci_connect($username, $password, $connection_string, $character_set, $session_mode) {}
 
 /**
- * Defines PHP variables for fetches of SQL-Columns.
+ * Associates a PHP variable with a column for query fetches using
+ * oci_fetch.
+ * 
+ * The oci_define_by_name call must occur before executing oci_execute.
  *
  * @param resource
  * @param string
@@ -33366,14 +33197,26 @@ function oci_define_by_name($statement, $column_name, &$variable, $type) {}
 
 /**
  * Returns the last error found.
+ * 
+ * The function should be called immediately after an error occurs.
+ * Errors are cleared by a successful statement.
  *
  * @param resource
  * @return array
  **/
-function oci_error($source) {}
+function oci_error($resource) {}
 
 /**
- * Executes a previously parsed statement.
+ * Executes a statement previously returned from oci_parse.
+ * 
+ * After execution, statements like INSERT will have data committed to
+ * the database by default. For statements like SELECT, execution
+ * performs the logic of the query. Query results can subsequently be
+ * fetched in PHP with functions like oci_fetch_array.
+ * 
+ * Each parsed statement may be executed multiple times, saving the cost
+ * of re-parsing. This is commonly used for INSERT statements when data
+ * is bound with oci_bind_by_name.
  *
  * @param resource
  * @param int
@@ -33382,8 +33225,11 @@ function oci_error($source) {}
 function oci_execute($statement, $mode) {}
 
 /**
- * Fetches the next row (for SELECT statements) into the internal
- * result-buffer.
+ * Fetches the next row from a query into internal buffers accessible
+ * either with oci_result, or by using variables previously defined with
+ * oci_define_by_name.
+ * 
+ * See oci_fetch_array for general information about fetching data.
  *
  * @param resource
  * @return bool
@@ -33391,7 +33237,11 @@ function oci_execute($statement, $mode) {}
 function oci_fetch($statement) {}
 
 /**
- * Fetches all the rows from a result into a user-defined array.
+ * Fetches multiple rows from a query into a two-dimensional array. By
+ * default, all rows are returned.
+ * 
+ * This function can be called only once for each query executed with
+ * oci_execute.
  *
  * @param resource
  * @param array
@@ -33403,10 +33253,10 @@ function oci_fetch($statement) {}
 function oci_fetch_all($statement, &$output, $skip, $maxrows, $flags) {}
 
 /**
- * Returns an array, which corresponds to the next result row.
- * 
- * It should be mentioned here, that oci_fetch_array is insignificantly
- * slower, than oci_fetch_row, but much more handy.
+ * Returns an array containing the next result-set row of a query. Each
+ * array entry corresponds to a column of the row. This function is
+ * typically called in a loop until it returns , indicating no more rows
+ * exist.
  *
  * @param resource
  * @param int
@@ -33415,13 +33265,13 @@ function oci_fetch_all($statement, &$output, $skip, $maxrows, $flags) {}
 function oci_fetch_array($statement, $mode) {}
 
 /**
- * Returns the next row from the result data as an associative array.
+ * Returns an associative array containing the next result-set row of a
+ * query. Each array entry corresponds to a column of the row. This
+ * function is typically called in a loop until it returns , indicating
+ * no more rows exist.
  * 
  * Calling oci_fetch_assoc is identical to calling oci_fetch_array with
- * OCI_ASSOC.
- * 
- * A subsequent call to oci_fetch_assoc will return the next row or if
- * there are no more rows.
+ * OCI_ASSOC + OCI_RETURN_NULLS.
  *
  * @param resource
  * @return array
@@ -33429,10 +33279,10 @@ function oci_fetch_array($statement, $mode) {}
 function oci_fetch_assoc($statement) {}
 
 /**
- * Returns the next row from the result data as an object.
- * 
- * Subsequent calls to oci_fetch_object will return the next row from the
- * result or if there are no more rows.
+ * Returns an object containing the next result-set row of a query. Each
+ * attribute of the object corresponds to a column of the row. This
+ * function is typically called in a loop until it returns , indicating
+ * no more rows exist.
  *
  * @param resource
  * @return object
@@ -33440,13 +33290,13 @@ function oci_fetch_assoc($statement) {}
 function oci_fetch_object($statement) {}
 
 /**
- * Returns the next row from the result data as an indexed array.
+ * Returns a numerically indexed array containing the next result-set row
+ * of a query. Each array entry corresponds to a column of the row. This
+ * function is typically called in a loop until it returns , indicating
+ * no more rows exist.
  * 
  * Calling oci_fetch_row is identical to calling oci_fetch_array with
- * OCI_NUM.
- * 
- * Subsequent calls to oci_fetch_row will return the next row from the
- * result data or if there are no more rows.
+ * OCI_NUM + OCI_RETURN_NULLS.
  *
  * @param resource
  * @return array
@@ -33592,7 +33442,7 @@ function oci_new_collection($connection, $tdo, $schema) {}
  * @param int
  * @return resource
  **/
-function oci_new_connect($username, $password, $db, $charset, $session_mode) {}
+function oci_new_connect($username, $password, $connection_string, $character_set, $session_mode) {}
 
 /**
  * Allocates a new statement handle on the specified connection.
@@ -33628,15 +33478,18 @@ function oci_num_fields($statement) {}
 function oci_num_rows($statement) {}
 
 /**
- * Prepares the queryusing connection and returns the statement
+ * Prepares sql_text using connection and returns the statement
  * identifier, which can be used with oci_bind_by_name, oci_execute and
  * other functions.
+ * 
+ * Statement identifiers can be freed with oci_free_statement or by
+ * setting the variable to null.
  *
  * @param resource
  * @param string
  * @return resource
  **/
-function oci_parse($connection, $query) {}
+function oci_parse($connection, $sql_text) {}
 
 /**
  * Changes password for user with username.
@@ -33665,7 +33518,7 @@ function oci_password_change($connection, $username, $old_password, $new_passwor
  * @param int
  * @return resource
  **/
-function oci_pconnect($username, $password, $db, $charset, $session_mode) {}
+function oci_pconnect($username, $password, $connection_string, $character_set, $session_mode) {}
 
 /**
  * Returns the data from field in the current row, fetched by oci_fetch.
@@ -33677,7 +33530,19 @@ function oci_pconnect($username, $password, $db, $charset, $session_mode) {}
 function oci_result($statement, $field) {}
 
 /**
- * Rolls back all outstanding statements for the Oracle connection.
+ * Reverts all uncommitted changes for the Oracle connection and ends the
+ * transaction. It releases all locks held. All Oracle SAVEPOINTS are
+ * erased.
+ * 
+ * A transaction begins when the first SQL statement that changes data is
+ * executed with oci_execute using the OCI_NO_AUTO_COMMIT flag. Further
+ * data changes made by other statements become part of the same
+ * transaction. Data changes made in a transaction are temporary until
+ * the transaction is committed or rolled back. Other users of the
+ * database will not see the changes until they are committed.
+ * 
+ * When inserting or updating data, using transactions is recommended for
+ * relational data consistency and for performance reasons.
  *
  * @param resource
  * @return bool
@@ -33796,8 +33661,41 @@ function oci_set_edition($edition) {}
 function oci_set_module_name($connection, $module_name) {}
 
 /**
- * Sets the number of rows to be prefetched after successful call to
- * oci_execute.
+ * Sets the number of rows to be buffered by the Oracle Client libraries
+ * after a successful query call to oci_execute and for each subsequent
+ * internal fetch request to the database. For queries returning a large
+ * number of rows, performance can be significantly improved by
+ * increasing the prefetch count above the default oci8.default_prefetch
+ * value.
+ * 
+ * Prefetching is Oracle's efficient way of returning more than one data
+ * row from the database in each network request. This can result in
+ * better network and CPU utilization. The buffering of rows is internal
+ * to OCI8 and the behavior of OCI8 fetching functions is unchanged
+ * regardless of the prefetch count. For example, oci_fetch_row will
+ * always return one row. The prefetch buffer is per-statement and is not
+ * used by re-executed statements or by other connections.
+ * 
+ * Call oci_set_prefetch before calling oci_execute.
+ * 
+ * A tuning goal is to set the prefetch value to a reasonable size for
+ * the network and database to handle. For queries returning a very large
+ * number of rows, overall system efficiency might be better if rows are
+ * retrieved from the database in several chunks (i.e set the prefetch
+ * value smaller than the number of rows). This allows the database to
+ * handle other users' statements while the PHP script is processing the
+ * current set of rows.
+ * 
+ * Query prefetching was introduced in Oracle 8i. REF CURSOR prefetching
+ * was introduced in Oracle 11gR2 and occurs when PHP is linked with
+ * Oracle 11gR2 Client libraries and connected to 11gR2 or previous
+ * versions of the database. Nested cursor prefetching was introduced in
+ * Oracle 11gR2 and requires both the Oracle Client libraries and the
+ * database to be version 11gR2.
+ * 
+ * Prefetching is not supported when queries contain LONG or LOB columns.
+ * The prefetch value is ignored and single-row fetches will be used in
+ * all the situations when prefetching is not supported.
  *
  * @param resource
  * @param int
@@ -33806,7 +33704,7 @@ function oci_set_module_name($connection, $module_name) {}
 function oci_set_prefetch($statement, $rows) {}
 
 /**
- * Returns the type of the provided OCI statement.
+ * Returns a keyword identifying the type of the OCI8 statement.
  *
  * @param resource
  * @return string
@@ -40252,8 +40150,8 @@ function ps_get_parameter($psdoc, $name, $modifier) {}
  * 
  * ascender
  * 
- * The ascender of the currently active font or the font whose
- * identifier is passed in parameter modifier.
+ * The ascender of the currently active font or the font whose identifier
+ * is passed in parameter modifier.
  * 
  * descender
  * 
@@ -41236,8 +41134,8 @@ function px_set_value($pxdoc, $name, $value) {}
 
 /**
  * Turns a timestamp as it stored in the paradox file into human readable
- * format. Paradox timestamps are the number of milliseconds since
- * 1.1.0000. This function is just for convenience. It can be easily
+ * format. Paradox timestamps are the number of miliseconds since
+ * 0001-01-02. This function is just for convenience. It can be easily
  * replaced by some math and the calendar functions as demonstrated in
  * the following example.
  *
@@ -41560,40 +41458,6 @@ function rand() {}
 function range($low, $high, $step) {}
 
 /**
- * Close Rar archive and free all allocated resources.
- *
- * @param resource
- * @return bool
- **/
-function rar_close($rar_file) {}
-
-/**
- * Get entry object from the Rar archive.
- *
- * @param resource
- * @param string
- * @return RarEntry
- **/
-function rar_entry_get($rar_file, $entry_name) {}
-
-/**
- * Get entries list from the Rar archive.
- *
- * @param resource
- * @return array
- **/
-function rar_list($rar_file) {}
-
-/**
- * Open specified Rar archive and return Rar file resource.
- *
- * @param string
- * @param string
- * @return resource
- **/
-function rar_open($filename, $password) {}
-
-/**
  * Returns a string in which the sequences with percent (%) signs
  * followed by two hex digits have been replaced with literal characters.
  *
@@ -41815,6 +41679,20 @@ function read_exif_data($filename, $sections, $arrays, $thumbnail) {}
 function realpath($path) {}
 
 /**
+ * Get the contents of the realpath cache.
+ *
+ * @return array
+ **/
+function realpath_cache_get() {}
+
+/**
+ * Get the amount of memory used by the realpath cache.
+ *
+ * @return int
+ **/
+function realpath_cache_size() {}
+
+/**
  * Recode the string string according to the recode request request.
  *
  * @param string
@@ -41952,8 +41830,6 @@ function rmdir($dirname, $context) {}
  * 
  * PHP doesn't handle strings like "12,300.2" correctly by default. See
  * converting from strings.
- * 
- * The precision parameter was introduced in PHP 4.
  *
  * @param float
  * @param int
@@ -42405,7 +42281,9 @@ function session_is_registered($name) {}
 function session_module_name($module) {}
 
 /**
- * session_name returns the name of the current session.
+ * session_name returns the name of the current session. If name is
+ * given, session_start will update the session name and return the old
+ * session name.
  * 
  * The session name is reset to the default value stored in session.name
  * at request startup time. Thus, you need to call session_name for every
@@ -42526,17 +42404,19 @@ function session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly
 function session_set_save_handler($open, $close, $read, $write, $destroy, $gc) {}
 
 /**
- * session_start creates a session or resumes the current one based on
- * the current session id that's being passed via a request, such as GET,
- * POST, or a cookie.
+ * session_start creates a session or resumes the current one based on a
+ * session identifier passed via a GET or POST request, or passed via a
+ * cookie.
  * 
- * If you want to use a named session, you must call session_name before
- * calling session_start.
+ * To use a named session, call session_name before calling
+ * session_start.
  * 
- * session_start will register internal output handler for URL rewriting
- * when trans-sid is enabled. If a user uses ob_gzhandler or like with
- * ob_start, the order of output handler is important for proper output.
- * For example, user must register ob_gzhandler before session start.
+ * When session.use_trans_sid is enabled, the session_start function will
+ * register an internal output handler for URL rewriting.
+ * 
+ * If a user uses ob_gzhandler or similar with ob_start, the function
+ * order is important for proper output. For example, ob_gzhandler must
+ * be registered before starting the session.
  *
  * @return bool
  **/
@@ -43527,9 +43407,9 @@ function spliti($pattern, $string, $limit) {}
 
 /**
  * This function is intended to be used as a default implementation for
- * __autoload(). If nothing else is specified and autoload_register() is
+ * __autoload. If nothing else is specified and spl_autoload_register is
  * called without any parameters then this functions will be used for any
- * later call to __autoload().
+ * later call to __autoload.
  *
  * @param string
  * @param string
@@ -45002,6 +44882,21 @@ function stats_stat_powersum($arr, $power) {}
 function stats_variance($a, $sample) {}
 
 /**
+ * Returns a string description of the last connect error.
+ *
+ * @return string
+ **/
+function stomp_connect_error() {}
+
+/**
+ * Returns a string containing the version of the current stomp
+ * extension.
+ *
+ * @return string
+ **/
+function stomp_version() {}
+
+/**
  * Binary safe case-insensitive string comparison.
  *
  * @param string
@@ -45290,6 +45185,9 @@ function stream_notification_callback($notification_code, $severity, $message, $
 function stream_register_wrapper($protocol, $classname, $flags) {}
 
 /**
+ * Resolve filename against the include path according to the same rules
+ * as fopen/include does.
+ *
  * @param string
  * @param resource
  * @return string
@@ -45698,15 +45596,6 @@ function strripos($haystack, $needle, $offset) {}
  * haystack string. Note that the needle in this case can only be a
  * single character in PHP 4. If a string is passed as the needle, then
  * only the first character of that string will be used.
- * 
- * If needle is not found, returns .
- * 
- * It is easy to mistake the return values for "character found at
- * position 0" and "character not found". Here's how to detect the
- * difference:
- * 
- * If needle is not a string, it is converted to an integer and applied
- * as the ordinal value of a character.
  *
  * @param string
  * @param string
@@ -47561,14 +47450,6 @@ function textdomain($text_domain) {}
 function tidy_access_count($object) {}
 
 /**
- * This function cleans and repairs the given tidy object.
- *
- * @param tidy
- * @return bool
- **/
-function tidy_clean_repair($object) {}
-
-/**
  * Returns the number of errors encountered in the configuration of the
  * specified tidy object.
  *
@@ -47576,15 +47457,6 @@ function tidy_clean_repair($object) {}
  * @return int
  **/
 function tidy_config_count($object) {}
-
-/**
- * Runs diagnostic tests on the given tidy object, adding some more
- * information about the document in the error buffer.
- *
- * @param tidy
- * @return bool
- **/
-function tidy_diagnose($object) {}
 
 /**
  * Returns the number of Tidy errors encountered for the specified
@@ -47596,34 +47468,6 @@ function tidy_diagnose($object) {}
 function tidy_error_count($object) {}
 
 /**
- * Returns the value of the specified option for the specified tidy
- * object.
- *
- * @param tidy
- * @param string
- * @return mixed
- **/
-function tidy_getopt($object, $option) {}
-
-/**
- * Returns a tidyNode object starting from the body tag of the tidy parse
- * tree.
- *
- * @param tidy
- * @return tidyNode
- **/
-function tidy_get_body($object) {}
-
-/**
- * Gets the list of the configuration options in use by the given tidy
- * object.
- *
- * @param tidy
- * @return array
- **/
-function tidy_get_config($object) {}
-
-/**
  * Returns warnings and errors which occurred parsing the specified
  * document.
  *
@@ -47631,41 +47475,6 @@ function tidy_get_config($object) {}
  * @return string
  **/
 function tidy_get_error_buffer($object) {}
-
-/**
- * Returns a tidyNode object starting from the head tag of the tidy parse
- * tree.
- *
- * @param tidy
- * @return tidyNode
- **/
-function tidy_get_head($object) {}
-
-/**
- * Returns a tidyNode object starting from the html tag of the tidy parse
- * tree.
- *
- * @param tidy
- * @return tidyNode
- **/
-function tidy_get_html($object) {}
-
-/**
- * Returns the detected HTML version for the specified tidy object.
- *
- * @param tidy
- * @return int
- **/
-function tidy_get_html_ver($object) {}
-
-/**
- * tidy_get_opt_doc returns the documentation for the given option name.
- *
- * @param tidy
- * @param string
- * @return string
- **/
-function tidy_get_opt_doc($object, $optname) {}
 
 /**
  * Gets a string with the repaired html.
@@ -47676,46 +47485,6 @@ function tidy_get_opt_doc($object, $optname) {}
 function tidy_get_output($object) {}
 
 /**
- * Gets the release date of the Tidy library.
- *
- * @return string
- **/
-function tidy_get_release() {}
-
-/**
- * Returns a tidyNode object representing the root of the tidy parse
- * tree.
- *
- * @param tidy
- * @return tidyNode
- **/
-function tidy_get_root($object) {}
-
-/**
- * Returns the status for the specified tidy object.
- *
- * @param tidy
- * @return int
- **/
-function tidy_get_status($object) {}
-
-/**
- * Tells if the document is a XHTML document.
- *
- * @param tidy
- * @return bool
- **/
-function tidy_is_xhtml($object) {}
-
-/**
- * Tells if the document is a generic (non HTML/XHTML) XML document.
- *
- * @param tidy
- * @return bool
- **/
-function tidy_is_xml($object) {}
-
-/**
  * Loads a Tidy configuration file, with the specified encoding.
  *
  * @param string
@@ -47723,48 +47492,6 @@ function tidy_is_xml($object) {}
  * @return void
  **/
 function tidy_load_config($filename, $encoding) {}
-
-/**
- * Parses the given file.
- *
- * @param string
- * @param mixed
- * @param string
- * @param bool
- * @return tidy
- **/
-function tidy_parse_file($filename, $config, $encoding, $use_include_path) {}
-
-/**
- * Parses a document stored in a string.
- *
- * @param string
- * @param mixed
- * @param string
- * @return tidy
- **/
-function tidy_parse_string($input, $config, $encoding) {}
-
-/**
- * Repairs the given file and returns it as a string.
- *
- * @param string
- * @param mixed
- * @param string
- * @param bool
- * @return string
- **/
-function tidy_repair_file($filename, $config, $encoding, $use_include_path) {}
-
-/**
- * Repairs the given string.
- *
- * @param string
- * @param mixed
- * @param string
- * @return string
- **/
-function tidy_repair_string($data, $config, $encoding) {}
 
 /**
  * This function restores the Tidy configuration to the default values.
@@ -49154,6 +48881,59 @@ function win32_start_service_ctrl_dispatcher($name) {}
 function win32_stop_service($servicename, $machine) {}
 
 /**
+ * Retrieves information about file cache content and its usage.
+ *
+ * @return array
+ **/
+function wincache_fcache_fileinfo() {}
+
+/**
+ * Retrieves information about memory usage by file cache.
+ *
+ * @return array
+ **/
+function wincache_fcache_meminfo() {}
+
+/**
+ * Retrieves information about opcode cache content and its usage.
+ *
+ * @return array
+ **/
+function wincache_ocache_fileinfo() {}
+
+/**
+ * Retrieves information about memory usage by opcode cache.
+ *
+ * @return array
+ **/
+function wincache_ocache_meminfo() {}
+
+/**
+ * Refreshes the cache entries for the files, whose names were passed in
+ * the input argument. If no argument is specified then refreshes all the
+ * entries in the cache.
+ *
+ * @param array
+ * @return bool
+ **/
+function wincache_refresh_if_changed($files) {}
+
+/**
+ * Retrieves information about cached mappings between relative file
+ * paths and corresponding absolute file paths.
+ *
+ * @return array
+ **/
+function wincache_rplist_fileinfo() {}
+
+/**
+ * Retrieves information about memory usage by relative file path cache.
+ *
+ * @return array
+ **/
+function wincache_rplist_meminfo() {}
+
+/**
  * Wraps a string to a given number of characters using a string break
  * character.
  *
@@ -49253,9 +49033,9 @@ function xdiff_file_bpatch($file, $patch, $dest) {}
  * Makes an unified diff containing differences between old_file and
  * new_file and stores it in dest file. The resulting file is
  * human-readable. An optional context parameter specifies how many lines
- * of context should be added around each change (with default value of
- * 3). Setting minimal parameter to true will result in outputting the
- * shortest patch file possible (can take a long time).
+ * of context should be added around each change. Setting minimal
+ * parameter to true will result in outputting the shortest patch file
+ * possible (can take a long time).
  *
  * @param string
  * @param string
@@ -49344,6 +49124,9 @@ function xdiff_file_rabdiff($old_file, $new_file, $dest) {}
  * Makes a binary diff of two strings and returns the result. This
  * function works with both text and binary data. Resulting patch can be
  * later applied using xdiff_string_bpatch/xdiff_file_bpatch.
+ * 
+ * Starting with version 1.5.0 this function is an alias of
+ * xdiff_string_bdiff.
  *
  * @param string
  * @param string
@@ -49375,9 +49158,9 @@ function xdiff_string_bpatch($str, $patch) {}
  * Makes an unified diff containing differences between old_data string
  * and new_data string and returns it. The resulting diff is
  * human-readable. An optional context parameter specifies how many lines
- * of context should be added around each change (with default value of
- * 3). Setting minimal parameter to true will result in outputting the
- * shortest patch file possible (can take a long time).
+ * of context should be added around each change. Setting minimal
+ * parameter to true will result in outputting the shortest patch file
+ * possible (can take a long time).
  *
  * @param string
  * @param string
@@ -55886,7 +55669,7 @@ class Imagick implements Iterator, Traversable {
      * @param bool
      * @return bool
      **/
-    function adaptiveResizeImage($columns, $rows, $fit) {}
+    function adaptiveResizeImage($columns, $rows, $bestfit) {}
 
     /**
      * Adaptively sharpen the image by sharpening more intensely near image
@@ -56199,8 +55982,8 @@ class Imagick implements Iterator, Traversable {
     function cropImage($width, $height, $x, $y) {}
 
     /**
-     * Creates a fixed size thumbnail by first scaling the image down and
-     * cropping a specified area from the center.
+     * Creates a fixed size thumbnail by first scaling the image up or down
+     * and cropping a specified area from the center.
      *
      * @param int
      * @param int
@@ -56371,6 +56154,21 @@ class Imagick implements Iterator, Traversable {
     function evaluateImage($op, $constant, $channel) {}
 
     /**
+     * Exports image pixels into an array. The map defines the ordering of
+     * the exported pixels. The size of the returned array is width * height
+     * * strlen(map).
+     *
+     * @param int
+     * @param int
+     * @param int
+     * @param int
+     * @param string
+     * @param int
+     * @return array
+     **/
+    function exportImagePixels($x, $y, $width, $height, $map, $STORAGE) {}
+
+    /**
      * Comfortability method for setting image size. The method sets the
      * image size and allows setting x,y coordinates where the new area
      * begins.
@@ -56437,6 +56235,18 @@ class Imagick implements Iterator, Traversable {
      * @return bool
      **/
     function frameImage($matte_color, $width, $height, $inner_bevel, $outer_bevel) {}
+
+    /**
+     * Applies an arithmetic, relational, or logical expression to an image.
+     * Use these operators to create lighter or darker versions of an image,
+     * to increase or decrease contrast in an image, or to negate the image
+     * colors.
+     *
+     * @param integer
+     * @param array
+     * @return boolean
+     **/
+    function functionImage($function, $arguments) {}
 
     /**
      * Evaluate expression for each pixel in the image. Consult The Fx
@@ -56616,6 +56426,14 @@ class Imagick implements Iterator, Traversable {
      * @return array
      **/
     function getImageChannelExtrema($channel) {}
+
+    /**
+     * Get the kurtosis and skewness of a specific channel.
+     *
+     * @param int
+     * @return array
+     **/
+    function getImageChannelKurtosis($channel) {}
 
     /**
      * Gets the mean and standard deviation of one or more image channels.
@@ -57156,6 +56974,16 @@ class Imagick implements Iterator, Traversable {
      * @return array
      **/
     function getVersion() {}
+
+    /**
+     * Replaces colors in the image using a Hald lookup table. Hald images
+     * can be created using HALD color coder.
+     *
+     * @param Imagick
+     * @param int
+     * @return boolean
+     **/
+    function haldClutImage($clut, $channel) {}
 
     /**
      * Returns if the object has more images when traversing the list in the
@@ -57701,6 +57529,16 @@ class Imagick implements Iterator, Traversable {
     function reduceNoiseImage($radius) {}
 
     /**
+     * Replaces colors an image with those defined by replacement. The colors
+     * are replaced with the closest possible color.
+     *
+     * @param Imagick
+     * @param int
+     * @return void
+     **/
+    function remapImage($replacement, $DITHER) {}
+
+    /**
      * Removes an image from the image list.
      *
      * @return bool
@@ -57751,7 +57589,7 @@ class Imagick implements Iterator, Traversable {
      * @param bool
      * @return bool
      **/
-    function resizeImage($columns, $rows, $filter, $blur, $fit) {}
+    function resizeImage($columns, $rows, $filter, $blur, $bestfit) {}
 
     /**
      * Offsets an image as defined by x and y.
@@ -57806,7 +57644,7 @@ class Imagick implements Iterator, Traversable {
      * @param bool
      * @return bool
      **/
-    function scaleImage($cols, $rows, $fit) {}
+    function scaleImage($cols, $rows, $bestfit) {}
 
     /**
      * Analyses the image and identifies units that are similar.
@@ -58481,6 +58319,18 @@ class Imagick implements Iterator, Traversable {
     function solarizeImage($threshold) {}
 
     /**
+     * Given the arguments array containing numeric values this method
+     * interpolates the colors found at those coordinates across the whole
+     * image using sparse_method.
+     *
+     * @param int
+     * @param array
+     * @param int
+     * @return boolean
+     **/
+    function sparseColorImage($SPARSE_METHOD, $arguments, $channel) {}
+
+    /**
      * Splices a solid color into the image.
      *
      * @param int
@@ -58570,7 +58420,7 @@ class Imagick implements Iterator, Traversable {
      * @param bool
      * @return bool
      **/
-    function thumbnailImage($columns, $rows, $fit) {}
+    function thumbnailImage($columns, $rows, $bestfit) {}
 
     /**
      * Applies a color vector to each pixel in the image. The length of the
@@ -60391,7 +60241,7 @@ class KTaglib_ID3v2_AttachedPictureFrame {
     function setType($type) {}
 
 }
-class KTagLib_ID3v2_Frame extends KTagLib_ID3v2_Frame {
+class KTaglib_ID3v2_Frame extends KTagLib_ID3v2_Frame {
     /**
      * Returns the size of the frame in bytes. Please refer to id3.org to see
      * what ID3v2 frames are and how they are defined.
@@ -60496,7 +60346,7 @@ class KTaglib_MPEG_AudioProperties {
     function isProtectionEnabled() {}
 
 }
-class KTaglib_MPEG_File {
+class KTagLib_MPEG_File {
     /**
      * Returns an object that provides access to the audio properties of the
      * mpeg file.
@@ -61294,7 +61144,8 @@ class maxdb {
     function stmt_init() {}
 
     /**
-     * This function has no functionally effect.
+     * maxdb_stmt_store_result has no functionally effect and should not be
+     * used for retrieving data from MaxDB server.
      *
      * @return object
      **/
@@ -61416,8 +61267,8 @@ class Memcache {
      * 
      * New item's value will not be less than zero.
      * 
-     * Do not use Memcache::decrement with item, which was stored
-     * compressed, because consequent call to Memcache::get will fail.
+     * Do not use Memcache::decrement with item, which was stored compressed,
+     * because consequent call to Memcache::get will fail.
      * 
      * Memcache::decrement does not create an item if it didn't exist. Also
      * you can use memcache_decrement function.
@@ -61512,8 +61363,8 @@ class Memcache {
      * number, it will change it's value to value. Memcache::increment does
      * not create an item if it didn't exist.
      * 
-     * Do not use Memcache::increment with item, which was stored
-     * compressed, because consequent call to Memcache::get will fail.
+     * Do not use Memcache::increment with item, which was stored compressed,
+     * because consequent call to Memcache::get will fail.
      * 
      * Also you can use memcache_increment function.
      *
@@ -61749,7 +61600,7 @@ class Memcached {
      * to obtain this token. Note that the token is represented as a double
      * due to the limitations of PHP's integer space.
      *
-     * @param double
+     * @param float
      * @param string
      * @param mixed
      * @param int
@@ -61763,7 +61614,7 @@ class Memcached {
      * specific server. This is useful if you need to keep a bunch of related
      * keys on a certain server.
      *
-     * @param double
+     * @param float
      * @param string
      * @param string
      * @param mixed
@@ -61818,7 +61669,7 @@ class Memcached {
     /**
      * Memcached::fetch retrieves the next result from the last request.
      *
-     * @return mixed
+     * @return array
      **/
     function fetch() {}
 
@@ -61826,7 +61677,7 @@ class Memcached {
      * Memcached::fetchAll retrieves all the remaining results from the last
      * request.
      *
-     * @return mixed
+     * @return array
      **/
     function fetchAll() {}
 
@@ -61855,7 +61706,7 @@ class Memcached {
      *
      * @param string
      * @param callback
-     * @param double
+     * @param float
      * @return mixed
      **/
     function get($key, $cache_cb, &$cas_token) {}
@@ -61868,7 +61719,7 @@ class Memcached {
      * @param string
      * @param string
      * @param callback
-     * @param double
+     * @param float
      * @return mixed
      **/
     function getByKey($server_key, $key, $cache_cb, &$cas_token) {}
@@ -61922,7 +61773,7 @@ class Memcached {
      *
      * @param array
      * @param array
-     * @param integer
+     * @param int
      * @return mixed
      **/
     function getMulti($keys, &$cas_tokens, $flags) {}
@@ -61935,7 +61786,7 @@ class Memcached {
      * @param string
      * @param array
      * @param string
-     * @param integer
+     * @param int
      * @return void
      **/
     function getMultiByKey($server_key, $keys, &$cas_tokens, $flags) {}
@@ -61946,7 +61797,7 @@ class Memcached {
      * to the extension. See Memcached Constants for more information.
      *
      * @param int
-     * @return void
+     * @return mixed
      **/
     function getOption($option) {}
 
@@ -62124,8 +61975,7 @@ class Memcached {
      * 
      * Memcached::OPT_HASH requires Memcached::HASH_* values.
      * 
-     * Memcached::OPT_DISTRIBUTION requires Memcached::DISTRIBUTION_*
-     * values.
+     * Memcached::OPT_DISTRIBUTION requires Memcached::DISTRIBUTION_* values.
      *
      * @param int
      * @param mixed
@@ -62225,9 +62075,25 @@ class MessageFormatter {
 
 }
 class Mongo {
-    const DEFAULT_HOST = '';
-    const DEFAULT_PORT = 0;
     /**
+     * This method does not need to be called, except in unusual
+     * circumstances. The driver will cleanly close the database connection
+     * when the Mongo object goes out of scope.
+     * 
+     * If you are using a service where objects do not go out of scope
+     * between requests, you may wish to call close() at the end of your
+     * program to keep old connections from hanging around. However, it is
+     * probably more efficient to take advantage of this fact and simply use
+     * a persistent connection, which will automatically create a connection
+     * if needed and use it for as many requests as the application server
+     * allows it to exist.
+     * 
+     * You may also wish to call close() if you are unsure of the state of a
+     * connection and wish to guarantee a new connection will happen. For
+     * example:
+     * 
+     * vs.
+     *
      * @return boolean
      **/
     function close() {}
@@ -62265,14 +62131,17 @@ class Mongo {
     function lastError() {}
 
     /**
-     * To successfully create a paired connection, $this-&gt;server must be a
-     * string of the form "server1,server2".
+     * Pass a string of the form "mongodb://server1,server2" to the
+     * constructor instead of using this method.
      *
      * @return boolean
      **/
     function pairConnect() {}
 
     /**
+     * Pass "mongodb://server1,server2" and array("persist" =&gt; $id) to the
+     * constructor instead of using this method.
+     *
      * @param string
      * @param string
      * @return boolean
@@ -62280,6 +62149,9 @@ class Mongo {
     function pairPersistConnect($username, $password) {}
 
     /**
+     * Pass array("persist" =&gt; $id) to the constructor instead of using
+     * this method.
+     *
      * @param string
      * @param string
      * @return boolean
@@ -62292,14 +62164,6 @@ class Mongo {
      * @return array
      **/
     function prevError() {}
-
-    /**
-     * @param MongoDB
-     * @param boolean
-     * @param boolean
-     * @return array
-     **/
-    function repairDB($db, $preserve_cloned_files, $backup_original_files) {}
 
     /**
      * Use MongoDB::resetError instead.
@@ -62322,12 +62186,41 @@ class Mongo {
     function selectDB($dbname) {}
 
     /**
+     * If no parameters are passed, this connects to "localhost:27017" (or
+     * whatever was specified in php.ini for mongo.default_host and
+     * mongo.default_port).
+     * 
+     * As of version 1.0.2, server can have a special form:
+     * mongodb://[username:password@]host1[:port1][,host2[:port2:],...].
+     * Breaking this down, it starts with mongodb://, to indicate it is in
+     * this form. If username and password are specified, the constructor
+     * will attempt to authenticate the connection with the admin database
+     * before returning. Username and password are optional and must be
+     * followed by an @, if specified. At least one host must be given (port
+     * optional, always defaulting to 27017) and as many hosts as desired may
+     * be connected to. Host names are comma-separated and the constructor
+     * will return successfully if it connected to at least one host. If it
+     * could not connect to any of the hosts, it will throw a
+     * MongoConnectionException.
+     * 
+     * If you elect not to connect immediately (you pass the option
+     * array("connect" =&gt; false)), you will need to call Mongo::connect
+     * before doing any database operations.
+     *
      * @param string
-     * @param boolean
-     * @param boolean
-     * @param boolean
+     * @param array
      **/
-    function __construct($server, $connect, $persistent, $paired) {}
+    function __construct($server, $options) {}
+
+    /**
+     * This is the cleanest way of getting a database. If the database name
+     * has any special characters, Mongo::selectDB will need to be used.
+     * However, in most cases, this should be sufficient.
+     *
+     * @param string
+     * @return MongoDB
+     **/
+    function __get($dbname) {}
 
     /**
      * @return string
@@ -62338,6 +62231,15 @@ class Mongo {
 class MongoBinData {
     /**
      * Creates a new binary data object.
+     * 
+     * There are five types of binary data currently recognized by the BSON
+     * spec: function (0x01), byte array (0x02), UUID (0x03), MD5 (0x05), and
+     * user defined (0x80). The default type is byte array (0x02). There is
+     * no particular difference in how the driver or server interpret
+     * different types, so by and large they are irrelevant for now. Any
+     * number (between 0 and 255) could be used for type, if the user is
+     * willing to assume the risk that the database might eventually do
+     * something with binary data based on type.
      *
      * @param string
      * @param int
@@ -62345,8 +62247,6 @@ class MongoBinData {
     function __construct($data, $type) {}
 
     /**
-     * Returns the string representing this binary data object.
-     *
      * @return string
      **/
     function __toString() {}
@@ -62373,11 +62273,10 @@ class MongoCollection extends MongoCollection {
     function batchInsert($a) {}
 
     /**
-     * @param array
-     * @param array
+     * @param mixed
      * @return int
      **/
-    function count($query, $fields) {}
+    function count($query) {}
 
     /**
      * @param array
@@ -62404,10 +62303,15 @@ class MongoCollection extends MongoCollection {
     function drop() {}
 
     /**
-     * @param string|array
+     * A unique index cannot be created on a field if multiple existing
+     * documents do not contain the field. The field is effectively for these
+     * documents and thus already non-unique.
+     *
+     * @param array
+     * @param array
      * @return boolean
      **/
-    function ensureIndex($keys) {}
+    function ensureIndex($keys, $options) {}
 
     /**
      * @param array
@@ -62474,10 +62378,10 @@ class MongoCollection extends MongoCollection {
     /**
      * @param array
      * @param array
-     * @param boolean
+     * @param array
      * @return boolean
      **/
-    function update($criteria, $newobj, $upsert) {}
+    function update($criteria, $newobj, $options) {}
 
     /**
      * @param bool
@@ -62492,6 +62396,16 @@ class MongoCollection extends MongoCollection {
     function __construct($db, $name) {}
 
     /**
+     * A concise syntax for getting a collection with a dot-separated name.
+     * If a collection name contains strange characters, you may have to use
+     * MongoDB::selectCollection instead.
+     *
+     * @param string
+     * @return MongoCollection
+     **/
+    function __get($name) {}
+
+    /**
      * @return string
      **/
     function __toString() {}
@@ -62499,14 +62413,31 @@ class MongoCollection extends MongoCollection {
 }
 class MongoCursor extends MongoCursor {
     /**
+     * @param boolean
      * @return int
      **/
-    function count() {}
+    function count($all) {}
 
     /**
+     * This field is until MongoCursor::next is called.
+     *
      * @return array
      **/
     function current() {}
+
+    /**
+     * The database sends responses in batches of documents, up to 4Mb of
+     * documents per response. This method checks if the database has more
+     * batches or if the result set has been exhausted.
+     * 
+     * A cursor being "dead" does not mean that MongoCursor::hasNext will
+     * return , it only means that the database is done sending results to
+     * the client. The client should continue iterating through results until
+     * MongoCursor::hasNext is .
+     *
+     * @return boolean
+     **/
+    function dead() {}
 
     /**
      * @return void
@@ -62519,6 +62450,9 @@ class MongoCursor extends MongoCursor {
     function explain() {}
 
     /**
+     * This equivalent to calling MongoCursor::next, then
+     * MongoCursor::current.
+     *
      * @return array
      **/
     function getNext() {}
@@ -62533,6 +62467,26 @@ class MongoCursor extends MongoCursor {
      * @return MongoCursor
      **/
     function hint($key_pattern) {}
+
+    /**
+     * After remaining idle for some amount of time, cursor, by default,
+     * "die." This is generally the behavior one wants. The database cleans
+     * up a cursor once all of its results have been sent to the client, but
+     * if the client doesn't request all of the results, the cursor will
+     * languish there, taking up resources. Thus, after a few minutes, the
+     * cursor "times out" and the database assumes the client has gotten
+     * everything it needs and cleans up its the cursor's resources.
+     * 
+     * If, for some reason, you need a cursor to hang around for a long time,
+     * you can prevent the database from cleaning it up by using this method.
+     * However, if you make a cursor immortal, you need to iterate through
+     * all of its results (or at least until Cursor::dead returns ) or the
+     * cursor will hang around the database forever, taking up resources.
+     *
+     * @param boolean
+     * @return MongoCursor
+     **/
+    function immortal($liveForever) {}
 
     /**
      * @return string
@@ -62602,18 +62556,32 @@ class MongoCursor extends MongoCursor {
      * Unix "tail -f" command.
      * 
      * Tailable means cursor is not closed when the last data is retrieved.
-     * rather, the cursor marks the final object's position. you can resume
+     * Rather, the cursor marks the final object's position. you can resume
      * using the cursor later, from where it was located, if more data were
      * received.
      * 
      * Like any "latent cursor", the cursor may become invalid at some point
      * -- for example if that final object it references were deleted. Thus,
-     * you should be prepared to requery if the cursor is dead().
+     * you should be prepared to requery if the cursor is MongoCursor::dead.
      *
      * @param boolean
      * @return MongoCursor
      **/
     function tailable($tail) {}
+
+    /**
+     * A timeout can be set at any time and will affect subsequent queries on
+     * the cursor, including fetching more results from the database. For
+     * example, to wait forever for an initial response but timeout after 100
+     * ms for subsequent results, one could say:
+     * 
+     * A timeout of 0 (or a negative number) will wait forever so it can be
+     * used to reset the cursor if a timeout is no longer needed.
+     *
+     * @param int
+     * @return MongoCursor
+     **/
+    function timeout($ms) {}
 
     /**
      * @return boolean
@@ -62628,6 +62596,8 @@ class MongoCursor extends MongoCursor {
      **/
     function __construct($connection, $ns, $query, $fields) {}
 
+}
+class MongoCursorException extends MongoCursorException {
 }
 class MongoDate {
     /**
@@ -62649,10 +62619,24 @@ class MongoDate {
 
 }
 class MongoDB {
-    const PROFILING_OFF = 0;
-    const PROFILING_ON = 0;
-    const PROFILING_SLOW = 0;
     /**
+     * This method causes its connection to be authenticated. If
+     * authentication is enabled for the database server (it's not, by
+     * default), you need to log in before the database will allow you to do
+     * anything.
+     *
+     * @param string
+     * @param string
+     * @return array
+     **/
+    function authenticate($username, $password) {}
+
+    /**
+     * Almost everything that is not a CRUD operation can be done with a
+     * database command. Need to know the database version? There's a command
+     * for that. Need to do aggregation? There's a command for that. Need to
+     * turn up logging? You get the idea.
+     *
      * @param array
      * @return array
      **/
@@ -62686,6 +62670,12 @@ class MongoDB {
     function dropCollection($coll) {}
 
     /**
+     * The Mongo database server runs a JavaScript engine. This method allows
+     * you to run arbitary JavaScript on the database. This can be useful if
+     * you want touch a number of collections lightly, or process some
+     * results on the database side to reduce the amount that has to be sent
+     * to the client.
+     *
      * @param mixed
      * @param array
      * @return array
@@ -62696,11 +62686,6 @@ class MongoDB {
      * @return bool
      **/
     function forceError() {}
-
-    /**
-     * @return array
-     **/
-    function getCursorInfo() {}
 
     /**
      * @param array
@@ -62766,6 +62751,16 @@ class MongoDB {
     function __construct($conn, $name) {}
 
     /**
+     * This is the easiest way of getting a collection from a database
+     * object. If a collection name contains strange characters, you may have
+     * to use MongoDB::selectCollection instead.
+     *
+     * @param string
+     * @return MongoCollection
+     **/
+    function __get($name) {}
+
+    /**
      * @return string
      **/
     function __toString() {}
@@ -62773,11 +62768,14 @@ class MongoDB {
 }
 class MongoDBRef {
     /**
+     * If no database is given, the current database is used.
+     *
      * @param string
      * @param mixed
+     * @param string
      * @return array
      **/
-    function create($ns, $id) {}
+    function create($collection, $id, $database) {}
 
     /**
      * @param MongoDB
@@ -62787,13 +62785,16 @@ class MongoDBRef {
     function get($db, $ref) {}
 
     /**
-     * @param array
+     * This not actually follow the reference, so it does not determine if it
+     * is broken or not. It merely checks that ref is in valid database
+     * reference format (in that it is an object or array with $ref and $id
+     * fields).
+     *
+     * @param mixed
      * @return boolean
      **/
     function isRef($ref) {}
 
-}
-class MongoEmptyObj {
 }
 class MongoException extends MongoException {
 }
@@ -62890,7 +62891,7 @@ class MongoGridFSCursor {
     function __construct($gridfs, $connection, $ns, $query, $fields) {}
 
 }
-class MongoGridFSFile {
+class MongoGridfsFile {
     /**
      * Warning: this will load the file into memory. If the file is bigger
      * than your memory, this will cause problems!
@@ -62924,6 +62925,13 @@ class MongoGridFSFile {
 }
 class MongoId {
     /**
+     * This returns the same thing as running time() when the id is created.
+     *
+     * @return int
+     **/
+    function getTimestamp() {}
+
+    /**
      * @param string
      **/
     function __construct($id) {}
@@ -62933,6 +62941,10 @@ class MongoId {
      **/
     function __toString() {}
 
+}
+class MongoMaxKey {
+}
+class MongoMinKey {
 }
 class MongoRegex {
     /**
@@ -62950,24 +62962,24 @@ class MongoRegex {
     function __toString() {}
 
 }
-class MongoUtil {
-    const ASC = 0;
-    const BIN_ARRAY = 0;
-    const BIN_CUSTOM = 0;
-    const BIN_MD5 = 0;
-    const BIN_UUID = 0;
-    const DESC = 0;
-    const GT = '';
-    const GTE = '';
-    const IN = '';
-    const LT = '';
-    const LTE = '';
-    const NE = '';
+class MongoTimestamp {
     /**
-     * @param string|array
+     * Creates a new timestamp. If no parameters are given, the current time
+     * is used and the increment is automatically provided. The increment is
+     * set to 0 when the module is loaded and is incremented every time this
+     * constructor is called (without the $inc parameter passed in).
+     *
+     * @param long
+     * @param long
+     **/
+    function __construct($sec, $inc) {}
+
+    /**
+     * Returns the "sec" field of this timestamp.
+     *
      * @return string
      **/
-    function toIndexString($keys) {}
+    function __toString() {}
 
 }
 class MultipleIterator implements Iterator, Traversable {
@@ -63290,13 +63302,6 @@ class MySQLi {
     function escape_string($escapestr) {}
 
     /**
-     * Returns client Zval cache statistics.
-     *
-     * @return bool
-     **/
-    function get_cache_stats() {}
-
-    /**
      * Returns a character set object providing several properties of the
      * current active character set.
      *
@@ -63312,13 +63317,6 @@ class MySQLi {
     function get_client_info() {}
 
     /**
-     * Returns client per-process statistics.
-     *
-     * @return bool
-     **/
-    function get_client_stats() {}
-
-    /**
      * Returns statistics about the client connection.
      *
      * @return bool
@@ -63326,7 +63324,7 @@ class MySQLi {
     function get_connection_stats() {}
 
     /**
-     * @return object
+     * @return mysqli_warnings
      **/
     function get_warnings() {}
 
@@ -64002,6 +64000,17 @@ class MySQLi_STMT {
     function store_result() {}
 
 }
+class mysqli_warning {
+    /**
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     **/
+    function __construct() {}
+
+}
 class NoRewindIterator extends IteratorIterator {
     /**
      * Gets the current value.
@@ -64273,7 +64282,7 @@ class OAuth {
      *
      * @param string
      * @param array
-     * @param int
+     * @param string
      * @param array
      * @return bool
      **/
@@ -64317,7 +64326,7 @@ class OAuth {
     /**
      * Set where the OAuth parameters should be passed.
      *
-     * @param string
+     * @param int
      * @return bool
      **/
     function setAuthType($auth_type) {}
@@ -64353,7 +64362,7 @@ class OAuth {
      * @param string
      * @param string
      * @param string
-     * @param string
+     * @param int
      **/
     function __construct($consumer_key, $consumer_secret, $signature_method, $auth_type) {}
 
@@ -64630,7 +64639,8 @@ class PDO {
      * question mark (?) parameter markers for which real values will be
      * substituted when the statement is executed. You cannot use both named
      * and question mark parameter markers within the same SQL statement;
-     * pick one or the other parameter style.
+     * pick one or the other parameter style. Use these parameters to bind
+     * any user-input, do not include the user-input directly in the query.
      * 
      * You must include a unique parameter marker for each value you wish to
      * pass in to the statement when you call PDOStatement::execute. You
@@ -64734,15 +64744,15 @@ class PDO {
      * 
      * PDO::ATTR_ERRMODE: Error reporting.
      * 
-     * PDO::ERRMODE_SILENT: Just set error codes. PDO::ERRMODE_WARNING:
-     * Raise E_WARNING. PDO::ERRMODE_EXCEPTION: Throw exceptions.
+     * PDO::ERRMODE_SILENT: Just set error codes. PDO::ERRMODE_WARNING: Raise
+     * E_WARNING. PDO::ERRMODE_EXCEPTION: Throw exceptions.
      * 
      * PDO::ATTR_ORACLE_NULLS (available with all drivers, not just Oracle):
      * Conversion of NULL and empty strings.
      * 
-     * PDO::NULL_NATURAL: No conversion. PDO::NULL_EMPTY_STRING: Empty
-     * string is converted to . PDO::NULL_TO_STRING: NULL is converted to an
-     * empty string.
+     * PDO::NULL_NATURAL: No conversion. PDO::NULL_EMPTY_STRING: Empty string
+     * is converted to . PDO::NULL_TO_STRING: NULL is converted to an empty
+     * string.
      * 
      * PDO::ATTR_STRINGIFY_FETCHES: Convert numeric values to strings when
      * fetching. Requires bool.
@@ -65057,10 +65067,10 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
     function addEmptyDir($dirname) {}
 
     /**
-     * With this method, any file or URL can be added to the phar archive. If
-     * the optional second parameter localname is specified, the file will be
-     * stored in the archive with that name, otherwise the file parameter is
-     * used as the path to store within the archive. URLs must have a
+     * With this method, any file or URL can be added to the tar/zip archive.
+     * If the optional second parameter localname is specified, the file will
+     * be stored in the archive with that name, otherwise the file parameter
+     * is used as the path to store within the archive. URLs must have a
      * localname or an exception is thrown. This method is similar to
      * ZipArchive::addFile.
      *
@@ -65092,11 +65102,11 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
     function apiVersion() {}
 
     /**
-     * Populate a phar archive from directory contents. The optional second
-     * parameter is a regular expression (pcre) that is used to exclude
-     * files. Any filename that matches the regular expression will be
-     * included, all others will be excluded. For more fine-grained control,
-     * use Phar::buildFromIterator.
+     * Populate a tar/zip archive from directory contents. The optional
+     * second parameter is a regular expression (pcre) that is used to
+     * exclude files. Any filename that matches the regular expression will
+     * be included, all others will be excluded. For more fine-grained
+     * control, use PharData::buildFromIterator.
      *
      * @param string
      * @param string
@@ -65654,18 +65664,13 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
     /**
      * set the signature algorithm for a phar and apply it. The signature
      * algorithm must be one of Phar::MD5, Phar::SHA1, Phar::SHA256,
-     * Phar::SHA512, or Phar::OPENSSL.
-     * 
-     * Note that all executable phar archives have a signature created
-     * automatically, SHA1 by default. data tar- or zip-based archives
-     * (archives created with the PharData class) must have their signature
-     * created and set explicitly via Phar::setSignatureAlgorithm.
+     * Phar::SHA512, or Phar::PGP (pgp not yet supported and falls back to
+     * SHA-1).
      *
      * @param int
-     * @param string
      * @return void
      **/
-    function setSignatureAlgorithm($sigtype, $privatekey) {}
+    function setSignatureAlgorithm($sigtype) {}
 
     /**
      * This method is used to add a PHP bootstrap loader stub to a new Phar
@@ -66237,80 +66242,124 @@ class PharFileInfo extends SplFileInfo {
 }
 class RangeException extends RuntimeException {
 }
-class Rar {
+class RarArchive implements Traversable {
     /**
-     * Rar::extract extracts entry's data to the dir. It will create new file
-     * in the specified dir with the name identical to the entry's name.
+     * Close RAR archive and free all allocated resources.
      *
-     * @param string
-     * @param string
      * @return bool
      **/
-    function extract($dir, $filepath) {}
+    function close() {}
 
     /**
-     * Rar::getAttr returns attributes of the archive entry.
-     *
-     * @return int
-     **/
-    function getAttr() {}
-
-    /**
-     * Rar::getCrc returns CRC of the archive entry.
-     *
-     * @return int
-     **/
-    function getCrc() {}
-
-    /**
-     * Gets entry last modification time.
+     * Get the (global) comment stored in the RAR archive. It may be up to 64
+     * KiB long.
      *
      * @return string
      **/
-    function getFileTime() {}
+    function getComment() {}
 
     /**
-     * Rar::getHostOs return code of the host OS of the archive entry.
+     * Get entry object (file or directory) from the RAR archive.
      *
-     * @return int
+     * @param string
+     * @return RarEntry
      **/
-    function getHostOs() {}
+    function getEntry($entryname) {}
 
     /**
-     * Rar::getMethod returns number of the method used when adding current
-     * archive entry.
+     * Check whether the RAR archive is solid. Individual file extraction is
+     * slower on solid archives.
      *
-     * @return int
+     * @return bool
      **/
-    function getMethod() {}
+    function isSolid() {}
 
     /**
-     * Rar::getName returns full name of the archive entry.
+     * Get entries list (files and directories) from the RAR archive.
+     *
+     * @return array
+     **/
+    function list() {}
+
+    /**
+     * Open specified RAR archive and return RarArchive instance representing
+     * it.
+     *
+     * @param string
+     * @param string
+     * @return RarArchive
+     **/
+    function open($filename, $password) {}
+
+    /**
+     * Provides a string representation for this RarArchive object. It
+     * currently shows the full path name of the archive volume that was
+     * opened and whether the resource is valid or was already closed through
+     * a call to RarArchive::close.
+     * 
+     * This method may be used only for debugging purposes, as there are no
+     * guarantees as to which information the result contains or how it is
+     * formatted.
+     *
+     * @return void
+     **/
+    function __toString() {}
+
+}
+class RarEntry {
+    /**
+     * Returns a file handler that supports read operations. This handler
+     * provides on-the-fly decompression for this entry.
+     * 
+     * The handler is not invalidated by calling rar_close.
+     *
+     * @param string
+     * @return resource
+     **/
+    function getStream($password) {}
+
+    /**
+     * Tests whether the current entry contents are encrypted.
+     *
+     * @return bool
+     **/
+    function isEncrypted() {}
+
+    /**
+     * RarEntry::__toString returns a textual representation for this entry.
+     * It includes whether the entry is a file or a directory (symbolic links
+     * and other special objects will be treated as files), the UTF-8 name of
+     * the entry and its CRC. The form and content of this representation may
+     * be changed in the future, so they cannot be relied upon.
      *
      * @return string
      **/
-    function getName() {}
+    function __toString() {}
+
+}
+class RarException extends Exception {
+    /**
+     * Checks whether the RAR functions will emit warnings and return error
+     * values or whether they will throw exceptions in most of the
+     * circumstances (does not include some programmatic errors such as
+     * passing the wrong type of arguments).
+     *
+     * @return bool
+     **/
+    function isUsingExceptions() {}
 
     /**
-     * Get packed size of the archive entry.
+     * If and only if the argument is , then, instead of emitting warnings
+     * and returning a special value indicating error when the UnRAR library
+     * encounters an error, an exception of type RarException will be thrown.
+     * 
+     * Exceptions will also be thrown for the following errors, which occur
+     * outside the library (their error code will be -1):
      *
-     * @return int
+     * @param bool
+     * @return void
      **/
-    function getPackedSize() {}
-
-    /**
-     * Get unpacked size of the archive entry.
-     *
-     * @return int
-     **/
-    function getUnpackedSize() {}
-
-    /**
-     * Get version of the archiver used to add the archive entry.
-     *
-     * @return int
-     **/
-    function getVersion() {}
+    function setUsingExceptions($using_exceptions) {}
 
 }
 class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator {
@@ -66543,7 +66592,7 @@ class RecursiveIteratorIterator implements OuterIterator, Traversable, Iterator 
     function rewind() {}
 
     /**
-     * Set the maximum allowed depth. Defaults to -1, which is any depth.
+     * Set the maximum allowed depth.
      *
      * @param string
      * @return void
@@ -66959,9 +67008,9 @@ class ReflectionClass implements Reflector {
     function isFinal() {}
 
     /**
-     * Checks if a class is an instance of an object.
+     * Checks if an object is an instance of a class.
      *
-     * @param string
+     * @param object
      * @return bool
      **/
     function isInstance($object) {}
@@ -67807,6 +67856,59 @@ class RegexIterator extends FilterIterator {
     function setPregFlags($preg_flags) {}
 
 }
+class ResourceBundle {
+    /**
+     * Get the number of elements in the bundle.
+     *
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Creates a resource bundle.
+     *
+     * @param string
+     * @param string
+     * @param bool
+     * @return ResourceBundle
+     **/
+    function create($locale, $bundlename, $fallback) {}
+
+    /**
+     * Get the data from the bundle by index or string key.
+     *
+     * @param string|int
+     * @return mixed
+     **/
+    function get($index) {}
+
+    /**
+     * Get error code from the last function performed by the bundle object.
+     *
+     * @return int
+     **/
+    function getErrorCode() {}
+
+    /**
+     * Get error message from the last function performed by the bundle
+     * object.
+     *
+     * @return string
+     **/
+    function getErrorMessage() {}
+
+    /**
+     * Get the list of locales supported by the bundle. The list is taken
+     * from the bundle table named res_index which should contain a table
+     * named InstalledLocales, which contains locales as keys. This bundle
+     * should be either in data directory as .res file or part of the .dat
+     * file for this function to work.
+     *
+     * @return array
+     **/
+    function getLocales() {}
+
+}
 class result {
     /**
      * Returns the position of the field cursor used for the last
@@ -67827,8 +67929,7 @@ class result {
      * The maxdb_fetch_lengths function returns an array containing the
      * lengths of every column of the current row within the result set
      * represented by the result parameter. If successful, a numerically
-     * indexed array representing the lengths of each column is returned or
-     * on failure.
+     * indexed array representing the lengths of each column is returned.
      *
      * @var array
      **/
@@ -68225,8 +68326,8 @@ class SAMMessage {
      * 
      * SAM_FLOAT
      * 
-     * A short floating point value. SAM will attempt to convert the
-     * property value specified into a floating point value with 7 digits of
+     * A short floating point value. SAM will attempt to convert the property
+     * value specified into a floating point value with 7 digits of
      * precision. If a string value is passed an attempt will be made to
      * interpret the string as a numeric value. If the passed value cannot be
      * expressed as a 7 digit floating point value data may be lost in the
@@ -69200,7 +69301,7 @@ class SimpleXMLIterator extends SimpleXMLElement implements RecursiveIterator, T
 }
 class SoapClient {
     /**
-     * This constructor creates SoapClient objects in WSDL or non-WSDL mode.
+     * SoapClient::SoapClient
      *
      * @param mixed
      * @param array
@@ -69414,7 +69515,7 @@ class SoapServer {
      * Adds a SOAP header to be returned with the response to the current
      * request.
      *
-     * @param string
+     * @param SoapHeader
      * @return void
      **/
     function addSoapHeader($object) {}
@@ -69534,7 +69635,7 @@ class SolrClient {
      * @param int
      * @return SolrUpdateResponse
      **/
-    function addDocument(&$doc, $allowDups, $commitWithin) {}
+    function addDocument($doc, $allowDups, $commitWithin) {}
 
     /**
      * Adds a collection of documents to the index.
@@ -69544,7 +69645,7 @@ class SolrClient {
      * @param int
      * @return void
      **/
-    function addDocuments(&$docs, $allowDups, $commitWithin) {}
+    function addDocuments($docs, $allowDups, $commitWithin) {}
 
     /**
      * This method finalizes all add/deletes made to the index.
@@ -69590,6 +69691,22 @@ class SolrClient {
     function deleteByQuery($query) {}
 
     /**
+     * Returns the debug data for the last connection attempt
+     *
+     * @return string
+     **/
+    function getDebug() {}
+
+    /**
+     * Returns the client options set internally. Very useful for debugging.
+     * The values returned are readonly and can only be set when the object
+     * is instantiated.
+     *
+     * @return array
+     **/
+    function getOptions() {}
+
+    /**
      * Defragments the index for faster search performance.
      *
      * @param int
@@ -69613,7 +69730,7 @@ class SolrClient {
      * @param SolrParams
      * @return SolrQueryResponse
      **/
-    function query(&$query) {}
+    function query($query) {}
 
     /**
      * Sends a raw XML update request to the server
@@ -69755,9 +69872,9 @@ class SolrDocument implements ArrayAccess, Iterator, Traversable, Serializable {
      *
      * @param SolrDocument
      * @param bool
-     * @return void
+     * @return bool
      **/
-    function merge(&$sourceDoc, $overwrite) {}
+    function merge($sourceDoc, $overwrite) {}
 
     /**
      * Moves the internal pointer to the next field.
@@ -69826,7 +69943,7 @@ class SolrDocument implements ArrayAccess, Iterator, Traversable, Serializable {
     /**
      * @param int
      * @param int
-     * @return void
+     * @return bool
      **/
     function sort($sortOrderBy, $sortDirection) {}
 
@@ -69895,7 +70012,7 @@ class SolrDocument implements ArrayAccess, Iterator, Traversable, Serializable {
      *
      * @param string
      * @param string
-     * @return void
+     * @return bool
      **/
     function __set($fieldName, $fieldValue) {}
 
@@ -69904,7 +70021,7 @@ class SolrDocument implements ArrayAccess, Iterator, Traversable, Serializable {
      * object property.
      *
      * @param string
-     * @return void
+     * @return bool
      **/
     function __unset($fieldName) {}
 
@@ -70047,7 +70164,7 @@ class SolrInputDocument {
      * @param bool
      * @return bool
      **/
-    function merge(&$sourceDoc, $overwrite) {}
+    function merge($sourceDoc, $overwrite) {}
 
     /**
      * This is an alias of SolrInputDocument::clear
@@ -70084,7 +70201,7 @@ class SolrInputDocument {
     /**
      * Returns an array representation of the input document.
      *
-     * @return void
+     * @return array
      **/
     function toArray() {}
 
@@ -70172,7 +70289,7 @@ class SolrObject implements ArrayAccess {
     function offsetUnset($property_name) {}
 
     /**
-     * The method description goes here.
+     * Creates Solr object.
      *
      **/
     function __construct() {}
@@ -70460,7 +70577,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * accepts an optional field override.
      *
      * @param string
-     * @return string
+     * @return array
      **/
     function getFacetDateOther($field_override) {}
 
@@ -71101,7 +71218,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
     /**
      * Maps to facet.date.hardend
      *
-     * @param string
+     * @param bool
      * @param string
      * @return SolrQuery
      **/
@@ -71691,7 +71808,7 @@ class SolrResponse {
     function getResponse() {}
 
     /**
-     * The method description goes here.
+     * Sets the parse mode.
      *
      * @param int
      * @return bool
@@ -71867,11 +71984,7 @@ class SphinxClient {
 
     /**
      * Controls the format of search results set arrays (whether matches
-     * should be returned as an array or a hash). If array_result is (default
-     * value), matches are returned as a hash with document IDs as keys, and
-     * other information (weight, attributes) as values. If array_result is ,
-     * matches are eturned as a plain array with complete per-match
-     * information including document IDs.
+     * should be returned as an array or a hash).
      *
      * @param bool
      * @return bool
@@ -72049,8 +72162,7 @@ class SphinxClient {
     function setMatchMode($mode) {}
 
     /**
-     * Sets maximum search query time, in milliseconds. qtime must be a
-     * non-negative integer. Default value is 0, i.e. no limit.
+     * Sets maximum search query time.
      *
      * @param int
      * @return bool
@@ -72065,8 +72177,8 @@ class SphinxClient {
      * 
      * Constant Description
      * 
-     * SPH_RANK_PROXIMITY_BM25 Default ranking mode which uses both
-     * proximity and BM25 ranking.
+     * SPH_RANK_PROXIMITY_BM25 Default ranking mode which uses both proximity
+     * and BM25 ranking.
      * 
      * SPH_RANK_BM25 Statistical ranking mode which uses BM25 ranking only
      * (similar to most of other full-text engines). This mode is faster, but
@@ -72097,6 +72209,15 @@ class SphinxClient {
     function setRetries($count, $delay) {}
 
     /**
+     * Sets the select clause, listing specific attributes to fetch, and
+     * expressions to compute and fetch.
+     *
+     * @param string
+     * @return bool
+     **/
+    function setSelect($clause) {}
+
+    /**
      * Sets searchd host name and TCP port. All subsequent requests will use
      * the new host and port settings. Default host and port are 'localhost'
      * and 3312, respectively.
@@ -72114,8 +72235,8 @@ class SphinxClient {
      * 
      * Constant Description
      * 
-     * SPH_SORT_RELEVANCE Sort by relevance in descending order (best
-     * matches first).
+     * SPH_SORT_RELEVANCE Sort by relevance in descending order (best matches
+     * first).
      * 
      * SPH_SORT_ATTR_DESC Sort by an attribute in descending order (bigger
      * attribute values first).
@@ -74140,6 +74261,146 @@ class stmt {
     function stmt_send_long_data($param_nr, $data) {}
 
 }
+class Stomp {
+    /**
+     * Rolls back a transaction in progress.
+     *
+     * @param string
+     * @param array
+     * @return bool
+     **/
+    function abort($transaction_id, $headers) {}
+
+    /**
+     * Acknowledges consumption of a message from a subscription using client
+     * acknowledgment.
+     *
+     * @param mixed
+     * @param array
+     * @return bool
+     **/
+    function ack($msg, $headers) {}
+
+    /**
+     * Starts a transaction.
+     *
+     * @param string
+     * @param array
+     * @return bool
+     **/
+    function begin($transaction_id, $headers) {}
+
+    /**
+     * Commits a transaction in progress.
+     *
+     * @param string
+     * @param array
+     * @return bool
+     **/
+    function commit($transaction_id, $headers) {}
+
+    /**
+     * Gets the last stomp error.
+     *
+     * @return string
+     **/
+    function error() {}
+
+    /**
+     * Gets read timeout
+     *
+     * @return array
+     **/
+    function getReadTimeout() {}
+
+    /**
+     * Gets the current stomp session ID.
+     *
+     * @return string
+     **/
+    function getSessionId() {}
+
+    /**
+     * Indicates whether or not there is a frame ready to read.
+     *
+     * @return bool
+     **/
+    function hasFrame() {}
+
+    /**
+     * Reads the next frame.
+     *
+     * @return stompframe
+     **/
+    function readFrame() {}
+
+    /**
+     * Sends a message to the Message Broker.
+     *
+     * @param string
+     * @param mixed
+     * @param array
+     * @return bool
+     **/
+    function send($destination, $msg, $headers) {}
+
+    /**
+     * Sets read timeout.
+     *
+     * @param int
+     * @param int
+     * @return void
+     **/
+    function setReadTimeout($seconds, $microseconds) {}
+
+    /**
+     * Registers to listen to a given destination.
+     *
+     * @param string
+     * @param array
+     * @return bool
+     **/
+    function subscribe($destination, $headers) {}
+
+    /**
+     * Removes an existing subscription.
+     *
+     * @param string
+     * @param array
+     * @return bool
+     **/
+    function unsubscribe($destination, $headers) {}
+
+    /**
+     * Opens a connection to a stomp compliant Message Broker.
+     *
+     * @param string
+     * @param string
+     * @param string
+     **/
+    function __construct($broker, $username, $password) {}
+
+    /**
+     * Closes a previously opened connection.
+     *
+     * @return bool
+     **/
+    function __destruct() {}
+
+}
+class StompException extends Exception {
+}
+class StompFrame {
+    /**
+     * Constructor.
+     *
+     * @param string
+     * @param array
+     * @param string
+     **/
+    function __construct($command, $headers, $body) {}
+
+}
 class streamWrapper {
     /**
      * This method is called in response to closedir.
@@ -75653,6 +75914,155 @@ class Tidy {
      **/
     var $errorBuffer;
     /**
+     * Returns a tidyNode object starting from the body tag of the tidy parse
+     * tree.
+     *
+     * @return tidyNode
+     **/
+    function body() {}
+
+    /**
+     * This function cleans and repairs the given tidy object.
+     *
+     * @return bool
+     **/
+    function cleanRepair() {}
+
+    /**
+     * Runs diagnostic tests on the given tidy object, adding some more
+     * information about the document in the error buffer.
+     *
+     * @return bool
+     **/
+    function diagnose() {}
+
+    /**
+     * Gets the list of the configuration options in use by the given tidy
+     * object.
+     *
+     * @return array
+     **/
+    function getConfig() {}
+
+    /**
+     * Returns the detected HTML version for the specified tidy object.
+     *
+     * @return int
+     **/
+    function getHtmlVer() {}
+
+    /**
+     * Returns the value of the specified option for the specified tidy
+     * object.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function getOpt($option) {}
+
+    /**
+     * tidy_get_opt_doc returns the documentation for the given option name.
+     *
+     * @param string
+     * @return string
+     **/
+    function getOptDoc($optname) {}
+
+    /**
+     * Gets the release date of the Tidy library.
+     *
+     * @return string
+     **/
+    function getRelease() {}
+
+    /**
+     * Returns the status for the specified tidy object.
+     *
+     * @return int
+     **/
+    function getStatus() {}
+
+    /**
+     * Returns a tidyNode object starting from the head tag of the tidy parse
+     * tree.
+     *
+     * @return tidyNode
+     **/
+    function head() {}
+
+    /**
+     * Returns a tidyNode object starting from the html tag of the tidy parse
+     * tree.
+     *
+     * @return tidyNode
+     **/
+    function html() {}
+
+    /**
+     * Tells if the document is a XHTML document.
+     *
+     * @return bool
+     **/
+    function isXhtml() {}
+
+    /**
+     * Tells if the document is a generic (non HTML/XHTML) XML document.
+     *
+     * @return bool
+     **/
+    function isXml() {}
+
+    /**
+     * Parses the given file.
+     *
+     * @param string
+     * @param mixed
+     * @param string
+     * @param bool
+     * @return bool
+     **/
+    function parseFile($filename, $config, $encoding, $use_include_path) {}
+
+    /**
+     * Parses a document stored in a string.
+     *
+     * @param string
+     * @param mixed
+     * @param string
+     * @return bool
+     **/
+    function parseString($input, $config, $encoding) {}
+
+    /**
+     * Repairs the given file and returns it as a string.
+     *
+     * @param string
+     * @param mixed
+     * @param string
+     * @param bool
+     * @return string
+     **/
+    function repairFile($filename, $config, $encoding, $use_include_path) {}
+
+    /**
+     * Repairs the given string.
+     *
+     * @param string
+     * @param mixed
+     * @param string
+     * @return string
+     **/
+    function repairString($data, $config, $encoding) {}
+
+    /**
+     * Returns a tidyNode object representing the root of the tidy parse
+     * tree.
+     *
+     * @return tidyNode
+     **/
+    function root() {}
+
+    /**
      * Constructs a new tidy object.
      *
      * @param string
@@ -75737,7 +76147,7 @@ class TokyoTyrant {
      *
      * @param string
      * @param number
-     * @param string
+     * @param int
      * @return number
      **/
     function add($key, $increment, $type) {}
@@ -75796,6 +76206,13 @@ class TokyoTyrant {
      * @return mixed
      **/
     function get($keys) {}
+
+    /**
+     * Gets an iterator for iterating all keys / values in the database.
+     *
+     * @return TokyoTyrantIterator
+     **/
+    function getIterator() {}
 
     /**
      * Returns the number of records in the database
@@ -75867,7 +76284,7 @@ class TokyoTyrant {
      * @param string
      * @param string
      * @param int
-     * @return void
+     * @return mixed
      **/
     function putShl($key, $value, $width) {}
 
@@ -75877,7 +76294,7 @@ class TokyoTyrant {
      * @param string
      * @param int
      * @param bool
-     * @return void
+     * @return mixed
      **/
     function restore($log_dir, $timestamp, $check_consistency) {}
 
@@ -75888,7 +76305,7 @@ class TokyoTyrant {
      * @param int
      * @param int
      * @param bool
-     * @return void
+     * @return mixed
      **/
     function setMaster($host, $port, $timestamp, $check_consistency) {}
 
@@ -75910,7 +76327,7 @@ class TokyoTyrant {
     /**
      * Synchronizes the database on to the physical device
      *
-     * @return void
+     * @return mixed
      **/
     function sync() {}
 
@@ -75926,7 +76343,7 @@ class TokyoTyrant {
     /**
      * Empties a remote database
      *
-     * @return void
+     * @return mixed
      **/
     function vanish() {}
 
@@ -75943,6 +76360,55 @@ class TokyoTyrant {
 }
 class tokyotyrantexception extends Exception {
 }
+class TokyoTyrantIterator {
+    /**
+     * Returns the current value during iteration.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * Returns the current key.
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Move to next key during iteration and return it's value.
+     *
+     * @return mixed
+     **/
+    function next() {}
+
+    /**
+     * Rewinds the iterator for new iteration. Called automatically at the
+     * beginning of foreach.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Checks whether the internal pointer points to valid element.
+     *
+     * @return boolean
+     **/
+    function valid() {}
+
+    /**
+     * Construct a new TokyoTyrantIterator object. One connection can have
+     * multiple iterators but it is not quaranteed that all items are
+     * traversed in that case. object parameter can be either an of instance
+     * TokyoTyrant or TokyoTyrantTable.
+     *
+     * @param mixed
+     * @return TokyoTyrantIterator
+     **/
+    function __construct($object) {}
+
+}
 class TokyoTyrantQuery implements Iterator, Traversable {
     /**
      * Adds a condition to the query. Condition can be something like: get
@@ -75951,7 +76417,7 @@ class TokyoTyrantQuery implements Iterator, Traversable {
      * @param string
      * @param int
      * @param string
-     * @return void
+     * @return mixed
      **/
     function addCond($name, $op, $expr) {}
 
@@ -75981,7 +76447,7 @@ class TokyoTyrantQuery implements Iterator, Traversable {
     /**
      * Returns the current key. Part of the Iterator interface
      *
-     * @return int
+     * @return string
      **/
     function key() {}
 
@@ -75989,9 +76455,11 @@ class TokyoTyrantQuery implements Iterator, Traversable {
      * Executes multiple queries on a database and returns matching records.
      * The current object is always the left most object in the search.
      *
+     * @param array
+     * @param int
      * @return array
      **/
-    function metaSearch() {}
+    function metaSearch($queries, $type) {}
 
     /**
      * Returns the next result in the resultset. Part of the Iterator
@@ -76013,7 +76481,7 @@ class TokyoTyrantQuery implements Iterator, Traversable {
      * Rewind the resultset and executes the query if it has not been
      * executed. Part of the Iterator interface.
      *
-     * @return boolean
+     * @return bool
      **/
     function rewind() {}
 
@@ -76031,14 +76499,14 @@ class TokyoTyrantQuery implements Iterator, Traversable {
      *
      * @param int
      * @param int
-     * @return void
+     * @return mixed
      **/
     function setLimit($max, $skip) {}
 
     /**
      * Checks if the current item is valid. Part of the Iterator interface
      *
-     * @return void
+     * @return bool
      **/
     function valid() {}
 
@@ -76057,7 +76525,7 @@ class TokyoTyrantTable extends TokyoTyrant {
      * @param string
      * @param mixed
      * @param string
-     * @return int
+     * @return void
      **/
     function add($key, $increment, $type) {}
 
@@ -76073,10 +76541,17 @@ class TokyoTyrantTable extends TokyoTyrant {
      * Gets a row from table database. keys is a single integer for the
      * primary key of the row or an array of integers for multiple rows.
      *
-     * @param mixed
+     * @param string
      * @return void
      **/
     function get($keys) {}
+
+    /**
+     * Gets an iterator for iterating all keys / values in the database.
+     *
+     * @return TokyoTyrantIterator
+     **/
+    function getIterator() {}
 
     /**
      * Get a query object to execute searches on the database
@@ -76099,7 +76574,7 @@ class TokyoTyrantTable extends TokyoTyrant {
      * value is an array containing the row contents which is usually key
      * value pairs.
      *
-     * @param mixed
+     * @param string
      * @param array
      * @return int
      **/
@@ -76110,7 +76585,7 @@ class TokyoTyrantTable extends TokyoTyrant {
      * Existing keys will be left unmodified but any new columns will be
      * appended to the row. Passing null as key will generate a new row.
      *
-     * @param mixed
+     * @param string
      * @param array
      * @return void
      **/
@@ -76120,7 +76595,7 @@ class TokyoTyrantTable extends TokyoTyrant {
      * Puts a new record into the database. If the key already exists this
      * method throws an exception indicating that the records exists.
      *
-     * @param mixed
+     * @param string
      * @param array
      * @return void
      **/
@@ -76156,7 +76631,7 @@ class TokyoTyrantTable extends TokyoTyrant {
      *
      * @param string
      * @param int
-     * @return void
+     * @return mixed
      **/
     function setIndex($column, $type) {}
 
@@ -76973,7 +77448,7 @@ class XSLTProcessor {
      * This method import the stylesheet into the XSLTProcessor for
      * transformations.
      *
-     * @param DOMDocument
+     * @param object
      * @return void
      **/
     function importStylesheet($stylesheet) {}
@@ -77390,6 +77865,7 @@ define('AL_STOPPED', 0);
 define('AL_TRUE', 0);
 define('AL_VELOCITY', 0);
 define('AM_STR', 0);
+define('APACHE_MAP', 0);
 define('APD_VERSION', '');
 define('ARGS_TRACE', 0);
 define('ASSERT_ACTIVE', 0);
@@ -78380,8 +78856,8 @@ define('LOG_EMERG', 0);
 define('LOG_ERR', 0);
 define('LOG_INFO', 0);
 define('LOG_KERN', 0);
-define('LOG_LOCAL0 ... LOG_LOCAL7', 0);
 define('LOG_LOCAL0', 0);
+define('LOG_LOCAL0 ... LOG_LOCAL7', 0);
 define('LOG_LOCAL1', 0);
 define('LOG_LOCAL2', 0);
 define('LOG_LOCAL3', 0);
@@ -78689,6 +79165,9 @@ define('NIL', 0);
 define('NOEXPR', 0);
 define('NORM_IGNORECASE', 0);
 define('NORM_IGNOREKANATYPE', 0);
+/**
+ * Availability is dependent upon under lying library.
+ **/
 define('NORM_IGNOREKASHIDA', 0);
 define('NORM_IGNORENONSPACE', 0);
 define('NORM_IGNORESYMBOLS', 0);
@@ -78697,37 +79176,21 @@ define('NOSTR', 0);
 define('N_CS_PRECEDES', 0);
 define('N_SEP_BY_SPACE', 0);
 define('N_SIGN_POSN', 0);
-define('OCI_ASSOC', 0);
-define('OCI_BOTH', 0);
 define('OCI_B_BFILE', 0);
-define('OCI_B_BIN', 0);
 define('OCI_B_BLOB', 0);
 define('OCI_B_CFILEE', 0);
 define('OCI_B_CLOB', 0);
 define('OCI_B_CURSOR', 0);
+define('OCI_B_INT', 0);
 define('OCI_B_NTY', 0);
+define('OCI_B_NUM', 0);
 define('OCI_B_ROWID', 0);
-define('OCI_COMMIT_ON_SUCCESS', 0);
+define('OCI_B_SQLT_NTY', 0);
 define('OCI_DEFAULT', 0);
-define('OCI_DESCRIBE_ONLY', 0);
 define('OCI_DTYPE_FILE', 0);
 define('OCI_DTYPE_LOB', 0);
 define('OCI_DTYPE_ROWID', 0);
-define('OCI_D_FILE', 0);
-define('OCI_D_LOB', 0);
-define('OCI_D_ROWID', 0);
-define('OCI_EXACT_FETCH', 0);
-define('OCI_FETCHSTATEMENT_BY_COLUMN', 0);
-define('OCI_FETCHSTATEMENT_BY_ROW', 0);
-define('OCI_LOB_BUFFER_FREE', 0);
-define('OCI_NUM', 0);
-define('OCI_RETURN_LOBS', 0);
-define('OCI_RETURN_NULLS', 0);
-define('OCI_SYSDATE', 0);
-define('OCI_SYSDBA', 0);
-define('OCI_SYSOPER', 0);
-define('OCI_TEMP_BLOB', 0);
-define('OCI_TEMP_CLOB', 0);
+define('OCI_NO_AUTO_COMMIT', 0);
 define('ODBC_BINMODE_CONVERT', 0);
 define('ODBC_BINMODE_PASSTHRU', 0);
 define('ODBC_BINMODE_RETURN', 0);
@@ -79121,6 +79584,28 @@ define('SNMP_UNSIGNED', 0);
 define('SNMP_VALUE_LIBRARY', 0);
 define('SNMP_VALUE_OBJECT', 0);
 define('SNMP_VALUE_PLAIN', 0);
+define('SOAP_1_1', 0);
+define('SOAP_1_2', 0);
+define('SOAP_ACTOR_NEXT', 0);
+define('SOAP_ACTOR_NONE', 0);
+define('SOAP_ACTOR_UNLIMATERECEIVER', 0);
+define('SOAP_AUTHENTICATION_BASIC', 0);
+define('SOAP_AUTHENTICATION_DIGEST', 0);
+define('SOAP_COMPRESSION_ACCEPT', 0);
+define('SOAP_COMPRESSION_DEFLATE', 0);
+define('SOAP_COMPRESSION_GZIP', 0);
+define('SOAP_DOCUMENT', 0);
+define('SOAP_ENCODED', 0);
+define('SOAP_ENC_ARRAY', 0);
+define('SOAP_ENC_OBJECT', 0);
+define('SOAP_FUNCTIONS_ALL', 0);
+define('SOAP_LITERAL', 0);
+define('SOAP_PERSISTENCE_REQUEST', 0);
+define('SOAP_PERSISTENCE_SESSION', 0);
+define('SOAP_RPC', 0);
+define('SOAP_SINGLE_ELEMENT_ARRAYS', 0);
+define('SOAP_USE_XSI_ARRAY_TYPE', 0);
+define('SOAP_WAIT_ONE_WAY_CALLS', 0);
 define('SOCK_DGRAM', 0);
 define('SOCK_RAW', 0);
 define('SOCK_RDM', 0);
@@ -79169,27 +79654,6 @@ define('SQLITE_ASSOC', 0);
 define('SQLITE_BOTH', 0);
 define('SQLITE_NUM', 0);
 define('SQLTEXT', 0);
-define('SQLT_AFC', 0);
-define('SQLT_AVC', 0);
-define('SQLT_BDOUBLE', 0);
-define('SQLT_BFILEE', 0);
-define('SQLT_BFLOAT', 0);
-define('SQLT_BIN', 0);
-define('SQLT_BLOB', 0);
-define('SQLT_CFILEE', 0);
-define('SQLT_CHR', 0);
-define('SQLT_CLOB', 0);
-define('SQLT_FLT', 0);
-define('SQLT_INT', 0);
-define('SQLT_LBI', 0);
-define('SQLT_LNG', 0);
-define('SQLT_LVC', 0);
-define('SQLT_NTY', 0);
-define('SQLT_NUM', 0);
-define('SQLT_ODT', 0);
-define('SQLT_RDD', 0);
-define('SQLT_STR', 0);
-define('SQLT_VCS', 0);
 define('SQLVARCHAR', 0);
 define('SQL_BEST_ROWID', 0);
 define('SQL_BIGINT', 0);
@@ -79747,6 +80211,7 @@ define('UDM_PREFIX_DISABLED', 0);
 define('UDM_PREFIX_ENABLED', 0);
 define('UDM_TRACK_DISABLED', 0);
 define('UDM_TRACK_ENABLED', 0);
+define('UNKNOWN_TYPE', 0);
 define('VARCMP_EQ', 0);
 define('VARCMP_GT', 0);
 define('VARCMP_LT', 0);
@@ -79805,6 +80270,10 @@ define('WIN32_SERVICE_STOP_PENDING', 0);
 define('WIN32_SERVICE_WIN32_OWN_PROCESS', 0);
 define('WIN32_SERVICE_WIN32_SHARE_PROCESS', 0);
 define('WNOHANG', 0);
+define('WSDL_CACHE_BOTH', 0);
+define('WSDL_CACHE_DISK', 0);
+define('WSDL_CACHE_MEMORY', 0);
+define('WSDL_CACHE_NONE', 0);
 define('WUNTRACED', 0);
 define('XATTR_CREATE', 0);
 define('XATTR_DONTFOLLOW', 0);
@@ -79898,6 +80367,55 @@ define('XPATH_RANGE', 0);
 define('XPATH_STRING', 0);
 define('XPATH_UNDEFINED', 0);
 define('XPATH_USERS', 0);
+define('XSD_1999_NAMESPACE', 0);
+define('XSD_1999_TIMEINSTANT', 0);
+define('XSD_ANYTYPE', 0);
+define('XSD_ANYURI', 0);
+define('XSD_ANYXML', 0);
+define('XSD_BASE64BINARY', 0);
+define('XSD_BOOLEAN', 0);
+define('XSD_BYTE', 0);
+define('XSD_DATE', 0);
+define('XSD_DATETIME', 0);
+define('XSD_DECIMAL', 0);
+define('XSD_DOUBLE', 0);
+define('XSD_DURATION', 0);
+define('XSD_ENTITIES', 0);
+define('XSD_ENTITY', 0);
+define('XSD_FLOAT', 0);
+define('XSD_GDAY', 0);
+define('XSD_GMONTH', 0);
+define('XSD_GMONTHDAY', 0);
+define('XSD_GYEAR', 0);
+define('XSD_GYEARMONTH', 0);
+define('XSD_HEXBINARY', 0);
+define('XSD_ID', 0);
+define('XSD_IDREF', 0);
+define('XSD_IDREFS', 0);
+define('XSD_INT', 0);
+define('XSD_INTEGER', 0);
+define('XSD_LANGUAGE', 0);
+define('XSD_LONG', 0);
+define('XSD_NAME', 0);
+define('XSD_NAMESPACE', 0);
+define('XSD_NCNAME', 0);
+define('XSD_NEGATIVEINTEGER', 0);
+define('XSD_NMTOKEN', 0);
+define('XSD_NMTOKENS', 0);
+define('XSD_NONNEGATIVEINTEGER', 0);
+define('XSD_NONPOSITIVEINTEGER', 0);
+define('XSD_NORMALIZEDSTRING', 0);
+define('XSD_NOTATION', 0);
+define('XSD_POSITIVEINTEGER', 0);
+define('XSD_QNAME', 0);
+define('XSD_SHORT', 0);
+define('XSD_STRING', 0);
+define('XSD_TIME', 0);
+define('XSD_TOKEN', 0);
+define('XSD_UNSIGNEDBYTE', 0);
+define('XSD_UNSIGNEDINT', 0);
+define('XSD_UNSIGNEDLONG', 0);
+define('XSD_UNSIGNEDSHORT', 0);
 define('XSLT_ERR_UNSUPPORTED_SCHEME', 0);
 define('XSLT_OPT_SILENT', 0);
 define('XSLT_SABOPT_DISABLE_ADDING_META', 0);
