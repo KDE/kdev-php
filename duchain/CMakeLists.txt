@@ -43,5 +43,5 @@ target_link_libraries(kdev4phpduchain
     kdev4phpparser
  )
 
-install(TARGETS kdev4phpduchain DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS kdev4phpduchain DESTINATION ${PLUGIN_INSTALL_DIR})
 
