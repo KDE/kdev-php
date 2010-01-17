@@ -29,5 +29,5 @@ target_link_libraries(kdev4phpcompletion
     kdev4phpparser
  )
 
-install(TARGETS kdev4phpcompletion DESTINATION ${PLUGIN_INSTALL_DIR})
+install(TARGETS kdev4phpcompletion DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 
