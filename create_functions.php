@@ -23,7 +23,7 @@ if (!isset($_SERVER['argv'][1])) {
     $msg = "Usage:\n".$_SERVER['argv'][0]." [path to phpdoc]\n";
     $msg .= "you may checkout from the php svn server using this command:\n";
     $msg .= "svn checkout http://svn.php.net/repository/phpdoc/en/trunk ./phpdoc-en\n";
-    $msg .= "\nTo debug a file use this: ".$_SERVER['argv'][0]." --debug FILE\n";
+    $msg .= "\nTo debug files/directories use this: ".$_SERVER['argv'][0]." --debug PATH ...\n";
     file_put_contents('php://stderr', $msg);
     exit(-1);
 }
@@ -49,8 +49,19 @@ $existingFunctions = array();
 
 if ($_SERVER['argv'][1] == '--debug') {
     // only debug given file
-    parseFile(new SplFileInfo($_SERVER['argv'][2]));
     define('DEBUG', true);
+    $dirs = array();
+    foreach ( $_SERVER['argv'] as $i => $v ) {
+        if ( $i <= 1 ) {
+            continue;
+        } else if ( is_dir($v) ) {
+            $dirs[] = $v;
+        } else if ( file_exists($v) ) {
+            parseFile($v);
+        } else {
+            trigger_error("bad argument: ".$v, E_USER_ERROR);
+        }
+    }
 } else {
     define('DEBUG', false);
 
@@ -59,12 +70,17 @@ if ($_SERVER['argv'][1] == '--debug') {
         exit(-1);
     }
 
-    $dirs = array("reference", "appendices", "language/predefined/");
-    foreach ($dirs as $dir) {
-        $dirIt = new RecursiveIteratorIterator( new RecursiveDirectoryIterator($_SERVER['argv'][1].'/'.$dir));
-        foreach ($dirIt as $file) {
-            parseFile($file);
-        }
+    $dirs = array(
+        $_SERVER['argv'][1]."/reference",
+        $_SERVER['argv'][1]."/appendices",
+        $_SERVER['argv'][1]."/language/predefined/"
+    );
+}
+
+foreach ($dirs as $dir) {
+    $dirIt = new RecursiveIteratorIterator( new RecursiveDirectoryIterator($dir));
+    foreach ($dirIt as $file) {
+        parseFile($file);
     }
 }
 
@@ -117,8 +133,13 @@ function constTypeValue($ctype) {
     }
 }
 
-function prepareComment($comment) {
-    return "/**\n * ".preg_replace("#^\s+#m", " * ", trim($comment))."\n **/\n";
+function prepareComment($comment, $indent = '') {
+    if (trim($comment) == '') {
+        return '';
+    }
+    return $indent."/**\n".
+           preg_replace("#^(\n)?\s*#m", $indent." * $1", trim($comment))."\n".
+           $indent." **/\n";
 }
 
 function sortByName($a, $b) {
@@ -139,17 +160,13 @@ uksort($constants, 'strnatcasecmp');
 
 foreach ($variables as $name=>$var) {
     $declarationCount++;
-    $out .= "/**\n";
-    $out .= " * ";
-    $out .= str_replace("\n", "\n * ", $var['desc']);
-    $out .= "\n";
     if ($var['deprecated']) {
-        $out .= " * @deprecated\n";
+        $var['desc'] .= "\n@deprecated\n";
     }
     if (isset($var['superglobal']) && $var['superglobal']) {
-        $out .= " * @superglobal\n";
+        $var['desc'] .= "\n@superglobal\n";
     }
-    $out .= " **/\n";
+    $out .= prepareComment($var['desc']);
     $out .= "$name = array();\n\n";
 }
 
@@ -161,12 +178,8 @@ foreach ($skipClasses as &$name) {
 foreach ($classes as $class => $i) {
     if (in_array($class, $skipClasses)) continue; //skip those as they are documented in spl.php
     if ($class != 'global') {
-        if (isset($i['desc']) && $i['desc']) {
-            $out .= "/**\n";
-            $out .= " * ";
-            $out .= str_replace("\n", "\n * ", $i['desc']);
-            $out .= "\n";
-            $out .= " **/\n";
+        if (isset($i['desc'])) {
+            $out .= prepareComment($i['desc']);
         }
         $class = $i['prettyName'];
         $out .= ($i['isInterface'] ? 'interface' : 'class') . " " . $class;
@@ -195,16 +208,13 @@ foreach ($classes as $class => $i) {
 
     usort($i['properties'], 'sortByName');
     foreach ($i['properties'] as $f) {
-        $out .= "$indent/**\n";
+        if ($f['type']) {
+            $f['desc'] .= "\n@var {$f['type']}\n";
+        }
         ///HACK the directory stuff has really bad documentation
         if ($f['desc'] && $class != 'directory') {
-            $out .= "$indent * ";
-            $out .= str_replace("\n", "\n$indent * ", $f['desc']);
-            $out .= "\n";
-            $out .= "$indent *\n";
+            $out .= prepareComment($f['desc'], $indent);
         }
-        if ($f['type']) $out .= "$indent * @var $f[type]\n";
-        $out .= "$indent **/\n";
         $out .= "{$indent}var $".$f['name'].";\n";
         $declarationCount++;
     }
@@ -214,20 +224,17 @@ foreach ($classes as $class => $i) {
         if ( $class == 'global' && in_array($f['name'], $skipFunctions) ) {
             continue;
         }
-        $out .= "$indent/**\n";
-
+        $f['desc'] .= "\n\n";
+        foreach ($f['params'] as $pi=>$param) {
+            $f['desc'] .= "@param {$param['type']}\n";
+        }
+        if ($f['type']) {
+            $f['desc'] .= "\n@return {$f['type']}\n";
+        }
         ///HACK the directory stuff has really bad documentation
         if ($f['desc'] && $class != 'directory') {
-            $out .= "$indent * ";
-            $out .= str_replace("\n", "\n$indent * ", $f['desc']);
-            $out .= "\n";
-            $out .= "$indent *\n";
+            $out .= prepareComment($f['desc'], $indent);
         }
-        foreach ($f['params'] as $pi=>$param) {
-            $out .= "$indent * @param $param[type]\n";
-        }
-        if ($f['type']) $out .= "$indent * @return $f[type]\n";
-        $out .= "$indent **/\n";
         $out .= "{$indent}function ".$f['name'];
         $out .= "(";
         foreach ($f['params'] as $pi=>$param) {
@@ -378,6 +385,11 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             if ($interfaces = $class->xpath('//db:oointerface/db:interfacename')) {
                 foreach ($interfaces as $if) {
                     $classes[$className]['implements'][] = (string)$if;
+                }
+            }
+            if ($paras = $xml->xpath('//db:section[starts-with(@xml:id, "'.$className.'")]/db:para')) {
+                foreach ($paras as $p) {
+                    $classes[$className]['desc'] .= "\n".((string)$p);
                 }
             }
         }
