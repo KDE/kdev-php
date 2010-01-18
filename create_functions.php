@@ -57,7 +57,7 @@ if ($_SERVER['argv'][1] == '--debug') {
         } else if ( is_dir($v) ) {
             $dirs[] = $v;
         } else if ( file_exists($v) ) {
-            parseFile($v);
+            parseFile(new SplFileInfo($v));
         } else {
             trigger_error("bad argument: ".$v, E_USER_ERROR);
         }
