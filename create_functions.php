@@ -134,14 +134,45 @@ function constTypeValue($ctype) {
     }
 }
 
-function prepareComment($comment, $indent = '') {
-    if (trim($comment) == '') {
+function removeTag($xml, $tag) {
+    $tag = preg_quote($tag, '#');
+    return trim(preg_replace('#(^<'.$tag.'[^>]*>|</'.$tag.'>$)#s', '', trim($xml)));
+}
+
+function cleanupComment($comment) {
+    // <function|parameter>...</> to {@link ...}
+    $comment = preg_replace('#<(function|parameter)>(.+)</\1>#U', '{@link $2}', $comment);
+    // remove <para> and other stuff
+    ///TODO: support web-links, lists and tables
+    $comment = strip_tags($comment);
+
+    $comment = preg_replace('#(?<=[^\n])\n(?=[^\n])#s', ' ', $comment);
+
+    $comment = preg_replace('#  +#', ' ', $comment);
+    $comment = preg_replace('#^ | $#m', '', $comment);
+    $comment = preg_replace("#\n{3,}#", "\n\n", $comment);
+
+    $comment = trim($comment);
+    return $comment;
+}
+
+function prepareComment($comment, array $more, $indent = '') {
+    $comment = cleanupComment($comment);
+    if (empty($comment) && empty($more)) {
         return '';
     }
-    // remove indentation
-    $comment = preg_replace("#^[ \t]*#m", "", trim($comment));
-    // merge lines
-    $comment = preg_replace("#\n{3,}#", "\n\n", $comment);
+    $comment = wordwrap($comment, 70, "\n", false);
+    if ( !empty($more) ) {
+        if ( !empty($comment) ) {
+            $comment .= "\n\n";
+        }
+        foreach($more as $s) {
+            $comment .= str_replace("\n", "\n  ", // indent
+                            wordwrap(cleanupComment($s), 68, "\n", false)
+                        )."\n";
+        }
+    }
+    $comment = rtrim($comment);
     // add indentation and asterisk
     $comment = preg_replace("#^#m", $indent." * ", $comment);
     return $indent."/**\n".
@@ -167,13 +198,14 @@ uksort($constants, 'strnatcasecmp');
 
 foreach ($variables as $name=>$var) {
     $declarationCount++;
+    $moreDesc = array();
     if ($var['deprecated']) {
-        $var['desc'] .= "\n@deprecated\n";
+        $moreDesc[] = "@deprecated";
     }
     if (isset($var['superglobal']) && $var['superglobal']) {
-        $var['desc'] .= "\n@superglobal\n";
+        $moreDesc[] = "@superglobal";
     }
-    $out .= prepareComment($var['desc']);
+    $out .= prepareComment($var['desc'], $moreDesc);
     $out .= "$name = array();\n\n";
 }
 
@@ -186,7 +218,7 @@ foreach ($classes as $class => $i) {
     if (in_array($class, $skipClasses)) continue; //skip those as they are documented in spl.php
     if ($class != 'global') {
         if (isset($i['desc'])) {
-            $out .= prepareComment($i['desc']);
+            $out .= prepareComment($i['desc'], array());
         }
         $class = $i['prettyName'];
         $out .= ($i['isInterface'] ? 'interface' : 'class') . " " . $class;
@@ -215,12 +247,13 @@ foreach ($classes as $class => $i) {
 
     usort($i['properties'], 'sortByName');
     foreach ($i['properties'] as $f) {
+        $moreDesc = array();
         if ($f['type']) {
-            $f['desc'] .= "\n@var {$f['type']}\n";
+            $moreDesc[] = "@var {$f['type']}";
         }
         ///HACK the directory stuff has really bad documentation
-        if ($f['desc'] && $class != 'directory') {
-            $out .= prepareComment($f['desc'], $indent);
+        if ($class != 'directory') {
+            $out .= prepareComment($f['desc'], $moreDesc, $indent);
         }
         $out .= "{$indent}var $".$f['name'].";\n";
         $declarationCount++;
@@ -231,24 +264,24 @@ foreach ($classes as $class => $i) {
         if ( $class == 'global' && in_array($f['name'], $skipFunctions) ) {
             continue;
         }
-        $f['desc'] .= "\n\n";
+        $moreDesc = array();
         foreach ($f['params'] as $pi=>$param) {
             $desc = '';
             if ( isset($param['desc']) ) {
                 $desc = trim($param['desc']);
             }
-            $f['desc'] .= "@param {$param['type']} \${$param['name']} $desc\n";
+            $moreDesc[] = "@param {$param['type']} \${$param['name']} $desc";
         }
         if ($f['type']) {
-            $f['desc'] .= "\n@return {$f['type']}\n";
+            $moreDesc[] = "@return {$f['type']}";
         }
         $version_key = strtolower(($class == 'global' ? '' : $class.'::') . $f['name']);
         if (isset($versions[$version_key])) {
-            $f['desc'] .= "\n@since {$versions[$version_key]}\n";
+            $moreDesc[] = "@since {$versions[$version_key]}";
         }
         ///HACK the directory stuff has really bad documentation
-        if ($f['desc'] && $class != 'directory') {
-            $out .= prepareComment($f['desc'], $indent);
+        if ($class != 'directory') {
+            $out .= prepareComment($f['desc'], $moreDesc, $indent);
         }
         $out .= "{$indent}function ".$f['name'];
         $out .= "(";
@@ -257,9 +290,6 @@ foreach ($classes as $class => $i) {
             if (!$first) $out .= ", ";
             $first = false;
             if ($param['isRef']) $out .= "&";
-            if ( !isset($param['name']) ) {
-                var_dump($param);
-            }
             $out .= '$'.$param['name'];
         }
         $out .= ") {}\n\n";
@@ -271,7 +301,7 @@ foreach ($classes as $class => $i) {
 foreach ($constants as $c=>$ctype) {
     if (strpos($c, '::')===false) {
         if ( isset($constants_comments[$c]) ) {
-          $out .= prepareComment($constants_comments[$c]);
+          $out .= prepareComment($constants_comments[$c], array());
         }
         $out .= "define('$c', ".constTypeValue($ctype).");\n";
         $declarationCount++;
@@ -390,10 +420,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         foreach ($list as $l) {
             $classname = newClassEntry((string)$l->term->classname);
 
-            $desc = trim(strip_tags($l->listitem->asXML()));
-            if ( !empty($desc) ) {
-               $classes[$classname]['desc'] = $desc;
-            }
+            $classes[$classname]['desc'] = removeTag($l->listitem->asXML(), 'listitem');
         }
     }
 
@@ -501,18 +528,12 @@ function newClassEntry($name) {
 function getDocumentation(SimpleXMLElement $xml) {
     $descs = array();
     foreach ($xml->refsect1->para as $p ) {
-        $p = strip_tags($p->asXML());
-        $p = trim($p);
-        $p = preg_replace('#  +#', ' ', $p);
-        $p = preg_replace('#^ | $#m', '', $p);
-        $p = preg_replace('#(?<=[^\n])\n(?=[^\n])#s', ' ', $p);
-        $p = preg_replace('#\n\n+#s', "\n\n", $p);
+        $p = removeTag($p->asXML(), 'para');
         if ( stripos($p, 'procedural style') !== false || stripos($p, 'procedure style') !== false
             || stripos($p, 'object oriented style') !== false ) {
             // uninteresting
             continue;
         }
-        $p = wordwrap($p, 70, "\n", false);
         $descs[] = $p;
     }
     return implode("\n\n", $descs);
@@ -596,11 +617,7 @@ function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc
             $paramName = (string) $d->term->parameter;
             $params[$i]['desc'] = '';
             foreach ( $d->listitem->para as $p ) {
-                $p = $p->asXML();
-                // <function|parameter>...</> to {@link ...}
-                $p = preg_replace('#<(function|parameter)>(.+)</\1>#U', '{@link $2}', $p);
-                // remove <para> and other stuff
-                $p = strip_tags($p);
+                $p = removeTag($p->asXML(), 'para');
                 $params[$i]['desc'] .= $p . "\n";
             }
             ++$i;
