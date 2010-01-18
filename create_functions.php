@@ -233,7 +233,11 @@ foreach ($classes as $class => $i) {
         }
         $f['desc'] .= "\n\n";
         foreach ($f['params'] as $pi=>$param) {
-            $f['desc'] .= "@param {$param['type']}\n";
+            $desc = '';
+            if ( isset($param['desc']) ) {
+                $desc = trim($param['desc']);
+            }
+            $f['desc'] .= "@param {$param['type']} \${$param['name']} $desc\n";
         }
         if ($f['type']) {
             $f['desc'] .= "\n@return {$f['type']}\n";
@@ -248,9 +252,14 @@ foreach ($classes as $class => $i) {
         }
         $out .= "{$indent}function ".$f['name'];
         $out .= "(";
+        $first = true;
         foreach ($f['params'] as $pi=>$param) {
-            if ($pi > 0) $out .= ", ";
+            if (!$first) $out .= ", ";
+            $first = false;
             if ($param['isRef']) $out .= "&";
+            if ( !isset($param['name']) ) {
+                var_dump($param);
+            }
             $out .= '$'.$param['name'];
         }
         $out .= ") {}\n\n";
@@ -575,6 +584,27 @@ function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc
             'type' => (string)$param->type,
             'isRef' => isset($param->parameter->attributes()->role) ? ($param->parameter->attributes()->role == "reference") : false
         );
+    }
+    // get description of params
+    if ( $param_descs = $xml->xpath('db:refsect1[@role="parameters"]//db:varlistentry') ) {
+        $i = 0;
+        foreach ( $param_descs as $d ) {
+            if ( !isset($params[$i]) ) {
+                ///TODO: support optional params (i.e. ... token)
+                continue;
+            }
+            $paramName = (string) $d->term->parameter;
+            $params[$i]['desc'] = '';
+            foreach ( $d->listitem->para as $p ) {
+                $p = $p->asXML();
+                // <function|parameter>...</> to {@link ...}
+                $p = preg_replace('#<(function|parameter)>(.+)</\1>#U', '{@link $2}', $p);
+                // remove <para> and other stuff
+                $p = strip_tags($p);
+                $params[$i]['desc'] .= $p . "\n";
+            }
+            ++$i;
+        }
     }
 
     $class = newClassEntry($class);
