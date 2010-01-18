@@ -46,6 +46,7 @@ $constants = array();
 $constants_comments = array();
 $variables = array();
 $existingFunctions = array();
+$versions = array();
 
 if ($_SERVER['argv'][1] == '--debug') {
     // only debug given file
@@ -137,8 +138,14 @@ function prepareComment($comment, $indent = '') {
     if (trim($comment) == '') {
         return '';
     }
+    // remove indentation
+    $comment = preg_replace("#^[ \t]*#m", "", trim($comment));
+    // merge lines
+    $comment = preg_replace("#\n{3,}#", "\n\n", $comment);
+    // add indentation and asterisk
+    $comment = preg_replace("#^#m", $indent." * ", $comment);
     return $indent."/**\n".
-           preg_replace("#^(\n)?\s*#m", $indent." * $1", trim($comment))."\n".
+                   $comment."\n".
            $indent." **/\n";
 }
 
@@ -231,6 +238,10 @@ foreach ($classes as $class => $i) {
         if ($f['type']) {
             $f['desc'] .= "\n@return {$f['type']}\n";
         }
+        $version_key = strtolower(($class == 'global' ? '' : $class.'::') . $f['name']);
+        if (isset($versions[$version_key])) {
+            $f['desc'] .= "\n@since {$versions[$version_key]}\n";
+        }
         ///HACK the directory stuff has really bad documentation
         if ($f['desc'] && $class != 'directory') {
             $out .= prepareComment($f['desc'], $indent);
@@ -273,7 +284,7 @@ echo "wrote ".$declarationCount." declarations\n";
  * @return  bool
  */
 function parseFile($file, $funcOverload="") {
-global $existingFunctions, $constants, $constants_comments, $variables, $classes, $isInterface;
+global $existingFunctions, $constants, $constants_comments, $variables, $classes, $isInterface, $versions;
 
     if (substr($file->getFilename(), -4) != '.xml') return false;
     if (substr($file->getFilename(), 0, 9) == 'entities.') return false;
@@ -281,7 +292,8 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     $string = preg_replace('#<!\\[CDATA\\[.*?\\]\\]>#s', '', $string);
     $isInterface = strpos($string, '<phpdoc:classref') !== false &&
                    strpos($string, '&reftitle.interfacesynopsis;') !== false;
-    $string = preg_replace('#&[A-Za-z\\.0-9-_]+;#', '', $string);
+
+    $string = preg_replace('#(?:(&amp;|&gt;|&lt;)|&[A-Za-z\\.0-9-_]+;)#', '$1', $string);
     $removeSections = array();
     $removeSections[] = 'apd.installwin32';
     $removeSections[] = 'intl.intldateformatter-constants.calendartypes';
@@ -289,6 +301,14 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         $string = preg_replace('#'.preg_quote('<section xml:id="'.$i.'">').'.*?</section>#s', '', $string);
     }
     $xml = new SimpleXMLElement($string);
+
+    if ( $file->getFilename() == 'versions.xml' ) {
+        foreach ( $xml->xpath('/versions/function') as $f ) {
+            $attrs = $f->attributes();
+            $versions[strtolower($attrs['name'])] = (string) $attrs['from'];
+        }
+        return;
+    }
 
     $xml->registerXPathNamespace('db', 'http://docbook.org/ns/docbook');
     $xml->registerXPathNamespace('phpdoc', 'http://php.net/ns/phpdoc');
