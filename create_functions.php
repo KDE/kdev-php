@@ -19,11 +19,10 @@
  ***************************************************************************/
 
 
-if (!isset($_SERVER['argv'][1]) || !isset($_SERVER['argv'][2])) {
-    $msg = "Usage:\n".$_SERVER['argv'][0]." [path to phpdoc] [path to php sources]\n";
+if (!isset($_SERVER['argv'][1])) {
+    $msg = "Usage:\n".$_SERVER['argv'][0]." [path to phpdoc]\n";
     $msg .= "you may checkout from the php svn server using this command:\n";
     $msg .= "svn checkout http://svn.php.net/repository/phpdoc/en/trunk ./phpdoc-en\n";
-    $msg .= "svn checkout http://svn.php.net/repository/php/php-src/branches/PHP_5_2 php5\n";
     $msg .= "\nTo debug a file use this: ".$_SERVER['argv'][0]." --debug FILE\n";
     file_put_contents('php://stderr', $msg);
     exit(-1);
@@ -33,14 +32,14 @@ $skipClasses = array();
 
 $skipClasses[] = 'self';
 $skipClasses[] = 'parent';
-$skipClasses[] = 'exception'; //lowercase
 $skipClasses[] = '__php_incomplete_class';
 $skipClasses[] = 'php_user_filter';
 
-///TODO: re-enable them once they have their do() and echo() methods removed.
+///TODO: re-enable them once they have their do(), echo() or list() methods removed.
 $skipClasses[] = 'gearmanclient';
 $skipClasses[] = 'gearmanworker';
 $skipClasses[] = 'gearmantask';
+$skipClasses[] = 'rararchive';
 
 $classes = array();
 $constants = array();
@@ -54,68 +53,11 @@ if ($_SERVER['argv'][1] == '--debug') {
     define('DEBUG', true);
 } else {
     define('DEBUG', false);
-}
 
-if ( !DEBUG ) {
     if (!file_exists($_SERVER['argv'][1])) {
         file_put_contents('php://stderr', "phpdoc path not found");
         exit(-1);
     }
-    if (!file_exists($_SERVER['argv'][2])) {
-        file_put_contents('php://stderr', "php sources path not found");
-        exit(-1);
-    }
-
-    //take ext/spl/spl.php as documentation for spl functions
-    //make the file valid php
-    $splContent = file_get_contents($_SERVER['argv'][2].'/ext/spl/spl.php');
-    $splContent = str_replace('mixed cmp_function', '$cmp_function', $splContent);
-    $splContent = str_replace('string class_name', '$class_name', $splContent);
-    $splContent = str_replace('string $', '$', $splContent);
-    $splContent = str_replace('{/**/};', '{}', $splContent);
-    $splContent = str_replace('{/**/}', '{}', $splContent);
-    $splContent = str_replace("\t", '    ', $splContent);
-    $splContent = str_replace("\r", '', $splContent);
-    $splContent = preg_replace("#(const [A-Z_]+\s*)(0x[0-9]+;)#", '\1= \2', $splContent);
-    $splContent = preg_replace("#/\\*\\* @(mainpage|defgroup|file).*?\\*/#s", '', $splContent);
-    // strip actual function code
-    $splContent = preg_replace("#(function.*?\))\s*(?!\{\n    \})\{\n.*?\n    \}#s", '\1{}', $splContent);
-    $splContent = trim($splContent);
-
-    foreach (new DirectoryIterator($_SERVER['argv'][2].'/ext/spl/internal') as $file) {
-        if (!$file->isFile()) continue;
-        if (substr($file->getFilename(), -4) != '.inc') continue;
-        $c = file_get_contents($file->getPathname());
-        $c = str_replace("\t", '    ', $c);
-        $c = str_replace("\r", '', $c);
-
-        $c = preg_replace("#/\\*\\* @file.*?\\*/#s", '', $c);
-        // handle code blocks in comments - quick'n'dirty
-        if ( preg_match_all('#\\\code.*\\\endcode#s', $c, $codeblocks) ) {
-            $codeblocks = $codeblocks[0];
-            foreach( $codeblocks as $block ) {
-                $c = str_replace($block, md5($block), $c);
-            }
-        } else {
-            $codeblocks = array();
-        }
-        // normalize special case
-        $c = str_replace("rewind();\n    {", "rewind()\n    {", $c);
-        // strip actual function code
-        $c = preg_replace("#(function.*?\))\s*\{\n.*?\n    \}#s", '\1{}', $c);
-        $c = trim($c);
-
-        foreach ( $codeblocks as $block ) {
-            $c = str_replace(md5($block), $block, $c);
-        }
-
-        $splContent .= $c;
-    }
-    $splContent = str_replace('<?php', '', $splContent);
-    $splContent = str_replace('?>', '', $splContent);
-    $spl = preg_replace("#/\\*.*?\\*/#s", '', $splContent);
-    preg_match_all("#^(class|interface)\s+(\S+)[^{]*{#sm", $spl, $m);
-    $skipClasses = array_merge($skipClasses, $m[2]);
 
     $dirs = array("reference", "appendices", "language/predefined/");
     foreach ($dirs as $dir) {
@@ -211,10 +153,6 @@ foreach ($variables as $name=>$var) {
     $out .= "$name = array();\n\n";
 }
 
-if ( !DEBUG ) {
-    $out .= $splContent;
-}
-
 // make skipclasses lowercase
 foreach ($skipClasses as &$name) {
     $name = strtolower($name);
@@ -231,7 +169,7 @@ foreach ($classes as $class => $i) {
             $out .= " **/\n";
         }
         $class = $i['prettyName'];
-        $out .= "class $class";
+        $out .= ($i['isInterface'] ? 'interface' : 'class') . " " . $class;
         if (isset($i['extends'])) {
             $out .= " extends {$i['extends']}";
         }
@@ -328,12 +266,14 @@ echo "wrote ".$declarationCount." declarations\n";
  * @return  bool
  */
 function parseFile($file, $funcOverload="") {
-global $existingFunctions, $constants, $constants_comments, $variables, $classes;
+global $existingFunctions, $constants, $constants_comments, $variables, $classes, $isInterface;
 
     if (substr($file->getFilename(), -4) != '.xml') return false;
     if (substr($file->getFilename(), 0, 9) == 'entities.') return false;
     $string = file_get_contents($file->getPathname());
     $string = preg_replace('#<!\\[CDATA\\[.*?\\]\\]>#s', '', $string);
+    $isInterface = strpos($string, '<phpdoc:classref') !== false &&
+                   strpos($string, '&reftitle.interfacesynopsis;') !== false;
     $string = preg_replace('#&[A-Za-z\\.0-9-_]+;#', '', $string);
     $removeSections = array();
     $removeSections[] = 'apd.installwin32';
@@ -342,6 +282,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         $string = preg_replace('#'.preg_quote('<section xml:id="'.$i.'">').'.*?</section>#s', '', $string);
     }
     $xml = new SimpleXMLElement($string);
+
     $xml->registerXPathNamespace('db', 'http://docbook.org/ns/docbook');
     $xml->registerXPathNamespace('phpdoc', 'http://php.net/ns/phpdoc');
     if ($vars = $xml->xpath('//phpdoc:varentry//db:refnamediv')) {
@@ -419,6 +360,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             }
         }
     }
+
     $cEls = $xml->xpath('//db:classsynopsis/db:classsynopsisinfo');
     if ($cEls) {
         foreach ($cEls as $class) {
@@ -490,18 +432,22 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
  * Returns the lower-cased @p $name
  */
 function newClassEntry($name) {
-    global $classes;
+    global $classes, $isInterface;
     $lower = strtolower($name);
     if (!isset($classes[$lower])) {
         $classes[$lower] = array(
             'functions' => array(),
             'properties' => array(),
             'prettyName' => $name,
-            'desc' => ''
+            'desc' => '',
+            'isInterface' => $isInterface,
         );
     } else {
         if ( $lower != $name ) {
             $classes[$lower]['prettyName'] = $name;
+        }
+        if ( $isInterface ) {
+            $classes[$lower]['isInterface'] = true;
         }
     }
     return $lower;

@@ -123,2199 +123,598 @@ $_SERVER = array();
  **/
 $_SESSION = array();
 
-
-
-
-
-
-
-
-
-
-
-
-
-/** @ingroup SPL
- * @brief Default implementation for __autoload()
- * @since PHP 5.1
- *
- * @param class_name        name of class to load
- * @param file_extensions   file extensions (use defaults if NULL)
- */
-function spl_autoload($class_name, $file_extensions = NULL) {}
-
-/** @ingroup SPL
- * @brief Manual invocation of all registerd autoload functions
- * @since PHP 5.1
- *
- * @param class_name        name of class to load
- */
-function spl_autoload_call($class_name) {}
-
-/** @ingroup SPL
- * @brief Register and return default file extensions for spl_autoload
- * @since PHP 5.1
- *
- * @param file_extensions optional comma separated list of extensions to use in
- *        default autoload function. If not given just return the current list.
- * @return comma separated list of file extensions to use in default autoload
- *        function.
- */
-function spl_autoload_extensions($file_extensions) {}
-
-/** @ingroup SPL
- * @brief Return all registered autoload functionns
- * @since PHP 5.1
- *
- * @return array of all registered autoload functions or false
- */
-function spl_autoload_functions() {}
-
-/** @ingroup SPL
- * @brief Register given function as autoload implementation
- * @since PHP 5.1
- *
- * @param autoload_function  name of function or array of object/class and
- *                           function name to register as autoload function.
- * @param throw              whether to throw or issue an error on failure.
- */
-function spl_autoload_register($autoload_function = "spl_autoload", $throw = true) {}
-
-/** @ingroup SPL
- * @brief Unregister given function as autoload implementation
- * @since PHP 5.1
- *
- * @param autoload_function  name of function or array of object/class and
- *                           function name to unregister as autoload function.
- */
-function spl_autoload_unregister($autoload_function = "spl_autoload") {}
-
-/** @ingroup SPL
- * @brief Return an array of classes and interfaces in SPL
- *
- * @return array containing the names of all clsses and interfaces defined in
- *         extension SPL
- */
-function spl_classes() {}
-
-/** @ingroup SPL
- * @brief Count the elements in an iterator
- * @since PHP 5.1
- *
- * @return number of elements in an iterator
- */
-function iterator_count(Traversable $it) {}
-
-/** @ingroup SPL
- * @brief Copy iterator elements into an array
- * @since PHP 5.1
- *
- * @param it  iterator to copy
- * @param use_keys whether touse the keys
- * @return array with elements copied from the iterator
- */
-function iterator_to_array(Traversable $it, $use_keys = true) {}
-
-/** @ingroup ZendEngine
- * @brief Basic Exception class.
- * @since PHP 5.0
- */
-class Exception
-{
-    /** The exception message */
-    protected $message;
-
-    /** The string represenations as generated during construction */
-    private $string;
-
-    /** The code passed to the constructor */
-    protected $code;
-
-    /** The file name where the exception was instantiated */
-    protected $file;
-
-    /** The line number where the exception was instantiated */
-    protected $line;
-
-    /** The stack trace */
-    private $trace;
-
-    /** Prevent clone
-     */
-    final private function __clone() {}
-
-    /** Construct an exception
-     *
-     * @param $message Some text describing the exception
-     * @param $code    Some code describing the exception
-     */
-    function __construct($message = NULL, $code = 0){}
-
-    /** @return the message passed to the constructor
-     */
-    final public function getMessage(){}
-
-    /** @return the code passed to the constructor
-     */
-    final public function getCode(){}
-
-    /** @return the name of the file where the exception was thrown
-     */
-    final public function getFile(){}
-
-    /** @return the line number where the exception was thrown
-     */
-    final public function getLine(){}
-
-    /** @return the stack trace as array
-     */
-    final public function getTrace(){}
-
-    /** @return the stack trace as string
-     */
-    final public function getTraceAsString()
-    {
-    }
-
-    /** @return string represenation of exception
-     */
-    public function __toString(){}
-}
-
-/** @ingroup SPL
- * @brief Exception that represents error in the program logic.
- * @since PHP 5.1
- *
- * This kind of exceptions should directly leed to a fix in your code.
- */
-class LogicException extends Exception
-{
-}
-
-/** @ingroup SPL
- * @brief Exception thrown when a function call was illegal.
- * @since PHP 5.1
- */
-class BadFunctionCallException extends LogicException
-{
-}
-
-/** @ingroup SPL
- * @brief Exception thrown when a method call was illegal.
- * @since PHP 5.1
- */
-class BadMethodCallException extends BadFunctionCallException
-{
-}
-
-/** @ingroup SPL
- * @brief Exception that denotes a value not in the valid domain was used.
- * @since PHP 5.1
- *
- * This kind of exception should be used to inform about domain erors in
- * mathematical sense.
- *
- * @see RangeException
- */
-class DomainException extends LogicException
-{
-}
-
-/** @ingroup SPL
- * @brief Exception that denotes invalid arguments were passed.
- * @since PHP 5.1
- *
- * @see UnexpectedValueException
- */
-class InvalidArgumentException extends LogicException
-{
-}
-
-/** @ingroup SPL
- * @brief Exception thrown when a parameter exceeds the allowed length.
- * @since PHP 5.1
- *
- * This can be used for strings length, array size, file size, number of
- * elements read from an Iterator and so on.
- */
-class LengthException extends LogicException
-{
-}
-
-/** @ingroup SPL
- * @brief Exception thrown when an illegal index was requested.
- * @since PHP 5.1
- *
- * This represents errors that should be detected at compile time.
- *
- * @see OutOfBoundsException
- */
-class OutOfRangeException extends LogicException
-{
-}
-
-/** @ingroup SPL
- * @brief Exception thrown for errors that are only detectable at runtime.
- * @since PHP 5.1
- */
-class RuntimeException extends Exception
-{
-}
-
-/** @ingroup SPL
- * @brief Exception thrown when an illegal index was requested.
- * @since PHP 5.1
- *
- * This represents errors that cannot be detected at compile time.
- *
- * @see OutOfRangeException
- */
-class OutOfBoundsException extends RuntimeException
-{
-}
-
-/** @ingroup SPL
- * @brief Exception thrown to indicate arithmetic/buffer overflow.
- * @since PHP 5.1
- */
-class OverflowException extends RuntimeException
-{
-}
-
-/** @ingroup SPL
- * @brief Exception thrown to indicate range errors during program execution.
- * @since PHP 5.1
- *
- * Normally this means there was an arithmetic error other than under/overflow.
- * This is the runtime version of DomainException.
- *
- * @see DomainException
- */
-class RangeException extends RuntimeException
-{
-}
-
-/** @ingroup SPL
- * @brief Exception thrown to indicate arithmetic/buffer underflow.
- * @since PHP 5.1
- */
-class UnderflowException extends RuntimeException
-{
-}
-
-/** @ingroup SPL
- * @brief Exception thrown to indicate an unexpected value.
- * @since PHP 5.1
- *
- * Typically this happens when a function calls another function and espects
- * the return value to be of a certain type or value not including arithmetic
- * or buffer related errors.
- *
- * @see InvalidArgumentException
- */
-class UnexpectedValueException extends RuntimeException
-{
-}
-
-/** @ingroup ZendEngine
- * @brief Interface to override array access of objects.
- * @since PHP 5.0
- */
-interface ArrayAccess
-{
-    /** @param $offset to modify
-     * @param $value new value
-     */
-    function offsetSet($offset, $value);
-
-    /** @param $offset to retrieve
-     * @return value at given offset
-     */
-    function offsetGet($offset);
-
-    /** @param $offset to delete
-     */
-    function offsetUnset($offset);
-
-    /** @param $offset to check
-     * @return whether the offset exists.
-     */
-    function offsetExists($offset);
-}
-
-/** @ingroup ZendEngine
- * @brief Interface to detect a class is traversable using foreach.
- * @since PHP 5.0
- *
- * Abstract base interface that cannot be implemented alone. Instead it
- * must be implemented by either IteratorAggregate or Iterator.
- *
- * @note Internal classes that implement this interface can be used in a
- * foreach construct and do not need to implement IteratorAggregate or
- * Iterator.
- *
- * @note This is an engine internal interface which cannot be implemented
- * in PHP scripts. Either IteratorAggregate or Iterator must be used
- * instead.
- */
-interface Traversable
-{
-}
-
-/** @ingroup ZendEngine
- * @brief Interface to create an external Iterator.
- * @since PHP 5.0
- *
- * @note This is an engine internal interface.
- */
-interface IteratorAggregate extends Traversable
-{
-    /** @return an Iterator for the implementing object.
-     */
-    function getIterator();
-}
-
-/** @ingroup ZendEngine
- * @brief Basic iterator
- * @since PHP 5.0
- *
- * Interface for external iterators or objects that can be iterated
- * themselves internally.
- *
- * @note This is an engine internal interface.
- */
-interface Iterator extends Traversable
-{
-    /** Rewind the Iterator to the first element.
-     */
-    function rewind();
-
-    /** Return the current element.
-     */
-    function current();
-
-    /** Return the key of the current element.
-     */
-    function key();
-
-    /** Move forward to next element.
-     */
-    function next();
-
-    /** Check if there is a current element after calls to rewind() or next().
-     */
-    function valid();
-}
-
-/** @ingroup SPL
- * @brief This Interface allows to hook into the global count() function.
- * @since PHP 5.1
- */
-interface Countable
-{
-    /** @return the number the global function count() should show
-     */
-    function count();
-}
-
-/** @ingroup ZendEngine
- * @brief Interface for customized serializing
- * @since 5.1
- *
- * Classes that implement this interface no longer support __sleep() and
- * __wakeup(). The method serialized is called whenever an instance needs to
- * be serialized. This does not invoke __destruct() or has any other side
- * effect unless programmed inside the method. When the data is unserialized
- * the class is known and the appropriate unserialize() method is called as a
- * constructor instead of calling __construct(). If you need to execute the
- * standard constructor you may do so in the method.
- */
-interface Serializable
-{
+class AppendIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
     /**
-     * @return string representation of the instance
-     */
-    function serialize();
+     * Appends an iterator.
+     *
+     * @param Iterator
+     * @return void
+     **/
+    function append($iterator) {}
 
     /**
-     * @note This is a constructor
+     * Gets the current value.
      *
-     * @param $serialized data read from stream to construct the instance
-     */
-    function unserialize($serialized);
+     * @return void
+     **/
+    function current() {}
+
+    /**
+     * The getArrayIterator method
+     *
+     * @return void
+     **/
+    function getArrayIterator() {}
+
+    /**
+     * Get an inner iterator
+     *
+     * @return void
+     **/
+    function getInnerIterator() {}
+
+    /**
+     * Get an index of iterators.
+     *
+     * @return void
+     **/
+    function getIteratorIndex() {}
+
+    /**
+     * Get the current key
+     *
+     * @return void
+     **/
+    function key() {}
+
+    /**
+     * Moves to the next element. If this means to another Iterator then it
+     * rewinds that Iterator.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewind to the first element of the first inner Iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Checks validity of the current element.
+     *
+     * @return void
+     **/
+    function valid() {}
+
+    /**
+     * Constructs an AppendIterator.
+     *
+     **/
+    function __construct() {}
+
 }
-
-/** @ingroup SPL
- * @brief An Array wrapper
- * @since PHP 5.0
- * @version 1.2
- *
- * This array wrapper allows to recursively iterate over Arrays and public
- * Object properties.
- *
- * @see ArrayIterator
- */
-class ArrayObject implements IteratorAggregate, ArrayAccess, Countable
-{
-    /** Properties of the object have their normal functionality
-     * when accessed as list (var_dump, foreach, etc.) */
-    const STD_PROP_LIST     = 0x00000001;
-    /** Array indices can be accessed as properties in read/write */
-    const ARRAY_AS_PROPS    = 0x00000002;
-
-    /** Construct a new array iterator from anything that has a hash table.
-     * That is any Array or Object.
+interface ArrayAccess {
+    /**
+     * Whether or not an offset exists.
+     * 
+     * This method is executed when using isset or empty on objects
+     * implementing ArrayAccess.
      *
-     * @param $array the array to use.
-     * @param $flags see setFlags().
-     * @param $iterator_class class used in getIterator()
-     */
-    function __construct($array, $flags = 0, $iterator_class = "ArrayIterator") {}
+     * @param mixed
+     * @return boolean
+     **/
+    function offsetExists($offset) {}
 
-    /** Set behavior flags.
+    /**
+     * Returns the value at specified offset.
+     * 
+     * This method is executed when checking if offset is empty.
      *
-     * @param $flags bitmask as follows:
-     *        0 set: properties of the object have their normal functionality
-     *               when accessed as list (var_dump, foreach, etc.)
-     *        1 set: array indices can be accessed as properties in read/write
-     */
-    function setFlags($flags) {}
+     * @param mixed
+     * @return mixed
+     **/
+    function offsetGet($offset) {}
 
-    /** @return current flags
-     */
-    function getFlags() {}
+    /**
+     * Assigns a value to the specified offset.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function offsetSet($offset, $value) {}
 
-    /** Sort the entries by values.
-     */
-    function asort() {}
+    /**
+     * Unsets an offset.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function offsetUnset($offset) {}
 
-    /** Sort the entries by key.
-     */
-    function ksort() {}
-
-    /** Sort the entries by values using user defined function.
-     */
-    function uasort($cmp_function) {}
-
-    /** Sort the entries by key using user defined function.
-     */
-    function uksort($cmp_function) {}
-
-    /** Sort the entries by values using "natural order" algorithm.
-     */
-    function natsort() {}
-
-    /** Sort the entries by values using case insensitive "natural order" algorithm.
-     */
-    function natcasesort() {}
-
-    /** @param $array new array or object
-     */
-    function exchangeArray($array) {}
-
-    /** @return the iterator which is an ArrayIterator object connected to
-     * this object.
-     */
-    function getIterator() {}
-
-    /** @param $index offset to inspect
-     * @return whetehr offset $index esists
-     */
-    function offsetExists($index) {}
-
-    /** @param $index offset to return value for
-     * @return value at offset $index
-     */
-    function offsetGet($index) {}
-
-    /** @param $index index to set
-     * @param $newval new value to store at offset $index
-     */
-    function offsetSet($index, $newval) {}
-
-    /** @param $index offset to unset
-     */
-    function offsetUnset($index) {}
-
-    /** @param $value is appended as last element
-     * @warning this method cannot be called when the ArrayObject refers to
-     *          an object.
-     */
+}
+class ArrayIterator implements Iterator, Traversable, ArrayAccess, SeekableIterator, Countable {
+    /**
+     * Appends value as the last element.
+     *
+     * @param string
+     * @return void
+     **/
     function append($value) {}
 
-    /** @return a \b copy of the array
-     * @note when the ArrayObject refers to an object then this method
-     *       returns an array of the public properties.
-     */
-    function getArrayCopy() {}
+    /**
+     * Sorts an array by values.
+     *
+     * @return void
+     **/
+    function asort() {}
 
-    /** @return the number of elements in the array or the number of public
+    /**
+     * Gets the number of elements in the array, or the number of public
      * properties in the object.
-     */
+     *
+     * @return void
+     **/
     function count() {}
 
-    /* @param $iterator_class new class used in getIterator()
-     */
-    function setIteratorClass($itertor_class) {}
-
-    /* @return class used in getIterator()
-     */
-    function getIteratorClass() {}
-}
-
-/** @ingroup SPL
- * @brief An Array iterator
- * @since PHP 5.0
- * @version 1.2
- *
- * This iterator allows to unset and modify values and keys while iterating
- * over Arrays and Objects.
- *
- * When you want to iterate over the same array multiple times you need to
- * instanciate ArrayObject and let it create ArrayIterator instances that
- * refer to it either by using foreach or by calling its getIterator()
- * method manually.
- */
-class ArrayIterator implements SeekableIterator, ArrayAccess, Countable
-{
-    /** Properties of the object have their normal functionality
-     * when accessed as list (var_dump, foreach, etc.) */
-    const STD_PROP_LIST  = 0x00000001;
-    /** Array indices can be accessed as properties in read/write */
-    const ARRAY_AS_PROPS = 0x00000002;
-
-    /** Construct a new array iterator from anything that has a hash table.
-     * That is any Array or Object.
+    /**
+     * Get the current array entry.
      *
-     * @param $array the array to use.
-     * @param $flags see setFlags().
-     */
-    function __construct($array, $flags = 0) {}
-
-    /** Set behavior flags.
-     *
-     * @param $flags bitmask as follows:
-     *        0 set: properties of the object have their normal functionality
-     *               when accessed as list (var_dump, foreach, etc.)
-     *        1 set: array indices can be accessed as properties in read/write
-     */
-    function setFlags($flags) {}
+     * @return mixed
+     **/
+    function current() {}
 
     /**
-     * @return current flags
-     */
-    function getFlags() {}
-
-    /** Sort the entries by values.
-     */
-    function asort() {}
-
-    /** Sort the entries by key.
-     */
-    function ksort() {}
-
-    /** Sort the entries by values using user defined function.
-     */
-    function uasort($cmp_function) {}
-
-    /** Sort the entries by key using user defined function.
-     */
-    function uksort($cmp_function) {}
-
-    /** Sort the entries by values using "natural order" algorithm.
-     */
-    function natsort() {}
-
-    /** Sort the entries by values using case insensitive "natural order" algorithm.
-     */
-    function natcasesort() {}
-
-    /** @param $index offset to inspect
-     * @return whetehr offset $index esists
-     */
-    function offsetExists($index) {}
-
-    /** @param $index offset to return value for
-     * @return value at offset $index
-     */
-    function offsetGet($index) {}
-
-    /** @param $index index to set
-     * @param $newval new value to store at offset $index
-     */
-    function offsetSet($index, $newval) {}
-
-    /** @param $index offset to unset
-     */
-    function offsetUnset($index) {}
-
-    /** @param $value is appended as last element
-     * @warning this method cannot be called when the ArrayIterator refers to
-     *          an object.
-     */
-    function append($value) {}
-
-    /** @return a \b copy of the array
-     * @note when the ArrayIterator refers to an object then this method
-     *       returns an array of the public properties.
-     */
+     * Get a copy of an array.
+     *
+     * @return void
+     **/
     function getArrayCopy() {}
 
-    /** @param $position offset to seek to
-     * @throw OutOfBoundsException if $position is invalid
-     */
+    /**
+     * Get the current flags.
+     *
+     * @return void
+     **/
+    function getFlags() {}
+
+    /**
+     * This function returns the current array key
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Sorts an array by the keys.
+     *
+     * @return void
+     **/
+    function ksort() {}
+
+    /**
+     * Sort the entries by values using a case insensitive "natural order"
+     * algorithm.
+     *
+     * @return void
+     **/
+    function natcasesort() {}
+
+    /**
+     * Sort the entries by values using "natural order" algorithm.
+     *
+     * @return void
+     **/
+    function natsort() {}
+
+    /**
+     * The iterator to the next entry.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Checks if the offset exists.
+     *
+     * @param string
+     * @return void
+     **/
+    function offsetExists($index) {}
+
+    /**
+     * Gets the value from the provided offset.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function offsetGet($index) {}
+
+    /**
+     * Sets a value for a given offset.
+     *
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function offsetSet($index, $newval) {}
+
+    /**
+     * Unsets a value for an offset.
+     *
+     * @param string
+     * @return void
+     **/
+    function offsetUnset($index) {}
+
+    /**
+     * This rewinds the iterator to the beginning.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @param int
+     * @return void
+     **/
     function seek($position) {}
 
-    /** @return the number of elements in the array or the number of public
-     * properties in the object.
-     */
+    /**
+     * Serialize.
+     *
+     * @return string
+     **/
+    function serialize() {}
+
+    /**
+     * Sets behaviour flags.
+     *
+     * @param string
+     * @return void
+     **/
+    function setFlags($flags) {}
+
+    /**
+     * Sort the entries by values using user defined function.
+     *
+     * @param string
+     * @return void
+     **/
+    function uasort($cmp_function) {}
+
+    /**
+     * Sort the entries by key using user defined function.
+     *
+     * @param string
+     * @return void
+     **/
+    function uksort($cmp_function) {}
+
+    /**
+     * Unserialize.
+     *
+     * @param string
+     * @return string
+     **/
+    function unserialize($serialized) {}
+
+    /**
+     * Checks if the array contains any more entries.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Constructs an ArrayIterator object.
+     *
+     * @param mixed
+     **/
+    function __construct($array) {}
+
+}
+class ArrayObject implements IteratorAggregate, Traversable, ArrayAccess, Serializable, Countable {
+    /**
+     * Appends a new value as the last element.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function append($value) {}
+
+    /**
+     * Sorts the entries such that the keys maintain their correlation with
+     * the entries they are associated with. This is used mainly when sorting
+     * associative arrays where the actual element order is significant.
+     *
+     * @return void
+     **/
+    function asort() {}
+
+    /**
+     * Get the number of public properties in the ArrayObject.
+     *
+     * @return int
+     **/
     function count() {}
 
-    /** @copydoc Iterator::rewind */
-    function rewind() {}
-
-    /** @copydoc Iterator::valid */
-    function valid() {}
-
-    /** @copydoc Iterator::current */
-    function current() {}
-
-    /** @copydoc Iterator::key */
-    function key() {}
-
-    /** @copydoc Iterator::next */
-    function next() {}
-}
-
-/** @ingroup SPL
- * @brief File info class
- * @since PHP 5.1.3
- */
-class SplFileInfo
-{
-    /** Construct a file info object
+    /**
+     * Exchange the current array with another array or object.
      *
-     * @param $file_name path or file name
-     */
-    function __construct($file_name) {}
-
-    /** @return the path part only.
-     */
-    function getPath() {}
-
-    /** @return the filename only.
-     */
-    function getFilename() {}
-
-    /** @return SplFileInfo created for the file
-     * @param class_name name of class to instantiate
-     * @see SplFileInfo::setInfoClass()
-     */
-    function getFileInfo($class_name = NULL) {}
-
-    /** @return The current entries path and file name.
-     */
-    function getPathname() {}
-
-    /** @return SplFileInfo created for the path
-     * @param class_name name of class to instantiate
-     * @see SplFileInfo::setInfoClass()
-     */
-    function getPathInfo($class_name = NULL) {}
-
-    /** @return The current entry's permissions.
-     */
-    function getPerms() {}
-
-    /** @return The current entry's inode.
-     */
-    function getInode() {}
-
-    /** @return The current entry's size in bytes .
-     */
-    function getSize() {}
-
-    /** @return The current entry's owner name.
-     */
-    function getOwner() {}
-
-    /** @return The current entry's group name.
-     */
-    function getGroup() {}
-
-    /** @return The current entry's last access time.
-     */
-    function getATime() {}
-
-    /** @return The current entry's last modification time.
-     */
-    function getMTime() {}
-
-    /** @return The current entry's last change time.
-     */
-    function getCTime() {}
-
-    /** @return The current entry's file type.
-     */
-    function getType() {}
-
-    /** @return Whether the current entry is writeable.
-     */
-    function isWritable() {}
-
-    /** @return Whether the current entry is readable.
-     */
-    function isReadable() {}
-
-    /** @return Whether the current entry is executable.
-     */
-    function isExecutable() {}
-
-    /** @return Whether the current entry is .
-     */
-    function isFile() {}
-
-    /** @return Whether the current entry is a directory.
-     */
-    function isDir() {}
-
-    /** @return whether the current entry is a link.
-     */
-    function isLink() {}
-
-    /** @return target of link.
-     */
-    function getLinkTarget() {}
-
-    /** @return The resolved path
-     */
-    function getRealPath() {}
-
-    /** @return getPathname()
-     */
-    function __toString() {}
-
-    /** Open the current file as a SplFileObject instance
-     *
-     * @param mode              open mode
-     * @param use_include_path  whether to search include paths (don't use)
-     * @param context           resource context to pased to open function
-     * @throw RuntimeException  if file cannot be opened (e.g. insufficient
-     *                          access rights).
-     * @return The opened file as a SplFileObject instance
-     *
-     * @see SplFileObject
-     * @see SplFileInfo::setFileClass()
-     * @see file()
-     */
-    function openFile($mode = 'r', $use_include_path = false, $context = NULL) {}
-
-    /** @param class_name name of class used with openFile(). Must be derived
-     * from SPLFileObject.
-     */
-    function setFileClass($class_name = "SplFileObject") {}
-
-    /** @param class_name name of class used with getFileInfo(), getPathInfo().
-     *                     Must be derived from SplFileInfo.
-     */
-    function setInfoClass($class_name = "SplFileInfo") {}
-}
-
-/** @ingroup SPL
- * @brief Directory iterator
- * @version 1.1
- * @since PHP 5.0
- */
-class DirectoryIterator extends SplFileInfo implements Iterator
-{
-    /** Construct a directory iterator from a path-string.
-     *
-     * @param $path directory to iterate.
-     */
-    function __construct($path) {}
-
-    /** @copydoc Iterator::rewind */
-    function rewind() {}
-
-    /** @copydoc Iterator::valid */
-    function valid() {}
-
-    /** @return index of entry
-     */
-    function key() {}
-
-    /** @return $this
-     */
-    function current() {}
-
-    /** @copydoc Iterator::next */
-    function next() {}
-
-    /** @return Whether the current entry is either '.' or '..'.
-     */
-    function isDot() {}
-
-    /** @return whether the current entry is a link.
-     */
-    function isLink() {}
-
-    /** @return getFilename()
-     */
-    function __toString() {}
-}
-
-/** @ingroup SPL
- * @brief recursive directory iterator
- * @version 1.1
- * @since PHP 5.0
- */
-class RecursiveDirectoryIterator extends DirectoryIterator implements RecursiveIterator
-{
-    const CURRENT_AS_FILEINFO   = 0x00000000; /* make RecursiveDirectoryTree::current() return SplFileInfo */
-    const CURRENT_AS_SELF       = 0x00000010; /* make RecursiveDirectoryTree::current() return getSelf() */
-    const CURRENT_AS_PATHNAME   = 0x00000020; /* make RecursiveDirectoryTree::current() return getPathname() */
-
-    const KEY_AS_PATHNAME       = 0x00000000; /* make RecursiveDirectoryTree::key() return getPathname() */
-    const KEY_AS_FILENAME       = 0x00000100; /* make RecursiveDirectoryTree::key() return getFilename() */
-
-    const NEW_CURRENT_AND_KEY   = 0x00000100; /* CURRENT_AS_FILEINFO + KEY_AS_FILENAME */
-
-    /** Construct a directory iterator from a path-string.
-     *
-     * @param $path   directory to iterate.
-     * @param $flags  open flags
-     * - CURRENT_AS_FILEINFO
-     * - CURRENT_AS_SELF
-     * - CURRENT_AS_PATHNAME
-     * - KEY_AS_PATHNAME
-     * - KEY_AS_FILENAME
-     * - NEW_CURRENT_AND_KEY
-     */
-    function __construct($path, $flags = 0) {}
-
-    /** @return getPathname() or getFilename() depending on flags
-     */
-    function key() {}
-
-    /** @return getFilename() or getFileInfo() depending on flags
-     */
-    function current() {}
-
-    /** @return whether the current is a directory (not '.' or '..').
-     */
-    function hasChildren() {}
-
-    /** @return a RecursiveDirectoryIterator for the current entry.
-     */
-    function getChildren() {}
-
-    /** @return sub path only (without main path)
-     */
-    function getSubPath() {}
-
-    /** @return the current sub path
-     */
-    function getSubPathname() {}
-}
-
-/** @ingroup SPL
- * @brief recursive SimpleXML_Element iterator
- * @since PHP 5.0
- *
- * The SimpleXMLIterator implements the RecursiveIterator interface. This
- * allows iteration over all elements using foreach or an appropriate while
- * construct, just like SimpleXMLElement does. When using the foreach construct,
- * you will also iterate over the subelements. For every element which
- * has subelements, hasChildren() returns true.  This will trigger a call to
- * getChildren() which returns the iterator for that sub element.
- */
-class SimpleXMLIterator extends SimpleXMLElement implements RecursiveIterator, Countable
-{
-    /** @return whether the current node has sub nodes.
-     */
-    function hasChildren() {}
-
-    /** @return a SimpleXMLIterator for the current node.
-     */
-    function getChildren() {}
-
-    /** @return number of elements/attributes seen with foreach()
-     */
-    function count() {}
-
-    /** @copydoc Iterator::rewind */
-    function rewind() {}
-
-    /** @copydoc Iterator::valid */
-    function valid() {}
-
-    /** @copydoc Iterator::current */
-    function current() {}
-
-    /** @copydoc Iterator::key */
-    function key() {}
-
-    /** @copydoc Iterator::next */
-    function next() {}
-}
-
-/** @ingroup SPL
- * @brief Observer of the observer pattern
- * @since PHP 5.1
- *
- * For a detailed explanation see Observer pattern in
- * <em>
- * Gamma, Helm, Johnson, Vlissides<br />
- * Design Patterns
- * </em>
- */
-interface SplObserver
-{
-    /** Called from the subject (i.e. when it's value has changed).
-     * @param $subject the callee
-     */
-    function update(SplSubject $subject);
-}
-
-/** @ingroup SPL
- * @brief Subject to the observer pattern
- * @since PHP 5.1
- * @see Observer
- */
-interface SplSubject
-{
-    /** @param $observer new observer to attach
-     */
-    function attach(SplObserver $observer);
-
-    /** @param $observer existing observer to detach
-     * @note a non attached observer shouldn't result in a warning or similar
-     */
-    function detach(SplObserver $observer);
-
-    /** Notify all observers
-     */
-    function notify();
-}
-
-
-
-
-
-/**
- * @brief   Regular expression filter for iterators
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- *
- * This filter iterator assumes that the inner iterator 
- */
-class RegexIterator extends FilterIterator
-{
-    const USE_KEY     = 0x00000001; /**< If present in $flags the the key is 
-                                         used rather then the current value. */
-
-    const MATCH       = 0; /**< Mode: Executed a plain match only      */
-    const GET_MATCH   = 1; /**< Mode: Return the first matche (if any) */
-    const ALL_MATCHES = 2; /**< Mode: Return all matches (if any)      */
-    const SPLIT       = 3; /**< Mode: Return the split values (if any) */
-    const REPLACE     = 4; /**< Mode: Replace the input key or current */
-    
-    private $regex;     /**< the regular expression to match against */
-    private $mode;      /**< operation mode (one of self::MATCH, 
-                             self::GET_MATCH, self::ALL_MATCHES, self::SPLIT) */
-    private $flags;     /**< special flags (self::USE_KEY) */
-    private $preg_flags;/**< PREG_* flags, see preg_match(), preg_match_all(), 
-                             preg_split() */ 
-    private $key;       /**< the value used for key() */
-    private $current;   /**< the value used for current() */
+     * @param mixed
+     * @return array
+     **/
+    function exchangeArray($input) {}
 
     /**
-     * Constructs a regular expression filter around an iterator whose 
-     * elemnts or keys are strings.
+     * Exports the ArrayObject to an array.
      *
-     * @param it          inner iterator
-     * @param regex       the regular expression to match
-     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
-     *                    self::ALL_MATCHES, self::SPLIT)
-     * @param flags       special flags (self::USE_KEY)
-     * @param preg_flags  global PREG_* flags, see preg_match(), 
-     *                    preg_match_all(), preg_split()
-     */
-    function __construct(Iterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
+     * @return array
+     **/
+    function getArrayCopy() {}
 
     /**
-     * Match current or key against regular expression using mode, flags and
-     * preg_flags.
+     * Gets the behavior flags of the ArrayObject. See the
+     * ArrayObject::setFlags method for a list of the available flags.
      *
-     * @return whether this is a match
-     *
-     * @warning never call this twice for the same state
-     */
-    function accept(){}
+     * @return int
+     **/
+    function getFlags() {}
 
-    /** @return the key after accept has been called
-     */
-    function key(){}
-
-    /** @return the current value after accept has been called
-     */
-    function current(){}
-
-    /** @return current operation mode
-     */
-    function getMode(){}
-
-    /** @param mode new operaion mode
-     */
-    function setMode($mode){}
-
-    /** @return current operation flags
-     */
-    function getFlags(){}
-
-    /** @param flags new operaion flags
-     */
-    function setFlags($flags){}
-
-    /** @return current PREG flags
-     */
-    function getPregFlags(){}
-
-    /** @param preg_flags new PREG flags
-     */
-    function setPregFlags($preg_flags){}
-}
-
-
-
-
-
-/**
- * @brief   Cached recursive iteration over another Iterator
- * @author  Marcus Boerger
- * @version 1.2
- * @since PHP 5.1
- *
- * @see CachingIterator
- */
-class RecursiveCachingIterator extends CachingIterator implements RecursiveIterator
-{
-    private $hasChildren;
-    private $getChildren;
-
-    /** Construct from another iterator
-     *
-     * @param it    Iterator to cache
-     * @param flags Bitmask: 
-     *              - CALL_TOSTRING   (whether to call __toString() for every element)
-     *              - CATCH_GET_CHILD (whether to catch exceptions when trying to get childs)
-     */
-    function __construct(RecursiveIterator $it, $flags = self::CALL_TOSTRING){}
-
-    /** Rewind Iterator
-     */    
-    function rewind(){}
-
-    /** Forward to next element if necessary then an Iterator for the Children
-     * will be created.
-     */
-    function next(){}
-    
-    private $ref;
-
-    /** @return whether the current element has children
-     * @note The check whether the Iterator for the children can be created was
-     *       already executed. Hence when flag CATCH_GET_CHILD was given in
-     *       constructor this fucntion returns false so that getChildren does 
-     *       not try to access those children.
-     */
-    function hasChildren(){}
-
-    /** @return An Iterator for the children
-     */
-    function getChildren(){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief Basic Iterator wrapper
- * @since PHP 5.1
- *
- * This iterator wrapper allows to convert anything that is traversable into 
- * an Iterator. It is very important to understand that most classes that do 
- * not implement Iterator have their reasone to. Most likely they do not allow
- * the full Iterator feature set. If so you need to provide techniques to
- * prevent missuse. If you do not you must expect exceptions or fatal erros.
- *
- * It is also possible to derive the class and implement IteratorAggregate by
- * downcasting the instances returned in getIterator. See the following
- * example (assuming BaseClass implements Traversable):
- \code
- class SomeClass extends BaseClass implements IteratorAggregate
- {
-   function getIterator()
-   {
-     return new IteratorIterator($this, 'BaseClass');
-   }
- }
- \endcode
- *
- * As you can see in the example this approach requires that the class to 
- * downcast to is actually a base class of the specified iterator to wrap.
- * Omitting the downcast in the above example would result in an endless loop
- * since IteratorIterator::__construct() would call SomeClass::getIterator().
- */
-class IteratorIterator implements OuterIterator
-{
-    /** Construct an IteratorIterator from an Iterator or an IteratorAggregate.
-     *
-     * @param iterator  inner iterator
-     * @param classname optional class the iterator has to be downcasted to
-     */
-    function __construct(Traversable $iterator, $classname = null){}
-
-    /** \return the inner iterator as passed to the constructor
-     */
-    function getInnerIterator(){}
-
-    /** \return whether the iterator is valid
-     */
-    function valid(){}
-
-    /** \return current key
-     */
-    function key(){}
-
-    /** \return current value
-     */
-    function current(){}
-
-    /** forward to next element
-     */
-    function next(){}
-
-    /** rewind to the first element
-     */
-    function rewind(){}
-
-    /** Aggregate the inner iterator
-     *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
-     */
-    function __call($func, $params){}
-
-    /** The inner iterator must be private because when this class will be
-     * converted to c code it won't no longer be available.
-     */
-    private $iterator;
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   Iterator to filter recursive iterators
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- *
- * Passes the RecursiveIterator interface to the inner Iterator and provides
- * the same functionality as FilterIterator. This allows you to skip parents
- * and all their childs before loading them all. You need to care about
- * function getChildren() because it may not always suit your needs. The 
- * builtin behavior uses reflection to return a new instance of the exact same
- * class it is called from. That is you extend RecursiveFilterIterator and
- * getChildren() will create instance of that class. The problem is that doing
- * this does not transport any state or control information of your accept()
- * implementation to the new instance. To overcome this problem you might 
- * need to overwrite getChildren(), call this implementation and pass the
- * control vaules manually.
- */
-abstract class RecursiveFilterIterator extends FilterIterator implements RecursiveIterator
-{
-    /** @param $it the RecursiveIterator to filter
-     */
-    function __construct(RecursiveIterator $it){}
-    
-    /** @return whether the current element has children
-     */
-    function hasChildren(){}
-
-    /** @return an iterator for the current elements children
-     *
-     * @note the returned iterator will be of the same class as $this
-     */
-    function getChildren(){}
-    
-    private $ref;
-}
-
-
-
-
-
-/**
- * @brief   Interface for recursive iteration with RecursiveIteratorIterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.0
- */
-interface RecursiveIterator extends Iterator
-{
-    /** @return whether the current element has children
-     */
-    function hasChildren();
-    
-    /** @return the sub iterator for the current element
-     * @note The returned object must implement RecursiveIterator.
-     */
-    function getChildren();
-}
-
-
-
-
-
-/**
- * @brief   Cached iteration over another Iterator
- * @author  Marcus Boerger
- * @version 1.2
- * @since PHP 5.0
- *
- * This iterator wrapper does a one ahead iteration. This way it knows whether
- * the inner iterator has one more element.
- *
- * @note If you want to convert the elements into strings and the inner 
- *       Iterator is an internal Iterator then you need to provide the 
- *       flag CALL_TOSTRING to do the conversion when the actual element
- *       is being fetched. Otherwise the conversion would happen with the
- *       already changed iterator. If you do not need this then it you should
- *       omit this flag because it costs unneccessary work and time.
- */
-class CachingIterator implements OuterIterator
-{
-    const CALL_TOSTRING        = 0x00000001;
-    const CATCH_GET_CHILD      = 0x00000002;
-    const TOSTRING_USE_KEY     = 0x00000010;
-    const TOSTRING_USE_CURRENT = 0x00000020;
-
-    private $it;
-    private $current;
-    private $key;
-    private $valid;
-    private $strValue;
-
-    /** Construct from another iterator
-     *
-     * @param it    Iterator to cache
-     * @param flags Bitmask: 
-     *              - CALL_TOSTRING  (whether to call __toString() for every element)
-     */
-    function __construct(Iterator $it, $flags = self::CALL_TOSTRING){}
-
-    /** Rewind the Iterator
-     */
-    function rewind(){}
-    
-    /** Forward to the next element
-     */
-    function next(){}
-    
-    /** @return whether teh iterator is valid
-     */
-    function valid(){}
-
-    /** @return whether there is one more element
-     */
-    function hasNext(){}
-    
-    /** @return the current element
-     */
-    function current(){}
-
-    /** @return the current key
-     */
-    function key(){}
-
-    /** Aggregate the inner iterator
-     *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
-     */
-    function __call($func, $params){}
-    
-    /** @return the string represenatation that was generated for the current 
-     *          element
-     * @throw exception when CALL_TOSTRING was not specified in constructor
-     */
-    function __toString(){}
-    
     /**
-     * @return The inner iterator
-     */    
-    function getInnerIterator(){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   Iterator that iterates over several iterators one after the other
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- */
-class AppendIterator implements OuterIterator
-{
-    /** @internal array of inner iterators */
-    private $iterators;
-
-    /** Construct an empty AppendIterator
-     */
-    function __construct(){}
-
-    /** Append an Iterator
-     * @param $it Iterator to append
+     * Create a new iterator from an ArrayObject instance.
      *
-     * If the current state is invalid but the appended iterator is valid
-     * the the AppendIterator itself becomes valid. However there will be no
-     * call to $it->rewind(). Also if the current state is invalid the inner
-     * ArrayIterator will be rewound und forwarded to the appended element.
-     */    
-    function append(Iterator $it){}
+     * @return ArrayIterator
+     **/
+    function getIterator() {}
 
-    /** @return the current inner Iterator
-     */
-    function getInnerIterator(){}
+    /**
+     * Gets the classname of the array iterator that is used by
+     * ArrayObject::getIterator().
+     *
+     * @return int
+     **/
+    function getIteratorClass() {}
 
-    /** Rewind to the first element of the first inner Iterator.
+    /**
+     * Sorts the entries by key, maintaining key to entry correlations. This
+     * is useful mainly for associative arrays.
+     *
      * @return void
-     */
-    function rewind(){}
+     **/
+    function ksort() {}
 
-    /** @return whether the current element is valid
-      */
-    function valid(){}
-
-    /** @return the current value if it is valid or \c NULL
-     */
-    function current(){}
-
-    /** @return the current key if it is valid or \c NULL
-     */
-    function key(){}
-
-    /** Move to the next element. If this means to another Iterator that 
-     * rewind that Iterator.
-     * @return void
-     */
-    function next(){}
-
-    /** Aggregates the inner iterator
-     */    
-    function __call($func, $params){}
-}
-
-
-
-
-
-/**
- * @brief   Interface to access the current inner iteraor of iterator wrappers
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- */
-interface OuterIterator extends Iterator
-{
-    /** @return inner iterator
-     */
-    function getInnerIterator();
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   Object representation for any stream
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.1
- */
-class SplFileObject extends SplFileInfo implements RecursiveIterator, SeekableIterator
-{
-    /** Flag: wheter to suppress new lines */
-    const DROP_NEW_LINE   = 0x00000001;
-
-    private $fp;
-    private $fname;
-    private $line     = NULL;
-    private $lnum     = 0;
-    private $max_len  = 0;
-    private $flags    = 0;
-    private $delimiter= ',';
-    private $enclosure= '"';
-    
     /**
-     * Constructs a new file object
+     * This method is a case insensitive version of ArrayObject::natsort.
      * 
-     * @param $file_name         The name of the stream to open
-     * @param $open_mode         The file open mode
-     * @param $use_include_path  Whether to search in include paths
-     * @param $context           A stream context
-     * @throw RuntimeException   If file cannot be opened (e.g. insufficient 
-     *                           access rights).
-     */
-    function __construct($file_name, $open_mode = 'r', $use_include_path = false, $context = NULL){}
-    
-    /**
-     * @return whether the end of the stream is reached
-     */
-    function eof(){}
-
-    /** increase current line number
-     * @return next line from stream
-     */
-    function fgets(){}
-
-    /**
-     * @param delimiter  character used as field separator
-     * @param enclosure  end of 
-     * @return array containing read data
-     */
-    function fgetcsv($delimiter = NULL, $enclosure = NULL){}
-
-    /**
-     * Set the delimiter and enclosure character used in fgetcsv
-     *
-     * @param delimiter new delimiter, defaults to ','
-     * @param enclosure new enclosure, defaults to '"'
-     */
-    function setCsvControl($delimiter = ';', $enclosure = '"'){}
-
-    /**
-     * @return array(delimiter, enclosure) as used in fgetcsv
-     */
-    function getCsvControl($delimiter = ',', $enclosure = '"'){}
-
-    /**
-     * @param operation lock operation (LOCK_SH, LOCK_EX, LOCK_UN, LOCK_NB)
-     * @retval $wouldblock  whether the operation would block
-     */
-    function flock($operation, &$wouldblock){}
-
-    /**
-     * Flush current data
-     * @return success or failure
-     */
-    function fflush(){}
-
-    /**
-     * @return current file position
-     */
-    function ftell(){}
-
-    /**
-     * @param pos new file position
-     * @param whence seek method (SEEK_SET, SEEK_CUR, SEEK_END)
-     * @return Upon success, returns 0; otherwise, returns -1. Note that 
-     *         seeking past EOF is not considered an error.
-     */
-    function fseek($pos, $whence = SEEK_SET){}
-
-    /**
-     * @return next char from file
-     * @note a new line character does not increase $this->lnum
-     */
-    function fgetc(){}
-
-    /** Read and return remaining part of stream
-     * @return size of remaining part passed through
-     */
-    function fpassthru(){}
-
-    /** Get a line from the file and strip HTML tags
-     * @param $allowable_tags tags to keep in the string
-     */
-    function fgetss($allowable_tags = NULL){}
-
-    /** Scan the next line
-     * @param $format string specifying format to parse
-     */    
-    function fscanf($format /* , ... */){}
-
-    /**
-     * @param $str to write
-     * @param $length maximum line length to write
-     */
-    function fwrite($str, $length = NULL){}
-
-    /**
-     * @return array of file stat information
-     */
-    function fstat(){}
-
-    /**
-     * @param $size new size to truncate file to
-     */
-    function ftruncate($size){}
-
-    /**
-     * @param $flags new flag set
-     */
-    function setFlags($flags){}
-
-    /**
-     *  @return current set of flags
-     */
-    function getFlags(){}
-
-    /**
-     * @param $max_len set the maximum line length read
-     */
-    function setMaxLineLen($max_len){}
-
-    /**
-     * @return current setting for max line
-     */
-    function getMaxLineLen(){}
-
-    /**
-     * @return false
-     */
-    function hasChildren(){}
-
-    /**
-     * @return false
-     */
-    function getChildren(){}
-
-    /**
-     * Invalidate current line buffer and set line number to 0.
-     */
-    function rewind(){}
-
-    /**
-     * @return whether more data can be read
-     */
-    function valid(){}
-    
-    /**
-     * @note Fill current line buffer if not done yet.
-     * @return line buffer 
-     */    
-    function current(){}
-
-    /**
-     * @return line number 
-     * @note fgetc() will increase the line number when reaing a new line char.
-     *       This has the effect key() called on a read a new line will already
-     *       return the increased line number.
-     * @note Line counting works as long as you only read the file and do not
-     *       use fseek().
-     */    
-    function key(){}
-
-    /** Invalidate current line buffer.
-     */    
-    function next(){}
-
-    /**
-     * @return next line read from file and increase the line counter
-     */
-    private function readLine(){}
-
-    /**
-     * Free the current line buffer and increment the line counter
-     */
-    private function freeLine(){}
-
-    /*
-     * @note If you DO overload this function key() and current() will increment
-     *       $this->lnum automatically. If not then function reaLine() will do
-     *       that for you.
-     */ 
-    function getCurrentLine(){}
-
-    /**
-     * @return current line
-     */
-    function __toString(){}
-
-    /**
-     * @param $line_pos Seek to this line
-     */    
-    function seek($line_pos){}
-}
-
-
-
-
-
-/** @brief seekable iterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.0
- *
- * Turns a normal iterator ino a seekable iterator. When there is a way
- * to seek on an iterator LimitIterator can use this to efficiently rewind
- * to offset.
- */
-interface SeekableIterator extends Iterator
-{
-    /** Seek to an absolute position
-     *
-     * \param $index position to seek to
-     * \return void
-     *
-     * The method should throw an exception if it is not possible to seek to 
-     * the given position. Typically this exception should be of type 
-     * OutOfBoundsException.
-     \code
-    function seek($index);
-        $this->rewind();
-        $position = 0;
-        while($position < $index && $this->valid()) {
-            $this->next();
-            $position++;
-        }
-        if (!$this->valid()) {
-            throw new OutOfBoundsException('Invalid seek position');
-        }
-    }
-     \endcode
-     */
-    function seek($index);
-}
-
-
-
-
-
-/**
- * @brief   Recursive regular expression filter for iterators
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- *
- * This filter iterator assumes that the inner iterator 
- */
-class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator
-{
-    /**
-     * Constructs a regular expression filter around an iterator whose 
-     * elemnts or keys are strings.
-     *
-     * @param it          inner iterator
-     * @param regex       the regular expression to match
-     * @param mode        operation mode (one of self::MATCH, self::GET_MATCH, 
-     *                    self::ALL_MATCHES, self::SPLIT)
-     * @param flags       special flags (self::USE_KEY)
-     * @param preg_flags  global PREG_* flags, see preg_match(), 
-     *                    preg_match_all(), preg_split()
-     */
-    function __construct(RecursiveIterator $it, $regex, $mode = 0, $flags = 0, $preg_flags = 0){}
-
-    /** @return whether the current element has children
-     */
-    function hasChildren(){}
-
-    /** @return an iterator for the current elements children
-     *
-     * @note the returned iterator will be of the same class as $this
-     */
-    function getChildren(){}
-    
-    private $ref;
-}
-
-
-
-
-
-/**
- * @brief   Abstract filter for iterators
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.0
- *
- * Instances of this class act as a filter around iterators. In other words 
- * you can put an iterator into the constructor and the instance will only 
- * return selected (accepted) elements.
- *
- * The only thing that needs to be done to make this work is implementing 
- * method accept(). Typically this invloves reading the current element or 
- * key of the inner Iterator and checking whether it is acceptable.
- */
-abstract class FilterIterator implements OuterIterator
-{
-    private $it;
-
-    /**
-     * Constructs a filter around another iterator.
-     *
-     * @param it     Iterator to filter
-     */
-    function __construct(Iterator $it){}
-
-    /**
-     * Rewind the inner iterator.
-     */
-    function rewind() {    
-        $this->it->rewind();
-        $this->fetch();
-    }
-
-    /**
-     * Accept function to decide whether an element of the inner iterator
-     * should be accessible through the Filteriterator.
-     *
-     * @return whether or not to expose the current element of the inner
-     *         iterator.
-     */
-    abstract function accept();
-
-    /**
-     * Fetch next element and store it.
+     * This method implements a sort algorithm that orders alphanumeric
+     * strings in the way a human being would while maintaining key/value
+     * associations. This is described as a "natural ordering".
      *
      * @return void
-     */
-    protected function fetch(){}
+     **/
+    function natcasesort() {}
 
     /**
-     * Move to next element
+     * This method implements a sort algorithm that orders alphanumeric
+     * strings in the way a human being would while maintaining key/value
+     * associations. This is described as a "natural ordering". An example of
+     * the difference between this algorithm and the regular computer string
+     * sorting algorithms (used in ArrayObject::asort) method can be seen in
+     * the example below.
      *
      * @return void
-     */
-    function next(){}
-    
-    /**
-     * @return Whether more elements are available
-     */
-    function valid(){}
-    
-    /**
-     * @return The current key
-     */
-    function key(){}
-    
-    /**
-     * @return The current value
-     */
-    function current(){}
-    
-    /**
-     * hidden __clone
-     */
-    protected function __clone(){}
+     **/
+    function natsort() {}
 
     /**
-     * @return The inner iterator
-     */    
-    function getInnerIterator(){}
+     * @param mixed
+     * @return bool
+     **/
+    function offsetExists($index) {}
 
-    /** Aggregate the inner iterator
+    /**
+     * @param mixed
+     * @return mixed
+     **/
+    function offsetGet($index) {}
+
+    /**
+     * Sets the value at the specified index to newval.
      *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
-     */
-    function __call($func, $params){}
-}
-
-
-
-
-
-/**
- * @brief   Limited Iteration over another Iterator
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.0
- *
- * A class that starts iteration at a certain offset and only iterates over
- * a specified amount of elements.
- *
- * This class uses SeekableIterator::seek() if available and rewind() plus
- * a skip loop otehrwise.
- */
-class LimitIterator implements OuterIterator
-{
-    private $it;
-    private $offset;
-    private $count;
-    private $pos;
-
-    /** Construct
-     *
-     * @param it     Iterator to limit
-     * @param offset Offset to first element
-     * @param count  Maximum number of elements to show or -1 for all
-     */
-    function __construct(Iterator $it, $offset = 0, $count = -1){}
-    
-    /** Seek to specified position
-     * @param position offset to seek to (relative to beginning not offset
-     *                 specified in constructor).
-     * @throw exception when position is invalid
-     */
-    function seek($position){}
-
-    /** Rewind to offset specified in constructor
-     */
-    function rewind(){}
-    
-    /** @return whether iterator is valid
-     */
-    function valid(){}
-    
-    /** @return current key
-     */
-    function key(){}
-
-    /** @return current element
-     */
-    function current(){}
-
-    /** Forward to nect element
-     */
-    function next(){}
-
-    /** @return current position relative to zero (not to offset specified in 
-     *          constructor).
-     */
-    function getPosition(){}
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function offsetSet($index, $newval) {}
 
     /**
-     * @return The inner iterator
-     */    
-    function getInnerIterator(){}
-
-    /** Aggregate the inner iterator
+     * Unsets the value at the specified index.
      *
-     * @param func    Name of method to invoke
-     * @param params  Array of parameters to pass to method
-     */
-    function __call($func, $params){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   A recursive array iterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- *
- * Passes the RecursiveIterator interface to the inner Iterator and provides
- * the same functionality as FilterIterator. This allows you to skip parents
- * and all their childs before loading them all. You need to care about
- * function getChildren() because it may not always suit your needs. The 
- * builtin behavior uses reflection to return a new instance of the exact same
- * class it is called from. That is you extend RecursiveFilterIterator and
- * getChildren() will create instance of that class. The problem is that doing
- * this does not transport any state or control information of your accept()
- * implementation to the new instance. To overcome this problem you might 
- * need to overwrite getChildren(), call this implementation and pass the
- * control vaules manually.
- */
-class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator
-{
-    /** @return whether the current element has children
-     */
-    function hasChildren(){}
-
-    /** @return an iterator for the current elements children
-     *
-     * @note the returned iterator will be of the same class as $this
-     */
-    function getChildren(){}
-    
-    private $ref;
-}
-
-
-
-
-
-/**
- * @brief   Iterates through recursive iterators
- * @author  Marcus Boerger
- * @version 1.2
- * @since PHP 5.0
- *
- * The objects of this class are created by instances of RecursiveIterator. 
- * Elements of those iterators may be traversable themselves. If so these 
- * sub elements are recursed into.
- */
-class RecursiveIteratorIterator implements OuterIterator
-{
-    /** Mode: Only show leaves */
-    const LEAVES_ONLY         = 0;
-    /** Mode: Show parents prior to their children */
-    const SELF_FIRST        = 1;
-    /** Mode: Show all children prior to their parent */
-    const CHILD_FIRST        = 2;
-
-    /** Flag: Catches exceptions during getChildren() calls and simply jumps
-     * to the next element. */
-    const CATCH_GET_CHILD    = 0x00000002;
-
-    private $ait = array();
-    private $count = 0;
-    private $mode  = self::LEAVES_ONLY;
-    private $flags = 0;
-
-    /** Construct from RecursiveIterator
-     *
-     * @param it     RecursiveIterator to iterate
-     * @param mode   Operation mode (one of):
-     *               - LEAVES_ONLY only show leaves
-     *               - SELF_FIRST  show parents prior to their childs
-     *               - CHILD_FIRST show all children prior to their parent
-     * @param flags  Control flags, zero or any combination of the following
-     *               (since PHP 5.1).
-     *               - CATCH_GET_CHILD which catches exceptions during
-     *                 getChildren() calls and simply jumps to the next 
-     *                 element.
-     */
-    function __construct(RecursiveIterator $it, $mode = self::LEAVES_ONLY, $flags = 0){}
-
-    /** Rewind to top iterator as set in constructor
-     */
-    function rewind(){}
-    
-    /** @return whether iterator is valid
-     */
-    function valid(){}
-    
-    /** @return current key
-     */
-    function key(){}
-    
-    /** @return current element
-     */
-    function current(){}
-    
-    /** Forward to next element
-     */
-    function next(){}
-
-    /** @return Sub Iterator at given level or if unspecified the current sub 
-     *          Iterator
-     */
-    function getSubIterator($level = NULL){}
+     * @param mixed
+     * @return void
+     **/
+    function offsetUnset($index) {}
 
     /**
-     * @return The inner iterator
-     */    
-    function getInnerIterator(){}
-
-    /** @return Current Depth (Number of parents)
-     */
-    function getDepth(){}
-
-    /** @return whether current sub iterators current element has children
-     * @since PHP 5.1
-     */
-    function callHasChildren(){}
-
-    /** @return current sub iterators current children
-     * @since PHP 5.1
-     */
-    function callGetChildren(){}
-
-    /** Called right after calling getChildren() and its rewind().
-     * @since PHP 5.1
-     */
-    function beginChildren(){}
-
-    private function callNextElement($after_move){}
-    
-    /** Called when the next element is available
-     */
-    function nextElement()
-    {
-    }
-}
-
-
-
-
-
-/**
- * @brief   Object storage
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1.2
- *
- * This container allows to store objects uniquly without the need to compare
- * them one by one. This is only possible internally. The code represenation
- * here therefore has a complexity of O(n) while the actual implementation has
- * complexity O(1).
- */
-class SplObjectStorage implements Iterator, Countable
-{
-    private $storage = array();
-    private $index = 0;
-
-    /** Rewind to top iterator as set in constructor
-     */
-    function rewind(){}
-    
-    /** @return whether iterator is valid
-     */
-    function valid(){}
-    
-    /** @return current key
-     */
-    function key(){}
-    
-    /** @return current object
-     */
-    function current(){}
-    
-    /** Forward to next element
-     */
-    function next(){}
-
-    /** @return number of objects in storage
-     */
-    function count(){}
-
-    /** @param obj object to look for
-     * @return whether $obj is contained in storage
-      */
-    function contains($obj){}
-
-    /** @param $obj new object to attach to storage if not yet contained
-     */
-    function attach($obj){}
-
-    /** @param $obj object to remove from storage
-     */
-    function detach($obj){}
-}
-
-
-
-
-
-/** @ingroup SPL
- * @brief   An infinite Iterator
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.1
- *
- * This Iterator takes another Iterator and infinitvely iterates it by
- * rewinding it when its end is reached.
- *
- * \note Even an InfiniteIterator stops if its inner Iterator is empty.
- *
- \verbatim
- $it       = new ArrayIterator(array(1,2,3));
- $infinite = new InfiniteIterator($it);
- $limit    = new LimitIterator($infinite, 0, 5);
- foreach($limit as $val=>$key)
- {
-     echo "$val=>$key\n";
- }
- \endverbatim
- */
-class InfiniteIterator extends IteratorIterator
-{
-    /** Move the inner Iterator forward to its next element or rewind it.
+     * Serializes an ArrayObject.
+     *
      * @return void
-     */
-    function next(){}
-}
+     **/
+    function serialize() {}
 
-
-
-
-
-/** @ingroup SPL
- * @brief   An empty Iterator
- * @author  Marcus Boerger
- * @version 1.0
- * @since PHP 5.1
- */
-class EmptyIterator implements Iterator
-{
-    /** No operation.
+    /**
+     * Set the flags that change the behavior of the ArrayObject.
+     *
+     * @param int
      * @return void
-     */
-    function rewind(){}
+     **/
+    function setFlags($flags) {}
 
-    /** @return \c false
-     */
-    function valid(){}
-
-    /** This function must not be called. It throws an exception upon access.
-     * @throw Exception
+    /**
+     * Sets the classname of the array iterator that is used by
+     * ArrayObject::getIterator().
+     *
+     * @param string
      * @return void
-     */
-    function current(){}
+     **/
+    function setIteratorClass($iterator_class) {}
 
-    /** This function must not be called. It throws an exception upon access.
-     * @throw Exception
+    /**
+     * This function sorts the entries such that keys maintain their
+     * correlation with the entry that they are associated with, using a
+     * user-defined comparison function.
+     * 
+     * This is used mainly when sorting associative arrays where the actual
+     * element order is significant.
+     *
+     * @param callback
      * @return void
-     */
-    function key(){}
+     **/
+    function uasort($cmp_function) {}
 
-    /** No operation.
+    /**
+     * This function sorts the keys of the entries using a user-supplied
+     * comparison function. The key to entry correlations will be maintained.
+     *
+     * @param callback
      * @return void
-     */
-    function next(){}
+     **/
+    function uksort($cmp_function) {}
+
+    /**
+     * Unserializes a serialized ArrayObject.
+     *
+     * @param string
+     * @return void
+     **/
+    function unserialize($serialized) {}
+
 }
-
-
-
-
-
-/**
- * @brief   Iterator to filter parents
- * @author  Marcus Boerger
- * @version 1.2
- * @since PHP 5.1
- *
- * This extended FilterIterator allows a recursive iteration using 
- * RecursiveIteratorIterator that only shows those elements which have 
- * children.
- */
-class ParentIterator extends RecursiveFilterIterator
-{
-    /** @return whetehr the current element has children
-     */
-    function accept(){}
+class BadFunctionCallException extends LogicException {
 }
-
-
-
-
-
-/** @ingroup SPL
- * @brief   An Iterator wrapper that doesn't call rewind
- * @author  Marcus Boerger
- * @version 1.1
- * @since PHP 5.1
- */
-class NoRewindIterator extends IteratorIterator
-{
-    /** Simply prevent execution of inner iterators rewind().
-     */
-    function rewind(){}
+class BadMethodCallException extends BadFunctionCallException {
 }
+class CachingIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator, ArrayAccess, Countable {
+    const CALL_TOSTRING = 0;
+    const CATCH_GET_CHILD = 0;
+    /**
+     * May return the number of elements in the iterator.
+     *
+     * @return void
+     **/
+    function count() {}
 
+    /**
+     * May return the current element in the iteration.
+     *
+     * @return void
+     **/
+    function current() {}
+
+    /**
+     * @return void
+     **/
+    function getCache() {}
+
+    /**
+     * Get the bitmask of the flags used for this CachingIterator instance.
+     *
+     * @return void
+     **/
+    function getFlags() {}
+
+    /**
+     * Returns the iterator sent to the constructor.
+     *
+     * @return void
+     **/
+    function getInnerIterator() {}
+
+    /**
+     * @return void
+     **/
+    function hasNext() {}
+
+    /**
+     * This method may return a key for the current element.
+     *
+     * @return void
+     **/
+    function key() {}
+
+    /**
+     * Move the iterator forward.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @param string
+     * @return void
+     **/
+    function offsetExists($index) {}
+
+    /**
+     * @param string
+     * @return void
+     **/
+    function offsetGet($index) {}
+
+    /**
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function offsetSet($index, $newval) {}
+
+    /**
+     * @param string
+     * @return void
+     **/
+    function offsetUnset($index) {}
+
+    /**
+     * Rewind the iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Set the flags for the CachingIterator object.
+     *
+     * @param bitmask
+     * @return void
+     **/
+    function setFlags($flags) {}
+
+    /**
+     * Check whether the current element is valid.
+     *
+     * @return void
+     **/
+    function valid() {}
+
+    /**
+     * @param Iterator
+     * @param string
+     **/
+    function __construct($iterator, $flags) {}
+
+    /**
+     * Get the string representation of the current element.
+     *
+     * @return void
+     **/
+    function __toString() {}
+
+}
 class Cairo {
     /**
      * Returns an array with the available font backends
@@ -4348,6 +2747,16 @@ class Collator {
     function sortWithSortKeys(&$arr) {}
 
 }
+interface Countable {
+    /**
+     * This method is executed when using the count function on an object
+     * implementing Countable.
+     *
+     * @return int
+     **/
+    function count() {}
+
+}
 class DateInterval {
     /**
      * Uses the normal date parsers and sets up a DateInterval from the
@@ -4625,6 +3034,205 @@ class Directory {
      **/
     function read() {}
 
+}
+class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, SeekableIterator {
+    /**
+     * Get the current DirectoryIterator item.
+     *
+     * @return DirectoryIterator
+     **/
+    function current() {}
+
+    /**
+     * Get the last access time of the current DirectoryIterator item.
+     *
+     * @return int
+     **/
+    function getATime() {}
+
+    /**
+     * Get the base name of the current DirectoryIterator item.
+     *
+     * @param string
+     * @return string
+     **/
+    function getBasename($suffix) {}
+
+    /**
+     * Get the inode change time for the current DirectoryIterator item.
+     *
+     * @return int
+     **/
+    function getCTime() {}
+
+    /**
+     * Get the file name of the current DirectoryIterator item.
+     *
+     * @return string
+     **/
+    function getFilename() {}
+
+    /**
+     * Get the group id of the file.
+     *
+     * @return int
+     **/
+    function getGroup() {}
+
+    /**
+     * Get the inode number for the current DirectoryIterator item.
+     *
+     * @return int
+     **/
+    function getInode() {}
+
+    /**
+     * Get the last modification time of the current DirectoryIterator item,
+     * as a Unix timestamp.
+     *
+     * @return int
+     **/
+    function getMTime() {}
+
+    /**
+     * Get the owner of the current DirectoryIterator item, in numerical
+     * format.
+     *
+     * @return int
+     **/
+    function getOwner() {}
+
+    /**
+     * Get the path to the current DirectoryIterator item.
+     *
+     * @return string
+     **/
+    function getPath() {}
+
+    /**
+     * Get the path and file name of the current file.
+     *
+     * @return string
+     **/
+    function getPathname() {}
+
+    /**
+     * Get the permissions of the current DirectoryIterator item.
+     *
+     * @return int
+     **/
+    function getPerms() {}
+
+    /**
+     * Get the file size for the current DirectoryIterator item.
+     *
+     * @return int
+     **/
+    function getSize() {}
+
+    /**
+     * Determines which file type the current DirectoryIterator item belongs
+     * to. One of file, link, or dir.
+     *
+     * @return string
+     **/
+    function getType() {}
+
+    /**
+     * Determines if the current DirectoryIterator item is a directory.
+     *
+     * @return bool
+     **/
+    function isDir() {}
+
+    /**
+     * Determines if the current DirectoryIterator item is a directory and
+     * either . or ...
+     *
+     * @return bool
+     **/
+    function isDot() {}
+
+    /**
+     * Determines if the current DirectoryIterator item is executable.
+     *
+     * @return bool
+     **/
+    function isExecutable() {}
+
+    /**
+     * Determines if the current DirectoryIterator item is a regular file.
+     *
+     * @return bool
+     **/
+    function isFile() {}
+
+    /**
+     * Determines if the current DirectoryIterator item is a symbolic link.
+     *
+     * @return bool
+     **/
+    function isLink() {}
+
+    /**
+     * Determines if the current DirectoryIterator item is readable.
+     *
+     * @return bool
+     **/
+    function isReadable() {}
+
+    /**
+     * Determines if the current DirectoryIterator item is writable.
+     *
+     * @return bool
+     **/
+    function isWritable() {}
+
+    /**
+     * Get the key for the current DirectoryIterator item.
+     *
+     * @return string
+     **/
+    function key() {}
+
+    /**
+     * Move forward to the next DirectoryIterator item.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewind the DirectoryIterator back to the start.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Seek to a given position in the DirectoryIterator.
+     *
+     * @param int
+     * @return void
+     **/
+    function seek($position) {}
+
+    /**
+     * Check whether current DirectoryIterator position is a valid file.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Get the file name of the current DirectoryIterator item.
+     *
+     * @return string
+     **/
+    function __toString() {}
+
+}
+class DomainException extends LogicException {
 }
 class DOMAttr extends DOMNode {
     /**
@@ -6341,6 +4949,43 @@ class DomXsltStylesheet {
     function result_dump_mem($xmldoc) {}
 
 }
+class EmptyIterator implements Iterator, Traversable {
+    /**
+     * This function must not be called. It throws an exception upon access.
+     *
+     * @return void
+     **/
+    function current() {}
+
+    /**
+     * This function must not be called. It throws an exception upon access.
+     *
+     * @return void
+     **/
+    function key() {}
+
+    /**
+     * No operation, nothing to do.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * No operation, nothing to do.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * The EmptyIterator valid() method.
+     *
+     * @return void
+     **/
+    function valid() {}
+
+}
 class ErrorException extends Exception {
     /**
      * Returns the severity of the exception.
@@ -6348,6 +4993,72 @@ class ErrorException extends Exception {
      * @return int
      **/
     function getSeverity() {}
+
+}
+class Exception extends Exception {
+    /**
+     * Returns the Exception code.
+     *
+     * @return int
+     **/
+    function getCode() {}
+
+    /**
+     * Get the name of the file the exception was thrown from.
+     *
+     * @return string
+     **/
+    function getFile() {}
+
+    /**
+     * Returns line number where the exception was thrown.
+     *
+     * @return int
+     **/
+    function getLine() {}
+
+    /**
+     * Returns the Exception message.
+     *
+     * @return string
+     **/
+    function getMessage() {}
+
+    /**
+     * Returns previous Exception (the third parameter of
+     * Exception::__construct).
+     *
+     * @return Exception
+     **/
+    function getPrevious() {}
+
+    /**
+     * Returns the Exception stack trace.
+     *
+     * @return array
+     **/
+    function getTrace() {}
+
+    /**
+     * Returns the Exception stack trace as a string.
+     *
+     * @return string
+     **/
+    function getTraceAsString() {}
+
+    /**
+     * Tries to clone the Exception, which results in Fatal error.
+     *
+     * @return void
+     **/
+    function __clone() {}
+
+    /**
+     * Returns the string representation of the exception.
+     *
+     * @return string
+     **/
+    function __toString() {}
 
 }
 class FilesystemIterator extends DirectoryIterator implements SeekableIterator, Traversable, Iterator {
@@ -59154,6 +57865,23 @@ class ImagickPixelIterator {
     function __construct($wand) {}
 
 }
+class InfiniteIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
+    /**
+     * Moves the inner Iterator forward to its next element if there is one,
+     * otherwise rewinds the inner Iterator back to the beginning.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Constructs an InfiniteIterator from an Iterator.
+     *
+     * @param Iterator
+     **/
+    function __construct($iterator) {}
+
+}
 class IntlDateFormatter {
     /**
      * Create a date formatter
@@ -59296,6 +58024,106 @@ class IntlDateFormatter {
      * @return bool
      **/
     function setTimeZoneId($zone) {}
+
+}
+class InvalidArgumentException extends LogicException {
+}
+interface Iterator extends Traversable {
+    /**
+     * Returns the current element.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * Returns the key of the current element.
+     *
+     * @return scalar
+     **/
+    function key() {}
+
+    /**
+     * Moves the current position to the next element.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds back to the first element of the Iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * This method is called after Iterator::rewind and Iterator::next to
+     * check if the current position is valid.
+     *
+     * @return boolean
+     **/
+    function valid() {}
+
+}
+interface IteratorAggregate extends Traversable {
+    /**
+     * Returns an external iterator.
+     *
+     * @return Traversable
+     **/
+    function getIterator() {}
+
+}
+class IteratorIterator implements Iterator, Traversable, OuterIterator {
+    /**
+     * Get the value of the current element.
+     *
+     * @return void
+     **/
+    function current() {}
+
+    /**
+     * Get the inner iterator.
+     *
+     * @return void
+     **/
+    function getInnerIterator() {}
+
+    /**
+     * Get the key of the current element.
+     *
+     * @return void
+     **/
+    function key() {}
+
+    /**
+     * Forward to the next element.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds to the first element.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Checks if the iterator is valid.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Creates an iterator from anything that is traversable.
+     *
+     * @param Traversable
+     **/
+    function __construct($iterator) {}
 
 }
 class KTaglib_ID3v2_AttachedPictureFrame {
@@ -59588,7 +58416,74 @@ class KTaglib_Tag extends KTagLib_Tag {
     function isEmpty() {}
 
 }
+class LengthException extends LogicException {
+}
 class libXMLError {
+}
+class LimitIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
+    /**
+     * Gets the current element.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * Gets the inner iterator.
+     *
+     * @return Iterator
+     **/
+    function getInnerIterator() {}
+
+    /**
+     * @return int
+     **/
+    function getPosition() {}
+
+    /**
+     * Gets the current key
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Moves the iterator forward.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds the iterator to the specified starting offset.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * @param int
+     * @return void
+     **/
+    function seek($position) {}
+
+    /**
+     * Checks whether the current element is valid.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Constructs a new LimitIterator, which consists of a passed in iterator
+     * with limits applied to it.
+     *
+     * @param Iterator
+     * @param string
+     * @param string
+     **/
+    function __construct($iterator, $offset, $count) {}
+
 }
 class Locale {
     /**
@@ -59750,6 +58645,8 @@ class Locale {
      **/
     function setDefault($locale) {}
 
+}
+class LogicException extends Exception {
 }
 class maxdb {
     /**
@@ -63084,6 +61981,57 @@ class mysqli_warning {
     function __construct() {}
 
 }
+class NoRewindIterator extends IteratorIterator {
+    /**
+     * Gets the current value.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * Gets the inner iterator, that was passed in to NoRewindIterator.
+     *
+     * @return iterator
+     **/
+    function getInnerIterator() {}
+
+    /**
+     * Gets the current key.
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * Forwards to the next element.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Prevents the rewind operation on the inner iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Checks whether the iterator is valid.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Constructs a NoRewindIterator.
+     *
+     * @param Iterator
+     **/
+    function __construct($iterator) {}
+
+}
 class Normalizer {
     /**
      * Checks if the provided string is already in the specified
@@ -63390,6 +62338,65 @@ class OAuth {
 
 }
 class OAuthException extends Exception {
+}
+interface OuterIterator extends Iterator {
+    /**
+     * Returns the inner iterator for the current iterator entry.
+     *
+     * @return Iterator
+     **/
+    function getInnerIterator() {}
+
+}
+class OutOfBoundsException extends RuntimeException {
+}
+class OutOfRangeException extends LogicException {
+}
+class OverflowException extends RuntimeException {
+}
+class ParentIterator extends RecursiveFilterIterator implements RecursiveIterator, OuterIterator, Traversable, Iterator {
+    /**
+     * Determines if the the current element has children.
+     *
+     * @return bool
+     **/
+    function accept() {}
+
+    /**
+     * Get the inner iterator's children contained in a ParentIterator.
+     *
+     * @return ParentIterator
+     **/
+    function getChildren() {}
+
+    /**
+     * Check whether the inner iterator's current element has children.
+     *
+     * @return bool
+     **/
+    function hasChildren() {}
+
+    /**
+     * Moves the iterator forward.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds the iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Constructs a ParentIterator on an iterator.
+     *
+     * @param RecursiveIterator
+     **/
+    function __construct($iterator) {}
+
 }
 class PDO {
     const ATTR_AUTOCOMMIT = 0;
@@ -65203,69 +64210,7 @@ class PharFileInfo extends SplFileInfo {
     function __construct($entry) {}
 
 }
-class RarArchive implements Traversable {
-    /**
-     * Close RAR archive and free all allocated resources.
-     *
-     * @return bool
-     **/
-    function close() {}
-
-    /**
-     * Get the (global) comment stored in the RAR archive. It may be up to 64
-     * KiB long.
-     *
-     * @return string
-     **/
-    function getComment() {}
-
-    /**
-     * Get entry object (file or directory) from the RAR archive.
-     *
-     * @param string
-     * @return RarEntry
-     **/
-    function getEntry($entryname) {}
-
-    /**
-     * Check whether the RAR archive is solid. Individual file extraction is
-     * slower on solid archives.
-     *
-     * @return bool
-     **/
-    function isSolid() {}
-
-    /**
-     * Get entries list (files and directories) from the RAR archive.
-     *
-     * @return array
-     **/
-    function list() {}
-
-    /**
-     * Open specified RAR archive and return RarArchive instance representing
-     * it.
-     *
-     * @param string
-     * @param string
-     * @return RarArchive
-     **/
-    function open($filename, $password) {}
-
-    /**
-     * Provides a string representation for this RarArchive object. It
-     * currently shows the full path name of the archive volume that was
-     * opened and whether the resource is valid or was already closed through
-     * a call to RarArchive::close.
-     * 
-     * This method may be used only for debugging purposes, as there are no
-     * guarantees as to which information the result contains or how it is
-     * formatted.
-     *
-     * @return void
-     **/
-    function __toString() {}
-
+class RangeException extends RuntimeException {
 }
 class RarEntry {
     /**
@@ -65323,6 +64268,94 @@ class RarException extends Exception {
     function setUsingExceptions($using_exceptions) {}
 
 }
+class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator {
+    /**
+     * Returns an iterator for the current iterator entry.
+     *
+     * @return RecursiveArrayIterator
+     **/
+    function getChildren() {}
+
+    /**
+     * Returns whether current entry is an array or an object for which an
+     * iterator can be obtained via RecursiveArrayIterator::getChildren.
+     *
+     * @return bool
+     **/
+    function hasChildren() {}
+
+}
+class RecursiveCachingIterator extends CachingIterator implements Countable, ArrayAccess, Iterator, Traversable, OuterIterator, RecursiveIterator {
+    /**
+     * @return RecursiveCachingIterator
+     **/
+    function getChildren() {}
+
+    /**
+     * @return bool
+     **/
+    function hasChildren() {}
+
+    /**
+     * Constructs a new RecursiveCachingIterator, which consists of a passed
+     * in iterator.
+     *
+     * @param Iterator
+     * @param string
+     **/
+    function __construct($iterator, $flags) {}
+
+}
+class RecursiveDirectoryIterator extends DirectoryIterator implements Traversable, Iterator, RecursiveIterator {
+    /**
+     * @return object
+     **/
+    function getChildren() {}
+
+    /**
+     * Gets the sub path.
+     *
+     * @return string
+     **/
+    function getSubPath() {}
+
+    /**
+     * Gets the sub path and filename.
+     *
+     * @return string
+     **/
+    function getSubPathname() {}
+
+    /**
+     * @param bool
+     * @return bool
+     **/
+    function hasChildren($allow_links) {}
+
+    /**
+     * @return string
+     **/
+    function key() {}
+
+    /**
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Constructs a RecursiveDirectoryIterator.
+     *
+     * @param string
+     * @param string
+     **/
+    function __construct($path, $flags) {}
+
+}
 class RecursiveFilterIterator extends FilterIterator implements Iterator, Traversable, OuterIterator, RecursiveIterator {
     /**
      * Return the inner iterator's children contained in a
@@ -65345,6 +64378,163 @@ class RecursiveFilterIterator extends FilterIterator implements Iterator, Traver
      * @param RecursiveIterator
      **/
     function __construct($iterator) {}
+
+}
+interface RecursiveIterator extends Iterator {
+    /**
+     * Returns an iterator for the current iterator entry.
+     *
+     * @return RecursiveIterator
+     **/
+    function getChildren() {}
+
+    /**
+     * Returns if an iterator can be created fot the current entry.
+     * RecursiveIterator::getChildren.
+     *
+     * @return bool
+     **/
+    function hasChildren() {}
+
+}
+class RecursiveIteratorIterator implements OuterIterator, Traversable, Iterator {
+    const CHILD_FIRST = 0;
+    const LEAVES_ONLY = 0;
+    const SELF_FIRST = 0;
+    /**
+     * Is called after calling RecursiveIteratorIterator::getChildren, and
+     * its associated RecursiveIteratorIterator::rewind.
+     *
+     * @return void
+     **/
+    function beginChildren() {}
+
+    /**
+     * Called when iteration begins (after the first
+     * RecursiveIteratorIterator::rewind call.
+     *
+     * @return void
+     **/
+    function beginIteration() {}
+
+    /**
+     * Get children of the current element.
+     *
+     * @return RecursiveIterator
+     **/
+    function callGetChildren() {}
+
+    /**
+     * Called for each element to test whether it has children.
+     *
+     * @return bool
+     **/
+    function callHasChildren() {}
+
+    /**
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * Called when end recursing one level.
+     *
+     * @return void
+     **/
+    function endChildren() {}
+
+    /**
+     * Called when the iteration ends (when RecursiveIteratorIterator::valid
+     * first returns .
+     *
+     * @return void
+     **/
+    function endIteration() {}
+
+    /**
+     * @return int
+     **/
+    function getDepth() {}
+
+    /**
+     * Gets the current active sub iterator.
+     *
+     * @return iterator
+     **/
+    function getInnerIterator() {}
+
+    /**
+     * Gets the maximum allowable depth.
+     *
+     * @return mixed
+     **/
+    function getMaxDepth() {}
+
+    /**
+     * @return RecursiveIterator
+     **/
+    function getSubIterator() {}
+
+    /**
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Called when the next element is available.
+     *
+     * @return void
+     **/
+    function nextElement() {}
+
+    /**
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Set the maximum allowed depth.
+     *
+     * @param string
+     * @return void
+     **/
+    function setMaxDepth($max_depth) {}
+
+    /**
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Creates a RecursiveIteratorIterator from a RecursiveIterator.
+     *
+     * @param Traversable
+     * @param int
+     * @param int
+     **/
+    function __construct($iterator, $mode, $flags) {}
+
+}
+class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator {
+    /**
+     * Returns an iterator for the current iterator entry.
+     *
+     * @return RecursiveRegexIterator
+     **/
+    function getChildren() {}
+
+    /**
+     * Returns whether an iterator can be obtained for the current entry.
+     * This iterator can be obtained via RecursiveRegexIterator::getChildren.
+     *
+     * @return bool
+     **/
+    function hasChildren() {}
 
 }
 class RecursiveTreeIterator extends RecursiveIteratorIterator implements OuterIterator, Traversable, Iterator {
@@ -66515,6 +65705,63 @@ class Reflector {
     function __toString() {}
 
 }
+class RegexIterator extends FilterIterator {
+    /**
+     * Match (string) RegexIterator::current against a regular expression.
+     *
+     * @return bool
+     **/
+    function accept() {}
+
+    /**
+     * Returns the special flags, see RegexIterator::setFlags for the list of
+     * special flags.
+     *
+     * @return int
+     **/
+    function getFlags() {}
+
+    /**
+     * Returns the operation mode, see RegexIterator::setMode for the list of
+     * operation modes.
+     *
+     * @return int
+     **/
+    function getMode() {}
+
+    /**
+     * Returns the special flags, see RegexIterator::__construct for the list
+     * of flags.
+     *
+     * @return int
+     **/
+    function getPregFlags() {}
+
+    /**
+     * Sets the special flags.
+     *
+     * @param int
+     * @return void
+     **/
+    function setFlags($flags) {}
+
+    /**
+     * Sets the operation mode.
+     *
+     * @param int
+     * @return void
+     **/
+    function setMode($mode) {}
+
+    /**
+     * Sets the regular expression flags.
+     *
+     * @param int
+     * @return void
+     **/
+    function setPregFlags($preg_flags) {}
+
+}
 class ResourceBundle {
     /**
      * Get the number of elements in the bundle.
@@ -66750,6 +65997,8 @@ class Runkit_Sandbox_Parent {
      **/
     function __construct() {}
 
+}
+class RuntimeException extends Exception {
 }
 class SAMConnection {
     /**
@@ -67794,6 +67043,33 @@ class SDO_Sequence {
     function move($toIndex, $fromIndex) {}
 
 }
+interface SeekableIterator extends Iterator {
+    /**
+     * Seeks to a given position in the iterator.
+     *
+     * @param int
+     * @return void
+     **/
+    function seek($position) {}
+
+}
+interface Serializable {
+    /**
+     * Should return the string representation of the object.
+     *
+     * @return string
+     **/
+    function serialize() {}
+
+    /**
+     * Called during unserialization of the object.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function unserialize($serialized) {}
+
+}
 class SimpleXMLElement {
     /**
      * Adds an attribute to the SimpleXML element.
@@ -67889,6 +67165,61 @@ class SimpleXMLElement {
      * @return array
      **/
     function xpath($path) {}
+
+}
+class SimpleXMLIterator extends SimpleXMLElement implements RecursiveIterator, Traversable, Iterator, Countable {
+    /**
+     * This method returns the current element as a SimpleXMLIterator object
+     * or .
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * This method returns a SimpleXMLIterator object containing sub-elements
+     * of the current SimpleXMLIterator element.
+     *
+     * @return object
+     **/
+    function getChildren() {}
+
+    /**
+     * This method checks whether the current SimpleXMLIterator element has
+     * sub-elements.
+     *
+     * @return bool
+     **/
+    function hasChildren() {}
+
+    /**
+     * This method gets the XML tag name of the current element.
+     *
+     * @return mixed
+     **/
+    function key() {}
+
+    /**
+     * This method moves the SimpleXMLIterator to the next element.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * This method rewinds the SimpleXMLIterator to the first element.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * This method checks if the current element is valid after calls to
+     * SimpleXMLIterator::rewind or SimpleXMLIterator::next.
+     *
+     * @return bool
+     **/
+    function valid() {}
 
 }
 class SoapClient {
@@ -71002,6 +70333,469 @@ class SplDoublyLinkedList implements Iterator, ArrayAccess, Countable {
 }
 class SplEnum {
 }
+class SplFileInfo {
+    /**
+     * Gets the last access time for the file.
+     *
+     * @return int
+     **/
+    function getATime() {}
+
+    /**
+     * This method returns the base name of the file, directory, or link
+     * without path info.
+     *
+     * @param string
+     * @return string
+     **/
+    function getBasename($suffix) {}
+
+    /**
+     * Returns the inode change time for the file. The time returned is a
+     * Unix timestamp.
+     *
+     * @return int
+     **/
+    function getCTime() {}
+
+    /**
+     * This method gets an SplFileInfo object for the referenced file.
+     *
+     * @param string
+     * @return SplFileInfo
+     **/
+    function getFileInfo($class_name) {}
+
+    /**
+     * Gets the filename without any path information.
+     *
+     * @return string
+     **/
+    function getFilename() {}
+
+    /**
+     * Gets the file group. The group ID is returned in numerical format.
+     *
+     * @return int
+     **/
+    function getGroup() {}
+
+    /**
+     * Gets the inode number for the filesystem object.
+     *
+     * @return int
+     **/
+    function getInode() {}
+
+    /**
+     * Gets the target of a filesystem link.
+     *
+     * @return string
+     **/
+    function getLinkTarget() {}
+
+    /**
+     * Returns the time when the contents of the file were changed. The time
+     * returned is a Unix timestamp.
+     *
+     * @return int
+     **/
+    function getMTime() {}
+
+    /**
+     * Gets the file owner. The owner ID is returned in numerical format.
+     *
+     * @return int
+     **/
+    function getOwner() {}
+
+    /**
+     * Returns the path to the file, omitting the filename and any trailing
+     * slash.
+     *
+     * @return string
+     **/
+    function getPath() {}
+
+    /**
+     * Gets an SplFileInfo object for the parent of the current file.
+     *
+     * @param string
+     * @return SplFileInfo
+     **/
+    function getPathInfo($class_name) {}
+
+    /**
+     * Returns the path to the file.
+     *
+     * @return string
+     **/
+    function getPathname() {}
+
+    /**
+     * Gets the file permissions for the file.
+     *
+     * @return int
+     **/
+    function getPerms() {}
+
+    /**
+     * This method expands all symbolic links, resolves relative references
+     * and returns the real path to the file.
+     *
+     * @return string
+     **/
+    function getRealPath() {}
+
+    /**
+     * Returns the filesize in bytes for the file referenced.
+     *
+     * @return int
+     **/
+    function getSize() {}
+
+    /**
+     * Returns the type of the file referenced.
+     *
+     * @return string
+     **/
+    function getType() {}
+
+    /**
+     * This method can be used to determine if the file is a directory.
+     *
+     * @return bool
+     **/
+    function isDir() {}
+
+    /**
+     * Checks if the file is executable.
+     *
+     * @return bool
+     **/
+    function isExecutable() {}
+
+    /**
+     * Checks if the file referenced by this SplFileInfo object exists and is
+     * a regular file.
+     *
+     * @return bool
+     **/
+    function isFile() {}
+
+    /**
+     * Use this method to check if the file referenced by the SplFileInfo
+     * object is a link.
+     *
+     * @return bool
+     **/
+    function isLink() {}
+
+    /**
+     * Check if the file is readable.
+     *
+     * @return bool
+     **/
+    function isReadable() {}
+
+    /**
+     * Checks if the current entry is writable.
+     *
+     * @return bool
+     **/
+    function isWritable() {}
+
+    /**
+     * Creates an SplFileObject object of the file. This is useful because
+     * SplFileObject contains additional methods for manipulating the file
+     * whereas SplFileInfo is only useful for gaining information, like
+     * whether the file is writable.
+     *
+     * @param string
+     * @param bool
+     * @param resource
+     * @return SplFileObject
+     **/
+    function openFile($open_mode, $use_include_path, $context) {}
+
+    /**
+     * Set the class name which SplFileInfo will use to open files with when
+     * openFile() is called. The class name passed to this method must be
+     * derived from SplFileObject.
+     *
+     * @param string
+     * @return void
+     **/
+    function setFileClass($class_name) {}
+
+    /**
+     * Use this method to set a custom class which will be used when
+     * getFileInfo and getPathInfo are called. The class name passed to this
+     * method must be derived from SplFileInfo.
+     *
+     * @param string
+     * @return void
+     **/
+    function setInfoClass($class_name) {}
+
+    /**
+     * Creates a new SplFileInfo object for the file_name specified. The file
+     * does not need to exist, or be readable.
+     *
+     * @param string
+     **/
+    function __construct($file_name) {}
+
+    /**
+     * This method will return the file name of the referenced file.
+     *
+     * @return void
+     **/
+    function __toString() {}
+
+}
+class SplFileObject extends SplFileInfo implements RecursiveIterator, Traversable, Iterator, SeekableIterator {
+    /**
+     * Retrieves the current line of the file.
+     *
+     * @return string|array
+     **/
+    function current() {}
+
+    /**
+     * Determine whether the end of file has been reached
+     *
+     * @return boolean
+     **/
+    function eof() {}
+
+    /**
+     * Forces a write of all buffered output to the file.
+     *
+     * @return boolean
+     **/
+    function fflush() {}
+
+    /**
+     * Gets a character from the file.
+     *
+     * @return string
+     **/
+    function fgetc() {}
+
+    /**
+     * Gets a line from the file which is in CSV format and returns an array
+     * containing the fields read.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return array
+     **/
+    function fgetcsv($delimiter, $enclosure, $escape) {}
+
+    /**
+     * Gets a line from the file.
+     *
+     * @return string
+     **/
+    function fgets() {}
+
+    /**
+     * Identical to SplFileObject::fgets, except that SplFileObject::fgetss
+     * attempts to strip any HTML and PHP tags from the text it reads.
+     *
+     * @param string
+     * @return string
+     **/
+    function fgetss($allowable_tags) {}
+
+    /**
+     * Locks or unlocks the file in the same portable way as flock.
+     *
+     * @param int
+     * @param int
+     * @return bool
+     **/
+    function flock($operation, &$wouldblock) {}
+
+    /**
+     * Reads to EOF on the given file pointer from the current position and
+     * writes the results to the output buffer.
+     * 
+     * You may need to call SplFileObject::rewind to reset the file pointer
+     * to the beginning of the file if you have already written data to the
+     * file.
+     *
+     * @return int
+     **/
+    function fpassthru() {}
+
+    /**
+     * Reads a line from the file and interprets it according to the
+     * specified format, which is described in the documentation for sprintf.
+     * 
+     * Any whitespace in the format string matches any whitespace in the line
+     * from the file. This means that even a tab \t in the format string can
+     * match a single space character in the input stream.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function fscanf($format) {}
+
+    /**
+     * Seek to a position in the file measured in bytes from the beginning of
+     * the file, obtained by adding offset to the position specified by
+     * whence.
+     *
+     * @param int
+     * @param int
+     * @return int
+     **/
+    function fseek($offset, $whence) {}
+
+    /**
+     * Gathers the statistics of the file. Behaves identically to fstat.
+     *
+     * @return array
+     **/
+    function fstat() {}
+
+    /**
+     * Returns the position of the file pointer which represents the current
+     * offset in the file stream.
+     *
+     * @return int
+     **/
+    function ftell() {}
+
+    /**
+     * Truncates the file to size bytes.
+     *
+     * @param int
+     * @return bool
+     **/
+    function ftruncate($size) {}
+
+    /**
+     * Writes the contents of string to the file
+     *
+     * @param string
+     * @param int
+     * @return int
+     **/
+    function fwrite($str, $length) {}
+
+    /**
+     * An SplFileObject does not have children so this method returns .
+     *
+     * @return void
+     **/
+    function getChildren() {}
+
+    /**
+     * Gets the delimiter and enclosure character used for parsing CSV
+     * fields.
+     *
+     * @return array
+     **/
+    function getCsvControl() {}
+
+    /**
+     * Gets the flags set for an instance of SplFileObject as an integer.
+     *
+     * @return int
+     **/
+    function getFlags() {}
+
+    /**
+     * Gets the maximum line length as set by SplFileObject::setMaxLineLen.
+     *
+     * @return int
+     **/
+    function getMaxLineLen() {}
+
+    /**
+     * An SplFileObject does not have children so this method always return .
+     *
+     * @return bool
+     **/
+    function hasChildren() {}
+
+    /**
+     * Gets the current line number.
+     *
+     * @return int
+     **/
+    function key() {}
+
+    /**
+     * Moves ahead to the next line in the file.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds the file back to the first line.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Seek to specified line in the file.
+     *
+     * @param int
+     * @return void
+     **/
+    function seek($line_pos) {}
+
+    /**
+     * Sets the delimiter and enclosure character for parsing CSV fields.
+     *
+     * @param string
+     * @param string
+     * @param string
+     * @return void
+     **/
+    function setCsvControl($delimiter, $enclosure, $escape) {}
+
+    /**
+     * Sets the flags to be used by the SplFileObject.
+     *
+     * @param int
+     * @return void
+     **/
+    function setFlags($flags) {}
+
+    /**
+     * Sets the maximum length of a line to be read.
+     *
+     * @param int
+     * @return void
+     **/
+    function setMaxLineLen($max_len) {}
+
+    /**
+     * Check whether EOF has been reached.
+     *
+     * @return bool
+     **/
+    function valid() {}
+
+    /**
+     * Construct a new file object.
+     *
+     * @param string
+     * @param string
+     * @param bool
+     * @param resource
+     **/
+    function __construct($filename, $open_mode, $use_include_path, $context) {}
+
+}
 class SplFixedArray implements Iterator, ArrayAccess, Countable {
     /**
      * Returns the size of the array.
@@ -71217,6 +71011,169 @@ class SplMinHeap extends SplHeap implements Iterator, Countable {
     function compare($value1, $value2) {}
 
 }
+class SplObjectStorage implements Countable, Iterator, Traversable, Serializable, ArrayAccess {
+    /**
+     * Adds all objects-data pairs from a different storage in the current
+     * storage.
+     *
+     * @param SplObjectStorage
+     * @return void
+     **/
+    function addAll($storage) {}
+
+    /**
+     * Adds an object inside the storage, and optionaly associate it to some
+     * data.
+     *
+     * @param object
+     * @param mixed
+     * @return void
+     **/
+    function attach($object, $data) {}
+
+    /**
+     * Checks if the storage contains the object provided.
+     *
+     * @param object
+     * @return boolean
+     **/
+    function contains($object) {}
+
+    /**
+     * Counts the number of objects in the storage.
+     *
+     * @return int
+     **/
+    function count() {}
+
+    /**
+     * Returns the current storage entry.
+     *
+     * @return object
+     **/
+    function current() {}
+
+    /**
+     * Removes the object from the storage.
+     *
+     * @param object
+     * @return void
+     **/
+    function detach($object) {}
+
+    /**
+     * Returns the data, or info, associated with the object pointed by the
+     * current iterator position.
+     *
+     * @return mixed
+     **/
+    function getInfo() {}
+
+    /**
+     * Returns the index at which the iterator currently is.
+     *
+     * @return int
+     **/
+    function key() {}
+
+    /**
+     * Moves the iterator to the next object in the storage.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Checks whether an object exists in the storage.
+     *
+     * @param object
+     * @return boolean
+     **/
+    function offsetExists($object) {}
+
+    /**
+     * Returns the data associated with an object in the storage.
+     *
+     * @param object
+     * @return mixed
+     **/
+    function offsetGet($object) {}
+
+    /**
+     * Associate data to an object in the storage.
+     *
+     * @param object
+     * @param mixed
+     * @return void
+     **/
+    function offsetSet($object, $info) {}
+
+    /**
+     * Removes an object from the storage.
+     *
+     * @param object
+     * @return void
+     **/
+    function offsetUnset($object) {}
+
+    /**
+     * Removes objects contained in another storage from the current storage.
+     *
+     * @param SplObjectStorage
+     * @return void
+     **/
+    function removeAll($storage) {}
+
+    /**
+     * Rewind the iterator to the first storage element.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * Returns a string representation of the storage.
+     *
+     * @return string
+     **/
+    function serialize() {}
+
+    /**
+     * Associates data, or info, with the object currently pointed to by the
+     * iterator.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function setInfo($data) {}
+
+    /**
+     * Unserializes storage entries and attach them to the current storage.
+     *
+     * @param string
+     * @return void
+     **/
+    function unserialize($serialized) {}
+
+    /**
+     * Returns if the current iterator entry is valid.
+     *
+     * @return boolean
+     **/
+    function valid() {}
+
+}
+interface SplObserver {
+    /**
+     * This method is called when any SplSubject to which the observer is
+     * attached calls SplSubject::notify.
+     *
+     * @param SplSubject
+     * @return void
+     **/
+    function update($subject) {}
+
+}
 class SplPriorityQueue implements Iterator, Countable {
     /**
      * Compare priority1 with priority2.
@@ -71337,6 +71294,32 @@ class SplStack extends SplDoublyLinkedList implements Iterator, ArrayAccess, Cou
 
 }
 class SplString {
+}
+interface SplSubject {
+    /**
+     * Attaches an SplObserver so that it can be notified of updates.
+     *
+     * @param SplObserver
+     * @return void
+     **/
+    function attach($observer) {}
+
+    /**
+     * Detaches an observer from the subject to no longer notify it of
+     * updates.
+     *
+     * @param SplObserver
+     * @return void
+     **/
+    function detach($observer) {}
+
+    /**
+     * Notifies all attached observers.
+     *
+     * @return void
+     **/
+    function notify() {}
+
 }
 class SplTempFileObject extends SplFileObject implements SeekableIterator, Iterator, Traversable, RecursiveIterator {
     /**
@@ -74577,6 +74560,12 @@ class TokyoTyrantTable extends TokyoTyrant {
      **/
     function setIndex($column, $type) {}
 
+}
+interface Traversable {
+}
+class UnderflowException extends RuntimeException {
+}
+class UnexpectedValueException extends RuntimeException {
 }
 class XMLReader {
     const ATTRIBUTE = 0;
