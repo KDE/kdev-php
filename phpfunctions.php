@@ -2389,6 +2389,46 @@ class AppendIterator extends IteratorIterator implements OuterIterator, Traversa
     function __construct() {}
 
 }
+class ArrayAccess {
+    /**
+     * Whether or not an offset exists.
+     * 
+     * This method is executed when using isset or empty on objects
+     * implementing ArrayAccess.
+     *
+     * @param mixed
+     * @return boolean
+     **/
+    function offsetExists($offset) {}
+
+    /**
+     * Returns the value at specified offset.
+     * 
+     * This method is executed when checking if offset is empty.
+     *
+     * @param mixed
+     * @return mixed
+     **/
+    function offsetGet($offset) {}
+
+    /**
+     * Assigns a value to the specified offset.
+     *
+     * @param mixed
+     * @param mixed
+     * @return void
+     **/
+    function offsetSet($offset, $value) {}
+
+    /**
+     * Unsets an offset.
+     *
+     * @param mixed
+     * @return void
+     **/
+    function offsetUnset($offset) {}
+
+}
 class ArrayIterator implements Iterator, Traversable, ArrayAccess, SeekableIterator, Countable {
     /**
      * Appends value as the last element.
@@ -7140,6 +7180,15 @@ class EmptyIterator implements Iterator, Traversable {
      * @return void
      **/
     function valid() {}
+
+}
+class ErrorException extends Exception {
+    /**
+     * Returns the severity of the exception.
+     *
+     * @return int
+     **/
+    function getSeverity() {}
 
 }
 class FilesystemIterator extends DirectoryIterator implements SeekableIterator, Traversable, Iterator {
@@ -60109,7 +60158,52 @@ class IntlDateFormatter {
 }
 class InvalidArgumentException extends LogicException {
 }
-class Iterator {
+class Iterator extends Traversable {
+    /**
+     * Returns the current element.
+     *
+     * @return mixed
+     **/
+    function current() {}
+
+    /**
+     * Returns the key of the current element.
+     *
+     * @return scalar
+     **/
+    function key() {}
+
+    /**
+     * Moves the current position to the next element.
+     *
+     * @return void
+     **/
+    function next() {}
+
+    /**
+     * Rewinds back to the first element of the Iterator.
+     *
+     * @return void
+     **/
+    function rewind() {}
+
+    /**
+     * This method is called after Iterator::rewind and Iterator::next to
+     * check if the current position is valid.
+     *
+     * @return boolean
+     **/
+    function valid() {}
+
+}
+class IteratorAggregate extends Traversable {
+    /**
+     * Returns an external iterator.
+     *
+     * @return Traversable
+     **/
+    function getIterator() {}
+
 }
 class IteratorIterator implements Iterator, Traversable, OuterIterator {
     /**
@@ -69147,6 +69241,23 @@ class SeekableIterator extends Iterator {
     function seek($position) {}
 
 }
+class Serializable {
+    /**
+     * Should return the string representation of the object.
+     *
+     * @return string
+     **/
+    function serialize() {}
+
+    /**
+     * Called during unserialization of the object.
+     *
+     * @param string
+     * @return mixed
+     **/
+    function unserialize($serialized) {}
+
+}
 class SimpleXMLElement {
     /**
      * Adds an attribute to the SimpleXML element.
@@ -76635,6 +76746,8 @@ class TokyoTyrantTable extends TokyoTyrant {
      **/
     function setIndex($column, $type) {}
 
+}
+class Traversable {
 }
 class UnderflowException extends RuntimeException {
 }

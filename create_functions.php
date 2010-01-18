@@ -117,7 +117,7 @@ if ( !DEBUG ) {
     preg_match_all("#^(class|interface)\s+(\S+)[^{]*{#sm", $spl, $m);
     $skipClasses = array_merge($skipClasses, $m[2]);
 
-    $dirs = array("reference", "appendices", "language/predefined/variables");
+    $dirs = array("reference", "appendices", "language/predefined/");
     foreach ($dirs as $dir) {
         $dirIt = new RecursiveIteratorIterator( new RecursiveDirectoryIterator($_SERVER['argv'][1].'/'.$dir));
         foreach ($dirIt as $file) {
