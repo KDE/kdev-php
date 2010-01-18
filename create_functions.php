@@ -24,68 +24,12 @@ if (!isset($_SERVER['argv'][1]) || !isset($_SERVER['argv'][2])) {
     $msg .= "you may checkout from the php svn server using this command:\n";
     $msg .= "svn checkout http://svn.php.net/repository/phpdoc/en/trunk ./phpdoc-en\n";
     $msg .= "svn checkout http://svn.php.net/repository/php/php-src/branches/PHP_5_2 php5\n";
+    $msg .= "\nTo debug a file use this: ".$_SERVER['argv'][0]." --debug FILE\n";
     file_put_contents('php://stderr', $msg);
     exit(-1);
 }
-if (!file_exists($_SERVER['argv'][1])) {
-    file_put_contents('php://stderr', "phpdoc path not found");
-    exit(-1);
-}
-if (!file_exists($_SERVER['argv'][2])) {
-    file_put_contents('php://stderr', "php sources path not found");
-    exit(-1);
-}
 
-//take ext/spl/spl.php as documentation for spl functions
-//make the file valid php
-$splContent = file_get_contents($_SERVER['argv'][2].'/ext/spl/spl.php');
-$splContent = str_replace('mixed cmp_function', '$cmp_function', $splContent);
-$splContent = str_replace('string class_name', '$class_name', $splContent);
-$splContent = str_replace('string $', '$', $splContent);
-$splContent = str_replace('{/**/};', '{}', $splContent);
-$splContent = str_replace('{/**/}', '{}', $splContent);
-$splContent = str_replace("\t", '    ', $splContent);
-$splContent = str_replace("\r", '', $splContent);
-$splContent = preg_replace("#(const [A-Z_]+\s*)(0x[0-9]+;)#", '\1= \2', $splContent);
-$splContent = preg_replace("#/\\*\\* @(mainpage|defgroup|file).*?\\*/#s", '', $splContent);
-// strip actual function code
-$splContent = preg_replace("#(function.*?\))\s*(?!\{\n    \})\{\n.*?\n    \}#s", '\1{}', $splContent);
-$splContent = trim($splContent);
-
-foreach (new DirectoryIterator($_SERVER['argv'][2].'/ext/spl/internal') as $file) {
-    if (!$file->isFile()) continue;
-    if (substr($file->getFilename(), -4) != '.inc') continue;
-    $c = file_get_contents($file->getPathname());
-    $c = str_replace("\t", '    ', $c);
-    $c = str_replace("\r", '', $c);
-
-    $c = preg_replace("#/\\*\\* @file.*?\\*/#s", '', $c);
-    // handle code blocks in comments - quick'n'dirty
-    if ( preg_match_all('#\\\code.*\\\endcode#s', $c, $codeblocks) ) {
-        $codeblocks = $codeblocks[0];
-        foreach( $codeblocks as $block ) {
-            $c = str_replace($block, md5($block), $c);
-        }
-    } else {
-        $codeblocks = array();
-    }
-    // normalize special case
-    $c = str_replace("rewind();\n    {", "rewind()\n    {", $c);
-    // strip actual function code
-    $c = preg_replace("#(function.*?\))\s*\{\n.*?\n    \}#s", '\1{}', $c);
-    $c = trim($c);
-
-    foreach ( $codeblocks as $block ) {
-        $c = str_replace(md5($block), $block, $c);
-    }
-
-    $splContent .= $c;
-}
-$splContent = str_replace('<?php', '', $splContent);
-$splContent = str_replace('?>', '', $splContent);
-$spl = preg_replace("#/\\*.*?\\*/#s", '', $splContent);
-preg_match_all("#^(class|interface)\s+(\S+)[^{]*{#sm", $spl, $m);
-$skipClasses = $m[2];
+$skipClasses = array();
 
 $skipClasses[] = 'self';
 $skipClasses[] = 'parent';
@@ -98,17 +42,87 @@ $skipClasses[] = 'gearmanclient';
 $skipClasses[] = 'gearmanworker';
 $skipClasses[] = 'gearmantask';
 
-$dirs = array("reference", "appendices", "language/predefined/variables");
-
 $classes = array();
 $constants = array();
 $constants_comments = array();
 $variables = array();
 $existingFunctions = array();
-foreach ($dirs as $dir) {
-    $dirIt = new RecursiveIteratorIterator( new RecursiveDirectoryIterator($_SERVER['argv'][1].'/'.$dir));
-    foreach ($dirIt as $file) {
-        parseFile($file);
+
+if ($_SERVER['argv'][1] == '--debug') {
+    // only debug given file
+    parseFile(new SplFileInfo($_SERVER['argv'][2]));
+    define('DEBUG', true);
+} else {
+    define('DEBUG', false);
+}
+
+if ( !DEBUG ) {
+    if (!file_exists($_SERVER['argv'][1])) {
+        file_put_contents('php://stderr', "phpdoc path not found");
+        exit(-1);
+    }
+    if (!file_exists($_SERVER['argv'][2])) {
+        file_put_contents('php://stderr', "php sources path not found");
+        exit(-1);
+    }
+
+    //take ext/spl/spl.php as documentation for spl functions
+    //make the file valid php
+    $splContent = file_get_contents($_SERVER['argv'][2].'/ext/spl/spl.php');
+    $splContent = str_replace('mixed cmp_function', '$cmp_function', $splContent);
+    $splContent = str_replace('string class_name', '$class_name', $splContent);
+    $splContent = str_replace('string $', '$', $splContent);
+    $splContent = str_replace('{/**/};', '{}', $splContent);
+    $splContent = str_replace('{/**/}', '{}', $splContent);
+    $splContent = str_replace("\t", '    ', $splContent);
+    $splContent = str_replace("\r", '', $splContent);
+    $splContent = preg_replace("#(const [A-Z_]+\s*)(0x[0-9]+;)#", '\1= \2', $splContent);
+    $splContent = preg_replace("#/\\*\\* @(mainpage|defgroup|file).*?\\*/#s", '', $splContent);
+    // strip actual function code
+    $splContent = preg_replace("#(function.*?\))\s*(?!\{\n    \})\{\n.*?\n    \}#s", '\1{}', $splContent);
+    $splContent = trim($splContent);
+
+    foreach (new DirectoryIterator($_SERVER['argv'][2].'/ext/spl/internal') as $file) {
+        if (!$file->isFile()) continue;
+        if (substr($file->getFilename(), -4) != '.inc') continue;
+        $c = file_get_contents($file->getPathname());
+        $c = str_replace("\t", '    ', $c);
+        $c = str_replace("\r", '', $c);
+
+        $c = preg_replace("#/\\*\\* @file.*?\\*/#s", '', $c);
+        // handle code blocks in comments - quick'n'dirty
+        if ( preg_match_all('#\\\code.*\\\endcode#s', $c, $codeblocks) ) {
+            $codeblocks = $codeblocks[0];
+            foreach( $codeblocks as $block ) {
+                $c = str_replace($block, md5($block), $c);
+            }
+        } else {
+            $codeblocks = array();
+        }
+        // normalize special case
+        $c = str_replace("rewind();\n    {", "rewind()\n    {", $c);
+        // strip actual function code
+        $c = preg_replace("#(function.*?\))\s*\{\n.*?\n    \}#s", '\1{}', $c);
+        $c = trim($c);
+
+        foreach ( $codeblocks as $block ) {
+            $c = str_replace(md5($block), $block, $c);
+        }
+
+        $splContent .= $c;
+    }
+    $splContent = str_replace('<?php', '', $splContent);
+    $splContent = str_replace('?>', '', $splContent);
+    $spl = preg_replace("#/\\*.*?\\*/#s", '', $splContent);
+    preg_match_all("#^(class|interface)\s+(\S+)[^{]*{#sm", $spl, $m);
+    $skipClasses = array_merge($skipClasses, $m[2]);
+
+    $dirs = array("reference", "appendices", "language/predefined/variables");
+    foreach ($dirs as $dir) {
+        $dirIt = new RecursiveIteratorIterator( new RecursiveDirectoryIterator($_SERVER['argv'][1].'/'.$dir));
+        foreach ($dirIt as $file) {
+            parseFile($file);
+        }
     }
 }
 
@@ -127,13 +141,15 @@ foreach (array_keys($constants) as $c) {
     }
 }
 
-// The dir function, which lacks parseable documentation...
-$classes['global']['functions'][] = array(
-    'name' => "dir",
-    'params' => array(array('name' => "path", 'type' => "string", 'isRef' => false)),
-    'type' => "Directory",
-    'desc' => "Return an instance of the Directory class"
-);
+if ( !DEBUG ) {
+    // The dir function, which lacks parseable documentation...
+    $classes['global']['functions'][] = array(
+        'name' => "dir",
+        'params' => array(array('name' => "path", 'type' => "string", 'isRef' => false)),
+        'type' => "Directory",
+        'desc' => "Return an instance of the Directory class"
+    );
+}
 
 $skipFunctions = array();
 // remove delete() function which only acts as a pointer to unlink
@@ -195,7 +211,10 @@ foreach ($variables as $name=>$var) {
     $out .= "$name = array();\n\n";
 }
 
-$out .= $splContent;
+if ( !DEBUG ) {
+    $out .= $splContent;
+}
+
 foreach ($classes as $class => $i) {
     if (in_array($class, $skipClasses)) continue; //skip those as they are documented in spl.php
     if ($class != 'global') {
@@ -289,9 +308,12 @@ foreach ($constants as $c=>$ctype) {
     }
 }
 
-file_put_contents("phpfunctions.php", $out);
-echo "created phpfunctions.php...\n";
-
+if ( !DEBUG ) {
+    file_put_contents("phpfunctions.php", $out);
+    echo "created phpfunctions.php...\n";
+} else {
+    echo "phpfunctions.php\n~~~~\n$out\n~~~~\n";
+}
 echo "wrote ".$declarationCount." declarations\n";
 
 /**
