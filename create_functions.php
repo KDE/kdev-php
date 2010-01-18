@@ -215,6 +215,11 @@ if ( !DEBUG ) {
     $out .= $splContent;
 }
 
+// make skipclasses lowercase
+foreach ($skipClasses as &$name) {
+    $name = strtolower($name);
+}
+
 foreach ($classes as $class => $i) {
     if (in_array($class, $skipClasses)) continue; //skip those as they are documented in spl.php
     if ($class != 'global') {
