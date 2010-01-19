@@ -32,10 +32,12 @@
 #include <language/backgroundparser/backgroundparser.h>
 #include <language/backgroundparser/parsejob.h>
 
+#include <KStandardDirs>
+
 using namespace KDevelop;
 
 PhpDocsModel::PhpDocsModel(QObject* parent)
-    : QAbstractListModel(parent)
+    : QAbstractListModel(parent), m_internalFunctionsFile(KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php"))
 {
     // make sure the php plugin is loaded
     ILanguage* phpLangPlugin = ICore::self()->languageController()->language("Php");
@@ -50,9 +52,14 @@ PhpDocsModel::~PhpDocsModel()
 {
 }
 
+const KDevelop::IndexedString& PhpDocsModel::internalFunctionFile() const
+{
+    return m_internalFunctionsFile;
+}
+
 void PhpDocsModel::slotParseJobFinished( ParseJob* job )
 {
-    if ( job->document() == IndexedString("InternalFunctions.php") ) {
+    if ( job->document() == m_internalFunctionsFile ) {
         disconnect(ICore::self()->languageController()->backgroundParser(), SIGNAL(parseJobFinished(KDevelop::ParseJob*)),
                    this, SLOT(slotParseJobFinished(KDevelop::ParseJob*)));
         fillModel();
@@ -63,9 +70,9 @@ void PhpDocsModel::fillModel()
 {
     DUChainReadLocker lock(DUChain::self()->lock());
 
-    TopDUContext* top = DUChain::self()->chainForDocument(IndexedString("InternalFunctions.php"));
+    TopDUContext* top = DUChain::self()->chainForDocument(m_internalFunctionsFile);
     if ( !top ) {
-        qWarning() << "could not find DUChain for InternalFunctions.php, connecting to background parser";
+        qWarning() << "could not find DUChain for internal function file, connecting to background parser";
         connect(ICore::self()->languageController()->backgroundParser(), SIGNAL(parseJobFinished(KDevelop::ParseJob*)),
                 this, SLOT(slotParseJobFinished(KDevelop::ParseJob*)));
         return;

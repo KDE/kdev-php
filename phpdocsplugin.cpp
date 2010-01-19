@@ -157,7 +157,7 @@ KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForDeclaration( Declara
         DUChainReadLocker lock( DUChain::lock() );
 
         // filter non global or non-php declarations
-        if ( dec->topContext()->url() != IndexedString("InternalFunctions.php") ) {
+        if ( dec->topContext()->url() != m_model->internalFunctionFile() ) {
             return KSharedPtr<IDocumentation>();
         }
 
