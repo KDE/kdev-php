@@ -25,7 +25,7 @@
 
 #include <kdebug.h>
 #include <klocale.h>
-#include <kstandarddirs.h>
+#include <KZip>
 
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/duchain.h>
@@ -142,39 +142,59 @@ void ParseJob::run()
     QString fileName = document().str();
 
     if (readFromDisk) {
-        QFile file(fileName);
-        //TODO: Read the first lines to determine encoding using Php encoding and use that for the text stream
-
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            KDevelop::ProblemPointer p(new KDevelop::Problem());
-            p->setSource(KDevelop::ProblemData::Disk);
-            p->setDescription(i18n("Could not open file '%1'", document().str()));
-            switch (file.error()) {
-            case QFile::ReadError:
-                p->setExplanation(i18n("File could not be read from."));
-                break;
-            case QFile::OpenError:
-                p->setExplanation(i18n("File could not be opened."));
-                break;
-            case QFile::PermissionsError:
-                p->setExplanation(i18n("File permissions prevent opening for read."));
-                break;
-            default:
-                break;
+        if ( fileName.endsWith(".php.zip", Qt::CaseInsensitive) ) {
+            KZip file(fileName);
+            if ( !file.open(QIODevice::ReadOnly) || !file.directory() ) {
+                kDebug() << "Could not open file" << document().str();
+                return abortJob();
+            } else if ( file.directory()->entries().count() != 1 ) {
+                kDebug() << "invalid zip file, too many entries:" << file.directory()->entries();
+                return abortJob();
             }
-            p->setFinalLocation(KDevelop::DocumentRange(document().str(), KTextEditor::Cursor(0, 0), KTextEditor::Cursor(0, 0)));
-            // TODO addProblem(p);
-            kWarning() << "Could not open file" << document().str()
-            << "(path" << document().str() << ")";
-            return ;
-        }
+            //NOTE: we only support archives with exactly one file in them
+            const KZipFileEntry* entry = static_cast<const KZipFileEntry*>(file.directory()->entry(file.directory()->entries().first()));
+            if ( !entry ) {
+                kDebug() << "invalid zip file, entry is not a file" << file.directory()->entries().first();
+                return abortJob();
+            }
+            session.setContents(entry->data());
+            file.close();
+        } else {
+            QFile file(fileName);
+            //TODO: Read the first lines to determine encoding using Php encoding and use that for the text stream
 
-        QTextStream s(&file);
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                /*
+                KDevelop::ProblemPointer p(new KDevelop::Problem());
+                p->setSource(KDevelop::ProblemData::Disk);
+                p->setDescription(i18n("Could not open file '%1'", document().str()));
+                switch (file.error()) {
+                case QFile::ReadError:
+                    p->setExplanation(i18n("File could not be read from."));
+                    break;
+                case QFile::OpenError:
+                    p->setExplanation(i18n("File could not be opened."));
+                    break;
+                case QFile::PermissionsError:
+                    p->setExplanation(i18n("File permissions prevent opening for read."));
+                    break;
+                default:
+                    break;
+                }
+                p->setFinalLocation(KDevelop::DocumentRange(document().str(), KTextEditor::Cursor(0, 0), KTextEditor::Cursor(0, 0)));
+                // TODO addProblem(p);
+                */
+                kWarning() << "Could not open file" << document().str();
+                return abortJob();
+            }
+
+            QTextStream s(&file);
 
 //         if( codec )
 //             s.setCodec( QTextCodec::codecForName(codec) );
-        session.setContents(s.readAll());
-        file.close();
+            session.setContents(s.readAll());
+            file.close();
+        }
     } else {
         session.setContents(contentsFromEditor());
         session.setCurrentDocument(document().str());

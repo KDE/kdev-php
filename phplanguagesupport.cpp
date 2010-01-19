@@ -23,7 +23,6 @@
 
 #include <kdebug.h>
 #include <kcomponentdata.h>
-#include <kstandarddirs.h>
 #include <kpluginfactory.h>
 #include <kpluginloader.h>
 #include <ktexteditor/smartinterface.h>
@@ -133,6 +132,10 @@ QReadWriteLock* LanguageSupport::internalFunctionsLock()
 
 KDevelop::ParseJob *LanguageSupport::createParseJob(const KUrl &url)
 {
+    if ( url.fileName().endsWith(".zip", Qt::CaseInsensitive) && !url.fileName().endsWith(".php.zip", Qt::CaseInsensitive) ) {
+        // only support *.php.zip files
+        return 0;
+    }
     return new ParseJob(url);
 }
 

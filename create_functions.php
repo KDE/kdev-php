@@ -307,7 +307,7 @@ foreach ($constants as $c=>$ctype) {
         $declarationCount++;
     }
 }
-
+chdir(dirname(__FILE__));
 if ( !DEBUG ) {
     file_put_contents("phpfunctions.php", $out);
     echo "created phpfunctions.php...\n";
@@ -315,6 +315,12 @@ if ( !DEBUG ) {
     echo "phpfunctions.php\n~~~~\n$out\n~~~~\n";
 }
 echo "wrote ".$declarationCount." declarations\n";
+
+echo "removing phpfunctions.php.zip...\n";
+unlink('phpfunctions.php.zip');
+echo "calling zip phpfunctions.php.zip phpfunctions.php...\n";
+shell_exec("zip phpfunctions.php.zip phpfunctions.php");
+echo "done\n";
 
 /**
  * Parse file
