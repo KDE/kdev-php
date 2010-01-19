@@ -309,18 +309,26 @@ foreach ($constants as $c=>$ctype) {
 }
 chdir(dirname(__FILE__));
 if ( !DEBUG ) {
-    file_put_contents("phpfunctions.php", $out);
-    echo "created phpfunctions.php...\n";
+    if ( file_exists("phpfunctions.php") ) {
+        echo "backing up phpfunction file\n";
+        copy("phpfunctions.php", "phpfunctions.old.php");
+        echo "saving phpfunctions.php file\n";
+        file_put_contents("phpfunctions.php", $out);
+        echo "saving diff to phpfunctions.diff";
+        shell_exec("diff -u phpfunctions.old.php phpfunctions.php > phpfunctions.diff");
+    } else {
+        echo "saving phpfunctions.php file\n";
+        file_put_contents("phpfunctions.php", $out);
+    }
+    echo "removing phpfunctions.php.zip...\n";
+    unlink('phpfunctions.php.zip');
+    echo "calling zip phpfunctions.php.zip phpfunctions.php...\n";
+    shell_exec("zip phpfunctions.php.zip phpfunctions.php");
+    echo "done\n";
 } else {
     echo "phpfunctions.php\n~~~~\n$out\n~~~~\n";
 }
 echo "wrote ".$declarationCount." declarations\n";
-
-echo "removing phpfunctions.php.zip...\n";
-unlink('phpfunctions.php.zip');
-echo "calling zip phpfunctions.php.zip phpfunctions.php...\n";
-shell_exec("zip phpfunctions.php.zip phpfunctions.php");
-echo "done\n";
 
 /**
  * Parse file
