@@ -91,7 +91,7 @@ bool DUChainTestBase::hasImportedParentContext(TopDUContext* top, DUContext* loo
     return false;
 }
 
-TopDUContext* DUChainTestBase::parseAdditionalFile(IndexedString fileName, QByteArray contents)
+TopDUContext* DUChainTestBase::parseAdditionalFile(const IndexedString& fileName, const QByteArray& contents)
 {
     ParseSession* session = new ParseSession();
     session->setContents(contents);

@@ -109,7 +109,7 @@ public slots:
 protected:
     KDevelop::TopDUContext* parse(const QByteArray& unit, DumpAreas dump = static_cast<DumpAreas>(DumpAST | DumpDUChain | DumpType), QString fileName = QString());
 
-    KDevelop::TopDUContext* parseAdditionalFile(KDevelop::IndexedString fileName, QByteArray contents);
+    KDevelop::TopDUContext* parseAdditionalFile(const KDevelop::IndexedString& fileName, const QByteArray& contents);
 
     KDevelop::DumpChain dumper;
 
