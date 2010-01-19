@@ -39,6 +39,8 @@
 #include "structuretype.h"
 
 #include "completion/helpers.h"
+#include "completion/context.h"
+
 #include "../duchain/navigation/navigationwidget.h"
 #include "../duchain/variabledeclaration.h"
 #include "../duchain/helper.h"
@@ -69,11 +71,14 @@ QString NormalDeclarationCompletionItem::declarationName() const
         isStatic = funDec->isStatic();
     }
 
-    if ( completionContext()->memberAccessOperation() == CodeCompletionContext::NoMemberAccess ) {
+    const KSharedPtr<CodeCompletionContext>& ctx = completionContext();
+
+    if ( ctx->memberAccessOperation() == CodeCompletionContext::NoMemberAccess ) {
         // if we complete a class member or method (inside a method)
         // we might have to add "self::", "parent::" or "$this->"
-        if ( completionContext()->duContext() && completionContext()->duContext()->parentContext()
-                && completionContext()->duContext()->parentContext()->type() == DUContext::Class ) {
+        if ( ctx->duContext() && ctx->duContext()->parentContext()
+                && ctx->duContext()->parentContext()->type() == DUContext::Class )
+        {
             if ( m_declaration->context() && m_declaration->context()->type() == DUContext::Class ) {
                 if ( isStatic ) {
                     ret = "self::" + ret;
