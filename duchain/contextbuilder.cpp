@@ -147,6 +147,11 @@ KTextEditor::Range ContextBuilder::editorFindRange(AstNode* fromRange, AstNode* 
     return editor()->findRange(fromRange, toRange).textRange();
 }
 
+SimpleCursor ContextBuilder::startPos(AstNode* node)
+{
+    return editor()->findPosition(node->startToken, KDevelop::EditorIntegrator::FrontEdge);
+}
+
 QualifiedIdentifier ContextBuilder::identifierForNode(IdentifierAst* id)
 {
     if (!id)

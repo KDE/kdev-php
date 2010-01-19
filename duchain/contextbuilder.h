@@ -62,6 +62,8 @@ protected:
     virtual void setContextOnNode(AstNode* node, KDevelop::DUContext* ctx);
     virtual KDevelop::DUContext* contextFromNode(AstNode* node);
     virtual KTextEditor::Range editorFindRange(AstNode* fromRange, AstNode* toRange);
+    /// Find Cursor for start of a node, useful to limit findLocalDeclarations() searches.
+    KDevelop::SimpleCursor startPos(AstNode* node);
 
     virtual KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
