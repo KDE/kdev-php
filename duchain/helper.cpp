@@ -21,6 +21,7 @@
 
 #include <KParts/MainWindow>
 #include <KLocalizedString>
+#include <KStandardDirs>
 
 #include <language/duchain/ducontext.h>
 #include <language/duchain/duchainlock.h>
@@ -41,7 +42,6 @@
 #include "classdeclaration.h"
 #include "classmethoddeclaration.h"
 #include "functiondeclaration.h"
-
 
 #define ifDebug(x)
 
@@ -103,7 +103,7 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                 return declaration;
             }
         }
-        if ( currentContext->url() == IndexedString("InternalFunctions.php") ) {
+        if ( currentContext->url() == internalFunctionFile() ) {
             // when compiling php internal functions, we don't need to ask the persistent symbol table for anything
             return 0;
         }
@@ -136,7 +136,7 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                 }
                 TopDUContext* top = declarations[i].declaration()->context()->topContext();
 
-                if (top->url() != IndexedString("InternalFunctions.php") && ICore::self()) {
+                if (ICore::self()) {
                     bool loadedProjectContainsUrl = false;
                     foreach(IProject *project, ICore::self()->projectController()->projects()) {
                         if (project->fileSet().contains(top->url())) {
@@ -292,6 +292,12 @@ QString prettyName(Declaration* dec) {
     } else {
         return dec->identifier().toString();
     }
+}
+
+const KDevelop::IndexedString& internalFunctionFile()
+{
+    static const KDevelop::IndexedString internalFile(KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php"));
+    return internalFile;
 }
 
 }

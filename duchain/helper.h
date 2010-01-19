@@ -63,5 +63,7 @@ KDEVPHPDUCHAIN_EXPORT KUrl getUrlForBase(const QString &includeFile, const KUrl 
 KDEVPHPDUCHAIN_EXPORT KDevelop::IndexedString getIncludeFileForNode(UnaryExpressionAst* node, EditorIntegrator* editor);
 
 KDEVPHPDUCHAIN_EXPORT QString prettyName(KDevelop::Declaration* dec);
+
+KDEVPHPDUCHAIN_EXPORT const KDevelop::IndexedString& internalFunctionFile();
 }
 #endif

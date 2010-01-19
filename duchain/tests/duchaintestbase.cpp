@@ -52,7 +52,7 @@ void DUChainTestBase::initTestCase()
     DUChain::self()->disablePersistentStorage();
 
     //yeah... adding a testcase here is kinda strange, but anyways - we have to check for special
-    //handling of file called InternalFunctions.php
+    //handling of the internal functions file
     //see e.g. testDeclarationReturnTypeDocBlock
     QByteArray content("<?php "
                         //test start
@@ -63,7 +63,7 @@ void DUChainTestBase::initTestCase()
                        "/**\n * @superglobal\n **/\n$_GET = array();\n"
                        "class Exception {} interface testInterface {}\n");
     content.append("interface Iterator { function rewind(); function current(); function key(); function next(); function valid(); } ");
-    parseAdditionalFile(IndexedString("InternalFunctions.php"), content);
+    parseAdditionalFile(internalFunctionFile(), content);
 }
 
 CompletionTreeItemPointer DUChainTestBase::searchDeclaration(QList<CompletionTreeItemPointer> items, Declaration* declaration)
@@ -101,7 +101,7 @@ TopDUContext* DUChainTestBase::parseAdditionalFile(IndexedString fileName, QByte
     DeclarationBuilder declarationBuilder(session);
     TopDUContext* top = declarationBuilder.build(fileName, ast);
 
-    if ( fileName != IndexedString("InternalFunctions.php") ) {
+    if ( fileName != internalFunctionFile() ) {
         UseBuilder useBuilder(session);
         useBuilder.buildUses(ast);
     }
@@ -137,7 +137,7 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QSt
     DeclarationBuilder declarationBuilder(session);
     TopDUContext* top = declarationBuilder.build(IndexedString(url), ast);
 
-    if ( IndexedString(url) != IndexedString("InternalFunctions.php") ) {
+    if ( IndexedString(url) != internalFunctionFile() ) {
         UseBuilder useBuilder(session);
         useBuilder.buildUses(ast);
     }

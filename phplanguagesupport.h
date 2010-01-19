@@ -23,13 +23,14 @@
 #include <QtCore/QVariant>
 #include <QReadWriteLock>
 
+#include <language/duchain/indexedstring.h>
+
 namespace KDevelop
 {
 class IDocument;
 class IProject;
 class CodeHighlighting;
 class ReferencedTopDUContext;
-class IndexedString;
 class ParseJob;
 }
 
@@ -42,9 +43,9 @@ class Highlighting;
 /**
  * \brief Language Support plugin for PHP
  *
- * All internal PHP declarations can be found in the document called InternalFunctions.php.
- * It's real path is not important. To check whether the file was already loaded, use
- * \p internalFunctionsLoaded. If it has not yet loaded, you have two options:
+ * All internal PHP declarations can be found in a central document, hitherto called the
+ * internal function file. See \p internalFunctionsFile(). To check whether the file was already
+ * loaded, use \p internalFunctionsLoaded. If it has not yet loaded, you have two options:
  *
  * 1) Block thread and wait for job to finish:
  * \code
@@ -60,15 +61,21 @@ class Highlighting;
  *           this, SLOT(slotParseJobFinished(KDevelop::ParseJob*)));
  *  ...
  *  void slotParseJobFinished(ParseJob* job) {
- *    if ( job->document() == IndexedString("InternalFunctions.php") )
+ *    if ( job->document() == internalFunctionsFile() )
  *      // now you can get the ducontext
  *  }
  * \endcode
  *
- * To access the DUContext, use:
+ * To access the DUContext, include duchain/helper.h and use:
  * \code
  *  DUChainWriteLocker lock(DUChain::lock());
- *  TopDUContext* ctx = DUChain::self()->chainForDocument(IndexedString("InternalFunctions.php"));
+ *  TopDUContext* ctx = DUChain::self()->chainForDocument(internalFunctionsFile());
+ * \endcode
+ *
+ * To access the destination of the internal function file without linking against the LanguageSupport,
+ * i.e. in the PHP-Docs plugin, use:
+ * \code
+ *  IndexedString url(KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php"));
  * \endcode
  */
 class LanguageSupport : public KDevelop::IPlugin, public KDevelop::ILanguageSupport

@@ -126,7 +126,7 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
 
     // now skip through some things the DeclarationBuilderBase (ContextBuilder) would do,
     // most significantly don't clear imported parent contexts
-    m_isInternalFunctions = url == IndexedString("InternalFunctions.php");
+    m_isInternalFunctions = url == internalFunctionFile();
     if ( m_isInternalFunctions ) {
         m_reportErrors = false;
     } else if ( ICore::self() ) {
@@ -581,14 +581,13 @@ void DeclarationBuilder::reportRedeclarationError(Declaration* declaration, AstN
         // make sure this is not a wrongly reported redeclaration error
         return;
     }
-    QString filename(declaration->context()->topContext()->url().str());
-    if (filename == "InternalFunctions.php") {
+    if (declaration->context()->topContext()->url() == internalFunctionFile()) {
         reportError(i18n("Cannot redeclare PHP internal %1.", declaration->toString()), node);
     } else {
         ///TODO: try to shorten the filename by removing the leading path to the current project
         reportError(
             i18n("Cannot redeclare %1, already declared in %2 on line %3.",
-                 declaration->toString(), filename, declaration->range().start.line + 1
+                 declaration->toString(), declaration->context()->topContext()->url().str(), declaration->range().start.line + 1
                 ), node
         );
     }

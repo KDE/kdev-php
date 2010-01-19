@@ -53,6 +53,8 @@
 #include "navigation/navigationwidget.h"
 #include <language/duchain/parsingenvironment.h>
 
+#include "duchain/helper.h"
+
 using namespace KDevelop;
 
 K_PLUGIN_FACTORY(KDevPhpSupportFactory, registerPlugin<Php::LanguageSupport>();)
@@ -71,6 +73,8 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
         : KDevelop::IPlugin(KDevPhpSupportFactory::componentData(), parent),
         KDevelop::ILanguageSupport(), m_internalFunctionsLoaded(false)
 {
+    Q_ASSERT(internalFunctionFile().toUrl().isValid());
+
     KDEV_USE_EXTENSION_INTERFACE(KDevelop::ILanguageSupport)
 
     m_self = this;
@@ -100,27 +104,9 @@ LanguageSupport::~LanguageSupport()
 void LanguageSupport::slotPluginLoaded( IPlugin* plugin )
 {
     if ( plugin == this ) {
-        {
-            DUChainReadLocker lock(DUChain::lock());
-            if ( TopDUContext* ctx = DUChain::self()->chainForDocument(IndexedString("InternalFunctions.php")) ) {
-                // compare modification time and force rebuild if neccessary
-                const QFileInfo info(KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php"));
-                const uint& modTime = ctx->parsingEnvironmentFile()->modificationRevision().modificationTime;
-                if ( info.lastModified().toTime_t() <= modTime ) {
-                    // nothing required
-                    kDebug() << "internal function file up2date";
-                    m_internalFunctionsLoaded = true;
-                    return;
-                }
-            }
-        }
-        kDebug() << "adding job for internal function file";
+        kDebug() << "making sure that internal function file is up to date";
         m_internalFunctionsLock.lockForWrite();
-        core()->languageController()->backgroundParser()->addDocument(
-            KUrl("InternalFunctions.php"),
-            (KDevelop::TopDUContext::Features) uint(KDevelop::TopDUContext::AllDeclarationsAndContexts | KDevelop::TopDUContext::ForceUpdate),
-            -10, this
-        );
+        DUChain::self()->updateContextForUrl(internalFunctionFile(), KDevelop::TopDUContext::AllDeclarationsAndContexts, this);
         disconnect(core()->pluginController(), SIGNAL(pluginLoaded(KDevelop::IPlugin*)),
                    this, SLOT(slotPluginLoaded(KDevelop::IPlugin*)));
     }
@@ -128,7 +114,7 @@ void LanguageSupport::slotPluginLoaded( IPlugin* plugin )
 
 void LanguageSupport::updateReady( IndexedString url, ReferencedTopDUContext topContext )
 {
-    Q_ASSERT(url == IndexedString("InternalFunctions.php"));
+    Q_ASSERT(url == internalFunctionFile());
     Q_UNUSED(topContext);
     kDebug() << "finished parsing internal function file";
     m_internalFunctionsLoaded = true;

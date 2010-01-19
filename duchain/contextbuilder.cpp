@@ -55,7 +55,7 @@ ContextBuilder::~ContextBuilder()
 ReferencedTopDUContext ContextBuilder::build(const KDevelop::IndexedString& url, AstNode* node,
         KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
 {
-    m_isInternalFunctions = url == IndexedString("InternalFunctions.php");
+    m_isInternalFunctions = url == internalFunctionFile();
     if ( m_isInternalFunctions ) {
         m_reportErrors = false;
     } else if ( ICore::self() ) {
@@ -99,9 +99,9 @@ void ContextBuilder::startVisiting(AstNode* node)
         DUChainReadLocker lock(DUChain::lock());
         hasImports = !top->importedParentContexts().isEmpty();
     }
-    if (!hasImports && top->url() != IndexedString("InternalFunctions.php")) {
+    if (!hasImports && top->url() != internalFunctionFile()) {
         DUChainWriteLocker lock(DUChain::lock());
-        TopDUContext* import = DUChain::self()->chainForDocument(IndexedString("InternalFunctions.php"));
+        TopDUContext* import = DUChain::self()->chainForDocument(internalFunctionFile());
         if (!import) {
             kWarning() << "importing internalFunctions failed" << currentContext()->url().str();
             Q_ASSERT(false);

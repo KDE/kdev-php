@@ -109,8 +109,8 @@ LanguageSupport *ParseJob::php() const
 void ParseJob::run()
 {
     // make sure we loaded the internal file already
-    if ( document() != IndexedString("InternalFunctions.php") && !m_parentJob && !php()->internalFunctionsLoaded() ) {
-        kDebug() << "waiting for InternalFunctions.php to finish parsing";
+    if ( !php()->internalFunctionsLoaded() && !m_parentJob && document() != internalFunctionFile() ) {
+        kDebug() << "waiting for internal function file to finish parsing";
         QReadLocker(php()->internalFunctionsLock());
     }
 
@@ -140,9 +140,6 @@ void ParseJob::run()
     ParseSession session;
 
     QString fileName = document().str();
-    if (fileName == "InternalFunctions.php") {
-        fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
-    }
 
     if (readFromDisk) {
         QFile file(fileName);
@@ -243,7 +240,7 @@ void ParseJob::run()
         setDuChain(chain);
 
         if ( minimumFeatures() & TopDUContext::AllDeclarationsContextsAndUses
-                && document() != IndexedString("InternalFunctions.php") )
+                && document() != internalFunctionFile() )
         {
             UseBuilder useBuilder(&editor);
             useBuilder.buildUses(ast);

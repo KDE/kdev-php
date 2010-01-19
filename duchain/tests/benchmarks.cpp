@@ -81,7 +81,7 @@ void Benchmarks::declarationBuilder()
     session.parse(&ast);
     QBENCHMARK {
         DeclarationBuilder builder(&session);
-        ReferencedTopDUContext top = builder.build(IndexedString("InternalFunctions.php"), ast);
+        ReferencedTopDUContext top = builder.build(internalFunctionFile(), ast);
 
         if ( true ) {
             DUChainWriteLocker lock(DUChain::lock());
