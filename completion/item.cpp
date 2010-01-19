@@ -50,7 +50,7 @@ namespace Php
 
 QString NormalDeclarationCompletionItem::declarationName() const
 {
-    if (m_declaration->identifier().toString().isEmpty())
+    if (m_declaration->indexedIdentifier().isEmpty())
         return "<unknown>";
     else {
         QString ret = prettyName(m_declaration.data());
