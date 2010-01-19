@@ -139,11 +139,12 @@ void ParseJob::run()
 
     ParseSession session;
 
+    QString fileName = document().str();
+    if (fileName == "InternalFunctions.php") {
+        fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
+    }
+
     if (readFromDisk) {
-        QString fileName = document().str();
-        if (fileName == "InternalFunctions.php") {
-            fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
-        }
         QFile file(fileName);
         //TODO: Read the first lines to determine encoding using Php encoding and use that for the text stream
 
@@ -271,7 +272,7 @@ void ParseJob::run()
         chain->setFeatures(minimumFeatures());
         ParsingEnvironmentFilePointer file = chain->parsingEnvironmentFile();
 
-        QFileInfo fileInfo(document().str());
+        QFileInfo fileInfo(fileName);
         QDateTime lastModified = fileInfo.lastModified();
         if (readFromDisk) {
             file->setModificationRevision(KDevelop::ModificationRevision(lastModified));
