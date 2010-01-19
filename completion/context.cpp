@@ -1601,20 +1601,19 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
         // filter private methods and class members when doing a global completion
         // when we are inside a class function, don't filter the private stuff
         // of the current class
-        if ( ClassMemberDeclaration* memberDec = dynamic_cast<ClassMemberDeclaration*>(dec) ) {
-            if ( memberDec->accessPolicy() == Declaration::Private
-                    && memberDec->context() != m_duContext->parentContext() ) {
-                return false;
+        // NOTE: ClassFunctionDeclaration inherits ClassMemberDeclaration
+        // NOTE: both have to have a parent context with type class
+        if ( dec->context() && dec->context()->type() == DUContext::Class
+                && m_duContext->parentContext() != dec->context() )
+        {
+            if ( ClassMemberDeclaration* memberDec = dynamic_cast<ClassMemberDeclaration*>(dec) ) {
+                if ( memberDec->accessPolicy() == Declaration::Private ) {
+                    return false;
+                }
             }
-        } else if ( ClassFunctionDeclaration* funDec = dynamic_cast<ClassFunctionDeclaration*>(dec) ) {
-            if ( funDec->accessPolicy() == Declaration::Private
-                    && memberDec->context() != m_duContext->parentContext() ) {
-                return false;
-            }
-        } else if ( !dec->isFunctionDeclaration() ) {
-            if ( m_duContext.data() == dec->context() && m_position < dec->range().start ) {
-                return false;
-            }
+        }
+        if ( !dec->isFunctionDeclaration() && m_duContext.data() == dec->context() && m_position < dec->range().start ) {
+            return false;
         }
     }
 
