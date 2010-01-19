@@ -446,7 +446,7 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
                     return;
                 }
                 if ( cdec->abstractType()->indexed() == type->indexed() ) {
-                    setEncountered(cdec);
+                    encounter(dec);
                     return;
                 }
             }
@@ -654,14 +654,14 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
     DUChainWriteLocker lock(DUChain::lock());
     // check if this variable is already declared
     {
-        QList< Declaration* > decs = parentCtx->findLocalDeclarations(identifier.first());
+        QList< Declaration* > decs = parentCtx->findLocalDeclarations(identifier.first(), editor()->findPosition(node->endToken));
         if ( !decs.isEmpty() ) {
             QList< Declaration* >::const_iterator it = decs.constEnd() - 1;
             while ( true ) {
                 // we expect that the list of declarations has the newest declaration at back
                 if ( dynamic_cast<VariableDeclaration*>( *it ) ) {
                     if ( (*it)->abstractType()->indexed() == type->indexed() ) {
-                        setEncountered(*it);
+                        encounter(*it);
                         return;
                     }
                     break;
@@ -888,7 +888,8 @@ void DeclarationBuilder::declareFoundVariable(AbstractType* type)
                 foreach ( Declaration* dec, ctx->findDeclarations(m_variable) ) {
                     if ( dec->kind() == Declaration::Instance ) {
                         isDeclared = true;
-                        setEncountered(dec);
+                        // update comment but nothing else
+                        encounter(dec);
                         break;
                     }
                 }
@@ -965,7 +966,7 @@ void DeclarationBuilder::visitGlobalVar(GlobalVarAst* node)
             foreach ( Declaration* dec, currentContext()->localDeclarations() ) {
                 if ( dynamic_cast<AliasDeclaration*>(dec) && dec->identifier() == id.first() ) {
                     // don't redeclare but reuse the existing declaration
-                    setEncountered(dec);
+                    encounter(dec);
                     return;
                 }
             }
@@ -1008,8 +1009,7 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
 
         foreach ( Declaration* dec, includedCtx->findDeclarations(identifier, SimpleCursor(0, 1)) ) {
             if ( dec->kind() == Declaration::Import ) {
-                // nothing to do
-                setEncountered(dec);
+                encounter(dec);
                 return;
             }
         }
@@ -1044,6 +1044,17 @@ void DeclarationBuilder::closeContext()
     setCompilingContexts(true);
     DeclarationBuilderBase::closeContext();
     setCompilingContexts(false);
+}
+void DeclarationBuilder::encounter(Declaration* dec)
+{
+    // when we are recompiling, it's important to mark decs as encountered
+    // and update their comments
+    if ( recompiling() && !wasEncountered(dec) ) {
+        kDebug() << "old:" << dec->comment();
+        dec->setComment(comment());
+        setEncountered(dec);
+        kDebug() << "new:" << dec->comment();
+    }
 }
 
 }

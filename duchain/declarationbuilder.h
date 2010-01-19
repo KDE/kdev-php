@@ -212,6 +212,11 @@ private:
      * @see declareVariable
      */
     void declareFoundVariable(KDevelop::AbstractType* type);
+
+    /**
+     * Sets encountered and updates the comment when we are recompiling.
+     */
+    void encounter(KDevelop::Declaration* dec);
 };
 
 }
