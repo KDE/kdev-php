@@ -121,13 +121,14 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
         switch (index.column()) {
         case CodeCompletionModel::Prefix:
             if (dec->kind() == Declaration::Type && !dec->isTypeAlias()) {
-                if (FunctionType::Ptr funcType = dec->type<FunctionType>()) {
-                    if ( funcType->returnType() ) {
+                if (dec->isFunctionDeclaration()) {
+                    FunctionType::Ptr funcType = dec->type<FunctionType>();
+                    if ( funcType && funcType->returnType() ) {
                         return funcType->returnType()->toString();
                     } else {
                         return "<notype>";
                     }
-                } else if (StructureType::Ptr classType =  dec->type<StructureType>()) {
+                } else if (dec->internalContext() && dec->internalContext()->type() == DUContext::Class) {
                     ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
                     if (classDec) {
                         if (classDec->classType() == ClassDeclarationData::Interface) {
