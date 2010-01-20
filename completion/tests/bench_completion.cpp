@@ -25,6 +25,12 @@
 
 #include <KZip>
 
+//#define USE_VALGRIND
+
+#ifdef USE_VALGRIND
+  #include <valgrind/callgrind.h>
+#endif
+
 using namespace Php;
 using namespace KDevelop;
 
@@ -73,9 +79,43 @@ void BenchmarkCodeCompletion::globalCompletion()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
+    #ifdef USE_VALGRIND
+        CALLGRIND_TOGGLE_COLLECT
+    #endif
+
     QBENCHMARK {
         PhpCompletionTester tester(top, "<?php ");
     }
+
+    #ifdef USE_VALGRIND
+        CALLGRIND_TOGGLE_COLLECT
+    #endif
+}
+
+void BenchmarkCodeCompletion::completionData()
+{
+    kDebug() << "benching global completion";
+    TopDUContext* top = parse("<?php ", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    PhpCompletionTester tester(top, "<?php ");
+
+    #ifdef USE_VALGRIND
+        CALLGRIND_TOGGLE_COLLECT
+    #endif
+
+    const int size = tester.items.size();
+    QBENCHMARK {
+        for ( int i = 0; i < size; ++i ) {
+            tester.itemData(i, KTextEditor::CodeCompletionModel::Prefix);
+            tester.itemData(i, KTextEditor::CodeCompletionModel::Name);
+            tester.itemData(i, KTextEditor::CodeCompletionModel::Postfix);
+        }
+    }
+    #ifdef USE_VALGRIND
+        CALLGRIND_TOGGLE_COLLECT
+    #endif
 }
 
 }
