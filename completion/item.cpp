@@ -119,6 +119,8 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
         return QVariant(NavigationWidget::shortDescription(dec));
     case Qt::DisplayRole:
         switch (index.column()) {
+        case CodeCompletionModel::Postfix:
+            return QVariant();
         case CodeCompletionModel::Prefix:
             if (dec->kind() == Declaration::Type && !dec->isTypeAlias()) {
                 if (dec->isFunctionDeclaration()) {
