@@ -62,7 +62,8 @@ void BenchmarkCodeCompletion::initTestCase()
 
 void BenchmarkCodeCompletion::cleanupTestCase()
 {
-//     DUChain::self()->aboutToQuit();
+    // force cleanup
+    QMetaObject::invokeMethod(DUChain::self(), "aboutToQuit");
 }
 
 void BenchmarkCodeCompletion::globalCompletion()
