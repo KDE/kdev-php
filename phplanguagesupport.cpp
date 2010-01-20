@@ -105,7 +105,7 @@ void LanguageSupport::slotPluginLoaded( IPlugin* plugin )
     if ( plugin == this ) {
         kDebug() << "making sure that internal function file is up to date";
         m_internalFunctionsLock.lockForWrite();
-        DUChain::self()->updateContextForUrl(internalFunctionFile(), KDevelop::TopDUContext::AllDeclarationsAndContexts, this);
+        DUChain::self()->updateContextForUrl(internalFunctionFile(), KDevelop::TopDUContext::AllDeclarationsAndContexts, this, -10);
         disconnect(core()->pluginController(), SIGNAL(pluginLoaded(KDevelop::IPlugin*)),
                    this, SLOT(slotPluginLoaded(KDevelop::IPlugin*)));
     }
