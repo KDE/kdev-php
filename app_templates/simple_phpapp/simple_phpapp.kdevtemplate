@@ -3,6 +3,7 @@
 Name=Simple PHP Application
 Name[en_GB]=Simple PHP Application
 Name[es]=Aplicación PHP sencilla
+Name[fr]=Application PHP simple
 Name[pt]=Aplicação Simples em PHP
 Name[pt_BR]=Aplicativo PHP simples
 Name[ro]=Aplicație PHP simplă
@@ -14,6 +15,7 @@ Category=PHP
 Comment=Generate filestructure to start a PHP application
 Comment[en_GB]=Generate filestructure to start a PHP application
 Comment[es]=Generar una estructura de archivos para iniciar una aplicación PHP
+Comment[fr]=Génère une structure de fichiers pour démarrer une application PHP
 Comment[pt]=Gerar a estrutura de ficheiros para iniciar uma aplicação em PHP
 Comment[pt_BR]=Gera a estrutura de arquivos para iniciar um aplicativo PHP
 Comment[sv]=Skapa filstruktur för att påbörja ett PHP-program
