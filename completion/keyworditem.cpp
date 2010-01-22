@@ -2,7 +2,7 @@
  * KDevelop Php Code Completion Support
  *
  * Copyright 2009 Milian Wolff <mail@milianw.de>
- * Basec on Cpp ImplementationHelperItem
+ * Based on Cpp ImplementationHelperItem
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Library General Public License as

@@ -1,6 +1,7 @@
 /*****************************************************************************
  * Copyright (c) 2007 Piyush verma <piyush.verma@gmail.com>                  *
  * Copyright (c) 2008 Niko Sams <niko.sams@gmail.com>                        *
+ * Copyright (c) 2010 Milian Wolff <mail@milianw.de>                         *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
  * it under the terms of the GNU General Public License as published by      *
