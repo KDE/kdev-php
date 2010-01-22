@@ -25,7 +25,7 @@
 
 #include <KZip>
 
-//#define USE_VALGRIND
+#define USE_VALGRIND
 
 #ifdef USE_VALGRIND
   #include <valgrind/callgrind.h>
@@ -37,6 +37,20 @@ using namespace KDevelop;
 QTEST_MAIN(Php::BenchmarkCodeCompletion)
 
 namespace Php {
+
+// makro defined by cmake, points to the sourcedir of _this_ file
+const QString srcPath(KDESRCDIR);
+
+QFile* getFile(const QString& path)
+{
+    QFile* file = new QFile(srcPath + path);
+    kDebug() << file->fileName();
+    Q_ASSERT(file->exists());
+    file->open(QIODevice::ReadOnly);
+    Q_ASSERT(!file->error());
+    Q_ASSERT(file->isReadable());
+    return file;
+}
 
 typedef CodeCompletionItemTester<CodeCompletionContext> PhpCompletionTester;
 
@@ -85,6 +99,29 @@ void BenchmarkCodeCompletion::globalCompletion()
 
     QBENCHMARK {
         PhpCompletionTester tester(top, "<?php ");
+    }
+
+    #ifdef USE_VALGRIND
+        CALLGRIND_TOGGLE_COLLECT
+    #endif
+}
+
+void BenchmarkCodeCompletion::globalCompletionBigFile()
+{
+    QFile* file(getFile("../../create_functions.php"));
+    const QString contents( file->readAll() );
+    delete file;
+
+    TopDUContext* top = parse(contents.toUtf8(), DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    #ifdef USE_VALGRIND
+        CALLGRIND_TOGGLE_COLLECT
+    #endif
+
+    QBENCHMARK {
+        PhpCompletionTester tester(top, contents);
     }
 
     #ifdef USE_VALGRIND

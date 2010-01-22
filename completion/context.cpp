@@ -60,7 +60,7 @@
 
 #define LOCKDUCHAIN     DUChainReadLocker lock(DUChain::lock())
 
-#define ifDebug(x) x
+#define ifDebug(x) 
 #include <language/codecompletion/codecompletion.h>
 
 using namespace KDevelop;

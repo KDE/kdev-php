@@ -35,6 +35,7 @@ public slots:
 
 private slots:
     void globalCompletion();
+    void globalCompletionBigFile();
     void completionData();
 };
 

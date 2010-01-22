@@ -647,3 +647,5 @@ function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc
         'desc'   => $funcOverload ? str_replace($function, $funcOverload, $desc) : $desc
     );
 }
+
+/* don't add a closing ?> here, we use this file in a benchmark as well */
