@@ -22,6 +22,7 @@ Name[uk]=KDevPhpDocs
 Name[zh_CN]=KDevPhpDocs
 Name[zh_TW]=KDevPhpDocs
 GenericName=PHP Documentation
+GenericName[cs]=Dokumentace PHP
 GenericName[de]=PHP-Dokumentation
 GenericName[en_GB]=PHP Documentation
 GenericName[es]=Documentación PHP
