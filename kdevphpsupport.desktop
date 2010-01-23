@@ -25,6 +25,7 @@ Name[uk]=KDevPhpSupport
 Name[zh_CN]=KDevPhpSupport
 Name[zh_TW]=KDevPhpSupport
 GenericName=Php Support
+GenericName[cs]=Podpora php
 GenericName[en_GB]=Php Support
 GenericName[es]=Implementación de PHP
 GenericName[fr]=Prise en charge de PHP
