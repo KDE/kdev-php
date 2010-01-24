@@ -93,7 +93,6 @@ struct UrlParseLock {
 
 ParseJob::ParseJob(const KUrl &url)
         : KDevelop::ParseJob(url)
-        , m_url(url)
         , m_parentJob(0)
 {
 }

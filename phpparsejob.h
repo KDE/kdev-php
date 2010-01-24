@@ -44,8 +44,6 @@ public:
     explicit ParseJob(const KUrl &url);
     virtual ~ParseJob();
 
-    const KTextEditor::Range& textRangeToParse() const;
-
     LanguageSupport* php() const;
 
     void setParentJob(ParseJob *job);
@@ -54,8 +52,6 @@ protected:
     virtual void run();
 
 private:
-    KUrl m_url;
-    KTextEditor::Range m_textRangeToParse;
     ParseJob *m_parentJob; ///< parent job if this one is an include
 
     /**
