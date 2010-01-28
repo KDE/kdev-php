@@ -251,6 +251,10 @@ void ParseJob::run()
             }
         }
 
+        if (!php() || !php()->language()) {
+            return abortJob();
+        }
+
         QReadLocker parseLock(php()->language()->parseLock());
 
         DeclarationBuilder builder(&editor);
