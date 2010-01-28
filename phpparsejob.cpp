@@ -108,6 +108,9 @@ LanguageSupport *ParseJob::php() const
 
 void ParseJob::run()
 {
+    if ( !php() ) {
+        return abortJob();
+    }
     // make sure we loaded the internal file already
     if ( !php()->internalFunctionsLoaded() && !m_parentJob && document() != internalFunctionFile() ) {
         kDebug() << "waiting for internal function file to finish parsing";
