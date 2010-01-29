@@ -1543,7 +1543,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
         return false;
     }
 
-    static ClassDeclaration* exceptionDecl = 0;
+    static DUChainPointer<ClassDeclaration> exceptionDecl;
     if (!exceptionDecl) {
         QList<Declaration*> decs = dec->context()->findDeclarations(QualifiedIdentifier("exception"));
         Q_ASSERT(decs.count() == 1);
@@ -1561,6 +1561,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
             return false;
         }
         ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
+
         // filter non-classes
         if (!classDec) {
             return false;
@@ -1572,8 +1573,8 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
         }
         // filter non-exception classes
         else if (m_memberAccessOperation == ExceptionChoose) {
-            return classDec->equalQualifiedIdentifier(exceptionDecl)
-                   || classDec->isPublicBaseClass(exceptionDecl, m_duContext->topContext());
+            return classDec->equalQualifiedIdentifier(exceptionDecl.data())
+                   || classDec->isPublicBaseClass(exceptionDecl.data(), m_duContext->topContext());
         }
         // show interfaces
         else if (m_memberAccessOperation == InterfaceChoose) {
@@ -1594,7 +1595,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
         if (!structType) return false;
         ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(structType->declaration(dec->topContext()));
         if (!classDec) return false;
-        return classDec->isPublicBaseClass(exceptionDecl, m_duContext->topContext());
+        return classDec->isPublicBaseClass(exceptionDecl.data(), m_duContext->topContext());
     }
 
     if (m_memberAccessOperation == NoMemberAccess) {
