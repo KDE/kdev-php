@@ -60,7 +60,7 @@
 
 #define LOCKDUCHAIN     DUChainReadLocker lock(DUChain::lock())
 
-#define ifDebug(x) 
+#define ifDebug(x)
 #include <language/codecompletion/codecompletion.h>
 
 using namespace KDevelop;
@@ -1543,7 +1543,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
         return false;
     }
 
-    static ClassDeclaration* exceptionDecl;
+    static ClassDeclaration* exceptionDecl = 0;
     if (!exceptionDecl) {
         QList<Declaration*> decs = dec->context()->findDeclarations(QualifiedIdentifier("exception"));
         Q_ASSERT(decs.count() == 1);
