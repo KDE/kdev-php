@@ -25,8 +25,6 @@
 
 #include <KZip>
 
-#define USE_VALGRIND
-
 #ifdef USE_VALGRIND
   #include <valgrind/callgrind.h>
 #endif
