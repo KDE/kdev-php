@@ -130,6 +130,9 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
             }
         }
 
+        #if 0
+        //Disabled, because not everyone writes phpdoc for every function
+        //TODO: move to a phpdoc helper
         // build phpdoc comment
         {
             QualifiedIdentifier parentClassIdentifier;
@@ -146,6 +149,7 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
             replText += "\n" + indendation + " * @overload " + m_declaration->internalContext()->scopeIdentifier(true).toString();
             replText += "\n" + indendation + " **/\n" + indendation;
         }
+        #endif
 
         // write function signature
 
