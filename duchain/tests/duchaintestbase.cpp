@@ -31,8 +31,8 @@
 #include "dumptypes.h"
 #include "parsesession.h"
 #include "phpdebugvisitor.h"
-#include "declarationbuilder.h"
-#include "usebuilder.h"
+#include "../builders/declarationbuilder.h"
+#include "../builders/usebuilder.h"
 #include "../helper.h"
 
 using namespace KTextEditor;

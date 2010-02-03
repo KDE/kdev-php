@@ -29,7 +29,7 @@
 #include <language/duchain/forwarddeclaration.h>
 #include <language/duchain/duchainutils.h>
 
-#include "classdeclaration.h"
+#include "../declarations/classdeclaration.h"
 #include "helper.h"
 
 namespace Php

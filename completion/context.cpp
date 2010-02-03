@@ -25,7 +25,7 @@
 #include "helpers.h"
 
 #include "../duchain/helper.h"
-#include "../duchain/variabledeclaration.h"
+#include "../duchain/declarations/variabledeclaration.h"
 
 #include "implementationitem.h"
 #include "keyworditem.h"
@@ -45,8 +45,8 @@
 #include <language/duchain/codemodel.h>
 #include <language/duchain/classdeclaration.h>
 
-#include "classmethoddeclaration.h"
-#include "structuretype.h"
+#include "declarations/classmethoddeclaration.h"
+#include "types/structuretype.h"
 
 #include <interfaces/icore.h>
 #include <interfaces/iprojectcontroller.h>

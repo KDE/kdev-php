@@ -29,7 +29,7 @@
 #include <language/duchain/declaration.h>
 #include <language/duchain/types/functiontype.h>
 #include <language/codecompletion/codecompletionmodel.h>
-#include "classmethoddeclaration.h"
+#include "declarations/classmethoddeclaration.h"
 
 #include <ktexteditor/document.h>
 #include <ktexteditor/view.h>

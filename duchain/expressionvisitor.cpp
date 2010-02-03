@@ -21,8 +21,8 @@
 #include "parsesession.h"
 #include "editorintegrator.h"
 #include "helper.h"
-#include "variabledeclaration.h"
-#include "classdeclaration.h"
+#include "declarations/variabledeclaration.h"
+#include "declarations/classdeclaration.h"
 
 #include <language/duchain/topducontext.h>
 #include <language/duchain/duchain.h>

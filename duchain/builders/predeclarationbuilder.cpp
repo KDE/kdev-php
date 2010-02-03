@@ -33,10 +33,10 @@
 #include "phpast.h"
 #include "parsesession.h"
 #include "helper.h"
-#include "classdeclaration.h"
-#include "functiondeclaration.h"
-#include "variabledeclaration.h"
-#include "structuretype.h"
+#include "../declarations/classdeclaration.h"
+#include "../declarations/functiondeclaration.h"
+#include "../declarations/variabledeclaration.h"
+#include "../types/structuretype.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;

@@ -46,7 +46,7 @@
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/dumpchain.h>
 
-#include "duchain/classmethoddeclaration.h"
+#include "../duchain/declarations/classmethoddeclaration.h"
 
 #include "context.h"
 #include "worker.h"

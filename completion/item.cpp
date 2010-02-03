@@ -34,15 +34,15 @@
 #include <language/duchain/namespacealiasdeclaration.h>
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/types/functiontype.h>
-#include "classdeclaration.h"
-#include "classmethoddeclaration.h"
-#include "structuretype.h"
+#include "declarations/classdeclaration.h"
+#include "declarations/classmethoddeclaration.h"
+#include "types/structuretype.h"
 
 #include "completion/helpers.h"
 #include "completion/context.h"
 
 #include "../duchain/navigation/navigationwidget.h"
-#include "../duchain/variabledeclaration.h"
+#include "../duchain/declarations/variabledeclaration.h"
 #include "../duchain/helper.h"
 
 using namespace KDevelop;

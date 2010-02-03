@@ -39,10 +39,10 @@
 #include "phpast.h"
 #include "parsesession.h"
 #include "helper.h"
-#include "variabledeclaration.h"
-#include "classmethoddeclaration.h"
-#include "classdeclaration.h"
-#include "functiondeclaration.h"
+#include "../declarations/variabledeclaration.h"
+#include "../declarations/classmethoddeclaration.h"
+#include "../declarations/classdeclaration.h"
+#include "../declarations/functiondeclaration.h"
 #include "expressionvisitor.h"
 
 using namespace KTextEditor;

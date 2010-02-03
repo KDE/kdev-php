@@ -29,13 +29,13 @@
 #include <language/duchain/codemodel.h>
 #include <language/codecompletion/codecompletiontesthelper.h>
 #include <language/duchain/types/alltypes.h>
-#include "duchain/structuretype.h"
+#include "duchain/types/structuretype.h"
 
 #include "completion/context.h"
 #include "completion/item.h"
 #include "completion/helpers.h"
 #include "completion/model.h"
-#include "duchain/functiondeclaration.h"
+#include "duchain/declarations/functiondeclaration.h"
 
 
 using namespace KTextEditor;

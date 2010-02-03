@@ -39,9 +39,9 @@
 #include "../parser/parsesession.h"
 #include "phpast.h"
 #include "phpdefaultvisitor.h"
-#include "classdeclaration.h"
-#include "classmethoddeclaration.h"
-#include "functiondeclaration.h"
+#include "declarations/classdeclaration.h"
+#include "declarations/classmethoddeclaration.h"
+#include "declarations/functiondeclaration.h"
 
 #define ifDebug(x)
 

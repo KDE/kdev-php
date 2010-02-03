@@ -30,16 +30,15 @@
 
 #include "helper.h"
 
-#include "classdeclaration.h"
-#include "classmethoddeclaration.h"
-#include "functiondeclaration.h"
+#include "../declarations/classdeclaration.h"
+#include "../declarations/classmethoddeclaration.h"
+#include "../declarations/functiondeclaration.h"
+#include "../declarations/variabledeclaration.h"
 
-#include "structuretype.h"
-#include "integraltypeextended.h"
+#include "../types/structuretype.h"
+#include "../types/integraltypeextended.h"
 
 #include <kstandarddirs.h>
-
-#include <variabledeclaration.h>
 
 
 using namespace KTextEditor;

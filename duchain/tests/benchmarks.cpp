@@ -25,8 +25,8 @@
 
 #include "phpparsejob.h"
 #include "parsesession.h"
-#include "declarationbuilder.h"
-#include "usebuilder.h"
+#include "../builders/declarationbuilder.h"
+#include "../builders/usebuilder.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;

@@ -5,25 +5,25 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
     )
 
 set(duchain_SRCS
-    integraltypeextended.cpp
-    structuretype.cpp
-    includebuilder.cpp
-    predeclarationbuilder.cpp
-    declarationbuilder.cpp
-    contextbuilder.cpp
+    types/integraltypeextended.cpp
+    types/structuretype.cpp
+    builders/includebuilder.cpp
+    builders/predeclarationbuilder.cpp
+    builders/declarationbuilder.cpp
+    builders/contextbuilder.cpp
+    builders/usebuilder.cpp
+    builders/typebuilder.cpp
     editorintegrator.cpp
-    usebuilder.cpp
-    typebuilder.cpp
     dumptypes.cpp
     expressionvisitor.cpp
     expressionparser.cpp
     expressionevaluationresult.cpp
     helper.cpp
     phpducontext.cpp
-    variabledeclaration.cpp
-    classmethoddeclaration.cpp
-    classdeclaration.cpp
-    functiondeclaration.cpp
+    declarations/variabledeclaration.cpp
+    declarations/classmethoddeclaration.cpp
+    declarations/classdeclaration.cpp
+    declarations/functiondeclaration.cpp
     tests/duchaintestbase.cpp
     navigation/navigationwidget.cpp
     navigation/declarationnavigationcontext.cpp

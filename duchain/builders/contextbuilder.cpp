@@ -33,8 +33,8 @@
 #include <klocalizedstring.h>
 
 #include "parsesession.h"
-#include "editorintegrator.h"
-#include "helper.h"
+#include "../editorintegrator.h"
+#include "../helper.h"
 #include "phpducontext.h"
 #include "phpast.h"
 

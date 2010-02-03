@@ -24,8 +24,8 @@
 #include <language/duchain/duchainlock.h>
 
 #include "phpparsejob.h"
-#include "../classdeclaration.h"
-#include "../variabledeclaration.h"
+#include "../declarations/classdeclaration.h"
+#include "../declarations/variabledeclaration.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;

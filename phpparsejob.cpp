@@ -37,15 +37,14 @@
 #include <interfaces/icore.h>
 #include <interfaces/ilanguagecontroller.h>
 
-// #include "phphighlighting.h"
 #include "editorintegrator.h"
 #include "parsesession.h"
 #include "phplanguagesupport.h"
 #include "phpdebugvisitor.h"
-#include "duchain/declarationbuilder.h"
-#include "duchain/usebuilder.h"
+#include "duchain/builders/declarationbuilder.h"
+#include "duchain/builders/usebuilder.h"
 #include "duchain/helper.h"
-#include "includebuilder.h"
+#include "duchain/builders/includebuilder.h"
 #include "phpducontext.h"
 
 #include <QtCore/QReadLocker>

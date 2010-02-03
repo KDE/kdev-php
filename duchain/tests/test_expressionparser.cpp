@@ -28,7 +28,7 @@
 #include <language/duchain/types/integraltype.h>
 #include <language/duchain/declaration.h>
 
-#include "structuretype.h"
+#include "../types/structuretype.h"
 #include "expressionparser.h"
 
 using namespace KTextEditor;

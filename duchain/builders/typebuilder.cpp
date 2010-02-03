@@ -28,16 +28,16 @@
 #include <language/duchain/ducontext.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/types/integraltype.h>
-#include "classdeclaration.h"
-#include "integraltypeextended.h"
-#include "structuretype.h"
+#include "../declarations/classdeclaration.h"
+#include "../types/integraltypeextended.h"
+#include "../types/structuretype.h"
 
 #include "editorintegrator.h"
 #include "parsesession.h"
 #include "phpdebugvisitor.h"
 #include "expressionparser.h"
 #include "expressionvisitor.h"
-#include "classmethoddeclaration.h"
+#include "../declarations/classmethoddeclaration.h"
 #include <language/duchain/types/unsuretype.h>
 
 using namespace KDevelop;
