@@ -16,7 +16,7 @@
    Boston, MA 02110-1301, USA.
 */
 
-#include "test_uses.h"
+#include "uses.h"
 
 #include <QtTest/QtTest>
 
@@ -764,4 +764,4 @@ void TestUses::nestedMethodCalls()
 }
 
 
-#include "test_uses.moc"
+#include "uses.moc"

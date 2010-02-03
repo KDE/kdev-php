@@ -16,7 +16,7 @@
    Boston, MA 02110-1301, USA.
 */
 
-#include "test_duchain.h"
+#include "duchain.h"
 
 #include <QtTest/QtTest>
 
@@ -2102,4 +2102,4 @@ void TestDUChain::testUndeclaredVarPropertyInString()
 
 }
 
-#include "test_duchain.moc"
+#include "duchain.moc"

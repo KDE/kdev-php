@@ -16,7 +16,7 @@
    Boston, MA 02110-1301, USA.
 */
 
-#include "test_expressionparser.h"
+#include "expressionparser.h"
 
 #include <QtTest/QtTest>
 
@@ -29,7 +29,7 @@
 #include <language/duchain/declaration.h>
 
 #include "../types/structuretype.h"
-#include "expressionparser.h"
+#include "../expressionparser.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -352,4 +352,4 @@ void TestExpressionParser::findArg()
 
 }
 
-#include "test_expressionparser.moc"
+#include "expressionparser.moc"
