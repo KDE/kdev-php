@@ -32,3 +32,15 @@ target_link_libraries(benchmarks
     ${QT_QTTEST_LIBRARY}
     ${KDEVPLATFORM_INTERFACES_LIBRARIES}
 )
+
+
+set(duchain_multiplefiles_SRCS
+    duchain_multiplefiles.cpp
+)
+kde4_add_unit_test(duchain_multiplefiles ${duchain_multiplefiles_SRCS})
+target_link_libraries(duchain_multiplefiles
+    kdev4phpduchain
+    ${QT_QTTEST_LIBRARY}
+    ${KDEVPLATFORM_INTERFACES_LIBRARIES}
+    ${KDEVPLATFORM_TESTS_LIBRARIES}
+)
