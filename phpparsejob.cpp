@@ -257,6 +257,21 @@ void ParseJob::run()
                                                      &editor, ProblemData::Preprocessor);
                     continue;
                 }
+                {
+                    DUChainReadLocker lock(DUChain::lock());
+                    bool needsUpdate = true;
+                    foreach(const ParsingEnvironmentFilePointer &file, DUChain::self()->allEnvironmentFiles(i.value())) {
+                        if (file->needsUpdate()) {
+                            needsUpdate = true;
+                            break;
+                        } else {
+                            needsUpdate = false;
+                        }
+                    }
+                    if (!(minimumFeatures() & TopDUContext::ForceUpdateRecursive) && !needsUpdate) {
+                        continue;
+                    }
+                }
                 kDebug() << "parse included file" << i.value().str();
                 ParseJob job(i.value().toUrl());
                 job.setMinimumFeatures(minimumFeatures());
