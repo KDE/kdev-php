@@ -246,6 +246,9 @@ AbstractType::Ptr TypeBuilder::getTypeForNode(AstNode* node)
         ExpressionParser ep;
         ep.setCreateProblems(true);
         ExpressionEvaluationResult res = ep.evaluateType(node, editor());
+        if (res.hadUnresolvedIdentifiers()) {
+            m_hadUnresolvedIdentifiers = true;
+        }
         type = res.type();
     }
     if (!type) {

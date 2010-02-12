@@ -39,6 +39,8 @@ private slots:
     void testImportsGlobalFunction();
     void testImportsBaseClassNotYetParsed();
     void testNonExistingBaseClass();
+    void testImportsGlobalFunctionNotYetParsed();
+    void testNonExistingGlobalFunction();
 
 private:
     KDevelop::TestCore* m_core;

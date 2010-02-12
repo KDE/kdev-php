@@ -48,15 +48,18 @@ public:
     void setDeclaration(KDevelop::Declaration* declaration);
     void setDeclarations(QList<KDevelop::Declaration*> declarations);
     void setType(KDevelop::AbstractType::Ptr type);
+    void setHadUnresolvedIdentifiers(bool v);
 
     KDevelop::AbstractType::Ptr type() const;
     QList<KDevelop::DeclarationId> allDeclarationIds() const;
     QList<KDevelop::Declaration*> allDeclarations() const;
+    bool hadUnresolvedIdentifiers() const;
 
 private:
     QList<KDevelop::Declaration*> m_allDeclarations;
     QList<KDevelop::DeclarationId> m_allDeclarationIds;
     KDevelop::AbstractType::Ptr m_type; ///Type the expression evaluated to, may be zero when the expression failed to evaluate
+    bool m_hadUnresolvedIdentifiers;
 
     //bool isInstance; ///Whether the result of this expression is an instance(as it normally should be)
     //KDevelop::DeclarationId instanceDeclaration; ///If this expression is an instance of some type, this either contains the declaration of the instance, or the type

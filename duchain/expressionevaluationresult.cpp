@@ -36,7 +36,8 @@ ExpressionEvaluationResult::~ExpressionEvaluationResult()
 {
 }
 
-ExpressionEvaluationResult::ExpressionEvaluationResult()/* : isInstance(false)*/
+ExpressionEvaluationResult::ExpressionEvaluationResult()
+    : m_hadUnresolvedIdentifiers(false)/*, isInstance(false)*/
 {
 }
 
@@ -88,5 +89,16 @@ void ExpressionEvaluationResult::setType(AbstractType::Ptr type)
 
     m_type = type;
 }
+
+void ExpressionEvaluationResult::setHadUnresolvedIdentifiers(bool v)
+{
+    m_hadUnresolvedIdentifiers = v;
+}
+
+bool ExpressionEvaluationResult::hadUnresolvedIdentifiers() const
+{
+    return m_hadUnresolvedIdentifiers;
+}
+
 
 }

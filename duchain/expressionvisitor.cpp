@@ -247,6 +247,8 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
                 } else {
                     m_result.setType(AbstractType::Ptr());
                 }
+            } else {
+                m_result.setHadUnresolvedIdentifiers(true);
             }
         }
     }

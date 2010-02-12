@@ -105,6 +105,15 @@ public:
         project->addToFileSet(KDevelop::IndexedString(m_file.fileName()));
     }
 
+    ~TestFile()
+    {
+        if (m_topContext) {
+            KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
+            KDevelop::DUChain::self()->removeDocumentChain(m_topContext.data());
+        }
+    }
+
+
     void parse(KDevelop::TopDUContext::Features features)
     {
         KDevelop::DUChain::self()->updateContextForUrl(KDevelop::IndexedString(m_file.fileName()), features, this);
@@ -115,7 +124,7 @@ public:
         QTime t;
         t.start();
         while (!m_ready) {
-            Q_ASSERT(t.elapsed() < 30000);
+            Q_ASSERT(t.elapsed() < 60000);
             QTest::qWait(10);
         }
     }
@@ -155,9 +164,7 @@ void TestDUChainMultipleFiles::testImportsGlobalFunction()
 
     TestFile f2("<? foo();", project);
     f2.parse(features);
-
-    DUChainReleaser releaseTop1(f1.topContext());
-    DUChainReleaser releaseTop2(f2.topContext());
+    f2.waitForParsed();
 
     KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
     QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::SimpleCursor(0, 0)));
@@ -177,8 +184,7 @@ void TestDUChainMultipleFiles::testImportsBaseClassNotYetParsed()
     TestFile f1("<? class A {}", project);
     f1.parse(features);
 
-    DUChainReleaser releaseTop1(f1.topContext());
-    DUChainReleaser releaseTop2(f2.topContext());
+    f1.waitForParsed();
     QTest::qWait(100);
 
     KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
@@ -196,11 +202,51 @@ void TestDUChainMultipleFiles::testNonExistingBaseClass()
 
     TestFile f1("<? class B extends A {}", project);
     f1.parse(features);
+    f1.waitForParsed();
 
-    DUChainReleaser releaseTop1(f1.topContext());
     QTest::qWait(1000);
+
+    //TODO: assert that no running parsejob runs
 }
 
+void TestDUChainMultipleFiles::testImportsGlobalFunctionNotYetParsed()
+{
+    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+
+    TestProject* project = new TestProject;
+    m_projectController->clearProjects();
+    m_projectController->addProject(project);
+
+    TestFile f2("<? foo2();", project);
+    f2.parse(features);
+
+    TestFile f1("<? function foo2() {}", project);
+    f1.parse(features);
+
+    f2.waitForParsed();
+    QTest::qWait(100);
+
+    KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
+    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::SimpleCursor(0, 0)));
+
+}
+
+void TestDUChainMultipleFiles::testNonExistingGlobalFunction()
+{
+    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+
+    TestProject* project = new TestProject;
+    m_projectController->clearProjects();
+    m_projectController->addProject(project);
+
+    TestFile f2("<? foo3();", project);
+    f2.parse(features);
+
+    f2.waitForParsed();
+    QTest::qWait(100);
+
+    //TODO: assert that no running parsejob runs
+}
 
 }
 
