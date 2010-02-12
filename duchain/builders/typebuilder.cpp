@@ -74,9 +74,6 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         iType = IntegralType::TypeArray;
     } else if (lType == "resource") {
         return AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeResource));
-    } else if (lType == "object") {
-        //TODO
-        iType = IntegralType::TypeMixed;
     } else if (lType == "null") {
         iType = IntegralType::TypeNull;
     } else if (lType == "void") {
@@ -87,6 +84,9 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
             return currentContext()->owner()->abstractType();
         }
     } else {
+        if (lType == "object") {
+            type = "stdclass";
+        }
         //don't use openTypeFromName as it uses cursor for findDeclarations
         Declaration* decl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier(type.toLower()), node);
         if (decl && decl->abstractType()) {

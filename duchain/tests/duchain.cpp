@@ -437,7 +437,10 @@ void TestDUChain::testDeclarationReturnTypeDocBlock()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A { /** @return A **/ function bar() {} } class B {} /** @return A **/ function foo() { return new B(); } ");
+    QByteArray method("<? class A { /** @return A **/ function bar() {} } "
+                      "   class B {} "
+                      "/** @return A **/ function foo() { return new B(); } "
+                      "/** @return object **/ function bar() {}");
 
     TopDUContext* top = parse(method, DumpNone);
     DUChainReleaser releaseTop(top);
@@ -456,6 +459,13 @@ void TestDUChain::testDeclarationReturnTypeDocBlock()
     QVERIFY(fType);
     QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
     QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("a"));
+
+    //function bar
+    dec = top->localDeclarations().at(3);
+    fType = dec->type<FunctionType>();
+    QVERIFY(fType);
+    QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
+    QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("stdclass"));
 
     //test hint in internal functions file of a type that is added later on
     // function
