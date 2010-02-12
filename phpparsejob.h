@@ -30,6 +30,8 @@
 #include <ksharedptr.h>
 #include <ktexteditor/range.h>
 
+#include <language/duchain/topducontext.h>
+
 namespace Php
 {
 
@@ -41,6 +43,10 @@ class ParseJob : public KDevelop::ParseJob
     Q_OBJECT
 
 public:
+    enum {
+        Resheduled = KDevelop::TopDUContext::LastFeature
+    };
+
     explicit ParseJob(const KUrl &url);
     virtual ~ParseJob();
 

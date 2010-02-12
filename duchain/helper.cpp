@@ -158,6 +158,7 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
         }
     }
 
+    ifDebug(kDebug() << "returning 0";)
     return 0;
 }
 

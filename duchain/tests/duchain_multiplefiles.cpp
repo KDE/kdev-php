@@ -73,6 +73,7 @@ public:
     QList<KDevelop::IProject*> projects() const { return m_projects; }
 public:
     void addProject(KDevelop::IProject* p) { p->setParent(this); m_projects << p; }
+    void clearProjects() { qDeleteAll(m_projects); m_projects.clear(); }
 
 private:
     QList<KDevelop::IProject*> m_projects;
@@ -104,15 +105,24 @@ public:
         project->addToFileSet(KDevelop::IndexedString(m_file.fileName()));
     }
 
-    KDevelop::ReferencedTopDUContext parse(KDevelop::TopDUContext::Features features)
+    void parse(KDevelop::TopDUContext::Features features)
     {
         KDevelop::DUChain::self()->updateContextForUrl(KDevelop::IndexedString(m_file.fileName()), features, this);
+    }
+
+    void waitForParsed()
+    {
         QTime t;
         t.start();
         while (!m_ready) {
-            Q_ASSERT(t.elapsed() < 1000);
+            Q_ASSERT(t.elapsed() < 30000);
             QTest::qWait(10);
         }
+    }
+
+    KDevelop::ReferencedTopDUContext topContext()
+    {
+        waitForParsed();
         return m_topContext;
     }
 
@@ -136,18 +146,59 @@ void TestDUChainMultipleFiles::testImportsGlobalFunction()
     KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
 
     TestProject* project = new TestProject;
+    m_projectController->clearProjects();
     m_projectController->addProject(project);
 
     TestFile f1("<? function foo() {}", project);
-    KDevelop::ReferencedTopDUContext t1 = f1.parse(features);
-    DUChainReleaser releaseTop1(t1);
+    f1.parse(features);
+    f1.waitForParsed();
 
     TestFile f2("<? foo();", project);
-    KDevelop::ReferencedTopDUContext t2 = f2.parse(features);
-    DUChainReleaser releaseTop2(t2);
+    f2.parse(features);
+
+    DUChainReleaser releaseTop1(f1.topContext());
+    DUChainReleaser releaseTop2(f2.topContext());
 
     KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
-    QVERIFY(t2->imports(t1, KDevelop::SimpleCursor(0, 0)));
+    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::SimpleCursor(0, 0)));
+}
+
+void TestDUChainMultipleFiles::testImportsBaseClassNotYetParsed()
+{
+    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+
+    TestProject* project = new TestProject;
+    m_projectController->clearProjects();
+    m_projectController->addProject(project);
+
+    TestFile f2("<? class B extends A {}", project);
+    f2.parse(features);
+
+    TestFile f1("<? class A {}", project);
+    f1.parse(features);
+
+    DUChainReleaser releaseTop1(f1.topContext());
+    DUChainReleaser releaseTop2(f2.topContext());
+    QTest::qWait(100);
+
+    KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
+    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::SimpleCursor(0, 0)));
+
+}
+
+void TestDUChainMultipleFiles::testNonExistingBaseClass()
+{
+    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+
+    TestProject* project = new TestProject;
+    m_projectController->clearProjects();
+    m_projectController->addProject(project);
+
+    TestFile f1("<? class B extends A {}", project);
+    f1.parse(features);
+
+    DUChainReleaser releaseTop1(f1.topContext());
+    QTest::qWait(1000);
 }
 
 

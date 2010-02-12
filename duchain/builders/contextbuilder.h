@@ -52,6 +52,8 @@ public:
     virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
             KDevelop::ReferencedTopDUContext updateContext
             = KDevelop::ReferencedTopDUContext(), bool useSmart = true);
+
+    bool hadUnresolvedIdentifiers() const;
 protected:
     EditorIntegrator* editor() const;
 
@@ -103,6 +105,7 @@ protected:
     bool m_reportErrors;
     ///TODO: push this into kdevplatform
     bool m_mapAst;
+    bool m_hadUnresolvedIdentifiers;
 };
 
 }

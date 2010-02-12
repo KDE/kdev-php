@@ -36,6 +36,7 @@
 #include <language/highlighting/codehighlighting.h>
 #include <interfaces/icore.h>
 #include <interfaces/ilanguagecontroller.h>
+#include <language/backgroundparser/backgroundparser.h>
 
 #include "editorintegrator.h"
 #include "parsesession.h"
@@ -49,6 +50,7 @@
 
 #include <QtCore/QReadLocker>
 #include <QtCore/QThread>
+#include <language/duchain/duchainutils.h>
 
 using namespace KDevelop;
 
@@ -129,7 +131,7 @@ void ParseJob::run()
                 needsUpdate = false;
             }
         }
-        if (!(minimumFeatures() & TopDUContext::ForceUpdate) && !needsUpdate) {
+        if (!(minimumFeatures() & TopDUContext::ForceUpdate || minimumFeatures() & Resheduled) && !needsUpdate) {
             kDebug() << "Already up to date" << document().str();
             return;
         }
@@ -211,6 +213,19 @@ void ParseJob::run()
         return abortJob();
     }
 
+    KDevelop::ReferencedTopDUContext toUpdate;
+    {
+        KDevelop::DUChainReadLocker duchainlock(KDevelop::DUChain::lock());
+        toUpdate = KDevelop::DUChainUtils::standardContextForUrl(document().toUrl());
+    }
+
+    KDevelop::TopDUContext::Features newFeatures = minimumFeatures();
+    if (toUpdate)
+        newFeatures = (KDevelop::TopDUContext::Features)(newFeatures | toUpdate->features());
+
+    //Remove update-flags like 'Recursive' or 'ForceUpdate'
+    newFeatures = static_cast<KDevelop::TopDUContext::Features>(newFeatures & KDevelop::TopDUContext::AllDeclarationsContextsUsesAndAST);
+
     if (matched) {
         EditorIntegrator editor(&session);
 
@@ -265,11 +280,27 @@ void ParseJob::run()
 
         setDuChain(chain);
 
-        if ( minimumFeatures() & TopDUContext::AllDeclarationsContextsAndUses
+        if ( newFeatures & TopDUContext::AllDeclarationsContextsAndUses
                 && document() != internalFunctionFile() )
         {
             UseBuilder useBuilder(&editor);
             useBuilder.buildUses(ast);
+        }
+
+        if (builder.hadUnresolvedIdentifiers()) {
+            if (!(minimumFeatures() & Resheduled)) {
+                // Need to create new parse job with lower priority
+                kDebug() << "Reschedule file " << document().str() << "for parsing";
+                KDevelop::TopDUContext::Features feat = static_cast<KDevelop::TopDUContext::Features>(
+                        minimumFeatures() | KDevelop::TopDUContext::VisibleDeclarationsAndContexts | Resheduled
+                    );
+                KDevelop::ICore::self()->languageController()->backgroundParser()
+                    ->addDocument(document().toUrl(), feat, 50000);
+
+            } else {
+                // We haven't resolved all identifiers, but by now, we don't expect to
+                kDebug() << "Builder found unresolved identifiers when they should have been resolved! (if there was no coding error)";
+            }
         }
 
         if (abortRequested()) {
@@ -292,7 +323,7 @@ void ParseJob::run()
             chain->addProblem(p);
         }
 
-        chain->setFeatures(minimumFeatures());
+        chain->setFeatures(newFeatures);
         ParsingEnvironmentFilePointer file = chain->parsingEnvironmentFile();
 
         QFileInfo fileInfo(fileName);

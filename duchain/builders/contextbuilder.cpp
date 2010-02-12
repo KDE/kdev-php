@@ -44,7 +44,9 @@ using namespace KDevelop;
 namespace Php
 {
 
-ContextBuilder::ContextBuilder() : m_isInternalFunctions(false), m_reportErrors(true), m_mapAst(false)
+ContextBuilder::ContextBuilder()
+    : m_isInternalFunctions(false), m_reportErrors(true),
+      m_mapAst(false), m_hadUnresolvedIdentifiers(false)
 {
 }
 
@@ -89,6 +91,12 @@ void ContextBuilder::setEditor(ParseSession* session)
     EditorIntegrator* e = new EditorIntegrator(session);
     ContextBuilderBase::setEditor(e, true);
 }
+
+bool ContextBuilder::hadUnresolvedIdentifiers() const
+{
+    return m_hadUnresolvedIdentifiers;
+}
+
 
 void ContextBuilder::startVisiting(AstNode* node)
 {
@@ -283,6 +291,10 @@ void ContextBuilder::addBaseType(IdentifierAst * identifier)
                 reportError(i18n("Circular inheritance of %1 and %2", currentClass->toString(), baseClass->toString()), identifier);
             }
         }
+    }
+    if (!baseClass) {
+        kDebug() << "unresolved identifier";
+        m_hadUnresolvedIdentifiers = true;
     }
 }
 

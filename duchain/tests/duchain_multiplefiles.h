@@ -37,6 +37,8 @@ private slots:
     void cleanup();
 
     void testImportsGlobalFunction();
+    void testImportsBaseClassNotYetParsed();
+    void testNonExistingBaseClass();
 
 private:
     KDevelop::TestCore* m_core;
