@@ -27,6 +27,8 @@
 #include <interfaces/iproject.h>
 #include <tests/testcore.h>
 #include <shell/projectcontroller.h>
+#include <interfaces/ilanguagecontroller.h>
+#include <language/backgroundparser/backgroundparser.h>
 
 QTEST_KDEMAIN(Php::TestDUChainMultipleFiles, GUI)
 
@@ -204,9 +206,8 @@ void TestDUChainMultipleFiles::testNonExistingBaseClass()
     f1.parse(features);
     f1.waitForParsed();
 
-    QTest::qWait(1000);
-
-    //TODO: assert that no running parsejob runs
+    //there must not be a re-enqueued parsejob
+    QVERIFY(KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
 }
 
 void TestDUChainMultipleFiles::testImportsGlobalFunctionNotYetParsed()
@@ -243,9 +244,8 @@ void TestDUChainMultipleFiles::testNonExistingGlobalFunction()
     f2.parse(features);
 
     f2.waitForParsed();
-    QTest::qWait(100);
-
-    //TODO: assert that no running parsejob runs
+     //there must not be a re-enqueued parsejob
+    QVERIFY(KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
 }
 
 }

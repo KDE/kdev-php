@@ -288,7 +288,7 @@ void ParseJob::run()
         }
 
         if (builder.hadUnresolvedIdentifiers()) {
-            if (!(minimumFeatures() & Resheduled)) {
+            if (!(minimumFeatures() & Resheduled) && KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount()) {
                 // Need to create new parse job with lower priority
                 kDebug() << "Reschedule file " << document().str() << "for parsing";
                 KDevelop::TopDUContext::Features feat = static_cast<KDevelop::TopDUContext::Features>(
