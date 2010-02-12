@@ -229,6 +229,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
                     }
                 }
             } else {
+                m_result.setHadUnresolvedIdentifiers(true);
                 usingDeclaration(node->stringFunctionName, 0);
                 m_result.setType(AbstractType::Ptr());
             }

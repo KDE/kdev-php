@@ -41,6 +41,8 @@ private slots:
     void testNonExistingBaseClass();
     void testImportsGlobalFunctionNotYetParsed();
     void testNonExistingGlobalFunction();
+    void testImportsStaticFunctionNotYetParsed();
+    void testNonExistingStaticFunction();
 
 private:
     KDevelop::TestCore* m_core;

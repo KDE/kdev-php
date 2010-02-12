@@ -248,6 +248,44 @@ void TestDUChainMultipleFiles::testNonExistingGlobalFunction()
     QVERIFY(KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
 }
 
+void TestDUChainMultipleFiles::testImportsStaticFunctionNotYetParsed()
+{
+    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+
+    TestProject* project = new TestProject;
+    m_projectController->clearProjects();
+    m_projectController->addProject(project);
+
+    TestFile f2("<? C::foo();", project);
+    f2.parse(features);
+
+    TestFile f1("<? class C { public static function foo() {} }", project);
+    f1.parse(features);
+
+    f2.waitForParsed();
+    QTest::qWait(100);
+
+    KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
+    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::SimpleCursor(0, 0)));
+}
+
+void TestDUChainMultipleFiles::testNonExistingStaticFunction()
+{
+    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+
+    TestProject* project = new TestProject;
+    m_projectController->clearProjects();
+    m_projectController->addProject(project);
+
+    TestFile f2("<? D::foo();", project);
+    f2.parse(features);
+
+    f2.waitForParsed();
+     //there must not be a re-enqueued parsejob
+    QVERIFY(KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
+}
+
+
 }
 
 #include "duchain_multiplefiles.moc"
