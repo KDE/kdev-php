@@ -23,6 +23,7 @@
 
 #include <QFile>
 #include <QTextCodec>
+#include <KLocalizedString>
 
 namespace Php
 {
@@ -60,7 +61,25 @@ bool ParseSession::readFile(const QString& filename, const char* codec)
 
     QFile f(filename);
     if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        kDebug() << "Couldn't open project file:" << filename;
+        KDevelop::ProblemPointer p(new KDevelop::Problem());
+        p->setSource(KDevelop::ProblemData::Disk);
+        p->setDescription(i18n("Could not open file '%1'", filename));
+        switch (f.error()) {
+        case QFile::ReadError:
+            p->setExplanation(i18n("File could not be read from."));
+            break;
+        case QFile::OpenError:
+            p->setExplanation(i18n("File could not be opened."));
+            break;
+        case QFile::PermissionsError:
+            p->setExplanation(i18n("File permissions prevent opening for read."));
+            break;
+        default:
+            break;
+        }
+        p->setFinalLocation(KDevelop::DocumentRange(filename, KTextEditor::Cursor(0, 0), KTextEditor::Cursor(0, 0)));
+        m_problems << p;
+        kWarning() << "Could not open file" << filename;
         return false;
     }
     QTextStream s(&f);
@@ -69,6 +88,7 @@ bool ParseSession::readFile(const QString& filename, const char* codec)
     m_contents = s.readAll();
     return true;
 }
+
 void ParseSession::setDebug(bool debug)
 {
     m_debug = debug;
@@ -105,7 +125,7 @@ bool ParseSession::parse(Php::StartAst** ast)
         parser->expectedSymbol(AstNode::StartKind, "start");
         kDebug() << "Couldn't parse content";
     }
-    m_problems = parser->problems();
+    m_problems << parser->problems();
     delete parser;
     return matched;
 }

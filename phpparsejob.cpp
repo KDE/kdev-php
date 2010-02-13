@@ -164,46 +164,14 @@ void ParseJob::run()
             session.setContents(entry->data());
             file.close();
         } else {
-            QFile file(fileName);
-            //TODO: Read the first lines to determine encoding using Php encoding and use that for the text stream
-
-            if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-                /*
-                KDevelop::ProblemPointer p(new KDevelop::Problem());
-                p->setSource(KDevelop::ProblemData::Disk);
-                p->setDescription(i18n("Could not open file '%1'", document().str()));
-                switch (file.error()) {
-                case QFile::ReadError:
-                    p->setExplanation(i18n("File could not be read from."));
-                    break;
-                case QFile::OpenError:
-                    p->setExplanation(i18n("File could not be opened."));
-                    break;
-                case QFile::PermissionsError:
-                    p->setExplanation(i18n("File permissions prevent opening for read."));
-                    break;
-                default:
-                    break;
-                }
-                p->setFinalLocation(KDevelop::DocumentRange(document().str(), KTextEditor::Cursor(0, 0), KTextEditor::Cursor(0, 0)));
-                // TODO addProblem(p);
-                */
-                kWarning() << "Could not open file" << document().str();
+            if (!session.readFile(fileName)) {
                 return abortJob();
             }
-
-            QTextStream s(&file);
-
-//         if( codec )
-//             s.setCodec( QTextCodec::codecForName(codec) );
-            session.setContents(s.readAll());
-            file.close();
         }
     } else {
         session.setContents(contentsFromEditor());
         session.setCurrentDocument(document().str());
     }
-
 
     // 2) parse
     StartAst* ast = 0;
