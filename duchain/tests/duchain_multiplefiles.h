@@ -23,11 +23,11 @@
 
 namespace KDevelop {
     class TestCore;
+    class TestProjectController;
 }
 
 namespace Php
 {
-class TestProjectController;
 
 class TestDUChainMultipleFiles : public DUChainTestBase
 {
@@ -46,7 +46,7 @@ private slots:
 
 private:
     KDevelop::TestCore* m_core;
-    TestProjectController* m_projectController;
+    KDevelop::TestProjectController* m_projectController;
 };
 
 }

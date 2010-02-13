@@ -23,70 +23,22 @@
 #include <qtest_kde.h>
 
 #include <tests/autotestshell.h>
-#include <interfaces/iprojectcontroller.h>
-#include <interfaces/iproject.h>
 #include <tests/testcore.h>
-#include <shell/projectcontroller.h>
 #include <interfaces/ilanguagecontroller.h>
 #include <language/backgroundparser/backgroundparser.h>
+#include <tests/testproject.h>
 
 QTEST_KDEMAIN(Php::TestDUChainMultipleFiles, GUI)
 
 namespace Php
 {
 
-class TestProject : public KDevelop::IProject
-{
-    Q_OBJECT
-public:
-    KDevelop::IProjectFileManager* projectFileManager() const { return 0; }
-    KDevelop::IBuildSystemManager* buildSystemManager() const { return 0; }
-    KDevelop::IPlugin* managerPlugin() const { return 0; }
-    KDevelop::IPlugin* versionControlPlugin() const { return 0; }
-    KDevelop::ProjectFolderItem* projectItem() const { return 0; }
-    int fileCount() const { return 0; }
-    KDevelop::ProjectFileItem* fileAt( int ) const { return 0; }
-    QList<KDevelop::ProjectFileItem*> files() const { return QList<KDevelop::ProjectFileItem*>(); }
-    QList<KDevelop::ProjectFileItem*> filesForUrl( const KUrl& ) const { return QList<KDevelop::ProjectFileItem*>(); }
-    QList<KDevelop::ProjectFolderItem*> foldersForUrl( const KUrl& ) const { return QList<KDevelop::ProjectFolderItem*>(); }
-    void reloadModel() { }
-    KUrl projectFileUrl() const { return KUrl(); }
-    KSharedConfig::Ptr projectConfiguration() const { return KGlobal::config(); }
-    void addToFileSet( const KDevelop::IndexedString& file) { m_fileSet << file; }
-    void removeFromFileSet( const KDevelop::IndexedString& file) { m_fileSet.remove(file); }
-    QSet<KDevelop::IndexedString> fileSet() const { return m_fileSet; }
-public Q_SLOTS:
-    const KUrl folder() const { return KUrl(); }
-    QString name() const { return "Test Project"; }
-    KUrl relativeUrl(const KUrl& ) const { return KUrl(); }
-    bool inProject(const KUrl &) const { return false; }
-private:
-    QSet<KDevelop::IndexedString> m_fileSet;
-};
-
-
-class TestProjectController : public KDevelop::ProjectController
-{
-    Q_OBJECT
-public:
-    TestProjectController(KDevelop::Core* core) : KDevelop::ProjectController(core) {}
-    KDevelop::IProject* projectAt( int i ) const { return m_projects.at(i); }
-    int projectCount() const { return m_projects.count(); }
-    QList<KDevelop::IProject*> projects() const { return m_projects; }
-public:
-    void addProject(KDevelop::IProject* p) { p->setParent(this); m_projects << p; }
-    void clearProjects() { qDeleteAll(m_projects); m_projects.clear(); }
-
-private:
-    QList<KDevelop::IProject*> m_projects;
-};
-
 void TestDUChainMultipleFiles::init()
 {
     AutoTestShell::init();
     m_core = new KDevelop::TestCore();
     m_core->initialize(KDevelop::Core::NoUi);
-    m_projectController = new TestProjectController(m_core);
+    m_projectController = new KDevelop::TestProjectController(m_core);
     m_core->setProjectController(m_projectController);
 }
 
@@ -100,7 +52,7 @@ class TestFile : public QObject
 {
     Q_OBJECT
 public:
-    TestFile(QByteArray contents, TestProject *project) : m_file("XXXXXX.php"), m_ready(false) {
+    TestFile(QByteArray contents, KDevelop::TestProject *project) : m_file("XXXXXX.php"), m_ready(false) {
         m_file.open();
         m_file.write(contents);
         m_file.close();
@@ -156,7 +108,7 @@ void TestDUChainMultipleFiles::testImportsGlobalFunction()
 {
     KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
 
-    TestProject* project = new TestProject;
+    KDevelop::TestProject* project = new KDevelop::TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
@@ -176,7 +128,7 @@ void TestDUChainMultipleFiles::testImportsBaseClassNotYetParsed()
 {
     KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
 
-    TestProject* project = new TestProject;
+    KDevelop::TestProject* project = new KDevelop::TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
@@ -198,7 +150,7 @@ void TestDUChainMultipleFiles::testNonExistingBaseClass()
 {
     KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
 
-    TestProject* project = new TestProject;
+    KDevelop::TestProject* project = new KDevelop::TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
@@ -214,7 +166,7 @@ void TestDUChainMultipleFiles::testImportsGlobalFunctionNotYetParsed()
 {
     KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
 
-    TestProject* project = new TestProject;
+    KDevelop::TestProject* project = new KDevelop::TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
@@ -236,7 +188,7 @@ void TestDUChainMultipleFiles::testNonExistingGlobalFunction()
 {
     KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
 
-    TestProject* project = new TestProject;
+    KDevelop::TestProject* project = new KDevelop::TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
@@ -252,7 +204,7 @@ void TestDUChainMultipleFiles::testImportsStaticFunctionNotYetParsed()
 {
     KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
 
-    TestProject* project = new TestProject;
+    KDevelop::TestProject* project = new KDevelop::TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
@@ -273,7 +225,7 @@ void TestDUChainMultipleFiles::testNonExistingStaticFunction()
 {
     KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
 
-    TestProject* project = new TestProject;
+    KDevelop::TestProject* project = new KDevelop::TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
