@@ -164,9 +164,7 @@ void ParseJob::run()
             session.setContents(entry->data());
             file.close();
         } else {
-            if (!session.readFile(fileName)) {
-                return abortJob();
-            }
+            session.readFile(fileName);
         }
     } else {
         session.setContents(contentsFromEditor());
