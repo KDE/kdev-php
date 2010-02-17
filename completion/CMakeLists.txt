@@ -13,6 +13,7 @@ set(completion_SRCS
     context.cpp
     model.cpp
     helpers.cpp
+    codemodelitem.cpp
 )
 
 

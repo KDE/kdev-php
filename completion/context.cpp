@@ -62,6 +62,7 @@
 
 #define ifDebug(x)
 #include <language/codecompletion/codecompletion.h>
+#include "codemodelitem.h"
 
 using namespace KDevelop;
 
@@ -1389,9 +1390,13 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                 CodeModel::self().items(url, count, foundItems);
                 for (uint i = 0; i < count; ++i) {
                     if (foundItems[i].kind == CodeModelItem::Class || foundItems[i].kind == CodeModelItem::Function
-                            || foundItems[i].kind == CodeModelItem::Variable) {
+                            /*|| foundItems[i].kind == CodeModelItem::Variable*/) {
                         foreach(const ParsingEnvironmentFilePointer &env, DUChain::self()->allEnvironmentFiles(url)) {
                             if (env->language() != IndexedString("Php")) continue;
+                            items << CompletionTreeItemPointer ( new CodeModelCompletionItem(env, foundItems[0]));
+                        }
+                        if (abort) return items;
+                        /*
                             TopDUContext* top = env->topContext();
                             if(!top) continue;
                             if (m_duContext->imports(top)) continue;
@@ -1416,7 +1421,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                                             )
                                         );
                             }
-                        }
+                        }*/
                     }
                 }
             }
