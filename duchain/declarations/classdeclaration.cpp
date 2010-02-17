@@ -21,6 +21,7 @@
 #include "classdeclaration.h"
 
 #include <language/duchain/duchainregister.h>
+#include <completioncodemodel.h>
 
 namespace Php {
 REGISTER_DUCHAIN_ITEM(ClassDeclaration);
@@ -67,6 +68,8 @@ QString ClassDeclaration::prettyName() const
 void ClassDeclaration::setPrettyName( const QString& name )
 {
     d_func_dynamic()->prettyName = KDevelop::IndexedString(name);
+
+    CompletionCodeModel::self().addItem(topContext()->url(), qualifiedIdentifier(), d_func_dynamic()->prettyName, CompletionCodeModelItem::Unknown);
 }
 
 QString ClassDeclaration::toString() const

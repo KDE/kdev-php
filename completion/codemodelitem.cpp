@@ -21,20 +21,23 @@
 
 #include "codemodelitem.h"
 
+#include <KTextEditor/Document>
+
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
-#include <language/duchain/codemodel.h>
 #include <language/codecompletion/codecompletionmodel.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/duchainutils.h>
-
+#include <navigation/navigationwidget.h>
+#include <language/codecompletion/codecompletionhelper.h>
+#include <language/duchain/abstractfunctiondeclaration.h>
 
 using namespace KDevelop;
 
 namespace Php
 {
 
-CodeModelCompletionItem::CodeModelCompletionItem(const ParsingEnvironmentFilePointer &env, const CodeModelItem &item)
+CodeModelCompletionItem::CodeModelCompletionItem(const ParsingEnvironmentFilePointer &env, const CompletionCodeModelItem &item)
     : CompletionTreeItem(), m_env(env), m_item(item)
 {
 }
@@ -52,11 +55,9 @@ QVariant CodeModelCompletionItem::data(const QModelIndex& index, int role, const
     case Qt::DisplayRole:
         switch (index.column()) {
         case KDevelop::CodeCompletionModel::Name:
-            //if (!m_decl) {
-            //    m_decl = m_env->topContext()->findDeclarations(m_item.id).first();
-            //}
-            //return m_decl->toString();
-            return QVariant(m_item.id.identifier().toString());
+            return QVariant(m_item.prettyName.str());
+        case KDevelop::CodeCompletionModel::Prefix:
+            return QString("class");
         }
         break;
     case Qt::DecorationRole:
@@ -66,35 +67,46 @@ QVariant CodeModelCompletionItem::data(const QModelIndex& index, int role, const
             return DUChainUtils::iconForProperties(p);
         }
         break;
+    case CodeCompletionModel::IsExpandable:
+        return QVariant(true);
+    case CodeCompletionModel::ExpandingWidget: {
+        QList<Declaration*> decls = m_env->topContext()->findDeclarations(m_item.id);
+        if (decls.isEmpty()) return QVariant();
+        DeclarationPointer decl(DeclarationPointer(decls.first()));
+        QWidget *nav = new NavigationWidget(decl, model->currentTopContext());
+        Q_ASSERT(nav);
+        model->addNavigationWidget(this, nav);
+
+        QVariant v;
+        v.setValue<QWidget*>(nav);
+        return v;
+    }
     }
     return QVariant();
 }
 
 CodeCompletionModel::CompletionProperties CodeModelCompletionItem::completionProperties() const
 {
-    CodeCompletionModel::CompletionProperties ret = CodeCompletionModel::NoProperty;
-
-    switch (m_item.kind) {
-        case CodeModelItem::Unknown:
-            break;
-        case CodeModelItem::Function:
-            ret |= CodeCompletionModel::Function;
-            break;
-        case CodeModelItem::Variable:
-            ret |= CodeCompletionModel::Variable;
-            break;
-        case CodeModelItem::Class:
-            ret |= CodeCompletionModel::Class;
-            break;
-        case CodeModelItem::ForwardDeclaration:
-            break;
-        case CodeModelItem::Namespace:
-            ret |= CodeCompletionModel::Namespace;
-            break;
-    }
+    CodeCompletionModel::CompletionProperties ret = CodeCompletionModel::Class;
     return ret;
 }
 
+void CodeModelCompletionItem::execute(KTextEditor::Document* document, const KTextEditor::Range& word)
+{
+    document->replaceText(word, m_item.prettyName.str());
+
+    KDevelop::DeclarationPointer decl;
+    {
+        KDevelop::DUChainReadLocker lock(KDevelop::DUChain::lock());
+        QList<Declaration*> decls = m_env->topContext()->findDeclarations(m_item.id);
+        if (decls.isEmpty()) return;
+        decl = decls.first();
+    }
+    if (decl && dynamic_cast<AbstractFunctionDeclaration*>(decl.data())) {
+        //Do some intelligent stuff for functions with the parens:
+        insertFunctionParenText(document, word, decl);
+    }
+}
 
 }
 

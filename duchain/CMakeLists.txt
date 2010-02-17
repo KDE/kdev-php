@@ -29,6 +29,7 @@ set(duchain_SRCS
     navigation/declarationnavigationcontext.cpp
     navigation/includenavigationcontext.cpp
     navigation/magicconstantnavigationcontext.cpp
+    completioncodemodel.cpp
     )
 
 

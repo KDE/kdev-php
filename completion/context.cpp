@@ -44,6 +44,7 @@
 #include <util/pushvalue.h>
 #include <language/duchain/codemodel.h>
 #include <language/duchain/classdeclaration.h>
+#include <language/codecompletion/codecompletion.h>
 
 #include "declarations/classmethoddeclaration.h"
 #include "types/structuretype.h"
@@ -54,15 +55,15 @@
 #include <project/projectmodel.h>
 #include <language/duchain/types/unsuretype.h>
 #include <language/duchain/parsingenvironment.h>
-
 #include <language/util/includeitem.h>
+
 #include "includefileitem.h"
+#include "../duchain/completioncodemodel.h"
+#include "codemodelitem.h"
 
 #define LOCKDUCHAIN     DUChainReadLocker lock(DUChain::lock())
 
 #define ifDebug(x)
-#include <language/codecompletion/codecompletion.h>
-#include "codemodelitem.h"
 
 using namespace KDevelop;
 
@@ -1383,20 +1384,18 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                         )
                     );
         }
-        uint count = 0;
-        const CodeModelItem* foundItems = 0;
+
         foreach(QSet<IndexedString> urlSets, completionFiles()) {
             foreach(const IndexedString &url, urlSets) {
+                uint count = 0;
+                const CodeModelItem* foundItems = 0;
                 CodeModel::self().items(url, count, foundItems);
                 for (uint i = 0; i < count; ++i) {
-                    if (foundItems[i].kind == CodeModelItem::Class || foundItems[i].kind == CodeModelItem::Function
-                            /*|| foundItems[i].kind == CodeModelItem::Variable*/) {
+                    CodeModelItem::Kind k = foundItems[i].kind;
+                    if (((k & CodeModelItem::Function) || (k & CodeModelItem::Variable)) && !(k & CodeModelItem::ClassMember)) {
                         foreach(const ParsingEnvironmentFilePointer &env, DUChain::self()->allEnvironmentFiles(url)) {
                             if (env->language() != IndexedString("Php")) continue;
-                            items << CompletionTreeItemPointer ( new CodeModelCompletionItem(env, foundItems[0]));
-                        }
-                        if (abort) return items;
-                        /*
+                            kDebug() << "using?" << foundItems[i].id.identifier().toString() << env->url().str();
                             TopDUContext* top = env->topContext();
                             if(!top) continue;
                             if (m_duContext->imports(top)) continue;
@@ -1421,7 +1420,22 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                                             )
                                         );
                             }
-                        }*/
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach(QSet<IndexedString> urlSets, completionFiles()) {
+            foreach(const IndexedString &url, urlSets) {
+                uint count = 0;
+                const CompletionCodeModelItem* foundItems = 0;
+                CompletionCodeModel::self().items(url, count, foundItems);
+                for (uint i = 0; i < count; ++i) {
+                    if (abort) return items;
+                    foreach(const ParsingEnvironmentFilePointer &env, DUChain::self()->allEnvironmentFiles(url)) {
+                        Q_ASSERT(env->language() == IndexedString("Php"));
+                        items << CompletionTreeItemPointer ( new CodeModelCompletionItem(env, foundItems[0]));
                     }
                 }
             }
