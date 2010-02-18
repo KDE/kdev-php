@@ -62,6 +62,8 @@ public:
     void setPrettyName(const QString& name);
     QString prettyName() const;
 
+    virtual void setInSymbolTable(bool inSymbolTable);
+
     enum {
         Identity = 85
     };

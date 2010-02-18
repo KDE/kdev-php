@@ -67,9 +67,10 @@ QString ClassDeclaration::prettyName() const
 
 void ClassDeclaration::setPrettyName( const QString& name )
 {
+    bool wasInSymbolTable = d_func()->m_inSymbolTable;
+    setInSymbolTable(false);
     d_func_dynamic()->prettyName = KDevelop::IndexedString(name);
-
-    CompletionCodeModel::self().addItem(topContext()->url(), qualifiedIdentifier(), d_func_dynamic()->prettyName, CompletionCodeModelItem::Unknown);
+    setInSymbolTable(wasInSymbolTable);
 }
 
 QString ClassDeclaration::toString() const
@@ -101,6 +102,18 @@ QString ClassDeclaration::toString() const
       break;
   }
   return ret + prettyName();
+}
+
+void ClassDeclaration::setInSymbolTable(bool inSymbolTable)
+{
+    if(!d_func()->prettyName.isEmpty()) {
+        if(!d_func()->m_inSymbolTable && inSymbolTable) {
+            CompletionCodeModel::self().addItem(url(), qualifiedIdentifier(), d_func_dynamic()->prettyName, CompletionCodeModelItem::Unknown);
+        } else if(d_func()->m_inSymbolTable && !inSymbolTable) {
+            CompletionCodeModel::self().removeItem(url(), qualifiedIdentifier());
+        }
+    }
+    KDevelop::ClassDeclaration::setInSymbolTable(inSymbolTable);
 }
 
 }
