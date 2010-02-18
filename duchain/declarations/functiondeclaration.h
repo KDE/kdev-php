@@ -59,8 +59,8 @@ public:
 
     virtual QString toString() const;
 
-    void setPrettyName(const QString& name);
-    QString prettyName() const;
+    void setPrettyName(const KDevelop::IndexedString& name);
+    KDevelop::IndexedString prettyName() const;
 
     enum {
         Identity = 86

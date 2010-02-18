@@ -74,14 +74,14 @@ Declaration* ClassMethodDeclaration::clonePrivate() const
     return new ClassMethodDeclaration(*this);
 }
 
-QString ClassMethodDeclaration::prettyName() const
+KDevelop::IndexedString ClassMethodDeclaration::prettyName() const
 {
-    return d_func()->prettyName.str();
+    return d_func()->prettyName;
 }
 
-void ClassMethodDeclaration::setPrettyName( const QString& name )
+void ClassMethodDeclaration::setPrettyName( const KDevelop::IndexedString& name )
 {
-    d_func_dynamic()->prettyName = KDevelop::IndexedString(name);
+    d_func_dynamic()->prettyName = name;
 }
 
 QString ClassMethodDeclaration::toString() const
@@ -92,12 +92,12 @@ QString ClassMethodDeclaration::toString() const
     TypePtr<FunctionType> function = type<FunctionType>();
     if(function) {
         return QString("%1 %2 %3").arg(function->partToString( FunctionType::SignatureReturn ))
-                                  .arg(prettyName())
+                                  .arg(prettyName().str())
                                   .arg(function->partToString( FunctionType::SignatureArguments ));
     } else {
         QString type = abstractType() ? abstractType()->toString() : QString("<notype>");
         kDebug(9505) << "A function has a bad type attached:" << type;
-        return QString("invalid member-function %1 type %2").arg(prettyName()).arg(type);
+        return QString("invalid member-function %1 type %2").arg(prettyName().str()).arg(type);
     }
 }
 

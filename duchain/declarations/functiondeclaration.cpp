@@ -63,14 +63,14 @@ KDevelop::Declaration* FunctionDeclaration::clonePrivate() const
     return new FunctionDeclaration(*this);
 }
 
-QString FunctionDeclaration::prettyName() const
+KDevelop::IndexedString FunctionDeclaration::prettyName() const
 {
-    return d_func()->prettyName.str();
+    return d_func()->prettyName;
 }
 
-void FunctionDeclaration::setPrettyName( const QString& name )
+void FunctionDeclaration::setPrettyName( const KDevelop::IndexedString& name )
 {
-    d_func_dynamic()->prettyName = KDevelop::IndexedString(name);
+    d_func_dynamic()->prettyName = name;
 }
 
 QString FunctionDeclaration::toString() const
@@ -82,7 +82,7 @@ QString FunctionDeclaration::toString() const
   Q_ASSERT(function);
 
   return QString("%1 %2 %3").arg(function->partToString( KDevelop::FunctionType::SignatureReturn ))
-                            .arg(prettyName())
+                            .arg(prettyName().str())
                             .arg(function->partToString( KDevelop::FunctionType::SignatureArguments ));
 }
 

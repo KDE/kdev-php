@@ -38,7 +38,7 @@ typedef KDevelop::AbstractContextBuilder<AstNode, IdentifierAst> ContextBuilderB
 
 /// first is the "pretty" identifier used for printing
 /// second comes the all-lowercase identifier used for storage
-typedef QPair<QString, KDevelop::QualifiedIdentifier> IdentifierPair;
+typedef QPair<KDevelop::IndexedString, KDevelop::QualifiedIdentifier> IdentifierPair;
 
 class KDEVPHPDUCHAIN_EXPORT ContextBuilder: public ContextBuilderBase, public DefaultVisitor
 {

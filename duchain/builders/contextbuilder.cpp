@@ -179,11 +179,11 @@ QualifiedIdentifier ContextBuilder::identifierForNode(VariableIdentifierAst* id)
 IdentifierPair ContextBuilder::identifierPairForNode( IdentifierAst* id )
 {
     if (!id) {
-        return qMakePair(QString(), QualifiedIdentifier());
+        return qMakePair(KDevelop::IndexedString(), QualifiedIdentifier());
     }
     const QString ret = stringForNode(id);
 
-    return qMakePair(ret, QualifiedIdentifier(ret.toLower()));
+    return qMakePair(KDevelop::IndexedString(ret), QualifiedIdentifier(ret.toLower()));
 }
 
 QString ContextBuilder::stringForNode(IdentifierAst* node) const

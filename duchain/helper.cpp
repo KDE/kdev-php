@@ -287,15 +287,15 @@ QString prettyName(Declaration* dec) {
      if ( dec->context() && dec->context()->type() == DUContext::Class && dec->isFunctionDeclaration() ) {
         ClassMethodDeclaration* classMember = dynamic_cast<ClassMethodDeclaration*>(dec);
         Q_ASSERT(classMember);
-        return classMember->prettyName();
+        return classMember->prettyName().str();
     } else if ( dec->isFunctionDeclaration() ) {
         FunctionDeclaration* func = dynamic_cast<FunctionDeclaration*>(dec);
         Q_ASSERT(func);
-        return func->prettyName();
+        return func->prettyName().str();
     } else if ( dec->internalContext() && dec->internalContext()->type() == DUContext::Class ) {
         ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
         Q_ASSERT(classDec);
-        return classDec->prettyName();
+        return classDec->prettyName().str();
     } else {
         return dec->identifier().toString();
     }

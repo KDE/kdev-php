@@ -62,8 +62,8 @@ public:
     /// Constructor using raw data. \param data internal data.
     StructureType(StructureTypeData& data);
 
-    void setPrettyName(const QString& name);
-    QString prettyName() const;
+    void setPrettyName(const KDevelop::IndexedString& name);
+    KDevelop::IndexedString prettyName() const;
 
     virtual QString toString() const;
 

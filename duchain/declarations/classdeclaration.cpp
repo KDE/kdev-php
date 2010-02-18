@@ -60,16 +60,16 @@ KDevelop::Declaration* ClassDeclaration::clonePrivate() const
     return new ClassDeclaration(*this);
 }
 
-QString ClassDeclaration::prettyName() const
+KDevelop::IndexedString ClassDeclaration::prettyName() const
 {
-    return d_func()->prettyName.str();
+    return d_func()->prettyName;
 }
 
-void ClassDeclaration::setPrettyName( const QString& name )
+void ClassDeclaration::setPrettyName( const KDevelop::IndexedString& name )
 {
     bool wasInSymbolTable = d_func()->m_inSymbolTable;
     setInSymbolTable(false);
-    d_func_dynamic()->prettyName = KDevelop::IndexedString(name);
+    d_func_dynamic()->prettyName = name;
     setInSymbolTable(wasInSymbolTable);
 }
 
@@ -101,7 +101,7 @@ QString ClassDeclaration::toString() const
       ret += "struct ";
       break;
   }
-  return ret + prettyName();
+  return ret + prettyName().str();
 }
 
 void ClassDeclaration::setInSymbolTable(bool inSymbolTable)

@@ -48,18 +48,18 @@ QString StructureType::toString() const
     if ( d_func()->prettyName.isEmpty() ) {
         return KDevelop::StructureType::toString();
     } else {
-        return prettyName();
+        return prettyName().str();
     }
 }
 
-QString StructureType::prettyName() const
+KDevelop::IndexedString StructureType::prettyName() const
 {
-    return d_func()->prettyName.str();
+    return d_func()->prettyName;
 }
 
-void StructureType::setPrettyName( const QString& name )
+void StructureType::setPrettyName( const KDevelop::IndexedString& name )
 {
-    d_func_dynamic()->prettyName = IndexedString(name);
+    d_func_dynamic()->prettyName = name;
 }
 
 KDevelop::AbstractType* StructureType::clone() const
