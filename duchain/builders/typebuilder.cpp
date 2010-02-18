@@ -417,7 +417,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
     {
         FunctionType::Ptr ft = currentType<FunctionType>();
         // kDebug() << "return" << (ft->returnType() ? ft->returnType()->toString() : "none") << lastType()->toString();
-        if (ft->returnType()) {
+        if (ft->returnType() && !ft->returnType()->equals(lastType().unsafeData())) {
             if (ft->returnType().cast<IntegralType>()
                 && ft->returnType().cast<IntegralType>()->dataType() == IntegralType::TypeMixed)
             {

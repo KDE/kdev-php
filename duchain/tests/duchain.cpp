@@ -362,7 +362,8 @@ void TestDUChain::testDeclarationMultipleReturnTypes()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A {} function foo() { return null; return new A(); return null; }");
+    QByteArray method("<? class A {} function foo() { return null; return new A(); return null; }\n"
+                      "function bar() { return 1; return 2; }");
 
     TopDUContext* top = parse(method, DumpNone);
     DUChainReleaser releaseTop(top);
@@ -370,7 +371,7 @@ void TestDUChain::testDeclarationMultipleReturnTypes()
 
     FunctionType::Ptr fType = top->localDeclarations().at(1)->type<FunctionType>();
     QVERIFY(fType);
-
+    kDebug() << fType->toString();
     TypePtr<UnsureType> ut = UnsureType::Ptr::dynamicCast(fType->returnType());
     QVERIFY(ut);
     QCOMPARE(2u, ut->typesSize());
@@ -382,6 +383,12 @@ void TestDUChain::testDeclarationMultipleReturnTypes()
 
     QVERIFY(ut->types()[1].type<IntegralType>());
     QVERIFY(ut->types()[1].type<IntegralType>()->dataType() == IntegralType::TypeNull);
+
+    fType = top->localDeclarations().at(2)->type<FunctionType>();
+    QVERIFY(fType);
+    kDebug() << fType->toString();
+    QVERIFY(IntegralType::Ptr::dynamicCast(fType->returnType()));
+    QVERIFY(IntegralType::Ptr::dynamicCast(fType->returnType())->dataType() == IntegralType::TypeInt);
 }
 
 void TestDUChain::testReturnTypeViaMember()
