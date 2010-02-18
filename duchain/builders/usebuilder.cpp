@@ -124,11 +124,19 @@ void UseBuilder::visitStaticScalar(StaticScalarAst* node)
 
 void UseBuilder::visitStatement(StatementAst *node)
 {
+    AstNode* visitNode = 0;
     if (node->foreachVar) {
-        UseExpressionVisitor v(editor(), this);
-        node->foreachVar->ducontext = currentContext();
-        v.visitNode(node->foreachVar);
+        visitNode = node->foreachVar;
+    } else if (node->unsetVariablesSequence) {
+        visitNode = node;
     }
+
+    if (visitNode) {
+        UseExpressionVisitor v(editor(), this);
+        visitNode->ducontext = currentContext();
+        v.visitNode(visitNode);
+    }
+
     UseBuilderBase::visitStatement(node);
 }
 

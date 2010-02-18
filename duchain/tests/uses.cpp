@@ -761,6 +761,22 @@ void TestUses::nestedMethodCalls()
     compareUses(methodBDec, SimpleRange(5, 10, 5, 11));
 }
 
+void TestUses::unset()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $a = 1; unset($a);");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVector<Declaration*> decs = top->localDeclarations();
+    QCOMPARE(decs.size(), 1);
+    QCOMPARE(decs.first()->range(), SimpleRange(0, 3, 0, 5));
+    compareUses(decs.first(), SimpleRange(0, 17, 0, 19));
+}
+
 }
 
 

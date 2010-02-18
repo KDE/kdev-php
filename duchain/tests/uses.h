@@ -71,6 +71,7 @@ private slots:
     void functionUseBeforeDeclaration();
     void propertyAndMethodWithSameName();
     void nestedMethodCalls();
+    void unset();
 };
 
 }
