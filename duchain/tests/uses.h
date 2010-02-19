@@ -72,7 +72,7 @@ private slots:
     void propertyAndMethodWithSameName();
     void nestedMethodCalls();
     void unset();
-    void referencedArgument();
+    void functionArguments();
 };
 
 }

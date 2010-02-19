@@ -523,9 +523,10 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
         }
     }
     {
+        // create variable declaration for argument
         DUChainWriteLocker lock(DUChain::lock());
         SimpleRange newRange = editorFindRange(node->variable, node->variable);
-        openDefinition<Declaration>(identifierForNode(node->variable), newRange);
+        openDefinition<VariableDeclaration>(identifierForNode(node->variable), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
     }
 
@@ -654,7 +655,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
     DUChainWriteLocker lock(DUChain::lock());
     // check if this variable is already declared
     {
-        QList< Declaration* > decs = parentCtx->findLocalDeclarations(identifier.first(), startPos(node));
+        QList< Declaration* > decs = parentCtx->findDeclarations(identifier.first(), startPos(node));
         if ( !decs.isEmpty() ) {
             QList< Declaration* >::const_iterator it = decs.constEnd() - 1;
             while ( true ) {
