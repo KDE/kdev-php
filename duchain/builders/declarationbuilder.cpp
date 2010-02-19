@@ -29,6 +29,7 @@
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/aliasdeclaration.h>
 #include <language/duchain/types/integraltype.h>
+#include <language/duchain/types/unsuretype.h>
 
 #include <interfaces/icore.h>
 #include <interfaces/ilanguagecontroller.h>
@@ -659,11 +660,25 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
             while ( true ) {
                 // we expect that the list of declarations has the newest declaration at back
                 if ( dynamic_cast<VariableDeclaration*>( *it ) ) {
-                    if ( (*it)->abstractType()->indexed() == type->indexed() ) {
-                        encounter(*it);
-                        return;
+                    encounter(*it);
+                    if ( (*it)->abstractType() && !(*it)->abstractType()->equals(type.unsafeData()) ) {
+                        // if it's currently mixed and we now get something more definite, use that instead
+                        if ( IntegralType::Ptr integral = IntegralType::Ptr::dynamicCast((*it)->abstractType()) ) {
+                            if ( integral->dataType() == IntegralType::TypeMixed ) {
+                                (*it)->setType(type);
+                                return;
+                            }
+                        }
+                        // else make it unsure
+                        UnsureType::Ptr unsure = UnsureType::Ptr::dynamicCast((*it)->abstractType());
+                        if ( !unsure ) {
+                            unsure = UnsureType::Ptr(new UnsureType());
+                            unsure->addType((*it)->indexedType());
+                        }
+                        unsure->addType(type->indexed());
+                        (*it)->setType(unsure);
                     }
-                    break;
+                    return;
                 }
                 if ( it == decs.constBegin() ) {
                     break;

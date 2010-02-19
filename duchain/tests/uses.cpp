@@ -176,7 +176,7 @@ void TestUses::memberFunctionInString()
     compareUses(top->childContexts().first()->localDeclarations().first(), SimpleRange(0, 54, 0, 57));
 }
 
-void TestUses::variableTwoDeclarations()
+void TestUses::variableTypeChange()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -186,13 +186,16 @@ void TestUses::variableTwoDeclarations()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    compareUses(top->localDeclarations().at(1), SimpleRange(0, 25, 0, 27));
-
-    //$a = 0 is a new declaration!
-    compareUses(top->localDeclarations().at(2), SimpleRange(0, 37, 0, 39));
+    QList<SimpleRange> ranges;
+    ranges << SimpleRange(0, 25, 0, 27);
+    ranges << SimpleRange(0, 29, 0, 31);
+    ranges << SimpleRange(0, 37, 0, 39);
+    ranges << SimpleRange(0, 41, 0, 43);
+    ranges << SimpleRange(0, 51, 0, 53);
+    compareUses(top->localDeclarations().at(1), ranges);
 }
 
-void TestUses::variableTwoDeclarationsInFunction()
+void TestUses::variableTypeChangeInFunction()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -203,10 +206,12 @@ void TestUses::variableTwoDeclarationsInFunction()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    compareUses(top->childContexts().at(1)->localDeclarations().at(0), SimpleRange(0, 28, 0, 30));
-
-    //$a = 0 is a new declaration!
-    compareUses(top->childContexts().at(1)->localDeclarations().at(1), SimpleRange(0, 38, 0, 40));
+    QList<SimpleRange> ranges;
+    ranges << SimpleRange(0, 28, 0, 30);
+    ranges << SimpleRange(0, 32, 0, 34);
+    ranges << SimpleRange(0, 38, 0, 40);
+    ranges << SimpleRange(0, 42, 0, 44);
+    compareUses(top->childContexts().at(1)->localDeclarations().at(0), ranges);
 }
 
 void TestUses::classExtends()
@@ -775,6 +780,20 @@ void TestUses::unset()
     QCOMPARE(decs.size(), 1);
     QCOMPARE(decs.first()->range(), SimpleRange(0, 3, 0, 5));
     compareUses(decs.first(), SimpleRange(0, 17, 0, 19));
+}
+
+void TestUses::referencedArgument()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo(&$a) { $a = 0; }");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *d = top->childContexts().first()->localDeclarations().first();
+    compareUses(d, SimpleRange(0, 22, 0, 24));
 }
 
 }

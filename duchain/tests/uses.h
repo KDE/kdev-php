@@ -39,8 +39,8 @@ private slots:
     void varInString();
     void memberVarInString();
     void memberFunctionInString();
-    void variableTwoDeclarations();
-    void variableTwoDeclarationsInFunction();
+    void variableTypeChange();
+    void variableTypeChangeInFunction();
     void classExtends();
     void classImplements();
     void classImplementsMultiple();
@@ -72,6 +72,7 @@ private slots:
     void propertyAndMethodWithSameName();
     void nestedMethodCalls();
     void unset();
+    void referencedArgument();
 };
 
 }

@@ -95,7 +95,7 @@ void TestDUChain::testDeclareVar()
 
     QVERIFY(!top->parentContext());
     QCOMPARE(top->childContexts().count(), 2);
-    QCOMPARE(top->localDeclarations().count(), 7);
+    QCOMPARE(top->localDeclarations().count(), 5);
 
     //class A
     Declaration* dec = top->localDeclarations().at(0);
@@ -105,39 +105,34 @@ void TestDUChain::testDeclareVar()
     //$i
     Declaration* decVar = top->localDeclarations().at(2);
     QCOMPARE(decVar->identifier(), Identifier("i"));
-    StructureType::Ptr type = decVar->type<StructureType>();
-    QVERIFY(type);
-    QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("a"));
-    QVERIFY(type->equals(dec->abstractType().unsafeData()));
-
+    kDebug() << decVar->abstractType()->toString();
+    UnsureType::Ptr unsureType = decVar->type<UnsureType>();
+    QVERIFY(unsureType);
+    QCOMPARE(unsureType->typesSize(), 3u);
+    // = new A();
+    QCOMPARE(unsureType->types()[0].abstractType().cast<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QVERIFY(unsureType->types()[0].abstractType()->equals(dec->abstractType().unsafeData()));
+    // = new B();
     //class B
     dec = top->localDeclarations().at(1);
     QCOMPARE(dec->uses().count(), 1);
     QCOMPARE(dec->uses().begin()->count(), 2);
+    QCOMPARE(unsureType->types()[1].abstractType().cast<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("b"));
+    QVERIFY(unsureType->types()[1].abstractType()->equals(dec->abstractType().unsafeData()));
+    // = 'foo';
+    QVERIFY(unsureType->types()[2].abstractType().cast<IntegralType>());
+    QVERIFY(unsureType->types()[2].abstractType().cast<IntegralType>()->dataType() == IntegralType::TypeString);
 
     //$j
     decVar = top->localDeclarations().at(3);
     QCOMPARE(decVar->identifier(), Identifier("j"));
-    type = decVar->type<StructureType>();
-    QVERIFY(type);
-    QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("b"));
-    QVERIFY(type->equals(dec->abstractType().unsafeData()));
-
-    //$i (2nd)
-    decVar = top->localDeclarations().at(4);
-    QCOMPARE(decVar->identifier(), Identifier("i"));
-    type = decVar->type<StructureType>();
-    QVERIFY(type);
-    QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("b"));
-    QVERIFY(type->equals(dec->abstractType().unsafeData()));
-
-    //$i (3rd)
-    decVar = top->localDeclarations().at(5);
-    QCOMPARE(decVar->identifier(), Identifier("i"));
-    QVERIFY(decVar->type<IntegralType>());
+    StructureType::Ptr classType = decVar->type<StructureType>();
+    QVERIFY(classType);
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("b"));
+    QVERIFY(classType->equals(dec->abstractType().unsafeData()));
 
     // $a
-    decVar = top->localDeclarations().at(6);
+    decVar = top->localDeclarations().at(4);
     QCOMPARE(decVar->identifier(), Identifier("a"));
     QVERIFY(decVar->type<IntegralType>());
 }
@@ -1074,6 +1069,7 @@ void TestDUChain::testSingleton()
     FunctionType::Ptr fun = top->childContexts().first()->localDeclarations().first()->type<FunctionType>();
     QVERIFY(fun);
     StructureType::Ptr ret = StructureType::Ptr::dynamicCast(fun->returnType());
+    kDebug() << fun->returnType()->toString();
     QVERIFY(ret);
     QCOMPARE(ret->declaration(top), top->localDeclarations().first());
 }
@@ -1416,9 +1412,13 @@ void TestDUChain::testReturnTypeTwoDeclarations()
     Declaration* dec = top->localDeclarations().at(0);
     FunctionType::Ptr functionType = dec->type<FunctionType>();
     QVERIFY(functionType);
-    IntegralType::Ptr retType = IntegralType::Ptr::dynamicCast(functionType->returnType());
+    UnsureType::Ptr retType = UnsureType::Ptr::dynamicCast(functionType->returnType());
     QVERIFY(retType);
-    QCOMPARE(retType->dataType(), (uint)IntegralType::TypeInt);
+    QCOMPARE(retType->typesSize(), 2u);
+    QVERIFY(retType->types()[0].abstractType().cast<IntegralType>());
+    QCOMPARE(retType->types()[0].abstractType().cast<IntegralType>()->dataType(), (uint)IntegralType::TypeString);
+    QVERIFY(retType->types()[1].abstractType().cast<IntegralType>());
+    QCOMPARE(retType->types()[1].abstractType().cast<IntegralType>()->dataType(), (uint)IntegralType::TypeInt);
 }
 
 void TestDUChain::testGlobalVariableNotVisibleInFunction()
