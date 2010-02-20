@@ -38,7 +38,7 @@ namespace Php
 {
 
 CodeModelCompletionItem::CodeModelCompletionItem(const ParsingEnvironmentFilePointer &env, const CompletionCodeModelItem &item)
-    : CompletionTreeItem(), m_env(env), m_item(item)
+    : CompletionTreeItem(), m_item(item), m_env(env)
 {
 }
 
