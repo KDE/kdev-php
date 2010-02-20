@@ -53,7 +53,7 @@ TestDUChain::TestDUChain()
 {
 }
 
-void TestDUChain::testDeclareFunction()
+void TestDUChain::declareFunction()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -82,7 +82,7 @@ void TestDUChain::testDeclareFunction()
     QCOMPARE(top->childContexts().at(1)->type(), DUContext::Other);
 }
 
-void TestDUChain::testDeclareVar()
+void TestDUChain::declareVar()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -137,7 +137,7 @@ void TestDUChain::testDeclareVar()
     QVERIFY(decVar->type<IntegralType>());
 }
 
-void TestDUChain::testDeclareClass()
+void TestDUChain::declareClass()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -214,7 +214,7 @@ void TestDUChain::testDeclareClass()
     QCOMPARE(funDec->accessPolicy(), Declaration::Public);
 }
 
-void TestDUChain::testClassMemberVar()
+void TestDUChain::classMemberVar()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -277,7 +277,7 @@ void TestDUChain::testClassMemberVar()
     QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeInt);
 }
 
-void TestDUChain::testReturnTypeClass()
+void TestDUChain::returnTypeClass()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -308,7 +308,7 @@ void TestDUChain::testReturnTypeClass()
     QCOMPARE(retType->qualifiedIdentifier(), QualifiedIdentifier("a"));
 }
 
-void TestDUChain::testDeclarationReturnType()
+void TestDUChain::declarationReturnType()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -335,7 +335,7 @@ void TestDUChain::testDeclarationReturnType()
     QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("a"));
 }
 
-void TestDUChain::testDeclarationReturnTypeInRecursingFunction()
+void TestDUChain::declarationReturnTypeInRecursingFunction()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -353,7 +353,7 @@ void TestDUChain::testDeclarationReturnTypeInRecursingFunction()
     QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("a"));
 }
 
-void TestDUChain::testDeclarationMultipleReturnTypes()
+void TestDUChain::declarationMultipleReturnTypes()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -386,7 +386,7 @@ void TestDUChain::testDeclarationMultipleReturnTypes()
     QVERIFY(IntegralType::Ptr::dynamicCast(fType->returnType())->dataType() == IntegralType::TypeInt);
 }
 
-void TestDUChain::testReturnTypeViaMember()
+void TestDUChain::returnTypeViaMember()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -435,7 +435,7 @@ void TestDUChain::testReturnTypeViaMember()
     }
 }
 
-void TestDUChain::testDeclarationReturnTypeDocBlock()
+void TestDUChain::declarationReturnTypeDocBlock()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -492,7 +492,7 @@ void TestDUChain::testDeclarationReturnTypeDocBlock()
     QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("exception"));
 }
 
-void TestDUChain::testDeclarationReturnTypeDocBlockIntegral()
+void TestDUChain::declarationReturnTypeDocBlockIntegral()
 {
     QByteArray method("<? /** @return string **/ function foo() {} /** @return mixed **/ function bar() {} class A { /** @return int **/ function aaa() {} }");
 
@@ -519,7 +519,7 @@ void TestDUChain::testDeclarationReturnTypeDocBlockIntegral()
     QVERIFY(IntegralType::Ptr::dynamicCast(fType->returnType())->dataType() == IntegralType::TypeInt);
 }
 
-void TestDUChain::testDeclarationReturnTypeClassChain()
+void TestDUChain::declarationReturnTypeClassChain()
 {
     QByteArray method("<? class A { /** @return this **/ function a() {} /** @return self **/ function b() {} }");
 
@@ -538,7 +538,7 @@ void TestDUChain::testDeclarationReturnTypeClassChain()
     QVERIFY(/* func b (self) */ ctx->localDeclarations().at(1)->type<FunctionType>() == ctx->owner()->abstractType());
 }
 
-void TestDUChain::testDeclareTypehintFunction()
+void TestDUChain::declareTypehintFunction()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -581,7 +581,7 @@ void TestDUChain::testDeclareTypehintFunction()
     QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("a"));
 }
 
-void TestDUChain::testDeclareTypehintArrayFunction()
+void TestDUChain::declareTypehintArrayFunction()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -603,7 +603,7 @@ void TestDUChain::testDeclareTypehintArrayFunction()
     QVERIFY(type->dataType() == IntegralType::TypeArray);
 }
 
-void TestDUChain::testClassImplementsInterface()
+void TestDUChain::classImplementsInterface()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -662,7 +662,7 @@ void TestDUChain::testClassImplementsInterface()
     QCOMPARE(dec->uses().count(), 0);
 }
 
-void TestDUChain::testClassExtends()
+void TestDUChain::classExtends()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -721,7 +721,7 @@ void TestDUChain::testClassExtends()
 }
 
 
-void TestDUChain::testStaticMethod()
+void TestDUChain::staticMethod()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -737,7 +737,7 @@ void TestDUChain::testStaticMethod()
     QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("b"));
 }
 
-void TestDUChain::testOwnStaticMethod()
+void TestDUChain::ownStaticMethod()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -765,7 +765,7 @@ void TestDUChain::testOwnStaticMethod()
     QCOMPARE(top->childContexts().at(1)->childContexts().at(1 + 2)->localDeclarations().at(1)
              ->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("b"));
 }
-void TestDUChain::testThis()
+void TestDUChain::thisVar()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -789,7 +789,7 @@ void TestDUChain::testThis()
     QCOMPARE(cls->qualifiedIdentifier(), QualifiedIdentifier("a"));
 }
 
-void TestDUChain::testObjectFunctionCall()
+void TestDUChain::objectFunctionCall()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -813,7 +813,7 @@ void TestDUChain::testObjectFunctionCall()
     QCOMPARE(cls->qualifiedIdentifier(), QualifiedIdentifier("b"));
 }
 
-void TestDUChain::testObjectFunctionCall2()
+void TestDUChain::objectFunctionCall2()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -831,7 +831,7 @@ void TestDUChain::testObjectFunctionCall2()
     QCOMPARE(cls->qualifiedIdentifier(), QualifiedIdentifier("c"));
 }
 
-void TestDUChain::testObjectFunctionCall3()
+void TestDUChain::objectFunctionCall3()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -848,7 +848,7 @@ void TestDUChain::testObjectFunctionCall3()
     QCOMPARE(top->localDeclarations().at(3)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("b"));;
 }
 
-void TestDUChain::testObjectVariable()
+void TestDUChain::objectVariable()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -862,7 +862,7 @@ void TestDUChain::testObjectVariable()
     QCOMPARE(top->localDeclarations().at(3)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("b"));;
 }
 
-void TestDUChain::testStaticMemberVariable()
+void TestDUChain::staticMemberVariable()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -875,7 +875,7 @@ void TestDUChain::testStaticMemberVariable()
     QCOMPARE(top->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("i"));
     QCOMPARE(top->localDeclarations().at(2)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("b"));;
 }
-void TestDUChain::testOwnStaticMemberVariable()
+void TestDUChain::ownStaticMemberVariable()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -890,7 +890,7 @@ void TestDUChain::testOwnStaticMemberVariable()
     QCOMPARE(barContext->localDeclarations().at(1)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("b"));
 }
 
-void TestDUChain::testClassConst()
+void TestDUChain::classConst()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -905,7 +905,7 @@ void TestDUChain::testClassConst()
              QualifiedIdentifier("a::FOO"));
 }
 
-void TestDUChain::testDefine()
+void TestDUChain::define()
 {
     // the last define tests that we don't crash under that circumstance
     //                 0         1         2         3         4         5         6         7
@@ -924,7 +924,7 @@ void TestDUChain::testDefine()
     QVERIFY(top->findDeclarations(QualifiedIdentifier("FOO")).first()->abstractType()->modifiers() & AbstractType::ConstModifier);
     QVERIFY(top->findDeclarations(QualifiedIdentifier("BAR")).first()->abstractType()->modifiers() & AbstractType::ConstModifier);
 }
-void TestDUChain::testDefaultFunctionParam()
+void TestDUChain::defaultFunctionParam()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -942,7 +942,7 @@ void TestDUChain::testDefaultFunctionParam()
     QCOMPARE(fun->defaultParameters()[1].str(), QString("null"));
 }
 
-void TestDUChain::testGlobalFunction()
+void TestDUChain::globalFunction()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -959,7 +959,7 @@ void TestDUChain::testGlobalFunction()
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("substr")).count(), 1);
 }
 
-void TestDUChain::testGlobalVariableFromInternalFunctions()
+void TestDUChain::globalVariableFromInternalFunctions()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -976,7 +976,7 @@ void TestDUChain::testGlobalVariableFromInternalFunctions()
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("_GET")).count(), 1);
 }
 
-void TestDUChain::testNewObjectFromOtherFile()
+void TestDUChain::newObjectFromOtherFile()
 {
 
     TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo.php"), "<?php class Foo { } ");
@@ -994,7 +994,7 @@ void TestDUChain::testNewObjectFromOtherFile()
              addTop->localDeclarations().first());
 }
 
-void TestDUChain::testUnknownReturnType()
+void TestDUChain::unknownReturnType()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1012,7 +1012,7 @@ void TestDUChain::testUnknownReturnType()
     QVERIFY(IntegralType::Ptr::staticCast(fType->returnType())->dataType() == IntegralType::TypeVoid);
 }
 
-void TestDUChain::testStaticFunctionCallFromOtherFile()
+void TestDUChain::staticFunctionCallFromOtherFile()
 {
 
     TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo2.php"), "<?php class Foo { public static function a() {} } ");
@@ -1023,7 +1023,7 @@ void TestDUChain::testStaticFunctionCallFromOtherFile()
     QVERIFY(hasImportedParentContext(top, addTop));
 }
 
-void TestDUChain::testClassConstantFromOtherFile()
+void TestDUChain::classConstantFromOtherFile()
 {
 
     TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo2.php"), "<?php class Foo { const BAR = 0; } ");
@@ -1034,7 +1034,7 @@ void TestDUChain::testClassConstantFromOtherFile()
     QVERIFY(hasImportedParentContext(top, addTop));
 }
 
-void TestDUChain::testGlobalFunctionCallFromOtherFile()
+void TestDUChain::globalFunctionCallFromOtherFile()
 {
 
     TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo3.php"), "<?php function a() {} ");
@@ -1045,7 +1045,7 @@ void TestDUChain::testGlobalFunctionCallFromOtherFile()
     QVERIFY(hasImportedParentContext(top, addTop));
 }
 
-void TestDUChain::testConstantFromOtherFile()
+void TestDUChain::constantFromOtherFile()
 {
 
     TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo3.php"), "<?php define('A', 0); ");
@@ -1056,7 +1056,7 @@ void TestDUChain::testConstantFromOtherFile()
     QVERIFY(hasImportedParentContext(top, addTop));
 }
 
-void TestDUChain::testSingleton()
+void TestDUChain::singleton()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1074,7 +1074,7 @@ void TestDUChain::testSingleton()
     QCOMPARE(ret->declaration(top), top->localDeclarations().first());
 }
 
-void TestDUChain::testInternalFunctions()
+void TestDUChain::internalFunctions()
 {
     return; //disabled because it is too slow
     QString fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
@@ -1085,7 +1085,7 @@ void TestDUChain::testInternalFunctions()
     DUChainWriteLocker lock(DUChain::lock());
 }
 
-void TestDUChain::testTrueFalse()
+void TestDUChain::trueFalse()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1099,7 +1099,7 @@ void TestDUChain::testTrueFalse()
     QVERIFY(top->localDeclarations().at(1)->type<IntegralType>()->dataType() == IntegralType::TypeBoolean);
 }
 
-void TestDUChain::testNull()
+void TestDUChain::null()
 {
     QByteArray method("<? $a = null; ");
 
@@ -1110,7 +1110,7 @@ void TestDUChain::testNull()
     QVERIFY(top->localDeclarations().at(0)->type<IntegralType>()->dataType() == IntegralType::TypeNull);
 }
 
-void TestDUChain::testArray()
+void TestDUChain::array()
 {
     QByteArray method("<? $a = array(); $b = array(1, 2, 3); $b[] = 'test';");
 
@@ -1124,7 +1124,7 @@ void TestDUChain::testArray()
     QCOMPARE(top->findDeclarations(Identifier("b")).count(), 1);
 }
 
-void TestDUChain::testFunctionDocBlock()
+void TestDUChain::functionDocBlock()
 {
     {
         TopDUContext* top = parse("<? /**\n *Foo\n **/\nfunction foo() {} ", DumpNone);
@@ -1178,7 +1178,7 @@ void TestDUChain::testFunctionDocBlock()
     }
 }
 
-void TestDUChain::testVariableDocBlock()
+void TestDUChain::variableDocBlock()
 {
     {
         TopDUContext* top = parse("<? /**\n *Foo\n **/\n$a = 0; /**\n *Foo\n **/\nstatic $b;", DumpAll);
@@ -1196,7 +1196,7 @@ void TestDUChain::testVariableDocBlock()
     }
 }
 
-void TestDUChain::testFunctionDocBlockParams()
+void TestDUChain::functionDocBlockParams()
 {
     TopDUContext* top = parse("<? class A {} /**\n * @param\tint\n *\t@param A\n *  @param   mixed **/\nfunction foo($a, $b, $c, $d) {} ", DumpNone);
     {
@@ -1226,7 +1226,7 @@ void TestDUChain::testFunctionDocBlockParams()
     }
 }
 
-void TestDUChain::testMemberFunctionDocBlockParams()
+void TestDUChain::memberFunctionDocBlockParams()
 {
     TopDUContext* top = parse("<? class A { /**\n * @param bool\n * @param A\n * @param array\n **/\nfunction foo($a, $b, $c) {} }", DumpNone);
     {
@@ -1249,7 +1249,7 @@ void TestDUChain::testMemberFunctionDocBlockParams()
     }
 }
 
-void TestDUChain::testForeachLoop()
+void TestDUChain::foreachLoop()
 {
     TopDUContext* top = parse("<? $a = array(1); foreach($a as $k=>$i) { $i; }", DumpAll);
     DUChainReleaser releaseTop(top);
@@ -1260,7 +1260,7 @@ void TestDUChain::testForeachLoop()
     QCOMPARE(top->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("i"));
 }
 
-void TestDUChain::testPhp4StyleConstructor()
+void TestDUChain::php4StyleConstructor()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1277,7 +1277,7 @@ void TestDUChain::testPhp4StyleConstructor()
     QVERIFY(classFuncDec->isConstructor());
 }
 
-void TestDUChain::testConstructor()
+void TestDUChain::constructor()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1309,7 +1309,7 @@ void TestDUChain::testConstructor()
     }
 }
 
-void TestDUChain::testDestructor()
+void TestDUChain::destructor()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1326,7 +1326,7 @@ void TestDUChain::testDestructor()
     QVERIFY(!classFuncDec->isConstructor());
 }
 
-void TestDUChain::testFunctionInFunction()
+void TestDUChain::functionInFunction()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1338,7 +1338,7 @@ void TestDUChain::testFunctionInFunction()
     QCOMPARE(top->localDeclarations().at(0)->qualifiedIdentifier(), QualifiedIdentifier("aaa"));
 }
 
-void TestDUChain::testObjectWithClassName()
+void TestDUChain::objectWithClassName()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1352,7 +1352,7 @@ void TestDUChain::testObjectWithClassName()
     QVERIFY(top2 == top);
 }
 
-void TestDUChain::testLargeNumberOfDeclarations()
+void TestDUChain::largeNumberOfDeclarations()
 {
     TopDUContext* top = new TopDUContext(IndexedString("testurl"), SimpleRange(0, 0, 6000, 0), 0);
     DUChain::self()->addDocumentChain(top);
@@ -1366,7 +1366,7 @@ void TestDUChain::testLargeNumberOfDeclarations()
     }
 }
 
-void TestDUChain::testStaticVariable()
+void TestDUChain::staticVariable()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1399,7 +1399,7 @@ void TestDUChain::testStaticVariable()
     QCOMPARE(top->childContexts().at(1)->localDeclarations().at(5)->type<IntegralType>()->dataType(), (uint)IntegralType::TypeInt);
 }
 
-void TestDUChain::testReturnTypeTwoDeclarations()
+void TestDUChain::returnTypeTwoDeclarations()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1421,7 +1421,7 @@ void TestDUChain::testReturnTypeTwoDeclarations()
     QCOMPARE(retType->types()[1].abstractType().cast<IntegralType>()->dataType(), (uint)IntegralType::TypeInt);
 }
 
-void TestDUChain::testGlobalVariableNotVisibleInFunction()
+void TestDUChain::globalVariableNotVisibleInFunction()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1434,7 +1434,7 @@ void TestDUChain::testGlobalVariableNotVisibleInFunction()
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("a")).first()->uses().count(), 0);
 }
 
-void TestDUChain::testGlobalVariableInFunction()
+void TestDUChain::globalVariableInFunction()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1447,7 +1447,7 @@ void TestDUChain::testGlobalVariableInFunction()
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("a")).first()->uses().count(), 1);
 }
 
-void TestDUChain::testSuperglobalInFunction()
+void TestDUChain::superglobalInFunction()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1468,7 +1468,7 @@ void TestDUChain::testSuperglobalInFunction()
     QCOMPARE(dec->uses().values().first().at(1), SimpleRange(0, 27, 0, 32));
 }
 
-void TestDUChain::testReturnWithoutFunction()
+void TestDUChain::returnWithoutFunction()
 {
     //yes, this is possible in php, you then have $a as return value of an include call
     QByteArray method("<? $a = 0; return $a; ");
@@ -1477,7 +1477,7 @@ void TestDUChain::testReturnWithoutFunction()
     DUChainReleaser releaseTop(top);
 }
 
-void TestDUChain::testCircularInheritance()
+void TestDUChain::circularInheritance()
 {
     //circular inheritance is not allowed in PHP and should not crash kdevelop
     QByteArray method("<? class a extends b {} class b extends c {} class c extends a {}");
@@ -1494,7 +1494,7 @@ void TestDUChain::testCircularInheritance()
              top->localDeclarations().at(0)->internalContext());
 }
 
-void TestDUChain::testFindDeclarations()
+void TestDUChain::findDeclarations()
 {
     DUChainWriteLocker lock(DUChain::lock());
 
@@ -1530,7 +1530,7 @@ void TestDUChain::testFindDeclarations()
     QCOMPARE(1, top2->findDeclarations(Identifier("foo")).count());
 }
 
-void TestDUChain::testMemberTypeAfterMethod()
+void TestDUChain::memberTypeAfterMethod()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1568,7 +1568,7 @@ void TestDUChain::testMemberTypeAfterMethod()
 }
 
 
-void TestDUChain::testCatchDeclaration()
+void TestDUChain::catchDeclaration()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1585,7 +1585,7 @@ void TestDUChain::testCatchDeclaration()
     QCOMPARE(QualifiedIdentifier("exception"), ex->type<StructureType>()->declaration(top)->qualifiedIdentifier());
 }
 
-void TestDUChain::testResourceType()
+void TestDUChain::resourceType()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1605,7 +1605,7 @@ void TestDUChain::testResourceType()
     QVERIFY(rtype->dataType() == IntegralTypeExtended::TypeResource);
 }
 
-void TestDUChain::testForeachIterator()
+void TestDUChain::foreachIterator()
 {
     QByteArray code;
     code.append("<? class B {} class A implements Iterator {");
@@ -1628,7 +1628,7 @@ void TestDUChain::testForeachIterator()
     QVERIFY(top->localDeclarations().first() == iDec->type<StructureType>()->declaration(top));
 }
 
-void TestDUChain::testForeachIterator2()
+void TestDUChain::foreachIterator2()
 {
     QByteArray code;
     code.append("<? class B {} class A implements Iterator {");
@@ -1651,7 +1651,7 @@ void TestDUChain::testForeachIterator2()
     QVERIFY(top->localDeclarations().first() == iDec->type<StructureType>()->declaration(top));
 }
 
-void TestDUChain::testForeachIterator3()
+void TestDUChain::foreachIterator3()
 {
     QByteArray code;
     code.append("<? class B {} class A implements Iterator {");
@@ -1674,7 +1674,7 @@ void TestDUChain::testForeachIterator3()
     QVERIFY(top->localDeclarations().first() == iDec->type<StructureType>()->declaration(top));
 }
 
-void TestDUChain::testReturnThis()
+void TestDUChain::returnThis()
 {
     QByteArray code("<? class A { \n/**\n * @return $this\n */\npublic function x() {} } ");
     TopDUContext* top = parse(code, DumpAST);
@@ -1689,7 +1689,7 @@ void TestDUChain::testReturnThis()
     QVERIFY(StructureType::Ptr::dynamicCast(t)->declaration(top) == top->localDeclarations().first());
 }
 
-void TestDUChain::testUnsureReturnType()
+void TestDUChain::unsureReturnType()
 {
     QByteArray code("<? /**\n * @return bool|int\n */\nfunction x() {} ");
     TopDUContext* top = parse(code, DumpAST);
@@ -1708,7 +1708,7 @@ void TestDUChain::testUnsureReturnType()
 }
 
 
-void TestDUChain::testUnsureReturnType2()
+void TestDUChain::unsureReturnType2()
 {
     QByteArray code("<? class A {} class B {}\n/**\n * @return A|B\n */\nfunction x() {} ");
     TopDUContext* top = parse(code, DumpAST);
@@ -1726,7 +1726,7 @@ void TestDUChain::testUnsureReturnType2()
     QCOMPARE(ut->types()[1].type<StructureType>()->toString(), QString("B"));
 }
 
-void TestDUChain::testUnsureReturnType3()
+void TestDUChain::unsureReturnType3()
 {
     QByteArray code("<? function x() { if(rand(0,1)) return false; else return 1; return \"a\"; } ");
     TopDUContext* top = parse(code, DumpAST);
@@ -1747,7 +1747,7 @@ void TestDUChain::testUnsureReturnType3()
     QVERIFY(ut->types()[2].type<IntegralType>()->dataType() == IntegralType::TypeString);
 }
 
-void TestDUChain::testUnsureReturnType4()
+void TestDUChain::unsureReturnType4()
 {
     QByteArray code("<? \n/**\n * @param bool|int\n */\nfunction x($a) { return $a; } ");
     TopDUContext* top = parse(code, DumpAST);
@@ -1765,7 +1765,7 @@ void TestDUChain::testUnsureReturnType4()
     QVERIFY(ut->types()[1].type<IntegralType>()->dataType() == IntegralType::TypeInt);
 }
 
-void TestDUChain::testDeclareMemberOutOfClass()
+void TestDUChain::declareMemberOutOfClass()
 {
     //               0         1         2         3         4         5         6         7
     //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1819,7 +1819,7 @@ void TestDUChain::testDeclareMemberOutOfClass()
     QCOMPARE(top->problems().at(1)->finalLocation().start().line(), 3);
 }
 
-void TestDUChain::testDeclareMemberInClassMethod()
+void TestDUChain::declareMemberInClassMethod()
 {
     QByteArray code("<? class foo { private $priv = 0; protected $prot = 0; } class bar extends foo {\n"
                     // should declare member variable asdf (once!) as public
@@ -1866,7 +1866,7 @@ void TestDUChain::testDeclareMemberInClassMethod()
     QCOMPARE(top->problems().first()->finalLocation().start().line(), 4);
 }
 
-void TestDUChain::testThisRedeclaration()
+void TestDUChain::thisRedeclaration()
 {
     //               0         1         2         3         4         5         6         7
     //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -1881,7 +1881,7 @@ void TestDUChain::testThisRedeclaration()
     QVERIFY(top->problems().first()->finalLocation() == KTextEditor::Range(0, 50, 0, 55));
 }
 
-void TestDUChain::testImplicitArrayDeclaration()
+void TestDUChain::implicitArrayDeclaration()
 {
     ///TODO: adapt to unsure type once it's supported
     {
@@ -1949,7 +1949,7 @@ void TestDUChain::testImplicitArrayDeclaration()
     }
 }
 
-void TestDUChain::testImplicitReferenceDeclaration()
+void TestDUChain::implicitReferenceDeclaration()
 {
     {
     //               0         1         2         3         4         5         6         7
@@ -1991,7 +1991,7 @@ void TestDUChain::testImplicitReferenceDeclaration()
     }
 }
 
-void TestDUChain::testClassContextRange()
+void TestDUChain::classContextRange()
 {
     //               0         1         2         3         4         5         6         7
     //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -2004,7 +2004,7 @@ void TestDUChain::testClassContextRange()
     QCOMPARE(top->childContexts().first()->localDeclarations().count(), 2);
 }
 
-void TestDUChain::testLateClassMembers()
+void TestDUChain::lateClassMembers()
 {
     //               0         1         2         3         4         5         6         7
     //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -2022,7 +2022,7 @@ void TestDUChain::testLateClassMembers()
     QCOMPARE(cmdec->accessPolicy(), Declaration::Private);
 }
 
-void TestDUChain::testList()
+void TestDUChain::list()
 {
     foreach ( const QString& code, QStringList() << "<?php list($i, $j, $k) = array(1,2,3);"
                                                  << "<?php $a = array(1,2,3); list($i,$j,$k) = $a;"
@@ -2046,7 +2046,7 @@ void TestDUChain::testList()
     }
 }
 
-void TestDUChain::testAlternateDocCommentTypeHints()
+void TestDUChain::alternateDocCommentTypeHints()
 {
     //               0         1         2         3         4         5         6         7
     //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -2064,7 +2064,7 @@ void TestDUChain::testAlternateDocCommentTypeHints()
     QCOMPARE(dec->type<StructureType>()->declaration(top), cdec);
 }
 
-void TestDUChain::testFindFunctionArgs()
+void TestDUChain::findFunctionArgs()
 {
     //               0         1         2         3         4         5         6         7
     //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -2088,7 +2088,7 @@ void TestDUChain::testFindFunctionArgs()
     }
 }
 
-void TestDUChain::testUndeclaredPropertyInString()
+void TestDUChain::undeclaredPropertyInString()
 {
     // testcase for bug 209814
 
@@ -2106,7 +2106,7 @@ void TestDUChain::testUndeclaredPropertyInString()
     QCOMPARE(classCtx->findDeclarations(Identifier("bar")).size(), 1);
 }
 
-void TestDUChain::testUndeclaredVarPropertyInString()
+void TestDUChain::undeclaredVarPropertyInString()
 {
     // testcase for bug 210043
 
