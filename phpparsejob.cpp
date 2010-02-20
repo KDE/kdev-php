@@ -26,7 +26,8 @@
 
 #include <kdebug.h>
 #include <klocale.h>
-#include <KZip>
+#include <KFilterDev>
+#include <KMimeType>
 
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/duchain.h>
@@ -112,23 +113,15 @@ void ParseJob::run()
     QString fileName = document().str();
 
     if (readFromDisk) {
-        if ( fileName.endsWith(".php.zip", Qt::CaseInsensitive) ) {
-            KZip file(fileName);
-            if ( !file.open(QIODevice::ReadOnly) || !file.directory() ) {
+        if ( fileName.endsWith(".php.gz", Qt::CaseInsensitive) ) {
+            QString mimeType = KMimeType::findByPath(fileName, 0, false)->name ();
+            QIODevice* file = KFilterDev::deviceForFile (fileName, mimeType, false);
+            if ( !file->open(QIODevice::ReadOnly) ) {
                 kDebug() << "Could not open file" << document().str();
                 return abortJob();
-            } else if ( file.directory()->entries().count() != 1 ) {
-                kDebug() << "invalid zip file, too many entries:" << file.directory()->entries();
-                return abortJob();
             }
-            //NOTE: we only support archives with exactly one file in them
-            const KZipFileEntry* entry = static_cast<const KZipFileEntry*>(file.directory()->entry(file.directory()->entries().first()));
-            if ( !entry ) {
-                kDebug() << "invalid zip file, entry is not a file" << file.directory()->entries().first();
-                return abortJob();
-            }
-            session.setContents(entry->data());
-            file.close();
+            session.setContents(file->readAll());
+            delete file;
         } else {
             session.readFile(fileName);
         }

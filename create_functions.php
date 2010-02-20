@@ -216,6 +216,8 @@ foreach ($skipClasses as &$name) {
 }
 
 foreach ($classes as $class => $i) {
+    ///TODO: find proper fix for that
+    $i['isInterface'] = $i['isInterface'] && empty($i['implements']);
     if (in_array($class, $skipClasses)) continue; //skip those as they are documented in spl.php
     if ($class != 'global') {
         if (isset($i['desc'])) {
@@ -293,7 +295,13 @@ foreach ($classes as $class => $i) {
             if ($param['isRef']) $out .= "&";
             $out .= '$'.$param['name'];
         }
-        $out .= ") {}\n\n";
+        $out .= ")";
+        if ( !$i['isInterface'] ) {
+            $out .= "{}";
+        } else {
+            $out .= ";";
+        }
+        $out .= "\n\n";
         $declarationCount++;
     }
 
@@ -321,10 +329,21 @@ if ( !DEBUG ) {
         echo "saving phpfunctions.php file\n";
         file_put_contents("phpfunctions.php", $out);
     }
-    echo "removing phpfunctions.php.zip...\n";
-    unlink('phpfunctions.php.zip');
-    echo "calling zip phpfunctions.php.zip phpfunctions.php...\n";
-    shell_exec("zip phpfunctions.php.zip phpfunctions.php");
+
+    if ( shell_exec("which php-parser") ) {
+        echo "making sure phpfunctions file is valid...\n";
+        system("php-parser phpfunctions.php", $ret);
+        if ( $ret != 0 ) {
+            die("could not parse file, aborting\n");
+        }
+    } else {
+        echo "note: put php-parser in your path and I can check the generated file directly...\n";
+    }
+
+    echo "removing phpfunctions.php.gz...\n";
+    unlink('phpfunctions.php.gz');
+    echo "calling gzip phpfunctions.php...\n";
+    shell_exec("gzip phpfunctions.php");
     echo "done\n";
 } else {
     echo "phpfunctions.php\n~~~~\n$out\n~~~~\n";
@@ -354,6 +373,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     foreach ($removeSections as $i) {
         $string = preg_replace('#'.preg_quote('<section xml:id="'.$i.'">').'.*?</section>#s', '', $string);
     }
+    echo "reading documentation from {$file->getPathname()}\n";
     $xml = new SimpleXMLElement($string);
 
     if ( $file->getFilename() == 'versions.xml' ) {

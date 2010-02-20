@@ -20,6 +20,9 @@
 #include <QtTest/QtTest>
 #include <QtCore/QFile>
 
+#include <KFilterDev>
+#include <KMimeType>
+
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
 
@@ -48,20 +51,19 @@ void Benchmarks::initTestCase()
     DUChain::self()->disablePersistentStorage();
 }
 
-QFile* Benchmarks::getInternalFile()
+QIODevice* getInternalFile()
 {
-    QFile* file = new QFile(srcPath + "../../phpfunctions.php.zip");
-    kDebug() << file->fileName();
-    Q_ASSERT(file->exists());
-    file->open(QIODevice::ReadOnly);
-    Q_ASSERT(!file->error());
-    Q_ASSERT(file->isReadable());
+    QString fileName = srcPath + "../../phpfunctions.php.gz";
+    QString mimeType = KMimeType::findByPath(fileName, 0, false)->name ();
+    QIODevice* file = KFilterDev::deviceForFile (fileName, mimeType, false);
+    bool opened = file->open(QIODevice::ReadOnly);
+    Q_ASSERT(opened);
     return file;
 }
 
 void Benchmarks::parser()
 {
-    QFile* file = getInternalFile();
+    QIODevice* file = getInternalFile();
     QBENCHMARK {
         ParseSession session = ParseSession();
         session.setContents(file->readAll());
@@ -73,7 +75,7 @@ void Benchmarks::parser()
 
 void Benchmarks::declarationBuilder()
 {
-    QFile* file = getInternalFile();
+    QIODevice* file = getInternalFile();
     ParseSession session = ParseSession();
     session.setContents(file->readAll());
     delete file;
@@ -92,7 +94,7 @@ void Benchmarks::declarationBuilder()
 
 void Benchmarks::useBuilder()
 {
-    QFile* file = getInternalFile();
+    QIODevice* file = getInternalFile();
     ParseSession session = ParseSession();
     session.setContents(file->readAll());
     delete file;

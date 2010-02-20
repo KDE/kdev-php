@@ -303,7 +303,7 @@ QString prettyName(Declaration* dec) {
 
 const KDevelop::IndexedString& internalFunctionFile()
 {
-    static const KDevelop::IndexedString internalFile(KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php.zip"));
+    static const KDevelop::IndexedString internalFile(KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php.gz"));
     return internalFile;
 }
 

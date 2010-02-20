@@ -23,7 +23,8 @@
 
 #include <language/codecompletion/codecompletiontesthelper.h>
 
-#include <KZip>
+#include <KMimeType>
+#include <KFilterDev>
 
 #ifdef USE_VALGRIND
   #include <valgrind/callgrind.h>
@@ -58,21 +59,15 @@ void BenchmarkCodeCompletion::initTestCase()
     DUChainWriteLocker lock(DUChain::lock());
     if ( !DUChain::self()->chainForDocument(internalFunctionFile()) ) {
         kDebug() << "no internal function file found in DUChain, loading it manually";
-        KZip file(internalFunctionFile().str());
-        if ( !file.open(QIODevice::ReadOnly) || !file.directory() ) {
-            kDebug() << "Could not open file" << internalFunctionFile().str();
-            return;
-        } else if ( file.directory()->entries().count() != 1 ) {
-            kDebug() << "invalid zip file, too many entries:" << file.directory()->entries();
-            return;
-        }
-        const KZipFileEntry* entry = static_cast<const KZipFileEntry*>(file.directory()->entry(file.directory()->entries().first()));
-        if ( !entry ) {
-            kDebug() << "invalid zip file, entry is not a file" << file.directory()->entries().first();
+        QString fileName = internalFunctionFile().str();
+        QString mimeType = KMimeType::findByPath(fileName, 0, false)->name ();
+        QIODevice* file = KFilterDev::deviceForFile (fileName, mimeType, false);
+        if ( !file->open(QIODevice::ReadOnly) ) {
+            kDebug() << "Could not open file" << fileName;
             return;
         }
-        parseAdditionalFile(internalFunctionFile(), entry->data());
-        file.close();
+        parseAdditionalFile(internalFunctionFile(), file->readAll());
+        delete file;
         lock.unlock();
         DUChain::self()->storeToDisk();
     }

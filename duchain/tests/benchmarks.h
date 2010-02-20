@@ -40,10 +40,6 @@ private slots:
     void declarationBuilder();
     /// benchmarks the use-builder
     void useBuilder();
-
-private:
-    /// returns a QFile for the phpfunctions.php file
-    QFile* getInternalFile();
 };
 
 }
