@@ -304,8 +304,9 @@ void ParseJob::run()
             DUChainReadLocker lock(DUChain::lock());
             kDebug() << DUChain::self()->chainForDocument(document());
         }
-        return;
     }
+
+    cleanupSmartRevision();
 }
 
 void ParseJob::setParentJob(ParseJob *job)
