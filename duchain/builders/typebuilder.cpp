@@ -348,6 +348,11 @@ void TypeBuilder::visitParameter(ParameterAst *node)
         if (decl) type = decl->abstractType();
     } else if (node->arrayType != -1) {
         type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
+    } else if (node->defaultValue) {
+        ExpressionVisitor v(editor());
+        node->defaultValue->ducontext = currentContext();
+        v.visitNode(node->defaultValue);
+        type = v.result().type();
     }
     if (!type) {
         if (m_currentFunctionParams.count() > currentType<FunctionType>()->arguments().count()) {
@@ -422,7 +427,6 @@ void TypeBuilder::visitStatement(StatementAst* node)
         if ( ReferenceType::Ptr rType = ReferenceType::Ptr::dynamicCast(type) ) {
             type = rType->baseType();
         }
-        kDebug() << type->toString();
         if (ft->returnType() && !ft->returnType()->equals(type.unsafeData())) {
             if (ft->returnType().cast<IntegralType>()
                 && ft->returnType().cast<IntegralType>()->dataType() == IntegralType::TypeMixed)

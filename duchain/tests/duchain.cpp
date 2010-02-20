@@ -1807,6 +1807,19 @@ void TestDUChain::unsureReferencedArgument()
     QVERIFY(rType->baseType()->equals(aType.unsafeData()));
 }
 
+void TestDUChain::defaultArgument()
+{
+    // php does not return references
+    QByteArray code("<? \nfunction x($a = 1) {} ");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* dec = top->childContexts().first()->localDeclarations().first();
+    QVERIFY(dec->type<IntegralType>());
+    QCOMPARE(dec->type<IntegralType>()->dataType(), (uint)IntegralType::TypeInt);
+}
+
 void TestDUChain::declareMemberOutOfClass()
 {
     //               0         1         2         3         4         5         6         7
