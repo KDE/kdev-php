@@ -197,6 +197,12 @@ uksort($variables, 'strnatcasecmp');
 uksort($classes, 'strnatcasecmp');
 uksort($constants, 'strnatcasecmp');
 
+// put exception up front
+$exception = $classes['exception'];
+unset($classes['exception']);
+$classes = array_merge(array('exception' => $exception), $classes);
+reset($classes);
+
 foreach ($variables as $name=>$var) {
     $declarationCount++;
     $moreDesc = array();
