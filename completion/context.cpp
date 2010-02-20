@@ -745,6 +745,7 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
 
     if ( m_memberAccessOperation == FunctionCallAccess ) {
         Q_ASSERT(lastToken.type() == Parser::Token_LPAREN);
+        openLParen = 1;
         // check ctor call
         qint64 pos = lastToken.prependedBy(TokenList() << Parser::Token_STRING << Parser::Token_NEW, true);
         if ( pos != -1 ) {
@@ -757,26 +758,33 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
         }
     }
 
+    QList<int> stopTokens = QList<int>()
+            << Parser::Token_SEMICOLON << Parser::Token_INVALID << Parser::Token_OPEN_TAG
+            << Parser::Token_OPEN_TAG_WITH_ECHO << Parser::Token_LBRACE << Parser::Token_RBRACE
+            << Parser::Token_IF << Parser::Token_WHILE << Parser::Token_FOR << Parser::Token_FOREACH
+            << Parser::Token_SWITCH << Parser::Token_ELSEIF;
+    if ( m_memberAccessOperation != FunctionCallAccess ) {
+        stopTokens << Parser::Token_COMMA;
+    }
+
     // find expression start
-    while ( lastToken.typeAt(startPos) != Parser::Token_COMMA &&
-            lastToken.typeAt(startPos) != Parser::Token_SEMICOLON &&
-            lastToken.typeAt(startPos) != Parser::Token_INVALID &&
-            lastToken.typeAt(startPos) != Parser::Token_OPEN_TAG &&
-            lastToken.typeAt(startPos) != Parser::Token_OPEN_TAG_WITH_ECHO &&
-            lastToken.typeAt(startPos) != Parser::Token_LBRACE &&
-            lastToken.typeAt(startPos) != Parser::Token_RBRACE &&
-            lastToken.typeAt(startPos) != Parser::Token_COMMENT &&
-            lastToken.typeAt(startPos) != Parser::Token_DOC_COMMENT )
+    while ( !stopTokens.contains(lastToken.typeAt(startPos)) )
     {
         if ( lastToken.typeAt(startPos) == Parser::Token_LPAREN ) {
-            --openLParen;
-            if ( openLParen <= 0 ) {
+            ++openLParen;
+            if ( m_memberAccessOperation != FunctionCallAccess && openLParen > 0 ) {
                 break;
             }
         } else if ( lastToken.typeAt(startPos) == Parser::Token_RPAREN ) {
-            ++openLParen;
+            --openLParen;
         }
         --startPos;
+    }
+
+    if ( openLParen < 0 ) {
+        ifDebug(kDebug() << "too many closed parenthesis";)
+        m_valid = false;
+        return;
     }
 
     // we actually incorporate the not-wanted token, hence move forward
@@ -850,9 +858,8 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
 
         m_expression = m_expression.trimmed();
 
-        if ( m_memberAccessOperation == FunctionCallAccess ) {
-            // make sure the expression is valid
-            Q_ASSERT(m_expression.endsWith('('));
+        // make sure the expression is valid
+        for ( int i = openLParen; i > 0; --i ) {
             m_expression.append(')');
         }
 

@@ -87,6 +87,7 @@ private slots:
     void functionArguments();
     void referencedClass();
     void ctorCall();
+    void chainedCalling();
 };
 
 }

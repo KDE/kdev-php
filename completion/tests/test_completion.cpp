@@ -278,7 +278,7 @@ void TestCompletion::methodCall()
 
         QString ret;
         createArgumentList(*item2, ret, 0);
-        QCOMPARE(ret, QString("(A $a, mixed $b = null)"));
+        QCOMPARE(ret, QString("(A $a, null $b = null)"));
     }
     {
         PhpCompletionTester tester(top, "blah; $i->foo(new A(), ");
@@ -1133,6 +1133,19 @@ void TestCompletion::ctorCall()
         createArgumentList(*item2, ret, 0);
         QCOMPARE(ret, QString("(bool $asdf)"));
     }
+}
+
+void TestCompletion::chainedCalling()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php class a { function b() { return new a; } } $a = new a;", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    PhpCompletionTester tester(top, "$a->b()->");
+    QVERIFY(tester.completionContext->memberAccessOperation() == CodeCompletionContext::MemberAccess);
+    QCOMPARE(tester.names, QStringList() << "b");
 }
 
 }
