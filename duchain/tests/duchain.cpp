@@ -1785,6 +1785,28 @@ void TestDUChain::referencedArgument()
     QVERIFY(rType->baseType()->equals(aType.unsafeData()));
 }
 
+void TestDUChain::unsureReferencedArgument()
+{
+    // php does not return references
+    QByteArray code("<? \nfunction x(&$a) { $a = 1; $a = 'asdf'; return $a; } ");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* dec = top->localDeclarations().first();
+    QVERIFY(dec->type<FunctionType>());
+    kDebug() << dec->abstractType()->toString();
+    UnsureType::Ptr aType = dec->type<FunctionType>()->returnType().cast<UnsureType>();
+    QVERIFY(aType);
+    QCOMPARE(aType->typesSize(), 2u);
+    QCOMPARE(aType->types()[0].abstractType().cast<IntegralType>()->dataType(), (uint)IntegralType::TypeInt);
+    QCOMPARE(aType->types()[1].abstractType().cast<IntegralType>()->dataType(), (uint)IntegralType::TypeString);
+    QCOMPARE(top->childContexts().first()->type(), DUContext::Function);
+    ReferenceType::Ptr rType = top->childContexts().first()->localDeclarations().first()->abstractType().cast<ReferenceType>();
+    QVERIFY(rType);
+    QVERIFY(rType->baseType()->equals(aType.unsafeData()));
+}
+
 void TestDUChain::declareMemberOutOfClass()
 {
     //               0         1         2         3         4         5         6         7

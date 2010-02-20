@@ -684,12 +684,26 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                         }
                         // else make it unsure
                         UnsureType::Ptr unsure = UnsureType::Ptr::dynamicCast((*it)->abstractType());
+                        // maybe it's referenced?
+                        ReferenceType::Ptr rType = ReferenceType::Ptr::dynamicCast((*it)->abstractType());
+                        if ( !unsure && rType ) {
+                            unsure = UnsureType::Ptr::dynamicCast(rType->baseType());
+                        }
                         if ( !unsure ) {
                             unsure = UnsureType::Ptr(new UnsureType());
-                            unsure->addType((*it)->indexedType());
+                            if ( rType ) {
+                                unsure->addType(rType->baseType()->indexed());
+                            } else {
+                                unsure->addType((*it)->indexedType());
+                            }
                         }
                         unsure->addType(type->indexed());
-                        (*it)->setType(unsure);
+                        if ( rType ) {
+                            rType->setBaseType(AbstractType::Ptr(unsure.unsafeData()));
+                            (*it)->setType(rType);
+                        } else {
+                            (*it)->setType(unsure);
+                        }
                     }
                     return;
                 }
