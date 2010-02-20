@@ -34,6 +34,7 @@
 #include "../builders/declarationbuilder.h"
 #include "../builders/usebuilder.h"
 #include "../helper.h"
+#include <completion/codemodelitem.h>
 
 using namespace KTextEditor;
 using namespace KDevelop;

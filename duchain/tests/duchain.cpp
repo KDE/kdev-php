@@ -2083,6 +2083,7 @@ void TestDUChain::testFindFunctionArgs()
         decs = funcDec->internalContext()->findDeclarations(arg->identifier());
         QCOMPARE(decs.size(), 1);
         decs = funcDec->internalContext()->findDeclarations(arg->qualifiedIdentifier());
+        kDebug() << arg->qualifiedIdentifier().toString();
         QCOMPARE(decs.size(), 1);
     }
 }

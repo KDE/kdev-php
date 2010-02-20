@@ -70,11 +70,8 @@ QVariant CodeModelCompletionItem::data(const QModelIndex& index, int role, const
     case CodeCompletionModel::IsExpandable:
         return QVariant(true);
     case CodeCompletionModel::ExpandingWidget: {
-        QList<Declaration*> decls = m_env->topContext()->findDeclarations(m_item.id);
-        if (decls.isEmpty()) return QVariant();
-        DeclarationPointer decl(DeclarationPointer(decls.first()));
-        QWidget *nav = new NavigationWidget(decl, model->currentTopContext());
-        Q_ASSERT(nav);
+        if (!declaration()) return QVariant();
+        QWidget *nav = new NavigationWidget(declaration(), model->currentTopContext());
         model->addNavigationWidget(this, nav);
 
         QVariant v;
@@ -95,18 +92,23 @@ void CodeModelCompletionItem::execute(KTextEditor::Document* document, const KTe
 {
     document->replaceText(word, m_item.prettyName.str());
 
-    KDevelop::DeclarationPointer decl;
-    {
-        KDevelop::DUChainReadLocker lock(KDevelop::DUChain::lock());
-        QList<Declaration*> decls = m_env->topContext()->findDeclarations(m_item.id);
-        if (decls.isEmpty()) return;
-        decl = decls.first();
-    }
-    if (decl && dynamic_cast<AbstractFunctionDeclaration*>(decl.data())) {
+    if (declaration() && dynamic_cast<AbstractFunctionDeclaration*>(declaration().data())) {
         //Do some intelligent stuff for functions with the parens:
-        insertFunctionParenText(document, word, decl);
+        insertFunctionParenText(document, word, declaration());
     }
 }
+
+DeclarationPointer CodeModelCompletionItem::declaration() const
+{
+    if (!m_decl) {
+        KDevelop::DUChainReadLocker lock(KDevelop::DUChain::lock());
+        QList<Declaration*> decls = m_env->topContext()->findDeclarations(m_item.id);
+        if (decls.isEmpty()) return DeclarationPointer();
+        m_decl = decls.first();
+    }
+    return m_decl;
+}
+
 
 }
 
