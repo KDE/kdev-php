@@ -758,17 +758,16 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
         }
     }
 
-    QList<int> stopTokens = QList<int>()
+    static const QList<int> defaultStopTokens = QList<int>()
             << Parser::Token_SEMICOLON << Parser::Token_INVALID << Parser::Token_OPEN_TAG
             << Parser::Token_OPEN_TAG_WITH_ECHO << Parser::Token_LBRACE << Parser::Token_RBRACE
             << Parser::Token_IF << Parser::Token_WHILE << Parser::Token_FOR << Parser::Token_FOREACH
             << Parser::Token_SWITCH << Parser::Token_ELSEIF;
-    if ( m_memberAccessOperation != FunctionCallAccess ) {
-        stopTokens << Parser::Token_COMMA;
-    }
+
 
     // find expression start
-    while ( !stopTokens.contains(lastToken.typeAt(startPos)) )
+    while ( !defaultStopTokens.contains(lastToken.typeAt(startPos)) &&
+            (m_memberAccessOperation == FunctionCallAccess || lastToken.typeAt(startPos) != Parser::Token_COMMA) )
     {
         if ( lastToken.typeAt(startPos) == Parser::Token_LPAREN ) {
             ++openLParen;
