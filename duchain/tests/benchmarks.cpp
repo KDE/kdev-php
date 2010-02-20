@@ -50,7 +50,7 @@ void Benchmarks::initTestCase()
 
 QFile* Benchmarks::getInternalFile()
 {
-    QFile* file = new QFile(srcPath + "../../phpfunctions.php");
+    QFile* file = new QFile(srcPath + "../../phpfunctions.php.zip");
     kDebug() << file->fileName();
     Q_ASSERT(file->exists());
     file->open(QIODevice::ReadOnly);
