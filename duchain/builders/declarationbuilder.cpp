@@ -664,8 +664,20 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                     encounter(*it);
                     if ( (*it)->abstractType() && !(*it)->abstractType()->equals(type.unsafeData()) ) {
                         // if it's currently mixed and we now get something more definite, use that instead
+                        if ( ReferenceType::Ptr rType = ReferenceType::Ptr::dynamicCast((*it)->abstractType()) ) {
+                            if ( IntegralType::Ptr integral = IntegralType::Ptr::dynamicCast(rType->baseType()) ) {
+                                if ( integral->dataType() == IntegralType::TypeMixed ) {
+                                    // referenced mixed to referenced @p type
+                                    ReferenceType::Ptr newType(new ReferenceType());
+                                    newType->setBaseType(type);
+                                    (*it)->setType(newType);
+                                    return;
+                                }
+                            }
+                        }
                         if ( IntegralType::Ptr integral = IntegralType::Ptr::dynamicCast((*it)->abstractType()) ) {
                             if ( integral->dataType() == IntegralType::TypeMixed ) {
+                                // mixed to @p type
                                 (*it)->setType(type);
                                 return;
                             }

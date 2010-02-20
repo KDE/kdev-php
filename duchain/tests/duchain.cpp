@@ -1765,6 +1765,26 @@ void TestDUChain::unsureReturnType4()
     QVERIFY(ut->types()[1].type<IntegralType>()->dataType() == IntegralType::TypeInt);
 }
 
+void TestDUChain::referencedArgument()
+{
+    // php does not return references
+    QByteArray code("<? \nfunction x(&$a) { $a = 1; return $a; } ");
+    TopDUContext* top = parse(code, DumpAST);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* dec = top->localDeclarations().first();
+    QVERIFY(dec->type<FunctionType>());
+    kDebug() << dec->abstractType()->toString();
+    IntegralType::Ptr aType = dec->type<FunctionType>()->returnType().cast<IntegralType>();
+    QVERIFY(aType);
+    QCOMPARE(aType->dataType(), (uint)IntegralType::TypeInt);
+    QCOMPARE(top->childContexts().first()->type(), DUContext::Function);
+    ReferenceType::Ptr rType = top->childContexts().first()->localDeclarations().first()->abstractType().cast<ReferenceType>();
+    QVERIFY(rType);
+    QVERIFY(rType->baseType()->equals(aType.unsafeData()));
+}
+
 void TestDUChain::declareMemberOutOfClass()
 {
     //               0         1         2         3         4         5         6         7

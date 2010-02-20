@@ -102,6 +102,7 @@ private slots:
     void unsureReturnType2();
     void unsureReturnType3();
     void unsureReturnType4();
+    void referencedArgument();
     void declareMemberOutOfClass();
     void declareMemberInClassMethod();
     void thisRedeclaration();
