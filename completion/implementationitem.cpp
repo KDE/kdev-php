@@ -35,6 +35,9 @@
 #include <ktexteditor/document.h>
 #include <kicon.h>
 #include <klocalizedstring.h>
+#include <KTextEditor/View>
+#include <language/duchain/duchainutils.h>
+#include <language/duchain/classdeclaration.h>
 
 using namespace KDevelop;
 
@@ -167,7 +170,11 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
             }
         }
 
-        if (ClassFunctionDeclaration* method = dynamic_cast<ClassFunctionDeclaration*>(m_declaration.data())) {
+        QString functionName;
+        bool isConstructorOrDestructor = false;
+        bool isInterface = false;
+
+        if (ClassMethodDeclaration* method = dynamic_cast<ClassMethodDeclaration*>(m_declaration.data())) {
             // NOTE: it should _never_ be private - but that's the completionmodel / context / worker's job
             if (!modifiers.contains("public") && !modifiers.contains("protected")) {
                 if (method->accessPolicy() == Declaration::Protected) {
@@ -179,29 +186,64 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
             if (!modifiers.contains("static") && method->isStatic()) {
                 modifiers << "static";
             }
+            functionName = method->prettyName().str();
+
+            isConstructorOrDestructor = method->isConstructor() || method->isDestructor();
+
+            if (method->context() && method->context()->owner()) {
+                ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(method->context()->owner());
+                if (classDec) {
+                    isInterface = (classDec->classType() == ClassDeclarationData::Interface);
+                }
+            }
         } else {
             kDebug() << "completion item for implementation was not a classfunction declaration!";
+            functionName = m_declaration->identifier().toString();
         }
 
         if (!modifiers.contains("function")) {
             replText += "function ";
         }
 
-        replText += m_declaration->identifier().toString();
+        replText += functionName;
 
         {
             // get argument list
             QString arguments;
             createArgumentList(*this, arguments, 0, true);
-
             replText += arguments;
         }
 
-        // ) {...}
-        replText += QString("{\n%1  \n%1}\n%1").arg(indendation);
+        QString arguments;
+        QVector<Declaration*> parameters;
+        if (DUChainUtils::getArgumentContext(m_declaration.data()))
+            parameters = DUChainUtils::getArgumentContext(m_declaration.data())->localDeclarations();
+        arguments = '(';
+        bool first = true;
+        foreach(Declaration* dec, parameters) {
+            if (first)
+                first = false;
+            else
+                arguments += ", ";
+
+            arguments += '$' + dec->identifier().toString();
+        }
+        arguments += ')';
+
+
+        replText += QString("\n%1{\n%1    ").arg(indendation);
+        if (isInterface) {
+        } else if (!isConstructorOrDestructor) {
+            replText += QString("$ret = parent::%2%3;\n%1    return $ret;").arg(indendation).arg(functionName).arg(arguments);
+        } else {
+            replText += QString("parent::%1%2;").arg(functionName).arg(arguments);
+        }
+        replText += QString("\n%1}\n%1")
+                .arg(indendation);
 
         //TODO: properly place the cursor inside the {} part
         document->replaceText(replaceRange, replText);
+
     } else {
         kDebug() << "Declaration disappeared";
     }
