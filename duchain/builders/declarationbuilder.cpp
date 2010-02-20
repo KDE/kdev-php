@@ -1065,10 +1065,8 @@ void DeclarationBuilder::encounter(Declaration* dec)
     // when we are recompiling, it's important to mark decs as encountered
     // and update their comments
     if ( recompiling() && !wasEncountered(dec) ) {
-        kDebug() << "old:" << dec->comment();
         dec->setComment(comment());
         setEncountered(dec);
-        kDebug() << "new:" << dec->comment();
     }
 }
 
