@@ -56,13 +56,14 @@ void DUChainTestBase::initTestCase()
     //handling of the internal functions file
     //see e.g. testDeclarationReturnTypeDocBlock
     QByteArray content("<?php "
+                        "class Exception {} "
                         //test start
                         "/** @return Exception **/ function should_return_exception() {}\n"
                        "class internal_test_class {/** @return Exception **/ function should_return_exception() {}}\n"
                         // test end
                        "function define() {} function substr() {} class stdClass {}\n"
                        "/**\n * @superglobal\n **/\n$_GET = array();\n"
-                       "class Exception {} interface testInterface {}\n");
+                       "interface testInterface {}\n");
     content.append("interface Iterator { function rewind(); function current(); function key(); function next(); function valid(); } ");
     parseAdditionalFile(internalFunctionFile(), content);
 }

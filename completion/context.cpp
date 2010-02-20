@@ -1433,9 +1433,12 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                 CompletionCodeModel::self().items(url, count, foundItems);
                 for (uint i = 0; i < count; ++i) {
                     if (abort) return items;
+                    if (m_memberAccessOperation == ExceptionChoose) {
+                        if (!(foundItems[i].kind & CompletionCodeModelItem::Exception)) continue;
+                    }
                     foreach(const ParsingEnvironmentFilePointer &env, DUChain::self()->allEnvironmentFiles(url)) {
                         Q_ASSERT(env->language() == IndexedString("Php"));
-                        items << CompletionTreeItemPointer ( new CodeModelCompletionItem(env, foundItems[0]));
+                        items << CompletionTreeItemPointer ( new CodeModelCompletionItem(env, foundItems[i]));
                     }
                 }
             }

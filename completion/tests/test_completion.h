@@ -60,6 +60,7 @@ private slots:
     void nameNormalVariable();
     void nameClassMember();
     void exceptions();
+    void exceptionOtherFile();
     void abstractMethods();
     void interfaceMethods();
     void overrideMethods();

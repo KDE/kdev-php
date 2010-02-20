@@ -39,11 +39,7 @@ namespace Php {
     }
     enum Kind {
       Unknown = 0,
-      Function = 1,
-      Variable = 2,
-      Class = 4,
-      ForwardDeclaration = 8,
-      Namespace = 16
+      Exception = 1
     };
     KDevelop::IndexedQualifiedIdentifier id;
     KDevelop::IndexedString prettyName;

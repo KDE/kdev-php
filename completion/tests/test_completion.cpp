@@ -311,6 +311,7 @@ void TestCompletion::newObjectFromOtherFile()
 
     TopDUContext* addTop = parseAdditionalFile(IndexedString("/duchaintest/foo.php"), "<?php class Foo { function bar() {} } ");
     DUChainReleaser releaseAddTop(addTop);
+
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? $a = new Foo(); ");
@@ -544,6 +545,28 @@ void TestCompletion::exceptions()
         QCOMPARE(tester.items.count(), 2);
         QVERIFY(searchDeclaration(tester.items, top->localDeclarations().at(0)));
     }
+}
+
+void TestCompletion::exceptionOtherFile()
+{
+    TopDUContext* addTop = parseAdditionalFile(IndexedString("file:///internal/projecttest0"),
+        "<?php class MyExcptOtherFile extends Exception {} class MyClass {}");
+    DUChainReleaser releaseAddTop(addTop);
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? ");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    {
+        PhpCompletionTester tester(top, "throw new ");
+        QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::ExceptionChoose);
+        QCOMPARE(tester.items.count(), 2);
+        QVERIFY(searchDeclaration(tester.items, addTop->localDeclarations().at(0)));
+    }
+
 }
 
 void TestCompletion::abstractMethods()

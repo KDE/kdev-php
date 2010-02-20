@@ -108,7 +108,24 @@ void ClassDeclaration::setInSymbolTable(bool inSymbolTable)
 {
     if(!d_func()->prettyName.isEmpty()) {
         if(!d_func()->m_inSymbolTable && inSymbolTable) {
-            CompletionCodeModel::self().addItem(url(), qualifiedIdentifier(), d_func_dynamic()->prettyName, CompletionCodeModelItem::Unknown);
+            CompletionCodeModelItem::Kind flags = CompletionCodeModelItem::Unknown;
+            if (qualifiedIdentifier() == KDevelop::QualifiedIdentifier("exception")) {
+                flags = (CompletionCodeModelItem::Kind)(flags | CompletionCodeModelItem::Exception);
+            } else {
+                static KDevelop::DUChainPointer<ClassDeclaration> exceptionDecl;
+                if (!exceptionDecl) {
+                    QList<Declaration*> decs = context()->findDeclarations(KDevelop::QualifiedIdentifier("exception"));
+                    Q_ASSERT(decs.count() == 1);
+                    exceptionDecl = dynamic_cast<ClassDeclaration*>(decs.first());
+                    Q_ASSERT(exceptionDecl);
+                }
+                if (equalQualifiedIdentifier(exceptionDecl.data())
+                    || isPublicBaseClass(exceptionDecl.data(), context()->topContext())
+                ) {
+                    flags = (CompletionCodeModelItem::Kind)(flags | CompletionCodeModelItem::Exception);
+                }
+            }
+            CompletionCodeModel::self().addItem(url(), qualifiedIdentifier(), d_func_dynamic()->prettyName, flags);
         } else if(d_func()->m_inSymbolTable && !inSymbolTable) {
             CompletionCodeModel::self().removeItem(url(), qualifiedIdentifier());
         }
