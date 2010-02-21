@@ -516,11 +516,16 @@ void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationA
 
 void DeclarationBuilder::visitParameter(ParameterAst *node)
 {
+    AbstractFunctionDeclaration* funDec = dynamic_cast<AbstractFunctionDeclaration*>(currentDeclaration());
+    Q_ASSERT(funDec);
     if (node->defaultValue) {
-        AbstractFunctionDeclaration* funDec = dynamic_cast<AbstractFunctionDeclaration*>(currentDeclaration());
-        if (funDec) {
-            funDec->addDefaultParameter(IndexedString(editor()->parseSession()->symbol(node->defaultValue)));
+        QString symbol = editor()->parseSession()->symbol(node->defaultValue);
+        funDec->addDefaultParameter(IndexedString(symbol));
+        if ( node->parameterType && symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0 ) {
+            reportError(i18n("Default value for parameters with a class type hint can only be NULL."), node->defaultValue);
         }
+    } else if ( !node->defaultValue && funDec->defaultParametersSize() ) {
+        reportError(i18n("Following parameters must have a default value assigned."), node);
     }
     {
         // create variable declaration for argument
