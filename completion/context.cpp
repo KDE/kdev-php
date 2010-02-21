@@ -1401,7 +1401,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     if (((k & CodeModelItem::Function) || (k & CodeModelItem::Variable)) && !(k & CodeModelItem::ClassMember)) {
                         foreach(const ParsingEnvironmentFilePointer &env, DUChain::self()->allEnvironmentFiles(url)) {
                             if (env->language() != IndexedString("Php")) continue;
-                            kDebug() << "using?" << foundItems[i].id.identifier().toString() << env->url().str();
                             TopDUContext* top = env->topContext();
                             if(!top) continue;
                             if (m_duContext->imports(top)) continue;
