@@ -88,6 +88,7 @@ private slots:
     void referencedClass();
     void ctorCall();
     void chainedCalling();
+    void funcCallInConditional();
 };
 
 }

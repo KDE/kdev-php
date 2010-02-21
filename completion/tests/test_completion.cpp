@@ -1148,6 +1148,33 @@ void TestCompletion::chainedCalling()
     QCOMPARE(tester.names, QStringList() << "b");
 }
 
+void TestCompletion::funcCallInConditional()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function asdf($a, $b = 1) {}");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    {
+        PhpCompletionTester tester(top, "if ( !empty($_POST['answer']) && asdf(");
+        QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
+        QVERIFY(tester.completionContext->parentContext());
+        QCOMPARE(tester.completionContext->parentContext()->memberAccessOperation(),
+                 CodeCompletionContext::FunctionCallAccess);
+
+        CompletionTreeItemPointer item = searchDeclaration(tester.items, top->localDeclarations().at(0));
+        QVERIFY(item);
+        NormalDeclarationCompletionItem* item2 = dynamic_cast<NormalDeclarationCompletionItem*>(item.data());
+
+        QString ret;
+        createArgumentList(*item2, ret, 0);
+        QCOMPARE(ret, QString("(mixed $a, int $b = 1)"));
+    }
+}
+
 }
 
 #include "test_completion.moc"
