@@ -74,6 +74,7 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
         KDevelop::ILanguageSupport(), m_internalFunctionsLoaded(false)
 {
     Q_ASSERT(internalFunctionFile().toUrl().isValid());
+    m_internalFunctionsLock.lockForWrite();
 
     KDEV_USE_EXTENSION_INTERFACE(KDevelop::ILanguageSupport)
 
@@ -105,7 +106,6 @@ void LanguageSupport::slotPluginLoaded( IPlugin* plugin )
 {
     if ( plugin == this ) {
         kDebug() << "making sure that internal function file is up to date";
-        m_internalFunctionsLock.lockForWrite();
         DUChain::self()->updateContextForUrl(internalFunctionFile(), KDevelop::TopDUContext::AllDeclarationsAndContexts, this, -10);
         disconnect(core()->pluginController(), SIGNAL(pluginLoaded(KDevelop::IPlugin*)),
                    this, SLOT(slotPluginLoaded(KDevelop::IPlugin*)));
