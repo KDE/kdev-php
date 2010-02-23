@@ -87,7 +87,7 @@ void ParseJob::run()
 
     UrlParseLock urlLock(document());
 
-    {
+    if ( !(minimumFeatures() & TopDUContext::ForceUpdate || minimumFeatures() & Resheduled) ) {
         DUChainReadLocker lock(DUChain::lock());
         bool needsUpdate = true;
         foreach(const ParsingEnvironmentFilePointer &file, DUChain::self()->allEnvironmentFiles(document())) {
@@ -98,7 +98,7 @@ void ParseJob::run()
                 needsUpdate = false;
             }
         }
-        if (!(minimumFeatures() & TopDUContext::ForceUpdate || minimumFeatures() & Resheduled) && !needsUpdate) {
+        if (!needsUpdate) {
             kDebug() << "Already up to date" << document().str();
             return;
         }
