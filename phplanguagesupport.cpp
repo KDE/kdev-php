@@ -116,9 +116,11 @@ void LanguageSupport::updateReady( IndexedString url, ReferencedTopDUContext top
 {
     Q_ASSERT(url == internalFunctionFile());
     Q_UNUSED(topContext);
-    kDebug() << "finished parsing internal function file";
+    kDebug() << "finished parsing internal function file" << url.str();
     m_internalFunctionsLoaded = true;
     m_internalFunctionsLock.unlock();
+    DUChainReadLocker lock(DUChain::lock());
+    Q_ASSERT(DUChain::self()->chainForDocument(internalFunctionFile()));
 }
 
 bool LanguageSupport::internalFunctionsLoaded() const
