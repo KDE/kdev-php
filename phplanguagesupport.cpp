@@ -91,9 +91,6 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
 
 LanguageSupport::~LanguageSupport()
 {
-    // Remove any documents waiting to be parsed from the background paser.
-    core()->languageController()->backgroundParser()->clear(this);
-
     ILanguage* lang = language();
     if ( lang ) {
         lang->parseLock()->lockForWrite();
