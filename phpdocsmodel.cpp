@@ -37,7 +37,7 @@
 using namespace KDevelop;
 
 PhpDocsModel::PhpDocsModel(QObject* parent)
-    : QAbstractListModel(parent), m_internalFunctionsFile(KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php"))
+    : QAbstractListModel(parent), m_internalFunctionsFile(KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php.gz"))
 {
     // make sure the php plugin is loaded
     ILanguage* phpLangPlugin = ICore::self()->languageController()->language("Php");
