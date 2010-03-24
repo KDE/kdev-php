@@ -153,7 +153,6 @@ void UseBuilder::newCheckedUse(AstNode* node, Declaration* declaration)
 
 void UseBuilder::visitUnaryExpression( UnaryExpressionAst* node )
 {
-    UseBuilderBase::visitUnaryExpression(node);
     IndexedString includeFile = getIncludeFileForNode(node, editor());
     if ( !includeFile.isEmpty() ) {
         ///TODO: is there not a more elegant way to get a QualifiedIdentifier from a IndexedString?
