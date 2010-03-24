@@ -68,8 +68,6 @@ ReferencedTopDUContext UseBuilder::build ( const KDevelop::IndexedString& url, A
 
 void UseBuilder::visitParameter(ParameterAst *node)
 {
-    UseBuilderBase::visitParameter(node);
-
     if (node->parameterType) {
         newCheckedUse(node->parameterType, findDeclarationImport(ClassDeclarationType, node->parameterType));
     }
@@ -77,7 +75,6 @@ void UseBuilder::visitParameter(ParameterAst *node)
 
 void UseBuilder::visitClassImplements(ClassImplementsAst *node)
 {
-    UseBuilderBase::visitClassImplements(node);
     if (node->implementsSequence) {
         const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
         do {
@@ -89,7 +86,6 @@ void UseBuilder::visitClassImplements(ClassImplementsAst *node)
 
 void UseBuilder::visitClassExtends(ClassExtendsAst *node)
 {
-    UseBuilderBase::visitClassExtends(node);
     newCheckedUse(node->identifier, findDeclarationImport(ClassDeclarationType, node->identifier));
 }
 
@@ -108,13 +104,11 @@ void UseBuilder::visitGlobalVar(GlobalVarAst* node)
             newCheckedUse(node->var, dec);
         }
     }
-    UseBuilderBase::visitGlobalVar(node);
 }
 
 void UseBuilder::visitStaticScalar(StaticScalarAst* node)
 {
     if (currentContext()->type() == DUContext::Class) {
-        UseBuilderBase::visitStaticScalar(node);
         UseExpressionVisitor v(editor(), this);
         node->ducontext = currentContext();
         v.visitNode(node);
