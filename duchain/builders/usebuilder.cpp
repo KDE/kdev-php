@@ -95,7 +95,6 @@ void UseBuilder::visitClassExtends(ClassExtendsAst *node)
 
 void UseBuilder::visitExpr(ExprAst* node)
 {
-    UseBuilderBase::visitExpr(node);
     UseExpressionVisitor v(editor(), this);
     node->ducontext = currentContext();
     v.visitNode(node);
