@@ -143,6 +143,12 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
     closeDeclaration();
 }
 
+void PreDeclarationBuilder::closeDeclaration()
+{
+    eventuallyAssignInternalContext();
+    PreDeclarationBuilderBase::closeDeclaration();
+}
+
 void PreDeclarationBuilder::closeContext()
 {
     // we don't want to cleanup here, see DeclarationBuilder::closeContext()

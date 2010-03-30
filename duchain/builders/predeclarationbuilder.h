@@ -66,6 +66,7 @@ protected:
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst* node);
 
+    virtual void closeDeclaration();
     virtual void closeContext();
 private:
     QHash<qint64, Php::ClassDeclaration*>* m_types;

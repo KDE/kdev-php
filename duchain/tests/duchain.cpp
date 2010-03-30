@@ -2173,6 +2173,27 @@ void TestDUChain::undeclaredVarPropertyInString()
     // just don't crash
 }
 
+void TestDUChain::upcommingClassInString()
+{
+    // testcase for bug 232687
+
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                                "class A {\n"
+                                "    function A () {\n"
+                                "        $b = new B();\n"
+                                "        echo \"$b->blah\";\n"
+                                "    }\n"
+                                "}\n"
+                                "class B {\n"
+                                "  var $blah;\n"
+                                "}\n", DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+    // just don't crash
+}
+
 }
 
 #include "duchain.moc"

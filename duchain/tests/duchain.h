@@ -117,6 +117,7 @@ private slots:
     void findFunctionArgs();
     void undeclaredPropertyInString();
     void undeclaredVarPropertyInString();
+    void upcommingClassInString();
 };
 
 }
