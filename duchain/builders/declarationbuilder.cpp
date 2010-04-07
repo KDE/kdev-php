@@ -199,7 +199,7 @@ bool DeclarationBuilder::isBaseMethodRedeclaration(const IdentifierPair &ids, Cl
     DUChainWriteLocker lock(DUChain::lock());
     while (curClass->baseClassesSize() > 0) {
         StructureType::Ptr type;
-        FOREACH_FUNCTION(BaseClassInstance base, curClass->baseClasses) {
+        FOREACH_FUNCTION(const BaseClassInstance& base, curClass->baseClasses) {
             DUChainReadLocker lock(DUChain::lock());
             type = base.baseClass.type<StructureType>();
             if (!type) {
