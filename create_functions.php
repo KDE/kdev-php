@@ -35,6 +35,7 @@ $skipClasses[] = 'self';
 $skipClasses[] = 'parent';
 $skipClasses[] = '__php_incomplete_class';
 $skipClasses[] = 'php_user_filter';
+$skipClasses[] = 'static'; // O_o where does that come from?
 
 ///TODO: re-enable them once they have their do(), echo() or list() methods removed.
 $skipClasses[] = 'gearmanclient';
