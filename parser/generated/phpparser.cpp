@@ -9179,7 +9179,7 @@ bool Parser::parseStatement(StatementAst **yynode)
                 }
                 return false;
             }
-            (*yynode)->whilteStatement = __node_182;
+            (*yynode)->whileStatement = __node_182;
 
         }
         else if (yytoken == Token_FOR)
@@ -9823,7 +9823,7 @@ __catch_2:
                 }
                 return false;
             }
-            (*yynode)->whilteExpr = __node_206;
+            (*yynode)->whileExpr = __node_206;
 
             if (yytoken != Token_RPAREN)
             {

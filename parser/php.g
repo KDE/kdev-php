@@ -575,7 +575,7 @@ expression=booleanOrExpression
       (   COLON statements=innerStatementList newElseifList newElseSingle ENDIF semicolonOrCloseTag
         | ifStatement=statement elseifList=elseifList elseSingle=elseSingle
       )
-  | WHILE LPAREN whileExpr=expr RPAREN whilteStatement=whileStatement
+  | WHILE LPAREN whileExpr=expr RPAREN whileStatement=whileStatement
   | FOR LPAREN forExpr1=forExpr SEMICOLON forExpr2=forExpr
     SEMICOLON forExpr3=forExpr RPAREN forStatement=forStatement
   | SWITCH LPAREN swtichExpr=expr RPAREN switchCaseList=switchCaseList
@@ -592,7 +592,7 @@ expression=booleanOrExpression
     #catches=catchItem*
   | UNSET LPAREN #unsetVariables=variable @ COMMA RPAREN semicolonOrCloseTag
   | expr=expr semicolonOrCloseTag
-  | DO doStatement=statement WHILE LPAREN whilteExpr=expr RPAREN semicolonOrCloseTag
+  | DO doStatement=statement WHILE LPAREN whileExpr=expr RPAREN semicolonOrCloseTag
   | BREAK (breakExpr=expr | 0) semicolonOrCloseTag
   | CONTINUE (continueExpr=expr | 0) semicolonOrCloseTag
   | RETURN (returnExpr=expr | 0) semicolonOrCloseTag

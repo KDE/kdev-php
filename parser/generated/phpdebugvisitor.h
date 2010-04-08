@@ -1119,7 +1119,7 @@ public:
         if (node->elseifList) printToken(node->elseifList, "elseifList", "elseifList");
         if (node->elseSingle) printToken(node->elseSingle, "elseSingle", "elseSingle");
         if (node->whileExpr) printToken(node->whileExpr, "expr", "whileExpr");
-        if (node->whilteStatement) printToken(node->whilteStatement, "whileStatement", "whilteStatement");
+        if (node->whileStatement) printToken(node->whileStatement, "whileStatement", "whileStatement");
         if (node->forExpr1) printToken(node->forExpr1, "forExpr", "forExpr1");
         if (node->forExpr2) printToken(node->forExpr2, "forExpr", "forExpr2");
         if (node->forExpr3) printToken(node->forExpr3, "forExpr", "forExpr3");
@@ -1155,7 +1155,6 @@ public:
         }
         if (node->expr) printToken(node->expr, "expr", "expr");
         if (node->doStatement) printToken(node->doStatement, "statement", "doStatement");
-        if (node->whilteExpr) printToken(node->whilteExpr, "expr", "whilteExpr");
         if (node->breakExpr) printToken(node->breakExpr, "expr", "breakExpr");
         if (node->continueExpr) printToken(node->continueExpr, "expr", "continueExpr");
         if (node->returnExpr) printToken(node->returnExpr, "expr", "returnExpr");

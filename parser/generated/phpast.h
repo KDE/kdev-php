@@ -985,7 +985,7 @@ struct KDEVPHPPARSER_EXPORT StatementAst: public AstNode
     ElseifListAst *elseifList;
     ElseSingleAst *elseSingle;
     ExprAst *whileExpr;
-    WhileStatementAst *whilteStatement;
+    WhileStatementAst *whileStatement;
     ForExprAst *forExpr1;
     ForExprAst *forExpr2;
     ForExprAst *forExpr3;
@@ -1003,7 +1003,6 @@ struct KDEVPHPPARSER_EXPORT StatementAst: public AstNode
     const KDevPG::ListNode<VariableAst *> *unsetVariablesSequence;
     ExprAst *expr;
     StatementAst *doStatement;
-    ExprAst *whilteExpr;
     ExprAst *breakExpr;
     ExprAst *continueExpr;
     ExprAst *returnExpr;

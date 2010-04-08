@@ -761,7 +761,7 @@ void DefaultVisitor::visitStatement(StatementAst *node)
     visitNode(node->elseifList);
     visitNode(node->elseSingle);
     visitNode(node->whileExpr);
-    visitNode(node->whilteStatement);
+    visitNode(node->whileStatement);
     visitNode(node->forExpr1);
     visitNode(node->forExpr2);
     visitNode(node->forExpr3);
@@ -797,7 +797,6 @@ void DefaultVisitor::visitStatement(StatementAst *node)
     }
     visitNode(node->expr);
     visitNode(node->doStatement);
-    visitNode(node->whilteExpr);
     visitNode(node->breakExpr);
     visitNode(node->continueExpr);
     visitNode(node->returnExpr);
