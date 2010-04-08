@@ -75,6 +75,7 @@ if ($_SERVER['argv'][1] == '--debug') {
 
     $dirs = array(
         $_SERVER['argv'][1]."/reference",
+        $_SERVER['argv'][1]."/features",
         $_SERVER['argv'][1]."/appendices",
         $_SERVER['argv'][1]."/language/predefined/"
     );
@@ -147,6 +148,10 @@ function cleanupComment($comment) {
     // remove <para> and other stuff
     ///TODO: support web-links, lists and tables
     $comment = strip_tags($comment);
+    $comment = html_entity_decode($comment);
+
+    // make sure no */ occurs in a comment...
+    $comment = preg_replace('#\*/#', '* /', $comment);
 
     $comment = preg_replace('#(?<=[^\n])\n(?=[^\n])#s', ' ', $comment);
 
@@ -369,7 +374,6 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     if (substr($file->getFilename(), -4) != '.xml') return false;
     if (substr($file->getFilename(), 0, 9) == 'entities.') return false;
     $string = file_get_contents($file->getPathname());
-    $string = preg_replace('#<!\\[CDATA\\[.*?\\]\\]>#s', '', $string);
     $isInterface = strpos($string, '<phpdoc:classref') !== false &&
                    strpos($string, '&reftitle.interfacesynopsis;') !== false;
 
@@ -381,7 +385,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         $string = preg_replace('#'.preg_quote('<section xml:id="'.$i.'">').'.*?</section>#s', '', $string);
     }
     echo "reading documentation from {$file->getPathname()}\n";
-    $xml = new SimpleXMLElement($string);
+    $xml = simplexml_load_string($string,  "SimpleXMLElement",  LIBXML_NOCDATA);
 
     if ( $file->getFilename() == 'versions.xml' ) {
         foreach ( $xml->xpath('/versions/function') as $f ) {
@@ -448,7 +452,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
                     // check for comment
                     // next entry is the value of the constant which is followed by the comment
                     if ( isset($consts[$i+2]) && !$consts[$i+2]->children() ) {
-                        $comment = (string)$consts[$i+2];
+                        $comment = $consts[$i+2]->asXml();
                         if ( !empty($comment) ) {
                             $constants_comments[(string)$p->constant] = $comment;
                         }
@@ -456,6 +460,32 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
                 }
                 $constants[(string)$p->constant] = (string)$p->type;
             }
+        }
+    } else if (!isset($xml->variablelist) && $file->getFilename() == 'commandline.xml') {
+        // yay for non-unified xml structures :-X
+        $consts = $xml->xpath("//db:row");
+        foreach ( $consts as $i=>$p ) {
+            $constant = "";
+                    // default to integer constants
+            $type = "integer";
+            if ( isset($p->entry[0]) && isset($p->entry[0]->constant) ) {
+                $constant = trim((string) $p->entry[0]->constant);
+                if ( isset($p->entry[0]->constant->type) ) {
+                    $type = (string)$p->entry[0]->constant->type;
+                }
+            }
+            if (empty($constant)) {
+                continue;
+            }
+            // check for comment
+            // next entry is the comment
+            if ( isset($p->entry[1]) ) {
+                $comment = $p->entry[1]->para->asXml();
+                if ( !empty($comment) ) {
+                    $constants_comments[$constant] = $comment;
+                }
+            }
+            $constants[$constant] = $type;
         }
     }
     if ($list = $xml->xpath('//db:sect2[starts-with(@xml:id, "reserved.classes")]/db:variablelist/db:varlistentry')) {
