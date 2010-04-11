@@ -90,8 +90,10 @@ Range CodeCompletionModel::completionRange(View* view, const Cursor &position)
 
 bool CodeCompletionModel::shouldAbortCompletion(View* view, const SmartRange &range, const QString &currentCompletion)
 {
-    Q_UNUSED(view);
-    Q_UNUSED(range);
+    if(view->cursorPosition() < range.start() || view->cursorPosition() > range.end())
+        return true; //Always abort when the completion-range has been left
+    //Do not abort completions when the text has been empty already before and a newline has been entered
+
     static const QRegExp allowedText("^\\$?(\\w*)");
     return !allowedText.exactMatch(currentCompletion);
 }
