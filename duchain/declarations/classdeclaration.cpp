@@ -115,7 +115,7 @@ void ClassDeclaration::setInSymbolTable(bool inSymbolTable)
                 static KDevelop::DUChainPointer<ClassDeclaration> exceptionDecl;
                 if (!exceptionDecl) {
                     QList<Declaration*> decs = context()->topContext()->findDeclarations(KDevelop::QualifiedIdentifier("exception"));
-                    Q_ASSERT(decs.count() == 1);
+                    Q_ASSERT(decs.count());
                     exceptionDecl = dynamic_cast<ClassDeclaration*>(decs.first());
                     Q_ASSERT(exceptionDecl);
                 }
