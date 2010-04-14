@@ -109,12 +109,13 @@ void ClassDeclaration::setInSymbolTable(bool inSymbolTable)
     if(!d_func()->prettyName.isEmpty()) {
         if(!d_func()->m_inSymbolTable && inSymbolTable) {
             CompletionCodeModelItem::Kind flags = CompletionCodeModelItem::Unknown;
-            if (qualifiedIdentifier() == KDevelop::QualifiedIdentifier("exception")) {
+            static const KDevelop::QualifiedIdentifier exceptionQId("exception");
+            if (qualifiedIdentifier() == exceptionQId) {
                 flags = (CompletionCodeModelItem::Kind)(flags | CompletionCodeModelItem::Exception);
             } else {
                 static KDevelop::DUChainPointer<ClassDeclaration> exceptionDecl;
                 if (!exceptionDecl) {
-                    QList<Declaration*> decs = context()->topContext()->findDeclarations(KDevelop::QualifiedIdentifier("exception"));
+                    QList<Declaration*> decs = context()->topContext()->findDeclarations(exceptionQId);
                     Q_ASSERT(decs.count());
                     exceptionDecl = dynamic_cast<ClassDeclaration*>(decs.first());
                     Q_ASSERT(exceptionDecl);
