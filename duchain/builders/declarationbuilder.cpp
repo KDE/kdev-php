@@ -650,7 +650,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                                             AstNode* node)
 {
     // we must not re-assign $this in a class context
-    if ( identifier == QualifiedIdentifier("this")
+    if ( identifier == thisQId
             && currentContext()->parentContext()
             && currentContext()->parentContext()->type() == DUContext::Class ) {
         reportError(i18n("Cannot re-assign $this."), QList<AstNode*>() << node);
@@ -737,7 +737,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
 }
 
 DUContext* getClassContext(const QualifiedIdentifier &identifier, DUContext* currentCtx) {
-    if ( identifier == QualifiedIdentifier("this") ) {
+    if ( identifier == thisQId ) {
         if ( currentCtx->parentContext() && currentCtx->parentContext()->type() == DUContext::Class ) {
             return currentCtx->parentContext();
         }

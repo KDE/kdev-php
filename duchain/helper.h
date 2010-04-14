@@ -44,6 +44,24 @@ enum DeclarationType {
     ConstantDeclarationType,
     GlobalVariableDeclarationType
 };
+
+/// Indexed string for 'Php', identifies environment files from this language plugin
+const KDevelop::IndexedString phpLangString("Php");
+/// Qualified identifier for 'this'
+const KDevelop::QualifiedIdentifier thisQId("this");
+/// Qualified identifier for 'exception'
+const KDevelop::QualifiedIdentifier exceptionQId("exception");
+/// Qualified identifier for 'iterator'
+const KDevelop::QualifiedIdentifier iteratorQId("iterator");
+/// Qualified identifier for 'stdclass'
+const KDevelop::QualifiedIdentifier stdclassQId("stdclass");
+/// Qualified identifier for 'self'
+const KDevelop::QualifiedIdentifier selfQId("self");
+/// Qualified identifier for 'parent'
+const KDevelop::QualifiedIdentifier parentQId("parent");
+/// Qualified identifier for 'current'
+const KDevelop::QualifiedIdentifier currentQId("current");
+
 KDEVPHPDUCHAIN_EXPORT bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);
 
 KDEVPHPDUCHAIN_EXPORT KDevelop::Declaration* findDeclarationImportHelper(KDevelop::DUContext* currentContext,

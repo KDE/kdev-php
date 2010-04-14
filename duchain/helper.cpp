@@ -78,13 +78,13 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
         DeclarationType declarationType, AstNode* node, EditorIntegrator* editor)
 {
     ifDebug(kDebug() << id.toString() << declarationType;)
-    if (declarationType == ClassDeclarationType && id == QualifiedIdentifier("self")) {
+    if (declarationType == ClassDeclarationType && id == selfQId) {
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->parentContext()) {
             Declaration* declaration = currentContext->parentContext()->owner();
             return declaration;
         }
-    } else if (declarationType == ClassDeclarationType && id == QualifiedIdentifier("parent")) {
+    } else if (declarationType == ClassDeclarationType && id == parentQId) {
         //there can be just one Class-Context imported
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->parentContext()) {
@@ -122,7 +122,7 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                     ifDebug(kDebug() << "skipping declaration, missing meta-data";)
                     continue;
                 }
-                if(env->language() != IndexedString("Php")) {
+                if(env->language() != phpLangString) {
                     ifDebug(kDebug() << "skipping declaration, invalid language" << env->language().str();)
                     continue;
                 }

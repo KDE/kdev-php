@@ -512,7 +512,7 @@ void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
             break;
         case CastObject: {
             DUChainReadLocker lock(DUChain::lock());
-            m_result.setDeclarations(m_currentContext->findDeclarations(QualifiedIdentifier("stdclass")));
+            m_result.setDeclarations(m_currentContext->findDeclarations(stdclassQId));
             break;
         }
         case CastBool:

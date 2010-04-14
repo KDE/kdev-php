@@ -129,7 +129,7 @@ TopDUContext* ContextBuilder::newTopContext(const SimpleRange& range, ParsingEnv
 {
     if (!file) {
         file = new ParsingEnvironmentFile(editor()->currentUrl());
-        file->setLanguage(IndexedString("Php"));
+        file->setLanguage(phpLangString);
     }
     TopDUContext* ret = new PhpDUContext<TopDUContext>(editor()->currentUrl(), range, file);
     return ret;

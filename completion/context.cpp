@@ -1400,7 +1400,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     CodeModelItem::Kind k = foundItems[i].kind;
                     if (((k & CodeModelItem::Function) || (k & CodeModelItem::Variable)) && !(k & CodeModelItem::ClassMember)) {
                         foreach(const ParsingEnvironmentFilePointer &env, DUChain::self()->allEnvironmentFiles(url)) {
-                            if (env->language() != IndexedString("Php")) continue;
+                            if (env->language() != phpLangString) continue;
                             TopDUContext* top = env->topContext();
                             if(!top) continue;
                             if (m_duContext->imports(top)) continue;
@@ -1442,7 +1442,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                         if (!(foundItems[i].kind & CompletionCodeModelItem::Exception)) continue;
                     }
                     foreach(const ParsingEnvironmentFilePointer &env, DUChain::self()->allEnvironmentFiles(url)) {
-                        Q_ASSERT(env->language() == IndexedString("Php"));
+                        Q_ASSERT(env->language() == phpLangString);
                         items << CompletionTreeItemPointer ( new CodeModelCompletionItem(env, foundItems[i]));
                     }
                 }
@@ -1572,7 +1572,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
 
     static DUChainPointer<ClassDeclaration> exceptionDecl;
     if (!exceptionDecl) {
-        QList<Declaration*> decs = dec->context()->findDeclarations(QualifiedIdentifier("exception"));
+        QList<Declaration*> decs = dec->context()->findDeclarations(exceptionQId);
         Q_ASSERT(decs.count());
         exceptionDecl = dynamic_cast<ClassDeclaration*>(decs.first());
         Q_ASSERT(exceptionDecl);

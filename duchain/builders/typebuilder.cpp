@@ -480,12 +480,12 @@ void TypeBuilder::visitStatement(StatementAst* node)
             Q_ASSERT(classDec);
             lock.unlock();
             ClassDeclaration* iteratorDecl = dynamic_cast<ClassDeclaration*>(
-                findDeclarationImport(ClassDeclarationType, QualifiedIdentifier("iterator"), 0)
+                findDeclarationImport(ClassDeclarationType, iteratorQId, 0)
             );
             lock.lock();
             Q_ASSERT(iteratorDecl);
             if (classDec->isPublicBaseClass(iteratorDecl, currentContext()->topContext())) {
-                foreach (Declaration *d, classDec->internalContext()->findDeclarations(QualifiedIdentifier("current"))) {
+                foreach (Declaration *d, classDec->internalContext()->findDeclarations(currentQId)) {
                     if (!dynamic_cast<ClassMethodDeclaration*>(d)) continue;
                     Q_ASSERT(d->type<FunctionType>());
                     injectType(d->type<FunctionType>()->returnType());
