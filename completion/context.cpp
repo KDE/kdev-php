@@ -1573,7 +1573,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
     static DUChainPointer<ClassDeclaration> exceptionDecl;
     if (!exceptionDecl) {
         QList<Declaration*> decs = dec->context()->findDeclarations(QualifiedIdentifier("exception"));
-        Q_ASSERT(decs.count() == 1);
+        Q_ASSERT(decs.count());
         exceptionDecl = dynamic_cast<ClassDeclaration*>(decs.first());
         Q_ASSERT(exceptionDecl);
     }
