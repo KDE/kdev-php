@@ -52,8 +52,6 @@ public:
     }
 
 // memory pool
-    typedef KDevPG::MemoryPool memoryPoolType;
-
     KDevPG::MemoryPool *memoryPool;
     void setMemoryPool(KDevPG::MemoryPool *p)
     {
