@@ -42,6 +42,9 @@
 --    1.1) use quint32 instead of qint64 for end/start tokens
 --    1.2) investigate whether using a map/hash for the ducontext member of all
 --         ast nodes gives a significant memory decrease while not hampering performance
+--    1.3) investigate how unions could be used for exclusive AST node members
+--    1.4) see whether we can always use the expression lists instead of both
+--         single member pointer and list of members, esp. in expressions
 --  2) better cope with invalid code, have at least a partial AST
 --  3) investigate whether expanding the visitor lookup to a
 --     (albeit huge) switch() in KDev-PG-Qt gives a significant performance gain
