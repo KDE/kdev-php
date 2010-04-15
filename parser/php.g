@@ -37,6 +37,16 @@
 -- 1 first/follow conflicts:
 --  - elseifList: dangling-else conflict - should be ok
 
+-- TODO: (post 1.0.0 release)
+--  1) decrease memory consumption
+--    1.1) use quint32 instead of qint64 for end/start tokens
+--    1.2) investigate whether using a map/hash for the ducontext member of all
+--         ast nodes gives a significant memory decrease while not hampering performance
+--  2) better cope with invalid code, have at least a partial AST
+--  3) investigate whether expanding the visitor lookup to a
+--     (albeit huge) switch() in KDev-PG-Qt gives a significant performance gain
+--     I have the gut feeling that the current lookup takes unneccessary much time
+--
 
 [:
 
