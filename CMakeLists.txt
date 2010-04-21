@@ -88,4 +88,5 @@ target_link_libraries(kdevphplanguagesupport
 install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR})
 
 install(FILES kdevphpsupport.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-install(FILES phpfunctions.php.gz DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport)
+# not writeable so that the refactoring actions get hidden
+install(FILES phpfunctions.php.gz DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
