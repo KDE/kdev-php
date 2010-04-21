@@ -42,11 +42,11 @@
 #include <interfaces/idocumentcontroller.h>
 
 #include "phpparsejob.h"
-//#include "phphighlighting.h"
+#include "phphighlighting.h"
 
 #include <language/codecompletion/codecompletion.h>
 #include <language/codecompletion/codecompletionmodel.h>
-#include <language/highlighting/codehighlighting.h>
+
 #include "completion/model.h"
 #include "completion/worker.h"
 
@@ -80,7 +80,7 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
 
     m_self = this;
 
-    m_highlighting = new KDevelop::CodeHighlighting(this);
+    m_highlighting = new Php::Highlighting(this);
 
     CodeCompletionModel* ccModel = new CodeCompletionModel(this);
     new KDevelop::CodeCompletion(this, ccModel, name());

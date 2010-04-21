@@ -69,7 +69,7 @@ add_subdirectory(completion)
 set(kdevphplanguagesupport_PART_SRCS
     phplanguagesupport.cpp
     phpparsejob.cpp
-    #phphighlighting.cpp
+    phphighlighting.cpp
 )
 
 kde4_add_plugin(kdevphplanguagesupport ${kdevphplanguagesupport_PART_SRCS})
