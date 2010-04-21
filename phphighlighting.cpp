@@ -72,7 +72,6 @@ void HighlightingInstance::highlightUse(DUContext* context, int index, const QCo
 {
     if (SmartRange* range = context->useSmartRange(index)) {
         Declaration* decl = context->topContext()->usedDeclarationForIndex(context->uses()[index].m_declarationIndex);
-        if(decl) qDebug() << decl->toString();
         if (isConstDeclaration(decl)) {
             LOCK_SMART(range);
             range->setAttribute(m_highlighting->attributeForType(EnumType, ReferenceContext, color));
