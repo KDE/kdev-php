@@ -120,7 +120,7 @@ public slots:
     void updateReady(KDevelop::IndexedString url, KDevelop::ReferencedTopDUContext topContext);
 
 private slots:
-    void slotPluginLoaded(KDevelop::IPlugin* plugin);
+    void updateInternalFunctions();
 
 private:
     KDevelop::CodeHighlighting* m_highlighting;

@@ -54,6 +54,7 @@
 #include <language/duchain/parsingenvironment.h>
 
 #include "duchain/helper.h"
+#include <QTimer>
 
 using namespace KDevelop;
 
@@ -85,8 +86,7 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
     CodeCompletionModel* ccModel = new CodeCompletionModel(this);
     new KDevelop::CodeCompletion(this, ccModel, name());
 
-    connect(core()->pluginController(), SIGNAL(pluginLoaded(KDevelop::IPlugin*)),
-            this, SLOT(slotPluginLoaded(KDevelop::IPlugin*)));
+    QTimer::singleShot(0, this, SLOT(updateInternalFunctions()));
 }
 
 LanguageSupport::~LanguageSupport()
@@ -99,14 +99,11 @@ LanguageSupport::~LanguageSupport()
     }
 }
 
-void LanguageSupport::slotPluginLoaded( IPlugin* plugin )
+void LanguageSupport::updateInternalFunctions()
 {
-    if ( plugin == this ) {
-        kDebug() << "making sure that internal function file is up to date";
-        DUChain::self()->updateContextForUrl(internalFunctionFile(), KDevelop::TopDUContext::AllDeclarationsAndContexts, this, -10);
-        disconnect(core()->pluginController(), SIGNAL(pluginLoaded(KDevelop::IPlugin*)),
-                   this, SLOT(slotPluginLoaded(KDevelop::IPlugin*)));
-    }
+    Q_ASSERT(core()->pluginController()->loadedPlugins().contains(this));
+    kDebug() << "making sure that internal function file is up to date";
+    DUChain::self()->updateContextForUrl(internalFunctionFile(), KDevelop::TopDUContext::AllDeclarationsAndContexts, this, -10);
 }
 
 void LanguageSupport::updateReady( IndexedString url, ReferencedTopDUContext topContext )
