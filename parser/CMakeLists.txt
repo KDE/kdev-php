@@ -13,6 +13,8 @@ if(KDEVPGQT_FOUND)
     set( parser_SRCS
        ${_kdevpgList}
    )
+   message(${_kdevpgList})
+   add_custom_target(php-parser-generated DEPENDS ${_kdevpgList})
 else(KDEVPGQT_FOUND)
    message(STATUS "Assuming existence of generated parser files")
    set(parser_SRCS
