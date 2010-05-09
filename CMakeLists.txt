@@ -85,6 +85,11 @@ target_link_libraries(kdevphplanguagesupport
     kdev4phpcompletion
 )
 
+if(KDEVPGQT_FOUND)
+    # Prevent generated files from screwing moc
+    add_dependencies(kdevphplanguagesupport_automoc php-parser-generated)
+endif(KDEVPGQT_FOUND)
+
 install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR})
 
 install(FILES kdevphpsupport.desktop DESTINATION ${SERVICES_INSTALL_DIR})
