@@ -57,6 +57,7 @@ private slots:
     void staticMemberVariable();
     void ownStaticMemberVariable();
     void classConst();
+    void classConst_data();
     void define();
     void defaultFunctionParam();
     void globalFunction();

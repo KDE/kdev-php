@@ -80,20 +80,30 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
     ifDebug(kDebug() << id.toString() << declarationType;)
     if (declarationType == ClassDeclarationType && id == selfQId) {
         DUChainReadLocker lock(DUChain::lock());
-        if (currentContext->parentContext()) {
-            Declaration* declaration = currentContext->parentContext()->owner();
-            return declaration;
+        if (currentContext->type() == DUContext::Class) {
+            return currentContext->owner();
+        } else if (currentContext->parentContext() && currentContext->parentContext()->type() == DUContext::Class) {
+            return currentContext->parentContext()->owner();
+        } else {
+            return 0;
         }
     } else if (declarationType == ClassDeclarationType && id == parentQId) {
         //there can be just one Class-Context imported
         DUChainReadLocker lock(DUChain::lock());
-        if (currentContext->parentContext()) {
-            foreach(const DUContext::Import &i, currentContext->parentContext()->importedParentContexts()) {
-                if (i.context(currentContext->topContext())->type() == DUContext::Class) {
-                    return i.context(currentContext->topContext())->owner();
+        DUContext* classCtx = 0;
+        if (currentContext->type() == DUContext::Class) {
+            classCtx = currentContext;
+        } else if (currentContext->parentContext() && currentContext->parentContext()->type() == DUContext::Class) {
+            classCtx = currentContext->parentContext();
+        }
+        if (classCtx) {
+            foreach(const DUContext::Import &i, classCtx->importedParentContexts()) {
+                if (i.context(classCtx->topContext())->type() == DUContext::Class) {
+                    return i.context(classCtx->topContext())->owner();
                 }
             }
         }
+        return 0;
     } else {
         QList<Declaration*> foundDeclarations;
         DUChainReadLocker lock(DUChain::lock());

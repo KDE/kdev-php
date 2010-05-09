@@ -890,19 +890,37 @@ void TestDUChain::ownStaticMemberVariable()
     QCOMPARE(barContext->localDeclarations().at(1)->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("b"));
 }
 
+void TestDUChain::classConst_data()
+{
+    QTest::addColumn<QString>("classBody");
+    QTest::addColumn<int>("problems");
+
+    QTest::newRow("int") << "const C = 1;" << 0;
+    QTest::newRow("string") << "const C = 'asdf';" << 0;
+    QTest::newRow("float") << "const C = 0.5;" << 0;
+    QTest::newRow("bool") << "const C = true;" << 0;
+    QTest::newRow("selfConst") << "const C2 = 1; const C = self::C2;" << 0;
+    QTest::newRow("parentConst") << "const C = parent::P;" << 0;
+
+    QTest::newRow("array") << "const C = array();" << 1;
+}
+
 void TestDUChain::classConst()
 {
-    //                 0         1         2         3         4         5         6         7
-    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A { const FOO = 0; } ");
+    QFETCH(QString, classBody);
+    QFETCH(int, problems);
 
-    TopDUContext* top = parse(method, DumpNone);
+    QString fullClass("<? class B { const P = 1; } class A extends B { " + classBody + " } ");
+
+    TopDUContext* top = parse(fullClass.toUtf8(), DumpNone);
     DUChainReleaser releaseTop(top);
-    DUChainWriteLocker lock(DUChain::lock());
+    DUChainWriteLocker lock;
 
-    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::FOO")).count(), 1);
-    QCOMPARE(top->childContexts().at(0)->localDeclarations().at(0)->qualifiedIdentifier(),
-             QualifiedIdentifier("a::FOO"));
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->problems().count(), problems);
+
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::C")).count(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::C")).first()->context(), top->childContexts().last());
 }
 
 void TestDUChain::define()
