@@ -44,10 +44,8 @@ target_link_libraries(kdev4phpduchain
     kdev4phpparser
  )
 
-if(KDEVPGQT_FOUND)
-    # Prevent generated files from screwing moc
-    add_dependencies(kdev4phpduchain_automoc php-parser-generated)
-endif(KDEVPGQT_FOUND)
+# Prevent generated files from screwing moc
+add_dependencies(kdev4phpduchain_automoc php-parser-generated)
 
 install(TARGETS kdev4phpduchain DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 

@@ -46,20 +46,12 @@ include_directories(
 
 add_definitions( -DKDE_DEFAULT_DEBUG_AREA=9043 )
 
-#Don't error out if the FindXXX are missing for these two
-find_package(KDevelop-PG-Qt QUIET)
+find_package(KDevelop-PG-Qt REQUIRED)
 
-if(KDEVPGQT_FOUND)
-    include_directories(
-        ${CMAKE_BINARY_DIR}/parser
-        ${KDEVPGQT_INCLUDE_DIR}
-    )
-else(KDEVPGQT_FOUND)
-    include_directories(
-        ${CMAKE_CURRENT_SOURCE_DIR}/parser/generated
-        ${CMAKE_CURRENT_SOURCE_DIR}/parser/generated/kdevelop-pg-qt
-    )
-endif(KDEVPGQT_FOUND)
+include_directories(
+    ${CMAKE_BINARY_DIR}/parser
+    ${KDEVPGQT_INCLUDE_DIR}
+)
 
 add_subdirectory(app_templates)
 add_subdirectory(parser)
@@ -85,10 +77,8 @@ target_link_libraries(kdevphplanguagesupport
     kdev4phpcompletion
 )
 
-if(KDEVPGQT_FOUND)
-    # Prevent generated files from screwing moc
-    add_dependencies(kdevphplanguagesupport_automoc php-parser-generated)
-endif(KDEVPGQT_FOUND)
+# Prevent generated files from screwing moc
+add_dependencies(kdevphplanguagesupport_automoc php-parser-generated)
 
 install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR})
 
