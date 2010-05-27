@@ -1505,11 +1505,13 @@ void TestDUChain::circularInheritance()
 
     DUChainWriteLocker lock(DUChain::lock());
 
-    QVERIFY(top->localDeclarations().at(0)->internalContext()->importedParentContexts().empty());
-    QVERIFY(top->localDeclarations().at(1)->internalContext()->importedParentContexts().empty());
-    QCOMPARE(top->localDeclarations().at(2)->internalContext()->importedParentContexts().count(), 1);
-    QCOMPARE(top->localDeclarations().at(2)->internalContext()->importedParentContexts().first().context(top),
-             top->localDeclarations().at(0)->internalContext());
+    QVERIFY(top->localDeclarations().at(2)->internalContext()->importedParentContexts().empty());
+    QCOMPARE(top->localDeclarations().at(1)->internalContext()->importedParentContexts().count(), 1);
+    QCOMPARE(top->localDeclarations().at(1)->internalContext()->importedParentContexts().first().context(top),
+             top->localDeclarations().at(2)->internalContext());
+    QCOMPARE(top->localDeclarations().at(0)->internalContext()->importedParentContexts().count(), 1);
+    QCOMPARE(top->localDeclarations().at(0)->internalContext()->importedParentContexts().first().context(top),
+             top->localDeclarations().at(1)->internalContext());
 }
 
 void TestDUChain::findDeclarations()
