@@ -146,7 +146,7 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                 }
                 TopDUContext* top = declarations[i].declaration()->context()->topContext();
 
-                if (ICore::self()) {
+                if (ICore::self() && !ICore::self()->projectController()->projects().isEmpty()) {
                     bool loadedProjectContainsUrl = false;
                     foreach(IProject *project, ICore::self()->projectController()->projects()) {
                         if (project->fileSet().contains(top->url())) {
