@@ -6,10 +6,20 @@ include_directories(
     ${KDEVPLATFORM_INCLUDE_DIR}
 )
 
-set(completiontest_SRCS test_completion.cpp)
+set(completiontest_SRCS test_completion.cpp
+    ../../duchain/tests/duchaintestbase.cpp)
 kde4_add_unit_test(completiontest ${completiontest_SRCS})
-target_link_libraries(completiontest kdev4phpcompletion kdev4phpduchain ${QT_QTTEST_LIBRARY})
+target_link_libraries(completiontest
+    kdev4phpcompletion
+    kdev4phpduchain
+    ${QT_QTTEST_LIBRARY}
+    ${KDEVPLATFORM_TESTS_LIBRARIES})
 
-set(completionbench_SRCS bench_completion.cpp)
+set(completionbench_SRCS bench_completion.cpp
+    ../../duchain/tests/duchaintestbase.cpp)
 kde4_add_unit_test(completionbenchmark ${completionbench_SRCS})
-target_link_libraries(completionbenchmark kdev4phpcompletion kdev4phpduchain ${QT_QTTEST_LIBRARY})
+target_link_libraries(completionbenchmark
+    kdev4phpcompletion
+    kdev4phpduchain
+    ${QT_QTTEST_LIBRARY}
+    ${KDEVPLATFORM_TESTS_LIBRARIES})

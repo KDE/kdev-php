@@ -46,11 +46,6 @@ Benchmarks::Benchmarks()
 {
 }
 
-void Benchmarks::initTestCase()
-{
-    DUChain::self()->disablePersistentStorage();
-}
-
 QIODevice* getInternalFile()
 {
     QString fileName = srcPath + "../../phpfunctions.php.gz";

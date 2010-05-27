@@ -21,17 +21,16 @@
 #include <QtCore/QObject>
 #include <QtCore/QFile>
 
+#include "duchaintestbase.h"
+
 namespace Php
 {
-class Benchmarks : public QObject
+class Benchmarks : public DUChainTestBase
 {
     Q_OBJECT
 
 public:
     Benchmarks();
-
-public slots:
-    void initTestCase();
 
 private slots:
     /// benchmarks the parser

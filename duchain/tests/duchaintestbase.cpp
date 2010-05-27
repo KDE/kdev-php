@@ -36,6 +36,10 @@
 #include "../helper.h"
 #include <completion/codemodelitem.h>
 
+#include <tests/autotestshell.h>
+#include <tests/testcore.h>
+#include <language/codegen/coderepresentation.h>
+
 using namespace KTextEditor;
 using namespace KDevelop;
 
@@ -50,7 +54,12 @@ DUChainTestBase::DUChainTestBase()
 
 void DUChainTestBase::initTestCase()
 {
+    AutoTestShell::init();
+    TestCore* core = new TestCore();
+    core->initialize(KDevelop::Core::NoUi);
+
     DUChain::self()->disablePersistentStorage();
+    KDevelop::CodeRepresentation::setDiskChangesForbidden(true);
 
     //yeah... adding a testcase here is kinda strange, but anyways - we have to check for special
     //handling of the internal functions file

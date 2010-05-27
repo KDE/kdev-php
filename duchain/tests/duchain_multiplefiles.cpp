@@ -22,7 +22,6 @@
 
 #include <qtest_kde.h>
 
-#include <tests/autotestshell.h>
 #include <tests/testcore.h>
 #include <interfaces/ilanguagecontroller.h>
 #include <language/backgroundparser/backgroundparser.h>
@@ -33,19 +32,13 @@ QTEST_KDEMAIN(Php::TestDUChainMultipleFiles, GUI)
 namespace Php
 {
 
-void TestDUChainMultipleFiles::init()
+void TestDUChainMultipleFiles::initTestCase()
 {
-    KDevelop::AutoTestShell::init();
-    m_core = new KDevelop::TestCore();
-    m_core->initialize(KDevelop::Core::NoUi);
-    m_projectController = new KDevelop::TestProjectController(m_core);
-    m_core->setProjectController(m_projectController);
-}
-
-void TestDUChainMultipleFiles::cleanup()
-{
-    m_core->cleanup();
-    delete m_core;
+    DUChainTestBase::initTestCase();
+    KDevelop::TestCore* core = dynamic_cast<KDevelop::TestCore*>(KDevelop::ICore::self());
+    Q_ASSERT(core);
+    m_projectController = new KDevelop::TestProjectController(core);
+    core->setProjectController(m_projectController);
 }
 
 class TestFile : public QObject

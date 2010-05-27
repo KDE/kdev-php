@@ -479,12 +479,16 @@ void TypeBuilder::visitStatement(StatementAst* node)
             ClassDeclaration *classDec = dynamic_cast<ClassDeclaration*>(type->declaration(currentContext()->topContext()));
             Q_ASSERT(classDec);
             lock.unlock();
+            /// Qualified identifier for 'iterator'
+            static const KDevelop::QualifiedIdentifier iteratorQId("iterator");
             ClassDeclaration* iteratorDecl = dynamic_cast<ClassDeclaration*>(
                 findDeclarationImport(ClassDeclarationType, iteratorQId, 0)
             );
             lock.lock();
             Q_ASSERT(iteratorDecl);
             if (classDec->isPublicBaseClass(iteratorDecl, currentContext()->topContext())) {
+                /// Qualified identifier for 'current'
+                static const KDevelop::QualifiedIdentifier currentQId("current");
                 foreach (Declaration *d, classDec->internalContext()->findDeclarations(currentQId)) {
                     if (!dynamic_cast<ClassMethodDeclaration*>(d)) continue;
                     Q_ASSERT(d->type<FunctionType>());

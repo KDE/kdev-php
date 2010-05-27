@@ -1026,6 +1026,9 @@ QList<DUContext*> CodeCompletionContext::memberAccessContainers() const
 
 QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& abort, bool fullCompletion)
 {
+    /// Indexed string for 'Php', identifies environment files from this language plugin
+    static const IndexedString phpLangString("Php");
+
     LOCKDUCHAIN;
 
     QList<CompletionTreeItemPointer> items;
@@ -1572,6 +1575,8 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
 
     static DUChainPointer<ClassDeclaration> exceptionDecl;
     if (!exceptionDecl) {
+        /// Qualified identifier for 'exception'
+        static const KDevelop::QualifiedIdentifier exceptionQId("exception");
         QList<Declaration*> decs = dec->context()->findDeclarations(exceptionQId);
         Q_ASSERT(decs.count());
         exceptionDecl = dynamic_cast<ClassDeclaration*>(decs.first());

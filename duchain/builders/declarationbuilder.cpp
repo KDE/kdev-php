@@ -650,6 +650,8 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                                             AstNode* node)
 {
     // we must not re-assign $this in a class context
+    /// Qualified identifier for 'this'
+    static const QualifiedIdentifier thisQId("this");
     if ( identifier == thisQId
             && currentContext()->parentContext()
             && currentContext()->parentContext()->type() == DUContext::Class ) {
@@ -737,6 +739,8 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
 }
 
 DUContext* getClassContext(const QualifiedIdentifier &identifier, DUContext* currentCtx) {
+    /// Qualified identifier for 'this'
+    static const QualifiedIdentifier thisQId("this");
     if ( identifier == thisQId ) {
         if ( currentCtx->parentContext() && currentCtx->parentContext()->type() == DUContext::Class ) {
             return currentCtx->parentContext();

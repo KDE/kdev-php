@@ -111,6 +111,7 @@ void ClassDeclaration::setInSymbolTable(bool inSymbolTable)
     if(!d_func()->prettyName.isEmpty()) {
         if(!d_func()->m_inSymbolTable && inSymbolTable) {
             CompletionCodeModelItem::Kind flags = CompletionCodeModelItem::Unknown;
+            static const KDevelop::QualifiedIdentifier exceptionQId("exception");
             if (qualifiedIdentifier() == exceptionQId) {
                 flags = (CompletionCodeModelItem::Kind)(flags | CompletionCodeModelItem::Exception);
             } else {

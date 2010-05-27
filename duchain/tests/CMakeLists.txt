@@ -6,36 +6,54 @@ include_directories(
     ${KDEVPLATFORM_INCLUDE_DIR}
 )
 
-set(duchain_SRCS duchain.cpp)
+set(duchain_SRCS
+    duchain.cpp
+    duchaintestbase.cpp)
 kde4_add_unit_test(duchain ${duchain_SRCS})
-target_link_libraries(duchain kdev4phpduchain ${QT_QTTEST_LIBRARY})
+target_link_libraries(duchain
+    kdev4phpduchain
+    ${QT_QTTEST_LIBRARY}
+    ${KDEVPLATFORM_TESTS_LIBRARIES}
+)
 
 
-set(expressionparser_SRCS expressionparser.cpp)
+set(expressionparser_SRCS
+    expressionparser.cpp
+    duchaintestbase.cpp)
 kde4_add_unit_test(expressionparser ${expressionparser_SRCS})
-target_link_libraries(expressionparser kdev4phpduchain ${QT_QTTEST_LIBRARY})
+target_link_libraries(expressionparser
+    kdev4phpduchain
+    ${QT_QTTEST_LIBRARY}
+    ${KDEVPLATFORM_TESTS_LIBRARIES}
+)
 
-set(uses_SRCS uses.cpp)
+set(uses_SRCS
+    uses.cpp
+    duchaintestbase.cpp)
 kde4_add_unit_test(uses ${uses_SRCS})
 target_link_libraries(uses
     kdev4phpduchain
     ${QT_QTTEST_LIBRARY}
     ${KDEVPLATFORM_INTERFACES_LIBRARIES}
+    ${KDEVPLATFORM_TESTS_LIBRARIES}
 )
 
 set(benchmarks_SRCS
     benchmarks.cpp
+    duchaintestbase.cpp
 )
 kde4_add_unit_test(benchmarks ${benchmarks_SRCS})
 target_link_libraries(benchmarks
     kdev4phpduchain
     ${QT_QTTEST_LIBRARY}
     ${KDEVPLATFORM_INTERFACES_LIBRARIES}
+    ${KDEVPLATFORM_TESTS_LIBRARIES}
 )
 
 
 set(duchain_multiplefiles_SRCS
     duchain_multiplefiles.cpp
+    duchaintestbase.cpp
 )
 kde4_add_unit_test(duchain_multiplefiles ${duchain_multiplefiles_SRCS})
 target_link_libraries(duchain_multiplefiles

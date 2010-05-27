@@ -30,6 +30,10 @@
   #include <valgrind/callgrind.h>
 #endif
 
+#include <tests/autotestshell.h>
+#include <tests/testcore.h>
+#include <language/codegen/coderepresentation.h>
+
 using namespace Php;
 using namespace KDevelop;
 
@@ -55,6 +59,12 @@ typedef CodeCompletionItemTester<CodeCompletionContext> PhpCompletionTester;
 
 void BenchmarkCodeCompletion::initTestCase()
 {
+    AutoTestShell::init();
+    TestCore* core = new TestCore();
+    core->initialize(KDevelop::Core::NoUi);
+
+    DUChain::self()->disablePersistentStorage();
+
     // make sure we have a valid duchain for the global file
     DUChainWriteLocker lock(DUChain::lock());
     if ( !DUChain::self()->chainForDocument(internalFunctionFile()) ) {

@@ -77,6 +77,11 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
 Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIdentifier id,
         DeclarationType declarationType, AstNode* node, EditorIntegrator* editor)
 {
+    /// Qualified identifier for 'self'
+    static const QualifiedIdentifier selfQId("self");
+    /// Qualified identifier for 'parent'
+    static const QualifiedIdentifier parentQId("parent");
+
     ifDebug(kDebug() << id.toString() << declarationType;)
     if (declarationType == ClassDeclarationType && id == selfQId) {
         DUChainReadLocker lock(DUChain::lock());
@@ -124,6 +129,8 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
             PersistentSymbolTable::self().declarations(id, nr, declarations);
             ifDebug(kDebug() << "found declarations:" << nr;)
             lock.unlock();
+            /// Indexed string for 'Php', identifies environment files from this language plugin
+            static const IndexedString phpLangString("Php");
 
             DUChainWriteLocker wlock(DUChain::lock());
             for (uint i = 0; i < nr; ++i) {

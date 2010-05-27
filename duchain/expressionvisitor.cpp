@@ -511,6 +511,8 @@ void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
             type = IntegralType::TypeArray;
             break;
         case CastObject: {
+            /// Qualified identifier for 'stdclass'
+            static const KDevelop::QualifiedIdentifier stdclassQId("stdclass");
             DUChainReadLocker lock(DUChain::lock());
             m_result.setDeclarations(m_currentContext->findDeclarations(stdclassQId));
             break;

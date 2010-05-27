@@ -33,8 +33,7 @@ class TestDUChainMultipleFiles : public DUChainTestBase
 {
     Q_OBJECT
 private slots:
-    void init();
-    void cleanup();
+    void initTestCase();
 
     void testImportsGlobalFunction();
     void testImportsBaseClassNotYetParsed();
@@ -45,7 +44,6 @@ private slots:
     void testNonExistingStaticFunction();
 
 private:
-    KDevelop::TestCore* m_core;
     KDevelop::TestProjectController* m_projectController;
 };
 

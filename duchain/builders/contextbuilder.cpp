@@ -129,6 +129,8 @@ TopDUContext* ContextBuilder::newTopContext(const SimpleRange& range, ParsingEnv
 {
     if (!file) {
         file = new ParsingEnvironmentFile(editor()->currentUrl());
+        /// Indexed string for 'Php', identifies environment files from this language plugin
+        static const IndexedString phpLangString("Php");
         file->setLanguage(phpLangString);
     }
     TopDUContext* ret = new PhpDUContext<TopDUContext>(editor()->currentUrl(), range, file);
