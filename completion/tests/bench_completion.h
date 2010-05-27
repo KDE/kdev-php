@@ -30,8 +30,6 @@ class BenchmarkCodeCompletion : public DUChainTestBase
 public slots:
     // don't do the stuff we do in the DUChainTestBase
     void initTestCase();
-    // shutdown in a proper way, the DUChain we create here can be stored
-    void cleanupTestCase();
 
 private slots:
     void globalCompletion();

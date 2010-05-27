@@ -83,12 +83,6 @@ void BenchmarkCodeCompletion::initTestCase()
     }
 }
 
-void BenchmarkCodeCompletion::cleanupTestCase()
-{
-    // force cleanup
-    QMetaObject::invokeMethod(DUChain::self(), "aboutToQuit");
-}
-
 void BenchmarkCodeCompletion::globalCompletion()
 {
     kDebug() << "benching global completion";
