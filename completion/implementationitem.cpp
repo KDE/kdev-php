@@ -38,6 +38,7 @@
 #include <KTextEditor/View>
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/classdeclaration.h>
+#include <language/duchain/types/integraltype.h>
 
 using namespace KDevelop;
 
@@ -230,10 +231,17 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
         }
         arguments += ')';
 
+        bool voidReturnType = false;
+        if (FunctionType::Ptr::dynamicCast(m_declaration->abstractType())) {
+            AbstractType::Ptr retType = FunctionType::Ptr::staticCast(m_declaration->abstractType())->returnType();
+            if (retType->equals(new IntegralType(IntegralType::TypeVoid))) {
+                voidReturnType = true;
+            }
+        }
 
         replText += QString("\n%1{\n%1    ").arg(indendation);
         if (isInterface) {
-        } else if (!isConstructorOrDestructor) {
+        } else if (!isConstructorOrDestructor && !voidReturnType) {
             replText += QString("$ret = parent::%2%3;\n%1    return $ret;").arg(indendation).arg(functionName).arg(arguments);
         } else {
             replText += QString("parent::%1%2;").arg(functionName).arg(arguments);
