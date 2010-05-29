@@ -184,7 +184,7 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
                 }
             }
             if (!modifiers.contains("static") && method->isStatic()) {
-                modifiers << "static";
+                replText += "static ";
             }
             functionName = method->prettyName().str();
 
