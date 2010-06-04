@@ -10,6 +10,7 @@ X-KDE-ParentApp=kdevplatform
 X-KDE-ParentComponents=kdevplatform
 X-KDE-CfgDlgHierarchy=DOCUMENTATION
 Name=PHP Documentation
+Name[ca]=Documentació de PHP
 Name[cs]=Dokumentace PHP
 Name[es]=Documentación de PHP
 Name[et]=PHP dokumentatsioon
