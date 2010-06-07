@@ -219,7 +219,7 @@ namespace KDevelop
        METHOD_C ("__METHOD__"), FUNC_C ("__FUNCTION__"), LINE ("__LINE__"),
        FILE ("__FILE__"), COMMENT ("comment"), DOC_COMMENT ("doc comment"),  PAAMAYIM_NEKUDOTAYIM ("::"),
        INCLUDE ("include"), INCLUDE_ONCE ("include_once"), EVAL ("eval"), REQUIRE ("require"),
-       REQUIRE_ONCE ("require_once") ;;
+       REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace") ;;
 
 -- casts:
 %token INT_CAST ("int cast"), DOUBLE_CAST ("double cast"), STRING_CAST ("string cast"),
@@ -234,7 +234,7 @@ namespace KDevelop
        CURLY_OPEN ("curly open"), -- { in "{$foo}"; not the same as LBRACE
        DOLLAR_OPEN_CURLY_BRACES ("${"),
        START_HEREDOC ("start heredoc"), END_HEREDOC ("end heredoc"),
-       BACKTICK ("`");;
+       BACKTICK ("`"), BACKSLASH ("\\");;
 
 -- operators:
 %token IS_EQUAL ("=="), IS_NOT_EQUAL ("!="), IS_IDENTICAL ("==="),
@@ -269,8 +269,12 @@ namespace KDevelop
 
 -- The actual grammar starts here.
 
-statements=innerStatementList
+#statements=outerTopStatement*
 -> start ;;
+
+  namespaceDeclaration=namespaceDeclarationStatement
+  | statement=topStatement
+-> outerTopStatement ;;
 
     statement=statement
   | functionDeclaration=functionDeclarationStatement
@@ -797,6 +801,10 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 
      variable=VARIABLE
 -> variableIdentifier ;;
+
+    NAMESPACE #namespaceName=identifier @ BACKSLASH
+    ( SEMICOLON | LBRACE #statements=topStatement* RBRACE )
+-> namespaceDeclarationStatement ;;
 
     INTERFACE interfaceName=identifier (EXTENDS extends=classImplements | 0)
     LBRACE body=classBody RBRACE

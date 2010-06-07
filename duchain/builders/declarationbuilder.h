@@ -73,7 +73,7 @@ protected:
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst *node);
     virtual void visitClassConstantDeclaration(ClassConstantDeclarationAst *node);
-    virtual void visitTopStatement(TopStatementAst* node);
+    virtual void visitOuterTopStatement(OuterTopStatementAst* node);
     virtual void visitAssignmentExpression(AssignmentExpressionAst* node);
     virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
     virtual void visitVariable(VariableAst* node);

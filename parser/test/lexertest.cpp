@@ -291,6 +291,45 @@ void LexerTest::testPhpBlockWithComment()
     delete ts;
 }
 
+void LexerTest::testNamespaces()
+{
+    TokenStream* ts = tokenize(
+        "<?php\n"
+        "namespace Foo;\n"
+        "namespace Foo\\Bar;\n"
+        "namespace Foo\\Bar\\Asd {\n"
+        "}\n"
+    , true);
+    QCOMPARE((int)ts->size(), 25);
+
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+
+    COMPARE_TOKEN(ts, 1, Parser::Token_NAMESPACE, 1, 0, 1, 8);
+    COMPARE_TOKEN(ts, 2, Parser::Token_WHITESPACE, 1, 9, 1, 9);
+    COMPARE_TOKEN(ts, 3, Parser::Token_STRING, 1, 10, 1, 12);
+    COMPARE_TOKEN(ts, 4, Parser::Token_SEMICOLON, 1, 13, 1, 13);
+
+    COMPARE_TOKEN(ts, 6, Parser::Token_NAMESPACE, 2, 0, 2, 8);
+    COMPARE_TOKEN(ts, 7, Parser::Token_WHITESPACE, 2, 9, 2, 9);
+    COMPARE_TOKEN(ts, 8, Parser::Token_STRING, 2, 10, 2, 12);
+    COMPARE_TOKEN(ts, 9, Parser::Token_BACKSLASH, 2, 13, 2, 13);
+    COMPARE_TOKEN(ts, 10, Parser::Token_STRING, 2, 14, 2, 16);
+    COMPARE_TOKEN(ts, 11, Parser::Token_SEMICOLON, 2, 17, 2, 17);
+
+    COMPARE_TOKEN(ts, 13, Parser::Token_NAMESPACE, 3, 0, 3, 8);
+    COMPARE_TOKEN(ts, 14, Parser::Token_WHITESPACE, 3, 9, 3, 9);
+    COMPARE_TOKEN(ts, 15, Parser::Token_STRING, 3, 10, 3, 12);
+    COMPARE_TOKEN(ts, 16, Parser::Token_BACKSLASH, 3, 13, 3, 13);
+    COMPARE_TOKEN(ts, 17, Parser::Token_STRING, 3, 14, 3, 16);
+    COMPARE_TOKEN(ts, 18, Parser::Token_BACKSLASH, 3, 17, 3, 17);
+    COMPARE_TOKEN(ts, 19, Parser::Token_STRING, 3, 18, 3, 20);
+    COMPARE_TOKEN(ts, 20, Parser::Token_WHITESPACE, 3, 21, 3, 21);
+    COMPARE_TOKEN(ts, 21, Parser::Token_LBRACE, 3, 22, 3, 22);
+    COMPARE_TOKEN(ts, 23, Parser::Token_RBRACE, 4, 0, 4, 0);
+
+    delete ts;
+}
+
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
     TokenStream* tokenStream = new TokenStream;

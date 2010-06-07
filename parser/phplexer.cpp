@@ -500,7 +500,8 @@ int Lexer::nextTokenKind()
             } else {
                 token = Parser::Token_CONCAT;
             }
-
+        } else if (it->unicode() == '\\') {
+            token = Parser::Token_BACKSLASH;
         } else if (it->unicode() == ';') {
             token = Parser::Token_SEMICOLON;
         } else if (it->unicode() == '\'') {
@@ -710,6 +711,8 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_LOGICAL_AND;
             } else if (name == "xor") {
                 token = Parser::Token_LOGICAL_XOR;
+            } else if (name == "namespace") {
+                token = Parser::Token_NAMESPACE;
             } else {
                 token = Parser::Token_STRING;
             }

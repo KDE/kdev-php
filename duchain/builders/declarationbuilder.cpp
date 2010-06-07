@@ -599,13 +599,13 @@ void DeclarationBuilder::reportRedeclarationError(Declaration* declaration, AstN
         );
     }
 }
-void DeclarationBuilder::visitTopStatement(TopStatementAst* node)
+void DeclarationBuilder::visitOuterTopStatement(OuterTopStatementAst* node)
 {
     //docblock of an AssignmentExpression
     setComment(formatComment(node, editor()));
     m_lastTopStatementComment = editor()->parseSession()->docComment(node->startToken);
 
-    DeclarationBuilderBase::visitTopStatement(node);
+    DeclarationBuilderBase::visitOuterTopStatement(node);
 }
 
 void DeclarationBuilder::visitAssignmentExpression(AssignmentExpressionAst* node)
