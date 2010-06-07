@@ -1447,6 +1447,26 @@ void TestDUChain::globalVariableInFunction()
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("a")).first()->uses().count(), 1);
 }
 
+void TestDUChain::nonGlobalVariableInFunction()
+{
+    // bug: https://bugs.kde.org/show_bug.cgi?id=240920
+
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $a = 0; function foo() { $a = 1; }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QCOMPARE(top->findLocalDeclarations(Identifier("a")).count(), 1);
+    QCOMPARE(top->findLocalDeclarations(Identifier("a")).first()->uses().count(), 0);
+
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->childContexts().last()->findLocalDeclarations(Identifier("a")).count(), 1);
+    QCOMPARE(top->childContexts().last()->findLocalDeclarations(Identifier("a")).first()->uses().count(), 0);
+}
+
 void TestDUChain::superglobalInFunction()
 {
     //                 0         1         2         3         4         5         6         7

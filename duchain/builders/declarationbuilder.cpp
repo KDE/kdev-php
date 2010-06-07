@@ -660,7 +660,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
     DUChainWriteLocker lock(DUChain::lock());
     // check if this variable is already declared
     {
-        QList< Declaration* > decs = parentCtx->findDeclarations(identifier.first(), startPos(node));
+        QList< Declaration* > decs = parentCtx->findDeclarations(identifier.first(), startPos(node), 0, DUContext::DontSearchInParent);
         if ( !decs.isEmpty() ) {
             QList< Declaration* >::const_iterator it = decs.constEnd() - 1;
             while ( true ) {
