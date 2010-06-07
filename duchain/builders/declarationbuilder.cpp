@@ -468,10 +468,9 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
     closeInjectedContext(editor()->smart());
 }
 
-void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
+void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
 {
     if (m_reportErrors) {   // check for redeclarations
-        Q_ASSERT(currentContext()->type() == DUContext::Class);
         DUChainWriteLocker lock(DUChain::lock());
         foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first(), startPos(node->identifier)))
         {
@@ -481,16 +480,14 @@ void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationA
             }
         }
     }
-    openDefinition<ClassMemberDeclaration>(node->identifier, node->identifier);
-    ClassMemberDeclaration* dec = dynamic_cast<ClassMemberDeclaration*>(currentDeclaration());
-    Q_ASSERT(dec);
+    ClassMemberDeclaration* dec = openDefinition<ClassMemberDeclaration>(node->identifier, node->identifier);
     {
         DUChainWriteLocker lock(DUChain::lock());
         dec->setAccessPolicy(Declaration::Public);
         dec->setStatic(true);
         dec->setKind(Declaration::Instance);
     }
-    DeclarationBuilderBase::visitClassConstantDeclaration(node);
+    DeclarationBuilderBase::visitConstantDeclaration(node);
     closeDeclaration();
     if ( m_reportErrors ) {
         // const class members may only be ints, floats, bools or strings

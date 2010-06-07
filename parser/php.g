@@ -623,8 +623,11 @@ expression=booleanOrExpression
   | OPEN_TAG
   | OPEN_TAG_WITH_ECHO expr=expr semicolonOrCloseTag
   | INLINE_HTML
-
+  | CONST #consts=constantDeclaration @ COMMA SEMICOLON
 -> statement ;;
+
+    identifier=identifier ASSIGN scalar=staticScalar
+-> constantDeclaration ;;
 
    SEMICOLON | CLOSE_TAG
 -> semicolonOrCloseTag ;;
@@ -825,7 +828,7 @@ identifier=identifier
 #classStatements=classStatement*
 -> classBody ;;
 
-    CONST #consts=classConstantDeclaration @ COMMA SEMICOLON
+    CONST #consts=constantDeclaration @ COMMA SEMICOLON
   | VAR variable=classVariableDeclaration SEMICOLON
   | modifiers=optionalModifiers
     ( variable=classVariableDeclaration SEMICOLON
@@ -837,9 +840,6 @@ identifier=identifier
     SEMICOLON -- abstract method
  |  LBRACE statements=innerStatementList RBRACE
 -> methodBody ;;
-
-    identifier=identifier ASSIGN scalar=staticScalar
--> classConstantDeclaration ;;
 
 #vars=classVariable @ COMMA
 -> classVariableDeclaration ;;

@@ -58,6 +58,8 @@ private slots:
     void ownStaticMemberVariable();
     void classConst();
     void classConst_data();
+    void fileConst();
+    void fileConst_data();
     void define();
     void defaultFunctionParam();
     void globalFunction();

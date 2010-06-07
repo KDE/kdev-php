@@ -323,19 +323,19 @@ void TypeBuilder::visitClassVariable(ClassVariableAst *node)
     }
 }
 
-void TypeBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst* node)
+void TypeBuilder::visitConstantDeclaration(ConstantDeclarationAst* node)
 {
     if (!m_gotTypeFromDocComment) {
         AbstractType::Ptr type = getTypeForNode(node->scalar);
         type->setModifiers(type->modifiers() | AbstractType::ConstModifier);
         openAbstractType(type);
 
-        TypeBuilderBase::visitClassConstantDeclaration(node);
+        TypeBuilderBase::visitConstantDeclaration(node);
 
         closeType();
     } else {
         currentAbstractType()->setModifiers(currentAbstractType()->modifiers() & AbstractType::ConstModifier);
-        TypeBuilderBase::visitClassConstantDeclaration(node);
+        TypeBuilderBase::visitConstantDeclaration(node);
     }
 }
 

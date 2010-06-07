@@ -52,7 +52,7 @@ protected:
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
     virtual void visitClassStatement(ClassStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst *node);
-    virtual void visitClassConstantDeclaration(Php::ClassConstantDeclarationAst* node);
+    virtual void visitConstantDeclaration(ConstantDeclarationAst* node);
     virtual void visitParameter(ParameterAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
 

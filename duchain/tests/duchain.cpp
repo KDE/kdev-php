@@ -923,6 +923,43 @@ void TestDUChain::classConst()
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::C")).first()->context(), top->childContexts().last());
 }
 
+void TestDUChain::fileConst_data()
+{
+    QTest::addColumn<QString>("code");
+    QTest::addColumn<int>("problems");
+    QTest::addColumn<uint>("dataType");
+
+    QTest::newRow("int") << "const C = 1;" << 0 << (uint) IntegralType::TypeInt;
+    QTest::newRow("string") << "const C = 'asdf';" << 0 << (uint) IntegralType::TypeString;
+    QTest::newRow("float") << "const C = 0.5;" << 0 << (uint) IntegralType::TypeFloat;
+    QTest::newRow("bool") << "const C = true;" << 0 << (uint) IntegralType::TypeBoolean;
+
+    QTest::newRow("array") << "const C = array();" << 1 << (uint) IntegralType::TypeArray;
+}
+
+void TestDUChain::fileConst()
+{
+    QFETCH(QString, code);
+    QFETCH(int, problems);
+    QFETCH(uint, dataType);
+
+    code.prepend("<?php ");
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QCOMPARE(top->problems().count(), problems);
+
+    QList< Declaration* > decs = top->findDeclarations(QualifiedIdentifier("C"));
+    QCOMPARE(decs.count(), 1);
+    IntegralType::Ptr type = decs.first()->abstractType().cast<IntegralType>();
+    QVERIFY(type);
+    QCOMPARE(type->dataType(), dataType);
+    QVERIFY(type->modifiers() & AbstractType::ConstModifier);
+}
+
 void TestDUChain::define()
 {
     // the last define tests that we don't crash under that circumstance
