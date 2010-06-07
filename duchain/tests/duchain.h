@@ -88,6 +88,7 @@ private slots:
     void returnTypeTwoDeclarations();
     void globalVariableNotVisibleInFunction();
     void globalVariableInFunction();
+    void nonGlobalVariableInFunction();
     void superglobalInFunction();
     void returnWithoutFunction();
     void circularInheritance();
