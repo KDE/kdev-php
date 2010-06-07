@@ -29,25 +29,17 @@ QTEST_MAIN(Php::LexerTest)
 namespace Php
 {
 
-void compareEndPosition(TokenStream* tokenStream, qint64 index, qint64 expectedLine, qint64 expectedColumn)
-{
-    qint64 line;
-    qint64 column;
-    tokenStream->endPosition(index, &line, &column);
-    kDebug() << "  end" << index << ": actual" << line << column << "expected" << expectedLine << expectedColumn;
-    QCOMPARE(line, expectedLine);
-    QCOMPARE(column, expectedColumn);
-}
-
-void compareStartPosition(TokenStream* tokenStream, qint64 index, qint64 expectedLine, qint64 expectedColumn)
-{
-    qint64 line;
-    qint64 column;
-    tokenStream->startPosition(index, &line, &column);
-    kDebug() << "start" << index << ": actual" << line << column << "expected" << expectedLine << expectedColumn;
-    QCOMPARE(line, expectedLine);
-    QCOMPARE(column, expectedColumn);
-}
+#define COMPARE_TOKEN(tokenStream, index, tokenKind, startLine, startColumn, endLine, endColumn) \
+    { \
+        QVERIFY(tokenStream->token(index).kind == tokenKind); \
+        qint64 line; qint64 column; \
+        tokenStream->startPosition(index, &line, &column); \
+        QCOMPARE(line, (qint64) startLine); \
+        QCOMPARE(column, (qint64) startColumn); \
+        tokenStream->endPosition(index, &line, &column); \
+        QCOMPARE(line, (qint64) endLine); \
+        QCOMPARE(column, (qint64) endColumn); \
+    }
 
 LexerTest::LexerTest()
 {
@@ -58,17 +50,10 @@ void LexerTest::testOpenTagWithNewline()
     TokenStream* ts = tokenize("<?php\nfoo;");
     QVERIFY(ts->size() == 3);
 
-    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
-    compareStartPosition(ts, 0, 0, 0);
-    compareEndPosition(ts, 0, 0, 5);
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_STRING, 1, 0, 1, 2);
+    COMPARE_TOKEN(ts, 2, Parser::Token_SEMICOLON, 1, 3, 1, 3);
 
-    QVERIFY(ts->token(1).kind == Parser::Token_STRING);
-    compareStartPosition(ts, 1, 1, 0);
-    compareEndPosition(ts, 1, 1, 2);
-
-    QVERIFY(ts->token(2).kind == Parser::Token_SEMICOLON);
-    compareStartPosition(ts, 2, 1, 3);
-    compareEndPosition(ts, 2, 1, 3);
     delete ts;
 }
 
@@ -77,17 +62,9 @@ void LexerTest::testOpenTagWithSpace()
     TokenStream* ts = tokenize("<?php foo;");
     QVERIFY(ts->size() == 3);
 
-    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
-    compareStartPosition(ts, 0, 0, 0);
-    compareEndPosition(ts, 0, 0, 5);
-
-    QVERIFY(ts->token(1).kind == Parser::Token_STRING);
-    compareStartPosition(ts, 1, 0, 6);
-    compareEndPosition(ts, 1, 0, 8);
-
-    QVERIFY(ts->token(2).kind == Parser::Token_SEMICOLON);
-    compareStartPosition(ts, 2, 0, 9);
-    compareEndPosition(ts, 2, 0, 9);
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_STRING, 0, 6, 0, 8);
+    COMPARE_TOKEN(ts, 2, Parser::Token_SEMICOLON, 0, 9, 0, 9);
     delete ts;
 }
 
@@ -96,21 +73,10 @@ void LexerTest::testCommentOneLine()
     TokenStream* ts = tokenize("<?php\n//comment\nfoo;");
     QVERIFY(ts->size() == 4);
 
-    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
-    compareStartPosition(ts, 0, 0, 0);
-    compareEndPosition(ts, 0, 0, 5);
-
-    QVERIFY(ts->token(1).kind == Parser::Token_COMMENT);
-    compareStartPosition(ts, 1, 1, 0);
-    compareEndPosition(ts, 1, 1, 9);
-
-    QVERIFY(ts->token(2).kind == Parser::Token_STRING);
-    compareStartPosition(ts, 2, 2, 0);
-    compareEndPosition(ts, 2, 2, 2);
-
-    QVERIFY(ts->token(3).kind == Parser::Token_SEMICOLON);
-    compareStartPosition(ts, 3, 2, 3);
-    compareEndPosition(ts, 3, 2, 3);
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_COMMENT, 1, 0, 1, 9);
+    COMPARE_TOKEN(ts, 2, Parser::Token_STRING, 2, 0, 2, 2);
+    COMPARE_TOKEN(ts, 3, Parser::Token_SEMICOLON, 2, 3, 2, 3);
     delete ts;
 }
 
@@ -119,21 +85,10 @@ void LexerTest::testCommentOneLine2()
     TokenStream* ts = tokenize("<?php\n#comment\nfoo;");
     QVERIFY(ts->size() == 4);
 
-    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
-    compareStartPosition(ts, 0, 0, 0);
-    compareEndPosition(ts, 0, 0, 5);
-
-    QVERIFY(ts->token(1).kind == Parser::Token_COMMENT);
-    compareStartPosition(ts, 1, 1, 0);
-    compareEndPosition(ts, 1, 1, 8);
-
-    QVERIFY(ts->token(2).kind == Parser::Token_STRING);
-    compareStartPosition(ts, 2, 2, 0);
-    compareEndPosition(ts, 2, 2, 2);
-
-    QVERIFY(ts->token(3).kind == Parser::Token_SEMICOLON);
-    compareStartPosition(ts, 3, 2, 3);
-    compareEndPosition(ts, 3, 2, 3);
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_COMMENT, 1, 0, 1, 8);
+    COMPARE_TOKEN(ts, 2, Parser::Token_STRING, 2, 0, 2, 2);
+    COMPARE_TOKEN(ts, 3, Parser::Token_SEMICOLON, 2, 3, 2, 3);
     delete ts;
 }
 
@@ -142,25 +97,11 @@ void LexerTest::testCommentMultiLine()
     TokenStream* ts = tokenize("<?php\n/*com\nment*/\nfoo;", true);
     QVERIFY(ts->size() == 5);
 
-    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
-    compareStartPosition(ts, 0, 0, 0);
-    compareEndPosition(ts, 0, 0, 5);
-
-    QVERIFY(ts->token(1).kind == Parser::Token_COMMENT);
-    compareStartPosition(ts, 1, 1, 0);
-    compareEndPosition(ts, 1, 2, 5);
-
-    QVERIFY(ts->token(2).kind == Parser::Token_WHITESPACE);
-    compareStartPosition(ts, 2, 2, 6);
-    compareEndPosition(ts, 2, 2, 6);
-
-    QVERIFY(ts->token(3).kind == Parser::Token_STRING);
-    compareStartPosition(ts, 3, 3, 0);
-    compareEndPosition(ts, 3, 3, 2);
-
-    QVERIFY(ts->token(4).kind == Parser::Token_SEMICOLON);
-    compareStartPosition(ts, 4, 3, 3);
-    compareEndPosition(ts, 4, 3, 3);
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_COMMENT, 1, 0, 2, 5);
+    COMPARE_TOKEN(ts, 2, Parser::Token_WHITESPACE, 2, 6, 2, 6);
+    COMPARE_TOKEN(ts, 3, Parser::Token_STRING, 3, 0, 3, 2);
+    COMPARE_TOKEN(ts, 4, Parser::Token_SEMICOLON, 3, 3, 3, 3);
     delete ts;
 }
 
@@ -169,25 +110,11 @@ void LexerTest::testCommentMultiLine2()
     TokenStream* ts = tokenize("<?php\n/*\nment*/\nfoo;", true);
     QVERIFY(ts->size() == 5);
 
-    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
-    compareStartPosition(ts, 0, 0, 0);
-    compareEndPosition(ts, 0, 0, 5);
-
-    QVERIFY(ts->token(1).kind == Parser::Token_COMMENT);
-    compareStartPosition(ts, 1, 1, 0);
-    compareEndPosition(ts, 1, 2, 5);
-
-    QVERIFY(ts->token(2).kind == Parser::Token_WHITESPACE);
-    compareStartPosition(ts, 2, 2, 6);
-    compareEndPosition(ts, 2, 2, 6);
-
-    QVERIFY(ts->token(3).kind == Parser::Token_STRING);
-    compareStartPosition(ts, 3, 3, 0);
-    compareEndPosition(ts, 3, 3, 2);
-
-    QVERIFY(ts->token(4).kind == Parser::Token_SEMICOLON);
-    compareStartPosition(ts, 4, 3, 3);
-    compareEndPosition(ts, 4, 3, 3);
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_COMMENT, 1, 0, 2, 5);
+    COMPARE_TOKEN(ts, 2, Parser::Token_WHITESPACE, 2, 6, 2, 6);
+    COMPARE_TOKEN(ts, 3, Parser::Token_STRING, 3, 0, 3, 2);
+    COMPARE_TOKEN(ts, 4, Parser::Token_SEMICOLON, 3, 3, 3, 3);
     delete ts;
 }
 
@@ -205,13 +132,8 @@ void LexerTest::testNewlineInString()
     TokenStream* ts = tokenize("<?php \"\n\";", true);
     QVERIFY(ts->size() == 3);
 
-    QVERIFY(ts->token(1).kind == Parser::Token_CONSTANT_ENCAPSED_STRING);
-    compareStartPosition(ts, 1, 0, 6);
-    compareEndPosition(ts, 1, 1, 0);
-
-    QVERIFY(ts->token(2).kind == Parser::Token_SEMICOLON);
-    compareStartPosition(ts, 2, 1, 1);
-    compareEndPosition(ts, 2, 1, 1);
+    COMPARE_TOKEN(ts, 1, Parser::Token_CONSTANT_ENCAPSED_STRING, 0, 6, 1, 0);
+    COMPARE_TOKEN(ts, 2, Parser::Token_SEMICOLON, 1, 1, 1, 1);
     delete ts;
 }
 
@@ -222,13 +144,8 @@ void LexerTest::testNewlineInString2()
     TokenStream* ts = tokenize("<?php '\n';", true);
     QCOMPARE((int)ts->size(), 3);
 
-    QVERIFY(ts->token(1).kind == Parser::Token_CONSTANT_ENCAPSED_STRING);
-    compareStartPosition(ts, 1, 0, 6);
-    compareEndPosition(ts, 1, 1, 0);
-
-    QVERIFY(ts->token(2).kind == Parser::Token_SEMICOLON);
-    compareStartPosition(ts, 2, 1, 1);
-    compareEndPosition(ts, 2, 1, 1);
+    COMPARE_TOKEN(ts, 1, Parser::Token_CONSTANT_ENCAPSED_STRING, 0, 6, 1, 0);
+    COMPARE_TOKEN(ts, 2, Parser::Token_SEMICOLON, 1, 1, 1, 1);
     delete ts;
 }
 
@@ -237,25 +154,11 @@ void LexerTest::testNewlineInStringWithVar()
     TokenStream* ts = tokenize("<?php \"$a\n\";", true);
     QCOMPARE((int)ts->size(), 6);
 
-    QVERIFY(ts->token(1).kind == Parser::Token_DOUBLE_QUOTE);
-    compareStartPosition(ts, 1, 0, 6);
-    compareEndPosition(ts, 1, 0, 6);
-
-    QVERIFY(ts->token(2).kind == Parser::Token_VARIABLE);
-    compareStartPosition(ts, 2, 0, 7);
-    compareEndPosition(ts, 2, 0, 8);
-
-    QVERIFY(ts->token(3).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
-    compareStartPosition(ts, 3, 0, 9);
-    compareEndPosition(ts, 3, 0, 9);
-
-    QVERIFY(ts->token(4).kind == Parser::Token_DOUBLE_QUOTE);
-    compareStartPosition(ts, 4, 1, 0);
-    compareEndPosition(ts, 4, 1, 0);
-
-    QVERIFY(ts->token(5).kind == Parser::Token_SEMICOLON);
-    compareStartPosition(ts, 5, 1, 1);
-    compareEndPosition(ts, 5, 1, 1);
+    COMPARE_TOKEN(ts, 1, Parser::Token_DOUBLE_QUOTE, 0, 6, 0, 6);
+    COMPARE_TOKEN(ts, 2, Parser::Token_VARIABLE, 0, 7, 0, 8);
+    COMPARE_TOKEN(ts, 3, Parser::Token_ENCAPSED_AND_WHITESPACE, 0, 9, 0, 9);
+    COMPARE_TOKEN(ts, 4, Parser::Token_DOUBLE_QUOTE, 1, 0, 1, 0);
+    COMPARE_TOKEN(ts, 5, Parser::Token_SEMICOLON, 1, 1, 1, 1);
     delete ts;
 }
 
@@ -266,29 +169,12 @@ void LexerTest::testNewlineInStringWithVar2()
     TokenStream* ts = tokenize("<?php \"\n$a\n\";", true);
     QCOMPARE((int)ts->size(), 7);
 
-    QVERIFY(ts->token(1).kind == Parser::Token_DOUBLE_QUOTE);
-    compareStartPosition(ts, 1, 0, 6);
-    compareEndPosition(ts, 1, 0, 6);
-
-    QVERIFY(ts->token(2).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
-    compareStartPosition(ts, 2, 0, 7);
-    compareEndPosition(ts, 2, 0, 7);
-
-    QVERIFY(ts->token(3).kind == Parser::Token_VARIABLE);
-    compareStartPosition(ts, 3, 1, 0);
-    compareEndPosition(ts, 3, 1, 1);
-
-    QVERIFY(ts->token(4).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
-    compareStartPosition(ts, 4, 1, 2);
-    compareEndPosition(ts, 4, 1, 2);
-
-    QVERIFY(ts->token(5).kind == Parser::Token_DOUBLE_QUOTE);
-    compareStartPosition(ts, 5, 2, 0);
-    compareEndPosition(ts, 5, 2, 0);
-
-    QVERIFY(ts->token(6).kind == Parser::Token_SEMICOLON);
-    compareStartPosition(ts, 6, 2, 1);
-    compareEndPosition(ts, 6, 2, 1);
+    COMPARE_TOKEN(ts, 1, Parser::Token_DOUBLE_QUOTE, 0, 6, 0, 6);
+    COMPARE_TOKEN(ts, 2, Parser::Token_ENCAPSED_AND_WHITESPACE, 0, 7, 0, 7);
+    COMPARE_TOKEN(ts, 3, Parser::Token_VARIABLE, 1, 0, 1, 1);
+    COMPARE_TOKEN(ts, 4, Parser::Token_ENCAPSED_AND_WHITESPACE, 1, 2, 1, 2);
+    COMPARE_TOKEN(ts, 5, Parser::Token_DOUBLE_QUOTE, 2, 0, 2, 0);
+    COMPARE_TOKEN(ts, 6, Parser::Token_SEMICOLON, 2, 1, 2, 1);
     delete ts;
 }
 
@@ -299,29 +185,12 @@ void LexerTest::testNewlineInStringWithVar3()
     TokenStream* ts = tokenize("<?php \"{$$a}\";", true);
     QCOMPARE((int)ts->size(), 7);
 
-    QVERIFY(ts->token(1).kind == Parser::Token_DOUBLE_QUOTE);
-    compareStartPosition(ts, 1, 0, 6);
-    compareEndPosition(ts, 1, 0, 6);
-
-    QVERIFY(ts->token(2).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
-    compareStartPosition(ts, 2, 0, 7);
-    compareEndPosition(ts, 2, 0, 8);
-
-    QVERIFY(ts->token(3).kind == Parser::Token_VARIABLE);
-    compareStartPosition(ts, 3, 0, 9);
-    compareEndPosition(ts, 3, 0, 10);
-
-    QVERIFY(ts->token(4).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
-    compareStartPosition(ts, 4, 0, 11);
-    compareEndPosition(ts, 4, 0, 11);
-
-    QVERIFY(ts->token(5).kind == Parser::Token_DOUBLE_QUOTE);
-    compareStartPosition(ts, 5, 0, 12);
-    compareEndPosition(ts, 5, 0, 12);
-
-    QVERIFY(ts->token(6).kind == Parser::Token_SEMICOLON);
-    compareStartPosition(ts, 6, 0, 13);
-    compareEndPosition(ts, 6, 0, 13);
+    COMPARE_TOKEN(ts, 1, Parser::Token_DOUBLE_QUOTE, 0, 6, 0, 6);
+    COMPARE_TOKEN(ts, 2, Parser::Token_ENCAPSED_AND_WHITESPACE, 0, 7, 0, 8);
+    COMPARE_TOKEN(ts, 3, Parser::Token_VARIABLE, 0, 9, 0, 10);
+    COMPARE_TOKEN(ts, 4, Parser::Token_ENCAPSED_AND_WHITESPACE, 0, 11, 0, 11);
+    COMPARE_TOKEN(ts, 5, Parser::Token_DOUBLE_QUOTE, 0, 12, 0, 12);
+    COMPARE_TOKEN(ts, 6, Parser::Token_SEMICOLON, 0, 13, 0, 13);
     delete ts;
 }
 
@@ -337,30 +206,20 @@ void LexerTest::testMultiplePhpSections()
     for (qint64 line = 0; line <= 2; ++line) {
         if (line == 1) {
             // the html stuff in the middle
-            QVERIFY(ts->token(index).kind == Parser::Token_INLINE_HTML);
-            compareStartPosition(ts, index, 0, 11);
-            compareEndPosition(ts, index, 1, 6);
+            COMPARE_TOKEN(ts, index, Parser::Token_INLINE_HTML, 0, 11, 1, 6);
             ++index;
         } else {
             // the php stuff (symmetric) at the start and end
-            QVERIFY(ts->token(index).kind == Parser::Token_OPEN_TAG);
-            compareStartPosition(ts, index, line, 0);
-            compareEndPosition(ts, index, line, 5);
+            COMPARE_TOKEN(ts, index, Parser::Token_OPEN_TAG, line, 0, line, 5);
             ++index;
 
-            QVERIFY(ts->token(index).kind == Parser::Token_VARIABLE);
-            compareStartPosition(ts, index, line, 6);
-            compareEndPosition(ts, index, line, 7);
+            COMPARE_TOKEN(ts, index, Parser::Token_VARIABLE, line, 6, line, 7);
             ++index;
 
-            QVERIFY(ts->token(index).kind == Parser::Token_SEMICOLON);
-            compareStartPosition(ts, index, line, 8);
-            compareEndPosition(ts, index, line, 8);
+            COMPARE_TOKEN(ts, index, Parser::Token_SEMICOLON, line, 8, line, 8);
             ++index;
 
-            QVERIFY(ts->token(index).kind == Parser::Token_CLOSE_TAG);
-            compareStartPosition(ts, index, line, 9);
-            compareEndPosition(ts, index, line, 10);
+            COMPARE_TOKEN(ts, index, Parser::Token_CLOSE_TAG, line, 9, line, 10);
             ++index;
         }
     }
@@ -372,45 +231,16 @@ void LexerTest::testHereDoc()
     TokenStream* ts = tokenize("<?php\necho <<<EOD1\nstart $text\nend\nEOD1;\n$extern;", true);
     QCOMPARE((int)ts->size(), 12);
 
-    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
-    compareStartPosition(ts, 0, 0, 0);
-    compareEndPosition(ts, 0, 0, 5);
-
-    QVERIFY(ts->token(1).kind == Parser::Token_ECHO);
-    compareStartPosition(ts, 1, 1, 0);
-    compareEndPosition(ts, 1, 1, 3);
-
-    QVERIFY(ts->token(3).kind == Parser::Token_START_HEREDOC);
-    compareStartPosition(ts, 3, 1, 5);
-    compareEndPosition(ts, 3, 1, 12);
-
-    QVERIFY(ts->token(4).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
-    compareStartPosition(ts, 4, 2, 0);
-    compareEndPosition(ts, 4, 2, 5);
-
-    QVERIFY(ts->token(5).kind == Parser::Token_VARIABLE);
-    compareStartPosition(ts, 5, 2, 6);
-    compareEndPosition(ts, 5, 2, 10);
-
-    QVERIFY(ts->token(6).kind == Parser::Token_ENCAPSED_AND_WHITESPACE);
-    compareStartPosition(ts, 6, 2, 11);
-    compareEndPosition(ts, 6, 3, 3);
-
-    QVERIFY(ts->token(7).kind == Parser::Token_END_HEREDOC);
-    compareStartPosition(ts, 7, 4, 0);
-    compareEndPosition(ts, 7, 4, 3);
-
-    QVERIFY(ts->token(8).kind == Parser::Token_SEMICOLON);
-    compareStartPosition(ts, 8, 4, 4);
-    compareEndPosition(ts, 8, 4, 4);
-
-    QVERIFY(ts->token(10).kind == Parser::Token_VARIABLE);
-    compareStartPosition(ts, 10, 5, 0);
-    compareEndPosition(ts, 10, 5, 6);
-
-    QVERIFY(ts->token(11).kind == Parser::Token_SEMICOLON);
-    compareStartPosition(ts, 11, 5, 7);
-    compareEndPosition(ts, 11, 5, 7);
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_ECHO, 1, 0, 1, 3);
+    COMPARE_TOKEN(ts, 3, Parser::Token_START_HEREDOC, 1, 5, 1, 12);
+    COMPARE_TOKEN(ts, 4, Parser::Token_ENCAPSED_AND_WHITESPACE, 2, 0, 2, 5);
+    COMPARE_TOKEN(ts, 5, Parser::Token_VARIABLE, 2, 6, 2, 10);
+    COMPARE_TOKEN(ts, 6, Parser::Token_ENCAPSED_AND_WHITESPACE, 2, 11, 3, 3);
+    COMPARE_TOKEN(ts, 7, Parser::Token_END_HEREDOC, 4, 0, 4, 3);
+    COMPARE_TOKEN(ts, 8, Parser::Token_SEMICOLON, 4, 4, 4, 4);
+    COMPARE_TOKEN(ts, 10, Parser::Token_VARIABLE, 5, 0, 5, 6);
+    COMPARE_TOKEN(ts, 11, Parser::Token_SEMICOLON, 5, 7, 5, 7);
     delete ts;
 }
 
@@ -423,13 +253,8 @@ void LexerTest::testCommonStringTokens()
 
         QCOMPARE((int)ts->size(), 2);
 
-        QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
-        compareStartPosition(ts, 0, 0, 0);
-        compareEndPosition(ts, 0, 0, 5);
-
-        QVERIFY(ts->token(1).kind == Parser::Token_CONSTANT_ENCAPSED_STRING);
-        compareStartPosition(ts, 1, 0, 6);
-        compareEndPosition(ts, 1, 0, code.size() - 1);
+        COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+        COMPARE_TOKEN(ts, 1, Parser::Token_CONSTANT_ENCAPSED_STRING, 0, 6, 0, code.size() - 1);
 
         delete ts;
     }
@@ -441,18 +266,9 @@ void LexerTest::testNonTerminatedStringWithVar()
 
     QCOMPARE((int)ts->size(), 3);
 
-    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
-    compareStartPosition(ts, 0, 0, 0);
-    compareEndPosition(ts, 0, 0, 5);
-
-    QVERIFY(ts->token(1).kind == Parser::Token_DOUBLE_QUOTE);
-    compareStartPosition(ts, 1, 0, 6);
-    compareEndPosition(ts, 1, 0, 6);
-
-    QVERIFY(ts->token(2).kind == Parser::Token_VARIABLE);
-    compareStartPosition(ts, 2, 0, 7);
-    compareEndPosition(ts, 2, 0, 8);
-
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_DOUBLE_QUOTE, 0, 6, 0, 6);
+    COMPARE_TOKEN(ts, 2, Parser::Token_VARIABLE, 0, 7, 0, 8);
     delete ts;
 }
 
@@ -467,25 +283,12 @@ void LexerTest::testPhpBlockWithComment()
 
     QCOMPARE((int)ts->size(), 5);
 
-    QVERIFY(ts->token(0).kind == Parser::Token_OPEN_TAG);
-    compareStartPosition(ts, 0, 0, 0);
-    compareEndPosition(ts, 0, 0, 5);
-
-    QVERIFY(ts->token(1).kind == Parser::Token_COMMENT);
-    compareStartPosition(ts, 1, 1, 0);
-    compareEndPosition(ts, 1, 1, 6);
-
-    QVERIFY(ts->token(2).kind == Parser::Token_CLOSE_TAG);
-    compareStartPosition(ts, 2, 2, 0);
-    compareEndPosition(ts, 2, 2, 1);
-
-    QVERIFY(ts->token(3).kind == Parser::Token_INLINE_HTML);
-    compareStartPosition(ts, 3, 2, 2);
-    compareEndPosition(ts, 3, 2, 2);
-
-    QVERIFY(ts->token(4).kind == Parser::Token_OPEN_TAG);
-    compareStartPosition(ts, 4, 3, 0);
-    compareEndPosition(ts, 4, 3, 5);
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_COMMENT, 1, 0, 1, 6);
+    COMPARE_TOKEN(ts, 2, Parser::Token_CLOSE_TAG, 2, 0, 2, 1);
+    COMPARE_TOKEN(ts, 3, Parser::Token_INLINE_HTML, 2, 2, 2, 2);
+    COMPARE_TOKEN(ts, 4, Parser::Token_OPEN_TAG, 3, 0, 3, 5);
+    delete ts;
 }
 
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
