@@ -368,7 +368,7 @@ void ContextBuilder::reportError(const QString& errorMsg, AstNode* node, KDevelo
     reportError(errorMsg, editor()->findRange(node).textRange(), severity);
 }
 
-void ContextBuilder::reportError(const QString& errorMsg, QList< Php::AstNode* > nodes, KDevelop::ProblemData::Severity severity)
+void ContextBuilder::reportError(const QString& errorMsg, QList< AstNode* > nodes, KDevelop::ProblemData::Severity severity)
 {
     KTextEditor::Range range = KTextEditor::Range::invalid();
     foreach ( AstNode* node, nodes ) {

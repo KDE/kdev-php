@@ -38,7 +38,7 @@ class ClassDeclaration;
 class FunctionDeclaration;
 class NamespaceDeclaration;
 
-typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, Php::TypeBuilder> DeclarationBuilderBase;
+typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, TypeBuilder> DeclarationBuilderBase;
 
 /**
  * The DeclarationBuilder builds declarations, types and contexts for everything in a AST.
@@ -58,7 +58,7 @@ public:
         : m_findVariable(false), m_variableIsArray(false), m_currentModifers(0) {
         setEditor(editor);
     }
-    virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, Php::AstNode* node,
+    virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
             KDevelop::ReferencedTopDUContext updateContext
             = KDevelop::ReferencedTopDUContext(), bool useSmart = true);
 
@@ -91,7 +91,7 @@ protected:
     virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
 
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
-    bool isEmptyMethodBody(const Php::MethodBodyAst* body) const {
+    bool isEmptyMethodBody(const MethodBodyAst* body) const {
         return !body || !body->statements;
     }
 
@@ -103,7 +103,7 @@ protected:
 
     /// don't forget to closeDeclaration() afterwards
     /// set m_currentModifers to your likings and reset it afterwards
-    void openClassMemberDeclaration(Php::AstNode* node, const KDevelop::QualifiedIdentifier& name);
+    void openClassMemberDeclaration(AstNode* node, const KDevelop::QualifiedIdentifier& name);
 
     virtual void updateCurrentType();
 
@@ -142,7 +142,7 @@ private:
     QList<KDevelop::QualifiedIdentifier> m_upcomingClassVariables;
 
     /// handles common stuff for both interfaces and classes
-    Php::ClassDeclaration* openTypeDeclaration(IdentifierAst *name, KDevelop::ClassDeclarationData::ClassType type);
+    ClassDeclaration* openTypeDeclaration(IdentifierAst *name, KDevelop::ClassDeclarationData::ClassType type);
 
     /// check if this declaration is already declared
     bool isGlobalRedeclaration(const KDevelop::QualifiedIdentifier &identifier, AstNode *node,
@@ -152,7 +152,7 @@ private:
     /// @param identifier   The identifier for the current method
     /// @param curClass     the current class we are in
     /// @param node         the node we are processing, used to access modifiers and for error reporting
-    bool isBaseMethodRedeclaration(const IdentifierPair &ids, Php::ClassDeclaration *curClass,
+    bool isBaseMethodRedeclaration(const IdentifierPair &ids, ClassDeclaration *curClass,
                                    ClassStatementAst *node);
     /// reports a redeclaration error for the given node
     /// @param declaration the old declaration
