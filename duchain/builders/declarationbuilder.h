@@ -86,8 +86,8 @@ protected:
     virtual void visitCatchItem(CatchItemAst *node);
     virtual void visitUnaryExpression( UnaryExpressionAst* node );
     virtual void visitAssignmentListElement(AssignmentListElementAst* node);
-    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, KDevelop::QualifiedIdentifier identifier);
-    virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, KDevelop::QualifiedIdentifier identifier);
+    virtual void openNamespace(Php::NamespaceDeclarationStatementAst* parent, Php::IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier);
+    virtual void closeNamespace(Php::NamespaceDeclarationStatementAst* parent, Php::IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier);
 
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const Php::MethodBodyAst* body) const {

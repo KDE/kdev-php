@@ -143,7 +143,7 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
     closeDeclaration();
 }
 
-void PreDeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, QualifiedIdentifier identifier)
+void PreDeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const QualifiedIdentifier& identifier)
 {
     if ( node == parent->namespaceNameSequence->back()->element ) {
         setComment(formatComment(parent, editor()));
@@ -159,7 +159,7 @@ void PreDeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* pare
     PreDeclarationBuilderBase::openNamespace(parent, node, identifier);
 }
 
-void PreDeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, QualifiedIdentifier identifier)
+void PreDeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const QualifiedIdentifier& identifier)
 {
     PreDeclarationBuilderBase::closeNamespace(parent, node, identifier);
 

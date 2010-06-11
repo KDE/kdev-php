@@ -82,8 +82,8 @@ protected:
      * don't overload in other builders, use @c openNamespace and @c closeNamespace instead.
      */
     virtual void visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node);
-    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, KDevelop::QualifiedIdentifier identifier);
-    virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, KDevelop::QualifiedIdentifier identifier);
+    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier);
+    virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier);
 
     virtual void addBaseType(IdentifierAst * identifier);
 

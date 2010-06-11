@@ -68,8 +68,8 @@ protected:
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst* node);
-    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, KDevelop::QualifiedIdentifier identifier);
-    virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, KDevelop::QualifiedIdentifier identifier);
+    virtual void openNamespace(Php::NamespaceDeclarationStatementAst* parent, Php::IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier);
+    virtual void closeNamespace(Php::NamespaceDeclarationStatementAst* parent, Php::IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier);
 
     virtual void closeDeclaration();
     virtual void closeContext();

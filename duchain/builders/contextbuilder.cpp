@@ -302,7 +302,7 @@ void ContextBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStat
     }
 }
 
-void ContextBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, QualifiedIdentifier identifier)
+void ContextBuilder::openNamespace(Php::NamespaceDeclarationStatementAst* parent, Php::IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier)
 {
     if ( node == parent->namespaceNameSequence->back()->element ) {
         openContext(node, editorFindRange(parent->body, parent->body), KDevelop::DUContext::Namespace, identifier);
@@ -311,7 +311,7 @@ void ContextBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, Ide
     }
 }
 
-void ContextBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, QualifiedIdentifier identifier)
+void ContextBuilder::closeNamespace(Php::NamespaceDeclarationStatementAst* parent, Php::IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier)
 {
     closeContext();
 }

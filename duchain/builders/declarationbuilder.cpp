@@ -1075,7 +1075,7 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
     }
 }
 
-void DeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, QualifiedIdentifier identifier)
+void DeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const QualifiedIdentifier& identifier)
 {
     Declaration* dec = m_namespaces.value(node->string, 0);
     Q_ASSERT(dec);
@@ -1085,7 +1085,7 @@ void DeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent,
     DeclarationBuilderBase::openNamespace(parent, node, identifier);
 }
 
-void DeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, QualifiedIdentifier identifier)
+void DeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const QualifiedIdentifier& identifier)
 {
     DeclarationBuilderBase::closeNamespace(parent, node, identifier);
     closeDeclaration();
