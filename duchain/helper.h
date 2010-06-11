@@ -68,6 +68,12 @@ KDEVPHPDUCHAIN_EXPORT QString prettyName(KDevelop::Declaration* dec);
 
 KDEVPHPDUCHAIN_EXPORT const KDevelop::IndexedString& internalFunctionFile();
 
-KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierForNamespace(NamespacedIdentifierAst* node, EditorIntegrator* editor);
+/**
+ * Get proper QualifiedIdentifier for a NamespacedIdentifierAst.
+ *
+ * Identifier will be all lowercase except for the last identifier if @p lastIsConstIdentifier is set to true.
+ */
+KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierForNamespace(NamespacedIdentifierAst* node, EditorIntegrator* editor,
+                                                                           bool lastIsConstIdentifier = false);
 }
 #endif

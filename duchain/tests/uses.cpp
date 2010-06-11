@@ -815,10 +815,11 @@ void TestUses::namespaces()
                               "namespace Foo\\Bar {\n"
                               "const MyConst = 1;\n"
                               "function MyFunc(){}\n"
-                              "class MyClass{}\n"
+                              "class MyClass{ const ClassConst = 2; }\n"
                               "}\n"
                               "namespace {\n"
-                              "\\Foo\\Bar\\MyConst;"
+                              "\\Foo\\Bar\\MyConst;\n"
+                              "\\Foo\\Bar\\MyClass::ClassConst;\n"
 //                               "\\Foo\\Bar\\MyFunc();"
 //                               "new \\Foo\\Bar\\MyClass;"
                               "}\n", DumpAll);
@@ -826,10 +827,27 @@ void TestUses::namespaces()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
 
+    Declaration* dec;
+
     ///TODO: uses of namespace declarations
 
-    Declaration* dec = top->findDeclarations(QualifiedIdentifier("Foo::Bar::MyConst")).first();
+    dec = top->findDeclarations(QualifiedIdentifier("foo::bar")).first();
+    QCOMPARE(dec->kind(), Declaration::Namespace);
+    QVERIFY(dec->internalContext());
+    QCOMPARE(dec->internalContext()->localDeclarations().size(), 3);
+    foreach(Declaration* d, dec->internalContext()->localDeclarations()) {
+        kDebug() << d->toString() << d->qualifiedIdentifier();
+    }
+
+    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::MyConst")).first();
     compareUses(dec, SimpleRange(7, 9, 7, 16));
+
+    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myclass")).first();
+    QVERIFY(dynamic_cast<ClassDeclaration*>(dec));
+    compareUses(dec, SimpleRange(8, 9, 8, 16));
+
+    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myclass::ClassConst")).first();
+    compareUses(dec, SimpleRange(8, 18, 8, 28));
 }
 
 }

@@ -314,7 +314,7 @@ void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
             m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeNull)));
         } else {
             //constant (created with declare('foo', 'bar')) or const Foo = 1;
-            const QualifiedIdentifier id = identifierForNamespace(node->constant, m_editor);
+            QualifiedIdentifier id = identifierForNamespace(node->constant, m_editor, true);
             Declaration* declaration = findDeclarationImport(ConstantDeclarationType, node->constant, id);
             if (!declaration) {
                 ///TODO: is this really wanted?
