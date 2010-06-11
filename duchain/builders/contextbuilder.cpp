@@ -269,6 +269,32 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     }
 }
 
+void ContextBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node)
+{
+    if ( !node->namespaceNameSequence ) {
+        // global namespace
+        ///TODO: close opened namespace ctx
+        DefaultVisitor::visitInnerStatementList(node->body);
+        return;
+    }
+    ///TODO:
+    if ( !node->body ) {
+        kWarning() << "namespace foo; is unsupported yet....";
+    }
+
+    QualifiedIdentifier identifier;
+    ///TODO: support \ as separator
+    ///TODO: explicitly global?
+    const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
+    do {
+        identifier.push(Identifier(editor()->parseSession()->symbol(it->element)));
+    } while(it->hasNext() && (it = it->next));
+
+    DUContext* nspace = openContext(node, editorFindRange(node->body, node->body), KDevelop::DUContext::Namespace, identifier);
+    DefaultVisitor::visitInnerStatementList(node->body);
+    closeContext();
+}
+
 void ContextBuilder::addBaseType(IdentifierAst * identifier)
 {
     DUChainWriteLocker lock(DUChain::lock());

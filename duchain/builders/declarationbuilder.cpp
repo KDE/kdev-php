@@ -120,7 +120,7 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
     //Run DeclarationBuilder twice, to find uses of declarations that are
     //declared after the use. ($a = new Foo; class Foo {})
     {
-        PreDeclarationBuilder prebuilder(&m_types, &m_functions, &m_upcomingClassVariables, editor());
+        PreDeclarationBuilder prebuilder(&m_types, &m_functions, &m_namespaces, &m_upcomingClassVariables, editor());
         updateContext = prebuilder.build(url, node, updateContext, useSmart);
         m_actuallyRecompiling = prebuilder.didRecompile();
     }
@@ -824,7 +824,13 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                 SimpleRange newRange = editorFindRange(scalar, scalar);
                 DUChainWriteLocker lock(DUChain::lock());
                 LockedSmartInterface iface = editor()->smart();
-                injectContext(iface, currentContext()->topContext()); //constants are always global
+                // find fitting context to put define in,
+                // pick first namespace or global context otherwise
+                DUContext* ctx = currentContext();
+                while (ctx->type() != DUContext::Namespace && ctx->parentContext()) {
+                    ctx = ctx->parentContext();
+                }
+                injectContext(iface, ctx); //constants are always global
                 QualifiedIdentifier identifier(constant);
                 isGlobalRedeclaration(identifier, scalar, ConstantDeclarationType);
                 openDefinition<Declaration>(identifier, newRange);
@@ -1066,6 +1072,23 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
         eventuallyAssignInternalContext();
         DeclarationBuilderBase::closeDeclaration();
         closeInjectedContext(editor()->smart());
+    }
+}
+
+void DeclarationBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node)
+{
+    if ( node->namespaceNameSequence ) {
+        Declaration* dec = m_namespaces.value(node, 0);
+        Q_ASSERT(dec);
+        DeclarationBuilderBase::setEncountered(dec);
+
+        openDeclarationInternal(dec);
+    }
+
+    DeclarationBuilderBase::visitNamespaceDeclarationStatement(node);
+
+    if ( node->namespaceNameSequence ) {
+        closeDeclaration();
     }
 }
 

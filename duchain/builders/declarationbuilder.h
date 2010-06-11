@@ -86,6 +86,7 @@ protected:
     virtual void visitCatchItem(CatchItemAst *node);
     virtual void visitUnaryExpression( UnaryExpressionAst* node );
     virtual void visitAssignmentListElement(AssignmentListElementAst* node);
+    virtual void visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node);
 
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const Php::MethodBodyAst* body) const {
@@ -135,6 +136,7 @@ private:
 
     QHash<qint64, Php::ClassDeclaration*> m_types;
     QHash<qint64, Php::FunctionDeclaration*> m_functions;
+    QHash<NamespaceDeclarationStatementAst*, KDevelop::Declaration*> m_namespaces;
     QList<KDevelop::QualifiedIdentifier> m_upcomingClassVariables;
 
     /// handles common stuff for both interfaces and classes

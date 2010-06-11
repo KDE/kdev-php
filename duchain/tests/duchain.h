@@ -122,6 +122,7 @@ private slots:
     void undeclaredPropertyInString();
     void undeclaredVarPropertyInString();
     void upcommingClassInString();
+    void namespaces();
 };
 
 }

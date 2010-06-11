@@ -143,6 +143,36 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
     closeDeclaration();
 }
 
+void PreDeclarationBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node)
+{
+    if ( node->namespaceNameSequence ) {
+        setComment(formatComment(node, editor()));
+
+        QualifiedIdentifier identifier;
+        ///TODO: support \ as separator
+        ///TODO: explicitly global?
+        const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
+        do {
+            identifier.push(Identifier(editor()->parseSession()->symbol(it->element)));
+        } while(it->hasNext() && (it = it->next));
+
+        DUChainWriteLocker lock;
+        Declaration *dec = openDefinition<Declaration>(identifier,
+                                                       editorFindRange(node->namespaceNameSequence->front()->element,
+                                                                       node->namespaceNameSequence->back()->element)
+        );
+
+        dec->setKind(Declaration::Namespace);
+        m_namespaces->insert(node, dec);
+    }
+
+    PreDeclarationBuilderBase::visitNamespaceDeclarationStatement(node);
+
+    if ( node->namespaceNameSequence ) {
+        closeDeclaration();
+    }
+}
+
 void PreDeclarationBuilder::closeDeclaration()
 {
     eventuallyAssignInternalContext();

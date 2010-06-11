@@ -48,9 +48,12 @@ class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public PreDeclarationBuilder
 public:
     PreDeclarationBuilder(QHash<qint64, Php::ClassDeclaration*>* types,
                           QHash<qint64, Php::FunctionDeclaration*>* functions,
+                          QHash<NamespaceDeclarationStatementAst*, KDevelop::Declaration*>* namespaces,
                           QList<KDevelop::QualifiedIdentifier>* upcomingClassVariables,
                           EditorIntegrator* editor)
-            : m_types(types), m_functions(functions), m_upcomingClassVariables(upcomingClassVariables) {
+            : m_types(types), m_functions(functions), m_namespaces(namespaces),
+              m_upcomingClassVariables(upcomingClassVariables)
+    {
         setEditor(editor);
     }
 
@@ -65,12 +68,14 @@ protected:
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst* node);
+    virtual void visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node);
 
     virtual void closeDeclaration();
     virtual void closeContext();
 private:
     QHash<qint64, Php::ClassDeclaration*>* m_types;
     QHash<qint64, Php::FunctionDeclaration*>* m_functions;
+    QHash<NamespaceDeclarationStatementAst*, KDevelop::Declaration*>* m_namespaces;
     QList<KDevelop::QualifiedIdentifier>* m_upcomingClassVariables;
 };
 

@@ -78,6 +78,7 @@ protected:
     virtual void visitClassStatement(ClassStatementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
     virtual void visitUnaryExpression(UnaryExpressionAst* node);
+    virtual void visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node);
 
     virtual void addBaseType(IdentifierAst * identifier);
 

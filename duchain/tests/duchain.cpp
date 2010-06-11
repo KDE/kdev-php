@@ -2272,6 +2272,47 @@ void TestDUChain::upcommingClassInString()
     // just don't crash
 }
 
+void TestDUChain::namespaces()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "namespace asdf{\n"
+                              "function a(){}\n"
+                              "define('b', 0);\n"
+                              "class c {}\n"
+                              "}\n"
+                              "namespace NS1\\NS2 {\n"
+                              "function a(){}\n"
+                              "define('b', 0);\n"
+                              "class c {}\n"
+                              "}\n"
+                              , DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QCOMPARE(top->childContexts().size(), 2);
+    QCOMPARE(top->childContexts().first()->localScopeIdentifier().toString(), QString("asdf"));
+    ///TODO: support \ as separator
+    QCOMPARE(top->childContexts().last()->localScopeIdentifier().toString(), QString("NS1::NS2"));
+
+    QCOMPARE(top->localDeclarations().size(), 2);
+    QCOMPARE(top->localDeclarations().first()->kind(), Declaration::Namespace);
+    QCOMPARE(top->localDeclarations().last()->kind(), Declaration::Namespace);
+
+    ///TODO: declaration for NS1?
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("asdf")).size(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("asdf::a")).size(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("asdf::b")).size(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("asdf::c")).size(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a")).size(), 0);
+    QEXPECT_FAIL("", "need to talk to david about how to handle this case, we probably need to define a context for ns1 to make the lookup work", Abort);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("NS1::NS2")).size(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("NS1::NS2::a")).size(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("NS1::NS2::b")).size(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("NS1::NS2::c")).size(), 1);
+}
+
 }
 
 #include "duchain.moc"
