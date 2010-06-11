@@ -78,7 +78,12 @@ protected:
     virtual void visitClassStatement(ClassStatementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
     virtual void visitUnaryExpression(UnaryExpressionAst* node);
+    /**
+     * don't overload in other builders, use @c openNamespace and @c closeNamespace instead.
+     */
     virtual void visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node);
+    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, KDevelop::QualifiedIdentifier identifier);
+    virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, KDevelop::QualifiedIdentifier identifier);
 
     virtual void addBaseType(IdentifierAst * identifier);
 

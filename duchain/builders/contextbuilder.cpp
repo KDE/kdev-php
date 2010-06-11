@@ -282,16 +282,37 @@ void ContextBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStat
         kWarning() << "namespace foo; is unsupported yet....";
     }
 
-    QualifiedIdentifier identifier;
+    { // open
     ///TODO: support \ as separator
     ///TODO: explicitly global?
     const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
     do {
-        identifier.push(Identifier(editor()->parseSession()->symbol(it->element)));
+        openNamespace(node, it->element, identifierForNode(it->element));
     } while(it->hasNext() && (it = it->next));
+    }
 
-    DUContext* nspace = openContext(node, editorFindRange(node->body, node->body), KDevelop::DUContext::Namespace, identifier);
     DefaultVisitor::visitInnerStatementList(node->body);
+
+    { // close
+    ///TODO: support \ as separator
+    const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
+    do {
+        closeNamespace(node, it->element, identifierForNode(it->element));
+    } while(it->hasNext() && (it = it->next));
+    }
+}
+
+void ContextBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, QualifiedIdentifier identifier)
+{
+    if ( node == parent->namespaceNameSequence->back()->element ) {
+        openContext(node, editorFindRange(parent->body, parent->body), KDevelop::DUContext::Namespace, identifier);
+    } else {
+        openContext(node, parent->body, KDevelop::DUContext::Namespace, identifier);
+    }
+}
+
+void ContextBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, QualifiedIdentifier identifier)
+{
     closeContext();
 }
 

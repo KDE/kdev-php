@@ -1075,21 +1075,20 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
     }
 }
 
-void DeclarationBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node)
+void DeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, QualifiedIdentifier identifier)
 {
-    if ( node->namespaceNameSequence ) {
-        Declaration* dec = m_namespaces.value(node, 0);
-        Q_ASSERT(dec);
-        DeclarationBuilderBase::setEncountered(dec);
+    Declaration* dec = m_namespaces.value(node->string, 0);
+    Q_ASSERT(dec);
+    DeclarationBuilderBase::setEncountered(dec);
+    openDeclarationInternal(dec);
 
-        openDeclarationInternal(dec);
-    }
+    DeclarationBuilderBase::openNamespace(parent, node, identifier);
+}
 
-    DeclarationBuilderBase::visitNamespaceDeclarationStatement(node);
-
-    if ( node->namespaceNameSequence ) {
-        closeDeclaration();
-    }
+void DeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, QualifiedIdentifier identifier)
+{
+    DeclarationBuilderBase::closeNamespace(parent, node, identifier);
+    closeDeclaration();
 }
 
 void DeclarationBuilder::updateCurrentType()
