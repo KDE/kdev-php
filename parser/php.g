@@ -698,9 +698,9 @@ expression=booleanOrExpression
     ELSE COLON statements=innerStatementList | 0
 -> newElseSingle ;;
 
-    --resolve STRING vs. staticMember conflict
-    ?[: LA(2).kind != Token_PAAMAYIM_NEKUDOTAYIM :]
-    identifier=identifier
+--TODO     --resolve STRING vs. staticMember conflict
+--     ?[: LA(2).kind != Token_PAAMAYIM_NEKUDOTAYIM :]
+    identifier=namespacedIdentifier
   | dynamicClassNameReference=dynamicClassNameReference
 -> classNameReference ;;
 

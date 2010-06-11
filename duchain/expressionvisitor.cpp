@@ -181,8 +181,10 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
 {
     DefaultVisitor::visitVarExpressionNewObject(node);
     if (node->className->identifier) {
-        Declaration* dec = findDeclarationImport(ClassDeclarationType, node->className->identifier);
-        usingDeclaration(node->className->identifier, dec);
+        Declaration* dec = findDeclarationImport(ClassDeclarationType, node->className->identifier,
+                                                 identifierForNamespace(node->className->identifier, m_editor));
+        ///TODO: report uses for namespaces
+        usingDeclaration(node->className->identifier->namespaceNameSequence->back()->element, dec);
         DUChainReadLocker lock(DUChain::lock());
         m_result.setDeclaration(dec);
     }

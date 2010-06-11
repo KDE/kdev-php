@@ -820,8 +820,8 @@ void TestUses::namespaces()
                               "namespace {\n"
                               "\\Foo\\Bar\\MyConst;\n"
                               "\\Foo\\Bar\\MyClass::ClassConst;\n"
-                              "\\Foo\\Bar\\MyFunc();"
-//                               "new \\Foo\\Bar\\MyClass;"
+                              "\\Foo\\Bar\\MyFunc();\n"
+                              "new \\Foo\\Bar\\MyClass;\n"
                               "}\n", DumpAll);
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
@@ -844,7 +844,7 @@ void TestUses::namespaces()
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myclass")).first();
     QVERIFY(dynamic_cast<ClassDeclaration*>(dec));
-    compareUses(dec, SimpleRange(8, 9, 8, 16));
+    compareUses(dec, QList<SimpleRange>() << SimpleRange(8, 9, 8, 16) << SimpleRange(10, 13, 10, 20));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myclass::ClassConst")).first();
     compareUses(dec, SimpleRange(8, 18, 8, 28));
