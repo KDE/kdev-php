@@ -37,6 +37,7 @@ class UnaryExpressionAst;
 class AstNode;
 class CommonScalarAst;
 class EditorIntegrator;
+class NamespacedIdentifierAst;
 
 enum DeclarationType {
     ClassDeclarationType,
@@ -66,5 +67,7 @@ KDEVPHPDUCHAIN_EXPORT KDevelop::IndexedString getIncludeFileForNode(UnaryExpress
 KDEVPHPDUCHAIN_EXPORT QString prettyName(KDevelop::Declaration* dec);
 
 KDEVPHPDUCHAIN_EXPORT const KDevelop::IndexedString& internalFunctionFile();
+
+KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierForNamespace(NamespacedIdentifierAst* node, EditorIntegrator* editor);
 }
 #endif

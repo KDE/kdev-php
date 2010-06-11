@@ -270,40 +270,60 @@ DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
     return context;
 }
 
+DUContext* ExpressionVisitor::findClassContext(NamespacedIdentifierAst* className)
+{
+    DUContext* context = 0;
+    Declaration* declaration = findDeclarationImport(ClassDeclarationType, className, identifierForNamespace(className, m_editor));
+    ///TODO: report uses for namespaces
+    usingDeclaration(className->namespaceNameSequence->back()->element, declaration);
+    if (declaration) {
+        DUChainReadLocker lock(DUChain::lock());
+        context = declaration->internalContext();
+        if (!context && m_currentContext->parentContext() && m_currentContext->parentContext()->localScopeIdentifier() == declaration->qualifiedIdentifier()) {
+            //className is currentClass (internalContext is not yet set)
+            context = m_currentContext->parentContext();
+        }
+    }
+    return context;
+}
+
 void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
 {
     DefaultVisitor::visitConstantOrClassConst(node);
 
-    if (node->className) {
+    if (node->classConstant) {
         //class constant Foo::BAR
-        DUContext* context = findClassContext(node->className);
+        DUContext* context = findClassContext(node->constant);
         if (context) {
             DUChainReadLocker lock(DUChain::lock());
-            m_result.setDeclarations(context->findDeclarations(identifierForNode(node->constant)));
+            m_result.setDeclarations(context->findLocalDeclarations(Identifier(m_editor->parseSession()->symbol(node->classConstant))));
             lock.unlock();
             if (!m_result.allDeclarations().isEmpty()) {
-                usingDeclaration(node->constant, m_result.allDeclarations().last());
+                usingDeclaration(node->classConstant, m_result.allDeclarations().last());
             } else {
-                usingDeclaration(node->constant, 0);
+                usingDeclaration(node->classConstant, 0);
             }
         } else {
             m_result.setType(AbstractType::Ptr());
         }
-    } else if (node->constant) {
+    } else {
         QString str(stringForNode(node->constant).toLower());
         if (str == "true" || str == "false") {
             m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean)));
         } else if (str == "null") {
             m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeNull)));
         } else {
-            //constant (created with declare('foo', 'bar'))
-            Declaration* declaration = findDeclarationImport(ConstantDeclarationType, node->constant);
+            //constant (created with declare('foo', 'bar')) or const Foo = 1;
+            const QualifiedIdentifier id = identifierForNamespace(node->constant, m_editor);
+            Declaration* declaration = findDeclarationImport(ConstantDeclarationType, node->constant, id);
             if (!declaration) {
+                ///TODO: is this really wanted?
                 //it could also be a global function call, without ()
-                declaration = findDeclarationImport(FunctionDeclarationType, node->constant);
+                declaration = findDeclarationImport(FunctionDeclarationType, node->constant, id);
             }
             m_result.setDeclaration(declaration);
-            usingDeclaration(node->constant, declaration);
+            ///FIXME: report uses for namespaces
+            usingDeclaration(node->constant->namespaceNameSequence->back()->element, declaration);
         }
     }
 }
@@ -540,12 +560,12 @@ void ExpressionVisitor::visitAdditiveExpressionRest(AdditiveExpressionRestAst* n
     }
 }
 
-QString ExpressionVisitor::stringForNode(IdentifierAst* id)
+QString ExpressionVisitor::stringForNode(AstNode* id)
 {
     if (!id)
         return QString();
 
-    return m_editor->parseSession()->symbol(id->string);
+    return m_editor->parseSession()->symbol(id);
 }
 
 QualifiedIdentifier ExpressionVisitor::identifierForNode(IdentifierAst* id)
@@ -592,12 +612,17 @@ Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declaratio
     } else {
         id = identifierForNode(node);
     }
-    return findDeclarationImportHelper(m_currentContext, id, declarationType, node, m_editor);
+    return findDeclarationImport(declarationType, node, id);
 }
 
 Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
 {
-    return findDeclarationImportHelper(m_currentContext, identifierForNode(node), declarationType, node, m_editor);
+    return findDeclarationImport(declarationType, node, identifierForNode(node));
+}
+
+Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, AstNode* node, const KDevelop::QualifiedIdentifier& identifier)
+{
+    return findDeclarationImportHelper(m_currentContext, identifier, declarationType, node, m_editor);
 }
 
 }

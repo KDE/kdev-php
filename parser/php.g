@@ -738,8 +738,8 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
   | START_HEREDOC encapsList=encapsList END_HEREDOC
 -> scalar ;;
 
-    ?[: LA(2).kind == Token_PAAMAYIM_NEKUDOTAYIM :] className=identifier PAAMAYIM_NEKUDOTAYIM constant=identifier
-  | constant=identifier
+  constant=namespacedIdentifier
+  ( PAAMAYIM_NEKUDOTAYIM classConstant=identifier | 0 )
 -> constantOrClassConst ;;
 
     #encaps=encaps*
@@ -798,6 +798,10 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 
     #val1=staticScalar (DOUBLE_ARROW #val2=staticScalar | 0)
 -> staticArrayPairValue ;;
+
+   (isGlobal=BACKSLASH | 0)
+   #namespaceName=identifier+ @ BACKSLASH
+-> namespacedIdentifier ;;
 
      string=STRING
 -> identifier ;;

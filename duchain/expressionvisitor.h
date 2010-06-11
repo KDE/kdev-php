@@ -71,7 +71,7 @@ protected:
     void visitVariable(VariableAst* node);
     virtual void visitFunctionCallParameterList( FunctionCallParameterListAst* node );
 
-    QString stringForNode(IdentifierAst* id);
+    QString stringForNode(AstNode* id);
     KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
     QString stringForNode(VariableIdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
@@ -83,11 +83,13 @@ protected:
 
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
+    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, AstNode* node, const KDevelop::QualifiedIdentifier& identifier);
 
 protected:
     EditorIntegrator* m_editor;
 
 private:
+    KDevelop::DUContext* findClassContext(NamespacedIdentifierAst* className);
     KDevelop::DUContext* findClassContext(IdentifierAst* className);
 
     bool m_createProblems;

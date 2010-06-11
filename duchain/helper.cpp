@@ -324,4 +324,17 @@ const KDevelop::IndexedString& internalFunctionFile()
     return internalFile;
 }
 
+QualifiedIdentifier identifierForNamespace(NamespacedIdentifierAst* node, EditorIntegrator* editor)
+{
+    QualifiedIdentifier id;
+    if (node->isGlobal != -1) {
+        id.setExplicitlyGlobal(true);
+    }
+    const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
+    do {
+        id.push(Identifier(editor->parseSession()->symbol(it->element)));
+    } while (it->hasNext() && (it = it->next));
+    return id;
+}
+
 }

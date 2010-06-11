@@ -2332,6 +2332,8 @@ void TestDUChain::namespaces()
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("a")).size(), 1);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("b")).size(), 0);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("c")).size(), 0);
+
+    ///TODO: uses & prevent redeclarations of namespaces
 }
 
 }

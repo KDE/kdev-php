@@ -73,6 +73,7 @@ private slots:
     void nestedMethodCalls();
     void unset();
     void functionArguments();
+    void namespaces();
 };
 
 }

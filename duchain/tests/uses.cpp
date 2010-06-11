@@ -807,6 +807,31 @@ void TestUses::functionArguments()
     compareUses(d, SimpleRange(0, 35, 0, 37));
 }
 
+void TestUses::namespaces()
+{
+    //                         0         1         2         3         4         5         6         7
+    //                         01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "namespace Foo\\Bar {\n"
+                              "const MyConst = 1;\n"
+                              "function MyFunc(){}\n"
+                              "class MyClass{}\n"
+                              "}\n"
+                              "namespace {\n"
+                              "\\Foo\\Bar\\MyConst;"
+//                               "\\Foo\\Bar\\MyFunc();"
+//                               "new \\Foo\\Bar\\MyClass;"
+                              "}\n", DumpAll);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    ///TODO: uses of namespace declarations
+
+    Declaration* dec = top->findDeclarations(QualifiedIdentifier("Foo::Bar::MyConst")).first();
+    compareUses(dec, SimpleRange(7, 9, 7, 16));
+}
+
 }
 
 
