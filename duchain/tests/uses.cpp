@@ -829,11 +829,20 @@ void TestUses::namespaces()
 
     Declaration* dec;
 
-    ///TODO: uses of namespace declarations
+    dec = top->findDeclarations(QualifiedIdentifier("foo")).first();
+    QCOMPARE(dec->kind(), Declaration::Namespace);
+    compareUses(dec, QList<SimpleRange>() << SimpleRange(7, 1, 7, 4)
+                                          << SimpleRange(8, 1, 8, 4)
+                                          << SimpleRange(9, 1, 9, 4)
+                                          << SimpleRange(10, 5, 10, 8));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar")).first();
     QCOMPARE(dec->kind(), Declaration::Namespace);
     QVERIFY(dec->internalContext());
+    compareUses(dec, QList<SimpleRange>() << SimpleRange(7, 5, 7, 8)
+                                          << SimpleRange(8, 5, 8, 8)
+                                          << SimpleRange(9, 5, 9, 8)
+                                          << SimpleRange(10, 9, 10, 12));
     QCOMPARE(dec->internalContext()->localDeclarations().size(), 3);
     foreach(Declaration* d, dec->internalContext()->localDeclarations()) {
         kDebug() << d->toString() << d->qualifiedIdentifier();

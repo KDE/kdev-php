@@ -91,6 +91,7 @@ protected:
 private:
     KDevelop::DUContext* findClassContext(NamespacedIdentifierAst* className);
     KDevelop::DUContext* findClassContext(IdentifierAst* className);
+    void buildNamespaceUses(NamespacedIdentifierAst* namespaces, const KDevelop::QualifiedIdentifier& identifier);
 
     bool m_createProblems;
     KDevelop::SimpleCursor m_offset;

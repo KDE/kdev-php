@@ -43,7 +43,8 @@ enum DeclarationType {
     ClassDeclarationType,
     FunctionDeclarationType,
     ConstantDeclarationType,
-    GlobalVariableDeclarationType
+    GlobalVariableDeclarationType,
+    NamespaceDeclarationType
 };
 
 KDEVPHPDUCHAIN_EXPORT bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);

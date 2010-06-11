@@ -70,6 +70,10 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
                && !(declaration->abstractType() && declaration->abstractType()->modifiers() & AbstractType::ConstModifier)
               ) {
         return true;
+    } else if (declarationType == NamespaceDeclarationType
+               && declaration->kind() == Declaration::Namespace)
+    {
+        return true;
     }
     return false;
 }
