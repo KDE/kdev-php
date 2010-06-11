@@ -146,7 +146,7 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
 void PreDeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, QualifiedIdentifier identifier)
 {
     if ( node == parent->namespaceNameSequence->back()->element ) {
-        setComment(formatComment(node, editor()));
+        setComment(formatComment(parent, editor()));
     }
 
     {
