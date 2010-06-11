@@ -805,8 +805,8 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
      variable=VARIABLE
 -> variableIdentifier ;;
 
-    NAMESPACE #namespaceName=identifier @ BACKSLASH
-    ( SEMICOLON | LBRACE #statements=topStatement* RBRACE )
+    NAMESPACE #namespaceName=identifier* @ BACKSLASH
+    ( SEMICOLON | LBRACE body=innerStatementList RBRACE )
 -> namespaceDeclarationStatement ;;
 
     INTERFACE interfaceName=identifier (EXTENDS extends=classImplements | 0)

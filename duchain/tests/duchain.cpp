@@ -2287,25 +2287,36 @@ void TestDUChain::namespaces()
                               "define('b', 0);\n"
                               "class c {}\n"
                               "}\n"
+                              "namespace {\n"
+                              "function a(){}\n"
+                              "}\n"
                               , DumpAll);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
 
-    QCOMPARE(top->childContexts().size(), 2);
-    QCOMPARE(top->childContexts().first()->localScopeIdentifier().toString(), QString("asdf"));
-    ///TODO: support \ as separator
-    QCOMPARE(top->childContexts().last()->localScopeIdentifier().toString(), QString("NS1::NS2"));
+    QCOMPARE(top->problems().count(), 0);
 
-    QCOMPARE(top->localDeclarations().size(), 2);
-    QCOMPARE(top->localDeclarations().first()->kind(), Declaration::Namespace);
-    QCOMPARE(top->localDeclarations().last()->kind(), Declaration::Namespace);
+    QCOMPARE(top->childContexts().size(), 4);
+    QCOMPARE(top->childContexts().at(0)->localScopeIdentifier().toString(), QString("asdf"));
+    ///TODO: support \ as separator
+    QCOMPARE(top->childContexts().at(1)->localScopeIdentifier().toString(), QString("NS1::NS2"));
+
+    QCOMPARE(top->childContexts().at(2)->type(), DUContext::Function);
+    QCOMPARE(top->childContexts().at(3)->localScopeIdentifier().toString(), QString("a"));
+
+    QCOMPARE(top->localDeclarations().size(), 3);
+    QCOMPARE(top->localDeclarations().at(0)->kind(), Declaration::Namespace);
+    QCOMPARE(top->localDeclarations().at(1)->kind(), Declaration::Namespace);
+    QCOMPARE(top->localDeclarations().at(2)->kind(), Declaration::Type);
 
     ///TODO: declaration for NS1?
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("asdf")).size(), 1);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("asdf::a")).size(), 1);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("asdf::b")).size(), 1);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("asdf::c")).size(), 1);
-    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a")).size(), 0);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a")).size(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("b")).size(), 0);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("c")).size(), 0);
     QEXPECT_FAIL("", "need to talk to david about how to handle this case, we probably need to define a context for ns1 to make the lookup work", Abort);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("NS1::NS2")).size(), 1);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("NS1::NS2::a")).size(), 1);
