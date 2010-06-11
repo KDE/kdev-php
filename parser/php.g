@@ -559,7 +559,7 @@ expression=booleanOrExpression
    catch (baseVariable=baseVariable)
 -> baseVariableWithFunctionCalls ;;
 
-    stringFunctionNameOrClass=identifier (
+    stringFunctionNameOrClass=namespacedIdentifier (
         LPAREN stringParameterList=functionCallParameterList RPAREN
       | PAAMAYIM_NEKUDOTAYIM
         (

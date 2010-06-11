@@ -237,10 +237,12 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
             //static function call foo::$bar()
         } else {
             //global function call foo();
-            Declaration* dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionNameOrClass);
+            Declaration* dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionNameOrClass,
+                                                     identifierForNamespace(node->stringFunctionNameOrClass, m_editor));
             ifDebug(kDebug() << "function call of" << (dec ? dec->toString() : QString("function not found"));)
             m_result.setDeclaration(dec);
-            usingDeclaration(node->stringFunctionNameOrClass, dec);
+            ///TODO: uses of namespace
+            usingDeclaration(node->stringFunctionNameOrClass->namespaceNameSequence->back()->element, dec);
             if (dec) {
                 FunctionType::Ptr function = dec->type<FunctionType>();
                 if (function) {

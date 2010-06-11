@@ -820,7 +820,7 @@ void TestUses::namespaces()
                               "namespace {\n"
                               "\\Foo\\Bar\\MyConst;\n"
                               "\\Foo\\Bar\\MyClass::ClassConst;\n"
-//                               "\\Foo\\Bar\\MyFunc();"
+                              "\\Foo\\Bar\\MyFunc();"
 //                               "new \\Foo\\Bar\\MyClass;"
                               "}\n", DumpAll);
     QVERIFY(top);
@@ -848,6 +848,9 @@ void TestUses::namespaces()
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myclass::ClassConst")).first();
     compareUses(dec, SimpleRange(8, 18, 8, 28));
+
+    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myfunc")).first();
+    compareUses(dec, SimpleRange(9, 9, 9, 15));
 }
 
 }

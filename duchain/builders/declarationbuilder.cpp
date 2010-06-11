@@ -788,6 +788,7 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
 
 void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
 {
+    QualifiedIdentifier id;
     {
         FunctionType::Ptr oldFunction = m_currentFunctionType;
 
@@ -795,7 +796,8 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
         if ( node->stringFunctionName ) {
             dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionName);
         } else if ( node->stringFunctionNameOrClass ) {
-            dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionNameOrClass);
+            id = identifierForNamespace(node->stringFunctionNameOrClass, editor());
+            dec = findDeclarationImport(FunctionDeclarationType, id, node->stringFunctionNameOrClass);
         } else {
             ///TODO: node->varFunctionName
         }
@@ -812,7 +814,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
     }
 
     if (node->stringFunctionNameOrClass && !node->stringFunctionName && !node->varFunctionName) {
-        if (stringForNode(node->stringFunctionNameOrClass).compare("define", Qt::CaseInsensitive) == 0
+        if (id.toString(true) == "define"
                 && node->stringParameterList && node->stringParameterList->parametersSequence
                 && node->stringParameterList->parametersSequence->count() > 0) {
             //constant, defined through define-function
