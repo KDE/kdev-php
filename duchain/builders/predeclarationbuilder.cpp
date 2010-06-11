@@ -36,6 +36,7 @@
 #include "../declarations/classdeclaration.h"
 #include "../declarations/functiondeclaration.h"
 #include "../declarations/variabledeclaration.h"
+#include "../declarations/namespacedeclaration.h"
 #include "../types/structuretype.h"
 
 using namespace KTextEditor;
@@ -143,7 +144,7 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
     closeDeclaration();
 }
 
-void PreDeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const QualifiedIdentifier& identifier)
+void PreDeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier)
 {
     if ( node == parent->namespaceNameSequence->back()->element ) {
         setComment(formatComment(parent, editor()));
@@ -151,15 +152,16 @@ void PreDeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* pare
 
     {
     DUChainWriteLocker lock;
-    Declaration *dec = openDefinition<Declaration>(identifier, editorFindRange(node, node) );
+    NamespaceDeclaration *dec = openDefinition<NamespaceDeclaration>(identifier.second, editorFindRange(node, node) );
     dec->setKind(Declaration::Namespace);
+    dec->setPrettyName(identifier.first);
     m_namespaces->insert(node->string, dec);
     }
 
     PreDeclarationBuilderBase::openNamespace(parent, node, identifier);
 }
 
-void PreDeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const QualifiedIdentifier& identifier)
+void PreDeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier)
 {
     PreDeclarationBuilderBase::closeNamespace(parent, node, identifier);
 

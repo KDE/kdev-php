@@ -35,6 +35,7 @@ class ParseSession;
 class EditorIntegrator;
 class FunctionDeclaration;
 class ClassDeclaration;
+class NamespaceDeclaration;
 
 typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, ContextBuilder> PreDeclarationBuilderBase;
 
@@ -46,9 +47,9 @@ typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, ContextBuil
 class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public PreDeclarationBuilderBase
 {
 public:
-    PreDeclarationBuilder(QHash<qint64, Php::ClassDeclaration*>* types,
-                          QHash<qint64, Php::FunctionDeclaration*>* functions,
-                          QHash<qint64, KDevelop::Declaration*>* namespaces,
+    PreDeclarationBuilder(QHash<qint64, ClassDeclaration*>* types,
+                          QHash<qint64, FunctionDeclaration*>* functions,
+                          QHash<qint64, NamespaceDeclaration*>* namespaces,
                           QList<KDevelop::QualifiedIdentifier>* upcomingClassVariables,
                           EditorIntegrator* editor)
             : m_types(types), m_functions(functions), m_namespaces(namespaces),
@@ -63,20 +64,20 @@ public:
     bool didRecompile() { return recompiling(); }
 
 protected:
-//     virtual void visitNode(Php::AstNode* node);
+//     virtual void visitNode(AstNode* node);
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst* node);
-    virtual void openNamespace(Php::NamespaceDeclarationStatementAst* parent, Php::IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier);
-    virtual void closeNamespace(Php::NamespaceDeclarationStatementAst* parent, Php::IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier);
+    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
+    virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
 
     virtual void closeDeclaration();
     virtual void closeContext();
 private:
-    QHash<qint64, Php::ClassDeclaration*>* m_types;
-    QHash<qint64, Php::FunctionDeclaration*>* m_functions;
-    QHash<qint64, KDevelop::Declaration*>* m_namespaces;
+    QHash<qint64, ClassDeclaration*>* m_types;
+    QHash<qint64, FunctionDeclaration*>* m_functions;
+    QHash<qint64, NamespaceDeclaration*>* m_namespaces;
     QList<KDevelop::QualifiedIdentifier>* m_upcomingClassVariables;
 };
 

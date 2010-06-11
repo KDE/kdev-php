@@ -44,6 +44,7 @@
 #include "../declarations/classmethoddeclaration.h"
 #include "../declarations/classdeclaration.h"
 #include "../declarations/functiondeclaration.h"
+#include "../declarations/namespacedeclaration.h"
 #include "expressionvisitor.h"
 
 using namespace KTextEditor;
@@ -1075,9 +1076,9 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
     }
 }
 
-void DeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const QualifiedIdentifier& identifier)
+void DeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier)
 {
-    Declaration* dec = m_namespaces.value(node->string, 0);
+    NamespaceDeclaration* dec = m_namespaces.value(node->string, 0);
     Q_ASSERT(dec);
     DeclarationBuilderBase::setEncountered(dec);
     openDeclarationInternal(dec);
@@ -1085,7 +1086,7 @@ void DeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent,
     DeclarationBuilderBase::openNamespace(parent, node, identifier);
 }
 
-void DeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const QualifiedIdentifier& identifier)
+void DeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier)
 {
     DeclarationBuilderBase::closeNamespace(parent, node, identifier);
     closeDeclaration();

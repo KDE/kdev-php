@@ -36,6 +36,7 @@ class ParseSession;
 class EditorIntegrator;
 class ClassDeclaration;
 class FunctionDeclaration;
+class NamespaceDeclaration;
 
 typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, Php::TypeBuilder> DeclarationBuilderBase;
 
@@ -86,8 +87,8 @@ protected:
     virtual void visitCatchItem(CatchItemAst *node);
     virtual void visitUnaryExpression( UnaryExpressionAst* node );
     virtual void visitAssignmentListElement(AssignmentListElementAst* node);
-    virtual void openNamespace(Php::NamespaceDeclarationStatementAst* parent, Php::IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier);
-    virtual void closeNamespace(Php::NamespaceDeclarationStatementAst* parent, Php::IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier);
+    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
+    virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
 
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const Php::MethodBodyAst* body) const {
@@ -135,9 +136,9 @@ private:
     unsigned int m_currentModifers;
     QString m_lastTopStatementComment;
 
-    QHash<qint64, Php::ClassDeclaration*> m_types;
-    QHash<qint64, Php::FunctionDeclaration*> m_functions;
-    QHash<qint64, KDevelop::Declaration*> m_namespaces;
+    QHash<qint64, ClassDeclaration*> m_types;
+    QHash<qint64, FunctionDeclaration*> m_functions;
+    QHash<qint64, NamespaceDeclaration*> m_namespaces;
     QList<KDevelop::QualifiedIdentifier> m_upcomingClassVariables;
 
     /// handles common stuff for both interfaces and classes

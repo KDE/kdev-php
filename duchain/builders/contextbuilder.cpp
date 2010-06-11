@@ -287,7 +287,7 @@ void ContextBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStat
     ///TODO: explicitly global?
     const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
     do {
-        openNamespace(node, it->element, identifierForNode(it->element));
+        openNamespace(node, it->element, identifierPairForNode(it->element));
     } while(it->hasNext() && (it = it->next));
     }
 
@@ -297,21 +297,21 @@ void ContextBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStat
     ///TODO: support \ as separator
     const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
     do {
-        closeNamespace(node, it->element, identifierForNode(it->element));
+        closeNamespace(node, it->element, identifierPairForNode(it->element));
     } while(it->hasNext() && (it = it->next));
     }
 }
 
-void ContextBuilder::openNamespace(Php::NamespaceDeclarationStatementAst* parent, Php::IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier)
+void ContextBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier)
 {
     if ( node == parent->namespaceNameSequence->back()->element ) {
-        openContext(node, editorFindRange(parent->body, parent->body), KDevelop::DUContext::Namespace, identifier);
+        openContext(node, editorFindRange(parent->body, parent->body), KDevelop::DUContext::Namespace, identifier.second);
     } else {
-        openContext(node, parent->body, KDevelop::DUContext::Namespace, identifier);
+        openContext(node, parent->body, KDevelop::DUContext::Namespace, identifier.second);
     }
 }
 
-void ContextBuilder::closeNamespace(Php::NamespaceDeclarationStatementAst* parent, Php::IdentifierAst* node, const KDevelop::QualifiedIdentifier& identifier)
+void ContextBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier)
 {
     closeContext();
 }
