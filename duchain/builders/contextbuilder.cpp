@@ -277,9 +277,11 @@ void ContextBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStat
         DefaultVisitor::visitInnerStatementList(node->body);
         return;
     }
+
     ///TODO:
     if ( !node->body ) {
         kWarning() << "namespace foo; is unsupported yet....";
+        return;
     }
 
     { // open
