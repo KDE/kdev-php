@@ -316,6 +316,7 @@ void TestUses::constant()
 
 void TestUses::classConstant()
 {
+    {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { const FOO = 'abc'; } echo A::FOO;");
@@ -325,6 +326,27 @@ void TestUses::classConstant()
 
     compareUses(top->localDeclarations().first(), SimpleRange(0, 39, 0, 40));
     compareUses(top->childContexts().first()->localDeclarations().first(), SimpleRange(0, 42, 0, 45));
+    }
+    {
+    // bug: https://bugs.kde.org/show_bug.cgi?id=241597
+
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { const FOO = 'abc'; }\n"
+                      "class B extends A { function foo() { self::FOO; } }\n"
+                      "A::FOO;\n"
+                      "B::FOO;\n");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    Declaration* dec = top->childContexts().first()->localDeclarations().first();
+    QVERIFY(dec->abstractType()->modifiers() & AbstractType::ConstModifier);
+    QCOMPARE(dec->qualifiedIdentifier().toString(), QString("a::FOO"));
+    compareUses(dec, QList<SimpleRange>() << SimpleRange(1, 43, 1, 46)
+                                          << SimpleRange(2, 3, 2, 6)
+                                          << SimpleRange(3, 3, 3, 6));
+    }
 }
 
 void TestUses::classParent()

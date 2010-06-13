@@ -302,7 +302,7 @@ void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
         DUContext* context = findClassContext(node->constant);
         if (context) {
             DUChainReadLocker lock(DUChain::lock());
-            m_result.setDeclarations(context->findLocalDeclarations(Identifier(m_editor->parseSession()->symbol(node->classConstant))));
+            m_result.setDeclarations(context->findDeclarations(Identifier(m_editor->parseSession()->symbol(node->classConstant))));
             lock.unlock();
             if (!m_result.allDeclarations().isEmpty()) {
                 usingDeclaration(node->classConstant, m_result.allDeclarations().last());
