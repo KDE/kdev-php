@@ -564,6 +564,10 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 m_valid = false;
             }
             break;
+        case Parser::Token_NAMESPACE:
+        case Parser::Token_BACKSLASH:
+            m_memberAccessOperation = NamespaceChoose;
+            break;
         case Parser::Token_ARRAY:
         case Parser::Token_AS:
         case Parser::Token_BACKTICK:
@@ -694,6 +698,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case ClassExtendsChoose:
         case NoMemberAccess:
         case InstanceOfChoose:
+        case NamespaceChoose:
             ifDebug(log("returning early");)
             return;
         case FunctionCallAccess:
@@ -1621,6 +1626,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
             return true;
         }
     }
+
     if (m_memberAccessOperation == ExceptionInstanceChoose) {
         if (dec->kind() != Declaration::Instance) return false;
         StructureType::Ptr structType = dec->type<StructureType>();
@@ -1648,6 +1654,10 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
         if ( !dec->isFunctionDeclaration() && m_duContext.data() == dec->context() && m_position < dec->range().start ) {
             return false;
         }
+    }
+
+    if (m_memberAccessOperation == NamespaceChoose) {
+        return dec->kind() == Declaration::Namespace;
     }
 
     return true;

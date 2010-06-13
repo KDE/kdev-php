@@ -89,6 +89,7 @@ private slots:
     void ctorCall();
     void chainedCalling();
     void funcCallInConditional();
+    void namespaces();
 };
 
 }

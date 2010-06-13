@@ -95,7 +95,8 @@ public:
         ExceptionInstanceChoose, /// after the "throw" keyword instancec of the exception class should be shown
         ClassMemberChoose, /// in class context show list of overloadable or implementable methods
         /// and typical keywords for classes, i.e. access modifiers, static etc.
-        FileChoose /// autocompletion for files
+        FileChoose, /// autocompletion for files
+        NamespaceChoose /// autocompletion after namespace keyword
     };
 
     ///@return the used access-operation
