@@ -202,8 +202,8 @@ void ParseJob::run()
                                  ->parseJobForDocument(i.value().toUrl()))
                 {
                     // prevent deadlock
-                    // we might want to wait for it to finish and then import it or something...
-                    // this hack prevents e.g. proper error reporting on circular imports
+                    ///TODO we might want to wait for it to finish and then import it or something...
+                    /// this hack prevents e.g. proper error reporting on circular imports
                 } else {
                     ParseJob job(i.value().toUrl());
                     job.setMinimumFeatures(minimumFeatures());
