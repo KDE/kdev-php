@@ -1366,7 +1366,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
         //Show all visible declarations
         QSet<uint> existingIdentifiers;
         QList<DeclarationDepthPair> decls = m_duContext->allDeclarations(
-            m_duContext->range().end,
+            SimpleCursor::invalid(),
             m_duContext->topContext()
         );
 
@@ -1403,6 +1403,9 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
 
         foreach(QSet<IndexedString> urlSets, completionFiles()) {
             foreach(const IndexedString &url, urlSets) {
+                if (url == m_duContext->url()) {
+                    continue;
+                }
                 uint count = 0;
                 const CodeModelItem* foundItems = 0;
                 CodeModel::self().items(url, count, foundItems);
