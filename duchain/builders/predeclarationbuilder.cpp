@@ -144,7 +144,7 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
     closeDeclaration();
 }
 
-void PreDeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier)
+void PreDeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const Range& range)
 {
     if ( node == parent->namespaceNameSequence->back()->element ) {
         setComment(formatComment(parent, editor()));
@@ -158,7 +158,7 @@ void PreDeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* pare
     m_namespaces->insert(node->string, dec);
     }
 
-    PreDeclarationBuilderBase::openNamespace(parent, node, identifier);
+    PreDeclarationBuilderBase::openNamespace(parent, node, identifier, range);
 }
 
 void PreDeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier)

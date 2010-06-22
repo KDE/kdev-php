@@ -69,7 +69,7 @@ protected:
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst* node);
-    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
+    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KTextEditor::Range& range);
     virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
 
     virtual void closeDeclaration();

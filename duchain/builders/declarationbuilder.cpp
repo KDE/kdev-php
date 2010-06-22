@@ -1087,14 +1087,14 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
     }
 }
 
-void DeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier)
+void DeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const Range& range)
 {
     NamespaceDeclaration* dec = m_namespaces.value(node->string, 0);
     Q_ASSERT(dec);
     DeclarationBuilderBase::setEncountered(dec);
     openDeclarationInternal(dec);
 
-    DeclarationBuilderBase::openNamespace(parent, node, identifier);
+    DeclarationBuilderBase::openNamespace(parent, node, identifier, range);
 }
 
 void DeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier)

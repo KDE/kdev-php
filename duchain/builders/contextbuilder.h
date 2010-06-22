@@ -82,7 +82,7 @@ protected:
      * don't overload in other builders, use @c openNamespace and @c closeNamespace instead.
      */
     virtual void visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node);
-    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
+    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KTextEditor::Range& range);
     virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
 
     virtual void addBaseType(IdentifierAst * identifier);
@@ -112,6 +112,11 @@ protected:
     ///TODO: push this into kdevplatform
     bool m_mapAst;
     bool m_hadUnresolvedIdentifiers;
+
+private:
+    void closeNamespaces(NamespaceDeclarationStatementAst* namespaces);
+    NamespaceDeclarationStatementAst* m_openNamespaces;
+
 };
 
 }

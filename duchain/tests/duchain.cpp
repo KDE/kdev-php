@@ -2336,6 +2336,38 @@ void TestDUChain::namespaces()
     ///TODO: prevent redeclarations of namespaces
 }
 
+void TestDUChain::namespacesNoCurly()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "namespace asdf;\n"
+                              "function a(){}\n"
+                              "define('b', 0);\n"
+                              "class c {}\n"
+                              "\n"
+                              "namespace NS1\\NS2;\n"
+                              "function a(){}\n"
+                              "define('b', 0);\n"
+                              "class c {}\n"
+                              "\n"
+                              , DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QCOMPARE(top->problems().count(), 0);
+    foreach(ProblemPointer p, top->problems()) {
+        kDebug() << p->description() << p->explanation() << p->finalLocation();
+    }
+    QCOMPARE(top->childContexts().size(), 2);
+    QCOMPARE(top->childContexts().at(0)->localScopeIdentifier().toString(), QString("asdf"));
+    QCOMPARE(top->childContexts().at(1)->localScopeIdentifier().toString(), QString("ns1"));
+
+    QCOMPARE(top->localDeclarations().size(), 2);
+    QCOMPARE(top->localDeclarations().at(0)->kind(), Declaration::Namespace);
+    QCOMPARE(top->localDeclarations().at(1)->kind(), Declaration::Namespace);
+}
+
 }
 
 #include "duchain.moc"

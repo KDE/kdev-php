@@ -123,6 +123,7 @@ private slots:
     void undeclaredVarPropertyInString();
     void upcommingClassInString();
     void namespaces();
+    void namespacesNoCurly();
 };
 
 }

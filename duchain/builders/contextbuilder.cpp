@@ -46,7 +46,8 @@ namespace Php
 
 ContextBuilder::ContextBuilder()
     : m_isInternalFunctions(false), m_reportErrors(true),
-      m_mapAst(false), m_hadUnresolvedIdentifiers(false)
+      m_mapAst(false), m_hadUnresolvedIdentifiers(false),
+      m_openNamespaces(0)
 {
 }
 
@@ -118,6 +119,10 @@ void ContextBuilder::startVisiting(AstNode* node)
         }
     }
     visitNode(node);
+    if (m_openNamespaces) {
+        closeNamespaces(m_openNamespaces);
+        m_openNamespaces = 0;
+    }
 }
 
 DUContext* ContextBuilder::newContext(const SimpleRange& range)
@@ -271,45 +276,57 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
 
 void ContextBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node)
 {
-    if ( !node->namespaceNameSequence ) {
-        // global namespace
-        ///TODO: close opened namespace ctx
-        DefaultVisitor::visitInnerStatementList(node->body);
-        return;
+    // close existing namespace context
+    if (m_openNamespaces) {
+        closeNamespaces(m_openNamespaces);
+        m_openNamespaces = 0;
     }
 
-    ///TODO:
-    if ( !node->body ) {
-        kWarning() << "namespace foo; is unsupported yet....";
+    if ( !node->namespaceNameSequence ) {
+        // global namespace
+        DefaultVisitor::visitInnerStatementList(node->body);
         return;
     }
 
     { // open
     ///TODO: support \ as separator
-    ///TODO: explicitly global?
+
+    Range bodyRange;
+    if (node->body) {
+        bodyRange = editorFindRange(node->body, node->body);
+    } else {
+        bodyRange = Range(editor()->parseSession()->positionAt(node->endToken).textCursor(), currentContext()->topContext()->range().end.textCursor());
+    }
     const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
     do {
-        openNamespace(node, it->element, identifierPairForNode(it->element));
+        openNamespace(node, it->element, identifierPairForNode(it->element), bodyRange);
     } while(it->hasNext() && (it = it->next));
     }
 
-    DefaultVisitor::visitInnerStatementList(node->body);
-
-    { // close
-    ///TODO: support \ as separator
-    const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
-    do {
-        closeNamespace(node, it->element, identifierPairForNode(it->element));
-    } while(it->hasNext() && (it = it->next));
+    if (node->body) {
+        DefaultVisitor::visitInnerStatementList(node->body);
+        closeNamespaces(node);
+    } else {
+        m_openNamespaces = node;
     }
 }
 
-void ContextBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier)
+void ContextBuilder::closeNamespaces(NamespaceDeclarationStatementAst* namespaces)
+{
+    ///TODO: support \ as separator
+    const KDevPG::ListNode< IdentifierAst* >* it = namespaces->namespaceNameSequence->front();
+    do {
+        Q_ASSERT(currentContext()->type() == DUContext::Namespace);
+        closeNamespace(namespaces, it->element, identifierPairForNode(it->element));
+    } while(it->hasNext() && (it = it->next));
+}
+
+void ContextBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const Range& range)
 {
     if ( node == parent->namespaceNameSequence->back()->element ) {
-        openContext(node, editorFindRange(parent->body, parent->body), KDevelop::DUContext::Namespace, identifier.second);
+        openContext(node, range, KDevelop::DUContext::Namespace, identifier.second);
     } else {
-        openContext(node, parent->body, KDevelop::DUContext::Namespace, identifier.second);
+        openContext(node, range, KDevelop::DUContext::Namespace, identifier.second);
     }
 }
 
