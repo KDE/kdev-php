@@ -89,18 +89,17 @@ void ParseJob::run()
 
     if ( !(minimumFeatures() & TopDUContext::ForceUpdate || minimumFeatures() & Resheduled) ) {
         DUChainReadLocker lock(DUChain::lock());
-        bool needsUpdate = true;
+        static const IndexedString langString("Php");
         foreach(const ParsingEnvironmentFilePointer &file, DUChain::self()->allEnvironmentFiles(document())) {
-            if (file->needsUpdate()) {
-                needsUpdate = true;
-                break;
-            } else {
-                needsUpdate = false;
+            if (file->language() != langString) {
+                continue;
             }
-        }
-        if (!needsUpdate) {
-            kDebug() << "Already up to date" << document().str();
-            return;
+            if (!file->needsUpdate() && file->featuresSatisfied(minimumFeatures())) {
+                kDebug() << "Already up to date" << document().str();
+                setDuChain(file->topContext());
+                return;
+            }
+            break;
         }
     }
 
