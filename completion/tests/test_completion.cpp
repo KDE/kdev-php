@@ -1215,6 +1215,39 @@ void TestCompletion::inNamespace()
         QVERIFY(searchDeclaration(tester.items, top->localDeclarations().last()));
         QVERIFY(!searchDeclaration(tester.items, top->childContexts().last()->localDeclarations().first()));
     }
+    {
+        PhpCompletionTester tester(top->childContexts().at(0), "\\");
+        QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::BackslashAccess);
+        QVERIFY(!tester.completionContext->parentContext());
+
+        QCOMPARE(tester.items.count(), 2);
+        QVERIFY(searchDeclaration(tester.items, top->localDeclarations().first()));
+        QVERIFY(!searchDeclaration(tester.items, top->childContexts().first()->localDeclarations().first()));
+        QVERIFY(searchDeclaration(tester.items, top->localDeclarations().last()));
+        QVERIFY(!searchDeclaration(tester.items, top->childContexts().last()->localDeclarations().first()));
+    }
+    {
+        PhpCompletionTester tester(top->childContexts().at(0), "\\foo\\");
+        QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::BackslashAccess);
+        QVERIFY(!tester.completionContext->parentContext());
+
+        QCOMPARE(tester.items.count(), 1);
+        QVERIFY(!searchDeclaration(tester.items, top->localDeclarations().first()));
+        QVERIFY(searchDeclaration(tester.items, top->childContexts().first()->localDeclarations().first()));
+        QVERIFY(!searchDeclaration(tester.items, top->localDeclarations().last()));
+        QVERIFY(!searchDeclaration(tester.items, top->childContexts().last()->localDeclarations().first()));
+    }
+    {
+        PhpCompletionTester tester(top->childContexts().at(0), "\\yxc\\");
+        QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::BackslashAccess);
+        QVERIFY(!tester.completionContext->parentContext());
+
+        QCOMPARE(tester.items.count(), 1);
+        QVERIFY(!searchDeclaration(tester.items, top->localDeclarations().first()));
+        QVERIFY(!searchDeclaration(tester.items, top->childContexts().first()->localDeclarations().first()));
+        QVERIFY(!searchDeclaration(tester.items, top->localDeclarations().last()));
+        QVERIFY(searchDeclaration(tester.items, top->childContexts().last()->localDeclarations().first()));
+    }
 }
 
 }

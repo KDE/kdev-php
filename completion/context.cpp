@@ -568,8 +568,25 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             break;
         case Parser::Token_NAMESPACE:
         case Parser::Token_BACKSLASH:
-            m_memberAccessOperation = NamespaceChoose;
+        {
+            QString identifier;
+            qint64 relPos = 0;
+            while (lastToken.typeAt(relPos) == Parser::Token_STRING || lastToken.typeAt(relPos) == Parser::Token_BACKSLASH) {
+                if (lastToken.typeAt(relPos) == Parser::Token_BACKSLASH) {
+                    identifier.prepend("::");
+                } else {
+                    identifier.prepend(lastToken.stringAt(relPos));
+                }
+                --relPos;
+            }
+            if ( lastToken.typeAt(relPos) == Parser::Token_NAMESPACE ) {
+                m_memberAccessOperation = NamespaceChoose;
+            } else {
+                m_memberAccessOperation = BackslashAccess;
+            }
+            m_namespace = QualifiedIdentifier(identifier);
             break;
+        }
         case Parser::Token_ARRAY:
         case Parser::Token_AS:
         case Parser::Token_BACKTICK:
@@ -673,6 +690,12 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             case InstanceOfChoose:
                 log("InstanceOfChoose");
                 break;
+            case NamespaceChoose:
+                log("NamespaceChoose");
+                break;
+            case BackslashAccess:
+                log("BackslashAccess");
+                break;
         }
     )
 
@@ -701,6 +724,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case NoMemberAccess:
         case InstanceOfChoose:
         case NamespaceChoose:
+        case BackslashAccess:
             ifDebug(log("returning early");)
             return;
         case FunctionCallAccess:
@@ -1276,6 +1300,34 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                 }
             } else {
                 kDebug() << "invalid owner declaration for overloadable completion";
+            }
+        }
+    } else if (m_memberAccessOperation == BackslashAccess || m_memberAccessOperation == NamespaceChoose) {
+        DUContext* ctx = 0;
+        if (m_namespace.isEmpty()) {
+            ctx = m_duContext->topContext();
+        } else {
+            foreach(Declaration* dec, m_duContext->topContext()->findDeclarations(m_namespace)) {
+                if (dec->kind() == Declaration::Namespace) {
+                    ctx = dec->internalContext();
+                    break;
+                }
+            }
+        }
+        if (!ctx) {
+            kDebug() << "could not find namespace:" << m_namespace.toString();
+            return items;
+        }
+        foreach(Declaration* dec, ctx->localDeclarations()) {
+            if (!isValidCompletionItem(dec)) {
+                continue;
+            } else {
+                items << CompletionTreeItemPointer(
+                            new NormalDeclarationCompletionItem(
+                                    DeclarationPointer(dec),
+                                    KDevelop::CodeCompletionContext::Ptr(this), depth()
+                                )
+                         );
             }
         }
     } else if (m_expressionResult.type()) {

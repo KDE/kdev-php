@@ -96,7 +96,8 @@ public:
         ClassMemberChoose, /// in class context show list of overloadable or implementable methods
         /// and typical keywords for classes, i.e. access modifiers, static etc.
         FileChoose, /// autocompletion for files
-        NamespaceChoose /// autocompletion after namespace keyword
+        NamespaceChoose, /// autocompletion after namespace keyword
+        BackslashAccess /// autocompletion after backslash token
     };
 
     ///@return the used access-operation
@@ -154,6 +155,8 @@ private:
      * => identifiers test and foo must not be proposed for completion
      **/
     QList<uint> m_forbiddenIdentifiers;
+    /// filled only during BackslashAccess and NamespaceChoose
+    KDevelop::QualifiedIdentifier m_namespace;
 
     void forbidIdentifier(const QString &identifier);
     void forbidIdentifier(KDevelop::ClassDeclaration* identifier);
