@@ -283,8 +283,10 @@ void ContextBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStat
     }
 
     if ( !node->namespaceNameSequence ) {
-        // global namespace
-        DefaultVisitor::visitInnerStatementList(node->body);
+        if (node->body) {
+            // global namespace
+            DefaultVisitor::visitInnerStatementList(node->body);
+        }
         return;
     }
 
