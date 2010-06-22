@@ -234,7 +234,9 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
 
     ifDebug(log("non-processed text: " + text);)
 
-    if ( context->type() == DUContext::Class || context->type() == DUContext::Function || context->type() == DUContext::Other ) {
+    if ( context->type() == DUContext::Class || context->type() == DUContext::Function || context->type() == DUContext::Other
+        || context->type() == DUContext::Namespace )
+    {
         if ( !m_parentContext && !m_text.startsWith(QLatin1String("<?php ")) ) {
             ifDebug(log("added start tag: " + m_text);)
             m_text.prepend("<?php ");
