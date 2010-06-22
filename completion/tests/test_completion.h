@@ -90,6 +90,7 @@ private slots:
     void chainedCalling();
     void funcCallInConditional();
     void namespaces();
+    void inNamespace();
 };
 
 }

@@ -1194,6 +1194,29 @@ void TestCompletion::namespaces()
     }
 }
 
+void TestCompletion::inNamespace()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? namespace foo { function bar() {} }\n"
+                      "   namespace yxc { function qwe() {} }\n" );
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    {
+        PhpCompletionTester tester(top->childContexts().at(0), "");
+        QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
+        QVERIFY(!tester.completionContext->parentContext());
+
+        QVERIFY(searchDeclaration(tester.items, top->localDeclarations().first()));
+        QVERIFY(searchDeclaration(tester.items, top->childContexts().first()->localDeclarations().first()));
+        QVERIFY(searchDeclaration(tester.items, top->localDeclarations().last()));
+        QVERIFY(!searchDeclaration(tester.items, top->childContexts().last()->localDeclarations().first()));
+    }
+}
+
 }
 
 #include "test_completion.moc"
