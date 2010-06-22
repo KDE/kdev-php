@@ -141,6 +141,8 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
                     }
                 }
                 return QVariant();
+            }  else if (dec->kind() == Declaration::Namespace) {
+                return "namespace";
             }
         break;
 
