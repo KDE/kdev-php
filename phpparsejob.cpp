@@ -266,6 +266,9 @@ void ParseJob::run()
 
         DUChainWriteLocker lock(DUChain::lock());
 
+        foreach(const ProblemPointer &p, session.problems()) {
+            chain->addProblem(p);
+        }
         foreach(const ProblemPointer &p, includeProblems) {
             chain->addProblem(p);
         }
