@@ -154,7 +154,7 @@ namespace KDevelop
       Warning,
       Info
   };
-  void reportProblem( Parser::ProblemType type, const QString& message );
+  void reportProblem( Parser::ProblemType type, const QString& message, int tokenOffset = -1 );
   QList<KDevelop::ProblemPointer> problems() {
       return m_problems;
   }
@@ -359,7 +359,7 @@ expression=conditionalExpression
 ASSIGN
     assignmentExpressionCheckIfVariable --as in assignmentExpression
     (BIT_AND [: if (yytoken == Token_NEW) {
-                reportProblem(Warning, "=& new foo() is deprecated");
+                reportProblem(Warning, "=& new foo() is deprecated", -2);
                 m_state.varExpressionState = OnlyNewObject;
               } else {
                 m_state.varExpressionState = OnlyVariable;
@@ -812,7 +812,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
     NAMESPACE #namespaceName=identifier* @ BACKSLASH
     (
         -- the semicolon case needs at least one namespace identifier, the {...} case not...
-        SEMICOLON [: if (!(*yynode)->namespaceNameSequence) { reportProblem(Error, "Missing namespace identifier."); } :]
+        SEMICOLON [: if (!(*yynode)->namespaceNameSequence) { reportProblem(Error, "Missing namespace identifier.", -2); } :]
     | LBRACE body=innerStatementList RBRACE )
 -> namespaceDeclarationStatement ;;
 
@@ -938,7 +938,7 @@ QString Parser::tokenText(qint64 begin, qint64 end)
 }
 
 
-void Parser::reportProblem( Parser::ProblemType type, const QString& message )
+void Parser::reportProblem( Parser::ProblemType type, const QString& message, int offset )
 {
     if (type == Error)
         qDebug() << "** ERROR:" << message;
@@ -949,7 +949,7 @@ void Parser::reportProblem( Parser::ProblemType type, const QString& message )
 
     qint64 sLine;
     qint64 sCol;
-    qint64 index = tokenStream->index()-1;
+    qint64 index = tokenStream->index() + offset;
     tokenStream->startPosition(index, &sLine, &sCol);
     qint64 eLine;
     qint64 eCol;
