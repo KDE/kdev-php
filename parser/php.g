@@ -813,7 +813,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
     (
         -- the semicolon case needs at least one namespace identifier, the {...} case not...
         SEMICOLON [: if (!(*yynode)->namespaceNameSequence) { reportProblem(Error, "Missing namespace identifier.", -2); } :]
-    | LBRACE body=innerStatementList RBRACE )
+    | LBRACE try/recover(body=innerStatementList) RBRACE )
 -> namespaceDeclarationStatement ;;
 
     INTERFACE interfaceName=identifier (EXTENDS extends=classImplements | 0)
