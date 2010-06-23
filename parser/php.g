@@ -587,7 +587,7 @@ expression=booleanOrExpression
     className=identifier PAAMAYIM_NEKUDOTAYIM variable=variableWithoutObjects
 -> staticMember ;;
 
-    LBRACE statements=innerStatementList RBRACE
+    LBRACE try/recover(statements=innerStatementList) RBRACE
   | IF LPAREN ifExpr=expr RPAREN
       (   COLON statements=innerStatementList newElseifList newElseSingle ENDIF semicolonOrCloseTag
         | ifStatement=statement elseifList=elseifList elseSingle=elseSingle
@@ -605,7 +605,7 @@ expression=booleanOrExpression
         foreachStatement=foreachStatement
   | DECLARE LPAREN declareItem=declareItem @ COMMA RPAREN declareStatement
   | SEMICOLON     -- empty statement
-  | TRY  LBRACE statements=innerStatementList RBRACE
+  | TRY  LBRACE try/recover(statements=innerStatementList) RBRACE
     #catches=catchItem*
   | UNSET LPAREN #unsetVariables=variable @ COMMA RPAREN semicolonOrCloseTag
   | expr=expr semicolonOrCloseTag
@@ -632,7 +632,7 @@ expression=booleanOrExpression
    SEMICOLON | CLOSE_TAG
 -> semicolonOrCloseTag ;;
 
-    LBRACE (SEMICOLON | 0) caseList=caseList RBRACE
+    LBRACE (SEMICOLON | 0) try/recover(caseList=caseList) RBRACE
   | COLON (SEMICOLON | 0) caseList=caseList ENDSWITCH semicolonOrCloseTag
 -> switchCaseList ;;
 
@@ -644,7 +644,7 @@ expression=booleanOrExpression
 -> case_item ;;
 
     CATCH LPAREN catchClass=identifier var=variableIdentifier RPAREN
-    LBRACE statements=innerStatementList RBRACE
+    LBRACE try/recover(statements=innerStatementList) RBRACE
 -> catchItem ;;
 
     statement=statement
@@ -775,7 +775,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 ] ;;
 
     FUNCTION (BIT_AND | 0) functionName=identifier
-    LPAREN parameters=parameterList RPAREN LBRACE functionBody=innerStatementList RBRACE
+    LPAREN parameters=parameterList RPAREN LBRACE try/recover(functionBody=innerStatementList) RBRACE
 -> functionDeclarationStatement ;;
 
     (#parameters=parameter @ COMMA) | 0
@@ -817,13 +817,13 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 -> namespaceDeclarationStatement ;;
 
     INTERFACE interfaceName=identifier (EXTENDS extends=classImplements | 0)
-    LBRACE body=classBody RBRACE
+    LBRACE try/recover(body=classBody) RBRACE
 -> interfaceDeclarationStatement ;;
 
     modifier=optionalClassModifier CLASS className=identifier
         (EXTENDS extends=classExtends | 0)
         (IMPLEMENTS implements=classImplements | 0)
-    LBRACE body=classBody RBRACE
+    LBRACE try/recover(body=classBody) RBRACE
 -> classDeclarationStatement ;;
 
 identifier=identifier
@@ -845,7 +845,7 @@ identifier=identifier
 -> classStatement ;;
 
     SEMICOLON -- abstract method
- |  LBRACE statements=innerStatementList RBRACE
+ |  LBRACE try/recover(statements=innerStatementList) RBRACE
 -> methodBody ;;
 
 #vars=classVariable @ COMMA
