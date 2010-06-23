@@ -33,6 +33,14 @@
 #include <QDebug>
 #include <iostream>
 #include <QTextCodec>
+#include <tests/autotestshell.h>
+#include <tests/testcore.h>
+#include <language/duchain/duchain.h>
+#include <language/codegen/coderepresentation.h>
+#include <KApplication>
+#include <KLocalizedString>
+#include <KAboutData>
+#include <KCmdLineArgs>
 
 using namespace Php;
 using namespace std;
@@ -101,14 +109,16 @@ private:
         }
 
         Php::StartAst* ast = 0;
-        if (!m_session.parse(&ast)) {
+        bool success = !m_session.parse(&ast);
+        if (!success) {
             qerr << "parse error" << endl;
             exit(255);
-        } else {
-            if (m_debug) {
-                Php::DebugVisitor debugVisitor(m_session.tokenStream(), m_session.contents());
-                debugVisitor.visitStart(ast);
-            }
+        }
+        if (m_debug) {
+            Php::DebugVisitor debugVisitor(m_session.tokenStream(), m_session.contents());
+            debugVisitor.visitStart(ast);
+        }
+        if (success) {
             qout << "successfully parsed" << endl;
         }
     }
@@ -135,45 +145,35 @@ int main(int argc, char* argv[])
     qout.setCodec("UTF-8");
     qin.setCodec("UTF-8");
 
-    QStringList files;
-    bool debug = false;
-    bool printTokens = false;
-    QStringList code;
-    for (int i = 1; i < argc; i++) {
-        QString arg(argv[i]);
-        if (arg.startsWith(QString("--"))) {
-            arg = arg.mid(2);
-            if (arg == "help") {
-                showUsage(argv);
-                return 0;
-            } else if (arg == "debug") {
-                debug = true;
-            } else if (arg == "print-tokens") {
-                printTokens = true;
-            } else if (arg == "code") {
-                for (int j = i + 1; j < argc; ++j ) {
-                    code << argv[j];
-                }
-                if ( code.isEmpty() ) {
-                    qerr << "no code given" << endl;
-                    showUsage(argv);
-                    return 1;
-                }
-                break;
-            } else {
-                qerr << "unknown option: " << endl;
-                showUsage(argv);
-                return 1;
-            }
-        } else {
-            files << arg;
-        }
-    }
+    KAboutData aboutData( "php-parser", 0, ki18n( "php-parser" ),
+                          "1", ki18n("KDevelop PHP parser debuggging utility"), KAboutData::License_GPL,
+                          ki18n( "(c) 2008 Niko Sams, 2009 Milian Wolff" ), KLocalizedString(), "http://www.kdevelop.org" );
+    KCmdLineArgs::init( argc, argv, &aboutData, KCmdLineArgs::CmdLineArgNone );
+    KCmdLineOptions options;
+    options.add("debug", ki18n("print generated AST tree"));
+    options.add("print-tokens", ki18n("print generated token stream"));
+    options.add("code <code>", ki18n("PHP code to parse"));
+    options.add("+files", ki18n("files or - to read from STDIN, the latter is the default if nothing is provided"));
+    KCmdLineArgs::addCmdLineOptions( options );
+
+    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+
+    KApplication app(false);
+
+    QStringList files = args->getOptionList("files");
+    bool debug = args->isSet("debug");
+    bool printTokens = args->isSet("print-tokens");
+
+    KDevelop::AutoTestShell::init();
+    KDevelop::Core::initialize(0, KDevelop::Core::NoUi);
+
+    KDevelop::DUChain::self()->disablePersistentStorage();
+    KDevelop::CodeRepresentation::setDiskChangesForbidden(true);
 
     PhpParser parser(debug, printTokens);
 
-    if ( !code.isEmpty() ) {
-        parser.parseCode( code.join(" ") );
+    if ( args->isSet("code") ) {
+        parser.parseCode( args->getOption("code") );
     } else if ( files.isEmpty() ) {
         files << "-";
     }
@@ -190,17 +190,5 @@ int main(int argc, char* argv[])
         }
 
     }
-    return 0;
-}
-
-void showUsage(char** argv)
-{
-    qout << "Usage: " << argv[0] << " [options] FILE" << endl;
-    qout << "" << endl;
-    qout << "--print-tokens Print all found tokens" << endl;
-    qout << "--debug        Print AST" << endl;
-    qout << "--code ...     All following arguments will be interpreted as PHP code." << endl
-         << "               Hence put this option at the end of the list." << endl;
-    qout << "" << endl;
-    qout << "If FILE is empty or -, read from STDIN." << endl;
+    return app.exec();
 }
