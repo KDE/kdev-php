@@ -109,17 +109,26 @@ private:
         }
 
         Php::StartAst* ast = 0;
-        bool success = !m_session.parse(&ast);
-        if (!success) {
-            qerr << "parse error" << endl;
+        if (!m_session.parse(&ast)) {
+            qerr << "no AST tree could be generated" << endl;
+        } else {
+            qout << "AST tree successfully generated" << endl;
+            if (m_debug) {
+                Php::DebugVisitor debugVisitor(m_session.tokenStream(), m_session.contents());
+                debugVisitor.visitStart(ast);
+            }
+        }
+        if (!m_session.problems().isEmpty()) {
+            qout << endl << "problems encountered during parsing:" << endl;
+            foreach(KDevelop::ProblemPointer p, m_session.problems()) {
+                qout << p->description() << endl;
+            }
+        } else {
+            qout << "no problems encountered during parsing" << endl;
+        }
+
+        if (!ast) {
             exit(255);
-        }
-        if (m_debug) {
-            Php::DebugVisitor debugVisitor(m_session.tokenStream(), m_session.contents());
-            debugVisitor.visitStart(ast);
-        }
-        if (success) {
-            qout << "successfully parsed" << endl;
         }
     }
 
@@ -190,5 +199,5 @@ int main(int argc, char* argv[])
         }
 
     }
-    return app.exec();
+    return 0;
 }
