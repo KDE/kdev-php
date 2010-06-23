@@ -344,7 +344,9 @@ void TypeBuilder::visitParameter(ParameterAst *node)
     AbstractType::Ptr type;
     if (node->parameterType) {
         //don't use openTypeFromName as it uses cursor for findDeclarations
-        Declaration* decl = findDeclarationImport(ClassDeclarationType, node->parameterType);
+        Declaration* decl = findDeclarationImport(ClassDeclarationType,
+                                                  identifierForNamespace(node->parameterType, editor()),
+                                                  node->parameterType);
         if (decl) type = decl->abstractType();
     } else if (node->arrayType != -1) {
         type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));

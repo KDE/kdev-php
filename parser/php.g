@@ -781,7 +781,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
     (#parameters=parameter @ COMMA) | 0
 -> parameterList ;;
 
-(parameterType=identifier | arrayType=ARRAY | 0) (isRef=BIT_AND | 0)
+(parameterType=namespacedIdentifier | arrayType=ARRAY | 0) (isRef=BIT_AND | 0)
     variable=variableIdentifier (ASSIGN defaultValue=staticScalar | 0)
 -> parameter ;;
 

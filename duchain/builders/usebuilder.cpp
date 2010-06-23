@@ -69,7 +69,19 @@ ReferencedTopDUContext UseBuilder::build ( const KDevelop::IndexedString& url, A
 void UseBuilder::visitParameter(ParameterAst *node)
 {
     if (node->parameterType) {
-        newCheckedUse(node->parameterType, findDeclarationImport(ClassDeclarationType, node->parameterType));
+        QualifiedIdentifier identifier = identifierForNamespace(node->parameterType, editor());
+        QualifiedIdentifier curId;
+        curId.setExplicitlyGlobal(identifier.explicitlyGlobal());
+        Q_ASSERT(identifier.count() == node->parameterType->namespaceNameSequence->count());
+        for ( int i = 0; i < identifier.count() - 1; ++i ) {
+            curId.push(identifier.at(i));
+            AstNode* n = node->parameterType->namespaceNameSequence->at(i)->element;
+            Declaration* dec = findDeclarationImport(NamespaceDeclarationType, curId, n);
+            newCheckedUse(n, dec);
+        }
+        newCheckedUse(node->parameterType->namespaceNameSequence->back()->element, findDeclarationImport(ClassDeclarationType,
+                                                                 identifier,
+                                                                 node->parameterType ));
     }
 }
 
