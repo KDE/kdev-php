@@ -155,7 +155,7 @@ int main(int argc, char* argv[])
     qin.setCodec("UTF-8");
 
     KAboutData aboutData( "php-parser", 0, ki18n( "php-parser" ),
-                          "1", ki18n("KDevelop PHP parser debuggging utility"), KAboutData::License_GPL,
+                          "1", ki18n("KDevelop PHP parser debugging utility"), KAboutData::License_GPL,
                           ki18n( "(c) 2008 Niko Sams, 2009 Milian Wolff" ), KLocalizedString(), "http://www.kdevelop.org" );
     KCmdLineArgs::init( argc, argv, &aboutData, KCmdLineArgs::CmdLineArgNone );
     KCmdLineOptions options;
