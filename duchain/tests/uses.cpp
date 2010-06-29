@@ -844,6 +844,7 @@ void TestUses::namespaces()
                               "\\Foo\\Bar\\MyClass::ClassConst;\n"
                               "\\Foo\\Bar\\MyFunc();\n"
                               "new \\Foo\\Bar\\MyClass;\n"
+                              "function Func(\\Foo\\Bar\\MyClass $a){}\n"
                               "}\n", DumpAll);
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
@@ -856,7 +857,8 @@ void TestUses::namespaces()
     compareUses(dec, QList<SimpleRange>() << SimpleRange(7, 1, 7, 4)
                                           << SimpleRange(8, 1, 8, 4)
                                           << SimpleRange(9, 1, 9, 4)
-                                          << SimpleRange(10, 5, 10, 8));
+                                          << SimpleRange(10, 5, 10, 8)
+                                          << SimpleRange(11, 15, 11, 18));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar")).first();
     QCOMPARE(dec->kind(), Declaration::Namespace);
@@ -864,7 +866,8 @@ void TestUses::namespaces()
     compareUses(dec, QList<SimpleRange>() << SimpleRange(7, 5, 7, 8)
                                           << SimpleRange(8, 5, 8, 8)
                                           << SimpleRange(9, 5, 9, 8)
-                                          << SimpleRange(10, 9, 10, 12));
+                                          << SimpleRange(10, 9, 10, 12)
+                                          << SimpleRange(11, 19, 11, 22));
     QCOMPARE(dec->internalContext()->localDeclarations().size(), 3);
     foreach(Declaration* d, dec->internalContext()->localDeclarations()) {
         kDebug() << d->toString() << d->qualifiedIdentifier();
@@ -875,7 +878,10 @@ void TestUses::namespaces()
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myclass")).first();
     QVERIFY(dynamic_cast<ClassDeclaration*>(dec));
-    compareUses(dec, QList<SimpleRange>() << SimpleRange(8, 9, 8, 16) << SimpleRange(10, 13, 10, 20));
+    compareUses(dec, QList<SimpleRange>() << SimpleRange(8, 9, 8, 16)
+                                          << SimpleRange(10, 13, 10, 20)
+                                          << SimpleRange(11, 23, 11, 30)
+               );
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myclass::ClassConst")).first();
     compareUses(dec, SimpleRange(8, 18, 8, 28));

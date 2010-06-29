@@ -22,6 +22,6 @@ target_link_libraries( kdev4phpparser
 )
 
 kde4_add_executable( php-parser main.cpp )
-target_link_libraries(php-parser ${QT_QTCORE_LIBRARY} kdev4phpparser)
+target_link_libraries(php-parser ${QT_QTCORE_LIBRARY} ${KDEVPLATFORM_TESTS_LIBRARIES} kdev4phpparser)
 
 install(TARGETS kdev4phpparser DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})

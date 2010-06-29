@@ -154,7 +154,7 @@ namespace KDevelop
       Warning,
       Info
   };
-  void reportProblem( Parser::ProblemType type, const QString& message );
+  void reportProblem( Parser::ProblemType type, const QString& message, int tokenOffset = -1 );
   QList<KDevelop::ProblemPointer> problems() {
       return m_problems;
   }
@@ -359,7 +359,7 @@ expression=conditionalExpression
 ASSIGN
     assignmentExpressionCheckIfVariable --as in assignmentExpression
     (BIT_AND [: if (yytoken == Token_NEW) {
-                reportProblem(Warning, "=& new foo() is deprecated");
+                reportProblem(Warning, "=& new foo() is deprecated", -2);
                 m_state.varExpressionState = OnlyNewObject;
               } else {
                 m_state.varExpressionState = OnlyVariable;
@@ -587,7 +587,7 @@ expression=booleanOrExpression
     className=identifier PAAMAYIM_NEKUDOTAYIM variable=variableWithoutObjects
 -> staticMember ;;
 
-    LBRACE statements=innerStatementList RBRACE
+    LBRACE try/recover(statements=innerStatementList) RBRACE
   | IF LPAREN ifExpr=expr RPAREN
       (   COLON statements=innerStatementList newElseifList newElseSingle ENDIF semicolonOrCloseTag
         | ifStatement=statement elseifList=elseifList elseSingle=elseSingle
@@ -605,7 +605,7 @@ expression=booleanOrExpression
         foreachStatement=foreachStatement
   | DECLARE LPAREN declareItem=declareItem @ COMMA RPAREN declareStatement
   | SEMICOLON     -- empty statement
-  | TRY  LBRACE statements=innerStatementList RBRACE
+  | TRY  LBRACE try/recover(statements=innerStatementList) RBRACE
     #catches=catchItem*
   | UNSET LPAREN #unsetVariables=variable @ COMMA RPAREN semicolonOrCloseTag
   | expr=expr semicolonOrCloseTag
@@ -632,7 +632,7 @@ expression=booleanOrExpression
    SEMICOLON | CLOSE_TAG
 -> semicolonOrCloseTag ;;
 
-    LBRACE (SEMICOLON | 0) caseList=caseList RBRACE
+    LBRACE (SEMICOLON | 0) try/recover(caseList=caseList) RBRACE
   | COLON (SEMICOLON | 0) caseList=caseList ENDSWITCH semicolonOrCloseTag
 -> switchCaseList ;;
 
@@ -644,7 +644,7 @@ expression=booleanOrExpression
 -> case_item ;;
 
     CATCH LPAREN catchClass=identifier var=variableIdentifier RPAREN
-    LBRACE statements=innerStatementList RBRACE
+    LBRACE try/recover(statements=innerStatementList) RBRACE
 -> catchItem ;;
 
     statement=statement
@@ -775,13 +775,13 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 ] ;;
 
     FUNCTION (BIT_AND | 0) functionName=identifier
-    LPAREN parameters=parameterList RPAREN LBRACE functionBody=innerStatementList RBRACE
+    LPAREN parameters=parameterList RPAREN LBRACE try/recover(functionBody=innerStatementList) RBRACE
 -> functionDeclarationStatement ;;
 
     (#parameters=parameter @ COMMA) | 0
 -> parameterList ;;
 
-(parameterType=identifier | arrayType=ARRAY | 0) (isRef=BIT_AND | 0)
+(parameterType=namespacedIdentifier | arrayType=ARRAY | 0) (isRef=BIT_AND | 0)
     variable=variableIdentifier (ASSIGN defaultValue=staticScalar | 0)
 -> parameter ;;
 
@@ -810,17 +810,20 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 -> variableIdentifier ;;
 
     NAMESPACE #namespaceName=identifier* @ BACKSLASH
-    ( SEMICOLON | LBRACE body=innerStatementList RBRACE )
+    (
+        -- the semicolon case needs at least one namespace identifier, the {...} case not...
+        SEMICOLON [: if (!(*yynode)->namespaceNameSequence) { reportProblem(Error, "Missing namespace identifier.", -2); } :]
+    | LBRACE try/recover(body=innerStatementList) RBRACE )
 -> namespaceDeclarationStatement ;;
 
     INTERFACE interfaceName=identifier (EXTENDS extends=classImplements | 0)
-    LBRACE body=classBody RBRACE
+    LBRACE try/recover(body=classBody) RBRACE
 -> interfaceDeclarationStatement ;;
 
     modifier=optionalClassModifier CLASS className=identifier
         (EXTENDS extends=classExtends | 0)
         (IMPLEMENTS implements=classImplements | 0)
-    LBRACE body=classBody RBRACE
+    LBRACE try/recover(body=classBody) RBRACE
 -> classDeclarationStatement ;;
 
 identifier=identifier
@@ -842,7 +845,7 @@ identifier=identifier
 -> classStatement ;;
 
     SEMICOLON -- abstract method
- |  LBRACE statements=innerStatementList RBRACE
+ |  LBRACE try/recover(statements=innerStatementList) RBRACE
 -> methodBody ;;
 
 #vars=classVariable @ COMMA
@@ -935,7 +938,7 @@ QString Parser::tokenText(qint64 begin, qint64 end)
 }
 
 
-void Parser::reportProblem( Parser::ProblemType type, const QString& message )
+void Parser::reportProblem( Parser::ProblemType type, const QString& message, int offset )
 {
     if (type == Error)
         qDebug() << "** ERROR:" << message;
@@ -946,7 +949,7 @@ void Parser::reportProblem( Parser::ProblemType type, const QString& message )
 
     qint64 sLine;
     qint64 sCol;
-    qint64 index = tokenStream->index()-1;
+    qint64 index = tokenStream->index() + offset;
     tokenStream->startPosition(index, &sLine, &sCol);
     qint64 eLine;
     qint64 eCol;
@@ -1029,4 +1032,4 @@ void Parser::restoreState( Parser::ParserState* state)
 
 :]
 
--- kate: space-indent on; indent-width 4; tab-width 4; replace-tabs on; auto-insert-doxygen on
+-- kate: space-indent on; indent-width 4; tab-width 4; replace-tabs on; auto-insert-doxygen on; mode KDevelop-PG[-Qt]

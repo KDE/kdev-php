@@ -234,7 +234,7 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
         visitNode(node->parameters);
         closeContext();
 
-        if ( !m_isInternalFunctions ) {
+        if ( !m_isInternalFunctions && node->methodBody ) {
             // the internal functions file has only empty method bodies, so skip them
             DUContext* body = openContext(node->methodBody, DUContext::Other, node->methodName);
             {
@@ -261,7 +261,7 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     visitNode(node->parameters);
     closeContext();
 
-    if ( !m_isInternalFunctions ) {
+    if ( !m_isInternalFunctions && node->functionBody ) {
         // the internal functions file has only empty method bodies, so skip them
         DUContext* body = openContext(node->functionBody, DUContext::Other, node->functionName);
         {
@@ -283,8 +283,10 @@ void ContextBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStat
     }
 
     if ( !node->namespaceNameSequence ) {
-        // global namespace
-        DefaultVisitor::visitInnerStatementList(node->body);
+        if (node->body) {
+            // global namespace
+            DefaultVisitor::visitInnerStatementList(node->body);
+        }
         return;
     }
 
