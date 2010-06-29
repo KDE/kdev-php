@@ -832,7 +832,11 @@ identifier=identifier
 #implements=identifier @ COMMA
 -> classImplements ;;
 
-#classStatements=classStatement*
+-- error recovery, to understand it you probably have to look at the generated code ;-)
+[: do { :]
+try/recover(#classStatements=classStatement)*
+[: } while ( (yytoken != Token_RBRACE && yytoken != Token_EOF && yytoken != Token_CLOSE_TAG) && yylex() ); :]
+ RBRACE [: rewind(tokenStream->index() - 2); :]
 -> classBody ;;
 
     CONST #consts=constantDeclaration @ COMMA SEMICOLON
