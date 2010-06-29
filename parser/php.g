@@ -823,7 +823,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
     modifier=optionalClassModifier CLASS className=identifier
         (EXTENDS extends=classExtends | 0)
         (IMPLEMENTS implements=classImplements | 0)
-    LBRACE try/recover(body=classBody) RBRACE
+    LBRACE body=classBody RBRACE
 -> classDeclarationStatement ;;
 
 identifier=identifier
@@ -833,9 +833,18 @@ identifier=identifier
 -> classImplements ;;
 
 -- error recovery, to understand it you probably have to look at the generated code ;-)
-[: do { :]
+[: bool reported = false; while ( true ) { :]
 try/recover(#classStatements=classStatement)*
-[: } while ( (yytoken != Token_RBRACE && yytoken != Token_EOF && yytoken != Token_CLOSE_TAG) && yylex() ); :]
+[: if (yytoken != Token_RBRACE && yytoken != Token_EOF && yytoken != Token_CLOSE_TAG) {
+        if (!reported) {
+            reportProblem(Error, "Unexpected token in class context.");
+            reported = true;
+        }
+        yylex();
+   } else {
+        break;
+   }
+} :]
  RBRACE [: rewind(tokenStream->index() - 2); :]
 -> classBody ;;
 
