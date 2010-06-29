@@ -2396,10 +2396,12 @@ void TestDUChain::errorRecovery_data()
                                     << TestUse("y", Declaration::Namespace, 0)
                                     << TestUse("foo::a", Declaration::Instance, 1));
 
-    QTest::newRow("class") << QString("<?php class foo { const bar = 1; invalid } foo::bar;")
+    QTest::newRow("class") << QString("<?php class foo { const bar = 1; invalid static function func() {} } foo::bar; foo::func;")
                                  << (QList<TestUse>()
                                     << TestUse("foo", Declaration::Type, 0)
-                                    << TestUse("foo::bar", Declaration::Instance, 1));
+                                    << TestUse("foo::bar", Declaration::Instance, 1)
+                                    << TestUse("foo::func", Declaration::Type, 1)
+                                    );
 }
 
 void TestDUChain::errorRecovery()
