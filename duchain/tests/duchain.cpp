@@ -43,11 +43,9 @@
 
 using namespace KTextEditor;
 using namespace KDevelop;
+using namespace Php;
 
 QTEST_MAIN(Php::TestDUChain)
-
-namespace Php
-{
 
 TestDUChain::TestDUChain()
 {
@@ -2368,6 +2366,64 @@ void TestDUChain::namespacesNoCurly()
     QCOMPARE(top->localDeclarations().at(1)->kind(), Declaration::Namespace);
 }
 
+struct TestUse {
+    TestUse(const QString& _id, Declaration::Kind _kind, int _uses)
+        : id(_id), kind(_kind), uses(_uses)
+    {}
+    TestUse()
+    {}
+    QualifiedIdentifier id;
+    Declaration::Kind kind;
+    int uses;
+};
+
+Q_DECLARE_METATYPE ( TestUse )
+Q_DECLARE_METATYPE ( QList<TestUse> )
+
+void TestDUChain::errorRecovery_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::addColumn< QList<TestUse> >("usesMap");
+
+    QTest::newRow("conditional") << QString("<?php $a = 1; if ( false ) { in va lid } $a = 2; ")
+                                 << (QList<TestUse>()
+                                    << TestUse("a", Declaration::Instance, 1));
+
+    QTest::newRow("namespace") << QString("<?php namespace foo { const a = 1; } namespace y { -a sdflyxjcv 91348 } namespace { foo\\a; }")
+                                 << (QList<TestUse>()
+                                    << TestUse("foo", Declaration::Namespace, 1)
+                                    << TestUse("y", Declaration::Namespace, 0)
+                                    << TestUse("foo::a", Declaration::Instance, 1));
+
+    QTest::newRow("class") << QString("<?php class foo { const bar = 1; invalid } foo::bar;")
+                                 << (QList<TestUse>()
+                                    << TestUse("foo::a", Declaration::Instance, 1)
+                                    << TestUse("foo", Declaration::Instance, 1));
+}
+
+void TestDUChain::errorRecovery()
+{
+    QFETCH(QString, code);
+    QFETCH(QList<TestUse>, usesMap);
+
+    TopDUContext* top = parse(code.toLocal8Bit(), DumpAll);
+
+    QVERIFY(top);
+
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    foreach ( const TestUse& use, usesMap ) {
+        QList< Declaration* > decs = top->findDeclarations(use.id);
+        QCOMPARE(decs.count(), 1);
+        Declaration* dec = decs.first();
+        QCOMPARE(dec->kind(), use.kind);
+        if (use.uses) {
+            QCOMPARE(dec->uses().count(), 1);
+            QCOMPARE(dec->uses().begin()->count(), use.uses);
+        }
+    }
 }
 
 #include "duchain.moc"
