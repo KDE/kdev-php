@@ -169,7 +169,11 @@ int main(int argc, char* argv[])
 
     KApplication app(false);
 
-    QStringList files = args->getOptionList("files");
+    QStringList files;
+    for ( int i = 0; i < args->count(); ++i ) {
+        files << args->arg(i);
+    }
+
     bool debug = args->isSet("debug");
     bool printTokens = args->isSet("print-tokens");
 
