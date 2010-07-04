@@ -54,7 +54,6 @@ protected:
     KDevelop::Declaration* processVariable(VariableIdentifierAst *variable);
 
     void visitAssignmentExpression(AssignmentExpressionAst *node);
-    void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
     void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
     void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
     void visitVarExpressionNormal(VarExpressionNormalAst *node);

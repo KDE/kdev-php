@@ -149,11 +149,6 @@ void ExpressionVisitor::visitAssignmentExpression(AssignmentExpressionAst *node)
     }
 }
 
-void ExpressionVisitor::visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node)
-{
-    DefaultVisitor::visitAssignmentExpressionEqual(node);
-}
-
 void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
 {
     if (node->variable) {
