@@ -530,9 +530,10 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     }
 
     if (isset($xml->refsect1->methodsynopsis)) {
-        $methodsynopsis = $xml->refsect1->methodsynopsis;
-        newMethodEntry('global', $methodsynopsis->methodname, $funcOverload, $methodsynopsis, $desc, $xml);
-        $addedSomething = true;
+        foreach( $xml->refsect1->methodsynopsis as $synopsis ) {
+            newMethodEntry('global', $synopsis->methodname, $funcOverload, $synopsis, $desc, $xml);
+            $addedSomething = true;
+        }
     }
     if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->methodsynopsis)) {
         $methodsynopsis = $xml->refsect1->classsynopsis->methodsynopsis;

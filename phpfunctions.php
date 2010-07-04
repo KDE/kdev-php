@@ -9940,6 +9940,233 @@ function bzread($bz, $length){}
 function bzwrite($bz, $data, $length){}
 
 /**
+ * Appends the {@link path} onto the current path. The {@link path} may
+ * be either the return value from one of CairoContext::copyPath or
+ * CairoContext::copyPathFlat;
+ * 
+ * if {@link path} is not a valid CairoPath instance a CairoException
+ * will be thrown
+ * 
+ * @param CairoContext $context CairoContext object
+ * @param CairoPath $path CairoPath object
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_append_path($context, $path){}
+
+/**
+ * Adds a circular arc of the given radius to the current path. The arc
+ * is centered at ({@link x}, {@link y}), begins at {@link angle1} and
+ * proceeds in the direction of increasing angles to end at {@link
+ * angle2}. If {@link angle2} is less than {@link angle1} it will be
+ * progressively increased by 2*M_PI until it is greater than {@link
+ * angle1}. If there is a current point, an initial line segment will be
+ * added to the path to connect the current point to the beginning of the
+ * arc. If this initial line is undesired, it can be avoided by calling
+ * CairoContext::newSubPath or procedural {@link cairo_new_sub_path}
+ * before calling CairoContext::arc or {@link cairo_arc}.
+ * 
+ * Angles are measured in radians. An angle of 0.0 is in the direction of
+ * the positive X axis (in user space). An angle of M_PI/2.0 radians (90
+ * degrees) is in the direction of the positive Y axis (in user space).
+ * Angles increase in the direction from the positive X axis toward the
+ * positive Y axis. So with the default transformation matrix, angles
+ * increase in a clockwise direction.
+ * 
+ * (To convert from degrees to radians, use degrees * (M_PI / 180.).)
+ * This function gives the arc in the direction of increasing angles; see
+ * CairoContext::arcNegative or {@link cairo_arc_negative} to get the arc
+ * in the direction of decreasing angles.
+ * 
+ * @param CairoContext $context A valid CairoContext object
+ * @param float $x x position
+ * @param float $y y position
+ * @param float $radius Radius of the arc
+ * @param float $angle1 start angle
+ * @param float $angle2 end angle
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_arc($context, $x, $y, $radius, $angle1, $angle2){}
+
+/**
+ * Adds a circular arc of the given {@link radius} to the current path.
+ * The arc is centered at ({@link x}, {@link y}), begins at {@link
+ * angle1} and proceeds in the direction of decreasing angles to end at
+ * {@link angle2}. If {@link angle2} is greater than {@link angle1} it
+ * will be progressively decreased by 2*M_PI until it is less than {@link
+ * angle1}.
+ * 
+ * See CairoContext::arc or {@link cairo_arc} for more details. This
+ * function differs only in the direction of the arc between the two
+ * angles.
+ * 
+ * @param CairoContext $context A valid CairoContext object
+ * @param float $x double x position
+ * @param float $y double y position
+ * @param float $radius The radius of the desired negative arc
+ * @param float $angle1 Start angle of the arc
+ * @param float $angle2 End angle of the arc
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_arc_negative($context, $x, $y, $radius, $angle1, $angle2){}
+
+/**
+ * Returns an array with the available font backends
+ * 
+ * @return array
+ **/
+function cairo_available_fonts(){}
+
+/**
+ * Returns an array with the available surface backends
+ * 
+ * @return array
+ **/
+function cairo_available_surfaces(){}
+
+/**
+ * Establishes a new clip region by intersecting the current clip region
+ * with the current path as it would be filled by CairoContext::fill or
+ * {@link cairo_fill} and according to the current fill rule (see
+ * CairoContext::setFillRule or {@link cairo_set_fill_rule}).
+ * 
+ * After CairoContext::clip or {@link cairo_clip}, the current path will
+ * be cleared from the cairo context.
+ * 
+ * The current clip region affects all drawing operations by effectively
+ * masking out any changes to the surface that are outside the current
+ * clip region.
+ * 
+ * Calling CairoContext::clip or {@link cairo_clip} can only make the
+ * clip region smaller, never larger. But the current clip is part of the
+ * graphics state, so a temporary restriction of the clip region can be
+ * achieved by calling CairoContext::clip or {@link cairo_clip} within a
+ * CairoContext::save/CairoContext::restore or {@link cairo_save}/{@link
+ * cairo_restore} pair. The only other means of increasing the size of
+ * the clip region is CairoContext::resetClip or procedural {@link
+ * cairo_reset_clip}.
+ * 
+ * @param CairoContext $context A valid CairoContext object
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_clip($context){}
+
+/**
+ * Computes a bounding box in user coordinates covering the area inside
+ * the current clip.
+ * 
+ * @param CairoContext $context A valid CairoContext object
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_clip_extents($context){}
+
+/**
+ * Establishes a new clip region by intersecting the current clip region
+ * with the current path as it would be filled by Context.fill and
+ * according to the current FILL RULE (see CairoContext::setFillRule or
+ * {@link cairo_set_fill_rule}).
+ * 
+ * Unlike CairoContext::clip, CairoContext::clipPreserve preserves the
+ * path within the Context. The current clip region affects all drawing
+ * operations by effectively masking out any changes to the surface that
+ * are outside the current clip region.
+ * 
+ * Calling CairoContext::clipPreserve can only make the clip region
+ * smaller, never larger. But the current clip is part of the graphics
+ * state, so a temporary restriction of the clip region can be achieved
+ * by calling CairoContext::clipPreserve within a
+ * CairoContext::save/CairoContext::restore pair. The only other means of
+ * increasing the size of the clip region is CairoContext::resetClip.
+ * 
+ * @param CairoContext $context A valid CairoContext object
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_clip_preserve($context){}
+
+/**
+ * Returns a list-type array with the current clip region as a list of
+ * rectangles in user coordinates
+ * 
+ * @param CairoContext $context A valid CairoContext object created
+ *   with CairoContext::__construct or {@link cairo_create}
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_clip_rectangle_list($context){}
+
+/**
+ * Adds a line segment to the path from the current point to the
+ * beginning of the current sub-path, (the most recent point passed to
+ * CairoContext::moveTo), and closes this sub-path. After this call the
+ * current point will be at the joined endpoint of the sub-path.
+ * 
+ * The behavior of close_path() is distinct from simply calling
+ * CairoContext::lineTo with the equivalent coordinate in the case of
+ * stroking. When a closed sub-path is stroked, there are no caps on the
+ * ends of the sub-path. Instead, there is a line join connecting the
+ * final and initial segments of the sub-path.
+ * 
+ * If there is no current point before the call to
+ * CairoContext::closePath, this function will have no effect.
+ * 
+ * @param CairoContext $context A valid CairoContext object created
+ *   with CairoContext::__construct or {@link cairo_create}
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_close_path($context){}
+
+/**
+ * Emits the current page for backends that support multiple pages, but
+ * doesn't clear it, so that the contents of the current page will be
+ * retained for the next page. Use CairoSurface::showPage() if you want
+ * to get an empty page after the emission.
+ * 
+ * @param CairoContext $context A CairoContext object
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_copy_page($context){}
+
+/**
+ * Creates a copy of the current path and returns it to the user as a
+ * CairoPath. See CairoPath for hints on how to iterate over the returned
+ * data structure.
+ * 
+ * This function will always return a valid CairoPath object, but the
+ * result will have no data, if either of the following conditions hold:
+ * 1. If there is insufficient memory to copy the path. In this case
+ * CairoPath->status will be set to CAIRO_STATUS_NO_MEMORY. 2. If {@link
+ * context} is already in an error state. In this case CairoPath->status
+ * will contain the same status that would be returned by {@link
+ * cairo_status}.
+ * 
+ * In either case, CairoPath->status will be set to
+ * CAIRO_STATUS_NO_MEMORY (regardless of what the error status in cr
+ * might have been).
+ * 
+ * @param CairoContext $context A valid CairoContext object created
+ *   with CairoContext::__construct or {@link cairo_create}
+ * @return CairoPath
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_copy_path($context){}
+
+/**
+ * A CairoContext object
+ * 
+ * @param CairoContext $context Description...
+ * @return CairoPath
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_copy_path_flat($context){}
+
+/**
  * The function description goes here.
  * 
  * @param CairoSurface $surface Description...
@@ -9947,6 +10174,119 @@ function bzwrite($bz, $data, $length){}
  * @since PECL cairo >= 0.1.0
  **/
 function cairo_create($surface){}
+
+/**
+ * Adds a cubic Bezier spline to the path from the current point to
+ * position {@link x3} ,{@link y3} in user-space coordinates, using
+ * {@link x1}, {@link y1} and {@link x2}, {@link y2} as the control
+ * points. After this call the current point will be {@link x3}, {@link
+ * y3}.
+ * 
+ * If there is no current point before the call to CairoContext::curveTo
+ * this function will behave as if preceded by a call to
+ * CairoContext::moveTo ({@link x1}, {@link y1}).
+ * 
+ * @param CairoContext $context A valid CairoContext object created
+ *   with CairoContext::__construct or {@link cairo_create}
+ * @param float $x1 First control point in the x axis for the curve
+ * @param float $y1 First control point in the y axis for the curve
+ * @param float $x2 Second control point in x axis for the curve
+ * @param float $y2 Second control point in y axis for the curve
+ * @param float $x3 Final point in the x axis for the curve
+ * @param float $y3 Final point in the y axis for the curve
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_curve_to($context, $x1, $y1, $x2, $y2, $x3, $y3){}
+
+/**
+ * Transform a coordinate from device space to user space by multiplying
+ * the given point by the inverse of the current transformation matrix
+ * (CTM).
+ * 
+ * @param CairoContext $context A valid CairoContext object created
+ *   with CairoContext::__construct or {@link cairo_create}
+ * @param float $x x value of the coordinate
+ * @param float $y y value of the coordinate
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_device_to_user($context, $x, $y){}
+
+/**
+ * Transform a distance vector from device space to user space. This
+ * function is similar to CairoContext::deviceToUser or {@link
+ * cairo_device_to_user} except that the translation components of the
+ * inverse Cairo Transformation Matrix will be ignored when transforming
+ * ({@link x},{@link y}).
+ * 
+ * @param CairoContext $context A valid CairoContext object created
+ *   with CairoContext::__construct or {@link cairo_create}
+ * @param float $x X component of a distance vector
+ * @param float $y Y component of a distance vector
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_device_to_user_distance($context, $x, $y){}
+
+/**
+ * A drawing operator that fills the current path according to the
+ * current CairoFillRule, (each sub-path is implicitly closed before
+ * being filled). After CairoContext::fill or {@link cairo_fill}, the
+ * current path will be cleared from the CairoContext.
+ * 
+ * @param CairoContext $context A valid CairoContext object created
+ *   with CairoContext::__construct or {@link cairo_create}
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_fill($context){}
+
+/**
+ * Computes a bounding box in user coordinates covering the area that
+ * would be affected, (the “inked” area), by a CairoContext::fill
+ * operation given the current path and fill parameters. If the current
+ * path is empty, returns an empty rectangle (0,0,0,0). Surface
+ * dimensions and clipping are not taken into account.
+ * 
+ * Contrast with CairoContext::pathExtents, which is similar, but returns
+ * non-zero extents for some paths with no inked area, (such as a simple
+ * line segment).
+ * 
+ * Note that CairoContext::fillExtents must necessarily do more work to
+ * compute the precise inked areas in light of the fill rule, so
+ * CairoContext::pathExtents may be more desirable for sake of
+ * performance if the non-inked path extents are desired.
+ * 
+ * @param CairoContext $context A valid CairoContext object created
+ *   with CairoContext::__construct or {@link cairo_create}
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_fill_extents($context){}
+
+/**
+ * A drawing operator that fills the current path according to the
+ * current CairoFillRule, (each sub-path is implicitly closed before
+ * being filled). Unlike CairoContext::fill, CairoContext::fillPreserve
+ * (Procedural {@link cairo_fill}, {@link cairo_fill_preserve},
+ * respectively) preserves the path within the Context.
+ * 
+ * @param CairoContext $context A valid CairoContext object created
+ *   with CairoContext::__construct or {@link cairo_create}
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_fill_preserve($context){}
+
+/**
+ * Gets the font extents for the currently selected font.
+ * 
+ * @param CairoContext $context Description...
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_font_extents($context){}
 
 /**
  * The function description goes here.
@@ -10099,6 +10439,228 @@ function cairo_font_options_status($options){}
 function cairo_format_stride_for_width($format, $width){}
 
 /**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return int
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_antialias($context){}
+
+/**
+ * Gets the current point of the current path, which is conceptually the
+ * final point reached by the path so far.
+ * 
+ * The current point is returned in the user-space coordinate system. If
+ * there is no defined current point or if cr is in an error status, x
+ * and y will both be set to 0.0. It is possible to check this in advance
+ * with CairoContext::hasCurrentPoint.
+ * 
+ * Most path construction functions alter the current point. See the
+ * following for details on how they affect the current point:
+ * CairoContext::newPath, CairoContext::newSubPath,
+ * CairoContext::appendPath, CairoContext::closePath,
+ * CairoContext::moveTo, CairoContext::lineTo, CairoContext::curveTo,
+ * CairoContext::relMoveTo, CairoContext::relLineTo,
+ * CairoContext::relCurveTo, CairoContext::arc,
+ * CairoContext::arcNegative, CairoContext::rectangle,
+ * CairoContext::textPath, CairoContext::glyphPath.
+ * 
+ * Some functions use and alter the current point but do not otherwise
+ * change current path: CairoContext::showText.
+ * 
+ * Some functions unset the current path and as a result, current point:
+ * CairoContext::fill, CairoContext::stroke.
+ * 
+ * @param CairoContext $context A valid CairoContext object.
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_current_point($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_dash($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return int
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_dash_count($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return int
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_fill_rule($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_font_face($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_font_matrix($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_font_options($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_group_target($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return int
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_line_cap($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return int
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_line_join($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return float
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_line_width($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_matrix($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return float
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_miter_limit($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return int
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_operator($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_scaled_font($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_source($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_target($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return float
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_get_tolerance($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param array $glyphs Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_glyph_path($context, $glyphs){}
+
+/**
+ * Returns whether a current point is defined on the current path. See
+ * CairoContext::getCurrentPoint for details on the current point.
+ * 
+ * @param CairoContext $context A valid CairoContext object.
+ * @return bool
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_has_current_point($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_identity_matrix($context){}
+
+/**
  * The function description goes here.
  * 
  * @param int $format Description...
@@ -10177,6 +10739,122 @@ function cairo_image_surface_get_stride($surface){}
 function cairo_image_surface_get_width($surface){}
 
 /**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $x Description...
+ * @param string $y Description...
+ * @return bool
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_in_fill($context, $x, $y){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $x Description...
+ * @param string $y Description...
+ * @return bool
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_in_stroke($context, $x, $y){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $x Description...
+ * @param string $y Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_line_to($context, $x, $y){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param CairoPattern $pattern Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_mask($context, $pattern){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param CairoSurface $surface Description...
+ * @param string $x Description...
+ * @param string $y Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_mask_surface($context, $surface, $x, $y){}
+
+/**
+ * Returns new CairoMatrix object. Matrices are used throughout cairo to
+ * convert between different coordinate spaces. Sets matrix to be the
+ * affine transformation given by xx, yx, xy, yy, x0, y0. The
+ * transformation is given by: x_new = xx * x + xy * y + x0; and y_new =
+ * yx * x + yy * y + y0;
+ * 
+ * @param float $xx xx component of the affine transformation
+ * @param float $yx yx component of the affine transformation
+ * @param float $xy xy component of the affine transformation
+ * @param float $yy yy component of the affine transformation
+ * @param float $x0 X translation component of the affine
+ *   transformation
+ * @param float $y0 Y translation component of the affine
+ *   transformation
+ * @return object
+ **/
+function cairo_matrix_init($xx, $yx, $xy, $yy, $x0, $y0){}
+
+/**
+ * Creates a new matrix that is an identity transformation. An identity
+ * transformation means the source data is copied into the destination
+ * data without change
+ * 
+ * @return object
+ **/
+function cairo_matrix_init_identity(){}
+
+/**
+ * Creats a new matrix to a transformation that rotates by radians
+ * provided
+ * 
+ * @param float $radians angle of rotation, in radians. The direction
+ *   of rotation is defined such that positive angles rotate in the
+ *   direction from the positive X axis toward the positive Y axis. With
+ *   the default axis orientation of cairo, positive angles rotate in a
+ *   clockwise direction.
+ * @return object
+ **/
+function cairo_matrix_init_rotate($radians){}
+
+/**
+ * Creates a new matrix to a transformation that scales by sx and sy in
+ * the X and Y dimensions, respectively.
+ * 
+ * @param float $sx scale factor in the X direction
+ * @param float $sy scale factor in the Y direction
+ * @return object
+ **/
+function cairo_matrix_init_scale($sx, $sy){}
+
+/**
+ * Creates a new matrix to a transformation that translates by tx and ty
+ * in the X and Y dimensions, respectively.
+ * 
+ * @param float $tx amount to translate in the X direction
+ * @param float $ty amount to translate in the Y direction
+ * @return object
+ **/
+function cairo_matrix_init_translate($tx, $ty){}
+
+/**
  * The function description goes here.
  * 
  * @param CairoMatrix $matrix Description...
@@ -10204,6 +10882,19 @@ function cairo_matrix_multiply($matrix1, $matrix2){}
  * @since PECL cairo >= 0.1.0
  **/
 function cairo_matrix_rotate($matrix, $radians){}
+
+/**
+ * Applies scaling by sx, sy to the transformation in the matrix. The
+ * effect of the new transformation is to first scale the coordinates by
+ * sx and sy, then apply the original transformation to the coordinates.
+ * 
+ * @param CairoContext $context Procedural only - CairoMatrix instance
+ * @param float $sx scale factor in the X direction
+ * @param float $sy scale factor in the Y direction
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_matrix_scale($context, $sx, $sy){}
 
 /**
  * The function description goes here.
@@ -10237,6 +10928,65 @@ function cairo_matrix_transform_point($matrix, $dx, $dy){}
  * @since PECL cairo >= 0.1.0
  **/
 function cairo_matrix_translate($matrix, $tx, $ty){}
+
+/**
+ * Begin a new sub-path. After this call the current point will be (x,
+ * y).
+ * 
+ * @param CairoContext $context A valid CairoContext object.
+ * @param string $x The x coordinate of the new position.
+ * @param string $y The y coordinate of the new position
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_move_to($context, $x, $y){}
+
+/**
+ * Clears the current path. After this call there will be no path and no
+ * current point.
+ * 
+ * @param CairoContext $context A valid CairoContext object.
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_new_path($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_new_sub_path($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_paint($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $alpha Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_paint_with_alpha($context, $alpha){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_path_extents($context){}
 
 /**
  * The function description goes here.
@@ -10476,6 +11226,24 @@ function cairo_pdf_surface_create($file, $width, $height){}
 function cairo_pdf_surface_set_size($surface, $width, $height){}
 
 /**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_pop_group($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_pop_group_to_source($context){}
+
+/**
  * The function description goes here.
  * 
  * @return array
@@ -10570,6 +11338,123 @@ function cairo_ps_surface_set_eps($surface, $level){}
  * @since PECL cairo >= 0.1.0
  **/
 function cairo_ps_surface_set_size($surface, $width, $height){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_push_group($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $content Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_push_group_with_content($context, $content){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $x Description...
+ * @param string $y Description...
+ * @param string $width Description...
+ * @param string $height Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_rectangle($context, $x, $y, $width, $height){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $x1 Description...
+ * @param string $y1 Description...
+ * @param string $x2 Description...
+ * @param string $y2 Description...
+ * @param string $x3 Description...
+ * @param string $y3 Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_rel_curve_to($context, $x1, $y1, $x2, $y2, $x3, $y3){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $x Description...
+ * @param string $y Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_rel_line_to($context, $x, $y){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $x Description...
+ * @param string $y Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_rel_move_to($context, $x, $y){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_reset_clip($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_restore($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $angle Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_rotate($context, $angle){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_save($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $x Description...
+ * @param string $y Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_scale($context, $x, $y){}
 
 /**
  * The function description goes here.
@@ -10674,6 +11559,256 @@ function cairo_scaled_font_status($scaledfont){}
  * @since PECL cairo >= 0.1.0
  **/
 function cairo_scaled_font_text_extents($scaledfont, $text){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $family Description...
+ * @param string $slant Description...
+ * @param string $weight Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_select_font_face($context, $family, $slant, $weight){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $antialias Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_antialias($context, $antialias){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param array $dashes Description...
+ * @param string $offset Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_dash($context, $dashes, $offset){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $setting Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_fill_rule($context, $setting){}
+
+/**
+ * Sets the font-face for a given context.
+ * 
+ * @param CairoContext $context A CairoContext object to change the
+ *   font-face for.
+ * @param CairoFontFace $fontface A CairoFontFace object
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_font_face($context, $fontface){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param CairoMatrix $matrix Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_font_matrix($context, $matrix){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param CairoFontOptions $fontoptions Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_font_options($context, $fontoptions){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $size Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_font_size($context, $size){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $setting Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_line_cap($context, $setting){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $setting Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_line_join($context, $setting){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $width Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_line_width($context, $width){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param CairoMatrix $matrix Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_matrix($context, $matrix){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $limit Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_miter_limit($context, $limit){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $setting Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_operator($context, $setting){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param CairoScaledFont $scaledfont Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_scaled_font($context, $scaledfont){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param CairoPattern $pattern Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_source($context, $pattern){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param CairoSurface $surface Description...
+ * @param string $x Description...
+ * @param string $y Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_source_surface($context, $surface, $x, $y){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $tolerance Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_set_tolerance($context, $tolerance){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_show_page($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $text Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_show_text($context, $text){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return int
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_status($context){}
+
+/**
+ * Retrieves the current status as a readable string
+ * 
+ * @param int $status A valid status code given by {@link cairo_status}
+ *   or CairoContext::status
+ * @return string
+ **/
+function cairo_status_to_string($status){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_stroke($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_stroke_extents($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_stroke_preserve($context){}
 
 /**
  * The function description goes here.
@@ -10824,6 +11959,16 @@ function cairo_surface_status($surface){}
 function cairo_surface_write_to_png($surface, $x, $y){}
 
 /**
+ * Returns a numerically indexed array of currently available
+ * CairoSvgVersion constants. In order to retreive the string values for
+ * each item, use CairoSvgSurface::versionToString.
+ * 
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_svg_get_versions(){}
+
+/**
  * The function description goes here.
  * 
  * @param string $file Description...
@@ -10852,6 +11997,82 @@ function cairo_svg_surface_restrict_to_version($surface, $version){}
  * @since PECL cairo >= 0.1.0
  **/
 function cairo_svg_version_to_string($version){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_text_extents($context){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $text Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_text_path($context, $text){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param CairoMatrix $matrix Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_transform($context, $matrix){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $x Description...
+ * @param string $y Description...
+ * @return void
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_translate($context, $x, $y){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $x Description...
+ * @param string $y Description...
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_user_to_device($context, $x, $y){}
+
+/**
+ * Description here.
+ * 
+ * @param CairoContext $context Description...
+ * @param string $x Description...
+ * @param string $y Description...
+ * @return array
+ * @since PECL cairo >= 0.1.0
+ **/
+function cairo_user_to_device_distance($context, $x, $y){}
+
+/**
+ * Retrieves the current version of the cairo library as an integer value
+ * 
+ * @return int
+ **/
+function cairo_version(){}
+
+/**
+ * Retrieves the current cairo library version as a string.
+ * 
+ * @return string
+ **/
+function cairo_version_string(){}
 
 /**
  * @param string $clent
@@ -11339,6 +12560,212 @@ function closedir($dir_handle){}
  * @since PHP 4, PHP 5
  **/
 function closelog(){}
+
+/**
+ * This function sorts an array such that array indices maintain their
+ * correlation with the array elements they are associated with. This is
+ * used mainly when sorting associative arrays where the actual element
+ * order is significant. Array elements will have sort order according to
+ * current locale rules.
+ * 
+ * Equivalent to standard PHP {@link asort}.
+ * 
+ * @param Collator $coll Collator object.
+ * @param array $arr Array of strings to sort.
+ * @param int $sort_flag Optional sorting type, one of the following:
+ *   Collator::SORT_REGULAR - compare items normally (don't change types)
+ *   Collator::SORT_NUMERIC - compare items numerically
+ *   Collator::SORT_STRING - compare items as strings Default $sort_flag
+ *   value is Collator::SORT_REGULAR. It is also used if an invalid
+ *   $sort_flag value has been specified.
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function collator_asort($coll, &$arr, $sort_flag){}
+
+/**
+ * Compare two Unicode strings according to collation rules.
+ * 
+ * @param Collator $coll Collator object.
+ * @param string $str1 The first string to compare.
+ * @param string $str2 The second string to compare.
+ * @return int
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function collator_compare($coll, $str1, $str2){}
+
+/**
+ * The strings will be compared using the options already specified.
+ * 
+ * @param string $locale The locale containing the required collation
+ *   rules. Special values for locales can be passed in - if null is
+ *   passed for the locale, the default locale collation rules will be
+ *   used. If empty string ("") or "root" are passed, UCA rules will be
+ *   used.
+ * @return Collator
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function collator_create($locale){}
+
+/**
+ * Get a value of an integer collator attribute.
+ * 
+ * @param Collator $coll Collator object.
+ * @param int $attr Attribute to get value for.
+ * @return int
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function collator_get_attribute($coll, $attr){}
+
+/**
+ * @param Collator $coll Collator object.
+ * @return int
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function collator_get_error_code($coll){}
+
+/**
+ * Retrieves the message for the last error.
+ * 
+ * @param Collator $coll Collator object.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function collator_get_error_message($coll){}
+
+/**
+ * Get collector locale name.
+ * 
+ * @param Collator $coll Collator object.
+ * @param int $type You can choose between valid and actual locale (
+ *   Locale::VALID_LOCALE and Locale::ACTUAL_LOCALE, respectively). The
+ *   default is the actual locale.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function collator_get_locale($coll, $type){}
+
+/**
+ * Return collation key for a string.
+ * 
+ * @param Collator $coll Collator object.
+ * @param string $str The string to produce the key from.
+ * @return string
+ **/
+function collator_get_sort_key($coll, $str){}
+
+/**
+ * @param Collator $coll Collator object.
+ * @return int
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function collator_get_strength($coll){}
+
+/**
+ * @param Collator $coll Collator object.
+ * @param int $attr Attribute.
+ * @param int $val Attribute value.
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function collator_set_attribute($coll, $attr, $val){}
+
+/**
+ * The ICU Collation Service supports many levels of comparison (named
+ * "Levels", but also known as "Strengths"). Having these categories
+ * enables ICU to sort strings precisely according to local conventions.
+ * However, by allowing the levels to be selectively employed, searching
+ * for a string in text can be performed with various matching
+ * conditions.
+ * 
+ * Primary Level: Typically, this is used to denote differences between
+ * base characters (for example, "a" < "b"). It is the strongest
+ * difference. For example, dictionaries are divided into different
+ * sections by base character. This is also called the level1 strength.
+ * Secondary Level: Accents in the characters are considered secondary
+ * differences (for example, "as" < "às" < "at"). Other differences
+ * between letters can also be considered secondary differences,
+ * depending on the language. A secondary difference is ignored when
+ * there is a primary difference anywhere in the strings. This is also
+ * called the level2 strength. Note: In some languages (such as Danish),
+ * certain accented letters are considered to be separate base
+ * characters. In most languages, however, an accented letter only has a
+ * secondary difference from the unaccented version of that letter.
+ * Tertiary Level: Upper and lower case differences in characters are
+ * distinguished at the tertiary level (for example, "ao" < "Ao" <
+ * "aò"). In addition, a variant of a letter differs from the base form
+ * on the tertiary level (such as "A" and " "). Another example is the
+ * difference between large and small Kana. A tertiary difference is
+ * ignored when there is a primary or secondary difference anywhere in
+ * the strings. This is also called the level3 strength. Quaternary
+ * Level: When punctuation is ignored (see Ignoring Punctuations ) at
+ * level 13, an additional level can be used to distinguish words with
+ * and without punctuation (for example, "ab" < "a-b" < "aB"). This
+ * difference is ignored when there is a primary, secondary or tertiary
+ * difference. This is also known as the level4 strength. The quaternary
+ * level should only be used if ignoring punctuation is required or when
+ * processing Japanese text (see Hiragana processing). Identical Level:
+ * When all other levels are equal, the identical level is used as a
+ * tiebreaker. The Unicode code point values of the NFD form of each
+ * string are compared at this level, just in case there is no difference
+ * at levels 14. For example, Hebrew cantillation marks are only
+ * distinguished at this level. This level should be used sparingly, as
+ * only code point values differences between two strings is an extremely
+ * rare occurrence. Using this level substantially decreases the
+ * performance for both incremental comparison and sort key generation
+ * (as well as increasing the sort key length). It is also known as level
+ * 5 strength.
+ * 
+ * For example, people may choose to ignore accents or ignore accents and
+ * case when searching for text. Almost all characters are distinguished
+ * by the first three levels, and in most locales the default value is
+ * thus Tertiary. However, if Alternate is set to be Shifted, then the
+ * Quaternary strength can be used to break ties among whitespace,
+ * punctuation, and symbols that would otherwise be ignored. If very fine
+ * distinctions among characters are required, then the Identical
+ * strength can be used (for example, Identical Strength distinguishes
+ * between the Mathematical Bold Small A and the Mathematical Italic
+ * Small A.). However, using levels higher than Tertiary the Identical
+ * strength result in significantly longer sort keys, and slower string
+ * comparison performance for equal strings.
+ * 
+ * @param Collator $coll Collator object.
+ * @param int $strength Strength to set. Possible values are:
+ *   Collator::PRIMARY Collator::SECONDARY Collator::TERTIARY
+ *   Collator::QUATERNARY Collator::IDENTICAL Collator::DEFAULT
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function collator_set_strength($coll, $strength){}
+
+/**
+ * This function sorts an array according to current locale rules.
+ * 
+ * Equivalent to standard PHP {@link sort} .
+ * 
+ * @param Collator $coll Collator object.
+ * @param array $arr Array of strings to sort.
+ * @param int $sort_flag Optional sorting type, one of the following:
+ *   
+ *   Collator::SORT_REGULAR - compare items normally (don't change types)
+ *   Collator::SORT_NUMERIC - compare items numerically
+ *   Collator::SORT_STRING - compare items as strings Default sorting
+ *   type is Collator::SORT_REGULAR.
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function collator_sort($coll, &$arr, $sort_flag){}
+
+/**
+ * Similar to {@link collator_sort} but uses ICU sorting keys produced by
+ * ucol_getSortKey() to gain more speed on large arrays.
+ * 
+ * @param Collator $coll Collator object.
+ * @param array $arr Array of strings to sort
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function collator_sort_with_sort_keys($coll, &$arr){}
 
 /**
  * Creates an array containing variables and their values.
@@ -12515,6 +13942,215 @@ function cyrus_unbind($connection, $trigger_name){}
 function date($format, $timestamp){}
 
 /**
+ * Create a date formatter
+ * 
+ * @param string $locale Locale to use when formatting or parsing.
+ * @param int $datetype Date type to use (none, short, medium, long,
+ *   full). This is one of the IntlDateFormatter constants.
+ * @param int $timetype Time type to use (none, short, medium, long,
+ *   full). This is one of the IntlDateFormatter constants.
+ * @param string $timezone Time zone ID, default is system default.
+ * @param int $calendar Calendar to use for formatting or parsing;
+ *   default is Gregorian. This is one of the IntlDateFormatter calendar
+ *   constants.
+ * @param string $pattern Optional pattern to use when formatting or
+ *   parsing. Possible patterns are documented at .
+ * @return IntlDateFormatter
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_create($locale, $datetype, $timetype, $timezone, $calendar, $pattern){}
+
+/**
+ * Formats the time value as a string.
+ * 
+ * @param IntlDateFormatter $fmt The date formatter resource.
+ * @param mixed $value Value to format. Can be integer for an Unix
+ *   timestamp value (seconds since epoch, UTC) or array for a {@link
+ *   localtime} array.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_format($fmt, $value){}
+
+/**
+ * @param IntlDateFormatter $fmt The formatter resource
+ * @return int
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_get_calendar($fmt){}
+
+/**
+ * Returns date type used by the formatter.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource.
+ * @return int
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_get_datetype($fmt){}
+
+/**
+ * Get the error code from last operation. Returns error code from the
+ * last number formatting operation.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource.
+ * @return int
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_get_error_code($fmt){}
+
+/**
+ * Get the error text from the last operation.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_get_error_message($fmt){}
+
+/**
+ * Get locale used by the formatter.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource
+ * @param int $which You can choose between valid and actual locale (
+ *   Locale::VALID_LOCALE, Locale::ACTUAL_LOCALE, respectively). The
+ *   default is the actual locale.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_get_locale($fmt, $which){}
+
+/**
+ * Get pattern used by the formatter.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_get_pattern($fmt){}
+
+/**
+ * Return time type used by the formatter.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource.
+ * @return int
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_get_timetype($fmt){}
+
+/**
+ * Get the timezone-id used for the IntlDateFormatter.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_get_timezone_id($fmt){}
+
+/**
+ * Check if the parser is strict or lenient in interpreting inputs that
+ * do not match the pattern exactly.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource.
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_is_lenient($fmt){}
+
+/**
+ * Converts string $value to a field-based time value ( an array of
+ * various fields), starting at $parse_pos and consuming as much of the
+ * input value as possible.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource
+ * @param string $value string to convert to a time
+ * @param int $position Position at which to start the parsing in
+ *   $value (zero-based). If no error occurs before $value is consumed,
+ *   $parse_pos will contain -1 otherwise it will contain the position at
+ *   which parsing ended . If $parse_pos > strlen($value), the parse
+ *   fails immediately.
+ * @return array
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_localtime($fmt, $value, &$position){}
+
+/**
+ * Converts string $value to an incremental time value, starting at
+ * $parse_pos and consuming as much of the input value as possible.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource
+ * @param string $value string to convert to a time
+ * @param int $position Position at which to start the parsing in
+ *   $value (zero-based). If no error occurs before $value is consumed,
+ *   $parse_pos will contain -1 otherwise it will contain the position at
+ *   which parsing ended (and the error occurred). This variable will
+ *   contain the end position if the parse fails. If $parse_pos >
+ *   strlen($value), the parse fails immediately.
+ * @return int
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_parse($fmt, $value, &$position){}
+
+/**
+ * Sets the calendar used by the formatter.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource.
+ * @param int $which The calendar to use. Default is
+ *   IntlDateFormatter::GREGORIAN.
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_set_calendar($fmt, $which){}
+
+/**
+ * Define if the parser is strict or lenient in interpreting inputs that
+ * do not match the pattern exactly. Enabling lenient parsing allows the
+ * parser to accept otherwise flawed date or time patterns, parsing as
+ * much as possible to obtain a value. Extra space, unrecognized tokens,
+ * or invalid values ("February 30th") are not accepted.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource
+ * @param bool $lenient Sets whether the parser is lenient or not,
+ *   default is (strict).
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_set_lenient($fmt, $lenient){}
+
+/**
+ * Set the pattern used for the IntlDateFormatter.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource.
+ * @param string $pattern New pattern string to use. Possible patterns
+ *   are documented at .
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_set_pattern($fmt, $pattern){}
+
+/**
+ * Sets the time zone to use.
+ * 
+ * @param IntlDateFormatter $fmt The formatter resource.
+ * @param string $zone The time zone ID string of the time zone to use.
+ *   If or the empty string, the default time zone for the runtime is
+ *   used.
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function datefmt_set_timezone_id($fmt, $zone){}
+
+/**
+ * Adds the specified DateInterval object to the specified DateTime
+ * object.
+ * 
+ * @param DateTime $object A DateInterval object
+ * @param DateInterval $interval
+ * @return DateTime
+ * @since PHP 5 >= 5.3.0
+ **/
+function date_add($object, $interval){}
+
+/**
  * Returns new DateTime object.
  * 
  * @param string $time Enter here to obtain the current time when using
@@ -12526,6 +14162,38 @@ function date($format, $timestamp){}
  * @since PHP 5 >= 5.2.0
  **/
 function date_create($time, $timezone){}
+
+/**
+ * Returns new DateTime object formatted according to the specified
+ * format.
+ * 
+ * @param string $format Format accepted by {@link date}. If {@link
+ *   format} does not contain the character ! then portions of the
+ *   generated time which are not specified in {@link format} will be set
+ *   to the current system time. If {@link format} contains the character
+ *   !, then portions of the generated time not provided in {@link
+ *   format}, as well as values to the left-hand side of the !, will be
+ *   set to corresponding values from the Unix epoch. The Unix epoch is
+ *   1970-01-01 00:00:00 UTC.
+ * @param string $time String representing the time.
+ * @param DateTimeZone $timezone A DateTimeZone object representing the
+ *   desired time zone.
+ * @return DateTime
+ * @since PHP 5 >= 5.3.0
+ **/
+function date_create_from_format($format, $time, $timezone){}
+
+/**
+ * Resets the current date of the DateTime object to a different date.
+ * 
+ * @param DateTime $object Year of the date.
+ * @param int $year Month of the date.
+ * @param int $month Day of the date.
+ * @param int $day
+ * @return DateTime
+ * @since PHP 5 >= 5.2.0
+ **/
+function date_date_set($object, $year, $month, $day){}
 
 /**
  * In order of preference, this function returns the default timezone by:
@@ -12560,6 +14228,69 @@ function date_default_timezone_get(){}
 function date_default_timezone_set($timezone_identifier){}
 
 /**
+ * Returns the difference between two DateTime objects.
+ * 
+ * @param DateTime $datetime1 The date to compare to.
+ * @param DateTime $datetime2 Whether to return absolute difference.
+ * @param bool $absolute
+ * @return DateInterval
+ * @since PHP 5 >= 5.3.0
+ **/
+function date_diff($datetime1, $datetime2, $absolute){}
+
+/**
+ * Returns date formatted according to given format.
+ * 
+ * @param DateTime $object Format accepted by {@link date}.
+ * @param string $format
+ * @return string
+ * @since PHP 5 >= 5.2.0
+ **/
+function date_format($object, $format){}
+
+/**
+ * Returns an array of warnings and errors found while parsing a
+ * date/time string.
+ * 
+ * @return array
+ * @since PHP 5 >= 5.3.0
+ **/
+function date_get_last_errors(){}
+
+/**
+ * Set a date according to the ISO 8601 standard - using weeks and day
+ * offsets rather than specific dates.
+ * 
+ * @param DateTime $object Year of the date.
+ * @param int $year Week of the date.
+ * @param int $week Offset from the first day of the week.
+ * @param int $day
+ * @return DateTime
+ * @since PHP 5 >= 5.2.0
+ **/
+function date_isodate_set($object, $year, $week, $day){}
+
+/**
+ * Alter the timestamp of a DateTime object by incrementing or
+ * decrementing in a format accepted by {@link strtotime}.
+ * 
+ * @param DateTime $object
+ * @param string $modify
+ * @return DateTime
+ * @since PHP 5 >= 5.2.0
+ **/
+function date_modify($object, $modify){}
+
+/**
+ * Returns the timezone offset.
+ * 
+ * @param DateTime $object
+ * @return int
+ * @since PHP 5 >= 5.2.0
+ **/
+function date_offset_get($object){}
+
+/**
  * @param string $date Date in format accepted by {@link strtotime}.
  * @return array
  * @since PHP 5 >= 5.2.0
@@ -12576,6 +14307,17 @@ function date_parse($date){}
  * @since PHP 5 >= 5.3.0
  **/
 function date_parse_from_format($format, $date){}
+
+/**
+ * Subtracts the specified DateInterval object from the specified
+ * DateTime object.
+ * 
+ * @param DateTime $object A DateInterval object
+ * @param DateInterval $interval
+ * @return DateTime
+ * @since PHP 5 >= 5.3.0
+ **/
+function date_sub($object, $interval){}
 
 /**
  * {@link date_sunrise} returns the sunrise time for a given day
@@ -12629,6 +14371,55 @@ function date_sunset($timestamp, $format, $latitude, $longitude, $zenith, $gmt_o
  * @since PHP 5 >= 5.1.2
  **/
 function date_sun_info($time, $latitude, $longitude){}
+
+/**
+ * Gets the Unix timestamp.
+ * 
+ * @param DateTime $object
+ * @return int
+ * @since PHP 5 >= 5.3.0
+ **/
+function date_timestamp_get($object){}
+
+/**
+ * Sets the date and time based on an Unix timestamp.
+ * 
+ * @param DateTime $object Unix timestamp representing the date.
+ * @param int $unixtimestamp
+ * @return DateTime
+ * @since PHP 5 >= 5.3.0
+ **/
+function date_timestamp_set($object, $unixtimestamp){}
+
+/**
+ * Return time zone relative to given DateTime.
+ * 
+ * @param DateTime $object
+ * @return DateTimeZone
+ * @since PHP 5 >= 5.2.0
+ **/
+function date_timezone_get($object){}
+
+/**
+ * @param DateTime $object A DateTimeZone object representing the
+ *   desired time zone.
+ * @param DateTimeZone $timezone
+ * @return DateTime
+ * @since PHP 5 >= 5.2.0
+ **/
+function date_timezone_set($object, $timezone){}
+
+/**
+ * Resets the current time of the DateTime object to a different time.
+ * 
+ * @param DateTime $object Hour of the time.
+ * @param int $hour Minute of the time.
+ * @param int $minute Second of the time.
+ * @param int $second
+ * @return DateTime
+ * @since PHP 5 >= 5.2.0
+ **/
+function date_time_set($object, $hour, $minute, $second){}
 
 /**
  * Sets or gets the AUTOCOMMIT behavior of the specified connection
@@ -30510,6 +32301,61 @@ function linkinfo($path){}
 function localeconv(){}
 
 /**
+ * Tries to find locale that can satisfy the language list that is
+ * requested by the HTTP "Accept-Language" header.
+ * 
+ * @param string $header The string containing the "Accept-Language"
+ *   header according to format in RFC 2616.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_accept_from_http($header){}
+
+/**
+ * Returns a correctly ordered and delimited locale ID the keys identify
+ * the particular locale ID subtags, and the values are the associated
+ * subtag values.
+ * 
+ * @param array $subtags an array containing a list of key-value pairs,
+ *   where the keys identify the particular locale ID subtags, and the
+ *   values are the associated subtag values. The 'variant' and 'private'
+ *   subtags can take maximum 15 values whereas 'extlang' can take
+ *   maximum 3 values.e.g. Variants are allowed with the suffix ranging
+ *   from 0-14. Hence the keys for the input array can be variant0,
+ *   variant1, ...,variant14. In the returned locale id, the subtag is
+ *   ordered by suffix resulting in variant0 followed by variant1
+ *   followed by variant2 and so on. The 'variant', 'private' and
+ *   'extlang' multiple values can be specified both as array under
+ *   specific key (e.g. 'variant') and as multiple numbered keys (e.g.
+ *   'variant0', 'variant1', etc.).
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_compose($subtags){}
+
+/**
+ * Checks if a $langtag filter matches with $locale according to RFC
+ * 4647's basic filtering algorithm
+ * 
+ * @param string $langtag The language tag to check
+ * @param string $locale The language range to check against
+ * @param bool $canonicalize If true, the arguments will be converted
+ *   to canonical form before matching.
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_filter_matches($langtag, $locale, $canonicalize){}
+
+/**
+ * Gets the variants for the input locale
+ * 
+ * @param string $locale The locale to extract the variants from
+ * @return array
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_get_all_variants($locale){}
+
+/**
  * This function returns the default Locale, which is used by PHP to
  * localize certain features. Please note that this isn't influenced by
  * {@link setlocale} or the system settings.
@@ -30518,6 +32364,130 @@ function localeconv(){}
  * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
  **/
 function locale_get_default(){}
+
+/**
+ * Returns an appropriately localized display name for language of the
+ * input locale. If is then the default locale is used.
+ * 
+ * @param string $locale The locale to return a display language for
+ * @param string $in_locale Optional format locale to use to display
+ *   the language name
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_get_display_language($locale, $in_locale){}
+
+/**
+ * Returns an appropriately localized display name for the input locale.
+ * If is then the default locale is used.
+ * 
+ * @param string $locale The locale to return a display name for.
+ * @param string $in_locale optional format locale
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_get_display_name($locale, $in_locale){}
+
+/**
+ * Returns an appropriately localized display name for region of the
+ * input locale. If is then the default locale is used.
+ * 
+ * @param string $locale The locale to return a display region for.
+ * @param string $in_locale Optional format locale to use to display
+ *   the region name
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_get_display_region($locale, $in_locale){}
+
+/**
+ * Returns an appropriately localized display name for script of the
+ * input locale. If is then the default locale is used.
+ * 
+ * @param string $locale The locale to return a display script for
+ * @param string $in_locale Optional format locale to use to display
+ *   the script name
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_get_display_script($locale, $in_locale){}
+
+/**
+ * Returns an appropriately localized display name for variants of the
+ * input locale. If is then the default locale is used.
+ * 
+ * @param string $locale The locale to return a display variant for
+ * @param string $in_locale Optional format locale to use to display
+ *   the variant name
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_get_display_variant($locale, $in_locale){}
+
+/**
+ * Gets the keywords for the input locale.
+ * 
+ * @param string $locale The locale to extract the keywords from
+ * @return array
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_get_keywords($locale){}
+
+/**
+ * Gets the primary language for the input locale
+ * 
+ * @param string $locale The locale to extract the primary language
+ *   code from
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_get_primary_language($locale){}
+
+/**
+ * Gets the region for the input locale.
+ * 
+ * @param string $locale The locale to extract the region code from
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_get_region($locale){}
+
+/**
+ * Gets the script for the input locale.
+ * 
+ * @param string $locale The locale to extract the script code from
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_get_script($locale){}
+
+/**
+ * Searches the items in {@link langtag} for the best match to the
+ * language range specified in {@link locale} according to RFC 4647's
+ * lookup algorithm.
+ * 
+ * @param array $langtag An array containing a list of language tags to
+ *   compare to {@link locale}. Maximum 100 items allowed.
+ * @param string $locale The locale to use as the language range when
+ *   matching.
+ * @param bool $canonicalize If true, the arguments will be converted
+ *   to canonical form before matching.
+ * @param string $default The locale to use if no match is found.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_lookup($langtag, $locale, $canonicalize, $default){}
+
+/**
+ * Returns a key-value array of locale ID subtag elements.
+ * 
+ * @param string $locale The locale to extract the subtag array from.
+ *   Note: The 'variant' and 'private' subtags can take maximum 15 values
+ *   whereas 'extlang' can take maximum 3 values.
+ * @return array
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function locale_parse($locale){}
 
 /**
  * Sets the default Locale for PHP programs. Please note that this has
@@ -34270,6 +36240,118 @@ function msession_uniq($param, $classname, $data){}
 function msession_unlock($session, $key){}
 
 /**
+ * Constructs a new Message Formatter
+ * 
+ * @param string $locale The locale to use when formatting arguments
+ * @param string $pattern The pattern string to stick arguments into.
+ *   The pattern uses an 'apostrophe-friendly' syntax; it is run through
+ *   umsg_autoQuoteApostrophe before being interpreted.
+ * @return MessageFormatter
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function msgfmt_create($locale, $pattern){}
+
+/**
+ * Format the message by substituting the data into the format string
+ * according to the locale rules
+ * 
+ * @param MessageFormatter $fmt The message formatter
+ * @param array $args Arguments to insert into the format string
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function msgfmt_format($fmt, $args){}
+
+/**
+ * Quick formatting function that formats the string without having to
+ * explicitly create the formatter object. Use this function when the
+ * format operation is done only once and does not need and parameters or
+ * state to be kept.
+ * 
+ * @param string $locale The locale to use for formatting
+ *   locale-dependent parts
+ * @param string $pattern The pattern string to insert things into. The
+ *   pattern uses an 'apostrophe-friendly' syntax; it is run through
+ *   umsg_autoQuoteApostrophe before being interpreted.
+ * @param array $args The array of values to insert into the format
+ *   string
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function msgfmt_format_message($locale, $pattern, $args){}
+
+/**
+ * Get the error code from last operation.
+ * 
+ * @param MessageFormatter $fmt The message formatter
+ * @return int
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function msgfmt_get_error_code($fmt){}
+
+/**
+ * Get the error text from the last operation.
+ * 
+ * @param MessageFormatter $fmt The message formatter
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function msgfmt_get_error_message($fmt){}
+
+/**
+ * Get the locale for which the formatter was created.
+ * 
+ * @param NumberFormatter $formatter The formatter resource
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function msgfmt_get_locale($formatter){}
+
+/**
+ * Get the pattern used by the formatter
+ * 
+ * @param MessageFormatter $fmt The message formatter
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function msgfmt_get_pattern($fmt){}
+
+/**
+ * Parses input string and return any extracted items as an array.
+ * 
+ * @param MessageFormatter $fmt The message formatter
+ * @param string $value The string to parse
+ * @return array
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function msgfmt_parse($fmt, $value){}
+
+/**
+ * Parses input string without explicitly creating the formatter object.
+ * Use this function when the format operation is done only once and does
+ * not need and parameters or state to be kept.
+ * 
+ * @param string $locale The locale to use for parsing locale-dependent
+ *   parts
+ * @param string $value The string to parse for items
+ * @return array
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function msgfmt_parse_message($locale, $value){}
+
+/**
+ * Set the pattern used by the formatter
+ * 
+ * @param MessageFormatter $fmt The message formatter
+ * @param string $pattern The pattern string to use in this message
+ *   formatter. The pattern uses an 'apostrophe-friendly' syntax; it is
+ *   run through umsg_autoQuoteApostrophe before being interpreted.
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function msgfmt_set_pattern($fmt, $pattern){}
+
+/**
  * {@link msg_get_queue} returns an id that can be used to access the
  * System V message queue with the given {@link key}. The first call
  * creates the message queue with the optional {@link perms}. A second
@@ -35382,6 +37464,69 @@ function mt_srand($seed){}
 function mysqli_affected_rows($link){}
 
 /**
+ * Turns on or off auto-commit mode on queries for the database
+ * connection.
+ * 
+ * To determine the current state of autocommit use the SQL command
+ * SELECT @@autocommit.
+ * 
+ * @param mysqli $link Whether to turn on auto-commit or not.
+ * @param bool $mode
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_autocommit($link, $mode){}
+
+/**
+ * Changes the user of the specified database connection and sets the
+ * current database.
+ * 
+ * In order to successfully change users a valid {@link username} and
+ * {@link password} parameters must be provided and that user must have
+ * sufficient permissions to access the desired database. If for any
+ * reason authorization fails, the current user authentication will
+ * remain.
+ * 
+ * @param mysqli $link The MySQL user name.
+ * @param string $user The MySQL password.
+ * @param string $password The database to change to. If desired, the
+ *   value may be passed resulting in only changing the user and not
+ *   selecting a database. To select a database in this case use the
+ *   {@link mysqli_select_db} function.
+ * @param string $database
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_change_user($link, $user, $password, $database){}
+
+/**
+ * Returns the current character set for the database connection.
+ * 
+ * @param mysqli $link
+ * @return string
+ * @since PHP 5
+ **/
+function mysqli_character_set_name($link){}
+
+/**
+ * Closes a previously opened database connection.
+ * 
+ * @param mysqli $link
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_close($link){}
+
+/**
+ * Commits the current transaction for the database connection.
+ * 
+ * @param mysqli $link
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_commit($link){}
+
+/**
  * Opens a connection to the MySQL Server running on.
  * 
  * @param string $host Can be either a host name or an IP address.
@@ -35426,11 +37571,67 @@ function mysqli_connect_errno(){}
 function mysqli_connect_error(){}
 
 /**
+ * The {@link mysqli_data_seek} function seeks to an arbitrary result
+ * pointer specified by the {@link offset} in the result set.
+ * 
+ * @param mysqli_result $result The field offset. Must be between zero
+ *   and the total number of rows minus one (0..{@link mysqli_num_rows} -
+ *   1).
+ * @param int $offset
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_data_seek($result, $offset){}
+
+/**
+ * Performs debugging operations using the Fred Fish debugging library.
+ * 
+ * @param string $message A string representing the debugging operation
+ *   to perform
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_debug($message){}
+
+/**
+ * @param mysqli $link
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_disable_reads_from_master($link){}
+
+/**
  * @param mysqli $link
  * @return bool
  * @since PHP 5
  **/
 function mysqli_disable_rpl_parse($link){}
+
+/**
+ * This function is designed to be executed by an user with the SUPER
+ * privilege and is used to dump debugging information into the log for
+ * the MySQL Server relating to the connection.
+ * 
+ * @param mysqli $link
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_dump_debug_info($link){}
+
+/**
+ * @return void
+ * @since PHP 5 >= 5.1.0
+ **/
+function mysqli_embedded_server_end(){}
+
+/**
+ * @param bool $start
+ * @param array $arguments
+ * @param array $groups
+ * @return bool
+ * @since PHP 5 >= 5.1.0
+ **/
+function mysqli_embedded_server_start($start, $arguments, $groups){}
 
 /**
  * @param mysqli $link
@@ -35472,6 +37673,95 @@ function mysqli_errno($link){}
 function mysqli_error($link){}
 
 /**
+ * {@link mysqli_fetch_all} fetches all result rows and returns the
+ * result set as an associative array, a numeric array, or both.
+ * 
+ * @param mysqli_result $result This optional parameter is a constant
+ *   indicating what type of array should be produced from the current
+ *   row data. The possible values for this parameter are the constants
+ *   MYSQLI_ASSOC, MYSQLI_NUM, or MYSQLI_BOTH.
+ * @param int $resulttype
+ * @return mixed
+ * @since PHP 5 >= 5.3.0
+ **/
+function mysqli_fetch_all($result, $resulttype){}
+
+/**
+ * Returns an array that corresponds to the fetched row or if there are
+ * no more rows for the resultset represented by the {@link result}
+ * parameter.
+ * 
+ * {@link mysqli_fetch_array} is an extended version of the {@link
+ * mysqli_fetch_row} function. In addition to storing the data in the
+ * numeric indices of the result array, the {@link mysqli_fetch_array}
+ * function can also store the data in associative indices, using the
+ * field names of the result set as keys.
+ * 
+ * If two or more columns of the result have the same field names, the
+ * last column will take precedence and overwrite the earlier data. In
+ * order to access multiple columns with the same name, the numerically
+ * indexed version of the row must be used.
+ * 
+ * @param mysqli_result $result This optional parameter is a constant
+ *   indicating what type of array should be produced from the current
+ *   row data. The possible values for this parameter are the constants
+ *   MYSQLI_ASSOC, MYSQLI_NUM, or MYSQLI_BOTH. By using the MYSQLI_ASSOC
+ *   constant this function will behave identically to the {@link
+ *   mysqli_fetch_assoc}, while MYSQLI_NUM will behave identically to the
+ *   {@link mysqli_fetch_row} function. The final option MYSQLI_BOTH will
+ *   create a single array with the attributes of both.
+ * @param int $resulttype
+ * @return mixed
+ * @since PHP 5
+ **/
+function mysqli_fetch_array($result, $resulttype){}
+
+/**
+ * Returns an associative array that corresponds to the fetched row or if
+ * there are no more rows.
+ * 
+ * @param mysqli_result $result
+ * @return array
+ * @since PHP 5
+ **/
+function mysqli_fetch_assoc($result){}
+
+/**
+ * Returns the definition of one column of a result set as an object.
+ * Call this function repeatedly to retrieve information about all
+ * columns in the result set.
+ * 
+ * @param mysqli_result $result
+ * @return object
+ * @since PHP 5
+ **/
+function mysqli_fetch_field($result){}
+
+/**
+ * This function serves an identical purpose to the {@link
+ * mysqli_fetch_field} function with the single difference that, instead
+ * of returning one object at a time for each field, the columns are
+ * returned as an array of objects.
+ * 
+ * @param mysqli_result $result
+ * @return array
+ * @since PHP 5
+ **/
+function mysqli_fetch_fields($result){}
+
+/**
+ * Returns an object which contains field definition information from the
+ * specified result set.
+ * 
+ * @param mysqli_result $result The field number. This value must be in
+ *   the range from 0 to number of fields - 1.
+ * @param int $fieldnr
+ * @return object
+ * @since PHP 5
+ **/
+function mysqli_fetch_field_direct($result, $fieldnr){}
+
+/**
  * The {@link mysqli_fetch_lengths} function returns an array containing
  * the lengths of every column of the current row within the result set.
  * 
@@ -35480,6 +37770,35 @@ function mysqli_error($link){}
  * @since PHP 5
  **/
 function mysqli_fetch_lengths($result){}
+
+/**
+ * The {@link mysqli_fetch_object} will return the current row result set
+ * as an object where the attributes of the object represent the names of
+ * the fields found within the result set.
+ * 
+ * @param mysqli_result $result The name of the class to instantiate,
+ *   set the properties of and return. If not specified, a stdClass
+ *   object is returned.
+ * @param string $class_name An optional array of parameters to pass to
+ *   the constructor for {@link class_name} objects.
+ * @param array $params
+ * @return object
+ * @since PHP 5
+ **/
+function mysqli_fetch_object($result, $class_name, $params){}
+
+/**
+ * Fetches one row of data from the result set and returns it as an
+ * enumerated array, where each column is stored in an array offset
+ * starting from 0 (zero). Each subsequent call to this function will
+ * return the next row within the result set, or if there are no more
+ * rows.
+ * 
+ * @param mysqli_result $result
+ * @return mixed
+ * @since PHP 5
+ **/
+function mysqli_fetch_row($result){}
 
 /**
  * Returns the number of columns for the most recent query on the
@@ -35495,6 +37814,19 @@ function mysqli_fetch_lengths($result){}
 function mysqli_field_count($link){}
 
 /**
+ * Sets the field cursor to the given offset. The next call to {@link
+ * mysqli_fetch_field} will retrieve the field definition of the column
+ * associated with that offset.
+ * 
+ * @param mysqli_result $result The field number. This value must be in
+ *   the range from 0 to number of fields - 1.
+ * @param int $fieldnr
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_field_seek($result, $fieldnr){}
+
+/**
  * Returns the position of the field cursor used for the last {@link
  * mysqli_fetch_field} call. This value can be used as an argument to
  * {@link mysqli_field_seek}.
@@ -35506,12 +37838,31 @@ function mysqli_field_count($link){}
 function mysqli_field_tell($result){}
 
 /**
+ * Frees the memory associated with the result.
+ * 
+ * @param mysqli_result $result
+ * @return void
+ * @since PHP 5
+ **/
+function mysqli_free_result($result){}
+
+/**
  * Returns client Zval cache statistics.
  * 
  * @return array
  * @since PHP 5 >= 5.3.0
  **/
 function mysqli_get_cache_stats(){}
+
+/**
+ * Returns a character set object providing several properties of the
+ * current active character set.
+ * 
+ * @param mysqli $link
+ * @return object
+ * @since PHP 5 >= 5.1.0
+ **/
+function mysqli_get_charset($link){}
 
 /**
  * Returns a string that represents the MySQL client library version.
@@ -35538,6 +37889,15 @@ function mysqli_get_client_stats(){}
  * @since PHP 5
  **/
 function mysqli_get_client_version($link){}
+
+/**
+ * Returns statistics about the client connection.
+ * 
+ * @param mysqli $link
+ * @return array
+ * @since PHP 5 >= 5.3.0
+ **/
+function mysqli_get_connection_stats($link){}
 
 /**
  * Returns a string describing the connection represented by the {@link
@@ -35581,6 +37941,13 @@ function mysqli_get_server_info($link){}
 function mysqli_get_server_version($link){}
 
 /**
+ * @param mysqli $link
+ * @return mysqli_warning
+ * @since PHP 5 >= 5.1.0
+ **/
+function mysqli_get_warnings($link){}
+
+/**
  * The {@link mysqli_info} function returns a string providing
  * information about the last query executed. The nature of this string
  * is provided below:
@@ -35599,6 +37966,15 @@ function mysqli_get_server_version($link){}
 function mysqli_info($link){}
 
 /**
+ * Allocates or initializes a MYSQL object suitable for {@link
+ * mysqli_options} and {@link mysqli_real_connect}.
+ * 
+ * @return mysqli
+ * @since PHP 5
+ **/
+function mysqli_init(){}
+
+/**
  * The {@link mysqli_insert_id} function returns the ID generated by a
  * query on a table with a column having the AUTO_INCREMENT attribute. If
  * the last query wasn't an INSERT or UPDATE statement or if the modified
@@ -35612,12 +37988,65 @@ function mysqli_info($link){}
 function mysqli_insert_id($link){}
 
 /**
+ * This function is used to ask the server to kill a MySQL thread
+ * specified by the {@link processid} parameter. This value must be
+ * retrieved by calling the {@link mysqli_thread_id} function.
+ * 
+ * To stop a running query you should use the SQL command KILL QUERY
+ * processid.
+ * 
+ * @param mysqli $link
+ * @param int $processid
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_kill($link, $processid){}
+
+/**
  * @param mysqli $link
  * @param string $query
  * @return bool
  * @since PHP 5
  **/
 function mysqli_master_query($link, $query){}
+
+/**
+ * Indicates if one or more result sets are available from a previous
+ * call to {@link mysqli_multi_query}.
+ * 
+ * @param mysqli $link
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_more_results($link){}
+
+/**
+ * Executes one or multiple queries which are concatenated by a
+ * semicolon.
+ * 
+ * To retrieve the resultset from the first query you can use {@link
+ * mysqli_use_result} or {@link mysqli_store_result}. All subsequent
+ * query results can be processed using {@link mysqli_more_results} and
+ * {@link mysqli_next_result}.
+ * 
+ * @param mysqli $link The query, as a string. Data inside the query
+ *   should be properly escaped.
+ * @param string $query
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_multi_query($link, $query){}
+
+/**
+ * Prepares next result set from a previous call to {@link
+ * mysqli_multi_query} which can be retrieved by {@link
+ * mysqli_store_result} or {@link mysqli_use_result}.
+ * 
+ * @param mysqli $link
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_next_result($link){}
 
 /**
  * Returns the number of fields from specified result set.
@@ -35643,6 +38072,169 @@ function mysqli_num_fields($result){}
 function mysqli_num_rows($result){}
 
 /**
+ * Used to set extra connect options and affect behavior for a
+ * connection.
+ * 
+ * This function may be called multiple times to set several options.
+ * 
+ * {@link mysqli_options} should be called after {@link mysqli_init} and
+ * before {@link mysqli_real_connect}.
+ * 
+ * @param mysqli $link The option that you want to set. It can be one
+ *   of the following values: Valid options Name Description
+ *   MYSQLI_OPT_CONNECT_TIMEOUT connection timeout in seconds (supported
+ *   on Windows with TCP/IP since PHP 5.3.1) MYSQLI_OPT_LOCAL_INFILE
+ *   enable/disable use of LOAD LOCAL INFILE MYSQLI_INIT_COMMAND command
+ *   to execute after when connecting to MySQL server
+ *   MYSQLI_READ_DEFAULT_FILE Read options from named option file instead
+ *   of my.cnf MYSQLI_READ_DEFAULT_GROUP Read options from the named
+ *   group from my.cnf or the file specified with
+ *   MYSQL_READ_DEFAULT_FILE.
+ * @param int $option The value for the option.
+ * @param mixed $value
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_options($link, $option, $value){}
+
+/**
+ * Checks whether the connection to the server is working. If it has gone
+ * down, and global option mysqli.reconnect is enabled an automatic
+ * reconnection is attempted.
+ * 
+ * This function can be used by clients that remain idle for a long
+ * while, to check whether the server has closed the connection and
+ * reconnect if necessary.
+ * 
+ * @param mysqli $link
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_ping($link){}
+
+/**
+ * Poll connections.
+ * 
+ * @param array $read
+ * @param array $error
+ * @param array $reject
+ * @param int $sec Number of seconds to wait, must be non-negative.
+ * @param int $usec Number of microseconds to wait, must be
+ *   non-negative.
+ * @return int
+ * @since PHP 5 >= 5.3.0
+ **/
+function mysqli_poll(&$read, &$error, &$reject, $sec, $usec){}
+
+/**
+ * Prepares the SQL query, and returns a statement handle to be used for
+ * further operations on the statement. The query must consist of a
+ * single SQL statement.
+ * 
+ * The parameter markers must be bound to application variables using
+ * {@link mysqli_stmt_bind_param} and/or {@link mysqli_stmt_bind_result}
+ * before executing the statement or fetching rows.
+ * 
+ * @param mysqli $link The query, as a string. This parameter can
+ *   include one or more parameter markers in the SQL statement by
+ *   embedding question mark (?) characters at the appropriate positions.
+ * @param string $query
+ * @return mysqli_stmt
+ * @since PHP 5
+ **/
+function mysqli_prepare($link, $query){}
+
+/**
+ * Performs a {@link query} against the database.
+ * 
+ * Functionally, using this function is identical to calling {@link
+ * mysqli_real_query} followed either by {@link mysqli_use_result} or
+ * {@link mysqli_store_result}.
+ * 
+ * @param mysqli $link The query string. Data inside the query should
+ *   be properly escaped.
+ * @param string $query Either the constant MYSQLI_USE_RESULT or
+ *   MYSQLI_STORE_RESULT depending on the desired behavior. By default,
+ *   MYSQLI_STORE_RESULT is used. If you use MYSQLI_USE_RESULT all
+ *   subsequent calls will return error Commands out of sync unless you
+ *   call {@link mysqli_free_result} With MYSQLI_ASYNC (available with
+ *   mysqlnd), it is possible to perform query asynchronously. {@link
+ *   mysqli_poll} is then used to get results from such queries.
+ * @param int $resultmode
+ * @return mixed
+ * @since PHP 5
+ **/
+function mysqli_query($link, $query, $resultmode){}
+
+/**
+ * Establish a connection to a MySQL database engine.
+ * 
+ * This function differs from {@link mysqli_connect}:
+ * 
+ * @param mysqli $link Can be either a host name or an IP address.
+ *   Passing the value or the string "localhost" to this parameter, the
+ *   local host is assumed. When possible, pipes will be used instead of
+ *   the TCP/IP protocol.
+ * @param string $host The MySQL user name.
+ * @param string $username If provided or , the MySQL server will
+ *   attempt to authenticate the user against those user records which
+ *   have no password only. This allows one username to be used with
+ *   different permissions (depending on if a password as provided or
+ *   not).
+ * @param string $passwd If provided will specify the default database
+ *   to be used when performing queries.
+ * @param string $dbname Specifies the port number to attempt to
+ *   connect to the MySQL server.
+ * @param int $port Specifies the socket or named pipe that should be
+ *   used.
+ * @param string $socket With the parameter {@link flags} you can set
+ *   different connection options:
+ * @param int $flags
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_real_connect($link, $host, $username, $passwd, $dbname, $port, $socket, $flags){}
+
+/**
+ * This function is used to create a legal SQL string that you can use in
+ * an SQL statement. The given string is encoded to an escaped SQL
+ * string, taking into account the current character set of the
+ * connection.
+ * 
+ * @param mysqli $link The string to be escaped. Characters encoded are
+ *   NUL (ASCII 0), \n, \r, \, ', ", and Control-Z.
+ * @param string $escapestr
+ * @return string
+ * @since PHP 5
+ **/
+function mysqli_real_escape_string($link, $escapestr){}
+
+/**
+ * Executes a single query against the database whose result can then be
+ * retrieved or stored using the {@link mysqli_store_result} or {@link
+ * mysqli_use_result} functions.
+ * 
+ * In order to determine if a given query should return a result set or
+ * not, see {@link mysqli_field_count}.
+ * 
+ * @param mysqli $link The query, as a string. Data inside the query
+ *   should be properly escaped.
+ * @param string $query
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_real_query($link, $query){}
+
+/**
+ * Get result from async query.
+ * 
+ * @param mysql $link
+ * @return mysqli_result
+ * @since PHP 5 >= 5.3.0
+ **/
+function mysqli_reap_async_query($link){}
+
+/**
  * {@link mysqli_report} is a powerful function to improve your queries
  * and code during development and testing phase. Depending on the flags
  * it reports errors from mysqli function calls or queries which don't
@@ -35657,6 +38249,15 @@ function mysqli_num_rows($result){}
  * @since PHP 5
  **/
 function mysqli_report($flags){}
+
+/**
+ * Rollbacks the current transaction for the database.
+ * 
+ * @param mysqli $link
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_rollback($link){}
 
 /**
  * @param mysqli $link
@@ -35685,12 +38286,34 @@ function mysqli_rpl_probe($link){}
 function mysqli_rpl_query_type($link, $query){}
 
 /**
+ * Selects the default database to be used when performing queries
+ * against the database connection.
+ * 
+ * @param mysqli $link The database name.
+ * @param string $dbname
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_select_db($link, $dbname){}
+
+/**
  * @param mysqli $link
  * @param string $query
  * @return bool
  * @since PHP 5
  **/
 function mysqli_send_query($link, $query){}
+
+/**
+ * Sets the default character set to be used when sending data from and
+ * to the database server.
+ * 
+ * @param mysqli $link The charset to be set as default.
+ * @param string $charset
+ * @return bool
+ * @since PHP 5 >= 5.0.5
+ **/
+function mysqli_set_charset($link, $charset){}
 
 /**
  * Deactivates a LOAD DATA INFILE LOCAL handler previously set with
@@ -35701,6 +38324,24 @@ function mysqli_send_query($link, $query){}
  * @since PHP 5
  **/
 function mysqli_set_local_infile_default($link){}
+
+/**
+ * Set callback function for LOAD DATA LOCAL INFILE command
+ * 
+ * The callbacks task is to read input from the file specified in the
+ * LOAD DATA LOCAL INFILE and to reformat it into the format understood
+ * by LOAD DATA INFILE.
+ * 
+ * The returned data needs to match the format specified in the LOAD DATA
+ * 
+ * @param mysqli $link A callback function or object method taking the
+ *   following parameters:
+ * @param callback $read_func A PHP stream associated with the SQL
+ *   commands INFILE
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_set_local_infile_handler($link, $read_func){}
 
 /**
  * @param mysqli $link
@@ -35723,6 +38364,41 @@ function mysqli_slave_query($link, $query){}
 function mysqli_sqlstate($link){}
 
 /**
+ * Used for establishing secure connections using SSL. It must be called
+ * before {@link mysqli_real_connect}. This function does nothing unless
+ * OpenSSL support is enabled.
+ * 
+ * Note that MySQL Native Driver does not support SSL, so calling this
+ * function when using MySQL Native Driver will result in an error. MySQL
+ * Native Driver is enabled by default on Microsoft Windows from PHP
+ * version 5.3 onwards.
+ * 
+ * @param mysqli $link The path name to the key file.
+ * @param string $key The path name to the certificate file.
+ * @param string $cert The path name to the certificate authority file.
+ * @param string $ca The pathname to a directory that contains trusted
+ *   SSL CA certificates in PEM format.
+ * @param string $capath A list of allowable ciphers to use for SSL
+ *   encryption.
+ * @param string $cipher
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_ssl_set($link, $key, $cert, $ca, $capath, $cipher){}
+
+/**
+ * {@link mysqli_stat} returns a string containing information similar to
+ * that provided by the 'mysqladmin status' command. This includes uptime
+ * in seconds and the number of running threads, questions, reloads, and
+ * open tables.
+ * 
+ * @param mysqli $link
+ * @return string
+ * @since PHP 5
+ **/
+function mysqli_stat($link){}
+
+/**
  * Returns the number of rows affected by INSERT, UPDATE, or DELETE
  * query.
  * 
@@ -35735,6 +38411,105 @@ function mysqli_sqlstate($link){}
  * @since PHP 5
  **/
 function mysqli_stmt_affected_rows($stmt){}
+
+/**
+ * Gets the current value of a statement attribute.
+ * 
+ * @param mysqli_stmt $stmt The attribute that you want to get.
+ * @param int $attr
+ * @return int
+ * @since PHP 5
+ **/
+function mysqli_stmt_attr_get($stmt, $attr){}
+
+/**
+ * Used to modify the behavior of a prepared statement. This function may
+ * be called multiple times to set several attributes.
+ * 
+ * @param mysqli_stmt $stmt The attribute that you want to set. It can
+ *   have one of the following values: Attribute values Character
+ *   Description MYSQLI_STMT_ATTR_UPDATE_MAX_LENGTH If set to 1, causes
+ *   {@link mysqli_stmt_store_result} to update the metadata
+ *   MYSQL_FIELD->max_length value. MYSQLI_STMT_ATTR_CURSOR_TYPE Type of
+ *   cursor to open for statement when {@link mysqli_stmt_execute} is
+ *   invoked. {@link mode} can be MYSQLI_CURSOR_TYPE_NO_CURSOR (the
+ *   default) or MYSQLI_CURSOR_TYPE_READ_ONLY.
+ *   MYSQLI_STMT_ATTR_PREFETCH_ROWS Number of rows to fetch from server
+ *   at a time when using a cursor. {@link mode} can be in the range from
+ *   1 to the maximum value of unsigned long. The default is 1. If you
+ *   use the MYSQLI_STMT_ATTR_CURSOR_TYPE option with
+ *   MYSQLI_CURSOR_TYPE_READ_ONLY, a cursor is opened for the statement
+ *   when you invoke {@link mysqli_stmt_execute}. If there is already an
+ *   open cursor from a previous {@link mysqli_stmt_execute} call, it
+ *   closes the cursor before opening a new one. {@link
+ *   mysqli_stmt_reset} also closes any open cursor before preparing the
+ *   statement for re-execution. {@link mysqli_stmt_free_result} closes
+ *   any open cursor. If you open a cursor for a prepared statement,
+ *   {@link mysqli_stmt_store_result} is unnecessary.
+ * @param int $attr The value to assign to the attribute.
+ * @param int $mode
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_stmt_attr_set($stmt, $attr, $mode){}
+
+/**
+ * Bind variables for the parameter markers in the SQL statement that was
+ * passed to {@link mysqli_prepare}.
+ * 
+ * @param mysqli_stmt $stmt A string that contains one or more
+ *   characters which specify the types for the corresponding bind
+ *   variables: Type specification chars Character Description i
+ *   corresponding variable has type integer d corresponding variable has
+ *   type double s corresponding variable has type string b corresponding
+ *   variable is a blob and will be sent in packets
+ * @param string $types The number of variables and length of string
+ *   {@link types} must match the parameters in the statement.
+ * @param mixed $var1
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_stmt_bind_param($stmt, $types, &$var1){}
+
+/**
+ * Binds columns in the result set to variables.
+ * 
+ * When {@link mysqli_stmt_fetch} is called to fetch data, the MySQL
+ * client/server protocol places the data for the bound columns into the
+ * specified variables {@link var1, ...}.
+ * 
+ * @param mysqli_stmt $stmt The variable to be bound.
+ * @param mixed $var1
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_stmt_bind_result($stmt, &$var1){}
+
+/**
+ * Closes a prepared statement. {@link mysqli_stmt_close} also
+ * deallocates the statement handle. If the current statement has pending
+ * or unread results, this function cancels them so that the next query
+ * can be executed.
+ * 
+ * @param mysqli_stmt $stmt
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_stmt_close($stmt){}
+
+/**
+ * Seeks to an arbitrary result pointer in the statement result set.
+ * 
+ * {@link mysqli_stmt_store_result} must be called prior to {@link
+ * mysqli_stmt_data_seek}.
+ * 
+ * @param mysqli_stmt $stmt Must be between zero and the total number
+ *   of rows minus one (0.. {@link mysqli_stmt_num_rows} - 1).
+ * @param int $offset
+ * @return void
+ * @since PHP 5
+ **/
+function mysqli_stmt_data_seek($stmt, $offset){}
 
 /**
  * Returns the error code for the most recently invoked statement
@@ -35762,11 +38537,64 @@ function mysqli_stmt_errno($stmt){}
 function mysqli_stmt_error($stmt){}
 
 /**
+ * Executes a query that has been previously prepared using the {@link
+ * mysqli_prepare} function. When executed any parameter markers which
+ * exist will automatically be replaced with the appropriate data.
+ * 
+ * If the statement is UPDATE, DELETE, or INSERT, the total number of
+ * affected rows can be determined by using the {@link
+ * mysqli_stmt_affected_rows} function. Likewise, if the query yields a
+ * result set the {@link mysqli_stmt_fetch} function is used.
+ * 
+ * @param mysqli_stmt $stmt
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_stmt_execute($stmt){}
+
+/**
+ * Fetch the result from a prepared statement into the variables bound by
+ * {@link mysqli_stmt_bind_result}.
+ * 
+ * @param mysqli_stmt $stmt
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_stmt_fetch($stmt){}
+
+/**
  * @param mysqli_stmt $stmt
  * @return int
  * @since PHP 5
  **/
 function mysqli_stmt_field_count($stmt){}
+
+/**
+ * Frees the result memory associated with the statement, which was
+ * allocated by {@link mysqli_stmt_store_result}.
+ * 
+ * @param mysqli_stmt $stmt
+ * @return void
+ * @since PHP 5
+ **/
+function mysqli_stmt_free_result($stmt){}
+
+/**
+ * @param mysqli_stmt $stmt
+ * @return object
+ * @since PHP 5 >= 5.1.0
+ **/
+function mysqli_stmt_get_warnings($stmt){}
+
+/**
+ * Allocates and initializes a statement object suitable for {@link
+ * mysqli_stmt_prepare}.
+ * 
+ * @param mysqli $link
+ * @return mysqli_stmt
+ * @since PHP 5
+ **/
+function mysqli_stmt_init($link){}
 
 /**
  * @param mysqli_stmt $stmt
@@ -35801,6 +38629,73 @@ function mysqli_stmt_num_rows($stmt){}
 function mysqli_stmt_param_count($stmt){}
 
 /**
+ * Prepares the SQL query pointed to by the null-terminated string query.
+ * 
+ * The parameter markers must be bound to application variables using
+ * {@link mysqli_stmt_bind_param} and/or {@link mysqli_stmt_bind_result}
+ * before executing the statement or fetching rows.
+ * 
+ * @param mysqli_stmt $stmt The query, as a string. It must consist of
+ *   a single SQL statement. You can include one or more parameter
+ *   markers in the SQL statement by embedding question mark (?)
+ *   characters at the appropriate positions.
+ * @param string $query
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_stmt_prepare($stmt, $query){}
+
+/**
+ * Resets a prepared statement on client and server to state after
+ * prepare.
+ * 
+ * It resets the statement on the server, data sent using {@link
+ * mysqli_stmt_send_long_data}, unbuffered result sets and current
+ * errors. It does not clear bindings or stored result sets. Stored
+ * result sets will be cleared when executing the prepared statement (or
+ * closing it).
+ * 
+ * To prepare a statement with another query use function {@link
+ * mysqli_stmt_prepare}.
+ * 
+ * @param mysqli_stmt $stmt
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_stmt_reset($stmt){}
+
+/**
+ * If a statement passed to {@link mysqli_prepare} is one that produces a
+ * result set, {@link mysqli_stmt_result_metadata} returns the result
+ * object that can be used to process the meta information such as total
+ * number of fields and individual field information.
+ * 
+ * The result set structure should be freed when you are done with it,
+ * which you can do by passing it to {@link mysqli_free_result}
+ * 
+ * @param mysqli_stmt $stmt
+ * @return mysqli_result
+ * @since PHP 5
+ **/
+function mysqli_stmt_result_metadata($stmt){}
+
+/**
+ * Allows to send parameter data to the server in pieces (or chunks),
+ * e.g. if the size of a blob exceeds the size of max_allowed_packet.
+ * This function can be called multiple times to send the parts of a
+ * character or binary data value for a column, which must be one of the
+ * TEXT or BLOB datatypes.
+ * 
+ * @param mysqli_stmt $stmt Indicates which parameter to associate the
+ *   data with. Parameters are numbered beginning with 0.
+ * @param int $param_nr A string containing data to be sent.
+ * @param string $data
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_stmt_send_long_data($stmt, $param_nr, $data){}
+
+/**
  * Returns a string containing the SQLSTATE error code for the most
  * recently invoked prepared statement function that can succeed or fail.
  * The error code consists of five characters. '00000' means no error.
@@ -35812,6 +38707,30 @@ function mysqli_stmt_param_count($stmt){}
  * @since PHP 5
  **/
 function mysqli_stmt_sqlstate($stmt){}
+
+/**
+ * You must call {@link mysqli_stmt_store_result} for every query that
+ * successfully produces a result set (SELECT, SHOW, DESCRIBE, EXPLAIN),
+ * and only if you want to buffer the complete result set by the client,
+ * so that the subsequent {@link mysqli_stmt_fetch} call returns buffered
+ * data.
+ * 
+ * @param mysqli_stmt $stmt
+ * @return bool
+ * @since PHP 5
+ **/
+function mysqli_stmt_store_result($stmt){}
+
+/**
+ * Transfers the result set from the last query on the database
+ * connection represented by the {@link link} parameter to be used with
+ * the {@link mysqli_data_seek} function.
+ * 
+ * @param mysqli $link
+ * @return mysqli_result
+ * @since PHP 5
+ **/
+function mysqli_store_result($link){}
 
 /**
  * The {@link mysqli_thread_id} function returns the thread ID for the
@@ -35833,6 +38752,22 @@ function mysqli_thread_id($link){}
  * @since PHP 5
  **/
 function mysqli_thread_safe(){}
+
+/**
+ * Used to initiate the retrieval of a result set from the last query
+ * executed using the {@link mysqli_real_query} function on the database
+ * connection.
+ * 
+ * Either this or the {@link mysqli_store_result} function must be called
+ * before the results of a query can be retrieved, and one or the other
+ * must be called to prevent the next query on that database connection
+ * from failing.
+ * 
+ * @param mysqli $link
+ * @return mysqli_result
+ * @since PHP 5
+ **/
+function mysqli_use_result($link){}
 
 /**
  * Returns the number of warnings from the last query in the connection.
@@ -39437,6 +42372,27 @@ function nl2br($string, $is_xhtml){}
 function nl_langinfo($item){}
 
 /**
+ * Checks if the provided string is already in the specified
+ * normalization form.
+ * 
+ * @param string $input The input string to normalize
+ * @param string $form One of the normalization forms.
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function normalizer_is_normalized($input, $form){}
+
+/**
+ * Normalizes the input provided and returns the normalized string
+ * 
+ * @param string $input The input string to normalize
+ * @param string $form One of the normalization forms.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function normalizer_normalize($input, $form){}
+
+/**
  * @param string $server
  * @param string $mailbox
  * @param int $msg_number
@@ -39615,6 +42571,216 @@ function nthmac($clent, $data){}
  * @since PHP 4, PHP 5
  **/
 function number_format($number, $decimals){}
+
+/**
+ * Creates a number formatter.
+ * 
+ * @param string $locale Locale in which the number would be formatted
+ *   (locale name, e.g. en_CA).
+ * @param int $style Style of the formatting, one of the format style
+ *   constants. If NumberFormatter::PATTERN_DECIMAL or
+ *   NumberFormatter::PATTERN_RULEBASED is passed then the number format
+ *   is opened using the given pattern, which must conform to the syntax
+ *   described in ICU DecimalFormat documentation or ICU
+ *   RuleBasedNumberFormat documentation, respectively.
+ * @param string $pattern Pattern string in case chosen style requires
+ *   pattern.
+ * @return NumberFormatter
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_create($locale, $style, $pattern){}
+
+/**
+ * Format a numeric value according to the formatter rules.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @param number $value The value to format. Can be integer or double,
+ *   other values will be converted to a numeric value.
+ * @param int $type The formatting type to use.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_format($fmt, $value, $type){}
+
+/**
+ * Format the currency value according to the formatter rules.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @param float $value The numeric currency value.
+ * @param string $currency The 3-letter ISO 4217 currency code
+ *   indicating the currency to use.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_format_currency($fmt, $value, $currency){}
+
+/**
+ * Get a numeric attribute associated with the formatter. An example of a
+ * numeric attribute is the number of integer digits the formatter will
+ * produce.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @param int $attr Attribute specifier - one of the numeric attribute
+ *   constants.
+ * @return int
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_get_attribute($fmt, $attr){}
+
+/**
+ * Get error code from the last function performed by the formatter.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @return int
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_get_error_code($fmt){}
+
+/**
+ * Get error message from the last function performed by the formatter.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_get_error_message($fmt){}
+
+/**
+ * Get formatter locale name.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @param int $type You can choose between valid and actual locale (
+ *   Locale::VALID_LOCALE, Locale::ACTUAL_LOCALE, respectively). The
+ *   default is the actual locale.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_get_locale($fmt, $type){}
+
+/**
+ * Extract pattern used by the formatter.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_get_pattern($fmt){}
+
+/**
+ * Get a symbol associated with the formatter. The formatter uses symbols
+ * to represent the special locale-dependent characters in a number, for
+ * example the percent sign. This API is not supported for rule-based
+ * formatters.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @param int $attr Symbol specifier, one of the format symbol
+ *   constants.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_get_symbol($fmt, $attr){}
+
+/**
+ * Get a text attribute associated with the formatter. An example of a
+ * text attribute is the suffix for positive numbers. If the formatter
+ * does not understand the attribute, U_UNSUPPORTED_ERROR error is
+ * produced. Rule-based formatters only understand
+ * NumberFormatter::DEFAULT_RULESET and NumberFormatter::PUBLIC_RULESETS.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @param int $attr Attribute specifier - one of the text attribute
+ *   constants.
+ * @return string
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_get_text_attribute($fmt, $attr){}
+
+/**
+ * Parse a string into a number using the current formatter rules.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @param string $value The formatting type to use. By default,
+ *   NumberFormatter::TYPE_DOUBLE is used.
+ * @param int $type Offset in the string at which to begin parsing. On
+ *   return, this value will hold the offset at which parsing ended.
+ * @param int $position
+ * @return mixed
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_parse($fmt, $value, $type, &$position){}
+
+/**
+ * Parse a string into a double and a currency using the current
+ * formatter.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @param string $value Parameter to receive the currency name
+ *   (3-letter ISO 4217 currency code).
+ * @param string $currency Offset in the string at which to begin
+ *   parsing. On return, this value will hold the offset at which parsing
+ *   ended.
+ * @param int $position
+ * @return float
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_parse_currency($fmt, $value, &$currency, &$position){}
+
+/**
+ * Set a numeric attribute associated with the formatter. An example of a
+ * numeric attribute is the number of integer digits the formatter will
+ * produce.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @param int $attr Attribute specifier - one of the numeric attribute
+ *   constants.
+ * @param int $value The attribute value.
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_set_attribute($fmt, $attr, $value){}
+
+/**
+ * Set the pattern used by the formatter. Can not be used on a rule-based
+ * formatter.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @param string $pattern Pattern in syntax described in ICU
+ *   DecimalFormat documentation.
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_set_pattern($fmt, $pattern){}
+
+/**
+ * Set a symbol associated with the formatter. The formatter uses symbols
+ * to represent the special locale-dependent characters in a number, for
+ * example the percent sign. This API is not supported for rule-based
+ * formatters.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @param int $attr Symbol specifier, one of the format symbol
+ *   constants.
+ * @param string $value Text for the symbol.
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_set_symbol($fmt, $attr, $value){}
+
+/**
+ * Set a text attribute associated with the formatter. An example of a
+ * text attribute is the suffix for positive numbers. If the formatter
+ * does not understand the attribute, U_UNSUPPORTED_ERROR error is
+ * produced. Rule-based formatters only understand
+ * NumberFormatter::DEFAULT_RULESET and NumberFormatter::PUBLIC_RULESETS.
+ * 
+ * @param NumberFormatter $fmt NumberFormatter object.
+ * @param int $attr Attribute specifier - one of the text attribute
+ *   constants.
+ * @param string $value Text for the attribute value.
+ * @return bool
+ * @since PHP 5 >= 5.3.0, PECL intl >= 1.0.0
+ **/
+function numfmt_set_text_attribute($fmt, $attr, $value){}
 
 /**
  * Generates a Signature Base String according to pecl/oauth.
@@ -45057,6 +48223,16 @@ function PDF_utf16_to_utf8($pdfdoc, $utf16string){}
  * @since PECL pdflib >= Unknown future
  **/
 function PDF_utf32_to_utf16($pdfdoc, $utf32string, $ordering){}
+
+/**
+ * This function returns all currently available PDO drivers which can be
+ * used in {@link DSN} parameter of {@link PDO::__construct}. This is a
+ * static method.
+ * 
+ * @return array
+ * @since PHP 5.1.0 - 5.1.3, PECL pdo >= 0.9.0
+ **/
+function pdo_drivers(){}
 
 /**
  * This function behaves exactly as {@link fsockopen} with the difference
@@ -50578,6 +53754,109 @@ function rand(){}
 function range($low, $high, $step){}
 
 /**
+ * This method defines whether broken archives can be read or all the
+ * operations that attempt to extract the archive entries will fail.
+ * Broken archives are archives for which no error is detected when the
+ * file is opened but an error occurs when reading the entries.
+ * 
+ * @param RarArchive $rarfile A RarArchive object, opened with {@link
+ *   rar_open}.
+ * @param bool $allow_broken Whether to allow reading broken files ()
+ *   or not ().
+ * @return bool
+ * @since PECL rar >= 3.0.0
+ **/
+function rar_allow_broken_set($rarfile, $allow_broken){}
+
+/**
+ * This function determines whether an archive is incomplete, i.e., if a
+ * volume is missing or a volume is truncated.
+ * 
+ * @param RarArchive $rarfile A RarArchive object, opened with {@link
+ *   rar_open}.
+ * @return bool
+ * @since PECL rar >= 3.0.0
+ **/
+function rar_broken_is($rarfile){}
+
+/**
+ * Close RAR archive and free all allocated resources.
+ * 
+ * @param RarArchive $rarfile A RarArchive object, opened with {@link
+ *   rar_open}.
+ * @return bool
+ * @since PECL rar >= 0.1
+ **/
+function rar_close($rarfile){}
+
+/**
+ * Get the (global) comment stored in the RAR archive. It may be up to 64
+ * KiB long.
+ * 
+ * @param RarArchive $rarfile A RarArchive object, opened with {@link
+ *   rar_open}.
+ * @return string
+ * @since PECL rar >= 2.0.0
+ **/
+function rar_comment_get($rarfile){}
+
+/**
+ * Get entry object (file or directory) from the RAR archive.
+ * 
+ * @param RarArchive $rarfile A RarArchive object, opened with {@link
+ *   rar_open}.
+ * @param string $entryname Path to the entry within the RAR archive.
+ * @return RarEntry
+ * @since PECL rar >= 0.1
+ **/
+function rar_entry_get($rarfile, $entryname){}
+
+/**
+ * Get entries list (files and directories) from the RAR archive.
+ * 
+ * @param RarArchive $rarfile A RarArchive object, opened with {@link
+ *   rar_open}.
+ * @return array
+ * @since PECL rar >= 0.1
+ **/
+function rar_list($rarfile){}
+
+/**
+ * Open specified RAR archive and return RarArchive instance representing
+ * it.
+ * 
+ * @param string $filename Path to the Rar archive.
+ * @param string $password A plain password, if needed to decrypt the
+ *   headers. It will also be used by default if encrypted files are
+ *   found. Note that the files may have different passwords in respect
+ *   to the headers and among them.
+ * @param callback $volume_callback A function that receives one
+ *   parameter – the path of the volume that was not found – and
+ *   returns a string with the correct path for such volume or NULL if
+ *   such volume does not exist or is not known. The programmer should
+ *   ensure the passed function doesn't cause loops as this function is
+ *   called repetedly if the path returned in a previous call did not
+ *   correspond to the needed volume. Specifying this parameter omits the
+ *   notice that would otherwise be emitted whenever a volume is not
+ *   found; an implementation that only returns can therefore be used to
+ *   merely omit such notices.
+ * @return RarArchive
+ * @since PECL rar >= 0.1
+ **/
+function rar_open($filename, $password, $volume_callback){}
+
+/**
+ * Check whether the RAR archive is solid. Individual file extraction is
+ * slower on solid archives.
+ * 
+ * @param RarArchive $rarfile A RarArchive object, opened with {@link
+ *   rar_open}.
+ * @return bool
+ * @since PECL rar >= 2.0.0
+ **/
+function rar_solid_is($rarfile){}
+
+/**
  * @return string
  * @since PECL rar >= 3.0.0
  **/
@@ -50978,6 +54257,65 @@ function rename_function($original_name, $new_name){}
  * @since PHP 4, PHP 5
  **/
 function reset(&$array){}
+
+/**
+ * Get the number of elements in the bundle.
+ * 
+ * @param ResourceBundle $r ResourceBundle object.
+ * @return int
+ **/
+function resourcebundle_count($r){}
+
+/**
+ * Creates a resource bundle.
+ * 
+ * @param string $locale Locale for which the resources should be
+ *   loaded (locale name, e.g. en_CA).
+ * @param string $bundlename The directory where the data is stored or
+ *   the name of the .dat file.
+ * @param bool $fallback Whether locale should match exactly or
+ *   fallback to parent locale is allowed.
+ * @return ResourceBundle
+ **/
+function resourcebundle_create($locale, $bundlename, $fallback){}
+
+/**
+ * Get the data from the bundle by index or string key.
+ * 
+ * @param ResourceBundle $r ResourceBundle object.
+ * @param string|int $index Data index, must be string or integer.
+ * @return mixed
+ **/
+function resourcebundle_get($r, $index){}
+
+/**
+ * Get error code from the last function performed by the bundle object.
+ * 
+ * @param ResourceBundle $r ResourceBundle object.
+ * @return int
+ **/
+function resourcebundle_get_error_code($r){}
+
+/**
+ * Get error message from the last function performed by the bundle
+ * object.
+ * 
+ * @param ResourceBundle $r ResourceBundle object.
+ * @return string
+ **/
+function resourcebundle_get_error_message($r){}
+
+/**
+ * Get the list of locales supported by the bundle. The list is taken
+ * from the bundle table named res_index which should contain a table
+ * named InstalledLocales, which contains locales as keys. This bundle
+ * should be either in data directory as .res file or part of the .dat
+ * file for this function to work.
+ * 
+ * @param ResourceBundle $r ResourceBundle object.
+ * @return array
+ **/
+function resourcebundle_locales($r){}
 
 /**
  * Used after changing the error handler function using {@link
@@ -55128,12 +58466,155 @@ function stats_stat_powersum($arr, $power){}
 function stats_variance($a, $sample){}
 
 /**
+ * Rolls back a transaction in progress.
+ * 
+ * @param resource $link The transaction to abort.
+ * @param string $transaction_id
+ * @param array $headers
+ * @return bool
+ **/
+function stomp_abort($link, $transaction_id, $headers){}
+
+/**
+ * Acknowledges consumption of a message from a subscription using client
+ * acknowledgment.
+ * 
+ * @param resource $link The message/messageId to be acknowledged.
+ * @param mixed $msg
+ * @param array $headers
+ * @return bool
+ **/
+function stomp_ack($link, $msg, $headers){}
+
+/**
+ * Starts a transaction.
+ * 
+ * @param resource $link The transaction id.
+ * @param string $transaction_id
+ * @param array $headers
+ * @return bool
+ **/
+function stomp_begin($link, $transaction_id, $headers){}
+
+/**
+ * Closes a previously opened connection.
+ * 
+ * @param resource $link
+ * @return bool
+ **/
+function stomp_close($link){}
+
+/**
+ * Commits a transaction in progress.
+ * 
+ * @param resource $link The transaction id.
+ * @param string $transaction_id
+ * @param array $headers
+ * @return bool
+ **/
+function stomp_commit($link, $transaction_id, $headers){}
+
+/**
+ * Opens a connection to a stomp compliant Message Broker.
+ * 
+ * @param string $broker The broker URI
+ * @param string $username The username.
+ * @param string $password The password.
+ * @return resource
+ **/
+function stomp_connect($broker, $username, $password){}
+
+/**
  * Returns a string description of the last connect error.
  * 
  * @return string
  * @since PECL stomp >= 0.3.0
  **/
 function stomp_connect_error(){}
+
+/**
+ * Gets the last stomp error.
+ * 
+ * @param resource $link
+ * @return string
+ **/
+function stomp_error($link){}
+
+/**
+ * Gets read timeout
+ * 
+ * @param resource $link
+ * @return array
+ **/
+function stomp_get_read_timeout($link){}
+
+/**
+ * Gets the current stomp session ID.
+ * 
+ * @param resource $link
+ * @return string
+ **/
+function stomp_get_session_id($link){}
+
+/**
+ * Indicates whether or not there is a frame ready to read.
+ * 
+ * @param resource $link
+ * @return bool
+ **/
+function stomp_has_frame($link){}
+
+/**
+ * Reads the next frame. It is possible to instantiate an object of a
+ * specific class, and pass parameters to that class's constructor.
+ * 
+ * @param resource $link The name of the class to instantiate. If not
+ *   specified, a stompFrame object is returned.
+ * @return array
+ **/
+function stomp_read_frame($link){}
+
+/**
+ * Sends a message to the Message Broker.
+ * 
+ * @param resource $link Where to send the message
+ * @param string $destination Message to send.
+ * @param mixed $msg
+ * @param array $headers
+ * @return bool
+ **/
+function stomp_send($link, $destination, $msg, $headers){}
+
+/**
+ * Sets read timeout.
+ * 
+ * @param resource $link The seconds part of the timeout to be set.
+ * @param integer $seconds The microseconds part of the timeout to be
+ *   set.
+ * @param integer $microseconds
+ * @return void
+ **/
+function stomp_set_read_timeout($link, $seconds, $microseconds){}
+
+/**
+ * Registers to listen to a given destination.
+ * 
+ * @param resource $link Destination to subscribe to.
+ * @param string $destination
+ * @param array $headers
+ * @return bool
+ **/
+function stomp_subscribe($link, $destination, $headers){}
+
+/**
+ * Removes an existing subscription.
+ * 
+ * @param resource $link Subscription to remove.
+ * @param string $destination
+ * @param array $headers
+ * @return bool
+ **/
+function stomp_unsubscribe($link, $destination, $headers){}
 
 /**
  * Returns a string containing the version of the current stomp
@@ -58471,6 +61952,15 @@ function textdomain($text_domain){}
 function tidy_access_count($object){}
 
 /**
+ * This function cleans and repairs the given tidy {@link object}.
+ * 
+ * @param tidy $object
+ * @return bool
+ * @since PHP 5, PECL tidy >= 0.5.2
+ **/
+function tidy_clean_repair($object){}
+
+/**
  * Returns the number of errors encountered in the configuration of the
  * specified tidy {@link object}.
  * 
@@ -58479,6 +61969,16 @@ function tidy_access_count($object){}
  * @since PHP 5, PECL tidy >= 0.5.2
  **/
 function tidy_config_count($object){}
+
+/**
+ * Runs diagnostic tests on the given tidy {@link object}, adding some
+ * more information about the document in the error buffer.
+ * 
+ * @param tidy $object
+ * @return bool
+ * @since PHP 5, PECL tidy >= 0.5.2
+ **/
+function tidy_diagnose($object){}
 
 /**
  * Returns the number of Tidy errors encountered for the specified
@@ -58491,6 +61991,38 @@ function tidy_config_count($object){}
 function tidy_error_count($object){}
 
 /**
+ * Returns the value of the specified {@link option} for the specified
+ * tidy {@link object}.
+ * 
+ * @param tidy $object
+ * @param string $option You will find a list with each configuration
+ *   option and their types at: .
+ * @return mixed
+ * @since PHP 5, PECL tidy >= 0.5.2
+ **/
+function tidy_getopt($object, $option){}
+
+/**
+ * Returns a tidyNode object starting from the <body> tag of the tidy
+ * parse tree.
+ * 
+ * @param tidy $object
+ * @return tidyNode
+ * @since PHP 5, PECL tidy 0.5.2-1.0
+ **/
+function tidy_get_body($object){}
+
+/**
+ * Gets the list of the configuration options in use by the given tidy
+ * {@link object}.
+ * 
+ * @param tidy $object
+ * @return array
+ * @since PHP 5, PECL tidy >= 0.7.0
+ **/
+function tidy_get_config($object){}
+
+/**
  * Returns warnings and errors which occurred parsing the specified
  * document.
  * 
@@ -58499,6 +62031,47 @@ function tidy_error_count($object){}
  * @since PHP 5, PECL tidy >= 0.5.2
  **/
 function tidy_get_error_buffer($object){}
+
+/**
+ * Returns a tidyNode object starting from the <head> tag of the tidy
+ * parse tree.
+ * 
+ * @param tidy $object
+ * @return tidyNode
+ * @since PHP 5, PECL tidy 0.5.2-1.0.0
+ **/
+function tidy_get_head($object){}
+
+/**
+ * Returns a tidyNode object starting from the <html> tag of the tidy
+ * parse tree.
+ * 
+ * @param tidy $object
+ * @return tidyNode
+ * @since PHP 5, PECL tidy 0.5.2-1.0.0
+ **/
+function tidy_get_html($object){}
+
+/**
+ * Returns the detected HTML version for the specified tidy {@link
+ * object}.
+ * 
+ * @param tidy $object
+ * @return int
+ * @since PHP 5, PECL tidy >= 0.5.2
+ **/
+function tidy_get_html_ver($object){}
+
+/**
+ * {@link tidy_get_opt_doc} returns the documentation for the given
+ * option name.
+ * 
+ * @param tidy $object
+ * @param string $optname The option name
+ * @return string
+ * @since PHP 5 >= 5.1.0
+ **/
+function tidy_get_opt_doc($object, $optname){}
 
 /**
  * Gets a string with the repaired html.
@@ -58510,6 +62083,51 @@ function tidy_get_error_buffer($object){}
 function tidy_get_output($object){}
 
 /**
+ * Gets the release date of the Tidy library.
+ * 
+ * @return string
+ * @since PHP 5, PECL tidy >= 0.5.2
+ **/
+function tidy_get_release(){}
+
+/**
+ * Returns a tidyNode object representing the root of the tidy parse
+ * tree.
+ * 
+ * @param tidy $object
+ * @return tidyNode
+ * @since PHP 5, PECL tidy 0.5.2-1.0.0
+ **/
+function tidy_get_root($object){}
+
+/**
+ * Returns the status for the specified tidy {@link object}.
+ * 
+ * @param tidy $object
+ * @return int
+ * @since PHP 5, PECL tidy >= 0.5.2
+ **/
+function tidy_get_status($object){}
+
+/**
+ * Tells if the document is a XHTML document.
+ * 
+ * @param tidy $object
+ * @return bool
+ * @since PHP 5, PECL tidy >= 0.5.2
+ **/
+function tidy_is_xhtml($object){}
+
+/**
+ * Tells if the document is a generic (non HTML/XHTML) XML document.
+ * 
+ * @param tidy $object
+ * @return bool
+ * @since PHP 5, PECL tidy >= 0.5.2
+ **/
+function tidy_is_xml($object){}
+
+/**
  * Loads a Tidy configuration file, with the specified {@link encoding}.
  * 
  * @param string $filename
@@ -58518,6 +62136,85 @@ function tidy_get_output($object){}
  * @since PECL tidy >= 0.5.2
  **/
 function tidy_load_config($filename, $encoding){}
+
+/**
+ * Parses the given file.
+ * 
+ * @param string $filename If the {@link filename} parameter is given,
+ *   this function will also read that file and initialize the object
+ *   with the file, acting like {@link tidy_parse_file}.
+ * @param mixed $config The config {@link config} can be passed either
+ *   as an array or as a string. If a string is passed, it is interpreted
+ *   as the name of the configuration file, otherwise, it is interpreted
+ *   as the options themselves. For an explanation about each option, see
+ *   .
+ * @param string $encoding The {@link encoding} parameter sets the
+ *   encoding for input/output documents. The possible values for
+ *   encoding are: ascii, latin0, latin1, raw, utf8, iso2022, mac,
+ *   win1252, ibm858, utf16, utf16le, utf16be, big5, and shiftjis.
+ * @param bool $use_include_path Search for the file in the
+ *   include_path.
+ * @return tidy
+ * @since PHP 5, PECL tidy >= 0.5.2
+ **/
+function tidy_parse_file($filename, $config, $encoding, $use_include_path){}
+
+/**
+ * Parses a document stored in a string.
+ * 
+ * @param string $input The data to be parsed.
+ * @param mixed $config The config {@link config} can be passed either
+ *   as an array or as a string. If a string is passed, it is interpreted
+ *   as the name of the configuration file, otherwise, it is interpreted
+ *   as the options themselves. For an explanation about each option,
+ *   visit .
+ * @param string $encoding The {@link encoding} parameter sets the
+ *   encoding for input/output documents. The possible values for
+ *   encoding are: ascii, latin0, latin1, raw, utf8, iso2022, mac,
+ *   win1252, ibm858, utf16, utf16le, utf16be, big5, and shiftjis.
+ * @return tidy
+ * @since PHP 5, PECL tidy >= 0.5.2
+ **/
+function tidy_parse_string($input, $config, $encoding){}
+
+/**
+ * Repairs the given file and returns it as a string.
+ * 
+ * @param string $filename The file to be repaired.
+ * @param mixed $config The config {@link config} can be passed either
+ *   as an array or as a string. If a string is passed, it is interpreted
+ *   as the name of the configuration file, otherwise, it is interpreted
+ *   as the options themselves. Check
+ *   http://tidy.sourceforge.net/docs/quickref.html for an explanation
+ *   about each option.
+ * @param string $encoding The {@link encoding} parameter sets the
+ *   encoding for input/output documents. The possible values for
+ *   encoding are: ascii, latin0, latin1, raw, utf8, iso2022, mac,
+ *   win1252, ibm858, utf16, utf16le, utf16be, big5, and shiftjis.
+ * @param bool $use_include_path Search for the file in the
+ *   include_path.
+ * @return string
+ * @since PHP 5, PECL tidy >= 0.7.0
+ **/
+function tidy_repair_file($filename, $config, $encoding, $use_include_path){}
+
+/**
+ * Repairs the given string.
+ * 
+ * @param string $data The data to be repaired.
+ * @param mixed $config The config {@link config} can be passed either
+ *   as an array or as a string. If a string is passed, it is interpreted
+ *   as the name of the configuration file, otherwise, it is interpreted
+ *   as the options themselves. Check for an explanation about each
+ *   option.
+ * @param string $encoding The {@link encoding} parameter sets the
+ *   encoding for input/output documents. The possible values for
+ *   encoding are: ascii, latin0, latin1, raw, utf8, iso2022, mac,
+ *   win1252, ibm858, utf16, utf16le, utf16be, big5, and shiftjis.
+ * @return string
+ * @since PHP 5, PECL tidy >= 0.7.0
+ **/
+function tidy_repair_string($data, $config, $encoding){}
 
 /**
  * This function restores the Tidy configuration to the default values.
@@ -58581,6 +62278,30 @@ function tidy_warning_count($object){}
 function time(){}
 
 /**
+ * @return array
+ * @since PHP 5 >= 5.1.0
+ **/
+function timezone_abbreviations_list(){}
+
+/**
+ * @param int $what One of DateTimeZone class constants.
+ * @param string $country A two-letter ISO 3166-1 compatible country
+ *   code.
+ * @return array
+ * @since PHP 5 >= 5.1.0
+ **/
+function timezone_identifiers_list($what, $country){}
+
+/**
+ * Returns location information for a timezone, including country code,
+ * latitude/longitude and comments.
+ * 
+ * @return array
+ * @since PHP 5 >= 5.3.0
+ **/
+function timezone_location_get(){}
+
+/**
  * @param string $abbr Time zone abbreviation.
  * @param int $gmtOffset Offset from GMT in seconds. Defaults to -1
  *   which means that first found time zone corresponding to {@link abbr}
@@ -58595,6 +62316,27 @@ function time(){}
 function timezone_name_from_abbr($abbr, $gmtOffset, $isdst){}
 
 /**
+ * Returns the name of the timezone.
+ * 
+ * @return string
+ * @since PHP 5 >= 5.1.0
+ **/
+function timezone_name_get(){}
+
+/**
+ * This function returns the offset to GMT for the date/time specified in
+ * the {@link datetime} parameter. The GMT offset is calculated with the
+ * timezone information contained in the DateTimeZone object being used.
+ * 
+ * @param DateTimeZone $object DateTime that contains the date/time to
+ *   compute the offset from.
+ * @param DateTime $datetime
+ * @return int
+ * @since PHP 5 >= 5.1.0
+ **/
+function timezone_offset_get($object, $datetime){}
+
+/**
  * Creates new DateTimeZone object.
  * 
  * @param string $timezone One of timezones.
@@ -58602,6 +62344,15 @@ function timezone_name_from_abbr($abbr, $gmtOffset, $isdst){}
  * @since PHP 5 >= 5.1.0
  **/
 function timezone_open($timezone){}
+
+/**
+ * @param DateTimeZone $object Begin timestamp.
+ * @param int $timestamp_begin End timestamp.
+ * @param int $timestamp_end
+ * @return array
+ * @since PHP 5 >= 5.2.0
+ **/
+function timezone_transitions_get($object, $timestamp_begin, $timestamp_end){}
 
 /**
  * Returns the current version of the timezonedb.
@@ -74940,12 +78691,316 @@ class maxdb {
      **/
     var $warning_count;
     /**
+     * {@link maxdb_autocommit} is used to turn on or off auto-commit mode on
+     * queries for the database connection represented by the {@link link}
+     * resource.
+     * 
+     * @param bool $mode
+     * @return bool
+     **/
+    function auto_commit($mode){}
+
+    /**
+     * {@link maxdb_change_user} is used to change the user of the specified
+     * database connection as given by the {@link link} parameter and to set
+     * the current database to that specified by the {@link database}
+     * parameter.
+     * 
+     * In order to successfully change users a valid {@link username} and
+     * {@link password} parameters must be provided and that user must have
+     * sufficient permissions to access the desired database. If for any
+     * reason authorization fails, the current user authentication will
+     * remain.
+     * 
+     * @param string $user
+     * @param string $password
+     * @param string $database
+     * @return bool
+     **/
+    function change_user($user, $password, $database){}
+
+    /**
+     * Returns the current character set for the database connection
+     * specified by the {@link link} parameter.
+     * 
+     * @return string
+     **/
+    function character_set_name(){}
+
+    /**
+     * The {@link maxdb_close} function closes a previously opened database
+     * connection specified by the {@link link} parameter.
+     * 
+     * @return bool
+     **/
+    function close(){}
+
+    /**
+     * Commits the current transaction for the database connection specified
+     * by the {@link link} parameter.
+     * 
+     * @return bool
+     **/
+    function commit(){}
+
+    /**
+     * @return void
+     **/
+    function disable_reads_from_master(){}
+
+    /**
+     * Returns the number of columns for the most recent query on the
+     * connection represented by the {@link link} parameter. This function
+     * can be useful when using the {@link maxdb_store_result} function to
+     * determine if the query should have produced a non-empty result set or
+     * not without knowing the nature of the query.
+     * 
+     * @return int
+     **/
+    function field_count(){}
+
+    /**
+     * This function is used to disconnect from a MaxDB server specified by
+     * the {@link processid} parameter.
+     * 
+     * @param int $processid
+     * @return bool
+     **/
+    function kill($processid){}
+
+    /**
+     * Returns the current character set for the database connection
+     * specified by the {@link link} parameter.
+     * 
+     * @return string
+     **/
+    function maxdb_client_encoding(){}
+
+    /**
+     * This function is used to create a legal SQL string that you can use in
+     * an SQL statement. The string escapestr is encoded to an escaped SQL
+     * string, taking into account the current character set of the
+     * connection.
+     * 
+     * Characters encoded are ', ".
+     * 
+     * @param string $escapestr
+     * @return string
+     **/
+    function maxdb_escape_string($escapestr){}
+
+    /**
+     * {@link maxdb_maxdb_set_opt} can be used to set extra connect
+     * maxdb_set_opt and affect behavior for a connection.
+     * 
+     * This function may be called multiple times to set several
+     * maxdb_set_opt.
+     * 
+     * {@link maxdb_maxdb_set_opt} should be called after {@link maxdb_init}
+     * and before {@link maxdb_real_connect}.
+     * 
+     * The parameter {@link option} is the option that you want to set, the
+     * {@link value} is the value for the option. For detailed description of
+     * the maxdb_set_opt see The parameter {@link option} can be one of the
+     * following values: Valid maxdb_set_opt Name Description MAXDB_COMPNAME
+     * The component name used to initialise the SQLDBC runtime environment.
+     * MAXDB_APPLICATION The application to be connected to the database.
+     * MAXDB_APPVERSION The version of the application. MAXDB_SQLMODE The SQL
+     * mode. MAXDB_UNICODE TRUE, if the connection is an unicode (UCS2)
+     * client or FALSE, if not. MAXDB_TIMEOUT The maximum allowed time of
+     * inactivity after which the connection to the database is closed by the
+     * system. MAXDB_ISOLATIONLEVEL Specifies whether and how shared locks
+     * and exclusive locks are implicitly requested or released.
+     * MAXDB_PACKETCOUNT The number of different request packets used for the
+     * connection. MAXDB_STATEMENTCACHESIZE The number of prepared statements
+     * to be cached for the connection for re-use. MAXDB_CURSORPREFIX The
+     * prefix to use for result tables that are automatically named.
+     * 
+     * @param int $option
+     * @param mixed $value
+     * @return bool
+     **/
+    function maxdb_set_opt($option, $value){}
+
+    /**
+     * The {@link maxdb_multi_query} works like the function {@link
+     * maxdb_query}. Multiple queries are not yet supported.
+     * 
+     * @param string $query
+     * @return bool
+     **/
+    function multi_query($query){}
+
+    /**
+     * {@link maxdb_options} can be used to set extra connect options and
+     * affect behavior for a connection.
+     * 
+     * This function may be called multiple times to set several options.
+     * 
+     * {@link maxdb_options} should be called after {@link maxdb_init} and
+     * before {@link maxdb_real_connect}.
+     * 
+     * The parameter {@link option} is the option that you want to set, the
+     * {@link value} is the value for the option. For detailed description of
+     * the options see The parameter {@link option} can be one of the
+     * following values: Valid options Name Description MAXDB_COMPNAME The
+     * component name used to initialise the SQLDBC runtime environment.
+     * MAXDB_APPLICATION The application to be connected to the database.
+     * MAXDB_APPVERSION The version of the application. MAXDB_SQLMODE The SQL
+     * mode. MAXDB_UNICODE TRUE, if the connection is an unicode (UCS2)
+     * client or FALSE, if not. MAXDB_TIMEOUT The maximum allowed time of
+     * inactivity after which the connection to the database is closed by the
+     * system. MAXDB_ISOLATIONLEVEL Specifies whether and how shared locks
+     * and exclusive locks are implicitly requested or released.
+     * MAXDB_PACKETCOUNT The number of different request packets used for the
+     * connection. MAXDB_STATEMENTCACHESIZE The number of prepared statements
+     * to be cached for the connection for re-use. MAXDB_CURSORPREFIX The
+     * prefix to use for result tables that are automatically named.
+     * 
+     * @param int $option
+     * @param mixed $value
+     * @return bool
+     **/
+    function options($option, $value){}
+
+    /**
+     * Checks whether the connection to the server is working. If it has gone
+     * down, and global option maxdb.reconnect is enabled an automatic
+     * reconnection is attempted.
+     * 
+     * This function can be used by clients that remain idle for a long
+     * while, to check whether the server has closed the connection and
+     * reconnect if necessary.
+     * 
+     * @return bool
+     **/
+    function ping(){}
+
+    /**
+     * {@link maxdb_prepare} prepares the SQL query pointed to by the
+     * null-terminated string query, and returns a statement handle to be
+     * used for further operations on the statement. The query must consist
+     * of a single SQL statement.
+     * 
+     * The parameter {@link query} can include one or more parameter markers
+     * in the SQL statement by embedding question mark (?) characters at the
+     * appropriate positions.
+     * 
+     * The parameter markers must be bound to application variables using
+     * {@link maxdb_stmt_bind_param} and/or {@link maxdb_stmt_bind_result}
+     * before executing the statement or fetching rows.
+     * 
+     * @param string $query
+     * @return maxdb_stmt
+     **/
+    function prepare($query){}
+
+    /**
+     * The {@link maxdb_query} function is used to simplify the act of
+     * performing a query against the database represented by the {@link
+     * link} parameter.
+     * 
+     * @param string $query
+     * @return mixed
+     **/
+    function query($query){}
+
+    /**
+     * {@link maxdb_real_connect} attempts to establish a connection to a
+     * MaxDB database engine running on {@link hostname}.
+     * 
+     * This function differs from {@link maxdb_connect}:
+     * 
+     * @param string $hostname
+     * @param string $username
+     * @param string $passwd
+     * @param string $dbname
+     * @param int $port
+     * @param string $socket
+     * @return bool
+     **/
+    function real_connect($hostname, $username, $passwd, $dbname, $port, $socket){}
+
+    /**
+     * This function is used to create a legal SQL string that you can use in
+     * an SQL statement. The string escapestr is encoded to an escaped SQL
+     * string, taking into account the current character set of the
+     * connection.
+     * 
+     * Characters encoded are ', ".
+     * 
+     * @param string $escapestr
+     * @return string
+     **/
+    function real_escape_sring($escapestr){}
+
+    /**
+     * The {@link maxdb_real_query} is functionally identical with the {@link
+     * maxdb_query}.
+     * 
+     * @param string $query
+     * @return bool
+     **/
+    function real_query($query){}
+
+    /**
+     * Rollbacks the current transaction for the database specified by the
+     * {@link link} parameter.
+     * 
+     * @return bool
+     **/
+    function rollback(){}
+
+    /**
+     * @return int
+     **/
+    function rpl_query_type(){}
+
+    /**
+     * @param string $query
+     * @return bool
+     **/
+    function send_query($query){}
+
+    /**
+     * @param string $key
+     * @param string $cert
+     * @param string $ca
+     * @param string $capath
+     * @param string $cipher
+     * @return bool
+     **/
+    function ssl_set($key, $cert, $ca, $capath, $cipher){}
+
+    /**
+     * {@link maxdb_stat} returns a string containing several information
+     * about the MaxDB server running.
+     * 
+     * @return string
+     **/
+    function stat(){}
+
+    /**
      * Allocates and initializes a statement resource suitable for {@link
      * maxdb_stmt_prepare}.
      * 
      * @return object
      **/
     function stmt_init(){}
+
+    /**
+     * This function has no functionally effect.
+     * 
+     * @return object
+     **/
+    function store_result(){}
+
+    /**
+     * {@link maxdb_use_result} has no effect.
+     * 
+     * @return resource
+     **/
+    function use_result(){}
 
 }
 class maxdb_result {
@@ -74974,6 +79029,154 @@ class maxdb_result {
      * @var array
      **/
     var $lengths;
+    /**
+     * The {@link maxdb_data_seek} function seeks to an arbitrary result
+     * pointer specified by the {@link offset} in the result set represented
+     * by {@link result}. The {@link offset} parameter must be between zero
+     * and the total number of rows minus one (0..{@link maxdb_num_rows} -
+     * 1).
+     * 
+     * @param int $offset
+     * @return bool
+     **/
+    function data_seek($offset){}
+
+    /**
+     * Returns an array that corresponds to the fetched row or if there are
+     * no more rows for the resultset represented by the {@link result}
+     * parameter.
+     * 
+     * {@link maxdb_fetch_array} is an extended version of the {@link
+     * maxdb_fetch_row} function. In addition to storing the data in the
+     * numeric indices of the result array, the {@link maxdb_fetch_array}
+     * function can also store the data in associative indices, using the
+     * field names of the result set as keys.
+     * 
+     * If two or more columns of the result have the same field names, the
+     * last column will take precedence and overwrite the earlier data. In
+     * order to access multiple columns with the same name, the numerically
+     * indexed version of the row must be used.
+     * 
+     * The optional second argument {@link resulttype} is a constant
+     * indicating what type of array should be produced from the current row
+     * data. The possible values for this parameter are the constants
+     * MAXDB_ASSOC, MAXDB_ASSOC_UPPER, MAXDB_ASSOC_LOWER, MAXDB_NUM, or
+     * MAXDB_BOTH. By default the {@link maxdb_fetch_array} function will
+     * assume MAXDB_BOTH, which is a combination of MAXDB_NUM and MAXDB_ASSOC
+     * for this parameter.
+     * 
+     * By using the MAXDB_ASSOC constant this function will behave
+     * identically to the {@link maxdb_fetch_assoc}, while MAXDB_NUM will
+     * behave identically to the {@link maxdb_fetch_row} function. The final
+     * option MAXDB_BOTH will create a single array with the attributes of
+     * both.
+     * 
+     * By using the MAXDB_ASSOC_UPPER constant, the behaviour of this
+     * function is identical to the use of MAXDB_ASSOC except the array index
+     * of a column is the fieldname in upper case.
+     * 
+     * By using the MAXDB_ASSOC_LOWER constant, the behaviour of this
+     * function is identical to the use of MAXDB_ASSOC except the array index
+     * of a column is the fieldname in lower case.
+     * 
+     * @param int $resulttype
+     * @return mixed
+     **/
+    function fetch_array($resulttype){}
+
+    /**
+     * Returns an associative array that corresponds to the fetched row or if
+     * there are no more rows.
+     * 
+     * The {@link maxdb_fetch_assoc} function is used to return an
+     * associative array representing the next row in the result set for the
+     * result represented by the {@link result} parameter, where each key in
+     * the array represents the name of one of the result set's columns.
+     * 
+     * If two or more columns of the result have the same field names, the
+     * last column will take precedence. To access the other column(s) of the
+     * same name, you either need to access the result with numeric indices
+     * by using {@link maxdb_fetch_row} or add alias names.
+     * 
+     * @return array
+     **/
+    function fetch_assoc(){}
+
+    /**
+     * The {@link maxdb_fetch_field} returns the definition of one column of
+     * a result set as an resource. Call this function repeatedly to retrieve
+     * information about all columns in the result set. {@link
+     * maxdb_fetch_field} returns when no more fields are left.
+     * 
+     * @return mixed
+     **/
+    function fetch_field(){}
+
+    /**
+     * This function serves an identical purpose to the {@link
+     * maxdb_fetch_field} function with the single difference that, instead
+     * of returning one resource at a time for each field, the columns are
+     * returned as an array of resources.
+     * 
+     * @return mixed
+     **/
+    function fetch_fields(){}
+
+    /**
+     * {@link maxdb_fetch_field_direct} returns an resource which contains
+     * field definition information from specified resultset. The value of
+     * fieldnr must be in the range from 0 to number of fields - 1.
+     * 
+     * @param int $fieldnr
+     * @return mixed
+     **/
+    function fetch_field_direct($fieldnr){}
+
+    /**
+     * The {@link maxdb_fetch_object} will return the current row result set
+     * as an object where the attributes of the object represent the names of
+     * the fields found within the result set. If no more rows exist in the
+     * current result set, is returned.
+     * 
+     * @return object
+     **/
+    function fetch_object(){}
+
+    /**
+     * Returns an array that corresponds to the fetched row, or if there are
+     * no more rows.
+     * 
+     * {@link maxdb_fetch_row} fetches one row of data from the result set
+     * represented by {@link result} and returns it as an enumerated array,
+     * where each column is stored in an array offset starting from 0 (zero).
+     * Each subsequent call to the {@link maxdb_fetch_row} function will
+     * return the next row within the result set, or if there are no more
+     * rows.
+     * 
+     * @return mixed
+     **/
+    function fetch_row(){}
+
+    /**
+     * Sets the field cursor to the given offset. The next call to {@link
+     * maxdb_fetch_field} will retrieve the field definition of the column
+     * associated with that offset.
+     * 
+     * @param int $fieldnr
+     * @return bool
+     **/
+    function field_seek($fieldnr){}
+
+    /**
+     * The {@link maxdb_free_result} function frees the memory associated
+     * with the result represented by the {@link result} parameter, which was
+     * allocated by {@link maxdb_query}, {@link maxdb_store_result} or {@link
+     * maxdb_use_result}.
+     * 
+     * @return void
+     **/
+    function free(){}
+
 }
 class maxdb_stmt {
     /**
@@ -75020,6 +79223,303 @@ class maxdb_stmt {
      * @var int
      **/
     var $param_count;
+    /**
+     * (extended syntax):
+     * 
+     * (extended syntax):
+     * 
+     * {@link maxdb_stmt_bind_param} is used to bind variables for the
+     * parameter markers in the SQL statement that was passed to {@link
+     * maxdb_prepare}. The string {@link types} contains one or more
+     * characters which specify the types for the corresponding bind
+     * variables.
+     * 
+     * The extended syntax of {@link maxdb_stmt_bind_param} allows to give
+     * the parameters as an array instead of a variable list of PHP variables
+     * to the function. If the array variable has not been used before
+     * calling {@link maxdb_stmt_bind_param}, it has to be initialized as an
+     * emtpy array. See the examples how to use {@link maxdb_stmt_bind_param}
+     * with extended syntax.
+     * 
+     * Variables for SELECT INTO SQL statements can also be bound using
+     * {@link maxdb_stmt_bind_param}. Parameters for database procedures can
+     * be bound using {@link maxdb_stmt_bind_param}. See the examples how to
+     * use {@link maxdb_stmt_bind_param} in this cases.
+     * 
+     * If a variable bound as INTO variable to an SQL statement was used
+     * before, the content of this variable is overwritten by the data of the
+     * SELECT INTO statement. A reference to this variable will be invalid
+     * after a call to {@link maxdb_stmt_bind_param}.
+     * 
+     * For INOUT parameters of database procedures the content of the bound
+     * INOUT variable is overwritten by the output value of the database
+     * procedure. A reference to this variable will be invalid after a call
+     * to {@link maxdb_stmt_bind_param}.
+     * 
+     * Type specification chars Character Description i corresponding
+     * variable has type integer d corresponding variable has type double s
+     * corresponding variable has type string b corresponding variable is a
+     * blob and will be sent in packages
+     * 
+     * @param string $types
+     * @param mixed $var1
+     * @return bool
+     **/
+    function bind_param($types, &$var1){}
+
+    /**
+     * {@link maxdb_stmt_bind_result} is used to associate (bind) columns in
+     * the result set to variables. When {@link maxdb_stmt_fetch} is called
+     * to fetch data, the MaxDB client/server protocol places the data for
+     * the bound columns into the specified variables {@link var1, ...}.
+     * 
+     * @param mixed $var1
+     * @return bool
+     **/
+    function bind_result(&$var1){}
+
+    /**
+     * Closes a prepared statement. {@link maxdb_stmt_close} also deallocates
+     * the statement handle pointed to by {@link stmt}. If the current
+     * statement has pending or unread results, this function cancels them so
+     * that the next query can be executed.
+     * 
+     * @return bool
+     **/
+    function close(){}
+
+    /**
+     * This function has to be called after a sequence of {@link
+     * maxdb_stmt_send_long_data}, that was started after {@link
+     * maxdb_execute}.
+     * 
+     * {@link param_nr} indicates which parameter to associate the end of
+     * data with. Parameters are numbered beginning with 0.
+     * 
+     * @return bool
+     **/
+    function close_long_data(){}
+
+    /**
+     * The {@link maxdb_stmt_data_seek} function seeks to an arbitrary result
+     * pointer specified by the {@link offset} in the statement result set
+     * represented by {@link statement}. The {@link offset} parameter must be
+     * between zero and the total number of rows minus one (0..{@link
+     * maxdb_stmt_num_rows} - 1).
+     * 
+     * @param int $offset
+     * @return bool
+     **/
+    function data_seek($offset){}
+
+    /**
+     * The {@link maxdb_stmt_execute} function executes a query that has been
+     * previously prepared using the {@link maxdb_prepare} function
+     * represented by the {@link stmt} resource. When executed any parameter
+     * markers which exist will automatically be replaced with the appropiate
+     * data.
+     * 
+     * If the statement is UPDATE, DELETE, or INSERT, the total number of
+     * affected rows can be determined by using the {@link
+     * maxdb_stmt_affected_rows} function. Likewise, if the query yields a
+     * result set the {@link maxdb_fetch} function is used.
+     * 
+     * @return bool
+     **/
+    function execute(){}
+
+    /**
+     * {@link maxdb_stmt_fetch} returns row data using the variables bound by
+     * {@link maxdb_stmt_bind_result}.
+     * 
+     * @return bool
+     **/
+    function fetch(){}
+
+    /**
+     * The {@link maxdb_stmt_free_result} function frees the result memory
+     * associated with the statement represented by the {@link stmt}
+     * parameter, which was allocated by {@link maxdb_stmt_store_result}.
+     * 
+     * @return void
+     **/
+    function free_result(){}
+
+    /**
+     * (extended syntax):
+     * 
+     * (extended syntax):
+     * 
+     * {@link maxdb_stmt_maxdb_bind_param} is used to bind variables for the
+     * parameter markers in the SQL statement that was passed to {@link
+     * maxdb_prepare}. The string {@link types} contains one or more
+     * characters which specify the types for the corresponding bind
+     * variables.
+     * 
+     * The extended syntax of {@link maxdb_stmt_maxdb_bind_param} allows to
+     * give the parameters as an array instead of a variable list of PHP
+     * variables to the function. If the array variable has not been used
+     * before calling {@link maxdb_stmt_maxdb_bind_param}, it has to be
+     * initialized as an emtpy array. See the examples how to use {@link
+     * maxdb_stmt_maxdb_bind_param} with extended syntax.
+     * 
+     * Variables for SELECT INTO SQL statements can also be bound using
+     * {@link maxdb_stmt_maxdb_bind_param}. Parameters for database
+     * procedures can be bound using {@link maxdb_stmt_maxdb_bind_param}. See
+     * the examples how to use {@link maxdb_stmt_maxdb_bind_param} in this
+     * cases.
+     * 
+     * If a variable bound as INTO variable to an SQL statement was used
+     * before, the content of this variable is overwritten by the data of the
+     * SELECT INTO statement. A reference to this variable will be invalid
+     * after a call to {@link maxdb_stmt_maxdb_bind_param}.
+     * 
+     * For INOUT parameters of database procedures the content of the bound
+     * INOUT variable is overwritten by the output value of the database
+     * procedure. A reference to this variable will be invalid after a call
+     * to {@link maxdb_stmt_maxdb_bind_param}.
+     * 
+     * Type specification chars Character Description i corresponding
+     * variable has type integer d corresponding variable has type double s
+     * corresponding variable has type string b corresponding variable is a
+     * blob and will be sent in packages
+     * 
+     * @param string $types
+     * @param mixed $var1
+     * @return bool
+     **/
+    function maxdb_bind_param($types, &$var1){}
+
+    /**
+     * {@link maxdb_stmt_maxdb_bind_result} is used to associate (bind)
+     * columns in the result set to variables. When {@link maxdb_stmt_fetch}
+     * is called to fetch data, the MaxDB client/server protocol places the
+     * data for the bound columns into the specified variables {@link var1,
+     * ...}.
+     * 
+     * @param mixed $var1
+     * @return bool
+     **/
+    function maxdb_bind_result(&$var1){}
+
+    /**
+     * This function has to be called after a sequence of {@link
+     * maxdb_stmt_send_long_data}, that was started after {@link
+     * maxdb_execute}.
+     * 
+     * {@link param_nr} indicates which parameter to associate the end of
+     * data with. Parameters are numbered beginning with 0.
+     * 
+     * @return bool
+     **/
+    function maxdb_close_long_data(){}
+
+    /**
+     * The {@link maxdb_stmt_maxdb_execute} function maxdb_executes a query
+     * that has been previously prepared using the {@link maxdb_prepare}
+     * function represented by the {@link stmt} resource. When maxdb_executed
+     * any parameter markers which exist will automatically be replaced with
+     * the appropiate data.
+     * 
+     * If the statement is UPDATE, DELETE, or INSERT, the total number of
+     * affected rows can be determined by using the {@link
+     * maxdb_stmt_affected_rows} function. Likewise, if the query yields a
+     * result set the {@link maxdb_fetch} function is used.
+     * 
+     * @return bool
+     **/
+    function maxdb_execute(){}
+
+    /**
+     * {@link maxdb_stmt_maxdb_fetch} returns row data using the variables
+     * bound by {@link maxdb_stmt_bind_result}.
+     * 
+     * @return bool
+     **/
+    function maxdb_fetch(){}
+
+    /**
+     * If a statement passed to {@link maxdb_prepare} is one that produces a
+     * result set, {@link maxdb_stmt_maxdb_get_metadata} returns the result
+     * resource that can be used to process the meta information such as
+     * total number of fields and individual field information.
+     * 
+     * The result set structure should be freed when you are done with it,
+     * which you can do by passing it to {@link maxdb_free_result}
+     * 
+     * @return resource
+     **/
+    function maxdb_get_metadata(){}
+
+    /**
+     * Allows to send parameter data to the server in pieces (or chunks).
+     * This function can be called multiple times to send the parts of a
+     * character or binary data value for a column, which must be one of the
+     * TEXT or BLOB datatypes.
+     * 
+     * {@link param_nr} indicates which parameter to associate the data with.
+     * Parameters are numbered beginning with 0. {@link data} is a string
+     * containing data to be sent.
+     * 
+     * @param int $param_nr
+     * @param string $data
+     * @return bool
+     **/
+    function maxdb_send_long_data($param_nr, $data){}
+
+    /**
+     * {@link maxdb_stmt_prepare} prepares the SQL query pointed to by the
+     * null-terminated string query. The statement resource has to be
+     * allocated by {@link maxdb_stmt_init}. The query must consist of a
+     * single SQL statement.
+     * 
+     * The parameter {@link query} can include one or more parameter markers
+     * in the SQL statement by embedding question mark (?) characters at the
+     * appropriate positions.
+     * 
+     * The parameter markers must be bound to application variables using
+     * {@link maxdb_stmt_bind_param} and/or {@link maxdb_stmt_bind_result}
+     * before executing the statement or fetching rows.
+     * 
+     * @param string $query
+     * @return mixed
+     **/
+    function prepare($query){}
+
+    /**
+     * @return bool
+     **/
+    function reset(){}
+
+    /**
+     * If a statement passed to {@link maxdb_prepare} is one that produces a
+     * result set, {@link maxdb_stmt_result_metadata} returns the result
+     * resource that can be used to process the meta information such as
+     * total number of fields and individual field information.
+     * 
+     * The result set structure should be freed when you are done with it,
+     * which you can do by passing it to {@link maxdb_free_result}
+     * 
+     * @return resource
+     **/
+    function result_metadata(){}
+
+    /**
+     * Allows to send parameter data to the server in pieces (or chunks).
+     * This function can be called multiple times to send the parts of a
+     * character or binary data value for a column, which must be one of the
+     * TEXT or BLOB datatypes.
+     * 
+     * {@link param_nr} indicates which parameter to associate the data with.
+     * Parameters are numbered beginning with 0. {@link data} is a string
+     * containing data to be sent.
+     * 
+     * @param int $param_nr
+     * @param string $data
+     * @return bool
+     **/
+    function stmt_send_long_data($param_nr, $data){}
+
 }
 /**
  * Represents a connection to a set of memcache servers.
@@ -78124,6 +82624,18 @@ class MySQLi {
     function real_connect($host, $username, $passwd, $dbname, $port, $socket, $flags){}
 
     /**
+     * This function is used to create a legal SQL string that you can use in
+     * an SQL statement. The given string is encoded to an escaped SQL
+     * string, taking into account the current character set of the
+     * connection.
+     * 
+     * @param string $escapestr The string to be escaped. Characters
+     *   encoded are NUL (ASCII 0), \n, \r, \, ', ", and Control-Z.
+     * @return string
+     **/
+    function real_escape_string($escapestr){}
+
+    /**
      * Executes a single query against the database whose result can then be
      * retrieved or stored using the {@link mysqli_store_result} or {@link
      * mysqli_use_result} functions.
@@ -78324,6 +82836,13 @@ class MySQLi_Result {
      **/
     var $num_rows;
     /**
+     * Frees the memory associated with the result.
+     * 
+     * @return void
+     **/
+    function close(){}
+
+    /**
      * The {@link mysqli_data_seek} function seeks to an arbitrary result
      * pointer specified by the {@link offset} in the result set.
      * 
@@ -78452,6 +82971,13 @@ class MySQLi_Result {
      * @return void
      **/
     function free(){}
+
+    /**
+     * Frees the memory associated with the result.
+     * 
+     * @return void
+     **/
+    function free_result(){}
 
 }
 class MySQLi_STMT {
