@@ -218,6 +218,286 @@ class Exception extends Exception {
 
 }
 /**
+ * Represents a connection to an AMQP broker.
+ **/
+class AMQPConnection {
+    /**
+     * This method will check whether the connection to the AMQP broker is
+     * still valid. It does so by checking the return status of the last
+     * command.
+     * 
+     * @return void
+     * @since PECL amqp >= Unknown
+     **/
+    function isConnected(){}
+
+    /**
+     * Creates an AMQPConnection instance representing a connection to an
+     * AMQP broker.
+     * 
+     * @param array $credentials The {@link credentials} is an optional
+     *   array of credential information for connecting to the AMQP broker.
+     *   The keys used in the {@link credentials} array are: host, port,
+     *   vhost, login and password. All other keys will be ignored. For each
+     *   missing credential, the extension will check the ini settings or use
+     *   the default value.
+     * @since PECL amqp >= Unknown
+     **/
+    function __construct($credentials){}
+
+}
+class AMQPConnectionException extends AMQPException {
+}
+class AMQPException extends Exception {
+}
+/**
+ * Represents an AMQP exchange.
+ **/
+class AMQPExchange {
+    /**
+     * Bind an exchange to a queue using the specified routing key.
+     * 
+     * @param string $queue_name The name of the queue to which to bind.
+     * @param string $routing_key The routing key to use as a binding.
+     * @return void
+     * @since PECL amqp >= Unknown
+     **/
+    function bind($queue_name, $routing_key){}
+
+    /**
+     * Delete and exchange from the broker.
+     * 
+     * @param string $exchange_name The name of the exchange to delete. If
+     *   the AMQPExchange object is already bound to an existing exchange and
+     *   then {@link exchange_name} is not specified, the exchange bound to
+     *   the AMQPExchange object will be deleted.
+     * @return void
+     * @since PECL amqp >= Unknown
+     **/
+    function delete($exchange_name){}
+
+    /**
+     * Publish a message to the exchange represented by the AMQPExchange
+     * object.
+     * 
+     * @param string $message The message to publish.
+     * @param string $routing_key The routing key to which to publish.
+     * @return void
+     * @since PECL amqp >= Unknown
+     **/
+    function publish($message, $routing_key){}
+
+    /**
+     * Returns a new instance of an AMQPExchange object, associated with the
+     * given AMQPConnection object. If the {@link exchange_name} parameter is
+     * specified and the an exchange by that name exists on the broker, an
+     * instance of that specific exchange will be returned. Otherwise, the
+     * {@link exchange_name} is ignored.
+     * 
+     * @param AMQPConnection $connection A valid AMQPConnection object,
+     *   connected to a broker.
+     * @param string $exchange_name The name of an existing exchange to
+     *   represent.
+     * @since PECL amqp >= Unknown
+     **/
+    function __construct($connection, $exchange_name){}
+
+}
+class AMQPExchangeException extends AMQPException {
+}
+/**
+ * Represents an AMQP queue.
+ **/
+class AMQPQueue {
+    /**
+     * This method allows the acknowledgement of a message that is retrieved
+     * with the AMQP_NOACK flag through AMQPQueue::get or AMQPQueue::consume
+     * 
+     * @param int $delivery_tag The message delivery tag of which to
+     *   acknowledge receipt.
+     * @param int $flags The only valid flag that can be passed is
+     *   AMQP_MULTIPLE.
+     * @return void
+     **/
+    function ack($delivery_tag, $flags){}
+
+    /**
+     * The bind method will bind the given queue to the specified routing key
+     * on the given exchange.
+     * 
+     * @param string $exchange_name The exchange name on which to bind.
+     * @param string $routing_key The routing key to which to bind.
+     * @return void
+     * @since PECL amqp >= Unknown
+     **/
+    function bind($exchange_name, $routing_key){}
+
+    /**
+     * Cancel a queue that is already bound to an exchange and routing key.
+     * 
+     * @param string $consumer_tag The queue name to cancel, if the queue
+     *   object is not already representative of a queue.
+     * @return void
+     * @since PECL amqp >= Unknown
+     **/
+    function cancel($consumer_tag){}
+
+    /**
+     * @param string $num_messages
+     * @param string $flags
+     * @return void
+     * @since PECL amqp >= Unknown
+     **/
+    function consume($num_messages, $flags){}
+
+    /**
+     * Delete a queue from the broker, including its entire contents of
+     * unread or unacknowledged messages.
+     * 
+     * @param string $queue_name The name of the queue to delete.
+     * @return void
+     * @since PECL amqp >= Unknown
+     **/
+    function delete($queue_name){}
+
+    /**
+     * Retrieve the next message from the queue.
+     * 
+     * @param string $flags A bitmask of any of the flags: AMQP_NOACK.
+     * @return void
+     * @since PECL amqp >= Unknown
+     **/
+    function get($flags){}
+
+    /**
+     * Purge the contents of a queue.
+     * 
+     * @param string $queue_name The name of the queue to purge
+     * @return void
+     * @since PECL amqp >= Unknown
+     **/
+    function purge($queue_name){}
+
+    /**
+     * Remove a routing key binding on an exchange from the given queue.
+     * 
+     * @param string $exchange_name The name of the exchange on which the
+     *   queue is bound.
+     * @param string $routing_key The binding routing key used by the
+     *   queue.
+     * @return void
+     * @since PECL amqp >= Unknown
+     **/
+    function unbind($exchange_name, $routing_key){}
+
+    /**
+     * Creates an AMQPQueue instance representing an AMQP queue on the
+     * broker.
+     * 
+     * @param string $amqp_connection A valid AMQPConnection object.
+     * @param string $queue_name The name of the queue to construct. If no
+     *   queue name is specified, the broker will generate one.
+     * @since PECL amqp >= Unknown
+     **/
+    function __construct($amqp_connection, $queue_name){}
+
+}
+class AMQPQueueException extends AMQPException {
+}
+/**
+ * The class makes it easier to iterate over large APC caches. This is
+ * helpful as it allows iterating over large caches in steps, while
+ * grabbing a defined number of entries per lock instance, so it frees
+ * the cache locks for other activities rather than hold up the entire
+ * cache to grab 100 (the default) entries. Also, using regular
+ * expression matching is more efficient as it's been moved to the C
+ * level.
+ **/
+class APCIterator implements Iterator, Traversable {
+    /**
+     * Gets the current item from the APCIterator stack.
+     * 
+     * @return mixed
+     * @since PECL apc >= 3.1.1
+     **/
+    function current(){}
+
+    /**
+     * Get the total count.
+     * 
+     * @return integer
+     * @since PECL apc >= 3.1.1
+     **/
+    function getTotalCount(){}
+
+    /**
+     * Gets the total number of cache hits.
+     * 
+     * @return integer
+     * @since PECL apc >= 3.1.1
+     **/
+    function getTotalHits(){}
+
+    /**
+     * Gets the total cache size.
+     * 
+     * @return int
+     * @since PECL apc >= 3.1.1
+     **/
+    function getTotalSize(){}
+
+    /**
+     * Gets the current iterator key.
+     * 
+     * @return string
+     * @since PECL apc >= 3.1.1
+     **/
+    function key(){}
+
+    /**
+     * Moves the iterator pointer to the next element.
+     * 
+     * @return void
+     * @since PECL apc >= 3.1.1
+     **/
+    function next(){}
+
+    /**
+     * Rewinds back the iterator to the first element.
+     * 
+     * @return void
+     * @since PECL apc >= 3.1.1
+     **/
+    function rewind(){}
+
+    /**
+     * Checks if the current iterator position is valid.
+     * 
+     * @return void
+     * @since PECL apc >= 3.1.1
+     **/
+    function valid(){}
+
+    /**
+     * Constructs an APCIterator object.
+     * 
+     * @param string $cache The cache type, which will be user or file.
+     * @param mixed $search A PCRE regular expression that matches against
+     *   APC key names, either as a string for a single regular expression,
+     *   or as an array of regular expressions. Or, optionally pass in to
+     *   skip the search.
+     * @param int $format The desired format, as configured with one ore
+     *   more of the APC_ITER_* constants.
+     * @param int $chunk_size The chunk size. Must be a value greater than
+     *   0. The default value is 100.
+     * @param int $list The type to list. Either pass in APC_LIST_ACTIVE or
+     *   APC_LIST_INACTIVE.
+     * @since PECL apc >= 3.1.1
+     **/
+    function __construct($cache, $search, $format, $chunk_size, $list){}
+
+}
+/**
  * Iterate over multiple collections.
  **/
 class AppendIterator extends IteratorIterator implements OuterIterator, Traversable, Iterator {
@@ -363,7 +643,7 @@ class ArrayIterator implements Iterator, Traversable, ArrayAccess, SeekableItera
     /**
      * Appends value as the last element.
      * 
-     * @param string $value The value to append.
+     * @param mixed $value The value to append.
      * @return void
      * @since PHP 5 >= 5.0.0
      **/
@@ -397,7 +677,7 @@ class ArrayIterator implements Iterator, Traversable, ArrayAccess, SeekableItera
     /**
      * Get a copy of an array.
      * 
-     * @return void
+     * @return array
      * @since PHP 5 >= 5.0.0
      **/
     function getArrayCopy(){}
@@ -1036,12 +1316,12 @@ class CairoContext {
      * CairoContext::newSubPath or procedural {@link cairo_new_sub_path}
      * before calling CairoContext::arc or {@link cairo_arc}.
      * 
-     * Angles are measured in radians. An angle of 0.0 is in the direction
-     * of the positive X axis (in user space). An angle of M_PI/2.0 radians
-     * (90 degrees) is in the direction of the positive Y axis (in user
-     * space). Angles increase in the direction from the positive X axis
-     * toward the positive Y axis. So with the default transformation matrix,
-     * angles increase in a clockwise direction.
+     * Angles are measured in radians. An angle of 0.0 is in the direction of
+     * the positive X axis (in user space). An angle of M_PI/2.0 radians (90
+     * degrees) is in the direction of the positive Y axis (in user space).
+     * Angles increase in the direction from the positive X axis toward the
+     * positive Y axis. So with the default transformation matrix, angles
+     * increase in a clockwise direction.
      * 
      * (To convert from degrees to radians, use degrees * (M_PI / 180.).)
      * This function gives the arc in the direction of increasing angles; see
@@ -1281,9 +1561,9 @@ class CairoContext {
      * path is empty, returns an empty rectangle (0,0,0,0). Surface
      * dimensions and clipping are not taken into account.
      * 
-     * Contrast with CairoContext::pathExtents, which is similar, but
-     * returns non-zero extents for some paths with no inked area, (such as a
-     * simple line segment).
+     * Contrast with CairoContext::pathExtents, which is similar, but returns
+     * non-zero extents for some paths with no inked area, (such as a simple
+     * line segment).
      * 
      * Note that CairoContext::fillExtents must necessarily do more work to
      * compute the precise inked areas in light of the fill rule, so
@@ -1325,7 +1605,29 @@ class CairoContext {
     function getAntialias(){}
 
     /**
-     * Description here.
+     * Gets the current point of the current path, which is conceptually the
+     * final point reached by the path so far.
+     * 
+     * The current point is returned in the user-space coordinate system. If
+     * there is no defined current point or if cr is in an error status, x
+     * and y will both be set to 0.0. It is possible to check this in advance
+     * with CairoContext::hasCurrentPoint.
+     * 
+     * Most path construction functions alter the current point. See the
+     * following for details on how they affect the current point:
+     * CairoContext::newPath, CairoContext::newSubPath,
+     * CairoContext::appendPath, CairoContext::closePath,
+     * CairoContext::moveTo, CairoContext::lineTo, CairoContext::curveTo,
+     * CairoContext::relMoveTo, CairoContext::relLineTo,
+     * CairoContext::relCurveTo, CairoContext::arc,
+     * CairoContext::arcNegative, CairoContext::rectangle,
+     * CairoContext::textPath, CairoContext::glyphPath.
+     * 
+     * Some functions use and alter the current point but do not otherwise
+     * change current path: CairoContext::showText.
+     * 
+     * Some functions unset the current path and as a result, current point:
+     * CairoContext::fill, CairoContext::stroke.
      * 
      * @return array
      * @since PECL cairo >= 0.1.0
@@ -1478,7 +1780,8 @@ class CairoContext {
     function glyphPath($glyphs){}
 
     /**
-     * Description here.
+     * Returns whether a current point is defined on the current path. See
+     * CairoContext::getCurrentPoint for details on the current point.
      * 
      * @return bool
      * @since PECL cairo >= 0.1.0
@@ -1544,17 +1847,19 @@ class CairoContext {
     function maskSurface($surface, $x, $y){}
 
     /**
-     * Description here.
+     * Begin a new sub-path. After this call the current point will be (x,
+     * y).
      * 
-     * @param string $x Description...
-     * @param string $y Description...
+     * @param string $x A valid CairoContext object.
+     * @param string $y The x coordinate of the new position.
      * @return void
      * @since PECL cairo >= 0.1.0
      **/
     function moveTo($x, $y){}
 
     /**
-     * Description here.
+     * Clears the current path. After this call there will be no path and no
+     * current point.
      * 
      * @return void
      * @since PECL cairo >= 0.1.0
@@ -2059,8 +2364,8 @@ class CairoFilter {
  * particular weight, slant, and other characteristic but no
  * transformation or size.
  * 
- * Note: This class can not be instantiated directly, it is created by
- * or .
+ * Note: This class can not be instantiated directly, it is created by or
+ * .
  **/
 class CairoFontFace {
     /**
@@ -2229,8 +2534,8 @@ class CairoFontSlant {
  * used to describe the type of a given or . The font types are also
  * known as "font backends" within cairo.
  * 
- * The type of a CairoFontFace is determined by the how it is created,
- * an example would be the . The type can be queried with or
+ * The type of a CairoFontFace is determined by the how it is created, an
+ * example would be the . The type can be queried with or
  * 
  * The various functions can be used with a font face of any type.
  * 
@@ -2682,8 +2987,8 @@ class CairoPattern {
 /**
  * is used to describe the type of a given pattern.
  * 
- * The type of a pattern is determined by the function used to create
- * it. The and functions create patterns. The remaining
+ * The type of a pattern is determined by the function used to create it.
+ * The and functions create patterns. The remaining
  * cairo_pattern_create_* functions map to pattern types in obvious ways.
  **/
 class CairoPatternType {
@@ -2824,14 +3129,22 @@ class CairoRadialGradient extends CairoGradientPattern {
     function getCircles(){}
 
     /**
-     * The method description goes here.
+     * Creates a new radial gradient CairoPattern between the two circles
+     * defined by (x0, y0, r0) and (x1, y1, r1). Before using the gradient
+     * pattern, a number of color stops should be defined using
+     * CairoRadialGradient::addColorStopRgb or
+     * CairoRadialGradient::addColorStopRgba.
      * 
-     * @param float $x0 Description...
-     * @param float $y0 Description...
-     * @param float $r0 Description...
-     * @param float $x1 Description...
-     * @param float $y1 Description...
-     * @param float $r1 Description...
+     * Note: The coordinates here are in pattern space. For a new pattern,
+     * pattern space is identical to user space, but the relationship between
+     * the spaces can be changed with CairoRadialGradient::setMatrix.
+     * 
+     * @param float $x0 x coordinate for the center of the start circle.
+     * @param float $y0 y coordinate for the center of the start circle.
+     * @param float $r0 radius of the start circle.
+     * @param float $x1 x coordinate for the center of the end circle.
+     * @param float $y1 y coordinate for the center of the end circle.
+     * @param float $r1 radius of the end circle.
      * @since PECL cairo >= 0.1.0
      **/
     function __construct($x0, $y0, $r0, $x1, $y1, $r1){}
@@ -3252,6 +3565,34 @@ class CairoSvgVersion {
 class CairoToyFontFace extends CairoFontFace {
 }
 /**
+ * Represents a loaded chdb file.
+ **/
+class chdb {
+    /**
+     * Gets the value associated with a key from a chdb database.
+     * 
+     * @param string $key The key for which to get the value.
+     * @return string
+     * @since PECL chdb >= 0.1.0
+     **/
+    function get($key){}
+
+    /**
+     * Loads a chdb file, by mapping it into memory. While some validity
+     * checks are performed on the specified file, they are mostly there to
+     * avoid the possibility of common mistakes (for example, loading a file
+     * which is not a chdb database, or that is somehow incompatible with the
+     * current system). A maliciously crafted chdb file can thus be dangerous
+     * if loaded, so chdb files should be trusted and treated with the same
+     * security protections used for PHP shared libraries.
+     * 
+     * @param string $pathname The name of the file to load.
+     * @since PECL chdb >= 0.1.0
+     **/
+    function __construct($pathname){}
+
+}
+/**
  * Provides string comparison capability with support for appropriate
  * locale-sensitive sort orderings.
  **/
@@ -3395,18 +3736,18 @@ class Collator {
      * (as well as increasing the sort key length). It is also known as level
      * 5 strength.
      * 
-     * For example, people may choose to ignore accents or ignore accents
-     * and case when searching for text. Almost all characters are
-     * distinguished by the first three levels, and in most locales the
-     * default value is thus Tertiary. However, if Alternate is set to be
-     * Shifted, then the Quaternary strength can be used to break ties among
-     * whitespace, punctuation, and symbols that would otherwise be ignored.
-     * If very fine distinctions among characters are required, then the
-     * Identical strength can be used (for example, Identical Strength
-     * distinguishes between the Mathematical Bold Small A and the
-     * Mathematical Italic Small A.). However, using levels higher than
-     * Tertiary the Identical strength result in significantly longer sort
-     * keys, and slower string comparison performance for equal strings.
+     * For example, people may choose to ignore accents or ignore accents and
+     * case when searching for text. Almost all characters are distinguished
+     * by the first three levels, and in most locales the default value is
+     * thus Tertiary. However, if Alternate is set to be Shifted, then the
+     * Quaternary strength can be used to break ties among whitespace,
+     * punctuation, and symbols that would otherwise be ignored. If very fine
+     * distinctions among characters are required, then the Identical
+     * strength can be used (for example, Identical Strength distinguishes
+     * between the Mathematical Bold Small A and the Mathematical Italic
+     * Small A.). However, using levels higher than Tertiary the Identical
+     * strength result in significantly longer sort keys, and slower string
+     * comparison performance for equal strings.
      * 
      * @param int $strength Collator object.
      * @return bool
@@ -3489,45 +3830,11 @@ class DateInterval {
      **/
     function format($format){}
 
-    /**
-     * Creates new DateInterval object.
-     * 
-     * @param string $interval_spec Interval specification. The format
-     *   starts with the letter P, for period. Each duration period is
-     *   represented by an integer value followed by a period designator. If
-     *   the duration contains time elements, that portion of the
-     *   specification is preceded by the letter T.
-     *   
-     *   {@link interval_spec} Period Designators Period Designator
-     *   Description Y years M months D days W weeks. These get converted
-     *   into days, so can not be combined with D. H hours M minutes S
-     *   seconds Here are some simple examples. Two days is P2D. Two seconds
-     *   is PT2S. Six years and five minutes is P6YT5M. The specification can
-     *   also be represented as a date time. A sample of one year and four
-     *   days would be P0001-00-04T00:00:00. But the values in this format
-     *   can not exceed a given period's roll-over-point (e.g. 25 hours is
-     *   invalid). These formats are based on the ISO 8601 duration
-     *   specification.
-     * @since PHP 5 >= 5.3.0
-     **/
-    function __construct($interval_spec){}
-
 }
 /**
  * Representation of date period.
  **/
 class DatePeriod implements Traversable {
-    /**
-     * Creates new DatePeriod object.
-     * 
-     * @param DateTime $start Start date.
-     * @param DateInterval $interval Interval.
-     * @param int $recurrences Number of recurrences.
-     * @param int $options End date.
-     * @since PHP 5 >= 5.3.0
-     **/
-    function __construct($start, $interval, $recurrences, $options){}
-
 }
 /**
  * Representation of date and time.
@@ -3549,17 +3856,15 @@ class DateTime {
      * 
      * @param string $format Format accepted by {@link date}. If {@link
      *   format} does not contain the character ! then portions of the
-     *   date/time value specified in {@link format} but not specified in
-     *   {@link time} will be set to the current system time. If {@link
-     *   format} contains the character !, then portions of the generated
-     *   time specified to the left-hand side of the ! in {@link format} will
-     *   be set to corresponding values from the Unix epoch. If the first
-     *   character of {@link format} is !, then all portions of the date/time
-     *   value generated which are not specified in {@link time} will be
-     *   initialized to corresponding values from the Unix epoch. The Unix
-     *   epoch is 1970-01-01 00:00:00 UTC.
+     *   generated time which are not specified in {@link format} will be set
+     *   to the current system time. If {@link format} contains the character
+     *   !, then portions of the generated time not provided in {@link
+     *   format}, as well as values to the left-hand side of the !, will be
+     *   set to corresponding values from the Unix epoch. The Unix epoch is
+     *   1970-01-01 00:00:00 UTC.
      * @param string $time String representing the time.
-     * @param DateTimeZone $timezone Time zone.
+     * @param DateTimeZone $timezone A DateTimeZone object representing the
+     *   desired time zone.
      * @return DateTime
      * @since PHP 5 >= 5.3.0
      **/
@@ -3568,14 +3873,16 @@ class DateTime {
     /**
      * Returns the difference between two DateTime objects.
      * 
-     * @param DateTime $datetime The date to compare to.
+     * @param DateTime $datetime2 The date to compare to.
      * @param bool $absolute Whether to return absolute difference.
      * @return DateInterval
      * @since PHP 5 >= 5.3.0
      **/
-    function diff($datetime, $absolute){}
+    function diff($datetime2, $absolute){}
 
     /**
+     * Returns date formatted according to given format.
+     * 
      * @param string $format Format accepted by {@link date}.
      * @return string
      * @since PHP 5 >= 5.2.0
@@ -3583,8 +3890,8 @@ class DateTime {
     function format($format){}
 
     /**
-     * Returns the warnings and errors found while parsing a date/time
-     * string.
+     * Returns an array of warnings and errors found while parsing a
+     * date/time string.
      * 
      * @return array
      * @since PHP 5 >= 5.3.0
@@ -3592,6 +3899,8 @@ class DateTime {
     function getLastErrors(){}
 
     /**
+     * Returns the timezone offset.
+     * 
      * @return int
      * @since PHP 5 >= 5.2.0
      **/
@@ -3606,6 +3915,8 @@ class DateTime {
     function getTimestamp(){}
 
     /**
+     * Return time zone relative to given DateTime.
+     * 
      * @return DateTimeZone
      * @since PHP 5 >= 5.2.0
      **/
@@ -3615,8 +3926,7 @@ class DateTime {
      * Alter the timestamp of a DateTime object by incrementing or
      * decrementing in a format accepted by {@link strtotime}.
      * 
-     * @param string $modify String in a relative format accepted by {@link
-     *   strtotime}.
+     * @param string $modify
      * @return DateTime
      * @since PHP 5 >= 5.2.0
      **/
@@ -3666,7 +3976,8 @@ class DateTime {
     function setTimestamp($unixtimestamp){}
 
     /**
-     * @param DateTimeZone $timezone Desired time zone.
+     * @param DateTimeZone $timezone A DateTimeZone object representing the
+     *   desired time zone.
      * @return DateTime
      * @since PHP 5 >= 5.2.0
      **/
@@ -3681,16 +3992,6 @@ class DateTime {
      * @since PHP 5 >= 5.3.0
      **/
     function sub($interval){}
-
-    /**
-     * Returns new DateTime object.
-     * 
-     * @param string $time String in a format accepted by {@link
-     *   strtotime}.
-     * @param DateTimeZone $timezone Time zone of the time.
-     * @since PHP 5 >= 5.2.0
-     **/
-    function __construct($time, $timezone){}
 
     /**
      * The __set_state handler.
@@ -3766,14 +4067,6 @@ class DateTimeZone {
      **/
     function listIdentifiers($what, $country){}
 
-    /**
-     * Creates new DateTimeZone object.
-     * 
-     * @param string $timezone One of timezones.
-     * @since PHP 5 >= 5.2.0
-     **/
-    function __construct($timezone){}
-
 }
 /**
  * The class from which dir is instantiated.
@@ -3831,7 +4124,7 @@ class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, Se
      * Get the last access time of the current DirectoryIterator item.
      * 
      * @return int
-     * @since PHP 5 >= 5.0.2
+     * @since PHP 5
      **/
     function getATime(){}
 
@@ -3849,7 +4142,7 @@ class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, Se
      * Get the inode change time for the current DirectoryIterator item.
      * 
      * @return int
-     * @since PHP 5 >= 5.0.2
+     * @since PHP 5
      **/
     function getCTime(){}
 
@@ -3865,7 +4158,7 @@ class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, Se
      * Get the group id of the file.
      * 
      * @return int
-     * @since PHP 5 >= 5.0.2
+     * @since PHP 5
      **/
     function getGroup(){}
 
@@ -3873,7 +4166,7 @@ class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, Se
      * Get the inode number for the current DirectoryIterator item.
      * 
      * @return int
-     * @since PHP 5 >= 5.0.2
+     * @since PHP 5
      **/
     function getInode(){}
 
@@ -3882,7 +4175,7 @@ class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, Se
      * as a Unix timestamp.
      * 
      * @return int
-     * @since PHP 5 >= 5.0.2
+     * @since PHP 5
      **/
     function getMTime(){}
 
@@ -3891,7 +4184,7 @@ class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, Se
      * format.
      * 
      * @return int
-     * @since PHP 5 >= 5.0.2
+     * @since PHP 5
      **/
     function getOwner(){}
 
@@ -3915,7 +4208,7 @@ class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, Se
      * Get the permissions of the current DirectoryIterator item.
      * 
      * @return int
-     * @since PHP 5 >= 5.0.2
+     * @since PHP 5
      **/
     function getPerms(){}
 
@@ -3923,7 +4216,7 @@ class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, Se
      * Get the file size for the current DirectoryIterator item.
      * 
      * @return int
-     * @since PHP 5 >= 5.0.2
+     * @since PHP 5
      **/
     function getSize(){}
 
@@ -3932,7 +4225,7 @@ class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, Se
      * to. One of file, link, or dir.
      * 
      * @return string
-     * @since PHP 5 >= 5.0.2
+     * @since PHP 5
      **/
     function getType(){}
 
@@ -3949,7 +4242,7 @@ class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, Se
      * either . or ...
      * 
      * @return bool
-     * @since PHP 5.1.0
+     * @since PHP 5
      **/
     function isDot(){}
 
@@ -4037,6 +4330,7 @@ class DirectoryIterator extends SplFileInfo implements Iterator, Traversable, Se
      * Get the file name of the current DirectoryIterator item.
      * 
      * @return string
+     * @since PHP 5
      **/
     function __toString(){}
 
@@ -4706,8 +5000,8 @@ class DomDocument extends DOMNode {
      * filename}. Unlike loading XML, HTML does not have to be well-formed to
      * load.
      * 
-     * Though not recommended, this function may also be called statically
-     * to load and create a DOMDocument object. The static invocation may be
+     * Though not recommended, this function may also be called statically to
+     * load and create a DOMDocument object. The static invocation may be
      * used when no DOMDocument properties need to be set prior to loading.
      * However, doing so will result an in E_STRICT error being generated.
      * 
@@ -4845,8 +5139,8 @@ class DomDocument extends DOMNode {
     /**
      * Validates the document based on its DTD.
      * 
-     * You can also use the validateOnParse property of DOMDocument to make
-     * a DTD validation.
+     * You can also use the validateOnParse property of DOMDocument to make a
+     * DTD validation.
      * 
      * @return bool
      * @since PHP 5
@@ -5457,8 +5751,8 @@ class DomNode {
      * 
      * (PHP >= 4.3 only) If no first child is found, NULL is returned.
      * 
-     * See also {@link domnode_last_child}, and {@link
-     * domnode_next_sibling}, {@link domnode_previous_sibling}.
+     * See also {@link domnode_last_child}, and {@link domnode_next_sibling},
+     * {@link domnode_previous_sibling}.
      * 
      * @return domelement
      * @since PHP 4 >= 4.1.0
@@ -5551,10 +5845,10 @@ class DomNode {
      * plan to do further modifications on the appended child you must use
      * the returned node.
      * 
-     * (PHP >= 4.3 only) If {@link newnode} already is part of a document,
-     * it will be first unlinked from its existing context. If {@link
-     * refnode} is NULL, then {@link newnode} will be inserted at the end of
-     * the list of children.
+     * (PHP >= 4.3 only) If {@link newnode} already is part of a document, it
+     * will be first unlinked from its existing context. If {@link refnode}
+     * is NULL, then {@link newnode} will be inserted at the end of the list
+     * of children.
      * 
      * {@link domnode_insert_before} is very similar to {@link
      * domnode_append_child} as the following example shows which does the
@@ -6356,6 +6650,473 @@ class finfo {
 
 }
 /**
+ * Represents a class for connecting to a Gearman job server and making
+ * requests to perform some function on provided data. The function
+ * performed must be one registerd by a Gearman worker and the data
+ * passed is opaque to the job server.
+ **/
+class GearmanClient {
+    /**
+     * Adds one or more options to those already set.
+     * 
+     * @param int $options The options to add
+     * @return bool
+     * @since PECL gearman >= 0.6.0
+     **/
+    function addOptions($options){}
+
+    /**
+     * Adds a job server to a list of servers that can be used to run a task.
+     * No socket I/O happens here; the server is simply added to the list.
+     * 
+     * @param string $host
+     * @param int $port
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function addServer($host, $port){}
+
+    /**
+     * Adds a list of job servers that can be used to run a task. No socket
+     * I/O happens here; the servers are simply added to the full list of
+     * servers.
+     * 
+     * @param string $servers A comma-separated list of servers, each
+     *   server specified in the format host:port.
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function addServers($servers){}
+
+    /**
+     * Adds a task to be run in parallel with other tasks. Call this method
+     * for all the tasks to be run in parallel, then call
+     * GearmanClient::runTasks to perform the work. Note that enough workers
+     * need to be available for the tasks to all run in parallel.
+     * 
+     * @param string $function_name
+     * @param string $workload
+     * @param mixed $context
+     * @param string $unique
+     * @return GearmanTask
+     * @since PECL gearman >= 0.5.0
+     **/
+    function addTask($function_name, $workload, &$context, $unique){}
+
+    /**
+     * Adds a background task to be run in parallel with other tasks. Call
+     * this method for all the tasks to be run in parallel, then call
+     * GearmanClient::runTasks to perform the work.
+     * 
+     * @param string $function_name
+     * @param string $workload
+     * @param mixed $context
+     * @param string $unique
+     * @return GearmanTask
+     * @since PECL gearman >= 0.5.0
+     **/
+    function addTaskBackground($function_name, $workload, &$context, $unique){}
+
+    /**
+     * Adds a high priority task to be run in parallel with other tasks. Call
+     * this method for all the high priority tasks to be run in parallel,
+     * then call GearmanClient::runTasks to perform the work. Tasks with a
+     * high priority will be selected from the queue before those of normal
+     * or low priority.
+     * 
+     * @param string $function_name
+     * @param string $workload
+     * @param mixed $context
+     * @param string $unique
+     * @return GearmanTask
+     * @since PECL gearman >= 0.5.0
+     **/
+    function addTaskHigh($function_name, $workload, &$context, $unique){}
+
+    /**
+     * Adds a high priority background task to be run in parallel with other
+     * tasks. Call this method for all the tasks to be run in parallel, then
+     * call GearmanClient::runTasks to perform the work. Tasks with a high
+     * priority will be selected from the queue before those of normal or low
+     * priority.
+     * 
+     * @param string $function_name
+     * @param string $workload
+     * @param mixed $context
+     * @param string $unique
+     * @return GearmanTask
+     * @since PECL gearman >= 0.5.0
+     **/
+    function addTaskHighBackground($function_name, $workload, &$context, $unique){}
+
+    /**
+     * Adds a low priority background task to be run in parallel with other
+     * tasks. Call this method for all the tasks to be run in parallel, then
+     * call GearmanClient::runTasks to perform the work. Tasks with a low
+     * priority will be selected from the queue after those of normal or low
+     * priority.
+     * 
+     * @param string $function_name
+     * @param string $workload
+     * @param mixed $context
+     * @param string $unique
+     * @return GearmanTask
+     * @since PECL gearman >= 0.5.0
+     **/
+    function addTaskLow($function_name, $workload, &$context, $unique){}
+
+    /**
+     * Adds a low priority background task to be run in parallel with other
+     * tasks. Call this method for all the tasks to be run in parallel, then
+     * call GearmanClient::runTasks to perform the work. Tasks with a low
+     * priority will be selected from the queue after those of normal or high
+     * priority.
+     * 
+     * @param string $function_name
+     * @param string $workload
+     * @param mixed $context
+     * @param string $unique
+     * @return GearmanTask
+     * @since PECL gearman >= 0.5.0
+     **/
+    function addTaskLowBackground($function_name, $workload, &$context, $unique){}
+
+    /**
+     * Used to request status information from the Gearman server, which will
+     * call the specified status callback (set using
+     * GearmanClient::setStatusCallback).
+     * 
+     * @param string $job_handle The job handle for the task to get status
+     *   for
+     * @param string $context Data to be passed to the status callback,
+     *   generally a reference to an array or object
+     * @return GearmanTask
+     * @since PECL gearman >= 0.5.0
+     **/
+    function addTaskStatus($job_handle, &$context){}
+
+    /**
+     * Clears all the task callback functions that have previously been set.
+     * 
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function clearCallbacks(){}
+
+    /**
+     * Get the application context previously set with
+     * GearmanClient::setContext.
+     * 
+     * @return string
+     * @since PECL gearman >= 0.6.0
+     **/
+    function context(){}
+
+    /**
+     * Get the application data previously set with GearmanClient::setData.
+     * 
+     * @return string
+     * @since PECL gearman
+     **/
+    function data(){}
+
+    /**
+     * Runs a task in the background, returning a job handle which can be
+     * used to get the status of the running task.
+     * 
+     * @param string $function_name
+     * @param string $workload
+     * @param string $unique
+     * @return string
+     * @since PECL gearman >= 0.5.0
+     **/
+    function doBackground($function_name, $workload, $unique){}
+
+    /**
+     * Runs a single high priority task and returns a string representation
+     * of the result. It is up to the GearmanClient and GearmanWorker to
+     * agree on the format of the result. High priority tasks will get
+     * precedence over normal and low priority tasks in the job queue.
+     * 
+     * @param string $function_name
+     * @param string $workload
+     * @param string $unique
+     * @return string
+     * @since PECL gearman >= 0.5.0
+     **/
+    function doHigh($function_name, $workload, $unique){}
+
+    /**
+     * Runs a high priority task in the background, returning a job handle
+     * which can be used to get the status of the running task. High priority
+     * tasks take precedence over normal and low priority tasks in the job
+     * queue.
+     * 
+     * @param string $function_name
+     * @param string $workload
+     * @param string $unique
+     * @return string
+     * @since PECL gearman >= 0.5.0
+     **/
+    function doHighBackground($function_name, $workload, $unique){}
+
+    /**
+     * Gets that job handle for a running task. This should be used between
+     * repeated GearmanClient::do calls. The job handle can then be used to
+     * get information on the task.
+     * 
+     * @return string
+     * @since PECL gearman >= 0.5.0
+     **/
+    function doJobHandle(){}
+
+    /**
+     * Runs a single low priority task and returns a string representation of
+     * the result. It is up to the GearmanClient and GearmanWorker to agree
+     * on the format of the result. Normal and high priority tasks will get
+     * precedence over low priority tasks in the job queue.
+     * 
+     * @param string $function_name
+     * @param string $workload
+     * @param string $unique
+     * @return string
+     * @since PECL gearman >= 0.5.0
+     **/
+    function doLow($function_name, $workload, $unique){}
+
+    /**
+     * Runs a low priority task in the background, returning a job handle
+     * which can be used to get the status of the running task. Normal and
+     * high priority tasks take precedence over low priority tasks in the job
+     * queue.
+     * 
+     * @param string $function_name
+     * @param string $workload
+     * @param string $unique
+     * @return string
+     * @since PECL gearman >= 0.5.0
+     **/
+    function doLowBackground($function_name, $workload, $unique){}
+
+    /**
+     * Returns the status for the running task. This should be used between
+     * repeated GearmanClient::do calls.
+     * 
+     * @return array
+     * @since PECL gearman >= 0.5.0
+     **/
+    function doStatus(){}
+
+    /**
+     * Returns an error string for the last error encountered.
+     * 
+     * @return string
+     * @since PECL gearman >= 0.5.0
+     **/
+    function error(){}
+
+    /**
+     * Value of errno in the case of a GEARMAN_ERRNO return value.
+     * 
+     * @return int
+     * @since PECL gearman >= 0.5.0
+     **/
+    function getErrno(){}
+
+    /**
+     * Gets the status for a background job given a job handle. The status
+     * information will specify whether the job is known, whether the job is
+     * currently running, and the percentage completion.
+     * 
+     * @param string $job_handle
+     * @return array
+     * @since PECL gearman >= 0.5.0
+     **/
+    function jobStatus($job_handle){}
+
+    /**
+     * Removes (unsets) one or more options.
+     * 
+     * @param int $options The options to be removed (unset)
+     * @return bool
+     * @since PECL gearman >= 0.6.0
+     **/
+    function removeOptions($options){}
+
+    /**
+     * Returns the last Gearman return code.
+     * 
+     * @return int
+     * @since PECL gearman >= 0.5.0
+     **/
+    function returnCode(){}
+
+    /**
+     * For a set of tasks previously added with GearmanClient::addTask,
+     * GearmanClient::addTaskHigh, GearmanClient::addTaskLow,
+     * GearmanClient::addTaskBackground,
+     * GearmanClient::addTaskHighBackground, or
+     * GearmanClient::addTaskLowBackground, this call starts running the
+     * tasks in parallel.
+     * 
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function runTasks(){}
+
+    /**
+     * Sets the callback function for accepting data packets for a task. The
+     * callback function should take a single argument, a GearmanTask object.
+     * 
+     * @param callback $callback A function or method to call
+     * @return void
+     * @since PECL gearman
+     **/
+    function setClientCallback($callback){}
+
+    /**
+     * Use to set a function to be called when a task is completed. The
+     * callback function should accept a single argument, a GearmanTask
+     * oject.
+     * 
+     * @param callback $callback A function to be called
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function setCompleteCallback($callback){}
+
+    /**
+     * Sets an arbitrary string to provide application context that can later
+     * be retrieved by GearmanClient::context.
+     * 
+     * @param string $context Arbitrary context data
+     * @return bool
+     * @since PECL gearman >= 0.6.0
+     **/
+    function setContext($context){}
+
+    /**
+     * Sets a function to be called when a task is received and queued by the
+     * Gearman job server. The callback should accept a single argument, a
+     * GearmanClient oject.
+     * 
+     * @param string $callback A function to call
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function setCreatedCallback($callback){}
+
+    /**
+     * Sets some arbitrary application data that can later be retrieved by
+     * GearmanClient::data.
+     * 
+     * @param string $data
+     * @return bool
+     * @since PECL gearman
+     **/
+    function setData($data){}
+
+    /**
+     * Sets the callback function for accepting data packets for a task. The
+     * callback function should take a single argument, a GearmanTask object.
+     * 
+     * @param callback $callback A function or method to call
+     * @return bool
+     * @since PECL gearman >= 0.6.0
+     **/
+    function setDataCallback($callback){}
+
+    /**
+     * Specifies a function to call when a worker for a task sends an
+     * exception.
+     * 
+     * @param callback $callback Function to call when the worker throws an
+     *   exception
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function setExceptionCallback($callback){}
+
+    /**
+     * Sets the callback function to be used when a task does not complete
+     * successfully. The function should accept a single argument, a
+     * GearmanTask object.
+     * 
+     * @param callback $callback A function to call
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function setFailCallback($callback){}
+
+    /**
+     * Sets one or more client options.
+     * 
+     * @param int $options The options to be set
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function setOptions($options){}
+
+    /**
+     * Sets a callback function used for getting updated status information
+     * from a worker. The function should accept a single argument, a
+     * GearmanTask object.
+     * 
+     * @param callback $callback A function to call
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function setStatusCallback($callback){}
+
+    /**
+     * Sets the timeout for socket I/O activity.
+     * 
+     * @param int $timeout An interval of time in milliseconds
+     * @return bool
+     * @since PECL gearman >= 0.6.0
+     **/
+    function setTimeout($timeout){}
+
+    /**
+     * Sets a function to be called when a worker sends a warning. The
+     * callback should accept a single argument, a GearmanTask object.
+     * 
+     * @param callback $callback A function to call
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function setWarningCallback($callback){}
+
+    /**
+     * Sets a function to be called when a worker needs to send back data
+     * prior to job completion. A worker can do this when it needs to send
+     * updates, send partial results, or flush data during long running jobs.
+     * The callback should accept a single argument, a GearmanTask object.
+     * 
+     * @param callback $callback A function to call
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function setWorkloadCallback($callback){}
+
+    /**
+     * Returns the timeout in milliseconds to wait for I/O activity.
+     * 
+     * @return int
+     * @since PECL gearman >= 0.6.0
+     **/
+    function timeout(){}
+
+    /**
+     * Creates a GearmanClient instance representing a client that connects
+     * to the job server and submits tasks to complete.
+     * 
+     * @since PECL gearman >= 0.5.0
+     **/
+    function __construct(){}
+
+}
+/**
  * Description of the class.
  **/
 class GearmanException extends Exception {
@@ -6551,6 +7312,330 @@ class GearmanJob {
 
 }
 /**
+ * Description of the class.
+ **/
+class GearmanTask {
+    /**
+     * Returns a new GearmanTask object.
+     * 
+     * @return GearmanTask
+     * @since PECL gearman
+     **/
+    function create(){}
+
+    /**
+     * Returns data being returned for a task by a worker.
+     * 
+     * @return string
+     * @since PECL gearman >= 0.5.0
+     **/
+    function data(){}
+
+    /**
+     * Returns the size of the data being returned for a task.
+     * 
+     * @return int
+     * @since PECL gearman >= 0.5.0
+     **/
+    function dataSize(){}
+
+    /**
+     * Returns the name of the function this task is associated with, i.e.,
+     * the function the Gearman worker calls.
+     * 
+     * @return string
+     * @since PECL gearman >= 0.6.0
+     **/
+    function functionName(){}
+
+    /**
+     * Gets the status information for whether or not this task is known to
+     * the job server.
+     * 
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function isKnown(){}
+
+    /**
+     * Indicates whether or not this task is currently running.
+     * 
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function isRunning(){}
+
+    /**
+     * Returns the job handle for this task.
+     * 
+     * @return string
+     * @since PECL gearman >= 0.5.0
+     **/
+    function jobHandle(){}
+
+    /**
+     * @param int $data_len Length of data to be read.
+     * @return array
+     * @since PECL gearman >= 0.5.0
+     **/
+    function recvData($data_len){}
+
+    /**
+     * Returns the last Gearman return code for this task.
+     * 
+     * @return int
+     * @since PECL gearman >= 0.5.0
+     **/
+    function returnCode(){}
+
+    /**
+     * @param string $data Data to send to the worker.
+     * @return int
+     * @since PECL gearman
+     **/
+    function sendData($data){}
+
+    /**
+     * @param string $data Data to send to the worker.
+     * @return int
+     * @since PECL gearman >= 0.6.0
+     **/
+    function sendWorkload($data){}
+
+    /**
+     * Returns the denominator of the percentage of the task that is complete
+     * expressed as a fraction.
+     * 
+     * @return int
+     * @since PECL gearman >= 0.5.0
+     **/
+    function taskDenominator(){}
+
+    /**
+     * Returns the numerator of the percentage of the task that is complete
+     * expressed as a fraction.
+     * 
+     * @return int
+     * @since PECL gearman >= 0.5.0
+     **/
+    function taskNumerator(){}
+
+    /**
+     * Returns the unique identifier for this task. This is assigned by the
+     * GearmanClient, as opposed to the job handle which is set by the
+     * Gearman job server.
+     * 
+     * @return string
+     * @since PECL gearman >= 0.6.0
+     **/
+    function unique(){}
+
+    /**
+     * Returns the unique identifier for this task. This is assigned by the
+     * GearmanClient, as opposed to the job handle which is set by the
+     * Gearman job server.
+     * 
+     * @return string
+     * @since PECL gearman
+     **/
+    function uuid(){}
+
+    /**
+     * Creates a GearmanTask instance representing a task to be submitted to
+     * a job server.
+     * 
+     * @since PECL gearman >= 0.5.0
+     **/
+    function __construct(){}
+
+}
+/**
+ * Description of the class.
+ **/
+class GearmanWorker {
+    /**
+     * Registers a function name with the job server and specifies a callback
+     * corresponding to that function. Optionally specify extra application
+     * context data to be used when the callback is called and a timeout.
+     * 
+     * @param string $function_name The name of a function to register with
+     *   the job server
+     * @param callback $function A callback that gets called when a job for
+     *   the registered function name is submitted
+     * @param mixed $context A reference to arbitrary application context
+     *   data that can be modified by the worker function
+     * @param int $timeout An interval of time in seconds
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function addFunction($function_name, $function, &$context, $timeout){}
+
+    /**
+     * Adds one or more options to the options previously set.
+     * 
+     * @param int $option The options to be added
+     * @return bool
+     * @since PECL gearman >= 0.6.0
+     **/
+    function addOptions($option){}
+
+    /**
+     * Adds a job server to this worker. This goes into a list of servers
+     * than can be used to run jobs. No socket I/O happens here.
+     * 
+     * @param string $host
+     * @param int $port
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function addServer($host, $port){}
+
+    /**
+     * Adds one or more job servers to this worker. These go into a list of
+     * servers that can be used to run jobs. No socket I/O happens here.
+     * 
+     * @param string $servers A comma separated list of job servers in the
+     *   format host:port. If no port is specified, it defaults to 4730.
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function addServers($servers){}
+
+    /**
+     * Returns an error string for the last error encountered.
+     * 
+     * @return string
+     * @since PECL gearman >= 0.5.0
+     **/
+    function error(){}
+
+    /**
+     * Returns the value of errno in the case of a GEARMAN_ERRNO return
+     * value.
+     * 
+     * @return int
+     * @since PECL gearman >= 0.5.0
+     **/
+    function getErrno(){}
+
+    /**
+     * Gets the options previously set for the worker.
+     * 
+     * @return int
+     * @since PECL gearman >= 0.6.0
+     **/
+    function options(){}
+
+    /**
+     * Registers a function name with the job server with an optional
+     * timeout. The timeout specifies how many seconds the server will wait
+     * before marking a job as failed. If the timeout is set to zero, there
+     * is no timeout.
+     * 
+     * @param string $function_name The name of a function to register with
+     *   the job server
+     * @param int $timeout An interval of time in seconds
+     * @return bool
+     * @since PECL gearman >= 0.6.0
+     **/
+    function register($function_name, $timeout){}
+
+    /**
+     * Removes (unsets) one or more worker options.
+     * 
+     * @param int $option The options to be removed (unset)
+     * @return bool
+     * @since PECL gearman >= 0.6.0
+     **/
+    function removeOptions($option){}
+
+    /**
+     * Returns the last Gearman return code.
+     * 
+     * @return int
+     * @since PECL gearman >= 0.5.0
+     **/
+    function returnCode(){}
+
+    /**
+     * Sets one or more options to the supplied value.
+     * 
+     * @param int $option The options to be set
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function setOptions($option){}
+
+    /**
+     * Sets the interval of time to wait for socket I/O activity.
+     * 
+     * @param int $timeout An interval of time in milliseconds. A negative
+     *   value indicates an infinite timeout.
+     * @return bool
+     * @since PECL gearman >= 0.6.0
+     **/
+    function setTimeout($timeout){}
+
+    /**
+     * Returns the current time to wait, in milliseconds, for socket I/O
+     * activity.
+     * 
+     * @return int
+     * @since PECL gearman >= 0.6.0
+     **/
+    function timeout(){}
+
+    /**
+     * Unregisters a function name with the job servers ensuring that no more
+     * jobs (for that function) are sent to this worker.
+     * 
+     * @param string $function_name The name of a function to register with
+     *   the job server
+     * @return bool
+     * @since PECL gearman >= 0.6.0
+     **/
+    function unregister($function_name){}
+
+    /**
+     * Unregisters all previously registered functions, ensuring that no more
+     * jobs are sent to this worker.
+     * 
+     * @return bool
+     * @since PECL gearman >= 0.6.0
+     **/
+    function unregisterAll(){}
+
+    /**
+     * Causes the worker to wait for activity from one of the Gearman job
+     * servers when operating in non-blocking I/O mode. On failure, issues a
+     * E_WARNING with the last Gearman error encountered.
+     * 
+     * @return bool
+     * @since PECL gearman >= 0.6.0
+     **/
+    function wait(){}
+
+    /**
+     * Waits for a job to be assigned and then calls the appropriate callback
+     * function. Issues an E_WARNING with the last Gearman error if the
+     * return code is not one of GEARMAN_SUCCESS, GEARMAN_IO_WAIT, or
+     * GEARMAN_WORK_FAIL.
+     * 
+     * @return bool
+     * @since PECL gearman >= 0.5.0
+     **/
+    function work(){}
+
+    /**
+     * Creates a GearmanWorker instance representing a worker that connects
+     * to the job server and accepts tasks to run.
+     * 
+     * @since PECL gearman >= 0.5.0
+     **/
+    function __construct(){}
+
+}
+/**
  * Returns the absolute value of {@link number}.
  * 
  * @param mixed $number The numeric value to process
@@ -6605,8 +7690,7 @@ function acosh($arg){}
  *   escaped. Use the {@link ord} function to find the ASCII value for a
  *   character.
  *   
- *   <?php echo addcslashes("zoo['.']", 'z..A'); // output: \zoo['\.']
- *   ?>
+ *   <?php echo addcslashes("zoo['.']", 'z..A'); // output: \zoo['\.'] ?>
  *   
  *   Be careful if you choose to escape characters 0, a, b, f, n, r, t
  *   and v. They will be converted to \0, \a, \b, \f, \n, \r, \t and \v.
@@ -6623,11 +7707,11 @@ function addcslashes($str, $charlist){}
  * quoted in database queries etc. These characters are single quote ('),
  * double quote ("), backslash (\) and NUL (the byte).
  * 
- * An example use of {@link addslashes} is when you're entering data
- * into a database. For example, to insert the name O'reilly into a
- * database, you will need to escape it. It's highly recommeneded to use
- * DBMS specific escape function (e.g. {@link mysqli_real_escape_string}
- * for MySQL or {@link pg_escape_string} for PostgreSQL), but if the DBMS
+ * An example use of {@link addslashes} is when you're entering data into
+ * a database. For example, to insert the name O'reilly into a database,
+ * you will need to escape it. It's highly recommeneded to use DBMS
+ * specific escape function (e.g. {@link mysqli_real_escape_string} for
+ * MySQL or {@link pg_escape_string} for PostgreSQL), but if the DBMS
  * you're using does't have an escape function and the DBMS uses \ to
  * escape special chars, you can use this function. This would only be to
  * get the data into the database, the extra \ will not be inserted.
@@ -6914,6 +7998,61 @@ function apache_setenv($variable, $value, $walk_to_top){}
 function apc_add($key, $var, $ttl){}
 
 /**
+ * Returns a binary dump of the given files and user variables from the
+ * APC cache. A for files or user_vars signals a dump of every entry,
+ * whereas array() will dump nothing.
+ * 
+ * @param array $files The files. Passing in signals a dump of every
+ *   entry, while passing in {@link array} will dump nothing.
+ * @param array $user_vars The user vars. Passing in signals a dump of
+ *   every entry, while passing in {@link array} will dump nothing.
+ * @return string
+ * @since PECL apc >= 3.1.4
+ **/
+function apc_bin_dump($files, $user_vars){}
+
+/**
+ * Outputs a binary dump of the given files and user variables from the
+ * APC cache to the named file.
+ * 
+ * @param array $files The file names being dumped.
+ * @param array $user_vars The user variables being dumped.
+ * @param string $filename The filename where the dump is being saved.
+ * @param int $flags Flags passed to the {@link filename} stream. See
+ *   the {@link file_put_contents} documentation for details.
+ * @param resource $context The context passed to the {@link filename}
+ *   stream. See the {@link file_put_contents} documentation for details.
+ * @return int
+ * @since PECL apc >= 3.1.4
+ **/
+function apc_bin_dumpfile($files, $user_vars, $filename, $flags, $context){}
+
+/**
+ * Loads the given binary dump into the APC file/user cache.
+ * 
+ * @param string $data The binary dump being loaded, likely from {@link
+ *   apc_bin_dump}.
+ * @param int $flags Either APC_BIN_VERIFY_CRC32, APC_BIN_VERIFY_MD5,
+ *   or both.
+ * @return bool
+ * @since PECL apc >= 3.1.4
+ **/
+function apc_bin_load($data, $flags){}
+
+/**
+ * Loads a binary dump from a file into the APC file/user cache.
+ * 
+ * @param string $filename The file name containing the dump, likely
+ *   from {@link apc_bin_dumpfile}.
+ * @param resource $context The files context.
+ * @param int $flags Either APC_BIN_VERIFY_CRC32, APC_BIN_VERIFY_MD5,
+ *   or both.
+ * @return bool
+ * @since PECL apc >= 3.1.4
+ **/
+function apc_bin_loadfile($filename, $context, $flags){}
+
+/**
  * Retrieves cached information and meta-data from APC's data store.
  * 
  * @param string $cache_type If {@link cache_type} is "user",
@@ -6931,6 +8070,17 @@ function apc_add($key, $var, $ttl){}
  * @since PECL apc >= 2.0.0
  **/
 function apc_cache_info($cache_type, $limited){}
+
+/**
+ * apc_cas
+ * 
+ * @param string $key
+ * @param int $old
+ * @param int $new
+ * @return int
+ * @since PECL apc >= 3.1.1
+ **/
+function apc_cas($key, $old, $new){}
 
 /**
  * Clears the user/system cache.
@@ -6952,6 +8102,18 @@ function apc_clear_cache($cache_type){}
  * @since PECL apc >= 3.0.13
  **/
 function apc_compile_file($filename){}
+
+/**
+ * Decreases a stored integer value.
+ * 
+ * @param string $key The key of the value being decreased.
+ * @param int $step The step, or value to decrease.
+ * @param bool $success Optionally pass the success or fail boolean
+ *   value to this referenced variable.
+ * @return int
+ * @since PECL apc >= 3.1.1
+ **/
+function apc_dec($key, $step, &$success){}
 
 /**
  * {@link define} is notoriously slow. Since the main benefit of APC is
@@ -6987,6 +8149,26 @@ function apc_define_constants($key, $constants, $case_sensitive){}
 function apc_delete($key){}
 
 /**
+ * Deletes the given files from the opcode cache.
+ * 
+ * @param mixed $keys The files to be deleted. Accepts a string, array
+ *   of strings, or an APCIterator object.
+ * @return mixed
+ * @since PECL apc >= 3.1.1
+ **/
+function apc_delete_file($keys){}
+
+/**
+ * Checks if one ore more APC keys exist.
+ * 
+ * @param mixed $keys A string, or an array of strings, that contain
+ *   keys.
+ * @return mixed
+ * @since PECL apc >= 3.1.4
+ **/
+function apc_exists($keys){}
+
+/**
  * Fetchs a stored variable from the cache.
  * 
  * @param mixed $key The {@link key} used to store the value (with
@@ -6997,6 +8179,18 @@ function apc_delete($key){}
  * @since PECL apc >= 3.0.0
  **/
 function apc_fetch($key, &$success){}
+
+/**
+ * Increases a stored number.
+ * 
+ * @param string $key The key of the value being increased.
+ * @param int $step The step, or value to increase.
+ * @param bool $success Optionally pass the success or fail boolean
+ *   value to this referenced variable.
+ * @return int
+ * @since PECL apc >= 3.1.1
+ **/
+function apc_inc($key, $step, &$success){}
 
 /**
  * Loads a set of constants from the cache.
@@ -7343,13 +8537,13 @@ function array_filter($input, $callback){}
  * {@link array_flip} returns an array in flip order, i.e. keys from
  * {@link trans} become values and values from {@link trans} become keys.
  * 
- * Note that the values of {@link trans} need to be valid keys, i.e.
- * they need to be either integer or string. A warning will be emitted if
- * a value has the wrong type, and the key/value pair in question will
- * not be flipped.
+ * Note that the values of {@link trans} need to be valid keys, i.e. they
+ * need to be either integer or string. A warning will be emitted if a
+ * value has the wrong type, and the key/value pair in question will not
+ * be flipped.
  * 
- * If a value has several occurrences, the latest key will be used as
- * its values, and all others will be lost.
+ * If a value has several occurrences, the latest key will be used as its
+ * values, and all others will be lost.
  * 
  * @param array $trans An array of key/value pairs to be flipped.
  * @return array
@@ -7482,8 +8676,8 @@ function array_map($callback, $arr1){}
  * contain numeric keys, the later value will not overwrite the original
  * value, but will be appended.
  * 
- * If only one array is given and the array is numerically indexed, the
- * keys get reindexed in a continuous way.
+ * If all of the arrays contain only numeric keys, the resulting array is
+ * given incrementing keys starting from zero.
  * 
  * @param array $array1 Initial array to merge.
  * @param array $array2 Variable list of arrays to recursively merge.
@@ -7514,8 +8708,8 @@ function array_merge_recursive($array1){}
  * {@link array_multisort} can be used to sort several arrays at once, or
  * a multi-dimensional array by one or more dimensions.
  * 
- * Associative (string) keys will be maintained, but numeric keys will
- * be re-indexed.
+ * Associative (string) keys will be maintained, but numeric keys will be
+ * re-indexed.
  * 
  * @param array $arr An array being sorted.
  * @param mixed $arg Optionally another array, or sort options for the
@@ -7589,6 +8783,8 @@ function array_push(&$array, $var){}
  * 
  * @param array $input The input array.
  * @param int $num_req Specifies how many entries you want to pick.
+ *   Trying to pick more elements than there are in the array will result
+ *   in an E_WARNING level error.
  * @return mixed
  * @since PHP 4, PHP 5
  **/
@@ -7619,8 +8815,8 @@ function array_reduce($input, $function, $initial){}
  * arrays are passed for replacement, they will be processed in order,
  * the later arrays overwriting the previous values.
  * 
- * {@link array_replace} is not recursive : it will replace values in
- * the first array by whatever type is in the second array.
+ * {@link array_replace} is not recursive : it will replace values in the
+ * first array by whatever type is in the second array.
  * 
  * @param array $array The array in which elements are replaced.
  * @param array $array1 The array from which elements will be
@@ -7676,8 +8872,10 @@ function array_reverse($array, $preserve_keys){}
  * @param mixed $needle The searched value.
  * @param array $haystack The array.
  * @param bool $strict If the third parameter {@link strict} is set to
- *   then the {@link array_search} function will also check the types of
- *   the {@link needle} in the {@link haystack}.
+ *   then the {@link array_search} function will search for identical
+ *   elements in the {@link haystack}. This means it will also check the
+ *   types of the {@link needle} in the {@link haystack}, and objects
+ *   must be the same instance.
  * @return mixed
  * @since PHP 4 >= 4.0.5, PHP 5
  **/
@@ -8032,9 +9230,9 @@ function asort(&$array, $sort_flags){}
  * presence of certain features like extension functions or certain
  * system limits and features.
  * 
- * Assertions should not be used for normal runtime operations like
- * input parameter checks. As a rule of thumb your code should always be
- * able to work correctly if assertion checking is not activated.
+ * Assertions should not be used for normal runtime operations like input
+ * parameter checks. As a rule of thumb your code should always be able
+ * to work correctly if assertion checking is not activated.
  * 
  * The behavior of {@link assert} may be configured by {@link
  * assert_options} or by .ini-settings described in that functions manual
@@ -8128,8 +9326,7 @@ function base64_decode($data, $strict){}
  * through transport layers that are not 8-bit clean, such as mail
  * bodies.
  * 
- * Base64-encoded data takes about 33% more space than the original
- * data.
+ * Base64-encoded data takes about 33% more space than the original data.
  * 
  * @param string $data The data to encode.
  * @return string
@@ -8212,11 +9409,11 @@ function bbcode_add_smiley($bbcode_container, $smiley, $replace_by){}
  *   string $argument) param_handling optional - Gives the callback used
  *   for modification of the argument. Object Oriented Notation supported
  *   only since 0.10.1 callback prototype is string name(string $content,
- *   string $argument) childs optional - List of accepted child for the
- *   tag. The format of the list is a comma separated string. If the list
- *   starts with ! it will be the list of rejected child for the tag.
- *   parent optional - List of accepted child for the tag. The format of
- *   the list is a comma separated string.
+ *   string $argument) childs optional - List of accepted children for
+ *   the tag. The format of the list is a comma separated string. If the
+ *   list starts with ! it will be the list of rejected children for the
+ *   tag. parent optional - List of accepted parents for the tag. The
+ *   format of the list is a comma separated string.
  * @return resource
  * @since PECL bbcode >= 0.9.0
  **/
@@ -8561,10 +9758,9 @@ function bin2hex($str){}
  * {@link bindec} converts a binary number to an integer or, if needed
  * for size reasons, float.
  * 
- * {@link bindec} interprets all {@link binary_string} values as
- * unsigned integers. This is because {@link bindec} sees the most
- * significant bit as another order of magnitude rather than as the sign
- * bit.
+ * {@link bindec} interprets all {@link binary_string} values as unsigned
+ * integers. This is because {@link bindec} sees the most significant bit
+ * as another order of magnitude rather than as the sign bit.
  * 
  * @param string $binary_string The binary string to convert
  * @return number
@@ -8595,6 +9791,10 @@ function bindtextdomain($domain, $directory){}
 function bind_textdomain_codeset($domain, $codeset){}
 
 /**
+ * This function is very beta and entirely useless for 99% of users. It
+ * is only useful if you're doing something weird, such as writing your
+ * own driver on top of the PHP driver.
+ * 
  * @param string $bson The BSON to be deserialized.
  * @return array
  * @since PECL mongo >=1.0.1
@@ -8602,6 +9802,10 @@ function bind_textdomain_codeset($domain, $codeset){}
 function bson_decode($bson){}
 
 /**
+ * This function is very beta and entirely useless for 99% of users. It
+ * is only useful if you're doing something weird, such as writing your
+ * own driver on top of the PHP driver.
+ * 
  * @param mixed $anything The variable to be serialized.
  * @return string
  * @since PECL mongo >=1.0.1
@@ -9699,18 +10903,20 @@ function call_user_func($function, $parameter){}
 function call_user_func_array($function, $param_arr){}
 
 /**
- * @param string $method_name
- * @param object $obj
- * @param mixed $parameter
+ * @param string $method_name The method name being called.
+ * @param object $obj The object that {@link method_name} is being
+ *   called on.
+ * @param mixed $parameter The optional parameters.
  * @return mixed
  * @since PHP 4, PHP 5
  **/
 function call_user_method($method_name, &$obj, $parameter){}
 
 /**
- * @param string $method_name
- * @param object $obj
- * @param array $params
+ * @param string $method_name The method name being called.
+ * @param object $obj The object that {@link method_name} is being
+ *   called on.
+ * @param array $params An array of parameters.
  * @return mixed
  * @since PHP 4 >= 4.0.5, PHP 5
  **/
@@ -9787,6 +10993,22 @@ function cal_to_jd($calendar, $month, $day, $year){}
 function ceil($value){}
 
 /**
+ * {@link chdb_create} creates a chdb file containing the specified
+ * key-value pairs.
+ * 
+ * @param string $pathname The name of the file to create. If a file
+ *   with the same name already exists, it is overwritten.
+ * @param array $data An array containing the key-value pairs to store
+ *   in the chdb file. Keys and values are converted to strings before
+ *   being written to the file, as chdb only support the string type.
+ *   Note that binary strings are supported as well, both as keys and
+ *   values.
+ * @return void
+ * @since PECL chdb >= 0.1.0
+ **/
+function chdb_create($pathname, $data){}
+
+/**
  * Changes PHP's current directory to {@link directory}.
  * 
  * @param string $directory The new current directory
@@ -9852,15 +11074,15 @@ function chgrp($filename, $group){}
  *   incorrect chmod("/somedir/somefile", 0755); // octal; correct value
  *   of mode ?>
  *   
- *   The {@link mode} parameter consists of three octal number
- *   components specifying access restrictions for the owner, the user
- *   group in which the owner is in, and to everybody else in this order.
- *   One component can be computed by adding up the needed permissions
- *   for that target user base. Number 1 means that you grant execute
- *   rights, number 2 means that you make the file writeable, number 4
- *   means that you make the file readable. Add up these numbers to
- *   specify needed rights. You can also read more about modes on Unix
- *   systems with 'man 1 chmod' and 'man 2 chmod'.
+ *   The {@link mode} parameter consists of three octal number components
+ *   specifying access restrictions for the owner, the user group in
+ *   which the owner is in, and to everybody else in this order. One
+ *   component can be computed by adding up the needed permissions for
+ *   that target user base. Number 1 means that you grant execute rights,
+ *   number 2 means that you make the file writeable, number 4 means that
+ *   you make the file readable. Add up these numbers to specify needed
+ *   rights. You can also read more about modes on Unix systems with 'man
+ *   1 chmod' and 'man 2 chmod'.
  *   
  *   <?php // Read and write for owner, nothing for everybody else
  *   chmod("/somedir/somefile", 0600);
@@ -10121,11 +11343,11 @@ function closelog(){}
 /**
  * Creates an array containing variables and their values.
  * 
- * For each of these, {@link compact} looks for a variable with that
- * name in the current symbol table and adds it to the output array such
- * that the variable name becomes the key and the contents of the
- * variable become the value for that key. In short, it does the opposite
- * of {@link extract}.
+ * For each of these, {@link compact} looks for a variable with that name
+ * in the current symbol table and adds it to the output array such that
+ * the variable name becomes the key and the contents of the variable
+ * become the value for that key. In short, it does the opposite of
+ * {@link extract}.
  * 
  * Any strings that are not set will simply be skipped.
  * 
@@ -10529,18 +11751,15 @@ function create_function($args, $code){}
  * sets a constant named CRYPT_SALT_LENGTH which indicates the longest
  * valid salt allowed by the available hashes.
  * 
- * The standard DES-based {@link crypt} returns the salt as the first
- * two characters of the output. It also only uses the first eight
- * characters of {@link str}, so longer strings that start with the same
- * eight characters will generate the same result (when the same salt is
- * used).
+ * The standard DES-based {@link crypt} returns the salt as the first two
+ * characters of the output. It also only uses the first eight characters
+ * of {@link str}, so longer strings that start with the same eight
+ * characters will generate the same result (when the same salt is used).
  * 
  * @param string $str The string to be hashed.
  * @param string $salt An optional salt string to base the hashing on.
- *   If not provided, one will be randomly generated by PHP each time you
- *   call this function. If you are using the supplied salt, you should
- *   be aware that the salt is generated once. If you are calling this
- *   function repeatedly, this may impact both appearance and security.
+ *   If not provided, the behaviour is defined by the algorithm
+ *   implementation and can lead to unexpected results.
  * @return string
  * @since PHP 4, PHP 5
  **/
@@ -11091,7 +12310,8 @@ function curl_multi_select($mh, $timeout){}
  *   parameter: Option Set {@link value} to Notes CURLOPT_HTTP200ALIASES
  *   An array of HTTP 200 responses that will be treated as valid
  *   responses and not as errors. Added in cURL 7.10.3.
- *   CURLOPT_HTTPHEADER An array of HTTP header fields to set.
+ *   CURLOPT_HTTPHEADER An array of HTTP header fields to set, in the
+ *   format array('Content-type: text/plain', 'Content-length: 100')
  *   CURLOPT_POSTQUOTE An array of FTP commands to execute on the server
  *   after the FTP request has been performed. CURLOPT_QUOTE An array of
  *   FTP commands to execute on the server prior to the FTP request.
@@ -11295,9 +12515,13 @@ function cyrus_unbind($connection, $trigger_name){}
 function date($format, $timestamp){}
 
 /**
- * @param string $time String in a format accepted by {@link
- *   strtotime}.
- * @param DateTimeZone $timezone Time zone of the time.
+ * Returns new DateTime object.
+ * 
+ * @param string $time Enter here to obtain the current time when using
+ *   the {@link $timezone} parameter.
+ * @param DateTimeZone $timezone A DateTimeZone object representing the
+ *   desired time zone. If {@link $timezone} is omitted, the current
+ *   timezone will be used.
  * @return DateTime
  * @since PHP 5 >= 5.2.0
  **/
@@ -11307,8 +12531,9 @@ function date_create($time, $timezone){}
  * In order of preference, this function returns the default timezone by:
  * Reading the timezone set using the {@link date_default_timezone_set}
  * function (if any) Reading the TZ environment variable (if non empty)
- * Reading the value of the date.timezone ini option (if set) Querying
- * the host operating system (if supported and allowed by the OS)
+ * (Prior to PHP 5.3.0) Reading the value of the date.timezone ini option
+ * (if set) Querying the host operating system (if supported and allowed
+ * by the OS)
  * 
  * If none of the above succeed, date_default_timezone_get will return a
  * default timezone of UTC.
@@ -11768,8 +12993,8 @@ function db2_fetch_object($stmt, $row_number){}
  * To retrieve individual fields from the result set, call the {@link
  * db2_result} function.
  * 
- * Rather than calling {@link db2_fetch_row} and {@link db2_result},
- * most applications will call one of {@link db2_fetch_assoc}, {@link
+ * Rather than calling {@link db2_fetch_row} and {@link db2_result}, most
+ * applications will call one of {@link db2_fetch_assoc}, {@link
  * db2_fetch_both}, or {@link db2_fetch_array} to advance the result set
  * pointer and return a complete row as an array.
  * 
@@ -11961,8 +13186,8 @@ function db2_get_option($resource, $option){}
  * Returns the auto generated ID of the last insert query that
  * successfully executed on this connection.
  * 
- * The result of this function is not affected by any of the following:
- * A single row INSERT statement with a VALUES clause for a table without
+ * The result of this function is not affected by any of the following: A
+ * single row INSERT statement with a VALUES clause for a table without
  * an identity column. A multiple row INSERT statement with a VALUES
  * clause. An INSERT statement with a fullselect. A ROLLBACK TO SAVEPOINT
  * statement.
@@ -13998,7 +15223,7 @@ function disk_total_space($directory){}
  *   <debug-or-not>-<zts-or-not>-ZEND_MODULE_API_NO, e.g.
  *   /usr/local/php/lib/php/extensions/debug-non-zts-20010901 or
  *   /usr/local/php/lib/php/extensions/no-debug-zts-20010901.
- * @return int
+ * @return bool
  * @since PHP 4, PHP 5
  **/
 function dl($library){}
@@ -14233,9 +15458,6 @@ function each(&$array){}
  * in September 1752) two correction factors are added to make the cycle
  * more accurate.
  * 
- * (The code is based on a C program by Simon Kershaw, <webmaster at
- * ely.anglican dot org>)
- * 
  * @param int $year The year as a number between 1970 an 2037
  * @return int
  * @since PHP 4, PHP 5
@@ -14262,9 +15484,6 @@ function easter_date($year){}
  * Gregory XIII in October 1582, and into Britain and its then colonies
  * in September 1752) two correction factors are added to make the cycle
  * more accurate.
- * 
- * (The code is based on a C program by Simon Kershaw, <webmaster at
- * ely.anglican dot org>)
  * 
  * @param int $year The year as a positive number
  * @param int $method Allows to calculate easter dates based on the
@@ -14627,10 +15846,9 @@ function escapeshellarg($arg){}
  * user input is escaped before this data is passed to the {@link exec}
  * or {@link system} functions, or to the backtick operator.
  * 
- * Following characters are preceded by a backslash:
- * #&;`|*?~<>^()[]{}$\, \x0A and \xFF. ' and " are escaped only if they
- * are not paired. In Windows, all these characters plus % are replaced
- * by a space instead.
+ * Following characters are preceded by a backslash: #&;`|*?~<>^()[]{}$\,
+ * \x0A and \xFF. ' and " are escaped only if they are not paired. In
+ * Windows, all these characters plus % are replaced by a space instead.
  * 
  * @param string $command The command that will be escaped.
  * @return string
@@ -14826,6 +16044,23 @@ function event_buffer_priority_set($bevent, $priority){}
 function event_buffer_read($bevent, $data_size){}
 
 /**
+ * Sets or changes existing callbacks for the buffered {@link event}.
+ * 
+ * @param resource $event Valid buffered event resource.
+ * @param mixed $readcb Callback to invoke where there is data to read,
+ *   or NULL if no callback is desired.
+ * @param mixed $writecb Callback to invoke where the descriptor is
+ *   ready for writing, or NULL if no callback is desired.
+ * @param mixed $errorcb Callback to invoke where there is an error on
+ *   the descriptor, cannot be NULL.
+ * @param mixed $arg An argument that will be passed to each of the
+ *   callbacks (optional).
+ * @return resource
+ * @since PECL libevent >= 0.0.4
+ **/
+function event_buffer_set_callback($event, $readcb, $writecb, $errorcb, $arg){}
+
+/**
  * Sets the read and write timeouts for the specified buffered event.
  * 
  * @param resource $bevent Valid buffered event resource.
@@ -14896,20 +16131,24 @@ function event_new(){}
  * Prepares the event to be used in {@link event_add}. The event is
  * prepared to call the function specified by the {@link callback} on the
  * events specified in parameter {@link events}, which is a set of the
- * following flags: EV_TIMEOUT, EV_SIGNAL, EV_READ and EV_WRITE.
+ * following flags: EV_TIMEOUT, EV_SIGNAL, EV_READ, EV_WRITE, EV_PERSIST
+ * and EV_SIGNAL.
+ * 
+ * If EV_SIGNAL bit is set in parameter {@link events}, the {@link fd} is
+ * interpreted as signal number.
  * 
  * After initializing the event, use {@link event_base_set} to associate
  * the event with its event base.
  * 
  * In case of matching event, these three arguments are passed to the
- * {@link callback} function: {@link fd} Resource indicating the stream.
- * {@link events} A flag indicating the event. Can be one of the
- * following: EV_TIMEOUT, EV_SIGNAL, EV_READ or EV_WRITE. {@link arg}
- * Optional parameter, previously passed to {@link event_set} as {@link
- * arg}.
+ * {@link callback} function: {@link fd} Signal number or resource
+ * indicating the stream. {@link events} A flag indicating the event.
+ * Consists of the following flags: EV_TIMEOUT, EV_SIGNAL, EV_READ,
+ * EV_WRITE, EV_PERSIST and EV_SIGNAL. {@link arg} Optional parameter,
+ * previously passed to {@link event_set} as {@link arg}.
  * 
  * @param resource $event Valid event resource.
- * @param resource $fd Valid PHP stream resource. The stream must be
+ * @param mixed $fd Valid PHP stream resource. The stream must be
  *   castable to file descriptor, so you most likely won't be able to use
  *   any of filtered streams.
  * @param int $events A set of flags indicating the desired event, can
@@ -14972,15 +16211,15 @@ function exif_imagetype($filename){}
  * so their values must not be part of any header returned. Also, html is
  * a height/width text string to be used inside normal HTML.
  * 
- * When an Exif header contains a Copyright note, this itself can
- * contain two values. As the solution is inconsistent in the Exif 2.10
- * standard, the COMPUTED section will return both entries
- * Copyright.Photographer and Copyright.Editor while the IFD0 sections
- * contains the byte array with the NULL character that splits both
- * entries. Or just the first entry if the datatype was wrong (normal
- * behaviour of Exif). The COMPUTED will also contain the entry Copyright
- * which is either the original copyright string, or a comma separated
- * list of the photo and editor copyright.
+ * When an Exif header contains a Copyright note, this itself can contain
+ * two values. As the solution is inconsistent in the Exif 2.10 standard,
+ * the COMPUTED section will return both entries Copyright.Photographer
+ * and Copyright.Editor while the IFD0 sections contains the byte array
+ * with the NULL character that splits both entries. Or just the first
+ * entry if the datatype was wrong (normal behaviour of Exif). The
+ * COMPUTED will also contain the entry Copyright which is either the
+ * original copyright string, or a comma separated list of the photo and
+ * editor copyright.
  * 
  * The tag UserComment has the same problem as the Copyright tag. It can
  * store two values. First the encoding used, and second the value
@@ -15215,9 +16454,9 @@ function fam_close($fam){}
 /**
  * Requests monitoring for a collection of files within a directory.
  * 
- * A FAM event will be generated whenever the status of the files
- * change. The possible event codes are described in detail in the
- * constants part of this section.
+ * A FAM event will be generated whenever the status of the files change.
+ * The possible event codes are described in detail in the constants part
+ * of this section.
  * 
  * @param resource $fam A resource representing a connection to the FAM
  *   service returned by {@link fam_open}
@@ -15238,8 +16477,8 @@ function fam_monitor_collection($fam, $dirname, $depth, $mask){}
  * (i.e. the result of function {@link stat} on that directory) or its
  * content (i.e. the results of {@link readdir}) changes.
  * 
- * The possible event codes are described in detail in the constants
- * part of this section.
+ * The possible event codes are described in detail in the constants part
+ * of this section.
  * 
  * @param resource $fam A resource representing a connection to the FAM
  *   service returned by {@link fam_open}
@@ -15254,8 +16493,8 @@ function fam_monitor_directory($fam, $dirname){}
  * whenever the file status changes (i.e. the result of function {@link
  * stat} on that file).
  * 
- * The possible event codes are described in detail in the constants
- * part of this section.
+ * The possible event codes are described in detail in the constants part
+ * of this section.
  * 
  * @param resource $fam A resource representing a connection to the FAM
  *   service returned by {@link fam_open}
@@ -15746,10 +16985,10 @@ function fbsql_field_type($result, $field_offset){}
 /**
  * Frees all memory associated with the given {@link result} identifier.
  * 
- * {@link fbsql_free_result} only needs to be called if you are
- * concerned about how much memory is being used for queries that return
- * large result sets. All associated result memory is automatically freed
- * at the end of the script's execution.
+ * {@link fbsql_free_result} only needs to be called if you are concerned
+ * about how much memory is being used for queries that return large
+ * result sets. All associated result memory is automatically freed at
+ * the end of the script's execution.
  * 
  * @param resource $result
  * @return bool
@@ -15894,8 +17133,8 @@ function fbsql_pconnect($hostname, $username, $password){}
 /**
  * Sends a {@link query} to the currently active database on the server.
  * 
- * If the query succeeds, you can call {@link fbsql_num_rows} to find
- * out how many rows were returned for a SELECT statement or {@link
+ * If the query succeeds, you can call {@link fbsql_num_rows} to find out
+ * how many rows were returned for a SELECT statement or {@link
  * fbsql_affected_rows} to find out how many rows were affected by a
  * DELETE, INSERT, REPLACE, or UPDATE statement.
  * 
@@ -15910,12 +17149,12 @@ function fbsql_query($query, $link_identifier, $batch_size){}
 /**
  * Reads BLOB data from the database.
  * 
- * If a select statement contains BLOB and/or CLOB columns FrontBase
- * will return the data directly when data is fetched. This default
- * behavior can be changed with {@link fbsql_set_lob_mode} so the fetch
- * functions will return handles to BLOB and CLOB data. If a handle is
- * fetched a user must call {@link fbsql_read_blob} to get the actual
- * BLOB data from the database.
+ * If a select statement contains BLOB and/or CLOB columns FrontBase will
+ * return the data directly when data is fetched. This default behavior
+ * can be changed with {@link fbsql_set_lob_mode} so the fetch functions
+ * will return handles to BLOB and CLOB data. If a handle is fetched a
+ * user must call {@link fbsql_read_blob} to get the actual BLOB data
+ * from the database.
  * 
  * @param string $blob_handle A BLOB handle, returned by {@link
  *   fbsql_create_blob}.
@@ -15928,12 +17167,12 @@ function fbsql_read_blob($blob_handle, $link_identifier){}
 /**
  * Reads CLOB data from the database.
  * 
- * If a select statement contains BLOB and/or CLOB columns FrontBase
- * will return the data directly when data is fetched. This default
- * behavior can be changed with {@link fbsql_set_lob_mode} so the fetch
- * functions will return handles to BLOB and CLOB data. If a handle is
- * fetched a user must call {@link fbsql_read_clob} to get the actual
- * CLOB data from the database.
+ * If a select statement contains BLOB and/or CLOB columns FrontBase will
+ * return the data directly when data is fetched. This default behavior
+ * can be changed with {@link fbsql_set_lob_mode} so the fetch functions
+ * will return handles to BLOB and CLOB data. If a handle is fetched a
+ * user must call {@link fbsql_read_clob} to get the actual CLOB data
+ * from the database.
  * 
  * @param string $clob_handle A CLOB handle, returned by {@link
  *   fbsql_create_clob}.
@@ -16837,12 +18076,12 @@ function file_exists($filename){}
  * specified {@link offset} up to {@link maxlen} bytes. On failure,
  * {@link file_get_contents} will return .
  * 
- * {@link file_get_contents} is the preferred way to read the contents
- * of a file into a string. It will use memory mapping techniques if
+ * {@link file_get_contents} is the preferred way to read the contents of
+ * a file into a string. It will use memory mapping techniques if
  * supported by your OS to enhance performance.
  * 
  * @param string $filename Name of the file to read.
- * @param int $flags
+ * @param bool $use_include_path
  * @param resource $context A valid context resource created with
  *   {@link stream_context_create}. If you don't need to use a custom
  *   context, you can skip this parameter by .
@@ -16854,7 +18093,7 @@ function file_exists($filename){}
  * @return string
  * @since PHP 4 >= 4.3.0, PHP 5
  **/
-function file_get_contents($filename, $flags, $context, $offset, $maxlen){}
+function file_get_contents($filename, $use_include_path, $context, $offset, $maxlen){}
 
 /**
  * This function is identical to calling {@link fopen}, {@link fwrite}
@@ -16891,7 +18130,7 @@ function file_put_contents($filename, $data, $flags, $context){}
 
 /**
  * @param int $type One of INPUT_GET, INPUT_POST, INPUT_COOKIE,
- *   INPUT_SERVER, INPUT_ENV.
+ *   INPUT_SERVER, or INPUT_ENV.
  * @param string $variable_name Name of a variable to check.
  * @return bool
  * @since PHP 5 >= 5.2.0
@@ -16907,8 +18146,7 @@ function filter_id($filtername){}
 
 /**
  * @param int $type One of INPUT_GET, INPUT_POST, INPUT_COOKIE,
- *   INPUT_SERVER, INPUT_ENV, INPUT_SESSION (not implemented yet) or
- *   INPUT_REQUEST (not implemented yet).
+ *   INPUT_SERVER, or INPUT_ENV.
  * @param string $variable_name Name of a variable to get.
  * @param int $filter Filter to apply.
  * @param mixed $options Associative array of options or bitwise
@@ -16924,8 +18162,7 @@ function filter_input($type, $variable_name, $filter, $options){}
  * repetitively calling {@link filter_input}.
  * 
  * @param int $type One of INPUT_GET, INPUT_POST, INPUT_COOKIE,
- *   INPUT_SERVER, INPUT_ENV, INPUT_SESSION (not implemented yet), or
- *   INPUT_REQUEST (not implemented yet).
+ *   INPUT_SERVER, or INPUT_ENV.
  * @param mixed $definition An array defining the arguments. A valid
  *   key is a string containing a variable name and a valid value is
  *   either a filter type, or an array optionally specifying the filter,
@@ -16957,10 +18194,10 @@ function filter_list(){}
  *   argument, the value to be filtered, and return the value after
  *   filtering/sanitizing it.
  *   
- *   <?php // for filters that accept options, use this format $options
- *   = array( 'options' => array( 'default' => 3, // value to return if
- *   the filter fails // other options here 'min_range' => 0 ), 'flags'
- *   => FILTER_FLAG_ALLOW_OCTAL, ); $var = filter_var('0755',
+ *   <?php // for filters that accept options, use this format $options =
+ *   array( 'options' => array( 'default' => 3, // value to return if the
+ *   filter fails // other options here 'min_range' => 0 ), 'flags' =>
+ *   FILTER_FLAG_ALLOW_OCTAL, ); $var = filter_var('0755',
  *   FILTER_VALIDATE_INT, $options);
  *   
  *   // for filter that only accept flags, you can pass them directly
@@ -17046,7 +18283,8 @@ function finfo_file($finfo, $file_name, $options, $context){}
  *   something like /path/to/magic.mime. If not specified, the MAGIC
  *   environment variable is used. If this variable is not set either,
  *   /usr/share/misc/magic is used by default. A .mime and/or .mgc suffix
- *   is added if needed.
+ *   is added if needed. Passing NULL or an empty string will be
+ *   equivalent to the default value.
  * @return resource
  * @since PHP >= 5.3.0, PECL fileinfo >= 0.1.0
  **/
@@ -17116,9 +18354,9 @@ function floor($value){}
  * (CGI, a web server, etc). This attempts to push current output all the
  * way to the browser with a few caveats.
  * 
- * {@link flush} may not be able to override the buffering scheme of
- * your web server and it has no effect on any client-side buffering in
- * the browser. It also doesn't affect PHP's userspace output buffering
+ * {@link flush} may not be able to override the buffering scheme of your
+ * web server and it has no effect on any client-side buffering in the
+ * browser. It also doesn't affect PHP's userspace output buffering
  * mechanism. This means you will have to call both {@link ob_flush} and
  * {@link flush} to flush the ob output buffers if you are using those.
  * 
@@ -17204,7 +18442,7 @@ function fnmatch($pattern, $string, $flags){}
  *   any backslashes used in the path to the file, or use forward
  *   slashes.
  *   
- *   <?php $handle = fopen("c:\\data\\info.txt", "r"); ?>
+ *   <?php $handle = fopen("c:\\folder\\resource.txt", "r"); ?>
  * @param string $mode The {@link mode} parameter specifies the type of
  *   access you require to the stream. It may be any of the following: A
  *   list of possible modes for {@link fopen} using {@link mode} {@link
@@ -17696,8 +18934,8 @@ function ftp_nb_continue($ftp_stream){}
 /**
  * {@link ftp_nb_fget} retrieves a remote file from the FTP server.
  * 
- * The difference between this function and {@link ftp_fget} is that
- * this function retrieves the file asynchronously, so your program can
+ * The difference between this function and {@link ftp_fget} is that this
+ * function retrieves the file asynchronously, so your program can
  * perform other operations while the file is being downloaded.
  * 
  * @param resource $ftp_stream The link identifier of the FTP
@@ -18001,8 +19239,8 @@ function func_get_arg($arg_num){}
 /**
  * Gets an array of the function's argument list.
  * 
- * This function may be used in conjunction with {@link func_get_arg}
- * and {@link func_num_args} to allow user-defined functions to accept
+ * This function may be used in conjunction with {@link func_get_arg} and
+ * {@link func_num_args} to allow user-defined functions to accept
  * variable-length argument lists.
  * 
  * @return array
@@ -18013,8 +19251,8 @@ function func_get_args(){}
 /**
  * Gets the number of arguments passed to the function.
  * 
- * This function may be used in conjunction with {@link func_get_arg}
- * and {@link func_get_args} to allow user-defined functions to accept
+ * This function may be used in conjunction with {@link func_get_arg} and
+ * {@link func_get_args} to allow user-defined functions to accept
  * variable-length argument lists.
  * 
  * @return int
@@ -18151,8 +19389,8 @@ function geoip_db_avail($database){}
  * The {@link geoip_db_filename} function returns the filename of the
  * corresponding GeoIP Database.
  * 
- * It does not indicate if the file exists or not on disk, only where
- * the library is looking for the database.
+ * It does not indicate if the file exists or not on disk, only where the
+ * library is looking for the database.
  * 
  * @param int $database The database type as an integer. You can use
  *   the various constants defined with this extension (ie:
@@ -18167,11 +19405,11 @@ function geoip_db_filename($database){}
  * information as a multi-dimensional array about all the GeoIP database
  * types.
  * 
- * This function is available even if no databases are installed. It
- * will simply list them as non-available.
+ * This function is available even if no databases are installed. It will
+ * simply list them as non-available.
  * 
- * The names of the different keys of the returning associative array
- * are as follows:
+ * The names of the different keys of the returning associative array are
+ * as follows:
  * 
  * "available" -- Boolean, indicate if DB is available (see {@link
  * geoip_db_avail}) "description" -- The database description "filename"
@@ -18235,8 +19473,8 @@ function geoip_org_by_name($hostname){}
  * commercial GeoIP City Edition. A warning will be issued if the proper
  * database cannot be located.
  * 
- * The names of the different keys of the returning associative array
- * are as follows:
+ * The names of the different keys of the returning associative array are
+ * as follows:
  * 
  * "continent_code" -- Two letter continent code (as of version 1.0.4
  * with libgeoip 1.4.3 or newer) "country_code" -- Two letter country
@@ -18265,8 +19503,8 @@ function geoip_record_by_name($hostname){}
  * commercial GeoIP Region Edition. A warning will be issued if the
  * proper database cannot be located.
  * 
- * The names of the different keys of the returning associative array
- * are as follows:
+ * The names of the different keys of the returning associative array are
+ * as follows:
  * 
  * "country_code" -- Two letter country code (see {@link
  * geoip_country_code_by_name}) "region" -- The region code (ex: CA for
@@ -18291,9 +19529,9 @@ function geoip_region_by_name($hostname){}
  * For the rest of the world, GeoIP uses FIPS 10-4 codes to represent
  * regions. You can check for a detailed list of FIPS 10-4 codes.
  * 
- * This function is always available if using GeoIP Library version
- * 1.4.1 or newer. The data is taken directly from the GeoIP Library and
- * not from any database.
+ * This function is always available if using GeoIP Library version 1.4.1
+ * or newer. The data is taken directly from the GeoIP Library and not
+ * from any database.
  * 
  * @param string $country_code The two-letter country code (see {@link
  *   geoip_country_code_by_name})
@@ -18316,9 +19554,9 @@ function geoip_region_name_by_code($country_code, $region_code){}
  * For the rest of the world, GeoIP uses FIPS 10-4 codes to represent
  * regions. You can check for a detailed list of FIPS 10-4 codes.
  * 
- * This function is always available if using GeoIP Library version
- * 1.4.1 or newer. The data is taken directly from the GeoIP Library and
- * not from any database.
+ * This function is always available if using GeoIP Library version 1.4.1
+ * or newer. The data is taken directly from the GeoIP Library and not
+ * from any database.
  * 
  * @param string $country_code The two-letter country code (see {@link
  *   geoip_country_code_by_name})
@@ -18340,21 +19578,6 @@ function geoip_time_zone_by_country_and_region($country_code, $region_code){}
  * @since PHP 4, PHP 5
  **/
 function getallheaders(){}
-
-/**
- * Returns the OS-dependent attributes of the archive entry.
- * 
- * @return int
- **/
-function getAttr(){}
-
-/**
- * Returns an hexadecimal string representation of the CRC of the archive
- * entry.
- * 
- * @return string
- **/
-function getCrc(){}
 
 /**
  * Gets the current working directory.
@@ -18388,13 +19611,6 @@ function getdate($timestamp){}
  * @since PHP 4, PHP 5
  **/
 function getenv($varname){}
-
-/**
- * Gets entry last modification time.
- * 
- * @return string
- **/
-function getFileTime(){}
 
 /**
  * Returns the host name of the Internet host specified by {@link
@@ -18435,13 +19651,6 @@ function gethostbynamel($hostname){}
 function gethostname(){}
 
 /**
- * Returns the code of the host OS of the archive entry.
- * 
- * @return int
- **/
-function getHostOs(){}
-
-/**
  * The {@link getimagesize} function will determine the size of any given
  * image file and return the dimensions along with the file type and a
  * height/width text string to be used inside a normal HTML IMG tag and
@@ -18476,14 +19685,6 @@ function getimagesize($filename, &$imageinfo){}
  * @since PHP 4, PHP 5
  **/
 function getlastmod(){}
-
-/**
- * RarEntry::getMethod returns number of the method used when adding
- * current archive entry.
- * 
- * @return int
- **/
-function getMethod(){}
 
 /**
  * Searches DNS for MX records corresponding to {@link hostname}.
@@ -18527,13 +19728,6 @@ function getmypid(){}
 function getmyuid(){}
 
 /**
- * Returns the name (with path) of the archive entry.
- * 
- * @return string
- **/
-function getName(){}
-
-/**
  * Parses options passed to the script.
  * 
  * @param string $options
@@ -18542,13 +19736,6 @@ function getName(){}
  * @since PHP 4 >= 4.3.0, PHP 5
  **/
 function getopt($options, $longopts){}
-
-/**
- * Get packed size of the archive entry.
- * 
- * @return int
- **/
-function getPackedSize(){}
 
 /**
  * {@link getprotobyname} returns the protocol number associated with the
@@ -18640,21 +19827,6 @@ function gettimeofday($return_float){}
  * @since PHP 4, PHP 5
  **/
 function gettype($var){}
-
-/**
- * Get unpacked size of the archive entry.
- * 
- * @return int
- **/
-function getUnpackedSize(){}
-
-/**
- * Returns minimum version of RAR program (e.g. WinRAR) required to
- * unpack the entry. It is encoded as 10 * major version + minor version.
- * 
- * @return int
- **/
-function getVersion(){}
 
 /**
  * Attempts to determine the capabilities of the user's browser, by
@@ -18892,8 +20064,8 @@ function get_magic_quotes_runtime(){}
  *   manual"> <meta name="geo.position" content="49.33;-86.59"> </head>
  *   <!-- parsing stops here -->
  *   
- *   (pay attention to line endings - PHP uses a native function to
- *   parse the input, so a Mac file won't work on Unix).
+ *   (pay attention to line endings - PHP uses a native function to parse
+ *   the input, so a Mac file won't work on Unix).
  * @param bool $use_include_path Setting {@link use_include_path} to
  *   will result in PHP trying to open the file along the standard
  *   include path as per the include_path directive. This is used for
@@ -19147,9 +20319,9 @@ function gmp_gcd($a, $b){}
  * is the greatest common divisor. Returns an array with respective
  * elements g, s and t.
  * 
- * This function can be used to solve linear Diophantine equations in
- * two variables. These are equations that allow only integer solutions
- * and have the form: a*x + b*y = c. For more information, go to the
+ * This function can be used to solve linear Diophantine equations in two
+ * variables. These are equations that allow only integer solutions and
+ * have the form: a*x + b*y = c. For more information, go to the
  * "Diophantine Equation" page at MathWorld
  * 
  * @param resource $a
@@ -19833,8 +21005,8 @@ function grapheme_substr($string, $start, $length){}
 /**
  * Valid Range for Gregorian Calendar 4714 B.C. to 9999 A.D.
  * 
- * Although this function can handle dates all the way back to 4714
- * B.C., such use may not be meaningful. The Gregorian calendar was not
+ * Although this function can handle dates all the way back to 4714 B.C.,
+ * such use may not be meaningful. The Gregorian calendar was not
  * instituted until October 15, 1582 (or October 5, 1582 in the Julian
  * calendar). Some countries did not accept it until much later. For
  * example, Britain converted in 1752, The USSR in 1918 and Greece in
@@ -20503,9 +21675,9 @@ function gzinflate($data, $length){}
 /**
  * Opens a gzip (.gz) file for reading or writing.
  * 
- * {@link gzopen} can be used to read a file which is not in gzip
- * format; in this case {@link gzread} will directly read from the file
- * without decompression.
+ * {@link gzopen} can be used to read a file which is not in gzip format;
+ * in this case {@link gzread} will directly read from the file without
+ * decompression.
  * 
  * @param string $filename The file name.
  * @param string $mode As in {@link fopen} (rb or wb) but can also
@@ -20786,8 +21958,8 @@ function hash_update_stream($context, $handle, $length){}
  *   <?php header("Location: http://www.example.com/"); /* Redirect
  *   browser * /
  *   
- *   /* Make sure that code below does not get executed when we
- *   redirect. * / exit; ?>
+ *   /* Make sure that code below does not get executed when we redirect.
+ *   * / exit; ?>
  * @param bool $replace The optional {@link replace} parameter
  *   indicates whether the header should replace a previous similar
  *   header, or add a second header of the same type. By default it will
@@ -21059,10 +22231,10 @@ function http_build_query($formdata, $numeric_prefix, $arg_separator){}
 function http_build_str($query, $prefix, $arg_separator){}
 
 /**
- * Build an URL.
+ * Build a URL.
  * 
- * The parts of the second URL will be merged into the first according
- * to the flags argument.
+ * The parts of the second URL will be merged into the first according to
+ * the flags argument.
  * 
  * @param mixed $url (part(s) of) an URL in form of a string or
  *   associative array like {@link parse_url} returns
@@ -21087,8 +22259,8 @@ function http_build_url($url, $parts, $flags, &$new_url){}
  * A log entry is written to the cache log if the http.log.cache is set
  * and the cache attempt was successful.
  * 
- * If this function is used outside the http_send_*() API, it
- * facilitates the {@link ob_etaghandler}.
+ * If this function is used outside the http_send_*() API, it facilitates
+ * the {@link ob_etaghandler}.
  * 
  * @param string $etag custom ETag
  * @return bool
@@ -21099,13 +22271,13 @@ function http_cache_etag($etag){}
 /**
  * Attempts to cache the sent entity by its last modification date.
  * 
- * If the supplied argument is greater than 0, it is handled as
- * timestamp and will be sent as date of last modification. If it is 0 or
- * omitted, the current time will be sent as Last-Modified date. If it's
- * negative, it is handled as expiration time in seconds, which means
- * that if the requested last modification date is not between the
- * calculated timespan, the Last-Modified header is updated and the
- * actual body will be sent.
+ * If the supplied argument is greater than 0, it is handled as timestamp
+ * and will be sent as date of last modification. If it is 0 or omitted,
+ * the current time will be sent as Last-Modified date. If it's negative,
+ * it is handled as expiration time in seconds, which means that if the
+ * requested last modification date is not between the calculated
+ * timespan, the Last-Modified header is updated and the actual body will
+ * be sent.
  * 
  * A log entry will be written to the cache log if the http.log.cache is
  * set and the cache attempt was successful.
@@ -21426,14 +22598,13 @@ function http_put_stream($url, $stream, $options, &$info){}
 /**
  * Redirect to the given url.
  * 
- * The supplied {@link url} will be expanded with {@link
- * http_build_url}, the {@link params} array will be treated with {@link
- * http_build_str} and the session identification will be appended if
- * {@link session} is true. The HTTP response code will be set according
- * to {@link status}. You can use one of the redirect constants for
- * convenience. Please see RFC 2616 for which redirect response code to
- * use in which situation. By default PHP will decide which response
- * status fits best.
+ * The supplied {@link url} will be expanded with {@link http_build_url},
+ * the {@link params} array will be treated with {@link http_build_str}
+ * and the session identification will be appended if {@link session} is
+ * true. The HTTP response code will be set according to {@link status}.
+ * You can use one of the redirect constants for convenience. Please see
+ * RFC 2616 for which redirect response code to use in which situation.
+ * By default PHP will decide which response status fits best.
  * 
  * To be RFC compliant, Redirecting to <a>URL</a>. will be displayed, if
  * the client doesn't redirect immediately, and the request method was
@@ -22086,9 +23257,9 @@ function hw_getrellink($link, $rootid, $sourceid, $destid){}
 /**
  * Gets a remote document.
  * 
- * Remote documents in Hyperwave notation are documents retrieved from
- * an external source. Common remote documents are for example external
- * web pages or queries in a database.
+ * Remote documents in Hyperwave notation are documents retrieved from an
+ * external source. Common remote documents are for example external web
+ * pages or queries in a database.
  * 
  * In order to be able to access external sources through remote
  * documents Hyperwave introduces the HGI (Hyperwave Gateway Interface)
@@ -22142,9 +23313,9 @@ function hw_getsrcbydestobj($connection, $objectID){}
  * Returns the document with object ID {@link objectID}. If the document
  * has anchors which can be inserted, they will be inserted already.
  * 
- * This function will only work for pure text documents. It will not
- * open a special data connection and therefore blocks the control
- * connection during the transfer.
+ * This function will only work for pure text documents. It will not open
+ * a special data connection and therefore blocks the control connection
+ * during the transfer.
  * 
  * @param int $connection The connection identifier.
  * @param int $objectID The object identifier.
@@ -22353,8 +23524,8 @@ function hw_mapid($connection, $server_id, $object_id){}
  * value 'books' into 'articles' you will have to create two arrays and
  * call {@link hw_modifyobject}. modifying an attribute
  * 
- * <?php // $connect is an existing connection to the Hyperwave server
- * // $objid is the ID of the object to modify $remarr = array("Name" =>
+ * <?php // $connect is an existing connection to the Hyperwave server //
+ * $objid is the ID of the object to modify $remarr = array("Name" =>
  * "books"); $addarr = array("Name" => "articles");
  * $hw_modifyobject($connect, $objid, $remarr, $addarr); ?>
  * 
@@ -22364,9 +23535,9 @@ function hw_mapid($connection, $server_id, $object_id){}
  * set attribute value in the remove array to an integer. adding a
  * completely new attribute
  * 
- * <?php // $connect is an existing connection to the Hyperwave server
- * // $objid is the ID of the object to modify $remarr = array("Name" =>
- * 0); $addarr = array("Name" => "articles"); $hw_modifyobject($connect,
+ * <?php // $connect is an existing connection to the Hyperwave server //
+ * $objid is the ID of the object to modify $remarr = array("Name" => 0);
+ * $addarr = array("Name" => "articles"); $hw_modifyobject($connect,
  * $objid, $remarr, $addarr); ?>
  * 
  * Multilingual attributes, e.g. 'Title', can be modified in two ways.
@@ -22832,9 +24003,9 @@ function ibase_errmsg(){}
 /**
  * Execute a query prepared by {@link ibase_prepare}.
  * 
- * This is a lot more effective than using {@link ibase_query} if you
- * are repeating a same kind of query several times with only some
- * parameters changing.
+ * This is a lot more effective than using {@link ibase_query} if you are
+ * repeating a same kind of query several times with only some parameters
+ * changing.
  * 
  * @param resource $query An InterBase query prepared by {@link
  *   ibase_prepare}.
@@ -22889,8 +24060,8 @@ function ibase_fetch_object($result_id, $fetch_flag){}
  * {@link ibase_fetch_row} fetches one row of data from the given result
  * set.
  * 
- * Subsequent calls to {@link ibase_fetch_row} return the next row in
- * the result set, or if there are no more rows.
+ * Subsequent calls to {@link ibase_fetch_row} return the next row in the
+ * result set, or if there are no more rows.
  * 
  * @param resource $result_identifier An InterBase result identifier.
  * @param int $fetch_flag {@link fetch_flag} is a combination of the
@@ -23033,11 +24204,11 @@ function ibase_param_info($query, $param_number){}
  * one is found, an identifier for it will be returned instead of opening
  * a new connection.
  * 
- * Second, the connection to the InterBase server will not be closed
- * when the execution of the script ends. Instead, the link will remain
- * open for future use ({@link ibase_close} will not close links
- * established by {@link ibase_pconnect}). This type of link is therefore
- * called 'persistent'.
+ * Second, the connection to the InterBase server will not be closed when
+ * the execution of the script ends. Instead, the link will remain open
+ * for future use ({@link ibase_close} will not close links established
+ * by {@link ibase_pconnect}). This type of link is therefore called
+ * 'persistent'.
  * 
  * @param string $database The {@link database} argument has to be a
  *   valid path to database file on the server it resides on. If the
@@ -23291,8 +24462,8 @@ function iconv_mime_decode_headers($encoded_headers, $mode, $charset){}
  * Subject: =?ISO-8859-1?Q?Pr=FCfung_f=FCr?= Entwerfen von einer MIME
  * kopfzeile
  * 
- * In the above example, "Subject" is the field name and the portion
- * that begins with "=?ISO-8859-1?..." is the field value.
+ * In the above example, "Subject" is the field name and the portion that
+ * begins with "=?ISO-8859-1?..." is the field value.
  * 
  * @param string $field_name The field name.
  * @param string $field_value The field value.
@@ -23707,8 +24878,8 @@ function ifxus_write_slob($bid, $content){}
  * has not even begun fetching them at this stage (just after the
  * "PREPARE" when the optimizer has determined the query plan).
  * 
- * Useful after {@link ifx_prepare} to limit queries to reasonable
- * result sets.
+ * Useful after {@link ifx_prepare} to limit queries to reasonable result
+ * sets.
  * 
  * @param resource $result_id A valid result id returned by {@link
  *   ifx_query} or {@link ifx_prepare}.
@@ -23846,8 +25017,8 @@ function ifx_errormsg($errorcode){}
  * Fetches one row of data from the result associated with the specified
  * result identifier.
  * 
- * Subsequent calls to {@link ifx_fetch_row} would return the next row
- * in the result set, or if there are no more rows.
+ * Subsequent calls to {@link ifx_fetch_row} would return the next row in
+ * the result set, or if there are no more rows.
  * 
  * @param resource $result_id {@link result_id} is a valid resultid
  *   returned by {@link ifx_query} or {@link ifx_prepare} (select type
@@ -24323,8 +25494,8 @@ function imagealphablending($image, $blendmode){}
  * 
  * Thickness and styled are not supported.
  * 
- * Using antialiased primitives with transparent background color can
- * end with some unexpected results. The blend method uses the background
+ * Using antialiased primitives with transparent background color can end
+ * with some unexpected results. The blend method uses the background
  * color as any other colors. The lack of alpha component support does
  * not allow an alpha based antialiasing method.
  * 
@@ -24391,8 +25562,8 @@ function imagecharup($image, $font, $x, $y, $c, $color){}
  * Returns a color identifier representing the color composed of the
  * given RGB components.
  * 
- * {@link imagecolorallocate} must be called to create each color that
- * is to be used in the image represented by {@link image}.
+ * {@link imagecolorallocate} must be called to create each color that is
+ * to be used in the image represented by {@link image}.
  * 
  * @param resource $image Value of red component.
  * @param int $red Value of green component.
@@ -24423,10 +25594,10 @@ function imagecolorallocatealpha($image, $red, $green, $blue, $alpha){}
  * Returns the index of the color of the pixel at the specified location
  * in the image specified by {@link image}.
  * 
- * If PHP is compiled against GD library 2.0 or higher and the image is
- * a truecolor image, this function returns the RGB value of that pixel
- * as integer. Use bitshifting and masking to access the distinct red,
- * green and blue component values:
+ * If PHP is compiled against GD library 2.0 or higher and the image is a
+ * truecolor image, this function returns the RGB value of that pixel as
+ * integer. Use bitshifting and masking to access the distinct red, green
+ * and blue component values:
  * 
  * @param resource $image x-coordinate of the point.
  * @param int $x y-coordinate of the point.
@@ -24440,8 +25611,8 @@ function imagecolorat($image, $x, $y){}
  * Returns the index of the color in the palette of the image which is
  * "closest" to the specified RGB value.
  * 
- * The "distance" between the desired color and each color in the
- * palette is calculated as if the RGB values represented points in
+ * The "distance" between the desired color and each color in the palette
+ * is calculated as if the RGB values represented points in
  * three-dimensional space.
  * 
  * If you created the image from a file, only colors used in the image
@@ -24577,11 +25748,12 @@ function imagecolorresolvealpha($image, $red, $green, $blue, $alpha){}
  * @param int $index Value of red component.
  * @param int $red Value of green component.
  * @param int $green Value of blue component.
- * @param int $blue
+ * @param int $blue Value of alpha component.
+ * @param int $alpha
  * @return void
  * @since PHP 4, PHP 5
  **/
-function imagecolorset($image, $index, $red, $green, $blue){}
+function imagecolorset($image, $index, $red, $green, $blue, $alpha){}
 
 /**
  * Gets the color for a specified index.
@@ -24596,7 +25768,8 @@ function imagecolorsforindex($image, $index){}
 /**
  * Returns the number of colors in an image palette.
  * 
- * @param resource $image
+ * @param resource $image An image resource, returned by one of the
+ *   image creation functions, such as {@link imagecreatefromgif}.
  * @return int
  * @since PHP 4, PHP 5
  **/
@@ -24739,9 +25912,9 @@ function imagecopyresampled($dst_image, $src_image, $dst_x, $dst_y, $src_x, $src
  * another image. {@link dst_image} is the destination image, {@link
  * src_image} is the source image identifier.
  * 
- * In other words, {@link imagecopyresized} will take an rectangular
- * area from {@link src_image} of width {@link src_w} and height {@link
- * src_h} at position ({@link src_x},{@link src_y}) and place it in a
+ * In other words, {@link imagecopyresized} will take an rectangular area
+ * from {@link src_image} of width {@link src_w} and height {@link src_h}
+ * at position ({@link src_x},{@link src_y}) and place it in a
  * rectangular area of {@link dst_image} of width {@link dst_w} and
  * height {@link dst_h} at position ({@link dst_x},{@link dst_y}).
  * 
@@ -24887,10 +26060,10 @@ function imagecreatefromxpm($filename){}
  * {@link imagecreatetruecolor} returns an image identifier representing
  * a black image of the specified size.
  * 
- * Depending on your PHP and GD versions this function is defined or
- * not. With PHP 4.0.6 through 4.1.x this function always exists if the
- * GD module is loaded, but calling it without GD2 being installed PHP
- * will issue a fatal error and exit. With PHP 4.2.x this behaviour is
+ * Depending on your PHP and GD versions this function is defined or not.
+ * With PHP 4.0.6 through 4.1.x this function always exists if the GD
+ * module is loaded, but calling it without GD2 being installed PHP will
+ * issue a fatal error and exit. With PHP 4.2.x this behaviour is
  * different in issuing a warning instead of an error. Other versions
  * only define this function, if the correct GD version is installed.
  * 
@@ -25253,8 +26426,8 @@ function imagegrabwindow($window_handle, $client_area){}
 /**
  * {@link imageinterlace} turns the interlace bit on or off.
  * 
- * If the interlace bit is set and the image is used as a JPEG image,
- * the image is created as a progressive JPEG.
+ * If the interlace bit is set and the image is used as a JPEG image, the
+ * image is created as a progressive JPEG.
  * 
  * @param resource $image If non-zero, the image will be interlaced,
  *   else the interlace bit is turned off.
@@ -25648,8 +26821,8 @@ function imagestring($image, $font, $x, $y, $string, $color){}
 /**
  * Draws a {@link string} vertically at the given coordinates.
  * 
- * @param resource $image x-coordinate of the upper left corner.
- * @param int $font y-coordinate of the upper left corner.
+ * @param resource $image x-coordinate of the bottom left corner.
+ * @param int $font y-coordinate of the bottom left corner.
  * @param int $x The string to be written.
  * @param int $y A color identifier created with {@link
  *   imagecolorallocate}.
@@ -26820,8 +27993,8 @@ function imap_utf7_decode($text){}
 /**
  * Converts {@link data} to modified UTF-7 text.
  * 
- * This is needed to encode mailbox names that contain certain
- * characters which are not in range of printable ASCII characters.
+ * This is needed to encode mailbox names that contain certain characters
+ * which are not in range of printable ASCII characters.
  * 
  * @param string $data An ISO-8859-1 string.
  * @return string
@@ -26964,8 +28137,8 @@ function ingres_close($link){}
  * This closes the transaction. A new transaction can be opened by
  * sending a query with {@link ingres_query}.
  * 
- * You can also have the server commit automatically after every query
- * by calling {@link ingres_autocommit} before opening the transaction.
+ * You can also have the server commit automatically after every query by
+ * calling {@link ingres_autocommit} before opening the transaction.
  * 
  * By default Ingres will roll back any uncommitted transactions at the
  * end of a request. Use this function or {@link ingres_autocommit} to
@@ -27097,8 +28270,8 @@ function ingres_error($link){}
  * Returns a string containing the last SQLSTATE, or NULL if no error has
  * occurred.
  * 
- * If a {@link link} resource is passed to {@link ingres_errsqlstate},
- * it returns the last error recorded for the link. If no link is passed,
+ * If a {@link link} resource is passed to {@link ingres_errsqlstate}, it
+ * returns the last error recorded for the link. If no link is passed,
  * then {@link ingres_errsqlstate} returns the last error reported using
  * the default link.
  * 
@@ -27192,6 +28365,7 @@ function ingres_fetch_array($result, $result_type){}
  * 
  * @param resource $result The query result identifier
  * @return array
+ * @since PECL ingres >= 2.2.2
  **/
 function ingres_fetch_assoc($result){}
 
@@ -27792,13 +28966,6 @@ function iptcembed($iptcdata, $jpeg_file_name, $spool){}
 function iptcparse($iptcblock){}
 
 /**
- * Tests whether the current entry is a directory.
- * 
- * @return bool
- **/
-function isDirectory(){}
-
-/**
  * Checks if the given {@link object} is of this class or has this class
  * as one of its parents.
  * 
@@ -28079,9 +29246,9 @@ function is_subclass_of($object, $class_name){}
  * to trick the script into working on files upon which it should not be
  * working--for instance, /etc/passwd.
  * 
- * This sort of check is especially important if there is any chance
- * that anything done with uploaded files could reveal their contents to
- * the user, or even to other users on the same system.
+ * This sort of check is especially important if there is any chance that
+ * anything done with uploaded files could reveal their contents to the
+ * user, or even to other users on the same system.
  * 
  * For proper working, the function {@link is_uploaded_file} needs an
  * argument like $_FILES['userfile']['tmp_name'], - the name of the
@@ -28309,10 +29476,13 @@ function jpeg2wbmp($jpegname, $wbmpname, $dest_height, $dest_width, $threshold){
  * @param bool $assoc When , returned objects will be converted into
  *   associative arrays.
  * @param int $depth User specified recursion depth.
+ * @param int $options Bitmask of JSON decode options. Currently only
+ *   JSON_BIGINT_AS_STRING is supported (default is to cast large
+ *   integers as floats)
  * @return mixed
  * @since PHP 5 >= 5.2.0, PECL json >= 1.2.0
  **/
-function json_decode($json, $assoc, $depth){}
+function json_decode($json, $assoc, $depth, $options){}
 
 /**
  * Returns a string containing the JSON representation of {@link value}.
@@ -28337,12 +29507,11 @@ function json_last_error(){}
 /**
  * Valid Range for Julian Calendar 4713 B.C. to 9999 A.D.
  * 
- * Although this function can handle dates all the way back to 4713
- * B.C., such use may not be meaningful. The calendar was created in 46
- * B.C., but the details did not stabilize until at least 8 A.D., and
- * perhaps as late at the 4th century. Also, the beginning of a year
- * varied from one culture to another - not all accepted January as the
- * first month.
+ * Although this function can handle dates all the way back to 4713 B.C.,
+ * such use may not be meaningful. The calendar was created in 46 B.C.,
+ * but the details did not stabilize until at least 8 A.D., and perhaps
+ * as late at the 4th century. Also, the beginning of a year varied from
+ * one culture to another - not all accepted January as the first month.
  * 
  * @param int $month The month as a number from 1 (for January) to 12
  *   (for December)
@@ -28563,8 +29732,7 @@ function lchown($filename, $user){}
 /**
  * Translate ISO-8859 characters to t61 characters.
  * 
- * This function is useful if you have to talk to a legacy LDAPv2
- * server.
+ * This function is useful if you have to talk to a legacy LDAPv2 server.
  * 
  * @param string $value The text to be translated.
  * @return string
@@ -28734,8 +29902,8 @@ function ldap_explode_dn($dn, $with_attrib){}
  * Gets the first attribute in the given entry. Remaining attributes are
  * retrieved by calling {@link ldap_next_attribute} successively.
  * 
- * Similar to reading entries, attributes are also read one by one from
- * a particular entry.
+ * Similar to reading entries, attributes are also read one by one from a
+ * particular entry.
  * 
  * @param resource $link_identifier An LDAP link identifier, returned
  *   by {@link ldap_connect}.
@@ -28875,8 +30043,8 @@ function ldap_get_values($link_identifier, $result_entry_identifier, $attribute)
 /**
  * Reads all the values of the attribute in the entry in the result.
  * 
- * This function is used exactly like {@link ldap_get_values} except
- * that it handles binary data and not string data.
+ * This function is used exactly like {@link ldap_get_values} except that
+ * it handles binary data and not string data.
  * 
  * @param resource $link_identifier An LDAP link identifier, returned
  *   by {@link ldap_connect}.
@@ -29242,9 +30410,9 @@ function ldap_unbind($link_identifier){}
  * parameter and will calculate just the number of insert, replace and
  * delete operations needed to transform {@link str1} into {@link str2}.
  * 
- * A second variant will take three additional parameters that define
- * the cost of insert, replace and delete operations. This is more
- * general and adaptive than variant one, but not as efficient.
+ * A second variant will take three additional parameters that define the
+ * cost of insert, replace and delete operations. This is more general
+ * and adaptive than variant one, but not as efficient.
  * 
  * @param string $str1 One of the strings being evaluated for
  *   Levenshtein distance.
@@ -29322,9 +30490,9 @@ function link($from_path, $to_path){}
 /**
  * Gets information about a link.
  * 
- * This function is used to verify if a link (pointed to by {@link
- * path}) really exists (using the same method as the S_ISLNK macro
- * defined in stat.h).
+ * This function is used to verify if a link (pointed to by {@link path})
+ * really exists (using the same method as the S_ISLNK macro defined in
+ * stat.h).
  * 
  * @param string $path Path to the link.
  * @return int
@@ -29611,8 +30779,8 @@ function mailparse_msg_get_structure($mimemail){}
 /**
  * Incrementally parse data into the supplied mime mail resource.
  * 
- * This function allow you to stream portions of a file at a time,
- * rather than read and parse the whole thing.
+ * This function allow you to stream portions of a file at a time, rather
+ * than read and parse the whole thing.
  * 
  * @param resource $mimemail A valid MIME resource.
  * @param string $data
@@ -29685,9 +30853,9 @@ function max($values){}
  * {@link link} parameter. If this number cannot be determined, this
  * function will return -1.
  * 
- * The {@link maxdb_affected_rows} function only works with queries
- * which modify a table. In order to return the number of rows from a
- * SELECT query, use the {@link maxdb_num_rows} function instead.
+ * The {@link maxdb_affected_rows} function only works with queries which
+ * modify a table. In order to return the number of rows from a SELECT
+ * query, use the {@link maxdb_num_rows} function instead.
  * 
  * @param resource $link
  * @return int
@@ -29708,6 +30876,10 @@ function maxdb_affected_rows($link){}
 function maxdb_autocommit($link, $mode){}
 
 /**
+ * (extended syntax):
+ * 
+ * (extended syntax):
+ * 
  * {@link maxdb_bind_param} is used to bind variables for the parameter
  * markers in the SQL statement that was passed to {@link maxdb_prepare}.
  * The string {@link types} contains one or more characters which specify
@@ -29725,7 +30897,7 @@ function maxdb_autocommit($link, $mode){}
  * bound using {@link maxdb_bind_param}. See the examples how to use
  * {@link maxdb_bind_param} in this cases.
  * 
- * If a variable bound as INTO variable to a SQL statement was used
+ * If a variable bound as INTO variable to an SQL statement was used
  * before, the content of this variable is overwritten by the data of the
  * SELECT INTO statement. A reference to this variable will be invalid
  * after a call to {@link maxdb_bind_param}.
@@ -29987,7 +31159,7 @@ function maxdb_error($link){}
 
 /**
  * This function is used to create a legal SQL string that you can use in
- * a SQL statement. The string escapestr is encoded to an escaped SQL
+ * an SQL statement. The string escapestr is encoded to an escaped SQL
  * string, taking into account the current character set of the
  * connection.
  * 
@@ -30237,8 +31409,6 @@ function maxdb_get_client_info(){}
 function maxdb_get_client_version(){}
 
 /**
- * Procdural style:
- * 
  * The {@link maxdb_get_host_info} function returns a string describing
  * the connection represented by the {@link link} parameter is using.
  * 
@@ -30525,7 +31695,7 @@ function maxdb_real_connect($link, $hostname, $username, $passwd, $dbname, $port
 
 /**
  * This function is used to create a legal SQL string that you can use in
- * a SQL statement. The string escapestr is encoded to an escaped SQL
+ * an SQL statement. The string escapestr is encoded to an escaped SQL
  * string, taking into account the current character set of the
  * connection.
  * 
@@ -30606,9 +31776,9 @@ function maxdb_select_db($link, $dbname){}
  * character or binary data value for a column, which must be one of the
  * TEXT or BLOB datatypes.
  * 
- * {@link param_nr} indicates which parameter to associate the data
- * with. Parameters are numbered beginning with 0. {@link data} is a
- * string containing data to be sent.
+ * {@link param_nr} indicates which parameter to associate the data with.
+ * Parameters are numbered beginning with 0. {@link data} is a string
+ * containing data to be sent.
  * 
  * @param resource $stmt
  * @param int $param_nr
@@ -30719,6 +31889,10 @@ function maxdb_stat($link){}
 function maxdb_stmt_affected_rows($stmt){}
 
 /**
+ * (extended syntax):
+ * 
+ * (extended syntax):
+ * 
  * {@link maxdb_stmt_bind_param} is used to bind variables for the
  * parameter markers in the SQL statement that was passed to {@link
  * maxdb_prepare}. The string {@link types} contains one or more
@@ -30737,7 +31911,7 @@ function maxdb_stmt_affected_rows($stmt){}
  * be bound using {@link maxdb_stmt_bind_param}. See the examples how to
  * use {@link maxdb_stmt_bind_param} in this cases.
  * 
- * If a variable bound as INTO variable to a SQL statement was used
+ * If a variable bound as INTO variable to an SQL statement was used
  * before, the content of this variable is overwritten by the data of the
  * SELECT INTO statement. A reference to this variable will be invalid
  * after a call to {@link maxdb_stmt_bind_param}.
@@ -30953,9 +32127,9 @@ function maxdb_stmt_result_metadata($stmt){}
  * character or binary data value for a column, which must be one of the
  * TEXT or BLOB datatypes.
  * 
- * {@link param_nr} indicates which parameter to associate the data
- * with. Parameters are numbered beginning with 0. {@link data} is a
- * string containing data to be sent.
+ * {@link param_nr} indicates which parameter to associate the data with.
+ * Parameters are numbered beginning with 0. {@link data} is a string
+ * containing data to be sent.
  * 
  * @param resource $stmt
  * @param int $param_nr
@@ -31113,10 +32287,9 @@ function mb_convert_kana($str, $option, $encoding){}
  * Converts character encoding of variables {@link vars} in encoding
  * {@link from_encoding} to encoding {@link to_encoding}.
  * 
- * {@link mb_convert_variables} join strings in Array or Object to
- * detect encoding, since encoding detection tends to fail for short
- * strings. Therefore, it is impossible to mix encoding in single array
- * or object.
+ * {@link mb_convert_variables} join strings in Array or Object to detect
+ * encoding, since encoding detection tends to fail for short strings.
+ * Therefore, it is impossible to mix encoding in single array or object.
  * 
  * @param string $to_encoding The encoding that the string is being
  *   converted to.
@@ -31231,6 +32404,16 @@ function mb_encode_mimeheader($str, $charset, $transfer_encoding, $linefeed, $in
  * @since PHP 4 >= 4.0.6, PHP 5
  **/
 function mb_encode_numericentity($str, $convmap, $encoding){}
+
+/**
+ * Returns an array of aliases for a known {@link encoding} type.
+ * 
+ * @param string $encoding The encoding type being checked, for
+ *   aliases.
+ * @return array
+ * @since PHP 5 >= 5.3.0
+ **/
+function mb_encoding_aliases($encoding){}
 
 /**
  * @param string $pattern The search pattern.
@@ -31592,9 +32775,9 @@ function mb_strlen($str, $encoding){}
 /**
  * Finds position of the first occurrence of a string in a string.
  * 
- * Performs a multi-byte safe {@link strpos} operation based on number
- * of characters. The first character's position is 0, the second
- * character position is 1, and so on.
+ * Performs a multi-byte safe {@link strpos} operation based on number of
+ * characters. The first character's position is 0, the second character
+ * position is 1, and so on.
  * 
  * @param string $haystack The string being checked.
  * @param string $needle The position counted from the beginning of
@@ -31870,8 +33053,8 @@ function mcrypt_decrypt($cipher, $key, $data, $mode, $iv){}
  * when linked against libmcrypt 2.4.x or higher. The {@link mode} should
  * be either MCRYPT_ENCRYPT or MCRYPT_DECRYPT.
  * 
- * This function is deprecated and should not be used anymore, see
- * {@link mcrypt_generic} and {@link mdecrypt_generic} for replacements.
+ * This function is deprecated and should not be used anymore, see {@link
+ * mcrypt_generic} and {@link mdecrypt_generic} for replacements.
  * 
  * @param int $cipher
  * @param string $key
@@ -32407,11 +33590,13 @@ function memory_get_usage($real_usage){}
  * Binstock & Rex, Addison Wesley, 1995].
  * 
  * @param string $str The input string.
- * @param int $phones
+ * @param int $phonemes This parameter restricts the returned metaphone
+ *   key to {@link phonemes} characters in length. The default value of 0
+ *   means no restriction.
  * @return string
  * @since PHP 4, PHP 5
  **/
-function metaphone($str, $phones){}
+function metaphone($str, $phonemes){}
 
 /**
  * Checks if the class method exists in the given {@link object}.
@@ -32662,9 +33847,9 @@ function money_format($format, $number){}
  * PHP's HTTP POST upload mechanism). If the file is valid, it will be
  * moved to the filename given by {@link destination}.
  * 
- * This sort of check is especially important if there is any chance
- * that anything done with uploaded files could reveal their contents to
- * the user, or even to other users on the same system.
+ * This sort of check is especially important if there is any chance that
+ * anything done with uploaded files could reveal their contents to the
+ * user, or even to other users on the same system.
  * 
  * @param string $filename The filename of the uploaded file.
  * @param string $destination The destination of the moved file.
@@ -33414,8 +34599,8 @@ function msql_fetch_field($result, $field_offset){}
  * Indirectly, that means that you can only access the data by the field
  * names, and not by their offsets (numbers are illegal property names).
  * 
- * Speed-wise, the function is identical to {@link msql_fetch_array},
- * and almost as quick as {@link msql_fetch_row} (the difference is
+ * Speed-wise, the function is identical to {@link msql_fetch_array}, and
+ * almost as quick as {@link msql_fetch_row} (the difference is
  * insignificant).
  * 
  * @param resource $result
@@ -33430,8 +34615,8 @@ function msql_fetch_object($result){}
  * an array. Each result column is stored in an array offset, starting at
  * offset 0.
  * 
- * Subsequent call to {@link msql_fetch_row} would return the next row
- * in the result set, or if there are no more rows.
+ * Subsequent call to {@link msql_fetch_row} would return the next row in
+ * the result set, or if there are no more rows.
  * 
  * @param resource $result
  * @return array
@@ -34100,7 +35285,7 @@ function mssql_pconnect($servername, $username, $password, $new_link){}
  * {@link mssql_query} sends a query to the currently active database on
  * the server that's associated with the specified link identifier.
  * 
- * @param string $query A SQL query.
+ * @param string $query An SQL query.
  * @param resource $link_identifier A MS SQL link identifier, returned
  *   by {@link mssql_connect} or {@link mssql_pconnect}. If the link
  *   identifier isn't specified, the last opened link is assumed. If no
@@ -34239,13 +35424,6 @@ function mysqli_connect_errno(){}
  * @since PHP 5
  **/
 function mysqli_connect_error(){}
-
-/**
- * @param mysqli $link
- * @return bool
- * @since PHP 5
- **/
-function mysqli_disable_reads_from_master($link){}
 
 /**
  * @param mysqli $link
@@ -34453,10 +35631,10 @@ function mysqli_num_fields($result){}
 /**
  * Returns the number of rows in the result set.
  * 
- * The use of {@link mysqli_num_rows} depends on whether you use
- * buffered or unbuffered result sets. In case you use unbuffered
- * resultsets {@link mysqli_num_rows} will not return the correct number
- * of rows until all the rows in the result have been retrieved.
+ * The use of {@link mysqli_num_rows} depends on whether you use buffered
+ * or unbuffered result sets. In case you use unbuffered resultsets
+ * {@link mysqli_num_rows} will not return the correct number of rows
+ * until all the rows in the result have been retrieved.
  * 
  * @param mysqli_result $result
  * @return int
@@ -34525,25 +35703,6 @@ function mysqli_send_query($link, $query){}
 function mysqli_set_local_infile_default($link){}
 
 /**
- * Set callback function for LOAD DATA LOCAL INFILE command
- * 
- * The callbacks task is to read input from the file specified in the
- * LOAD DATA LOCAL INFILE and to reformat it into the format understood
- * by LOAD DATA INFILE.
- * 
- * The returned data needs to match the format specified in the LOAD
- * DATA
- * 
- * @param mysqli $link A callback function or object method taking the
- *   following parameters:
- * @param callback $read_func A PHP stream associated with the SQL
- *   commands INFILE
- * @return bool
- * @since PHP 5
- **/
-function mysqli_set_local_infile_handler($link, $read_func){}
-
-/**
  * @param mysqli $link
  * @param string $query
  * @return bool
@@ -34608,16 +35767,6 @@ function mysqli_stmt_error($stmt){}
  * @since PHP 5
  **/
 function mysqli_stmt_field_count($stmt){}
-
-/**
- * Allocates and initializes a statement object suitable for {@link
- * mysqli_stmt_prepare}.
- * 
- * @param mysqli $link
- * @return mysqli_stmt
- * @since PHP 5
- **/
-function mysqli_stmt_init($link){}
 
 /**
  * @param mysqli_stmt $stmt
@@ -34820,7 +35969,7 @@ function mysql_db_query($database, $query, $link_identifier){}
  * {@link mysql_drop_db} attempts to drop (remove) an entire database
  * from the server associated with the specified link identifier. This
  * function is deprecated, it is preferable to use {@link mysql_query} to
- * issue a sql DROP DATABASE statement instead.
+ * issue an sql DROP DATABASE statement instead.
  * 
  * @param string $database_name The name of the database that will be
  *   deleted.
@@ -35028,10 +36177,10 @@ function mysql_field_type($result, $field_offset){}
  * {@link mysql_free_result} will free all memory associated with the
  * result identifier {@link result}.
  * 
- * {@link mysql_free_result} only needs to be called if you are
- * concerned about how much memory is being used for queries that return
- * large result sets. All associated result memory is automatically freed
- * at the end of the script's execution.
+ * {@link mysql_free_result} only needs to be called if you are concerned
+ * about how much memory is being used for queries that return large
+ * result sets. All associated result memory is automatically freed at
+ * the end of the script's execution.
  * 
  * @param resource $result
  * @return bool
@@ -35109,7 +36258,7 @@ function mysql_list_dbs($link_identifier){}
  * Retrieves information about the given table name.
  * 
  * This function is deprecated. It is preferable to use {@link
- * mysql_query} to issue a SQL SHOW COLUMNS FROM table [LIKE 'name']
+ * mysql_query} to issue an SQL SHOW COLUMNS FROM table [LIKE 'name']
  * statement instead.
  * 
  * @param string $database_name The name of the database that's being
@@ -35135,7 +36284,7 @@ function mysql_list_processes($link_identifier){}
  * Retrieves a list of table names from a MySQL database.
  * 
  * This function is deprecated. It is preferable to use {@link
- * mysql_query} to issue a SQL SHOW TABLES [FROM db_name] [LIKE
+ * mysql_query} to issue an SQL SHOW TABLES [FROM db_name] [LIKE
  * 'pattern'] statement instead.
  * 
  * @param string $database The name of the database
@@ -35220,7 +36369,7 @@ function mysql_ping($link_identifier){}
  * supported) to the currently active database on the server that's
  * associated with the specified {@link link_identifier}.
  * 
- * @param string $query A SQL query The query string should not end
+ * @param string $query An SQL query The query string should not end
  *   with a semicolon. Data inside the query should be properly escaped.
  * @param resource $link_identifier
  * @return resource
@@ -35307,7 +36456,7 @@ function mysql_stat($link_identifier){}
  * Retrieves the table name from a {@link result}.
  * 
  * This function deprecated. It is preferable to use {@link mysql_query}
- * to issue a SQL SHOW TABLES [FROM db_name] [LIKE 'pattern'] statement
+ * to issue an SQL SHOW TABLES [FROM db_name] [LIKE 'pattern'] statement
  * instead.
  * 
  * @param resource $result A result pointer resource that's returned
@@ -38567,8 +39716,8 @@ function ob_flush(){}
 /**
  * Gets the current buffer contents and delete current output buffer.
  * 
- * {@link ob_get_clean} essentially executes both {@link
- * ob_get_contents} and {@link ob_end_clean}.
+ * {@link ob_get_clean} essentially executes both {@link ob_get_contents}
+ * and {@link ob_end_clean}.
  * 
  * @return string
  * @since PHP 4 >= 4.3.0, PHP 5
@@ -38828,13 +39977,12 @@ function oci_bind_array_by_name($statement, $name, &$var_array, $max_table_lengt
  * requested" may occur. For OUT binds one symptom is no value being set
  * in the PHP variable.
  * 
- * For a statement that is repeatedly executed, binding values that
- * never change may reduce the ability of the Oracle optimizer to choose
- * the best statement execution plan. Long running statements that are
- * rarely re-executed may not benefit from binding. However in both
- * cases, binding might be safer than joining strings into a SQL
- * statement, as this can be a security risk if unfiltered user text is
- * concatenated.
+ * For a statement that is repeatedly executed, binding values that never
+ * change may reduce the ability of the Oracle optimizer to choose the
+ * best statement execution plan. Long running statements that are rarely
+ * re-executed may not benefit from binding. However in both cases,
+ * binding might be safer than joining strings into a SQL statement, as
+ * this can be a security risk if unfiltered user text is concatenated.
  * 
  * @param resource $statement A valid OCI8 statement identifer.
  * @param string $bv_name The colon-prefixed bind variable placeholder
@@ -38898,15 +40046,15 @@ function oci_close($connection){}
  * A commit ends the current transaction and makes permanent all changes.
  * It releases all locks held.
  * 
- * A transaction begins when the first SQL statement that changes data
- * is executed with {@link oci_execute} using the OCI_NO_AUTO_COMMIT
- * flag. Further data changes made by other statements become part of the
- * same transaction. Data changes made in a transaction are temporary
- * until the transaction is committed or rolled back. Other users of the
+ * A transaction begins when the first SQL statement that changes data is
+ * executed with {@link oci_execute} using the OCI_NO_AUTO_COMMIT flag.
+ * Further data changes made by other statements become part of the same
+ * transaction. Data changes made in a transaction are temporary until
+ * the transaction is committed or rolled back. Other users of the
  * database will not see the changes until they are committed.
  * 
- * When inserting or updating data, using transactions is recommended
- * for relational data consistency and for performance reasons.
+ * When inserting or updating data, using transactions is recommended for
+ * relational data consistency and for performance reasons.
  * 
  * @param resource $connection An Oracle connection identifier,
  *   returned by {@link oci_connect}, {@link oci_pconnect}, or {@link
@@ -38946,8 +40094,8 @@ function oci_connect($username, $password, $connection_string, $character_set, $
  * Associates a PHP variable with a column for query fetches using {@link
  * oci_fetch}.
  * 
- * The {@link oci_define_by_name} call must occur before executing
- * {@link oci_execute}.
+ * The {@link oci_define_by_name} call must occur before executing {@link
+ * oci_execute}.
  * 
  * @param resource $statement
  * @param string $column_name The column name used in the query. Use
@@ -39410,15 +40558,15 @@ function oci_result($statement, $field){}
  * ends the transaction. It releases all locks held. All Oracle
  * SAVEPOINTS are erased.
  * 
- * A transaction begins when the first SQL statement that changes data
- * is executed with {@link oci_execute} using the OCI_NO_AUTO_COMMIT
- * flag. Further data changes made by other statements become part of the
- * same transaction. Data changes made in a transaction are temporary
- * until the transaction is committed or rolled back. Other users of the
+ * A transaction begins when the first SQL statement that changes data is
+ * executed with {@link oci_execute} using the OCI_NO_AUTO_COMMIT flag.
+ * Further data changes made by other statements become part of the same
+ * transaction. Data changes made in a transaction are temporary until
+ * the transaction is committed or rolled back. Other users of the
  * database will not see the changes until they are committed.
  * 
- * When inserting or updating data, using transactions is recommended
- * for relational data consistency and for performance reasons.
+ * When inserting or updating data, using transactions is recommended for
+ * relational data consistency and for performance reasons.
  * 
  * @param resource $connection An Oracle connection identifier,
  *   returned by {@link oci_connect}, {@link oci_pconnect} or {@link
@@ -39442,7 +40590,7 @@ function oci_server_version($connection){}
  * Sets the action name for Oracle tracing.
  * 
  * The action name is registered with the database when the next
- * 'roundtrip' from PHP to the database occurs, typically when a SQL
+ * 'roundtrip' from PHP to the database occurs, typically when an SQL
  * statement is executed.
  * 
  * The action name can subsequently be queried from database
@@ -39465,7 +40613,7 @@ function oci_set_action($connection, $action_name){}
  * database user.
  * 
  * The client identifier is registered with the database when the next
- * 'roundtrip' from PHP to the database occurs, typically when a SQL
+ * 'roundtrip' from PHP to the database occurs, typically when an SQL
  * statement is executed.
  * 
  * The identifier can subsequently be queried from database
@@ -39487,7 +40635,7 @@ function oci_set_client_identifier($connection, $client_identifier){}
  * Sets the client information for Oracle tracing.
  * 
  * The client information is registered with the database when the next
- * 'roundtrip' from PHP to the database occurs, typically when a SQL
+ * 'roundtrip' from PHP to the database occurs, typically when an SQL
  * statement is executed.
  * 
  * The client information can subsequently be queried from database
@@ -39506,9 +40654,9 @@ function oci_set_client_info($connection, $client_info){}
  * Sets the database "edition" of objects to be used by a subsequent
  * connections.
  * 
- * Oracle Editions allow concurrent versions of applications to run
- * using the same schema and object names. This is useful for upgrading
- * live systems.
+ * Oracle Editions allow concurrent versions of applications to run using
+ * the same schema and object names. This is useful for upgrading live
+ * systems.
  * 
  * Call {@link oci_set_edition} before calling {@link oci_connect},
  * {@link oci_pconnect} or {@link oci_new_connect}.
@@ -39531,7 +40679,7 @@ function oci_set_edition($edition){}
  * Sets the module name for Oracle tracing.
  * 
  * The module name is registered with the database when the next
- * 'roundtrip' from PHP to the database occurs, typically when a SQL
+ * 'roundtrip' from PHP to the database occurs, typically when an SQL
  * statement is executed.
  * 
  * The name can subsequently be queried from database administration
@@ -39580,9 +40728,9 @@ function oci_set_module_name($connection, $module_name){}
  * Oracle 11gR2 and requires both the Oracle Client libraries and the
  * database to be version 11gR2.
  * 
- * Prefetching is not supported when queries contain LONG or LOB
- * columns. The prefetch value is ignored and single-row fetches will be
- * used in all the situations when prefetching is not supported.
+ * Prefetching is not supported when queries contain LONG or LOB columns.
+ * The prefetch value is ignored and single-row fetches will be used in
+ * all the situations when prefetching is not supported.
  * 
  * @param resource $statement
  * @param int $rows The number of rows to be prefetched, >= 0
@@ -40123,8 +41271,8 @@ function odbc_rollback($connection_id){}
  * reference to explain all the different options and values that can be
  * used. Different driver versions support different options.
  * 
- * Because the effects may vary depending on the ODBC driver, use of
- * this function in scripts to be made publicly available is strongly
+ * Because the effects may vary depending on the ODBC driver, use of this
+ * function in scripts to be made publicly available is strongly
  * discouraged. Also, some ODBC options are not available to this
  * function because they must be set before the connection is established
  * or the query is prepared. However, if on a particular job it can make
@@ -40831,11 +41979,11 @@ function openssl_pkcs7_verify($filename, $flags, $outfilename, $cainfo, $extrace
  * {@link openssl_pkcs12_export} stores {@link x509} into a string named
  * by {@link out} in a PKCS#12 file format.
  * 
- * @param mixed $x509
- * @param string $out On success, this will hold the PKCS#12.
- * @param mixed $priv_key Private key component of PKCS#12 file.
- * @param string $pass Encryption password for unlocking the PKCS#12
+ * @param mixed $x509 On success, this will hold the PKCS#12.
+ * @param string $out Private key component of PKCS#12 file.
+ * @param mixed $priv_key Encryption password for unlocking the PKCS#12
  *   file.
+ * @param string $pass
  * @param array $args
  * @return bool
  * @since PHP 5 >= 5.2.2
@@ -40846,11 +41994,11 @@ function openssl_pkcs12_export($x509, &$out, $priv_key, $pass, $args){}
  * {@link openssl_pkcs12_export_to_file} stores {@link x509} into a file
  * named by {@link filename} in a PKCS#12 file format.
  * 
- * @param mixed $x509
- * @param string $filename Path to the output file.
- * @param mixed $priv_key Private key component of PKCS#12 file.
- * @param string $pass Encryption password for unlocking the PKCS#12
+ * @param mixed $x509 Path to the output file.
+ * @param string $filename Private key component of PKCS#12 file.
+ * @param mixed $priv_key Encryption password for unlocking the PKCS#12
  *   file.
+ * @param string $pass
  * @param array $args
  * @return bool
  * @since PHP 5 >= 5.2.2
@@ -41046,19 +42194,25 @@ function openssl_public_decrypt($data, &$decrypted, $key, $padding){}
 function openssl_public_encrypt($data, &$crypted, $key, $padding){}
 
 /**
- * {@link openssl_random_pseudo_bytes} returns a with {@link length}
- * caracters. It also indicates if it has used a strong algorithm to
- * produce those pseudo-random bytes in the second argument.
+ * Generates a string of pseudo-random bytes, with the number of bytes
+ * determined by the {@link length} parameter.
  * 
- * @param string $length The length of the desired string. Must be a
- *   positive integer. PHP will try to cast this parameter to a non-null
- *   integer to use it.
- * @param string $strong If a strong algorithm was used, or not, as a
- *   boolean. This parameter will be if an error occurrs.
+ * It also indicates if a cryptographically strong algorithm was used to
+ * produce the pseudo-random bytes, and does this via the optional {@link
+ * crypto_strong} parameter. It's rare for this to be , but some systems
+ * may be broken or old.
+ * 
+ * @param string $length The length of the desired string of bytes.
+ *   Must be a positive integer. PHP will try to cast this parameter to a
+ *   non-null integer to use it.
+ * @param bool $crypto_strong If passed into the function, this will
+ *   hold a boolean value that determines if the algorithm used was
+ *   "cryptographically strong", e.g., safe for usage with GPG,
+ *   passwords, etc. if it did, otherwise
  * @return string
  * @since PHP 5 >= 5.3.0
  **/
-function openssl_random_pseudo_bytes($length, $strong){}
+function openssl_random_pseudo_bytes($length, &$crypto_strong){}
 
 /**
  * {@link openssl_seal} seals (encrypts) {@link data} by using RC4 with a
@@ -41154,8 +42308,8 @@ function openssl_x509_check_private_key($cert, $key){}
  * {@link openssl_x509_export} stores {@link x509} into a string named by
  * {@link output} in a PEM encoded format.
  * 
- * @param mixed $x509
- * @param string $output On success, this will hold the PEM.
+ * @param mixed $x509 On success, this will hold the PEM.
+ * @param string $output
  * @param bool $notext
  * @return bool
  * @since PHP 4 >= 4.2.0, PHP 5
@@ -41166,8 +42320,8 @@ function openssl_x509_export($x509, &$output, $notext){}
  * {@link openssl_x509_export_to_file} stores {@link x509} into a file
  * named by {@link outfilename} in a PEM encoded format.
  * 
- * @param mixed $x509
- * @param string $outfilename Path to the output file.
+ * @param mixed $x509 Path to the output file.
+ * @param string $outfilename
  * @param bool $notext
  * @return bool
  * @since PHP 4 >= 4.2.0, PHP 5
@@ -42281,8 +43435,8 @@ function PDF_begin_page($pdfdoc, $width, $height){}
  * parameters {@link width} and {@link height} are the dimensions of the
  * new page in points.
  * 
- * Common Page Sizes in Points name size A0 2380 x 3368 A1 1684 x 2380
- * A2 1190 x 1684 A3 842 x 1190 A4 595 x 842 A5 421 x 595 A6 297 x 421 B5
+ * Common Page Sizes in Points name size A0 2380 x 3368 A1 1684 x 2380 A2
+ * 1190 x 1684 A3 842 x 1190 A4 595 x 842 A5 421 x 595 A6 297 x 421 B5
  * 501 x 709 letter (8.5" x 11") 612 x 792 legal (8.5" x 14") 612 x 1008
  * ledger (17" x 11") 1224 x 792 11" x 17" 792 x 1224
  * 
@@ -43963,8 +45117,8 @@ function pg_client_encoding($connection){}
  * {@link pg_close} closes the non-persistent connection to a PostgreSQL
  * database associated with the given {@link connection} resource.
  * 
- * If there is open large object resource on the connection, do not
- * close the connection before closing all large object resources.
+ * If there is open large object resource on the connection, do not close
+ * the connection before closing all large object resources.
  * 
  * @param resource $connection PostgreSQL database connection resource.
  *   When {@link connection} is not present, the default connection is
@@ -44042,7 +45196,7 @@ function pg_connection_status($connection){}
 
 /**
  * {@link pg_convert} checks and converts the values in {@link
- * assoc_array} into suitable values for use in a SQL statement.
+ * assoc_array} into suitable values for use in an SQL statement.
  * Precondition for {@link pg_convert} is the existence of a table {@link
  * table_name} which has at least as many columns as {@link assoc_array}
  * has elements. The fieldnames in {@link table_name} must match the
@@ -44184,8 +45338,8 @@ function pg_escape_string($connection, $data){}
  * Sends a request to execute a prepared statement with given parameters,
  * and waits for the result.
  * 
- * {@link pg_execute} is like {@link pg_query_params}, but the command
- * to be executed is specified by naming a previously-prepared statement,
+ * {@link pg_execute} is like {@link pg_query_params}, but the command to
+ * be executed is specified by naming a previously-prepared statement,
  * instead of giving a query string. This feature allows commands that
  * will be used repeatedly to be parsed and planned just once, rather
  * than each time they are executed. The statement must have been
@@ -44243,10 +45397,10 @@ function pg_fetch_all_columns($result, $column){}
  * {@link pg_fetch_array} returns an array that corresponds to the
  * fetched row (record).
  * 
- * {@link pg_fetch_array} is an extended version of {@link
- * pg_fetch_row}. In addition to storing the data in the numeric indices
- * (field number) to the result array, it can also store the data using
- * associative indices (field name). It stores both indicies by default.
+ * {@link pg_fetch_array} is an extended version of {@link pg_fetch_row}.
+ * In addition to storing the data in the numeric indices (field number)
+ * to the result array, it can also store the data using associative
+ * indices (field name). It stores both indicies by default.
  * 
  * {@link pg_fetch_array} is NOT significantly slower than using {@link
  * pg_fetch_row}, and is significantly easier to use.
@@ -44272,10 +45426,10 @@ function pg_fetch_array($result, $row, $result_type){}
  * {@link pg_fetch_assoc} returns an associative array that corresponds
  * to the fetched row (records).
  * 
- * {@link pg_fetch_assoc} is equivalent to calling {@link
- * pg_fetch_array} with PGSQL_ASSOC as the optional third parameter. It
- * only returns an associative array. If you need the numeric indices,
- * use {@link pg_fetch_row}.
+ * {@link pg_fetch_assoc} is equivalent to calling {@link pg_fetch_array}
+ * with PGSQL_ASSOC as the optional third parameter. It only returns an
+ * associative array. If you need the numeric indices, use {@link
+ * pg_fetch_row}.
  * 
  * {@link pg_fetch_assoc} is NOT significantly slower than using {@link
  * pg_fetch_row}, and is significantly easier to use.
@@ -44613,15 +45767,15 @@ function pg_last_notice($connection){}
  * {@link pg_last_oid} is used to retrieve the OID assigned to an
  * inserted row.
  * 
- * OID field became an optional field from PostgreSQL 7.2 and will not
- * be present by default in PostgreSQL 8.1. When the OID field is not
+ * OID field became an optional field from PostgreSQL 7.2 and will not be
+ * present by default in PostgreSQL 8.1. When the OID field is not
  * present in a table, the programmer must use {@link pg_result_status}
  * to check for successful insertion.
  * 
- * To get the value of a SERIAL field in an inserted row, it is
- * necessary to use the PostgreSQL CURRVAL function, naming the sequence
- * whose last value is required. If the name of the sequence is unknown,
- * the pg_get_serial_sequence PostgreSQL 8.0 function is necessary.
+ * To get the value of a SERIAL field in an inserted row, it is necessary
+ * to use the PostgreSQL CURRVAL function, naming the sequence whose last
+ * value is required. If the name of the sequence is unknown, the
+ * pg_get_serial_sequence PostgreSQL 8.0 function is necessary.
  * 
  * PostgreSQL 8.1 has a function LASTVAL that returns the value of the
  * most recently used sequence in the session. This avoids the need for
@@ -45087,12 +46241,12 @@ function pg_query($connection, $query){}
  * the parameters. A value in this array means the corresponding
  * parameter is SQL NULL.
  * 
- * The primary advantage of {@link pg_query_params} over {@link
- * pg_query} is that parameter values may be separated from the {@link
- * query} string, thus avoiding the need for tedious and error-prone
- * quoting and escaping. Unlike {@link pg_query}, {@link pg_query_params}
- * allows at most one SQL command in the given string. (There can be
- * semicolons in it, but not more than one nonempty command.)
+ * The primary advantage of {@link pg_query_params} over {@link pg_query}
+ * is that parameter values may be separated from the {@link query}
+ * string, thus avoiding the need for tedious and error-prone quoting and
+ * escaping. Unlike {@link pg_query}, {@link pg_query_params} allows at
+ * most one SQL command in the given string. (There can be semicolons in
+ * it, but not more than one nonempty command.)
  * 
  * @param resource $connection PostgreSQL database connection resource.
  *   When {@link connection} is not present, the default connection is
@@ -45218,8 +46372,8 @@ function pg_select($connection, $table_name, $assoc_array, $options){}
  * Sends a request to execute a prepared statement with given parameters,
  * without waiting for the result(s).
  * 
- * This is similar to {@link pg_send_query_params}, but the command to
- * be executed is specified by naming a previously-prepared statement,
+ * This is similar to {@link pg_send_query_params}, but the command to be
+ * executed is specified by naming a previously-prepared statement,
  * instead of giving a query string. The function's parameters are
  * handled identically to {@link pg_execute}. Like {@link pg_execute}, it
  * will not work on pre-7.4 versions of PostgreSQL.
@@ -45461,8 +46615,7 @@ function pg_update($connection, $table_name, $data, $condition, $options){}
  * server version. Protocol and server versions are only available if PHP
  * was compiled with PostgreSQL 7.4 or later.
  * 
- * For more detailed server information, use {@link
- * pg_parameter_status}.
+ * For more detailed server information, use {@link pg_parameter_status}.
  * 
  * @param resource $connection PostgreSQL database connection resource.
  *   When {@link connection} is not present, the default connection is
@@ -45489,11 +46642,10 @@ function pg_version($connection){}
  *   Usually used in combination with the other flags. Indicates that a
  *   complete stand-alone HTML page needs to be printed including the
  *   information indicated by the other flags. CREDITS_GENERAL General
- *   credits: Language design and concept, PHP 4.0 authors and SAPI
- *   module. CREDITS_GROUP A list of the core developers CREDITS_MODULES
- *   A list of the extension modules for PHP, and their authors
- *   CREDITS_SAPI A list of the server API modules for PHP, and their
- *   authors
+ *   credits: Language design and concept, PHP authors and SAPI module.
+ *   CREDITS_GROUP A list of the core developers CREDITS_MODULES A list
+ *   of the extension modules for PHP, and their authors CREDITS_SAPI A
+ *   list of the server API modules for PHP, and their authors
  * @return bool
  * @since PHP 4, PHP 5
  **/
@@ -45507,9 +46659,9 @@ function phpcredits($flag){}
  * paths, master and local values of configuration options, HTTP headers,
  * and the PHP License.
  * 
- * Because every system is setup differently, {@link phpinfo} is
- * commonly used to check configuration settings and for available
- * predefined variables on a given system.
+ * Because every system is setup differently, {@link phpinfo} is commonly
+ * used to check configuration settings and for available predefined
+ * variables on a given system.
  * 
  * {@link phpinfo} is also a valuable debugging tool as it contains all
  * EGPCS (Environment, GET, POST, Cookie, Server) data.
@@ -45839,9 +46991,9 @@ function posix_getpwuid($uid){}
  * {@link posix_getrlimit} returns an array of information about the
  * current resource's soft and hard limits.
  * 
- * Each resource has an associated soft and hard limit. The soft limit
- * is the value that the kernel enforces for the corresponding resource.
- * The hard limit acts as a ceiling for the soft limit. An unprivileged
+ * Each resource has an associated soft and hard limit. The soft limit is
+ * the value that the kernel enforces for the corresponding resource. The
+ * hard limit acts as a ceiling for the soft limit. An unprivileged
  * process may only set its soft limit to a value from 0 to the hard
  * limit, and irreversibly lower its hard limit.
  * 
@@ -46151,24 +47303,24 @@ function preg_match($pattern, $subject, &$matches, $flags, $offset){}
  *   array of strings matched by the first parenthesized subpattern, and
  *   so on.
  *   
- *   <?php preg_match_all("|<[^>]+>(.*)</[^>]+>|U", "<b>example:
- *   </b><div align=left>this is a test</div>", $out,
- *   PREG_PATTERN_ORDER); echo $out[0][0] . ", " . $out[0][1] . "\n";
- *   echo $out[1][0] . ", " . $out[1][1] . "\n"; ?>
+ *   <?php preg_match_all("|<[^>]+>(.*)</[^>]+>|U", "<b>example: </b><div
+ *   align=left>this is a test</div>", $out, PREG_PATTERN_ORDER); echo
+ *   $out[0][0] . ", " . $out[0][1] . "\n"; echo $out[1][0] . ", " .
+ *   $out[1][1] . "\n"; ?>
  *   
  *   <b>example: </b>, <div align=left>this is a test</div> example: ,
  *   this is a test
  *   
- *   So, $out[0] contains array of strings that matched full pattern,
- *   and $out[1] contains array of strings enclosed by tags.
- *   PREG_SET_ORDER Orders results so that $matches[0] is an array of
- *   first set of matches, $matches[1] is an array of second set of
- *   matches, and so on.
+ *   So, $out[0] contains array of strings that matched full pattern, and
+ *   $out[1] contains array of strings enclosed by tags. PREG_SET_ORDER
+ *   Orders results so that $matches[0] is an array of first set of
+ *   matches, $matches[1] is an array of second set of matches, and so
+ *   on.
  *   
- *   <?php preg_match_all("|<[^>]+>(.*)</[^>]+>|U", "<b>example:
- *   </b><div align=\"left\">this is a test</div>", $out,
- *   PREG_SET_ORDER); echo $out[0][0] . ", " . $out[0][1] . "\n"; echo
- *   $out[1][0] . ", " . $out[1][1] . "\n"; ?>
+ *   <?php preg_match_all("|<[^>]+>(.*)</[^>]+>|U", "<b>example: </b><div
+ *   align=\"left\">this is a test</div>", $out, PREG_SET_ORDER); echo
+ *   $out[0][0] . ", " . $out[0][1] . "\n"; echo $out[1][0] . ", " .
+ *   $out[1][1] . "\n"; ?>
  *   
  *   <b>example: </b>, example: <div align="left">this is a test</div>,
  *   this is a test
@@ -46183,16 +47335,16 @@ function preg_match($pattern, $subject, &$matches, $flags, $offset){}
  *   full pattern matches, $matches[1] is an array of strings matched by
  *   the first parenthesized subpattern, and so on.
  *   
- *   <?php preg_match_all("|<[^>]+>(.*)</[^>]+>|U", "<b>example:
- *   </b><div align=left>this is a test</div>", $out,
- *   PREG_PATTERN_ORDER); echo $out[0][0] . ", " . $out[0][1] . "\n";
- *   echo $out[1][0] . ", " . $out[1][1] . "\n"; ?>
+ *   <?php preg_match_all("|<[^>]+>(.*)</[^>]+>|U", "<b>example: </b><div
+ *   align=left>this is a test</div>", $out, PREG_PATTERN_ORDER); echo
+ *   $out[0][0] . ", " . $out[0][1] . "\n"; echo $out[1][0] . ", " .
+ *   $out[1][1] . "\n"; ?>
  *   
  *   <b>example: </b>, <div align=left>this is a test</div> example: ,
  *   this is a test
  *   
- *   So, $out[0] contains array of strings that matched full pattern,
- *   and $out[1] contains array of strings enclosed by tags.
+ *   So, $out[0] contains array of strings that matched full pattern, and
+ *   $out[1] contains array of strings enclosed by tags.
  * @return int
  * @since PHP 4, PHP 5
  **/
@@ -46204,8 +47356,8 @@ function preg_match_all($pattern, $subject, &$matches, $flags, $offset){}
  * useful if you have a run-time string that you need to match in some
  * text and the string may contain special regex characters.
  * 
- * The special regular expression characters are: . \ + * ? [ ^ ] $ ( )
- * { } = ! < > | : -
+ * The special regular expression characters are: . \ + * ? [ ^ ] $ ( ) {
+ * } = ! < > | : -
  * 
  * @param string $str The input string.
  * @param string $delimiter If the optional {@link delimiter} is
@@ -46723,8 +47875,8 @@ function printer_open($printername){}
  * rectangle the brush is used to draw the shapes, while the pen is used
  * to draw the border.
  * 
- * If you haven't selected a brush before drawing shapes, the shape
- * won't be filled.
+ * If you haven't selected a brush before drawing shapes, the shape won't
+ * be filled.
  * 
  * @param resource $printer_handle {@link printer_handle} must be a
  *   valid printer handle.
@@ -48351,9 +49503,9 @@ function ps_set_parameter($psdoc, $name, $value){}
  * the x and y value separately by calling {@link ps_set_value} and
  * choosing textx respectively texty as the value name.
  * 
- * If you want to output text at a certain position it is more
- * convenient to use {@link ps_show_xy} instead of setting the text
- * position and calling {@link ps_show}.
+ * If you want to output text at a certain position it is more convenient
+ * to use {@link ps_show_xy} instead of setting the text position and
+ * calling {@link ps_show}.
  * 
  * @param resource $psdoc Resource identifier of the postscript file as
  *   returned by {@link ps_new}.
@@ -48385,8 +49537,7 @@ function ps_set_value($psdoc, $name, $value){}
  * Creates a shading, which can be used by {@link ps_shfill} or {@link
  * ps_shading_pattern}.
  * 
- * The color of the shading can be in any color space except for
- * pattern.
+ * The color of the shading can be in any color space except for pattern.
  * 
  * @param resource $psdoc Resource identifier of the postscript file as
  *   returned by {@link ps_new}.
@@ -48831,14 +49982,14 @@ function px_get_value($pxdoc, $name){}
  * inserted at the end of the database, but may be inserted at any
  * position depending on where the first free slot is found.
  * 
- * The record data is passed as an array of field values. The elements
- * in the array must correspond to the fields in the database. If the
- * array has less elements than fields in the database, the remaining
- * fields will be set to null.
+ * The record data is passed as an array of field values. The elements in
+ * the array must correspond to the fields in the database. If the array
+ * has less elements than fields in the database, the remaining fields
+ * will be set to null.
  * 
- * Most field values can be passed as its equivalent php type e.g. a
- * long value is used for fields of type PX_FIELD_LONG, PX_FIELD_SHORT
- * and PX_FIELD_AUTOINC, a double values is used for fields of type
+ * Most field values can be passed as its equivalent php type e.g. a long
+ * value is used for fields of type PX_FIELD_LONG, PX_FIELD_SHORT and
+ * PX_FIELD_AUTOINC, a double values is used for fields of type
  * PX_FIELD_CURRENCY and PX_FIELD_NUMBER. Field values for blob and alpha
  * fields are passed as strings.
  * 
@@ -49060,10 +50211,10 @@ function px_timestamp2string($pxdoc, $value, $format){}
 /**
  * Updates an exiting record in the database. The record starts at 0.
  * 
- * The record data is passed as an array of field values. The elements
- * in the array must correspond to the fields in the database. If the
- * array has less elements than fields in the database, the remaining
- * fields will be set to null.
+ * The record data is passed as an array of field values. The elements in
+ * the array must correspond to the fields in the database. If the array
+ * has less elements than fields in the database, the remaining fields
+ * will be set to null.
  * 
  * @param resource $pxdoc Resource identifier of the paradox database
  *   as returned by {@link px_new}.
@@ -49427,6 +50578,12 @@ function rand(){}
 function range($low, $high, $step){}
 
 /**
+ * @return string
+ * @since PECL rar >= 3.0.0
+ **/
+function rar_wrapper_cache_stats(){}
+
+/**
  * Returns a string in which the sequences with percent (%) signs
  * followed by two hex digits have been replaced with literal characters.
  * 
@@ -49642,15 +50799,15 @@ function readlink($path){}
  * so their values must not be part of any header returned. Also, html is
  * a height/width text string to be used inside normal HTML.
  * 
- * When an Exif header contains a Copyright note, this itself can
- * contain two values. As the solution is inconsistent in the Exif 2.10
- * standard, the COMPUTED section will return both entries
- * Copyright.Photographer and Copyright.Editor while the IFD0 sections
- * contains the byte array with the NULL character that splits both
- * entries. Or just the first entry if the datatype was wrong (normal
- * behaviour of Exif). The COMPUTED will also contain the entry Copyright
- * which is either the original copyright string, or a comma separated
- * list of the photo and editor copyright.
+ * When an Exif header contains a Copyright note, this itself can contain
+ * two values. As the solution is inconsistent in the Exif 2.10 standard,
+ * the COMPUTED section will return both entries Copyright.Photographer
+ * and Copyright.Editor while the IFD0 sections contains the byte array
+ * with the NULL character that splits both entries. Or just the first
+ * entry if the datatype was wrong (normal behaviour of Exif). The
+ * COMPUTED will also contain the entry Copyright which is either the
+ * original copyright string, or a comma separated list of the photo and
+ * editor copyright.
  * 
  * The tag UserComment has the same problem as the Copyright tag. It can
  * store two values. First the encoding used, and second the value
@@ -49874,7 +51031,7 @@ function rewinddir($dir_handle){}
 /**
  * Attempts to remove the directory named by {@link dirname}. The
  * directory must be empty, and the relevant permissions must permit
- * this.
+ * this. A E_WARNING level error will be generated on failure.
  * 
  * @param string $dirname Path to the directory.
  * @param resource $context
@@ -50228,9 +51385,9 @@ function scandir($directory, $sorting_order, $context){}
  * already acquired will block forever if acquiring the semaphore would
  * cause its maximum number of semaphore to be exceeded.
  * 
- * After processing a request, any semaphores acquired by the process
- * but not explicitly released will be released automatically and a
- * warning will be generated.
+ * After processing a request, any semaphores acquired by the process but
+ * not explicitly released will be released automatically and a warning
+ * will be generated.
  * 
  * @param resource $sem_identifier {@link sem_identifier} is a
  *   semaphore resource, obtained from {@link sem_get}.
@@ -50289,8 +51446,8 @@ function sem_remove($sem_identifier){}
 /**
  * Generates a storable representation of a value
  * 
- * This is useful for storing or passing PHP values around without
- * losing their type and structure.
+ * This is useful for storing or passing PHP values around without losing
+ * their type and structure.
  * 
  * To make the serialized string into a PHP value again, use {@link
  * unserialize}.
@@ -50334,8 +51491,8 @@ function session_cache_expire($new_cache_expire){}
  * {@link session_cache_limiter} returns the name of the current cache
  * limiter.
  * 
- * The cache limiter defines which cache control HTTP headers are sent
- * to the client. These headers determine the rules by which the page
+ * The cache limiter defines which cache control HTTP headers are sent to
+ * the client. These headers determine the rules by which the page
  * content may be cached by the client and intermediate proxies. Setting
  * the cache limiter to nocache disallows any client/proxy caching. A
  * value of public permits caching by proxies and the client, whereas
@@ -50454,7 +51611,7 @@ function session_module_name($module){}
 
 /**
  * {@link session_name} returns the name of the current session. If
- * {@link name} is given, {@link session_start} will update the session
+ * {@link name} is given, {@link session_name} will update the session
  * name and return the old session name.
  * 
  * The session name is reset to the default value stored in session.name
@@ -50619,11 +51776,13 @@ function session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly
  *   to make save handler work as expected. Return empty string if there
  *   is no data to read. Return values from other handlers are converted
  *   to boolean expression. for success, for failure.
- * @param callback $write The "write" handler is not executed until
- *   after the output stream is closed. Thus, output from debugging
- *   statements in the "write" handler will never be seen in the browser.
- *   If debugging output is necessary, it is suggested that the debug
- *   output be written to a file instead.
+ * @param callback $write Write function that is called when session
+ *   data is to be saved. This function expects two parameters: an
+ *   identifier and the data associated with it. The "write" handler is
+ *   not executed until after the output stream is closed. Thus, output
+ *   from debugging statements in the "write" handler will never be seen
+ *   in the browser. If debugging output is necessary, it is suggested
+ *   that the debug output be written to a file instead.
  * @param callback $destroy The destroy handler, this is executed when
  *   a session is destroyed with {@link session_destroy} and takes the
  *   session id as its only parameter.
@@ -50810,10 +51969,10 @@ function settype(&$var, $type){}
  * Sets a user function ({@link error_handler}) to handle errors in a
  * script.
  * 
- * This function can be used for defining your own way of handling
- * errors during runtime, for example in applications in which you need
- * to do cleanup of data/files when a critical error happens, or when you
- * need to trigger an error under certain conditions (using {@link
+ * This function can be used for defining your own way of handling errors
+ * during runtime, for example in applications in which you need to do
+ * cleanup of data/files when a critical error happens, or when you need
+ * to trigger an error under certain conditions (using {@link
  * trigger_error}).
  * 
  * It is important to remember that the standard PHP error handler is
@@ -51111,9 +52270,9 @@ function shm_has_var($shm_identifier, $variable_key){}
  * {@link shm_put_var} inserts or updates the {@link variable} with the
  * given {@link variable_key}.
  * 
- * Warnings (E_WARNING level) will be issued if {@link shm_identifier}
- * is not a valid SysV shared memory index or if there was not enough
- * shared memory remaining to complete your request.
+ * Warnings (E_WARNING level) will be issued if {@link shm_identifier} is
+ * not a valid SysV shared memory index or if there was not enough shared
+ * memory remaining to complete your request.
  * 
  * @param resource $shm_identifier A shared memory resource handle as
  *   returned by {@link shm_attach}
@@ -51443,8 +52602,8 @@ function snmp_set_oid_output_format($oid_format){}
  * OID). Additionally, if quick_print is not enabled, the library prints
  * additional hex values for all strings of three characters or less.
  * 
- * By default the UCD SNMP library returns verbose values, quick_print
- * is used to return only the value.
+ * By default the UCD SNMP library returns verbose values, quick_print is
+ * used to return only the value.
  * 
  * Currently strings are still returned with extra quotes, this will be
  * corrected in a later release.
@@ -51579,8 +52738,8 @@ function socket_create($domain, $type, $protocol){}
  * AF_INET listening on all local interfaces on the given port waiting
  * for new connections.
  * 
- * This function is meant to ease the task of creating a new socket
- * which only listens to accept new connections.
+ * This function is meant to ease the task of creating a new socket which
+ * only listens to accept new connections.
  * 
  * @param int $port The port on which to listen on all interfaces.
  * @param int $backlog The {@link backlog} parameter defines the
@@ -51984,9 +53143,8 @@ function solr_get_version(){}
  *   (don't change types) SORT_NUMERIC - compare items numerically
  *   SORT_STRING - compare items as strings SORT_LOCALE_STRING - compare
  *   items as strings, based on the current locale. Added in PHP 4.4.0
- *   and 5.0.2. Before PHP 6, it uses the system locale, which can be
- *   changed using {@link setlocale}. Since PHP 6, you must use the
- *   {@link i18n_loc_set_default} function.
+ *   and 5.0.2, it uses the system locale, which can be changed using
+ *   {@link setlocale}.
  * @return bool
  * @since PHP 4, PHP 5
  **/
@@ -51995,11 +53153,11 @@ function sort(&$array, $sort_flags){}
 /**
  * Calculates the soundex key of {@link str}.
  * 
- * Soundex keys have the property that words pronounced similarly
- * produce the same soundex key, and can thus be used to simplify
- * searches in databases where you know the pronunciation but not the
- * spelling. This soundex function returns a string 4 characters long,
- * starting with a letter.
+ * Soundex keys have the property that words pronounced similarly produce
+ * the same soundex key, and can thus be used to simplify searches in
+ * databases where you know the pronunciation but not the spelling. This
+ * soundex function returns a string 4 characters long, starting with a
+ * letter.
  * 
  * This particular soundex function is one described by Donald Knuth in
  * "The Art Of Computer Programming, vol. 3: Sorting And Searching",
@@ -52135,8 +53293,9 @@ function spl_autoload_register($autoload_function, $throw, $prepend){}
  * stack is activated and empty after unregistering the given function
  * then it will be deactivated.
  * 
- * When this function results in the autoload stack being activated an
- * existing __autoload function will not be reactivated.
+ * When this function results in the autoload stack being deactivated,
+ * any __autoload function that previously existed will not be
+ * reactivated.
  * 
  * @param mixed $autoload_function The autoload function being
  *   unregistered.
@@ -52219,9 +53378,9 @@ function spl_object_hash($obj){}
  *   <?php $format = 'There are %d monkeys in the %s'; printf($format,
  *   $num, $location); ?>
  *   
- *   This might output, "There are 5 monkeys in the tree". But imagine
- *   we are creating a format string in a separate file, commonly because
- *   we would like to internationalize it and we rewrite it as: Argument
+ *   This might output, "There are 5 monkeys in the tree". But imagine we
+ *   are creating a format string in a separate file, commonly because we
+ *   would like to internationalize it and we rewrite it as: Argument
  *   swapping
  *   
  *   <?php $format = 'The %s contains %d monkeys'; printf($format, $num,
@@ -52240,8 +53399,8 @@ function spl_object_hash($obj){}
  *   without adding more arguments in the code. For example: Argument
  *   swapping
  *   
- *   <?php $format = 'The %2$s contains %1$d monkeys. That\'s a nice
- *   %2$s full of %1$d monkeys.'; printf($format, $num, $location); ?>
+ *   <?php $format = 'The %2$s contains %1$d monkeys. That\'s a nice %2$s
+ *   full of %1$d monkeys.'; printf($format, $num, $location); ?>
  * @param mixed $args
  * @return string
  * @since PHP 4, PHP 5
@@ -52357,8 +53516,8 @@ function sqlite_create_aggregate($dbhandle, $function_name, $step_func, $finaliz
  * with SQLite as an UDF (User Defined Function), so that it can be
  * called from within your SQL statements.
  * 
- * The UDF can be used in any SQL statement that can call functions,
- * such as SELECT and UPDATE statements and also in triggers.
+ * The UDF can be used in any SQL statement that can call functions, such
+ * as SELECT and UPDATE statements and also in triggers.
  * 
  * @param resource $dbhandle The SQLite Database resource; returned
  *   from {@link sqlite_open} when used procedurally. This parameter is
@@ -52405,12 +53564,12 @@ function sqlite_error_string($error_code){}
  * doubling up single-quote characters (') and checking for binary-unsafe
  * characters in the query string.
  * 
- * Although the encoding makes it safe to insert the data, it will
- * render simple text comparisons and LIKE clauses in your queries
- * unusable for the columns that contain the binary data. In practice,
- * this shouldn't be a problem, as your schema should be such that you
- * don't use such things on binary columns (in fact, it might be better
- * to store binary data using other means, such as in files).
+ * Although the encoding makes it safe to insert the data, it will render
+ * simple text comparisons and LIKE clauses in your queries unusable for
+ * the columns that contain the binary data. In practice, this shouldn't
+ * be a problem, as your schema should be such that you don't use such
+ * things on binary columns (in fact, it might be better to store binary
+ * data using other means, such as in files).
  * 
  * @param string $item The string being quoted. If the {@link item}
  *   contains a NUL character, or if it begins with a character whose
@@ -52623,11 +53782,11 @@ function sqlite_last_insert_rowid($dbhandle){}
  * compatible modes. This function allows you to determine which encoding
  * scheme is used by your version of the library.
  * 
- * When compiled with UTF-8 support, sqlite handles encoding and
- * decoding of UTF-8 multi-byte character sequences, but does not yet do
- * a complete job when working with the data (no normalization is
- * performed for example), and some comparison operations may still not
- * be carried out correctly.
+ * When compiled with UTF-8 support, sqlite handles encoding and decoding
+ * of UTF-8 multi-byte character sequences, but does not yet do a
+ * complete job when working with the data (no normalization is performed
+ * for example), and some comparison operations may still not be carried
+ * out correctly.
  * 
  * @return string
  * @since PHP 5, PECL sqlite >= 1.0.0
@@ -52674,7 +53833,7 @@ function sqlite_num_fields($result){}
 function sqlite_num_rows($result){}
 
 /**
- * Opens a SQLite database or creates the database if it does not exist.
+ * Opens an SQLite database or creates the database if it does not exist.
  * 
  * @param string $filename The filename of the SQLite database. If the
  *   file does not exist, SQLite will attempt to create it. PHP must have
@@ -52826,9 +53985,9 @@ function sqlite_udf_encode_binary($data){}
  * result set that can only be used to read each row, one after the
  * other.
  * 
- * This function is ideal for generating things such as HTML tables
- * where you only need to process one row at a time and don't need to
- * randomly access the row data.
+ * This function is ideal for generating things such as HTML tables where
+ * you only need to process one row at a time and don't need to randomly
+ * access the row data.
  * 
  * @param resource $dbhandle The SQLite Database resource; returned
  *   from {@link sqlite_open} when used procedurally. This parameter is
@@ -54302,9 +55461,9 @@ function stream_get_filters(){}
 /**
  * Gets a line from the given handle.
  * 
- * Reading ends when {@link length} bytes have been read, when the
- * string specified by {@link ending} is found (which is not included in
- * the return value), or on EOF (whichever comes first).
+ * Reading ends when {@link length} bytes have been read, when the string
+ * specified by {@link ending} is found (which is not included in the
+ * return value), or on EOF (whichever comes first).
  * 
  * This function is nearly identical to {@link fgets} except in that it
  * allows end of line delimiters other than the standard \n, \r, and
@@ -54451,6 +55610,20 @@ function stream_select(&$read, &$write, &$except, $tv_sec, $tv_usec){}
 function stream_set_blocking($stream, $mode){}
 
 /**
+ * Sets the read buffer. It's the equivalent of {@link
+ * stream_set_write_buffer}, but for read operations.
+ * 
+ * @param resource $stream The file pointer.
+ * @param int $buffer The number of bytes to buffer. If {@link buffer}
+ *   is 0 then read operations are unbuffered. This ensures that all
+ *   reads with {@link fread} are completed before other processes are
+ *   allowed to write to that output stream.
+ * @return int
+ * @since PHP 5 >= 5.3.3
+ **/
+function stream_set_read_buffer($stream, $buffer){}
+
+/**
  * Sets the timeout value on {@link stream}, expressed in the sum of
  * {@link seconds} and {@link microseconds}.
  * 
@@ -54485,12 +55658,13 @@ function stream_set_write_buffer($stream, $buffer){}
  * Accept a connection on a socket previously created by {@link
  * stream_socket_server}.
  * 
- * @param resource $server_socket Override the default socket accept
- *   timeout. Time should be given in seconds.
- * @param float $timeout Will be set to the name (address) of the
+ * @param resource $server_socket The server socket to accept a
+ *   connection from.
+ * @param float $timeout Override the default socket accept timeout.
+ *   Time should be given in seconds.
+ * @param string $peername Will be set to the name (address) of the
  *   client which connected, if included and available from the selected
  *   transport.
- * @param string $peername
  * @return resource
  * @since PHP 5
  **/
@@ -55109,9 +56283,9 @@ function strtok($str, $token){}
  * Returns {@link string} with all alphabetic characters converted to
  * lowercase.
  * 
- * Note that 'alphabetic' is determined by the current locale. This
- * means that in i.e. the default "C" locale, characters such as umlaut-A
- * () will not be converted.
+ * Note that 'alphabetic' is determined by the current locale. This means
+ * that in i.e. the default "C" locale, characters such as umlaut-A ()
+ * will not be converted.
  * 
  * @param string $str The input string.
  * @return string
@@ -55126,9 +56300,7 @@ function strtolower($str){}
  * process is explained in the {@link date_default_timezone_get} function
  * page.
  * 
- * @param string $time The string to parse. Before PHP 5.0.0,
- *   microseconds weren't allowed in the time, since PHP 5.0.0 they are
- *   allowed but ignored.
+ * @param string $time
  * @param int $now The timestamp which is used as a base for the
  *   calculation of relative dates.
  * @return int
@@ -55531,6 +56703,20 @@ function svn_client_version(){}
  * @since PECL svn >= 0.1.0
  **/
 function svn_commit($log, $targets, $dontrecurse){}
+
+/**
+ * Deletes the file, directory or symbolic link at {@link path} from the
+ * working directory. The item will be deleted from the repository the
+ * next time you call {@link svn_commit} on the working copy.
+ * 
+ * @param string $path Path of item to delete.
+ * @param bool $force If , the file will be deleted even if it has
+ *   local modifications. Otherwise, local modifications will result in a
+ *   failure. Default is
+ * @return bool
+ * @since PECL svn >= 0.4.0
+ **/
+function svn_delete($path, $force){}
 
 /**
  * Recursively diffs two paths, {@link path1} and {@link path2}.
@@ -56432,9 +57618,9 @@ function swf_perspective($fovy, $aspect, $near, $far){}
 /**
  * Places the object in the current frame at a specified {@link depth}.
  * 
- * This uses the current mulcolor (specified by {@link swf_mulcolor})
- * and the current addcolor (specified by {@link swf_addcolor}) to color
- * the object and it uses the current matrix to position the object.
+ * This uses the current mulcolor (specified by {@link swf_mulcolor}) and
+ * the current addcolor (specified by {@link swf_addcolor}) to color the
+ * object and it uses the current matrix to position the object.
  * 
  * @param int $objid The object id.
  * @param int $depth Must be between 1 and 65535.
@@ -56842,9 +58028,9 @@ function sybase_deadlock_retry_count($retry_count){}
  * indices of the result array, it also stores the data in associative
  * indices, using the field names as keys.
  * 
- * An important thing to note is that using {@link sybase_fetch_array}
- * is NOT significantly slower than using {@link sybase_fetch_row}, while
- * it provides a significant added value.
+ * An important thing to note is that using {@link sybase_fetch_array} is
+ * NOT significantly slower than using {@link sybase_fetch_row}, while it
+ * provides a significant added value.
  * 
  * @param resource $result
  * @return array
@@ -56858,9 +58044,9 @@ function sybase_fetch_array($result){}
  * array. Columns from different tables with the same names are returned
  * as name, name1, name2, ..., nameN.
  * 
- * An important thing to note is that using {@link sybase_fetch_assoc}
- * is NOT significantly slower than using {@link sybase_fetch_row}, while
- * it provides a significant added value.
+ * An important thing to note is that using {@link sybase_fetch_assoc} is
+ * NOT significantly slower than using {@link sybase_fetch_row}, while it
+ * provides a significant added value.
  * 
  * @param resource $result
  * @return array
@@ -57121,9 +58307,9 @@ function sybase_set_message_handler($handler, $connection){}
  * reads up to the target row. The behavior may produce better
  * performance for large result sets.
  * 
- * {@link sybase_num_rows} will only return the correct number of rows
- * if all result sets have been read. To Sybase, the number of rows is
- * not known and is therefore computed by the client implementation.
+ * {@link sybase_num_rows} will only return the correct number of rows if
+ * all result sets have been read. To Sybase, the number of rows is not
+ * known and is therefore computed by the client implementation.
  * 
  * @param string $query
  * @param resource $link_identifier
@@ -57409,8 +58595,9 @@ function time(){}
 function timezone_name_from_abbr($abbr, $gmtOffset, $isdst){}
 
 /**
- * @param string $timezone Time zone identifier as full name (e.g.
- *   Europe/Prague) or abbreviation (e.g. CET).
+ * Creates new DateTimeZone object.
+ * 
+ * @param string $timezone One of timezones.
  * @return DateTimeZone
  * @since PHP 5 >= 5.1.0
  **/
@@ -57948,8 +59135,8 @@ function udm_hash32($agent, $str){}
  *   parameter description in UDM_ISPELL_TYPE_DB. {@link
  *   udm_load_ispell_data} example
  *   
- *   <?php if ((! udm_load_ispell_data($udm, UDM_ISPELL_TYPE_AFFIX,
- *   'en', '/opt/ispell/en.aff', 0)) || (! udm_load_ispell_data($udm,
+ *   <?php if ((! udm_load_ispell_data($udm, UDM_ISPELL_TYPE_AFFIX, 'en',
+ *   '/opt/ispell/en.aff', 0)) || (! udm_load_ispell_data($udm,
  *   UDM_ISPELL_TYPE_AFFIX, 'ru', '/opt/ispell/ru.aff', 0)) || (!
  *   udm_load_ispell_data($udm, UDM_ISPELL_TYPE_SPELL, 'en',
  *   '/opt/ispell/en.dict', 0)) || (! udm_load_ispell_data($udm,
@@ -57970,8 +59157,8 @@ function udm_hash32($agent, $str){}
  *   return messages associated with SQL. Please, see {@link flag}
  *   parameter description in UDM_ISPELL_TYPE_DB.
  *   
- *   <?php if ((! udm_load_ispell_data($udm, UDM_ISPELL_TYPE_AFFIX,
- *   'en', '/opt/ispell/en.aff', 0)) || (! udm_load_ispell_data($udm,
+ *   <?php if ((! udm_load_ispell_data($udm, UDM_ISPELL_TYPE_AFFIX, 'en',
+ *   '/opt/ispell/en.aff', 0)) || (! udm_load_ispell_data($udm,
  *   UDM_ISPELL_TYPE_AFFIX, 'ru', '/opt/ispell/ru.aff', 0)) || (!
  *   udm_load_ispell_data($udm, UDM_ISPELL_TYPE_SPELL, 'en',
  *   '/opt/ispell/en.dict', 0)) || (! udm_load_ispell_data($udm,
@@ -58282,7 +59469,8 @@ function uniqid($prefix, $more_entropy){}
 function unixtojd($timestamp){}
 
 /**
- * Deletes {@link filename}. Similar to the Unix C unlink() function.
+ * Deletes {@link filename}. Similar to the Unix C unlink() function. A
+ * E_WARNING level error will be generated on failure.
  * 
  * @param string $filename Path to the file.
  * @param resource $context
@@ -58295,9 +59483,9 @@ function unlink($filename, $context){}
  * Unpacks from a binary string into an array according to the given
  * {@link format}.
  * 
- * {@link unpack} works slightly different from Perl as the unpacked
- * data is stored in an associative array. To accomplish this you have to
- * name the different format codes and separate them by a slash /.
+ * {@link unpack} works slightly different from Perl as the unpacked data
+ * is stored in an associative array. To accomplish this you have to name
+ * the different format codes and separate them by a slash /.
  * 
  * @param string $format See {@link pack} for an explanation of the
  *   format codes.
@@ -59139,16 +60327,18 @@ function wddx_unserialize($packet){}
  *   params} Command line parameters to pass to the service when it
  *   starts. If you want to run a PHP script as the service, then the
  *   first parameter should be the full path to the PHP script that you
- *   intend to run. {@link load_order} Controls the load_order. This is
- *   not yet fully supported. {@link svc_type} Sets the service type. If
- *   omitted, the default value is WIN32_SERVICE_WIN32_OWN_PROCESS. Don't
- *   change this unless you know what you're doing. {@link start_type}
- *   Specifies how the service should be started. The default is
- *   WIN32_SERVICE_AUTO_START which means the service will be launched
- *   when the machine starts up. {@link error_control} Informs the SCM
- *   what it should do when it detects a problem with the service. The
- *   default is WIN32_SERVER_ERROR_IGNORE. Changing this value is not yet
- *   fully supported.
+ *   intend to run. If the script name or path contains spaces, then wrap
+ *   the full path to the PHP script with ". {@link load_order} Controls
+ *   the load_order. This is not yet fully supported. {@link svc_type}
+ *   Sets the service type. If omitted, the default value is
+ *   WIN32_SERVICE_WIN32_OWN_PROCESS. Don't change this unless you know
+ *   what you're doing. {@link start_type} Specifies how the service
+ *   should be started. The default is WIN32_SERVICE_AUTO_START which
+ *   means the service will be launched when the machine starts up.
+ *   {@link error_control} Informs the SCM what it should do when it
+ *   detects a problem with the service. The default is
+ *   WIN32_SERVER_ERROR_IGNORE. Changing this value is not yet fully
+ *   supported.
  * @param string $machine The short name of the service. This is the
  *   name that you will use to control the service using the net command.
  *   The service must be unique (no two services can share the same
@@ -59252,8 +60442,8 @@ function win32_start_service($servicename, $machine){}
  * spawning a thread to handle the lower-level communication with the
  * service control manager.
  * 
- * Once started, the service process should continue to check-in with
- * the service control manager so that it can determine if it should
+ * Once started, the service process should continue to check-in with the
+ * service control manager so that it can determine if it should
  * terminate. This is achieved by periodically calling {@link
  * win32_get_last_control_message} and handling the return code
  * appropriately.
@@ -59277,10 +60467,13 @@ function win32_stop_service($servicename, $machine){}
 /**
  * Retrieves information about file cache content and its usage.
  * 
+ * @param bool $summaryonly Controls whether the returned array will
+ *   contain information about individual cache entries along with the
+ *   file cache summary.
  * @return array
  * @since PECL wincache >= 1.0.0
  **/
-function wincache_fcache_fileinfo(){}
+function wincache_fcache_fileinfo($summaryonly){}
 
 /**
  * Retrieves information about memory usage by file cache.
@@ -59291,12 +60484,32 @@ function wincache_fcache_fileinfo(){}
 function wincache_fcache_meminfo(){}
 
 /**
+ * Obtains an exclusive lock on a given key. The execution of the current
+ * script will be blocked until the lock can be obtained. Once the lock
+ * is obtained, the other scripts that try to request the lock by using
+ * the same key will be blocked, until the current script releases the
+ * lock by using {@link wincache_unlock}.
+ * 
+ * @param string $key Name of the key in the cache to get the lock on.
+ * @param bool $isglobal Controls whether the scope of the lock is
+ *   system-wide or local. Local locks are scoped to the application pool
+ *   in IIS FastCGI case or to all php processes that have the same
+ *   parent process identifier.
+ * @return bool
+ * @since PECL wincache >= 1.1.0
+ **/
+function wincache_lock($key, $isglobal){}
+
+/**
  * Retrieves information about opcode cache content and its usage.
  * 
+ * @param bool $summaryonly Controls whether the returned array will
+ *   contain information about individual cache entries along with the
+ *   opcode cache summary.
  * @return array
  * @since PECL wincache >= 1.0.0
  **/
-function wincache_ocache_fileinfo(){}
+function wincache_ocache_fileinfo($summaryonly){}
 
 /**
  * Retrieves information about memory usage by opcode cache.
@@ -59334,6 +60547,25 @@ function wincache_rplist_fileinfo(){}
  * @since PECL wincache >= 1.0.0
  **/
 function wincache_rplist_meminfo(){}
+
+/**
+ * Retrieves information about session cache content and its usage.
+ * 
+ * @param bool $summaryonly Controls whether the returned array will
+ *   contain information about individual cache entries along with the
+ *   session cache summary.
+ * @return array
+ * @since PECL wincache >= 1.1.0
+ **/
+function wincache_scache_info($summaryonly){}
+
+/**
+ * Retrieves information about memory usage by session cache.
+ * 
+ * @return array
+ * @since PECL wincache >= 1.1.0
+ **/
+function wincache_scache_meminfo(){}
 
 /**
  * Adds a variable in user cache, only if this variable doesn't already
@@ -59465,10 +60697,18 @@ function wincache_ucache_inc($key, $inc_by, &$success){}
 /**
  * Retrieves information about data stored in the user cache.
  * 
- * @return bool
+ * @param bool $summaryonly Controls whether the returned array will
+ *   contain information about individual cache entries along with the
+ *   user cache summary.
+ * @param string $key The key of an entry in the user cache. If
+ *   specified then the returned array will contain information only
+ *   about that cache entry. If not specified and {@link summaryonly} is
+ *   set to false then the returned array will contain information about
+ *   all entries in the cache.
+ * @return array
  * @since PECL wincache >= 1.1.0
  **/
-function wincache_ucache_info(){}
+function wincache_ucache_info($summaryonly, $key){}
 
 /**
  * Retrieves information about memory usage by user cache.
@@ -59506,6 +60746,18 @@ function wincache_ucache_meminfo(){}
  * @since PECL wincache >= 1.1.0
  **/
 function wincache_ucache_set($key, $value, $ttl){}
+
+/**
+ * Releases an exclusive lock that was obtained on a given key by using
+ * {@link wincache_lock}. If any other process was blocked waiting for
+ * the lock on this key, that process will be able to obtain the lock.
+ * 
+ * @param string $key Name of the key in the cache to release the lock
+ *   on.
+ * @return bool
+ * @since PECL wincache >= 1.1.0
+ **/
+function wincache_unlock($key){}
 
 /**
  * Wraps a string to a given number of characters using a string break
@@ -59744,8 +60996,8 @@ function xdiff_file_patch_binary($file, $patch, $dest){}
  * both text and binary files. Resulting patch file can be later applied
  * using {@link xdiff_file_bpatch}/{@link xdiff_string_bpatch}.
  * 
- * For more details about differences between algorithm used please
- * check libxdiff website.
+ * For more details about differences between algorithm used please check
+ * libxdiff website.
  * 
  * @param string $old_file Path to the first file. This file acts as
  *   "old" file.
@@ -60776,9 +62028,9 @@ function xml_set_object($parser, &$object){}
  * Sets the processing instruction (PI) handler function for the XML
  * parser {@link parser}.
  * 
- * A processing instruction has the following format: <?target data?>
- * You can put PHP code into such a tag, but be aware of one limitation:
- * in an XML PI, the PI end tag (?>) can not be quoted, so this character
+ * A processing instruction has the following format: <?target data?> You
+ * can put PHP code into such a tag, but be aware of one limitation: in
+ * an XML PI, the PI end tag (?>) can not be quoted, so this character
  * sequence should not appear in the PHP code you embed with PIs in XML
  * documents.If it does, the rest of the PHP code, as well as the "real"
  * PI end tag, will be treated as character data.
@@ -61391,8 +62643,8 @@ function yaz_ccl_conf($id, $config){}
  * to an RPN query which may be passed to the {@link yaz_search} function
  * to perform a search.
  * 
- * To define a set of valid CCL fields call {@link yaz_ccl_conf} prior
- * to this function.
+ * To define a set of valid CCL fields call {@link yaz_ccl_conf} prior to
+ * this function.
  * 
  * @param resource $id The connection resource returned by {@link
  *   yaz_connect}.
@@ -61422,8 +62674,8 @@ function yaz_close($id){}
  * This function returns a connection resource on success, zero on
  * failure.
  * 
- * {@link yaz_connect} prepares for a connection to a Z39.50 server.
- * This function is non-blocking and does not attempt to establish a
+ * {@link yaz_connect} prepares for a connection to a Z39.50 server. This
+ * function is non-blocking and does not attempt to establish a
  * connection - it merely prepares a connect to be performed later when
  * {@link yaz_wait} is called.
  * 
@@ -61452,13 +62704,13 @@ function yaz_close($id){}
  *   queries and messages. MARC21/USMARC records are not affected by this
  *   setting.
  *   
- *   preferredMessageSize An integer that specifies the maximum byte
- *   size of all records to be returned by a target during retrieval. See
- *   the Z39.50 standard for more information. This option is supported
- *   in PECL YAZ 1.0.5 or later.
+ *   preferredMessageSize An integer that specifies the maximum byte size
+ *   of all records to be returned by a target during retrieval. See the
+ *   Z39.50 standard for more information. This option is supported in
+ *   PECL YAZ 1.0.5 or later.
  *   
- *   maximumRecordSize An integer that specifies the maximum byte size
- *   of a single record to be returned by a target during retrieval. This
+ *   maximumRecordSize An integer that specifies the maximum byte size of
+ *   a single record to be returned by a target during retrieval. This
  *   entity is referred to as Exceptional-record-size in the Z39.50
  *   standard. This option is supported in PECL YAZ 1.0.5 or later.
  * @return mixed
@@ -61483,8 +62735,8 @@ function yaz_database($id, $databases){}
 /**
  * This function sets the element set name for retrieval.
  * 
- * Call this function before {@link yaz_search} or {@link yaz_present}
- * to specify the element set name for records to be retrieved.
+ * Call this function before {@link yaz_search} or {@link yaz_present} to
+ * specify the element set name for records to be retrieved.
  * 
  * @param resource $id The connection resource returned by {@link
  *   yaz_connect}.
@@ -61604,8 +62856,8 @@ function yaz_itemorder($id, $args){}
  * This function prepares for retrieval of records after a successful
  * search.
  * 
- * The {@link yaz_range} function should be called prior to this
- * function to specify the range of records to be retrieved.
+ * The {@link yaz_range} function should be called prior to this function
+ * to specify the range of records to be retrieved.
  * 
  * @param resource $id The connection resource returned by {@link
  *   yaz_connect}.
@@ -66112,9 +67364,9 @@ class HttpMessage implements Iterator, Countable, Serializable {
     /**
      * Instantiate a new HttpMessage object.
      * 
-     * The constructed object will actually represent the last message of
-     * the passed string. If there were prior messages, those can be accessed
-     * by HttpMessage::{@link getParentMessage}.
+     * The constructed object will actually represent the last message of the
+     * passed string. If there were prior messages, those can be accessed by
+     * HttpMessage::{@link getParentMessage}.
      * 
      * @param string $message a single or several consecutive HTTP messages
      * @return void
@@ -66704,9 +67956,9 @@ class HttpRequest {
      * Don't forget to specify a content type. Affects only POST and custom
      * requests.
      * 
-     * Only either post fields or raw post data can be used for each
-     * request. Raw post data has higher precedence and will be used even if
-     * post fields are set.
+     * Only either post fields or raw post data can be used for each request.
+     * Raw post data has higher precedence and will be used even if post
+     * fields are set.
      * 
      * @param string $raw_post_data raw post data
      * @return bool
@@ -69904,6 +71156,17 @@ class Imagick implements Iterator, Traversable {
     function readImageFile($filehandle, $fileName){}
 
     /**
+     * Translate, scale, shear, or rotate image colors. This method supports
+     * variable sized matrices but normally 5x5 matrix is used for RGBA and
+     * 6x6 is used for CMYK. The last row should contain the normalized
+     * values.
+     * 
+     * @param array $matrix The matrix containing the color values
+     * @return bool
+     **/
+    function recolorImage($matrix){}
+
+    /**
      * Smooths the contours of an image while still preserving edge
      * information. The algorithm works by replacing each pixel with its
      * neighbor closest in value. A neighbor is defined by radius. Use a
@@ -72973,10 +74236,10 @@ interface KTaglib_ID3v2_AttachedPictureFrame {
     /**
      * Returns the type of the image.
      * 
-     * The ID3v2 specification allows an AttachedPictureFrame to set the
-     * type of an image. This can be e.g. FrontCover or FileIcon. Please
-     * refer to the KTagLib_ID3v2_AttachedPictureFrame class description for
-     * a list of available types.
+     * The ID3v2 specification allows an AttachedPictureFrame to set the type
+     * of an image. This can be e.g. FrontCover or FileIcon. Please refer to
+     * the KTagLib_ID3v2_AttachedPictureFrame class description for a list of
+     * available types.
      * 
      * @return int
      * @since 0.2.0
@@ -73554,9 +74817,9 @@ class maxdb {
      * {@link link} parameter. If this number cannot be determined, this
      * function will return -1.
      * 
-     * The {@link maxdb_affected_rows} function only works with queries
-     * which modify a table. In order to return the number of rows from a
-     * SELECT query, use the {@link maxdb_num_rows} function instead.
+     * The {@link maxdb_affected_rows} function only works with queries which
+     * modify a table. In order to return the number of rows from a SELECT
+     * query, use the {@link maxdb_num_rows} function instead.
      * 
      * @var int
      **/
@@ -73582,8 +74845,6 @@ class maxdb {
      **/
     var $error;
     /**
-     * Procdural style:
-     * 
      * The {@link maxdb_get_host_info} function returns a string describing
      * the connection represented by the {@link link} parameter is using.
      * 
@@ -73679,277 +74940,6 @@ class maxdb {
      **/
     var $warning_count;
     /**
-     * {@link maxdb_autocommit} is used to turn on or off auto-commit mode on
-     * queries for the database connection represented by the {@link link}
-     * resource.
-     * 
-     * @param bool $mode
-     * @return bool
-     **/
-    function auto_commit($mode){}
-
-    /**
-     * {@link maxdb_change_user} is used to change the user of the specified
-     * database connection as given by the {@link link} parameter and to set
-     * the current database to that specified by the {@link database}
-     * parameter.
-     * 
-     * In order to successfully change users a valid {@link username} and
-     * {@link password} parameters must be provided and that user must have
-     * sufficient permissions to access the desired database. If for any
-     * reason authorization fails, the current user authentication will
-     * remain.
-     * 
-     * @param string $user
-     * @param string $password
-     * @param string $database
-     * @return bool
-     **/
-    function change_user($user, $password, $database){}
-
-    /**
-     * Returns the current character set for the database connection
-     * specified by the {@link link} parameter.
-     * 
-     * @return string
-     **/
-    function character_set_name(){}
-
-    /**
-     * The {@link maxdb_close} function closes a previously opened database
-     * connection specified by the {@link link} parameter.
-     * 
-     * @return bool
-     **/
-    function close(){}
-
-    /**
-     * Commits the current transaction for the database connection specified
-     * by the {@link link} parameter.
-     * 
-     * @return bool
-     **/
-    function commit(){}
-
-    /**
-     * @return void
-     **/
-    function disable_reads_from_master(){}
-
-    /**
-     * Returns the number of columns for the most recent query on the
-     * connection represented by the {@link link} parameter. This function
-     * can be useful when using the {@link maxdb_store_result} function to
-     * determine if the query should have produced a non-empty result set or
-     * not without knowing the nature of the query.
-     * 
-     * @return int
-     **/
-    function field_count(){}
-
-    /**
-     * This function is used to disconnect from a MaxDB server specified by
-     * the {@link processid} parameter.
-     * 
-     * @param int $processid
-     * @return bool
-     **/
-    function kill($processid){}
-
-    /**
-     * Returns the current character set for the database connection
-     * specified by the {@link link} parameter.
-     * 
-     * @return string
-     **/
-    function maxdb_client_encoding(){}
-
-    /**
-     * This function is used to create a legal SQL string that you can use in
-     * a SQL statement. The string escapestr is encoded to an escaped SQL
-     * string, taking into account the current character set of the
-     * connection.
-     * 
-     * Characters encoded are ', ".
-     * 
-     * @param string $escapestr
-     * @return string
-     **/
-    function maxdb_escape_string($escapestr){}
-
-    /**
-     * {@link maxdb_maxdb_set_opt} can be used to set extra connect
-     * maxdb_set_opt and affect behavior for a connection.
-     * 
-     * This function may be called multiple times to set several
-     * maxdb_set_opt.
-     * 
-     * {@link maxdb_maxdb_set_opt} should be called after {@link maxdb_init}
-     * and before {@link maxdb_real_connect}.
-     * 
-     * The parameter {@link option} is the option that you want to set, the
-     * {@link value} is the value for the option. For detailed description of
-     * the maxdb_set_opt see The parameter {@link option} can be one of the
-     * following values: Valid maxdb_set_opt Name Description MAXDB_COMPNAME
-     * The component name used to initialise the SQLDBC runtime environment.
-     * MAXDB_APPLICATION The application to be connected to the database.
-     * MAXDB_APPVERSION The version of the application. MAXDB_SQLMODE The SQL
-     * mode. MAXDB_UNICODE TRUE, if the connection is an unicode (UCS2)
-     * client or FALSE, if not. MAXDB_TIMEOUT The maximum allowed time of
-     * inactivity after which the connection to the database is closed by the
-     * system. MAXDB_ISOLATIONLEVEL Specifies whether and how shared locks
-     * and exclusive locks are implicitly requested or released.
-     * MAXDB_PACKETCOUNT The number of different request packets used for the
-     * connection. MAXDB_STATEMENTCACHESIZE The number of prepared statements
-     * to be cached for the connection for re-use. MAXDB_CURSORPREFIX The
-     * prefix to use for result tables that are automatically named.
-     * 
-     * @param int $option
-     * @param mixed $value
-     * @return bool
-     **/
-    function maxdb_set_opt($option, $value){}
-
-    /**
-     * The {@link maxdb_multi_query} works like the function {@link
-     * maxdb_query}. Multiple queries are not yet supported.
-     * 
-     * @param string $query
-     * @return bool
-     **/
-    function multi_query($query){}
-
-    /**
-     * {@link maxdb_options} can be used to set extra connect options and
-     * affect behavior for a connection.
-     * 
-     * This function may be called multiple times to set several options.
-     * 
-     * {@link maxdb_options} should be called after {@link maxdb_init} and
-     * before {@link maxdb_real_connect}.
-     * 
-     * The parameter {@link option} is the option that you want to set, the
-     * {@link value} is the value for the option. For detailed description of
-     * the options see The parameter {@link option} can be one of the
-     * following values: Valid options Name Description MAXDB_COMPNAME The
-     * component name used to initialise the SQLDBC runtime environment.
-     * MAXDB_APPLICATION The application to be connected to the database.
-     * MAXDB_APPVERSION The version of the application. MAXDB_SQLMODE The SQL
-     * mode. MAXDB_UNICODE TRUE, if the connection is an unicode (UCS2)
-     * client or FALSE, if not. MAXDB_TIMEOUT The maximum allowed time of
-     * inactivity after which the connection to the database is closed by the
-     * system. MAXDB_ISOLATIONLEVEL Specifies whether and how shared locks
-     * and exclusive locks are implicitly requested or released.
-     * MAXDB_PACKETCOUNT The number of different request packets used for the
-     * connection. MAXDB_STATEMENTCACHESIZE The number of prepared statements
-     * to be cached for the connection for re-use. MAXDB_CURSORPREFIX The
-     * prefix to use for result tables that are automatically named.
-     * 
-     * @param int $option
-     * @param mixed $value
-     * @return bool
-     **/
-    function options($option, $value){}
-
-    /**
-     * Checks whether the connection to the server is working. If it has gone
-     * down, and global option maxdb.reconnect is enabled an automatic
-     * reconnection is attempted.
-     * 
-     * This function can be used by clients that remain idle for a long
-     * while, to check whether the server has closed the connection and
-     * reconnect if necessary.
-     * 
-     * @return bool
-     **/
-    function ping(){}
-
-    /**
-     * The {@link maxdb_query} function is used to simplify the act of
-     * performing a query against the database represented by the {@link
-     * link} parameter.
-     * 
-     * @param string $query
-     * @return mixed
-     **/
-    function query($query){}
-
-    /**
-     * {@link maxdb_real_connect} attempts to establish a connection to a
-     * MaxDB database engine running on {@link hostname}.
-     * 
-     * This function differs from {@link maxdb_connect}:
-     * 
-     * @param string $hostname
-     * @param string $username
-     * @param string $passwd
-     * @param string $dbname
-     * @param int $port
-     * @param string $socket
-     * @return bool
-     **/
-    function real_connect($hostname, $username, $passwd, $dbname, $port, $socket){}
-
-    /**
-     * This function is used to create a legal SQL string that you can use in
-     * a SQL statement. The string escapestr is encoded to an escaped SQL
-     * string, taking into account the current character set of the
-     * connection.
-     * 
-     * Characters encoded are ', ".
-     * 
-     * @param string $escapestr
-     * @return string
-     **/
-    function real_escape_sring($escapestr){}
-
-    /**
-     * The {@link maxdb_real_query} is functionally identical with the {@link
-     * maxdb_query}.
-     * 
-     * @param string $query
-     * @return bool
-     **/
-    function real_query($query){}
-
-    /**
-     * Rollbacks the current transaction for the database specified by the
-     * {@link link} parameter.
-     * 
-     * @return bool
-     **/
-    function rollback(){}
-
-    /**
-     * @return int
-     **/
-    function rpl_query_type(){}
-
-    /**
-     * @param string $query
-     * @return bool
-     **/
-    function send_query($query){}
-
-    /**
-     * @param string $key
-     * @param string $cert
-     * @param string $ca
-     * @param string $capath
-     * @param string $cipher
-     * @return bool
-     **/
-    function ssl_set($key, $cert, $ca, $capath, $cipher){}
-
-    /**
-     * {@link maxdb_stat} returns a string containing several information
-     * about the MaxDB server running.
-     * 
-     * @return string
-     **/
-    function stat(){}
-
-    /**
      * Allocates and initializes a statement resource suitable for {@link
      * maxdb_stmt_prepare}.
      * 
@@ -73957,57 +74947,83 @@ class maxdb {
      **/
     function stmt_init(){}
 
+}
+class maxdb_result {
     /**
-     * This function has no functionally effect.
+     * Returns the position of the field cursor used for the last {@link
+     * maxdb_fetch_field} call. This value can be used as an argument to
+     * {@link maxdb_field_seek}.
      * 
-     * @return object
+     * @var int
      **/
-    function store_result(){}
-
+    var $current_field;
     /**
-     * {@link maxdb_use_result} has no effect.
+     * {@link maxdb_num_fields} returns the number of fields from specified
+     * result set.
      * 
-     * @return resource
+     * @var int
      **/
-    function use_result(){}
-
+    var $field_count;
+    /**
+     * The {@link maxdb_fetch_lengths} function returns an array containing
+     * the lengths of every column of the current row within the result set
+     * represented by the {@link result} parameter. If successful, a
+     * numerically indexed array representing the lengths of each column is
+     * returned.
+     * 
+     * @var array
+     **/
+    var $lengths;
 }
 class maxdb_stmt {
     /**
-     * Closes a prepared statement. {@link maxdb_stmt_close} also deallocates
-     * the statement handle pointed to by {@link stmt}. If the current
-     * statement has pending or unread results, this function cancels them so
-     * that the next query can be executed.
+     * {@link maxdb_stmt_affected_rows} returns the number of rows affected
+     * by INSERT, UPDATE, or DELETE query. If the last query was invalid or
+     * the number of rows can not determined, this function will return -1.
      * 
-     * @return bool
+     * @var int
      **/
-    function close(){}
-
+    var $affected_rows;
     /**
-     * This function has to be called after a sequence of {@link
-     * maxdb_stmt_send_long_data}, that was started after {@link
-     * maxdb_execute}.
+     * For the statement specified by stmt, {@link maxdb_stmt_errno} returns
+     * the error code for the most recently invoked statement function that
+     * can succeed or fail.
      * 
-     * {@link param_nr} indicates which parameter to associate the end of
-     * data with. Parameters are numbered beginning with 0.
-     * 
-     * @return bool
+     * @var int
      **/
-    function close_long_data(){}
-
+    var $errno;
     /**
-     * This function has to be called after a sequence of {@link
-     * maxdb_stmt_send_long_data}, that was started after {@link
-     * maxdb_execute}.
+     * For the statement specified by stmt, {@link maxdb_stmt_error} returns
+     * a containing the error message for the most recently invoked statement
+     * function that can succeed or fail.
      * 
-     * {@link param_nr} indicates which parameter to associate the end of
-     * data with. Parameters are numbered beginning with 0.
-     * 
-     * @return bool
+     * @var string
      **/
-    function maxdb_close_long_data(){}
-
+    var $error;
+    /**
+     * Returns the number of rows in the result set.
+     * 
+     * @var int
+     **/
+    var $num_rows;
+    /**
+     * {@link maxdb_stmt_param_count} returns the number of parameter markers
+     * present in the prepared statement.
+     * 
+     * @var int
+     **/
+    var $param_count;
+    /**
+     * {@link maxdb_stmt_param_count} returns the number of parameter markers
+     * present in the prepared statement.
+     * 
+     * @var int
+     **/
+    var $param_count;
 }
+/**
+ * Represents a connection to a set of memcache servers.
+ **/
 class Memcache {
     /**
      * {@link Memcache::add} stores variable {@link var} with {@link key}
@@ -75207,7 +76223,7 @@ class Mongo {
     function resetError(){}
 
     /**
-     * @param string|MongoDB $db The database name.
+     * @param string $db The database name.
      * @param string $collection The collection name.
      * @return MongoCollection
      * @since PECL mongo >=0.9.0
@@ -75215,11 +76231,11 @@ class Mongo {
     function selectCollection($db, $collection){}
 
     /**
-     * @param string $dbname The database name.
+     * @param string $name The database name.
      * @return MongoDB
      * @since PECL mongo >=0.9.0
      **/
-    function selectDB($dbname){}
+    function selectDB($name){}
 
     /**
      * If no parameters are passed, this connects to "localhost:27017" (or
@@ -75397,6 +76413,27 @@ class MongoCollection extends MongoCollection {
     function createDBRef($a){}
 
     /**
+     * This method is identical to:
+     * 
+     * Each index, when created, is given a unique name. This is generally
+     * user-set (with {@link MongoCollection::ensureIndex}'s "name" option)
+     * or generated by the driver from a combination of key names and
+     * directions. This name is then used by {@link
+     * MongoCollection::deleteIndex} to remove the function.
+     * 
+     * Unfortunately, the {@link MongoCollection::ensureIndex} generates
+     * slightly different names than the shell and, due to backwards
+     * compatibility issues, {@link MongoCollection::deleteIndex} cannot
+     * delete custom-named indexes as well. Thus, the best way to delete
+     * indexes created in the shell or with custom names is to directly call
+     * the deleteIndexes database command.
+     * 
+     * Thus, if you named an index "superfast query", you could delete it
+     * with:
+     * 
+     * To find what an index is named, you can query the system.indexes
+     * collection of a database and look for the name field.
+     * 
      * @param string|array $keys Field or fields from which to delete the
      *   index.
      * @return array
@@ -75487,16 +76524,21 @@ class MongoCollection extends MongoCollection {
      *   "Passing a {@link keys} function" example below).
      * @param array $initial Initial value of the aggregation counter
      *   object.
-     * @param MongoCode $reduce A function that aggregates (reduces) the
-     *   objects iterated.
-     * @param array $condition An condition that must be true for a row to
-     *   be considered.
+     * @param MongoCode $reduce A function that takes two arguments (the
+     *   current document and the aggregation to this point) and does the
+     *   aggregation.
+     * @param array $condition Optional parameters to the group command.
+     *   Valid options include:
      * @return array
      * @since PECL mongo >=0.9.2
      **/
     function group($keys, $initial, $reduce, $condition){}
 
     /**
+     * All strings sent to the database must be UTF-8. If a string is not
+     * UTF-8, a MongoException will be thrown. To insert (or query for) a
+     * non-UTF-8 string, use MongoBinData.
+     * 
      * @param array $a An array.
      * @param array $options Options for the insert. "safe" Check that the
      *   insert succeeded.
@@ -75703,12 +76745,12 @@ class MongoCursor extends MongoCursor {
      * cursor "times out" and the database assumes the client has gotten
      * everything it needs and cleans up its the cursor's resources.
      * 
-     * If, for some reason, you need a cursor to hang around for a long
-     * time, you can prevent the database from cleaning it up by using this
-     * method. However, if you make a cursor immortal, you need to iterate
-     * through all of its results (or at least until {@link Cursor::dead}
-     * returns ) or the cursor will hang around the database forever, taking
-     * up resources.
+     * If, for some reason, you need a cursor to hang around for a long time,
+     * you can prevent the database from cleaning it up by using this method.
+     * However, if you make a cursor immortal, you need to iterate through
+     * all of its results (or at least until {@link Cursor::dead} returns )
+     * or the cursor will hang around the database forever, taking up
+     * resources.
      * 
      * @param boolean $liveForever If the cursor should be immortal.
      * @return MongoCursor
@@ -75780,8 +76822,8 @@ class MongoCursor extends MongoCursor {
      * query, or deleted during the query, it may or may not be returned,
      * even with snapshot mode).
      * 
-     * Note that short query responses (less than 1MB) are always
-     * effectively snapshotted.
+     * Note that short query responses (less than 1MB) are always effectively
+     * snapshotted.
      * 
      * Currently, snapshot mode may not be used with sorting or explicit
      * hints.
@@ -75837,9 +76879,8 @@ class MongoCursor extends MongoCursor {
      * results // from the database, it will only wait 100 ms for the
      * database's reply
      * 
-     * try { print_r($cursor->getNext()); }
-     * catch(MongoCursorTimeoutException $e) { echo "query took too long!"; }
-     * }
+     * try { print_r($cursor->getNext()); } catch(MongoCursorTimeoutException
+     * $e) { echo "query took too long!"; } }
      * 
      * ?>
      * 
@@ -75922,8 +76963,8 @@ class MongoDB {
      * 
      * $saltedHash = md5($nonce["nonce"]."${username}${hash}");
      * 
-     * $result = $db->command(array("authenticate" => 1, "user" =>
-     * $username, "nonce" => $nonce["nonce"], "key" => $saltedHash);
+     * $result = $db->command(array("authenticate" => 1, "user" => $username,
+     * "nonce" => $nonce["nonce"], "key" => $saltedHash);
      * 
      * ?>
      * 
@@ -76109,8 +77150,8 @@ class MongoDB {
      * create an instance of MongoDB is through {@link Mongo::__get} or
      * {@link Mongo::selectDB}.
      * 
-     * If you're ignoring the previous paragraph and want to call it
-     * directly you can do so:
+     * If you're ignoring the previous paragraph and want to call it directly
+     * you can do so:
      * 
      * But don't. Isn't this much nicer:
      * 
@@ -76169,6 +77210,15 @@ class MongoDB {
  * If each person had a list of things they liked which could come from
  * multiple collections, such as "hobbies", "sports", "books", etc., we
  * could use s to keep track of what "like" went with what collection:
+ * 
+ * Database references can be thought of as hyperlinks: they give the
+ * unique address of another document, but they do not load it or
+ * automatically follow the link/reference.
+ * 
+ * A database reference is just a normal associative array, not an
+ * instance of , so this class is a little different than the other data
+ * type classes. This class contains exclusively static methods for
+ * manipulating database references.
  **/
 class MongoDBRef {
     /**
@@ -76207,6 +77257,13 @@ class MongoException extends MongoException {
 }
 class MongoGridFS {
     /**
+     * @param mixed $id _id of the file to remove.
+     * @return boolean
+     * @since PECL mongo >=1.0.8
+     **/
+    function delete($id){}
+
+    /**
      * @return array
      * @since PECL mongo >=0.9.0
      **/
@@ -76228,13 +77285,26 @@ class MongoGridFS {
     function findOne($query){}
 
     /**
+     * @param mixed $id _id of the file to find.
+     * @return MongoGridFSFile
+     * @since PECL mongo >=1.0.8
+     **/
+    function get($id){}
+
+    /**
+     * @param string $filename The name of the file.
+     * @param array $extra Other metadata to add to the file saved.
+     * @return mixed
+     * @since PECL mongo >=1.0.8
+     **/
+    function put($filename, $extra){}
+
+    /**
      * @param array $criteria The filename or criteria for which to search.
-     * @param boolean $just_one If only one matching file should be
-     *   removed.
      * @return boolean
      * @since PECL mongo >=0.9.0
      **/
-    function remove($criteria, $just_one){}
+    function remove($criteria){}
 
     /**
      * @param string $bytes A string of bytes to store.
@@ -76374,10 +77444,21 @@ class MongoGridFSFile {
  * least significant bytes of the process id running the script, and the
  * last three bytes are an incrementing value.
  * 
- * s are serializable/unserializable. Their serialized form is similar
- * to their string form:
+ * s are serializable/unserializable. Their serialized form is similar to
+ * their string form:
  **/
 class MongoId {
+    /**
+     * This returns the hostname MongoId is using to generate unique ids.
+     * This should be the same value {@link gethostname} returns.
+     * 
+     * It is identical to the function:
+     * 
+     * @return string
+     * @since PECL mongo >= 1.0.8
+     **/
+    function getHostname(){}
+
     /**
      * This returns the same thing as running {@link time()} when the id is
      * created.
@@ -76394,6 +77475,20 @@ class MongoId {
      * @since PECL mongo >= 0.8.0
      **/
     function __construct($id){}
+
+    /**
+     * This function is only used by PHP internally, it shouldn't need to
+     * ever be called by the user.
+     * 
+     * It is identical to the function:
+     * 
+     * @param array $props Theoretically, an array of properties used to
+     *   create the new id. However, as MongoId instances have no properties,
+     *   this is not used.
+     * @return MongoId
+     * @since PECL mongo >= 1.0.8
+     **/
+    function __set_state($props){}
 
     /**
      * @return string
@@ -76859,7 +77954,7 @@ class MySQLi {
     function get_connection_stats(){}
 
     /**
-     * @return mysqli_warnings
+     * @return mysqli_warning
      **/
     function get_warnings(){}
 
@@ -77097,8 +78192,7 @@ class MySQLi {
      * LOAD DATA LOCAL INFILE and to reformat it into the format understood
      * by LOAD DATA INFILE.
      * 
-     * The returned data needs to match the format specified in the LOAD
-     * DATA
+     * The returned data needs to match the format specified in the LOAD DATA
      * 
      * @param mysqli $link A callback function or object method taking the
      *   following parameters:
@@ -77161,10 +78255,10 @@ class MySQLi {
      * executed using the {@link mysqli_real_query} function on the database
      * connection.
      * 
-     * Either this or the {@link mysqli_store_result} function must be
-     * called before the results of a query can be retrieved, and one or the
-     * other must be called to prevent the next query on that database
-     * connection from failing.
+     * Either this or the {@link mysqli_store_result} function must be called
+     * before the results of a query can be retrieved, and one or the other
+     * must be called to prevent the next query on that database connection
+     * from failing.
      * 
      * @return mysqli_result
      **/
@@ -77221,10 +78315,10 @@ class MySQLi_Result {
     /**
      * Returns the number of rows in the result set.
      * 
-     * The use of {@link mysqli_num_rows} depends on whether you use
-     * buffered or unbuffered result sets. In case you use unbuffered
-     * resultsets {@link mysqli_num_rows} will not return the correct number
-     * of rows until all the rows in the result have been retrieved.
+     * The use of {@link mysqli_num_rows} depends on whether you use buffered
+     * or unbuffered result sets. In case you use unbuffered resultsets
+     * {@link mysqli_num_rows} will not return the correct number of rows
+     * until all the rows in the result have been retrieved.
      * 
      * @var int
      **/
@@ -77928,12 +79022,21 @@ class NumberFormatter {
 class OAuth {
     /**
      * Turns off verbose request information (off by default). Alternatively,
-     * the {@link debug} member can be set to a value to turn debug off.
+     * the debug property can be set to a value to turn debug off.
      * 
      * @return bool
      * @since PECL OAuth >= 0.99.3
      **/
     function disableDebug(){}
+
+    /**
+     * Disable redirects from being followed automatically, thus allowing the
+     * request to be manually redirected.
+     * 
+     * @return bool
+     * @since PECL OAuth >= 0.99.9
+     **/
+    function disableRedirects(){}
 
     /**
      * Turns off the usual SSL peer certificate and host checks, this is not
@@ -77956,6 +79059,14 @@ class OAuth {
     function enableDebug(){}
 
     /**
+     * Follow and sign redirects automatically, which is enabled by default.
+     * 
+     * @return bool
+     * @since PECL OAuth >= 0.99.9
+     **/
+    function enableRedirects(){}
+
+    /**
      * Turns on the usual SSL peer certificate and host checks (enabled by
      * default). Alternatively, the {@link sslChecks} member can be set to a
      * non- value to turn SSL checks off.
@@ -77972,15 +79083,14 @@ class OAuth {
      *   resource.
      * @param array $extra_parameters Extra parameters to send with the
      *   request for the resource.
-     * @param string $http_method {@link http_method} can be one of the
-     *   following: OAUTH_HTTP_METHOD_GET Set the request method to GET.
-     *   OAUTH_HTTP_METHOD_POST Set the request method to POST.
-     *   OAUTH_HTTP_METHOD_PUT Set the request method to PUT.
-     *   OAUTH_HTTP_METHOD_HEAD Set the request method to HEAD, this can be
-     *   useful for discovering information prior to the request (if OAuth
-     *   credentials are in the Authorization header).
-     * @param array $http_headers
-     * @return bool
+     * @param string $http_method One of the OAUTH_HTTP_METHOD_* OAUTH
+     *   constants, which includes GET, POST, PUT, HEAD, or DELETE. HEAD
+     *   (OAUTH_HTTP_METHOD_HEAD) can be useful for discovering information
+     *   prior to the request (if OAuth credentials are in the Authorization
+     *   header).
+     * @param array $http_headers HTTP client headers (such as User-Agent,
+     *   Accept, etc.)
+     * @return mixed
      * @since PECL OAuth >= 0.99.1
      **/
     function fetch($protected_resource_url, $extra_parameters, $http_method, $http_headers){}
@@ -78005,6 +79115,15 @@ class OAuth {
      * @since PECL OAuth >= 0.99.1
      **/
     function getAccessToken($access_token_url, $auth_session_handle, $verifier_token){}
+
+    /**
+     * Gets the Certificate Authority information, which includes the ca_path
+     * and ca_info set by OAuth::setCaPath.
+     * 
+     * @return array
+     * @since PECL OAuth >= 0.99.8
+     **/
+    function getCAPath(){}
 
     /**
      * Get the raw response of the most recent request.
@@ -78043,20 +79162,59 @@ class OAuth {
      *   5.2): OAUTH_AUTH_TYPE_AUTHORIZATION Pass the OAuth parameters in the
      *   HTTP Authorization header. OAUTH_AUTH_TYPE_FORM Append the OAuth
      *   parameters to the HTTP POST request body. OAUTH_AUTH_TYPE_URI Append
-     *   the OAuth parameters to the request URI.
-     * @return bool
+     *   the OAuth parameters to the request URI. OAUTH_AUTH_TYPE_NONE None.
+     * @return mixed
      * @since PECL OAuth >= 0.99.1
      **/
     function setAuthType($auth_type){}
 
     /**
+     * Sets the Certificate Authority (CA), both for path and info.
+     * 
+     * @param string $ca_path The CA Path being set.
+     * @param string $ca_info The CA Info being set.
+     * @return mixed
+     * @since PECL OAuth >= 0.99.8
+     **/
+    function setCAPath($ca_path, $ca_info){}
+
+    /**
      * Sets the nonce for all subsequent requests.
      * 
      * @param string $nonce The value for oauth_nonce.
-     * @return bool
+     * @return mixed
      * @since PECL OAuth >= 0.99.1
      **/
     function setNonce($nonce){}
+
+    /**
+     * Sets the Request Engine, that will be sending the HTTP requests.
+     * 
+     * @param string $reqengine The desired request engine. Set to
+     *   OAUTH_REQENGINE_STREAMS to use PHP Streams, or OAUTH_REQENGINE_CURL
+     *   to use Curl.
+     * @return void
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function setRequestEngine($reqengine){}
+
+    /**
+     * Sets the RSA certificate.
+     * 
+     * @param string $cert The RSA certificate.
+     * @return mixed
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function setRSACertificate($cert){}
+
+    /**
+     * Sets the OAuth timestamp for subsequent requests.
+     * 
+     * @param string $timestamp The timestamp.
+     * @return mixed
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function setTimestamp($timestamp){}
 
     /**
      * Set the token and secret for subsequent requests.
@@ -78094,12 +79252,183 @@ class OAuth {
      **/
     function __construct($consumer_key, $consumer_secret, $signature_method, $auth_type){}
 
+    /**
+     * The destructor.
+     * 
+     * @return void
+     * @since PECL OAuth >= 0.99.9
+     **/
+    function __destruct(){}
+
 }
 /**
  * This exception is thrown when exceptional errors occur while using the
  * OAuth extension and contains useful debugging information.
  **/
 class OAuthException extends Exception {
+}
+/**
+ * Manages an OAuth provider class.
+ * 
+ * See also an external in-depth tutorial titled , which takes a hands-on
+ * approach to providing this service. There are also within the OAuth
+ * extensions sources.
+ **/
+class OAuthProvider {
+    /**
+     * Add required oauth provider parameters.
+     * 
+     * @param string $req_params The required parameters.
+     * @return bool
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function addRequiredParameter($req_params){}
+
+    /**
+     * Calls the registered consumer handler callback function, which is set
+     * with OAuthProvider::consumerHandler.
+     * 
+     * @return void
+     **/
+    function callconsumerHandler(){}
+
+    /**
+     * Calls the registered timestamp handler callback function, which is set
+     * with OAuthProvider::timestampNonceHandler.
+     * 
+     * @return void
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function callTimestampNonceHandler(){}
+
+    /**
+     * Calls the registered token handler callback function, which is set
+     * with OAuthProvider::tokenHandler.
+     * 
+     * @return void
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function calltokenHandler(){}
+
+    /**
+     * Checks an OAuth request.
+     * 
+     * @param string $uri The optional URI, or endpoint.
+     * @param string $method The HTTP method. Optionally pass in one of the
+     *   OAUTH_HTTP_METHOD_* OAuth constants.
+     * @return void
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function checkOAuthRequest($uri, $method){}
+
+    /**
+     * Sets the consumer handler callback, which will later be called with
+     * OAuthProvider::callConsumerHandler.
+     * 
+     * @param callback $callback_function The callback functions name.
+     * @return void
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function consumerHandler($callback_function){}
+
+    /**
+     * Generates a string of pseudo-random bytes.
+     * 
+     * @param int $size The desired token length, in terms of bytes.
+     * @param bool $strong Setting to means /dev/random will be used for
+     *   entropy, as otherwise the non-blocking /dev/urandom is used. This
+     *   parameter is ignored on Windows.
+     * @return string
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function generateToken($size, $strong){}
+
+    /**
+     * The 2-legged flow, or request signing. It does not require a token.
+     * 
+     * @param mixed $params_array
+     * @return void
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function is2LeggedEndpoint($params_array){}
+
+    /**
+     * @param bool $will_issue_request_token Sets whether or not it will
+     *   issue a request token, thus determining if
+     *   OAuthProvider::tokenHandler needs to be called.
+     * @return void
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function isRequestTokenEndpoint($will_issue_request_token){}
+
+    /**
+     * Removes a required parameter.
+     * 
+     * @param string $req_params The required parameter to be removed.
+     * @return bool
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function removeRequiredParameter($req_params){}
+
+    /**
+     * Pass in a problem as an OAuthException, with possible problems listed
+     * in the OAuth constants section.
+     * 
+     * @param string $oauthexception The OAuthException.
+     * @return void
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function reportProblem($oauthexception){}
+
+    /**
+     * Sets a parameter.
+     * 
+     * @param string $param_key The parameter key.
+     * @param mixed $param_val The optional parameter value.
+     * @return bool
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function setParam($param_key, $param_val){}
+
+    /**
+     * Sets the request tokens path.
+     * 
+     * @param string $path The path.
+     * @return bool
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function setRequestTokenPath($path){}
+
+    /**
+     * Sets the timestamp nonce handler callback, which will later be called
+     * with OAuthProvider::callTimestampNonceHandler. Errors related to
+     * timestamp/nonce are thrown to this callback.
+     * 
+     * @param callback $callback_function The callback functions name.
+     * @return void
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function timestampNonceHandler($callback_function){}
+
+    /**
+     * Sets the token handler callback, which will later be called with
+     * OAuthProvider::callTokenHandler.
+     * 
+     * @param callback $callback_function The callback functions name.
+     * @return void
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function tokenHandler($callback_function){}
+
+    /**
+     * Initiates a new OAuthProvider object.
+     * 
+     * @param array $params_array Setting these these optional parameters
+     *   is limited to the CLI SAPI.
+     * @since PECL OAuth >= 1.0.0
+     **/
+    function __construct($params_array){}
+
 }
 /**
  * Classes implementing can be used to iterate over iterators.
@@ -78311,8 +79640,8 @@ interface PDO {
      * {@link PDO::exec} executes an SQL statement in a single function call,
      * returning the number of rows affected by the statement.
      * 
-     * {@link PDO::exec} does not return results from a SELECT statement.
-     * For a SELECT statement that you only need to issue once during your
+     * {@link PDO::exec} does not return results from a SELECT statement. For
+     * a SELECT statement that you only need to issue once during your
      * program, consider issuing {@link PDO::query}. For a statement that you
      * need to issue multiple times, prepare a PDOStatement object with
      * {@link PDO::prepare} and issue the statement with {@link
@@ -78330,8 +79659,8 @@ interface PDO {
      * retrieve PDOStatement attributes, refer to {@link
      * PDOStatement::getAttribute}.
      * 
-     * Note that some database/driver combinations may not support all of
-     * the database connection attributes.
+     * Note that some database/driver combinations may not support all of the
+     * database connection attributes.
      * 
      * @param int $attribute One of the PDO::ATTR_* constants. The
      *   constants that apply to database connections are as follows:
@@ -78376,8 +79705,8 @@ interface PDO {
      * will continue to live in the database until it is removed by calling
      * {@link PDO::pgsqlLOBUnlink}.
      * 
-     * Large objects can be up to 2GB in size, but are cumbersome to use;
-     * you need to ensure that {@link PDO::pgsqlLOBUnlink} is called prior to
+     * Large objects can be up to 2GB in size, but are cumbersome to use; you
+     * need to ensure that {@link PDO::pgsqlLOBUnlink} is called prior to
      * deleting the last row that references its OID from your database. In
      * addition, large objects have no access controls. As an alternative,
      * try the bytea column type; recent versions of PostgreSQL allow bytea
@@ -78437,10 +79766,10 @@ interface PDO {
      * plan and meta information, and helps to prevent SQL injection attacks
      * by eliminating the need to manually quote the parameters.
      * 
-     * PDO will emulate prepared statements/bound parameters for drivers
-     * that do not natively support them, and can also rewrite named or
-     * question mark style parameter markers to something more appropriate,
-     * if the driver supports one style but not the other.
+     * PDO will emulate prepared statements/bound parameters for drivers that
+     * do not natively support them, and can also rewrite named or question
+     * mark style parameter markers to something more appropriate, if the
+     * driver supports one style but not the other.
      * 
      * @param string $statement This must be a valid SQL statement for the
      *   target database server.
@@ -78486,14 +79815,14 @@ interface PDO {
      * If you are using this function to build SQL statements, you are
      * strongly recommended to use {@link PDO::prepare} to prepare SQL
      * statements with bound parameters instead of using {@link PDO::quote}
-     * to interpolate user input into a SQL statement. Prepared statements
+     * to interpolate user input into an SQL statement. Prepared statements
      * with bound parameters are not only more portable, more convenient,
      * immune to SQL injection, but are often much faster to execute than
      * interpolated queries, as both the server and client side can cache a
      * compiled form of the query.
      * 
-     * Not all PDO drivers implement this method (notably PDO_ODBC).
-     * Consider using prepared statements instead.
+     * Not all PDO drivers implement this method (notably PDO_ODBC). Consider
+     * using prepared statements instead.
      * 
      * @param string $string The string to be quoted.
      * @param int $parameter_type Provides a data type hint for drivers
@@ -78508,8 +79837,8 @@ interface PDO {
      * PDO::beginTransaction}. It is an error to call this method if no
      * transaction is active.
      * 
-     * If the database was set to autocommit mode, this function will
-     * restore autocommit mode after it has rolled back the transaction.
+     * If the database was set to autocommit mode, this function will restore
+     * autocommit mode after it has rolled back the transaction.
      * 
      * Some databases, including MySQL, automatically issue an implicit
      * COMMIT when a database definition language (DDL) statement such as
@@ -78598,8 +79927,8 @@ interface PDO {
      * UDF (User Defined Function), so that it can be called from within your
      * SQL statements.
      * 
-     * The UDF can be used in any SQL statement that can call functions,
-     * such as SELECT and UPDATE statements and also in triggers.
+     * The UDF can be used in any SQL statement that can call functions, such
+     * as SELECT and UPDATE statements and also in triggers.
      * 
      * @param string $function_name The name of the function used in SQL
      *   statements.
@@ -78704,14 +80033,14 @@ class PDOStatement implements Traversable {
      * suffers from this limitation, the problem may manifest itself in an
      * out-of-sequence error.
      * 
-     * {@link PDOStatement::closeCursor} is implemented either as an
-     * optional driver specific method (allowing for maximum efficiency), or
-     * as the generic PDO fallback if no driver specific function is
-     * installed. The PDO generic fallback is semantically the same as
-     * writing the following code in your PHP script:
+     * {@link PDOStatement::closeCursor} is implemented either as an optional
+     * driver specific method (allowing for maximum efficiency), or as the
+     * generic PDO fallback if no driver specific function is installed. The
+     * PDO generic fallback is semantically the same as writing the following
+     * code in your PHP script:
      * 
-     * <?php do { while ($stmt->fetch()) ; if (!$stmt->nextRowset()) break;
-     * } while (true); ?>
+     * <?php do { while ($stmt->fetch()) ; if (!$stmt->nextRowset()) break; }
+     * while (true); ?>
      * 
      * @return bool
      * @since PHP 5 >= 5.1.0, PECL pdo >= 0.9.0
@@ -79116,14 +80445,14 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
      * gunzip command, or accessed directly and transparently with the Phar
      * extension.
      * 
-     * For Zip-based and phar-based phar archives, this method compresses
-     * all files in the Phar archive using gzip compression. The zlib
-     * extension must be enabled to take advantage of this feature. In
-     * addition, if any files are already compressed using bzip2 compression,
-     * the bzip2 extension must be enabled in order to decompress the files
-     * prior to re-compressing with gzip compression. As with all
-     * functionality that modifies the contents of a phar, the phar.readonly
-     * INI variable must be off in order to succeed.
+     * For Zip-based and phar-based phar archives, this method compresses all
+     * files in the Phar archive using gzip compression. The zlib extension
+     * must be enabled to take advantage of this feature. In addition, if any
+     * files are already compressed using bzip2 compression, the bzip2
+     * extension must be enabled in order to decompress the files prior to
+     * re-compressing with gzip compression. As with all functionality that
+     * modifies the contents of a phar, the phar.readonly INI variable must
+     * be off in order to succeed.
      * 
      * @return bool
      * @since PHP >= 5.3.0, PECL phar >= 1.0.0
@@ -79136,12 +80465,12 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
      * tar archive is not supported by the file format. Use {@link
      * Phar::compress} to compress an entire tar-based phar archive.
      * 
-     * For Zip-based and phar-based phar archives, this method compresses
-     * all files in the Phar archive using the specified compression. The
-     * zlib or bzip2 extensions must be enabled to take advantage of this
-     * feature. In addition, if any files are already compressed using
-     * bzip2/zlib compression, the respective extension must be enabled in
-     * order to decompress the files prior to re-compressing. As with all
+     * For Zip-based and phar-based phar archives, this method compresses all
+     * files in the Phar archive using the specified compression. The zlib or
+     * bzip2 extensions must be enabled to take advantage of this feature. In
+     * addition, if any files are already compressed using bzip2/zlib
+     * compression, the respective extension must be enabled in order to
+     * decompress the files prior to re-compressing. As with all
      * functionality that modifies the contents of a phar, the phar.readonly
      * INI variable must be off in order to succeed.
      * 
@@ -79432,9 +80761,8 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
      * to disk immediately, or whether a call to {@link Phar->stopBuffering}
      * is needed to enable saving changes.
      * 
-     * Phar write buffering is per-archive, buffering active for the
-     * foo.phar Phar archive does not affect changes to the bar.phar Phar
-     * archive.
+     * Phar write buffering is per-archive, buffering active for the foo.phar
+     * Phar archive does not affect changes to the bar.phar Phar archive.
      * 
      * @return bool
      * @since PHP >= 5.3.0, PECL phar >= 1.0.0
@@ -79725,9 +81053,8 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
      * {@link Phar::startBuffering}/{@link Phar::stopBuffering} pair of
      * methods is provided for this purpose.
      * 
-     * Phar write buffering is per-archive, buffering active for the
-     * foo.phar Phar archive does not affect changes to the bar.phar Phar
-     * archive.
+     * Phar write buffering is per-archive, buffering active for the foo.phar
+     * Phar archive does not affect changes to the bar.phar Phar archive.
      * 
      * @return void
      * @since PHP >= 5.3.0, PECL phar >= 1.0.0
@@ -79751,9 +81078,8 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess 
      * {@link Phar::startBuffering}/{@link Phar::stopBuffering} pair of
      * methods is provided for this purpose.
      * 
-     * Phar write buffering is per-archive, buffering active for the
-     * foo.phar Phar archive does not affect changes to the bar.phar Phar
-     * archive.
+     * Phar write buffering is per-archive, buffering active for the foo.phar
+     * Phar archive does not affect changes to the bar.phar Phar archive.
      * 
      * @return void
      * @since PHP >= 5.3.0, PECL phar >= 1.0.0
@@ -80386,10 +81712,214 @@ class PharFileInfo extends SplFileInfo {
 class RangeException extends RuntimeException {
 }
 /**
+ * This class represents a RAR archive, which may be formed by several
+ * volumes (parts) and which contains a number of RAR entries (i.e.,
+ * files, directories and other special objects such as symbolic links).
+ * 
+ * Objects of this class can be traversed, yielding the entries stored in
+ * the respective RAR archive. Those entries can also be obtained through
+ * and .
+ **/
+class RarArchive implements Traversable {
+    /**
+     * Close RAR archive and free all allocated resources.
+     * 
+     * @return bool
+     * @since PECL rar >= 2.0.0
+     **/
+    function close(){}
+
+    /**
+     * Get the (global) comment stored in the RAR archive. It may be up to 64
+     * KiB long.
+     * 
+     * @return string
+     * @since PECL rar >= 2.0.0
+     **/
+    function getComment(){}
+
+    /**
+     * Get entries list (files and directories) from the RAR archive.
+     * 
+     * @return array
+     * @since PECL rar >= 2.0.0
+     **/
+    function getEntries(){}
+
+    /**
+     * Get entry object (file or directory) from the RAR archive.
+     * 
+     * @param string $entryname A RarArchive object, opened with {@link
+     *   rar_open}.
+     * @return RarEntry
+     * @since PECL rar >= 2.0.0
+     **/
+    function getEntry($entryname){}
+
+    /**
+     * This function determines whether an archive is incomplete, i.e., if a
+     * volume is missing or a volume is truncated.
+     * 
+     * @return bool
+     * @since PECL rar >= 3.0.0
+     **/
+    function isBroken(){}
+
+    /**
+     * Check whether the RAR archive is solid. Individual file extraction is
+     * slower on solid archives.
+     * 
+     * @return bool
+     * @since PECL rar >= 2.0.0
+     **/
+    function isSolid(){}
+
+    /**
+     * Open specified RAR archive and return RarArchive instance representing
+     * it.
+     * 
+     * @param string $filename Path to the Rar archive.
+     * @param string $password A plain password, if needed to decrypt the
+     *   headers. It will also be used by default if encrypted files are
+     *   found. Note that the files may have different passwords in respect
+     *   to the headers and among them.
+     * @param callback $volume_callback A function that receives one
+     *   parameter – the path of the volume that was not found – and
+     *   returns a string with the correct path for such volume or NULL if
+     *   such volume does not exist or is not known. The programmer should
+     *   ensure the passed function doesn't cause loops as this function is
+     *   called repetedly if the path returned in a previous call did not
+     *   correspond to the needed volume. Specifying this parameter omits the
+     *   notice that would otherwise be emitted whenever a volume is not
+     *   found; an implementation that only returns can therefore be used to
+     *   merely omit such notices.
+     * @return RarArchive
+     * @since PECL rar >= 2.0.0
+     **/
+    function open($filename, $password, $volume_callback){}
+
+    /**
+     * This method defines whether broken archives can be read or all the
+     * operations that attempt to extract the archive entries will fail.
+     * Broken archives are archives for which no error is detected when the
+     * file is opened but an error occurs when reading the entries.
+     * 
+     * @param bool $allow_broken A RarArchive object, opened with {@link
+     *   rar_open}.
+     * @return bool
+     * @since PECL rar >= 3.0.0
+     **/
+    function setAllowBroken($allow_broken){}
+
+    /**
+     * Provides a string representation for this RarArchive object. It
+     * currently shows the full path name of the archive volume that was
+     * opened and whether the resource is valid or was already closed through
+     * a call to RarArchive::close.
+     * 
+     * This method may be used only for debugging purposes, as there are no
+     * guarantees as to which information the result contains or how it is
+     * formatted.
+     * 
+     * @return void
+     * @since PECL rar >= 2.0.0
+     **/
+    function __toString(){}
+
+}
+/**
  * A RAR entry, representing a directory or a compressed file inside a
  * RAR archive.
  **/
 class RarEntry {
+    /**
+     * RarEntry::extract extracts the entry's data. It will create new file
+     * in the specified {@link dir} with the name identical to the entry's
+     * name, unless the second argument is specified. See below for more
+     * information.
+     * 
+     * @param string $dir Path to the directory where files should be
+     *   extracted. This parameter is considered if and only if {@link
+     *   filepath} is not. If both parameters are empty an extraction to the
+     *   current directory will be attempted.
+     * @param string $filepath Path (relative or absolute) containing the
+     *   directory and filename of the extracted file. This parameter
+     *   overrides both the parameter {@link dir} and the original file name.
+     * @param string $password The password used to encrypt this entry. If
+     *   the entry is not encrypted, this value will not be used and can be
+     *   omitted. If this parameter is omitted and the entry is encrypted,
+     *   the password given to {@link rar_open}, if any, will be used. If a
+     *   wrong password is given, either explicitly or implicitly via {@link
+     *   rar_open}, CRC checking will fail and this method will fail and
+     *   return . If no password is given and one is required, this method
+     *   will fail and return . You can check whether an entry is encrypted
+     *   with RarEntry::isEncrypted.
+     * @param bool $extended_data If , extended information such as NTFS
+     *   ACLs and Unix owner information will be set in the extract files, as
+     *   long as it's present in the archive.
+     * @return bool
+     * @since PECL rar >= 0.1
+     **/
+    function extract($dir, $filepath, $password, $extended_data){}
+
+    /**
+     * Returns the OS-dependent attributes of the archive entry.
+     * 
+     * @return int
+     * @since PECL rar >= 0.1
+     **/
+    function getAttr(){}
+
+    /**
+     * Returns an hexadecimal string representation of the CRC of the archive
+     * entry.
+     * 
+     * @return string
+     * @since PECL rar >= 0.1
+     **/
+    function getCrc(){}
+
+    /**
+     * Gets entry last modification time.
+     * 
+     * @return string
+     * @since PECL rar >= 0.1
+     **/
+    function getFileTime(){}
+
+    /**
+     * Returns the code of the host OS of the archive entry.
+     * 
+     * @return int
+     * @since PECL rar >= 0.1
+     **/
+    function getHostOs(){}
+
+    /**
+     * RarEntry::getMethod returns number of the method used when adding
+     * current archive entry.
+     * 
+     * @return int
+     * @since PECL rar >= 0.1
+     **/
+    function getMethod(){}
+
+    /**
+     * Returns the name (with path) of the archive entry.
+     * 
+     * @return string
+     * @since PECL rar >= 0.1
+     **/
+    function getName(){}
+
+    /**
+     * Get packed size of the archive entry.
+     * 
+     * @return int
+     * @since PECL rar >= 0.1
+     **/
+    function getPackedSize(){}
+
     /**
      * Returns a file handler that supports read operations. This handler
      * provides on-the-fly decompression for this entry.
@@ -80409,6 +81939,31 @@ class RarEntry {
      * @since PECL rar >= 2.0.0
      **/
     function getStream($password){}
+
+    /**
+     * Get unpacked size of the archive entry.
+     * 
+     * @return int
+     * @since PECL rar >= 0.1
+     **/
+    function getUnpackedSize(){}
+
+    /**
+     * Returns minimum version of RAR program (e.g. WinRAR) required to
+     * unpack the entry. It is encoded as 10 * major version + minor version.
+     * 
+     * @return int
+     * @since PECL rar >= 0.1
+     **/
+    function getVersion(){}
+
+    /**
+     * Tests whether the current entry is a directory.
+     * 
+     * @return bool
+     * @since PECL rar >= 2.0.0
+     **/
+    function isDirectory(){}
 
     /**
      * Tests whether the current entry contents are encrypted.
@@ -81145,10 +82700,12 @@ class ReflectionClass implements Reflector {
     function getParentClass(){}
 
     /**
-     * Gets the properties.
+     * Retrieves reflected properties.
      * 
-     * @param string $filter The optional filter.
-     * @return ReflectionProperty
+     * @param int $filter The optional filter, for filtering desired
+     *   property types. It's configured using the ReflectionProperty
+     *   constants, and defaults to all property types.
+     * @return array
      * @since PHP 5
      **/
     function getProperties($filter){}
@@ -81378,7 +82935,8 @@ class ReflectionException extends Exception {
  **/
 class ReflectionExtension implements Reflector {
     /**
-     * Exports a reflected extension.
+     * Exports a reflected extension. The output format of this function is
+     * the same as the CLI argument --re [extension].
      * 
      * @param string $name
      * @param string $return
@@ -81461,7 +83019,8 @@ class ReflectionExtension implements Reflector {
     function info(){}
 
     /**
-     * Clones.
+     * The clone method prevents an object from being cloned. Reflection
+     * objects cannot be cloned.
      * 
      * @return void
      * @since PHP 5
@@ -81477,7 +83036,9 @@ class ReflectionExtension implements Reflector {
     function __construct($name){}
 
     /**
-     * To a string.
+     * Exports a reflected extension and returns it as a string. This is the
+     * same as the ReflectionExtension::export with the {@link return} set to
+     * .
      * 
      * @return string
      * @since PHP 5
@@ -82326,181 +83887,6 @@ class ResourceBundle {
     function getLocales(){}
 
 }
-class result {
-    /**
-     * Returns the position of the field cursor used for the last {@link
-     * maxdb_fetch_field} call. This value can be used as an argument to
-     * {@link maxdb_field_seek}.
-     * 
-     * @var int
-     **/
-    var $current_field;
-    /**
-     * {@link maxdb_num_fields} returns the number of fields from specified
-     * result set.
-     * 
-     * @var int
-     **/
-    var $field_count;
-    /**
-     * The {@link maxdb_fetch_lengths} function returns an array containing
-     * the lengths of every column of the current row within the result set
-     * represented by the {@link result} parameter. If successful, a
-     * numerically indexed array representing the lengths of each column is
-     * returned.
-     * 
-     * @var array
-     **/
-    var $lengths;
-    /**
-     * The {@link maxdb_data_seek} function seeks to an arbitrary result
-     * pointer specified by the {@link offset} in the result set represented
-     * by {@link result}. The {@link offset} parameter must be between zero
-     * and the total number of rows minus one (0..{@link maxdb_num_rows} -
-     * 1).
-     * 
-     * @param int $offset
-     * @return bool
-     **/
-    function data_seek($offset){}
-
-    /**
-     * Returns an array that corresponds to the fetched row or if there are
-     * no more rows for the resultset represented by the {@link result}
-     * parameter.
-     * 
-     * {@link maxdb_fetch_array} is an extended version of the {@link
-     * maxdb_fetch_row} function. In addition to storing the data in the
-     * numeric indices of the result array, the {@link maxdb_fetch_array}
-     * function can also store the data in associative indices, using the
-     * field names of the result set as keys.
-     * 
-     * If two or more columns of the result have the same field names, the
-     * last column will take precedence and overwrite the earlier data. In
-     * order to access multiple columns with the same name, the numerically
-     * indexed version of the row must be used.
-     * 
-     * The optional second argument {@link resulttype} is a constant
-     * indicating what type of array should be produced from the current row
-     * data. The possible values for this parameter are the constants
-     * MAXDB_ASSOC, MAXDB_ASSOC_UPPER, MAXDB_ASSOC_LOWER, MAXDB_NUM, or
-     * MAXDB_BOTH. By default the {@link maxdb_fetch_array} function will
-     * assume MAXDB_BOTH, which is a combination of MAXDB_NUM and MAXDB_ASSOC
-     * for this parameter.
-     * 
-     * By using the MAXDB_ASSOC constant this function will behave
-     * identically to the {@link maxdb_fetch_assoc}, while MAXDB_NUM will
-     * behave identically to the {@link maxdb_fetch_row} function. The final
-     * option MAXDB_BOTH will create a single array with the attributes of
-     * both.
-     * 
-     * By using the MAXDB_ASSOC_UPPER constant, the behaviour of this
-     * function is identical to the use of MAXDB_ASSOC except the array index
-     * of a column is the fieldname in upper case.
-     * 
-     * By using the MAXDB_ASSOC_LOWER constant, the behaviour of this
-     * function is identical to the use of MAXDB_ASSOC except the array index
-     * of a column is the fieldname in lower case.
-     * 
-     * @param int $resulttype
-     * @return mixed
-     **/
-    function fetch_array($resulttype){}
-
-    /**
-     * Returns an associative array that corresponds to the fetched row or if
-     * there are no more rows.
-     * 
-     * The {@link maxdb_fetch_assoc} function is used to return an
-     * associative array representing the next row in the result set for the
-     * result represented by the {@link result} parameter, where each key in
-     * the array represents the name of one of the result set's columns.
-     * 
-     * If two or more columns of the result have the same field names, the
-     * last column will take precedence. To access the other column(s) of the
-     * same name, you either need to access the result with numeric indices
-     * by using {@link maxdb_fetch_row} or add alias names.
-     * 
-     * @return array
-     **/
-    function fetch_assoc(){}
-
-    /**
-     * The {@link maxdb_fetch_field} returns the definition of one column of
-     * a result set as an resource. Call this function repeatedly to retrieve
-     * information about all columns in the result set. {@link
-     * maxdb_fetch_field} returns when no more fields are left.
-     * 
-     * @return mixed
-     **/
-    function fetch_field(){}
-
-    /**
-     * This function serves an identical purpose to the {@link
-     * maxdb_fetch_field} function with the single difference that, instead
-     * of returning one resource at a time for each field, the columns are
-     * returned as an array of resources.
-     * 
-     * @return mixed
-     **/
-    function fetch_fields(){}
-
-    /**
-     * {@link maxdb_fetch_field_direct} returns an resource which contains
-     * field definition information from specified resultset. The value of
-     * fieldnr must be in the range from 0 to number of fields - 1.
-     * 
-     * @param int $fieldnr
-     * @return mixed
-     **/
-    function fetch_field_direct($fieldnr){}
-
-    /**
-     * The {@link maxdb_fetch_object} will return the current row result set
-     * as an object where the attributes of the object represent the names of
-     * the fields found within the result set. If no more rows exist in the
-     * current result set, is returned.
-     * 
-     * @return object
-     **/
-    function fetch_object(){}
-
-    /**
-     * Returns an array that corresponds to the fetched row, or if there are
-     * no more rows.
-     * 
-     * {@link maxdb_fetch_row} fetches one row of data from the result set
-     * represented by {@link result} and returns it as an enumerated array,
-     * where each column is stored in an array offset starting from 0 (zero).
-     * Each subsequent call to the {@link maxdb_fetch_row} function will
-     * return the next row within the result set, or if there are no more
-     * rows.
-     * 
-     * @return mixed
-     **/
-    function fetch_row(){}
-
-    /**
-     * Sets the field cursor to the given offset. The next call to {@link
-     * maxdb_fetch_field} will retrieve the field definition of the column
-     * associated with that offset.
-     * 
-     * @param int $fieldnr
-     * @return bool
-     **/
-    function field_seek($fieldnr){}
-
-    /**
-     * The {@link maxdb_free_result} function frees the memory associated
-     * with the result represented by the {@link result} parameter, which was
-     * allocated by {@link maxdb_query}, {@link maxdb_store_result} or {@link
-     * maxdb_use_result}.
-     * 
-     * @return void
-     **/
-    function free(){}
-
-}
 class Runkit_Sandbox_Parent {
     /**
      * Instantiating the Runkit_Sandbox_Parent class from within a sandbox
@@ -82784,8 +84170,8 @@ class SAMMessage {
      * 
      * $msg->header->myPropertyName = 'textData'; ?>
      * 
-     * If it is desired to pass type information an alternative syntax may
-     * be used where the value and the type hint are passed in an associative
+     * If it is desired to pass type information an alternative syntax may be
+     * used where the value and the type hint are passed in an associative
      * array:
      * 
      * Setting a text format property using a type hint
@@ -83926,8 +85312,8 @@ class SimpleXMLElement {
      * 
      * @param string $ns An XML namespace.
      * @param bool $is_prefix If {@link is_prefix} is , {@link ns} will be
-     *   regarded as a namespace URL. If , {@link ns} will be regarded as a
-     *   prefix.
+     *   regarded as a prefix. If , {@link ns} will be regarded as a
+     *   namespace URL.
      * @return SimpleXMLElement
      * @since PHP 5 >= 5.0.1
      **/
@@ -84108,9 +85494,8 @@ class SoapClient {
     function __doRequest($request, $location, $action, $version, $one_way){}
 
     /**
-     * Returns a list of available SOAP functions.
-     * 
-     * This function only works in WSDL mode.
+     * Returns an array of functions described in the WSDL for the Web
+     * service.
      * 
      * @return array
      * @since PHP 5 >= 5.0.1
@@ -84645,6 +86030,16 @@ class SolrClient {
     function rollback(){}
 
     /**
+     * Sets the response writer used to prepare the response from Solr
+     * 
+     * @param string $responseWriter One of the following : - xml -
+     *   phpnative
+     * @return void
+     * @since PECL solr >= 0.9.11
+     **/
+    function setResponseWriter($responseWriter){}
+
+    /**
      * Changes the specified servlet type to a new value
      * 
      * @param int $type One of the following : -
@@ -84671,11 +86066,12 @@ class SolrClient {
      * @param array $clientOptions This is an array containing one of the
      *   following keys : - secure (Boolean value indicating whether or not
      *   to connect in secure mode) - hostname (The hostname for the Solr
-     *   server) - port (The port number) - path (The path to solr) - login
-     *   (The username used for HTTP Authentication, if any) - password (The
-     *   HTTP Authentication password) - proxy_host (The hostname for the
-     *   proxy server, if any) - proxy_port (The proxy port) - proxy_login
-     *   (The proxy username) - proxy_password (The proxy password) - timeout
+     *   server) - port (The port number) - path (The path to solr) - wt (The
+     *   name of the response writer e.g. xml, phpnative) - login (The
+     *   username used for HTTP Authentication, if any) - password (The HTTP
+     *   Authentication password) - proxy_host (The hostname for the proxy
+     *   server, if any) - proxy_port (The proxy port) - proxy_login (The
+     *   proxy username) - proxy_password (The proxy password) - timeout
      *   (This is maximum time in seconds allowed for the http data transfer
      *   operation. Default is 30 seconds) - ssl_cert (File name to a
      *   PEM-formatted file containing the private key + private certificate
@@ -86339,11 +87735,11 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * Instructs Solr what kinds of Request parameters should be included in
      * the response for debugging purposes, legal values include:
      * 
-     * - none - don't include any request parameters for debugging -
-     * explicit - include the parameters explicitly specified by the client
-     * in the request - all - include all parameters involved in this
-     * request, either specified explicitly by the client, or implicit
-     * because of the request handler configuration.
+     * - none - don't include any request parameters for debugging - explicit
+     * - include the parameters explicitly specified by the client in the
+     * request - all - include all parameters involved in this request,
+     * either specified explicitly by the client, or implicit because of the
+     * request handler configuration.
      * 
      * @param string $type The type of parameters to include
      * @return SolrQuery
@@ -87340,8 +88736,8 @@ class SphinxClient {
      * affected. This call lets you specify non-default weights for full-text
      * fields.
      * 
-     * The weights must be positive 32-bit integers, so be careful not to
-     * hit 32-bit integer maximum. The final weight is a 32-bit integer too.
+     * The weights must be positive 32-bit integers, so be careful not to hit
+     * 32-bit integer maximum. The final weight is a 32-bit integer too.
      * Default weight value is 1. Unknown field names are silently ignored.
      * 
      * @param array $weights Associative array of field names and field
@@ -87553,8 +88949,8 @@ class SphinxClient {
     /**
      * Sets distributed retry count and delay.
      * 
-     * On temporary failures searchd will attempt up to {@link count}
-     * retries per agent. {@link delay} is the delay between the retries, in
+     * On temporary failures searchd will attempt up to {@link count} retries
+     * per agent. {@link delay} is the delay between the retries, in
      * milliseconds. Retries are disabled by default. Note that this call
      * will not make the API itself retry on temporary failure; it only tells
      * searchd to do so.
@@ -89456,8 +90852,8 @@ class SQLiteDatabase {
      * with SQLite as an UDF (User Defined Function), so that it can be
      * called from within your SQL statements.
      * 
-     * The UDF can be used in any SQL statement that can call functions,
-     * such as SELECT and UPDATE statements and also in triggers.
+     * The UDF can be used in any SQL statement that can call functions, such
+     * as SELECT and UPDATE statements and also in triggers.
      * 
      * @param string $function_name The SQLite Database resource; returned
      *   from {@link sqlite_open} when used procedurally. This parameter is
@@ -89542,9 +90938,9 @@ class SQLiteDatabase {
      * result set that can only be used to read each row, one after the
      * other.
      * 
-     * This function is ideal for generating things such as HTML tables
-     * where you only need to process one row at a time and don't need to
-     * randomly access the row data.
+     * This function is ideal for generating things such as HTML tables where
+     * you only need to process one row at a time and don't need to randomly
+     * access the row data.
      * 
      * @param string $query The SQLite Database resource; returned from
      *   {@link sqlite_open} when used procedurally. This parameter is not
@@ -89729,307 +91125,6 @@ class SQLiteResult {
  * Created by typecasting to object.
  **/
 class stdClass {
-}
-class stmt {
-    /**
-     * {@link maxdb_stmt_affected_rows} returns the number of rows affected
-     * by INSERT, UPDATE, or DELETE query. If the last query was invalid or
-     * the number of rows can not determined, this function will return -1.
-     * 
-     * @var int
-     **/
-    var $affected_rows;
-    /**
-     * For the statement specified by stmt, {@link maxdb_stmt_errno} returns
-     * the error code for the most recently invoked statement function that
-     * can succeed or fail.
-     * 
-     * @var int
-     **/
-    var $errno;
-    /**
-     * For the statement specified by stmt, {@link maxdb_stmt_error} returns
-     * a containing the error message for the most recently invoked statement
-     * function that can succeed or fail.
-     * 
-     * @var string
-     **/
-    var $error;
-    /**
-     * Returns the number of rows in the result set.
-     * 
-     * @var int
-     **/
-    var $num_rows;
-    /**
-     * {@link maxdb_stmt_param_count} returns the number of parameter markers
-     * present in the prepared statement.
-     * 
-     * @var int
-     **/
-    var $param_count;
-    /**
-     * {@link maxdb_stmt_param_count} returns the number of parameter markers
-     * present in the prepared statement.
-     * 
-     * @var int
-     **/
-    var $param_count;
-    /**
-     * {@link maxdb_stmt_bind_param} is used to bind variables for the
-     * parameter markers in the SQL statement that was passed to {@link
-     * maxdb_prepare}. The string {@link types} contains one or more
-     * characters which specify the types for the corresponding bind
-     * variables.
-     * 
-     * The extended syntax of {@link maxdb_stmt_bind_param} allows to give
-     * the parameters as an array instead of a variable list of PHP variables
-     * to the function. If the array variable has not been used before
-     * calling {@link maxdb_stmt_bind_param}, it has to be initialized as an
-     * emtpy array. See the examples how to use {@link maxdb_stmt_bind_param}
-     * with extended syntax.
-     * 
-     * Variables for SELECT INTO SQL statements can also be bound using
-     * {@link maxdb_stmt_bind_param}. Parameters for database procedures can
-     * be bound using {@link maxdb_stmt_bind_param}. See the examples how to
-     * use {@link maxdb_stmt_bind_param} in this cases.
-     * 
-     * If a variable bound as INTO variable to a SQL statement was used
-     * before, the content of this variable is overwritten by the data of the
-     * SELECT INTO statement. A reference to this variable will be invalid
-     * after a call to {@link maxdb_stmt_bind_param}.
-     * 
-     * For INOUT parameters of database procedures the content of the bound
-     * INOUT variable is overwritten by the output value of the database
-     * procedure. A reference to this variable will be invalid after a call
-     * to {@link maxdb_stmt_bind_param}.
-     * 
-     * Type specification chars Character Description i corresponding
-     * variable has type integer d corresponding variable has type double s
-     * corresponding variable has type string b corresponding variable is a
-     * blob and will be sent in packages
-     * 
-     * @param string $types
-     * @param mixed $var1
-     * @return bool
-     **/
-    function bind_param($types, &$var1){}
-
-    /**
-     * {@link maxdb_stmt_bind_result} is used to associate (bind) columns in
-     * the result set to variables. When {@link maxdb_stmt_fetch} is called
-     * to fetch data, the MaxDB client/server protocol places the data for
-     * the bound columns into the specified variables {@link var1, ...}.
-     * 
-     * @param mixed $var1
-     * @return bool
-     **/
-    function bind_result(&$var1){}
-
-    /**
-     * The {@link maxdb_stmt_data_seek} function seeks to an arbitrary result
-     * pointer specified by the {@link offset} in the statement result set
-     * represented by {@link statement}. The {@link offset} parameter must be
-     * between zero and the total number of rows minus one (0..{@link
-     * maxdb_stmt_num_rows} - 1).
-     * 
-     * @param int $offset
-     * @return bool
-     **/
-    function data_seek($offset){}
-
-    /**
-     * The {@link maxdb_stmt_execute} function executes a query that has been
-     * previously prepared using the {@link maxdb_prepare} function
-     * represented by the {@link stmt} resource. When executed any parameter
-     * markers which exist will automatically be replaced with the appropiate
-     * data.
-     * 
-     * If the statement is UPDATE, DELETE, or INSERT, the total number of
-     * affected rows can be determined by using the {@link
-     * maxdb_stmt_affected_rows} function. Likewise, if the query yields a
-     * result set the {@link maxdb_fetch} function is used.
-     * 
-     * @return bool
-     **/
-    function execute(){}
-
-    /**
-     * {@link maxdb_stmt_fetch} returns row data using the variables bound by
-     * {@link maxdb_stmt_bind_result}.
-     * 
-     * @return bool
-     **/
-    function fetch(){}
-
-    /**
-     * The {@link maxdb_stmt_free_result} function frees the result memory
-     * associated with the statement represented by the {@link stmt}
-     * parameter, which was allocated by {@link maxdb_stmt_store_result}.
-     * 
-     * @return void
-     **/
-    function free_result(){}
-
-    /**
-     * {@link maxdb_stmt_maxdb_bind_param} is used to bind variables for the
-     * parameter markers in the SQL statement that was passed to {@link
-     * maxdb_prepare}. The string {@link types} contains one or more
-     * characters which specify the types for the corresponding bind
-     * variables.
-     * 
-     * The extended syntax of {@link maxdb_stmt_maxdb_bind_param} allows to
-     * give the parameters as an array instead of a variable list of PHP
-     * variables to the function. If the array variable has not been used
-     * before calling {@link maxdb_stmt_maxdb_bind_param}, it has to be
-     * initialized as an emtpy array. See the examples how to use {@link
-     * maxdb_stmt_maxdb_bind_param} with extended syntax.
-     * 
-     * Variables for SELECT INTO SQL statements can also be bound using
-     * {@link maxdb_stmt_maxdb_bind_param}. Parameters for database
-     * procedures can be bound using {@link maxdb_stmt_maxdb_bind_param}. See
-     * the examples how to use {@link maxdb_stmt_maxdb_bind_param} in this
-     * cases.
-     * 
-     * If a variable bound as INTO variable to a SQL statement was used
-     * before, the content of this variable is overwritten by the data of the
-     * SELECT INTO statement. A reference to this variable will be invalid
-     * after a call to {@link maxdb_stmt_maxdb_bind_param}.
-     * 
-     * For INOUT parameters of database procedures the content of the bound
-     * INOUT variable is overwritten by the output value of the database
-     * procedure. A reference to this variable will be invalid after a call
-     * to {@link maxdb_stmt_maxdb_bind_param}.
-     * 
-     * Type specification chars Character Description i corresponding
-     * variable has type integer d corresponding variable has type double s
-     * corresponding variable has type string b corresponding variable is a
-     * blob and will be sent in packages
-     * 
-     * @param string $types
-     * @param mixed $var1
-     * @return bool
-     **/
-    function maxdb_bind_param($types, &$var1){}
-
-    /**
-     * {@link maxdb_stmt_maxdb_bind_result} is used to associate (bind)
-     * columns in the result set to variables. When {@link maxdb_stmt_fetch}
-     * is called to fetch data, the MaxDB client/server protocol places the
-     * data for the bound columns into the specified variables {@link var1,
-     * ...}.
-     * 
-     * @param mixed $var1
-     * @return bool
-     **/
-    function maxdb_bind_result(&$var1){}
-
-    /**
-     * The {@link maxdb_stmt_maxdb_execute} function maxdb_executes a query
-     * that has been previously prepared using the {@link maxdb_prepare}
-     * function represented by the {@link stmt} resource. When maxdb_executed
-     * any parameter markers which exist will automatically be replaced with
-     * the appropiate data.
-     * 
-     * If the statement is UPDATE, DELETE, or INSERT, the total number of
-     * affected rows can be determined by using the {@link
-     * maxdb_stmt_affected_rows} function. Likewise, if the query yields a
-     * result set the {@link maxdb_fetch} function is used.
-     * 
-     * @return bool
-     **/
-    function maxdb_execute(){}
-
-    /**
-     * {@link maxdb_stmt_maxdb_fetch} returns row data using the variables
-     * bound by {@link maxdb_stmt_bind_result}.
-     * 
-     * @return bool
-     **/
-    function maxdb_fetch(){}
-
-    /**
-     * If a statement passed to {@link maxdb_prepare} is one that produces a
-     * result set, {@link maxdb_stmt_maxdb_get_metadata} returns the result
-     * resource that can be used to process the meta information such as
-     * total number of fields and individual field information.
-     * 
-     * The result set structure should be freed when you are done with it,
-     * which you can do by passing it to {@link maxdb_free_result}
-     * 
-     * @return resource
-     **/
-    function maxdb_get_metadata(){}
-
-    /**
-     * Allows to send parameter data to the server in pieces (or chunks).
-     * This function can be called multiple times to send the parts of a
-     * character or binary data value for a column, which must be one of the
-     * TEXT or BLOB datatypes.
-     * 
-     * {@link param_nr} indicates which parameter to associate the data
-     * with. Parameters are numbered beginning with 0. {@link data} is a
-     * string containing data to be sent.
-     * 
-     * @param int $param_nr
-     * @param string $data
-     * @return bool
-     **/
-    function maxdb_send_long_data($param_nr, $data){}
-
-    /**
-     * {@link maxdb_stmt_prepare} prepares the SQL query pointed to by the
-     * null-terminated string query. The statement resource has to be
-     * allocated by {@link maxdb_stmt_init}. The query must consist of a
-     * single SQL statement.
-     * 
-     * The parameter {@link query} can include one or more parameter markers
-     * in the SQL statement by embedding question mark (?) characters at the
-     * appropriate positions.
-     * 
-     * The parameter markers must be bound to application variables using
-     * {@link maxdb_stmt_bind_param} and/or {@link maxdb_stmt_bind_result}
-     * before executing the statement or fetching rows.
-     * 
-     * @param string $query
-     * @return mixed
-     **/
-    function prepare($query){}
-
-    /**
-     * @return bool
-     **/
-    function reset(){}
-
-    /**
-     * If a statement passed to {@link maxdb_prepare} is one that produces a
-     * result set, {@link maxdb_stmt_result_metadata} returns the result
-     * resource that can be used to process the meta information such as
-     * total number of fields and individual field information.
-     * 
-     * The result set structure should be freed when you are done with it,
-     * which you can do by passing it to {@link maxdb_free_result}
-     * 
-     * @return resource
-     **/
-    function result_metadata(){}
-
-    /**
-     * Allows to send parameter data to the server in pieces (or chunks).
-     * This function can be called multiple times to send the parts of a
-     * character or binary data value for a column, which must be one of the
-     * TEXT or BLOB datatypes.
-     * 
-     * {@link param_nr} indicates which parameter to associate the data
-     * with. Parameters are numbered beginning with 0. {@link data} is a
-     * string containing data to be sent.
-     * 
-     * @param int $param_nr
-     * @param string $data
-     * @return bool
-     **/
-    function stmt_send_long_data($param_nr, $data){}
-
 }
 /**
  * Represents a connection between PHP and a Stomp compliant Message
@@ -90244,9 +91339,9 @@ class streamWrapper {
     /**
      * This method is called in response to {@link rewinddir}.
      * 
-     * Should reset the output generated by streamWrapper::dir_readdir.
-     * i.e.: The next call to streamWrapper::dir_readdir should return the
-     * first entry in the location returned by streamWrapper::dir_opendir.
+     * Should reset the output generated by streamWrapper::dir_readdir. i.e.:
+     * The next call to streamWrapper::dir_readdir should return the first
+     * entry in the location returned by streamWrapper::dir_opendir.
      * 
      * @return bool
      * @since PHP 4 >= 4.3.2, PHP 5
@@ -90304,8 +91399,8 @@ class streamWrapper {
     /**
      * This method is called in response to {@link fclose}.
      * 
-     * All resources that were locked, or allocated, by the wrapper should
-     * be released.
+     * All resources that were locked, or allocated, by the wrapper should be
+     * released.
      * 
      * @return void
      * @since PHP 4 >= 4.3.2, PHP 5
@@ -91324,8 +92419,8 @@ class SWFMovie {
     /**
      * Streams the given MP3 file {@link mp3file}.
      * 
-     * This method is not very robust in dealing with oddities (can skip
-     * over an initial ID3 tag, but that's about it).
+     * This method is not very robust in dealing with oddities (can skip over
+     * an initial ID3 tag, but that's about it).
      * 
      * Note that the movie isn't smart enough to put enough frames in to
      * contain the entire mp3 stream- you'll have to add (length of song *
@@ -91378,8 +92473,8 @@ class SWFShape {
      * 
      * {@link red}, {@link green}, {@link blue} is a color (RGB mode).
      * 
-     * The {@link bitmap} argument is an {@link SWFBitmap} object. The
-     * {@link flags} argument can be one of the following values:
+     * The {@link bitmap} argument is an {@link SWFBitmap} object. The {@link
+     * flags} argument can be one of the following values:
      * SWFFILL_CLIPPED_BITMAP, SWFFILL_TILED_BITMAP, SWFFILL_LINEAR_GRADIENT
      * or SWFFILL_RADIAL_GRADIENT. Default is SWFFILL_TILED_BITMAP for
      * SWFBitmap and SWFFILL_LINEAR_GRADIENT for SWFGradient.
@@ -95345,8 +96440,8 @@ define('LOG_EMERG', 0);
 define('LOG_ERR', 0);
 define('LOG_INFO', 0);
 define('LOG_KERN', 0);
-define('LOG_LOCAL0 ... LOG_LOCAL7', 0);
 define('LOG_LOCAL0', 0);
+define('LOG_LOCAL0 ... LOG_LOCAL7', 0);
 define('LOG_LOCAL1', 0);
 define('LOG_LOCAL2', 0);
 define('LOG_LOCAL3', 0);
