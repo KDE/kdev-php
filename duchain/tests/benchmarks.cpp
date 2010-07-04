@@ -48,7 +48,7 @@ Benchmarks::Benchmarks()
 
 QIODevice* getInternalFile()
 {
-    QString fileName = srcPath + "../../phpfunctions.php.gz";
+    QString fileName = srcPath + "../../phpfunctions.php";
     QString mimeType = KMimeType::findByPath(fileName, 0, false)->name ();
     QIODevice* file = KFilterDev::deviceForFile (fileName, mimeType, false);
     bool opened = file->open(QIODevice::ReadOnly);

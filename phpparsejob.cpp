@@ -26,8 +26,6 @@
 
 #include <kdebug.h>
 #include <klocale.h>
-#include <KFilterDev>
-#include <KMimeType>
 
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/duchain.h>
@@ -112,18 +110,7 @@ void ParseJob::run()
     QString fileName = document().str();
 
     if (readFromDisk) {
-        if ( fileName.endsWith(".php.gz", Qt::CaseInsensitive) ) {
-            QString mimeType = KMimeType::findByPath(fileName, 0, false)->name ();
-            QIODevice* file = KFilterDev::deviceForFile (fileName, mimeType, false);
-            if ( !file->open(QIODevice::ReadOnly) ) {
-                kDebug() << "Could not open file" << document().str();
-                return abortJob();
-            }
-            session.setContents(file->readAll());
-            delete file;
-        } else {
-            session.readFile(fileName);
-        }
+        session.readFile(fileName);
     } else {
         session.setContents(contentsFromEditor());
         session.setCurrentDocument(document().str());

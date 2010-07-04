@@ -129,10 +129,6 @@ QReadWriteLock* LanguageSupport::internalFunctionsLock()
 
 KDevelop::ParseJob *LanguageSupport::createParseJob(const KUrl &url)
 {
-    if ( url.fileName().endsWith(".gz", Qt::CaseInsensitive) && !url.fileName().endsWith(".php.gz", Qt::CaseInsensitive) ) {
-        // only support *.php.gz files
-        return 0;
-    }
     return new ParseJob(url);
 }
 

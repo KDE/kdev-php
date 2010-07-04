@@ -62,4 +62,4 @@ install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR})
 
 install(FILES kdevphpsupport.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 # not writeable so that the refactoring actions get hidden
-install(FILES phpfunctions.php.gz DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
+install(FILES phpfunctions.php DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)

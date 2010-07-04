@@ -330,17 +330,8 @@ foreach ($constants as $c=>$ctype) {
 }
 chdir(dirname(__FILE__));
 if ( !DEBUG ) {
-    if ( file_exists("phpfunctions.php") ) {
-        echo "backing up phpfunction file\n";
-        copy("phpfunctions.php", "phpfunctions.old.php");
-        echo "saving phpfunctions.php file\n";
-        file_put_contents("phpfunctions.php", $out);
-        echo "saving diff to phpfunctions.diff";
-        shell_exec("diff -u phpfunctions.old.php phpfunctions.php > phpfunctions.diff");
-    } else {
-        echo "saving phpfunctions.php file\n";
-        file_put_contents("phpfunctions.php", $out);
-    }
+    echo "saving phpfunctions.php file\n";
+    file_put_contents("phpfunctions.php", $out);
 
     if ( shell_exec("which php-parser") ) {
         echo "making sure phpfunctions file is valid...\n";
@@ -352,10 +343,6 @@ if ( !DEBUG ) {
         echo "note: put php-parser in your path and I can check the generated file directly...\n";
     }
 
-    echo "removing phpfunctions.php.gz...\n";
-    unlink('phpfunctions.php.gz');
-    echo "calling gzip phpfunctions.php...\n";
-    shell_exec("gzip phpfunctions.php");
     echo "done\n";
 } else {
     echo "phpfunctions.php\n~~~~\n$out\n~~~~\n";
