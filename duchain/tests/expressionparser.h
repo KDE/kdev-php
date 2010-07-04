@@ -42,6 +42,7 @@ private slots:
     void cast();
     void operations();
     void findArg();
+    void array();
 };
 
 }

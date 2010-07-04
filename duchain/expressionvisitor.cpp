@@ -149,6 +149,16 @@ void ExpressionVisitor::visitAssignmentExpression(AssignmentExpressionAst *node)
     }
 }
 
+void ExpressionVisitor::visitBaseVariable(BaseVariableAst* node)
+{
+    DefaultVisitor::visitBaseVariable(node);
+
+    if (node->offsetItemsSequence) {
+        // it's an array item but we don't support it really, so just assign type mixed and be done
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
+    }
+}
+
 void ExpressionVisitor::visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node)
 {
     if (node->variable) {

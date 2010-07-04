@@ -350,6 +350,29 @@ void TestExpressionParser::findArg()
     QCOMPARE(StructureType::Ptr::staticCast(type->baseType())->declaration(top), top->localDeclarations().first());
 }
 
+void TestExpressionParser::array()
+{
+    // see bug https://bugs.kde.org/show_bug.cgi?id=237110
+
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $a = array(\"foo\");");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    ExpressionParser p(true);
+    QCOMPARE(top->localDeclarations().first()->abstractType().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeArray));
+
+    ExpressionEvaluationResult res = p.evaluateType("$b = $a[0]", DUContextPointer(top), SimpleCursor(0, 22));
+    QVERIFY(res.type().cast<IntegralType>());
+    QEXPECT_FAIL("", "we'd need advanced array support to know that [0] returns a string...", Continue);
+    QCOMPARE(res.type().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeString));
+    // fallback
+    QCOMPARE(res.type().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+}
+
 }
 
 #include "expressionparser.moc"
