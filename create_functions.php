@@ -37,12 +37,6 @@ $skipClasses[] = '__php_incomplete_class';
 $skipClasses[] = 'php_user_filter';
 $skipClasses[] = 'static'; // O_o where does that come from?
 
-///TODO: re-enable them once they have their do(), echo() or list() methods removed.
-$skipClasses[] = 'gearmanclient';
-$skipClasses[] = 'gearmanworker';
-$skipClasses[] = 'gearmantask';
-$skipClasses[] = 'rararchive';
-
 $classes = array();
 $constants = array();
 $constants_comments = array();
@@ -117,6 +111,14 @@ $skipFunctions = array();
 // remove delete() function which only acts as a pointer to unlink
 // in the documentation but does not actually exist as a alias in PHP
 $skipFunctions[] = 'delete';
+
+// awesome uncallable functions - noone knows wth that should be...
+$skipMethods = array();
+$skipMethods[] = 'list';
+$skipMethods[] = 'declare';
+$skipMethods[] = 'do';
+$skipMethods[] = 'echo';
+$skipMethods[] = 'function';
 
 /*
  Here ends the hackings...
@@ -277,6 +279,8 @@ foreach ($classes as $class => $i) {
     usort($i['functions'], 'sortByName');
     foreach ($i['functions'] as $f) {
         if ( $class == 'global' && in_array($f['name'], $skipFunctions) ) {
+            continue;
+        } else if ( $class != 'global' && in_array($f['name'], $skipMethods) ) {
             continue;
         }
         $moreDesc = array();
