@@ -1304,13 +1304,34 @@ void TestDUChain::memberFunctionDocBlockParams()
 
 void TestDUChain::foreachLoop()
 {
+    {
     TopDUContext* top = parse("<? $a = array(1); foreach($a as $k=>$i) { $i; }", DumpAll);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().count(), 3);
     QCOMPARE(top->localDeclarations().at(1)->qualifiedIdentifier(), QualifiedIdentifier("k"));
+    QVERIFY(top->localDeclarations().at(1)->abstractType().cast<IntegralType>());
+    QCOMPARE(top->localDeclarations().at(1)->abstractType().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
     QCOMPARE(top->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("i"));
+    QVERIFY(top->localDeclarations().at(2)->abstractType().cast<IntegralType>());
+    QCOMPARE(top->localDeclarations().at(2)->abstractType().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+    }
+    {
+    // bug: https://bugs.kde.org/show_bug.cgi?id=237110
+    TopDUContext* top = parse("<? $a = array(1); foreach($a as $b) { $c = new stdclass; }", DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->localDeclarations().count(), 3);
+    QCOMPARE(top->localDeclarations().at(1)->qualifiedIdentifier(), QualifiedIdentifier("b"));
+    kDebug() << top->localDeclarations().at(1)->toString();
+    QVERIFY(top->localDeclarations().at(1)->abstractType().cast<IntegralType>());
+    QCOMPARE(top->localDeclarations().at(1)->abstractType().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+    QCOMPARE(top->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("c"));
+    QVERIFY(top->localDeclarations().at(2)->abstractType().cast<StructureType>());
+    QCOMPARE(top->localDeclarations().at(2)->abstractType().cast<StructureType>()->qualifiedIdentifier().toString(), QString("stdclass"));
+    }
 }
 
 void TestDUChain::php4StyleConstructor()

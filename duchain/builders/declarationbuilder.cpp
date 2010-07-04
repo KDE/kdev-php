@@ -986,8 +986,6 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
         openDefinition<VariableDeclaration>(identifierForNode(node->foreachVariable->variable), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
         closeDeclaration();
-
-        clearLastType();
     }
 
     if (node->foreachVarAsVar) {

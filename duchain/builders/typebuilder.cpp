@@ -471,12 +471,15 @@ void TypeBuilder::visitStatement(StatementAst* node)
         foreachNode = node->foreachVar;
     } else if (node->foreachExpr) {
         foreachNode = node->foreachExpr;
+    } else if (node->foreachExprAsVar) {
+        foreachNode = node->foreachExprAsVar;
     }
     if (foreachNode) {
         ExpressionVisitor v(editor());
         foreachNode->ducontext = currentContext();
         v.visitNode(foreachNode);
         DUChainReadLocker lock(DUChain::lock());
+        bool foundType = false;
         if (StructureType::Ptr type = StructureType::Ptr::dynamicCast(v.result().type())) {
             ClassDeclaration *classDec = dynamic_cast<ClassDeclaration*>(type->declaration(currentContext()->topContext()));
             Q_ASSERT(classDec);
@@ -495,9 +498,13 @@ void TypeBuilder::visitStatement(StatementAst* node)
                     if (!dynamic_cast<ClassMethodDeclaration*>(d)) continue;
                     Q_ASSERT(d->type<FunctionType>());
                     injectType(d->type<FunctionType>()->returnType());
+                    foundType = true;
                     // kDebug() << "that's it: " << d->type<FunctionType>()->returnType()->toString();
                 }
             }
+        }
+        if (!foundType) {
+            injectType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
         }
     }
 }
