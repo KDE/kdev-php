@@ -776,7 +776,6 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
 
     if ( m_memberAccessOperation == FunctionCallAccess ) {
         Q_ASSERT(lastToken.type() == Parser::Token_LPAREN);
-        openLParen = 1;
         // check ctor call
         qint64 pos = lastToken.prependedBy(TokenList() << Parser::Token_STRING << Parser::Token_NEW, true);
         if ( pos != -1 ) {
@@ -802,7 +801,7 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
     {
         if ( lastToken.typeAt(startPos) == Parser::Token_LPAREN ) {
             ++openLParen;
-            if ( m_memberAccessOperation != FunctionCallAccess && openLParen > 0 ) {
+            if ( openLParen > 0 ) {
                 break;
             }
         } else if ( lastToken.typeAt(startPos) == Parser::Token_RPAREN ) {
@@ -889,6 +888,9 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
         m_expression = m_expression.trimmed();
 
         // make sure the expression is valid
+        if (m_memberAccessOperation == FunctionCallAccess) {
+            m_expression.append(')');
+        }
         for ( int i = openLParen; i > 0; --i ) {
             m_expression.append(')');
         }
@@ -914,12 +916,14 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
         }
     }
 
+    lastToken.moveTo(startPos);
+
     // Handle recursive contexts (Example: "ret = function1(param1, function2(" )
-    if ( lastToken.typeAt(startPos - 1) == Parser::Token_LPAREN ||
-         lastToken.typeAt(startPos - 1) == Parser::Token_COMMA ) {
+    if ( lastToken.typeAt(-1) == Parser::Token_LPAREN ||
+         lastToken.typeAt(-1) == Parser::Token_COMMA ) {
         //Our expression is within a function-call. We need to find out the possible argument-types we need to match, and show an argument-hint.
 
-        lastToken.moveTo(startPos - 1);
+        lastToken.moveTo(-1);
         if ( lastToken.type() == Parser::Token_COMMA ) {
             removeOtherArguments(lastToken);
             if ( lastToken.type() == Parser::Token_INVALID ) {

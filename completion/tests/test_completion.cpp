@@ -306,6 +306,42 @@ void TestCompletion::functionCall()
     QVERIFY(searchDeclaration(tester.items, top->localDeclarations().at(1)));
 }
 
+void TestCompletion::nestedFunctionCall_data()
+{
+    QTest::addColumn<QString>("text");
+
+    QTest::newRow("nested") << QString("bar(foo(");
+    QTest::newRow("nested prev arg") << QString("bar(1, foo(");
+    QTest::newRow("nested prev func call") << QString("bar(foo(1), foo(");
+    QTest::newRow("nested prev arg comma") << QString("bar(1, bar(1, ");
+    QTest::newRow("nested prev func comma") << QString("bar(1, bar(foo(1), ");
+}
+
+void TestCompletion::nestedFunctionCall()
+{
+    QFETCH(QString, text);
+
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo($a) {return 1;} function bar($b, $c) {return 2;}");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    PhpCompletionTester tester(top, text);
+    QVERIFY(tester.completionContext->parentContext());
+    QVERIFY(tester.completionContext->parentContext()->parentContext());
+    QVERIFY(!tester.completionContext->parentContext()->parentContext()->parentContext());
+    QCOMPARE(tester.completionContext->parentContext()->memberAccessOperation(),
+             CodeCompletionContext::FunctionCallAccess);
+    QCOMPARE(tester.completionContext->parentContext()->parentContext()->memberAccessOperation(),
+             CodeCompletionContext::FunctionCallAccess);
+
+    QVERIFY(searchDeclaration(tester.items, top->localDeclarations().at(0)));
+    QVERIFY(searchDeclaration(tester.items, top->localDeclarations().at(1)));
+}
+
 void TestCompletion::newObjectFromOtherFile()
 {
 
@@ -687,7 +723,7 @@ void TestCompletion::overrideMethods()
 
 void TestCompletion::inArray()
 {
-    TopDUContext* top = parse("", DumpAll);
+    TopDUContext* top = parse("", DumpNone);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 

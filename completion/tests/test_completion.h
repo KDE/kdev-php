@@ -49,6 +49,8 @@ private slots:
     void privateStaticObjectCompletion();
     void methodCall();
     void functionCall();
+    void nestedFunctionCall_data();
+    void nestedFunctionCall();
     void newObjectFromOtherFile();
     void constantFromOtherFile();
     void baseClass();
