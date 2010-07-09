@@ -515,6 +515,12 @@ void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
             usingDeclaration(node->className, 0);
             m_result.setType(AbstractType::Ptr());
         }
+        if (node->variable->offsetItemsSequence) {
+            const KDevPG::ListNode< DimListItemAst* >* it = node->variable->offsetItemsSequence->front();
+            do {
+                visitDimListItem(it->element);
+            } while(it->hasNext() && (it = it->next));
+        }
     }
 }
 
