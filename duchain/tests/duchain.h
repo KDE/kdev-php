@@ -126,6 +126,7 @@ private slots:
     void namespacesNoCurly();
     void errorRecovery_data();
     void errorRecovery();
+    void varStatic();
 };
 
 }

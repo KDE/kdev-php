@@ -548,7 +548,7 @@ expression=booleanOrExpression
    var=baseVariableWithFunctionCalls (#variableProperties=variableProperty*)
 -> variable ;;
 
-    OBJECT_OPERATOR objectProperty=objectProperty
+    (OBJECT_OPERATOR|PAAMAYIM_NEKUDOTAYIM) objectProperty=objectProperty
         (isFunctionCall=LPAREN parameterList=functionCallParameterList RPAREN | 0)
 -> variableProperty ;;
 
