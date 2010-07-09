@@ -633,6 +633,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_LIST:
         case Parser::Token_LNUMBER:
         case Parser::Token_METHOD_C:
+        case Parser::Token_NAMESPACE_C:
         case Parser::Token_NUM_STRING:
         case Parser::Token_REQUIRE:
         case Parser::Token_REQUIRE_ONCE:

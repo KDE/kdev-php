@@ -219,7 +219,7 @@ namespace KDevelop
        METHOD_C ("__METHOD__"), FUNC_C ("__FUNCTION__"), LINE ("__LINE__"),
        FILE ("__FILE__"), COMMENT ("comment"), DOC_COMMENT ("doc comment"),  PAAMAYIM_NEKUDOTAYIM ("::"),
        INCLUDE ("include"), INCLUDE_ONCE ("include_once"), EVAL ("eval"), REQUIRE ("require"),
-       REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace") ;;
+       REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__") ;;
 
 -- casts:
 %token INT_CAST ("int cast"), DOUBLE_CAST ("double cast"), STRING_CAST ("string cast"),
@@ -770,6 +770,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
   | CLASS_C                  [: (*yynode)->scalarType = ScalarTypeString; :]
   | METHOD_C                 [: (*yynode)->scalarType = ScalarTypeString; :]
   | FUNC_C                   [: (*yynode)->scalarType = ScalarTypeString; :]
+  | NAMESPACE_C              [: (*yynode)->scalarType = ScalarTypeString; :]
 -> commonScalar [
      member variable scalarType: ScalarTypes;
 ] ;;

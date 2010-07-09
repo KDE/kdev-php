@@ -713,6 +713,8 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_LOGICAL_XOR;
             } else if (name == "namespace") {
                 token = Parser::Token_NAMESPACE;
+            } else if (name == "__namespace__") {
+                token = Parser::Token_NAMESPACE_C;
             } else {
                 token = Parser::Token_STRING;
             }

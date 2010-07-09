@@ -104,6 +104,15 @@ QString MagicConstantNavigationContext::html(bool shorten)
         if ( value.isEmpty() ) {
             value = commentHighlight(i18n("empty (not inside a function)"));
         }
+    } else if ( m_constant == "__NAMESPACE__" ) {
+        if ( DUContext* ctx = findContext(m_topContext, m_position, DUContext::Namespace) ) {
+            if ( ctx->owner() && ctx->owner()->kind() == Declaration::Namespace ) {
+                value = codeHighlight(Qt::escape(ctx->localScopeIdentifier().toString()));
+            }
+        }
+        if ( value.isEmpty() ) {
+            value = commentHighlight(i18n("empty (not inside a namespace)"));
+        }
     }
 
     html += i18n("current value: %1", value);
