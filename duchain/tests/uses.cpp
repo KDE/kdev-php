@@ -838,6 +838,7 @@ void TestUses::namespaces()
                               "const MyConst = 1;\n"
                               "function MyFunc(){}\n"
                               "class MyClass{ const ClassConst = 2; }\n"
+                              "interface MyInterface{}\n"
                               "}\n"
                               "namespace {\n"
                               "\\Foo\\Bar\\MyConst;\n"
@@ -845,6 +846,7 @@ void TestUses::namespaces()
                               "\\Foo\\Bar\\MyFunc();\n"
                               "new \\Foo\\Bar\\MyClass;\n"
                               "function Func(\\Foo\\Bar\\MyClass $a){}\n"
+                              "class a extends \\Foo\\Bar\\MyClass implements \\Foo\\Bar\\MyInterface {}\n"
                               "}\n", DumpAll);
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
@@ -854,40 +856,48 @@ void TestUses::namespaces()
 
     dec = top->findDeclarations(QualifiedIdentifier("foo")).first();
     QCOMPARE(dec->kind(), Declaration::Namespace);
-    compareUses(dec, QList<SimpleRange>() << SimpleRange(7, 1, 7, 4)
-                                          << SimpleRange(8, 1, 8, 4)
+    compareUses(dec, QList<SimpleRange>() << SimpleRange(8, 1, 8, 4)
                                           << SimpleRange(9, 1, 9, 4)
-                                          << SimpleRange(10, 5, 10, 8)
-                                          << SimpleRange(11, 15, 11, 18));
+                                          << SimpleRange(10, 1, 10, 4)
+                                          << SimpleRange(11, 5, 11, 8)
+                                          << SimpleRange(12, 15, 12, 18)
+                                          << SimpleRange(13, 17, 13, 20)
+                                          << SimpleRange(13, 45, 13, 48));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar")).first();
     QCOMPARE(dec->kind(), Declaration::Namespace);
     QVERIFY(dec->internalContext());
-    compareUses(dec, QList<SimpleRange>() << SimpleRange(7, 5, 7, 8)
-                                          << SimpleRange(8, 5, 8, 8)
+    compareUses(dec, QList<SimpleRange>() << SimpleRange(8, 5, 8, 8)
                                           << SimpleRange(9, 5, 9, 8)
-                                          << SimpleRange(10, 9, 10, 12)
-                                          << SimpleRange(11, 19, 11, 22));
-    QCOMPARE(dec->internalContext()->localDeclarations().size(), 3);
+                                          << SimpleRange(10, 5, 10, 8)
+                                          << SimpleRange(11, 9, 11, 12)
+                                          << SimpleRange(12, 19, 12, 22)
+                                          << SimpleRange(13, 21, 13, 24)
+                                          << SimpleRange(13, 49, 13, 52));
+    QCOMPARE(dec->internalContext()->localDeclarations().size(), 4);
     foreach(Declaration* d, dec->internalContext()->localDeclarations()) {
         kDebug() << d->toString() << d->qualifiedIdentifier();
     }
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::MyConst")).first();
-    compareUses(dec, SimpleRange(7, 9, 7, 16));
+    compareUses(dec, SimpleRange(8, 9, 8, 16));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myclass")).first();
     QVERIFY(dynamic_cast<ClassDeclaration*>(dec));
-    compareUses(dec, QList<SimpleRange>() << SimpleRange(8, 9, 8, 16)
-                                          << SimpleRange(10, 13, 10, 20)
-                                          << SimpleRange(11, 23, 11, 30)
+    compareUses(dec, QList<SimpleRange>() << SimpleRange(9, 9, 9, 16)
+                                          << SimpleRange(11, 13, 11, 20)
+                                          << SimpleRange(12, 23, 12, 30)
+                                          << SimpleRange(13, 25, 13, 32)
                );
+    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myinterface")).first();
+    QVERIFY(dynamic_cast<ClassDeclaration*>(dec));
+    compareUses(dec, SimpleRange(13, 53, 13, 64) );
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myclass::ClassConst")).first();
-    compareUses(dec, SimpleRange(8, 18, 8, 28));
+    compareUses(dec, SimpleRange(9, 18, 9, 28));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myfunc")).first();
-    compareUses(dec, SimpleRange(9, 9, 9, 15));
+    compareUses(dec, SimpleRange(10, 9, 10, 15));
 }
 
 }

@@ -367,7 +367,7 @@ void DeclarationBuilder::visitClassExtends(ClassExtendsAst *node)
 
 void DeclarationBuilder::visitClassImplements(ClassImplementsAst *node)
 {
-    const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
+    const KDevPG::ListNode<NamespacedIdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
     do {
         addBaseType(__it->element);
         __it = __it->next;

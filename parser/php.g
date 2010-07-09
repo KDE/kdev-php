@@ -826,10 +826,10 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
     LBRACE body=classBody RBRACE
 -> classDeclarationStatement ;;
 
-identifier=identifier
+identifier=namespacedIdentifier
 -> classExtends ;;
 
-#implements=identifier @ COMMA
+#implements=namespacedIdentifier @ COMMA
 -> classImplements ;;
 
 -- error recovery, to understand it you probably have to look at the generated code ;-)

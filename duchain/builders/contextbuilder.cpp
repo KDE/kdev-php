@@ -337,7 +337,7 @@ void ContextBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, Id
     closeContext();
 }
 
-void ContextBuilder::addBaseType(IdentifierAst * identifier)
+void ContextBuilder::addBaseType(NamespacedIdentifierAst * identifier)
 {
     DUChainWriteLocker lock(DUChain::lock());
 
@@ -345,7 +345,9 @@ void ContextBuilder::addBaseType(IdentifierAst * identifier)
 
     ClassDeclaration* currentClass = dynamic_cast<ClassDeclaration*>(currentContext()->owner());
 
-    ClassDeclaration* baseClass = dynamic_cast<ClassDeclaration*>(findDeclarationImport(ClassDeclarationType, identifier));
+    ClassDeclaration* baseClass = dynamic_cast<ClassDeclaration*>(
+        findDeclarationImport(ClassDeclarationType, identifierForNamespace(identifier, editor()), identifier)
+    );
 
     if (currentClass && baseClass) {
         if (DUContext* baseContext = baseClass->logicalInternalContext(0)) {

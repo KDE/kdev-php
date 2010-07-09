@@ -85,7 +85,7 @@ protected:
     virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KTextEditor::Range& range);
     virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
 
-    virtual void addBaseType(IdentifierAst * identifier);
+    virtual void addBaseType(NamespacedIdentifierAst * identifier);
 
     virtual void classContextOpened(KDevelop::DUContext* context);
 

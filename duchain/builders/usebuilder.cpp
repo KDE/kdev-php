@@ -69,28 +69,16 @@ ReferencedTopDUContext UseBuilder::build ( const KDevelop::IndexedString& url, A
 void UseBuilder::visitParameter(ParameterAst *node)
 {
     if (node->parameterType) {
-        QualifiedIdentifier identifier = identifierForNamespace(node->parameterType, editor());
-        QualifiedIdentifier curId;
-        curId.setExplicitlyGlobal(identifier.explicitlyGlobal());
-        Q_ASSERT(identifier.count() == node->parameterType->namespaceNameSequence->count());
-        for ( int i = 0; i < identifier.count() - 1; ++i ) {
-            curId.push(identifier.at(i));
-            AstNode* n = node->parameterType->namespaceNameSequence->at(i)->element;
-            Declaration* dec = findDeclarationImport(NamespaceDeclarationType, curId, n);
-            newCheckedUse(n, dec);
-        }
-        newCheckedUse(node->parameterType->namespaceNameSequence->back()->element, findDeclarationImport(ClassDeclarationType,
-                                                                 identifier,
-                                                                 node->parameterType ));
+        buildNamespaceUses(node->parameterType);
     }
 }
 
 void UseBuilder::visitClassImplements(ClassImplementsAst *node)
 {
     if (node->implementsSequence) {
-        const KDevPG::ListNode<IdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
+        const KDevPG::ListNode<NamespacedIdentifierAst*> *__it = node->implementsSequence->front(), *__end = __it;
         do {
-            newCheckedUse(__it->element, findDeclarationImport(ClassDeclarationType, __it->element));
+            buildNamespaceUses(__it->element);
             __it = __it->next;
         } while (__it != __end);
     }
@@ -98,7 +86,7 @@ void UseBuilder::visitClassImplements(ClassImplementsAst *node)
 
 void UseBuilder::visitClassExtends(ClassExtendsAst *node)
 {
-    newCheckedUse(node->identifier, findDeclarationImport(ClassDeclarationType, node->identifier));
+    buildNamespaceUses(node->identifier);
 }
 
 void UseBuilder::visitExpr(ExprAst* node)
@@ -178,7 +166,22 @@ void UseBuilder::visitUnaryExpression( UnaryExpressionAst* node )
             }
         }
     }
+}
 
+void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node)
+{
+    QualifiedIdentifier identifier = identifierForNamespace(node, editor());
+    QualifiedIdentifier curId;
+    curId.setExplicitlyGlobal(identifier.explicitlyGlobal());
+    Q_ASSERT(identifier.count() == node->namespaceNameSequence->count());
+    for ( int i = 0; i < identifier.count() - 1; ++i ) {
+        curId.push(identifier.at(i));
+        AstNode* n = node->namespaceNameSequence->at(i)->element;
+        Declaration* dec = findDeclarationImport(NamespaceDeclarationType, curId, n);
+        newCheckedUse(n, dec);
+    }
+    newCheckedUse(node->namespaceNameSequence->back()->element,
+                  findDeclarationImport(ClassDeclarationType, identifier, node ));
 }
 
 }
