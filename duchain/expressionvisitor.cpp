@@ -397,11 +397,6 @@ void ExpressionVisitor::visitStaticScalar(StaticScalarAst *node)
     }
 }
 
-void ExpressionVisitor::visitEncaps(EncapsAst *node)
-{
-    DefaultVisitor::visitEncaps(node);
-}
-
 void ExpressionVisitor::visitEncapsVar(EncapsVarAst *node)
 {
     DefaultVisitor::visitEncapsVar(node);
