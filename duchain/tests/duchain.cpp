@@ -2216,4 +2216,24 @@ void TestDUChain::upcommingClassInString()
 
 }
 
+void TestDUChain::varStatic()
+{
+    //bug: https://bugs.kde.org/244076
+
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "class c { static a = 1; static function foo() {} }\n"
+                              "$o = 'c';\n"
+                              "$o::a;\n"
+                              "$o::foo();\n"
+                              , DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().empty());
+
+    // we cannot support anything though :(
+}
+
 #include "duchain.moc"
