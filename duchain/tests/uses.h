@@ -62,6 +62,7 @@ private slots:
     void useInAsignment();
     void foreachArray();
     void assignmentToMemberArray();
+    void staticArrayIndex();
     void functionParamNewDeclaration();
     void catchClass();
     void variableRedeclaration();

@@ -542,6 +542,27 @@ void TestUses::assignmentToMemberArray()
                );
 }
 
+void TestUses::staticArrayIndex()
+{
+    // bug: https://bugs.kde.org/show_bug.cgi?id=241160
+
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<?php class x { static private $a = array(); function z($i) { self::$a[$i]; } }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration* a = top->childContexts().first()->localDeclarations().first();
+    QCOMPARE(a->identifier().toString(), QString("a"));
+    compareUses(a, SimpleRange(0, 68, 0, 70));
+
+    Declaration* i = top->childContexts().first()->childContexts().first()->localDeclarations().first();
+    QCOMPARE(i->identifier().toString(), QString("i"));
+    compareUses(i, SimpleRange(0, 71, 0, 73));
+}
+
 void TestUses::functionParamNewDeclaration()
 {
     //                 0         1         2         3         4         5         6         7
