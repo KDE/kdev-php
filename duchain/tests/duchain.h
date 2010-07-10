@@ -120,6 +120,7 @@ private slots:
     void undeclaredVarPropertyInString();
     void upcommingClassInString();
     void varStatic();
+    void curlyVarAfterObj();
 };
 
 }
