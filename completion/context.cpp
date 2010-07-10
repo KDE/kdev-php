@@ -538,6 +538,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_SR:
         case Parser::Token_SR_ASSIGN:
         case Parser::Token_START_HEREDOC:
+        case Parser::Token_START_NOWDOC:
         case Parser::Token_STRING:
         case Parser::Token_STRING_CAST:
         case Parser::Token_TILDE:
@@ -613,6 +614,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_ENDSWITCH:
         case Parser::Token_ENDWHILE:
         case Parser::Token_END_HEREDOC:
+        case Parser::Token_END_NOWDOC:
         case Parser::Token_EOF:
         case Parser::Token_EVAL:
         case Parser::Token_FILE:
