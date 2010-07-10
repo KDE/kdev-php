@@ -2469,4 +2469,26 @@ void TestDUChain::varStatic()
     // we cannot support anything though :(
 }
 
+void TestDUChain::staticNowdoc()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "class c {\n"
+                              "public $bar = <<<'FOO'\nbar\nFOO;\n"
+                              "public const C = <<<'FOO'\nbar\nFOO;\n"
+                              "}\n"
+                              , DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().empty());
+
+    QCOMPARE(top->childContexts().first()->localDeclarations().count(), 2);
+    QCOMPARE(top->childContexts().first()->localDeclarations().first()->type<IntegralType>()->dataType(),
+             static_cast<uint>(IntegralType::TypeString));
+    QCOMPARE(top->childContexts().first()->localDeclarations().last()->type<IntegralType>()->dataType(),
+             static_cast<uint>(IntegralType::TypeString));
+}
+
 #include "duchain.moc"

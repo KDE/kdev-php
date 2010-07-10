@@ -737,7 +737,6 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
   | varname=STRING_VARNAME
   | DOUBLE_QUOTE encapsList=encapsList DOUBLE_QUOTE
   | START_HEREDOC encapsList=encapsList END_HEREDOC
-  | START_NOWDOC STRING END_NOWDOC
 -> scalar ;;
 
   constant=namespacedIdentifier
@@ -773,6 +772,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
   | METHOD_C                 [: (*yynode)->scalarType = ScalarTypeString; :]
   | FUNC_C                   [: (*yynode)->scalarType = ScalarTypeString; :]
   | NAMESPACE_C              [: (*yynode)->scalarType = ScalarTypeString; :]
+  | START_NOWDOC STRING END_NOWDOC [: (*yynode)->scalarType = ScalarTypeString; :]
 -> commonScalar [
      member variable scalarType: ScalarTypes;
 ] ;;

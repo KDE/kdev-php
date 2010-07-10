@@ -127,6 +127,7 @@ private slots:
     void errorRecovery_data();
     void errorRecovery();
     void varStatic();
+    void staticNowdoc();
 };
 
 }
