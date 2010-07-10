@@ -244,6 +244,40 @@ void LexerTest::testHereDoc()
     delete ts;
 }
 
+void LexerTest::testHereDocQuoted()
+{
+    TokenStream* ts = tokenize("<?php\necho <<<\"EOD1\"\nstart $text\nend\nEOD1;\n$extern;", true);
+    QCOMPARE((int)ts->size(), 12);
+
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_ECHO, 1, 0, 1, 3);
+    COMPARE_TOKEN(ts, 3, Parser::Token_START_HEREDOC, 1, 5, 1, 14);
+    COMPARE_TOKEN(ts, 4, Parser::Token_ENCAPSED_AND_WHITESPACE, 2, 0, 2, 5);
+    COMPARE_TOKEN(ts, 5, Parser::Token_VARIABLE, 2, 6, 2, 10);
+    COMPARE_TOKEN(ts, 6, Parser::Token_ENCAPSED_AND_WHITESPACE, 2, 11, 3, 3);
+    COMPARE_TOKEN(ts, 7, Parser::Token_END_HEREDOC, 4, 0, 4, 3);
+    COMPARE_TOKEN(ts, 8, Parser::Token_SEMICOLON, 4, 4, 4, 4);
+    COMPARE_TOKEN(ts, 10, Parser::Token_VARIABLE, 5, 0, 5, 6);
+    COMPARE_TOKEN(ts, 11, Parser::Token_SEMICOLON, 5, 7, 5, 7);
+    delete ts;
+}
+
+void LexerTest::testNowdoc()
+{
+    TokenStream* ts = tokenize("<?php\necho <<<'EOD1'\nstart $text\nend\nEOD1;\n$extern;", true);
+    QCOMPARE((int)ts->size(), 10);
+
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_ECHO, 1, 0, 1, 3);
+    COMPARE_TOKEN(ts, 3, Parser::Token_START_NOWDOC, 1, 5, 1, 14);
+    COMPARE_TOKEN(ts, 4, Parser::Token_STRING, 2, 0, 3, 3);
+    COMPARE_TOKEN(ts, 5, Parser::Token_END_NOWDOC, 4, 0, 4, 3);
+    COMPARE_TOKEN(ts, 6, Parser::Token_SEMICOLON, 4, 4, 4, 4);
+    COMPARE_TOKEN(ts, 8, Parser::Token_VARIABLE, 5, 0, 5, 6);
+    COMPARE_TOKEN(ts, 9, Parser::Token_SEMICOLON, 5, 7, 5, 7);
+    delete ts;
+}
+
 void LexerTest::testCommonStringTokens()
 {
     // all these should have open_tag followed by constant encapsed string

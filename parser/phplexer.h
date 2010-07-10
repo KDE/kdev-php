@@ -70,11 +70,11 @@ private:
     bool isValidVariableIdentifier(QChar* it);
     void createNewline(int pos);
     bool isEscapedWithBackslash(QChar* it, int curPos, int startPos);
-    bool isHeredocEnd(QChar* it);
+    bool isHereNowDocEnd(QChar* it);
 
     QStack<int> m_state;
 
-    QString m_heredocIdentifier;
+    QString m_hereNowDocIdentifier;
     int m_haltCompiler;
 
 public:
@@ -89,7 +89,8 @@ public:
         StringVariableCurly = 6,
         StringVarname = 7,
         StringHeredoc = 8,
-        StringBacktick = 9
+        StringBacktick = 9,
+        StringNowdoc = 10
     };
 };
 

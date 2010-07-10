@@ -288,24 +288,41 @@ int Lexer::nextTokenKind()
                             ((it + pos)->unicode() == ' ' || (it + pos)->unicode() == '\t')) {
                         pos++;
                     }
+                    bool isNowdoc = (it + pos)->unicode() == '\'';
+                    bool foundQuote = isNowdoc || (it + pos)->unicode() == '"';
+                    if (foundQuote) {
+                        ++pos;
+                    }
                     if ((it + pos)->isLetter() || (it + pos)->unicode() == '_') { //identifier must start with a letter
-                        m_heredocIdentifier.clear();
+                        m_hereNowDocIdentifier.clear();
                         while (m_curpos + pos < m_contentSize &&
                                 ((it + pos)->isDigit() || (it + pos)->isLetter() || (it + pos)->unicode() == '_')) {
-                            m_heredocIdentifier.append(*(it + pos));
+                            m_hereNowDocIdentifier.append(*(it + pos));
                             pos++;
                         }
-                        if ((it + pos)->unicode() == '\n') {
+                        if (foundQuote && (m_curpos + pos) < m_contentSize) {
+                            if (isNowdoc && (it+pos)->unicode() == '\'') {
+                                ++pos;
+                            } else if ((it+pos)->unicode() == '"') {
+                                ++pos;
+                            }
+                        }
+                        if (m_curpos + pos < m_contentSize && (it + pos)->unicode() == '\n') {
                             //identifier must be followed by newline, newline is part of HEREDOC token
-                            token = Parser::Token_START_HEREDOC;
-                            pushState(StringHeredoc);
+                            if (isNowdoc) {
+                                token = Parser::Token_START_NOWDOC;
+                                pushState(StringNowdoc);
+                            } else {
+                                token = Parser::Token_START_HEREDOC;
+                                pushState(StringHeredoc);
+                            }
                             m_curpos += pos - 1;
                             createNewline(m_curpos);
                         }
                     }
                 }
 
-                if (token != Parser::Token_START_HEREDOC) {
+                if (token != Parser::Token_START_HEREDOC && token != Parser::Token_START_NOWDOC) {
                     if ((it + 2)->unicode() == '=') {
                         m_curpos++;
                         token = Parser::Token_SL_ASSIGN;
@@ -734,9 +751,9 @@ int Lexer::nextTokenKind()
             token = Parser::Token_BACKTICK;
             if (state() == StringVariable) popState();
             popState();
-        } else if ((state() == StringHeredoc || state(1) == StringHeredoc) && isHeredocEnd(it)) {
+        } else if ((state() == StringHeredoc || state(1) == StringHeredoc) && isHereNowDocEnd(it)) {
             token = Parser::Token_END_HEREDOC;
-            m_curpos += m_heredocIdentifier.length() - 1;
+            m_curpos += m_hereNowDocIdentifier.length() - 1;
             if (state() == StringVariable) popState();
             popState();
         } else if (processVariable(it)) {
@@ -793,9 +810,30 @@ int Lexer::nextTokenKind()
 
                 if (state() == StringHeredoc && (it - 1)->unicode() == '\n') {
                     //check for end of heredoc (\nEOD;\n)
-                    if (state() == StringHeredoc && isHeredocEnd(it)) {
+                    if (state() == StringHeredoc && isHereNowDocEnd(it)) {
                         break;
                     }
+                }
+            }
+            m_curpos--;
+        }
+        break;
+    case StringNowdoc:
+        if (isHereNowDocEnd(it)) {
+            token = Parser::Token_END_NOWDOC;
+            m_curpos += m_hereNowDocIdentifier.length() - 1;
+            popState();
+        } else {
+            token = Parser::Token_STRING;
+            int startPos = m_curpos;
+            while (m_curpos < m_contentSize) {
+                if (it->unicode() == '\n') createNewline(m_curpos);
+                m_curpos++;
+                it++;
+
+                if ((it - 1)->unicode() == '\n' && isHereNowDocEnd(it)) {
+                    //check for end of nowdoc (\nEOD;\n)
+                    break;
                 }
             }
             m_curpos--;
@@ -887,15 +925,15 @@ qint64 Lexer::tokenEnd() const
     return m_tokenEnd;
 }
 
-bool Lexer::isHeredocEnd(QChar* it)
+bool Lexer::isHereNowDocEnd(QChar* it)
 {
-    int identiferLen = m_heredocIdentifier.length();
+    int identiferLen = m_hereNowDocIdentifier.length();
     QString lineStart;
     for (int i = 0; i < identiferLen; i++) {
         if (m_curpos + i >= m_contentSize) break;
         lineStart.append(*(it + i));
     }
-    if (lineStart == m_heredocIdentifier &&
+    if (lineStart == m_hereNowDocIdentifier &&
             ((it + identiferLen)->unicode() == '\n'
              || ((it + identiferLen)->unicode() == ';' &&
                  (it + identiferLen + 1)->unicode() == '\n'))) {

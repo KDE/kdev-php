@@ -234,7 +234,8 @@ namespace KDevelop
        CURLY_OPEN ("curly open"), -- { in "{$foo}"; not the same as LBRACE
        DOLLAR_OPEN_CURLY_BRACES ("${"),
        START_HEREDOC ("start heredoc"), END_HEREDOC ("end heredoc"),
-       BACKTICK ("`"), BACKSLASH ("\\");;
+       BACKTICK ("`"), BACKSLASH ("\\"),
+       START_NOWDOC("start nowdoc"), END_NOWDOC("end nowdoc") ;;
 
 -- operators:
 %token IS_EQUAL ("=="), IS_NOT_EQUAL ("!="), IS_IDENTICAL ("==="),
@@ -736,6 +737,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
   | varname=STRING_VARNAME
   | DOUBLE_QUOTE encapsList=encapsList DOUBLE_QUOTE
   | START_HEREDOC encapsList=encapsList END_HEREDOC
+  | START_NOWDOC STRING END_NOWDOC
 -> scalar ;;
 
   constant=namespacedIdentifier
