@@ -530,7 +530,6 @@ expression=booleanOrExpression
     #parameters=functionCallParameterListElement @ COMMA | 0
 -> functionCallParameterList ;;
 
-
     (BIT_AND variable=variable) | expr=expr
 -> functionCallParameterListElement ;;
 
@@ -549,8 +548,9 @@ expression=booleanOrExpression
    var=baseVariableWithFunctionCalls (#variableProperties=variableProperty*)
 -> variable ;;
 
-    (OBJECT_OPERATOR|PAAMAYIM_NEKUDOTAYIM) objectProperty=objectProperty
-        (isFunctionCall=LPAREN parameterList=functionCallParameterList RPAREN | 0)
+    (OBJECT_OPERATOR|PAAMAYIM_NEKUDOTAYIM)
+    ( ?[: LA(1).kind == Token_DOLLAR:] LBRACE variable=variable RBRACE | objectProperty=objectProperty )
+    (isFunctionCall=LPAREN parameterList=functionCallParameterList RPAREN | 0)
 -> variableProperty ;;
 
    --Conflict

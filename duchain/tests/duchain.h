@@ -128,6 +128,7 @@ private slots:
     void errorRecovery();
     void varStatic();
     void staticNowdoc();
+    void curlyVarAfterObj();
 };
 
 }

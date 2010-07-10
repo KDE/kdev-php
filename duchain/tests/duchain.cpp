@@ -2491,4 +2491,26 @@ void TestDUChain::staticNowdoc()
              static_cast<uint>(IntegralType::TypeString));
 }
 
+void TestDUChain::curlyVarAfterObj()
+{
+    // bug: https://bugs.kde.org/show_bug.cgi?id=241645
+
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "class c {\n"
+                              "public $bar = 'foo';\n"
+                              "public $asdf = 'bar';\n"
+                              "public function foo(){}\n"
+                              "}\n"
+                              "$a = new c;\n"
+                              "$a->{$a->bar}();\n"
+                              "$a->{$a->asdf};\n"
+                              , DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().empty());
+}
+
 #include "duchain.moc"

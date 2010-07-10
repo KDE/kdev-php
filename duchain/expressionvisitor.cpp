@@ -427,7 +427,7 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
 {
     ifDebug(kDebug() << "node:" << m_editor->parseSession()->symbol(node)
         << (node->isFunctionCall != -1 ? QString("is function call") : QString("is no function call"));)
-    if (node->objectProperty->objectDimList) {
+    if (node->objectProperty && node->objectProperty->objectDimList) {
         //handle $foo->bar() and $foo->baz, $foo is m_result.type()
 
         if (m_result.type() && StructureType::Ptr::dynamicCast(m_result.type())) {
