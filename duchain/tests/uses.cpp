@@ -961,6 +961,24 @@ void TestUses::useNamespace()
     compareUses(dec, QList<SimpleRange>() << SimpleRange(6, 4, 6, 9)
                                           << SimpleRange(6, 13, 6, 18)
                                           << SimpleRange(6, 24, 6, 29) );
+
+    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::a")).first();
+    compareUses(dec, SimpleRange(5, 8, 5, 9));
+
+    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::b")).first();
+    compareUses(dec, SimpleRange(5, 15, 5, 16));
+
+    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::C")).first();
+    compareUses(dec, SimpleRange(5, 24, 5, 25));
+
+    dec = top->findDeclarations(QualifiedIdentifier("verylong::a")).first();
+    compareUses(dec, SimpleRange(6, 10, 6, 11));
+
+    dec = top->findDeclarations(QualifiedIdentifier("verylong::b")).first();
+    compareUses(dec, SimpleRange(6, 19, 6, 20));
+
+    dec = top->findDeclarations(QualifiedIdentifier("verylong::C")).first();
+    compareUses(dec, SimpleRange(6, 30, 6, 31));
 }
 
 }
