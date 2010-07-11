@@ -219,7 +219,7 @@ namespace KDevelop
        METHOD_C ("__METHOD__"), FUNC_C ("__FUNCTION__"), LINE ("__LINE__"),
        FILE ("__FILE__"), COMMENT ("comment"), DOC_COMMENT ("doc comment"),  PAAMAYIM_NEKUDOTAYIM ("::"),
        INCLUDE ("include"), INCLUDE_ONCE ("include_once"), EVAL ("eval"), REQUIRE ("require"),
-       REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__") ;;
+       REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use") ;;
 
 -- casts:
 %token INT_CAST ("int cast"), DOUBLE_CAST ("double cast"), STRING_CAST ("string cast"),
@@ -625,7 +625,11 @@ expression=booleanOrExpression
   | OPEN_TAG_WITH_ECHO expr=expr semicolonOrCloseTag
   | INLINE_HTML
   | CONST #consts=constantDeclaration @ COMMA SEMICOLON
+  | USE #useNamespace=useNamespace @ COMMA SEMICOLON
 -> statement ;;
+
+    identifier=namespacedIdentifier (AS aliasIdentifier=identifier | 0)
+-> useNamespace ;;
 
     identifier=identifier ASSIGN scalar=staticScalar
 -> constantDeclaration ;;

@@ -168,7 +168,12 @@ void UseBuilder::visitUnaryExpression( UnaryExpressionAst* node )
     }
 }
 
-void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node)
+void UseBuilder::visitUseNamespace(UseNamespaceAst* node)
+{
+    buildNamespaceUses(node->identifier, NamespaceDeclarationType);
+}
+
+void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node, DeclarationType lastType)
 {
     QualifiedIdentifier identifier = identifierForNamespace(node, editor());
     QualifiedIdentifier curId;
@@ -181,7 +186,7 @@ void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node)
         newCheckedUse(n, dec);
     }
     newCheckedUse(node->namespaceNameSequence->back()->element,
-                  findDeclarationImport(ClassDeclarationType, identifier, node ));
+                  findDeclarationImport(lastType, identifier, node ));
 }
 
 }

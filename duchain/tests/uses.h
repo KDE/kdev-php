@@ -75,6 +75,7 @@ private slots:
     void unset();
     void functionArguments();
     void namespaces();
+    void useNamespace();
 };
 
 }

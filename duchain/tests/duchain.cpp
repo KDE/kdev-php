@@ -2387,6 +2387,30 @@ void TestDUChain::namespacesNoCurly()
     QCOMPARE(top->localDeclarations().at(1)->kind(), Declaration::Namespace);
 }
 
+void TestDUChain::useNamespace()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "namespace ns1\\ns2 {\n"
+                              "function a(){}\n"
+                              "const b = 0;\n"
+                              "class c {}\n"
+                              "}\n"
+                              "namespace ns3\\ns4 {\n"
+                              "function a(){}\n"
+                              "const b = 0;\n"
+                              "class c {}\n"
+                              "}\n"
+                              "namespace {\n"
+                              "use ns1\\ns2, ns3\\ns4 as ns5;\n"
+                              "}\n"
+                              , DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+}
+
 struct TestUse {
     TestUse(const QString& _id, Declaration::Kind _kind, int _uses)
         : id(_id), kind(_kind), uses(_uses)

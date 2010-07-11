@@ -921,6 +921,34 @@ void TestUses::namespaces()
     compareUses(dec, SimpleRange(10, 9, 10, 15));
 }
 
+void TestUses::useNamespace()
+{
+    //                         0         1         2         3         4         5         6         7
+    //                         01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "namespace Foo\\Bar {}\n"
+                              "namespace VeryLong {}\n"
+                              "namespace {\n"
+                              "use Foo\\Bar, VeryLong as Short;\n"
+                              "}\n", DumpAll);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    Declaration* dec;
+    dec = top->findDeclarations(QualifiedIdentifier("foo")).first();
+    QCOMPARE(dec->kind(), Declaration::Namespace);
+    compareUses(dec, SimpleRange(4, 4, 4, 7));
+
+    dec = top->findDeclarations(QualifiedIdentifier("foo::bar")).first();
+    QCOMPARE(dec->kind(), Declaration::Namespace);
+    compareUses(dec, SimpleRange(4, 8, 4, 11));
+
+    dec = top->findDeclarations(QualifiedIdentifier("verylong")).first();
+    QCOMPARE(dec->kind(), Declaration::Namespace);
+    compareUses(dec, SimpleRange(4, 13, 4, 21));
+}
+
 }
 
 

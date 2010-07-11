@@ -60,9 +60,10 @@ protected:
     virtual void visitStatement(StatementAst* node);
     virtual void visitCatchItem(CatchItemAst* node);
     virtual void visitUnaryExpression( UnaryExpressionAst* node );
+    virtual void visitUseNamespace(UseNamespaceAst* node);
 
 private:
-    void buildNamespaceUses(Php::NamespacedIdentifierAst* node);
+    void buildNamespaceUses(Php::NamespacedIdentifierAst* node, Php::DeclarationType lastType = Php::ClassDeclarationType);
 };
 
 }

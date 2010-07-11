@@ -124,6 +124,7 @@ private slots:
     void upcommingClassInString();
     void namespaces();
     void namespacesNoCurly();
+    void useNamespace();
     void errorRecovery_data();
     void errorRecovery();
     void varStatic();
