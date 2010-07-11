@@ -45,6 +45,7 @@
 #include "../declarations/classdeclaration.h"
 #include "../declarations/functiondeclaration.h"
 #include "../declarations/namespacedeclaration.h"
+#include "../declarations/namespacealiasdeclaration.h"
 #include "expressionvisitor.h"
 
 using namespace KTextEditor;
@@ -1098,6 +1099,22 @@ void DeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent,
 void DeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier)
 {
     DeclarationBuilderBase::closeNamespace(parent, node, identifier);
+    closeDeclaration();
+}
+
+void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
+{
+    IdentifierAst* idNode = node->aliasIdentifier ? node->aliasIdentifier : node->identifier->namespaceNameSequence->back()->element;
+    IdentifierPair id = identifierPairForNode(idNode);
+    SimpleRange range = editor()->findRange(idNode);
+    DUChainWriteLocker lock;
+    NamespaceAliasDeclaration* decl = openDefinition<NamespaceAliasDeclaration>(id.second, range);
+    {
+        ///TODO: case insensitive!
+        decl->setImportIdentifier( identifierForNamespace(node->identifier, editor()) );
+        decl->setPrettyName( id.first );
+        decl->setKind(Declaration::NamespaceAlias);
+    }
     closeDeclaration();
 }
 

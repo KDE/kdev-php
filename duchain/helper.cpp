@@ -71,7 +71,7 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
               ) {
         return true;
     } else if (declarationType == NamespaceDeclarationType
-               && declaration->kind() == Declaration::Namespace)
+               && (declaration->kind() == Declaration::Namespace || declaration->kind() == Declaration::NamespaceAlias) )
     {
         return true;
     }

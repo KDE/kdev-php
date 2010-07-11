@@ -926,11 +926,13 @@ void TestUses::useNamespace()
     //                         0         1         2         3         4         5         6         7
     //                         01234567890123456789012345678901234567890123456789012345678901234567890123456789
     TopDUContext* top = parse("<?php\n"
-                              "namespace Foo\\Bar {}\n"
-                              "namespace VeryLong {}\n"
+                              "namespace Foo\\Bar {class A{} function B(){} const C = 1;}\n"
+                              "namespace VeryLong {class A{} function B(){} const C = 1;}\n"
                               "namespace {\n"
                               "use Foo\\Bar, VeryLong as Short;\n"
-                              "}\n", DumpAll);
+                              "new Bar\\A; Bar\\B(); Bar\\C;\n"
+                              "new Short\\A; Short\\B(); Short\\C;\n"
+                              "}\n", DumpNone);
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
@@ -947,6 +949,18 @@ void TestUses::useNamespace()
     dec = top->findDeclarations(QualifiedIdentifier("verylong")).first();
     QCOMPARE(dec->kind(), Declaration::Namespace);
     compareUses(dec, SimpleRange(4, 13, 4, 21));
+
+    dec = top->findDeclarations(QualifiedIdentifier("bar")).first();
+    QCOMPARE(dec->kind(), Declaration::NamespaceAlias);
+    compareUses(dec, QList<SimpleRange>() << SimpleRange(5, 4, 5, 7)
+                                          << SimpleRange(5, 11, 5, 14)
+                                          << SimpleRange(5, 20, 5, 23) );
+
+    dec = top->findDeclarations(QualifiedIdentifier("short")).first();
+    QCOMPARE(dec->kind(), Declaration::NamespaceAlias);
+    compareUses(dec, QList<SimpleRange>() << SimpleRange(6, 4, 6, 9)
+                                          << SimpleRange(6, 13, 6, 18)
+                                          << SimpleRange(6, 24, 6, 29) );
 }
 
 }

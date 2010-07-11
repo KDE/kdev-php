@@ -27,6 +27,7 @@
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/integraltype.h>
 #include <language/duchain/types/unsuretype.h>
+#include <language/duchain/namespacealiasdeclaration.h>
 
 #include "helper.h"
 
@@ -2409,6 +2410,16 @@ void TestDUChain::useNamespace()
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
+
+    QCOMPARE(top->localDeclarations().count(), 4);
+
+    Declaration* dec = top->localDeclarations().at(2);
+    QCOMPARE(dec->qualifiedIdentifier().toString(), QString("ns2"));
+    QVERIFY(dynamic_cast<NamespaceAliasDeclaration*>(dec));
+
+    dec = top->localDeclarations().at(3);
+    QCOMPARE(dec->qualifiedIdentifier().toString(), QString("ns5"));
+    QVERIFY(dynamic_cast<NamespaceAliasDeclaration*>(dec));
 }
 
 struct TestUse {
