@@ -284,7 +284,23 @@ namespace KDevelop
   | HALT_COMPILER LPAREN RPAREN SEMICOLON -- Lexer stops allready
 -> topStatement ;;
 
-#statements=topStatement*
+[: bool reported = false; while ( true ) { :]
+    try/recover(#statements=topStatement)*
+[: if (yytoken != Token_RBRACE && yytoken != Token_EOF && yytoken != Token_CLOSE_TAG
+       && yytoken != Token_ENDIF && yytoken != Token_ENDFOREACH && yytoken != Token_ENDFOR
+       && yytoken != Token_ENDWHILE && yytoken != Token_ENDSWITCH && yytoken != Token_ENDDECLARE ) {
+        if (!reported) {
+            qint64 index = tokenStream->index() - 1;
+            Token &token = tokenStream->token(index);
+            QString tokenValue = token.kind != 0 ? tokenText(token.begin, token.end) : "EOF";
+            reportProblem(Error, QString("Unexpected token \"%1\".").arg(tokenValue));
+            reported = true;
+        }
+        yylex();
+   } else {
+        break;
+   }
+} :]
 -> innerStatementList ;;
 
 --Operator Precedence, from PHP Manual

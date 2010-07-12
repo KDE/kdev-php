@@ -130,6 +130,8 @@ private slots:
     void varStatic();
     void staticNowdoc();
     void curlyVarAfterObj();
+    void embeddedHTML_data();
+    void embeddedHTML();
 };
 
 }
