@@ -7,7 +7,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
 set(duchain_SRCS
     types/integraltypeextended.cpp
     types/structuretype.cpp
-    builders/includebuilder.cpp
     builders/predeclarationbuilder.cpp
     builders/declarationbuilder.cpp
     builders/contextbuilder.cpp
