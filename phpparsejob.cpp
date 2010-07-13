@@ -47,7 +47,6 @@
 #include "duchain/builders/declarationbuilder.h"
 #include "duchain/builders/usebuilder.h"
 #include "duchain/helper.h"
-#include "duchain/builders/includebuilder.h"
 #include "phpducontext.h"
 
 #include <QtCore/QReadLocker>
@@ -151,70 +150,11 @@ void ParseJob::run()
     newFeatures = static_cast<KDevelop::TopDUContext::Features>(newFeatures & KDevelop::TopDUContext::AllDeclarationsContextsUsesAndAST);
 
     if (matched) {
-        EditorIntegrator editor(&session);
-
-        IncludeBuilder includeBuilder(&editor);
-        includeBuilder.build(document(), ast);
-
-        QList<ProblemPointer> includeProblems;
-        {
-            QMapIterator<Php::AstNode*, QString> i(includeBuilder.badIncludes());
-            while (i.hasNext()) {
-                i.next();
-                if (abortRequested()) {
-                    return abortJob();
-                }
-                includeProblems << createProblem(i18n("Included file %1 could not be found.", i.value()), i.key(),
-                                                 &editor, ProblemData::Preprocessor);
-                continue;
-            }
-        }
-        {
-            QMapIterator<Php::AstNode*, IndexedString> i(includeBuilder.includes());
-            while (i.hasNext()) {
-                i.next();
-                if (abortRequested()) {
-                    return abortJob();
-                }
-                if (hasParentDocument(i.value())) {
-                    includeProblems << createProblem(i18n("File %1 includes itself.", i.value().str()), i.key(),
-                                                     &editor, ProblemData::Preprocessor);
-                    continue;
-                }
-                {
-                    DUChainReadLocker lock(DUChain::lock());
-                    bool needsUpdate = true;
-                    foreach(const ParsingEnvironmentFilePointer &file, DUChain::self()->allEnvironmentFiles(i.value())) {
-                        if (file->needsUpdate()) {
-                            needsUpdate = true;
-                            break;
-                        } else {
-                            needsUpdate = false;
-                        }
-                    }
-                    if (!(minimumFeatures() & TopDUContext::ForceUpdateRecursive) && !needsUpdate) {
-                        continue;
-                    }
-                }
-                kDebug() << "parse included file" << i.value().str();
-                if (ICore::self()->languageController()->backgroundParser()
-                                 ->parseJobForDocument(i.value().toUrl()))
-                {
-                    // prevent deadlock
-                    // we might want to wait for it to finish and then import it or something...
-                    // this hack prevents e.g. proper error reporting on circular imports
-                } else {
-                    ParseJob job(i.value().toUrl());
-                    job.setMinimumFeatures(minimumFeatures());
-                    job.setParentJob(this);
-                    job.run();
-                }
-            }
-        }
-
-        if (!php() || !php()->language()) {
+        if (abortRequested() || !php() || !php()->language()) {
             return abortJob();
         }
+
+        EditorIntegrator editor(&session);
 
         QReadLocker parseLock(php()->language()->parseLock());
 
@@ -266,7 +206,7 @@ void ParseJob::run()
 
         DUChainWriteLocker lock(DUChain::lock());
 
-        foreach(const ProblemPointer &p, includeProblems) {
+        foreach(const ProblemPointer &p, session.problems()) {
             chain->addProblem(p);
         }
 
