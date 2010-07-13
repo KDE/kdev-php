@@ -236,10 +236,6 @@ void ParseJob::run()
             top->addProblem(p);
         }
         kDebug() << "===Failed===" << document().str();
-        {
-            DUChainReadLocker lock(DUChain::lock());
-            kDebug() << DUChain::self()->chainForDocument(document());
-        }
     }
 
     cleanupSmartRevision();
