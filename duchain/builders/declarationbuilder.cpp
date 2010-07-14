@@ -1104,6 +1104,12 @@ void DeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent
 
 void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
 {
+    if ( !node->aliasIdentifier && node->identifier->namespaceNameSequence->count() == 1 ) {
+        reportError(i18n("The use statement with non-compound name '%1' has no effect.",
+                         identifierForNode(node->identifier->namespaceNameSequence->front()->element).toString()),
+                    node->identifier, KDevelop::ProblemData::Warning);
+        return;
+    }
     IdentifierAst* idNode = node->aliasIdentifier ? node->aliasIdentifier : node->identifier->namespaceNameSequence->back()->element;
     IdentifierPair id = identifierPairForNode(idNode);
     SimpleRange range = editor()->findRange(idNode);
