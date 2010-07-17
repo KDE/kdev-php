@@ -14,8 +14,6 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-cmake_minimum_required(VERSION 2.6)
-
 add_definitions( -DKDE_DEFAULT_DEBUG_AREA=9043 )
 
 ########## shared settings ##########
