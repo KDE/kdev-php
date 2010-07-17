@@ -2214,8 +2214,6 @@ void TestDUChain::upcommingClassInString()
     // just don't crash
 }
 
-}
-
 void TestDUChain::varStatic()
 {
     //bug: https://bugs.kde.org/244076
@@ -2256,6 +2254,8 @@ void TestDUChain::curlyVarAfterObj()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
     QVERIFY(top->problems().empty());
+}
+
 }
 
 #include "duchain.moc"
