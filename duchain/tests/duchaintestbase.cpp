@@ -109,6 +109,7 @@ TopDUContext* DUChainTestBase::parseAdditionalFile(const IndexedString& fileName
     if (!session.parse(&ast)) qFatal("can't parse");
 
     EditorIntegrator editor(&session);
+    session.setCurrentDocument(fileName);
     DeclarationBuilder declarationBuilder(&editor);
     TopDUContext* top = declarationBuilder.build(fileName, ast);
 
@@ -143,9 +144,9 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QSt
     if (url.isEmpty()) url = QString("file:///internal/%1").arg(testNumber++);
 
     EditorIntegrator editor(&session);
-
+    session.setCurrentDocument(IndexedString(url));
     DeclarationBuilder declarationBuilder(&editor);
-    TopDUContext* top = declarationBuilder.build(IndexedString(url), ast);
+    TopDUContext* top = declarationBuilder.build(session.currentDocument(), ast);
 
     if ( IndexedString(url) != internalFunctionFile() ) {
         UseBuilder useBuilder(&editor);
