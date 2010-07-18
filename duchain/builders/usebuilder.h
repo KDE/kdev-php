@@ -41,14 +41,13 @@ typedef KDevelop::AbstractUseBuilder<AstNode, IdentifierAst, ContextBuilder> Use
 class KDEVPHPDUCHAIN_EXPORT UseBuilder: public UseBuilderBase
 {
 public:
-    UseBuilder(ParseSession* session);
     UseBuilder(EditorIntegrator* editor);
 
     void newCheckedUse(AstNode* node, KDevelop::Declaration* declaration);
 
     virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
         KDevelop::ReferencedTopDUContext updateContext
-        = KDevelop::ReferencedTopDUContext(), bool useSmart = true);
+        = KDevelop::ReferencedTopDUContext());
 
 protected:
     virtual void visitParameter(ParameterAst *node);

@@ -22,9 +22,6 @@
 
 #include <QByteArray>
 
-#include <ktexteditor/smartrange.h>
-#include <ktexteditor/smartinterface.h>
-
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/types/functiontype.h>
 
@@ -39,7 +36,6 @@
 #include "../declarations/namespacedeclaration.h"
 #include "../types/structuretype.h"
 
-using namespace KTextEditor;
 using namespace KDevelop;
 
 namespace Php
@@ -51,7 +47,7 @@ PreDeclarationBuilder::~PreDeclarationBuilder()
 
 void PreDeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst * node)
 {
-    setComment(formatComment(node, editor()));
+    setComment(formatComment(node, m_editor));
     {
         IdentifierPair ids = identifierPairForNode(node->className);
         DUChainWriteLocker lock(DUChain::lock());
@@ -92,7 +88,7 @@ void PreDeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationState
 
 void PreDeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
 {
-    setComment(formatComment(node, editor()));
+    setComment(formatComment(node, m_editor));
     {
         IdentifierPair ids = identifierPairForNode(node->interfaceName);
         DUChainWriteLocker lock(DUChain::lock());
@@ -123,7 +119,7 @@ void PreDeclarationBuilder::visitClassVariable(ClassVariableAst* node)
 
 void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
-    setComment(formatComment(node, editor()));
+    setComment(formatComment(node, m_editor));
     {
         IdentifierPair ids = identifierPairForNode(node->functionName);
         DUChainWriteLocker lock(DUChain::lock());
@@ -144,10 +140,10 @@ void PreDeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclaratio
     closeDeclaration();
 }
 
-void PreDeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const Range& range)
+void PreDeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const RangeInRevision& range)
 {
     if ( node == parent->namespaceNameSequence->back()->element ) {
-        setComment(formatComment(parent, editor()));
+        setComment(formatComment(parent, m_editor));
     }
 
     {

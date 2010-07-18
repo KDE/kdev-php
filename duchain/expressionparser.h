@@ -53,7 +53,7 @@ public:
      * @see ExpressionVisitor
      */
     ExpressionEvaluationResult evaluateType(const QByteArray& expression, KDevelop::DUContextPointer context,
-                                            const KDevelop::SimpleCursor &offset);
+                                            const KDevelop::CursorInRevision &offset);
     /**
      * Sets up an ExpressionVisitor and returns it's result when visiting @p ast .
      *
@@ -67,7 +67,7 @@ private:
      * for the offset, because we _never_ want to use this directly.
      */
     ExpressionEvaluationResult evaluateType(AstNode* ast, EditorIntegrator* editor,
-                                            const KDevelop::SimpleCursor &offset);
+                                            const KDevelop::CursorInRevision &offset);
     bool m_debug;
     bool m_createProblems;
 };

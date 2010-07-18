@@ -40,7 +40,6 @@
 #include <tests/testcore.h>
 #include <language/codegen/coderepresentation.h>
 
-using namespace KTextEditor;
 using namespace KDevelop;
 
 
@@ -104,20 +103,19 @@ bool DUChainTestBase::hasImportedParentContext(TopDUContext* top, DUContext* loo
 
 TopDUContext* DUChainTestBase::parseAdditionalFile(const IndexedString& fileName, const QByteArray& contents)
 {
-    ParseSession* session = new ParseSession();
-    session->setContents(contents);
+    ParseSession session;
+    session.setContents(contents);
     StartAst* ast = 0;
-    if (!session->parse(&ast)) qFatal("can't parse");
+    if (!session.parse(&ast)) qFatal("can't parse");
 
-    DeclarationBuilder declarationBuilder(session);
+    EditorIntegrator editor(&session);
+    DeclarationBuilder declarationBuilder(&editor);
     TopDUContext* top = declarationBuilder.build(fileName, ast);
 
     if ( fileName != internalFunctionFile() ) {
-        UseBuilder useBuilder(session);
+        UseBuilder useBuilder(&editor);
         useBuilder.buildUses(ast);
     }
-
-    delete session;
 
     return top;
 }
@@ -127,29 +125,30 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QSt
     if (dump)
         kDebug() << "==== Beginning new test case...:" << endl << unit;
 
-    ParseSession* session = new ParseSession();
-    session->setContents(unit);
+    ParseSession session;
+    session.setContents(unit);
     StartAst* ast = 0;
-    if (!session->parse(&ast)) {
+    if (!session.parse(&ast)) {
         kDebug() << "Parse failed";
         return 0;
     }
 
     if (dump & DumpAST) {
         kDebug() << "===== AST:";
-        DebugVisitor debugVisitor(session->tokenStream(), session->contents());
+        DebugVisitor debugVisitor(session.tokenStream(), session.contents());
         debugVisitor.visitNode(ast);
     }
 
     static int testNumber = 0;
     if (url.isEmpty()) url = QString("file:///internal/%1").arg(testNumber++);
 
+    EditorIntegrator editor(&session);
 
-    DeclarationBuilder declarationBuilder(session);
+    DeclarationBuilder declarationBuilder(&editor);
     TopDUContext* top = declarationBuilder.build(IndexedString(url), ast);
 
     if ( IndexedString(url) != internalFunctionFile() ) {
-        UseBuilder useBuilder(session);
+        UseBuilder useBuilder(&editor);
         useBuilder.buildUses(ast);
     }
 
@@ -164,14 +163,13 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QSt
         kDebug() << "===== Types:";
         DUChainWriteLocker lock(DUChain::lock());
         DumpTypes dt;
-        foreach(const AbstractType::Ptr& type, declarationBuilder.topTypes())
-        dt.dump(type.unsafeData());
+        foreach(const AbstractType::Ptr& type, declarationBuilder.topTypes()) {
+            dt.dump(type.unsafeData());
+        }
     }
 
     if (dump)
         kDebug() << "===== Finished test case.";
-
-    delete session;
 
     return top;
 }

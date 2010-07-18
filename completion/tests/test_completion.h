@@ -37,7 +37,7 @@ private:
     void dumpCompletionItems(QList<KDevelop::CompletionTreeItemPointer> items);
     void verifyExtendsOrImplements(const QString &code, const QString &actionStr,
                                    KDevelop::ClassDeclarationData::ClassType,
-                                   KDevelop::SimpleCursor cursor,
+                                   const KDevelop::CursorInRevision& cursor,
                                    QStringList forbiddenIdentifiers);
 
 private slots:

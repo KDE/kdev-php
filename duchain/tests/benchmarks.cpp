@@ -31,7 +31,6 @@
 #include "../builders/declarationbuilder.h"
 #include "../builders/usebuilder.h"
 
-using namespace KTextEditor;
 using namespace KDevelop;
 
 QTEST_MAIN(Php::Benchmarks)
@@ -71,13 +70,14 @@ void Benchmarks::parser()
 void Benchmarks::declarationBuilder()
 {
     QIODevice* file = getInternalFile();
-    ParseSession session = ParseSession();
+    ParseSession session;
     session.setContents(file->readAll());
     delete file;
     StartAst* ast = 0;
     session.parse(&ast);
+    EditorIntegrator editor(&session);
     QBENCHMARK {
-        DeclarationBuilder builder(&session);
+        DeclarationBuilder builder(&editor);
         ReferencedTopDUContext top = builder.build(internalFunctionFile(), ast);
 
         if ( true ) {
@@ -95,10 +95,11 @@ void Benchmarks::useBuilder()
     delete file;
     StartAst* ast = 0;
     session.parse(&ast);
-    DeclarationBuilder builder(&session);
+    EditorIntegrator editor(&session);
+    DeclarationBuilder builder(&editor);
     KDevelop::ReferencedTopDUContext chain = builder.build(IndexedString("BigTestFile.php"), ast);
     QBENCHMARK {
-        UseBuilder useBuilder(&session);
+        UseBuilder useBuilder(&editor);
         useBuilder.buildUses(ast);
     }
 }

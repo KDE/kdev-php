@@ -19,8 +19,7 @@
 #ifndef PHPEDITORINTEGRATOR_H
 #define PHPEDITORINTEGRATOR_H
 
-#include <language/editor/editorintegrator.h>
-#include <language/editor/simplerange.h>
+#include <language/editor/rangeinrevision.h>
 
 #include "phpduchainexport.h"
 
@@ -41,12 +40,22 @@ class AstNode;
  *
  * \todo introduce stacks for the state?
  */
-class KDEVPHPDUCHAIN_EXPORT EditorIntegrator : public KDevelop::EditorIntegrator
+class KDEVPHPDUCHAIN_EXPORT EditorIntegrator
 {
 public:
     EditorIntegrator(ParseSession* session);
 
     ParseSession* parseSession() const;
+
+    enum Edge {
+        FrontEdge,
+        BackEdge
+    };
+
+    enum RangeEdge {
+        InnerEdge,
+        OuterEdge
+    };
 
     /**
      * Finds the location and \a file where the given \a token was parsed from.  This function
@@ -57,7 +66,7 @@ public:
      *
      * \returns the requested cursor relating to the start or end of the given token.
      */
-    KDevelop::SimpleCursor findPosition(const KDevPG::TokenStream::Token& token, Edge edge = BackEdge) const;
+    KDevelop::CursorInRevision findPosition(const KDevPG::TokenStream::Token& token, Edge edge = BackEdge) const;
 
     /**
      * Finds the location and \a file where the given \a token was parsed from.
@@ -68,9 +77,7 @@ public:
      *
      * \returns the requested cursor relating to the start or end of the given token.
      */
-    KDevelop::SimpleCursor findPosition(qint64 token, Edge edge = BackEdge) const;
-
-    using KDevelop::EditorIntegrator::createRange;
+    KDevelop::CursorInRevision findPosition(qint64 token, Edge edge = BackEdge) const;
 
     /**
      * Create a range encompassing the given AstNode \a node.
@@ -78,7 +85,7 @@ public:
      *
      * \overload
      */
-    KDevelop::SimpleRange findRange(AstNode* node, RangeEdge = OuterEdge);
+    KDevelop::RangeInRevision findRange(AstNode* node, RangeEdge = OuterEdge);
 
     /**
      * Create a range encompassing the given AstNode \a nodes.
@@ -86,7 +93,7 @@ public:
      *
      * \overload
      */
-    KDevelop::SimpleRange findRange(AstNode* from, AstNode* to);
+    KDevelop::RangeInRevision findRange(AstNode* from, AstNode* to);
 
     /**
      * Create a range encompassing the given AstNode \a token.
@@ -94,7 +101,7 @@ public:
      *
      * \overload
      */
-    KDevelop::SimpleRange findRange(const KDevPG::TokenStream::Token& token);
+    KDevelop::RangeInRevision findRange(const KDevPG::TokenStream::Token& token);
 
     /**
      * Create a range encompassing the given AstNode \a token.
@@ -102,7 +109,7 @@ public:
      *
      * \overload
      */
-    KDevelop::SimpleRange findRange(qint64 token);
+    KDevelop::RangeInRevision findRange(qint64 token);
 
     /**
      * Create a range encompassing the given AstNode \a tokens.
@@ -110,7 +117,7 @@ public:
      *
      * \overload
      */
-    KDevelop::SimpleRange findRange(qint64 start_token, qint64 end_token);
+    KDevelop::RangeInRevision findRange(qint64 start_token, qint64 end_token);
 
     /**
      * Retrieve the string represented by a token.

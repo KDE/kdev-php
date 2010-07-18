@@ -56,9 +56,9 @@ class KDEVPHPDUCHAIN_EXPORT ClassMethodDeclaration : public KDevelop::ClassFunct
 {
 public:
     ClassMethodDeclaration(const ClassMethodDeclaration &rhs);
-    ClassMethodDeclaration(const KDevelop::SimpleRange &range, KDevelop::DUContext *context);
+    ClassMethodDeclaration(const KDevelop::RangeInRevision &range, KDevelop::DUContext *context);
     ClassMethodDeclaration(ClassMethodDeclarationData &data);
-    ClassMethodDeclaration(ClassMethodDeclarationData &data, const KDevelop::SimpleRange &range, KDevelop::DUContext *context);
+    ClassMethodDeclaration(ClassMethodDeclarationData &data, const KDevelop::RangeInRevision &range, KDevelop::DUContext *context);
     ~ClassMethodDeclaration();
 
     /// overwritten to check for __construct() method

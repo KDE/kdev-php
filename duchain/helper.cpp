@@ -297,7 +297,7 @@ IndexedString getIncludeFileForNode(UnaryExpressionAst* node, EditorIntegrator* 
             if ( str == "." || str == ".." || str.endsWith('/') ) {
                 return IndexedString();
             }
-            return findIncludeFileUrl(str, editor->currentUrl().toUrl());
+            return findIncludeFileUrl(str, editor->parseSession()->currentDocument().toUrl());
         }
     }
 

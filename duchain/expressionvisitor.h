@@ -46,7 +46,7 @@ public:
         return m_result;
     }
     void setCreateProblems(bool v);
-    void setOffset(const KDevelop::SimpleCursor offset);
+    void setOffset(const KDevelop::CursorInRevision& offset);
 
     virtual void visitNode(AstNode *node);
 
@@ -93,7 +93,7 @@ private:
     void buildNamespaceUses(NamespacedIdentifierAst* namespaces, const KDevelop::QualifiedIdentifier& identifier);
 
     bool m_createProblems;
-    KDevelop::SimpleCursor m_offset;
+    KDevelop::CursorInRevision m_offset;
     KDevelop::DUContext* m_currentContext;
 
     ExpressionEvaluationResult m_result;

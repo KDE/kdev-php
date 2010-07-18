@@ -32,7 +32,7 @@ VariableDeclaration::VariableDeclaration(VariableDeclarationData& data) : KDevel
 {
 }
 
-VariableDeclaration::VariableDeclaration(VariableDeclarationData& data, const KDevelop::SimpleRange& range)
+VariableDeclaration::VariableDeclaration(VariableDeclarationData& data, const KDevelop::RangeInRevision& range)
         : KDevelop::Declaration(data, range)
 {
 }
@@ -40,10 +40,9 @@ VariableDeclaration::VariableDeclaration(VariableDeclarationData& data, const KD
 VariableDeclaration::VariableDeclaration(const VariableDeclaration& rhs)
         : KDevelop::Declaration(*new VariableDeclarationData(*rhs.d_func()))
 {
-    setSmartRange(rhs.smartRange(), DocumentRangeObject::DontOwn);
 }
 
-VariableDeclaration::VariableDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context)
+VariableDeclaration::VariableDeclaration(const KDevelop::RangeInRevision& range, KDevelop::DUContext* context)
         : KDevelop::Declaration(*new VariableDeclarationData, range)
 {
     d_func_dynamic()->setClassId(this);

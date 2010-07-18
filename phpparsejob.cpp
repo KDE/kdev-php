@@ -22,7 +22,6 @@
 #include <QReadWriteLock>
 
 #include <ktexteditor/document.h>
-#include <ktexteditor/smartinterface.h>
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -102,18 +101,16 @@ void ParseJob::run()
 
     kDebug() << "parsing" << document().str();
 
-    bool readFromDisk = !contentsAvailableFromEditor();
+    KDevelop::ProblemPointer p = readContents();
+    if (p) {
+        //TODO: associate problem with topducontext
+        return abortJob();;
+    }
 
     ParseSession session;
-
-    QString fileName = document().str();
-
-    if (readFromDisk) {
-        session.readFile(fileName);
-    } else {
-        session.setContents(contentsFromEditor());
-        session.setCurrentDocument(document().str());
-    }
+    //TODO: support different charsets
+    session.setContents(QString::fromUtf8(contents().contents));
+    session.setCurrentDocument(document());
 
     // 2) parse
     StartAst* ast = 0;
@@ -181,10 +178,10 @@ void ParseJob::run()
             return abortJob();
         }
 
-        if (editor.smart() && KDevelop::EditorIntegrator::documentForUrl(document())) {
-            if (php() && php()->codeHighlighting()) {
-                php()->codeHighlighting()->highlightDUChain(chain);
-            }
+        if (php() && php()->codeHighlighting()
+            && ICore::self()->languageController()->backgroundParser()->trackerForUrl(document()))
+        {
+            php()->codeHighlighting()->highlightDUChain(chain);
         }
 
         if (abortRequested()) {
@@ -199,15 +196,7 @@ void ParseJob::run()
 
         chain->setFeatures(newFeatures);
         ParsingEnvironmentFilePointer file = chain->parsingEnvironmentFile();
-
-        QFileInfo fileInfo(fileName);
-        QDateTime lastModified = fileInfo.lastModified();
-        if (readFromDisk) {
-            file->setModificationRevision(KDevelop::ModificationRevision(lastModified));
-        } else {
-            file->setModificationRevision(KDevelop::ModificationRevision(lastModified, revisionToken()));
-        }
-
+        file->setModificationRevision(contents().modification);
         DUChain::self()->updateContextEnvironment( chain->topContext(), file.data() );
     } else {
         ReferencedTopDUContext top;
@@ -227,7 +216,7 @@ void ParseJob::run()
             /// Indexed string for 'Php', identifies environment files from this language plugin
             static const IndexedString phpLangString("Php");
             file->setLanguage(phpLangString);
-            top = new TopDUContext(document(), SimpleRange(SimpleCursor(0, 0), SimpleCursor(INT_MAX, INT_MAX)), file);
+            top = new TopDUContext(document(), RangeInRevision(0, 0, INT_MAX, INT_MAX), file);
             DUChain::self()->addDocumentChain(top);
         }
         setDuChain(top);
@@ -237,8 +226,6 @@ void ParseJob::run()
         }
         kDebug() << "===Failed===" << document().str();
     }
-
-    cleanupSmartRevision();
 }
 
 void ParseJob::setParentJob(ParseJob *job)
@@ -263,7 +250,7 @@ ProblemPointer ParseJob::createProblem(const QString &description, AstNode* node
     p->setSource(source);
     p->setSeverity(severity);
     p->setDescription(description);
-    p->setFinalLocation(DocumentRange(document().str(), editor->findRange(node).textRange()));
+    p->setFinalLocation(DocumentRange(document(), editor->findRange(node).castToSimpleRange()));
     kDebug() << p->description();
     return p;
 }

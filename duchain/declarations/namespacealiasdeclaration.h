@@ -52,7 +52,7 @@ class KDEVPHPDUCHAIN_EXPORT NamespaceAliasDeclaration : public KDevelop::Namespa
 {
 public:
     NamespaceAliasDeclaration(const NamespaceAliasDeclaration& rhs);
-    NamespaceAliasDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context);
+    NamespaceAliasDeclaration(const KDevelop::RangeInRevision& range, KDevelop::DUContext* context);
     NamespaceAliasDeclaration(NamespaceAliasDeclarationData& data);
     virtual ~NamespaceAliasDeclaration();
 

@@ -23,21 +23,16 @@
 #include <language/highlighting/colorcache.h>
 #include <language/highlighting/configurablecolors.h>
 
-#include <KTextEditor/SmartRange>
-#include <KTextEditor/SmartInterface>
 #include <KTextEditor/Document>
 
 using namespace KDevelop;
 using namespace Php;
-using namespace KTextEditor;
-
-#define LOCK_SMART(range) KTextEditor::SmartInterface* iface = dynamic_cast<KTextEditor::SmartInterface*>(range->document()); QMutexLocker lock(iface ? iface->smartMutex() : 0);
 
 class HighlightingInstance : public CodeHighlightingInstance {
 public:
     HighlightingInstance(const CodeHighlighting* highlighting);
-    virtual void highlightDeclaration(Declaration* declaration, const QColor& color) const;
-    virtual void highlightUse(DUContext* context, int index, const QColor& color) const;
+    virtual void highlightDeclaration(Declaration* declaration, const QColor& color);
+    virtual void highlightUse(DUContext* context, int index, const QColor& color);
 
 };
 
@@ -53,14 +48,13 @@ bool isConstDeclaration(Declaration* decl) {
 
 ///TODO: make this easier by rewriting some parts in the KDevplatform CodeHighlightingInstance
 ///      essentially we'd need to overwrite TypeForDeclaration
-void HighlightingInstance::highlightDeclaration(Declaration* declaration, const QColor& color) const
+void HighlightingInstance::highlightDeclaration(Declaration* declaration, const QColor& color)
 {
     if (isConstDeclaration(declaration)) {
         // highlight const class members and defines differently from normal variables
-        if (SmartRange* range = declaration->smartRange()) {
-            LOCK_SMART(range);
-            range->setAttribute(m_highlighting->attributeForType(EnumType, DeclarationContext, color));
-        }
+//         if (SmartRange* range = declaration->smartRange()) {
+//             range->setAttribute(m_highlighting->attributeForType(EnumType, DeclarationContext, color));
+//         }
     } else {
         CodeHighlightingInstance::highlightDeclaration(declaration, color);
     }
@@ -68,16 +62,15 @@ void HighlightingInstance::highlightDeclaration(Declaration* declaration, const 
 
 ///TODO: make this easier by rewriting some parts in the KDevplatform CodeHighlightingInstance
 ///      essentially we'd need to overwrite TypeForDeclaration
-void HighlightingInstance::highlightUse(DUContext* context, int index, const QColor& color) const
+void HighlightingInstance::highlightUse(DUContext* context, int index, const QColor& color)
 {
-    if (SmartRange* range = context->useSmartRange(index)) {
-        Declaration* decl = context->topContext()->usedDeclarationForIndex(context->uses()[index].m_declarationIndex);
-        if (isConstDeclaration(decl)) {
-            LOCK_SMART(range);
-            range->setAttribute(m_highlighting->attributeForType(EnumType, ReferenceContext, color));
-            return;
-        }
-    }
+//     if (SmartRange* range = context->useSmartRange(index)) {
+//         Declaration* decl = context->topContext()->usedDeclarationForIndex(context->uses()[index].m_declarationIndex);
+//         if (isConstDeclaration(decl)) {
+//             range->setAttribute(m_highlighting->attributeForType(EnumType, ReferenceContext, color));
+//             return;
+//         }
+//     }
     KDevelop::CodeHighlightingInstance::highlightUse(context, index, color);
 }
 

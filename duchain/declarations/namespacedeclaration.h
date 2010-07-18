@@ -52,7 +52,7 @@ class KDEVPHPDUCHAIN_EXPORT NamespaceDeclaration : public KDevelop::Declaration
 {
 public:
     NamespaceDeclaration(const NamespaceDeclaration &rhs);
-    NamespaceDeclaration(const KDevelop::SimpleRange &range, KDevelop::DUContext *parentContext);
+    NamespaceDeclaration(const KDevelop::RangeInRevision &range, KDevelop::DUContext *parentContext);
     NamespaceDeclaration(NamespaceDeclarationData &data);
     virtual ~NamespaceDeclaration();
 

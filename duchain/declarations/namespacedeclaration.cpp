@@ -31,10 +31,9 @@ REGISTER_DUCHAIN_ITEM(NamespaceDeclaration);
 NamespaceDeclaration::NamespaceDeclaration(const NamespaceDeclaration& rhs)
         : KDevelop::Declaration(*new NamespaceDeclarationData(*rhs.d_func()))
 {
-    setSmartRange(rhs.smartRange(), DocumentRangeObject::DontOwn);
 }
 
-NamespaceDeclaration::NamespaceDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context)
+NamespaceDeclaration::NamespaceDeclaration(const KDevelop::RangeInRevision& range, KDevelop::DUContext* context)
         : KDevelop::Declaration(*new NamespaceDeclarationData, range)
 {
     d_func_dynamic()->setClassId(this);

@@ -47,7 +47,7 @@ void ExpressionParser::setCreateProblems(bool v)
 }
 
 ExpressionEvaluationResult ExpressionParser::evaluateType(const QByteArray& expression, DUContextPointer context,
-                                                          const SimpleCursor &offset)
+                                                          const CursorInRevision &offset)
 {
     if (m_debug)
         kDebug() << "==== .Evaluating ..:" << endl << expression;
@@ -75,11 +75,11 @@ ExpressionEvaluationResult ExpressionParser::evaluateType(const QByteArray& expr
 
 ExpressionEvaluationResult ExpressionParser::evaluateType(AstNode* ast, EditorIntegrator* editor)
 {
-    return evaluateType(ast, editor, SimpleCursor::invalid());
+    return evaluateType(ast, editor, CursorInRevision::invalid());
 }
 
 ExpressionEvaluationResult ExpressionParser::evaluateType(AstNode* ast, EditorIntegrator* editor,
-                                                          const SimpleCursor &offset)
+                                                          const CursorInRevision &offset)
 {
     if (m_debug) {
         kDebug() << "===== AST:";

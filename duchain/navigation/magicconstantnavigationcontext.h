@@ -31,7 +31,7 @@ public:
     virtual QString name() const;
     virtual QString html(bool shorten = false);
 private:
-    KDevelop::SimpleCursor m_position;
+    KDevelop::CursorInRevision m_position;
     QString m_constant;
 };
 

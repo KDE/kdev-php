@@ -160,7 +160,7 @@ namespace KDevelop
   }
   QString tokenText(qint64 begin, qint64 end);
   void setDebug(bool debug);
-  void setCurrentDocument(QString url);
+  void setCurrentDocument(KDevelop::IndexedString url);
 
     enum InitialLexerState {
         HtmlState = 0,
@@ -178,7 +178,7 @@ namespace KDevelop
     };
     QString m_contents;
     bool m_debug;
-    QString m_currentDocument;
+    KDevelop::IndexedString m_currentDocument;
     QList<KDevelop::ProblemPointer> m_problems;
 
     struct ParserState {
@@ -1004,7 +1004,7 @@ void Parser::reportProblem( Parser::ProblemType type, const QString& message, in
             break;
     }
     p->setDescription(message);
-    p->setFinalLocation(KDevelop::DocumentRange(m_currentDocument, KTextEditor::Range(sLine, sCol, eLine, eCol+1)));
+    p->setFinalLocation(KDevelop::DocumentRange(m_currentDocument, KDevelop::SimpleRange(sLine, sCol, eLine, eCol+1)));
     m_problems << KDevelop::ProblemPointer(p);
 }
 
@@ -1044,7 +1044,7 @@ void Parser::setDebug( bool debug )
     m_debug = debug;
 }
 
-void Parser::setCurrentDocument(QString url)
+void Parser::setCurrentDocument(KDevelop::IndexedString url)
 {
     m_currentDocument = url;
 }

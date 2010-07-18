@@ -33,7 +33,7 @@ const int foo = 5;
 MagicConstantNavigationContext::MagicConstantNavigationContext(TopDUContextPointer topContext,
                                                                 const SimpleCursor& position,
                                                                 const QString& constant)
-    : AbstractNavigationContext(topContext, 0), m_position(position), m_constant(constant)
+    : AbstractNavigationContext(topContext, 0), m_position(position.line, position.column), m_constant(constant)
 {
 }
 
@@ -43,7 +43,7 @@ QString MagicConstantNavigationContext::name() const
     return m_constant;
 }
 
-DUContext* findContext(TopDUContextPointer topCtx, const SimpleCursor& pos, DUContext::ContextType type) {
+DUContext* findContext(TopDUContextPointer topCtx, const CursorInRevision& pos, DUContext::ContextType type) {
     DUContext* ctx = topCtx->findContextAt(pos);
     while ( ctx && ctx->type() != type ) {
         ctx = ctx->parentContext();
@@ -55,7 +55,7 @@ DUContext* findContext(TopDUContextPointer topCtx, const SimpleCursor& pos, DUCo
     }
 }
 
-QString MagicConstantNavigationContext::html(bool shorten)
+QString MagicConstantNavigationContext::html(bool /*shorten*/)
 {
     QString html = "<html><body><p><small><small>";
     html += typeHighlight(i18n("magic constant"));
@@ -76,7 +76,7 @@ QString MagicConstantNavigationContext::html(bool shorten)
             value = commentHighlight(i18n("empty (not inside a class)"));
         }
     } else if ( m_constant == "__METHOD__" ) {
-        SimpleCursor pos = m_position;
+        CursorInRevision pos = m_position;
         while ( DUContext* ctx = findContext(m_topContext, pos, DUContext::Other) ) {
             if ( !ctx->parentContext() ) {
                 break;
@@ -95,7 +95,7 @@ QString MagicConstantNavigationContext::html(bool shorten)
             value = commentHighlight(i18n("empty (not inside a method)"));
         }
     } else if ( m_constant == "__FUNCTION__" ) {
-        SimpleCursor pos = m_position;
+        CursorInRevision pos = m_position;
         if ( DUContext* ctx = findContext(m_topContext, pos, DUContext::Other) ) {
             if ( ctx->owner() && ctx->owner()->type<FunctionType>() ) {
                 value = codeHighlight(Qt::escape(ctx->localScopeIdentifier().toString()));

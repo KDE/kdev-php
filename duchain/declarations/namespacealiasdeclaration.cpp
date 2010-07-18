@@ -31,10 +31,9 @@ REGISTER_DUCHAIN_ITEM(NamespaceAliasDeclaration);
 NamespaceAliasDeclaration::NamespaceAliasDeclaration(const NamespaceAliasDeclaration& rhs)
         : KDevelop::NamespaceAliasDeclaration(*new NamespaceAliasDeclarationData(*rhs.d_func()))
 {
-    setSmartRange(rhs.smartRange(), DocumentRangeObject::DontOwn);
 }
 
-NamespaceAliasDeclaration::NamespaceAliasDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context)
+NamespaceAliasDeclaration::NamespaceAliasDeclaration(const KDevelop::RangeInRevision& range, KDevelop::DUContext* context)
         : KDevelop::NamespaceAliasDeclaration(*new NamespaceAliasDeclarationData)
 {
     setRange(range);

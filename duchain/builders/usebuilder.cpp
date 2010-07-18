@@ -25,7 +25,6 @@
 #include "editorintegrator.h"
 #include "expressionvisitor.h"
 #include "parsesession.h"
-using namespace KTextEditor;
 using namespace KDevelop;
 
 namespace Php
@@ -47,23 +46,18 @@ private:
     UseBuilder* m_builder;
 };
 
-UseBuilder::UseBuilder(ParseSession* session)
+UseBuilder::UseBuilder( EditorIntegrator* editor )
 {
-    setEditor(session);
+    m_editor = editor;
 }
 
-UseBuilder::UseBuilder(EditorIntegrator* editor)
-{
-    setEditor(editor);
-}
-
-ReferencedTopDUContext UseBuilder::build ( const KDevelop::IndexedString& url, AstNode* node, ReferencedTopDUContext updateContext, bool useSmart )
+ReferencedTopDUContext UseBuilder::build ( const KDevelop::IndexedString& url, AstNode* node, ReferencedTopDUContext updateContext )
 {
     // just for safety purposes: running the UseBuilder on the internal function file
     // will lead to undefined behavior due to the amount of optimization it has received
     // (esp. in the contextbuilder)
     Q_ASSERT(url != internalFunctionFile());
-    return UseBuilderBase::build ( url, node, updateContext, useSmart );
+    return UseBuilderBase::build ( url, node, updateContext );
 }
 
 void UseBuilder::visitParameter(ParameterAst *node)
@@ -91,7 +85,7 @@ void UseBuilder::visitClassExtends(ClassExtendsAst *node)
 
 void UseBuilder::visitExpr(ExprAst* node)
 {
-    UseExpressionVisitor v(editor(), this);
+    UseExpressionVisitor v(m_editor, this);
     node->ducontext = currentContext();
     v.visitNode(node);
 }
@@ -109,7 +103,7 @@ void UseBuilder::visitGlobalVar(GlobalVarAst* node)
 void UseBuilder::visitStaticScalar(StaticScalarAst* node)
 {
     if (currentContext()->type() == DUContext::Class) {
-        UseExpressionVisitor v(editor(), this);
+        UseExpressionVisitor v(m_editor, this);
         node->ducontext = currentContext();
         v.visitNode(node);
     }
@@ -125,7 +119,7 @@ void UseBuilder::visitStatement(StatementAst *node)
     }
 
     if (visitNode) {
-        UseExpressionVisitor v(editor(), this);
+        UseExpressionVisitor v(m_editor, this);
         visitNode->ducontext = currentContext();
         v.visitNode(visitNode);
     }
@@ -153,7 +147,7 @@ void UseBuilder::newCheckedUse(AstNode* node, Declaration* declaration)
 
 void UseBuilder::visitUnaryExpression( UnaryExpressionAst* node )
 {
-    IndexedString includeFile = getIncludeFileForNode(node, editor());
+    IndexedString includeFile = getIncludeFileForNode(node, m_editor);
     if ( !includeFile.isEmpty() ) {
         ///TODO: is there not a more elegant way to get a QualifiedIdentifier from a IndexedString?
         QualifiedIdentifier identifier(QString::fromUtf8(includeFile.byteArray()));
@@ -175,7 +169,7 @@ void UseBuilder::visitUseNamespace(UseNamespaceAst* node)
 
 void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node, DeclarationType lastType)
 {
-    QualifiedIdentifier identifier = identifierForNamespace(node, editor());
+    QualifiedIdentifier identifier = identifierForNamespace(node, m_editor);
     QualifiedIdentifier curId;
     curId.setExplicitlyGlobal(identifier.explicitlyGlobal());
     Q_ASSERT(identifier.count() == node->namespaceNameSequence->count());

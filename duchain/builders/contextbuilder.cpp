@@ -38,7 +38,6 @@
 #include "phpducontext.h"
 #include "phpast.h"
 
-using namespace KTextEditor;
 using namespace KDevelop;
 
 namespace Php
@@ -47,7 +46,7 @@ namespace Php
 ContextBuilder::ContextBuilder()
     : m_isInternalFunctions(false), m_reportErrors(true),
       m_mapAst(false), m_hadUnresolvedIdentifiers(false),
-      m_openNamespaces(0)
+      m_editor(0), m_openNamespaces(0)
 {
 }
 
@@ -55,8 +54,13 @@ ContextBuilder::~ContextBuilder()
 {
 }
 
+EditorIntegrator* ContextBuilder::editor() const
+{
+    return m_editor;
+}
+
 ReferencedTopDUContext ContextBuilder::build(const KDevelop::IndexedString& url, AstNode* node,
-        KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
+        KDevelop::ReferencedTopDUContext updateContext)
 {
     m_isInternalFunctions = url == internalFunctionFile();
     if ( m_isInternalFunctions ) {
@@ -78,19 +82,8 @@ ReferencedTopDUContext ContextBuilder::build(const KDevelop::IndexedString& url,
     } else {
         kDebug() << "compiling" << url.str();
     }
-    ReferencedTopDUContext top = ContextBuilderBase::build(url, node, updateContext, useSmart);
+    ReferencedTopDUContext top = ContextBuilderBase::build(url, node, updateContext);
     return top;
-}
-
-void ContextBuilder::setEditor(EditorIntegrator* editor)
-{
-    ContextBuilderBase::setEditor(editor, false);
-}
-
-void ContextBuilder::setEditor(ParseSession* session)
-{
-    EditorIntegrator* e = new EditorIntegrator(session);
-    ContextBuilderBase::setEditor(e, true);
 }
 
 bool ContextBuilder::hadUnresolvedIdentifiers() const
@@ -125,20 +118,20 @@ void ContextBuilder::startVisiting(AstNode* node)
     }
 }
 
-DUContext* ContextBuilder::newContext(const SimpleRange& range)
+DUContext* ContextBuilder::newContext(const RangeInRevision& range)
 {
     return new PhpDUContext<DUContext>(range, currentContext());
 }
 
-TopDUContext* ContextBuilder::newTopContext(const SimpleRange& range, ParsingEnvironmentFile* file)
+TopDUContext* ContextBuilder::newTopContext(const RangeInRevision& range, ParsingEnvironmentFile* file)
 {
     if (!file) {
-        file = new ParsingEnvironmentFile(editor()->currentUrl());
+        file = new ParsingEnvironmentFile(m_editor->parseSession()->currentDocument());
         /// Indexed string for 'Php', identifies environment files from this language plugin
         static const IndexedString phpLangString("Php");
         file->setLanguage(phpLangString);
     }
-    TopDUContext* ret = new PhpDUContext<TopDUContext>(editor()->currentUrl(), range, file);
+    TopDUContext* ret = new PhpDUContext<TopDUContext>(m_editor->parseSession()->currentDocument(), range, file);
     return ret;
 }
 
@@ -152,19 +145,14 @@ KDevelop::DUContext* ContextBuilder::contextFromNode(AstNode* node)
     return node->ducontext;
 }
 
-EditorIntegrator* ContextBuilder::editor() const
+RangeInRevision ContextBuilder::editorFindRange(AstNode* fromRange, AstNode* toRange)
 {
-    return static_cast<EditorIntegrator*>(ContextBuilderBase::editor());
+    return m_editor->findRange(fromRange, toRange);
 }
 
-KTextEditor::Range ContextBuilder::editorFindRange(AstNode* fromRange, AstNode* toRange)
+CursorInRevision ContextBuilder::startPos(AstNode* node)
 {
-    return editor()->findRange(fromRange, toRange).textRange();
-}
-
-SimpleCursor ContextBuilder::startPos(AstNode* node)
-{
-    return editor()->findPosition(node->startToken, KDevelop::EditorIntegrator::FrontEdge);
+    return m_editor->findPosition(node->startToken, EditorIntegrator::FrontEdge);
 }
 
 QualifiedIdentifier ContextBuilder::identifierForNode(IdentifierAst* id)
@@ -195,11 +183,11 @@ IdentifierPair ContextBuilder::identifierPairForNode( IdentifierAst* id )
 
 QString ContextBuilder::stringForNode(IdentifierAst* node) const
 {
-    return editor()->parseSession()->symbol(node->string);
+    return m_editor->parseSession()->symbol(node->string);
 }
 QString ContextBuilder::stringForNode(VariableIdentifierAst* node) const
 {
-    return editor()->parseSession()->symbol(node->variable);
+    return m_editor->parseSession()->symbol(node->variable);
 }
 
 void ContextBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst* node)
@@ -293,11 +281,11 @@ void ContextBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStat
     { // open
     ///TODO: support \ as separator
 
-    Range bodyRange;
+    RangeInRevision bodyRange;
     if (node->body) {
         bodyRange = editorFindRange(node->body, node->body);
     } else {
-        bodyRange = Range(editor()->parseSession()->positionAt(node->endToken).textCursor(), currentContext()->topContext()->range().end.textCursor());
+        bodyRange = RangeInRevision(m_editor->findPosition(node->endToken), currentContext()->topContext()->range().end);
     }
     const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
     do {
@@ -323,7 +311,7 @@ void ContextBuilder::closeNamespaces(NamespaceDeclarationStatementAst* namespace
     } while(it->hasNext() && (it = it->next));
 }
 
-void ContextBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const Range& range)
+void ContextBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const RangeInRevision& range)
 {
     if ( node == parent->namespaceNameSequence->back()->element ) {
         openContext(node, range, KDevelop::DUContext::Namespace, identifier.second);
@@ -332,7 +320,7 @@ void ContextBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, Ide
     }
 }
 
-void ContextBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier)
+void ContextBuilder::closeNamespace(NamespaceDeclarationStatementAst* /*parent*/, IdentifierAst* /*node*/, const IdentifierPair& /*identifier*/)
 {
     closeContext();
 }
@@ -346,7 +334,7 @@ void ContextBuilder::addBaseType(NamespacedIdentifierAst * identifier)
     ClassDeclaration* currentClass = dynamic_cast<ClassDeclaration*>(currentContext()->owner());
 
     ClassDeclaration* baseClass = dynamic_cast<ClassDeclaration*>(
-        findDeclarationImport(ClassDeclarationType, identifierForNamespace(identifier, editor()), identifier)
+        findDeclarationImport(ClassDeclarationType, identifierForNamespace(identifier, m_editor), identifier)
     );
 
     if (currentClass && baseClass) {
@@ -374,7 +362,7 @@ void ContextBuilder::addBaseType(NamespacedIdentifierAst * identifier)
 void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
 {
     DefaultVisitor::visitUnaryExpression(node);
-    IndexedString includeFile = getIncludeFileForNode(node, editor());
+    IndexedString includeFile = getIncludeFileForNode(node, m_editor);
     if ( !includeFile.isEmpty() ) {
         DUChainWriteLocker lock(DUChain::lock());
         TopDUContext *top = DUChain::self()->chainForDocument(includeFile);
@@ -388,29 +376,30 @@ void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
 
 void ContextBuilder::reportError(const QString& errorMsg, AstNode* node, KDevelop::ProblemData::Severity severity)
 {
-    reportError(errorMsg, editor()->findRange(node).textRange(), severity);
+    reportError(errorMsg, m_editor->findRange(node), severity);
 }
 
 void ContextBuilder::reportError(const QString& errorMsg, QList< AstNode* > nodes, KDevelop::ProblemData::Severity severity)
 {
-    KTextEditor::Range range = KTextEditor::Range::invalid();
+    KDevelop::RangeInRevision range = KDevelop::RangeInRevision::invalid();
     foreach ( AstNode* node, nodes ) {
         if ( !range.isValid() ) {
-            range.setRange( editor()->findRange(node).textRange() );
+            range = m_editor->findRange(node);
         } else {
-            range.expandToRange( editor()->findRange(node).textRange() );
+            range.end = m_editor->findPosition(node->endToken);
         }
     }
     reportError(errorMsg, range, severity);
 }
 
-void ContextBuilder::reportError(const QString& errorMsg, KTextEditor::Range range, KDevelop::ProblemData::Severity severity)
+void ContextBuilder::reportError(const QString& errorMsg, KDevelop::RangeInRevision range, KDevelop::ProblemData::Severity severity)
 {
     KDevelop::Problem *p = new KDevelop::Problem();
     p->setSeverity(severity);
     p->setSource(KDevelop::ProblemData::DUChainBuilder);
     p->setDescription(errorMsg);
-    p->setFinalLocation(KDevelop::DocumentRange(editor()->currentUrl().str(), range));
+    p->setFinalLocation(KDevelop::DocumentRange(m_editor->parseSession()->currentDocument(),
+                                                range.castToSimpleRange()));
     {
         DUChainWriteLocker lock(DUChain::lock());
         kDebug() << "Problem" << p->description() << p->finalLocation();
@@ -426,17 +415,17 @@ Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationTy
     } else {
         id = identifierForNode(node);
     }
-    return findDeclarationImportHelper(currentContext(), id, declarationType, node, editor());
+    return findDeclarationImportHelper(currentContext(), id, declarationType, node, m_editor);
 }
 
 Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
 {
-    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, editor());
+    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, m_editor);
 }
 
 Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, const QualifiedIdentifier &identifier, AstNode* node)
 {
-    return findDeclarationImportHelper(currentContext(), identifier, declarationType, node, editor());
+    return findDeclarationImportHelper(currentContext(), identifier, declarationType, node, m_editor);
 }
 
 }

@@ -52,9 +52,9 @@ class KDEVPHPDUCHAIN_EXPORT ClassDeclaration : public KDevelop::ClassDeclaration
 {
 public:
     ClassDeclaration(const ClassDeclaration &rhs);
-    ClassDeclaration(const KDevelop::SimpleRange &range, KDevelop::DUContext *context);
+    ClassDeclaration(const KDevelop::RangeInRevision &range, KDevelop::DUContext *context);
     ClassDeclaration(ClassDeclarationData &data);
-    ClassDeclaration(ClassDeclarationData &data, const KDevelop::SimpleRange &range, KDevelop::DUContext *context);
+    ClassDeclaration(ClassDeclarationData &data, const KDevelop::RangeInRevision &range, KDevelop::DUContext *context);
     ~ClassDeclaration();
 
     virtual QString toString() const;

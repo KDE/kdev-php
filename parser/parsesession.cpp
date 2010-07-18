@@ -50,14 +50,19 @@ void ParseSession::setContents(const QString& contents)
     m_contents = contents;
 }
 
-void ParseSession::setCurrentDocument(const QString& filename)
+void ParseSession::setCurrentDocument(const KDevelop::IndexedString& filename)
 {
     m_currentDocument = filename;
 }
 
+KDevelop::IndexedString ParseSession::currentDocument() const
+{
+    return m_currentDocument;
+}
+
 bool ParseSession::readFile(const QString& filename, const char* codec)
 {
-    m_currentDocument = filename;
+    m_currentDocument = KDevelop::IndexedString(filename);
 
     QFile f(filename);
     if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -77,7 +82,7 @@ bool ParseSession::readFile(const QString& filename, const char* codec)
         default:
             break;
         }
-        p->setFinalLocation(KDevelop::DocumentRange(filename, KTextEditor::Cursor(0, 0), KTextEditor::Cursor(0, 0)));
+        p->setFinalLocation(KDevelop::DocumentRange(m_currentDocument, KDevelop::SimpleRange(0, 0, 0, 0)));
         m_problems << p;
         kWarning() << "Could not open file" << filename;
         return false;
@@ -130,11 +135,11 @@ bool ParseSession::parse(Php::StartAst** ast)
     return matched;
 }
 
-KDevelop::SimpleCursor ParseSession::positionAt(qint64 offset) const
+KDevelop::CursorInRevision ParseSession::positionAt(qint64 offset) const
 {
     qint64 line, column;
     m_tokenStream->locationTable()->positionAt(offset, &line, &column);
-    return KDevelop::SimpleCursor(line, column);
+    return KDevelop::CursorInRevision(line, column);
 }
 
 QString ParseSession::symbol(qint64 token) const

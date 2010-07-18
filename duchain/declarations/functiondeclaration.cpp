@@ -29,10 +29,9 @@ REGISTER_DUCHAIN_ITEM(FunctionDeclaration);
 FunctionDeclaration::FunctionDeclaration(const FunctionDeclaration& rhs)
         : KDevelop::FunctionDeclaration(*new FunctionDeclarationData(*rhs.d_func()))
 {
-    setSmartRange(rhs.smartRange(), DocumentRangeObject::DontOwn);
 }
 
-FunctionDeclaration::FunctionDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context)
+FunctionDeclaration::FunctionDeclaration(const KDevelop::RangeInRevision& range, KDevelop::DUContext* context)
         : KDevelop::FunctionDeclaration(*new FunctionDeclarationData, range)
 {
     d_func_dynamic()->setClassId(this);
@@ -46,7 +45,7 @@ FunctionDeclaration::FunctionDeclaration(FunctionDeclarationData& data)
 {
 }
 
-FunctionDeclaration::FunctionDeclaration(FunctionDeclarationData& data, const KDevelop::SimpleRange& range, KDevelop::DUContext* context)
+FunctionDeclaration::FunctionDeclaration(FunctionDeclarationData& data, const KDevelop::RangeInRevision& range, KDevelop::DUContext* context)
         : KDevelop::FunctionDeclaration(data, range)
 {
     if (context) {

@@ -225,7 +225,7 @@ inline void skipWhiteSpace(const TokenAccess &lastToken, qint64 &pos)
 
 int completionRecursionDepth = 0;
 
-CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, const KDevelop::SimpleCursor& position, int depth)
+CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, const KDevelop::CursorInRevision& position, int depth)
         : KDevelop::CodeCompletionContext(context, text, position, depth)
         , m_memberAccessOperation(NoMemberAccess), m_parentAccess(false), m_isFileCompletionAfterDirname(false)
 {
@@ -752,7 +752,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     evaluateExpression(lastToken);
 }
 
-CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context, const KDevelop::SimpleCursor& position,
+CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context, const KDevelop::CursorInRevision& position,
                                              TokenAccess& lastToken,  int depth)
         : KDevelop::CodeCompletionContext(context, QString(), position, depth)
         , m_memberAccessOperation(NoMemberAccess), m_parentAccess(false), m_isFileCompletionAfterDirname(false)
@@ -1425,7 +1425,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
         //Show all visible declarations
         QSet<uint> existingIdentifiers;
         QList<DeclarationDepthPair> decls = m_duContext->allDeclarations(
-            SimpleCursor::invalid(),
+            CursorInRevision::invalid(),
             m_duContext->topContext()
         );
 

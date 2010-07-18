@@ -42,7 +42,6 @@
 #include <kstandarddirs.h>
 
 
-using namespace KTextEditor;
 using namespace KDevelop;
 using namespace Php;
 
@@ -1429,12 +1428,12 @@ void TestDUChain::objectWithClassName()
 
 void TestDUChain::largeNumberOfDeclarations()
 {
-    TopDUContext* top = new TopDUContext(IndexedString("testurl"), SimpleRange(0, 0, 6000, 0), 0);
+    TopDUContext* top = new TopDUContext(IndexedString("testurl"), RangeInRevision(0, 0, 6000, 0), 0);
     DUChain::self()->addDocumentChain(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
     for (int i = 0; i < 6000; ++i) {
-        SimpleRange newRange(i, 0, i, 1);
+        RangeInRevision newRange(i, 0, i, 1);
         Declaration* dec = new Declaration(newRange, top);
         dec->setIdentifier(Identifier(QString("dec%0").arg(i)));
         dec->setAbstractType(AbstractType::Ptr(0));
@@ -1559,8 +1558,8 @@ void TestDUChain::superglobalInFunction()
     QCOMPARE(dec->uses().keys().count(), 1);
     QCOMPARE(dec->uses().values().count(), 1);
     QCOMPARE(dec->uses().values().first().count(), 2);
-    QCOMPARE(dec->uses().values().first().first(), SimpleRange(0, 3, 0, 8));
-    QCOMPARE(dec->uses().values().first().at(1), SimpleRange(0, 27, 0, 32));
+    QCOMPARE(dec->uses().values().first().first(), RangeInRevision(0, 3, 0, 8));
+    QCOMPARE(dec->uses().values().first().at(1), RangeInRevision(0, 27, 0, 32));
 }
 
 void TestDUChain::returnWithoutFunction()
@@ -1595,14 +1594,14 @@ void TestDUChain::findDeclarations()
 {
     DUChainWriteLocker lock(DUChain::lock());
 
-    TopDUContext* top1 = new TopDUContext(IndexedString("testfile1"), SimpleRange(0, 0, 0, 10), 0);
+    TopDUContext* top1 = new TopDUContext(IndexedString("testfile1"), RangeInRevision(0, 0, 0, 10), 0);
     DUChainReleaser releaseTop1(top1);
     DUChain::self()->addDocumentChain(top1);
-    TopDUContext* top2 = new TopDUContext(IndexedString("testfile2"), SimpleRange(0, 0, 0, 10), 0);
+    TopDUContext* top2 = new TopDUContext(IndexedString("testfile2"), RangeInRevision(0, 0, 0, 10), 0);
     DUChainReleaser releaseTop2(top2);
     DUChain::self()->addDocumentChain(top2);
 
-    Declaration* declaration = new Declaration(SimpleRange(0, 0, 0, 3), top1);
+    Declaration* declaration = new Declaration(RangeInRevision(0, 0, 0, 3), top1);
     declaration->setIdentifier(Identifier("foo"));
 
     QVERIFY(!top1->usingImportsCache());
@@ -1943,14 +1942,14 @@ void TestDUChain::declareMemberOutOfClass()
         QCOMPARE(dec->uses().keys().count(), 1);
         QCOMPARE(dec->uses().values().count(), 1);
         QCOMPARE(dec->uses().values().first().count(), 4);
-        kDebug() << dec->uses().values().first().at(0).textRange();
-        QCOMPARE(dec->uses().values().first().at(0), SimpleRange(1, 16, 1, 20));
-        kDebug() << dec->uses().values().first().at(1).textRange();
-        QCOMPARE(dec->uses().values().first().at(1), SimpleRange(1, 35, 1, 39));
-        kDebug() << dec->uses().values().first().at(2).textRange();
-        QCOMPARE(dec->uses().values().first().at(2), SimpleRange(2, 0, 2, 4));
-        kDebug() << dec->uses().values().first().at(3).textRange();
-        QCOMPARE(dec->uses().values().first().at(3), SimpleRange(3, 0, 3, 4));
+        kDebug() << dec->uses().values().first().at(0).castToSimpleRange();
+        QCOMPARE(dec->uses().values().first().at(0), RangeInRevision(1, 16, 1, 20));
+        kDebug() << dec->uses().values().first().at(1).castToSimpleRange();
+        QCOMPARE(dec->uses().values().first().at(1), RangeInRevision(1, 35, 1, 39));
+        kDebug() << dec->uses().values().first().at(2).castToSimpleRange();
+        QCOMPARE(dec->uses().values().first().at(2), RangeInRevision(2, 0, 2, 4));
+        kDebug() << dec->uses().values().first().at(3).castToSimpleRange();
+        QCOMPARE(dec->uses().values().first().at(3), RangeInRevision(3, 0, 3, 4));
     }
 
     { // check if asdf got declared
@@ -1967,8 +1966,8 @@ void TestDUChain::declareMemberOutOfClass()
 
     // check that prot and priv don't get redeclared
     QCOMPARE(top->problems().count(), 2);
-    QCOMPARE(top->problems().at(0)->finalLocation().start().line(), 2);
-    QCOMPARE(top->problems().at(1)->finalLocation().start().line(), 3);
+    QCOMPARE(top->problems().at(0)->finalLocation().start.line, 2);
+    QCOMPARE(top->problems().at(1)->finalLocation().start.line, 3);
 }
 
 void TestDUChain::declareMemberInClassMethod()
@@ -2015,7 +2014,7 @@ void TestDUChain::declareMemberInClassMethod()
 
     // only one problem: error trying to assign to a private member of a parent class
     QCOMPARE(top->problems().count(), 1);
-    QCOMPARE(top->problems().first()->finalLocation().start().line(), 4);
+    QCOMPARE(top->problems().first()->finalLocation().start.line, 4);
 }
 
 void TestDUChain::thisRedeclaration()
@@ -2030,7 +2029,7 @@ void TestDUChain::thisRedeclaration()
     // only $this = false is a problem, $this->test = true is perfectly valid
     QCOMPARE(top->problems().count(), 1);
     kDebug() << top->problems().first()->finalLocation();
-    QVERIFY(top->problems().first()->finalLocation() == KTextEditor::Range(0, 50, 0, 55));
+    QVERIFY(top->problems().first()->finalLocation() == KDevelop::DocumentRange(top->url(), SimpleRange(0, 50, 0, 55)));
 }
 
 void TestDUChain::implicitArrayDeclaration()
@@ -2152,7 +2151,7 @@ void TestDUChain::classContextRange()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QCOMPARE(top->childContexts().first()->range().textRange(), KTextEditor::Range(0, 6, 0, 17));
+    QCOMPARE(top->childContexts().first()->range(), KDevelop::RangeInRevision(0, 6, 0, 17));
     QCOMPARE(top->childContexts().first()->localDeclarations().count(), 2);
 }
 

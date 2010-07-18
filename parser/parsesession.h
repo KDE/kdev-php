@@ -37,7 +37,7 @@ namespace Php
 class TokenStream;
 class StartAst;
 
-typedef QPair<KDevelop::DUContextPointer, KDevelop::SimpleRange> SimpleUse;
+typedef QPair<KDevelop::DUContextPointer, KDevelop::RangeInRevision> SimpleUse;
 
 class KDEVPHPPARSER_EXPORT ParseSession
 {
@@ -46,7 +46,8 @@ public:
     ~ParseSession();
 
     void setContents(const QString& contents);
-    void setCurrentDocument(const QString& filename);
+    void setCurrentDocument(const KDevelop::IndexedString& filename);
+    KDevelop::IndexedString currentDocument() const;
     bool readFile(const QString& filename, const char* charset = 0);
     void setDebug(bool);
     TokenStream* tokenStream() const;
@@ -68,7 +69,7 @@ public:
      *
      * \note the line starts from 0.
      */
-    KDevelop::SimpleCursor positionAt(qint64 offset) const;
+    KDevelop::CursorInRevision positionAt(qint64 offset) const;
 
     QList<KDevelop::ProblemPointer> problems();
 
@@ -82,7 +83,7 @@ public:
 private:
     QString m_contents;
     bool m_debug;
-    QString m_currentDocument;
+    KDevelop::IndexedString m_currentDocument;
     KDevPG::MemoryPool* m_pool;
     TokenStream* m_tokenStream;
     QList<KDevelop::ProblemPointer> m_problems;

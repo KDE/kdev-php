@@ -97,7 +97,7 @@ public:
 
     static LanguageSupport* self();
     /*the code highlighter*/
-    const KDevelop::ICodeHighlighting* codeHighlighting() const;
+    KDevelop::ICodeHighlighting* codeHighlighting() const;
 
     virtual QWidget* specialLanguageObjectNavigationWidget(const KUrl& url, const KDevelop::SimpleCursor& position);
     virtual KDevelop::SimpleRange specialLanguageObjectRange(const KUrl& url, const KDevelop::SimpleCursor& position);

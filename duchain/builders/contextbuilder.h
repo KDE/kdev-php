@@ -47,25 +47,24 @@ public:
     ContextBuilder();
     virtual ~ContextBuilder();
 
-    void setEditor(EditorIntegrator* editor);
-    void setEditor(ParseSession* session);
     virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
             KDevelop::ReferencedTopDUContext updateContext
-            = KDevelop::ReferencedTopDUContext(), bool useSmart = true);
+            = KDevelop::ReferencedTopDUContext());
 
     bool hadUnresolvedIdentifiers() const;
-protected:
+
     EditorIntegrator* editor() const;
 
-    virtual KDevelop::DUContext* newContext(const KDevelop::SimpleRange& range);
-    virtual KDevelop::TopDUContext* newTopContext(const KDevelop::SimpleRange& range, KDevelop::ParsingEnvironmentFile* file = 0);
+protected:
+    virtual KDevelop::DUContext* newContext(const KDevelop::RangeInRevision& range);
+    virtual KDevelop::TopDUContext* newTopContext(const KDevelop::RangeInRevision& range, KDevelop::ParsingEnvironmentFile* file = 0);
 
     virtual void startVisiting(AstNode* node);
     virtual void setContextOnNode(AstNode* node, KDevelop::DUContext* ctx);
     virtual KDevelop::DUContext* contextFromNode(AstNode* node);
-    virtual KTextEditor::Range editorFindRange(AstNode* fromRange, AstNode* toRange);
+    virtual KDevelop::RangeInRevision editorFindRange(AstNode* fromRange, AstNode* toRange);
     /// Find Cursor for start of a node, useful to limit findLocalDeclarations() searches.
-    KDevelop::SimpleCursor startPos(AstNode* node);
+    KDevelop::CursorInRevision startPos( Php::AstNode* node);
 
     virtual KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
@@ -82,7 +81,7 @@ protected:
      * don't overload in other builders, use @c openNamespace and @c closeNamespace instead.
      */
     virtual void visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node);
-    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KTextEditor::Range& range);
+    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range);
     virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
 
     virtual void addBaseType(NamespacedIdentifierAst * identifier);
@@ -90,15 +89,15 @@ protected:
     virtual void classContextOpened(KDevelop::DUContext* context);
 
     /// Report @p errorMsg with the range of @p node
-    /// @see void reportError(const QString& errorMsg, KTextEditor::Range range);
+    /// @see void reportError(const QString& errorMsg, KDevelop::SimpleRange range);
     void reportError(const QString& errorMsg, AstNode* node,
                         KDevelop::ProblemData::Severity severity = KDevelop::ProblemData::Error);
     /// Report @p errorMsg with the range encompassing all nodes in @p nodes
-    /// @see void reportError(const QString& errorMsg, KTextEditor::Range range);
+    /// @see void reportError(const QString& errorMsg, KDevelop::SimpleRange range);
     void reportError(const QString& errorMsg, QList<AstNode*> nodes,
                         KDevelop::ProblemData::Severity severity = KDevelop::ProblemData::Error);
     /// Report @p errorMsg with range @p range
-    void reportError(const QString& errorMsg, KTextEditor::Range range,
+    void reportError(const QString& errorMsg, KDevelop::RangeInRevision range,
                         KDevelop::ProblemData::Severity severity = KDevelop::ProblemData::Error);
 
     KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
@@ -112,6 +111,8 @@ protected:
     ///TODO: push this into kdevplatform
     bool m_mapAst;
     bool m_hadUnresolvedIdentifiers;
+
+    EditorIntegrator* m_editor;
 
 private:
     void closeNamespaces(NamespaceDeclarationStatementAst* namespaces);

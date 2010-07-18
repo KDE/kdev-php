@@ -26,7 +26,6 @@
 #include <kcomponentdata.h>
 #include <kpluginfactory.h>
 #include <kpluginloader.h>
-#include <ktexteditor/smartinterface.h>
 #include <KTextEditor/Document>
 
 #include <interfaces/icore.h>
@@ -142,7 +141,7 @@ KDevelop::ILanguage *LanguageSupport::language()
     return core()->languageController()->language(name());
 }
 
-const KDevelop::ICodeHighlighting* LanguageSupport::codeHighlighting() const
+KDevelop::ICodeHighlighting* LanguageSupport::codeHighlighting() const
 {
     return m_highlighting;
 }

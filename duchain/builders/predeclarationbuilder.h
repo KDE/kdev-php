@@ -51,11 +51,11 @@ public:
                           QHash<qint64, FunctionDeclaration*>* functions,
                           QHash<qint64, NamespaceDeclaration*>* namespaces,
                           QList<KDevelop::QualifiedIdentifier>* upcomingClassVariables,
-                          EditorIntegrator* editor)
+                          EditorIntegrator* editor )
             : m_types(types), m_functions(functions), m_namespaces(namespaces),
               m_upcomingClassVariables(upcomingClassVariables)
     {
-        setEditor(editor);
+        m_editor = editor;
     }
 
     virtual ~PreDeclarationBuilder();
@@ -69,7 +69,7 @@ protected:
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst* node);
-    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KTextEditor::Range& range);
+    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range);
     virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
 
     virtual void closeDeclaration();

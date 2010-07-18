@@ -73,7 +73,7 @@ public:
      * @warning The du-chain must be unlocked when this is called.
      * */
     CodeCompletionContext(KDevelop::DUContextPointer context, const QString& text,
-                          const QString& followingText, const KDevelop::SimpleCursor& position,
+                          const QString& followingText, const KDevelop::CursorInRevision& position,
                           int depth = 0);
     ~CodeCompletionContext();
 
@@ -133,7 +133,7 @@ private:
      *       it afterwards. Probably you don't want to do that anyway.
      *       Hence always return after creating the parent.
      */
-    CodeCompletionContext(KDevelop::DUContextPointer context, const KDevelop::SimpleCursor& position,
+    CodeCompletionContext(KDevelop::DUContextPointer context, const KDevelop::CursorInRevision& position,
                             TokenAccess& lastToken, const int depth);
 
     /**

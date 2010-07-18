@@ -23,9 +23,6 @@
 
 #include <QByteArray>
 
-#include <ktexteditor/smartrange.h>
-#include <ktexteditor/smartinterface.h>
-
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/aliasdeclaration.h>
 #include <language/duchain/types/integraltype.h>
@@ -48,7 +45,6 @@
 #include "../declarations/namespacealiasdeclaration.h"
 #include "expressionvisitor.h"
 
-using namespace KTextEditor;
 using namespace KDevelop;
 
 namespace Php
@@ -117,13 +113,14 @@ void DeclarationBuilder::getVariableIdentifier(VariableAst* node,
 }
 
 KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::IndexedString& url, Php::AstNode* node,
-        KDevelop::ReferencedTopDUContext updateContext, bool useSmart)
+        KDevelop::ReferencedTopDUContext updateContext)
 {
     //Run DeclarationBuilder twice, to find uses of declarations that are
     //declared after the use. ($a = new Foo; class Foo {})
     {
-        PreDeclarationBuilder prebuilder(&m_types, &m_functions, &m_namespaces, &m_upcomingClassVariables, editor());
-        updateContext = prebuilder.build(url, node, updateContext, useSmart);
+        PreDeclarationBuilder prebuilder(&m_types, &m_functions, &m_namespaces,
+                                         &m_upcomingClassVariables, m_editor);
+        updateContext = prebuilder.build(url, node, updateContext);
         m_actuallyRecompiling = prebuilder.didRecompile();
     }
 
@@ -135,7 +132,7 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
     } else if ( ICore::self() ) {
         m_reportErrors = ICore::self()->languageController()->completionSettings()->highlightSemanticProblems();
     }
-    return ContextBuilderBase::build(url, node, updateContext, useSmart);
+    return ContextBuilderBase::build(url, node, updateContext);
 }
 
 void DeclarationBuilder::startVisiting(AstNode* node)
@@ -250,7 +247,7 @@ bool DeclarationBuilder::isBaseMethodRedeclaration(const IdentifierPair &ids, Cl
 
 void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 {
-    setComment(formatComment(node, editor()));
+    setComment(formatComment(node, m_editor));
     if (node->methodName) {
         //method declaration
 
@@ -401,9 +398,9 @@ void DeclarationBuilder::openClassMemberDeclaration(AstNode* node, const Qualifi
 
     // dirty hack: declarations of class members outside the class context would
     //             make the class context encompass the newRange. This is not what we want.
-    SimpleRange oldRange = currentContext()->range();
+    RangeInRevision oldRange = currentContext()->range();
 
-    SimpleRange newRange = editorFindRange(node, node);
+    RangeInRevision newRange = editorFindRange(node, node);
     openDefinition<ClassMemberDeclaration>(name, newRange);
 
     ClassMemberDeclaration* dec = dynamic_cast<ClassMemberDeclaration*>(currentDeclaration());
@@ -469,14 +466,14 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
 
     // this member should be public and non-static
     m_currentModifers = ModifierPublic;
-    injectContext(editor()->smart(), parentCtx);
+    injectContext(parentCtx);
     openClassMemberDeclaration(node, identifier);
     m_currentModifers = 0;
     //own closeDeclaration() that doesn't use lastType()
     currentDeclaration()->setType(type);
     eventuallyAssignInternalContext();
     DeclarationBuilderBase::closeDeclaration();
-    closeInjectedContext(editor()->smart());
+    closeInjectedContext();
 }
 
 void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
@@ -527,7 +524,7 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
     AbstractFunctionDeclaration* funDec = dynamic_cast<AbstractFunctionDeclaration*>(currentDeclaration());
     Q_ASSERT(funDec);
     if (node->defaultValue) {
-        QString symbol = editor()->parseSession()->symbol(node->defaultValue);
+        QString symbol = m_editor->parseSession()->symbol(node->defaultValue);
         funDec->addDefaultParameter(IndexedString(symbol));
         if ( node->parameterType && symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0 ) {
             reportError(i18n("Default value for parameters with a class type hint can only be NULL."), node->defaultValue);
@@ -538,7 +535,7 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
     {
         // create variable declaration for argument
         DUChainWriteLocker lock(DUChain::lock());
-        SimpleRange newRange = editorFindRange(node->variable, node->variable);
+        RangeInRevision newRange = editorFindRange(node->variable, node->variable);
         openDefinition<VariableDeclaration>(identifierForNode(node->variable), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
     }
@@ -610,8 +607,8 @@ void DeclarationBuilder::reportRedeclarationError(Declaration* declaration, AstN
 void DeclarationBuilder::visitOuterTopStatement(OuterTopStatementAst* node)
 {
     //docblock of an AssignmentExpression
-    setComment(formatComment(node, editor()));
-    m_lastTopStatementComment = editor()->parseSession()->docComment(node->startToken);
+    setComment(formatComment(node, m_editor));
+    m_lastTopStatementComment = m_editor->parseSession()->docComment(node->startToken);
 
     DeclarationBuilderBase::visitOuterTopStatement(node);
 }
@@ -730,7 +727,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
         }
     }
 
-    SimpleRange newRange = editorFindRange(node, node);
+    RangeInRevision newRange = editorFindRange(node, node);
 
     VariableDeclaration *dec = openDefinition<VariableDeclaration>(identifier, newRange);
     dec->setKind(Declaration::Instance);
@@ -806,7 +803,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
         if ( node->stringFunctionName ) {
             dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionName);
         } else if ( node->stringFunctionNameOrClass ) {
-            id = identifierForNamespace(node->stringFunctionNameOrClass, editor());
+            id = identifierForNamespace(node->stringFunctionNameOrClass, m_editor);
             dec = findDeclarationImport(FunctionDeclarationType, id, node->stringFunctionNameOrClass);
         } else {
             ///TODO: node->varFunctionName
@@ -832,18 +829,17 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
             //find name of the constant (first argument of the function call)
             CommonScalarAst* scalar = findCommonScalar(node->stringParameterList->parametersSequence->at(0)->element);
             if (scalar && scalar->string != -1) {
-                QString constant = editor()->parseSession()->symbol(scalar->string);
+                QString constant = m_editor->parseSession()->symbol(scalar->string);
                 constant = constant.mid(1, constant.length() - 2);
-                SimpleRange newRange = editorFindRange(scalar, scalar);
+                RangeInRevision newRange = editorFindRange(scalar, scalar);
                 DUChainWriteLocker lock(DUChain::lock());
-                LockedSmartInterface iface = editor()->smart();
                 // find fitting context to put define in,
                 // pick first namespace or global context otherwise
                 DUContext* ctx = currentContext();
                 while (ctx->type() != DUContext::Namespace && ctx->parentContext()) {
                     ctx = ctx->parentContext();
                 }
-                injectContext(iface, ctx); //constants are always global
+                injectContext(ctx); //constants are always global
                 QualifiedIdentifier identifier(constant);
                 isGlobalRedeclaration(identifier, scalar, ConstantDeclarationType);
                 openDefinition<Declaration>(identifier, newRange);
@@ -851,7 +847,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                 Q_ASSERT(lastType());
                 lastType()->setModifiers(lastType()->modifiers() | AbstractType::ConstModifier);
                 closeDeclaration();
-                closeInjectedContext(iface);
+                closeInjectedContext();
             }
         }
     }
@@ -983,7 +979,7 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
 
     if (node->foreachVariable) {
         DUChainWriteLocker lock(DUChain::lock());
-        SimpleRange newRange = editorFindRange(node->foreachVariable->variable, node->foreachVariable->variable);
+        RangeInRevision newRange = editorFindRange(node->foreachVariable->variable, node->foreachVariable->variable);
         openDefinition<VariableDeclaration>(identifierForNode(node->foreachVariable->variable), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
         closeDeclaration();
@@ -991,7 +987,7 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
 
     if (node->foreachVarAsVar) {
         DUChainWriteLocker lock(DUChain::lock());
-        SimpleRange newRange = editorFindRange(node->foreachVarAsVar->variable, node->foreachVarAsVar->variable);
+        RangeInRevision newRange = editorFindRange(node->foreachVarAsVar->variable, node->foreachVarAsVar->variable);
         openDefinition<VariableDeclaration>(identifierForNode(node->foreachVarAsVar->variable), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
         closeDeclaration();
@@ -999,7 +995,7 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
 
     if (node->foreachExprAsVar) {
         DUChainWriteLocker lock(DUChain::lock());
-        SimpleRange newRange = editorFindRange(node->foreachExprAsVar, node->foreachExprAsVar);
+        RangeInRevision newRange = editorFindRange(node->foreachExprAsVar, node->foreachExprAsVar);
         openDefinition<VariableDeclaration>(identifierForNode(node->foreachExprAsVar), newRange);
         currentDeclaration()->setKind(Declaration::Instance);
         closeDeclaration();
@@ -1012,8 +1008,8 @@ void DeclarationBuilder::visitStaticVar(StaticVarAst* node)
     DeclarationBuilderBase::visitStaticVar(node);
 
     DUChainWriteLocker lock(DUChain::lock());
-    SimpleRange newRange = editorFindRange(node->var, node->var);
-    openDefinition<VariableDeclaration>(identifierForNode(node->var), newRange);
+    openDefinition<VariableDeclaration>(identifierForNode(node->var),
+                                        editorFindRange(node->var, node->var));
     currentDeclaration()->setKind(Declaration::Instance);
 
     closeDeclaration();
@@ -1039,7 +1035,7 @@ void DeclarationBuilder::visitGlobalVar(GlobalVarAst* node)
         Declaration* aliasedDeclaration = findDeclarationImport(GlobalVariableDeclarationType, node->var);
         if (aliasedDeclaration) {
             DUChainWriteLocker lock(DUChain::lock());
-            AliasDeclaration* dec = openDefinition<AliasDeclaration>(id, editor()->findRange(node->var));
+            AliasDeclaration* dec = openDefinition<AliasDeclaration>(id, m_editor->findRange(node->var));
             dec->setAliasedDeclaration(aliasedDeclaration);
             closeDeclaration();
         }
@@ -1051,8 +1047,8 @@ void DeclarationBuilder::visitCatchItem(CatchItemAst *node)
     DeclarationBuilderBase::visitCatchItem(node);
 
     DUChainWriteLocker lock(DUChain::lock());
-    SimpleRange newRange = editorFindRange(node->var, node->var);
-    openDefinition<VariableDeclaration>(identifierForNode(node->var), newRange);
+    openDefinition<VariableDeclaration>(identifierForNode(node->var),
+                                        editorFindRange(node->var, node->var));
     currentDeclaration()->setKind(Declaration::Instance);
     closeDeclaration();
 }
@@ -1060,7 +1056,7 @@ void DeclarationBuilder::visitCatchItem(CatchItemAst *node)
 void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
 {
     DeclarationBuilderBase::visitUnaryExpression(node);
-    IndexedString includeFile = getIncludeFileForNode(node, editor());
+    IndexedString includeFile = getIncludeFileForNode(node, m_editor);
     if ( !includeFile.isEmpty() ) {
         DUChainWriteLocker lock;
         TopDUContext* includedCtx = DUChain::self()->chainForDocument(includeFile);
@@ -1071,22 +1067,22 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
 
         QualifiedIdentifier identifier(includeFile.str());
 
-        foreach ( Declaration* dec, includedCtx->findDeclarations(identifier, SimpleCursor(0, 1)) ) {
+        foreach ( Declaration* dec, includedCtx->findDeclarations(identifier, CursorInRevision(0, 1)) ) {
             if ( dec->kind() == Declaration::Import ) {
                 encounter(dec);
                 return;
             }
         }
-        injectContext(editor()->smart(), includedCtx);
-        openDefinition<Declaration>(identifier, SimpleRange(0, 0, 0, 0));
+        injectContext(includedCtx);
+        openDefinition<Declaration>(identifier, RangeInRevision(0, 0, 0, 0));
         currentDeclaration()->setKind(Declaration::Import);
         eventuallyAssignInternalContext();
         DeclarationBuilderBase::closeDeclaration();
-        closeInjectedContext(editor()->smart());
+        closeInjectedContext();
     }
 }
 
-void DeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const Range& range)
+void DeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const RangeInRevision& range)
 {
     NamespaceDeclaration* dec = m_namespaces.value(node->string, 0);
     Q_ASSERT(dec);
@@ -1112,12 +1108,12 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
     }
     IdentifierAst* idNode = node->aliasIdentifier ? node->aliasIdentifier : node->identifier->namespaceNameSequence->back()->element;
     IdentifierPair id = identifierPairForNode(idNode);
-    SimpleRange range = editor()->findRange(idNode);
     DUChainWriteLocker lock;
-    NamespaceAliasDeclaration* decl = openDefinition<NamespaceAliasDeclaration>(id.second, range);
+    NamespaceAliasDeclaration* decl = openDefinition<NamespaceAliasDeclaration>(id.second,
+                                                                                m_editor->findRange(idNode));
     {
         ///TODO: case insensitive!
-        decl->setImportIdentifier( identifierForNamespace(node->identifier, editor()) );
+        decl->setImportIdentifier( identifierForNamespace(node->identifier, m_editor) );
         decl->setPrettyName( id.first );
         decl->setKind(Declaration::NamespaceAlias);
     }

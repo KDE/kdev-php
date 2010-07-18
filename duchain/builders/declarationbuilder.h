@@ -50,17 +50,15 @@ typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, TypeBuilder
 class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase
 {
 public:
-    DeclarationBuilder(ParseSession* session)
-        :  m_findVariable(false), m_variableIsArray(false), m_currentModifers(0) {
-        setEditor(session);
-    }
     DeclarationBuilder(EditorIntegrator* editor)
-        : m_findVariable(false), m_variableIsArray(false), m_currentModifers(0) {
-        setEditor(editor);
+        : m_findVariable(false), m_variableIsArray(false),
+          m_currentModifers(0)
+    {
+        m_editor = editor;
     }
     virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
             KDevelop::ReferencedTopDUContext updateContext
-            = KDevelop::ReferencedTopDUContext(), bool useSmart = true);
+            = KDevelop::ReferencedTopDUContext());
 
     virtual void startVisiting(AstNode* node);
 
@@ -87,7 +85,7 @@ protected:
     virtual void visitCatchItem(CatchItemAst *node);
     virtual void visitUnaryExpression( UnaryExpressionAst* node );
     virtual void visitAssignmentListElement(AssignmentListElementAst* node);
-    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KTextEditor::Range& range);
+    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range);
     virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
     virtual void visitUseNamespace(UseNamespaceAst* node);
 

@@ -52,9 +52,9 @@ class KDEVPHPDUCHAIN_EXPORT FunctionDeclaration : public KDevelop::FunctionDecla
 {
 public:
     FunctionDeclaration(const FunctionDeclaration &rhs);
-    FunctionDeclaration(const KDevelop::SimpleRange &range, KDevelop::DUContext *context);
+    FunctionDeclaration(const KDevelop::RangeInRevision &range, KDevelop::DUContext *context);
     FunctionDeclaration(FunctionDeclarationData &data);
-    FunctionDeclaration(FunctionDeclarationData &data, const KDevelop::SimpleRange &range, KDevelop::DUContext *context);
+    FunctionDeclaration(FunctionDeclarationData &data, const KDevelop::RangeInRevision &range, KDevelop::DUContext *context);
     ~FunctionDeclaration();
 
     virtual QString toString() const;

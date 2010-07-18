@@ -114,7 +114,7 @@ void TestDUChainMultipleFiles::testImportsGlobalFunction()
     f2.waitForParsed();
 
     KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
-    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::SimpleCursor(0, 0)));
+    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
 }
 
 void TestDUChainMultipleFiles::testImportsBaseClassNotYetParsed()
@@ -135,7 +135,7 @@ void TestDUChainMultipleFiles::testImportsBaseClassNotYetParsed()
     QTest::qWait(100);
 
     KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
-    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::SimpleCursor(0, 0)));
+    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
 
 }
 
@@ -173,7 +173,7 @@ void TestDUChainMultipleFiles::testImportsGlobalFunctionNotYetParsed()
     QTest::qWait(100);
 
     KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
-    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::SimpleCursor(0, 0)));
+    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
 
 }
 
@@ -211,7 +211,7 @@ void TestDUChainMultipleFiles::testImportsStaticFunctionNotYetParsed()
     QTest::qWait(100);
 
     KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
-    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::SimpleCursor(0, 0)));
+    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
 }
 
 void TestDUChainMultipleFiles::testNonExistingStaticFunction()

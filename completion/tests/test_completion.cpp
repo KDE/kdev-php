@@ -109,8 +109,8 @@ const QByteArray testClassB(
 class TestCodeCompletionContext : public CodeCompletionContext
 {
 public:
-    TestCodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, const SimpleCursor &position, int depth = 0)
-            : CodeCompletionContext(context, text, followingText, position, depth) { }
+    TestCodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, const CursorInRevision &position, int depth = 0)
+        : CodeCompletionContext(context, text, followingText, position, depth) { }
 protected:
     QList<QSet<IndexedString> > completionFiles() {
         QList<QSet<IndexedString> > ret;
@@ -131,7 +131,7 @@ typedef CodeCompletionItemTester<TestCodeCompletionContext> BasePhpCompletionTes
 class PhpCompletionTester : public BasePhpCompletionTester
 {
 public:
-    PhpCompletionTester(DUContext* context, QString text = "; ", QString followingText = "", SimpleCursor position = SimpleCursor::invalid())
+    PhpCompletionTester(DUContext* context, QString text = "; ", QString followingText = "", CursorInRevision position = CursorInRevision::invalid())
         : BasePhpCompletionTester(context, text.startsWith("<?") ? text : text.prepend("<?php "), followingText, position)
     {
 
@@ -735,7 +735,7 @@ void TestCompletion::inArray()
 
 void TestCompletion::verifyExtendsOrImplements(const QString &codeStr, const QString &completionStr,
         ClassDeclarationData::ClassType type,
-        SimpleCursor cursor,
+        const CursorInRevision& cursor,
         QStringList forbiddenIdentifiers)
 {
     if (cursor.isValid()) {
@@ -778,17 +778,17 @@ void TestCompletion::newExtends()
 {
     verifyExtendsOrImplements("<?php ", "class test extends ",
                               ClassDeclarationData::Class,
-                              SimpleCursor::invalid(),
+                              CursorInRevision::invalid(),
                               QStringList() << "test");
 
     verifyExtendsOrImplements("<?php ", "interface test extends ",
                               ClassDeclarationData::Interface,
-                              SimpleCursor::invalid(),
+                              CursorInRevision::invalid(),
                               QStringList() << "test");
 
     verifyExtendsOrImplements("<?php interface blub{} ", "interface test extends blub, ",
                               ClassDeclarationData::Interface,
-                              SimpleCursor::invalid(),
+                              CursorInRevision::invalid(),
                               QStringList() << "test" << "blub");
 }
 
@@ -798,14 +798,14 @@ void TestCompletion::updateExtends()
     //                         012345678901234567890123456789012345678901234567890123456789
     verifyExtendsOrImplements("<?php class test {}", "class test extends ",
                               ClassDeclarationData::Class,
-                              SimpleCursor(0, 16),
+                              CursorInRevision(0, 16),
                               QStringList() << "test");
 
     //                         0         1         2         3         4         5
     //                         012345678901234567890123456789012345678901234567890123456789
     verifyExtendsOrImplements("<?php interface test {}", "interface test extends ",
                               ClassDeclarationData::Interface,
-                              SimpleCursor(0, 20),
+                              CursorInRevision(0, 20),
                               QStringList() << "test");
 
     //                         0         1         2         3         4         5
@@ -813,7 +813,7 @@ void TestCompletion::updateExtends()
     verifyExtendsOrImplements("<?php interface blub{} interface test extends blub {}",
                               "interface test extends blub,bar, ",
                               ClassDeclarationData::Interface,
-                              SimpleCursor(0, 50),
+                              CursorInRevision(0, 50),
                               QStringList() << "test" << "blub");
 }
 
@@ -821,11 +821,11 @@ void TestCompletion::newImplements()
 {
     verifyExtendsOrImplements("<?php ", "class test implements ",
                               ClassDeclarationData::Interface,
-                              SimpleCursor::invalid(),
+                              CursorInRevision::invalid(),
                               QStringList() << "test");
     verifyExtendsOrImplements("<?php interface blub{}", " class test implements blub, ",
                               ClassDeclarationData::Interface,
-                              SimpleCursor::invalid(),
+                              CursorInRevision::invalid(),
                               QStringList() << "test" << "blub");
 }
 
@@ -835,7 +835,7 @@ void TestCompletion::updateImplements()
     //                         012345678901234567890123456789012345678901234567890123456789
     verifyExtendsOrImplements("<?php class test {}", "class test implements ",
                               ClassDeclarationData::Interface,
-                              SimpleCursor(0, 16),
+                              CursorInRevision(0, 16),
                               QStringList() << "test");
 
     //                         0         1         2         3         4         5
@@ -843,7 +843,7 @@ void TestCompletion::updateImplements()
     verifyExtendsOrImplements("<?php interface blub{} class test implements blub {}",
                               "class test implements blub, ",
                               ClassDeclarationData::Interface,
-                              SimpleCursor(0, 49),
+                              CursorInRevision(0, 49),
                               QStringList() << "test" << "blub");
 }
 
@@ -852,13 +852,13 @@ void TestCompletion::avoidCircularInheritance()
     verifyExtendsOrImplements("<?php interface blub{} interface bar extends blub{}",
                               "interface test extends bar, ",
                               ClassDeclarationData::Interface,
-                              SimpleCursor::invalid(),
+                              CursorInRevision::invalid(),
                               QStringList() << "test" << "blub" << "bar");
 
     verifyExtendsOrImplements("<?php interface blub{} interface bar extends blub{}",
                               "class test implements bar, ",
                               ClassDeclarationData::Interface,
-                              SimpleCursor::invalid(),
+                              CursorInRevision::invalid(),
                               QStringList() << "blub" << "bar");
 }
 
@@ -1024,7 +1024,7 @@ void TestCompletion::functionBeforeDeclaration()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().size(), 1);
-    PhpCompletionTester tester(top, "", "", SimpleCursor(0, 3));
+    PhpCompletionTester tester(top, "", "", CursorInRevision(0, 3));
     // function _should_ be found
     QVERIFY(searchDeclaration(tester.items, top->localDeclarations().first()));
 }
@@ -1038,7 +1038,7 @@ void TestCompletion::classBeforeDeclaration()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().size(), 1);
-    PhpCompletionTester tester(top, "", "", SimpleCursor(0, 3));
+    PhpCompletionTester tester(top, "", "", CursorInRevision(0, 3));
     // class _should_ be found
     QVERIFY(searchDeclaration(tester.items, top->localDeclarations().first()));
 }
@@ -1052,7 +1052,7 @@ void TestCompletion::constantBeforeDeclaration()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().size(), 1);
-    PhpCompletionTester tester(top, "", "", SimpleCursor(0, 3));
+    PhpCompletionTester tester(top, "", "", CursorInRevision(0, 3));
     // constant should _not_ be found
     QVERIFY(!searchDeclaration(tester.items, top->localDeclarations().first()));
 }
@@ -1066,7 +1066,7 @@ void TestCompletion::variableBeforeDeclaration()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().size(), 1);
-    PhpCompletionTester tester(top, "", "", SimpleCursor(0, 3));
+    PhpCompletionTester tester(top, "", "", CursorInRevision(0, 3));
     // variable should _not_ be found
     QVERIFY(!searchDeclaration(tester.items, top->localDeclarations().first()));
 }

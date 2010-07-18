@@ -19,8 +19,6 @@
 #include "editorintegrator.h"
 
 #include <ktexteditor/document.h>
-#include <ktexteditor/smartrange.h>
-#include <ktexteditor/smartinterface.h>
 
 #include <language/editor/documentrange.h>
 #include <language/editor/documentrangeobject.h>
@@ -28,7 +26,6 @@
 #include "phpast.h"
 #include "parsesession.h"
 
-using namespace KTextEditor;
 using namespace Php;
 
 EditorIntegrator::EditorIntegrator(ParseSession* session)
@@ -36,13 +33,13 @@ EditorIntegrator::EditorIntegrator(ParseSession* session)
 {
 }
 
-KDevelop::SimpleCursor EditorIntegrator::findPosition(qint64 token, Edge edge) const
+KDevelop::CursorInRevision EditorIntegrator::findPosition(qint64 token, Edge edge) const
 {
     const KDevPG::TokenStream::Token& t = m_session->tokenStream()->token(token);
     return findPosition(t, edge);
 }
 
-KDevelop::SimpleCursor EditorIntegrator::findPosition(const KDevPG::TokenStream::Token & token, Edge edge) const
+KDevelop::CursorInRevision EditorIntegrator::findPosition(const KDevPG::TokenStream::Token & token, Edge edge) const
 {
     if (edge == BackEdge) {
         // Apparently KTE expects a range to go until _after_ the last character that should be included
@@ -53,25 +50,25 @@ KDevelop::SimpleCursor EditorIntegrator::findPosition(const KDevPG::TokenStream:
     }
 }
 
-KDevelop::SimpleRange EditorIntegrator::findRange(AstNode * node, RangeEdge edge)
+KDevelop::RangeInRevision EditorIntegrator::findRange(AstNode * node, RangeEdge edge)
 {
     Q_UNUSED(edge);
-    return KDevelop::SimpleRange(findPosition(node->startToken, FrontEdge), findPosition(node->endToken, BackEdge));
+    return KDevelop::RangeInRevision(findPosition(node->startToken, FrontEdge), findPosition(node->endToken, BackEdge));
 }
 
-KDevelop::SimpleRange EditorIntegrator::findRange(qint64 startToken, qint64 endToken)
+KDevelop::RangeInRevision EditorIntegrator::findRange(qint64 startToken, qint64 endToken)
 {
-    return KDevelop::SimpleRange(findPosition(startToken, FrontEdge), findPosition(endToken, BackEdge));
+    return KDevelop::RangeInRevision(findPosition(startToken, FrontEdge), findPosition(endToken, BackEdge));
 }
 
-KDevelop::SimpleRange EditorIntegrator::findRange(AstNode* from, AstNode* to)
+KDevelop::RangeInRevision EditorIntegrator::findRange(AstNode* from, AstNode* to)
 {
-    return KDevelop::SimpleRange(findPosition(from->startToken, FrontEdge), findPosition(to->endToken, BackEdge));
+    return KDevelop::RangeInRevision(findPosition(from->startToken, FrontEdge), findPosition(to->endToken, BackEdge));
 }
 
-KDevelop::SimpleRange EditorIntegrator::findRange(const KDevPG::TokenStream::Token & token)
+KDevelop::RangeInRevision EditorIntegrator::findRange(const KDevPG::TokenStream::Token & token)
 {
-    return KDevelop::SimpleRange(findPosition(token, FrontEdge), findPosition(token, BackEdge));
+    return KDevelop::RangeInRevision(findPosition(token, FrontEdge), findPosition(token, BackEdge));
 }
 
 QString EditorIntegrator::tokenToString(qint64 token) const

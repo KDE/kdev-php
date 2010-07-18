@@ -54,9 +54,9 @@ class KDEVPHPDUCHAIN_EXPORT VariableDeclaration : public KDevelop::Declaration
 {
 public:
     VariableDeclaration(const VariableDeclaration& rhs);
-    VariableDeclaration(const KDevelop::SimpleRange& range, KDevelop::DUContext* context);
+    VariableDeclaration(const KDevelop::RangeInRevision& range, KDevelop::DUContext* context);
     VariableDeclaration(VariableDeclarationData& data);
-    VariableDeclaration(VariableDeclarationData& data, const KDevelop::SimpleRange&);
+    VariableDeclaration(VariableDeclarationData& data, const KDevelop::RangeInRevision&);
     virtual ~VariableDeclaration();
 
     bool isSuperglobal() const;
