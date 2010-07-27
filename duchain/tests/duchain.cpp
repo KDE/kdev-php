@@ -2586,4 +2586,6 @@ void TestDUChain::cases()
     QVERIFY(top->problems().empty());
 }
 
+}
+
 #include "duchain.moc"

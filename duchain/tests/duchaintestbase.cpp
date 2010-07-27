@@ -117,6 +117,13 @@ TopDUContext* DUChainTestBase::parseAdditionalFile(const IndexedString& fileName
         useBuilder.buildUses(ast);
     }
 
+    if (!session->problems().isEmpty()) {
+        DUChainWriteLocker lock;
+        foreach( const ProblemPointer& p, session->problems() ) {
+            top->addProblem(p);
+        }
+    }
+
     delete session;
 
     return top;
@@ -147,6 +154,13 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QSt
 
     DeclarationBuilder declarationBuilder(session);
     TopDUContext* top = declarationBuilder.build(IndexedString(url), ast);
+
+    if (!session->problems().isEmpty()) {
+        DUChainWriteLocker lock;
+        foreach( const ProblemPointer& p, session->problems() ) {
+            top->addProblem(p);
+        }
+    }
 
     if ( IndexedString(url) != internalFunctionFile() ) {
         UseBuilder useBuilder(session);
