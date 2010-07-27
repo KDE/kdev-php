@@ -2573,4 +2573,16 @@ void TestDUChain::embeddedHTML()
     QVERIFY(top->problems().empty());
 }
 
+void TestDUChain::cases()
+{
+    // testcase for bug https://bugs.kde.org/show_bug.cgi?id=245832
+    TopDUContext* top = parse("<?php switch(1) { case 1:\n case 2:\n break; default: break; }", DumpNone);
+
+    QVERIFY(top);
+
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().empty());
+}
+
 #include "duchain.moc"
