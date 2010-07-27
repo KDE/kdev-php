@@ -287,6 +287,7 @@ namespace KDevelop
 [: bool reported = false; while ( true ) { :]
     try/recover(#statements=topStatement)*
 [: if (yytoken != Token_RBRACE && yytoken != Token_EOF && yytoken != Token_CLOSE_TAG
+       && yytoken != Token_ELSEIF
        && yytoken != Token_ENDIF && yytoken != Token_ENDFOREACH && yytoken != Token_ENDFOR
        && yytoken != Token_ENDWHILE && yytoken != Token_ENDSWITCH && yytoken != Token_ENDDECLARE
        && yytoken != Token_CASE && yytoken != Token_DEFAULT) {

@@ -2553,7 +2553,8 @@ void TestDUChain::embeddedHTML_data()
 {
     QTest::addColumn<QString>("code");
 
-    QTest::newRow("if") << QString("<?php if ( true ) : ?>\n<?php elseif ( false ) : ?>\n<?php endif; ?>");
+    QTest::newRow("if") << QString("<?php if ( true ) : ?>\n<?php endif; ?>");
+    QTest::newRow("elseif") << QString("<?php if ( true ) : ?>\n<?php elseif ( false ) : ?>\n<?php endif; ?>");
     QTest::newRow("foreach") << QString("<?php foreach ( array(1,2) as $i ) : ?>\n<?php endforeach; ?>\n");
     QTest::newRow("switch") << QString("<?php switch ( 1 ) : case 1: ?>\n<?php break; endswitch; ?>\n");
     QTest::newRow("for") << QString("<?php for ( ;; ) : ?>\n<?php endfor; ?>\n");
