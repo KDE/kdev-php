@@ -921,26 +921,37 @@ void TestCompletion::nonGlobalInFunction()
     QVERIFY(!searchDeclaration(tester.items, decs.first()));
 }
 
+void TestCompletion::fileCompletion_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("include-quote") << QString("include \"");
+    QTest::newRow("include_once-quote") << QString("include_once \"");
+    QTest::newRow("require-quote") << QString("require \"");
+    QTest::newRow("require_once-quote") << QString("require_once \"");
+    QTest::newRow("include-paren") << QString("include ( \"");
+    QTest::newRow("include-quote2") << QString("include '");
+    QTest::newRow("include-paren2") << QString("include ( '");
+    QTest::newRow("include-dirname") << QString("include dirname(__FILE__) . \"/");
+    QTest::newRow("include-dirname2") << QString("include dirname(__FILE__) . '/");
+    QTest::newRow("include-dirname3") << QString("include ( dirname(__FILE__) . \"/");
+    QTest::newRow("include-dirname4") << QString("include ( dirname(__FILE__) . '/");
+    /** TODO:  "include __DIR__ . \"/" */
+}
+
 void TestCompletion::fileCompletion()
 {
     TopDUContext* top = parse("<?php ", DumpNone);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
+    QFETCH(QString, code);
+
     ///TODO: somehow offer files and check whether they work with relative sub-paths
     ///TODO: make sure items after dirname(__FILE__) or similar start with a /
-    foreach ( const QString& code, QStringList() << "include \"" << "include_once \"" << "require_once \""
-                                                 << "require \"" << "include ( \""
-                                                 << "include dirname(__FILE__) . \"/"
-                                                 << "include ( dirname(__FILE__) . \"/"
-                                                 << "include '" << "include ( '"
-                                                 << "include ( dirname(__FILE__) . '/"
-                                                 /** TODO:  << "include __DIR__ . \"/" */ )
-    {
-        kDebug() << code;
-        PhpCompletionTester tester(top, code);
-        QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::FileChoose);
-    }
+    kDebug() << code;
+    PhpCompletionTester tester(top, code);
+    QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::FileChoose);
 }
 
 void TestCompletion::instanceof()

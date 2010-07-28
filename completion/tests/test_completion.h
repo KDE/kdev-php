@@ -77,6 +77,7 @@ private slots:
     void phpStartTag();
     void outsidePhpContext();
     void nonGlobalInFunction();
+    void fileCompletion_data();
     void fileCompletion();
     void instanceof();
     void afterFunctionArg();
