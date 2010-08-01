@@ -2,9 +2,11 @@
 [General]
 Name=Simple PHP Application
 Name[de]=Eine einfache PHP-Anwendung
+Name[en_GB]=Simple PHP Application
 Name[es]=Aplicación PHP sencilla
 Name[et]=Lihtne PHP rakendus
 Name[fr]=Application PHP simple
+Name[it]=Semplice applicazione in PHP
 Name[ja]=簡単な PHP アプリケーション
 Name[nb]=Et enkelt PHP-program
 Name[nds]=Eenfach PHP-Programm
@@ -16,9 +18,11 @@ Name[x-test]=xxSimple PHP Applicationxx
 Category=PHP
 Comment=Generate filestructure to start a PHP application
 Comment[de]=Dateistruktur erstellen, auf deren Basis eine PHP-Anwendung erstellt werden kann
+Comment[en_GB]=Generate filestructure to start a PHP application
 Comment[es]=Generar una estructura de archivos para iniciar una aplicación PHP
 Comment[et]=Failistruktuuri genereerimine PHP rakenduse tarbeks
 Comment[fr]=Générer une structure de fichiers pour lancer une application PHP
+Comment[it]=Genera una struttura file per avviare un'applicazione in PHP
 Comment[ja]=PHP アプリケーションを始めるためのファイル構造を生成
 Comment[nb]=Generer filstruktur for å starte et PHP-program
 Comment[nds]=De Dateistruktuur för't Starten vun en PHP-Programm opstellen
