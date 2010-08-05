@@ -129,8 +129,10 @@ QReadWriteLock* LanguageSupport::internalFunctionsLock()
 
 KDevelop::ParseJob *LanguageSupport::createParseJob(const KUrl &url)
 {
-    if ( url.fileName().endsWith(".gz", Qt::CaseInsensitive) && !url.fileName().endsWith(".php.gz", Qt::CaseInsensitive) ) {
-        // only support *.php.gz files
+    if ( !url.fileName().endsWith(".php") && KMimeType::findByUrl(url)->name() == "application/x-gzip"
+          && !url.fileName().endsWith(".php.gz", Qt::CaseInsensitive) )
+    {
+        // only support *.php.gz files, not arbitrary gzip files (might lead to crashes...)
         return 0;
     }
     return new ParseJob(url);

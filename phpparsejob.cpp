@@ -111,11 +111,17 @@ void ParseJob::run()
     QString fileName = document().str();
 
     if (readFromDisk) {
-        if ( fileName.endsWith(".php.gz", Qt::CaseInsensitive) ) {
-            QString mimeType = KMimeType::findByPath(fileName, 0, false)->name ();
+        QString mimeType = KMimeType::findByPath(fileName, 0, false)->name ();
+        if ( mimeType == "application/x-gzip" ) {
             QIODevice* file = KFilterDev::deviceForFile (fileName, mimeType, false);
             if ( !file->open(QIODevice::ReadOnly) ) {
                 kDebug() << "Could not open file" << document().str();
+                delete file;
+                return abortJob();
+            }
+            if (KMimeType::findByContent(file)->name() != "application/x-php") {
+                kDebug() << "gzip file" << document().str() << "does not contain PHP code";
+                delete file;
                 return abortJob();
             }
             session.setContents(file->readAll());
