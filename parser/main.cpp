@@ -27,20 +27,7 @@
 #include "tokenstream.h"
 #include "phptokentext.h"
 
-#include <QFile>
-#include <QString>
-#include <QStringList>
-#include <QDebug>
-#include <iostream>
-#include <QTextCodec>
-#include <tests/autotestshell.h>
-#include <tests/testcore.h>
-#include <language/duchain/duchain.h>
-#include <language/codegen/coderepresentation.h>
-#include <KApplication>
-#include <KLocalizedString>
 #include <KAboutData>
-#include <KCmdLineArgs>
 
 #include <language/util/debuglanguageparserhelper.h>
 
