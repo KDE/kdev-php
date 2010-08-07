@@ -32,6 +32,7 @@ public:
 
 private slots:
     void newClass();
+    void newSelf();
     void memberVariable();
     void memberFunction();
     void globalFunction();
