@@ -284,6 +284,10 @@ DUContext* ExpressionVisitor::findClassContext(NamespacedIdentifierAst* classNam
 {
     DUContext* context = 0;
     const QualifiedIdentifier id = identifierForNamespace(className, m_editor);
+    static const QualifiedIdentifier staticQId("static");
+    if (id.count() == 1 && id == staticQId) {
+        return m_currentContext->parentContext();
+    }
     Declaration* declaration = findDeclarationImport(ClassDeclarationType, className, id);
     usingDeclaration(className->namespaceNameSequence->back()->element, declaration);
     buildNamespaceUses(className, id);

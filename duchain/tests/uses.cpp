@@ -981,7 +981,18 @@ void TestUses::useNamespace()
     compareUses(dec, SimpleRange(6, 30, 6, 31));
 }
 
+void TestUses::lateStatic()
+{
+    //                         0         1         2         3         4         5         6         7
+    //                         01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php class a { function b() { static::b(); } }", DumpAll);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    compareUses(top->childContexts().first()->localDeclarations().first(), SimpleRange(0, 39, 0, 40));
 }
 
+}
 
 #include "uses.moc"

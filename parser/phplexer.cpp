@@ -659,7 +659,18 @@ int Lexer::nextTokenKind()
             } else if (name == "return") {
                 token = Parser::Token_RETURN;
             } else if (name == "static") {
-                token = Parser::Token_STATIC;
+                QChar* lookAhead = it;
+                int pos = m_curpos;
+                while (pos < m_contentSize && lookAhead->isSpace()) {
+                    ++lookAhead;
+                    ++pos;
+                }
+                if (pos + 1 < m_contentSize && lookAhead->unicode() == ':' && (++lookAhead)->unicode() == ':') {
+                    // PHP 5.3 - late static
+                    token = Parser::Token_STRING;
+                } else {
+                    token = Parser::Token_STATIC;
+                }
             } else if (name == "switch") {
                 token = Parser::Token_SWITCH;
             } else if (name == "throw") {
