@@ -10,8 +10,8 @@ if [ ! -d "$1" ]; then
   exit 2
 fi
 
-pass=""
-fail=""
+passed=""
+failed=""
 
 path=$1
 shift 1
@@ -27,13 +27,13 @@ for f in $(find "$path" -type f -name "*.phpt"); do
   if php-parser /tmp/$base &>/tmp/$base.log; then
     if [[ "$fail" == "" ]]; then
       echo "passed $base"
-      pass=$(echo -e "$pass\n$base")
+      passed=$(echo -e "$passed\n$base")
     else
       echo
       echo "failed $base"
       cat /tmp/$base.log
       echo
-      fail=$(echo -e "$fail\n$base")
+      failed=$(echo -e "$failed\n$base")
     fi
   else
     if [[ "$fail" == "" ]]; then
@@ -41,10 +41,10 @@ for f in $(find "$path" -type f -name "*.phpt"); do
       echo "failed $base"
       cat /tmp/$base.log
       echo
-      fail=$(echo -e "$fail\n$base")
+      failed=$(echo -e "$failed\n$base")
     else
       echo "passed $base"
-      pass=$(echo -e "$pass\n$base")
+      passed=$(echo -e "$passed\n$base")
     fi
   fi
 done
@@ -53,8 +53,8 @@ echo
 echo "PASSED:"
 echo
 
-echo "$pass"
+echo "$passed"
 echo
 echo "FAILED:"
 echo
-echo "$fail"
+echo "$failed"
