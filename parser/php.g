@@ -277,7 +277,11 @@ namespace KDevelop
   | statement=topStatement
 -> outerTopStatement ;;
 
-    statement=statement
+-- first/first conflict for FUNCTION
+   (?[: (LA(1).kind == Token_FUNCTION && ((LA(2).kind == Token_BIT_AND && LA(3).kind == Token_LPAREN)
+            || LA(2).kind == Token_LPAREN))
+        || LA(1).kind != Token_FUNCTION :]
+    statement=statement )
   | functionDeclaration=functionDeclarationStatement
   | classDeclaration=classDeclarationStatement
   | interfaceDeclaration=interfaceDeclarationStatement
@@ -536,7 +540,20 @@ expression=booleanOrExpression
   | EMPTY LPAREN emptyVarialbe=variable RPAREN
   | newObject=varExpressionNewObject
   | CLONE cloneCar=varExpressionNormal
+  | closure=closure
 -> varExpressionNormal ;;
+
+-- http://wiki.php.net/rfc/closures
+    (isStatic=STATIC|0) FUNCTION (isRef=BIT_AND|0) LPAREN parameters=parameterList RPAREN
+        ( USE LPAREN lexicalVars=lexicalVarList RPAREN | 0)
+        LBRACE try/recover(functionBody=innerStatementList) RBRACE
+-> closure ;;
+
+  (#lexicalVars=lexicalVar @ COMMA) | 0
+-> lexicalVarList ;;
+
+  (isRef=BIT_AND | 0) variable=variableIdentifier
+-> lexicalVar ;;
 
     NEW className=classNameReference ctor=ctorArguments
 -> varExpressionNewObject ;;
@@ -627,7 +644,9 @@ expression=booleanOrExpression
   | TRY  LBRACE try/recover(statements=innerStatementList) RBRACE
     #catches=catchItem*
   | UNSET LPAREN #unsetVariables=variable @ COMMA RPAREN semicolonOrCloseTag
-  | expr=expr semicolonOrCloseTag
+    -- first/first conflict STATIC resolved by lookahead
+  | (?[: (LA(1).kind == Token_STATIC && LA(2).kind == Token_FUNCTION) || LA(1).kind != Token_STATIC :]
+        expr=expr semicolonOrCloseTag)
   | DO doStatement=statement WHILE LPAREN whileExpr=expr RPAREN semicolonOrCloseTag
   | BREAK (breakExpr=expr | 0) semicolonOrCloseTag
   | CONTINUE (continueExpr=expr | 0) semicolonOrCloseTag

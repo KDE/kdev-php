@@ -2586,5 +2586,31 @@ void TestDUChain::cases()
     QVERIFY(top->problems().empty());
 }
 
+void TestDUChain::closureParser()
+{
+    // testcase for the parser after closures where introduced,
+    // to make sure nothing brakes and all parser conflicts are resolved
+    TopDUContext* top = parse("<?php\n"
+                              "$lambda1 = function() {return 0;};\n"
+                              "$lambda2 = function() use ($lambda1) {return 0;};\n"
+                              "$lambda3 = function & () use (&$lambda2, $lambda1) {return 0;};\n"
+                              "$lambda3 = static function & () use (&$lambda2, $lambda1) {return 0;};\n"
+                              "\n"
+                              "static $foo = 1;\n"
+                              "\n"
+                              "class a {\n"
+                              "  function foo() {}\n"
+                              "  function & bar() {}\n"
+                              "}\n"
+                              "function foo() {}\n"
+                              "function & bar() {}\n", DumpNone);
+
+    QVERIFY(top);
+
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().empty());
+}
+
 
 #include "duchain.moc"
