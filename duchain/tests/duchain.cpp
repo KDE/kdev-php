@@ -2612,7 +2612,7 @@ void TestDUChain::closureParser()
 
 void TestDUChain::closures()
 {
-    TopDUContext* top = parse("<?php $l = function($a, $b) { return 0; };\n", DumpNone);
+    TopDUContext* top = parse("<?php $l = function($a, stdClass $b) { return 0; };\n", DumpNone);
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
@@ -2622,6 +2622,20 @@ void TestDUChain::closures()
     QCOMPARE(l->identifier().toString(), QString("l"));
     Declaration* closure = top->localDeclarations().last();
     QVERIFY(closure->identifier().isEmpty());
+
+    FunctionType::Ptr funcType = closure->type<FunctionType>();
+    QVERIFY(funcType);
+
+    QCOMPARE(funcType->arguments().count(), 2);
+    QVERIFY(funcType->arguments().at(0).cast<IntegralType>());
+    QCOMPARE(funcType->arguments().at(0).cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+    QVERIFY(funcType->arguments().at(1).cast<StructureType>());
+    QCOMPARE(funcType->arguments().at(1).cast<StructureType>()->qualifiedIdentifier().toString(), QString("stdclass"));
+
+    QVERIFY(funcType->returnType().cast<IntegralType>());
+    QCOMPARE(funcType->returnType().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeInt));
+
+    QVERIFY(l->abstractType()->equals(closure->abstractType().constData()));
 
     qDebug() << l->toString() << l->abstractType()->toString();
     qDebug() << closure->toString() << closure->abstractType()->toString();
