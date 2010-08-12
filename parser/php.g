@@ -544,7 +544,7 @@ expression=booleanOrExpression
 -> varExpressionNormal ;;
 
 -- http://wiki.php.net/rfc/closures
-    (isStatic=STATIC|0) FUNCTION (isRef=BIT_AND|0) LPAREN parameters=parameterList RPAREN
+    FUNCTION (isRef=BIT_AND|0) LPAREN parameters=parameterList RPAREN
         ( USE LPAREN lexicalVars=lexicalVarList RPAREN | 0)
         LBRACE try/recover(functionBody=innerStatementList) RBRACE
 -> closure ;;
@@ -644,9 +644,7 @@ expression=booleanOrExpression
   | TRY  LBRACE try/recover(statements=innerStatementList) RBRACE
     #catches=catchItem*
   | UNSET LPAREN #unsetVariables=variable @ COMMA RPAREN semicolonOrCloseTag
-    -- first/first conflict STATIC resolved by lookahead
-  | (?[: (LA(1).kind == Token_STATIC && LA(2).kind == Token_FUNCTION) || LA(1).kind != Token_STATIC :]
-        expr=expr semicolonOrCloseTag)
+  | expr=expr semicolonOrCloseTag
   | DO doStatement=statement WHILE LPAREN whileExpr=expr RPAREN semicolonOrCloseTag
   | BREAK (breakExpr=expr | 0) semicolonOrCloseTag
   | CONTINUE (continueExpr=expr | 0) semicolonOrCloseTag
