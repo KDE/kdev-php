@@ -564,6 +564,21 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
     closeType();
     closeDeclaration();
 }
+void DeclarationBuilder::visitClosure(ClosureAst* node)
+{
+    setComment(formatComment(node, editor()));
+    {
+        DUChainWriteLocker lock;
+        FunctionDeclaration *dec = openDefinition<FunctionDeclaration>(QualifiedIdentifier(),
+                                                                       editor()->findRange(node->startToken));
+        dec->setKind(Declaration::Type);
+        dec->clearDefaultParameters();
+    }
+
+    DeclarationBuilderBase::visitClosure(node);
+
+    closeDeclaration();
+}
 
 bool DeclarationBuilder::isGlobalRedeclaration(const QualifiedIdentifier &identifier, AstNode* node,
         DeclarationType type)

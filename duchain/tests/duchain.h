@@ -134,6 +134,7 @@ private slots:
     void embeddedHTML();
     void cases();
     void closureParser();
+    void closures();
 };
 
 }

@@ -90,6 +90,7 @@ protected:
     virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KTextEditor::Range& range);
     virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
     virtual void visitUseNamespace(UseNamespaceAst* node);
+    virtual void visitClosure(ClosureAst* node);
 
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const MethodBodyAst* body) const {

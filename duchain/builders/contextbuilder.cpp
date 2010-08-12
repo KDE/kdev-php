@@ -274,6 +274,35 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     }
 }
 
+void ContextBuilder::visitClosure(ClosureAst* node)
+{
+    DUContext* parameters = openContext(node->parameters, DUContext::Function);
+    Q_ASSERT(!parameters->inSymbolTable());
+
+    visitParameterList(node->parameters);
+    closeContext();
+
+    if ( node->lexicalVars ) {
+        DUContext* imported = openContext(node->lexicalVars, DUContext::Function);
+        Q_ASSERT(!imported->inSymbolTable());
+
+        visitLexicalVarList(node->lexicalVars);
+        closeContext();
+    }
+
+    if ( !m_isInternalFunctions && node->functionBody ) {
+        // the internal functions file has only empty method bodies, so skip them
+        DUContext* body = openContext(node->functionBody, DUContext::Other);
+        {
+            DUChainWriteLocker lock(DUChain::lock());
+            body->addImportedParentContext(parameters);
+            body->setInSymbolTable(false);
+        }
+        visitNode(node->functionBody);
+        closeContext();
+    }
+}
+
 void ContextBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node)
 {
     // close existing namespace context

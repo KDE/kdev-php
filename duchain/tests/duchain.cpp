@@ -2594,6 +2594,7 @@ void TestDUChain::closureParser()
                               "$lambda1 = function() {return 0;};\n"
                               "$lambda2 = function() use ($lambda1) {return 0;};\n"
                               "$lambda3 = function & () use (&$lambda2, $lambda1) {return 0;};\n"
+                              "$lambda4 = function & ($a, &$b, stdClass $c) use (&$lambda2, $lambda1) {return 0;};\n"
                               "\n"
                               "class a {\n"
                               "  function foo() {}\n"
@@ -2609,5 +2610,21 @@ void TestDUChain::closureParser()
     QVERIFY(top->problems().empty());
 }
 
+void TestDUChain::closures()
+{
+    TopDUContext* top = parse("<?php $l = function($a, $b) { return 0; };\n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QCOMPARE(top->localDeclarations().count(), 2);
+    Declaration* l = top->localDeclarations().first();
+    QCOMPARE(l->identifier().toString(), QString("l"));
+    Declaration* closure = top->localDeclarations().last();
+    QVERIFY(closure->identifier().isEmpty());
+
+    qDebug() << l->toString() << l->abstractType()->toString();
+    qDebug() << closure->toString() << closure->abstractType()->toString();
+}
 
 #include "duchain.moc"
