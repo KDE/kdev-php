@@ -91,6 +91,7 @@ protected:
     virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
     virtual void visitUseNamespace(UseNamespaceAst* node);
     virtual void visitClosure(ClosureAst* node);
+    virtual void visitLexicalVar(LexicalVarAst* node);
 
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const MethodBodyAst* body) const {

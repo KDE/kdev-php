@@ -77,6 +77,7 @@ private slots:
     void namespaces();
     void useNamespace();
     void lateStatic();
+    void closures();
 };
 
 }

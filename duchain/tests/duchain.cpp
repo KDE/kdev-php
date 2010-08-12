@@ -2636,9 +2636,6 @@ void TestDUChain::closures()
     QCOMPARE(funcType->returnType().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeInt));
 
     QVERIFY(l->abstractType()->equals(closure->abstractType().constData()));
-
-    qDebug() << l->toString() << l->abstractType()->toString();
-    qDebug() << closure->toString() << closure->abstractType()->toString();
 }
 
 #include "duchain.moc"

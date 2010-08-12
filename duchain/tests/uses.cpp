@@ -993,6 +993,27 @@ void TestUses::lateStatic()
     compareUses(top->childContexts().first()->localDeclarations().first(), SimpleRange(0, 39, 0, 40));
 }
 
+void TestUses::closures()
+{
+    //                         0         1         2         3         4         5         6         7
+    //                         01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php $a = 1; $b = 2;\n"
+                              "$l = function($b) use ($a) { return $a - $b; };\n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QCOMPARE(top->localDeclarations().count(), 4);
+
+    Declaration* a = top->localDeclarations().at(0);
+    QCOMPARE(a->identifier().toString(), QString("a"));
+    compareUses(a, QList<SimpleRange>() << SimpleRange(1, 23, 1, 25) << SimpleRange(1, 36, 1, 38));
+
+    Declaration* b = top->localDeclarations().at(1);
+    QCOMPARE(b->identifier().toString(), QString("b"));
+    QVERIFY(b->uses().isEmpty());
+}
+
 }
 
 #include "uses.moc"

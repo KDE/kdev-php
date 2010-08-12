@@ -282,8 +282,9 @@ void ContextBuilder::visitClosure(ClosureAst* node)
     visitParameterList(node->parameters);
     closeContext();
 
+    DUContext* imported = 0;
     if ( node->lexicalVars ) {
-        DUContext* imported = openContext(node->lexicalVars, DUContext::Function);
+        imported = openContext(node->lexicalVars, DUContext::Other);
         Q_ASSERT(!imported->inSymbolTable());
 
         visitLexicalVarList(node->lexicalVars);
@@ -294,8 +295,11 @@ void ContextBuilder::visitClosure(ClosureAst* node)
         // the internal functions file has only empty method bodies, so skip them
         DUContext* body = openContext(node->functionBody, DUContext::Other);
         {
-            DUChainWriteLocker lock(DUChain::lock());
+            DUChainWriteLocker lock;
             body->addImportedParentContext(parameters);
+            if (imported) {
+                body->addImportedParentContext(imported, SimpleCursor::invalid(), true);
+            }
             body->setInSymbolTable(false);
         }
         visitNode(node->functionBody);

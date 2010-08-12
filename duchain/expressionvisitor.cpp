@@ -198,58 +198,79 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
 
 void ExpressionVisitor::visitVarExpressionNormal(VarExpressionNormalAst *node)
 {
-    if (node->closure) {
-        FunctionType* closureType = new FunctionType;
-        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
-        visitInnerStatementList(node->closure->functionBody);
-        closureType->setReturnType(m_result.type());
+    DefaultVisitor::visitVarExpressionNormal(node);
+    if (node->array != -1) {
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeArray)));
+    }
+}
 
-        if (node->closure->parameters->parametersSequence) {
-            const KDevPG::ListNode< ParameterAst* >* it = node->closure->parameters->parametersSequence->front();
-            forever {
-                AbstractType::Ptr type;
-                if (it->element->parameterType) {
-                    //don't use openTypeFromName as it uses cursor for findDeclarations
-                    Declaration* decl = findDeclarationImport(ClassDeclarationType,
-                                                              it->element->parameterType,
-                                                              identifierForNamespace(it->element->parameterType, m_editor));
-                    if (decl) {
-                        type = decl->abstractType();
-                    }
-                } else if (it->element->arrayType != -1) {
-                    type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
-                } else if (it->element->defaultValue) {
-                    ExpressionVisitor v(m_editor);
-                    it->element->defaultValue->ducontext = m_currentContext;
-                    v.visitNode(it->element->defaultValue);
-                    type = v.result().type();
-                }
-                if (!type) {
-                    type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
-                }
+void ExpressionVisitor::visitClosure(ClosureAst* node)
+{
+    FunctionType* closureType = new FunctionType;
+    m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
+    visitInnerStatementList(node->functionBody);
+    closureType->setReturnType(m_result.type());
 
-                if ( it->element->isRef != -1 ) {
-                    ReferenceType::Ptr p( new ReferenceType() );
-                    p->setBaseType( type );
-
-                    type = p.cast<AbstractType>();
+    if (node->parameters->parametersSequence) {
+        const KDevPG::ListNode< ParameterAst* >* it = node->parameters->parametersSequence->front();
+        forever {
+            AbstractType::Ptr type;
+            if (it->element->parameterType) {
+                //don't use openTypeFromName as it uses cursor for findDeclarations
+                Declaration* decl = findDeclarationImport(ClassDeclarationType,
+                                                            it->element->parameterType,
+                                                            identifierForNamespace(it->element->parameterType, m_editor));
+                if (decl) {
+                    type = decl->abstractType();
                 }
-                closureType->addArgument(type);
-                if ( it->hasNext() ) {
-                    it = it->next;
-                } else {
+            } else if (it->element->arrayType != -1) {
+                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
+            } else if (it->element->defaultValue) {
+                ExpressionVisitor v(m_editor);
+                it->element->defaultValue->ducontext = m_currentContext;
+                v.visitNode(it->element->defaultValue);
+                type = v.result().type();
+            }
+            if (!type) {
+                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
+            }
+
+            if ( it->element->isRef != -1 ) {
+                ReferenceType::Ptr p( new ReferenceType() );
+                p->setBaseType( type );
+
+                type = p.cast<AbstractType>();
+            }
+            closureType->addArgument(type);
+            if ( it->hasNext() ) {
+                it = it->next;
+            } else {
+                break;
+            }
+        }
+    }
+
+    if (node->lexicalVars->lexicalVarsSequence) {
+        const KDevPG::ListNode< LexicalVarAst* >* it = node->lexicalVars->lexicalVarsSequence->front();
+        DUChainWriteLocker lock;
+        forever {
+            Declaration* found = 0;
+            foreach(Declaration* dec, m_currentContext->findDeclarations(identifierForNode(it->element->variable))) {
+                if (dec->kind() == Declaration::Instance) {
+                    found = dec;
                     break;
                 }
             }
-        }
-
-        m_result.setType(AbstractType::Ptr(closureType));
-    } else {
-        DefaultVisitor::visitVarExpressionNormal(node);
-        if (node->array != -1) {
-            m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeArray)));
+            usingDeclaration(it->element->variable, found);
+            if ( it->hasNext() ) {
+                it = it->next;
+            } else {
+                break;
+            }
         }
     }
+
+    m_result.setType(AbstractType::Ptr(closureType));
 }
 
 void ExpressionVisitor::visitFunctionCallParameterList( FunctionCallParameterListAst* node )
