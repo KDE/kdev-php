@@ -1304,6 +1304,16 @@ void TestCompletion::closures()
         QVERIFY(tester.containsDeclaration(l));
         QVERIFY(!tester.containsDeclaration(c));
     }
+    {
+        PhpCompletionTester tester(top, "$l(");
+        QVERIFY(tester.containsDeclaration(l));
+        QVERIFY(!tester.containsDeclaration(c));
+
+        QVERIFY(tester.completionContext->parentContext());
+        QVERIFY(!tester.completionContext->parentContext()->parentContext());
+        QCOMPARE(tester.completionContext->parentContext()->memberAccessOperation(),
+                 CodeCompletionContext::FunctionCallAccess);
+    }
 }
 
 }

@@ -40,6 +40,7 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/types/identifiedtype.h>
+#include <language/duchain/types/functiontype.h>
 #include <language/interfaces/iproblem.h>
 #include <util/pushvalue.h>
 #include <language/duchain/codemodel.h>
@@ -733,7 +734,9 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case FunctionCallAccess:
             m_memberAccessOperation = NoMemberAccess;
             Q_ASSERT(lastToken.type() == Parser::Token_LPAREN);
-            if ( lastToken.prependedBy(TokenList() << Parser::Token_STRING, true) == -1 ) {
+            if ( lastToken.prependedBy(TokenList() << Parser::Token_STRING, true) == -1 &&
+                 lastToken.prependedBy(TokenList() << Parser::Token_VARIABLE, true) == -1 )
+            {
                 // handle for, foreach, while, etc.
                 ifDebug(kDebug() << "NoMemberAccess (no function call)";)
             } else {
@@ -1559,8 +1562,8 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                             if ( !decl ) {
                                 continue;
                             }
-                        } else {
-                            kDebug() << "parent decl is neither function nor class, skipping" << decl->toString();
+                        } else if ( !decl->type<FunctionType>() ) {
+                            kDebug() << "parent decl is neither function nor class nor closure, skipping" << decl->toString();
                             continue;
                         }
                     }
