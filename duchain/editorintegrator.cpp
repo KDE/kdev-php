@@ -53,23 +53,28 @@ KDevelop::SimpleCursor EditorIntegrator::findPosition(const KDevPG::TokenStream:
     }
 }
 
-KDevelop::SimpleRange EditorIntegrator::findRange(AstNode * node, RangeEdge edge)
+KDevelop::SimpleRange EditorIntegrator::findRange(AstNode * node, RangeEdge edge) const
 {
     Q_UNUSED(edge);
     return KDevelop::SimpleRange(findPosition(node->startToken, FrontEdge), findPosition(node->endToken, BackEdge));
 }
 
-KDevelop::SimpleRange EditorIntegrator::findRange(qint64 startToken, qint64 endToken)
+KDevelop::SimpleRange EditorIntegrator::findRange(qint64 startToken, qint64 endToken) const
 {
     return KDevelop::SimpleRange(findPosition(startToken, FrontEdge), findPosition(endToken, BackEdge));
 }
 
-KDevelop::SimpleRange EditorIntegrator::findRange(AstNode* from, AstNode* to)
+KDevelop::SimpleRange EditorIntegrator::findRange(qint64 token) const
+{
+    return KDevelop::SimpleRange(findPosition(token, FrontEdge), findPosition(token, BackEdge));
+}
+
+KDevelop::SimpleRange EditorIntegrator::findRange(AstNode* from, AstNode* to) const
 {
     return KDevelop::SimpleRange(findPosition(from->startToken, FrontEdge), findPosition(to->endToken, BackEdge));
 }
 
-KDevelop::SimpleRange EditorIntegrator::findRange(const KDevPG::TokenStream::Token & token)
+KDevelop::SimpleRange EditorIntegrator::findRange(const KDevPG::TokenStream::Token & token) const
 {
     return KDevelop::SimpleRange(findPosition(token, FrontEdge), findPosition(token, BackEdge));
 }

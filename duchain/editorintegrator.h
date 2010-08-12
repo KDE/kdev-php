@@ -49,8 +49,7 @@ public:
     ParseSession* parseSession() const;
 
     /**
-     * Finds the location and \a file where the given \a token was parsed from.  This function
-     * does not change any of the EditorIntegrator's state.
+     * Finds the location and \a file where the given \a token was parsed from.
      *
      * \param token token to locate
      * \param edge set to FrontEdge to return the start position of the token, BackEdge to return the end position.
@@ -61,7 +60,6 @@ public:
 
     /**
      * Finds the location and \a file where the given \a token was parsed from.
-     * This function does not change any of the EditorIntegrator's state.
      *
      * \param token token to locate
      * \param edge set to FrontEdge to return the start position of the token, BackEdge to return the end position.
@@ -74,43 +72,38 @@ public:
 
     /**
      * Create a range encompassing the given AstNode \a node.
-     * This function does not change any of the EditorIntegrator's state.
      *
      * \overload
      */
-    KDevelop::SimpleRange findRange(AstNode* node, RangeEdge = OuterEdge);
+    KDevelop::SimpleRange findRange(AstNode* node, RangeEdge = OuterEdge) const;
 
     /**
      * Create a range encompassing the given AstNode \a nodes.
-     * This function does not change any of the EditorIntegrator's state.
      *
      * \overload
      */
-    KDevelop::SimpleRange findRange(AstNode* from, AstNode* to);
+    KDevelop::SimpleRange findRange(AstNode* from, AstNode* to) const;
 
     /**
      * Create a range encompassing the given AstNode \a token.
-     * This function does not change any of the EditorIntegrator's state.
      *
      * \overload
      */
-    KDevelop::SimpleRange findRange(const KDevPG::TokenStream::Token& token);
+    KDevelop::SimpleRange findRange(const KDevPG::TokenStream::Token& token) const;
 
     /**
      * Create a range encompassing the given AstNode \a token.
-     * This function does not change any of the EditorIntegrator's state.
      *
      * \overload
      */
-    KDevelop::SimpleRange findRange(qint64 token);
+    KDevelop::SimpleRange findRange(qint64 token) const;
 
     /**
      * Create a range encompassing the given AstNode \a tokens.
-     * This function does not change any of the EditorIntegrator's state.
      *
      * \overload
      */
-    KDevelop::SimpleRange findRange(qint64 start_token, qint64 end_token);
+    KDevelop::SimpleRange findRange(qint64 startToken, qint64 endToken) const;
 
     /**
      * Retrieve the string represented by a token.
