@@ -1641,6 +1641,10 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
         // hack for included files
         return false;
     }
+    if ( dec->kind() == Declaration::Type && dec->qualifiedIdentifier().isEmpty() ) {
+        // filter closures
+        return false;
+    }
 
     static DUChainPointer<ClassDeclaration> exceptionDecl;
     if (!exceptionDecl) {

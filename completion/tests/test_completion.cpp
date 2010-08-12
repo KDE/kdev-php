@@ -1286,6 +1286,26 @@ void TestCompletion::inNamespace()
     }
 }
 
+void TestCompletion::closures()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $l = function($a) {};\n" );
+
+    TopDUContext* top = parse(method, DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    Declaration* l = top->localDeclarations().first();
+    Declaration* c = top->localDeclarations().last();
+    {
+        PhpCompletionTester tester(top, "");
+        QVERIFY(tester.containsDeclaration(l));
+        QVERIFY(!tester.containsDeclaration(c));
+    }
+}
+
 }
 
 #include "test_completion.moc"
