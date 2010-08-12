@@ -847,7 +847,7 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
 
         const QString identifier(lastToken.stringAt(startPos).toLower());
 
-        if ( identifier == "self" || identifier == "parent" ) {
+        if ( identifier == "self" || identifier == "parent" || identifier == "static" ) {
             // self and parent are only accessible from within a member function of a class
             if (DUContext* parent = m_duContext->parentContext()) {
                 LOCKDUCHAIN;

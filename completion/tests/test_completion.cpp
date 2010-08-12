@@ -196,11 +196,20 @@ void TestCompletion::privateStaticObjectCompletion()
 
     DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
 
+    {
     PhpCompletionTester tester(funContext, "self::");
 
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::StaticMemberAccess);
 
     QCOMPARE(tester.names, QStringList() << "spubf" << "$spub" << "c" << "sprotf" << "$sprot" << "sprivf" << "$spriv");
+    }
+    {
+    PhpCompletionTester tester(funContext, "static::");
+
+    QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::StaticMemberAccess);
+
+    QCOMPARE(tester.names, QStringList() << "spubf" << "$spub" << "c" << "sprotf" << "$sprot" << "sprivf" << "$spriv");
+    }
 }
 void TestCompletion::protectedObjectCompletion()
 {
