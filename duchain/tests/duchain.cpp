@@ -2616,6 +2616,7 @@ void TestDUChain::closures()
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
+    QVERIFY(top->problems().isEmpty());
 
     QCOMPARE(top->localDeclarations().count(), 2);
     Declaration* l = top->localDeclarations().first();
@@ -2644,10 +2645,20 @@ void TestDUChain::gotoTest()
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
+    QVERIFY(top->problems().isEmpty());
 
     ///TODO: create declaration for destination label
     ///TODO: create use for goto label
     ///TODO: report error when trying to jump into loop or switch statement
+}
+
+void TestDUChain::ternary()
+{
+    TopDUContext* top = parse("<?php $a = true ? 1 : 2; $b = false ?: 3; \n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().isEmpty());
 }
 
 #include "duchain.moc"

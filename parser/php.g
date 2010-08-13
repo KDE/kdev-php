@@ -404,7 +404,7 @@ ASSIGN
 -> assignmentExpressionCheckIfVariable ;;
 
 expression=booleanOrExpression
-   (  QUESTION ifExpression=expr
+   (  QUESTION (ifExpression=expr|0)
       COLON    elseExpression=conditionalExpression
     | 0
    )

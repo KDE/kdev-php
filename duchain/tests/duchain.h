@@ -136,6 +136,7 @@ private slots:
     void closureParser();
     void closures();
     void gotoTest();
+    void ternary();
 };
 
 }
