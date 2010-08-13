@@ -2638,4 +2638,16 @@ void TestDUChain::closures()
     QVERIFY(l->abstractType()->equals(closure->abstractType().constData()));
 }
 
+void TestDUChain::gotoTest()
+{
+    TopDUContext* top = parse("<?php goto dest; dest: \n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    ///TODO: create declaration for destination label
+    ///TODO: create use for goto label
+    ///TODO: report error when trying to jump into loop or switch statement
+}
+
 #include "duchain.moc"

@@ -219,7 +219,8 @@ namespace KDevelop
        METHOD_C ("__METHOD__"), FUNC_C ("__FUNCTION__"), LINE ("__LINE__"),
        FILE ("__FILE__"), COMMENT ("comment"), DOC_COMMENT ("doc comment"),  PAAMAYIM_NEKUDOTAYIM ("::"),
        INCLUDE ("include"), INCLUDE_ONCE ("include_once"), EVAL ("eval"), REQUIRE ("require"),
-       REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use") ;;
+       REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use"),
+       GOTO ("goto") ;;
 
 -- casts:
 %token INT_CAST ("int cast"), DOUBLE_CAST ("double cast"), STRING_CAST ("string cast"),
@@ -644,7 +645,8 @@ expression=booleanOrExpression
   | TRY  LBRACE try/recover(statements=innerStatementList) RBRACE
     #catches=catchItem*
   | UNSET LPAREN #unsetVariables=variable @ COMMA RPAREN semicolonOrCloseTag
-  | expr=expr semicolonOrCloseTag
+  -- fix first/follow with goto target
+  | ( ?[: LA(1).kind != Token_STRING || LA(2).kind != Token_COLON :] expr=expr semicolonOrCloseTag )
   | DO doStatement=statement WHILE LPAREN whileExpr=expr RPAREN semicolonOrCloseTag
   | BREAK (breakExpr=expr | 0) semicolonOrCloseTag
   | CONTINUE (continueExpr=expr | 0) semicolonOrCloseTag
@@ -661,6 +663,8 @@ expression=booleanOrExpression
   | INLINE_HTML
   | CONST #consts=constantDeclaration @ COMMA SEMICOLON
   | USE #useNamespace=useNamespace @ COMMA SEMICOLON
+  | GOTO gotoLabel=STRING SEMICOLON
+  | gotoTarget=STRING COLON
 -> statement ;;
 
     identifier=namespacedIdentifier (AS aliasIdentifier=identifier | 0)

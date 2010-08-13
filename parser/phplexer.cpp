@@ -707,6 +707,8 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_FUNCTION;
             } else if (name == "use") {
                 token = Parser::Token_USE;
+            } else if (name == "goto") {
+                token = Parser::Token_GOTO;
             } else if (name == "global") {
                 token = Parser::Token_GLOBAL;
             } else if (name == "var") {
