@@ -135,12 +135,14 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
     } else if ( ICore::self() ) {
         m_reportErrors = ICore::self()->languageController()->completionSettings()->highlightSemanticProblems();
     }
+
     return ContextBuilderBase::build(url, node, updateContext, useSmart);
 }
 
 void DeclarationBuilder::startVisiting(AstNode* node)
 {
     setRecompiling(m_actuallyRecompiling);
+    setCompilingContexts(false);
     DeclarationBuilderBase::startVisiting(node);
 }
 

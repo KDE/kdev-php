@@ -101,21 +101,23 @@ bool ContextBuilder::hadUnresolvedIdentifiers() const
 
 void ContextBuilder::startVisiting(AstNode* node)
 {
-    TopDUContext* top = dynamic_cast<TopDUContext*>(currentContext());
-    Q_ASSERT(top);
-    bool hasImports;
-    {
-        DUChainReadLocker lock(DUChain::lock());
-        hasImports = !top->importedParentContexts().isEmpty();
-    }
-    if (!hasImports && top->url() != internalFunctionFile()) {
-        DUChainWriteLocker lock(DUChain::lock());
-        TopDUContext* import = DUChain::self()->chainForDocument(internalFunctionFile());
-        if (!import) {
-            kWarning() << "importing internalFunctions failed" << currentContext()->url().str();
-            Q_ASSERT(false);
-        } else {
-            top->addImportedParentContext(import);
+    if (compilingContexts()) {
+        TopDUContext* top = dynamic_cast<TopDUContext*>(currentContext());
+        Q_ASSERT(top);
+        bool hasImports;
+        {
+            DUChainReadLocker lock(DUChain::lock());
+            hasImports = !top->importedParentContexts().isEmpty();
+        }
+        if (!hasImports && top->url() != internalFunctionFile()) {
+            DUChainWriteLocker lock(DUChain::lock());
+            TopDUContext* import = DUChain::self()->chainForDocument(internalFunctionFile());
+            if (!import) {
+                kWarning() << "importing internalFunctions failed" << currentContext()->url().str();
+                Q_ASSERT(false);
+            } else {
+                top->addImportedParentContext(import);
+            }
         }
     }
     visitNode(node);
@@ -237,7 +239,7 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
         if ( !m_isInternalFunctions && node->methodBody ) {
             // the internal functions file has only empty method bodies, so skip them
             DUContext* body = openContext(node->methodBody, DUContext::Other, node->methodName);
-            {
+            if (compilingContexts()) {
                 DUChainWriteLocker lock(DUChain::lock());
                 body->addImportedParentContext(parameters);
                 body->setInSymbolTable(false);
@@ -264,7 +266,7 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     if ( !m_isInternalFunctions && node->functionBody ) {
         // the internal functions file has only empty method bodies, so skip them
         DUContext* body = openContext(node->functionBody, DUContext::Other, node->functionName);
-        {
+        if (compilingContexts()) {
             DUChainWriteLocker lock(DUChain::lock());
             body->addImportedParentContext(parameters);
             body->setInSymbolTable(false);
@@ -294,7 +296,7 @@ void ContextBuilder::visitClosure(ClosureAst* node)
     if ( !m_isInternalFunctions && node->functionBody ) {
         // the internal functions file has only empty method bodies, so skip them
         DUContext* body = openContext(node->functionBody, DUContext::Other);
-        {
+        if (compilingContexts()) {
             DUChainWriteLocker lock;
             body->addImportedParentContext(parameters);
             if (imported) {
@@ -407,6 +409,10 @@ void ContextBuilder::addBaseType(NamespacedIdentifierAst * identifier)
 void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
 {
     DefaultVisitor::visitUnaryExpression(node);
+    if (!compilingContexts()) {
+        return;
+    }
+
     IndexedString includeFile = getIncludeFileForNode(node, editor());
     if ( !includeFile.isEmpty() ) {
         DUChainWriteLocker lock(DUChain::lock());
