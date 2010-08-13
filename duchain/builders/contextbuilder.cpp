@@ -227,13 +227,13 @@ void ContextBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStat
 
 void ContextBuilder::visitClassStatement(ClassStatementAst *node)
 {
-    visitNode(node->modifiers);
+    visitOptionalModifiers(node->modifiers);
     if (node->methodName) {
         //method declaration
         DUContext* parameters = openContext(node->parameters, DUContext::Function, node->methodName);
         Q_ASSERT(!parameters->inSymbolTable());
 
-        visitNode(node->parameters);
+        visitParameterList(node->parameters);
         closeContext();
 
         if ( !m_isInternalFunctions && node->methodBody ) {
@@ -244,7 +244,7 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
                 body->addImportedParentContext(parameters);
                 body->setInSymbolTable(false);
             }
-            visitNode(node->methodBody);
+            visitMethodBody(node->methodBody);
             closeContext();
         }
     } else {
@@ -255,12 +255,12 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
 
 void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)
 {
-    visitNode(node->functionName);
+    visitIdentifier(node->functionName);
 
     DUContext* parameters = openContext(node->parameters, DUContext::Function, node->functionName);
     Q_ASSERT(!parameters->inSymbolTable());
 
-    visitNode(node->parameters);
+    visitParameterList(node->parameters);
     closeContext();
 
     if ( !m_isInternalFunctions && node->functionBody ) {
@@ -271,7 +271,7 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
             body->addImportedParentContext(parameters);
             body->setInSymbolTable(false);
         }
-        visitNode(node->functionBody);
+        visitInnerStatementList(node->functionBody);
         closeContext();
     }
 }
@@ -304,7 +304,7 @@ void ContextBuilder::visitClosure(ClosureAst* node)
             }
             body->setInSymbolTable(false);
         }
-        visitNode(node->functionBody);
+        visitInnerStatementList(node->functionBody);
         closeContext();
     }
 }
