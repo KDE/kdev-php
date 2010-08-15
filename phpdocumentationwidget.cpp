@@ -22,20 +22,36 @@
 
 #include <KHTMLPart>
 #include <QProgressBar>
-
+#include <QLabel>
 #include <QVBoxLayout>
+#include <QTemporaryFile>
 
 #include "phpdocsplugin.h"
-#include <QLabel>
+#include <documentation/standarddocumentationview.h>
 
-PhpDocumentationWidget::PhpDocumentationWidget(const KUrl &url, PhpDocsPlugin* provider, QWidget* parent)
-    : QStackedWidget(parent), m_part(new KHTMLPart(this)), m_loading(new QWidget(this))
+QSharedPointer<QTemporaryFile> createStyleSheet()
 {
-    addWidget(m_part->widget());
-    addWidget(m_loading);
+    QSharedPointer<QTemporaryFile> file(new QTemporaryFile);
+    bool ret = file->open();
+    Q_ASSERT(ret);
 
-    connect( m_part, SIGNAL(docCreated()),
-             this, SLOT(documentLoaded()) );
+    QTextStream ts(file.data());
+    ts << QString( "#headnav,#headsearch,#footnav,#leftbar{display:none !important;}"
+                                        "body{font-size:80% !important;}"
+                                        "option,select{font-size:80% !important;}"
+                                        "#layout_2,#layout_3{background: none !important;}"
+                                        "#content{margin:0 !important}");
+    return file;
+}
+
+static QSharedPointer<QTemporaryFile> phpDocStyleSheet=createStyleSheet();
+
+PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget* find, const KUrl &url, PhpDocsPlugin* provider, QWidget* parent)
+    : QStackedWidget(parent), m_loading(new QWidget(this))
+{
+    m_part=new KDevelop::StandardDocumentationView(find, this);
+    addWidget(m_part);
+    addWidget(m_loading);
 
     QProgressBar* progressbar = new QProgressBar;
     progressbar->setValue(0);
@@ -43,7 +59,7 @@ PhpDocumentationWidget::PhpDocumentationWidget(const KUrl &url, PhpDocsPlugin* p
     progressbar->setMaximum(100);
     progressbar->setAlignment(Qt::AlignCenter);
 
-    connect( m_part->browserExtension(), SIGNAL(loadingProgress(int)),
+    connect( m_part, SIGNAL(loadProgress(int)),
              progressbar, SLOT(setValue(int)) );
 
     QVBoxLayout* layout = new QVBoxLayout;
@@ -56,21 +72,18 @@ PhpDocumentationWidget::PhpDocumentationWidget(const KUrl &url, PhpDocsPlugin* p
     m_loading->setLayout(layout);
     setCurrentWidget(m_loading);
 
-    connect( m_part->browserExtension(), SIGNAL(openUrlRequest(KUrl,KParts::OpenUrlArguments, KParts::BrowserArguments)),
-             provider, SLOT(loadUrl(KUrl)) );
 
-    m_part->openUrl( url );
+    connect(m_part, SIGNAL(linkClicked(QUrl)), provider, SLOT(loadUrl(QUrl)));
+    connect(m_part, SIGNAL(loadFinished(bool)), this, SLOT(documentLoaded()) );
+
+    m_part->load( url );
 }
 
 void PhpDocumentationWidget::documentLoaded()
 {
-    m_part->setUserStyleSheet( QString( "#headnav,#headsearch,#footnav,#leftbar{display:none !important;}"
-                                        "body{font-size:80% !important;}"
-                                        "option,select{font-size:80% !important;}"
-                                        "#layout_2,#layout_3{background: none !important;}"
-                                        "#content{margin:0 !important}") );
+    m_part->settings()->setUserStyleSheetUrl(KUrl(phpDocStyleSheet->fileName()));
 
-    setCurrentWidget(m_part->widget());
+    setCurrentWidget(m_part);
     removeWidget(m_loading);
     delete m_loading;
     m_loading = 0;

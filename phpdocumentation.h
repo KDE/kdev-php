@@ -43,7 +43,7 @@ class PhpDocumentation : public KDevelop::IDocumentation
     virtual QString name() const;
     virtual QString description() const;
     virtual bool providesWidget() const;
-    virtual QWidget* documentationWidget(QWidget* parent = 0);
+    virtual QWidget* documentationWidget(KDevelop::DocumentationFindWidget* findWidget, QWidget* parent = 0);
     virtual KDevelop::IDocumentationProvider* provider() const;
 
   private:

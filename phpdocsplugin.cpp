@@ -56,6 +56,7 @@ K_EXPORT_PLUGIN(PhpDocsFactory(KAboutData("kdevphpdocs","kdevphpdocs", ki18n("Ph
 PhpDocsPlugin::PhpDocsPlugin(QObject* parent, const QVariantList& args)
     : IPlugin(PhpDocsFactory::componentData(), parent), m_model(new PhpDocsModel(this))
 {
+    KDEV_USE_EXTENSION_INTERFACE( KDevelop::IDocumentationProvider )
     Q_UNUSED(args);
 
     readConfig();
@@ -195,7 +196,7 @@ KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForIndex(const QModelIn
     ));
 }
 
-void PhpDocsPlugin::loadUrl(const KUrl& url) const
+void PhpDocsPlugin::loadUrl(const QUrl& url) const
 {
     kDebug() << "loading URL" << url;
     KSharedPtr<IDocumentation> doc = documentationForUrl(url, QString());

@@ -25,7 +25,11 @@
 
 #include <KUrl>
 
-class KHTMLPart;
+namespace KDevelop {
+    class StandardDocumentationView;
+    class DocumentationFindWidget;
+}
+
 class PhpDocsPlugin;
 
 class PhpDocumentationWidget : public QStackedWidget
@@ -33,14 +37,14 @@ class PhpDocumentationWidget : public QStackedWidget
     Q_OBJECT
 
 public:
-    explicit PhpDocumentationWidget(const KUrl &url, PhpDocsPlugin* provider, QWidget* parent = 0);
+    explicit PhpDocumentationWidget(KDevelop::DocumentationFindWidget* find, const KUrl &url, PhpDocsPlugin* provider, QWidget* parent = 0);
 
 private slots:
     /// used to inject some custom CSS to alter the remote php.net site
     void documentLoaded();
 
 private:
-    KHTMLPart* m_part;
+    KDevelop::StandardDocumentationView* m_part;
     QWidget* m_loading;
 };
 

@@ -49,7 +49,7 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
     void addHistory( const KSharedPtr< KDevelop::IDocumentation >& doc ) const;
 
   public slots:
-    void loadUrl(const KUrl &url) const;
+    void loadUrl(const QUrl &url) const;
 
   private:
     KSharedPtr< KDevelop::IDocumentation > documentationForUrl(

@@ -41,9 +41,9 @@ QString PhpDocumentation::description() const
     return QString::fromUtf8( m_description );
 }
 
-QWidget* PhpDocumentation::documentationWidget( QWidget* parent )
+QWidget* PhpDocumentation::documentationWidget(KDevelop::DocumentationFindWidget* findWidget, QWidget* parent )
 {
-    return new PhpDocumentationWidget(m_url, m_parent, parent);
+    return new PhpDocumentationWidget(findWidget, m_url, m_parent, parent);
 }
 
 QString PhpDocumentation::name() const
