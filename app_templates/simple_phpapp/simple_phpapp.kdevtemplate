@@ -1,7 +1,7 @@
 # KDE Config File
 [General]
 Name=Simple PHP Application
-Name[ca]=Una aplicació PHP simple
+Name[ca]=Una aplicació PHP senzilla
 Name[ca@valencia]=Una aplicació PHP simple
 Name[da]=Simpel PHP-applikation
 Name[de]=Eine einfache PHP-Anwendung
