@@ -132,6 +132,11 @@ private slots:
     void curlyVarAfterObj();
     void embeddedHTML_data();
     void embeddedHTML();
+    void cases();
+    void closureParser();
+    void closures();
+    void gotoTest();
+    void ternary();
 };
 
 }

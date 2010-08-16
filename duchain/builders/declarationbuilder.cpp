@@ -132,12 +132,14 @@ KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::Index
     } else if ( ICore::self() ) {
         m_reportErrors = ICore::self()->languageController()->completionSettings()->highlightSemanticProblems();
     }
+
     return ContextBuilderBase::build(url, node, updateContext);
 }
 
 void DeclarationBuilder::startVisiting(AstNode* node)
 {
     setRecompiling(m_actuallyRecompiling);
+    setCompilingContexts(false);
     DeclarationBuilderBase::startVisiting(node);
 }
 
@@ -560,6 +562,48 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
 
     closeType();
     closeDeclaration();
+}
+void DeclarationBuilder::visitClosure(ClosureAst* node)
+{
+    setComment(formatComment(node, editor()));
+    {
+        DUChainWriteLocker lock;
+        FunctionDeclaration *dec = openDefinition<FunctionDeclaration>(QualifiedIdentifier(),
+                                                                       editor()->findRange(node->startToken));
+        dec->setKind(Declaration::Type);
+        dec->clearDefaultParameters();
+    }
+
+    DeclarationBuilderBase::visitClosure(node);
+
+    closeDeclaration();
+}
+void DeclarationBuilder::visitLexicalVar(LexicalVarAst* node)
+{
+    DeclarationBuilderBase::visitLexicalVar(node);
+
+    QualifiedIdentifier id = identifierForNode(node->variable);
+    DUChainWriteLocker lock;
+    if ( recompiling() ) {
+        // sadly we can't use findLocalDeclarations() here, since it un-aliases declarations
+        foreach ( Declaration* dec, currentContext()->localDeclarations() ) {
+            if ( dynamic_cast<AliasDeclaration*>(dec) && dec->identifier() == id.first() ) {
+                // don't redeclare but reuse the existing declaration
+                encounter(dec);
+                return;
+            }
+        }
+    }
+
+    // no existing declaration found, create one
+    foreach(Declaration* aliasedDeclaration, currentContext()->findDeclarations(id)) {
+        if (aliasedDeclaration->kind() == Declaration::Instance) {
+            AliasDeclaration* dec = openDefinition<AliasDeclaration>(id, editor()->findRange(node->variable));
+            dec->setAliasedDeclaration(aliasedDeclaration);
+            closeDeclaration();
+            break;
+        }
+    }
 }
 
 bool DeclarationBuilder::isGlobalRedeclaration(const QualifiedIdentifier &identifier, AstNode* node,

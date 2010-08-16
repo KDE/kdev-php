@@ -219,7 +219,8 @@ namespace KDevelop
        METHOD_C ("__METHOD__"), FUNC_C ("__FUNCTION__"), LINE ("__LINE__"),
        FILE ("__FILE__"), COMMENT ("comment"), DOC_COMMENT ("doc comment"),  PAAMAYIM_NEKUDOTAYIM ("::"),
        INCLUDE ("include"), INCLUDE_ONCE ("include_once"), EVAL ("eval"), REQUIRE ("require"),
-       REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use") ;;
+       REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use"),
+       GOTO ("goto") ;;
 
 -- casts:
 %token INT_CAST ("int cast"), DOUBLE_CAST ("double cast"), STRING_CAST ("string cast"),
@@ -277,7 +278,11 @@ namespace KDevelop
   | statement=topStatement
 -> outerTopStatement ;;
 
-    statement=statement
+-- first/first conflict for FUNCTION
+   (?[: (LA(1).kind == Token_FUNCTION && ((LA(2).kind == Token_BIT_AND && LA(3).kind == Token_LPAREN)
+            || LA(2).kind == Token_LPAREN))
+        || LA(1).kind != Token_FUNCTION :]
+    statement=statement )
   | functionDeclaration=functionDeclarationStatement
   | classDeclaration=classDeclarationStatement
   | interfaceDeclaration=interfaceDeclarationStatement
@@ -287,8 +292,10 @@ namespace KDevelop
 [: bool reported = false; while ( true ) { :]
     try/recover(#statements=topStatement)*
 [: if (yytoken != Token_RBRACE && yytoken != Token_EOF && yytoken != Token_CLOSE_TAG
+       && yytoken != Token_ELSEIF
        && yytoken != Token_ENDIF && yytoken != Token_ENDFOREACH && yytoken != Token_ENDFOR
-       && yytoken != Token_ENDWHILE && yytoken != Token_ENDSWITCH && yytoken != Token_ENDDECLARE ) {
+       && yytoken != Token_ENDWHILE && yytoken != Token_ENDSWITCH && yytoken != Token_ENDDECLARE
+       && yytoken != Token_CASE && yytoken != Token_DEFAULT) {
         if (!reported) {
             qint64 index = tokenStream->index() - 1;
             Token &token = tokenStream->token(index);
@@ -397,7 +404,7 @@ ASSIGN
 -> assignmentExpressionCheckIfVariable ;;
 
 expression=booleanOrExpression
-   (  QUESTION ifExpression=expr
+   (  QUESTION (ifExpression=expr|0)
       COLON    elseExpression=conditionalExpression
     | 0
    )
@@ -534,7 +541,20 @@ expression=booleanOrExpression
   | EMPTY LPAREN emptyVarialbe=variable RPAREN
   | newObject=varExpressionNewObject
   | CLONE cloneCar=varExpressionNormal
+  | closure=closure
 -> varExpressionNormal ;;
+
+-- http://wiki.php.net/rfc/closures
+    FUNCTION (isRef=BIT_AND|0) LPAREN parameters=parameterList RPAREN
+        ( USE LPAREN lexicalVars=lexicalVarList RPAREN | 0)
+        LBRACE try/recover(functionBody=innerStatementList) RBRACE
+-> closure ;;
+
+  (#lexicalVars=lexicalVar @ COMMA) | 0
+-> lexicalVarList ;;
+
+  (isRef=BIT_AND | 0) variable=variableIdentifier
+-> lexicalVar ;;
 
     NEW className=classNameReference ctor=ctorArguments
 -> varExpressionNewObject ;;
@@ -625,7 +645,8 @@ expression=booleanOrExpression
   | TRY  LBRACE try/recover(statements=innerStatementList) RBRACE
     #catches=catchItem*
   | UNSET LPAREN #unsetVariables=variable @ COMMA RPAREN semicolonOrCloseTag
-  | expr=expr semicolonOrCloseTag
+  -- fix first/follow with goto target
+  | ( ?[: LA(1).kind != Token_STRING || LA(2).kind != Token_COLON :] expr=expr semicolonOrCloseTag )
   | DO doStatement=statement WHILE LPAREN whileExpr=expr RPAREN semicolonOrCloseTag
   | BREAK (breakExpr=expr | 0) semicolonOrCloseTag
   | CONTINUE (continueExpr=expr | 0) semicolonOrCloseTag
@@ -642,6 +663,8 @@ expression=booleanOrExpression
   | INLINE_HTML
   | CONST #consts=constantDeclaration @ COMMA SEMICOLON
   | USE #useNamespace=useNamespace @ COMMA SEMICOLON
+  | GOTO gotoLabel=STRING SEMICOLON
+  | gotoTarget=STRING COLON
 -> statement ;;
 
     identifier=namespacedIdentifier (AS aliasIdentifier=identifier | 0)

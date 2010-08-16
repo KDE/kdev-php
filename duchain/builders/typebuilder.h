@@ -55,6 +55,7 @@ protected:
     virtual void visitConstantDeclaration(ConstantDeclarationAst* node);
     virtual void visitParameter(ParameterAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
+    virtual void visitClosure(ClosureAst* node);
 
     virtual void visitStatement(StatementAst* node);
     virtual void visitExpr(ExprAst *node);

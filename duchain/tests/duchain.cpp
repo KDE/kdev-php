@@ -2552,7 +2552,8 @@ void TestDUChain::embeddedHTML_data()
 {
     QTest::addColumn<QString>("code");
 
-    QTest::newRow("if") << QString("<?php if ( true ) : ?>\n<?php elseif ( false ) : ?>\n<?php endif; ?>");
+    QTest::newRow("if") << QString("<?php if ( true ) : ?>\n<?php endif; ?>");
+    QTest::newRow("elseif") << QString("<?php if ( true ) : ?>\n<?php elseif ( false ) : ?>\n<?php endif; ?>");
     QTest::newRow("foreach") << QString("<?php foreach ( array(1,2) as $i ) : ?>\n<?php endforeach; ?>\n");
     QTest::newRow("switch") << QString("<?php switch ( 1 ) : case 1: ?>\n<?php break; endswitch; ?>\n");
     QTest::newRow("for") << QString("<?php for ( ;; ) : ?>\n<?php endfor; ?>\n");
@@ -2570,6 +2571,93 @@ void TestDUChain::embeddedHTML()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
     QVERIFY(top->problems().empty());
+}
+
+void TestDUChain::cases()
+{
+    // testcase for bug https://bugs.kde.org/show_bug.cgi?id=245832
+    TopDUContext* top = parse("<?php switch(1) { case 1:\n case 2:\n break; default: break; }", DumpNone);
+
+    QVERIFY(top);
+
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().empty());
+}
+
+void TestDUChain::closureParser()
+{
+    // testcase for the parser after closures where introduced,
+    // to make sure nothing brakes and all parser conflicts are resolved
+    TopDUContext* top = parse("<?php\n"
+                              "$lambda1 = function() {return 0;};\n"
+                              "$lambda2 = function() use ($lambda1) {return 0;};\n"
+                              "$lambda3 = function & () use (&$lambda2, $lambda1) {return 0;};\n"
+                              "$lambda4 = function & ($a, &$b, stdClass $c) use (&$lambda2, $lambda1) {return 0;};\n"
+                              "\n"
+                              "class a {\n"
+                              "  function foo() {}\n"
+                              "  function & bar() {}\n"
+                              "}\n"
+                              "function foo() {}\n"
+                              "function & bar() {}\n", DumpNone);
+
+    QVERIFY(top);
+
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().empty());
+}
+
+void TestDUChain::closures()
+{
+    TopDUContext* top = parse("<?php $l = function($a, stdClass $b) { return 0; };\n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().isEmpty());
+
+    QCOMPARE(top->localDeclarations().count(), 2);
+    Declaration* l = top->localDeclarations().first();
+    QCOMPARE(l->identifier().toString(), QString("l"));
+    Declaration* closure = top->localDeclarations().last();
+    QVERIFY(closure->identifier().isEmpty());
+
+    FunctionType::Ptr funcType = closure->type<FunctionType>();
+    QVERIFY(funcType);
+
+    QCOMPARE(funcType->arguments().count(), 2);
+    QVERIFY(funcType->arguments().at(0).cast<IntegralType>());
+    QCOMPARE(funcType->arguments().at(0).cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+    QVERIFY(funcType->arguments().at(1).cast<StructureType>());
+    QCOMPARE(funcType->arguments().at(1).cast<StructureType>()->qualifiedIdentifier().toString(), QString("stdclass"));
+
+    QVERIFY(funcType->returnType().cast<IntegralType>());
+    QCOMPARE(funcType->returnType().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeInt));
+
+    QVERIFY(l->abstractType()->equals(closure->abstractType().constData()));
+}
+
+void TestDUChain::gotoTest()
+{
+    TopDUContext* top = parse("<?php goto dest; dest: \n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().isEmpty());
+
+    ///TODO: create declaration for destination label
+    ///TODO: create use for goto label
+    ///TODO: report error when trying to jump into loop or switch statement
+}
+
+void TestDUChain::ternary()
+{
+    TopDUContext* top = parse("<?php $a = true ? 1 : 2; $b = false ?: 3; \n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().isEmpty());
 }
 
 #include "duchain.moc"

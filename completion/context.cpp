@@ -40,6 +40,7 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/types/identifiedtype.h>
+#include <language/duchain/types/functiontype.h>
 #include <language/interfaces/iproblem.h>
 #include <util/pushvalue.h>
 #include <language/duchain/codemodel.h>
@@ -232,13 +233,13 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     // use other ctor for parents
     Q_ASSERT(depth == 0);
 
-    ifDebug(log("non-processed text: " + text);)
+    ifDebug(kDebug() << "non-processed text: " + text;)
 
     if ( context->type() == DUContext::Class || context->type() == DUContext::Function || context->type() == DUContext::Other
         || context->type() == DUContext::Namespace )
     {
         if ( !m_parentContext && !m_text.startsWith(QLatin1String("<?php ")) ) {
-            ifDebug(log("added start tag: " + m_text);)
+            ifDebug(kDebug() << "added start tag: " + m_text;)
             m_text.prepend("<?php ");
         }
     }
@@ -246,12 +247,12 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     m_valid = !m_text.isEmpty();
 
     if (!m_valid) {
-        log("empty completion text");
+        kDebug() << "empty completion text";
         return;
     }
 
     TokenAccess lastToken(m_text);
-//     ifDebug(log("clearing completion text");)
+//     ifDebug(kDebug() << "clearing completion text");)
 //     m_text.clear();
 
     /// even when we skip to some more meaning ful token, this will
@@ -260,19 +261,19 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
 
     bool lastWasWhitespace = lastToken == Parser::Token_WHITESPACE;
     if ( lastWasWhitespace ) {
-        ifDebug(log("skipping whitespace token");)
+        ifDebug(kDebug() << "skipping whitespace token";)
         lastToken.pop();
     }
 
     // when the text after the current token starts with /* we are inside
     // a multi line comment => don't offer completion
     if ( m_text.mid( lastTokenEnd, 2 ) == "/*" ) {
-        ifDebug(log("no completion in comments"));
+        ifDebug(kDebug() << "no completion in comments");
         m_valid = false;
         return;
     }
 
-    ifDebug(log(tokenText(lastToken.type()));)
+    ifDebug(kDebug() << tokenText(lastToken.type());)
 
     ///TODO: REFACTOR: push some stuff into its own methods
     ///                and call them from inside the big switch.
@@ -286,7 +287,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             case Parser::Token_IMPLEMENTS:
             case Parser::Token_NEW:
             case Parser::Token_THROW:
-                ifDebug(log("need whitespace after token for completion");)
+                ifDebug(kDebug() << "need whitespace after token for completion";)
                 m_valid = false;
                 return;
             default:
@@ -294,7 +295,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         }
     }
 
-    ifDebug(log(tokenText(lastToken.type()));)
+    ifDebug(kDebug() << tokenText(lastToken.type());)
 
     switch ( lastToken.type() ) {
         case Parser::Token_COMMENT:
@@ -302,7 +303,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             // multi-line comments are handled above
             if ( !lastWasWhitespace && !lastToken.stringAt(0).endsWith('\n')
                     && !lastToken.stringAt(0).startsWith(QLatin1String("/*")) ) {
-                ifDebug(log("no completion in comments");)
+                ifDebug(kDebug() << "no completion in comments";)
                 m_valid = false;
             }
             break;
@@ -316,7 +317,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 m_memberAccessOperation = InterfaceChoose;
                 forbidIdentifier(lastToken.stringAt(-2));
             } else {
-                ifDebug(log("token prepended by bad tokens, don't do completion");)
+                ifDebug(kDebug() << "token prepended by bad tokens, don't do completion";)
                 m_valid = false;
             }
             break;
@@ -326,7 +327,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 m_memberAccessOperation = InterfaceChoose;
                 forbidIdentifier(lastToken.stringAt(-2));
             } else {
-                ifDebug(log("token prepended by bad tokens, don't do completion");)
+                ifDebug(kDebug() << "token prepended by bad tokens, don't do completion";)
                 m_valid = false;
             }
             break;
@@ -367,7 +368,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 }
             }
             if ( m_memberAccessOperation == InterfaceChoose ) {
-                ifDebug(log("in implementation list");)
+                ifDebug(kDebug() << "in implementation list";)
                 m_memberAccessOperation = InterfaceChoose;
                 foreach ( const qint64& pos, identifierPositions ) {
                     forbidIdentifier(lastToken.stringAt(pos));
@@ -389,7 +390,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             // don't do completion if no whitespace is given and there is some text following,
             // esp. for stuff like <?php <?ph <?p
             if ( !lastWasWhitespace && !followingText.isEmpty() ) {
-                ifDebug(log("no completion because <? is followed by" + followingText));
+                ifDebug(kDebug() << "no completion because <? is followed by" + followingText;)
                 m_valid = false;
             } else {
                 // else just do normal completion
@@ -412,8 +413,8 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 m_memberAccessOperation = ExceptionChoose;
             } else if ( lastToken.typeAt(pos) == Parser::Token_ARRAY ) {
                 m_memberAccessOperation = NoMemberAccess;
-                ifDebug(log("NoMemberAccess");)
-                ifDebug(log("returning early");)
+                ifDebug(kDebug() << "NoMemberAccess";)
+                ifDebug(kDebug() << "returning early";)
                 return;
             } else {
                 m_memberAccessOperation = FunctionCallAccess;
@@ -650,7 +651,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_WHILE:
         case Parser::Token_WHITESPACE:
         case Parser::TokenTypeSize:
-            ifDebug(log("no completion after this token");)
+            ifDebug(kDebug() << "no completion after this token";)
             m_valid = false;
             break;
     }
@@ -658,61 +659,61 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     ifDebug(
         switch ( m_memberAccessOperation ) {
             case FileChoose:
-                log("FileChoose");
+                kDebug() << "FileChoose";
                 break;
             case ExceptionInstanceChoose:
-                log("ExceptionInstanceChoose");
+                kDebug() << "ExceptionInstanceChoose";
                 break;
             case ExceptionChoose:
-                log("ExceptionChoose");
+                kDebug() << "ExceptionChoose";
                 break;
             case ClassMemberChoose:
-                log("ClassMemberChoose");
+                kDebug() << "ClassMemberChoose";
                 break;
             case NoMemberAccess:
-                log("NoMemberAccess");
+                kDebug() << "NoMemberAccess";
                 break;
             case NewClassChoose:
-                log("NewClassChoose");
+                kDebug() << "NewClassChoose";
                 break;
             case FunctionCallAccess:
-                log("FunctionCallAccess");
+                kDebug() << "FunctionCallAccess";
                 break;
             case InterfaceChoose:
-                log("InterfaceChoose");
+                kDebug() << "InterfaceChoose";
                 break;
             case ClassExtendsChoose:
-                log("ClassExtendsChoose");
+                kDebug() << "ClassExtendsChoose";
                 break;
             case MemberAccess:
-                log("MemberAccess");
+                kDebug() << "MemberAccess";
                 break;
             case StaticMemberAccess:
-                log("StaticMemberAccess");
+                kDebug() << "StaticMemberAccess";
                 break;
             case InstanceOfChoose:
-                log("InstanceOfChoose");
+                kDebug() << "InstanceOfChoose";
                 break;
             case NamespaceChoose:
-                log("NamespaceChoose");
+                kDebug() << "NamespaceChoose";
                 break;
             case BackslashAccess:
-                log("BackslashAccess");
+                kDebug() << "BackslashAccess";
                 break;
         }
     )
 
-    ifDebug(log(tokenText(lastToken.type()));)
+    ifDebug(kDebug() << tokenText(lastToken.type());)
 
     // if it's not valid, we should return early
     if ( !m_valid ) {
-        ifDebug(log("invalid completion");)
+        ifDebug(kDebug() << "invalid completion";)
         return;
     }
 
     // trim the text to the end position of the current token
     m_text = m_text.left(lastToken.tokenAt(0).end + 1).trimmed();
-    ifDebug(log("trimmed text: " + m_text);)
+    ifDebug(kDebug() << "trimmed text: " << m_text;)
 
     // check whether we need the expression or have everything we need and can return early
     switch ( m_memberAccessOperation ) {
@@ -728,18 +729,20 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case InstanceOfChoose:
         case NamespaceChoose:
         case BackslashAccess:
-            ifDebug(log("returning early");)
+            ifDebug(kDebug() << "returning early";)
             return;
         case FunctionCallAccess:
             m_memberAccessOperation = NoMemberAccess;
             Q_ASSERT(lastToken.type() == Parser::Token_LPAREN);
-            if ( lastToken.prependedBy(TokenList() << Parser::Token_STRING, true) == -1 ) {
+            if ( lastToken.prependedBy(TokenList() << Parser::Token_STRING, true) == -1 &&
+                 lastToken.prependedBy(TokenList() << Parser::Token_VARIABLE, true) == -1 )
+            {
                 // handle for, foreach, while, etc.
-                ifDebug(log("NoMemberAccess (no function call)");)
+                ifDebug(kDebug() << "NoMemberAccess (no function call)";)
             } else {
                 //The first context should never be a function-call context,
                 //so make this a NoMemberAccess context and the parent a function-call context.
-                ifDebug(log("NoMemberAccess (creating parentContext for function call)");)
+                ifDebug(kDebug() << "NoMemberAccess (creating parentContext for function call)";)
                 m_parentContext = new CodeCompletionContext(m_duContext, m_position, lastToken, depth + 1);
             }
             return;
@@ -844,7 +847,7 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
 
         const QString identifier(lastToken.stringAt(startPos).toLower());
 
-        if ( identifier == "self" || identifier == "parent" ) {
+        if ( identifier == "self" || identifier == "parent" || identifier == "static" ) {
             // self and parent are only accessible from within a member function of a class
             if (DUContext* parent = m_duContext->parentContext()) {
                 LOCKDUCHAIN;
@@ -909,9 +912,9 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
             LOCKDUCHAIN;
             ifDebug(kDebug() << "expression type: " << m_expressionResult.type()->toString();)
         } else {
-            ifDebug(log(QString("expression could not be evaluated")));
+            ifDebug(kDebug() << QString("expression could not be evaluated"));
             if ( m_memberAccessOperation == FunctionCallAccess ) {
-                ifDebug(log("function not found");)
+                ifDebug(kDebug() << "function not found";)
                 return;
             }
             m_valid = false;
@@ -930,7 +933,7 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
         if ( lastToken.type() == Parser::Token_COMMA ) {
             removeOtherArguments(lastToken);
             if ( lastToken.type() == Parser::Token_INVALID ) {
-                ifDebug(log(QString("Could not find start position for parent function-call. Aborting."));)
+                ifDebug(kDebug() << QString("Could not find start position for parent function-call. Aborting.");)
                 m_valid = false;
                 return;
             }
@@ -938,11 +941,11 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
 
         if ( lastToken.prependedBy(TokenList() << Parser::Token_STRING, true) == -1 ) {
             // handle for, foreach, while, etc.
-            ifDebug(log("No real function call");)
+            ifDebug(kDebug() << "No real function call";)
             return;
         }
 
-        ifDebug(log(QString("Recursive function-call: creating parent context")));
+        ifDebug(kDebug() << QString("Recursive function-call: creating parent context"));
         m_parentContext = new CodeCompletionContext(m_duContext, m_position, lastToken, m_depth + 1);
 
         if (!m_parentContext->isValid()) {
@@ -1559,8 +1562,8 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                             if ( !decl ) {
                                 continue;
                             }
-                        } else {
-                            kDebug() << "parent decl is neither function nor class, skipping" << decl->toString();
+                        } else if ( !decl->type<FunctionType>() ) {
+                            kDebug() << "parent decl is neither function nor class nor closure, skipping" << decl->toString();
                             continue;
                         }
                     }
@@ -1639,6 +1642,10 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
 {
     if ( dec->range().isEmpty() ) {
         // hack for included files
+        return false;
+    }
+    if ( dec->kind() == Declaration::Type && dec->qualifiedIdentifier().isEmpty() ) {
+        // filter closures
         return false;
     }
 

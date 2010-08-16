@@ -397,6 +397,25 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
     }
 }
 
+void TypeBuilder::visitClosure(ClosureAst* node)
+{
+    m_currentFunctionParams = parseDocCommentParams(node);
+    FunctionType::Ptr type = FunctionType::Ptr(new FunctionType());
+    openType(type);
+
+    type->setReturnType(parseDocComment(node, "return"));
+    m_gotReturnTypeFromDocComment = type->returnType();
+
+    updateCurrentType();
+
+    TypeBuilderBase::visitClosure(node);
+
+    if (!type->returnType()) {
+        type->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
+    }
+    closeType();
+}
+
 void TypeBuilder::visitExpr(ExprAst *node)
 {
     openAbstractType(getTypeForNode(node));

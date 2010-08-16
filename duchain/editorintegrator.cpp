@@ -50,23 +50,28 @@ KDevelop::CursorInRevision EditorIntegrator::findPosition(const KDevPG::TokenStr
     }
 }
 
-KDevelop::RangeInRevision EditorIntegrator::findRange(AstNode * node, RangeEdge edge)
+KDevelop::RangeInRevision EditorIntegrator::findRange(AstNode * node, RangeEdge edge) const
 {
     Q_UNUSED(edge);
     return KDevelop::RangeInRevision(findPosition(node->startToken, FrontEdge), findPosition(node->endToken, BackEdge));
 }
 
-KDevelop::RangeInRevision EditorIntegrator::findRange(qint64 startToken, qint64 endToken)
+KDevelop::RangeInRevision EditorIntegrator::findRange(qint64 startToken, qint64 endToken) const
 {
     return KDevelop::RangeInRevision(findPosition(startToken, FrontEdge), findPosition(endToken, BackEdge));
 }
 
-KDevelop::RangeInRevision EditorIntegrator::findRange(AstNode* from, AstNode* to)
+KDevelop::RangeInRevision EditorIntegrator::findRange(qint64 token) const
+{
+    return KDevelop::RangeInRevision(findPosition(token, FrontEdge), findPosition(token, BackEdge));
+}
+
+KDevelop::RangeInRevision EditorIntegrator::findRange(AstNode* from, AstNode* to) const
 {
     return KDevelop::RangeInRevision(findPosition(from->startToken, FrontEdge), findPosition(to->endToken, BackEdge));
 }
 
-KDevelop::RangeInRevision EditorIntegrator::findRange(const KDevPG::TokenStream::Token & token)
+KDevelop::RangeInRevision EditorIntegrator::findRange(const KDevPG::TokenStream::Token & token) const
 {
     return KDevelop::RangeInRevision(findPosition(token, FrontEdge), findPosition(token, BackEdge));
 }

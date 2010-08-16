@@ -76,6 +76,7 @@ protected:
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
     virtual void visitClassStatement(ClassStatementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
+    virtual void visitClosure(ClosureAst* node);
     virtual void visitUnaryExpression(UnaryExpressionAst* node);
     /**
      * don't overload in other builders, use @c openNamespace and @c closeNamespace instead.

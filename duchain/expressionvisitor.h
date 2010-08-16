@@ -58,6 +58,7 @@ protected:
     void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
     void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
     void visitVarExpressionNormal(VarExpressionNormalAst *node);
+    virtual void visitClosure(ClosureAst* node);
     void visitFunctionCall(FunctionCallAst* node);
     void visitConstantOrClassConst(ConstantOrClassConstAst *node);
     void visitScalar(ScalarAst *node);

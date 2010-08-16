@@ -196,11 +196,20 @@ void TestCompletion::privateStaticObjectCompletion()
 
     DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
 
+    {
     PhpCompletionTester tester(funContext, "self::");
 
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::StaticMemberAccess);
 
     QCOMPARE(tester.names, QStringList() << "spubf" << "$spub" << "c" << "sprotf" << "$sprot" << "sprivf" << "$spriv");
+    }
+    {
+    PhpCompletionTester tester(funContext, "static::");
+
+    QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::StaticMemberAccess);
+
+    QCOMPARE(tester.names, QStringList() << "spubf" << "$spub" << "c" << "sprotf" << "$sprot" << "sprivf" << "$spriv");
+    }
 }
 void TestCompletion::protectedObjectCompletion()
 {
@@ -1283,6 +1292,36 @@ void TestCompletion::inNamespace()
         QVERIFY(!searchDeclaration(tester.items, top->childContexts().first()->localDeclarations().first()));
         QVERIFY(!searchDeclaration(tester.items, top->localDeclarations().last()));
         QVERIFY(searchDeclaration(tester.items, top->childContexts().last()->localDeclarations().first()));
+    }
+}
+
+void TestCompletion::closures()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $l = function($a) {};\n" );
+
+    TopDUContext* top = parse(method, DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    Declaration* l = top->localDeclarations().first();
+    Declaration* c = top->localDeclarations().last();
+    {
+        PhpCompletionTester tester(top, "");
+        QVERIFY(tester.containsDeclaration(l));
+        QVERIFY(!tester.containsDeclaration(c));
+    }
+    {
+        PhpCompletionTester tester(top, "$l(");
+        QVERIFY(tester.containsDeclaration(l));
+        QVERIFY(!tester.containsDeclaration(c));
+
+        QVERIFY(tester.completionContext->parentContext());
+        QVERIFY(!tester.completionContext->parentContext()->parentContext());
+        QCOMPARE(tester.completionContext->parentContext()->memberAccessOperation(),
+                 CodeCompletionContext::FunctionCallAccess);
     }
 }
 

@@ -93,6 +93,7 @@ private slots:
     void funcCallInConditional();
     void namespaces();
     void inNamespace();
+    void closures();
 };
 
 }
