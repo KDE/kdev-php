@@ -19,21 +19,11 @@
 
 #include "phphighlighting.h"
 #include <language/duchain/declaration.h>
-#include <language/duchain/use.h>
-#include <language/highlighting/colorcache.h>
-#include <language/highlighting/configurablecolors.h>
-
-#include <KTextEditor/SmartRange>
-#include <KTextEditor/SmartInterface>
-#include <KTextEditor/Document>
 
 #include "duchain/declarations/variabledeclaration.h"
 
 using namespace KDevelop;
 using namespace Php;
-using namespace KTextEditor;
-
-#define LOCK_SMART(range) KTextEditor::SmartInterface* iface = dynamic_cast<KTextEditor::SmartInterface*>(range->document()); QMutexLocker lock(iface ? iface->smartMutex() : 0);
 
 class HighlightingInstance : public CodeHighlightingInstance {
 public:
