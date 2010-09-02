@@ -19,11 +19,8 @@
 
 #include "phphighlighting.h"
 #include <language/duchain/declaration.h>
-#include <language/duchain/use.h>
-#include <language/highlighting/colorcache.h>
-#include <language/highlighting/configurablecolors.h>
 
-#include <KTextEditor/Document>
+#include "duchain/declarations/variabledeclaration.h"
 
 using namespace KDevelop;
 using namespace Php;
@@ -31,9 +28,7 @@ using namespace Php;
 class HighlightingInstance : public CodeHighlightingInstance {
 public:
     HighlightingInstance(const CodeHighlighting* highlighting);
-    virtual void highlightDeclaration(Declaration* declaration, const QColor& color);
-    virtual void highlightUse(DUContext* context, int index, const QColor& color);
-
+    virtual Types typeForDeclaration(KDevelop::Declaration* decl, KDevelop::DUContext* context) const;
 };
 
 HighlightingInstance::HighlightingInstance(const CodeHighlighting* highlighting)
@@ -41,39 +36,17 @@ HighlightingInstance::HighlightingInstance(const CodeHighlighting* highlighting)
 {
 }
 
-bool isConstDeclaration(Declaration* decl) {
-    return decl && !decl->isFunctionDeclaration() &&
-           decl->abstractType() && decl->abstractType()->modifiers() & AbstractType::ConstModifier;
-}
-
-///TODO: make this easier by rewriting some parts in the KDevplatform CodeHighlightingInstance
-///      essentially we'd need to overwrite TypeForDeclaration
-void HighlightingInstance::highlightDeclaration(Declaration* declaration, const QColor& color)
+HighlightingEnumContainer::Types HighlightingInstance::typeForDeclaration(Declaration* decl, DUContext* context) const
 {
-    if (isConstDeclaration(declaration)) {
-        // highlight const class members and defines differently from normal variables
-//         if (SmartRange* range = declaration->smartRange()) {
-//             range->setAttribute(m_highlighting->attributeForType(EnumType, DeclarationContext, color));
-//         }
+    if (decl && !decl->isFunctionDeclaration() && decl->abstractType()
+        && decl->abstractType()->modifiers() & AbstractType::ConstModifier
+        && !dynamic_cast<VariableDeclaration*>(decl) )
+    {
+        return EnumType;
     } else {
-        CodeHighlightingInstance::highlightDeclaration(declaration, color);
+        return CodeHighlightingInstance::typeForDeclaration(decl, context);
     }
 }
-
-///TODO: make this easier by rewriting some parts in the KDevplatform CodeHighlightingInstance
-///      essentially we'd need to overwrite TypeForDeclaration
-void HighlightingInstance::highlightUse(DUContext* context, int index, const QColor& color)
-{
-//     if (SmartRange* range = context->useSmartRange(index)) {
-//         Declaration* decl = context->topContext()->usedDeclarationForIndex(context->uses()[index].m_declarationIndex);
-//         if (isConstDeclaration(decl)) {
-//             range->setAttribute(m_highlighting->attributeForType(EnumType, ReferenceContext, color));
-//             return;
-//         }
-//     }
-    KDevelop::CodeHighlightingInstance::highlightUse(context, index, color);
-}
-
 
 Highlighting::Highlighting(QObject* parent)
     : CodeHighlighting(parent)
