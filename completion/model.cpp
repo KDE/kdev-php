@@ -88,7 +88,7 @@ Range CodeCompletionModel::completionRange(View* view, const Cursor &position)
     return range;
 }
 
-bool CodeCompletionModel::shouldAbortCompletion(View* view, const SmartRange &range, const QString &currentCompletion)
+bool CodeCompletionModel::shouldAbortCompletion(View* view, const Range &range, const QString &currentCompletion)
 {
     if(view->cursorPosition() < range.start() || view->cursorPosition() > range.end())
         return true; //Always abort when the completion-range has been left

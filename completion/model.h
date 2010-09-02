@@ -46,7 +46,7 @@ public:
     CodeCompletionModel(QObject* parent = 0);
     virtual ~CodeCompletionModel();
 
-    bool shouldAbortCompletion(KTextEditor::View* view, const KTextEditor::SmartRange &range, const QString &currentCompletion);
+    bool shouldAbortCompletion(KTextEditor::View* view, const KTextEditor::Range &range, const QString &currentCompletion);
     KTextEditor::Range completionRange(KTextEditor::View* view, const KTextEditor::Cursor &position);
 
 protected:
