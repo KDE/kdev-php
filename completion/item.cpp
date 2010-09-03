@@ -95,7 +95,7 @@ void NormalDeclarationCompletionItem::executed(KTextEditor::Document* document, 
 {
     if (m_declaration && dynamic_cast<AbstractFunctionDeclaration*>(m_declaration.data())) {
         //Do some intelligent stuff for functions with the parens:
-        insertFunctionParenText(document, word, m_declaration);
+        insertFunctionParenText(document, word.end(), m_declaration);
     }
 }
 

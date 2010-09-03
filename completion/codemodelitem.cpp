@@ -94,7 +94,9 @@ void CodeModelCompletionItem::execute(KTextEditor::Document* document, const KTe
 
     if (declaration() && dynamic_cast<AbstractFunctionDeclaration*>(declaration().data())) {
         //Do some intelligent stuff for functions with the parens:
-        insertFunctionParenText(document, word, declaration());
+        KTextEditor::Cursor pos = word.start();
+        pos.setColumn(pos.column() + m_item.prettyName.length());
+        insertFunctionParenText(document, pos, declaration());
     }
 }
 
