@@ -60,6 +60,7 @@ protected:
     virtual void visitCatchItem(CatchItemAst* node);
     virtual void visitUnaryExpression( UnaryExpressionAst* node );
     virtual void visitUseNamespace(UseNamespaceAst* node);
+    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range);
 
 private:
     void buildNamespaceUses(Php::NamespacedIdentifierAst* node, Php::DeclarationType lastType = Php::ClassDeclarationType);

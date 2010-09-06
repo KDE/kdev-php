@@ -867,6 +867,8 @@ void TestUses::namespaces()
                               "new \\Foo\\Bar\\MyClass;\n"
                               "function Func(\\Foo\\Bar\\MyClass $a){}\n"
                               "class a extends \\Foo\\Bar\\MyClass implements \\Foo\\Bar\\MyInterface {}\n"
+                              "}\n"
+                              "namespace Foo {\n"
                               "}\n", DumpAll);
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
@@ -874,9 +876,11 @@ void TestUses::namespaces()
 
     Declaration* dec;
 
-    dec = top->findDeclarations(QualifiedIdentifier("foo")).first();
+    dec = top->findDeclarations(QualifiedIdentifier("foo")).last();
     QCOMPARE(dec->kind(), Declaration::Namespace);
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 1, 8, 4)
+    compareUses(dec, QList<RangeInRevision>()
+                                          << RangeInRevision(1, 10, 1, 13)
+                                          << RangeInRevision(8, 1, 8, 4)
                                           << RangeInRevision(9, 1, 9, 4)
                                           << RangeInRevision(10, 1, 10, 4)
                                           << RangeInRevision(11, 5, 11, 8)

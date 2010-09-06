@@ -183,4 +183,14 @@ void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node, DeclarationTy
                   findDeclarationImport(lastType, identifier, node ));
 }
 
+void UseBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node,
+                               const IdentifierPair& identifier, const RangeInRevision& range)
+{
+    if (node != parent->namespaceNameSequence->back()->element) {
+        newCheckedUse(node, findDeclarationImport(NamespaceDeclarationType, identifier.second, node));
+    }
+    UseBuilderBase::openNamespace(parent, node, identifier, range);
+}
+
+
 }
