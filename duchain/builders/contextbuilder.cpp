@@ -134,6 +134,7 @@ TopDUContext* ContextBuilder::newTopContext(const RangeInRevision& range, Parsin
         file->setLanguage(phpLangString);
     }
     TopDUContext* ret = new PhpDUContext<TopDUContext>(m_editor->parseSession()->currentDocument(), range, file);
+    ret->setType(DUContext::Global);
     return ret;
 }
 
