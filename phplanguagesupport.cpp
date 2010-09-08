@@ -34,7 +34,6 @@
 #include <interfaces/ilanguage.h>
 #include <interfaces/idocument.h>
 #include <interfaces/iproject.h>
-#include <language/editor/editorintegrator.h>
 #include <language/backgroundparser/backgroundparser.h>
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
