@@ -33,6 +33,7 @@
 #include <language/backgroundparser/parsejob.h>
 
 #include <KStandardDirs>
+#include <KLocalizedString>
 
 using namespace KDevelop;
 
@@ -109,7 +110,7 @@ QVariant PhpDocsModel::data(const QModelIndex& index, int role) const
             DUChainReadLocker lock;
             DeclarationPointer dec = declarationForIndex(index);
             if (!dec.data()) {
-                return "<lost declaration>";
+                return i18n("<lost declaration>");
             }
             QString ret = dec->toString();
             if ( dec->isFunctionDeclaration() ) {
