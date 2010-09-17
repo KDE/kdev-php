@@ -24,6 +24,7 @@
 #include <QtGui/QStringListModel>
 
 #include <language/duchain/indexedstring.h>
+#include <language/duchain/declaration.h>
 
 namespace KDevelop
 {
@@ -55,7 +56,7 @@ public:
 
     /// Returns the Declaration for a given index
     /// NOTE: Don't forget to lock the DUChain if you access the declaration!
-    KDevelop::Declaration* declarationForIndex(const QModelIndex& index) const;
+    KDevelop::DeclarationPointer declarationForIndex(const QModelIndex& index) const;
 
     /// Returns the destination of the internal PHP function file
     /// @see PhpLanguageSupport
@@ -66,7 +67,7 @@ private:
     void fillModel();
 
     /// List of pointers to _all_ PHP internal declarations
-    QList<KDevelop::Declaration*> m_declarations;
+    QList<KDevelop::DeclarationPointer> m_declarations;
 
     /// internal function file
     const KDevelop::IndexedString m_internalFunctionsFile;
@@ -74,5 +75,7 @@ private:
 public slots:
     void slotParseJobFinished( KDevelop::ParseJob* job );
 };
+
+Q_DECLARE_METATYPE( KDevelop::DeclarationPointer )
 
 #endif // PHPDOCSMODEL_H

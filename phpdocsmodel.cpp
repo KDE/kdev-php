@@ -85,11 +85,11 @@ void PhpDocsModel::fillModel()
             // filter global constants, since they are hard to find in the documentation
             continue;
         }
-        m_declarations << declpair.first;
+        m_declarations << DeclarationPointer(declpair.first);
 
         if ( StructureType::Ptr type = declpair.first->type<StructureType>() ) {
             foreach ( Declaration* dec, type->internalContext(top)->localDeclarations() ) {
-                m_declarations << dec;
+                m_declarations << DeclarationPointer(dec);
             }
         }
     }
@@ -106,8 +106,11 @@ QVariant PhpDocsModel::data(const QModelIndex& index, int role) const
     switch ( role ) {
         case Qt::DisplayRole:
         case Qt::EditRole: {
-            Declaration* dec = declarationForIndex(index);
-            DUChainReadLocker lock(DUChain::self()->lock());
+            DUChainReadLocker lock;
+            DeclarationPointer dec = declarationForIndex(index);
+            if (!dec.data()) {
+                return "<lost declaration>";
+            }
             QString ret = dec->toString();
             if ( dec->isFunctionDeclaration() ) {
                 // remove function arguments
@@ -118,8 +121,8 @@ QVariant PhpDocsModel::data(const QModelIndex& index, int role) const
             return ret;
         }
         case DeclarationRole: {
-            Declaration* dec = declarationForIndex(index);
-            return QVariant(QMetaType::VoidStar, &dec);
+            DeclarationPointer dec = declarationForIndex(index);
+            return QVariant::fromValue<DeclarationPointer>(dec);
         }
         /*
         case Qt::ToolTipRole:
@@ -145,7 +148,7 @@ bool PhpDocsModel::canFetchMore(const QModelIndex& parent) const
     return false;
 }
 
-Declaration* PhpDocsModel::declarationForIndex(const QModelIndex& index) const
+DeclarationPointer PhpDocsModel::declarationForIndex(const QModelIndex& index) const
 {
     Q_ASSERT(m_declarations.size() > index.row());
 

@@ -195,7 +195,7 @@ QAbstractListModel* PhpDocsPlugin::indexModel() const
 KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForIndex(const QModelIndex& index) const
 {
     return documentationForDeclaration(static_cast<Declaration*>(
-        index.data(PhpDocsModel::DeclarationRole).value<void *>()
+        index.data(PhpDocsModel::DeclarationRole).value<DeclarationPointer>().data()
     ));
 }
 
