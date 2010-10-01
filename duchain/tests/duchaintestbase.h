@@ -23,7 +23,6 @@
 #include <QObject>
 #include <QByteArray>
 #include <QTest>
-#include <language/duchain/dumpchain.h>
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
 
@@ -110,8 +109,6 @@ protected:
     KDevelop::TopDUContext* parse(const QByteArray& unit, DumpAreas dump = static_cast<DumpAreas>(DumpAST | DumpDUChain | DumpType), QString fileName = QString());
 
     KDevelop::TopDUContext* parseAdditionalFile(const KDevelop::IndexedString& fileName, const QByteArray& contents);
-
-    KDevelop::DumpChain dumper;
 
     KDevelop::CompletionTreeItemPointer searchDeclaration(QList<KDevelop::CompletionTreeItemPointer> items, KDevelop::Declaration* declaration);
     bool hasImportedParentContext(KDevelop::TopDUContext* top, KDevelop::DUContext* lookingFor);
