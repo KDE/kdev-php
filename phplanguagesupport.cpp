@@ -203,6 +203,7 @@ QWidget* LanguageSupport::specialLanguageObjectNavigationWidget(const KUrl& url,
 {
     QPair<QString, SimpleRange> word = wordUnderCursor(url, position);
     if ( isMagicConstant(word) ) {
+        DUChainReadLocker lock;
         return new NavigationWidget(TopDUContextPointer(standardContext(url)), position, word.first);
     }
     return ILanguageSupport::specialLanguageObjectNavigationWidget(url, position);
