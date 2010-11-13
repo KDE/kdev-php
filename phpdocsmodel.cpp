@@ -43,7 +43,7 @@ PhpDocsModel::PhpDocsModel(QObject* parent)
     // make sure the php plugin is loaded
     ILanguage* phpLangPlugin = ICore::self()->languageController()->language("Php");
     if ( !phpLangPlugin ) {
-        qWarning() << "could not load PHP language support plugin";
+        kWarning() << "could not load PHP language support plugin";
         return;
     }
     fillModel();
@@ -73,7 +73,7 @@ void PhpDocsModel::fillModel()
 
     TopDUContext* top = DUChain::self()->chainForDocument(m_internalFunctionsFile);
     if ( !top ) {
-        qWarning() << "could not find DUChain for internal function file, connecting to background parser";
+        kDebug() << "could not find DUChain for internal function file, connecting to background parser";
         connect(ICore::self()->languageController()->backgroundParser(), SIGNAL(parseJobFinished(KDevelop::ParseJob*)),
                 this, SLOT(slotParseJobFinished(KDevelop::ParseJob*)));
         return;
