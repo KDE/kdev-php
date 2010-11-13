@@ -91,7 +91,7 @@ void TestExpressionParser::memberVariable()
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i->foo"), DUContextPointer(top), CursorInRevision(1, 0));
     QVERIFY(res.type());
     QCOMPARE(res.allDeclarations().count(), 1);
-    QCOMPARE(res.allDeclarations().first(), top->childContexts().first()->localDeclarations().first());
+    QCOMPARE(res.allDeclarations().first().data(), top->childContexts().first()->localDeclarations().first());
     QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier("a"));
 }
 void TestExpressionParser::memberFunction()
@@ -110,7 +110,7 @@ void TestExpressionParser::memberFunction()
     QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
     QVERIFY(IntegralType::Ptr::dynamicCast(res.type())->dataType() == IntegralType::TypeVoid);
     QCOMPARE(res.allDeclarations().size(), 1);
-    QCOMPARE(res.allDeclarations().first(), top->childContexts().first()->localDeclarations().first());
+    QCOMPARE(res.allDeclarations().first().data(), top->childContexts().first()->localDeclarations().first());
 }
 void TestExpressionParser::globalFunction()
 {
@@ -127,7 +127,7 @@ void TestExpressionParser::globalFunction()
     QVERIFY(res.type());
     QVERIFY(FunctionType::Ptr::dynamicCast(res.type()));
     QCOMPARE(res.allDeclarations().count(), 1);
-    QCOMPARE(res.allDeclarations().first(), top->localDeclarations().first());
+    QCOMPARE(res.allDeclarations().first().data(), top->localDeclarations().first());
 }
 
 void TestExpressionParser::chainCall()
@@ -167,7 +167,7 @@ void TestExpressionParser::thisObject()
     ExpressionParser p(true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$this"), DUContextPointer(funContext), CursorInRevision(1, 0));
     QCOMPARE(res.allDeclarations().count(), 1);
-    QCOMPARE(res.allDeclarations().first(), top->localDeclarations().first());
+    QCOMPARE(res.allDeclarations().first().data(), top->localDeclarations().first());
     QVERIFY(res.type());
     QVERIFY(StructureType::Ptr::dynamicCast(res.type()));
     QCOMPARE(StructureType::Ptr::dynamicCast(res.type())->declaration(top), top->localDeclarations().first());

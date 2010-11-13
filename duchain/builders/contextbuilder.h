@@ -64,7 +64,7 @@ protected:
     virtual KDevelop::DUContext* contextFromNode(AstNode* node);
     virtual KDevelop::RangeInRevision editorFindRange(AstNode* fromRange, AstNode* toRange);
     /// Find Cursor for start of a node, useful to limit findLocalDeclarations() searches.
-    KDevelop::CursorInRevision startPos( Php::AstNode* node);
+    KDevelop::CursorInRevision startPos( AstNode* node);
 
     virtual KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
@@ -101,9 +101,9 @@ protected:
     void reportError(const QString& errorMsg, KDevelop::RangeInRevision range,
                         KDevelop::ProblemData::Severity severity = KDevelop::ProblemData::Error);
 
-    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
-    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
-    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, const KDevelop::QualifiedIdentifier &identifier, AstNode* node);
+    KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
+    KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
+    KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, const KDevelop::QualifiedIdentifier &identifier, AstNode* node);
 
     /// internal functions file should not be checked for errors and can get some optimizations
     bool m_isInternalFunctions;

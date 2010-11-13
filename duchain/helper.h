@@ -49,7 +49,7 @@ enum DeclarationType {
 
 KDEVPHPDUCHAIN_EXPORT bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);
 
-KDEVPHPDUCHAIN_EXPORT KDevelop::Declaration* findDeclarationImportHelper(KDevelop::DUContext* currentContext,
+KDEVPHPDUCHAIN_EXPORT KDevelop::DeclarationPointer findDeclarationImportHelper(KDevelop::DUContext* currentContext,
         KDevelop::QualifiedIdentifier id,
         DeclarationType declarationType,
         AstNode* node,

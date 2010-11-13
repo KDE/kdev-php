@@ -22,6 +22,7 @@
 #include "phpduchainexport.h"
 #include <language/duchain/appendedlist.h>
 #include <language/duchain/declarationid.h>
+#include <language/duchain/declaration.h>
 #include <language/duchain/types/referencetype.h>
 #include <language/duchain/types/indexedtype.h>
 
@@ -45,18 +46,22 @@ public:
     ExpressionEvaluationResult();
     ~ExpressionEvaluationResult();
 
+    ///NOTE: Chain needs to be locked when calling this
     void setDeclaration(KDevelop::Declaration* declaration);
+    void setDeclaration(KDevelop::DeclarationPointer declaration);
+    ///NOTE: Chain needs to be locked when calling this
     void setDeclarations(QList<KDevelop::Declaration*> declarations);
+    void setDeclarations(QList<KDevelop::DeclarationPointer> declarations);
     void setType(KDevelop::AbstractType::Ptr type);
     void setHadUnresolvedIdentifiers(bool v);
 
     KDevelop::AbstractType::Ptr type() const;
     QList<KDevelop::DeclarationId> allDeclarationIds() const;
-    QList<KDevelop::Declaration*> allDeclarations() const;
+    QList<KDevelop::DeclarationPointer> allDeclarations() const;
     bool hadUnresolvedIdentifiers() const;
 
 private:
-    QList<KDevelop::Declaration*> m_allDeclarations;
+    QList<KDevelop::DeclarationPointer> m_allDeclarations;
     QList<KDevelop::DeclarationId> m_allDeclarationIds;
     KDevelop::AbstractType::Ptr m_type; ///Type the expression evaluated to, may be zero when the expression failed to evaluate
     bool m_hadUnresolvedIdentifiers;

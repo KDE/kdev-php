@@ -38,7 +38,7 @@ public:
     }
 
 protected:
-    virtual void usingDeclaration(AstNode* node, KDevelop::Declaration* decl) {
+    virtual void usingDeclaration(AstNode* node, const DeclarationPointer& decl) {
         m_builder->newCheckedUse(node, decl);
     }
 
@@ -51,7 +51,7 @@ UseBuilder::UseBuilder( EditorIntegrator* editor )
     m_editor = editor;
 }
 
-ReferencedTopDUContext UseBuilder::build ( const KDevelop::IndexedString& url, AstNode* node, ReferencedTopDUContext updateContext )
+ReferencedTopDUContext UseBuilder::build ( const IndexedString& url, AstNode* node, ReferencedTopDUContext updateContext )
 {
     // just for safety purposes: running the UseBuilder on the internal function file
     // will lead to undefined behavior due to the amount of optimization it has received
@@ -93,7 +93,7 @@ void UseBuilder::visitExpr(ExprAst* node)
 void UseBuilder::visitGlobalVar(GlobalVarAst* node)
 {
     if (node->var) {
-        Declaration* dec = findDeclarationImport(GlobalVariableDeclarationType, node->var);
+        DeclarationPointer dec = findDeclarationImport(GlobalVariableDeclarationType, node->var);
         if (dec) {
             newCheckedUse(node->var, dec);
         }
@@ -130,14 +130,14 @@ void UseBuilder::visitStatement(StatementAst *node)
 void UseBuilder::visitCatchItem(CatchItemAst *node)
 {
     if (node->catchClass) {
-        Declaration* dec = findDeclarationImport(ClassDeclarationType, node->catchClass);
+        DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, node->catchClass);
         newCheckedUse(node->catchClass, dec);
     }
     UseBuilderBase::visitCatchItem(node);
 
 }
 
-void UseBuilder::newCheckedUse(AstNode* node, Declaration* declaration)
+void UseBuilder::newCheckedUse(AstNode* node, const DeclarationPointer& declaration)
 {
     if ( declaration && declaration->comment().contains("@deprecated") ) {
         reportError(i18n("Usage of %1 is deprecated.", declaration->toString()), node, ProblemData::Hint);
@@ -176,7 +176,7 @@ void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node, DeclarationTy
     for ( int i = 0; i < identifier.count() - 1; ++i ) {
         curId.push(identifier.at(i));
         AstNode* n = node->namespaceNameSequence->at(i)->element;
-        Declaration* dec = findDeclarationImport(NamespaceDeclarationType, curId, n);
+        DeclarationPointer dec = findDeclarationImport(NamespaceDeclarationType, curId, n);
         newCheckedUse(n, dec);
     }
     newCheckedUse(node->namespaceNameSequence->back()->element,

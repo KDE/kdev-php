@@ -112,8 +112,8 @@ void DeclarationBuilder::getVariableIdentifier(VariableAst* node,
     }
 }
 
-KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::IndexedString& url, Php::AstNode* node,
-        KDevelop::ReferencedTopDUContext updateContext)
+ReferencedTopDUContext DeclarationBuilder::build(const IndexedString& url, AstNode* node,
+        ReferencedTopDUContext updateContext)
 {
     //Run DeclarationBuilder twice, to find uses of declarations that are
     //declared after the use. ($a = new Foo; class Foo {})
@@ -155,7 +155,7 @@ void DeclarationBuilder::closeDeclaration()
     DeclarationBuilderBase::closeDeclaration();
 }
 
-void DeclarationBuilder::classContextOpened(KDevelop::DUContext* context)
+void DeclarationBuilder::classContextOpened(DUContext* context)
 {
     DUChainWriteLocker lock(DUChain::lock());
     currentDeclaration()->setInternalContext(context);
@@ -843,7 +843,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
     {
         FunctionType::Ptr oldFunction = m_currentFunctionType;
 
-        Declaration* dec = 0;
+        DeclarationPointer dec;
         if ( node->stringFunctionName ) {
             dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionName);
         } else if ( node->stringFunctionNameOrClass ) {
@@ -1076,11 +1076,11 @@ void DeclarationBuilder::visitGlobalVar(GlobalVarAst* node)
             }
         }
         // no existing declaration found, create one
-        Declaration* aliasedDeclaration = findDeclarationImport(GlobalVariableDeclarationType, node->var);
+        DeclarationPointer aliasedDeclaration = findDeclarationImport(GlobalVariableDeclarationType, node->var);
         if (aliasedDeclaration) {
             DUChainWriteLocker lock(DUChain::lock());
             AliasDeclaration* dec = openDefinition<AliasDeclaration>(id, m_editor->findRange(node->var));
-            dec->setAliasedDeclaration(aliasedDeclaration);
+            dec->setAliasedDeclaration(aliasedDeclaration.data());
             closeDeclaration();
         }
     }
@@ -1147,7 +1147,7 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
     if ( !node->aliasIdentifier && node->identifier->namespaceNameSequence->count() == 1 ) {
         reportError(i18n("The use statement with non-compound name '%1' has no effect.",
                          identifierForNode(node->identifier->namespaceNameSequence->front()->element).toString()),
-                    node->identifier, KDevelop::ProblemData::Warning);
+                    node->identifier, ProblemData::Warning);
         return;
     }
     IdentifierAst* idNode = node->aliasIdentifier ? node->aliasIdentifier : node->identifier->namespaceNameSequence->back()->element;

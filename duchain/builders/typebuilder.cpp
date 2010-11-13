@@ -86,7 +86,8 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
             type = "stdclass";
         }
         //don't use openTypeFromName as it uses cursor for findDeclarations
-        Declaration* decl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier(type.toLower()), node);
+        DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
+                                                        QualifiedIdentifier(type.toLower()), node);
         if (decl && decl->abstractType()) {
             return decl->abstractType();
         }
@@ -342,10 +343,12 @@ void TypeBuilder::visitParameter(ParameterAst *node)
     AbstractType::Ptr type;
     if (node->parameterType) {
         //don't use openTypeFromName as it uses cursor for findDeclarations
-        Declaration* decl = findDeclarationImport(ClassDeclarationType,
+        DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
                                                   identifierForNamespace(node->parameterType, editor()),
                                                   node->parameterType);
-        if (decl) type = decl->abstractType();
+        if (decl) {
+            type = decl->abstractType();
+        }
     } else if (node->arrayType != -1) {
         type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
     } else if (node->defaultValue) {
@@ -500,17 +503,15 @@ void TypeBuilder::visitStatement(StatementAst* node)
         if (StructureType::Ptr type = StructureType::Ptr::dynamicCast(v.result().type())) {
             ClassDeclaration *classDec = dynamic_cast<ClassDeclaration*>(type->declaration(currentContext()->topContext()));
             Q_ASSERT(classDec);
-            lock.unlock();
             /// Qualified identifier for 'iterator'
-            static const KDevelop::QualifiedIdentifier iteratorQId("iterator");
+            static const QualifiedIdentifier iteratorQId("iterator");
             ClassDeclaration* iteratorDecl = dynamic_cast<ClassDeclaration*>(
-                findDeclarationImport(ClassDeclarationType, iteratorQId, 0)
+                findDeclarationImport(ClassDeclarationType, iteratorQId, 0).data()
             );
-            lock.lock();
             Q_ASSERT(iteratorDecl);
             if (classDec->isPublicBaseClass(iteratorDecl, currentContext()->topContext())) {
                 /// Qualified identifier for 'current'
-                static const KDevelop::QualifiedIdentifier currentQId("current");
+                static const QualifiedIdentifier currentQId("current");
                 foreach (Declaration *d, classDec->internalContext()->findDeclarations(currentQId)) {
                     if (!dynamic_cast<ClassMethodDeclaration*>(d)) continue;
                     Q_ASSERT(d->type<FunctionType>());
@@ -529,7 +530,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
 void TypeBuilder::visitCatchItem(Php::CatchItemAst *node)
 {
     TypeBuilderBase::visitCatchItem(node);
-    KDevelop::Declaration *dec = findDeclarationImport(ClassDeclarationType, node->catchClass);
+    DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, node->catchClass);
     if (dec && dec->abstractType()) {
         openAbstractType(dec->abstractType());
         closeType();

@@ -961,7 +961,8 @@ void CodeCompletionContext::forbidIdentifier(const QString& identifier)
     QualifiedIdentifier id(identifier.toLower());
 
     ClassDeclaration *dec = dynamic_cast<ClassDeclaration*>(
-                                findDeclarationImportHelper(m_duContext.data(), id, ClassDeclarationType, 0, 0)
+                                findDeclarationImportHelper(m_duContext.data(), id,
+                                                            ClassDeclarationType, 0, 0).data()
                             );
     if (dec) {
         forbidIdentifier(dec);

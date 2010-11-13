@@ -51,7 +51,7 @@ public:
     virtual void visitNode(AstNode *node);
 
 protected:
-    KDevelop::Declaration* processVariable(VariableIdentifierAst *variable);
+    KDevelop::DeclarationPointer processVariable( VariableIdentifierAst* variable);
 
     void visitAssignmentExpression(AssignmentExpressionAst *node);
     virtual void visitBaseVariable(BaseVariableAst* node);
@@ -77,13 +77,13 @@ protected:
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
 
 
-    virtual void usingDeclaration(AstNode* node, KDevelop::Declaration* decl) {
+    virtual void usingDeclaration(AstNode* node, const KDevelop::DeclarationPointer& decl) {
         Q_UNUSED(node) Q_UNUSED(decl)
     }
 
-    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
-    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
-    KDevelop::Declaration* findDeclarationImport(DeclarationType declarationType, AstNode* node, const KDevelop::QualifiedIdentifier& identifier);
+    KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
+    KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
+    KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, AstNode* node, const KDevelop::QualifiedIdentifier& identifier);
 
 protected:
     EditorIntegrator* m_editor;

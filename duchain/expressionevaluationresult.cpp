@@ -41,16 +41,32 @@ ExpressionEvaluationResult::ExpressionEvaluationResult()
 {
 }
 
-void ExpressionEvaluationResult::setDeclaration(Declaration* declaration)
+void ExpressionEvaluationResult::setDeclaration( Declaration* declaration )
 {
-    QList<Declaration*> decs;
+    ENSURE_CHAIN_READ_LOCKED
+    setDeclaration(DeclarationPointer(declaration));
+}
+
+void ExpressionEvaluationResult::setDeclaration( DeclarationPointer declaration)
+{
+    QList<DeclarationPointer> decs;
     if (declaration) {
         decs << declaration;
     }
     setDeclarations(decs);
 }
 
-void ExpressionEvaluationResult::setDeclarations(QList<Declaration*> declarations)
+void ExpressionEvaluationResult::setDeclarations( QList< Declaration* > declarations )
+{
+    ENSURE_CHAIN_READ_LOCKED
+    QList<DeclarationPointer> decs;
+    foreach(Declaration* dec, declarations) {
+        decs << DeclarationPointer(dec);
+    }
+    setDeclarations(decs);
+}
+
+void ExpressionEvaluationResult::setDeclarations(QList<DeclarationPointer> declarations)
 {
     ifDebug(kDebug() << "setting declarations" << declarations.size();)
 
@@ -62,7 +78,7 @@ void ExpressionEvaluationResult::setDeclarations(QList<Declaration*> declaration
     }
     m_allDeclarationIds.clear();
     DUChainReadLocker lock(DUChain::lock());
-    foreach(Declaration* dec, m_allDeclarations) {
+    foreach(const DeclarationPointer& dec, m_allDeclarations) {
         m_allDeclarationIds << dec->id();
         ifDebug(kDebug() << dec->toString();)
     }
@@ -73,7 +89,7 @@ AbstractType::Ptr ExpressionEvaluationResult::type() const
     return m_type;
 }
 
-QList<Declaration*> ExpressionEvaluationResult::allDeclarations() const
+QList<DeclarationPointer> ExpressionEvaluationResult::allDeclarations() const
 {
     return m_allDeclarations;
 }

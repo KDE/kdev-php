@@ -45,7 +45,7 @@ ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor)
 {
 }
 
-Declaration* ExpressionVisitor::processVariable(Php::VariableIdentifierAst* variable)
+DeclarationPointer ExpressionVisitor::processVariable(VariableIdentifierAst* variable)
 {
     Q_ASSERT(m_currentContext);
 
@@ -56,7 +56,7 @@ Declaration* ExpressionVisitor::processVariable(Php::VariableIdentifierAst* vari
         position.column += m_offset.column;
     }
 
-    Declaration* ret = 0;
+    DeclarationPointer ret;
     Identifier identifier = identifierForNode(variable).last();
 
     ifDebug(kDebug() << "processing variable" << identifier.toString() << position.textCursor();)
@@ -187,11 +187,10 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
     DefaultVisitor::visitVarExpressionNewObject(node);
     if (node->className->identifier) {
         const QualifiedIdentifier id = identifierForNamespace(node->className->identifier, m_editor);
-        Declaration* dec = findDeclarationImport(ClassDeclarationType, node->className->identifier,
+        DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, node->className->identifier,
                                                  id);
         usingDeclaration(node->className->identifier->namespaceNameSequence->back()->element, dec);
         buildNamespaceUses(node->className->identifier, id);
-        DUChainReadLocker lock(DUChain::lock());
         m_result.setDeclaration(dec);
     }
 }
@@ -217,7 +216,7 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
             AbstractType::Ptr type;
             if (it->element->parameterType) {
                 //don't use openTypeFromName as it uses cursor for findDeclarations
-                Declaration* decl = findDeclarationImport(ClassDeclarationType,
+                DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
                                                             it->element->parameterType,
                                                             identifierForNamespace(it->element->parameterType, m_editor));
                 if (decl) {
@@ -254,7 +253,7 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
         const KDevPG::ListNode< LexicalVarAst* >* it = node->lexicalVars->lexicalVarsSequence->front();
         DUChainWriteLocker lock;
         forever {
-            Declaration* found = 0;
+            DeclarationPointer found;
             foreach(Declaration* dec, m_currentContext->findDeclarations(identifierForNode(it->element->variable))) {
                 if (dec->kind() == Declaration::Instance) {
                     found = dec;
@@ -275,7 +274,7 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
 
 void ExpressionVisitor::visitFunctionCallParameterList( FunctionCallParameterListAst* node )
 {
-    QList<Declaration*> decs = m_result.allDeclarations();
+    QList<DeclarationPointer> decs = m_result.allDeclarations();
     AbstractType::Ptr type = m_result.type();
 
     DefaultVisitor::visitFunctionCallParameterList( node );
@@ -307,7 +306,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
                 }
             } else {
                 m_result.setHadUnresolvedIdentifiers(true);
-                usingDeclaration(node->stringFunctionName, 0);
+                usingDeclaration(node->stringFunctionName, DeclarationPointer());
                 m_result.setType(AbstractType::Ptr());
             }
         } else if (node->varFunctionName) {
@@ -315,7 +314,8 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
         } else {
             //global function call foo();
             const QualifiedIdentifier id = identifierForNamespace(node->stringFunctionNameOrClass, m_editor);
-            Declaration* dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionNameOrClass, id);
+            DeclarationPointer dec = findDeclarationImport(FunctionDeclarationType,
+                                                           node->stringFunctionNameOrClass, id);
             ifDebug(kDebug() << "function call of" << (dec ? dec->toString() : QString("function not found"));)
             m_result.setDeclaration(dec);
             usingDeclaration(node->stringFunctionNameOrClass->namespaceNameSequence->back()->element, dec);
@@ -333,10 +333,11 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
         }
     }
 }
+///TODO: DUContext pointer?
 DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
 {
     DUContext* context = 0;
-    Declaration* declaration = findDeclarationImport(ClassDeclarationType, className);
+    DeclarationPointer declaration = findDeclarationImport(ClassDeclarationType, className);
     usingDeclaration(className, declaration);
     if (declaration) {
         DUChainReadLocker lock(DUChain::lock());
@@ -348,7 +349,7 @@ DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
     }
     return context;
 }
-
+///TODO: DUContext pointer?
 DUContext* ExpressionVisitor::findClassContext(NamespacedIdentifierAst* className)
 {
     DUContext* context = 0;
@@ -357,7 +358,7 @@ DUContext* ExpressionVisitor::findClassContext(NamespacedIdentifierAst* classNam
     if (id.count() == 1 && id == staticQId) {
         return m_currentContext->parentContext();
     }
-    Declaration* declaration = findDeclarationImport(ClassDeclarationType, className, id);
+    DeclarationPointer declaration = findDeclarationImport(ClassDeclarationType, className, id);
     usingDeclaration(className->namespaceNameSequence->back()->element, declaration);
     buildNamespaceUses(className, id);
     if (declaration) {
@@ -385,7 +386,7 @@ void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
             if (!m_result.allDeclarations().isEmpty()) {
                 usingDeclaration(node->classConstant, m_result.allDeclarations().last());
             } else {
-                usingDeclaration(node->classConstant, 0);
+                usingDeclaration(node->classConstant, DeclarationPointer());
             }
         } else {
             m_result.setType(AbstractType::Ptr());
@@ -399,7 +400,7 @@ void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
         } else {
             //constant (created with declare('foo', 'bar')) or const Foo = 1;
             QualifiedIdentifier id = identifierForNamespace(node->constant, m_editor, true);
-            Declaration* declaration = findDeclarationImport(ConstantDeclarationType, node->constant, id);
+            DeclarationPointer declaration = findDeclarationImport(ConstantDeclarationType, node->constant, id);
             if (!declaration) {
                 ///TODO: is this really wanted?
                 //it could also be a global function call, without ()
@@ -475,10 +476,10 @@ void ExpressionVisitor::visitEncapsVar(EncapsVarAst *node)
     DefaultVisitor::visitEncapsVar(node);
     if (node->variable) {
         // handle $foo
-        Declaration* dec = processVariable(node->variable);
+        DeclarationPointer dec = processVariable(node->variable);
         if (dec && node->propertyIdentifier) {
             // handle property in $foo->bar
-            Declaration* foundDec = 0;
+            DeclarationPointer foundDec;
             DUChainReadLocker lock(DUChain::lock());
             if ( StructureType::Ptr structType = dec->type<StructureType>() ) {
                 if ( ClassDeclaration* cdec = dynamic_cast<ClassDeclaration*>(structType->declaration(m_currentContext->topContext())) ) {
@@ -538,8 +539,8 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
                             }
                         }
                     }
-                    lock.unlock();
                     m_result.setDeclarations(decs);
+                    lock.unlock();
                     if (!m_result.allDeclarations().isEmpty()) {
                         if ( !m_isAssignmentExpressionEqual ) {
                             usingDeclaration(node->objectProperty->objectDimList->variableName, m_result.allDeclarations().last());
@@ -554,7 +555,8 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
                         }
                     } else {
                         if ( !m_isAssignmentExpressionEqual ) {
-                            usingDeclaration(node->objectProperty->objectDimList->variableName, 0);
+                            usingDeclaration(node->objectProperty->objectDimList->variableName,
+                                             DeclarationPointer());
                         }
                         m_result.setType(AbstractType::Ptr());
                     }
@@ -582,10 +584,10 @@ void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
             if (!m_result.allDeclarations().isEmpty()) {
                 usingDeclaration(node->variable->variable->variable, m_result.allDeclarations().last());
             } else {
-                usingDeclaration(node->variable->variable->variable, 0);
+                usingDeclaration(node->variable->variable->variable, DeclarationPointer());
             }
         } else {
-            usingDeclaration(node->className, 0);
+            usingDeclaration(node->className, DeclarationPointer());
             m_result.setType(AbstractType::Ptr());
         }
         if (node->variable->offsetItemsSequence) {
@@ -617,7 +619,7 @@ void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
             break;
         case CastObject: {
             /// Qualified identifier for 'stdclass'
-            static const KDevelop::QualifiedIdentifier stdclassQId("stdclass");
+            static const QualifiedIdentifier stdclassQId("stdclass");
             DUChainReadLocker lock(DUChain::lock());
             m_result.setDeclarations(m_currentContext->findDeclarations(stdclassQId));
             break;
@@ -696,12 +698,12 @@ void ExpressionVisitor::buildNamespaceUses(NamespacedIdentifierAst* namespaces, 
     for ( int i = 0; i < identifier.count() - 1; ++i ) {
         curId.push(identifier.at(i));
         AstNode* node = namespaces->namespaceNameSequence->at(i)->element;
-        Declaration* dec = findDeclarationImport(NamespaceDeclarationType, node, curId);
+        DeclarationPointer dec = findDeclarationImport(NamespaceDeclarationType, node, curId);
         usingDeclaration(node, dec);
     }
 }
 
-Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
+DeclarationPointer ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
 {
     // methods and class names are case insensitive
     QualifiedIdentifier id;
@@ -713,12 +715,12 @@ Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declaratio
     return findDeclarationImport(declarationType, node, id);
 }
 
-Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
+DeclarationPointer ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
 {
     return findDeclarationImport(declarationType, node, identifierForNode(node));
 }
 
-Declaration* ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, AstNode* node, const KDevelop::QualifiedIdentifier& identifier)
+DeclarationPointer ExpressionVisitor::findDeclarationImport( DeclarationType declarationType, AstNode* node, const QualifiedIdentifier& identifier)
 {
     return findDeclarationImportHelper(m_currentContext, identifier, declarationType, node, m_editor);
 }

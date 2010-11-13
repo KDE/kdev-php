@@ -370,8 +370,9 @@ void ContextBuilder::addBaseType(NamespacedIdentifierAst * identifier)
     ClassDeclaration* currentClass = dynamic_cast<ClassDeclaration*>(currentContext()->owner());
 
     ClassDeclaration* baseClass = dynamic_cast<ClassDeclaration*>(
-        findDeclarationImport(ClassDeclarationType, identifierForNamespace(identifier, m_editor), identifier)
-    );
+        findDeclarationImport(ClassDeclarationType, identifierForNamespace(identifier, m_editor),
+                              identifier
+    ).data() );
 
     if (currentClass && baseClass) {
         if (DUContext* baseContext = baseClass->logicalInternalContext(0)) {
@@ -447,7 +448,8 @@ void ContextBuilder::reportError(const QString& errorMsg, KDevelop::RangeInRevis
     }
 }
 
-Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, IdentifierAst* node)
+DeclarationPointer ContextBuilder::findDeclarationImport(DeclarationType declarationType,
+                                                         IdentifierAst* node)
 {
     QualifiedIdentifier id;
     if ( declarationType == ClassDeclarationType || declarationType == FunctionDeclarationType ) {
@@ -458,12 +460,14 @@ Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationTy
     return findDeclarationImportHelper(currentContext(), id, declarationType, node, m_editor);
 }
 
-Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
+DeclarationPointer ContextBuilder::findDeclarationImport(DeclarationType declarationType,
+                                                         VariableIdentifierAst* node)
 {
     return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, m_editor);
 }
 
-Declaration* ContextBuilder::findDeclarationImport(DeclarationType declarationType, const QualifiedIdentifier &identifier, AstNode* node)
+DeclarationPointer ContextBuilder::findDeclarationImport(DeclarationType declarationType,
+                                                         const QualifiedIdentifier &identifier, AstNode* node)
 {
     return findDeclarationImportHelper(currentContext(), identifier, declarationType, node, m_editor);
 }

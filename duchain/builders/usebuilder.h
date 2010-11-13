@@ -43,7 +43,7 @@ class KDEVPHPDUCHAIN_EXPORT UseBuilder: public UseBuilderBase
 public:
     UseBuilder(EditorIntegrator* editor);
 
-    void newCheckedUse(AstNode* node, KDevelop::Declaration* declaration);
+    void newCheckedUse(Php::AstNode* node, const KDevelop::DeclarationPointer& declaration);
 
     virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
         KDevelop::ReferencedTopDUContext updateContext

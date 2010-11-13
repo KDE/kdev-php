@@ -78,7 +78,7 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
     return false;
 }
 
-Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIdentifier id,
+DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, QualifiedIdentifier id,
         DeclarationType declarationType, AstNode* node, EditorIntegrator* editor)
 {
     /// Qualified identifier for 'self'
@@ -90,11 +90,11 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
     if (declarationType == ClassDeclarationType && id == selfQId) {
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->type() == DUContext::Class) {
-            return currentContext->owner();
+            return DeclarationPointer(currentContext->owner());
         } else if (currentContext->parentContext() && currentContext->parentContext()->type() == DUContext::Class) {
-            return currentContext->parentContext()->owner();
+            return DeclarationPointer(currentContext->parentContext()->owner());
         } else {
-            return 0;
+            return DeclarationPointer();
         }
     } else if (declarationType == ClassDeclarationType && id == parentQId) {
         //there can be just one Class-Context imported
@@ -108,23 +108,22 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
         if (classCtx) {
             foreach(const DUContext::Import &i, classCtx->importedParentContexts()) {
                 if (i.context(classCtx->topContext())->type() == DUContext::Class) {
-                    return i.context(classCtx->topContext())->owner();
+                    return DeclarationPointer(i.context(classCtx->topContext())->owner());
                 }
             }
         }
-        return 0;
+        return DeclarationPointer();
     } else {
-        QList<Declaration*> foundDeclarations;
         DUChainReadLocker lock(DUChain::lock());
-        foundDeclarations = currentContext->topContext()->findDeclarations(id);
+        QList<Declaration*> foundDeclarations = currentContext->topContext()->findDeclarations(id);
         foreach(Declaration *declaration, foundDeclarations) {
             if (isMatch(declaration, declarationType)) {
-                return declaration;
+                return DeclarationPointer(declaration);
             }
         }
         if ( currentContext->url() == internalFunctionFile() ) {
             // when compiling php internal functions, we don't need to ask the persistent symbol table for anything
-            return 0;
+            return DeclarationPointer();
         }
         if (declarationType != GlobalVariableDeclarationType) {
             ifDebug(kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable" << id.toString();)
@@ -174,13 +173,13 @@ Declaration* findDeclarationImportHelper(DUContext* currentContext, QualifiedIde
                 currentContext->topContext()->parsingEnvironmentFile()
                 ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
                 ifDebug(kDebug() << "using" << declarations[i].declaration()->toString() << top->url().str();)
-                return declarations[i].declaration();
+                return DeclarationPointer(declarations[i].declaration());
             }
         }
     }
 
     ifDebug(kDebug() << "returning 0";)
-    return 0;
+    return DeclarationPointer();
 }
 
 QByteArray formatComment(AstNode* node, EditorIntegrator* editor)
