@@ -155,7 +155,7 @@ void UseBuilder::visitUnaryExpression( UnaryExpressionAst* node )
         DUChainWriteLocker lock(DUChain::lock());
         foreach ( Declaration* dec, currentContext()->topContext()->findDeclarations(identifier) ) {
             if ( dec->kind() == Declaration::Import ) {
-                newUse(node->includeExpression, dec);
+                newUse(node->includeExpression, DeclarationPointer(dec));
                 return;
             }
         }
