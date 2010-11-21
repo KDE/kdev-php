@@ -20,9 +20,6 @@
 
 #include <ktexteditor/document.h>
 
-#include <language/editor/documentrange.h>
-#include <language/editor/documentrangeobject.h>
-
 #include "phpast.h"
 #include "parsesession.h"
 
