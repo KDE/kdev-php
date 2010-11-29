@@ -200,18 +200,16 @@ void ParseJob::run()
         DUChain::self()->updateContextEnvironment( chain->topContext(), file.data() );
     } else {
         ReferencedTopDUContext top;
+        DUChainWriteLocker lock;
         {
-            DUChainReadLocker lock(DUChain::lock());
             top = DUChain::self()->chainForDocument(document());
         }
         if (top) {
-            DUChainWriteLocker lock(DUChain::lock());
             ///NOTE: if we clear the imported parent contexts, autocompletion of built-in PHP stuff won't work!
             //top->clearImportedParentContexts();
             top->parsingEnvironmentFile()->clearModificationRevisions();
             top->clearProblems();
         } else {
-            DUChainWriteLocker lock(DUChain::lock());
             ParsingEnvironmentFile *file = new ParsingEnvironmentFile(document());
             /// Indexed string for 'Php', identifies environment files from this language plugin
             static const IndexedString phpLangString("Php");
@@ -219,11 +217,10 @@ void ParseJob::run()
             top = new TopDUContext(document(), RangeInRevision(0, 0, INT_MAX, INT_MAX), file);
             DUChain::self()->addDocumentChain(top);
         }
-        setDuChain(top);
         foreach(const ProblemPointer &p, session.problems()) {
-            DUChainWriteLocker lock(DUChain::lock());
             top->addProblem(p);
         }
+        setDuChain(top);
         kDebug() << "===Failed===" << document().str();
     }
 }
