@@ -93,6 +93,11 @@ void ParseJob::run()
             if (!file->needsUpdate() && file->featuresSatisfied(minimumFeatures())) {
                 kDebug() << "Already up to date" << document().str();
                 setDuChain(file->topContext());
+                if (php() && php()->codeHighlighting()
+                    && ICore::self()->languageController()->backgroundParser()->trackerForUrl(document()))
+                {
+                    php()->codeHighlighting()->highlightDUChain(duChain());
+                }
                 return;
             }
             break;
@@ -178,12 +183,6 @@ void ParseJob::run()
             return abortJob();
         }
 
-        if (php() && php()->codeHighlighting()
-            && ICore::self()->languageController()->backgroundParser()->trackerForUrl(document()))
-        {
-            php()->codeHighlighting()->highlightDUChain(chain);
-        }
-
         if (abortRequested()) {
             return abortJob();
         }
@@ -198,6 +197,12 @@ void ParseJob::run()
         ParsingEnvironmentFilePointer file = chain->parsingEnvironmentFile();
         file->setModificationRevision(contents().modification);
         DUChain::self()->updateContextEnvironment( chain->topContext(), file.data() );
+
+        if (php() && php()->codeHighlighting()
+            && ICore::self()->languageController()->backgroundParser()->trackerForUrl(document()))
+        {
+            php()->codeHighlighting()->highlightDUChain(chain);
+        }
     } else {
         ReferencedTopDUContext top;
         DUChainWriteLocker lock;
