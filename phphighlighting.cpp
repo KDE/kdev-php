@@ -25,10 +25,13 @@
 using namespace KDevelop;
 using namespace Php;
 
+//BEGIN HighlightingInstance
+
 class HighlightingInstance : public CodeHighlightingInstance {
 public:
     HighlightingInstance(const CodeHighlighting* highlighting);
     virtual Types typeForDeclaration(KDevelop::Declaration* decl, KDevelop::DUContext* context) const;
+    virtual bool useRainbowColor( Declaration* dec ) const;
 };
 
 HighlightingInstance::HighlightingInstance(const CodeHighlighting* highlighting)
@@ -47,6 +50,13 @@ HighlightingEnumContainer::Types HighlightingInstance::typeForDeclaration(Declar
         return CodeHighlightingInstance::typeForDeclaration(decl, context);
     }
 }
+
+bool HighlightingInstance::useRainbowColor( Declaration* dec ) const
+{
+    return dynamic_cast<VariableDeclaration*>(dec);
+}
+
+//BEGIN Highlighting
 
 Highlighting::Highlighting(QObject* parent)
     : CodeHighlighting(parent)
