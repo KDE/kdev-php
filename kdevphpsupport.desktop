@@ -25,6 +25,7 @@ Comment[x-test]=xxPhp Language Supportxx
 Comment[zh_CN]=Php 语言支持
 Comment[zh_TW]=PHP 語言支援
 Name=PHP Language Support
+Name[en_GB]=PHP Language Support
 Name[es]=Implementación de lenguaje PHP
 Name[et]=PHP keele toetus
 Name[nl]=Ondersteuning voor PHP-taal
