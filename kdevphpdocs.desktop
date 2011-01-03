@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Comment=This plugin integrates PHP.net online documentation.
+Comment[da]=Dette plugin integrerer online dokumentation fra PHP.net.
 Comment[de]=Dieses Modul integriert die PHP.net-Online-Dokumentation.
 Comment[en_GB]=This plugin integrates PHP.net online documentation.
 Comment[es]=Este complemento integra la documentación en línea de PHP.net.
@@ -22,6 +23,7 @@ Comment[zh_CN]=此插件集成了 PHP.net 的在线文档。
 Comment[zh_TW]=此外掛程式整合 PHP.net 線上文件。
 Name=PHP Documentation
 Name[cs]=Dokumentace PHP
+Name[da]=PHP-dokumentation
 Name[de]=PHP-Dokumentation
 Name[en_GB]=PHP Documentation
 Name[es]=Documentación de PHP
