@@ -149,8 +149,7 @@ void UseBuilder::visitUnaryExpression( UnaryExpressionAst* node )
 {
     IndexedString includeFile = getIncludeFileForNode(node, m_editor);
     if ( !includeFile.isEmpty() ) {
-        ///TODO: is there not a more elegant way to get a QualifiedIdentifier from a IndexedString?
-        QualifiedIdentifier identifier(QString::fromUtf8(includeFile.byteArray()));
+        QualifiedIdentifier identifier(includeFile.str());
 
         DUChainWriteLocker lock(DUChain::lock());
         foreach ( Declaration* dec, currentContext()->topContext()->findDeclarations(identifier) ) {

@@ -899,6 +899,7 @@ void TestDUChain::classConst_data()
     QTest::newRow("bool") << "const C = true;" << 0;
     QTest::newRow("selfConst") << "const C2 = 1; const C = self::C2;" << 0;
     QTest::newRow("parentConst") << "const C = parent::P;" << 0;
+    QTest::newRow("null") << "const C = null;" << 0;
 
     QTest::newRow("array") << "const C = array();" << 1;
 }
