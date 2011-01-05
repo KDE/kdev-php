@@ -508,6 +508,7 @@ void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
                 case IntegralType::TypeFloat:
                 case IntegralType::TypeInt:
                 case IntegralType::TypeString:
+                case IntegralType::TypeNull:
                     badType = false;
                     break;
                 default:
