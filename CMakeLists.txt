@@ -9,7 +9,7 @@ enable_testing()
 #complain about the FindKDevelop-PG.cmake file not findable.
 find_package(KDE4 REQUIRED)
 
-find_package(KDevPlatform 1.1.80 REQUIRED)
+find_package(KDevPlatform 1.1.90 REQUIRED)
 include_directories(${KDEVPLATFORM_INCLUDE_DIR})
 
 include_directories(
