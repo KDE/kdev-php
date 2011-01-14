@@ -483,10 +483,20 @@ void ExpressionVisitor::visitEncapsVar(EncapsVarAst *node)
             DUChainReadLocker lock(DUChain::lock());
             if ( StructureType::Ptr structType = dec->type<StructureType>() ) {
                 if ( ClassDeclaration* cdec = dynamic_cast<ClassDeclaration*>(structType->declaration(m_currentContext->topContext())) ) {
-                    foreach( Declaration* pdec, cdec->internalContext()->findDeclarations(identifierForNode(node->propertyIdentifier)) ) {
-                        if ( !pdec->isFunctionDeclaration() ) {
-                            foundDec = pdec;
-                            break;
+                    ///TODO: share code with visitVariableProperty
+                    DUContext* ctx = cdec->internalContext();
+                    if (!ctx && m_currentContext->parentContext()) {
+                        if (m_currentContext->parentContext()->localScopeIdentifier() == cdec->qualifiedIdentifier()) {
+                            //class is currentClass (internalContext is not yet set)
+                            ctx = m_currentContext->parentContext();
+                        }
+                    }
+                    if (ctx) {
+                        foreach( Declaration* pdec, ctx->findDeclarations(identifierForNode(node->propertyIdentifier)) ) {
+                            if ( !pdec->isFunctionDeclaration() ) {
+                                foundDec = pdec;
+                                break;
+                            }
                         }
                     }
                 }
