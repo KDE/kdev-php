@@ -1158,7 +1158,10 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
                                                                                 m_editor->findRange(idNode));
     {
         ///TODO: case insensitive!
-        decl->setImportIdentifier( identifierForNamespace(node->identifier, m_editor) );
+        QualifiedIdentifier qid = identifierForNamespace(node->identifier, m_editor);
+        ///TODO: find out why this must be done (see mail to kdevelop-devel on jan 18th 2011)
+        qid.setExplicitlyGlobal( false );
+        decl->setImportIdentifier( qid );
         decl->setPrettyName( id.first );
         decl->setKind(Declaration::NamespaceAlias);
     }

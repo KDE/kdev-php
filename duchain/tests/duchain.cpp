@@ -2405,13 +2405,14 @@ void TestDUChain::useNamespace()
                               "}\n"
                               "namespace {\n"
                               "use ns1\\ns2, ns3\\ns4 as ns5;\n"
+                              "use \\ns3\\ns4 as ns6;\n"
                               "}\n"
                               , DumpNone);
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
 
-    QCOMPARE(top->localDeclarations().count(), 4);
+    QCOMPARE(top->localDeclarations().count(), 5);
 
     Declaration* dec = top->localDeclarations().at(2);
     QCOMPARE(dec->qualifiedIdentifier().toString(), QString("ns2"));
@@ -2420,6 +2421,12 @@ void TestDUChain::useNamespace()
     dec = top->localDeclarations().at(3);
     QCOMPARE(dec->qualifiedIdentifier().toString(), QString("ns5"));
     QVERIFY(dynamic_cast<NamespaceAliasDeclaration*>(dec));
+
+    dec = top->localDeclarations().at(4);
+    QCOMPARE(dec->qualifiedIdentifier().toString(), QString("ns6"));
+    QVERIFY(dynamic_cast<NamespaceAliasDeclaration*>(dec));
+    ///TODO: find out why this is explictly required
+    QVERIFY(!dynamic_cast<NamespaceAliasDeclaration*>(dec)->importIdentifier().explicitlyGlobal());
 }
 
 struct TestUse {
