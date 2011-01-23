@@ -148,7 +148,7 @@ void ParseJob::run()
         QReadLocker parseLock(php()->language()->parseLock());
 
         DeclarationBuilder builder(&editor);
-        KDevelop::ReferencedTopDUContext chain = builder.build(document(), ast);
+        KDevelop::ReferencedTopDUContext chain = builder.build(document(), ast, toUpdate);
 
         if (abortRequested()) {
             return abortJob();
