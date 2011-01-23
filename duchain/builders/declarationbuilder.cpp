@@ -710,6 +710,9 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
     }
 
     DUChainWriteLocker lock(DUChain::lock());
+
+    const RangeInRevision newRange = editorFindRange(node, node);
+
     // check if this variable is already declared
     {
         QList< Declaration* > decs = parentCtx->findDeclarations(identifier.first(), startPos(node), 0, DUContext::DontSearchInParent);
@@ -718,7 +721,12 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
             while ( true ) {
                 // we expect that the list of declarations has the newest declaration at back
                 if ( dynamic_cast<VariableDeclaration*>( *it ) ) {
-                    encounter(*it);
+                    if (!wasEncountered(*it)) {
+                        encounter(*it);
+                        // force new range https://bugs.kde.org/show_bug.cgi?id=262189,
+                        // might be wrong when we had syntax errors in there before
+                        (*it)->setRange(newRange);
+                    }
                     if ( (*it)->abstractType() && !(*it)->abstractType()->equals(type.unsafeData()) ) {
                         // if it's currently mixed and we now get something more definite, use that instead
                         if ( ReferenceType::Ptr rType = ReferenceType::Ptr::dynamicCast((*it)->abstractType()) ) {
@@ -772,8 +780,6 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
         }
     }
 
-    RangeInRevision newRange = editorFindRange(node, node);
-
     VariableDeclaration *dec = openDefinition<VariableDeclaration>(identifier, newRange);
     dec->setKind(Declaration::Instance);
     if (!m_lastTopStatementComment.isEmpty()) {
@@ -783,7 +789,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
         }
     }
     //own closeDeclaration() that doesn't use lastType()
-    currentDeclaration()->setType(type);
+    dec->setType(type);
     eventuallyAssignInternalContext();
     DeclarationBuilderBase::closeDeclaration();
 }
