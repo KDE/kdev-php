@@ -225,7 +225,7 @@ bool DeclarationBuilder::isBaseMethodRedeclaration(const IdentifierPair &ids, Cl
             {
                 if (dec->isFunctionDeclaration()) {
                     ClassMethodDeclaration* func = dynamic_cast<ClassMethodDeclaration*>(dec);
-                    if (!func) {
+                    if (!func || !wasEncountered(func)) {
                         continue;
                     }
                     // we cannot redeclare final classes ever
@@ -264,7 +264,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
                 DUChainWriteLocker lock(DUChain::lock());
                 foreach(Declaration * dec, currentContext()->findLocalDeclarations(ids.second.first(), startPos(node->methodName)))
                 {
-                    if (dec->isFunctionDeclaration()) {
+                    if (wasEncountered(dec) && dec->isFunctionDeclaration()) {
                         reportRedeclarationError(dec, node->methodName);
                         localError = true;
                         break;
@@ -383,7 +383,7 @@ void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
         Q_ASSERT(currentContext()->type() == DUContext::Class);
         foreach(Declaration * dec, currentContext()->findLocalDeclarations(name.first(), startPos(node)))
         {
-            if (!dec->isFunctionDeclaration() && ! dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
+            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && ! dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
                 reportRedeclarationError(dec, node);
                 break;
             }
@@ -484,7 +484,7 @@ void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
         DUChainWriteLocker lock(DUChain::lock());
         foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first(), startPos(node->identifier)))
         {
-            if (!dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
+            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
                 reportRedeclarationError(dec, node->identifier);
                 break;
             }
@@ -624,7 +624,7 @@ bool DeclarationBuilder::isGlobalRedeclaration(const QualifiedIdentifier &identi
     DUChainWriteLocker lock(DUChain::lock());
     QList<Declaration*> declarations = currentContext()->topContext()->findDeclarations( identifier, startPos(node) );
     foreach(Declaration* dec, declarations) {
-        if (isMatch(dec, type)) {
+        if (wasEncountered(dec) && isMatch(dec, type)) {
             reportRedeclarationError(dec, node);
             return true;
         }
