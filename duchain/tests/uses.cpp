@@ -879,7 +879,6 @@ void TestUses::namespaces()
     dec = top->findDeclarations(QualifiedIdentifier("foo")).last();
     QCOMPARE(dec->kind(), Declaration::Namespace);
     compareUses(dec, QList<RangeInRevision>()
-                                          << RangeInRevision(1, 10, 1, 13)
                                           << RangeInRevision(8, 1, 8, 4)
                                           << RangeInRevision(9, 1, 9, 4)
                                           << RangeInRevision(10, 1, 10, 4)
