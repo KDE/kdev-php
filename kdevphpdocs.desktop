@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Comment=This plugin integrates PHP.net online documentation.
+Comment[cs]=Tento modul integruje online dokumentaci PHP.net.
 Comment[da]=Dette plugin integrerer online dokumentation fra PHP.net.
 Comment[de]=Dieses Modul integriert die PHP.net-Online-Dokumentation.
 Comment[en_GB]=This plugin integrates PHP.net online documentation.
