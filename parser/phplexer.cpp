@@ -396,8 +396,12 @@ int Lexer::nextTokenKind()
                 } else {
                     token = Parser::Token_COMMENT;
                 }
-                while (m_curpos < m_contentSize &&
-                        !((it)->unicode() == '?' && (it + 1)->unicode() == '>')) {
+                while (m_curpos < m_contentSize) {
+                    if (m_curpos + 1 < m_contentSize && it->unicode() == '?' && (it + 1)->unicode() == '>') {
+                        --it;
+                        --m_curpos;
+                        break;
+                    }
                     if ( it->unicode() == '\n' ) {
                         createNewline(m_curpos);
                         if ( token == Parser::Token_COMMENT ) {
@@ -449,6 +453,11 @@ int Lexer::nextTokenKind()
             //accept COMMENT inside StringVariableCurly too, as php does
             token = Parser::Token_COMMENT;
             while (m_curpos < m_contentSize) {
+                if (m_curpos + 1 < m_contentSize && it->unicode() == '?' && (it + 1)->unicode() == '>') {
+                    --it;
+                    --m_curpos;
+                    break;
+                }
                 if (it->unicode() == '\n') {
                     createNewline(m_curpos);
                     break;

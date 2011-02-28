@@ -364,6 +364,34 @@ void LexerTest::testNamespaces()
     delete ts;
 }
 
+void LexerTest::testCloseTagInComment()
+{
+    {
+    TokenStream* ts = tokenize(
+        "<?php // asdf ?>"
+    , true);
+    QCOMPARE((int)ts->size(), 3);
+
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_COMMENT, 0, 6, 0, 13);
+    COMPARE_TOKEN(ts, 2, Parser::Token_CLOSE_TAG, 0, 14, 0, 15);
+
+    delete ts;
+    }
+    {
+    TokenStream* ts = tokenize(
+        "<?php #  asdf ?>"
+    , true);
+    QCOMPARE((int)ts->size(), 3);
+
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_COMMENT, 0, 6, 0, 13);
+    COMPARE_TOKEN(ts, 2, Parser::Token_CLOSE_TAG, 0, 14, 0, 15);
+
+    delete ts;
+    }
+}
+
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
     TokenStream* tokenStream = new TokenStream;
