@@ -2648,6 +2648,17 @@ void TestDUChain::closures()
     QVERIFY(l->abstractType()->equals(closure->abstractType().constData()));
 }
 
+void TestDUChain::closureEmptyUse()
+{
+    // test case for: https://bugs.kde.org/show_bug.cgi?id=267105
+    // don't crash but report parse error
+    TopDUContext* top = parse("<?php $c = function ($v) use () { return $v > 2; };\n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QCOMPARE(top->problems().size(), 1);
+}
+
 void TestDUChain::gotoTest()
 {
     TopDUContext* top = parse("<?php goto dest; dest: \n", DumpNone);
