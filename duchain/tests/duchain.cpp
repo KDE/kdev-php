@@ -2566,6 +2566,8 @@ void TestDUChain::embeddedHTML_data()
     QTest::newRow("switch") << QString("<?php switch ( 1 ) : case 1: ?>\n<?php break; endswitch; ?>\n");
     QTest::newRow("for") << QString("<?php for ( ;; ) : ?>\n<?php endfor; ?>\n");
     QTest::newRow("while") << QString("<?php while ( true ) : ?>\n<?php endwhile; ?>\n");
+    QTest::newRow("else") << QString("<?php if (true):\n echo 'ok1';\n else:\n echo 'ok2';\n endif; ?>");
+
 }
 
 void TestDUChain::embeddedHTML()
