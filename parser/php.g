@@ -550,7 +550,7 @@ expression=booleanOrExpression
         LBRACE try/recover(functionBody=innerStatementList) RBRACE
 -> closure ;;
 
-  (#lexicalVars=lexicalVar @ COMMA) | 0
+  (#lexicalVars=lexicalVar @ COMMA) | 0 [: reportProblem(Error, "Use list of closure must not be empty."); :]
 -> lexicalVarList ;;
 
   (isRef=BIT_AND | 0) variable=variableIdentifier

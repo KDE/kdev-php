@@ -249,7 +249,7 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
         }
     }
 
-    if (node->lexicalVars) {
+    if (node->lexicalVars && node->lexicalVars->lexicalVarsSequence) {
         const KDevPG::ListNode< LexicalVarAst* >* it = node->lexicalVars->lexicalVarsSequence->front();
         DUChainWriteLocker lock;
         forever {

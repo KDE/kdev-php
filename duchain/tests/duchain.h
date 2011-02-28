@@ -135,6 +135,7 @@ private slots:
     void cases();
     void closureParser();
     void closures();
+    void closureEmptyUse();
     void gotoTest();
     void ternary();
 };
