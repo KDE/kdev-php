@@ -502,6 +502,12 @@ void TypeBuilder::visitStatement(StatementAst* node)
         bool foundType = false;
         if (StructureType::Ptr type = StructureType::Ptr::dynamicCast(v.result().type())) {
             ClassDeclaration *classDec = dynamic_cast<ClassDeclaration*>(type->declaration(currentContext()->topContext()));
+            if (!classDec) {
+                ///FIXME: this is just a hack for https://bugs.kde.org/show_bug.cgi?id=269369
+                ///       a proper fix needs full fledged two-pass, i.e. get rid of PreDeclarationBuilder
+                // 0 == global lookup and the delcaration is found again...
+                classDec = dynamic_cast<ClassDeclaration*>(type->declaration(0));
+            }
             Q_ASSERT(classDec);
             /// Qualified identifier for 'iterator'
             static const QualifiedIdentifier iteratorQId("iterator");

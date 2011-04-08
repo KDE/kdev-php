@@ -250,25 +250,30 @@ void TestDUChainMultipleFiles::testForeachImportedIdentifier()
     TestFile f2("<?\n"
                 "class A {\n"
                 "  public function foo() { $i = $this->bar(); foreach($i as $a => $b) {} } \n"
-//                 "  /// @return SomeIterator\n"
                 "  public function bar() { $a = new SomeIterator(); return $a; }\n"
                 " }\n", project);
-    // build once
-    f2.parse(features);
-    f2.waitForParsed();
-    QTest::qWait(100);
 
-    // update
-    f2.parse(static_cast<KDevelop::TopDUContext::Features>(features | KDevelop::TopDUContext::ForceUpdate));
-    f2.waitForParsed();
-    QTest::qWait(100);
+    for(int i = 0; i < 2; ++i) {
+        if (i > 0) {
+            features = static_cast<KDevelop::TopDUContext::Features>(features | KDevelop::TopDUContext::ForceUpdate);
+        }
+        f2.parse(features);
+        f2.waitForParsed();
+        QTest::qWait(100);
 
-    KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
-    qDebug() << f2.topContext()->childContexts().first()->localDeclarations().last()->toString();
-    foreach(const KDevelop::DUContext::Import& import, f2.topContext()->importedParentContexts()) {
-        qDebug() << import.indexedContext().context()->url().str();
+        KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
+        KDevelop::DUContext* ACtx = f2.topContext()->childContexts().first();
+        QVERIFY(ACtx);
+        KDevelop::Declaration* iDec = ACtx->childContexts().at(1)->localDeclarations().first();
+        QVERIFY(iDec);
+        KDevelop::Declaration* SomeIteratorDec = f1.topContext()->localDeclarations().first();
+        QVERIFY(SomeIteratorDec);
+        if (i == 0) {
+            QEXPECT_FAIL("", "needs a full two-pass (i.e. get rid of PreDeclarationBuilder)", Continue);
+        }
+        QVERIFY(iDec->abstractType()->equals(SomeIteratorDec->abstractType().constData()));
+        QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
     }
-    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
 }
 
 }
