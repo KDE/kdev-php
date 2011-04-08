@@ -26,6 +26,7 @@
 #include <interfaces/ilanguagecontroller.h>
 #include <language/backgroundparser/backgroundparser.h>
 #include <tests/testproject.h>
+#include <language/duchain/declaration.h>
 
 QTEST_KDEMAIN(Php::TestDUChainMultipleFiles, GUI)
 
@@ -63,6 +64,7 @@ public:
 
     void parse(KDevelop::TopDUContext::Features features)
     {
+        m_ready = false;
         KDevelop::DUChain::self()->updateContextForUrl(KDevelop::IndexedString(m_file.fileName()), features, this);
     }
 
@@ -230,6 +232,44 @@ void TestDUChainMultipleFiles::testNonExistingStaticFunction()
     QVERIFY(KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
 }
 
+void TestDUChainMultipleFiles::testForeachImportedIdentifier()
+{
+    // see https://bugs.kde.org/show_bug.cgi?id=269369
+
+    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+
+    KDevelop::TestProject* project = new KDevelop::TestProject;
+    m_projectController->clearProjects();
+    m_projectController->addProject(project);
+
+    // build dependency
+    TestFile f1("<? class SomeIterator implements Countable, Iterator { }", project);
+    f1.parse(features);
+    f1.waitForParsed();
+
+    TestFile f2("<?\n"
+                "class A {\n"
+                "  public function foo() { $i = $this->bar(); foreach($i as $a => $b) {} } \n"
+//                 "  /// @return SomeIterator\n"
+                "  public function bar() { $a = new SomeIterator(); return $a; }\n"
+                " }\n", project);
+    // build once
+    f2.parse(features);
+    f2.waitForParsed();
+    QTest::qWait(100);
+
+    // update
+    f2.parse(static_cast<KDevelop::TopDUContext::Features>(features | KDevelop::TopDUContext::ForceUpdate));
+    f2.waitForParsed();
+    QTest::qWait(100);
+
+    KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
+    qDebug() << f2.topContext()->childContexts().first()->localDeclarations().last()->toString();
+    foreach(const KDevelop::DUContext::Import& import, f2.topContext()->importedParentContexts()) {
+        qDebug() << import.indexedContext().context()->url().str();
+    }
+    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
+}
 
 }
 
