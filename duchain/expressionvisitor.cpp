@@ -59,7 +59,7 @@ DeclarationPointer ExpressionVisitor::processVariable(VariableIdentifierAst* var
     DeclarationPointer ret;
     Identifier identifier = identifierForNode(variable).last();
 
-    ifDebug(kDebug() << "processing variable" << identifier.toString() << position.textCursor();)
+    ifDebug(kDebug() << "processing variable" << identifier.toString() << position.castToSimpleCursor();)
 
     if (identifier.nameEquals(Identifier("this"))) {
         DUChainReadLocker lock(DUChain::lock());
