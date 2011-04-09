@@ -847,7 +847,7 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
 void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
 {
     QualifiedIdentifier id;
-    {
+    if (!m_isInternalFunctions) {
         FunctionType::Ptr oldFunction = m_currentFunctionType;
 
         DeclarationPointer dec;
@@ -869,6 +869,9 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
         DeclarationBuilderBase::visitFunctionCall(node);
 
         m_currentFunctionType = oldFunction;
+    } else {
+        // optimize for internal function file
+        DeclarationBuilderBase::visitFunctionCall(node);
     }
 
     if (node->stringFunctionNameOrClass && !node->stringFunctionName && !node->varFunctionName) {
@@ -893,10 +896,14 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                 injectContext(ctx); //constants are always global
                 QualifiedIdentifier identifier(constant);
                 isGlobalRedeclaration(identifier, scalar, ConstantDeclarationType);
-                openDefinition<Declaration>(identifier, newRange);
-                currentDeclaration()->setKind(Declaration::Instance);
-                Q_ASSERT(lastType());
-                lastType()->setModifiers(lastType()->modifiers() | AbstractType::ConstModifier);
+                Declaration* dec = openDefinition<Declaration>(identifier, newRange);
+                dec->setKind(Declaration::Instance);
+                if (node->stringParameterList->parametersSequence->count() > 1) {
+                    AbstractType::Ptr type = getTypeForNode(node->stringParameterList->parametersSequence->at(1)->element);
+                    Q_ASSERT(type);
+                    type->setModifiers(type->modifiers() | AbstractType::ConstModifier);
+                    dec->setType(type);
+                } // TODO: else report error?
                 closeDeclaration();
                 closeInjectedContext();
             }

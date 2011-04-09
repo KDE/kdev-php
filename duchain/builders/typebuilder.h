@@ -58,13 +58,15 @@ protected:
     virtual void visitClosure(ClosureAst* node);
 
     virtual void visitStatement(StatementAst* node);
-    virtual void visitExpr(ExprAst *node);
+    virtual void visitAssignmentExpression(AssignmentExpressionAst* node);
     virtual void visitStaticVar(StaticVarAst *node);
     virtual void visitCatchItem(CatchItemAst *node);
 
     /// The declaration builder implements this and updates
     /// the type of the current declaration
     virtual void updateCurrentType();
+
+    KDevelop::AbstractType::Ptr getTypeForNode(AstNode* node);
 private:
     KDevelop::FunctionType::Ptr m_currentFunctionType;
     QList<KDevelop::AbstractType::Ptr> m_currentFunctionParams;
@@ -78,8 +80,6 @@ private:
     KDevelop::AbstractType::Ptr parseType(QString type, AstNode* node);
     KDevelop::AbstractType::Ptr parseDocComment(AstNode* node, const QString& docCommentName);
     QList<KDevelop::AbstractType::Ptr> parseDocCommentParams(AstNode* node);
-
-    KDevelop::AbstractType::Ptr getTypeForNode(AstNode* node);
 };
 
 }

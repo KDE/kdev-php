@@ -419,13 +419,18 @@ void TypeBuilder::visitClosure(ClosureAst* node)
     closeType();
 }
 
-void TypeBuilder::visitExpr(ExprAst *node)
+void TypeBuilder::visitAssignmentExpression(AssignmentExpressionAst* node)
 {
-    openAbstractType(getTypeForNode(node));
+    // performance: only try to find type when we are actually in an assignment expr
+    if (node->assignmentExpression || node->assignmentExpressionEqual) {
+        openAbstractType(getTypeForNode(node));
+    }
 
-    TypeBuilderBase::visitExpr(node);
+    TypeBuilderBase::visitAssignmentExpression(node);
 
-    closeType();
+    if (node->assignmentExpression || node->assignmentExpressionEqual) {
+        closeType();
+    }
 }
 
 void TypeBuilder::visitStaticVar(StaticVarAst *node)
@@ -440,50 +445,52 @@ void TypeBuilder::visitStaticVar(StaticVarAst *node)
 void TypeBuilder::visitStatement(StatementAst* node)
 {
     TypeBuilderBase::visitStatement(node);
-    if ( !m_gotReturnTypeFromDocComment && node->returnExpr && lastType() && hasCurrentType() && currentType<FunctionType>())
+    if ( !m_gotReturnTypeFromDocComment && node->returnExpr && hasCurrentType() && currentType<FunctionType>())
     {
         FunctionType::Ptr ft = currentType<FunctionType>();
         // kDebug() << "return" << (ft->returnType() ? ft->returnType()->toString() : "none") << lastType()->toString();
-        AbstractType::Ptr type = lastType();
-        // ignore references for return values, PHP does so as well
-        if ( ReferenceType::Ptr rType = ReferenceType::Ptr::dynamicCast(type) ) {
-            type = rType->baseType();
-        }
-        if (ft->returnType() && !ft->returnType()->equals(type.unsafeData())) {
-            if (ft->returnType().cast<IntegralType>()
-                && ft->returnType().cast<IntegralType>()->dataType() == IntegralType::TypeMixed)
-            {
-                //don't add TypeMixed to the list, just ignore
-                ft->setReturnType(type);
-            } else {
-                UnsureType::Ptr retT;
-                if (ft->returnType().cast<UnsureType>()) {
-                    //kDebug() << "we already have an unsure type";
-                    retT = ft->returnType().cast<UnsureType>();
-                    if (type.cast<UnsureType>()) {
-                        //kDebug() << "add multiple to returnType";
-                        FOREACH_FUNCTION(const IndexedType& t, type.cast<UnsureType>()->types) {
-                            retT->addType(t);
+        AbstractType::Ptr type = getTypeForNode(node->returnExpr);
+        if (type) {
+            // ignore references for return values, PHP does so as well
+            if ( ReferenceType::Ptr rType = ReferenceType::Ptr::dynamicCast(type) ) {
+                type = rType->baseType();
+            }
+            if (ft->returnType() && !ft->returnType()->equals(type.unsafeData())) {
+                if (ft->returnType().cast<IntegralType>()
+                    && ft->returnType().cast<IntegralType>()->dataType() == IntegralType::TypeMixed)
+                {
+                    //don't add TypeMixed to the list, just ignore
+                    ft->setReturnType(type);
+                } else {
+                    UnsureType::Ptr retT;
+                    if (ft->returnType().cast<UnsureType>()) {
+                        //kDebug() << "we already have an unsure type";
+                        retT = ft->returnType().cast<UnsureType>();
+                        if (type.cast<UnsureType>()) {
+                            //kDebug() << "add multiple to returnType";
+                            FOREACH_FUNCTION(const IndexedType& t, type.cast<UnsureType>()->types) {
+                                retT->addType(t);
+                            }
+                        } else {
+                            //kDebug() << "add to returnType";
+                            retT->addType(type->indexed());
                         }
                     } else {
-                        //kDebug() << "add to returnType";
-                        retT->addType(type->indexed());
+                        if (type.cast<UnsureType>()) {
+                            retT = type.cast<UnsureType>();
+                        } else {
+                            retT = new UnsureType();
+                            retT->addType(type->indexed());
+                        }
+                        retT->addType(ft->returnType()->indexed());
                     }
-                } else {
-                    if (type.cast<UnsureType>()) {
-                        retT = type.cast<UnsureType>();
-                    } else {
-                        retT = new UnsureType();
-                        retT->addType(type->indexed());
-                    }
-                    retT->addType(ft->returnType()->indexed());
+                    ft->setReturnType(AbstractType::Ptr::staticCast(retT));
                 }
-                ft->setReturnType(AbstractType::Ptr::staticCast(retT));
+            } else {
+                ft->setReturnType(type);
             }
-        } else {
-            ft->setReturnType(type);
+            updateCurrentType();
         }
-        updateCurrentType();
     }
 
     AstNode *foreachNode = 0;
