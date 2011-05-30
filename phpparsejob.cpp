@@ -96,6 +96,7 @@ void ParseJob::run()
                 if (php() && php()->codeHighlighting()
                     && ICore::self()->languageController()->backgroundParser()->trackerForUrl(document()))
                 {
+                    lock.unlock();
                     php()->codeHighlighting()->highlightDUChain(duChain());
                 }
                 return;
@@ -187,16 +188,18 @@ void ParseJob::run()
             return abortJob();
         }
 
-        DUChainWriteLocker lock(DUChain::lock());
+        {
+            DUChainWriteLocker lock(DUChain::lock());
 
-        foreach(const ProblemPointer &p, session.problems()) {
-            chain->addProblem(p);
+            foreach(const ProblemPointer &p, session.problems()) {
+                chain->addProblem(p);
+            }
+
+            chain->setFeatures(newFeatures);
+            ParsingEnvironmentFilePointer file = chain->parsingEnvironmentFile();
+            file->setModificationRevision(contents().modification);
+            DUChain::self()->updateContextEnvironment( chain->topContext(), file.data() );
         }
-
-        chain->setFeatures(newFeatures);
-        ParsingEnvironmentFilePointer file = chain->parsingEnvironmentFile();
-        file->setModificationRevision(contents().modification);
-        DUChain::self()->updateContextEnvironment( chain->topContext(), file.data() );
 
         if (php() && php()->codeHighlighting()
             && ICore::self()->languageController()->backgroundParser()->trackerForUrl(document()))
