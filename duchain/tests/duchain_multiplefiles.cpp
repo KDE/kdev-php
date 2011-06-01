@@ -62,10 +62,10 @@ public:
     }
 
 
-    void parse(KDevelop::TopDUContext::Features features)
+    void parse(KDevelop::TopDUContext::Features features, int priority = 1)
     {
         m_ready = false;
-        KDevelop::DUChain::self()->updateContextForUrl(KDevelop::IndexedString(m_file.fileName()), features, this);
+        KDevelop::DUChain::self()->updateContextForUrl(KDevelop::IndexedString(m_file.fileName()), features, this, priority);
     }
 
     void waitForParsed()
@@ -127,18 +127,19 @@ void TestDUChainMultipleFiles::testImportsBaseClassNotYetParsed()
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
+
     TestFile f2("<? class B extends A {}", project);
     f2.parse(features);
 
     TestFile f1("<? class A {}", project);
-    f1.parse(features);
+    f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
     f1.waitForParsed();
     QTest::qWait(100);
 
     KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
     QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
-
+    QVERIFY(KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
 }
 
 void TestDUChainMultipleFiles::testNonExistingBaseClass()
@@ -169,7 +170,7 @@ void TestDUChainMultipleFiles::testImportsGlobalFunctionNotYetParsed()
     f2.parse(features);
 
     TestFile f1("<? function foo2() {}", project);
-    f1.parse(features);
+    f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
     f2.waitForParsed();
     QTest::qWait(100);
@@ -207,7 +208,7 @@ void TestDUChainMultipleFiles::testImportsStaticFunctionNotYetParsed()
     f2.parse(features);
 
     TestFile f1("<? class C { public static function foo() {} }", project);
-    f1.parse(features);
+    f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
     f2.waitForParsed();
     QTest::qWait(100);
