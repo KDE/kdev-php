@@ -732,7 +732,7 @@ DeclarationPointer ExpressionVisitor::findDeclarationImport(DeclarationType decl
 
 DeclarationPointer ExpressionVisitor::findDeclarationImport( DeclarationType declarationType, AstNode* node, const QualifiedIdentifier& identifier)
 {
-    return findDeclarationImportHelper(m_currentContext, identifier, declarationType, node, m_editor);
+    return findDeclarationImportHelper(m_currentContext, identifier, declarationType);
 }
 
 }

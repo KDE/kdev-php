@@ -881,7 +881,7 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
         } else {
             QualifiedIdentifier id(identifier);
 
-            m_expressionResult.setDeclaration(findDeclarationImportHelper(duContext(), id, ClassDeclarationType, 0, 0));
+            m_expressionResult.setDeclaration(findDeclarationImportHelper(duContext(), id, ClassDeclarationType));
         }
     } else {
         // Now get the string of the expression and evaluate it
@@ -962,7 +962,7 @@ void CodeCompletionContext::forbidIdentifier(const QString& identifier)
 
     ClassDeclaration *dec = dynamic_cast<ClassDeclaration*>(
                                 findDeclarationImportHelper(m_duContext.data(), id,
-                                                            ClassDeclarationType, 0, 0).data()
+                                                            ClassDeclarationType).data()
                             );
     if (dec) {
         forbidIdentifier(dec);

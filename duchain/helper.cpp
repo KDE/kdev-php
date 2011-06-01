@@ -79,7 +79,7 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
 }
 
 DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, QualifiedIdentifier id,
-        DeclarationType declarationType, AstNode* node, EditorIntegrator* editor)
+        DeclarationType declarationType)
 {
     /// Qualified identifier for 'self'
     static const QualifiedIdentifier selfQId("self");
