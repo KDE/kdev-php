@@ -125,6 +125,7 @@ private slots:
     void namespaces();
     void namespacesNoCurly();
     void useNamespace();
+    void namespaceStaticVar();
     void errorRecovery_data();
     void errorRecovery();
     void varStatic();

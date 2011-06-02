@@ -2429,6 +2429,31 @@ void TestDUChain::useNamespace()
     QVERIFY(!dynamic_cast<NamespaceAliasDeclaration*>(dec)->importIdentifier().explicitlyGlobal());
 }
 
+void TestDUChain::namespaceStaticVar()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "namespace ns {\n"
+                              "class c{ static public $foo; }\n"
+                              "}\n"
+                              "namespace {\n"
+                              "\\ns\\c::$foo;\n"
+                              "}\n"
+                              , DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+    Declaration* fooDec = top->findDeclarations(QualifiedIdentifier("ns::c::foo")).first();
+    QVERIFY(fooDec);
+
+    QVERIFY(!fooDec->uses().isEmpty());
+    QVERIFY(!fooDec->uses().begin()->isEmpty());
+    QCOMPARE(fooDec->uses().begin()->begin()->start.line, 5);
+}
+
 struct TestUse {
     TestUse(const QString& _id, Declaration::Kind _kind, int _uses)
         : id(_id), kind(_kind), uses(_uses)

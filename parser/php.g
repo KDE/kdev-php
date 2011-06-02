@@ -621,7 +621,7 @@ expression=booleanOrExpression
     expr=expr | 0
 -> dimOffset ;;
 
-    className=identifier PAAMAYIM_NEKUDOTAYIM variable=variableWithoutObjects
+    className=namespacedIdentifier PAAMAYIM_NEKUDOTAYIM variable=variableWithoutObjects
 -> staticMember ;;
 
     LBRACE try/recover(statements=innerStatementList) RBRACE
