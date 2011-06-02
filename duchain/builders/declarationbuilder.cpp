@@ -903,6 +903,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                     Q_ASSERT(type);
                     type->setModifiers(type->modifiers() | AbstractType::ConstModifier);
                     dec->setType(type);
+                    injectType(type);
                 } // TODO: else report error?
                 closeDeclaration();
                 closeInjectedContext();
