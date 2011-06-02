@@ -85,9 +85,7 @@ void UseBuilder::visitClassExtends(ClassExtendsAst *node)
 
 void UseBuilder::visitExpr(ExprAst* node)
 {
-    UseExpressionVisitor v(m_editor, this);
-    node->ducontext = currentContext();
-    v.visitNode(node);
+    visitNodeWithExprVisitor(node);
 }
 
 void UseBuilder::visitGlobalVar(GlobalVarAst* node)
@@ -103,9 +101,7 @@ void UseBuilder::visitGlobalVar(GlobalVarAst* node)
 void UseBuilder::visitStaticScalar(StaticScalarAst* node)
 {
     if (currentContext()->type() == DUContext::Class) {
-        UseExpressionVisitor v(m_editor, this);
-        node->ducontext = currentContext();
-        v.visitNode(node);
+        visitNodeWithExprVisitor(node);
     }
 }
 
@@ -119,9 +115,7 @@ void UseBuilder::visitStatement(StatementAst *node)
     }
 
     if (visitNode) {
-        UseExpressionVisitor v(m_editor, this);
-        visitNode->ducontext = currentContext();
-        v.visitNode(visitNode);
+        visitNodeWithExprVisitor(visitNode);
     }
 
     UseBuilderBase::visitStatement(node);
@@ -196,5 +190,15 @@ void UseBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, Identif
     UseBuilderBase::openNamespace(parent, node, identifier, range);
 }
 
+void UseBuilder::visitNodeWithExprVisitor(AstNode* node)
+{
+    UseExpressionVisitor v(m_editor, this);
+    node->ducontext = currentContext();
+    v.visitNode(node);
+
+    if (v.result().hadUnresolvedIdentifiers()) {
+        m_hadUnresolvedIdentifiers = true;
+    }
+}
 
 }
