@@ -5,14 +5,10 @@ set(parser_STAT_SRCS
     parsesession.cpp
     )
 
-kdevpgqt_generate(_kdevpgList php NAMESPACE Php DEBUG_VISITOR TOKEN_TEXT
+kdevpgqt_generate(parser_SRCS php NAMESPACE Php DEBUG_VISITOR TOKEN_TEXT
     "${php_SOURCE_DIR}/parser/php.g"
     "${php_SOURCE_DIR}/parser/phplexer.h"
 )
-set( parser_SRCS
-    ${_kdevpgList}
-)
-add_custom_target(php-parser-generated DEPENDS ${_kdevpgList})
 
 kde4_add_library( kdev4phpparser SHARED ${parser_SRCS} ${parser_STAT_SRCS} )
 target_link_libraries( kdev4phpparser
