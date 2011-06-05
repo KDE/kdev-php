@@ -18,6 +18,8 @@
 
 #include "parsesession.h"
 
+#include "phpast.h"
+
 #include "kdev-pg-memory-pool.h"
 #include "kdev-pg-token-stream.h"
 

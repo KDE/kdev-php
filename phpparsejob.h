@@ -21,6 +21,7 @@
 #define PHP_PARSEJOB_H
 
 #include <language/backgroundparser/parsejob.h>
+#include <language/interfaces/iproblem.h>
 
 // from the parser subdirectory
 #include "phpast.h"

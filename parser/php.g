@@ -51,13 +51,11 @@
 --     I have the gut feeling that the current lookup takes unneccessary much time
 --
 
-[:
+------------------------------------------------------------
+-- Forward declaration in phpast.h
+------------------------------------------------------------
 
-#include <QtCore/QString>
-#include <kdebug.h>
-#include <tokenstream.h>
-#include <language/interfaces/iproblem.h>
-#include "phplexer.h"
+[:
 
 namespace KDevelop
 {
@@ -66,6 +64,16 @@ namespace KDevelop
 
 :]
 
+------------------------------------------------------------
+-- Additional includes for the parser
+------------------------------------------------------------
+
+%parser_declaration_header "tokenstream.h"
+%parser_declaration_header "QtCore/QString"
+%parser_declaration_header "language/interfaces/iproblem.h"
+%parser_declaration_header "phplexer.h"
+
+%parser_bits_header "kdebug.h"
 
 ------------------------------------------------------------
 -- Export macro to use the parser in a shared lib
