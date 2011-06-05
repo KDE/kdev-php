@@ -85,9 +85,7 @@ void UseBuilder::visitClassExtends(ClassExtendsAst *node)
 
 void UseBuilder::visitExpr(ExprAst* node)
 {
-    UseExpressionVisitor v(m_editor, this);
-    node->ducontext = currentContext();
-    v.visitNode(node);
+    visitNodeWithExprVisitor(node);
 }
 
 void UseBuilder::visitGlobalVar(GlobalVarAst* node)
@@ -103,9 +101,7 @@ void UseBuilder::visitGlobalVar(GlobalVarAst* node)
 void UseBuilder::visitStaticScalar(StaticScalarAst* node)
 {
     if (currentContext()->type() == DUContext::Class) {
-        UseExpressionVisitor v(m_editor, this);
-        node->ducontext = currentContext();
-        v.visitNode(node);
+        visitNodeWithExprVisitor(node);
     }
 }
 
@@ -119,9 +115,7 @@ void UseBuilder::visitStatement(StatementAst *node)
     }
 
     if (visitNode) {
-        UseExpressionVisitor v(m_editor, this);
-        visitNode->ducontext = currentContext();
-        v.visitNode(visitNode);
+        visitNodeWithExprVisitor(visitNode);
     }
 
     UseBuilderBase::visitStatement(node);
@@ -149,8 +143,7 @@ void UseBuilder::visitUnaryExpression( UnaryExpressionAst* node )
 {
     IndexedString includeFile = getIncludeFileForNode(node, m_editor);
     if ( !includeFile.isEmpty() ) {
-        ///TODO: is there not a more elegant way to get a QualifiedIdentifier from a IndexedString?
-        QualifiedIdentifier identifier(QString::fromUtf8(includeFile.byteArray()));
+        QualifiedIdentifier identifier(includeFile.str());
 
         DUChainWriteLocker lock(DUChain::lock());
         foreach ( Declaration* dec, currentContext()->topContext()->findDeclarations(identifier) ) {
@@ -177,7 +170,9 @@ void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node, DeclarationTy
         curId.push(identifier.at(i));
         AstNode* n = node->namespaceNameSequence->at(i)->element;
         DeclarationPointer dec = findDeclarationImport(NamespaceDeclarationType, curId, n);
-        newCheckedUse(n, dec);
+        if (!dec || dec->range() != editorFindRange(n, n)) {
+            newCheckedUse(n, dec);
+        }
     }
     newCheckedUse(node->namespaceNameSequence->back()->element,
                   findDeclarationImport(lastType, identifier, node ));
@@ -187,10 +182,23 @@ void UseBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, Identif
                                const IdentifierPair& identifier, const RangeInRevision& range)
 {
     if (node != parent->namespaceNameSequence->back()->element) {
-        newCheckedUse(node, findDeclarationImport(NamespaceDeclarationType, identifier.second, node));
+        DeclarationPointer dec = findDeclarationImport(NamespaceDeclarationType, identifier.second, node);
+        if (!dec || dec->range() != editorFindRange(node, node)) {
+            newCheckedUse(node, dec);
+        }
     }
     UseBuilderBase::openNamespace(parent, node, identifier, range);
 }
 
+void UseBuilder::visitNodeWithExprVisitor(AstNode* node)
+{
+    UseExpressionVisitor v(m_editor, this);
+    node->ducontext = currentContext();
+    v.visitNode(node);
+
+    if (v.result().hadUnresolvedIdentifiers()) {
+        m_hadUnresolvedIdentifiers = true;
+    }
+}
 
 }

@@ -899,6 +899,7 @@ void TestDUChain::classConst_data()
     QTest::newRow("bool") << "const C = true;" << 0;
     QTest::newRow("selfConst") << "const C2 = 1; const C = self::C2;" << 0;
     QTest::newRow("parentConst") << "const C = parent::P;" << 0;
+    QTest::newRow("null") << "const C = null;" << 0;
 
     QTest::newRow("array") << "const C = array();" << 1;
 }
@@ -2404,13 +2405,14 @@ void TestDUChain::useNamespace()
                               "}\n"
                               "namespace {\n"
                               "use ns1\\ns2, ns3\\ns4 as ns5;\n"
+                              "use \\ns3\\ns4 as ns6;\n"
                               "}\n"
                               , DumpNone);
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
 
-    QCOMPARE(top->localDeclarations().count(), 4);
+    QCOMPARE(top->localDeclarations().count(), 5);
 
     Declaration* dec = top->localDeclarations().at(2);
     QCOMPARE(dec->qualifiedIdentifier().toString(), QString("ns2"));
@@ -2419,6 +2421,37 @@ void TestDUChain::useNamespace()
     dec = top->localDeclarations().at(3);
     QCOMPARE(dec->qualifiedIdentifier().toString(), QString("ns5"));
     QVERIFY(dynamic_cast<NamespaceAliasDeclaration*>(dec));
+
+    dec = top->localDeclarations().at(4);
+    QCOMPARE(dec->qualifiedIdentifier().toString(), QString("ns6"));
+    QVERIFY(dynamic_cast<NamespaceAliasDeclaration*>(dec));
+    ///TODO: find out why this is explictly required
+    QVERIFY(!dynamic_cast<NamespaceAliasDeclaration*>(dec)->importIdentifier().explicitlyGlobal());
+}
+
+void TestDUChain::namespaceStaticVar()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "namespace ns {\n"
+                              "class c{ static public $foo; }\n"
+                              "}\n"
+                              "namespace {\n"
+                              "\\ns\\c::$foo;\n"
+                              "}\n"
+                              , DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+    Declaration* fooDec = top->findDeclarations(QualifiedIdentifier("ns::c::foo")).first();
+    QVERIFY(fooDec);
+
+    QVERIFY(!fooDec->uses().isEmpty());
+    QVERIFY(!fooDec->uses().begin()->isEmpty());
+    QCOMPARE(fooDec->uses().begin()->begin()->start.line, 5);
 }
 
 struct TestUse {
@@ -2558,6 +2591,8 @@ void TestDUChain::embeddedHTML_data()
     QTest::newRow("switch") << QString("<?php switch ( 1 ) : case 1: ?>\n<?php break; endswitch; ?>\n");
     QTest::newRow("for") << QString("<?php for ( ;; ) : ?>\n<?php endfor; ?>\n");
     QTest::newRow("while") << QString("<?php while ( true ) : ?>\n<?php endwhile; ?>\n");
+    QTest::newRow("else") << QString("<?php if (true):\n echo 'ok1';\n else:\n echo 'ok2';\n endif; ?>");
+
 }
 
 void TestDUChain::embeddedHTML()
@@ -2636,6 +2671,17 @@ void TestDUChain::closures()
     QCOMPARE(funcType->returnType().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeInt));
 
     QVERIFY(l->abstractType()->equals(closure->abstractType().constData()));
+}
+
+void TestDUChain::closureEmptyUse()
+{
+    // test case for: https://bugs.kde.org/show_bug.cgi?id=267105
+    // don't crash but report parse error
+    TopDUContext* top = parse("<?php $c = function ($v) use () { return $v > 2; };\n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QCOMPARE(top->problems().size(), 1);
 }
 
 void TestDUChain::gotoTest()

@@ -64,6 +64,8 @@ protected:
 
 private:
     void buildNamespaceUses(Php::NamespacedIdentifierAst* node, Php::DeclarationType lastType = Php::ClassDeclarationType);
+
+    void visitNodeWithExprVisitor(AstNode* node);
 };
 
 }

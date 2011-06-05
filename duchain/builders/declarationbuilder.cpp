@@ -225,7 +225,7 @@ bool DeclarationBuilder::isBaseMethodRedeclaration(const IdentifierPair &ids, Cl
             {
                 if (dec->isFunctionDeclaration()) {
                     ClassMethodDeclaration* func = dynamic_cast<ClassMethodDeclaration*>(dec);
-                    if (!func) {
+                    if (!func || !wasEncountered(func)) {
                         continue;
                     }
                     // we cannot redeclare final classes ever
@@ -264,7 +264,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
                 DUChainWriteLocker lock(DUChain::lock());
                 foreach(Declaration * dec, currentContext()->findLocalDeclarations(ids.second.first(), startPos(node->methodName)))
                 {
-                    if (dec->isFunctionDeclaration()) {
+                    if (wasEncountered(dec) && dec->isFunctionDeclaration()) {
                         reportRedeclarationError(dec, node->methodName);
                         localError = true;
                         break;
@@ -383,7 +383,7 @@ void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
         Q_ASSERT(currentContext()->type() == DUContext::Class);
         foreach(Declaration * dec, currentContext()->findLocalDeclarations(name.first(), startPos(node)))
         {
-            if (!dec->isFunctionDeclaration() && ! dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
+            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && ! dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
                 reportRedeclarationError(dec, node);
                 break;
             }
@@ -484,7 +484,7 @@ void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
         DUChainWriteLocker lock(DUChain::lock());
         foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first(), startPos(node->identifier)))
         {
-            if (!dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
+            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
                 reportRedeclarationError(dec, node->identifier);
                 break;
             }
@@ -508,6 +508,7 @@ void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
                 case IntegralType::TypeFloat:
                 case IntegralType::TypeInt:
                 case IntegralType::TypeString:
+                case IntegralType::TypeNull:
                     badType = false;
                     break;
                 default:
@@ -623,7 +624,7 @@ bool DeclarationBuilder::isGlobalRedeclaration(const QualifiedIdentifier &identi
     DUChainWriteLocker lock(DUChain::lock());
     QList<Declaration*> declarations = currentContext()->topContext()->findDeclarations( identifier, startPos(node) );
     foreach(Declaration* dec, declarations) {
-        if (isMatch(dec, type)) {
+        if (wasEncountered(dec) && isMatch(dec, type)) {
             reportRedeclarationError(dec, node);
             return true;
         }
@@ -709,6 +710,9 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
     }
 
     DUChainWriteLocker lock(DUChain::lock());
+
+    const RangeInRevision newRange = editorFindRange(node, node);
+
     // check if this variable is already declared
     {
         QList< Declaration* > decs = parentCtx->findDeclarations(identifier.first(), startPos(node), 0, DUContext::DontSearchInParent);
@@ -717,7 +721,12 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
             while ( true ) {
                 // we expect that the list of declarations has the newest declaration at back
                 if ( dynamic_cast<VariableDeclaration*>( *it ) ) {
-                    encounter(*it);
+                    if (!wasEncountered(*it)) {
+                        encounter(*it);
+                        // force new range https://bugs.kde.org/show_bug.cgi?id=262189,
+                        // might be wrong when we had syntax errors in there before
+                        (*it)->setRange(newRange);
+                    }
                     if ( (*it)->abstractType() && !(*it)->abstractType()->equals(type.unsafeData()) ) {
                         // if it's currently mixed and we now get something more definite, use that instead
                         if ( ReferenceType::Ptr rType = ReferenceType::Ptr::dynamicCast((*it)->abstractType()) ) {
@@ -771,8 +780,6 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
         }
     }
 
-    RangeInRevision newRange = editorFindRange(node, node);
-
     VariableDeclaration *dec = openDefinition<VariableDeclaration>(identifier, newRange);
     dec->setKind(Declaration::Instance);
     if (!m_lastTopStatementComment.isEmpty()) {
@@ -782,7 +789,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
         }
     }
     //own closeDeclaration() that doesn't use lastType()
-    currentDeclaration()->setType(type);
+    dec->setType(type);
     eventuallyAssignInternalContext();
     DeclarationBuilderBase::closeDeclaration();
 }
@@ -840,7 +847,7 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
 void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
 {
     QualifiedIdentifier id;
-    {
+    if (!m_isInternalFunctions) {
         FunctionType::Ptr oldFunction = m_currentFunctionType;
 
         DeclarationPointer dec;
@@ -862,6 +869,9 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
         DeclarationBuilderBase::visitFunctionCall(node);
 
         m_currentFunctionType = oldFunction;
+    } else {
+        // optimize for internal function file
+        DeclarationBuilderBase::visitFunctionCall(node);
     }
 
     if (node->stringFunctionNameOrClass && !node->stringFunctionName && !node->varFunctionName) {
@@ -886,10 +896,15 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                 injectContext(ctx); //constants are always global
                 QualifiedIdentifier identifier(constant);
                 isGlobalRedeclaration(identifier, scalar, ConstantDeclarationType);
-                openDefinition<Declaration>(identifier, newRange);
-                currentDeclaration()->setKind(Declaration::Instance);
-                Q_ASSERT(lastType());
-                lastType()->setModifiers(lastType()->modifiers() | AbstractType::ConstModifier);
+                Declaration* dec = openDefinition<Declaration>(identifier, newRange);
+                dec->setKind(Declaration::Instance);
+                if (node->stringParameterList->parametersSequence->count() > 1) {
+                    AbstractType::Ptr type = getTypeForNode(node->stringParameterList->parametersSequence->at(1)->element);
+                    Q_ASSERT(type);
+                    type->setModifiers(type->modifiers() | AbstractType::ConstModifier);
+                    dec->setType(type);
+                    injectType(type);
+                } // TODO: else report error?
                 closeDeclaration();
                 closeInjectedContext();
             }
@@ -1157,7 +1172,10 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
                                                                                 m_editor->findRange(idNode));
     {
         ///TODO: case insensitive!
-        decl->setImportIdentifier( identifierForNamespace(node->identifier, m_editor) );
+        QualifiedIdentifier qid = identifierForNamespace(node->identifier, m_editor);
+        ///TODO: find out why this must be done (see mail to kdevelop-devel on jan 18th 2011)
+        qid.setExplicitlyGlobal( false );
+        decl->setImportIdentifier( qid );
         decl->setPrettyName( id.first );
         decl->setKind(Declaration::NamespaceAlias);
     }

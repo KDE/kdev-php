@@ -57,7 +57,7 @@
 using namespace KDevelop;
 
 K_PLUGIN_FACTORY(KDevPhpSupportFactory, registerPlugin<Php::LanguageSupport>();)
-K_EXPORT_PLUGIN(KDevPhpSupportFactory(KAboutData("kdevphpsupport","kdevphp", ki18n("Php Support"), "1.1.60", ki18n("Support for Php Language"), KAboutData::License_GPL)
+K_EXPORT_PLUGIN(KDevPhpSupportFactory(KAboutData("kdevphpsupport","kdevphp", ki18n("Php Support"), "1.2.60", ki18n("Support for Php Language"), KAboutData::License_GPL)
     .addAuthor(ki18n("Milian Wolff"), ki18n("Author"), "mail@milianw.de", "http://milianw.de")
     .addAuthor(ki18n("Niko Sams"), ki18n("Author"), "niko.sams@gmail.com", "http://nikosams.blogspot.com")
 ))

@@ -1,7 +1,11 @@
 # KDE Config File
 [General]
 Name=Simple PHP Application
+Name[bs]=Prosta PHP aplikacija
+Name[cs]=Jednoduchá aplikace PHP
+Name[da]=Et simpelt PHP-program
 Name[de]=Eine einfache PHP-Anwendung
+Name[el]=Απλή εφαρμογή PHP
 Name[en_GB]=Simple PHP Application
 Name[es]=Aplicación PHP sencilla
 Name[et]=Lihtne PHP rakendus
@@ -16,13 +20,18 @@ Name[pt_BR]=Aplicativo PHP simples
 Name[ru]=Простое приложение на PHP
 Name[sv]=Enkelt PHP-program
 Name[tr]=Basit PHP Uygulaması
+Name[ug]=ئاددىي PHP پروگراممىسى
 Name[uk]=Проста програма мовою PHP
 Name[x-test]=xxSimple PHP Applicationxx
 Name[zh_CN]=简单的 PHP 应用程序
 Name[zh_TW]=簡單的 PHP 應用程式
 Category=PHP
 Comment=Generate filestructure to start a PHP application
+Comment[bs]=Generiši datotečnu strukturu za početak PHP aplikacija
+Comment[cs]=Vygenerovat strukturu souborů pro započetí aplikace PHP
+Comment[da]=Generér filstruktur til at påbegynde en PHP-applikation
 Comment[de]=Dateistruktur erstellen, auf deren Basis eine PHP-Anwendung erstellt werden kann
+Comment[el]=Δημιουργία δομής αρχείων για την εκκίνηση εφαρμογής σε PHP
 Comment[en_GB]=Generate filestructure to start a PHP application
 Comment[es]=Generar una estructura de archivos para iniciar una aplicación PHP
 Comment[et]=Failistruktuuri genereerimine PHP rakenduse tarbeks

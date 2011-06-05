@@ -9,7 +9,7 @@ enable_testing()
 #complain about the FindKDevelop-PG.cmake file not findable.
 find_package(KDE4 REQUIRED)
 
-find_package(KDevPlatform 1.1.60 REQUIRED)
+find_package(KDevPlatform 1.2.60 REQUIRED)
 include_directories(${KDEVPLATFORM_INCLUDE_DIR})
 
 include_directories(
@@ -54,9 +54,6 @@ target_link_libraries(kdevphplanguagesupport
     kdev4phpparser
     kdev4phpcompletion
 )
-
-# Prevent generated files from screwing moc
-add_dependencies(kdevphplanguagesupport_automoc php-parser-generated)
 
 install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR})
 

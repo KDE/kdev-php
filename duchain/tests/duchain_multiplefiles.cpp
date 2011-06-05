@@ -26,6 +26,7 @@
 #include <interfaces/ilanguagecontroller.h>
 #include <language/backgroundparser/backgroundparser.h>
 #include <tests/testproject.h>
+#include <language/duchain/declaration.h>
 
 QTEST_KDEMAIN(Php::TestDUChainMultipleFiles, GUI)
 
@@ -61,9 +62,10 @@ public:
     }
 
 
-    void parse(KDevelop::TopDUContext::Features features)
+    void parse(KDevelop::TopDUContext::Features features, int priority = 1)
     {
-        KDevelop::DUChain::self()->updateContextForUrl(KDevelop::IndexedString(m_file.fileName()), features, this);
+        m_ready = false;
+        KDevelop::DUChain::self()->updateContextForUrl(KDevelop::IndexedString(m_file.fileName()), features, this, priority);
     }
 
     void waitForParsed()
@@ -125,18 +127,19 @@ void TestDUChainMultipleFiles::testImportsBaseClassNotYetParsed()
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
+
     TestFile f2("<? class B extends A {}", project);
     f2.parse(features);
 
     TestFile f1("<? class A {}", project);
-    f1.parse(features);
+    f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
     f1.waitForParsed();
     QTest::qWait(100);
 
     KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
     QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
-
+    QVERIFY(KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
 }
 
 void TestDUChainMultipleFiles::testNonExistingBaseClass()
@@ -167,7 +170,7 @@ void TestDUChainMultipleFiles::testImportsGlobalFunctionNotYetParsed()
     f2.parse(features);
 
     TestFile f1("<? function foo2() {}", project);
-    f1.parse(features);
+    f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
     f2.waitForParsed();
     QTest::qWait(100);
@@ -205,7 +208,7 @@ void TestDUChainMultipleFiles::testImportsStaticFunctionNotYetParsed()
     f2.parse(features);
 
     TestFile f1("<? class C { public static function foo() {} }", project);
-    f1.parse(features);
+    f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
     f2.waitForParsed();
     QTest::qWait(100);
@@ -230,6 +233,49 @@ void TestDUChainMultipleFiles::testNonExistingStaticFunction()
     QVERIFY(KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
 }
 
+void TestDUChainMultipleFiles::testForeachImportedIdentifier()
+{
+    // see https://bugs.kde.org/show_bug.cgi?id=269369
+
+    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+
+    KDevelop::TestProject* project = new KDevelop::TestProject;
+    m_projectController->clearProjects();
+    m_projectController->addProject(project);
+
+    // build dependency
+    TestFile f1("<? class SomeIterator implements Countable, Iterator { }", project);
+    f1.parse(features);
+    f1.waitForParsed();
+
+    TestFile f2("<?\n"
+                "class A {\n"
+                "  public function foo() { $i = $this->bar(); foreach($i as $a => $b) {} } \n"
+                "  public function bar() { $a = new SomeIterator(); return $a; }\n"
+                " }\n", project);
+
+    for(int i = 0; i < 2; ++i) {
+        if (i > 0) {
+            features = static_cast<KDevelop::TopDUContext::Features>(features | KDevelop::TopDUContext::ForceUpdate);
+        }
+        f2.parse(features);
+        f2.waitForParsed();
+        QTest::qWait(100);
+
+        KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
+        KDevelop::DUContext* ACtx = f2.topContext()->childContexts().first();
+        QVERIFY(ACtx);
+        KDevelop::Declaration* iDec = ACtx->childContexts().at(1)->localDeclarations().first();
+        QVERIFY(iDec);
+        KDevelop::Declaration* SomeIteratorDec = f1.topContext()->localDeclarations().first();
+        QVERIFY(SomeIteratorDec);
+        if (i == 0) {
+            QEXPECT_FAIL("", "needs a full two-pass (i.e. get rid of PreDeclarationBuilder)", Continue);
+        }
+        QVERIFY(iDec->abstractType()->equals(SomeIteratorDec->abstractType().constData()));
+        QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
+    }
+}
 
 }
 

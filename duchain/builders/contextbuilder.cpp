@@ -457,19 +457,19 @@ DeclarationPointer ContextBuilder::findDeclarationImport(DeclarationType declara
     } else {
         id = identifierForNode(node);
     }
-    return findDeclarationImportHelper(currentContext(), id, declarationType, node, m_editor);
+    return findDeclarationImportHelper(currentContext(), id, declarationType);
 }
 
 DeclarationPointer ContextBuilder::findDeclarationImport(DeclarationType declarationType,
                                                          VariableIdentifierAst* node)
 {
-    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType, node, m_editor);
+    return findDeclarationImportHelper(currentContext(), identifierForNode(node), declarationType);
 }
 
 DeclarationPointer ContextBuilder::findDeclarationImport(DeclarationType declarationType,
                                                          const QualifiedIdentifier &identifier, AstNode* node)
 {
-    return findDeclarationImportHelper(currentContext(), identifier, declarationType, node, m_editor);
+    return findDeclarationImportHelper(currentContext(), identifier, declarationType);
 }
 
 }

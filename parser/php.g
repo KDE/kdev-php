@@ -300,7 +300,7 @@ namespace KDevelop
 [: bool reported = false; while ( true ) { :]
     try/recover(#statements=topStatement)*
 [: if (yytoken != Token_RBRACE && yytoken != Token_EOF && yytoken != Token_CLOSE_TAG
-       && yytoken != Token_ELSEIF
+       && yytoken != Token_ELSEIF && yytoken != Token_ELSE
        && yytoken != Token_ENDIF && yytoken != Token_ENDFOREACH && yytoken != Token_ENDFOR
        && yytoken != Token_ENDWHILE && yytoken != Token_ENDSWITCH && yytoken != Token_ENDDECLARE
        && yytoken != Token_CASE && yytoken != Token_DEFAULT) {
@@ -558,7 +558,7 @@ expression=booleanOrExpression
         LBRACE try/recover(functionBody=innerStatementList) RBRACE
 -> closure ;;
 
-  (#lexicalVars=lexicalVar @ COMMA) | 0
+  (#lexicalVars=lexicalVar @ COMMA) | 0 [: reportProblem(Error, "Use list of closure must not be empty."); :]
 -> lexicalVarList ;;
 
   (isRef=BIT_AND | 0) variable=variableIdentifier
@@ -629,7 +629,7 @@ expression=booleanOrExpression
     expr=expr | 0
 -> dimOffset ;;
 
-    className=identifier PAAMAYIM_NEKUDOTAYIM variable=variableWithoutObjects
+    className=namespacedIdentifier PAAMAYIM_NEKUDOTAYIM variable=variableWithoutObjects
 -> staticMember ;;
 
     LBRACE try/recover(statements=innerStatementList) RBRACE

@@ -51,9 +51,7 @@ KDEVPHPDUCHAIN_EXPORT bool isMatch(KDevelop::Declaration* declaration, Declarati
 
 KDEVPHPDUCHAIN_EXPORT KDevelop::DeclarationPointer findDeclarationImportHelper(KDevelop::DUContext* currentContext,
         KDevelop::QualifiedIdentifier id,
-        DeclarationType declarationType,
-        AstNode* node,
-        EditorIntegrator* editor);
+        DeclarationType declarationType);
 
 KDEVPHPDUCHAIN_EXPORT QByteArray formatComment(AstNode* node, EditorIntegrator* editor);
 

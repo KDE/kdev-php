@@ -93,6 +93,12 @@ void ParseJob::run()
             if (!file->needsUpdate() && file->featuresSatisfied(minimumFeatures())) {
                 kDebug() << "Already up to date" << document().str();
                 setDuChain(file->topContext());
+                if (php() && php()->codeHighlighting()
+                    && ICore::self()->languageController()->backgroundParser()->trackerForUrl(document()))
+                {
+                    lock.unlock();
+                    php()->codeHighlighting()->highlightDUChain(duChain());
+                }
                 return;
             }
             break;
@@ -143,7 +149,7 @@ void ParseJob::run()
         QReadLocker parseLock(php()->language()->parseLock());
 
         DeclarationBuilder builder(&editor);
-        KDevelop::ReferencedTopDUContext chain = builder.build(document(), ast);
+        KDevelop::ReferencedTopDUContext chain = builder.build(document(), ast, toUpdate);
 
         if (abortRequested()) {
             return abortJob();
@@ -151,14 +157,19 @@ void ParseJob::run()
 
         setDuChain(chain);
 
+        bool hadUnresolvedIdentifiers = builder.hadUnresolvedIdentifiers();
+
         if ( newFeatures & TopDUContext::AllDeclarationsContextsAndUses
                 && document() != internalFunctionFile() )
         {
             UseBuilder useBuilder(&editor);
             useBuilder.buildUses(ast);
+
+            if (useBuilder.hadUnresolvedIdentifiers())
+                hadUnresolvedIdentifiers = true;
         }
 
-        if (builder.hadUnresolvedIdentifiers()) {
+        if (hadUnresolvedIdentifiers) {
             if (!(minimumFeatures() & Resheduled) && KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount()) {
                 // Need to create new parse job with lower priority
                 kDebug() << "Reschedule file " << document().str() << "for parsing";
@@ -178,40 +189,40 @@ void ParseJob::run()
             return abortJob();
         }
 
+        if (abortRequested()) {
+            return abortJob();
+        }
+
+        {
+            DUChainWriteLocker lock(DUChain::lock());
+
+            foreach(const ProblemPointer &p, session.problems()) {
+                chain->addProblem(p);
+            }
+
+            chain->setFeatures(newFeatures);
+            ParsingEnvironmentFilePointer file = chain->parsingEnvironmentFile();
+            file->setModificationRevision(contents().modification);
+            DUChain::self()->updateContextEnvironment( chain->topContext(), file.data() );
+        }
+
         if (php() && php()->codeHighlighting()
             && ICore::self()->languageController()->backgroundParser()->trackerForUrl(document()))
         {
             php()->codeHighlighting()->highlightDUChain(chain);
         }
-
-        if (abortRequested()) {
-            return abortJob();
-        }
-
-        DUChainWriteLocker lock(DUChain::lock());
-
-        foreach(const ProblemPointer &p, session.problems()) {
-            chain->addProblem(p);
-        }
-
-        chain->setFeatures(newFeatures);
-        ParsingEnvironmentFilePointer file = chain->parsingEnvironmentFile();
-        file->setModificationRevision(contents().modification);
-        DUChain::self()->updateContextEnvironment( chain->topContext(), file.data() );
     } else {
         ReferencedTopDUContext top;
+        DUChainWriteLocker lock;
         {
-            DUChainReadLocker lock(DUChain::lock());
             top = DUChain::self()->chainForDocument(document());
         }
         if (top) {
-            DUChainWriteLocker lock(DUChain::lock());
             ///NOTE: if we clear the imported parent contexts, autocompletion of built-in PHP stuff won't work!
             //top->clearImportedParentContexts();
             top->parsingEnvironmentFile()->clearModificationRevisions();
             top->clearProblems();
         } else {
-            DUChainWriteLocker lock(DUChain::lock());
             ParsingEnvironmentFile *file = new ParsingEnvironmentFile(document());
             /// Indexed string for 'Php', identifies environment files from this language plugin
             static const IndexedString phpLangString("Php");
@@ -219,11 +230,10 @@ void ParseJob::run()
             top = new TopDUContext(document(), RangeInRevision(0, 0, INT_MAX, INT_MAX), file);
             DUChain::self()->addDocumentChain(top);
         }
-        setDuChain(top);
         foreach(const ProblemPointer &p, session.problems()) {
-            DUChainWriteLocker lock(DUChain::lock());
             top->addProblem(p);
         }
+        setDuChain(top);
         kDebug() << "===Failed===" << document().str();
     }
 }
