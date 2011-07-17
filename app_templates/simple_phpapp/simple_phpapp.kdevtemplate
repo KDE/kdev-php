@@ -48,6 +48,7 @@ Comment[pt_BR]=Gera a estrutura de arquivos para iniciar um aplicativo PHP
 Comment[ru]=Создание начальной структуры файлов приложения на PHP
 Comment[sv]=Skapa filstruktur för att påbörja ett PHP-program
 Comment[tr]=Bir PHP uygulaması başlatmak için dosya yapısını oluştur
+Comment[ug]=ھۆججەت قۇرۇلمىسىنى ھاسىل قىلىپ PHP پروگراممىسىنى باشلا
 Comment[uk]=Створення початкової файлової структури програми мовою PHP
 Comment[x-test]=xxGenerate filestructure to start a PHP applicationxx
 Comment[zh_CN]=生成文件结构以开发 PHP 应用程序
