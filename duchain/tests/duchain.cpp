@@ -1740,6 +1740,7 @@ void TestDUChain::foreachIterator2()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
+    QCOMPARE(top->localDeclarations().size(), 3);
     Declaration* iDec = top->localDeclarations().at(2);
     QCOMPARE(iDec->qualifiedIdentifier(), QualifiedIdentifier("i"));
     kDebug() << iDec->abstractType()->toString();
@@ -1769,6 +1770,33 @@ void TestDUChain::foreachIterator3()
     QVERIFY(iDec->type<StructureType>());
     QCOMPARE(iDec->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("b"));
     QVERIFY(top->localDeclarations().first() == iDec->type<StructureType>()->declaration(top));
+}
+
+void TestDUChain::foreachIterator4()
+{
+    // see also: https://bugs.kde.org/show_bug.cgi?id=276603
+    QByteArray code = "<?\n"
+                      "class A {\n"
+                      "  public static $s;\n"
+                      "  function foo() {\n"
+                      "    foreach(array(1,2) as $this->i){}\n"
+                      "    foreach(array(1,2) as $this->k => $this->v){}\n"
+                      "    foreach(array(1,2) as A::$s){}\n"
+                      "  }\n"
+                      "}\n";
+
+    TopDUContext* top = parse(code, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().isEmpty());
+
+    Declaration* aDec = top->localDeclarations().first();
+
+    DUContext* fooCtx = top->childContexts().first()->childContexts().last();
+    QVERIFY(fooCtx->owner());
+
+    QCOMPARE(aDec->uses().size(), 1);
+    QCOMPARE(aDec->uses().begin()->size(), 4);
 }
 
 void TestDUChain::returnThis()

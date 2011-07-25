@@ -107,15 +107,20 @@ void UseBuilder::visitStaticScalar(StaticScalarAst* node)
 
 void UseBuilder::visitStatement(StatementAst *node)
 {
-    AstNode* visitNode = 0;
     if (node->foreachVar) {
-        visitNode = node->foreachVar;
+        visitNodeWithExprVisitor(node->foreachVar);
     } else if (node->unsetVariablesSequence) {
-        visitNode = node;
+        visitNodeWithExprVisitor(node);
     }
 
-    if (visitNode) {
-        visitNodeWithExprVisitor(visitNode);
+    if (node->foreachExprAsVar) {
+        visitNodeWithExprVisitor(node->foreachExprAsVar);
+    }
+    if (node->foreachVarAsVar) {
+        visitNodeWithExprVisitor(node->foreachVarAsVar);
+    }
+    if (node->foreachVariable) {
+        visitNodeWithExprVisitor(node->foreachVariable);
     }
 
     UseBuilderBase::visitStatement(node);

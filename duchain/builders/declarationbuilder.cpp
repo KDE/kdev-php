@@ -997,27 +997,27 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
     DeclarationBuilderBase::visitStatement(node);
 
     if (node->foreachVariable) {
-        DUChainWriteLocker lock(DUChain::lock());
-        RangeInRevision newRange = editorFindRange(node->foreachVariable->variable, node->foreachVariable->variable);
-        openDefinition<VariableDeclaration>(identifierForNode(node->foreachVariable->variable), newRange);
-        currentDeclaration()->setKind(Declaration::Instance);
-        closeDeclaration();
+        PushValue<FindVariableResults> restore(m_findVariable);
+        visitForeachVariable(node->foreachVariable);
+        if (m_findVariable.node) {
+            declareFoundVariable(lastType().unsafeData());
+        }
     }
 
     if (node->foreachVarAsVar) {
-        DUChainWriteLocker lock(DUChain::lock());
-        RangeInRevision newRange = editorFindRange(node->foreachVarAsVar->variable, node->foreachVarAsVar->variable);
-        openDefinition<VariableDeclaration>(identifierForNode(node->foreachVarAsVar->variable), newRange);
-        currentDeclaration()->setKind(Declaration::Instance);
-        closeDeclaration();
+        PushValue<FindVariableResults> restore(m_findVariable);
+        visitForeachVariable(node->foreachVarAsVar);
+        if (m_findVariable.node) {
+            declareFoundVariable(lastType().unsafeData());
+        }
     }
 
     if (node->foreachExprAsVar) {
-        DUChainWriteLocker lock(DUChain::lock());
-        RangeInRevision newRange = editorFindRange(node->foreachExprAsVar, node->foreachExprAsVar);
-        openDefinition<VariableDeclaration>(identifierForNode(node->foreachExprAsVar), newRange);
-        currentDeclaration()->setKind(Declaration::Instance);
-        closeDeclaration();
+        PushValue<FindVariableResults> restore(m_findVariable);
+        visitVariable(node->foreachExprAsVar);
+        if (m_findVariable.node) {
+            declareFoundVariable(lastType().unsafeData());
+        }
     }
 
 }

@@ -101,6 +101,7 @@ private slots:
     void foreachIterator();
     void foreachIterator2();
     void foreachIterator3();
+    void foreachIterator4();
     void returnThis();
     void unsureReturnType();
     void unsureReturnType2();

@@ -645,7 +645,7 @@ expression=booleanOrExpression
   | FOREACH LPAREN (
             -- allow $var as &$i and not expr() as &$i
         try/rollback(foreachVar=variable AS foreachVarAsVar=foreachVariable)
-        catch(foreachExpr=expr AS foreachExprAsVar=variableIdentifier))
+        catch(foreachExpr=expr AS foreachExprAsVar=variable))
         (DOUBLE_ARROW foreachVariable=foreachVariable | 0) RPAREN
         foreachStatement=foreachStatement
   | DECLARE LPAREN declareItem=declareItem @ COMMA RPAREN declareStatement
@@ -706,7 +706,7 @@ expression=booleanOrExpression
     STRING ASSIGN scalar=staticScalar
 -> declareItem ;;
 
-    (BIT_AND | 0) variable=variableIdentifier
+    (BIT_AND | 0) variable=variable
 -> foreachVariable ;;
 
     statement=statement
