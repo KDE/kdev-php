@@ -104,6 +104,7 @@ public:
 
 public slots:
     void initTestCase();
+    void cleanupTestCase();
 
 protected:
     KDevelop::TopDUContext* parse(const QByteArray& unit, DumpAreas dump = static_cast<DumpAreas>(DumpAST | DumpDUChain | DumpType), QString fileName = QString());

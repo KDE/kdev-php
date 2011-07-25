@@ -55,8 +55,7 @@ DUChainTestBase::DUChainTestBase()
 void DUChainTestBase::initTestCase()
 {
     AutoTestShell::init();
-    TestCore* core = new TestCore();
-    core->initialize(KDevelop::Core::NoUi);
+    TestCore::initialize(Core::NoUi);
 
     DUChain::self()->disablePersistentStorage();
     KDevelop::CodeRepresentation::setDiskChangesForbidden(true);
@@ -75,6 +74,11 @@ void DUChainTestBase::initTestCase()
                        "interface testInterface {}\n");
     content.append("interface Iterator { function rewind(); function current(); function key(); function next(); function valid(); } ");
     parseAdditionalFile(internalFunctionFile(), content);
+}
+
+void DUChainTestBase::cleanupTestCase()
+{
+    TestCore::shutdown();
 }
 
 CompletionTreeItemPointer DUChainTestBase::searchDeclaration(QList<CompletionTreeItemPointer> items, Declaration* declaration)
