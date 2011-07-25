@@ -31,6 +31,7 @@
 #include <interfaces/icore.h>
 #include <interfaces/ilanguagecontroller.h>
 #include <interfaces/icompletionsettings.h>
+#include <util/pushvalue.h>
 
 #include <klocalizedstring.h>
 
@@ -49,6 +50,14 @@ using namespace KDevelop;
 
 namespace Php
 {
+
+DeclarationBuilder::FindVariableResults::FindVariableResults()
+: find(true)
+, isArray(false)
+, node(0)
+{
+
+}
 
 void DeclarationBuilder::getVariableIdentifier(VariableAst* node,
                                                 QualifiedIdentifier &identifier,
@@ -661,25 +670,9 @@ void DeclarationBuilder::visitOuterTopStatement(OuterTopStatementAst* node)
 void DeclarationBuilder::visitAssignmentExpression(AssignmentExpressionAst* node)
 {
     if ( node->assignmentExpressionEqual ) {
-        bool lastFindVariable = m_findVariable;
-        QualifiedIdentifier lastVariable = m_variable;
-        QualifiedIdentifier lastVariableParent = m_variableParent;
-        bool lastIsArray = m_variableIsArray;
-        AstNode* lastNode = m_variableNode;
-
-        m_findVariable = true;
-        m_variable = QualifiedIdentifier();
-        m_variableParent = QualifiedIdentifier();
-        m_variableIsArray = false;
-        m_variableNode = 0;
+        PushValue<FindVariableResults> restore(m_findVariable);
 
         DeclarationBuilderBase::visitAssignmentExpression(node);
-
-        m_findVariable = lastFindVariable;
-        m_variable = lastVariable;
-        m_variableParent = lastVariableParent;
-        m_variableIsArray = lastIsArray;
-        m_variableNode = lastNode;
     } else {
         DeclarationBuilderBase::visitAssignmentExpression(node);
     }
@@ -687,10 +680,10 @@ void DeclarationBuilder::visitAssignmentExpression(AssignmentExpressionAst* node
 
 void DeclarationBuilder::visitVariable(VariableAst* node)
 {
-    if ( m_findVariable ) {
-        getVariableIdentifier(node, m_variable, m_variableParent,
-                                    m_variableNode, m_variableIsArray);
-        m_findVariable = false;
+    if ( m_findVariable.find ) {
+        getVariableIdentifier(node, m_findVariable.identifier, m_findVariable.parentIdentifier,
+                              m_findVariable.node, m_findVariable.isArray);
+        m_findVariable.find = false;
     }
     DeclarationBuilderBase::visitVariable(node);
 }
@@ -820,26 +813,26 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
 {
     DeclarationBuilderBase::visitAssignmentExpressionEqual(node);
 
-    if ( !m_variable.isEmpty() && currentAbstractType()) {
+    if ( !m_findVariable.identifier.isEmpty() && currentAbstractType()) {
         //create new declaration assignments to not-yet declared variables and class members
 
         AbstractType::Ptr type;
-        if ( m_variableIsArray ) {
+        if ( m_findVariable.isArray ) {
             // implicit array declaration
             type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
         } else {
             type = currentAbstractType();
         }
 
-        if ( !m_variableParent.isEmpty() ) {
+        if ( !m_findVariable.parentIdentifier.isEmpty() ) {
             // assignment to class members
 
-            if ( DUContext* ctx = getClassContext(m_variableParent, currentContext()) ) {
-                declareClassMember(ctx, type, m_variable, m_variableNode);
+            if ( DUContext* ctx = getClassContext(m_findVariable.parentIdentifier, currentContext()) ) {
+                declareClassMember(ctx, type, m_findVariable.identifier, m_findVariable.node);
             }
         } else {
             // assigment to other variables
-            declareVariable(currentContext(), type, m_variable, m_variableNode );
+            declareVariable(currentContext(), type, m_findVariable.identifier, m_findVariable.node );
         }
     }
 }
@@ -924,21 +917,11 @@ void DeclarationBuilder::visitFunctionCallParameterList(FunctionCallParameterLis
 
 void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node)
 {
-    bool lastFindVariable = m_findVariable;
-    QualifiedIdentifier lastVariable = m_variable;
-    QualifiedIdentifier lastVariableParent = m_variableParent;
-    bool lastIsArray = m_variableIsArray;
-    AstNode* lastNode = m_variableNode;
-
-    m_findVariable = true;
-    m_variable = QualifiedIdentifier();
-    m_variableParent = QualifiedIdentifier();
-    m_variableIsArray = false;
-    m_variableNode = 0;
+    PushValue<FindVariableResults> restore(m_findVariable);
 
     DeclarationBuilderBase::visitFunctionCallParameterListElement(node);
 
-    if ( m_variableNode && !m_currentFunctionType.isNull() &&
+    if ( m_findVariable.node && !m_currentFunctionType.isNull() &&
             m_currentFunctionType->arguments().count() > m_functionCallParameterPos) {
         ReferenceType::Ptr refType = m_currentFunctionType->arguments()
                                         .at(m_functionCallParameterPos).cast<ReferenceType>();
@@ -952,61 +935,38 @@ void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParam
         }
     }
 
-    m_findVariable = lastFindVariable;
-    m_variable = lastVariable;
-    m_variableParent = lastVariableParent;
-    m_variableIsArray = lastIsArray;
-    m_variableNode = lastNode;
-
     ++m_functionCallParameterPos;
 }
 
 void DeclarationBuilder::visitAssignmentListElement(AssignmentListElementAst* node)
 {
-    bool lastFindVariable = m_findVariable;
-    QualifiedIdentifier lastVariable = m_variable;
-    QualifiedIdentifier lastVariableParent = m_variableParent;
-    bool lastIsArray = m_variableIsArray;
-    AstNode* lastNode = m_variableNode;
-
-    m_findVariable = true;
-    m_variable = QualifiedIdentifier();
-    m_variableParent = QualifiedIdentifier();
-    m_variableIsArray = false;
-    m_variableNode = 0;
+    PushValue<FindVariableResults> restore(m_findVariable);
 
     DeclarationBuilderBase::DefaultVisitor::visitAssignmentListElement(node);
 
-    if ( m_variableNode ) {
+    if ( m_findVariable.node ) {
         ///TODO: get a proper type here, if possible
         declareFoundVariable(new IntegralType(IntegralType::TypeMixed));
     }
-
-    m_findVariable = lastFindVariable;
-    m_variable = lastVariable;
-    m_variableParent = lastVariableParent;
-    m_variableIsArray = lastIsArray;
-    m_variableNode = lastNode;
-
 }
 
 void DeclarationBuilder::declareFoundVariable(AbstractType* type)
 {
-    Q_ASSERT(m_variableNode);
+    Q_ASSERT(m_findVariable.node);
 
     ///TODO: support something like: foo($var[0])
-    if ( !m_variableIsArray ) {
+    if ( !m_findVariable.isArray ) {
         DUContext *ctx = 0;
-        if ( m_variableParent.isEmpty() ) {
+        if ( m_findVariable.parentIdentifier.isEmpty() ) {
             ctx = currentContext();
         } else {
-            ctx = getClassContext(m_variableParent, currentContext());
+            ctx = getClassContext(m_findVariable.parentIdentifier, currentContext());
         }
         if ( ctx ) {
             bool isDeclared = false;
             {
                 DUChainWriteLocker lock(DUChain::lock());
-                foreach ( Declaration* dec, ctx->findDeclarations(m_variable) ) {
+                foreach ( Declaration* dec, ctx->findDeclarations(m_findVariable.identifier) ) {
                     if ( dec->kind() == Declaration::Instance ) {
                         isDeclared = true;
                         // update comment but nothing else
@@ -1015,17 +975,17 @@ void DeclarationBuilder::declareFoundVariable(AbstractType* type)
                     }
                 }
             }
-            if ( !isDeclared && m_variableParent.isEmpty() ) {
+            if ( !isDeclared && m_findVariable.parentIdentifier.isEmpty() ) {
                 // check also for global vars
-                isDeclared = findDeclarationImport(GlobalVariableDeclarationType, m_variable, m_variableNode);
+                isDeclared = findDeclarationImport(GlobalVariableDeclarationType, m_findVariable.identifier, m_findVariable.node);
             }
             if ( !isDeclared ) {
                 // couldn't find the dec, declare it
                 AbstractType::Ptr newType(type);
-                if ( !m_variableParent.isEmpty() ) {
-                    declareClassMember(ctx, newType, m_variable, m_variableNode);
+                if ( !m_findVariable.parentIdentifier.isEmpty() ) {
+                    declareClassMember(ctx, newType, m_findVariable.identifier, m_findVariable.node);
                 } else {
-                    declareVariable(ctx, newType, m_variable, m_variableNode);
+                    declareVariable(ctx, newType, m_findVariable.identifier, m_findVariable.node);
                 }
             }
         }
