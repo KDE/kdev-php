@@ -139,6 +139,7 @@ private slots:
     void closureEmptyUse();
     void gotoTest();
     void ternary();
+    void bug278705();
 };
 
 }

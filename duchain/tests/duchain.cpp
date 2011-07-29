@@ -2706,4 +2706,14 @@ void TestDUChain::ternary()
     QVERIFY(top->problems().isEmpty());
 }
 
+void TestDUChain::bug278705()
+{
+    // just don't crash, see https://bugs.kde.org/show_bug.cgi?id=278705
+    TopDUContext* top = parse("<?php\n $f =\n function( $params ){\n /\n };\n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().isEmpty());
+}
+
 #include "duchain.moc"
