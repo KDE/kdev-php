@@ -43,7 +43,11 @@ class KDEVPHPDUCHAIN_EXPORT UseBuilder: public UseBuilderBase
 public:
     UseBuilder(EditorIntegrator* editor);
 
-    void newCheckedUse(Php::AstNode* node, const KDevelop::DeclarationPointer& declaration);
+    /**
+     * Reports a problem if the use'd declaration is deprecated.
+     * Also reports an error if @p reportNotFound is true and @p declaration is null.
+     */
+    void newCheckedUse(Php::AstNode* node, const KDevelop::DeclarationPointer& declaration, bool reportNotFound = false);
 
     virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
         KDevelop::ReferencedTopDUContext updateContext
