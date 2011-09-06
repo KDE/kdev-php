@@ -129,8 +129,7 @@ void UseBuilder::visitStatement(StatementAst *node)
 void UseBuilder::visitCatchItem(CatchItemAst *node)
 {
     if (node->catchClass) {
-        DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, node->catchClass);
-        newCheckedUse(node->catchClass, dec);
+        buildNamespaceUses(node->catchClass, ClassDeclarationType);
     }
     UseBuilderBase::visitCatchItem(node);
 
@@ -167,7 +166,7 @@ void UseBuilder::visitUseNamespace(UseNamespaceAst* node)
 
 void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node, DeclarationType lastType)
 {
-    QualifiedIdentifier identifier = identifierForNamespace(node, m_editor);
+    const QualifiedIdentifier identifier = identifierForNamespace(node, m_editor);
     QualifiedIdentifier curId;
     curId.setExplicitlyGlobal(identifier.explicitlyGlobal());
     Q_ASSERT(identifier.count() == node->namespaceNameSequence->count());

@@ -543,7 +543,9 @@ void TypeBuilder::visitStatement(StatementAst* node)
 void TypeBuilder::visitCatchItem(Php::CatchItemAst *node)
 {
     TypeBuilderBase::visitCatchItem(node);
-    DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, node->catchClass);
+    DeclarationPointer dec = findDeclarationImport(ClassDeclarationType,
+                                                   identifierForNamespace(node->catchClass, m_editor),
+                                                   node->catchClass);
     if (dec && dec->abstractType()) {
         openAbstractType(dec->abstractType());
         closeType();

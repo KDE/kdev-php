@@ -2482,6 +2482,33 @@ void TestDUChain::namespaceStaticVar()
     QCOMPARE(fooDec->uses().begin()->begin()->start.line, 5);
 }
 
+void TestDUChain::namespacedCatch()
+{
+    // see also: https://bugs.kde.org/show_bug.cgi?id=281451
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "namespace ns {\n"
+                              "class e{}\n"
+                              "}\n"
+                              "namespace {\n"
+                              "try { /* ... */ }\n"
+                              "catch(\\ns\\e $exeption) { /* ... */ }"
+                              "}\n"
+                              , DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+    Declaration* eDec = top->findDeclarations(QualifiedIdentifier("ns::e")).first();
+    QVERIFY(eDec);
+
+    QVERIFY(!eDec->uses().isEmpty());
+    QVERIFY(!eDec->uses().begin()->isEmpty());
+    QCOMPARE(eDec->uses().begin()->begin()->start.line, 6);
+}
+
 struct TestUse {
     TestUse(const QString& _id, Declaration::Kind _kind, int _uses)
         : id(_id), kind(_kind), uses(_uses)
