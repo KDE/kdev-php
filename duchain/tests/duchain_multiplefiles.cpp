@@ -116,6 +116,8 @@ void TestDUChainMultipleFiles::testImportsGlobalFunction()
     f2.waitForParsed();
 
     KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
+    QVERIFY(f1.topContext());
+    QVERIFY(f2.topContext());
     QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
 }
 

@@ -31,7 +31,7 @@ namespace Php
 
 #define COMPARE_TOKEN(tokenStream, index, tokenKind, startLine, startColumn, endLine, endColumn) \
     { \
-        QVERIFY(tokenStream->token(index).kind == tokenKind); \
+        QVERIFY(tokenStream->at(index).kind == tokenKind); \
         qint64 line; qint64 column; \
         tokenStream->startPosition(index, &line, &column); \
         QCOMPARE(line, (qint64) startLine); \
@@ -400,7 +400,7 @@ TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialSta
     int i = 0;
     QList<Parser::Token> tokens;
     while ((token = lexer.nextTokenKind())) {
-        Parser::Token &t = tokenStream->next();
+        Parser::Token &t = tokenStream->push();
         t.begin = lexer.tokenBegin();
         t.end = lexer.tokenEnd();
         t.kind = token;

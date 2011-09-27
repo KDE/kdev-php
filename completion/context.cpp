@@ -89,7 +89,7 @@ public:
         Lexer lexer(&m_stream, code);
         int token;
         while ((token = lexer.nextTokenKind())) {
-            Parser::Token &t = m_stream.next();
+            Parser::Token &t = m_stream.push();
             t.begin = lexer.tokenBegin();
             t.end = lexer.tokenEnd();
             t.kind = token;
@@ -104,7 +104,7 @@ public:
         if ( m_pos == -1 ) {
             return Parser::Token_INVALID;
         } else {
-            return (Parser::TokenType) m_stream.token(m_pos).kind;
+            return (Parser::TokenType) m_stream.at(m_pos).kind;
         }
     }
 
@@ -133,7 +133,7 @@ public:
     int typeAt(const qint64 &relPos) const {
         const qint64 pos = m_pos + relPos;
         if ( pos >= 0 && pos < m_stream.size() ) {
-            return m_stream.token(pos).kind;
+            return m_stream.at(pos).kind;
         } else {
             return Parser::Token_INVALID;
         }
@@ -142,7 +142,7 @@ public:
     /// Get string for token at a given position relative to the current one.
     /// NOTE: Make sure you honor the boundaries.
     QString stringAt(const qint64 &relPos) const {
-        Parser::Token token = tokenAt(relPos);
+        Parser::Token token = at(relPos);
         return m_code.mid(token.begin, token.end - token.begin + 1);
     }
 
@@ -158,10 +158,10 @@ public:
         } else {
             uint pos = 1;
             foreach ( const Parser::TokenType& type, list ) {
-                if ( skipWhitespace && m_stream.token( m_pos - pos).kind == Parser::Token_WHITESPACE ) {
+                if ( skipWhitespace && m_stream.at( m_pos - pos).kind == Parser::Token_WHITESPACE ) {
                     ++pos;
                 }
-                if ( m_stream.token( m_pos - pos).kind == type ) {
+                if ( m_stream.at( m_pos - pos).kind == type ) {
                     ++pos;
                     continue;
                 } else {
@@ -174,11 +174,11 @@ public:
 
     /// Get the token relative to the current one.
     /// NOTE: Make sure you honor the boundaries.
-    Parser::Token tokenAt(const qint64 &relPos) const {
+    Parser::Token at(const qint64 &relPos) const {
         const qint64 pos = m_pos + relPos;
         Q_ASSERT(pos >= 0);
         Q_ASSERT(pos < m_stream.size());
-        return m_stream.token(pos);
+        return m_stream.at(pos);
     }
 
 private:
@@ -257,7 +257,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
 
     /// even when we skip to some more meaning ful token, this will
     /// always be the end position of the last token
-    const qint64 lastTokenEnd = lastToken.tokenAt(0).end + 1;
+    const qint64 lastTokenEnd = lastToken.at(0).end + 1;
 
     bool lastWasWhitespace = lastToken == Parser::Token_WHITESPACE;
     if ( lastWasWhitespace ) {
@@ -458,11 +458,11 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                     case Parser::Token_INCLUDE:
                     case Parser::Token_INCLUDE_ONCE:
                         m_memberAccessOperation = FileChoose;
-                        m_expression = m_text.mid( lastToken.tokenAt(0).begin + 1 ).append(followingText).trimmed();
+                        m_expression = m_text.mid( lastToken.at(0).begin + 1 ).append(followingText).trimmed();
                         m_isFileCompletionAfterDirname = isAfterDirname;
                         break;
                     default:
-                        if ( m_text.at( lastToken.tokenAt(0).begin ).unicode() == '"' ) {
+                        if ( m_text.at( lastToken.at(0).begin ).unicode() == '"' ) {
                             ///TODO: only offer variable completion
                             m_valid = false;
                         } else {
@@ -712,7 +712,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
     }
 
     // trim the text to the end position of the current token
-    m_text = m_text.left(lastToken.tokenAt(0).end + 1).trimmed();
+    m_text = m_text.left(lastToken.at(0).end + 1).trimmed();
     ifDebug(kDebug() << "trimmed text: " << m_text;)
 
     // check whether we need the expression or have everything we need and can return early

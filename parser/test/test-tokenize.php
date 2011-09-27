@@ -36,6 +36,8 @@ function processString($c) {
     }
     $phpTime = microtime(true) - $start;
 
+    var_dump($tokens);
+
     $out = array();
     $start = microtime(true);
     exec("php-parser --print-tokens --code ".escapeshellarg($c), $out, $ret);

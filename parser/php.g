@@ -306,7 +306,7 @@ namespace KDevelop
        && yytoken != Token_CASE && yytoken != Token_DEFAULT) {
         if (!reported) {
             qint64 index = tokenStream->index() - 1;
-            Token &token = tokenStream->token(index);
+            Token &token = tokenStream->at(index);
             QString tokenValue = token.kind != 0 ? tokenText(token.begin, token.end) : "EOF";
             reportProblem(Error, QString("Unexpected token \"%1\".").arg(tokenValue));
             reported = true;
@@ -985,7 +985,7 @@ void Parser::tokenize(const QString& contents, int initialState)
         {
             kind = Parser::Token_EOF;
         }
-        Parser::Token &t = tokenStream->next();
+        Parser::Token &t = tokenStream->push();
         t.begin = lexer.tokenBegin();
         t.end = lexer.tokenEnd();
         t.kind = kind;
@@ -1051,7 +1051,7 @@ void Parser::expectedSymbol(int /*expectedSymbol*/, const QString& name)
     qint64 line;
     qint64 col;
     qint64 index = tokenStream->index()-1;
-    Token &token = tokenStream->token(index);
+    Token &token = tokenStream->at(index);
     kDebug() << "token starts at:" << token.begin;
     kDebug() << "index is:" << index;
     tokenStream->startPosition(index, &line, &col);

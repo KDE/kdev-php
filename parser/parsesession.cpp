@@ -146,20 +146,20 @@ KDevelop::CursorInRevision ParseSession::positionAt(qint64 offset) const
 
 QString ParseSession::symbol(qint64 token) const
 {
-    const TokenStream::Token& tok = m_tokenStream->token(token);
+    const TokenStream::Token& tok = m_tokenStream->at(token);
     return m_contents.mid(tok.begin, tok.end - tok.begin + 1);
 }
 
 QString ParseSession::symbol(AstNode* node) const
 {
-    const TokenStream::Token& startTok = m_tokenStream->token(node->startToken);
-    const TokenStream::Token& endTok = m_tokenStream->token(node->endToken);
+    const TokenStream::Token& startTok = m_tokenStream->at(node->startToken);
+    const TokenStream::Token& endTok = m_tokenStream->at(node->endToken);
     return m_contents.mid(startTok.begin, endTok.end - startTok.begin + 1);
 }
 
 QString ParseSession::docComment(qint64 token) const
 {
-    const TokenStream::Token& tok = m_tokenStream->token(token);
+    const TokenStream::Token& tok = m_tokenStream->at(token);
     if (!tok.docCommentEnd) return QString();
     return m_contents.mid(tok.docCommentBegin, tok.docCommentEnd - tok.docCommentBegin + 1);
 }
