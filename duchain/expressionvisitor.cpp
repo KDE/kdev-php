@@ -115,8 +115,12 @@ DeclarationPointer ExpressionVisitor::processVariable(VariableIdentifierAst* var
     }
     if ( !m_isAssignmentExpressionEqual || identifier.nameEquals( Identifier("this") )
          // might be something like $s = $s . $s; in which case we have to add a use for the first $s
-         || (ret && ret->range().end < position) ) {
-        usingDeclaration(variable, ret);
+         || (ret && ret->range().end < position) )
+    {
+        // also don't report uses for the place of declaration
+        if (!ret || ret->range().end != position) {
+            usingDeclaration(variable, ret);
+        }
     }
     ifDebug(kDebug() << "found declaration:" << (ret ? ret->toString() : QString("no declaration found"));)
     return ret;
