@@ -54,6 +54,7 @@ Name[tr]=PHP Dili Desteği
 Name[ug]=PHP تىلىنى قوللاش
 Name[uk]=Підтримка мови PHP
 Name[x-test]=xxPHP Language Supportxx
+Name[zh_CN]=Php 语言支持
 Name[zh_TW]=PHP 語言支援
 ServiceTypes=KDevelop/Plugin
 Icon=application-x-php
