@@ -122,7 +122,7 @@ void ParseJob::run()
     StartAst* ast = 0;
     bool matched = session.parse(&ast);
 
-    if (abortRequested()) {
+    if (abortRequested() || ICore::self()->shuttingDown()) {
         return abortJob();
     }
 
