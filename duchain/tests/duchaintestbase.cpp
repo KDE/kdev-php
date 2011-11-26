@@ -58,7 +58,7 @@ void DUChainTestBase::initTestCase()
     TestCore::initialize(Core::NoUi);
 
     DUChain::self()->disablePersistentStorage();
-    KDevelop::CodeRepresentation::setDiskChangesForbidden(true);
+    CodeRepresentation::setDiskChangesForbidden(true);
 
     //yeah... adding a testcase here is kinda strange, but anyways - we have to check for special
     //handling of the internal functions file
