@@ -73,7 +73,19 @@ void DUChainTestBase::initTestCase()
                        "/**\n * @superglobal\n **/\n$_GET = array();\n"
                        "interface testInterface {}\n");
     content.append("interface Iterator { function rewind(); function current(); function key(); function next(); function valid(); } ");
-    parseAdditionalFile(internalFunctionFile(), content);
+    TopDUContext* ctx = parseAdditionalFile(internalFunctionFile(), content);
+    QVERIFY(ctx);
+
+    DUChainWriteLocker lock;
+    QVERIFY(ctx->problems().isEmpty());
+
+    // set features and modification revision, to prevent test cases that use
+    // the full language plugin from re-parsing the big internal function file
+    ctx->setFeatures(TopDUContext::AllDeclarationsAndContexts);
+    ParsingEnvironmentFilePointer file = ctx->parsingEnvironmentFile();
+    QVERIFY(file);
+    file->setModificationRevision(ModificationRevision::revisionForFile(internalFunctionFile()));
+    DUChain::self()->updateContextEnvironment(ctx, file.data());
 }
 
 void DUChainTestBase::cleanupTestCase()
