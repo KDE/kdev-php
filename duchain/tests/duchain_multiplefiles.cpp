@@ -1,5 +1,7 @@
 /* This file is part of KDevelop
-    Copyright 2010 Niko Sams <niko.sams@gmail.com>
+
+   Copyright 2010 Niko Sams <niko.sams@gmail.com>
+   Copyright 2011 Milian Wolff <mail@milianw.de>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -26,227 +28,171 @@
 #include <interfaces/ilanguagecontroller.h>
 #include <language/backgroundparser/backgroundparser.h>
 #include <tests/testproject.h>
+#include <tests/testfile.h>
 #include <language/duchain/declaration.h>
 
 QTEST_KDEMAIN(Php::TestDUChainMultipleFiles, GUI)
 
-namespace Php
-{
+using namespace KDevelop;
+using namespace Php;
 
 void TestDUChainMultipleFiles::initTestCase()
 {
     DUChainTestBase::initTestCase();
-    KDevelop::TestCore* core = dynamic_cast<KDevelop::TestCore*>(KDevelop::ICore::self());
+    TestCore* core = dynamic_cast<TestCore*>(ICore::self());
     Q_ASSERT(core);
-    m_projectController = new KDevelop::TestProjectController(core);
+    m_projectController = new TestProjectController(core);
     core->setProjectController(m_projectController);
 }
 
-class TestFile : public QObject
-{
-    Q_OBJECT
-public:
-    TestFile(QByteArray contents, KDevelop::TestProject *project) : m_file("XXXXXX.php"), m_ready(false) {
-        m_file.open();
-        m_file.write(contents);
-        m_file.close();
-        project->addToFileSet(KDevelop::IndexedString(m_file.fileName()));
-    }
-
-    ~TestFile()
-    {
-        if (m_topContext) {
-            KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
-            KDevelop::DUChain::self()->removeDocumentChain(m_topContext.data());
-        }
-    }
-
-
-    void parse(KDevelop::TopDUContext::Features features, int priority = 1)
-    {
-        m_ready = false;
-        KDevelop::DUChain::self()->updateContextForUrl(KDevelop::IndexedString(m_file.fileName()), features, this, priority);
-    }
-
-    void waitForParsed()
-    {
-        QTime t;
-        t.start();
-        while (!m_ready) {
-            Q_ASSERT(t.elapsed() < 60000);
-            QTest::qWait(10);
-        }
-    }
-
-    KDevelop::ReferencedTopDUContext topContext()
-    {
-        waitForParsed();
-        return m_topContext;
-    }
-
-public slots:
-    void updateReady(KDevelop::IndexedString url, KDevelop::ReferencedTopDUContext topContext)
-    {
-        Q_ASSERT(url.str() == m_file.fileName());
-        m_ready = true;
-        m_topContext = topContext;
-    }
-
-private:
-    QTemporaryFile m_file;
-    bool m_ready;
-    KDevelop::ReferencedTopDUContext m_topContext;
-};
-
-
 void TestDUChainMultipleFiles::testImportsGlobalFunction()
 {
-    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+    TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
-    KDevelop::TestProject* project = new KDevelop::TestProject;
+    TestProject* project = new TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
-    TestFile f1("<? function foo() {}", project);
+    TestFile f1("<? function foo() {}", "php", project);
     f1.parse(features);
-    f1.waitForParsed();
+    QVERIFY(f1.waitForParsed());
 
-    TestFile f2("<? foo();", project);
+    TestFile f2("<? foo();", "php", project);
     f2.parse(features);
     f2.waitForParsed();
 
-    KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
+    DUChainWriteLocker lock(DUChain::lock());
     QVERIFY(f1.topContext());
     QVERIFY(f2.topContext());
-    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
+    QVERIFY(f2.topContext()->imports(f1.topContext(), CursorInRevision(0, 0)));
 }
 
 void TestDUChainMultipleFiles::testImportsBaseClassNotYetParsed()
 {
-    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+    TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
-    KDevelop::TestProject* project = new KDevelop::TestProject;
+    TestProject* project = new TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
 
-    TestFile f2("<? class B extends A {}", project);
+    TestFile f2("<? class B extends A {}", "php", project);
     f2.parse(features);
 
-    TestFile f1("<? class A {}", project);
+    TestFile f1("<? class A {}", "php", project);
     f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
     f1.waitForParsed();
     QTest::qWait(100);
 
-    KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
-    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
-    QVERIFY(KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
+    DUChainWriteLocker lock(DUChain::lock());
+    QVERIFY(f2.topContext()->imports(f1.topContext(), CursorInRevision(0, 0)));
+    QVERIFY(ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
 }
 
 void TestDUChainMultipleFiles::testNonExistingBaseClass()
 {
-    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+    TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
-    KDevelop::TestProject* project = new KDevelop::TestProject;
+    TestProject* project = new TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
-    TestFile f1("<? class B extends A {}", project);
+    TestFile f1("<? class B extends A {}", "php", project);
     f1.parse(features);
     f1.waitForParsed();
 
     //there must not be a re-enqueued parsejob
-    QVERIFY(KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
+    QVERIFY(ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
 }
 
 void TestDUChainMultipleFiles::testImportsGlobalFunctionNotYetParsed()
 {
-    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+    TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
-    KDevelop::TestProject* project = new KDevelop::TestProject;
+    TestProject* project = new TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
-    TestFile f2("<? foo2();", project);
+    TestFile f2("<? foo2();", "php", project);
     f2.parse(features);
 
-    TestFile f1("<? function foo2() {}", project);
+    TestFile f1("<? function foo2() {}", "php", project);
     f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
     f2.waitForParsed();
     QTest::qWait(100);
 
-    KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
-    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
+    DUChainWriteLocker lock(DUChain::lock());
+    QVERIFY(f2.topContext()->imports(f1.topContext(), CursorInRevision(0, 0)));
 
 }
 
 void TestDUChainMultipleFiles::testNonExistingGlobalFunction()
 {
-    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+    TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
-    KDevelop::TestProject* project = new KDevelop::TestProject;
+    TestProject* project = new TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
-    TestFile f2("<? foo3();", project);
+    TestFile f2("<? foo3();", "php", project);
     f2.parse(features);
 
     f2.waitForParsed();
      //there must not be a re-enqueued parsejob
-    QVERIFY(KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
+    QVERIFY(ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
 }
 
 void TestDUChainMultipleFiles::testImportsStaticFunctionNotYetParsed()
 {
-    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+    TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
-    KDevelop::TestProject* project = new KDevelop::TestProject;
+    TestProject* project = new TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
-    TestFile f2("<? C::foo();", project);
+    TestFile f2("<? C::foo();", "php", project);
     f2.parse(features);
 
-    TestFile f1("<? class C { public static function foo() {} }", project);
+    TestFile f1("<? class C { public static function foo() {} }", "php", project);
     f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
     f2.waitForParsed();
     QTest::qWait(100);
 
-    KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
-    QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
+    DUChainWriteLocker lock(DUChain::lock());
+    QVERIFY(f2.topContext()->imports(f1.topContext(), CursorInRevision(0, 0)));
 }
 
 void TestDUChainMultipleFiles::testNonExistingStaticFunction()
 {
-    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+    TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
-    KDevelop::TestProject* project = new KDevelop::TestProject;
+    TestProject* project = new TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
-    TestFile f2("<? D::foo();", project);
+    TestFile f2("<? D::foo();", "php", project);
     f2.parse(features);
 
     f2.waitForParsed();
      //there must not be a re-enqueued parsejob
-    QVERIFY(KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
+    QVERIFY(ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
 }
 
 void TestDUChainMultipleFiles::testForeachImportedIdentifier()
 {
     // see https://bugs.kde.org/show_bug.cgi?id=269369
 
-    KDevelop::TopDUContext::Features features = KDevelop::TopDUContext::VisibleDeclarationsAndContexts;
+    TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
-    KDevelop::TestProject* project = new KDevelop::TestProject;
+    TestProject* project = new TestProject;
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
     // build dependency
-    TestFile f1("<? class SomeIterator implements Countable, Iterator { }", project);
+    TestFile f1("<? class SomeIterator implements Countable, Iterator { }", "php", project);
     f1.parse(features);
     f1.waitForParsed();
 
@@ -254,32 +200,29 @@ void TestDUChainMultipleFiles::testForeachImportedIdentifier()
                 "class A {\n"
                 "  public function foo() { $i = $this->bar(); foreach($i as $a => $b) {} } \n"
                 "  public function bar() { $a = new SomeIterator(); return $a; }\n"
-                " }\n", project);
+                " }\n", "php", project);
 
     for(int i = 0; i < 2; ++i) {
         if (i > 0) {
-            features = static_cast<KDevelop::TopDUContext::Features>(features | KDevelop::TopDUContext::ForceUpdate);
+            features = static_cast<TopDUContext::Features>(features | TopDUContext::ForceUpdate);
         }
         f2.parse(features);
         f2.waitForParsed();
         QTest::qWait(100);
 
-        KDevelop::DUChainWriteLocker lock(KDevelop::DUChain::lock());
-        KDevelop::DUContext* ACtx = f2.topContext()->childContexts().first();
+        DUChainWriteLocker lock(DUChain::lock());
+        DUContext* ACtx = f2.topContext()->childContexts().first();
         QVERIFY(ACtx);
-        KDevelop::Declaration* iDec = ACtx->childContexts().at(1)->localDeclarations().first();
+        Declaration* iDec = ACtx->childContexts().at(1)->localDeclarations().first();
         QVERIFY(iDec);
-        KDevelop::Declaration* SomeIteratorDec = f1.topContext()->localDeclarations().first();
+        Declaration* SomeIteratorDec = f1.topContext()->localDeclarations().first();
         QVERIFY(SomeIteratorDec);
         if (i == 0) {
             QEXPECT_FAIL("", "needs a full two-pass (i.e. get rid of PreDeclarationBuilder)", Continue);
         }
         QVERIFY(iDec->abstractType()->equals(SomeIteratorDec->abstractType().constData()));
-        QVERIFY(f2.topContext()->imports(f1.topContext(), KDevelop::CursorInRevision(0, 0)));
+        QVERIFY(f2.topContext()->imports(f1.topContext(), CursorInRevision(0, 0)));
     }
 }
 
-}
-
 #include "duchain_multiplefiles.moc"
-#include "moc_duchain_multiplefiles.cpp"
