@@ -1,6 +1,7 @@
 # KDE Config File
 [General]
 Name=Simple PHP Application
+Name[bs]=Prosta PHP aplikacija
 Name[ca]=Una aplicació PHP senzilla
 Name[ca@valencia]=Una aplicació PHP senzilla
 Name[cs]=Jednoduchá aplikace PHP
@@ -31,6 +32,7 @@ Name[zh_CN]=简单的 PHP 应用程序
 Name[zh_TW]=簡單的 PHP 應用程式
 Category=PHP
 Comment=Generate filestructure to start a PHP application
+Comment[bs]=Generiši datotečnu strukturu za početak PHP aplikacija
 Comment[ca]=Genera l'estructura de fitxers per a iniciar una aplicació PHP
 Comment[ca@valencia]=Genera l'estructura de fitxers per a iniciar una aplicació PHP
 Comment[cs]=Vygenerovat strukturu souborů pro započetí aplikace PHP
