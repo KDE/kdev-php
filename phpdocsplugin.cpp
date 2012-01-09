@@ -52,7 +52,7 @@ using namespace KDevelop;
 
 K_PLUGIN_FACTORY(PhpDocsFactory, registerPlugin<PhpDocsPlugin>(); )
 K_EXPORT_PLUGIN(PhpDocsFactory(KAboutData("kdevphpdocs","kdevphpdocs", ki18n("PhpDocs"),
-                                          "1.2.60", ki18n("Check PHP.net documentation"),
+                                          "1.2.80", ki18n("Check PHP.net documentation"),
                                KAboutData::License_GPL).addAuthor(ki18n("Milian Wolff"),
                                ki18n("Maintainer"), "mail@milianw.de", "http://milianw.de")))
 
