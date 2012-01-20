@@ -59,8 +59,8 @@ EditorIntegrator* ContextBuilder::editor() const
     return m_editor;
 }
 
-ReferencedTopDUContext ContextBuilder::build(const KDevelop::IndexedString& url, AstNode* node,
-        KDevelop::ReferencedTopDUContext updateContext)
+ReferencedTopDUContext ContextBuilder::build(const IndexedString& url, AstNode* node,
+                                             ReferencedTopDUContext updateContext)
 {
     m_isInternalFunctions = url == internalFunctionFile();
     if ( m_isInternalFunctions ) {
@@ -138,12 +138,12 @@ TopDUContext* ContextBuilder::newTopContext(const RangeInRevision& range, Parsin
     return ret;
 }
 
-void ContextBuilder::setContextOnNode(AstNode* node, KDevelop::DUContext* ctx)
+void ContextBuilder::setContextOnNode(AstNode* node, DUContext* ctx)
 {
     node->ducontext = ctx;
 }
 
-KDevelop::DUContext* ContextBuilder::contextFromNode(AstNode* node)
+DUContext* ContextBuilder::contextFromNode(AstNode* node)
 {
     return node->ducontext;
 }
@@ -177,11 +177,11 @@ QualifiedIdentifier ContextBuilder::identifierForNode(VariableIdentifierAst* id)
 IdentifierPair ContextBuilder::identifierPairForNode( IdentifierAst* id )
 {
     if (!id) {
-        return qMakePair(KDevelop::IndexedString(), QualifiedIdentifier());
+        return qMakePair(IndexedString(), QualifiedIdentifier());
     }
     const QString ret = stringForNode(id);
 
-    return qMakePair(KDevelop::IndexedString(ret), QualifiedIdentifier(ret.toLower()));
+    return qMakePair(IndexedString(ret), QualifiedIdentifier(ret.toLower()));
 }
 
 QString ContextBuilder::stringForNode(IdentifierAst* node) const
@@ -201,7 +201,7 @@ void ContextBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst
     closeContext();
 }
 
-void ContextBuilder::classContextOpened(KDevelop::DUContext* context)
+void ContextBuilder::classContextOpened(DUContext* context)
 {
     Q_UNUSED(context);
 }
@@ -350,9 +350,9 @@ void ContextBuilder::closeNamespaces(NamespaceDeclarationStatementAst* namespace
 void ContextBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const RangeInRevision& range)
 {
     if ( node == parent->namespaceNameSequence->back()->element ) {
-        openContext(node, range, KDevelop::DUContext::Namespace, identifier.second);
+        openContext(node, range, DUContext::Namespace, identifier.second);
     } else {
-        openContext(node, range, KDevelop::DUContext::Namespace, identifier.second);
+        openContext(node, range, DUContext::Namespace, identifier.second);
     }
 }
 
@@ -415,14 +415,14 @@ void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
     }
 }
 
-void ContextBuilder::reportError(const QString& errorMsg, AstNode* node, KDevelop::ProblemData::Severity severity)
+void ContextBuilder::reportError(const QString& errorMsg, AstNode* node, ProblemData::Severity severity)
 {
     reportError(errorMsg, m_editor->findRange(node), severity);
 }
 
-void ContextBuilder::reportError(const QString& errorMsg, QList< AstNode* > nodes, KDevelop::ProblemData::Severity severity)
+void ContextBuilder::reportError(const QString& errorMsg, QList< AstNode* > nodes, ProblemData::Severity severity)
 {
-    KDevelop::RangeInRevision range = KDevelop::RangeInRevision::invalid();
+    RangeInRevision range = RangeInRevision::invalid();
     foreach ( AstNode* node, nodes ) {
         if ( !range.isValid() ) {
             range = m_editor->findRange(node);
@@ -433,18 +433,18 @@ void ContextBuilder::reportError(const QString& errorMsg, QList< AstNode* > node
     reportError(errorMsg, range, severity);
 }
 
-void ContextBuilder::reportError(const QString& errorMsg, KDevelop::RangeInRevision range, KDevelop::ProblemData::Severity severity)
+void ContextBuilder::reportError(const QString& errorMsg, RangeInRevision range, ProblemData::Severity severity)
 {
-    KDevelop::Problem *p = new KDevelop::Problem();
+    Problem *p = new Problem();
     p->setSeverity(severity);
-    p->setSource(KDevelop::ProblemData::DUChainBuilder);
+    p->setSource(ProblemData::DUChainBuilder);
     p->setDescription(errorMsg);
-    p->setFinalLocation(KDevelop::DocumentRange(m_editor->parseSession()->currentDocument(),
+    p->setFinalLocation(DocumentRange(m_editor->parseSession()->currentDocument(),
                                                 range.castToSimpleRange()));
     {
         DUChainWriteLocker lock(DUChain::lock());
         kDebug() << "Problem" << p->description() << p->finalLocation();
-        currentContext()->topContext()->addProblem(KDevelop::ProblemPointer(p));
+        currentContext()->topContext()->addProblem(ProblemPointer(p));
     }
 }
 
