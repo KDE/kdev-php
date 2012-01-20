@@ -879,7 +879,13 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                 QString constant = m_editor->parseSession()->symbol(scalar->string);
                 constant = constant.mid(1, constant.length() - 2);
                 RangeInRevision newRange = editorFindRange(scalar, scalar);
-                DUChainWriteLocker lock(DUChain::lock());
+                AbstractType::Ptr type;
+                if (node->stringParameterList->parametersSequence->count() > 1) {
+                    type = getTypeForNode(node->stringParameterList->parametersSequence->at(1)->element);
+                    Q_ASSERT(type);
+                    type->setModifiers(type->modifiers() | AbstractType::ConstModifier);
+                } // TODO: else report error?
+                DUChainWriteLocker lock;
                 // find fitting context to put define in,
                 // pick first namespace or global context otherwise
                 DUContext* ctx = currentContext();
@@ -891,13 +897,10 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                 isGlobalRedeclaration(identifier, scalar, ConstantDeclarationType);
                 Declaration* dec = openDefinition<Declaration>(identifier, newRange);
                 dec->setKind(Declaration::Instance);
-                if (node->stringParameterList->parametersSequence->count() > 1) {
-                    AbstractType::Ptr type = getTypeForNode(node->stringParameterList->parametersSequence->at(1)->element);
-                    Q_ASSERT(type);
-                    type->setModifiers(type->modifiers() | AbstractType::ConstModifier);
+                if (type) {
                     dec->setType(type);
                     injectType(type);
-                } // TODO: else report error?
+                }
                 closeDeclaration();
                 closeInjectedContext();
             }
