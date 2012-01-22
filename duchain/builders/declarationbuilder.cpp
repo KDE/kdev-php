@@ -934,7 +934,7 @@ void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParam
             // http://de.php.net/manual/en/language.references.whatdo.php
 
             // declare with NULL type, just like PHP does
-            declareFoundVariable(new IntegralType(IntegralType::TypeNull));
+            declareFoundVariable(AbstractType::Ptr(new IntegralType(IntegralType::TypeNull)));
         }
     }
 
@@ -949,11 +949,11 @@ void DeclarationBuilder::visitAssignmentListElement(AssignmentListElementAst* no
 
     if ( m_findVariable.node ) {
         ///TODO: get a proper type here, if possible
-        declareFoundVariable(new IntegralType(IntegralType::TypeMixed));
+        declareFoundVariable(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
     }
 }
 
-void DeclarationBuilder::declareFoundVariable(AbstractType* type)
+void DeclarationBuilder::declareFoundVariable(AbstractType::Ptr type)
 {
     Q_ASSERT(m_findVariable.node);
 
@@ -984,11 +984,10 @@ void DeclarationBuilder::declareFoundVariable(AbstractType* type)
             }
             if ( !isDeclared ) {
                 // couldn't find the dec, declare it
-                AbstractType::Ptr newType(type);
                 if ( !m_findVariable.parentIdentifier.isEmpty() ) {
-                    declareClassMember(ctx, newType, m_findVariable.identifier, m_findVariable.node);
+                    declareClassMember(ctx, type, m_findVariable.identifier, m_findVariable.node);
                 } else {
-                    declareVariable(ctx, newType, m_findVariable.identifier, m_findVariable.node);
+                    declareVariable(ctx, type, m_findVariable.identifier, m_findVariable.node);
                 }
             }
         }
@@ -1003,7 +1002,7 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
         PushValue<FindVariableResults> restore(m_findVariable);
         visitForeachVariable(node->foreachVariable);
         if (m_findVariable.node) {
-            declareFoundVariable(lastType().unsafeData());
+            declareFoundVariable(lastType());
         }
     }
 
@@ -1011,7 +1010,7 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
         PushValue<FindVariableResults> restore(m_findVariable);
         visitForeachVariable(node->foreachVarAsVar);
         if (m_findVariable.node) {
-            declareFoundVariable(lastType().unsafeData());
+            declareFoundVariable(lastType());
         }
     }
 
@@ -1019,7 +1018,7 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
         PushValue<FindVariableResults> restore(m_findVariable);
         visitVariable(node->foreachExprAsVar);
         if (m_findVariable.node) {
-            declareFoundVariable(lastType().unsafeData());
+            declareFoundVariable(lastType());
         }
     }
 
