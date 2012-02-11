@@ -563,6 +563,7 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
     FunctionDeclaration* dec = m_functions.value(node->functionName->string, 0);
     Q_ASSERT(dec);
     // seems like we have to set that, else the usebuilder crashes
+
     DeclarationBuilderBase::setEncountered(dec);
 
     openDeclarationInternal(dec);
@@ -971,9 +972,13 @@ void DeclarationBuilder::declareFoundVariable(AbstractType::Ptr type)
                 DUChainWriteLocker lock(DUChain::lock());
                 foreach ( Declaration* dec, ctx->findDeclarations(m_findVariable.identifier) ) {
                     if ( dec->kind() == Declaration::Instance ) {
+                        if (!wasEncountered(dec)) {
+                            // just like a "redeclaration", hence we must update the range
+                            // TODO: do the same for all other uses of "encounter"?
+                            dec->setRange(editorFindRange(m_findVariable.node));
+                            encounter(dec);
+                        }
                         isDeclared = true;
-                        // update comment but nothing else
-                        encounter(dec);
                         break;
                     }
                 }
@@ -1167,6 +1172,7 @@ void DeclarationBuilder::closeContext()
     DeclarationBuilderBase::closeContext();
     setCompilingContexts(false);
 }
+
 void DeclarationBuilder::encounter(Declaration* dec)
 {
     // when we are recompiling, it's important to mark decs as encountered

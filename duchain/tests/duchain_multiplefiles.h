@@ -42,8 +42,8 @@ private slots:
     void testNonExistingGlobalFunction();
     void testImportsStaticFunctionNotYetParsed();
     void testNonExistingStaticFunction();
-
     void testForeachImportedIdentifier();
+    void testUpdateForeach();
 private:
     KDevelop::TestProjectController* m_projectController;
 };

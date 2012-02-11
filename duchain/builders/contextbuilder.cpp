@@ -150,7 +150,7 @@ DUContext* ContextBuilder::contextFromNode(AstNode* node)
 
 RangeInRevision ContextBuilder::editorFindRange(AstNode* fromRange, AstNode* toRange)
 {
-    return m_editor->findRange(fromRange, toRange);
+    return m_editor->findRange(fromRange, toRange ? toRange : fromRange);
 }
 
 CursorInRevision ContextBuilder::startPos(AstNode* node)
