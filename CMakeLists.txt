@@ -35,6 +35,7 @@ add_subdirectory(app_templates)
 add_subdirectory(parser)
 add_subdirectory(duchain)
 add_subdirectory(completion)
+add_subdirectory(testprovider)
 
 set(kdevphplanguagesupport_PART_SRCS
     phplanguagesupport.cpp
