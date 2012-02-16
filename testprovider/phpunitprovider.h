@@ -22,6 +22,8 @@
 #define PHPUNITPROVIDER_H
 
 #include <interfaces/iplugin.h>
+#include <interfaces/itestprovider.h>
+
 #include <QVariant>
 
 class KUrl;
@@ -31,16 +33,14 @@ class IProject;
 
 class QVariant;
 
-class PhpUnitProvider : public KDevelop::IPlugin
+class PhpUnitProvider : public KDevelop::IPlugin, public KDevelop::ITestProvider
 {
     Q_OBJECT
+    Q_INTERFACES(KDevelop::ITestProvider)
 public:
     PhpUnitProvider(QObject* parent, const QList<QVariant>& args = QList<QVariant>());
     virtual void unload();
-    void createTestSuite(const QString& name, const KUrl& url, KDevelop::IProject* project);
-
-public slots:
-    void findTestSuites();
+    virtual KJob* findTests();
 
 };
 

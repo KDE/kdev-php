@@ -3,7 +3,7 @@
 
 ########### next target ###############
 
-set(kdevphpunitprovider_PLUGIN_SRCS
+set(kdevphpunitprovider_PLUGIN_SRCS phpunitfindjob.cpp phpunittestsuite.cpp
     phpunitprovider.cpp
 )
 
