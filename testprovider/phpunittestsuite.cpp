@@ -22,12 +22,13 @@
 
 using namespace KDevelop;
 
-PhpUnitTestSuite::PhpUnitTestSuite(const QString& name, const KUrl& url, const QStringList& cases, IProject* project)
+PhpUnitTestSuite::PhpUnitTestSuite(const QString& name, const KUrl& url, const IndexedDeclaration& suiteDeclaration, const QMap< QString, IndexedDeclaration >& cases, IProject* project) :
+m_name(name),
+m_url(url),
+m_declaration(suiteDeclaration),
+m_cases(cases),
+m_project(project)
 {
-    m_name = name;
-    m_url = url;
-    m_cases = cases;
-    m_project = project;
 }
 
 PhpUnitTestSuite::~PhpUnitTestSuite()
@@ -63,7 +64,7 @@ KUrl PhpUnitTestSuite::url() const
 
 QStringList PhpUnitTestSuite::cases() const
 {
-    return m_cases;
+    return QStringList(m_cases.keys());
 }
 
 QString PhpUnitTestSuite::name() const
@@ -75,5 +76,16 @@ TestResult PhpUnitTestSuite::result() const
 {
     return TestResult();
 }
+
+IndexedDeclaration PhpUnitTestSuite::declaration() const
+{
+    return m_declaration;
+}
+
+IndexedDeclaration PhpUnitTestSuite::caseDeclaration(const QString& testCase) const
+{
+    return m_cases.value(testCase, IndexedDeclaration(0));
+}
+
 
 

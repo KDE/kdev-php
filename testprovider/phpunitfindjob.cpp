@@ -80,7 +80,7 @@ void PhpUnitFindJob::updateReady(const IndexedString& document, const KDevelop::
             {
                 continue;
             }
-            QStringList testCases;
+            QMap<QString, IndexedDeclaration> testCases;
             ClassDeclaration* classDeclaration = dynamic_cast<ClassDeclaration*>(d);
             if (classDeclaration && !classDeclaration->isAbstract())
             {
@@ -89,18 +89,18 @@ void PhpUnitFindJob::updateReady(const IndexedString& document, const KDevelop::
                     kDebug() << "Trying test case declaration" << member;
                     if (member->isFunctionDeclaration() && member->identifier().toString().startsWith("test"))
                     {
-                        testCases << member->identifier().toString();
+                        testCases.insert(member->identifier().toString(), IndexedDeclaration(member));
                     }
                 }
                 ITestSuite* existingSuite = tc->testSuiteForUrl(url);
-                if (existingSuite && existingSuite->cases() != testCases)
+                if (existingSuite && existingSuite->cases() != testCases.keys())
                 {
                     tc->removeTestSuite(existingSuite);
                     existingSuite = 0;
                 }
                 if (!existingSuite)
                 {
-                    tc->addTestSuite(new PhpUnitTestSuite(name, url, testCases, project));
+                    tc->addTestSuite(new PhpUnitTestSuite(name, url, IndexedDeclaration(classDeclaration), testCases, project));
                 }
             }
         }

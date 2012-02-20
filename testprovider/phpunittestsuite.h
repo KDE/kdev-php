@@ -22,6 +22,7 @@
 #define PHPUNITTESTSUITE_H
 
 #include <interfaces/itestsuite.h>
+#include <language/duchain/indexeddeclaration.h>
 #include <KUrl>
 
 class KJob;
@@ -34,7 +35,7 @@ class PhpUnitTestSuite : public KDevelop::ITestSuite
 {
 
 public:
-    PhpUnitTestSuite(const QString& name, const KUrl& url, const QStringList& cases, KDevelop::IProject* project);
+    PhpUnitTestSuite(const QString& name, const KUrl& url, const KDevelop::IndexedDeclaration& suiteDeclaration, const QMap<QString, KDevelop::IndexedDeclaration>& cases, KDevelop::IProject* project);
     virtual ~PhpUnitTestSuite();
 
     virtual KJob* launchCase(const QString& testCase);
@@ -47,10 +48,14 @@ public:
     virtual QString name() const;
     virtual KDevelop::TestResult result() const;
 
+    virtual KDevelop::IndexedDeclaration declaration() const;
+    virtual KDevelop::IndexedDeclaration caseDeclaration(const QString& testCase) const;
+
 private:
     QString m_name;
     KUrl m_url;
-    QStringList m_cases;
+    KDevelop::IndexedDeclaration m_declaration;
+    QMap<QString, KDevelop::IndexedDeclaration> m_cases;
     KDevelop::IProject* m_project;
 };
 
