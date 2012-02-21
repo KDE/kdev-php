@@ -1656,8 +1656,14 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
         static const KDevelop::QualifiedIdentifier exceptionQId("exception");
         QList<Declaration*> decs = dec->context()->findDeclarations(exceptionQId);
         Q_ASSERT(decs.count());
-        exceptionDecl = dynamic_cast<ClassDeclaration*>(decs.first());
-        Q_ASSERT(exceptionDecl);
+        if (decs.count()) { // additional safe-guard, see e.g. https://bugs.kde.org/show_bug.cgi?id=294218
+            exceptionDecl = dynamic_cast<ClassDeclaration*>(decs.first());
+            Q_ASSERT(exceptionDecl);
+        }
+    }
+    if (!exceptionDecl) {
+        // safe-guard, see: https://bugs.kde.org/show_bug.cgi?id=294218
+        kWarning() << "could not find PHP-Exception declaration, related code completion will be broken.";
     }
 
     if (m_memberAccessOperation == ExceptionChoose
@@ -1682,6 +1688,10 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
         }
         // filter non-exception classes
         else if (m_memberAccessOperation == ExceptionChoose) {
+            if (!exceptionDecl) {
+                // safe-guard, see: https://bugs.kde.org/show_bug.cgi?id=294218
+                return false;
+            }
             return classDec->equalQualifiedIdentifier(exceptionDecl.data())
                    || classDec->isPublicBaseClass(exceptionDecl.data(), m_duContext->topContext());
         }
@@ -1700,11 +1710,21 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
     }
 
     if (m_memberAccessOperation == ExceptionInstanceChoose) {
-        if (dec->kind() != Declaration::Instance) return false;
+        if (!exceptionDecl) {
+            // safe-guard, see: https://bugs.kde.org/show_bug.cgi?id=294218
+            return false;
+        }
+        if (dec->kind() != Declaration::Instance) {
+            return false;
+        }
         StructureType::Ptr structType = dec->type<StructureType>();
-        if (!structType) return false;
+        if (!structType) {
+            return false;
+        }
         ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(structType->declaration(dec->topContext()));
-        if (!classDec) return false;
+        if (!classDec) {
+            return false;
+        }
         return classDec->isPublicBaseClass(exceptionDecl.data(), m_duContext->topContext());
     }
 
