@@ -35,7 +35,7 @@ class PhpUnitTestSuite : public KDevelop::ITestSuite
 {
 
 public:
-    PhpUnitTestSuite(const QString& name, const KUrl& url, const KDevelop::IndexedDeclaration& suiteDeclaration, const QMap<QString, KDevelop::IndexedDeclaration>& cases, KDevelop::IProject* project);
+    PhpUnitTestSuite(const QString& name, const KUrl& url, const KDevelop::IndexedDeclaration& suiteDeclaration, const QStringList& cases, const QHash< QString, KDevelop::IndexedDeclaration >& caseDeclarations, KDevelop::IProject* project);
     virtual ~PhpUnitTestSuite();
 
     virtual KJob* launchCase(const QString& testCase);
@@ -55,7 +55,8 @@ private:
     QString m_name;
     KUrl m_url;
     KDevelop::IndexedDeclaration m_declaration;
-    QMap<QString, KDevelop::IndexedDeclaration> m_cases;
+    QStringList m_cases;
+    QHash<QString, KDevelop::IndexedDeclaration> m_caseDeclarations;
     KDevelop::IProject* m_project;
 };
 
