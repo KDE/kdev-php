@@ -30,6 +30,8 @@
 #include <KIcon>
 
 #include <interfaces/idocumentation.h>
+#include <interfaces/icore.h>
+#include <interfaces/idocumentationcontroller.h>
 
 #include <language/duchain/duchain.h>
 #include <language/duchain/declaration.h>
@@ -45,14 +47,13 @@
 
 #include "phpdocumentation.h"
 #include "phpdocssettings.h"
-#include <interfaces/icore.h>
-#include <interfaces/idocumentationcontroller.h>
+#include "kdevphpdocsversion.h"
 
 using namespace KDevelop;
 
 K_PLUGIN_FACTORY(PhpDocsFactory, registerPlugin<PhpDocsPlugin>(); )
 K_EXPORT_PLUGIN(PhpDocsFactory(KAboutData("kdevphpdocs","kdevphpdocs", ki18n("PhpDocs"),
-                                          "1.3.60", ki18n("Check PHP.net documentation"),
+                                          KDEVPHPDOCS_VERSION_STR, ki18n("Check PHP.net documentation"),
                                KAboutData::License_GPL).addAuthor(ki18n("Milian Wolff"),
                                ki18n("Maintainer"), "mail@milianw.de", "http://milianw.de")))
 

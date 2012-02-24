@@ -1,5 +1,11 @@
 PROJECT(phpdocs)
 
+set(KDEVPHPDOCS_VERSION_MAJOR 1)
+set(KDEVPHPDOCS_VERSION_MINOR 3)
+set(KDEVPHPDOCS_VERSION_PATCH 60)
+
+configure_file( "${phpdocs_SOURCE_DIR}/kdevphpdocsversion.h.cmake" "${phpdocs_BINARY_DIR}/kdevphpdocsversion.h" @ONLY )
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${phpdocs_SOURCE_DIR}/cmake/)
 enable_testing()
 
