@@ -1,5 +1,11 @@
 PROJECT(php)
 
+set(KDEVPHP_VERSION_MAJOR 1)
+set(KDEVPHP_VERSION_MINOR 2)
+set(KDEVPHP_VERSION_PATCH 90)
+
+configure_file( "${php_SOURCE_DIR}/kdevphpversion.h.cmake" "${php_BINARY_DIR}/kdevphpversion.h" @ONLY )
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${php_SOURCE_DIR}/cmake/)
 enable_testing()
 
