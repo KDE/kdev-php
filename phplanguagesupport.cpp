@@ -41,6 +41,7 @@
 
 #include "phpparsejob.h"
 #include "phphighlighting.h"
+#include "kdevphpversion.h"
 
 #include <language/codecompletion/codecompletion.h>
 #include <language/codecompletion/codecompletionmodel.h>
@@ -57,11 +58,12 @@
 using namespace KDevelop;
 
 K_PLUGIN_FACTORY(KDevPhpSupportFactory, registerPlugin<Php::LanguageSupport>();)
-K_EXPORT_PLUGIN(KDevPhpSupportFactory(KAboutData("kdevphpsupport","kdevphp", ki18n("Php Support"), "1.3.60", ki18n("Support for Php Language"), KAboutData::License_GPL)
+K_EXPORT_PLUGIN(KDevPhpSupportFactory(
+    KAboutData("kdevphpsupport", "kdevphp", ki18n("Php Support"),
+               KDEVPHP_VERSION_STR, ki18n("Support for Php Language"), KAboutData::License_GPL)
     .addAuthor(ki18n("Milian Wolff"), ki18n("Author"), "mail@milianw.de", "http://milianw.de")
     .addAuthor(ki18n("Niko Sams"), ki18n("Author"), "niko.sams@gmail.com", "http://nikosams.blogspot.com")
 ))
-
 
 namespace Php
 {
