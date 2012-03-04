@@ -95,7 +95,7 @@ void PhpUnitFindJob::updateReady(const IndexedString& document, const KDevelop::
                         testCaseDeclarations.insert(member->identifier().toString(), IndexedDeclaration(member));
                     }
                 }
-                ITestSuite* existingSuite = tc->testSuiteForUrl(url);
+                ITestSuite* existingSuite = tc->findTestSuite(project, name);
                 if (existingSuite && existingSuite->cases() != testCases)
                 {
                     tc->removeTestSuite(existingSuite);
