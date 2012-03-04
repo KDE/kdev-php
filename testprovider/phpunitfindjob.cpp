@@ -54,7 +54,7 @@ void PhpUnitFindJob::start()
 {
 
     QString file = KStandardDirs::locate("data", "kdevphpsupport/phpunitdeclarations.php");
-    DUChain::self()->updateContextForUrl(IndexedString(file), KDevelop::TopDUContext::AllDeclarationsAndContexts, this, -10);
+    DUChain::self()->updateContextForUrl(IndexedString(file), KDevelop::TopDUContext::AllDeclarationsContextsAndUses, this, -10);
 }
 
 void PhpUnitFindJob::updateReady(const IndexedString& document, const KDevelop::ReferencedTopDUContext& context)
@@ -66,6 +66,7 @@ void PhpUnitFindJob::updateReady(const IndexedString& document, const KDevelop::
 
     QVector<Declaration*> decl = context->localDeclarations();
     kDebug() << "Found" << decl.size() << "declarations using the direct method";
+
     foreach (Declaration* p, decl)
     {
         kDebug() << "Found PHP Unit declaration" << p->identifier().toString();
