@@ -225,4 +225,47 @@ void TestDUChainMultipleFiles::testForeachImportedIdentifier()
     }
 }
 
+void TestDUChainMultipleFiles::testUpdateForeach()
+{
+    TopDUContext::Features features = TopDUContext::AllDeclarationsContextsAndUses;
+
+    TestProject* project = new TestProject;
+    m_projectController->clearProjects();
+    m_projectController->addProject(project);
+
+    TestFile f("<?\n$k = null;\nforeach(array() as $i => $k) {}\n", "php", project);
+
+    f.parse(features);
+    f.waitForParsed();
+    QVERIFY(f.topContext());
+
+    {
+        DUChainWriteLocker lock;
+        QVERIFY(f.topContext()->problems().isEmpty());
+        QCOMPARE(f.topContext()->findDeclarations(Identifier("k")).count(), 1);
+        Declaration* kDec = f.topContext()->findDeclarations(Identifier("k")).first();
+        QCOMPARE(kDec->rangeInCurrentRevision().start.line, 1);
+        QCOMPARE(kDec->rangeInCurrentRevision().start.column, 0);
+        QCOMPARE(kDec->uses().count(), 1);
+        QCOMPARE(kDec->uses().begin()->count(), 1);
+        QCOMPARE(kDec->uses().begin()->begin()->start.line, 2);
+    }
+
+    // delete $k = null; line
+    f.setFileContents("<?\nforeach(array() as $i => $k) {}\n");
+    f.parse(static_cast<TopDUContext::Features>(features | TopDUContext::ForceUpdate));
+    f.waitForParsed();
+    QVERIFY(f.topContext());
+
+    {
+        DUChainWriteLocker lock;
+        QVERIFY(f.topContext()->problems().isEmpty());
+        QCOMPARE(f.topContext()->findDeclarations(Identifier("k")).count(), 1);
+        Declaration* kDec = f.topContext()->findDeclarations(Identifier("k")).first();
+        QCOMPARE(kDec->rangeInCurrentRevision().start.line, 1);
+        QCOMPARE(kDec->rangeInCurrentRevision().start.column, 25);
+        QCOMPARE(kDec->uses().count(), 0);
+    }
+}
+
 #include "duchain_multiplefiles.moc"

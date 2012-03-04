@@ -221,7 +221,7 @@ private:
      * @see declareClassMeember
      * @see declareVariable
      */
-    void declareFoundVariable(KDevelop::AbstractType* type);
+    void declareFoundVariable(KDevelop::AbstractType::Ptr type);
 
     /**
      * Sets encountered and updates the comment when we are recompiling.

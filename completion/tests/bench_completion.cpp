@@ -66,7 +66,7 @@ void BenchmarkCodeCompletion::initTestCase()
     DUChain::self()->disablePersistentStorage();
 
     // make sure we have a valid duchain for the global file
-    DUChainWriteLocker lock(DUChain::lock());
+    DUChainReadLocker lock(DUChain::lock());
     if ( !DUChain::self()->chainForDocument(internalFunctionFile()) ) {
         kDebug() << "no internal function file found in DUChain, loading it manually";
         QString fileName = internalFunctionFile().str();
@@ -76,9 +76,9 @@ void BenchmarkCodeCompletion::initTestCase()
             kDebug() << "Could not open file" << fileName;
             return;
         }
+        lock.unlock();
         parseAdditionalFile(internalFunctionFile(), file->readAll());
         delete file;
-        lock.unlock();
         DUChain::self()->storeToDisk();
     }
 }

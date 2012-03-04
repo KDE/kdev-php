@@ -62,7 +62,7 @@ protected:
     virtual void startVisiting(AstNode* node);
     virtual void setContextOnNode(AstNode* node, KDevelop::DUContext* ctx);
     virtual KDevelop::DUContext* contextFromNode(AstNode* node);
-    virtual KDevelop::RangeInRevision editorFindRange(AstNode* fromRange, AstNode* toRange);
+    virtual KDevelop::RangeInRevision editorFindRange(AstNode* fromRange, AstNode* toRange = 0);
     /// Find Cursor for start of a node, useful to limit findLocalDeclarations() searches.
     KDevelop::CursorInRevision startPos( AstNode* node);
 

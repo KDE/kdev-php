@@ -563,6 +563,7 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
     FunctionDeclaration* dec = m_functions.value(node->functionName->string, 0);
     Q_ASSERT(dec);
     // seems like we have to set that, else the usebuilder crashes
+
     DeclarationBuilderBase::setEncountered(dec);
 
     openDeclarationInternal(dec);
@@ -879,7 +880,13 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                 QString constant = m_editor->parseSession()->symbol(scalar->string);
                 constant = constant.mid(1, constant.length() - 2);
                 RangeInRevision newRange = editorFindRange(scalar, scalar);
-                DUChainWriteLocker lock(DUChain::lock());
+                AbstractType::Ptr type;
+                if (node->stringParameterList->parametersSequence->count() > 1) {
+                    type = getTypeForNode(node->stringParameterList->parametersSequence->at(1)->element);
+                    Q_ASSERT(type);
+                    type->setModifiers(type->modifiers() | AbstractType::ConstModifier);
+                } // TODO: else report error?
+                DUChainWriteLocker lock;
                 // find fitting context to put define in,
                 // pick first namespace or global context otherwise
                 DUContext* ctx = currentContext();
@@ -891,13 +898,10 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
                 isGlobalRedeclaration(identifier, scalar, ConstantDeclarationType);
                 Declaration* dec = openDefinition<Declaration>(identifier, newRange);
                 dec->setKind(Declaration::Instance);
-                if (node->stringParameterList->parametersSequence->count() > 1) {
-                    AbstractType::Ptr type = getTypeForNode(node->stringParameterList->parametersSequence->at(1)->element);
-                    Q_ASSERT(type);
-                    type->setModifiers(type->modifiers() | AbstractType::ConstModifier);
+                if (type) {
                     dec->setType(type);
                     injectType(type);
-                } // TODO: else report error?
+                }
                 closeDeclaration();
                 closeInjectedContext();
             }
@@ -931,7 +935,7 @@ void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParam
             // http://de.php.net/manual/en/language.references.whatdo.php
 
             // declare with NULL type, just like PHP does
-            declareFoundVariable(new IntegralType(IntegralType::TypeNull));
+            declareFoundVariable(AbstractType::Ptr(new IntegralType(IntegralType::TypeNull)));
         }
     }
 
@@ -946,11 +950,11 @@ void DeclarationBuilder::visitAssignmentListElement(AssignmentListElementAst* no
 
     if ( m_findVariable.node ) {
         ///TODO: get a proper type here, if possible
-        declareFoundVariable(new IntegralType(IntegralType::TypeMixed));
+        declareFoundVariable(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
     }
 }
 
-void DeclarationBuilder::declareFoundVariable(AbstractType* type)
+void DeclarationBuilder::declareFoundVariable(AbstractType::Ptr type)
 {
     Q_ASSERT(m_findVariable.node);
 
@@ -968,9 +972,13 @@ void DeclarationBuilder::declareFoundVariable(AbstractType* type)
                 DUChainWriteLocker lock(DUChain::lock());
                 foreach ( Declaration* dec, ctx->findDeclarations(m_findVariable.identifier) ) {
                     if ( dec->kind() == Declaration::Instance ) {
+                        if (!wasEncountered(dec)) {
+                            // just like a "redeclaration", hence we must update the range
+                            // TODO: do the same for all other uses of "encounter"?
+                            dec->setRange(editorFindRange(m_findVariable.node));
+                            encounter(dec);
+                        }
                         isDeclared = true;
-                        // update comment but nothing else
-                        encounter(dec);
                         break;
                     }
                 }
@@ -981,11 +989,10 @@ void DeclarationBuilder::declareFoundVariable(AbstractType* type)
             }
             if ( !isDeclared ) {
                 // couldn't find the dec, declare it
-                AbstractType::Ptr newType(type);
                 if ( !m_findVariable.parentIdentifier.isEmpty() ) {
-                    declareClassMember(ctx, newType, m_findVariable.identifier, m_findVariable.node);
+                    declareClassMember(ctx, type, m_findVariable.identifier, m_findVariable.node);
                 } else {
-                    declareVariable(ctx, newType, m_findVariable.identifier, m_findVariable.node);
+                    declareVariable(ctx, type, m_findVariable.identifier, m_findVariable.node);
                 }
             }
         }
@@ -1000,7 +1007,7 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
         PushValue<FindVariableResults> restore(m_findVariable);
         visitForeachVariable(node->foreachVariable);
         if (m_findVariable.node) {
-            declareFoundVariable(lastType().unsafeData());
+            declareFoundVariable(lastType());
         }
     }
 
@@ -1008,7 +1015,7 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
         PushValue<FindVariableResults> restore(m_findVariable);
         visitForeachVariable(node->foreachVarAsVar);
         if (m_findVariable.node) {
-            declareFoundVariable(lastType().unsafeData());
+            declareFoundVariable(lastType());
         }
     }
 
@@ -1016,7 +1023,7 @@ void DeclarationBuilder::visitStatement(StatementAst* node)
         PushValue<FindVariableResults> restore(m_findVariable);
         visitVariable(node->foreachExprAsVar);
         if (m_findVariable.node) {
-            declareFoundVariable(lastType().unsafeData());
+            declareFoundVariable(lastType());
         }
     }
 
@@ -1165,6 +1172,7 @@ void DeclarationBuilder::closeContext()
     DeclarationBuilderBase::closeContext();
     setCompilingContexts(false);
 }
+
 void DeclarationBuilder::encounter(Declaration* dec)
 {
     // when we are recompiling, it's important to mark decs as encountered
