@@ -19,6 +19,7 @@
 
 
 #include "phpunittestsuite.h"
+#include "phpunitrunjob.h"
 
 using namespace KDevelop;
 
@@ -40,17 +41,17 @@ PhpUnitTestSuite::~PhpUnitTestSuite()
 
 KJob* PhpUnitTestSuite::launchCase(const QString& testCase)
 {
-    return 0;
+    return launchCases(QStringList() << testCase);
 }
 
 KJob* PhpUnitTestSuite::launchCases(const QStringList& testCases)
 {
-    return 0;
+    return new PhpUnitRunJob(this, testCases);
 }
 
 KJob* PhpUnitTestSuite::launchAllCases()
 {
-    return 0;
+    return launchCases(m_cases);
 }
 
 KDevelop::IProject* PhpUnitTestSuite::project() const
@@ -75,7 +76,12 @@ QString PhpUnitTestSuite::name() const
 
 TestResult PhpUnitTestSuite::result() const
 {
-    return TestResult();
+    return m_result;
+}
+
+void PhpUnitTestSuite::setResult(const TestResult& result)
+{
+    m_result = result;
 }
 
 IndexedDeclaration PhpUnitTestSuite::declaration() const

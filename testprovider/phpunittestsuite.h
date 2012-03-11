@@ -51,6 +51,8 @@ public:
     virtual KDevelop::IndexedDeclaration declaration() const;
     virtual KDevelop::IndexedDeclaration caseDeclaration(const QString& testCase) const;
 
+    void setResult(const KDevelop::TestResult& result);
+
 private:
     QString m_name;
     KUrl m_url;
@@ -58,6 +60,7 @@ private:
     QStringList m_cases;
     QHash<QString, KDevelop::IndexedDeclaration> m_caseDeclarations;
     KDevelop::IProject* m_project;
+    KDevelop::TestResult m_result;
 };
 
 #endif // PHPUNITTESTSUITE_H

@@ -91,8 +91,9 @@ void PhpUnitFindJob::updateReady(const IndexedString& document, const KDevelop::
                     kDebug() << "Trying test case declaration" << member;
                     if (member->isFunctionDeclaration() && member->identifier().toString().startsWith("test"))
                     {
-                        testCases << member->identifier().toString();
-                        testCaseDeclarations.insert(member->identifier().toString(), IndexedDeclaration(member));
+                        const QString caseName = member->identifier().toString();
+                        testCases << caseName;
+                        testCaseDeclarations.insert(caseName, IndexedDeclaration(member));
                     }
                 }
                 ITestSuite* existingSuite = tc->findTestSuite(project, name);
