@@ -327,6 +327,12 @@ const KDevelop::IndexedString& internalFunctionFile()
     return internalFile;
 }
 
+const IndexedString& internalTestFile()
+{
+    static const KDevelop::IndexedString phpUnitFile(KStandardDirs::locate("data", "kdevphpsupport/phpunitdeclarations.php"));
+    return phpUnitFile;
+}
+
 QualifiedIdentifier identifierForNamespace(NamespacedIdentifierAst* node, EditorIntegrator* editor, bool lastIsConstIdentifier)
 {
     QualifiedIdentifier id;
