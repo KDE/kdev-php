@@ -132,13 +132,14 @@ void UseBuilder::visitCatchItem(CatchItemAst *node)
         buildNamespaceUses(node->catchClass, ClassDeclarationType);
     }
     UseBuilderBase::visitCatchItem(node);
-
 }
 
-void UseBuilder::newCheckedUse(AstNode* node, const DeclarationPointer& declaration)
+void UseBuilder::newCheckedUse(AstNode* node, const DeclarationPointer& declaration, bool reportNotFound)
 {
     if ( declaration && declaration->comment().contains("@deprecated") ) {
         reportError(i18n("Usage of %1 is deprecated.", declaration->toString()), node, ProblemData::Hint);
+    } else if ( !declaration && reportNotFound ) {
+        reportError(i18n("Declaration not found: %1", m_editor->parseSession()->symbol(node)), node, ProblemData::Hint);
     }
     UseBuilderBase::newUse(node, declaration);
 }
@@ -175,11 +176,13 @@ void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node, DeclarationTy
         AstNode* n = node->namespaceNameSequence->at(i)->element;
         DeclarationPointer dec = findDeclarationImport(NamespaceDeclarationType, curId, n);
         if (!dec || dec->range() != editorFindRange(n, n)) {
-            newCheckedUse(n, dec);
+            newCheckedUse(n, dec, true);
         }
     }
     newCheckedUse(node->namespaceNameSequence->back()->element,
-                  findDeclarationImport(lastType, identifier, node ));
+                  findDeclarationImport(lastType, identifier, node ),
+                  lastType == ClassDeclarationType || lastType == ConstantDeclarationType
+                  || lastType == FunctionDeclarationType || lastType == NamespaceDeclarationType);
 }
 
 void UseBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node,
