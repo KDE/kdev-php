@@ -111,6 +111,7 @@ private slots:
     void unsureReferencedArgument();
     void defaultArgument();
     void declareMemberOutOfClass();
+    void declareMemberOutOfClass2();
     void declareMemberInClassMethod();
     void thisRedeclaration();
     void implicitArrayDeclaration();

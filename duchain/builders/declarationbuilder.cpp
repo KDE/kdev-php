@@ -438,11 +438,12 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
     if ( m_upcomingClassVariables.contains(identifier) ) {
         if (m_actuallyRecompiling) {
             DUChainWriteLocker lock;
-            Declaration* dec = currentContext()->parentContext()->findDeclarationAt(startPos(node));
-            if ( dynamic_cast<ClassMemberDeclaration*>(dec) ) {
-                // invalidate declaration, it got added
-                // see also bug https://bugs.kde.org/show_bug.cgi?id=241750
-                delete dec;
+            if (Declaration* dec = currentContext()->findDeclarationAt(startPos(node))) {
+                if (dynamic_cast<ClassMemberDeclaration*>(dec)) {
+                    // invalidate declaration, it got added
+                    // see also bug https://bugs.kde.org/show_bug.cgi?id=241750
+                    delete dec;
+                }
             }
         }
         return;

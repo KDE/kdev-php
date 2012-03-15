@@ -145,7 +145,8 @@ TopDUContext* DUChainTestBase::parseAdditionalFile(const IndexedString& fileName
     return top;
 }
 
-TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QString url)
+TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump,
+                                     QString url, TopDUContext* update)
 {
     if (dump)
         kDebug() << "==== Beginning new test case...:" << endl << unit;
@@ -170,7 +171,7 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QSt
     EditorIntegrator editor(&session);
     session.setCurrentDocument(IndexedString(url));
     DeclarationBuilder declarationBuilder(&editor);
-    TopDUContext* top = declarationBuilder.build(session.currentDocument(), ast);
+    TopDUContext* top = declarationBuilder.build(session.currentDocument(), ast, ReferencedTopDUContext(update));
 
     if (!session.problems().isEmpty()) {
         DUChainWriteLocker lock;
@@ -199,6 +200,8 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump, QSt
             dt.dump(type.unsafeData());
         }
     }
+
+
 
     if (dump)
         kDebug() << "===== Finished test case.";

@@ -107,7 +107,9 @@ public slots:
     void cleanupTestCase();
 
 protected:
-    KDevelop::TopDUContext* parse(const QByteArray& unit, DumpAreas dump = static_cast<DumpAreas>(DumpAST | DumpDUChain | DumpType), QString fileName = QString());
+    KDevelop::TopDUContext* parse(const QByteArray& unit,
+                                  DUChainTestBase::DumpAreas dump = DumpAreas(DumpAll),
+                                  QString url = QString(), KDevelop::TopDUContext* update = 0);
 
     KDevelop::TopDUContext* parseAdditionalFile(const KDevelop::IndexedString& fileName, const QByteArray& contents);
 
