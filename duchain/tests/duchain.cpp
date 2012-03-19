@@ -1999,6 +1999,52 @@ void TestDUChain::declareMemberOutOfClass()
     QCOMPARE(top->problems().at(1)->finalLocation().start.line, 3);
 }
 
+void TestDUChain::declareMemberOutOfClass2()
+{
+    // see also: https://bugs.kde.org/show_bug.cgi?id=283356
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray code("<? $a = new A();\n"
+                    // allowed, should re-use existing declaration
+                    "$a->x = 1;\n"
+                    "class A { var $x = 1; }");
+    TopDUContext* top = parse(code, DumpAST);
+    QVERIFY(top);
+    // update
+    top = parse(code, DumpNone, top->url().str(), ReferencedTopDUContext(top));
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+
+    QList<Declaration*> decs = top->findLocalDeclarations(Identifier("a"));
+    QCOMPARE(decs.size(), 2);
+    {
+        Declaration *dec = decs.first();
+        QVERIFY(dynamic_cast<VariableDeclaration*>(dec));
+        QVERIFY(dec->type<StructureType>());
+        QVERIFY(dec->type<StructureType>()->declaration(top)->identifier().nameEquals(Identifier("a")));
+    }
+    {
+        Declaration *dec = decs.last();
+        QVERIFY(dynamic_cast<ClassDeclaration*>(dec));
+        QVERIFY(dec->type<StructureType>());
+        QVERIFY(dec->type<StructureType>()->declaration(top)->identifier().nameEquals(Identifier("a")));
+    }
+
+    { // check if x got declared
+        QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier("x"));
+        // the type of both assignments to $bar->asdf are the same, hence it should only be declared once
+        QCOMPARE(decs.size(), 1);
+        ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
+        QVERIFY(cmdec);
+        QVERIFY(cmdec->accessPolicy() == Declaration::Public);
+        QVERIFY(!cmdec->isStatic());
+        QVERIFY(cmdec->type<IntegralType>());
+        QCOMPARE(cmdec->type<IntegralType>()->dataType(), (uint) IntegralType::TypeInt);
+    }
+}
+
 void TestDUChain::declareMemberInClassMethod()
 {
     QByteArray code("<? class foo { private $priv = 0; protected $prot = 0; } class bar extends foo {\n"
