@@ -2807,4 +2807,47 @@ void TestDUChain::ternary()
     QVERIFY(top->problems().isEmpty());
 }
 
+namespace QTest {
+  template<>
+  char* toString(const KDevelop::CursorInRevision& c)
+  {
+    return qstrdup(
+        QString("(%1, %2)")
+        .arg(QTest::toString(c.line))
+        .arg(QTest::toString(c.column))
+        .toLocal8Bit().constData());
+  }
+  template<>
+  char* toString(const KDevelop::RangeInRevision& r)
+  {
+    return qstrdup(
+        QString("[%1, %2]")
+        .arg(QTest::toString(r.start))
+        .arg(QTest::toString(r.end))
+        .toLocal8Bit().constData());
+  }
+}
+
+void TestDUChain::bug296709()
+{
+    // see also: https://bugs.kde.org/show_bug.cgi?id=296709
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse(
+                    "<?php\n"
+                    "foreach(array() as $a) {\n"
+                    "  $a[0] = 1;\n"
+                    "}\n", DumpAll);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().isEmpty());
+    QList< Declaration* > decs = top->findLocalDeclarations(Identifier("a"));
+    QCOMPARE(decs.size(), 1);
+    QCOMPARE(decs.at(0)->range(), RangeInRevision(1, 19, 1, 21));
+    QCOMPARE(decs.at(0)->uses().count(), 1);
+    QCOMPARE(decs.at(0)->uses().begin()->count(), 1);
+    QCOMPARE(decs.at(0)->uses().begin()->first(), RangeInRevision(2, 2, 2, 4));
+}
+
 #include "duchain.moc"

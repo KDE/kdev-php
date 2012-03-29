@@ -971,9 +971,10 @@ void DeclarationBuilder::declareFoundVariable(AbstractType::Ptr type)
             bool isDeclared = false;
             {
                 DUChainWriteLocker lock(DUChain::lock());
+                RangeInRevision range = m_editor->findRange(m_findVariable.node);
                 foreach ( Declaration* dec, ctx->findDeclarations(m_findVariable.identifier) ) {
                     if ( dec->kind() == Declaration::Instance ) {
-                        if (!wasEncountered(dec)) {
+                        if (!wasEncountered(dec) || (dec->context() == ctx && range < dec->range())) {
                             // just like a "redeclaration", hence we must update the range
                             // TODO: do the same for all other uses of "encounter"?
                             dec->setRange(editorFindRange(m_findVariable.node));
