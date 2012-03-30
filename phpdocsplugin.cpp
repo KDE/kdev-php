@@ -207,6 +207,12 @@ void PhpDocsPlugin::loadUrl(const QUrl& url) const
     ICore::self()->documentationController()->showDocumentation(doc);
 }
 
+void PhpDocsPlugin::addToHistory(const QUrl& url)
+{
+    KSharedPtr<IDocumentation> doc = documentationForUrl(url, url.toString());
+    emit addHistory(doc);
+}
+
 KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForUrl(const KUrl& url, const QString& name, const QByteArray& description) const
 {
     return KSharedPtr<IDocumentation>(new PhpDocumentation( url, name, description, const_cast<PhpDocsPlugin*>(this)));

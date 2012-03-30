@@ -52,8 +52,10 @@ PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget
 : QStackedWidget(parent)
 , m_loading(new QWidget(this))
 , m_styleSheet(createStyleSheet(this))
+, m_provider(provider)
 {
     m_part = new KDevelop::StandardDocumentationView(find, this);
+    m_part->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     addWidget(m_part);
     addWidget(m_loading);
 
@@ -77,10 +79,16 @@ PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget
     setCurrentWidget(m_loading);
 
 
-    connect(m_part, SIGNAL(linkClicked(QUrl)), provider, SLOT(loadUrl(QUrl)));
+    connect(m_part, SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
     connect(m_part, SIGNAL(loadFinished(bool)), this, SLOT(documentLoaded()) );
 
     m_part->load( url );
+}
+
+void PhpDocumentationWidget::linkClicked(const QUrl& url)
+{
+    m_part->load(url);
+    m_provider->addToHistory(url);
 }
 
 void PhpDocumentationWidget::documentLoaded()
