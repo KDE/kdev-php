@@ -24,7 +24,9 @@
 
 #include <QtGui/QStackedWidget>
 
-#include <KUrl>
+class QTemporaryFile;
+class KUrl;
+class QUrl;
 
 namespace KDevelop {
     class StandardDocumentationView;
@@ -38,15 +40,19 @@ class PhpDocumentationWidget : public QStackedWidget
     Q_OBJECT
 
 public:
-    explicit PhpDocumentationWidget(KDevelop::DocumentationFindWidget* find, const KUrl &url, PhpDocsPlugin* provider, QWidget* parent = 0);
+    explicit PhpDocumentationWidget(KDevelop::DocumentationFindWidget* find, const KUrl &url,
+                                    PhpDocsPlugin* provider, QWidget* parent = 0);
 
 private slots:
     /// used to inject some custom CSS to alter the remote php.net site
     void documentLoaded();
+    void linkClicked(const QUrl& url);
 
 private:
     KDevelop::StandardDocumentationView* m_part;
     QWidget* m_loading;
+    QTemporaryFile* m_styleSheet;
+    PhpDocsPlugin* m_provider;
 };
 
 #endif // PHPDOCUMENTATIONWIDGET_H

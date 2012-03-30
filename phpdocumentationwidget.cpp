@@ -21,22 +21,25 @@
 
 #include "phpdocumentationwidget.h"
 
-#include <KHTMLPart>
 #include <QProgressBar>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QTemporaryFile>
+#include <QTextStream>
+
+#include <KLocalizedString>
+#include <KUrl>
 
 #include "phpdocsplugin.h"
 #include <documentation/standarddocumentationview.h>
 
-QSharedPointer<QTemporaryFile> createStyleSheet()
+QTemporaryFile* createStyleSheet(QObject* parent)
 {
-    QSharedPointer<QTemporaryFile> file(new QTemporaryFile);
+    QTemporaryFile* file = new QTemporaryFile(parent);
     bool ret = file->open();
     Q_ASSERT(ret);
 
-    QTextStream ts(file.data());
+    QTextStream ts(file);
     ts << QString( "#headnav,#headsearch,#footnav,#leftbar{display:none !important;}"
                                         "body{font-size:80% !important;}"
                                         "option,select{font-size:80% !important;}"
@@ -45,12 +48,15 @@ QSharedPointer<QTemporaryFile> createStyleSheet()
     return file;
 }
 
-static QSharedPointer<QTemporaryFile> phpDocStyleSheet=createStyleSheet();
-
-PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget* find, const KUrl &url, PhpDocsPlugin* provider, QWidget* parent)
-    : QStackedWidget(parent), m_loading(new QWidget(this))
+PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget* find, const KUrl &url,
+                                               PhpDocsPlugin* provider, QWidget* parent)
+: QStackedWidget(parent)
+, m_loading(new QWidget(this))
+, m_styleSheet(createStyleSheet(this))
+, m_provider(provider)
 {
-    m_part=new KDevelop::StandardDocumentationView(find, this);
+    m_part = new KDevelop::StandardDocumentationView(find, this);
+    m_part->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     addWidget(m_part);
     addWidget(m_loading);
 
@@ -74,15 +80,21 @@ PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget
     setCurrentWidget(m_loading);
 
 
-    connect(m_part, SIGNAL(linkClicked(QUrl)), provider, SLOT(loadUrl(QUrl)));
+    connect(m_part, SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
     connect(m_part, SIGNAL(loadFinished(bool)), this, SLOT(documentLoaded()) );
 
     m_part->load( url );
 }
 
+void PhpDocumentationWidget::linkClicked(const QUrl& url)
+{
+    m_part->load(url);
+    m_provider->addToHistory(url);
+}
+
 void PhpDocumentationWidget::documentLoaded()
 {
-    m_part->settings()->setUserStyleSheetUrl(KUrl(phpDocStyleSheet->fileName()));
+    m_part->settings()->setUserStyleSheetUrl(KUrl(m_styleSheet->fileName()));
 
     setCurrentWidget(m_part);
     removeWidget(m_loading);

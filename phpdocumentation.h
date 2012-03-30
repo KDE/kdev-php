@@ -31,7 +31,6 @@
 
 class QWidget;
 class QStackedWidget;
-class KHTMLPart;
 
 class PhpDocsPlugin;
 

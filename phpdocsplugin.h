@@ -47,6 +47,8 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
     virtual QString name() const;
     virtual KSharedPtr< KDevelop::IDocumentation > homePage() const;
 
+    void addToHistory(const QUrl& url);
+
   signals:
     void addHistory( const KSharedPtr< KDevelop::IDocumentation >& doc ) const;
 
