@@ -20,11 +20,13 @@
 
 #include "phpdocumentationwidget.h"
 
-#include <KHTMLPart>
 #include <QProgressBar>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QTemporaryFile>
+#include <QTextStream>
+
+#include <KLocalizedString>
 
 #include "phpdocsplugin.h"
 #include <documentation/standarddocumentationview.h>
