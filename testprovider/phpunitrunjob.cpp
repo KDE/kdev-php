@@ -20,6 +20,7 @@
 
 #include "phpunitrunjob.h"
 #include "phpunittestsuite.h"
+#include "testdoxdelegate.h"
 
 #include <util/processlinemaker.h>
 #include <outputview/outputmodel.h>
@@ -60,6 +61,7 @@ void PhpUnitRunJob::start()
     connect (maker, SIGNAL(receivedStdoutLines(QStringList)), SLOT(linesReceived(QStringList)));
 
     setModel(new KDevelop::OutputModel, KDevelop::IOutputView::TakeOwnership);
+    setDelegate(new TestDoxDelegate, KDevelop::IOutputView::TakeOwnership);
     setStandardToolView(KDevelop::IOutputView::TestView);
     startOutput();
 

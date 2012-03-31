@@ -3,8 +3,12 @@
 
 ########### next target ###############
 
-set(kdevphpunitprovider_PLUGIN_SRCS phpunitrunjob.cpp phpunitfindjob.cpp phpunittestsuite.cpp
+set(kdevphpunitprovider_PLUGIN_SRCS
     phpunitprovider.cpp
+    phpunittestsuite.cpp
+    phpunitfindjob.cpp
+    phpunitrunjob.cpp
+    testdoxdelegate.cpp
 )
 
 kde4_add_plugin(kdevphpunitprovider ${kdevphpunitprovider_PLUGIN_SRCS})
