@@ -78,6 +78,7 @@ private slots:
     void useNamespace();
     void lateStatic();
     void closures();
+    void instanceof();
 };
 
 }
