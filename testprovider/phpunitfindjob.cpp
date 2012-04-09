@@ -20,9 +20,12 @@
 
 #include "phpunitfindjob.h"
 
+#include "phpunittestsuite.h"
+
 #include <interfaces/icore.h>
 #include <interfaces/iproject.h>
 #include <interfaces/iprojectcontroller.h>
+#include <interfaces/itestcontroller.h>
 
 #include <language/duchain/declaration.h>
 #include <language/duchain/persistentsymboltable.h>
@@ -35,12 +38,8 @@
 
 #include <KStandardDirs>
 
-#include <QTimer>
-#include "phpunittestsuite.h"
-#include <interfaces/itestcontroller.h>
-#include <interfaces/iplugincontroller.h>
-
-PhpUnitFindJob::PhpUnitFindJob(QObject* parent): KJob(parent)
+PhpUnitFindJob::PhpUnitFindJob(QObject* parent)
+: KJob(parent)
 {
 
 }
@@ -52,7 +51,6 @@ PhpUnitFindJob::~PhpUnitFindJob()
 
 void PhpUnitFindJob::start()
 {
-
     QString file = KStandardDirs::locate("data", "kdevphpsupport/phpunitdeclarations.php");
     DUChain::self()->updateContextForUrl(IndexedString(file), KDevelop::TopDUContext::AllDeclarationsContextsAndUses, this, -10);
 }
@@ -61,7 +59,7 @@ void PhpUnitFindJob::updateReady(const IndexedString& document, const KDevelop::
 {
     Q_UNUSED(document)
 
-    ITestController* tc = ICore::self()->pluginController()->pluginForExtension("org.kdevelop.ITestController")->extension<ITestController>();
+    ITestController* tc = ICore::self()->testController();
     DUChainReadLocker lock(DUChain::lock());
 
     QVector<Declaration*> decl = context->localDeclarations();

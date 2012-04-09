@@ -24,8 +24,8 @@
 #include <KJob>
 
 namespace KDevelop {
-    class IndexedString;
-    class ReferencedTopDUContext;
+class IndexedString;
+class ReferencedTopDUContext;
 }
 
 class PhpUnitFindJob : public KJob
@@ -38,7 +38,8 @@ public:
     virtual void start();
 
 private slots:
-    void updateReady(const KDevelop::IndexedString& document, const KDevelop::ReferencedTopDUContext& context);
+    void updateReady(const KDevelop::IndexedString& document,
+                     const KDevelop::ReferencedTopDUContext& context);
 };
 
 #endif // PHPUNITFINDJOB_H
