@@ -69,7 +69,8 @@ protected:
     void visitUnaryExpression(UnaryExpressionAst* node);
     void visitAdditiveExpressionRest(AdditiveExpressionRestAst* node);
     void visitVariable(VariableAst* node);
-    virtual void visitFunctionCallParameterList( FunctionCallParameterListAst* node );
+    void visitFunctionCallParameterList( FunctionCallParameterListAst* node );
+    void visitRelationalExpression(RelationalExpressionAst* node);
 
     QString stringForNode(AstNode* id);
     KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);

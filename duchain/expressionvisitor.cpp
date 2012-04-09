@@ -661,6 +661,19 @@ void ExpressionVisitor::visitAdditiveExpressionRest(AdditiveExpressionRestAst* n
     }
 }
 
+void ExpressionVisitor::visitRelationalExpression(RelationalExpressionAst *node)
+{
+    DefaultVisitor::visitRelationalExpression(node);
+    if (node->instanceofType && node->instanceofType->identifier) {
+        const QualifiedIdentifier id = identifierForNamespace(node->instanceofType->identifier, m_editor);
+        DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, node->instanceofType->identifier,
+                                                 id);
+        usingDeclaration(node->instanceofType->identifier->namespaceNameSequence->back()->element, dec);
+        buildNamespaceUses(node->instanceofType->identifier, id);
+        m_result.setDeclaration(dec);
+    }
+}
+
 QString ExpressionVisitor::stringForNode(AstNode* id)
 {
     if (!id)
