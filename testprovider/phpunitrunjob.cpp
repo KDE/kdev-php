@@ -53,9 +53,18 @@ void PhpUnitRunJob::start()
 
     args << "--testdox" << m_suite->name() << m_suite->url().toLocalFile();
 
-    m_process->setProgram(KStandardDirs::findExe("phpunit"), args);
+    const QString exe = KStandardDirs::findExe("phpunit");
+    if (exe.isEmpty()) {
+        KDevelop::ITestController* tc = KDevelop::ICore::self()->testController();
+        tc->notifyTestRunFinished(m_suite);
+        emitResult();
+        return;
+    }
+    m_process->setProgram(exe, args);
     m_process->setOutputChannelMode(KProcess::MergedChannels);
     connect (m_process, SIGNAL(finished(int)), SLOT(processFinished(int)));
+    connect(m_process, SIGNAL(error(QProcess::ProcessError)),
+            this, SLOT(processError(QProcess::ProcessError)));
 
     KDevelop::ProcessLineMaker* maker = new KDevelop::ProcessLineMaker(m_process, this);
     connect (maker, SIGNAL(receivedStdoutLines(QStringList)), SLOT(linesReceived(QStringList)));
@@ -79,6 +88,14 @@ void PhpUnitRunJob::processFinished(int exitCode)
     Q_UNUSED(exitCode);
     m_suite->setResult(m_result);
 
+    KDevelop::ITestController* tc = KDevelop::ICore::self()->testController();
+    tc->notifyTestRunFinished(m_suite);
+
+    emitResult();
+}
+
+void PhpUnitRunJob::processError(QProcess::ProcessError )
+{
     KDevelop::ITestController* tc = KDevelop::ICore::self()->testController();
     tc->notifyTestRunFinished(m_suite);
 
