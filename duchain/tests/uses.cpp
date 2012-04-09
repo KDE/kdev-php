@@ -31,22 +31,6 @@ using namespace KDevelop;
 
 QTEST_MAIN(Php::TestUses)
 
-namespace QTest {
-
-template<>
-char* toString(const KDevelop::CursorInRevision& c)
-{
-    return qstrdup(qPrintable(QString("(%1, %2)").arg(c.line).arg(c.column)));
-}
-
-template<>
-char* toString(const KDevelop::RangeInRevision& r)
-{
-    return qstrdup(qPrintable(QString("[%1, %2]").arg(toString(r.start)).arg(toString(r.end))));
-}
-
-}
-
 namespace Php
 {
 
