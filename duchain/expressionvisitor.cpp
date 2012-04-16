@@ -191,8 +191,7 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
     DefaultVisitor::visitVarExpressionNewObject(node);
     if (node->className->identifier) {
         const QualifiedIdentifier id = identifierForNamespace(node->className->identifier, m_editor);
-        DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, node->className->identifier,
-                                                 id);
+        DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
         usingDeclaration(node->className->identifier->namespaceNameSequence->back()->element, dec);
         buildNamespaceUses(node->className->identifier, id);
         m_result.setDeclaration(dec);
@@ -221,8 +220,7 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
             if (it->element->parameterType) {
                 //don't use openTypeFromName as it uses cursor for findDeclarations
                 DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
-                                                            it->element->parameterType,
-                                                            identifierForNamespace(it->element->parameterType, m_editor));
+                                            identifierForNamespace(it->element->parameterType, m_editor));
                 if (decl) {
                     type = decl->abstractType();
                 }
@@ -318,8 +316,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
         } else {
             //global function call foo();
             const QualifiedIdentifier id = identifierForNamespace(node->stringFunctionNameOrClass, m_editor);
-            DeclarationPointer dec = findDeclarationImport(FunctionDeclarationType,
-                                                           node->stringFunctionNameOrClass, id);
+            DeclarationPointer dec = findDeclarationImport(FunctionDeclarationType, id);
             ifDebug(kDebug() << "function call of" << (dec ? dec->toString() : QString("function not found"));)
             m_result.setDeclaration(dec);
             usingDeclaration(node->stringFunctionNameOrClass->namespaceNameSequence->back()->element, dec);
@@ -362,7 +359,7 @@ DUContext* ExpressionVisitor::findClassContext(NamespacedIdentifierAst* classNam
     if (id.count() == 1 && id == staticQId) {
         return m_currentContext->parentContext();
     }
-    DeclarationPointer declaration = findDeclarationImport(ClassDeclarationType, className, id);
+    DeclarationPointer declaration = findDeclarationImport(ClassDeclarationType, id);
     usingDeclaration(className->namespaceNameSequence->back()->element, declaration);
     buildNamespaceUses(className, id);
     if (declaration) {
@@ -404,11 +401,11 @@ void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
         } else {
             //constant (created with declare('foo', 'bar')) or const Foo = 1;
             QualifiedIdentifier id = identifierForNamespace(node->constant, m_editor, true);
-            DeclarationPointer declaration = findDeclarationImport(ConstantDeclarationType, node->constant, id);
+            DeclarationPointer declaration = findDeclarationImport(ConstantDeclarationType, id);
             if (!declaration) {
                 ///TODO: is this really wanted?
                 //it could also be a global function call, without ()
-                declaration = findDeclarationImport(FunctionDeclarationType, node->constant, id);
+                declaration = findDeclarationImport(FunctionDeclarationType, id);
             }
             m_result.setDeclaration(declaration);
             usingDeclaration(node->constant->namespaceNameSequence->back()->element, declaration);
@@ -666,8 +663,7 @@ void ExpressionVisitor::visitRelationalExpression(RelationalExpressionAst *node)
     DefaultVisitor::visitRelationalExpression(node);
     if (node->instanceofType && node->instanceofType->identifier) {
         const QualifiedIdentifier id = identifierForNamespace(node->instanceofType->identifier, m_editor);
-        DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, node->instanceofType->identifier,
-                                                 id);
+        DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
         usingDeclaration(node->instanceofType->identifier->namespaceNameSequence->back()->element, dec);
         buildNamespaceUses(node->instanceofType->identifier, id);
         m_result.setDeclaration(dec);
@@ -725,7 +721,7 @@ void ExpressionVisitor::buildNamespaceUses(NamespacedIdentifierAst* namespaces, 
     for ( int i = 0; i < identifier.count() - 1; ++i ) {
         curId.push(identifier.at(i));
         AstNode* node = namespaces->namespaceNameSequence->at(i)->element;
-        DeclarationPointer dec = findDeclarationImport(NamespaceDeclarationType, node, curId);
+        DeclarationPointer dec = findDeclarationImport(NamespaceDeclarationType, curId);
         usingDeclaration(node, dec);
     }
 }
@@ -739,15 +735,16 @@ DeclarationPointer ExpressionVisitor::findDeclarationImport(DeclarationType decl
     } else {
         id = identifierForNode(node);
     }
-    return findDeclarationImport(declarationType, node, id);
+    return findDeclarationImport(declarationType, id);
 }
 
 DeclarationPointer ExpressionVisitor::findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node)
 {
-    return findDeclarationImport(declarationType, node, identifierForNode(node));
+    return findDeclarationImport(declarationType, identifierForNode(node));
 }
 
-DeclarationPointer ExpressionVisitor::findDeclarationImport( DeclarationType declarationType, AstNode* node, const QualifiedIdentifier& identifier)
+DeclarationPointer ExpressionVisitor::findDeclarationImport( DeclarationType declarationType,
+                                                             const QualifiedIdentifier& identifier)
 {
     return findDeclarationImportHelper(m_currentContext, identifier, declarationType);
 }

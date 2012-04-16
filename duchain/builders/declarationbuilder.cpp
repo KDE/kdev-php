@@ -195,6 +195,7 @@ ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, C
     Q_ASSERT(classDec);
     isGlobalRedeclaration(identifierForNode(name), name, ClassDeclarationType);
     Q_ASSERT(classDec->classType() == type);
+    Q_UNUSED(type);
 
     // seems like we have to do that manually, else the usebuilder crashes...
     setEncountered(classDec);
@@ -850,7 +851,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
             dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionName);
         } else if ( node->stringFunctionNameOrClass ) {
             id = identifierForNamespace(node->stringFunctionNameOrClass, m_editor);
-            dec = findDeclarationImport(FunctionDeclarationType, id, node->stringFunctionNameOrClass);
+            dec = findDeclarationImport(FunctionDeclarationType, id);
         } else {
             ///TODO: node->varFunctionName
         }
@@ -987,7 +988,7 @@ void DeclarationBuilder::declareFoundVariable(AbstractType::Ptr type)
             }
             if ( !isDeclared && m_findVariable.parentIdentifier.isEmpty() ) {
                 // check also for global vars
-                isDeclared = findDeclarationImport(GlobalVariableDeclarationType, m_findVariable.identifier, m_findVariable.node);
+                isDeclared = findDeclarationImport(GlobalVariableDeclarationType, m_findVariable.identifier);
             }
             if ( !isDeclared ) {
                 // couldn't find the dec, declare it

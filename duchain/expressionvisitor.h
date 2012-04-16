@@ -84,7 +84,8 @@ protected:
 
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
-    KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, AstNode* node, const KDevelop::QualifiedIdentifier& identifier);
+    KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType,
+                                                       const KDevelop::QualifiedIdentifier& identifier);
 
 protected:
     EditorIntegrator* m_editor;
