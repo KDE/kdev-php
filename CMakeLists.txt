@@ -70,3 +70,9 @@ target_link_libraries( kdevphpdocs_config ${KDE4_KUTILS_LIBS} ${KDE4_KIO_LIBS} )
 
 install( TARGETS kdevphpdocs_config DESTINATION ${PLUGIN_INSTALL_DIR} )
 install( FILES kdevphpdocs_config.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+
+include(CTest)
+
+# CTestCustom.cmake has to be in the CTEST_BINARY_DIR.
+# in the KDE build system, this is the same as CMAKE_BINARY_DIR.
+configure_file(${CMAKE_SOURCE_DIR}/CTestCustom.cmake ${CMAKE_BINARY_DIR}/CTestCustom.cmake)
