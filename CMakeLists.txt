@@ -67,6 +67,8 @@ install(FILES kdevphpsupport.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 # not writeable so that the refactoring actions get hidden
 install(FILES phpfunctions.php DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
 
+set(KDE4_BUILD_TESTS "ON" CACHE "BOOL" "Enable building of tests" FORCE )
+
 include(CTest)
 
 # CTestCustom.cmake has to be in the CTEST_BINARY_DIR.
