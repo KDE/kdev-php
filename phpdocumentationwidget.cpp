@@ -38,6 +38,7 @@ QTemporaryFile* createStyleSheet(QObject* parent)
     QTemporaryFile* file = new QTemporaryFile(parent);
     bool ret = file->open();
     Q_ASSERT(ret);
+    Q_UNUSED(ret);
 
     QTextStream ts(file);
     ts << QString( "#headnav,#headsearch,#footnav,#leftbar{display:none !important;}"
