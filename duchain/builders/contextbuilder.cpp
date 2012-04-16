@@ -370,9 +370,7 @@ void ContextBuilder::addBaseType(NamespacedIdentifierAst * identifier)
     ClassDeclaration* currentClass = dynamic_cast<ClassDeclaration*>(currentContext()->owner());
 
     ClassDeclaration* baseClass = dynamic_cast<ClassDeclaration*>(
-        findDeclarationImport(ClassDeclarationType, identifierForNamespace(identifier, m_editor),
-                              identifier
-    ).data() );
+        findDeclarationImport(ClassDeclarationType, identifierForNamespace(identifier, m_editor)).data() );
 
     if (currentClass && baseClass) {
         if (DUContext* baseContext = baseClass->logicalInternalContext(0)) {
@@ -467,7 +465,7 @@ DeclarationPointer ContextBuilder::findDeclarationImport(DeclarationType declara
 }
 
 DeclarationPointer ContextBuilder::findDeclarationImport(DeclarationType declarationType,
-                                                         const QualifiedIdentifier &identifier, AstNode* node)
+                                                         const QualifiedIdentifier &identifier)
 {
     return findDeclarationImportHelper(currentContext(), identifier, declarationType);
 }

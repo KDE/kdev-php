@@ -23,8 +23,11 @@
 #include <QObject>
 #include <QByteArray>
 #include <QTest>
+
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
+
+#include <tests/testhelpers.h>
 
 #include "phpduchainexport.h"
 
@@ -35,42 +38,7 @@ namespace KDevelop
 {
 class TopDUContext;
 }
-/*
-namespace QTest {
-  template<>
-  char* toString(const KTextEditor::Cursor& cursor)
-  {
-    QByteArray ba = "Cursor(";
-    ba += QByteArray::number(cursor.line()) + ", " + QByteArray::number(cursor.column());
-    ba += ')';
-    return qstrdup(ba.data());
-  }
-  template<>
-  char* toString(const KDevelop::QualifiedIdentifier& id)
-  {
-    QByteArray arr = id.toString().toLatin1();
-    return qstrdup(arr.data());
-  }
-  template<>
-  char* toString(const KDevelop::Identifier& id)
-  {
-    QByteArray arr = id.toString().toLatin1();
-    return qstrdup(arr.data());
-  }
-  template<>
-  char* toString(const KDevelop::Declaration& def)
-  {
-    QString s = QString("Declaration %1 (%2): %3").arg(def.identifier().toString()).arg(def.qualifiedIdentifier().toString()).arg(reinterpret_cast<long>(&def));
-    return qstrdup(s.toLatin1().constData());
-  }
-  template<>
-  char* toString(const TypePtr<KDevelop::AbstractType>& type)
-  {
-    QString s = QString("Type: %1").arg(type ? type->toString() : QString("<null>"));
-    return qstrdup(s.toLatin1().constData());
-  }
-}
-*/
+
 namespace Php
 {
 /**

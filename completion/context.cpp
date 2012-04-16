@@ -650,6 +650,8 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_VARIABLE:
         case Parser::Token_WHILE:
         case Parser::Token_WHITESPACE:
+        /// TODO: code completion after goto
+        case Parser::Token_GOTO:
         case Parser::TokenTypeSize:
             ifDebug(kDebug() << "no completion after this token";)
             m_valid = false;
@@ -1068,6 +1070,9 @@ QList<DUContext*> CodeCompletionContext::memberAccessContainers() const
 
 QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& abort, bool fullCompletion)
 {
+    //TODO: how should this be handled?
+    Q_UNUSED(fullCompletion)
+
     /// Indexed string for 'Php', identifies environment files from this language plugin
     static const IndexedString phpLangString("Php");
 

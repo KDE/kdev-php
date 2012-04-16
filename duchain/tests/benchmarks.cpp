@@ -52,6 +52,7 @@ QIODevice* getInternalFile()
     QIODevice* file = KFilterDev::deviceForFile (fileName, mimeType, false);
     bool opened = file->open(QIODevice::ReadOnly);
     Q_ASSERT(opened);
+    Q_UNUSED(opened);
     return file;
 }
 

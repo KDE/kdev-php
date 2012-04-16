@@ -87,7 +87,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         }
         //don't use openTypeFromName as it uses cursor for findDeclarations
         DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
-                                                        QualifiedIdentifier(type.toLower()), node);
+                                                        QualifiedIdentifier(type.toLower()));
         if (decl && decl->abstractType()) {
             return decl->abstractType();
         }
@@ -344,8 +344,7 @@ void TypeBuilder::visitParameter(ParameterAst *node)
     if (node->parameterType) {
         //don't use openTypeFromName as it uses cursor for findDeclarations
         DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
-                                                  identifierForNamespace(node->parameterType, editor()),
-                                                  node->parameterType);
+                                                  identifierForNamespace(node->parameterType, editor()));
         if (decl) {
             type = decl->abstractType();
         }
@@ -519,7 +518,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
             /// Qualified identifier for 'iterator'
             static const QualifiedIdentifier iteratorQId("iterator");
             ClassDeclaration* iteratorDecl = dynamic_cast<ClassDeclaration*>(
-                findDeclarationImport(ClassDeclarationType, iteratorQId, 0).data()
+                findDeclarationImport(ClassDeclarationType, iteratorQId).data()
             );
             Q_ASSERT(iteratorDecl);
             if (classDec->isPublicBaseClass(iteratorDecl, currentContext()->topContext())) {
@@ -544,8 +543,7 @@ void TypeBuilder::visitCatchItem(Php::CatchItemAst *node)
 {
     TypeBuilderBase::visitCatchItem(node);
     DeclarationPointer dec = findDeclarationImport(ClassDeclarationType,
-                                                   identifierForNamespace(node->catchClass, m_editor),
-                                                   node->catchClass);
+                                                   identifierForNamespace(node->catchClass, m_editor));
     if (dec && dec->abstractType()) {
         openAbstractType(dec->abstractType());
         closeType();

@@ -847,7 +847,6 @@ int Lexer::nextTokenKind()
             popState();
         } else {
             token = Parser::Token_STRING;
-            int startPos = m_curpos;
             while (m_curpos < m_contentSize) {
                 if (it->unicode() == '\n') createNewline(m_curpos);
                 m_curpos++;

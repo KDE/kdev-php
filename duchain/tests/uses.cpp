@@ -41,7 +41,7 @@ void compareUses(Declaration* dec, QList<RangeInRevision> ranges)
     QCOMPARE(dec->uses().values().count(), 1);
     QCOMPARE(dec->uses().values().first().count(), ranges.count());
     for (int i = 0; i < ranges.count(); ++i) {
-        kDebug() << dec->uses().values().first().at(i).castToSimpleRange() << ranges.at(i).castToSimpleRange();
+        kDebug() << dec->uses().values().first().at(i) << ranges.at(i);
         QCOMPARE(dec->uses().values().first().at(i), ranges.at(i));
     }
 }
@@ -1014,6 +1014,27 @@ void TestUses::closures()
     Declaration* b = top->localDeclarations().at(1);
     QCOMPARE(b->identifier().toString(), QString("b"));
     QVERIFY(b->uses().isEmpty());
+}
+
+void TestUses::instanceof()
+{
+    //                         0         1         2         3         4         5
+    //                         012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php class a {}\n"
+                              "$a = new a;\n"
+                              "$b = $a instanceof a;\n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QCOMPARE(top->localDeclarations().count(), 3);
+
+    Declaration* a = top->localDeclarations().at(0);
+    QCOMPARE(a->identifier().toString(), QString("a"));
+    compareUses(a, QList<RangeInRevision>()
+                    << RangeInRevision(1, 9, 1, 10)
+                    << RangeInRevision(2, 19, 2, 20));
+
 }
 
 }
