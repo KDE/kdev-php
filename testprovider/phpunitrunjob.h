@@ -21,6 +21,8 @@
 #ifndef PHPUNITRUNJOB_H
 #define PHPUNITRUNJOB_H
 
+#include <QProcess>
+
 #include <outputview/outputjob.h>
 #include <interfaces/itestsuite.h>
 
@@ -39,6 +41,7 @@ protected:
 
 private slots:
     void processFinished(int exitCode);
+    void processError(QProcess::ProcessError);
 
 private:
     KProcess* m_process;
