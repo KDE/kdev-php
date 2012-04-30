@@ -33,6 +33,7 @@
 
 PhpUnitRunJob::PhpUnitRunJob(PhpUnitTestSuite* suite, const QStringList& cases, QObject* parent)
 : OutputJob(parent, KDevelop::OutputJob::Verbose)
+, m_process(0)
 , m_suite(suite)
 , m_cases(cases)
 {
@@ -79,7 +80,10 @@ void PhpUnitRunJob::start()
 
 bool PhpUnitRunJob::doKill()
 {
-    m_process->kill();
+    if (m_process)
+    {
+        m_process->kill();
+    }
     return true;
 }
 
