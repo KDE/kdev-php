@@ -56,7 +56,7 @@ void PhpUnitRunJob::start()
     const QString exe = KStandardDirs::findExe("phpunit");
     if (exe.isEmpty()) {
         KDevelop::ITestController* tc = KDevelop::ICore::self()->testController();
-        tc->notifyTestRunFinished(m_suite);
+        tc->notifyTestRunFinished(m_suite, m_result);
         emitResult();
         return;
     }
@@ -85,19 +85,31 @@ bool PhpUnitRunJob::doKill()
 
 void PhpUnitRunJob::processFinished(int exitCode)
 {
-    Q_UNUSED(exitCode);
-    m_suite->setResult(m_result);
-
-    KDevelop::ITestController* tc = KDevelop::ICore::self()->testController();
-    tc->notifyTestRunFinished(m_suite);
+    if (exitCode == 0)
+    {
+        m_result.suiteResult = KDevelop::TestResult::Passed;
+        foreach (KDevelop::TestResult::TestCaseResult result, m_result.testCaseResults)
+        {
+            if (result == KDevelop::TestResult::Failed)
+            {
+                m_result.suiteResult = KDevelop::TestResult::Failed;
+                break;
+            }
+        }
+    }
+    else
+    {
+        m_result.suiteResult = KDevelop::TestResult::Error;
+    }
+    KDevelop::ICore::self()->testController()->notifyTestRunFinished(m_suite, m_result);
 
     emitResult();
 }
 
 void PhpUnitRunJob::processError(QProcess::ProcessError )
 {
-    KDevelop::ITestController* tc = KDevelop::ICore::self()->testController();
-    tc->notifyTestRunFinished(m_suite);
+    m_result.suiteResult = KDevelop::TestResult::Error;
+    KDevelop::ICore::self()->testController()->notifyTestRunFinished(m_suite, m_result);
 
     emitResult();
 }

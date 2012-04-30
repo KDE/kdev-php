@@ -74,16 +74,6 @@ QString PhpUnitTestSuite::name() const
     return m_name;
 }
 
-TestResult PhpUnitTestSuite::result() const
-{
-    return m_result;
-}
-
-void PhpUnitTestSuite::setResult(const TestResult& result)
-{
-    m_result = result;
-}
-
 IndexedDeclaration PhpUnitTestSuite::declaration() const
 {
     return m_declaration;

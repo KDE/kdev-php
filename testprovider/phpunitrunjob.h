@@ -25,6 +25,7 @@
 
 #include <outputview/outputjob.h>
 #include <interfaces/itestsuite.h>
+#include <interfaces/itestcontroller.h>
 
 class PhpUnitTestSuite;
 class KProcess;
