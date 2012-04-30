@@ -26,9 +26,9 @@
 #include <interfaces/iproject.h>
 #include <interfaces/ilanguage.h>
 #include <interfaces/ilanguagecontroller.h>
-#include <interfaces/iplugincontroller.h>
 #include <interfaces/itestcontroller.h>
 #include <project/projectmodel.h>
+
 #include <language/backgroundparser/backgroundparser.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/duchain.h>
@@ -36,14 +36,12 @@
 #include <language/duchain/classdeclaration.h>
 #include <language/duchain/duchainutils.h>
 
-
 #include <KPluginFactory>
 #include <KAboutData>
 #include <KLocalizedString>
 #include <KStandardDirs>
 #include <QVariant>
 #include <QTimer>
-#include "phpunitfindjob.h"
 
 K_PLUGIN_FACTORY(PhpUnitProviderFactory, registerPlugin<PhpUnitProvider>(); )
 K_EXPORT_PLUGIN(PhpUnitProviderFactory(KAboutData("kdevphpunitprovider","kdevphpunitprovider", ki18n("PHPUnit Integration"), "0.1", ki18n("Finds and run PHPUnit tests"), KAboutData::License_GPL)))
@@ -51,10 +49,8 @@ K_EXPORT_PLUGIN(PhpUnitProviderFactory(KAboutData("kdevphpunitprovider","kdevphp
 
 using namespace KDevelop;
 
-PhpUnitProvider::PhpUnitProvider(QObject* parent, const QList< QVariant >& args): IPlugin(PhpUnitProviderFactory::componentData(), parent),
-m_testCaseIdentifier("PHPUnit_Framework_TestCase")
+PhpUnitProvider::PhpUnitProvider(QObject* parent, const QList< QVariant >& args): IPlugin(PhpUnitProviderFactory::componentData(), parent)
 {
-    KDEV_USE_EXTENSION_INTERFACE(KDevelop::ITestProvider)
     Q_UNUSED(args);
 
     QString file = KStandardDirs::locate("data", "kdevphpsupport/phpunitdeclarations.php");
@@ -84,16 +80,6 @@ void PhpUnitProvider::updateReady(const IndexedString& document, const Reference
     {
         processContext(context);
     }
-}
-
-
-void PhpUnitProvider::unload()
-{
-}
-
-KJob* PhpUnitProvider::findTests()
-{
-    return new PhpUnitFindJob(this);
 }
 
 void PhpUnitProvider::parseJobFinished(KDevelop::ParseJob* job)

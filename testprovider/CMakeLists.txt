@@ -6,7 +6,6 @@
 set(kdevphpunitprovider_PLUGIN_SRCS
     phpunitprovider.cpp
     phpunittestsuite.cpp
-    phpunitfindjob.cpp
     phpunitrunjob.cpp
     testdoxdelegate.cpp
 )
