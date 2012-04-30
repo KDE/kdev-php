@@ -26,7 +26,6 @@
 #include <interfaces/iproject.h>
 #include <interfaces/iprojectcontroller.h>
 #include <interfaces/itestcontroller.h>
-#include <interfaces/iplugincontroller.h>
 
 #include <language/duchain/declaration.h>
 #include <language/duchain/persistentsymboltable.h>
@@ -60,7 +59,7 @@ void PhpUnitFindJob::updateReady(const IndexedString& document, const KDevelop::
 {
     Q_UNUSED(document)
 
-    ITestController* tc = ICore::self()->pluginController()->pluginForExtension("org.kdevelop.ITestController")->extension<ITestController>();
+    ITestController* tc = ICore::self()->testController();
     DUChainReadLocker lock(DUChain::lock());
 
     QVector<Declaration*> decl = context->localDeclarations();
@@ -69,8 +68,8 @@ void PhpUnitFindJob::updateReady(const IndexedString& document, const KDevelop::
     foreach (Declaration* p, decl)
     {
         kDebug() << "Found PHP Unit declaration" << p->identifier().toString();
-        uint steps = 1000; // For projects with more than 1000 test classes, increase this value
-        foreach (Declaration* d, DUChainUtils::getInheriters(p, steps))
+        uint depth = 3;
+        foreach (Declaration* d, DUChainUtils::getInheriters(p, depth))
         {
             QString name = d->identifier().toString();
             KUrl url = d->url().toUrl();

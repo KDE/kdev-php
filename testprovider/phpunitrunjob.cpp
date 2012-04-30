@@ -26,7 +26,6 @@
 #include <outputview/outputmodel.h>
 #include <interfaces/itestcontroller.h>
 #include <interfaces/icore.h>
-#include <interfaces/iplugincontroller.h>
 
 #include <KProcess>
 #include <KStandardDirs>
@@ -56,7 +55,7 @@ void PhpUnitRunJob::start()
 
     const QString exe = KStandardDirs::findExe("phpunit");
     if (exe.isEmpty()) {
-        KDevelop::ITestController* tc = KDevelop::ICore::self()->pluginController()->pluginForExtension("org.kdevelop.ITestController")->extension<KDevelop::ITestController>();
+        KDevelop::ITestController* tc = KDevelop::ICore::self()->testController();
         tc->notifyTestRunFinished(m_suite);
         emitResult();
         return;
@@ -89,8 +88,7 @@ void PhpUnitRunJob::processFinished(int exitCode)
     Q_UNUSED(exitCode);
     m_suite->setResult(m_result);
 
-
-    KDevelop::ITestController* tc = KDevelop::ICore::self()->pluginController()->pluginForExtension("org.kdevelop.ITestController")->extension<KDevelop::ITestController>();
+    KDevelop::ITestController* tc = KDevelop::ICore::self()->testController();
     tc->notifyTestRunFinished(m_suite);
 
     emitResult();
@@ -98,8 +96,7 @@ void PhpUnitRunJob::processFinished(int exitCode)
 
 void PhpUnitRunJob::processError(QProcess::ProcessError )
 {
-
-    KDevelop::ITestController* tc = KDevelop::ICore::self()->pluginController()->pluginForExtension("org.kdevelop.ITestController")->extension<KDevelop::ITestController>();
+    KDevelop::ITestController* tc = KDevelop::ICore::self()->testController();
     tc->notifyTestRunFinished(m_suite);
 
     emitResult();
