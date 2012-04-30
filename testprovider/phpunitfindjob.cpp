@@ -71,40 +71,7 @@ void PhpUnitFindJob::updateReady(const IndexedString& document, const KDevelop::
         uint steps = 1000;
         foreach (Declaration* d, DUChainUtils::getInheriters(p, steps))
         {
-            QString name = d->identifier().toString();
-            KUrl url = d->url().toUrl();
-            IProject* project = ICore::self()->projectController()->findProjectForUrl(url);
-            kDebug() << name << url << (project ? project->name() : "No project");
-            if (!project)
-            {
-                continue;
-            }
-            QStringList testCases;
-            QHash<QString, IndexedDeclaration> testCaseDeclarations;
-            ClassDeclaration* classDeclaration = dynamic_cast<ClassDeclaration*>(d);
-            if (classDeclaration && !classDeclaration->isAbstract())
-            {
-                foreach (Declaration* member, classDeclaration->internalContext()->localDeclarations())
-                {
-                    kDebug() << "Trying test case declaration" << member;
-                    if (member->isFunctionDeclaration() && member->identifier().toString().startsWith("test"))
-                    {
-                        const QString caseName = member->identifier().toString();
-                        testCases << caseName;
-                        testCaseDeclarations.insert(caseName, IndexedDeclaration(member));
-                    }
-                }
-                ITestSuite* existingSuite = tc->findTestSuite(project, name);
-                if (existingSuite && existingSuite->cases() != testCases)
-                {
-                    tc->removeTestSuite(existingSuite);
-                    existingSuite = 0;
-                }
-                if (!existingSuite)
-                {
-                    tc->addTestSuite(new PhpUnitTestSuite(name, url, IndexedDeclaration(classDeclaration), testCases, testCaseDeclarations, project));
-                }
-            }
+
         }
     }
 

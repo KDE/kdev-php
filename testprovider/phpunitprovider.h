@@ -23,12 +23,16 @@
 
 #include <interfaces/iplugin.h>
 #include <interfaces/itestprovider.h>
+#include <language/duchain/indexeddeclaration.h>
+#include <language/duchain/indexedstring.h>
+#include <language/duchain/topducontext.h>
 
 #include <QVariant>
 
 class KUrl;
 namespace KDevelop {
 class IProject;
+class ParseJob;
 }
 
 class QVariant;
@@ -37,11 +41,23 @@ class PhpUnitProvider : public KDevelop::IPlugin, public KDevelop::ITestProvider
 {
     Q_OBJECT
     Q_INTERFACES(KDevelop::ITestProvider)
+
 public:
     PhpUnitProvider(QObject* parent, const QList<QVariant>& args = QList<QVariant>());
     virtual void unload();
     virtual KJob* findTests();
 
+public slots:
+    void updateReady(const KDevelop::IndexedString& document, const KDevelop::ReferencedTopDUContext& context);
+    void parseJobFinished(KDevelop::ParseJob* job);
+
+private:
+    KDevelop::IndexedDeclaration m_testCaseDeclaration;
+    QList<KDevelop::ReferencedTopDUContext> m_pendingContexts;
+    KDevelop::Identifier m_testCaseIdentifier;
+
+    void processContext(KDevelop::ReferencedTopDUContext context);
+    void processTestCaseDeclaration(KDevelop::Declaration* declaration);
 };
 
 #endif // PHPUNITPROVIDER_H
