@@ -68,8 +68,8 @@ void PhpUnitFindJob::updateReady(const IndexedString& document, const KDevelop::
     foreach (Declaration* p, decl)
     {
         kDebug() << "Found PHP Unit declaration" << p->identifier().toString();
-        uint depth = 3;
-        foreach (Declaration* d, DUChainUtils::getInheriters(p, depth))
+        uint steps = 1000;
+        foreach (Declaration* d, DUChainUtils::getInheriters(p, steps))
         {
             QString name = d->identifier().toString();
             KUrl url = d->url().toUrl();
