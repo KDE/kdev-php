@@ -38,9 +38,9 @@ public:
     PhpUnitTestSuite(const QString& name, const KUrl& url, const KDevelop::IndexedDeclaration& suiteDeclaration, const QStringList& cases, const QHash< QString, KDevelop::IndexedDeclaration >& caseDeclarations, KDevelop::IProject* project);
     virtual ~PhpUnitTestSuite();
 
-    virtual KJob* launchCase(const QString& testCase);
-    virtual KJob* launchCases(const QStringList& testCases);
-    virtual KJob* launchAllCases();
+    virtual KJob* launchCase(const QString& testCase, TestJobVerbosity verbosity);
+    virtual KJob* launchCases(const QStringList& testCases, TestJobVerbosity verbosity);
+    virtual KJob* launchAllCases(TestJobVerbosity verbosity);
 
     virtual KDevelop::IProject* project() const;
     virtual KUrl url() const;

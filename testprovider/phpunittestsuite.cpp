@@ -39,19 +39,20 @@ PhpUnitTestSuite::~PhpUnitTestSuite()
 }
 
 
-KJob* PhpUnitTestSuite::launchCase(const QString& testCase)
+KJob* PhpUnitTestSuite::launchCase(const QString& testCase, TestJobVerbosity verbosity)
 {
-    return launchCases(QStringList() << testCase);
+    return launchCases(QStringList() << testCase, verbosity);
 }
 
-KJob* PhpUnitTestSuite::launchCases(const QStringList& testCases)
+KJob* PhpUnitTestSuite::launchCases(const QStringList& testCases, TestJobVerbosity verbosity)
 {
-    return new PhpUnitRunJob(this, testCases);
+    OutputJob::OutputJobVerbosity outputVerbosity = (verbosity == Verbose) ? OutputJob::Verbose : OutputJob::Silent;
+    return new PhpUnitRunJob(this, testCases, outputVerbosity);
 }
 
-KJob* PhpUnitTestSuite::launchAllCases()
+KJob* PhpUnitTestSuite::launchAllCases(TestJobVerbosity verbosity)
 {
-    return launchCases(m_cases);
+    return launchCases(m_cases, verbosity);
 }
 
 KDevelop::IProject* PhpUnitTestSuite::project() const

@@ -31,8 +31,8 @@
 #include <KStandardDirs>
 #include <KDebug>
 
-PhpUnitRunJob::PhpUnitRunJob(PhpUnitTestSuite* suite, const QStringList& cases, QObject* parent)
-: OutputJob(parent, KDevelop::OutputJob::Verbose)
+PhpUnitRunJob::PhpUnitRunJob(PhpUnitTestSuite* suite, const QStringList& cases, OutputJobVerbosity verbosity, QObject* parent)
+: OutputJob(parent, verbosity)
 , m_process(0)
 , m_suite(suite)
 , m_cases(cases)

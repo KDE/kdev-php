@@ -34,7 +34,7 @@ class PhpUnitRunJob : public KDevelop::OutputJob
 {
     Q_OBJECT
 public:
-    PhpUnitRunJob(PhpUnitTestSuite* suite, const QStringList& cases, QObject* parent = 0);
+    PhpUnitRunJob(PhpUnitTestSuite* suite, const QStringList& cases, OutputJobVerbosity verbosity, QObject* parent = 0);
     virtual void start();
 
 protected:
