@@ -1168,6 +1168,10 @@ void DeclarationBuilder::supportBuild(AstNode* node, DUContext* context)
 
 void DeclarationBuilder::closeContext()
 {
+    if (currentContext()->type() == DUContext::Function) {
+        Q_ASSERT(currentDeclaration<AbstractFunctionDeclaration>());
+        currentDeclaration<AbstractFunctionDeclaration>()->setInternalFunctionContext(currentContext());
+    }
     // We don't want the first pass to clean up stuff, since
     // there is lots of stuff we visit/encounter here first.
     // So we clean things up here.
