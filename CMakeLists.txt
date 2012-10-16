@@ -10,7 +10,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${phpdocs_SOURCE_DIR}/cmake/)
 enable_testing()
 
 find_package(KDE4 REQUIRED)
+<<<<<<< HEAD
 find_package(KDevPlatform 1.4.60 REQUIRED)
+=======
+find_package(KDevPlatform 1.4.0 REQUIRED)
+>>>>>>> 1.4
 include_directories(${KDEVPLATFORM_INCLUDE_DIR})
 
 include_directories(
