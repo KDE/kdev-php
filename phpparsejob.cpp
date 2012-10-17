@@ -177,7 +177,7 @@ void ParseJob::run()
                         minimumFeatures() | KDevelop::TopDUContext::VisibleDeclarationsAndContexts | Resheduled
                     );
                 KDevelop::ICore::self()->languageController()->backgroundParser()
-                    ->addDocument(document().toUrl(), feat, 50000);
+                    ->addDocument(document(), feat, 50000);
 
             } else {
                 // We haven't resolved all identifiers, but by now, we don't expect to
