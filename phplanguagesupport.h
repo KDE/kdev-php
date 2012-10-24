@@ -91,7 +91,7 @@ public:
     /*Name Of the Language*/
     QString name() const;
     /*Parsejob used by background parser to parse given Url*/
-    KDevelop::ParseJob *createParseJob(const KUrl &url);
+    KDevelop::ParseJob *createParseJob(const KDevelop::IndexedString& url);
     /*the actual language object*/
     KDevelop::ILanguage *language();
 
@@ -117,14 +117,13 @@ public slots:
      *
      * \see loadedInternalFunctions
      */
-    void updateReady(KDevelop::IndexedString url, KDevelop::ReferencedTopDUContext topContext);
+    void updateReady(const KDevelop::IndexedString& url, const KDevelop::ReferencedTopDUContext& topContext);
 
 private slots:
     void updateInternalFunctions();
 
 private:
     KDevelop::CodeHighlighting* m_highlighting;
-    static LanguageSupport* m_self;
     bool m_internalFunctionsLoaded;
     QReadWriteLock m_internalFunctionsLock;
 

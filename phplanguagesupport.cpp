@@ -68,8 +68,6 @@ K_EXPORT_PLUGIN(KDevPhpSupportFactory(
 namespace Php
 {
 
-LanguageSupport* LanguageSupport::m_self = 0;
-
 LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
         : KDevelop::IPlugin(KDevPhpSupportFactory::componentData(), parent),
         KDevelop::ILanguageSupport(), m_internalFunctionsLoaded(false)
@@ -78,8 +76,6 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
     m_internalFunctionsLock.lockForWrite();
 
     KDEV_USE_EXTENSION_INTERFACE(KDevelop::ILanguageSupport)
-
-    m_self = this;
 
     m_highlighting = new Php::Highlighting(this);
 
@@ -94,7 +90,8 @@ LanguageSupport::~LanguageSupport()
     ILanguage* lang = language();
     if ( lang ) {
         lang->parseLock()->lockForWrite();
-        m_self = 0; //By locking the parse-mutexes, we make sure that parse- and preprocess-jobs get a chance to finish in a good state
+        //By locking the parse-mutexes, we make sure that parse- and preprocess-jobs
+        //get a chance to finish in a good state
         lang->parseLock()->unlock();
     }
 }
@@ -106,7 +103,7 @@ void LanguageSupport::updateInternalFunctions()
     DUChain::self()->updateContextForUrl(internalFunctionFile(), KDevelop::TopDUContext::AllDeclarationsAndContexts, this, -10);
 }
 
-void LanguageSupport::updateReady( IndexedString url, ReferencedTopDUContext topContext )
+void LanguageSupport::updateReady( const IndexedString& url, const ReferencedTopDUContext& topContext )
 {
     Q_ASSERT(url == internalFunctionFile());
     Q_UNUSED(topContext);
@@ -127,9 +124,9 @@ QReadWriteLock* LanguageSupport::internalFunctionsLock()
     return &m_internalFunctionsLock;
 }
 
-KDevelop::ParseJob *LanguageSupport::createParseJob(const KUrl &url)
+KDevelop::ParseJob *LanguageSupport::createParseJob(const IndexedString &url)
 {
-    return new ParseJob(url);
+    return new ParseJob(url, this);
 }
 
 QString LanguageSupport::name() const
@@ -145,11 +142,6 @@ KDevelop::ILanguage *LanguageSupport::language()
 KDevelop::ICodeHighlighting* LanguageSupport::codeHighlighting() const
 {
     return m_highlighting;
-}
-
-LanguageSupport *LanguageSupport::self()
-{
-    return m_self;
 }
 
 QPair<QString, SimpleRange> LanguageSupport::wordUnderCursor(const KUrl& url, const SimpleCursor& position)

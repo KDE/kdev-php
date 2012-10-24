@@ -31,7 +31,6 @@
 #include <language/duchain/topducontext.h>
 #include <language/duchain/dumpchain.h>
 #include <interfaces/ilanguage.h>
-#include <language/highlighting/codehighlighting.h>
 #include <interfaces/icore.h>
 #include <interfaces/ilanguagecontroller.h>
 #include <language/backgroundparser/backgroundparser.h>
@@ -55,9 +54,9 @@ using namespace KDevelop;
 namespace Php
 {
 
-ParseJob::ParseJob(const KUrl &url)
-        : KDevelop::ParseJob(url)
-        , m_parentJob(0)
+ParseJob::ParseJob(const IndexedString& url, ILanguageSupport* languageSupport)
+: KDevelop::ParseJob(url, languageSupport)
+, m_parentJob(0)
 {
 }
 
@@ -65,16 +64,16 @@ ParseJob::~ParseJob()
 {
 }
 
-LanguageSupport *ParseJob::php() const
+LanguageSupport* ParseJob::php() const
 {
-    return LanguageSupport::self();
+    return dynamic_cast<LanguageSupport*>(languageSupport());
 }
 
 void ParseJob::run()
 {
-    if ( !php() ) {
-        return abortJob();
-    }
+    /// Indexed string for 'Php', identifies environment files from this language plugin
+    static const IndexedString phpLangString("Php");
+
     // make sure we loaded the internal file already
     if ( !php()->internalFunctionsLoaded() && !m_parentJob && document() != internalFunctionFile() ) {
         kDebug() << "waiting for internal function file to finish parsing";
@@ -83,28 +82,9 @@ void ParseJob::run()
 
     UrlParseLock urlLock(document());
 
-    if ( !(minimumFeatures() & TopDUContext::ForceUpdate || minimumFeatures() & Resheduled) ) {
-        DUChainReadLocker lock(DUChain::lock());
-        static const IndexedString langString("Php");
-        foreach(const ParsingEnvironmentFilePointer &file, DUChain::self()->allEnvironmentFiles(document())) {
-            if (file->language() != langString) {
-                continue;
-            }
-            if (!file->needsUpdate() && file->featuresSatisfied(minimumFeatures())) {
-                kDebug() << "Already up to date" << document().str();
-                setDuChain(file->topContext());
-                if (php() && php()->codeHighlighting()
-                    && ICore::self()->languageController()->backgroundParser()->trackerForUrl(document()))
-                {
-                    lock.unlock();
-                    php()->codeHighlighting()->highlightDUChain(duChain());
-                }
-                return;
-            }
-            break;
-        }
+    if (!(minimumFeatures() & Resheduled) && !isUpdateRequired(phpLangString)) {
+        return;
     }
-
     kDebug() << "parsing" << document().str();
 
     KDevelop::ProblemPointer p = readContents();
@@ -140,7 +120,7 @@ void ParseJob::run()
     newFeatures = static_cast<KDevelop::TopDUContext::Features>(newFeatures & KDevelop::TopDUContext::AllDeclarationsContextsUsesAndAST);
 
     if (matched) {
-        if (abortRequested() || !php() || !php()->language()) {
+        if (abortRequested()) {
             return abortJob();
         }
 
@@ -206,11 +186,7 @@ void ParseJob::run()
             DUChain::self()->updateContextEnvironment( chain->topContext(), file.data() );
         }
 
-        if (php() && php()->codeHighlighting()
-            && ICore::self()->languageController()->backgroundParser()->trackerForUrl(document()))
-        {
-            php()->codeHighlighting()->highlightDUChain(chain);
-        }
+        highlightDUChain();
     } else {
         ReferencedTopDUContext top;
         DUChainWriteLocker lock;
@@ -224,8 +200,6 @@ void ParseJob::run()
             top->clearProblems();
         } else {
             ParsingEnvironmentFile *file = new ParsingEnvironmentFile(document());
-            /// Indexed string for 'Php', identifies environment files from this language plugin
-            static const IndexedString phpLangString("Php");
             file->setLanguage(phpLangString);
             top = new TopDUContext(document(), RangeInRevision(0, 0, INT_MAX, INT_MAX), file);
             DUChain::self()->addDocumentChain(top);

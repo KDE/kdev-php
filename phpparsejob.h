@@ -48,14 +48,13 @@ public:
         Resheduled = KDevelop::TopDUContext::LastFeature
     };
 
-    explicit ParseJob(const KUrl &url);
+    explicit ParseJob(const KDevelop::IndexedString& url, KDevelop::ILanguageSupport* LanguageSupport);
     virtual ~ParseJob();
-
-    LanguageSupport* php() const;
 
     void setParentJob(ParseJob *job);
 
 protected:
+    LanguageSupport* php() const;
     virtual void run();
 
 private:
