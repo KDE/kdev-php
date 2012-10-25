@@ -77,6 +77,4 @@ public slots:
     void slotParseJobFinished( KDevelop::ParseJob* job );
 };
 
-Q_DECLARE_METATYPE( KDevelop::DeclarationPointer )
-
 #endif // PHPDOCSMODEL_H
