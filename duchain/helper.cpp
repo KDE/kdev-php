@@ -107,8 +107,9 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, Qualif
         }
         if (classCtx) {
             foreach(const DUContext::Import &i, classCtx->importedParentContexts()) {
-                if (i.context(classCtx->topContext())->type() == DUContext::Class) {
-                    return DeclarationPointer(i.context(classCtx->topContext())->owner());
+                DUContext* ctx = i.context(classCtx->topContext());
+                if (ctx && ctx->type() == DUContext::Class) {
+                    return DeclarationPointer(ctx->owner());
                 }
             }
         }

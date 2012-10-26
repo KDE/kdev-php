@@ -1007,13 +1007,6 @@ QString Parser::tokenText(qint64 begin, qint64 end)
 
 void Parser::reportProblem( Parser::ProblemType type, const QString& message, int offset )
 {
-    if (type == Error)
-        qDebug() << "** ERROR:" << message;
-    else if (type == Warning)
-        qDebug() << "** WARNING:" << message;
-    else if (type == Info)
-        qDebug() << "** Info:" << message;
-
     qint64 sLine;
     qint64 sCol;
     qint64 index = tokenStream->index() + offset;
