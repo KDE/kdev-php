@@ -70,8 +70,8 @@ void PhpUnitRunJob::start()
     KDevelop::ProcessLineMaker* maker = new KDevelop::ProcessLineMaker(m_process, this);
     connect (maker, SIGNAL(receivedStdoutLines(QStringList)), SLOT(linesReceived(QStringList)));
 
-    setModel(new KDevelop::OutputModel, KDevelop::IOutputView::TakeOwnership);
-    setDelegate(new TestDoxDelegate, KDevelop::IOutputView::TakeOwnership);
+    setModel(new KDevelop::OutputModel);
+    setDelegate(new TestDoxDelegate);
     setStandardToolView(KDevelop::IOutputView::TestView);
     startOutput();
 
