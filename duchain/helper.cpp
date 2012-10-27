@@ -43,7 +43,7 @@
 #include "declarations/classmethoddeclaration.h"
 #include "declarations/functiondeclaration.h"
 
-#define ifDebug(x)
+#define ifDebug(x) x
 
 using namespace KDevelop;
 
@@ -157,6 +157,16 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, Qualif
                 }
                 TopDUContext* top = declarations[i].declaration()->context()->topContext();
 
+                /*
+                 * NOTE:
+                 * To enable PHPUnit test classes, this check has been disabled.
+                 * Formerly it only loaded declarations from open projects, but PHPUnit declarations
+                 * belong to no project.
+                 *
+                 * If this behavior is unwanted, reinstate the check.
+                 * Miha Cancula <miha@noughmad.eu>
+                 */
+                /*
                 if (ICore::self() && !ICore::self()->projectController()->projects().isEmpty()) {
                     bool loadedProjectContainsUrl = false;
                     foreach(IProject *project, ICore::self()->projectController()->projects()) {
@@ -170,6 +180,8 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, Qualif
                         continue;
                     }
                 }
+                */
+
                 currentContext->topContext()->addImportedParentContext(top);
                 currentContext->topContext()->parsingEnvironmentFile()
                 ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
@@ -326,6 +338,12 @@ const KDevelop::IndexedString& internalFunctionFile()
 {
     static const KDevelop::IndexedString internalFile(KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php"));
     return internalFile;
+}
+
+const IndexedString& internalTestFile()
+{
+    static const KDevelop::IndexedString phpUnitFile(KStandardDirs::locate("data", "kdevphpsupport/phpunitdeclarations.php"));
+    return phpUnitFile;
 }
 
 QualifiedIdentifier identifierForNamespace(NamespacedIdentifierAst* node, EditorIntegrator* editor, bool lastIsConstIdentifier)

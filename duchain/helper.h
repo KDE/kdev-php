@@ -67,6 +67,8 @@ KDEVPHPDUCHAIN_EXPORT QString prettyName(KDevelop::Declaration* dec);
 
 KDEVPHPDUCHAIN_EXPORT const KDevelop::IndexedString& internalFunctionFile();
 
+KDEVPHPDUCHAIN_EXPORT const KDevelop::IndexedString& internalTestFile();
+
 /**
  * Get proper QualifiedIdentifier for a NamespacedIdentifierAst.
  *

@@ -105,13 +105,13 @@ void LanguageSupport::updateInternalFunctions()
 
 void LanguageSupport::updateReady( const IndexedString& url, const ReferencedTopDUContext& topContext )
 {
-    Q_ASSERT(url == internalFunctionFile());
     Q_UNUSED(topContext);
-    kDebug() << "finished parsing internal function file" << url.str();
-    m_internalFunctionsLoaded = true;
-    m_internalFunctionsLock.unlock();
-    DUChainReadLocker lock(DUChain::lock());
-    Q_ASSERT(DUChain::self()->chainForDocument(internalFunctionFile()));
+    if (url == internalFunctionFile())
+    {
+        DUChain::self()->updateContextForUrl(internalTestFile(), KDevelop::TopDUContext::AllDeclarationsAndContexts, this, -10);
+        m_internalFunctionsLoaded = true;
+        m_internalFunctionsLock.unlock();
+    }
 }
 
 bool LanguageSupport::internalFunctionsLoaded() const
