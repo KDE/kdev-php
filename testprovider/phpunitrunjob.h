@@ -41,17 +41,17 @@ protected:
     virtual bool doKill();
 
 private slots:
-    void processFinished(int exitCode);
-    void processError(QProcess::ProcessError);
+    void processFinished(KJob* job);
+    void rowsInserted(const QModelIndex &parent, int startRow, int endRow);
 
 private:
     KProcess* m_process;
     PhpUnitTestSuite* m_suite;
     QStringList m_cases;
     KDevelop::TestResult m_result;
-
-public slots:
-    void linesReceived(const QStringList& lines);
+    KJob* m_job;
+    KDevelop::OutputJob* m_outputJob;
+    KDevelop::OutputJob::OutputJobVerbosity m_verbosity;
 };
 
 #endif // PHPUNITRUNJOB_H

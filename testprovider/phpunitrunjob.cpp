@@ -26,17 +26,67 @@
 #include <outputview/outputmodel.h>
 #include <interfaces/itestcontroller.h>
 #include <interfaces/icore.h>
+#include <interfaces/ilauncher.h>
+#include <interfaces/ilaunchconfiguration.h>
+#include <interfaces/launchconfigurationtype.h>
+#include <interfaces/ilaunchmode.h>
 
 #include <KProcess>
 #include <KStandardDirs>
 #include <KDebug>
+#include <KLocalizedString>
+#include <KConfigGroup>
 
 PhpUnitRunJob::PhpUnitRunJob(PhpUnitTestSuite* suite, const QStringList& cases, OutputJobVerbosity verbosity, QObject* parent)
 : OutputJob(parent, verbosity)
 , m_process(0)
 , m_suite(suite)
 , m_cases(cases)
+, m_job(0)
+, m_outputJob(0)
+, m_verbosity(verbosity)
 {
+}
+
+KJob* createTestJob(QString launchModeId, QStringList arguments )
+{
+    KDevelop::LaunchConfigurationType* type = KDevelop::ICore::self()->runController()->launchConfigurationTypeForId( "Script Application" );
+    KDevelop::ILaunchMode* mode = KDevelop::ICore::self()->runController()->launchModeForId( launchModeId );
+
+    kDebug() << "got mode and type:" << type << type->id() << mode << mode->id();
+    Q_ASSERT(type && mode);
+
+    KDevelop::ILauncher* launcher = 0;
+    foreach (KDevelop::ILauncher *l, type->launchers())
+    {
+        //kDebug() << "avaliable launcher" << l << l->id() << l->supportedModes();
+        if (l->supportedModes().contains(mode->id())) {
+            launcher = l;
+            break;
+        }
+    }
+    Q_ASSERT(launcher);
+
+    KDevelop::ILaunchConfiguration* ilaunch = 0;
+    QList<KDevelop::ILaunchConfiguration*> launchConfigurations = KDevelop::ICore::self()->runController()->launchConfigurations();
+    foreach (KDevelop::ILaunchConfiguration *l, launchConfigurations) {
+        if (l->type() == type && l->config().readEntry("ConfiguredByPhpUnit", false)) {
+            ilaunch = l;
+            break;
+        }
+    }
+    if (!ilaunch) {
+        ilaunch = KDevelop::ICore::self()->runController()->createLaunchConfiguration( type,
+                                                qMakePair( mode->id(), launcher->id() ),
+                                                0, //TODO add project
+                                                i18n("PhpUnit") );
+        ilaunch->config().writeEntry("ConfiguredByPhpUnit", true);
+        //kDebug() << "created config, launching";
+    } else {
+        //kDebug() << "reusing generated config, launching";
+    }
+    type->configureLaunchFromCmdLineArguments( ilaunch->config(), arguments );
+    return KDevelop::ICore::self()->runController()->execute(launchModeId, ilaunch);
 }
 
 void PhpUnitRunJob::start()
@@ -61,36 +111,31 @@ void PhpUnitRunJob::start()
         emitResult();
         return;
     }
-    m_process->setProgram(exe, args);
-    m_process->setOutputChannelMode(KProcess::MergedChannels);
-    connect (m_process, SIGNAL(finished(int)), SLOT(processFinished(int)));
-    connect(m_process, SIGNAL(error(QProcess::ProcessError)),
-            this, SLOT(processError(QProcess::ProcessError)));
 
-    KDevelop::ProcessLineMaker* maker = new KDevelop::ProcessLineMaker(m_process, this);
-    connect (maker, SIGNAL(receivedStdoutLines(QStringList)), SLOT(linesReceived(QStringList)));
+    args.prepend(exe);
+    args.prepend("php");
 
-    setModel(new KDevelop::OutputModel);
-    setDelegate(new TestDoxDelegate);
-    setStandardToolView(KDevelop::IOutputView::TestView);
-    startOutput();
-
-    m_process->start();
+    m_job = createTestJob("execute", args);
 }
 
 bool PhpUnitRunJob::doKill()
 {
-    if (m_process)
+    if (m_job)
     {
-        m_process->kill();
+        m_job->kill();
     }
     return true;
 }
 
-void PhpUnitRunJob::processFinished(int exitCode)
+void PhpUnitRunJob::processFinished(KJob* job)
 {
-    if (exitCode == 0)
-    {
+    if(KDevelop::OutputModel* model = qobject_cast<KDevelop::OutputModel*>(m_outputJob->model())) {
+        model->flushLineBuffer();
+    }
+
+    if (job->error() == 1) {
+        m_result.suiteResult = KDevelop::TestResult::Failed;
+    } else if (job->error() == 0) {
         m_result.suiteResult = KDevelop::TestResult::Passed;
         foreach (KDevelop::TestResult::TestCaseResult result, m_result.testCaseResults)
         {
@@ -100,29 +145,24 @@ void PhpUnitRunJob::processFinished(int exitCode)
                 break;
             }
         }
-    }
-    else
-    {
+    } else {
         m_result.suiteResult = KDevelop::TestResult::Error;
     }
-    KDevelop::ICore::self()->testController()->notifyTestRunFinished(m_suite, m_result);
+    setError(job->error());
+    setErrorText(job->errorText());
 
+    kDebug() << m_result.suiteResult << m_result.testCaseResults;
+    KDevelop::ICore::self()->testController()->notifyTestRunFinished(m_suite, m_result);
     emitResult();
 }
 
-void PhpUnitRunJob::processError(QProcess::ProcessError )
-{
-    m_result.suiteResult = KDevelop::TestResult::Error;
-    KDevelop::ICore::self()->testController()->notifyTestRunFinished(m_suite, m_result);
-
-    emitResult();
-}
-
-void PhpUnitRunJob::linesReceived(const QStringList& lines)
+void PhpUnitRunJob::rowsInserted(const QModelIndex &parent, int startRow, int endRow)
 {
     static QRegExp testResultLineExp = QRegExp("\\[([x\\s])\\]");
-    foreach (const QString& line, lines)
+    for (int row = startRow; row <= endRow; ++row)
     {
+        QString line = m_outputJob->model()->data(m_outputJob->model()->index(row, 0, parent), Qt::DisplayRole).toString();
+
         int i = testResultLineExp.indexIn(line);
         if (i > -1)
         {
@@ -146,8 +186,4 @@ void PhpUnitRunJob::linesReceived(const QStringList& lines)
             kDebug() << line << testResultLineExp.pattern() << i;
         }
     }
-    qobject_cast<KDevelop::OutputModel*>(model())->appendLines(lines);
 }
-
-
-
