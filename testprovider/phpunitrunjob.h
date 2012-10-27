@@ -30,11 +30,11 @@
 class PhpUnitTestSuite;
 class KProcess;
 
-class PhpUnitRunJob : public KDevelop::OutputJob
+class PhpUnitRunJob : public KJob
 {
     Q_OBJECT
 public:
-    PhpUnitRunJob(PhpUnitTestSuite* suite, const QStringList& cases, OutputJobVerbosity verbosity, QObject* parent = 0);
+    PhpUnitRunJob(PhpUnitTestSuite* suite, const QStringList& cases, KDevelop::OutputJob::OutputJobVerbosity verbosity, QObject* parent = 0);
     virtual void start();
 
 protected:

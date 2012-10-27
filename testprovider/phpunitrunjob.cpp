@@ -23,6 +23,7 @@
 #include "testdoxdelegate.h"
 
 #include <util/processlinemaker.h>
+#include <util/executecompositejob.h>
 #include <outputview/outputmodel.h>
 #include <interfaces/itestcontroller.h>
 #include <interfaces/icore.h>
@@ -37,8 +38,8 @@
 #include <KLocalizedString>
 #include <KConfigGroup>
 
-PhpUnitRunJob::PhpUnitRunJob(PhpUnitTestSuite* suite, const QStringList& cases, OutputJobVerbosity verbosity, QObject* parent)
-: OutputJob(parent, verbosity)
+PhpUnitRunJob::PhpUnitRunJob(PhpUnitTestSuite* suite, const QStringList& cases, KDevelop::OutputJob::OutputJobVerbosity verbosity, QObject* parent)
+: KJob(parent)
 , m_process(0)
 , m_suite(suite)
 , m_cases(cases)
@@ -116,6 +117,20 @@ void PhpUnitRunJob::start()
     args.prepend("php");
 
     m_job = createTestJob("execute", args);
+
+    m_outputJob = qobject_cast<KDevelop::OutputJob*>(m_job);
+    if (!m_outputJob) {
+        if (KDevelop::ExecuteCompositeJob* cjob = qobject_cast<KDevelop::ExecuteCompositeJob*>(m_job)) {
+            m_outputJob = qobject_cast<KDevelop::OutputJob*>(cjob->subjobs().last());
+        }
+    }
+    Q_ASSERT(m_outputJob);
+    if (m_outputJob) {
+        m_outputJob->setVerbosity(m_verbosity);
+        connect(m_outputJob->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(rowsInserted(QModelIndex,int,int)));
+    }
+
+    connect(m_job, SIGNAL(finished(KJob*)), SLOT(processFinished(KJob*)));
 }
 
 bool PhpUnitRunJob::doKill()
@@ -129,8 +144,10 @@ bool PhpUnitRunJob::doKill()
 
 void PhpUnitRunJob::processFinished(KJob* job)
 {
-    if(KDevelop::OutputModel* model = qobject_cast<KDevelop::OutputModel*>(m_outputJob->model())) {
-        model->flushLineBuffer();
+    if (m_outputJob) {
+        if(KDevelop::OutputModel* model = qobject_cast<KDevelop::OutputModel*>(m_outputJob->model())) {
+            model->flushLineBuffer();
+        }
     }
 
     if (job->error() == 1) {
@@ -158,6 +175,7 @@ void PhpUnitRunJob::processFinished(KJob* job)
 
 void PhpUnitRunJob::rowsInserted(const QModelIndex &parent, int startRow, int endRow)
 {
+    Q_ASSERT(m_outputJob);
     static QRegExp testResultLineExp = QRegExp("\\[([x\\s])\\]");
     for (int row = startRow; row <= endRow; ++row)
     {
