@@ -80,7 +80,7 @@ KJob* createTestJob(QString launchModeId, QStringList arguments )
         ilaunch = KDevelop::ICore::self()->runController()->createLaunchConfiguration( type,
                                                 qMakePair( mode->id(), launcher->id() ),
                                                 0, //TODO add project
-                                                i18n("PhpUnit") );
+                                                i18n("PHPUnit") );
         ilaunch->config().writeEntry("ConfiguredByPhpUnit", true);
         //kDebug() << "created config, launching";
     } else {
