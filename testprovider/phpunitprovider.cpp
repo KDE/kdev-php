@@ -44,7 +44,7 @@
 #include <QTimer>
 
 K_PLUGIN_FACTORY(PhpUnitProviderFactory, registerPlugin<PhpUnitProvider>(); )
-K_EXPORT_PLUGIN(PhpUnitProviderFactory(KAboutData("kdevphpunitprovider","kdevphpunitprovider", ki18n("PHPUnit Integration"), "0.1", ki18n("Finds and run PHPUnit tests"), KAboutData::License_GPL)))
+K_EXPORT_PLUGIN(PhpUnitProviderFactory(KAboutData("kdevphpunitprovider","kdevphpunitprovider", ki18n("PHPUnit Integration"), "0.1", ki18n("Finds and runs PHPUnit tests"), KAboutData::License_GPL)))
 
 
 using namespace KDevelop;
