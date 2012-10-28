@@ -165,8 +165,6 @@ void PhpUnitRunJob::processFinished(KJob* job)
     } else {
         m_result.suiteResult = KDevelop::TestResult::Error;
     }
-    setError(job->error());
-    setErrorText(job->errorText());
 
     kDebug() << m_result.suiteResult << m_result.testCaseResults;
     KDevelop::ICore::self()->testController()->notifyTestRunFinished(m_suite, m_result);
