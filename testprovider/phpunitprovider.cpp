@@ -124,17 +124,8 @@ void PhpUnitProvider::processContext(ReferencedTopDUContext referencedContext)
             continue;
         }
 
-        foreach (const DUContext::Import& import, classDeclaration->internalContext()->importedParentContexts())
-        {
-            if (DUContext* importedContext = import.context(context))
-            {
-                if (importedContext->owner() && importedContext->owner() == testCase)
-                {
-                    kDebug() << "Imported context owner:" << importedContext->owner()->toString();
-                    processTestCaseDeclaration(declaration);
-                    continue;
-                }
-            }
+        if (classDeclaration->isPublicBaseClass(static_cast<ClassDeclaration*>(m_testCaseDeclaration.data()), context)) {
+            processTestCaseDeclaration(declaration);
         }
     }
 }
