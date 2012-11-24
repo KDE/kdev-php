@@ -43,7 +43,7 @@
 #include "declarations/classmethoddeclaration.h"
 #include "declarations/functiondeclaration.h"
 
-#define ifDebug(x) x
+#define ifDebug(x)
 
 using namespace KDevelop;
 
