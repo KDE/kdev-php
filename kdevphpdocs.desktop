@@ -2,7 +2,6 @@
 Type=Service
 Comment=This plugin integrates PHP.net online documentation.
 Comment[bg]=Тази приставка включва документация от PHP.net в Интернет
-Comment[bs]=Ovaj dodatak integriše PHP.net mrežnu dokumentaciju.
 Comment[ca]=Aquest connector integra documentació en línia de PHP.net.
 Comment[cs]=Tento modul integruje online dokumentaci PHP.net.
 Comment[da]=Dette plugin integrerer online dokumentation fra PHP.net.
@@ -39,7 +38,6 @@ Comment[zh_CN]=此插件集成了 PHP.net 的在线文档。
 Comment[zh_TW]=此外掛程式整合 PHP.net 線上文件。
 Name=PHP Documentation
 Name[bg]=Документация на PHP
-Name[bs]=PHP Dokumentacija
 Name[ca]=Documentació de PHP
 Name[cs]=Dokumentace PHP
 Name[da]=PHP-dokumentation
