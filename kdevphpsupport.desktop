@@ -4,6 +4,7 @@ Type=Service
 Exec=blubb
 Comment=PHP Language Support
 Comment[cs]=Podpora jazyka PHP
+Comment[da]=Understøttelse af sproget PHP
 Comment[de]=Sprachunterstützung für PHP
 Comment[el]=Υποστήριξη γλώσσας PHP
 Comment[es]=Implementación del lenguaje PHP
