@@ -100,11 +100,17 @@ void PhpUnitProvider::processContext(ReferencedTopDUContext referencedContext)
 {
     kDebug();
 
-    DUChainReadLocker locker(DUChain::lock());
+    DUChainReadLocker locker;
     TopDUContext* context = referencedContext.data();
 
-    if (!context)
-    {
+    if (!context) {
+        kDebug() << "context went away";
+        return;
+    }
+
+    Declaration* testCase = m_testCaseDeclaration.data();
+    if (!testCase) {
+        kDebug() << "test case declaration went away";
         return;
     }
 
@@ -113,7 +119,7 @@ void PhpUnitProvider::processContext(ReferencedTopDUContext referencedContext)
     foreach (Declaration* declaration, context->localDeclarations())
     {
         ClassDeclaration* classDeclaration = dynamic_cast<ClassDeclaration*>(declaration);
-        if (!classDeclaration || classDeclaration->isAbstract())
+        if (!classDeclaration || classDeclaration->isAbstract() || !classDeclaration->internalContext())
         {
             continue;
         }
@@ -122,9 +128,9 @@ void PhpUnitProvider::processContext(ReferencedTopDUContext referencedContext)
         {
             if (DUContext* importedContext = import.context(context))
             {
-                kDebug() << "Imported context owner:" << importedContext->owner()->toString();
-                if (importedContext->owner() && importedContext->owner() == m_testCaseDeclaration.data())
+                if (importedContext->owner() && importedContext->owner() == testCase)
                 {
+                    kDebug() << "Imported context owner:" << importedContext->owner()->toString();
                     processTestCaseDeclaration(declaration);
                     continue;
                 }
