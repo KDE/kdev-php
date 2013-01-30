@@ -156,8 +156,9 @@ void ParseJob::run()
                 KDevelop::TopDUContext::Features feat = static_cast<KDevelop::TopDUContext::Features>(
                         minimumFeatures() | KDevelop::TopDUContext::VisibleDeclarationsAndContexts | Resheduled
                     );
+                int priority = qMin(parsePriority()+100, (int)KDevelop::BackgroundParser::WorstPriority);
                 KDevelop::ICore::self()->languageController()->backgroundParser()
-                    ->addDocument(document(), feat, 50000);
+                    ->addDocument(document(), feat, priority);
 
             } else {
                 // We haven't resolved all identifiers, but by now, we don't expect to

@@ -85,6 +85,7 @@ void PhpUnitProvider::updateReady(const IndexedString& document, const Reference
 void PhpUnitProvider::parseJobFinished(KDevelop::ParseJob* job)
 {
     ReferencedTopDUContext topContext = job->duChain();
+    DUChainReadLocker lock;
     if (!m_testCaseDeclaration.isValid())
     {
         m_pendingContexts << topContext;
