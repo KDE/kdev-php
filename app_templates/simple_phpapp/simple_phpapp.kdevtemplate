@@ -3,6 +3,7 @@
 Name=Simple PHP Application
 Name[bs]=Prosta PHP aplikacija
 Name[ca]=Una aplicació PHP senzilla
+Name[ca@valencia]=Una aplicació PHP senzilla
 Name[cs]=Jednoduchá aplikace PHP
 Name[da]=Et simpelt PHP-program
 Name[de]=Eine einfache PHP-Anwendung
@@ -38,6 +39,7 @@ Category=PHP
 Comment=Generate filestructure to start a PHP application
 Comment[bs]=Generiši datotečnu strukturu za početak PHP aplikacija
 Comment[ca]=Genera l'estructura de fitxers per a iniciar una aplicació PHP
+Comment[ca@valencia]=Genera l'estructura de fitxers per a iniciar una aplicació PHP
 Comment[cs]=Vygenerovat strukturu souborů pro započetí aplikace PHP
 Comment[da]=Generér filstruktur til at påbegynde en PHP-applikation
 Comment[de]=Dateistruktur erstellen, auf deren Basis eine PHP-Anwendung erstellt werden kann
