@@ -138,7 +138,8 @@ QVariant PhpDocsModel::data(const QModelIndex& index, int role) const
 
 int PhpDocsModel::rowCount(const QModelIndex& parent) const
 {
-    Q_UNUSED(parent);
+    if (parent.isValid())
+        return 0;
 
     return m_declarations.count();
 }
