@@ -144,12 +144,6 @@ bool PhpUnitRunJob::doKill()
 
 void PhpUnitRunJob::processFinished(KJob* job)
 {
-    if (m_outputJob) {
-        if(KDevelop::OutputModel* model = qobject_cast<KDevelop::OutputModel*>(m_outputJob->model())) {
-            model->flushLineBuffer();
-        }
-    }
-
     if (job->error() == 1) {
         m_result.suiteResult = KDevelop::TestResult::Failed;
     } else if (job->error() == 0) {
