@@ -17,6 +17,10 @@ target_link_libraries(duchain
     ${KDEVPLATFORM_TESTS_LIBRARIES}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
 )
+# hack to make ../duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
+if (MINGW)
+    set_property(TARGET duchain APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
+endif (MINGW)
 
 
 set(expressionparser_SRCS
@@ -30,6 +34,11 @@ target_link_libraries(expressionparser
     ${KDEVPLATFORM_TESTS_LIBRARIES}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
 )
+# hack to make ../duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
+if (MINGW)
+    set_property(TARGET expressionparser APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
+endif (MINGW)
+
 
 set(uses_SRCS
     uses.cpp
@@ -43,6 +52,11 @@ target_link_libraries(uses
     ${KDEVPLATFORM_TESTS_LIBRARIES}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
 )
+# hack to make ../duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
+if (MINGW)
+    set_property(TARGET uses APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
+endif (MINGW)
+
 
 set(benchmarks_SRCS
     benchmarks.cpp
@@ -57,6 +71,10 @@ target_link_libraries(benchmarks
     ${KDEVPLATFORM_TESTS_LIBRARIES}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
 )
+# hack to make ../duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
+if (MINGW)
+    set_property(TARGET benchmarks APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
+endif (MINGW)
 
 
 set(duchain_multiplefiles_SRCS
@@ -72,3 +90,7 @@ target_link_libraries(duchain_multiplefiles
     ${KDEVPLATFORM_TESTS_LIBRARIES}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
 )
+# hack to make ../duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
+if (MINGW)
+    set_property(TARGET duchain_multiplefiles APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
+endif (MINGW)

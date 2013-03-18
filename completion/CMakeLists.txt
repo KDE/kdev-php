@@ -19,6 +19,13 @@ set(completion_SRCS
 
 
 kde4_add_library( kdev4phpcompletion SHARED ${completion_SRCS} )
+
+# hack to make ../parser/phpdebugvisitor.h (generated at compile time)
+# use the correct EXPORT tags when compiling in MinGW
+if (MINGW)
+    add_definitions(-DMAKE_KDEV4PHPPARSER_LIB)
+endif (MINGW)
+
 target_link_libraries(kdev4phpcompletion
     ${KDE4_KDECORE_LIBS}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}

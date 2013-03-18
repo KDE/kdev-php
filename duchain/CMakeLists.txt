@@ -34,6 +34,13 @@ set(duchain_SRCS
 
 
 kde4_add_library( kdev4phpduchain SHARED ${duchain_SRCS} )
+
+# hack to make ../parser/phpdebugvisitor.h (generated at compile time)
+# use the correct EXPORT tags when compiling in MinGW
+if (MINGW)
+    add_definitions(-DMAKE_KDEV4PHPPARSER_LIB)
+endif (MINGW)
+
 target_link_libraries(kdev4phpduchain
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KTEXTEDITOR_LIBS}

@@ -18,6 +18,13 @@ target_link_libraries( kdev4phpparser
 )
 
 kde4_add_executable( php-parser main.cpp )
+
+# hack to make phpdebugvisitor.h (generated at compile time)
+# use the correct EXPORT tags when compiling in MinGW
+if (MINGW)
+    add_definitions(-DMAKE_KDEV4PHPPARSER_LIB)
+endif (MINGW)
+
 target_link_libraries(php-parser ${QT_QTCORE_LIBRARY} ${KDEVPLATFORM_TESTS_LIBRARIES} ${KDEVPLATFORM_LANGUAGE_LIBRARIES} kdev4phpparser)
 
 install(TARGETS kdev4phpparser DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
