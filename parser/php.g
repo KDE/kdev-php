@@ -532,6 +532,7 @@ expression=booleanOrExpression
     ?[: m_state.varExpressionState == OnlyVariable :] 0 [: m_state.varExpressionState = Normal; :] variable=variable
   | ?[: m_state.varExpressionState == OnlyNewObject :] 0 [: m_state.varExpressionState = Normal; :] newObject=varExpressionNewObject
   | varExpressionNormal=varExpressionNormal
+  | varExpressionArray=varExpressionArray arrayIndex=arrayIndexSpecifier*
 -> varExpression ;;
 
     LPAREN expression=expr RPAREN
@@ -540,22 +541,24 @@ expression=booleanOrExpression
   --varExpressionIsVariable flag is needed for assignmentExpression
   | try/rollback (variable=variable [: m_state.varExpressionIsVariable = true; :])
     catch (scalar=scalar)
-  | array=ARRAY LPAREN
-        (#arrayValues=arrayPairValue
-             -- break because array(1,) is allowed (solves FIRST/FOLLOW conflict)
-          @ (COMMA [: if (yytoken == Token_RPAREN) { break; } :] ) | 0)
-    RPAREN
-  | array=LBRACKET
-        (#arrayValues=arrayPairValue
-             -- break because [1,] is allowed (solves FIRST/FOLLOW conflict)
-          @ (COMMA [: if (yytoken == Token_RBRACKET) { break; } :] ) | 0)
-    RBRACKET
   | ISSET LPAREN (#issetVariable=variable @ COMMA) RPAREN
   | EMPTY LPAREN emptyVarialbe=variable RPAREN
   | newObject=varExpressionNewObject
   | CLONE cloneCar=varExpressionNormal
   | closure=closure
 -> varExpressionNormal ;;
+
+    ARRAY LPAREN
+        (#arrayValues=arrayPairValue
+             -- break because array(1,) is allowed (solves FIRST/FOLLOW conflict)
+          @ (COMMA [: if (yytoken == Token_RPAREN) { break; } :] ) | 0)
+    RPAREN
+  | LBRACKET
+        (#arrayValues=arrayPairValue
+             -- break because [1,] is allowed (solves FIRST/FOLLOW conflict)
+          @ (COMMA [: if (yytoken == Token_RBRACKET) { break; } :] ) | 0)
+    RBRACKET
+-> varExpressionArray ;;
 
 -- http://wiki.php.net/rfc/closures
     FUNCTION (isRef=BIT_AND|0) LPAREN parameters=parameterList RPAREN

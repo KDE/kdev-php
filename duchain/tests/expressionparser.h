@@ -43,10 +43,12 @@ private slots:
     void cast();
     void operations();
     void findArg();
+    void array_data();
     void array();
-    void shortArray();
     void arrayFunctionDereferencing_data();
     void arrayFunctionDereferencing();
+    void arrayLiteralDereferencing_data();
+    void arrayLiteralDereferencing();
 };
 
 }

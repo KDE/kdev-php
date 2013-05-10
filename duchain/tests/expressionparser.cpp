@@ -368,45 +368,37 @@ void TestExpressionParser::findArg()
     QCOMPARE(StructureType::Ptr::staticCast(type->baseType())->declaration(top), top->localDeclarations().first());
 }
 
+void TestExpressionParser::array_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("normalSyntax") << "<? $a = array(1,2,3);\n";
+
+    QTest::newRow("shortSyntax") << "<? $a = [1,2,3];\n";
+
+    QTest::newRow("staticNormalSyntax") << "<? static $a = array(1,2,3);\n";
+
+    QTest::newRow("staticShortSyntax") << "<? static $a = [1,2,3];\n";
+}
+
 void TestExpressionParser::array()
 {
     // see bug https://bugs.kde.org/show_bug.cgi?id=237110
 
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? $a = array(\"foo\");");
+    QFETCH(QString, code);
 
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
 
     ExpressionParser p(true);
     QCOMPARE(top->localDeclarations().first()->abstractType().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeArray));
 
     ExpressionEvaluationResult res = p.evaluateType("$b = $a[0]", DUContextPointer(top), CursorInRevision(0, 22));
-    QVERIFY(res.type().cast<IntegralType>());
-    QEXPECT_FAIL("", "we'd need advanced array support to know that [0] returns a string...", Continue);
-    QCOMPARE(res.type().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeString));
-    // fallback
-    QCOMPARE(res.type().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
-}
-
-void TestExpressionParser::shortArray()
-{
-    // see bug https://bugs.kde.org/show_bug.cgi?id=237110
-
-    //                 0         1         2         3         4         5         6         7
-    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? $a = [\"foo\"];");
-
-    TopDUContext* top = parse(method, DumpNone);
-    DUChainReleaser releaseTop(top);
-    DUChainWriteLocker lock;
-
-    ExpressionParser p(true);
-    QCOMPARE(top->localDeclarations().first()->abstractType().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeArray));
-
-    ExpressionEvaluationResult res = p.evaluateType("$b = $a[0]", DUContextPointer(top), CursorInRevision(0, 17));
     QVERIFY(res.type().cast<IntegralType>());
     QEXPECT_FAIL("", "we'd need advanced array support to know that [0] returns a string...", Continue);
     QCOMPARE(res.type().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeString));
@@ -440,6 +432,34 @@ void TestExpressionParser::arrayFunctionDereferencing()
                       "$a = foo()[0];\n"
                       "$b = $myObj->bar()[0];\n"
                       "$c = obj::bar()[0];\n");*/
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+
+    Declaration* decl = top->localDeclarations().last();
+    IntegralType::Ptr type = decl->abstractType().cast<IntegralType>();
+    QVERIFY(type);
+    QEXPECT_FAIL("", "we'd need advanced array support to know that [0] returns a int...", Continue);
+    QCOMPARE(type->dataType(), static_cast<uint>(IntegralType::TypeInt));
+    // fallback
+    QCOMPARE(type->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+}
+
+void TestExpressionParser::arrayLiteralDereferencing_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("normalSyntax") << "<? $a = array(1,2,3)[1];\n";
+
+    QTest::newRow("shortSyntax") << "<? $a = [1,2,3][1];\n";
+}
+
+void TestExpressionParser::arrayLiteralDereferencing()
+{
+    QFETCH(QString, code);
 
     TopDUContext* top = parse(code.toUtf8(), DumpNone);
     DUChainReleaser releaseTop(top);

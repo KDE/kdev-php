@@ -197,12 +197,10 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
     }
 }
 
-void ExpressionVisitor::visitVarExpressionNormal(VarExpressionNormalAst *node)
+void ExpressionVisitor::visitVarExpressionArray(VarExpressionArrayAst *node)
 {
-    DefaultVisitor::visitVarExpressionNormal(node);
-    if (node->array != -1) {
-        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeArray)));
-    }
+    DefaultVisitor::visitVarExpressionArray(node);
+    m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeArray)));
 }
 
 void ExpressionVisitor::visitClosure(ClosureAst* node)
