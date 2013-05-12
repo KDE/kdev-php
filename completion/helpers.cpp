@@ -32,6 +32,8 @@
 #include <QTextFormat>
 #include <QStringList>
 #include <language/duchain/types/integraltype.h>
+#include <KTextEditor/ConfigInterface>
+#include <KTextEditor/Document>
 
 using namespace KDevelop;
 namespace Php
@@ -181,6 +183,24 @@ QStringList getMethodTokens(QString text)
     }
 
     return tokens;
+}
+
+const QString indentString(KTextEditor::Document *document)
+{
+    KTextEditor::ConfigInterface *iface = qobject_cast<KTextEditor::ConfigInterface *>(document);
+    if (!iface)
+        return "    ";
+    if (iface->configValue("replace-tabs").toBool()) {
+        QVariant iWidth = iface->configValue("indent-width");
+        if (iWidth.isValid())
+            return QString(iWidth.toUInt(), ' ');
+        /*
+         * Provide a default implementation if current KatePart
+         * does not handle "indent-width".
+         */
+        return "    ";
+    }
+    return "\t";
 }
 
 QString getIndendation( const QString &line ) {

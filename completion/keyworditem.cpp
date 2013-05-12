@@ -70,8 +70,7 @@ void KeywordItem::execute(KTextEditor::Document* document, const KTextEditor::Ra
     if ( !m_replacement.isEmpty() ) {
         QString replacement = m_replacement;
         replacement = replacement.replace('\n', '\n' + getIndendation(document->line(word.start().line())));
-        ///TODO: use user-selected indendation
-        replacement = replacement.replace("%INDENT%", "    ");
+        replacement = replacement.replace("%INDENT%", indentString(document));
 
         int cursorPos = replacement.indexOf("%CURSOR%");
         int selectionEnd = -1;

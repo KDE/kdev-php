@@ -33,6 +33,10 @@ class QVariant;
 template<class T>
 class QList;
 
+namespace KTextEditor {
+    class Document;
+}
+
 namespace Php
 {
 class NormalDeclarationCompletionItem;
@@ -45,6 +49,14 @@ void KDEVPHPCOMPLETION_EXPORT createArgumentList(const NormalDeclarationCompleti
 /// get a list of tokens which define a method at the end of the given text
 /// NOTE: result will contain "function" if it's the last token at the end of the text
 QStringList getMethodTokens(QString text);
+
+/**
+ * Get a string representing an indentation.
+ *
+ * @param document The current document.
+ * @returns a QString containing the indentation to be used.
+ */
+const QString KDEVPHPCOMPLETION_EXPORT indentString(KTextEditor::Document *document);
 
 /**
  * Get the indendation of a given line.
