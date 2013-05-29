@@ -2,7 +2,7 @@ PROJECT(phpdocs)
 
 set(KDEVPHPDOCS_VERSION_MAJOR 1)
 set(KDEVPHPDOCS_VERSION_MINOR 5)
-set(KDEVPHPDOCS_VERSION_PATCH 0)
+set(KDEVPHPDOCS_VERSION_PATCH 1)
 
 configure_file( "${phpdocs_SOURCE_DIR}/kdevphpdocsversion.h.cmake" "${phpdocs_BINARY_DIR}/kdevphpdocsversion.h" @ONLY )
 
