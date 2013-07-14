@@ -3,6 +3,7 @@ Encoding=UTF-8
 Type=Service
 Exec=blubb
 Comment=PHP Language Support
+Comment[bs]=Podrška za PHP jezik
 Comment[ca]=Implementació del llenguatge PHP
 Comment[ca@valencia]=Implementació del llenguatge PHP
 Comment[cs]=Podpora jazyka PHP
