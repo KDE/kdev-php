@@ -856,6 +856,7 @@ void TestUses::namespaces()
     TopDUContext* top = parse("<?php\n"
                               "namespace Foo\\Bar {\n"
                               "const MyConst = 1;\n"
+                              "$z = MyConst;\n"
                               "function MyFunc(){}\n"
                               "class MyClass{ const ClassConst = 2; }\n"
                               "interface MyInterface{}\n"
@@ -879,48 +880,49 @@ void TestUses::namespaces()
     dec = top->findDeclarations(QualifiedIdentifier("foo")).last();
     QCOMPARE(dec->kind(), Declaration::Namespace);
     compareUses(dec, QList<RangeInRevision>()
-                                          << RangeInRevision(8, 1, 8, 4)
                                           << RangeInRevision(9, 1, 9, 4)
                                           << RangeInRevision(10, 1, 10, 4)
-                                          << RangeInRevision(11, 5, 11, 8)
-                                          << RangeInRevision(12, 15, 12, 18)
-                                          << RangeInRevision(13, 17, 13, 20)
-                                          << RangeInRevision(13, 45, 13, 48));
+                                          << RangeInRevision(11, 1, 11, 4)
+                                          << RangeInRevision(12, 5, 12, 8)
+                                          << RangeInRevision(13, 15, 13, 18)
+                                          << RangeInRevision(14, 17, 14, 20)
+                                          << RangeInRevision(14, 45, 14, 48));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar")).first();
     QCOMPARE(dec->kind(), Declaration::Namespace);
     QVERIFY(dec->internalContext());
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 5, 8, 8)
-                                          << RangeInRevision(9, 5, 9, 8)
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 5, 9, 8)
                                           << RangeInRevision(10, 5, 10, 8)
-                                          << RangeInRevision(11, 9, 11, 12)
-                                          << RangeInRevision(12, 19, 12, 22)
-                                          << RangeInRevision(13, 21, 13, 24)
-                                          << RangeInRevision(13, 49, 13, 52));
-    QCOMPARE(dec->internalContext()->localDeclarations().size(), 4);
+                                          << RangeInRevision(11, 5, 11, 8)
+                                          << RangeInRevision(12, 9, 12, 12)
+                                          << RangeInRevision(13, 19, 13, 22)
+                                          << RangeInRevision(14, 21, 14, 24)
+                                          << RangeInRevision(14, 49, 14, 52));
+    QCOMPARE(dec->internalContext()->localDeclarations().size(), 5);
     foreach(Declaration* d, dec->internalContext()->localDeclarations()) {
         kDebug() << d->toString() << d->qualifiedIdentifier();
     }
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::MyConst")).first();
-    compareUses(dec, RangeInRevision(8, 9, 8, 16));
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(3, 5, 3, 12)
+                                          << RangeInRevision(9, 9, 9, 16));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myclass")).first();
     QVERIFY(dynamic_cast<ClassDeclaration*>(dec));
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 9, 9, 16)
-                                          << RangeInRevision(11, 13, 11, 20)
-                                          << RangeInRevision(12, 23, 12, 30)
-                                          << RangeInRevision(13, 25, 13, 32)
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(10, 9, 10, 16)
+                                          << RangeInRevision(12, 13, 12, 20)
+                                          << RangeInRevision(13, 23, 13, 30)
+                                          << RangeInRevision(14, 25, 14, 32)
                );
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myinterface")).first();
     QVERIFY(dynamic_cast<ClassDeclaration*>(dec));
-    compareUses(dec, RangeInRevision(13, 53, 13, 64) );
+    compareUses(dec, RangeInRevision(14, 53, 14, 64) );
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myclass::ClassConst")).first();
-    compareUses(dec, RangeInRevision(9, 18, 9, 28));
+    compareUses(dec, RangeInRevision(10, 18, 10, 28));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myfunc")).first();
-    compareUses(dec, RangeInRevision(10, 9, 10, 15));
+    compareUses(dec, RangeInRevision(11, 9, 11, 15));
 }
 
 void TestUses::useNamespace()

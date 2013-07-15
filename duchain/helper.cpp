@@ -117,6 +117,11 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, Qualif
     } else {
         DUChainReadLocker lock(DUChain::lock());
         QList<Declaration*> foundDeclarations = currentContext->topContext()->findDeclarations(id);
+        if (foundDeclarations.isEmpty()) {
+            // If it's not in the top context, try the current context (namespaces...)
+            // this fixes the bug: https://bugs.kde.org/show_bug.cgi?id=322274
+            foundDeclarations = currentContext->findDeclarations(id);
+        }
         foreach(Declaration *declaration, foundDeclarations) {
             if (isMatch(declaration, declarationType)) {
                 return DeclarationPointer(declaration);
