@@ -44,6 +44,7 @@ private slots:
     void operations();
     void findArg();
     void array();
+    void shortArray();
 };
 
 }

@@ -545,6 +545,11 @@ expression=booleanOrExpression
              -- break because array(1,) is allowed (solves FIRST/FOLLOW conflict)
           @ (COMMA [: if (yytoken == Token_RPAREN) { break; } :] ) | 0)
     RPAREN
+  | array=LBRACKET
+        (#arrayValues=arrayPairValue
+             -- break because [1,] is allowed (solves FIRST/FOLLOW conflict)
+          @ (COMMA [: if (yytoken == Token_RBRACKET) { break; } :] ) | 0)
+    RBRACKET
   | ISSET LPAREN (#issetVariable=variable @ COMMA) RPAREN
   | EMPTY LPAREN emptyVarialbe=variable RPAREN
   | newObject=varExpressionNewObject
@@ -848,6 +853,11 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
              -- break because array(1,) is allowed
           @ (COMMA [: if (yytoken == Token_RPAREN) { break; } :] ) | 0)
     RPAREN
+  | array=LBRACKET
+        (#arrayValues=staticArrayPairValue
+             -- break because [1,] is allowed
+          @ (COMMA [: if (yytoken == Token_RBRACKET) { break; } :] ) | 0)
+    RBRACKET
 -> staticScalar ;;
 
     #val1=staticScalar (DOUBLE_ARROW #val2=staticScalar | 0)
