@@ -599,15 +599,18 @@ expression=booleanOrExpression
 
     (OBJECT_OPERATOR|PAAMAYIM_NEKUDOTAYIM)
     ( ?[: LA(1).kind == Token_DOLLAR:] LBRACE variable=variable RBRACE | objectProperty=objectProperty )
-    (isFunctionCall=LPAREN parameterList=functionCallParameterList RPAREN | 0)
+    (isFunctionCall=LPAREN parameterList=functionCallParameterList RPAREN arrayIndex=arrayIndexSpecifier* | 0)
 -> variableProperty ;;
 
    --Conflict
    --   foo::$bar[0] (=baseVariable-staticMember)
    --vs.foo::$bar[0](); (=static function call)
-   try/rollback (functionCall=functionCall)
+   try/rollback (functionCall=functionCall arrayIndex=arrayIndexSpecifier*)
    catch (baseVariable=baseVariable)
 -> baseVariableWithFunctionCalls ;;
+
+   LBRACKET (expr=expr | 0) RBRACKET
+-> arrayIndexSpecifier ;;
 
     stringFunctionNameOrClass=namespacedIdentifier (
         LPAREN stringParameterList=functionCallParameterList RPAREN
@@ -630,9 +633,6 @@ expression=booleanOrExpression
 
   ( DOLLAR ( DOLLAR+ | 0 ) ( indirectVariable=variableIdentifier | LBRACE expr=expr RBRACE ) | variable=variableIdentifier )
 -> compoundVariableWithSimpleIndirectReference ;;
-
-    expr=expr | 0
--> dimOffset ;;
 
     className=namespacedIdentifier PAAMAYIM_NEKUDOTAYIM variable=variableWithoutObjects
 -> staticMember ;;
@@ -781,7 +781,7 @@ expression=booleanOrExpression
   variable=compoundVariableWithSimpleIndirectReference #offsetItems=dimListItem*
 -> variableWithoutObjects ;;
 
-LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
+arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
 -> dimListItem ;;
 
     name=identifier
@@ -807,7 +807,7 @@ LBRACKET dimOffset=dimOffset RBRACKET | LBRACE expr=expr RBRACE
 
      -- first/first conflict resolved by LA(2)
      --(expr allows STRING_VARNAME too - but without [expr])
-    DOLLAR_OPEN_CURLY_BRACES ( ?[: LA(2).kind == Token_LBRACKET:] STRING_VARNAME LBRACKET expr=expr RBRACKET RBRACE
+    DOLLAR_OPEN_CURLY_BRACES ( ?[: LA(2).kind == Token_LBRACKET:] STRING_VARNAME arrayIndex=arrayIndexSpecifier RBRACE
       | expr=expr RBRACE )
   | variable=variableIdentifier (OBJECT_OPERATOR propertyIdentifier=identifier | LBRACKET offset=encapsVarOffset RBRACKET | 0)
   | CURLY_OPEN expr=expr RBRACE

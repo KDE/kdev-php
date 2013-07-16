@@ -414,6 +414,48 @@ void TestExpressionParser::shortArray()
     QCOMPARE(res.type().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
 }
 
+void TestExpressionParser::arrayFunctionDereferencing_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("globalFunction") << "<? function foo() { return [1, 2]; }\n"
+                                       "$a = foo()[0];\n";
+
+    QTest::newRow("classMethod") << "<? class foo{ function bar() { return [1, 2]; } }\n"
+                                       "$obj = new foo(); $a = $obj->bar()[0];\n";
+
+    QTest::newRow("staticClassMethod") << "<? class foo{ static function bar() { return [1, 2]; } }\n"
+                                       "$a = foo::bar()[0];\n";
+}
+
+void TestExpressionParser::arrayFunctionDereferencing()
+{
+    // see bug https://bugs.kde.org/show_bug.cgi?id=305779
+    QFETCH(QString, code);
+    /*
+    QByteArray method("<? function foo() { return [1, 2]; }\n"
+                      "class obj { static function bar() { return [1, 2]; } }\n"
+                      "$myObj = new obj();\n"
+                      // actual test stuff:
+                      "$a = foo()[0];\n"
+                      "$b = $myObj->bar()[0];\n"
+                      "$c = obj::bar()[0];\n");*/
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+
+    Declaration* decl = top->localDeclarations().last();
+    IntegralType::Ptr type = decl->abstractType().cast<IntegralType>();
+    QVERIFY(type);
+    QEXPECT_FAIL("", "we'd need advanced array support to know that [0] returns a int...", Continue);
+    QCOMPARE(type->dataType(), static_cast<uint>(IntegralType::TypeInt));
+    // fallback
+    QCOMPARE(type->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+}
+
 }
 
 #include "expressionparser.moc"

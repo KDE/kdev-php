@@ -45,6 +45,8 @@ private slots:
     void findArg();
     void array();
     void shortArray();
+    void arrayFunctionDereferencing_data();
+    void arrayFunctionDereferencing();
 };
 
 }

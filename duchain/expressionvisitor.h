@@ -54,7 +54,7 @@ protected:
     KDevelop::DeclarationPointer processVariable( VariableIdentifierAst* variable);
 
     void visitAssignmentExpression(AssignmentExpressionAst *node);
-    virtual void visitBaseVariable(BaseVariableAst* node);
+    virtual void visitArrayIndexSpecifier(ArrayIndexSpecifierAst* node);
     void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
     void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
     void visitVarExpressionNormal(VarExpressionNormalAst *node);
