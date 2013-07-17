@@ -476,6 +476,32 @@ void TestExpressionParser::arrayLiteralDereferencing()
     QCOMPARE(type->dataType(), static_cast<uint>(IntegralType::TypeMixed));
 }
 
+void TestExpressionParser::stringAsArray_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("constantEncapsedString") << "<? $a = 'string'[1];\n";
+
+    QTest::newRow("dynamicString") << "<? $string = 'Hello';\n"
+                                      "$a = \"$string World\"[1];\n";
+}
+
+void TestExpressionParser::stringAsArray()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+
+    Declaration* decl = top->localDeclarations().last();
+    IntegralType::Ptr type = decl->abstractType().cast<IntegralType>();
+    QVERIFY(type);
+    QCOMPARE(type->dataType(), static_cast<uint>(IntegralType::TypeString));
+}
+
 }
 
 #include "expressionparser.moc"

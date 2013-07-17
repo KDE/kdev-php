@@ -615,6 +615,9 @@ expression=booleanOrExpression
    LBRACKET (expr=expr | 0) RBRACKET
 -> arrayIndexSpecifier ;;
 
+   LBRACKET (expr=expr) RBRACKET
+-> stringIndexSpecifier ;;
+
     stringFunctionNameOrClass=namespacedIdentifier (
         LPAREN stringParameterList=functionCallParameterList RPAREN
       | PAAMAYIM_NEKUDOTAYIM
@@ -794,7 +797,7 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
     commonScalar=commonScalar
   | constantOrClassConst=constantOrClassConst
   | varname=STRING_VARNAME
-  | DOUBLE_QUOTE encapsList=encapsList DOUBLE_QUOTE
+  | DOUBLE_QUOTE encapsList=encapsList DOUBLE_QUOTE stringIndex=stringIndexSpecifier*
   | START_HEREDOC encapsList=encapsList END_HEREDOC
 -> scalar ;;
 
@@ -824,7 +827,7 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
 
     LNUMBER                  [: (*yynode)->scalarType = ScalarTypeInt; :]
   | DNUMBER                  [: (*yynode)->scalarType = ScalarTypeFloat; :]
-  | string=CONSTANT_ENCAPSED_STRING [: (*yynode)->scalarType = ScalarTypeString; :]
+  | string=CONSTANT_ENCAPSED_STRING [: (*yynode)->scalarType = ScalarTypeString; :] stringIndex=stringIndexSpecifier*
   | LINE                     [: (*yynode)->scalarType = ScalarTypeInt; :]
   | FILE                     [: (*yynode)->scalarType = ScalarTypeString; :]
   | CLASS_C                  [: (*yynode)->scalarType = ScalarTypeString; :]

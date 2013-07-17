@@ -49,6 +49,8 @@ private slots:
     void arrayFunctionDereferencing();
     void arrayLiteralDereferencing_data();
     void arrayLiteralDereferencing();
+    void stringAsArray_data();
+    void stringAsArray();
 };
 
 }
