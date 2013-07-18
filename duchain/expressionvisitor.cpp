@@ -188,7 +188,12 @@ void ExpressionVisitor::visitVariable(VariableAst* node)
 void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *node)
 {
     DefaultVisitor::visitVarExpressionNewObject(node);
-    if (node->className->identifier) {
+    if (node->className->staticIdentifier != -1) {
+        static const QualifiedIdentifier id("static");
+        DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
+        usingDeclaration(node->className, dec);
+        m_result.setDeclaration(dec);
+    } else if (node->className->identifier) {
         const QualifiedIdentifier id = identifierForNamespace(node->className->identifier, m_editor);
         DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
         usingDeclaration(node->className->identifier->namespaceNameSequence->back()->element, dec);
@@ -352,10 +357,6 @@ DUContext* ExpressionVisitor::findClassContext(NamespacedIdentifierAst* classNam
 {
     DUContext* context = 0;
     const QualifiedIdentifier id = identifierForNamespace(className, m_editor);
-    static const QualifiedIdentifier staticQId("static");
-    if (id.count() == 1 && id == staticQId) {
-        return m_currentContext->parentContext();
-    }
     DeclarationPointer declaration = findDeclarationImport(ClassDeclarationType, id);
     usingDeclaration(className->namespaceNameSequence->back()->element, declaration);
     buildNamespaceUses(className, id);

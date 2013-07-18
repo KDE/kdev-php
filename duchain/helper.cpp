@@ -85,10 +85,21 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, Qualif
     static const QualifiedIdentifier selfQId("self");
     /// Qualified identifier for 'parent'
     static const QualifiedIdentifier parentQId("parent");
+    /// Qualified identifier for 'static'
+    static const QualifiedIdentifier staticQId("static");
 
     ifDebug(kDebug() << id.toString() << declarationType;)
     if (declarationType == ClassDeclarationType && id == selfQId) {
         DUChainReadLocker lock(DUChain::lock());
+        if (currentContext->type() == DUContext::Class) {
+            return DeclarationPointer(currentContext->owner());
+        } else if (currentContext->parentContext() && currentContext->parentContext()->type() == DUContext::Class) {
+            return DeclarationPointer(currentContext->parentContext()->owner());
+        } else {
+            return DeclarationPointer();
+        }
+    } else if (declarationType == ClassDeclarationType && id == staticQId) {
+        DUChainReadLocker lock;
         if (currentContext->type() == DUContext::Class) {
             return DeclarationPointer(currentContext->owner());
         } else if (currentContext->parentContext() && currentContext->parentContext()->type() == DUContext::Class) {

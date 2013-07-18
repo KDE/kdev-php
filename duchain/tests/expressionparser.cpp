@@ -77,6 +77,24 @@ void TestExpressionParser::newSelf()
     QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier("a"));
 }
 
+void TestExpressionParser::newStatic()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { function self() {  } }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    ExpressionParser p(true);
+    ExpressionEvaluationResult res = p.evaluateType( QByteArray("new static()"),
+                                        DUContextPointer(top->childContexts().first()->childContexts().last()),
+                                        CursorInRevision(0, 30));
+    QVERIFY(res.type().cast<StructureType>());
+    QCOMPARE(res.type().cast<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("a"));
+}
+
 void TestExpressionParser::memberVariable()
 {
     //                 0         1         2         3         4         5         6         7

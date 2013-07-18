@@ -764,6 +764,7 @@ expression=booleanOrExpression
 --TODO     --resolve STRING vs. staticMember conflict
 --     ?[: LA(2).kind != Token_PAAMAYIM_NEKUDOTAYIM :]
     identifier=namespacedIdentifier
+  | staticIdentifier = STATIC
   | dynamicClassNameReference=dynamicClassNameReference
 -> classNameReference ;;
 

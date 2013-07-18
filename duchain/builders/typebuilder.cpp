@@ -76,7 +76,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         iType = IntegralType::TypeNull;
     } else if (lType == "void") {
         iType = IntegralType::TypeVoid;
-    } else if (lType == "self" || lType == "this") {
+    } else if (lType == "self" || lType == "this" || lType == "static") {
         DUChainReadLocker lock(DUChain::lock());
         if ( currentContext()->type() == DUContext::Class && currentContext()->owner() ) {
             return currentContext()->owner()->abstractType();
