@@ -28,7 +28,7 @@
 
 namespace Php
 {
-class AstNode;
+struct AstNode;
 class EditorIntegrator;
 
 class KDEVPHPDUCHAIN_EXPORT ExpressionParser

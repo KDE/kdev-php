@@ -35,7 +35,7 @@ class SimpleCursor;
 namespace Php
 {
 class TokenStream;
-class StartAst;
+struct StartAst;
 
 typedef QPair<KDevelop::DUContextPointer, KDevelop::RangeInRevision> SimpleUse;
 

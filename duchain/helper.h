@@ -33,11 +33,11 @@ class DUContext;
 }
 namespace Php
 {
-class UnaryExpressionAst;
-class AstNode;
-class CommonScalarAst;
+struct UnaryExpressionAst;
+struct AstNode;
+struct CommonScalarAst;
+struct NamespacedIdentifierAst;
 class EditorIntegrator;
-class NamespacedIdentifierAst;
 
 enum DeclarationType {
     ClassDeclarationType,

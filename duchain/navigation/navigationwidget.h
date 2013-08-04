@@ -24,7 +24,7 @@
 #include "../phpduchainexport.h"
 
 namespace KDevelop {
-    struct IncludeItem;
+class IncludeItem;
 }
 
 namespace Php

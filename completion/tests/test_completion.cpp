@@ -49,10 +49,10 @@ namespace Php
 class TestCodeCompletionModel : public CodeCompletionModel
 {
 public:
+    using CodeCompletionModel::foundDeclarations;
     //normally set by worker, but in test we don't have a worker
-    //NOTE: ignore the compiler warning about foundDeclarations being hidden
-    //TODO: can this be fixed?
-    void foundDeclarations(QList<KDevelop::CompletionTreeItemPointer> items, CodeCompletionContext* completionContext) {
+    void foundDeclarations(QList<KDevelop::CompletionTreeItemPointer> items, CodeCompletionContext* completionContext)
+    {
         m_completionItems.clear();
         foreach(const CompletionTreeItemPointer &i, items) {
             m_completionItems << KSharedPtr<CompletionTreeElement>::staticCast(i);

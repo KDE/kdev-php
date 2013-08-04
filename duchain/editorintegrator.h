@@ -29,7 +29,7 @@ namespace Php
 {
 
 class ParseSession;
-class AstNode;
+struct AstNode;
 
 
 /**
