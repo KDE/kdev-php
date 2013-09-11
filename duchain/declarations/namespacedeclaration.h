@@ -23,7 +23,6 @@
 
 #include <language/duchain/declaration.h>
 
-#include <language/duchain/declaration.h>
 #include <language/duchain/declarationdata.h>
 #include <language/duchain/indexedstring.h>
 
