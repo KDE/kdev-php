@@ -810,7 +810,7 @@ DUContext* getClassContext(const QualifiedIdentifier &identifier, DUContext* cur
 }
 
 ///TODO: we need to handle assignment to array-members properly
-///      currently we just make sure the the array is declared, but don't know
+///      currently we just make sure the array is declared, but don't know
 ///      anything about its contents
 void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node)
 {

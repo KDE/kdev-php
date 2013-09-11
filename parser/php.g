@@ -48,7 +48,7 @@
 --  2) better cope with invalid code, have at least a partial AST
 --  3) investigate whether expanding the visitor lookup to a
 --     (albeit huge) switch() in KDev-PG-Qt gives a significant performance gain
---     I have the gut feeling that the current lookup takes unneccessary much time
+--     I have the gut feeling that the current lookup takes unnecessary much time
 --
 
 ------------------------------------------------------------

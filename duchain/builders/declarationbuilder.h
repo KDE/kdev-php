@@ -110,7 +110,7 @@ protected:
 
 private:
     /// because the predeclarationbuilder runs before us,
-    /// we always "think" that we are recompiling, while this is not neccessarily true
+    /// we always "think" that we are recompiling, while this is not necessarily true
     bool m_actuallyRecompiling;
 
     struct FindVariableResults {
@@ -198,7 +198,7 @@ private:
                             const KDevelop::QualifiedIdentifier& identifier, AstNode* node );
 
     /**
-     * Declare a variable in @p parentCtx. If the the variable is already defined in the
+     * Declare a variable in @p parentCtx. If the variable is already defined in the
      * context and it's last type equals @p type, don't do anything.
      *
      * @param parentCtx  The context you want to declare the variable in.

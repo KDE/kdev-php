@@ -83989,7 +83989,7 @@ class OverflowException extends RuntimeException {
  **/
 class ParentIterator extends RecursiveFilterIterator implements RecursiveIterator, OuterIterator, Traversable, Iterator {
     /**
-     * Determines if the the current element has children.
+     * Determines if the current element has children.
      * 
      * @return bool
      * @since PHP 5 >= 5.1.0
