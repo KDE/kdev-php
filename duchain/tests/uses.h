@@ -37,6 +37,9 @@ private slots:
     void memberVariable();
     void variable();
     void varInString();
+    void variableInNamespace();
+    void globalVariableInNamespace();
+    void variableInOtherNamespace();
     void memberVarInString();
     void memberFunctionInString();
     void variableTypeChange();

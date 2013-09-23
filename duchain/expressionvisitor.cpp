@@ -63,30 +63,25 @@ DeclarationPointer ExpressionVisitor::processVariable(VariableIdentifierAst* var
 
     ifDebug(kDebug() << "processing variable" << identifier.toString() << position.castToSimpleCursor();)
 
+    DUChainReadLocker lock;
+
     if (identifier.nameEquals(Identifier("this"))) {
-        DUChainReadLocker lock(DUChain::lock());
         if (m_currentContext->parentContext()
                 && m_currentContext->parentContext()->type() == DUContext::Class
                 && m_currentContext->parentContext()->owner()) {
             ret = m_currentContext->parentContext()->owner();
         }
     } else {
-        DUChainReadLocker lock(DUChain::lock());
         //DontSearchInParent-flag because (1) in Php global variables aren't available in function
         //context and (2) a function body consists of a single context (so this is no problem)
-        QList<Declaration*> decls = m_currentContext->findDeclarations(identifier, position,
-                                                            0, DUContext::DontSearchInParent);
-        for (int i = decls.count() - 1; i >= 0; i--) {
-            Declaration *dec = decls.at(i);
-            if (dec->kind() == Declaration::Instance && dynamic_cast<VariableDeclaration*>(dec)) {
-                ret = dec;
-                break;
-            }
-        }
+        ret = findVariableDeclaration(m_currentContext, identifier, position, DUContext::DontSearchInParent);
+    }
+    if (!ret && m_currentContext->type() == DUContext::Namespace)
+    {
+        ret = findVariableDeclaration(m_currentContext, identifier, position, DUContext::NoSearchFlags);
     }
     if (!ret) {
         //look for a function argument
-        DUChainReadLocker lock(DUChain::lock());
         ///TODO: why doesn't m_currentContext->findDeclarations() work?
         ///      evaluate if the stuff below is fast enough (faster?) than findDeclarations()
         ///see r1028306
@@ -106,7 +101,6 @@ DeclarationPointer ExpressionVisitor::processVariable(VariableIdentifierAst* var
     }
     if (!ret) {
         //look for a superglobal variable
-        DUChainReadLocker lock(DUChain::lock());
         foreach(Declaration* dec, m_currentContext->topContext()->findDeclarations(identifier, position)) {
             VariableDeclaration* varDec = dynamic_cast<VariableDeclaration*>(dec);
             if (varDec && varDec->isSuperglobal()) {
@@ -115,6 +109,9 @@ DeclarationPointer ExpressionVisitor::processVariable(VariableIdentifierAst* var
             }
         }
     }
+
+    lock.unlock();
+
     if ( !m_isAssignmentExpressionEqual || identifier.nameEquals( Identifier("this") )
          // might be something like $s = $s . $s; in which case we have to add a use for the first $s
          || (ret && ret->range().end < position) )
@@ -783,6 +780,21 @@ DeclarationPointer ExpressionVisitor::findDeclarationImport( DeclarationType dec
                                                              const QualifiedIdentifier& identifier)
 {
     return findDeclarationImportHelper(m_currentContext, identifier, declarationType);
+}
+
+Declaration* ExpressionVisitor::findVariableDeclaration(DUContext* context, Identifier identifier,
+                                                        CursorInRevision position, DUContext::SearchFlag flag)
+{
+    QList<Declaration*> decls = context->findDeclarations(identifier, position,
+                                                        0, flag);
+    for (int i = decls.count() - 1; i >= 0; i--) {
+        Declaration *dec = decls.at(i);
+        if (dec->kind() == Declaration::Instance && dynamic_cast<VariableDeclaration*>(dec)) {
+            return dec;
+        }
+    }
+
+    return NULL;
 }
 
 }

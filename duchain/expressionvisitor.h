@@ -87,7 +87,8 @@ protected:
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType,
                                                        const KDevelop::QualifiedIdentifier& identifier);
-
+    KDevelop::Declaration* findVariableDeclaration(KDevelop::DUContext* context, KDevelop::Identifier identifier,
+                                                   KDevelop::CursorInRevision position, KDevelop::DUContext::SearchFlag flag);
 protected:
     EditorIntegrator* m_editor;
 

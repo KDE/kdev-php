@@ -812,6 +812,12 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
     }
     //own closeDeclaration() that doesn't use lastType()
     dec->setType(type);
+
+    // variable declarations are not namespaced in PHP
+    if (currentContext()->type() == DUContext::Namespace) {
+        dec->setContext(currentContext()->topContext());
+    }
+
     eventuallyAssignInternalContext();
     DeclarationBuilderBase::closeDeclaration();
 }

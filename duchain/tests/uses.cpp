@@ -139,6 +139,47 @@ void TestUses::varInString()
     compareUses(top->localDeclarations().at(0), ranges);
 }
 
+void TestUses::variableInNamespace()
+{
+
+    //                        0         1         2         3         4         5         6         7
+    //                        01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<?php\nclass A { public $foo; } namespace Foo { $a = new A(); $a; $a->foo; foo($a); };");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+    QList<RangeInRevision> ranges;
+    ranges << RangeInRevision(1, 55, 1, 57) << RangeInRevision(1, 59, 1, 61) << RangeInRevision(1, 72, 1, 74);
+    compareUses(top->localDeclarations().at(2), ranges);
+}
+
+void TestUses::globalVariableInNamespace()
+{
+
+    //                        0         1         2         3         4         5         6         7
+    //                        01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<?php\nclass A { public $foo; } $a = new A(); namespace Foo { $a; $a->foo; foo($a); };");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+    QList<RangeInRevision> ranges;
+    ranges << RangeInRevision(1, 55, 1, 57) << RangeInRevision(1, 59, 1, 61) << RangeInRevision(1, 72, 1, 74);
+    compareUses(top->localDeclarations().at(1), ranges);
+}
+
+void TestUses::variableInOtherNamespace()
+{
+    //                        0         1         2         3         4         5         6         7
+    //                        01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<?php\nclass A { public $foo; } namespace Foo { $a = new A(); } namespace Bar { $a; $a->foo; foo($a); };");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+    QList<RangeInRevision> ranges;
+    ranges << RangeInRevision(1, 73, 1, 75) << RangeInRevision(1, 77, 1, 79) << RangeInRevision(1, 90, 1, 92);
+    compareUses(top->localDeclarations().at(2), ranges);
+}
+
 void TestUses::memberVarInString()
 {
 
@@ -898,7 +939,7 @@ void TestUses::namespaces()
                                           << RangeInRevision(13, 19, 13, 22)
                                           << RangeInRevision(14, 21, 14, 24)
                                           << RangeInRevision(14, 49, 14, 52));
-    QCOMPARE(dec->internalContext()->localDeclarations().size(), 5);
+    QCOMPARE(dec->internalContext()->localDeclarations().size(), 4);
     foreach(Declaration* d, dec->internalContext()->localDeclarations()) {
         kDebug() << d->toString() << d->qualifiedIdentifier();
     }
