@@ -36,6 +36,9 @@ private slots:
     void newStatic();
     void memberVariable();
     void memberFunction();
+    void newTrait();
+    void invalidTrait_data();
+    void invalidTrait();
     void globalFunction();
     void chainCall();
     void thisObject();

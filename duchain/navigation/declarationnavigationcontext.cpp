@@ -67,6 +67,8 @@ void DeclarationNavigationContext::htmlClass()
         // write class type
         if (classDecl->classType() == ClassDeclarationData::Interface) {
             modifyHtml() += "interface ";
+        } else if (classDecl->classType() == ClassDeclarationData::Trait) {
+            modifyHtml() += "trait ";
         } else {
             modifyHtml() += "class ";
         }

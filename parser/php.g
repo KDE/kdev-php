@@ -228,7 +228,7 @@ namespace KDevelop
        FILE ("__FILE__"), COMMENT ("comment"), DOC_COMMENT ("doc comment"),  PAAMAYIM_NEKUDOTAYIM ("::"),
        INCLUDE ("include"), INCLUDE_ONCE ("include_once"), EVAL ("eval"), REQUIRE ("require"),
        REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use"),
-       GOTO ("goto") ;;
+       GOTO ("goto"), TRAIT ("trait") ;;
 
 -- casts:
 %token INT_CAST ("int cast"), DOUBLE_CAST ("double cast"), STRING_CAST ("string cast"),
@@ -293,6 +293,7 @@ namespace KDevelop
     statement=statement )
   | functionDeclaration=functionDeclarationStatement
   | classDeclaration=classDeclarationStatement
+  | traitDeclaration=traitDeclarationStatement
   | interfaceDeclaration=interfaceDeclarationStatement
   | HALT_COMPILER LPAREN RPAREN SEMICOLON -- Lexer stops allready
 -> topStatement ;;
@@ -890,6 +891,10 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
     INTERFACE interfaceName=identifier (EXTENDS extends=classImplements | 0)
     LBRACE try/recover(body=classBody) RBRACE
 -> interfaceDeclarationStatement ;;
+
+    TRAIT traitName=identifier
+    LBRACE body=classBody RBRACE
+-> traitDeclarationStatement ;;
 
     modifier=optionalClassModifier CLASS className=identifier
         (EXTENDS extends=classExtends | 0)

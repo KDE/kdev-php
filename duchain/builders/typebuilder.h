@@ -50,6 +50,7 @@ public:
 protected:
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst* node);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
+    virtual void visitTraitDeclarationStatement(TraitDeclarationStatementAst* node);
     virtual void visitClassStatement(ClassStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst *node);
     virtual void visitConstantDeclaration(ConstantDeclarationAst* node);

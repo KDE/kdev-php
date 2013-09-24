@@ -287,6 +287,15 @@ void TypeBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStateme
     TypeBuilderBase::visitInterfaceDeclarationStatement(node);
 }
 
+void TypeBuilder::visitTraitDeclarationStatement(TraitDeclarationStatementAst* node)
+{
+    // the predeclaration builder should have set up a type already
+    // and the declarationbuilder should have set that as current type
+    Q_ASSERT(hasCurrentType() && currentType<StructureType>());
+
+    TypeBuilderBase::visitTraitDeclarationStatement(node);
+}
+
 void TypeBuilder::visitClassStatement(ClassStatementAst *node)
 {
     if (node->methodName) {

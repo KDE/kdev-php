@@ -657,6 +657,8 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_INSTANCEOF;
             } else if (name == "interface") {
                 token = Parser::Token_INTERFACE;
+            } else if (name == "trait") {
+                token = Parser::Token_TRAIT;
             } else if (name == "new") {
                 token = Parser::Token_NEW;
             } else if (name == "private") {

@@ -95,6 +95,9 @@ QString ClassDeclaration::toString() const
     case ClassDeclarationData::Interface:
       ret += "interface ";
       break;
+    case ClassDeclarationData::Trait:
+      ret += "trait ";
+      break;
     case ClassDeclarationData::Union:
       ret += "union ";
       break;

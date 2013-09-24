@@ -67,6 +67,7 @@ protected:
 //     virtual void visitNode(AstNode* node);
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
+    virtual void visitTraitDeclarationStatement(TraitDeclarationStatementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst* node);
     virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range);

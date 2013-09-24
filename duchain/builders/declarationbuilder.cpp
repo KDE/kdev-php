@@ -189,6 +189,16 @@ void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclaration
     closeDeclaration();
 }
 
+void DeclarationBuilder::visitTraitDeclarationStatement(TraitDeclarationStatementAst * node)
+{
+    ClassDeclaration* traitDec = openTypeDeclaration(node->traitName, ClassDeclarationData::Trait);
+    openType(traitDec->abstractType());
+    DeclarationBuilderBase::visitTraitDeclarationStatement(node);
+    closeType();
+    closeDeclaration();
+    m_upcomingClassVariables.clear();
+}
+
 ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, ClassDeclarationData::ClassType type)
 {
     ClassDeclaration* classDec = m_types.value(name->string, 0);
@@ -260,11 +270,12 @@ bool DeclarationBuilder::isBaseMethodRedeclaration(const IdentifierPair &ids, Cl
 void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
 {
     setComment(formatComment(node, m_editor));
+
+    ClassDeclaration *parent =  dynamic_cast<ClassDeclaration*>(currentDeclaration());
+    Q_ASSERT(parent);
+
     if (node->methodName) {
         //method declaration
-
-        ClassDeclaration *parent =  dynamic_cast<ClassDeclaration*>(currentDeclaration());
-        Q_ASSERT(parent);
 
         IdentifierPair ids = identifierPairForNode(node->methodName);
         if (m_reportErrors) {   // check for redeclarations
@@ -360,6 +371,10 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
                 }
                 if (m_currentModifers & ModifierAbstract) {
                     reportError(i18n("Properties cannot be declared abstract."), node->modifiers);
+                }
+                if ((parent->classType() == ClassDeclarationData::Trait) && (m_currentModifers & ModifierStatic))
+                {
+                    reportError(i18n("Traits cannot have static properties."), node->modifiers);
                 }
             }
         } else {
@@ -491,7 +506,18 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
 
 void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
 {
-    if (m_reportErrors) {   // check for redeclarations
+    if (m_reportErrors) {
+        // Check for constants in traits
+        if (isMatch(currentDeclaration(), ClassDeclarationType)) {
+            ClassDeclaration *parent =  dynamic_cast<ClassDeclaration*>(currentDeclaration());
+            Q_ASSERT(parent);
+
+            if (parent->classType() == ClassDeclarationData::Trait) {
+                reportError(i18n("Traits cannot have constants."), node);
+            }
+        }
+
+        // check for redeclarations
         DUChainWriteLocker lock(DUChain::lock());
         foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first(), startPos(node->identifier)))
         {

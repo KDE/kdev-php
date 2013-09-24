@@ -214,6 +214,14 @@ void ContextBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStat
     closeContext();
 }
 
+void ContextBuilder::visitTraitDeclarationStatement(TraitDeclarationStatementAst* node)
+{
+    openContext(node, editorFindRange(node, node), DUContext::Class, identifierPairForNode(node->traitName).second);
+    classContextOpened(currentContext()); //This callback is needed, so we can set the internal context and so find the declaration for the context (before closeDeclaration())
+    DefaultVisitor::visitTraitDeclarationStatement(node);
+    closeContext();
+}
+
 void ContextBuilder::visitClassStatement(ClassStatementAst *node)
 {
     visitOptionalModifiers(node->modifiers);

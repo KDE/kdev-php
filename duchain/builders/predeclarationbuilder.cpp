@@ -112,6 +112,33 @@ void PreDeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarat
     closeDeclaration();
 }
 
+void PreDeclarationBuilder::visitTraitDeclarationStatement(TraitDeclarationStatementAst *node)
+{
+    setComment(formatComment(node, m_editor));
+    {
+        IdentifierPair ids = identifierPairForNode(node->traitName);
+        StructureType::Ptr type(new StructureType());
+        type->setPrettyName(ids.first);
+
+        DUChainWriteLocker lock;
+
+        ClassDeclaration* dec = openDefinition<ClassDeclaration>(ids.second, editorFindRange(node->traitName, node->traitName));
+        dec->setPrettyName(ids.first);
+        dec->setKind(KDevelop::Declaration::Type);
+        dec->clearBaseClasses();
+        dec->setClassType(ClassDeclarationData::Trait);
+
+        type->setDeclaration(dec);
+        dec->setType(type);
+
+        m_types->insert(node->traitName->string, dec);
+    }
+
+    PreDeclarationBuilderBase::visitTraitDeclarationStatement(node);
+
+    closeDeclaration();
+}
+
 void PreDeclarationBuilder::visitClassVariable(ClassVariableAst* node)
 {
     m_upcomingClassVariables->append(identifierForNode(node->variable));

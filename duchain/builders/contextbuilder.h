@@ -74,6 +74,7 @@ protected:
 
     virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst*);
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
+    virtual void visitTraitDeclarationStatement(TraitDeclarationStatementAst* node);
     virtual void visitClassStatement(ClassStatementAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
     virtual void visitClosure(ClosureAst* node);

@@ -644,6 +644,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_RPAREN:
         case Parser::Token_STRING_VARNAME:
         case Parser::Token_SWITCH:
+        case Parser::Token_TRAIT:
         case Parser::Token_TRY:
         case Parser::Token_UNSET:
         case Parser::Token_USE:

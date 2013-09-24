@@ -130,6 +130,43 @@ void TestExpressionParser::memberFunction()
     QCOMPARE(res.allDeclarations().size(), 1);
     QCOMPARE(res.allDeclarations().first().data(), top->childContexts().first()->localDeclarations().first());
 }
+
+void TestExpressionParser::newTrait()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? trait A { function foo() {} }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(top->problems().isEmpty());
+
+    QCOMPARE(top->childContexts().size(), 1);
+    QVERIFY(top->childContexts().at(0)->type() == DUContext::Class);
+}
+
+void TestExpressionParser::invalidTrait_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("staticProperty") << "<? trait A { public static $foo; }\n";
+
+    QTest::newRow("constant") << "<? trait A { const FOO = ''; }\n";
+}
+
+void TestExpressionParser::invalidTrait()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(!top->problems().isEmpty());
+}
+
 void TestExpressionParser::globalFunction()
 {
     //                 0         1         2         3         4         5         6         7
