@@ -50,8 +50,8 @@ enum DeclarationType {
 KDEVPHPDUCHAIN_EXPORT bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);
 
 KDEVPHPDUCHAIN_EXPORT KDevelop::DeclarationPointer findDeclarationImportHelper(KDevelop::DUContext* currentContext,
-        KDevelop::QualifiedIdentifier id,
-        DeclarationType declarationType);
+                                                                               const KDevelop::QualifiedIdentifier& id,
+                                                                               DeclarationType declarationType);
 
 KDEVPHPDUCHAIN_EXPORT QByteArray formatComment(AstNode* node, EditorIntegrator* editor);
 

@@ -78,7 +78,7 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
     return false;
 }
 
-DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, QualifiedIdentifier id,
+DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const QualifiedIdentifier& id,
         DeclarationType declarationType)
 {
     /// Qualified identifier for 'self'
