@@ -147,6 +147,22 @@ void TestExpressionParser::newTrait()
     QVERIFY(top->childContexts().at(0)->type() == DUContext::Class);
 }
 
+void TestExpressionParser::newTraitWithAbstractMethod()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? trait A { public abstract function foo(); }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(top->problems().isEmpty());
+
+    QCOMPARE(top->childContexts().size(), 1);
+    QVERIFY(top->childContexts().at(0)->type() == DUContext::Class);
+}
+
 void TestExpressionParser::invalidTrait_data()
 {
     QTest::addColumn<QString>("code");

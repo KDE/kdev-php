@@ -333,7 +333,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
                     if (!m_reportErrors) {
                         dec->setIsAbstract(true);
                     } else {
-                        if (parent->classModifier() != ClassDeclarationData::Abstract) {
+                        if (parent->classModifier() != ClassDeclarationData::Abstract && parent->classType() != ClassDeclarationData::Trait) {
                             reportError(i18n("Class %1 contains abstract method %2 and must therefore be declared abstract "
                                              "or implement the method.",
                                              parent->identifier().toString(),

@@ -37,6 +37,7 @@ private slots:
     void memberVariable();
     void memberFunction();
     void newTrait();
+    void newTraitWithAbstractMethod();
     void invalidTrait_data();
     void invalidTrait();
     void globalFunction();
