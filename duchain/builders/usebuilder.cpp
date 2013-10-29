@@ -83,6 +83,68 @@ void UseBuilder::visitClassExtends(ClassExtendsAst *node)
     buildNamespaceUses(node->identifier);
 }
 
+void UseBuilder::visitClassStatement(ClassStatementAst *node)
+{
+     if (!node->traitsSequence) {
+        UseBuilderBase::visitClassStatement(node);
+        return;
+     }
+
+    const KDevPG::ListNode< NamespacedIdentifierAst* >* it = node->traitsSequence->front();
+    forever {
+        buildNamespaceUses(it->element, ClassDeclarationType);
+
+        if ( it->hasNext() ) {
+            it = it->next;
+        } else {
+            break;
+        }
+    }
+
+    if (node->imports) {
+        visitTraitAliasDeclaration(node->imports);
+    }
+
+    UseBuilderBase::visitClassStatement(node);
+}
+
+void UseBuilder::visitTraitAliasStatement(TraitAliasStatementAst *node)
+{
+    if (node->conflictIdentifierSequence) {
+        const KDevPG::ListNode< NamespacedIdentifierAst* >* it = node->conflictIdentifierSequence->front();
+        forever {
+            buildNamespaceUses(it->element, ClassDeclarationType);
+
+            if ( it->hasNext() ) {
+                it = it->next;
+            } else {
+                break;
+            }
+        }
+    }
+
+    DUChainWriteLocker lock;
+    DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, identifierForNamespace(node->importIdentifier->identifier, m_editor));
+
+    if (dec) {
+        QualifiedIdentifier original = identifierPairForNode(node->importIdentifier->methodIdentifier).second;
+        QList <Declaration*> list = dec.data()->internalContext()->findLocalDeclarations(original.last(), dec.data()->internalContext()->range().start);
+
+        if (!list.isEmpty()) {
+            UseBuilderBase::newUse(node->importIdentifier->methodIdentifier, DeclarationPointer(list.first()));
+        }
+    }
+
+    lock.unlock();
+
+    visitTraitAliasIdentifier(node->importIdentifier);
+}
+
+void UseBuilder::visitTraitAliasIdentifier(TraitAliasIdentifierAst *node)
+{
+    buildNamespaceUses(node->identifier, ClassDeclarationType);
+}
+
 void UseBuilder::visitExpr(ExprAst* node)
 {
     visitNodeWithExprVisitor(node);

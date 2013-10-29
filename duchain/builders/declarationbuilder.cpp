@@ -44,7 +44,11 @@
 #include "../declarations/functiondeclaration.h"
 #include "../declarations/namespacedeclaration.h"
 #include "../declarations/namespacealiasdeclaration.h"
+#include "../declarations/traitmethodaliasdeclaration.h"
+#include "../declarations/traitmemberaliasdeclaration.h"
 #include "expressionvisitor.h"
+
+#define ifDebug(x)
 
 using namespace KDevelop;
 
@@ -287,7 +291,7 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
                 DUChainWriteLocker lock(DUChain::lock());
                 foreach(Declaration * dec, currentContext()->findLocalDeclarations(ids.second.first(), startPos(node->methodName)))
                 {
-                    if (wasEncountered(dec) && dec->isFunctionDeclaration()) {
+                    if (wasEncountered(dec) && dec->isFunctionDeclaration() && !dynamic_cast<TraitMethodAliasDeclaration*>(dec)) {
                         reportRedeclarationError(dec, node->methodName);
                         localError = true;
                         break;
@@ -363,6 +367,10 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
         DeclarationBuilderBase::visitClassStatement(node);
 
         closeDeclaration();
+    } else if (node->traitsSequence) {
+        DeclarationBuilderBase::visitClassStatement(node);
+
+        importTraitMethods(node);
     } else {
         if (node->modifiers) {
             m_currentModifers = node->modifiers->modifiers;
@@ -380,6 +388,106 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
         }
         DeclarationBuilderBase::visitClassStatement(node);
         m_currentModifers = 0;
+    }
+}
+
+void DeclarationBuilder::importTraitMethods(ClassStatementAst *node)
+{
+    // Add trait members that don't need special handling
+    const KDevPG::ListNode< NamespacedIdentifierAst* >* it = node->traitsSequence->front();
+    DUChainWriteLocker lock;
+    forever {
+        DeclarationPointer dec =  findDeclarationImport(ClassDeclarationType, identifierForNamespace(it->element, m_editor));
+
+        if (!dec || !dec->internalContext()) {
+            break;
+        }
+
+        QVector <Declaration*> declarations = dec.data()->internalContext()->localDeclarations(0);
+        QVector <Declaration*> localDeclarations = currentContext()->localDeclarations(0);
+
+        ifDebug(kDebug() << "Importing from" << dec.data()->identifier().toString() << "to" << currentContext()->localScopeIdentifier().toString();)
+
+        foreach (Declaration* import, declarations) {
+            Declaration* found = nullptr;
+            foreach (Declaration* local, localDeclarations) {
+                ifDebug(kDebug() << "Comparing" << import->identifier().toString() << "with" << local->identifier().toString();)
+                if (auto trait = dynamic_cast<TraitMethodAliasDeclaration*>(local)) {
+                    if (trait->aliasedDeclaration().data() == import) {
+                        ifDebug(kDebug() << "Already imported";)
+                        found = local;
+                        break;
+                    }
+                    if (local->identifier() == import->identifier()) {
+                        ClassMethodDeclaration* importMethod = dynamic_cast<ClassMethodDeclaration*>(import);
+                        if (trait->isOverriding(import->context()->indexedLocalScopeIdentifier())) {
+                            ifDebug(kDebug() << "Is overridden";)
+                            found = local;
+                            break;
+                        } else if (importMethod) {
+                            reportError(
+                                i18n("Trait method %1 has not been applied, because there are collisions with other trait methods on %2")
+                                .arg(importMethod->prettyName().str())
+                                .arg(dynamic_cast<ClassDeclaration*>(currentDeclaration())->prettyName().str())
+                                , it->element, ProblemData::Error
+                            );
+                            found = local;
+                            break;
+                        }
+                    }
+                }
+                if (auto trait = dynamic_cast<TraitMemberAliasDeclaration*>(local)) {
+                    if (trait->aliasedDeclaration().data() == import) {
+                        ifDebug(kDebug() << "Already imported";)
+                        found = local;
+                        break;
+                    }
+                }
+                if (local->identifier() == import->identifier()) {
+                    if (dynamic_cast<ClassMemberDeclaration*>(local) && dynamic_cast<ClassMemberDeclaration*>(import)) {
+                        found = local;
+                        break;
+                    }
+                }
+            }
+
+            if (found) {
+                setEncountered(found);
+                continue;
+            }
+
+            ifDebug(kDebug() << "Importing new declaration";)
+
+            CursorInRevision cursor = m_editor->findRange(it->element).start;
+
+            if (auto olddec = dynamic_cast<const ClassMethodDeclaration*>(import)) {
+                TraitMethodAliasDeclaration* newdec = openDefinition<TraitMethodAliasDeclaration>(olddec->qualifiedIdentifier(), RangeInRevision(cursor, cursor));
+                openAbstractType(olddec->abstractType());
+                newdec->setPrettyName(olddec->prettyName());
+                newdec->setAccessPolicy(olddec->accessPolicy());
+                newdec->setKind(Declaration::Type);
+                newdec->setAliasedDeclaration(IndexedDeclaration(olddec));
+                newdec->setStatic(olddec->isStatic());
+                closeType();
+                closeDeclaration();
+            } else if (auto olddec = dynamic_cast<const ClassMemberDeclaration*>(import)) {
+                TraitMemberAliasDeclaration* newdec = openDefinition<TraitMemberAliasDeclaration>(olddec->qualifiedIdentifier(), RangeInRevision(cursor, cursor));
+                openAbstractType(olddec->abstractType());
+                newdec->setAccessPolicy(olddec->accessPolicy());
+                newdec->setKind(Declaration::Instance);
+                newdec->setAliasedDeclaration(IndexedDeclaration(olddec));
+                newdec->setStatic(olddec->isStatic());
+                closeType();
+                closeDeclaration();
+            }
+
+        }
+
+        if ( it->hasNext() ) {
+            it = it->next;
+        } else {
+            break;
+        }
     }
 }
 
@@ -557,6 +665,96 @@ void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
     }
 }
 
+void DeclarationBuilder::visitTraitAliasStatement(TraitAliasStatementAst *node)
+{
+    DUChainWriteLocker lock;
+
+    DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, identifierForNamespace(node->importIdentifier->identifier, m_editor));
+
+    if (dec && dec.data()->internalContext()) {
+        createTraitAliasDeclarations(node, dec);
+    }
+
+    lock.unlock();
+
+    DeclarationBuilderBase::visitTraitAliasStatement(node);
+}
+
+void DeclarationBuilder::createTraitAliasDeclarations(TraitAliasStatementAst *node, DeclarationPointer dec)
+{
+    QualifiedIdentifier original = identifierPairForNode(node->importIdentifier->methodIdentifier).second;
+    QList <Declaration*> list = dec.data()->internalContext()->findLocalDeclarations(original.last(), dec.data()->internalContext()->range().start);
+
+    QualifiedIdentifier alias;
+    if (node->aliasIdentifier) {
+        alias = identifierPairForNode(node->aliasIdentifier).second;
+    } else {
+        alias = original;
+    }
+
+    if (!list.isEmpty()) {
+        ClassMethodDeclaration* olddec = dynamic_cast<ClassMethodDeclaration*>(list.first());
+        TraitMethodAliasDeclaration* newdec;
+
+        // no existing declaration found, create one
+        if (node->aliasIdentifier) {
+            newdec = openDefinition<TraitMethodAliasDeclaration>(alias, m_editor->findRange(node->aliasIdentifier));
+            newdec->setPrettyName(identifierPairForNode(node->aliasIdentifier).first);
+            newdec->setAccessPolicy(olddec->accessPolicy());
+            openAbstractType(olddec->abstractType());
+            if (node->modifiers) {
+                if (node->modifiers->modifiers & ModifierPublic) {
+                    newdec->setAccessPolicy(Declaration::Public);
+                } else if (node->modifiers->modifiers & ModifierProtected) {
+                    newdec->setAccessPolicy(Declaration::Protected);
+                } else if (node->modifiers->modifiers & ModifierPrivate) {
+                    newdec->setAccessPolicy(Declaration::Private);
+                }
+
+                if (node->modifiers->modifiers & ModifierFinal) {
+                    reportError(i18n("Cannot use 'final' as method modifier"), node->modifiers, ProblemData::Error);
+                }
+                if (node->modifiers->modifiers & ModifierStatic) {
+                    reportError(i18n("Cannot use 'static' as method modifier"), node->modifiers, ProblemData::Error);
+                }
+
+            }
+        } else {
+            CursorInRevision cursor = m_editor->findRange(node->importIdentifier).start;
+            newdec = openDefinition<TraitMethodAliasDeclaration>(alias, RangeInRevision(cursor, cursor));
+            newdec->setPrettyName(identifierPairForNode(node->importIdentifier->methodIdentifier).first);
+            newdec->setAccessPolicy(olddec->accessPolicy());
+            openAbstractType(olddec->abstractType());
+        }
+        newdec->setKind(Declaration::Type);
+        newdec->setAliasedDeclaration(IndexedDeclaration(olddec));
+        newdec->setStatic(olddec->isStatic());
+
+        QVector <IndexedQualifiedIdentifier> ids;
+
+        if (node->conflictIdentifierSequence) {
+            const KDevPG::ListNode< NamespacedIdentifierAst* >* it = node->conflictIdentifierSequence->front();
+            forever {
+                DeclarationPointer dec =  findDeclarationImport(ClassDeclarationType, identifierForNamespace(it->element, m_editor));
+                if (dec) {
+                    ids.append(IndexedQualifiedIdentifier(dec.data()->qualifiedIdentifier()));
+                }
+
+                if ( it->hasNext() ) {
+                    it = it->next;
+                } else {
+                    break;
+                }
+            }
+
+            newdec->setOverrides(ids);
+        }
+
+        closeType();
+        closeDeclaration();
+    }
+}
+
 void DeclarationBuilder::visitParameter(ParameterAst *node)
 {
     AbstractFunctionDeclaration* funDec = dynamic_cast<AbstractFunctionDeclaration*>(currentDeclaration());
@@ -676,6 +874,13 @@ void DeclarationBuilder::reportRedeclarationError(Declaration* declaration, AstN
     }
     if (declaration->context()->topContext()->url() == internalFunctionFile()) {
         reportError(i18n("Cannot redeclare PHP internal %1.", declaration->toString()), node);
+    } else if (auto trait = dynamic_cast<TraitMemberAliasDeclaration*>(declaration)) {
+        reportError(
+            i18n("%1 and %2 define the same property (%3) in the composition of %1. This might be incompatible, to improve maintainability consider using accessor methods in traits instead.")
+            .arg(dynamic_cast<ClassDeclaration*>(currentDeclaration())->prettyName().str())
+            .arg(dynamic_cast<ClassDeclaration*>(trait->aliasedDeclaration().data()->context()->owner())->prettyName().str())
+            .arg(dynamic_cast<ClassMemberDeclaration*>(trait)->identifier().toString()), node, ProblemData::Warning
+        );
     } else {
         ///TODO: try to shorten the filename by removing the leading path to the current project
         reportError(

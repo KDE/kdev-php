@@ -57,6 +57,9 @@ protected:
     virtual void visitParameter(ParameterAst *node);
     virtual void visitClassImplements(ClassImplementsAst *node);
     virtual void visitClassExtends(ClassExtendsAst *node);
+    virtual void visitClassStatement(ClassStatementAst *node);
+    virtual void visitTraitAliasStatement(TraitAliasStatementAst *node);
+    virtual void visitTraitAliasIdentifier(TraitAliasIdentifierAst *node);
     virtual void visitExpr(ExprAst* node);
     virtual void visitGlobalVar(GlobalVarAst* node);
     virtual void visitStaticScalar(StaticScalarAst* node);

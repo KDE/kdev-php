@@ -228,7 +228,7 @@ namespace KDevelop
        FILE ("__FILE__"), COMMENT ("comment"), DOC_COMMENT ("doc comment"),  PAAMAYIM_NEKUDOTAYIM ("::"),
        INCLUDE ("include"), INCLUDE_ONCE ("include_once"), EVAL ("eval"), REQUIRE ("require"),
        REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use"),
-       GOTO ("goto"), TRAIT ("trait") ;;
+       GOTO ("goto"), TRAIT ("trait"), INSTEADOF ("insteadof") ;;
 
 -- casts:
 %token INT_CAST ("int cast"), DOUBLE_CAST ("double cast"), STRING_CAST ("string cast"),
@@ -942,7 +942,18 @@ try/recover(#classStatements=classStatement)*
       | FUNCTION (BIT_AND | 0) methodName=identifier LPAREN parameters=parameterList RPAREN
         methodBody=methodBody
     )
+  | USE #traits=namespacedIdentifier @ COMMA (imports=traitAliasDeclaration|SEMICOLON)
 -> classStatement ;;
+
+    LBRACE #statements=traitAliasStatement
+        @ (SEMICOLON [: if (yytoken == Token_RBRACE) { break; } :]) RBRACE
+-> traitAliasDeclaration ;;
+
+    importIdentifier=traitAliasIdentifier (AS (modifiers=optionalModifiers | 0) aliasIdentifier=identifier|INSTEADOF #conflictIdentifier=namespacedIdentifier @ COMMA)
+-> traitAliasStatement ;;
+
+    identifier=namespacedIdentifier PAAMAYIM_NEKUDOTAYIM methodIdentifier=identifier
+-> traitAliasIdentifier ;;
 
     SEMICOLON -- abstract method
  |  LBRACE try/recover(statements=innerStatementList) RBRACE

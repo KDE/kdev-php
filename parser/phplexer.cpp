@@ -655,6 +655,8 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_IMPLEMENTS;
             } else if (name == "instanceof") {
                 token = Parser::Token_INSTANCEOF;
+            } else if (name == "insteadof") {
+                token = Parser::Token_INSTEADOF;
             } else if (name == "interface") {
                 token = Parser::Token_INTERFACE;
             } else if (name == "trait") {

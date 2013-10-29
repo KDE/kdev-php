@@ -31,6 +31,9 @@
 #include <language/duchain/types/structuretype.h>
 
 #include "../declarations/classdeclaration.h"
+#include <declarations/classmethoddeclaration.h>
+#include <declarations/traitmethodaliasdeclaration.h>
+#include <declarations/traitmemberaliasdeclaration.h>
 #include "helper.h"
 
 namespace Php
@@ -113,6 +116,41 @@ void DeclarationNavigationContext::htmlClass()
         }
         modifyHtml() += " ";
     }
+}
+
+void DeclarationNavigationContext::htmlAdditionalNavigation()
+{
+    if (auto member = dynamic_cast<TraitMethodAliasDeclaration*>(m_declaration.data())) {
+        Declaration *dec = member->aliasedDeclaration().data();
+        modifyHtml() += i18n("Use of ");
+        AbstractNavigationContext::makeLink(prettyQualifiedIdentifier(DeclarationPointer(dec)).toString(),
+                                            QString("jump_to_used"),
+                                            NavigationAction(DeclarationPointer(dec),
+                                                             KDevelop::NavigationAction::NavigateDeclaration));
+        modifyHtml() += i18n(" from ");
+        AbstractNavigationContext::makeLink(prettyQualifiedIdentifier(DeclarationPointer(dec->context()->owner())).toString(),
+                                            QString("jump_to_used_container"),
+                                            NavigationAction(DeclarationPointer(dec->context()->owner()),
+                                                             KDevelop::NavigationAction::NavigateDeclaration));
+
+        modifyHtml() += "<br />";
+    } else if (auto member = dynamic_cast<TraitMemberAliasDeclaration*>(m_declaration.data())) {
+        Declaration *dec = member->aliasedDeclaration().data();
+        modifyHtml() += i18n("Use of ");
+        AbstractNavigationContext::makeLink(prettyQualifiedIdentifier(DeclarationPointer(dec)).toString(),
+                                            QString("jump_to_used"),
+                                            NavigationAction(DeclarationPointer(dec),
+                                                             KDevelop::NavigationAction::NavigateDeclaration));
+        modifyHtml() += i18n(" from ");
+        AbstractNavigationContext::makeLink(prettyQualifiedIdentifier(DeclarationPointer(dec->context()->owner())).toString(),
+                                            QString("jump_to_used_container"),
+                                            NavigationAction(DeclarationPointer(dec->context()->owner()),
+                                                             KDevelop::NavigationAction::NavigateDeclaration));
+
+        modifyHtml() += "<br />";
+    }
+
+    KDevelop::AbstractDeclarationNavigationContext::htmlAdditionalNavigation();
 }
 
 QualifiedIdentifier DeclarationNavigationContext::prettyQualifiedIdentifier( DeclarationPointer decl ) const

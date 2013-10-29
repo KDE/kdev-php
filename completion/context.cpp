@@ -628,6 +628,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_INCLUDE:
         case Parser::Token_INCLUDE_ONCE:
         case Parser::Token_INLINE_HTML:
+        case Parser::Token_INSTEADOF:
         case Parser::Token_INTERFACE:
         case Parser::Token_INVALID:
         case Parser::Token_ISSET:

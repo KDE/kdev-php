@@ -83,6 +83,7 @@ private slots:
     void closures();
     void instanceof();
     void classNameString();
+    void useTrait();
 };
 
 }

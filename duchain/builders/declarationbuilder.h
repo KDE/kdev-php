@@ -67,12 +67,15 @@ protected:
     virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
     virtual void visitTraitDeclarationStatement(TraitDeclarationStatementAst *node);
     virtual void visitClassStatement(ClassStatementAst *node);
+    virtual void importTraitMethods(ClassStatementAst *node);
     virtual void visitClassExtends(ClassExtendsAst *node);
     virtual void visitClassImplements(ClassImplementsAst *node);
     virtual void visitParameter(ParameterAst *node);
     virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
     virtual void visitClassVariable(ClassVariableAst *node);
     virtual void visitConstantDeclaration(ConstantDeclarationAst *node);
+    virtual void visitTraitAliasStatement(TraitAliasStatementAst *node);
+    virtual void createTraitAliasDeclarations(TraitAliasStatementAst *node, KDevelop::DeclarationPointer dec);
     virtual void visitOuterTopStatement(OuterTopStatementAst* node);
     virtual void visitAssignmentExpression(AssignmentExpressionAst* node);
     virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);

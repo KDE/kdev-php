@@ -181,6 +181,30 @@ void TestExpressionParser::invalidTrait()
     QVERIFY(!top->problems().isEmpty());
 }
 
+void TestExpressionParser::invalidTraitUse_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("staticModifier") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as public static bla; } }\n";
+
+    QTest::newRow("finalModifier") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as public final bla; } }\n";
+
+    QTest::newRow("traitMethodCollision") << "<? trait A { public function foo(){} } trait B { public function foo(){} } class Foo { use A,B; }\n";
+
+    QTest::newRow("propertyCollision") << "<? trait A { public $arg; } class Foo { use A; public $arg; }\n";
+}
+
+void TestExpressionParser::invalidTraitUse()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(!top->problems().isEmpty());
+}
+
 void TestExpressionParser::namespaceUseNameConflict()
 {
     QByteArray alias("<?php namespace Bar { class Foo {} use Foo; }\n");
