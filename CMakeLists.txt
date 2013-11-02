@@ -1,7 +1,7 @@
 PROJECT(php)
 
 set(KDEVPHP_VERSION_MAJOR 1)
-set(KDEVPHP_VERSION_MINOR 5)
+set(KDEVPHP_VERSION_MINOR 6)
 set(KDEVPHP_VERSION_PATCH 60)
 
 configure_file( "${php_SOURCE_DIR}/kdevphpversion.h.cmake" "${php_BINARY_DIR}/kdevphpversion.h" @ONLY )
@@ -15,7 +15,7 @@ enable_testing()
 #complain about the FindKDevelop-PG.cmake file not findable.
 find_package(KDE4 REQUIRED)
 
-find_package(KDevPlatform 1.5.60 REQUIRED)
+find_package(KDevPlatform 1.6.60 REQUIRED)
 include_directories(${KDEVPLATFORM_INCLUDE_DIR})
 
 include_directories(
