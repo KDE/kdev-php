@@ -48,7 +48,8 @@ target_link_libraries(kdevphpdocs
 )
 
 install(TARGETS kdevphpdocs DESTINATION ${PLUGIN_INSTALL_DIR})
-install(FILES kdevphpdocs.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+configure_file(kdevphpdocs.desktop.cmake ${CMAKE_CURRENT_BINARY_DIR}/kdevphpdocs.desktop)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kdevphpdocs.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
 
 ### Configuration module for PHP documentation plugin

@@ -83,7 +83,7 @@ Name[zh_TW]=PHP 文件
 ServiceTypes=KDevelop/Plugin
 
 X-KDE-Library=kdevphpdocs
-X-KDevelop-Version=16
+X-KDevelop-Version=@KDEV_PLUGIN_VERSION@
 X-KDevelop-Category=Global
 X-KDE-PluginInfo-Name=kdevphpdocs
 X-KDE-PluginInfo-Author=Milian Wolff
