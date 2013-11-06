@@ -1,5 +1,7 @@
 PROJECT(php)
 
+cmake_minimum_required(VERSION 2.8)
+
 set(KDEVPHP_VERSION_MAJOR 1)
 set(KDEVPHP_VERSION_MINOR 6)
 set(KDEVPHP_VERSION_PATCH 60)
