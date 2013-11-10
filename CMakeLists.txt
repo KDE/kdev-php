@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 
 set(KDEVPHPDOCS_VERSION_MAJOR 1)
 set(KDEVPHPDOCS_VERSION_MINOR 5)
-set(KDEVPHPDOCS_VERSION_PATCH 60)
+set(KDEVPHPDOCS_VERSION_PATCH 80)
 
 configure_file( "${phpdocs_SOURCE_DIR}/kdevphpdocsversion.h.cmake" "${phpdocs_BINARY_DIR}/kdevphpdocsversion.h" @ONLY )
 
@@ -12,7 +12,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${phpdocs_SOURCE_DIR}/cmake/)
 enable_testing()
 
 find_package(KDE4 REQUIRED)
-find_package(KDevPlatform 1.5.60 REQUIRED)
+find_package(KDevPlatform 1.5.80 REQUIRED)
 include_directories(${KDEVPLATFORM_INCLUDE_DIR})
 
 include_directories(
