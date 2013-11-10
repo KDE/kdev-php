@@ -30,6 +30,7 @@
 #include <language/duchain/persistentsymboltable.h>
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/integraltype.h>
+#include <language/duchain/types/structuretype.h>
 
 #define ifDebug(x)
 
