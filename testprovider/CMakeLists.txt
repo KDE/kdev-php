@@ -23,7 +23,9 @@ install(TARGETS kdevphpunitprovider DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 ########### install files ###############
 
-install( FILES kdevphpunitprovider.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+configure_file(kdevphpunitprovider.desktop.cmake ${CMAKE_CURRENT_BINARY_DIR}/kdevphpunitprovider.desktop)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kdevphpunitprovider.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+
 install( FILES phpunitdeclarations.php DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport )
 
 
