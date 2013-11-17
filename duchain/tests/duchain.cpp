@@ -135,6 +135,28 @@ void TestDUChain::declareVar()
     QVERIFY(decVar->type<IntegralType>());
 }
 
+void TestDUChain::varTypehint()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A {} /** @var A **/ $i = foo();");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    //class A
+    Declaration* dec = top->localDeclarations().at(0);
+
+    //$i
+    Declaration* decVar = top->localDeclarations().at(1);
+    QCOMPARE(decVar->identifier(), Identifier("i"));
+    StructureType::Ptr classType = decVar->type<StructureType>();
+    QVERIFY(classType);
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QVERIFY(classType->equals(dec->abstractType().unsafeData()));
+}
+
 void TestDUChain::declareClass()
 {
     //                 0         1         2         3         4         5         6         7

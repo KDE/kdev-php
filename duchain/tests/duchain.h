@@ -33,6 +33,7 @@ public:
 private slots:
     void declareFunction();
     void declareVar();
+    void varTypehint();
     void declareClass();
     void classMemberVar();
     void declareTypehintFunction();

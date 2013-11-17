@@ -239,16 +239,20 @@ QList<AbstractType::Ptr> TypeBuilder::parseDocCommentParams(AstNode* node)
 
 AbstractType::Ptr TypeBuilder::getTypeForNode(AstNode* node)
 {
+
     AbstractType::Ptr type;
     if (node) {
-        node->ducontext = currentContext();
-        ExpressionParser ep;
-        ep.setCreateProblems(true);
-        ExpressionEvaluationResult res = ep.evaluateType(node, editor());
-        if (res.hadUnresolvedIdentifiers()) {
-            m_hadUnresolvedIdentifiers = true;
+        type = parseDocComment(node, "var"); //we fully trust in @var typehint and don't try to evaluate ourself
+        if (!type) {
+            node->ducontext = currentContext();
+            ExpressionParser ep(true);
+            ep.setCreateProblems(true);
+            ExpressionEvaluationResult res = ep.evaluateType(node, editor());
+            if (res.hadUnresolvedIdentifiers()) {
+                m_hadUnresolvedIdentifiers = true;
+            }
+            type = res.type();
         }
-        type = res.type();
     }
     if (!type) {
         type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
