@@ -626,7 +626,7 @@ void TestCompletion::abstractMethods()
 
     DUContext* funContext = top->childContexts().first()->localDeclarations().last()->internalContext();
     PhpCompletionTester tester(funContext, "$this->");
-    QCOMPARE(tester.names, QStringList() << "bar");
+    QCOMPARE(tester.names, QStringList() << "foo" << "bar");
 }
 
 void TestCompletion::interfaceMethods()
@@ -641,8 +641,24 @@ void TestCompletion::interfaceMethods()
 
     DUContext* funContext = top->childContexts().last()->localDeclarations().first()->internalContext();
     PhpCompletionTester tester(funContext, "$this->");
-    QCOMPARE(tester.names, QStringList() << "bar");
+    QCOMPARE(tester.names, QStringList() << "bar" << "foo");
 }
+
+void TestCompletion::interfaceMethods2()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? interface A {  function foo(); } /** @var A **/ $a = x(); ");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    DUContext* funContext = top;
+    PhpCompletionTester tester(funContext, "$a->");
+    QCOMPARE(tester.names, QStringList() << "foo");
+}
+
 void TestCompletion::implementMethods()
 {
     //                 0         1         2         3         4         5         6         7

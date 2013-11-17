@@ -1408,14 +1408,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                         }
                     }
 
-                    // filter abstract methods
-                    if (filterAbstract) {
-                        ClassFunctionDeclaration* method = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
-                        if (method && method->isAbstract()) {
-                            continue;
-                        }
-                    }
-
                     if (!decl.first->identifier().isEmpty())
                         items << CompletionTreeItemPointer(
                                     new NormalDeclarationCompletionItem(

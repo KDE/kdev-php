@@ -65,6 +65,7 @@ private slots:
     void exceptionOtherFile();
     void abstractMethods();
     void interfaceMethods();
+    void interfaceMethods2();
     void overrideMethods();
     void implementMethods();
     void inArray();
