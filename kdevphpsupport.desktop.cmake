@@ -28,6 +28,7 @@ Comment[ru]=Поддержка языка PHP
 Comment[sk]=Jazyková podpora PHP
 Comment[sl]=Podpora jeziku PHP
 Comment[sv]=Stöd för språket PHP
+Comment[tr]=PHP Dili Desteği
 Comment[uk]=Підтримка мови PHP
 Comment[x-test]=xxPHP Language Supportxx
 Comment[zh_CN]=PHP 语言支持
