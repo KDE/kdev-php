@@ -245,7 +245,7 @@ AbstractType::Ptr TypeBuilder::getTypeForNode(AstNode* node)
         type = parseDocComment(node, "var"); //we fully trust in @var typehint and don't try to evaluate ourself
         if (!type) {
             node->ducontext = currentContext();
-            ExpressionParser ep(true);
+            ExpressionParser ep;
             ep.setCreateProblems(true);
             ExpressionEvaluationResult res = ep.evaluateType(node, editor());
             if (res.hadUnresolvedIdentifiers()) {
