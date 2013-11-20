@@ -240,7 +240,7 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
         }
 
         replText += QString("\n%1{\n%1    ").arg(indendation);
-        if (isInterface) {
+        if (isInterface || m_type == ImplementationItem::Implement) {
         } else if (!isConstructorOrDestructor && !voidReturnType) {
             replText += QString("$ret = parent::%2%3;\n%1    return $ret;").arg(indendation).arg(functionName).arg(arguments);
         } else {
