@@ -1254,64 +1254,64 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     //TODO: always add __construct, __destruct and maby other magic functions
                     // get all visible declarations and add inherited to the completion items
                     foreach(const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false)) {
-                        if (decl.first->isFunctionDeclaration()) {
-                            ClassFunctionDeclaration *method = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
-                            if (method) {
-                                if (decl.second == 0) {
-                                    // this function is already implemented
-                                    alreadyImplemented << decl.first->indexedIdentifier().getIndex();
-                                    continue;
-                                }
-                                // skip already implemented functions
-                                if (alreadyImplemented.contains(decl.first->indexedIdentifier().getIndex())) {
-                                    continue;
-                                }
-                                // skip non-static functions when requested
-                                if (filterNonStatic && !method->isStatic()) {
-                                    continue;
-                                }
-                                // skip static functions when requested
-                                if (filterStatic && method->isStatic()) {
-                                    continue;
-                                }
-                                // always skip private functions
-                                if (method->accessPolicy() == Declaration::Private) {
-                                    continue;
-                                }
-                                // skip public functions when requested
-                                if (filterPublic && method->accessPolicy() == Declaration::Public) {
-                                    // make sure no non-public base methods are added
-                                    alreadyImplemented << decl.first->indexedIdentifier().getIndex();
-                                    continue;
-                                }
-                                // skip final methods
-                                if (method->isFinal()) {
-                                    // make sure no non-final base methods are added
-                                    alreadyImplemented << decl.first->indexedIdentifier().getIndex();
-                                    continue;
-                                }
-                                // make sure we inherit or implement the base class of this method
-                                if (!method->context() || !method->context()->owner()) {
-                                    kDebug() << "invalid parent context/owner:" << method->toString();
-                                    continue;
-                                }
-                                if (!currentClass->isPublicBaseClass(dynamic_cast<ClassDeclaration*>(method->context()->owner()),
-                                                                        m_duContext->topContext())) {
-                                    continue;
-                                }
-
-                                ImplementationItem::HelperType itype;
-                                if (method->isAbstract()) {
-                                    itype = ImplementationItem::Implement;
-                                } else {
-                                    itype = ImplementationItem::Override;
-                                }
-
-                                items << CompletionTreeItemPointer(new ImplementationItem(itype, DeclarationPointer(decl.first),
-                                                                    KDevelop::CodeCompletionContext::Ptr(this), decl.second));
-                                // don't add identical items twice to the completion choices
+                        ClassMemberDeclaration *member = dynamic_cast<ClassMemberDeclaration*>(decl.first);
+                        if (member) {
+                            if (decl.second == 0) {
+                                // this function is already implemented
                                 alreadyImplemented << decl.first->indexedIdentifier().getIndex();
+                                continue;
                             }
+                            // skip already implemented functions
+                            if (alreadyImplemented.contains(decl.first->indexedIdentifier().getIndex())) {
+                                continue;
+                            }
+                            // skip non-static functions when requested
+                            if (filterNonStatic && !member->isStatic()) {
+                                continue;
+                            }
+                            // skip static functions when requested
+                            if (filterStatic && member->isStatic()) {
+                                continue;
+                            }
+                            // always skip private functions
+                            if (member->accessPolicy() == Declaration::Private) {
+                                continue;
+                            }
+                            // skip public functions when requested
+                            if (filterPublic && member->accessPolicy() == Declaration::Public) {
+                                // make sure no non-public base members are added
+                                alreadyImplemented << decl.first->indexedIdentifier().getIndex();
+                                continue;
+                            }
+                            // skip final members
+                            if (member->isFinal()) {
+                                // make sure no non-final base members are added
+                                alreadyImplemented << decl.first->indexedIdentifier().getIndex();
+                                continue;
+                            }
+                            // make sure we inherit or implement the base class of this member
+                            if (!member->context() || !member->context()->owner()) {
+                                kDebug() << "invalid parent context/owner:" << member->toString();
+                                continue;
+                            }
+                            if (!currentClass->isPublicBaseClass(dynamic_cast<ClassDeclaration*>(member->context()->owner()),
+                                                                    m_duContext->topContext())) {
+                                continue;
+                            }
+
+                            ImplementationItem::HelperType itype;
+                            if (!member->isFunctionDeclaration()) {
+                                itype = ImplementationItem::OverrideVar;
+                            } else if (member->isAbstract()) {
+                                itype = ImplementationItem::Implement;
+                            } else {
+                                itype = ImplementationItem::Override;
+                            }
+
+                            items << CompletionTreeItemPointer(new ImplementationItem(itype, DeclarationPointer(decl.first),
+                                                                KDevelop::CodeCompletionContext::Ptr(this), decl.second));
+                            // don't add identical items twice to the completion choices
+                            alreadyImplemented << decl.first->indexedIdentifier().getIndex();
                         }
                     }
                 }

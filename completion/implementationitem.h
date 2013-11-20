@@ -34,7 +34,8 @@ class ImplementationItem : public NormalDeclarationCompletionItem
 public:
     enum HelperType {
         Override,
-        Implement
+        Implement,
+        OverrideVar
     };
 
     explicit ImplementationItem(HelperType type, KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), KSharedPtr<KDevelop::CodeCompletionContext> context = KSharedPtr<KDevelop::CodeCompletionContext>(), int _inheritanceDepth = 0)

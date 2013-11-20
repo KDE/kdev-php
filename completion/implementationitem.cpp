@@ -55,6 +55,7 @@ QVariant ImplementationItem::data(const QModelIndex& index, int role, const Code
         if (index.column() == KTextEditor::CodeCompletionModel::Icon) {
             switch (m_type) {
             case Override:
+            case OverrideVar:
                 RETURN_CACHED_ICON("CTparents");
             case Implement:
                 RETURN_CACHED_ICON("CTsuppliers");
@@ -66,6 +67,7 @@ QVariant ImplementationItem::data(const QModelIndex& index, int role, const Code
             QString prefix;
             switch (m_type) {
             case Override:
+            case OverrideVar:
                 prefix = i18n("Override");
                 break;
             case Implement:
@@ -175,24 +177,28 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
         bool isConstructorOrDestructor = false;
         bool isInterface = false;
 
-        if (ClassMethodDeclaration* method = dynamic_cast<ClassMethodDeclaration*>(m_declaration.data())) {
+        if (ClassMemberDeclaration* member = dynamic_cast<ClassMemberDeclaration*>(m_declaration.data())) {
             // NOTE: it should _never_ be private - but that's the completionmodel / context / worker's job
             if (!modifiers.contains("public") && !modifiers.contains("protected")) {
-                if (method->accessPolicy() == Declaration::Protected) {
+                if (member->accessPolicy() == Declaration::Protected) {
                     replText += "protected ";
                 } else {
                     replText += "public ";
                 }
             }
-            if (!modifiers.contains("static") && method->isStatic()) {
+            if (!modifiers.contains("static") && member->isStatic()) {
                 replText += "static ";
             }
-            functionName = method->prettyName().str();
+            functionName = member->identifier().toString();
 
-            isConstructorOrDestructor = method->isConstructor() || method->isDestructor();
+            ClassMethodDeclaration* method = dynamic_cast<ClassMethodDeclaration*>(m_declaration.data());
+            if (method) {
+                functionName = method->prettyName().str();
+                isConstructorOrDestructor = method->isConstructor() || method->isDestructor();
+            }
 
-            if (method->context() && method->context()->owner()) {
-                ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(method->context()->owner());
+            if (member->context() && member->context()->owner()) {
+                ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(member->context()->owner());
                 if (classDec) {
                     isInterface = (classDec->classType() == ClassDeclarationData::Interface);
                 }
@@ -202,52 +208,58 @@ void ImplementationItem::execute(KTextEditor::Document* document, const KTextEdi
             functionName = m_declaration->identifier().toString();
         }
 
-        if (!modifiers.contains("function")) {
-            replText += "function ";
-        }
-
-        replText += functionName;
-
-        {
-            // get argument list
-            QString arguments;
-            createArgumentList(*this, arguments, 0, true);
-            replText += arguments;
-        }
-
-        QString arguments;
-        QVector<Declaration*> parameters;
-        if (DUChainUtils::getArgumentContext(m_declaration.data()))
-            parameters = DUChainUtils::getArgumentContext(m_declaration.data())->localDeclarations();
-        arguments = '(';
-        bool first = true;
-        foreach(Declaration* dec, parameters) {
-            if (first)
-                first = false;
-            else
-                arguments += ", ";
-
-            arguments += '$' + dec->identifier().toString();
-        }
-        arguments += ')';
-
-        bool voidReturnType = false;
-        if (FunctionType::Ptr::dynamicCast(m_declaration->abstractType())) {
-            AbstractType::Ptr retType = FunctionType::Ptr::staticCast(m_declaration->abstractType())->returnType();
-            if (retType->equals(new IntegralType(IntegralType::TypeVoid))) {
-                voidReturnType = true;
-            }
-        }
-
-        replText += QString("\n%1{\n%1    ").arg(indendation);
-        if (isInterface || m_type == ImplementationItem::Implement) {
-        } else if (!isConstructorOrDestructor && !voidReturnType) {
-            replText += QString("$ret = parent::%2%3;\n%1    return $ret;").arg(indendation).arg(functionName).arg(arguments);
+        if (m_type == ImplementationItem::OverrideVar) {
+            replText += "$" + functionName + " = ";
         } else {
-            replText += QString("parent::%1%2;").arg(functionName).arg(arguments);
+            if (!modifiers.contains("function")) {
+                replText += "function ";
+            }
+
+            replText += functionName;
+
+            {
+                // get argument list
+                QString arguments;
+                createArgumentList(*this, arguments, 0, true);
+                replText += arguments;
+            }
+
+            QString arguments;
+            QVector<Declaration*> parameters;
+            if (DUChainUtils::getArgumentContext(m_declaration.data()))
+                parameters = DUChainUtils::getArgumentContext(m_declaration.data())->localDeclarations();
+            arguments = '(';
+            bool first = true;
+            foreach(Declaration* dec, parameters) {
+                if (first)
+                    first = false;
+                else
+                    arguments += ", ";
+
+                arguments += '$' + dec->identifier().toString();
+            }
+            arguments += ')';
+
+            bool voidReturnType = false;
+            if (FunctionType::Ptr::dynamicCast(m_declaration->abstractType())) {
+                AbstractType::Ptr retType = FunctionType::Ptr::staticCast(m_declaration->abstractType())->returnType();
+                if (retType->equals(new IntegralType(IntegralType::TypeVoid))) {
+                    voidReturnType = true;
+                }
+            }
+
+            replText += QString("\n%1{\n%1    ").arg(indendation);
+            if (isInterface || m_type == ImplementationItem::Implement) {
+            } else if (!isConstructorOrDestructor && !voidReturnType) {
+                replText += QString("$ret = parent::%2%3;\n%1    return $ret;").arg(indendation).arg(functionName).arg(arguments);
+            } else {
+                replText += QString("parent::%1%2;").arg(functionName).arg(arguments);
+            }
+            replText += QString("\n%1}\n%1")
+                    .arg(indendation);
+
         }
-        replText += QString("\n%1}\n%1")
-                .arg(indendation);
+
 
         //TODO: properly place the cursor inside the {} part
         document->replaceText(replaceRange, replText);
