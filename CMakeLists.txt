@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 
 set(KDEVPHPDOCS_VERSION_MAJOR 1)
 set(KDEVPHPDOCS_VERSION_MINOR 5)
-set(KDEVPHPDOCS_VERSION_PATCH 80)
+set(KDEVPHPDOCS_VERSION_PATCH 90)
 
 configure_file( "${phpdocs_SOURCE_DIR}/kdevphpdocsversion.h.cmake" "${phpdocs_BINARY_DIR}/kdevphpdocsversion.h" @ONLY )
 
