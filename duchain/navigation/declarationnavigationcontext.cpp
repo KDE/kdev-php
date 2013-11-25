@@ -28,6 +28,7 @@
 #include <language/duchain/namespacealiasdeclaration.h>
 #include <language/duchain/forwarddeclaration.h>
 #include <language/duchain/duchainutils.h>
+#include <language/duchain/types/structuretype.h>
 
 #include "../declarations/classdeclaration.h"
 #include "helper.h"

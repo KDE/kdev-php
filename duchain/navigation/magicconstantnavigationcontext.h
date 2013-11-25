@@ -20,6 +20,7 @@
 #define MAGICCONSTANTNAVIGATIONCONTEXT_H
 
 #include <language/duchain/navigation/abstractnavigationcontext.h>
+#include <language/editor/cursorinrevision.h>
 
 namespace Php {
 

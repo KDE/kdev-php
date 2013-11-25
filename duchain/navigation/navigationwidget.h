@@ -25,6 +25,7 @@
 
 namespace KDevelop {
 class IncludeItem;
+class SimpleCursor;
 }
 
 namespace Php
