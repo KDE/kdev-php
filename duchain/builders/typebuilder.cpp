@@ -333,7 +333,7 @@ void TypeBuilder::visitClassVariable(ClassVariableAst *node)
 
 void TypeBuilder::visitConstantDeclaration(ConstantDeclarationAst* node)
 {
-    if (!m_gotTypeFromDocComment) {
+    if (!m_gotTypeFromDocComment || !currentAbstractType()) {
         AbstractType::Ptr type = getTypeForNode(node->scalar);
         type->setModifiers(type->modifiers() | AbstractType::ConstModifier);
         openAbstractType(type);
