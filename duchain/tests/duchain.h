@@ -144,6 +144,7 @@ private slots:
     void gotoTest();
     void ternary();
     void bug296709();
+    void declareFinalMethod();
 };
 
 }

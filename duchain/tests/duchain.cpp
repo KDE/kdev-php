@@ -2851,4 +2851,27 @@ void TestDUChain::bug296709()
     QCOMPARE(decs.at(0)->uses().begin()->first(), RangeInRevision(2, 2, 2, 4));
 }
 
+
+void TestDUChain::declareFinalMethod()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { public final function foo() {} }");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 1);
+
+    DUContext* contextClassA = top->childContexts().first();
+
+    Declaration* dec = contextClassA->localDeclarations().at(0);
+    ClassFunctionDeclaration* funDec = dynamic_cast<ClassFunctionDeclaration*>(dec);
+    QVERIFY(funDec);
+    QCOMPARE(funDec->qualifiedIdentifier(), QualifiedIdentifier("a::foo"));
+    QVERIFY(funDec->isFinal());
+}
+
 #include "duchain.moc"
