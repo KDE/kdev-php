@@ -1254,7 +1254,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     //TODO: always add __construct, __destruct and maby other magic functions
                     // get all visible declarations and add inherited to the completion items
                     foreach(const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false)) {
-                        ClassMemberDeclaration *member = dynamic_cast<ClassMemberDeclaration*>(decl.first);
+                        ClassFunctionDeclaration *member = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
                         if (member) {
                             if (decl.second == 0) {
                                 // this function is already implemented
