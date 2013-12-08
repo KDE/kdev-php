@@ -1358,8 +1358,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                 currentClass = dynamic_cast<ClassDeclaration*>(m_duContext->parentContext()->owner());
             }
 
-            bool filterAbstract = memberAccessOperation() == StaticMemberAccess || memberAccessOperation() == MemberAccess;
-
             foreach(DUContext* ctx, containers) {
                 ClassDeclaration* accessedClass = dynamic_cast<ClassDeclaration*>(ctx->owner());
                 if (abort)
