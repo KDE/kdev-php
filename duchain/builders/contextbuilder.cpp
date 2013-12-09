@@ -79,10 +79,14 @@ ReferencedTopDUContext ContextBuilder::build(const IndexedString& url, AstNode* 
         updateContext->clearImportedParentContexts();
         updateContext->parsingEnvironmentFile()->clearModificationRevisions();
         updateContext->clearProblems();
+        updateContext->updateImportsCache();
     } else {
         kDebug() << "compiling" << url.str();
     }
     ReferencedTopDUContext top = ContextBuilderBase::build(url, node, updateContext);
+
+    top->updateImportsCache();
+
     return top;
 }
 
@@ -97,6 +101,8 @@ void ContextBuilder::startVisiting(AstNode* node)
     if (compilingContexts()) {
         TopDUContext* top = dynamic_cast<TopDUContext*>(currentContext());
         Q_ASSERT(top);
+        top->updateImportsCache(); //Mark that we will use a cached import-structure
+
         bool hasImports;
         {
             DUChainReadLocker lock(DUChain::lock());
@@ -110,8 +116,10 @@ void ContextBuilder::startVisiting(AstNode* node)
                 Q_ASSERT(false);
             } else {
                 top->addImportedParentContext(import);
+                top->updateImportsCache();
             }
         }
+
     }
     visitNode(node);
     if (m_openNamespaces) {

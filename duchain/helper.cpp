@@ -201,6 +201,7 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const 
                 currentContext->topContext()->addImportedParentContext(top);
                 currentContext->topContext()->parsingEnvironmentFile()
                 ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
+                currentContext->topContext()->updateImportsCache();
                 ifDebug(kDebug() << "using" << declarations[i].declaration()->toString() << top->url().str();)
                 return DeclarationPointer(declarations[i].declaration());
             }
