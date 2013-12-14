@@ -1,6 +1,6 @@
 PROJECT(phpdocs)
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.9)
 
 set(KDEVPHPDOCS_VERSION_MAJOR 1)
 set(KDEVPHPDOCS_VERSION_MINOR 6)
