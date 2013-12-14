@@ -26,7 +26,7 @@ if (MINGW)
     add_definitions(-DMAKE_KDEV4PHPPARSER_LIB)
 endif (MINGW)
 
-target_link_libraries(kdev4phpcompletion
+target_link_libraries(kdev4phpcompletion LINK_PRIVATE
     ${KDE4_KDECORE_LIBS}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
     ${KDE4_KTEXTEDITOR_LIBS}

@@ -41,7 +41,7 @@ if (MINGW)
     add_definitions(-DMAKE_KDEV4PHPPARSER_LIB)
 endif (MINGW)
 
-target_link_libraries(kdev4phpduchain
+target_link_libraries(kdev4phpduchain LINK_PRIVATE
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KTEXTEDITOR_LIBS}
     ${KDEVPLATFORM_INTERFACES_LIBRARIES}

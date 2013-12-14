@@ -11,7 +11,7 @@ kdevpgqt_generate(parser_SRCS php NAMESPACE Php DEBUG_VISITOR TOKEN_TEXT
 )
 
 kde4_add_library( kdev4phpparser SHARED ${parser_SRCS} ${parser_STAT_SRCS} )
-target_link_libraries( kdev4phpparser
+target_link_libraries( kdev4phpparser LINK_PRIVATE
     ${KDE4_KDECORE_LIBS}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
     ${KDE4_KTEXTEDITOR_LIBS}
@@ -25,6 +25,11 @@ if (MINGW)
     add_definitions(-DMAKE_KDEV4PHPPARSER_LIB)
 endif (MINGW)
 
-target_link_libraries(php-parser ${QT_QTCORE_LIBRARY} ${KDEVPLATFORM_TESTS_LIBRARIES} ${KDEVPLATFORM_LANGUAGE_LIBRARIES} kdev4phpparser)
+target_link_libraries(php-parser
+    ${QT_QTCORE_LIBRARY}
+    ${KDEVPLATFORM_TESTS_LIBRARIES}
+    ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
+    kdev4phpparser
+)
 
 install(TARGETS kdev4phpparser DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
