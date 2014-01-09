@@ -85,7 +85,10 @@ ReferencedTopDUContext ContextBuilder::build(const IndexedString& url, AstNode* 
     }
     ReferencedTopDUContext top = ContextBuilderBase::build(url, node, updateContext);
 
-    top->updateImportsCache();
+    {
+        DUChainWriteLocker lock(DUChain::lock());
+        top->updateImportsCache();
+    }
 
     return top;
 }
@@ -101,7 +104,10 @@ void ContextBuilder::startVisiting(AstNode* node)
     if (compilingContexts()) {
         TopDUContext* top = dynamic_cast<TopDUContext*>(currentContext());
         Q_ASSERT(top);
-        top->updateImportsCache(); //Mark that we will use a cached import-structure
+        {
+            DUChainWriteLocker lock(DUChain::lock());
+            top->updateImportsCache(); //Mark that we will use a cached import-structure
+        }
 
         bool hasImports;
         {
