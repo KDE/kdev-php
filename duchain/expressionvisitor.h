@@ -70,6 +70,7 @@ protected:
     void visitAdditiveExpressionRest(AdditiveExpressionRestAst* node);
     void visitVariable(VariableAst* node);
     void visitFunctionCallParameterList( FunctionCallParameterListAst* node );
+    void visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node);
     void visitRelationalExpression(RelationalExpressionAst* node);
 
     QString stringForNode(AstNode* id);
@@ -102,6 +103,7 @@ private:
     ExpressionEvaluationResult m_result;
 
     bool m_isAssignmentExpressionEqual;
+    bool m_inDefine;
 };
 
 }

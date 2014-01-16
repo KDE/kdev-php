@@ -1039,6 +1039,21 @@ void TestUses::instanceof()
 
 }
 
+void TestUses::classNameString()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class Foo { } echo 'Foo';");
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+
+    Declaration* foo = top->localDeclarations().at(0);
+    QCOMPARE(foo->identifier().toString(), QString("foo"));
+    compareUses(foo, RangeInRevision(0, 22, 0, 27));
+}
+
 }
 
 #include "uses.moc"

@@ -42,7 +42,8 @@ namespace Php
 ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor)
         : m_editor(editor), m_createProblems(false),
           m_offset(CursorInRevision::invalid()), m_currentContext(0),
-          m_isAssignmentExpressionEqual(false)
+          m_isAssignmentExpressionEqual(false),
+          m_inDefine(false)
 {
 }
 
@@ -288,9 +289,29 @@ void ExpressionVisitor::visitFunctionCallParameterList( FunctionCallParameterLis
     m_result.setType(type);
 }
 
+void ExpressionVisitor::visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node)
+{
+    DefaultVisitor::visitFunctionCallParameterListElement(node);
+
+    if (m_inDefine) m_inDefine = false; //reset after first parameter passed, the second argument can be a class name
+}
+
 void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
 {
+    if (node->stringFunctionNameOrClass && !node->stringFunctionName && !node->varFunctionName) {
+        QualifiedIdentifier id = identifierForNamespace(node->stringFunctionNameOrClass, m_editor);
+        if (id.toString(true) == "define"
+                && node->stringParameterList && node->stringParameterList->parametersSequence
+                && node->stringParameterList->parametersSequence->count() > 0) {
+            //in a define() call the first argument is the constant name. we don't want to look for a class name to build uses
+            m_inDefine = true;
+        }
+    }
+
     DefaultVisitor::visitFunctionCall(node);
+
+    m_inDefine = false;
+
     if (node->stringFunctionNameOrClass) {
         if (node->stringFunctionName) {
             //static function call foo::bar()
@@ -437,7 +458,23 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
     } else if (node->encapsList) {
         m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeString)));
     }
+
+    if (!m_inDefine && node->commonScalar && node->commonScalar->scalarType == ScalarTypeString) {
+        QString str = m_editor->parseSession()->symbol(node->commonScalar);
+        QRegExp exp("^['\"]([A-Za-z0-9_]+)['\"]$");
+        if (exp.exactMatch(str)) {
+            //that *could* be a class name
+            QualifiedIdentifier id(exp.cap(1));
+            DeclarationPointer declaration = findDeclarationImport(ClassDeclarationType, id);
+            if (declaration) {
+                usingDeclaration(node->commonScalar, declaration);
+            } else {
+                m_result.setHadUnresolvedIdentifiers(true);
+            }
+        }
+    }
 }
+
 
 void ExpressionVisitor::visitStaticScalar(StaticScalarAst *node)
 {

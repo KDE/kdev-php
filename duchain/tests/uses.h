@@ -79,6 +79,7 @@ private slots:
     void lateStatic();
     void closures();
     void instanceof();
+    void classNameString();
 };
 
 }
