@@ -71,7 +71,7 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
               ) {
         return true;
     } else if (declarationType == NamespaceDeclarationType
-               && (declaration->kind() == Declaration::Namespace || declaration->kind() == Declaration::NamespaceAlias) )
+               && (declaration->kind() == Declaration::Namespace || declaration->kind() == Declaration::NamespaceAlias || dynamic_cast<ClassDeclaration*>(declaration)) )
     {
         return true;
     }
@@ -109,7 +109,7 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const 
         }
     } else if (declarationType == ClassDeclarationType && id == parentQId) {
         //there can be just one Class-Context imported
-        DUChainReadLocker lock(DUChain::lock());
+        DUChainReadLocker lock;
         DUContext* classCtx = 0;
         if (currentContext->type() == DUContext::Class) {
             classCtx = currentContext;
@@ -126,13 +126,19 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const 
         }
         return DeclarationPointer();
     } else {
-        DUChainReadLocker lock(DUChain::lock());
+        DUChainReadLocker lock;
         QList<Declaration*> foundDeclarations = currentContext->topContext()->findDeclarations(id);
         if (foundDeclarations.isEmpty()) {
             // If it's not in the top context, try the current context (namespaces...)
             // this fixes the bug: https://bugs.kde.org/show_bug.cgi?id=322274
             foundDeclarations = currentContext->findDeclarations(id);
         }
+        if (foundDeclarations.isEmpty()) {
+            // If it is neither in the top not the current context it might be defined in a different context
+            // Look up with fully qualified identifier
+            foundDeclarations = currentContext->topContext()->findDeclarations(identifierWithNamespace(id, currentContext));
+        }
+
         foreach(Declaration *declaration, foundDeclarations) {
             if (isMatch(declaration, declarationType)) {
                 return DeclarationPointer(declaration);
@@ -142,72 +148,99 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const 
             // when compiling php internal functions, we don't need to ask the persistent symbol table for anything
             return DeclarationPointer();
         }
+
+        lock.unlock();
+
         if (declarationType != GlobalVariableDeclarationType) {
-            ifDebug(kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable" << id.toString();)
-            uint nr;
-            const IndexedDeclaration* declarations = 0;
-            PersistentSymbolTable::self().declarations(id, nr, declarations);
-            ifDebug(kDebug() << "found declarations:" << nr;)
-            lock.unlock();
-            /// Indexed string for 'Php', identifies environment files from this language plugin
-            static const IndexedString phpLangString("Php");
+            ifDebug(kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable";)
+            DeclarationPointer decl;
 
-            DUChainWriteLocker wlock(DUChain::lock());
-            for (uint i = 0; i < nr; ++i) {
-                ParsingEnvironmentFilePointer env = DUChain::self()->environmentFileForDocument(declarations[i].indexedTopContext());
-                if(!env) {
-                    ifDebug(kDebug() << "skipping declaration, missing meta-data";)
-                    continue;
-                }
-                if(env->language() != phpLangString) {
-                    ifDebug(kDebug() << "skipping declaration, invalid language" << env->language().str();)
-                    continue;
-                }
+            decl = findDeclarationInPST(currentContext, id, declarationType);
 
-                if (!declarations[i].declaration()) {
-                    ifDebug(kDebug() << "skipping declaration, doesn't have declaration";)
-                    continue;
-                } else if (!isMatch(declarations[i].declaration(), declarationType)) {
-                    ifDebug(kDebug() << "skipping declaration, doesn't match with declarationType";)
-                    continue;
-                }
-                TopDUContext* top = declarations[i].declaration()->context()->topContext();
-
-                /*
-                 * NOTE:
-                 * To enable PHPUnit test classes, this check has been disabled.
-                 * Formerly it only loaded declarations from open projects, but PHPUnit declarations
-                 * belong to no project.
-                 *
-                 * If this behavior is unwanted, reinstate the check.
-                 * Miha Cancula <miha@noughmad.eu>
-                 */
-                /*
-                if (ICore::self() && !ICore::self()->projectController()->projects().isEmpty()) {
-                    bool loadedProjectContainsUrl = false;
-                    foreach(IProject *project, ICore::self()->projectController()->projects()) {
-                        if (project->fileSet().contains(top->url())) {
-                            loadedProjectContainsUrl = true;
-                            break;
-                        }
-                    }
-                    if (!loadedProjectContainsUrl) {
-                        ifDebug(kDebug() << "skipping declaration, not in loaded project";)
-                        continue;
-                    }
-                }
-                */
-
-                currentContext->topContext()->addImportedParentContext(top);
-                currentContext->topContext()->parsingEnvironmentFile()
-                ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
-                currentContext->topContext()->updateImportsCache();
-                ifDebug(kDebug() << "using" << declarations[i].declaration()->toString() << top->url().str();)
-                return DeclarationPointer(declarations[i].declaration());
+            if (!decl)
+            {
+                decl = findDeclarationInPST(currentContext, identifierWithNamespace(id, currentContext), declarationType);
             }
+
+            if (decl) {
+                ifDebug(kDebug() << "PST declaration exists";)
+            } else {
+                ifDebug(kDebug() << "PST declaration does not exist";)
+            }
+            return decl;
         }
     }
 
+    ifDebug(kDebug() << "returning 0";)
+    return DeclarationPointer();
+}
+
+DeclarationPointer findDeclarationInPST(DUContext* currentContext, QualifiedIdentifier id, DeclarationType declarationType)
+{
+    ifDebug(kDebug() << "PST: " << id.toString() << declarationType;)
+    uint nr;
+    const IndexedDeclaration* declarations = 0;
+    DUChainWriteLocker wlock;
+    PersistentSymbolTable::self().declarations(id, nr, declarations);
+    ifDebug(kDebug() << "found declarations:" << nr;)
+    /// Indexed string for 'Php', identifies environment files from this language plugin
+    static const IndexedString phpLangString("Php");
+
+    for (uint i = 0; i < nr; ++i) {
+        ParsingEnvironmentFilePointer env = DUChain::self()->environmentFileForDocument(declarations[i].indexedTopContext());
+        if(!env) {
+            ifDebug(kDebug() << "skipping declaration, missing meta-data";)
+            continue;
+        }
+        if(env->language() != phpLangString) {
+            ifDebug(kDebug() << "skipping declaration, invalid language" << env->language().str();)
+            continue;
+        }
+
+        if (!declarations[i].declaration()) {
+            ifDebug(kDebug() << "skipping declaration, doesn't have declaration";)
+            continue;
+        } else if (!isMatch(declarations[i].declaration(), declarationType)) {
+            ifDebug(kDebug() << "skipping declaration, doesn't match with declarationType";)
+            continue;
+        }
+        TopDUContext* top = declarations[i].declaration()->context()->topContext();
+
+        /*
+            * NOTE:
+            * To enable PHPUnit test classes, this check has been disabled.
+            * Formerly it only loaded declarations from open projects, but PHPUnit declarations
+            * belong to no project.
+            *
+            * If this behavior is unwanted, reinstate the check.
+            * Miha Cancula <miha@noughmad.eu>
+            */
+        /*
+        if (ICore::self() && !ICore::self()->projectController()->projects().isEmpty()) {
+            bool loadedProjectContainsUrl = false;
+            foreach(IProject *project, ICore::self()->projectController()->projects()) {
+                if (project->fileSet().contains(top->url())) {
+                    loadedProjectContainsUrl = true;
+                    break;
+                }
+            }
+            if (!loadedProjectContainsUrl) {
+                ifDebug(kDebug() << "skipping declaration, not in loaded project";)
+                continue;
+            }
+        }
+        */
+
+        currentContext->topContext()->addImportedParentContext(top);
+        currentContext->topContext()->parsingEnvironmentFile()
+        ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
+        currentContext->topContext()->updateImportsCache();
+        ifDebug(kDebug() << "using" << declarations[i].declaration()->toString() << top->url().str();)
+        wlock.unlock();
+        return DeclarationPointer(declarations[i].declaration());
+    }
+
+    wlock.unlock();
     ifDebug(kDebug() << "returning 0";)
     return DeclarationPointer();
 }
@@ -378,6 +411,21 @@ QualifiedIdentifier identifierForNamespace(NamespacedIdentifierAst* node, Editor
         }
     } while (it->hasNext() && (it = it->next));
     return id;
+}
+
+QualifiedIdentifier identifierWithNamespace(const QualifiedIdentifier& base, DUContext* context)
+{
+    DUChainReadLocker lock;
+    auto scope = context;
+    while (scope && scope->type() != DUContext::Namespace) {
+        scope = scope->parentContext();
+    }
+
+    if (scope) {
+        return scope->scopeIdentifier() + base;
+    } else {
+        return base;
+    }
 }
 
 }

@@ -183,6 +183,17 @@ void TestExpressionParser::invalidTrait()
     QVERIFY(!top->problems().isEmpty());
 }
 
+void TestExpressionParser::namespaceUseNameConflict()
+{
+    QByteArray alias("<?php namespace Bar { class Foo {} use Foo; }\n");
+
+    TopDUContext* top = parse(alias, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(!top->problems().isEmpty());
+}
+
 void TestExpressionParser::globalFunction()
 {
     //                 0         1         2         3         4         5         6         7

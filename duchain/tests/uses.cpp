@@ -973,10 +973,13 @@ void TestUses::useNamespace()
     TopDUContext* top = parse("<?php\n"
                               "namespace Foo\\Bar {class A{} function B(){} const C = 1;}\n"
                               "namespace VeryLong {class A{} function B(){} const C = 1;}\n"
+                              "namespace Baz {class A{} const C = 1;}\n"
                               "namespace {\n"
                               "use Foo\\Bar, VeryLong as Short;\n"
+                              "use Baz\\A as Bazaar, Baz\\C;\n"
                               "new Bar\\A; Bar\\B(); Bar\\C;\n"
                               "new Short\\A; Short\\B(); Short\\C;\n"
+                              "new Bazaar; C;\n"
                               "}\n", DumpNone);
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
@@ -985,45 +988,53 @@ void TestUses::useNamespace()
     Declaration* dec;
     dec = top->findDeclarations(QualifiedIdentifier("foo")).first();
     QCOMPARE(dec->kind(), Declaration::Namespace);
-    compareUses(dec, RangeInRevision(4, 4, 4, 7));
+    compareUses(dec, RangeInRevision(5, 4, 5, 7));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar")).first();
     QCOMPARE(dec->kind(), Declaration::Namespace);
-    compareUses(dec, RangeInRevision(4, 8, 4, 11));
+    compareUses(dec, RangeInRevision(5, 8, 5, 11));
 
     dec = top->findDeclarations(QualifiedIdentifier("verylong")).first();
     QCOMPARE(dec->kind(), Declaration::Namespace);
-    compareUses(dec, RangeInRevision(4, 13, 4, 21));
+    compareUses(dec, RangeInRevision(5, 13, 5, 21));
 
     dec = top->findDeclarations(QualifiedIdentifier("bar")).first();
     QCOMPARE(dec->kind(), Declaration::NamespaceAlias);
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(5, 4, 5, 7)
-                                          << RangeInRevision(5, 11, 5, 14)
-                                          << RangeInRevision(5, 20, 5, 23) );
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(7, 4, 7, 7)
+                                          << RangeInRevision(7, 11, 7, 14)
+                                          << RangeInRevision(7, 20, 7, 23) );
 
     dec = top->findDeclarations(QualifiedIdentifier("short")).first();
     QCOMPARE(dec->kind(), Declaration::NamespaceAlias);
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(6, 4, 6, 9)
-                                          << RangeInRevision(6, 13, 6, 18)
-                                          << RangeInRevision(6, 24, 6, 29) );
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 4, 8, 9)
+                                          << RangeInRevision(8, 13, 8, 18)
+                                          << RangeInRevision(8, 24, 8, 29) );
+
+    dec = top->findDeclarations(QualifiedIdentifier("baz::a")).first();
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(6, 8, 6, 9)
+                                          << RangeInRevision(9, 4, 9, 10));
+
+    dec = top->findDeclarations(QualifiedIdentifier("baz::c")).first();
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(6, 27, 6, 28)
+                                          << RangeInRevision(9, 12, 9, 13));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::a")).first();
-    compareUses(dec, RangeInRevision(5, 8, 5, 9));
+    compareUses(dec, RangeInRevision(7, 8, 7, 9));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::b")).first();
-    compareUses(dec, RangeInRevision(5, 15, 5, 16));
+    compareUses(dec, RangeInRevision(7, 15, 7, 16));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::C")).first();
-    compareUses(dec, RangeInRevision(5, 24, 5, 25));
+    compareUses(dec, RangeInRevision(7, 24, 7, 25));
 
     dec = top->findDeclarations(QualifiedIdentifier("verylong::a")).first();
-    compareUses(dec, RangeInRevision(6, 10, 6, 11));
+    compareUses(dec, RangeInRevision(8, 10, 8, 11));
 
     dec = top->findDeclarations(QualifiedIdentifier("verylong::b")).first();
-    compareUses(dec, RangeInRevision(6, 19, 6, 20));
+    compareUses(dec, RangeInRevision(8, 19, 8, 20));
 
     dec = top->findDeclarations(QualifiedIdentifier("verylong::C")).first();
-    compareUses(dec, RangeInRevision(6, 30, 6, 31));
+    compareUses(dec, RangeInRevision(8, 30, 8, 31));
 }
 
 void TestUses::lateStatic()

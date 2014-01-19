@@ -1161,22 +1161,47 @@ void DeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent
 
 void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
 {
-    if ( !node->aliasIdentifier && node->identifier->namespaceNameSequence->count() == 1 ) {
+    DUChainWriteLocker lock;
+
+    if ( currentContext()->type() != DUContext::Namespace &&
+            !node->aliasIdentifier && node->identifier->namespaceNameSequence->count() == 1 ) {
         reportError(i18n("The use statement with non-compound name '%1' has no effect.",
-                         identifierForNode(node->identifier->namespaceNameSequence->front()->element).toString()),
+                        identifierForNode(node->identifier->namespaceNameSequence->front()->element).toString()),
                     node->identifier, ProblemData::Warning);
         return;
     }
     IdentifierAst* idNode = node->aliasIdentifier ? node->aliasIdentifier : node->identifier->namespaceNameSequence->back()->element;
     IdentifierPair id = identifierPairForNode(idNode);
-    DUChainWriteLocker lock;
-    NamespaceAliasDeclaration* decl = openDefinition<NamespaceAliasDeclaration>(id.second,
-                                                                                m_editor->findRange(idNode));
+
+    ///TODO: case insensitive!
+    QualifiedIdentifier qid = identifierForNamespace(node->identifier, m_editor);
+    ///TODO: find out why this must be done (see mail to kdevelop-devel on jan 18th 2011)
+    qid.setExplicitlyGlobal( false );
+
+    DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, qid);
+
+    if (dec)
     {
-        ///TODO: case insensitive!
-        QualifiedIdentifier qid = identifierForNamespace(node->identifier, m_editor);
-        ///TODO: find out why this must be done (see mail to kdevelop-devel on jan 18th 2011)
-        qid.setExplicitlyGlobal( false );
+        // Check for a name conflict
+        DeclarationPointer dec2 = findDeclarationImport(ClassDeclarationType, id.second);
+
+        if (dec2 && dec2->context()->scopeIdentifier() == currentContext()->scopeIdentifier() &&
+            dec2->context()->topContext() == currentContext()->topContext() &&
+            dec2->identifier().toString() == id.second.toString())
+        {
+            reportError(i18n("Cannot use '%1' as '%2' because the name is already in use.",
+                            dec.data()->identifier().toString(), id.second.toString()),
+                        node->identifier, ProblemData::Error);
+            return;
+        }
+
+        AliasDeclaration* decl = openDefinition<AliasDeclaration>(id.second, m_editor->findRange(idNode));
+        decl->setAliasedDeclaration(dec.data());
+    }
+    else
+    {
+        NamespaceAliasDeclaration* decl = openDefinition<NamespaceAliasDeclaration>(id.second,
+                                                                                    m_editor->findRange(idNode));
         decl->setImportIdentifier( qid );
         decl->setPrettyName( id.first );
         decl->setKind(Declaration::NamespaceAlias);

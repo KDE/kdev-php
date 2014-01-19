@@ -40,6 +40,7 @@ private slots:
     void newTraitWithAbstractMethod();
     void invalidTrait_data();
     void invalidTrait();
+    void namespaceUseNameConflict();
     void globalFunction();
     void chainCall();
     void thisObject();

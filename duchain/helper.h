@@ -53,6 +53,10 @@ KDEVPHPDUCHAIN_EXPORT KDevelop::DeclarationPointer findDeclarationImportHelper(K
                                                                                const KDevelop::QualifiedIdentifier& id,
                                                                                DeclarationType declarationType);
 
+KDEVPHPDUCHAIN_EXPORT KDevelop::DeclarationPointer findDeclarationInPST(KDevelop::DUContext* currentContext,
+                                                                        KDevelop::QualifiedIdentifier id,
+                                                                        DeclarationType declarationType);
+
 KDEVPHPDUCHAIN_EXPORT QByteArray formatComment(AstNode* node, EditorIntegrator* editor);
 
 KDEVPHPDUCHAIN_EXPORT CommonScalarAst* findCommonScalar(AstNode* node);
@@ -76,5 +80,10 @@ KDEVPHPDUCHAIN_EXPORT const KDevelop::IndexedString& internalTestFile();
  */
 KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierForNamespace(NamespacedIdentifierAst* node, EditorIntegrator* editor,
                                                                            bool lastIsConstIdentifier = false);
+
+/**
+ * Get proper QualifiedIdentifier for a basic identifier.
+ */
+KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierWithNamespace(const KDevelop::QualifiedIdentifier& base, KDevelop::DUContext* context);
 }
 #endif
