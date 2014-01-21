@@ -273,7 +273,7 @@ CommonScalarAst* findCommonScalar(AstNode* node)
     return visitor.node();
 }
 
-bool includeExists(const KUrl &url)
+static bool includeExists(const KUrl &url)
 {
     {
         DUChainReadLocker lock(DUChain::lock());
@@ -328,7 +328,7 @@ IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &current
     IProject* ownProject = ICore::self()->projectController()->findProjectForUrl(currentUrl);
     if ( ownProject ) {
         url = getUrlForBase(includeFile, ownProject->folder());
-        if ( ownProject->inProject(url) || includeExists(url) ) {
+        if ( ownProject->inProject(IndexedString(url)) || includeExists(url) ) {
             return IndexedString(url);
         }
     }
@@ -339,7 +339,7 @@ IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &current
             continue;
         }
         url = getUrlForBase(includeFile, project->folder());
-        if ( project->inProject(url) || includeExists(url) ) {
+        if ( project->inProject(IndexedString(url)) || includeExists(url) ) {
             return IndexedString(url);
         }
     }
