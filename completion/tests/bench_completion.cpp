@@ -71,14 +71,13 @@ void BenchmarkCodeCompletion::initTestCase()
         kDebug() << "no internal function file found in DUChain, loading it manually";
         QString fileName = internalFunctionFile().str();
         QString mimeType = KMimeType::findByPath(fileName, 0, false)->name ();
-        QIODevice* file = KFilterDev::deviceForFile (fileName, mimeType, false);
+        QScopedPointer<QIODevice> file(KFilterDev::deviceForFile (fileName, mimeType, false));
         if ( !file->open(QIODevice::ReadOnly) ) {
             kDebug() << "Could not open file" << fileName;
             return;
         }
         lock.unlock();
         parseAdditionalFile(internalFunctionFile(), file->readAll());
-        delete file;
         DUChain::self()->storeToDisk();
     }
 }
