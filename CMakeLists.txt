@@ -55,6 +55,8 @@ set(kdevphplanguagesupport_PART_SRCS
     phplanguagesupport.cpp
     phpparsejob.cpp
     phphighlighting.cpp
+
+    codegen/refactoring.cpp
 )
 
 kde4_add_plugin(kdevphplanguagesupport ${kdevphplanguagesupport_PART_SRCS})

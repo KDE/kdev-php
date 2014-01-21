@@ -38,10 +38,13 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
 #include <interfaces/idocumentcontroller.h>
+#include <interfaces/contextmenuextension.h>
+#include <language/interfaces/editorcontext.h>
 
 #include "phpparsejob.h"
 #include "phphighlighting.h"
 #include "kdevphpversion.h"
+#include "codegen/refactoring.h"
 
 #include <language/codecompletion/codecompletion.h>
 #include <language/codecompletion/codecompletionmodel.h>
@@ -78,6 +81,7 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
     KDEV_USE_EXTENSION_INTERFACE(KDevelop::ILanguageSupport)
 
     m_highlighting = new Php::Highlighting(this);
+    m_refactoring = new Php::Refactoring(this);
 
     CodeCompletionModel* ccModel = new CodeCompletionModel(this);
     new KDevelop::CodeCompletion(this, ccModel, name());
@@ -142,6 +146,18 @@ KDevelop::ILanguage *LanguageSupport::language()
 KDevelop::ICodeHighlighting* LanguageSupport::codeHighlighting() const
 {
     return m_highlighting;
+}
+
+KDevelop::ContextMenuExtension LanguageSupport::contextMenuExtension(Context* context)
+{
+    ContextMenuExtension cm;
+    EditorContext *ed = dynamic_cast<KDevelop::EditorContext *>(context);
+
+    if (ed && ICore::self()->languageController()->languagesForUrl(ed->url()).contains(language())) {
+        // It's safe to add our own ContextMenuExtension.
+        m_refactoring->fillContextMenu(cm, context);
+    }
+    return cm;
 }
 
 QPair<QString, SimpleRange> LanguageSupport::wordUnderCursor(const KUrl& url, const SimpleCursor& position)

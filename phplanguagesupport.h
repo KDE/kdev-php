@@ -41,6 +41,7 @@ namespace Php
 {
 
 class Highlighting;
+class Refactoring;
 
 /**
  * \brief Language Support plugin for PHP
@@ -99,6 +100,11 @@ public:
     /*the code highlighter*/
     KDevelop::ICodeHighlighting* codeHighlighting() const;
 
+    /**
+     * @returns the ContextMenuExtension for the Php plugin.
+     */
+    virtual KDevelop::ContextMenuExtension contextMenuExtension(KDevelop::Context *context);
+
     virtual QWidget* specialLanguageObjectNavigationWidget(const KUrl& url, const KDevelop::SimpleCursor& position);
     virtual KDevelop::SimpleRange specialLanguageObjectRange(const KUrl& url, const KDevelop::SimpleCursor& position);
 
@@ -124,6 +130,7 @@ private slots:
 
 private:
     KDevelop::CodeHighlighting* m_highlighting;
+    Refactoring *m_refactoring;
     bool m_internalFunctionsLoaded;
     QReadWriteLock m_internalFunctionsLock;
 
