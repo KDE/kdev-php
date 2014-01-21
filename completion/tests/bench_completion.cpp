@@ -78,7 +78,6 @@ void BenchmarkCodeCompletion::initTestCase()
         }
         lock.unlock();
         parseAdditionalFile(internalFunctionFile(), file->readAll());
-        DUChain::self()->storeToDisk();
     }
 }
 
