@@ -82,31 +82,33 @@ void DeclarationBuilder::getVariableIdentifier(VariableAst* node,
         } else {
             // $var->...->parent->target
             ///TODO: $var->...->parent[0]->target = ... (we don't know the type of [0] yet, need proper array handling first)
-            const KDevPG::ListNode< VariablePropertyAst* >* parentNode = node->variablePropertiesSequence->at(
+            const KDevPG::ListNode< VariableObjectPropertyAst* >* parentNode = node->variablePropertiesSequence->at(
                 node->variablePropertiesSequence->count() - 2
             );
-            if ( parentNode->element && parentNode->element->objectProperty
-                && parentNode->element->objectProperty->objectDimList
-                && parentNode->element->objectProperty->objectDimList->variableName
-                && !parentNode->element->objectProperty->objectDimList->offsetItemsSequence ) {
+            if ( parentNode->element && parentNode->element->variableProperty
+                && parentNode->element->variableProperty->objectProperty
+                && parentNode->element->variableProperty->objectProperty->objectDimList
+                && parentNode->element->variableProperty->objectProperty->objectDimList->variableName
+                && !parentNode->element->variableProperty->objectProperty->objectDimList->offsetItemsSequence ) {
                 parent = identifierForNode(
-                    parentNode->element->objectProperty->objectDimList->variableName->name
+                    parentNode->element->variableProperty->objectProperty->objectDimList->variableName->name
                 );
             }
         }
 
         if ( !parent.isEmpty() ) {
-            const KDevPG::ListNode< VariablePropertyAst* >* tNode = node->variablePropertiesSequence->at(
+            const KDevPG::ListNode< VariableObjectPropertyAst* >* tNode = node->variablePropertiesSequence->at(
                 node->variablePropertiesSequence->count() - 1
             );
-            if ( tNode->element && tNode->element->objectProperty
-                && tNode->element->objectProperty->objectDimList
-                && tNode->element->objectProperty->objectDimList->variableName ) {
-                arrayAccess = (bool) tNode->element->objectProperty->objectDimList->offsetItemsSequence;
+            if ( tNode->element && tNode->element->variableProperty
+                && tNode->element->variableProperty->objectProperty
+                && tNode->element->variableProperty->objectProperty->objectDimList
+                && tNode->element->variableProperty->objectProperty->objectDimList->variableName ) {
+                arrayAccess = (bool) tNode->element->variableProperty->objectProperty->objectDimList->offsetItemsSequence;
                 identifier = identifierForNode(
-                    tNode->element->objectProperty->objectDimList->variableName->name
+                    tNode->element->variableProperty->objectProperty->objectDimList->variableName->name
                 );
-                targetNode = tNode->element->objectProperty->objectDimList->variableName->name;
+                targetNode = tNode->element->variableProperty->objectProperty->objectDimList->variableName->name;
             }
         }
     } else {

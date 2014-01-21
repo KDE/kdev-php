@@ -57,6 +57,7 @@ private slots:
     void arrayLiteralDereferencing();
     void stringAsArray_data();
     void stringAsArray();
+    void classMemberOnInstantiation();
 };
 
 }

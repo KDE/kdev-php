@@ -173,7 +173,8 @@ void ExpressionVisitor::visitVariable(VariableAst* node)
     if ( node->variablePropertiesSequence &&
          node->variablePropertiesSequence->front() &&
          node->variablePropertiesSequence->front()->element &&
-         node->variablePropertiesSequence->front()->element->objectProperty ) {
+         node->variablePropertiesSequence->front()->element->variableProperty &&
+         node->variablePropertiesSequence->front()->element->variableProperty->objectProperty ) {
         // make sure we mark $foo as a use in $foo->...
         bool isAssignmentExpressionEqual = m_isAssignmentExpressionEqual;
         m_isAssignmentExpressionEqual = false;

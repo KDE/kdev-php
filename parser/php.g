@@ -536,7 +536,9 @@ expression=booleanOrExpression
   | varExpressionArray=varExpressionArray arrayIndex=arrayIndexSpecifier*
 -> varExpression ;;
 
-    LPAREN expression=expr RPAREN
+
+    LPAREN try/rollback (newObject=varExpressionNewObject RPAREN (#variableProperties=instantiationAccess*))
+    catch (expression=expr RPAREN)
   | BACKTICK encapsList=encapsList BACKTICK
   --try/rollback resolves conflict scalar vs. staticMember (foo::bar vs. foo::$bar)
   --varExpressionIsVariable flag is needed for assignmentExpression
@@ -598,13 +600,22 @@ expression=booleanOrExpression
   | BIT_AND variable=variable
 -> arrayPairValue ;;
 
-   var=baseVariableWithFunctionCalls (#variableProperties=variableProperty*)
+   var=baseVariableWithFunctionCalls (#variableProperties=variableObjectProperty*)
 -> variable ;;
 
-    (OBJECT_OPERATOR|PAAMAYIM_NEKUDOTAYIM)
+    OBJECT_OPERATOR
+  | PAAMAYIM_NEKUDOTAYIM
+-> objectOperator ;;
+
     ( ?[: LA(1).kind == Token_DOLLAR:] LBRACE variable=variable RBRACE | objectProperty=objectProperty )
     (isFunctionCall=LPAREN parameterList=functionCallParameterList RPAREN arrayIndex=arrayIndexSpecifier* | 0)
 -> variableProperty ;;
+
+   objectOperator variableProperty=variableProperty
+-> variableObjectProperty ;;
+
+   OBJECT_OPERATOR variableProperty=variableProperty
+-> instantiationAccess ;;
 
    --Conflict
    --   foo::$bar[0] (=baseVariable-staticMember)
