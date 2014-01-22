@@ -25,6 +25,8 @@ set(duchain_SRCS
     declarations/functiondeclaration.cpp
     declarations/namespacedeclaration.cpp
     declarations/namespacealiasdeclaration.cpp
+    declarations/traitmethodaliasdeclaration.cpp
+    declarations/traitmemberaliasdeclaration.cpp
     navigation/navigationwidget.cpp
     navigation/declarationnavigationcontext.cpp
     navigation/includenavigationcontext.cpp
