@@ -372,10 +372,6 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
                 if (m_currentModifers & ModifierAbstract) {
                     reportError(i18n("Properties cannot be declared abstract."), node->modifiers);
                 }
-                if ((parent->classType() == ClassDeclarationData::Trait) && (m_currentModifers & ModifierStatic))
-                {
-                    reportError(i18n("Traits cannot have static properties."), node->modifiers);
-                }
             }
         } else {
             m_currentModifers = 0;

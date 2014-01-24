@@ -167,8 +167,6 @@ void TestExpressionParser::invalidTrait_data()
 {
     QTest::addColumn<QString>("code");
 
-    QTest::newRow("staticProperty") << "<? trait A { public static $foo; }\n";
-
     QTest::newRow("constant") << "<? trait A { const FOO = ''; }\n";
 }
 
