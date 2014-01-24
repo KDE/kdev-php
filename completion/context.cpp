@@ -41,7 +41,6 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/types/identifiedtype.h>
 #include <language/duchain/types/functiontype.h>
-#include <language/interfaces/iproblem.h>
 #include <util/pushvalue.h>
 #include <language/duchain/codemodel.h>
 #include <language/duchain/classdeclaration.h>

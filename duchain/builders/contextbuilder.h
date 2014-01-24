@@ -23,7 +23,7 @@
 
 #include "phpdefaultvisitor.h"
 #include <language/duchain/builders/abstractcontextbuilder.h>
-#include <language/interfaces/iproblem.h>
+#include <language/duchain/problem.h>
 
 #include "phpduchainexport.h"
 #include "editorintegrator.h"
