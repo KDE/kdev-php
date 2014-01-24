@@ -1014,7 +1014,7 @@ void TestUses::useNamespace()
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(6, 8, 6, 9)
                                           << RangeInRevision(9, 4, 9, 10));
 
-    dec = top->findDeclarations(QualifiedIdentifier("baz::c")).first();
+    dec = top->findDeclarations(QualifiedIdentifier("baz::C")).first();
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(6, 27, 6, 28)
                                           << RangeInRevision(9, 12, 9, 13));
 
