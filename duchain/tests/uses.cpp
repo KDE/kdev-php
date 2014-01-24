@@ -976,10 +976,10 @@ void TestUses::useNamespace()
                               "namespace Baz {class A{} const C = 1;}\n"
                               "namespace {\n"
                               "use Foo\\Bar, VeryLong as Short;\n"
-                              "use Baz\\A as Bazaar, Baz\\C;\n"
+                              "use Baz\\A as Bazaar;\n"
                               "new Bar\\A; Bar\\B(); Bar\\C;\n"
                               "new Short\\A; Short\\B(); Short\\C;\n"
-                              "new Bazaar; C;\n"
+                              "new Bazaar;\n"
                               "}\n", DumpNone);
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
@@ -1013,10 +1013,6 @@ void TestUses::useNamespace()
     dec = top->findDeclarations(QualifiedIdentifier("baz::a")).first();
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(6, 8, 6, 9)
                                           << RangeInRevision(9, 4, 9, 10));
-
-    dec = top->findDeclarations(QualifiedIdentifier("baz::C")).first();
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(6, 27, 6, 28)
-                                          << RangeInRevision(9, 12, 9, 13));
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::a")).first();
     compareUses(dec, RangeInRevision(7, 8, 7, 9));
