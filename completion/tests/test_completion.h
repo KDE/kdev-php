@@ -67,6 +67,7 @@ private slots:
     void interfaceMethods();
     void interfaceMethods2();
     void overrideMethods();
+    void overrideVars();
     void implementMethods();
     void inArray();
     void newExtends();

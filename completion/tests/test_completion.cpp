@@ -746,6 +746,36 @@ void TestCompletion::overrideMethods()
     //TODO: verify actual completion text
 }
 
+void TestCompletion::overrideVars()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { protected $x;  } class B extends A {  }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    // context of class B
+    DUContext* classContext = top->childContexts().last();
+    {
+        PhpCompletionTester tester(classContext, "{");
+        QStringList compItems;
+        compItems << "x";
+        compItems << "const";
+        compItems << "final";
+        compItems << "function";
+        compItems << "public";
+        compItems << "private";
+        compItems << "protected";
+        compItems << "static";
+        compItems << "var";
+        compItems.sort();
+        tester.names.sort();
+        QCOMPARE(tester.names, compItems);
+    }
+}
+
 void TestCompletion::inArray()
 {
     TopDUContext* top = parse("", DumpNone);

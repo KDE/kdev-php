@@ -1239,6 +1239,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     ADD_KEYWORD("const");
                 }
             }
+            ifDebug( kDebug() << "showOverloadable" << showOverloadable; )
             // complete overloadable methods from parents
             if (showOverloadable) {
                 // TODO: use m_duContext instead of ctx
@@ -1254,7 +1255,8 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     //TODO: always add __construct, __destruct and maby other magic functions
                     // get all visible declarations and add inherited to the completion items
                     foreach(const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false)) {
-                        ClassFunctionDeclaration *member = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
+                        ClassMemberDeclaration *member = dynamic_cast<ClassMemberDeclaration*>(decl.first);
+                        ClassFunctionDeclaration *classFunc = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
                         if (member) {
                             if (decl.second == 0) {
                                 // this function is already implemented
@@ -1284,7 +1286,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                                 continue;
                             }
                             // skip final members
-                            if (member->isFinal()) {
+                            if (classFunc && classFunc->isFinal()) {
                                 // make sure no non-final base members are added
                                 alreadyImplemented << decl.first->indexedIdentifier().getIndex();
                                 continue;
@@ -1307,6 +1309,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                             } else {
                                 itype = ImplementationItem::Override;
                             }
+                            ifDebug( kDebug() << "ImplementationItem" << itype; )
 
                             items << CompletionTreeItemPointer(new ImplementationItem(itype, DeclarationPointer(decl.first),
                                                                 KDevelop::CodeCompletionContext::Ptr(this), decl.second));
