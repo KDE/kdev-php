@@ -462,7 +462,7 @@ void ExpressionVisitor::visitScalar(ScalarAst *node)
         QRegExp exp("^['\"]([A-Za-z0-9_]+)['\"]$");
         if (exp.exactMatch(str)) {
             //that *could* be a class name
-            QualifiedIdentifier id(exp.cap(1));
+            QualifiedIdentifier id(exp.cap(1).toLower());
             DeclarationPointer declaration = findDeclarationImport(ClassDeclarationType, id);
             if (declaration) {
                 usingDeclaration(node->commonScalar, declaration);
