@@ -20,6 +20,7 @@ Comment[it]=Supporto al linguaggio PHP
 Comment[kk]=PHP тілін қолдау
 Comment[mr]=पीएचपी भाषा समर्थन
 Comment[nb]=PHP språkstøtte
+Comment[nds]=Ünnerstütten för PHP
 Comment[nl]=Ondersteuning voor PHP-taal
 Comment[pl]=Obsługa języka PHP
 Comment[pt]=Suporte à Linguagem PHP
