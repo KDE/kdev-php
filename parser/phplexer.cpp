@@ -146,14 +146,21 @@ int Lexer::nextTokenKind()
         } else if (it->isDigit() || (it->unicode() == '.' && (it + 1)->isDigit())) {
             QString num;bool hasPoint = false;
             bool hex = false;
-            if (it->unicode() == '0' && (it + 1)->unicode() == 'x') {
+            bool bin = false;
+            if (it->unicode() == '0' && (it + 1)->toLower() == 'x') {
                 it += 2;
                 m_curpos += 2;
                 hex = true;
             }
+            if (it->unicode() == '0' && (it + 1)->toLower() == 'b') {
+                it += 2;
+                m_curpos += 2;
+                bin = true;
+            }
             while (m_curpos < m_contentSize && (
                         it->isDigit()
                         || (!hex && !hasPoint && it->unicode() == '.')
+                        || (bin && (it->unicode() == '0' || it->unicode() == '1'))
                         || (hex && (it->toLower() == 'a' || it->toLower() == 'b' ||
                                     it->toLower() == 'c' || it->toLower() == 'd' ||
                                     it->toLower() == 'e' || it->toLower() == 'f')))) {
@@ -162,7 +169,7 @@ int Lexer::nextTokenKind()
                 it++;
                 m_curpos++;
             }
-            if (!hex && it->toLower() == 'e' &&
+            if (!hex && !bin && it->toLower() == 'e' &&
                     ((it + 1)->isDigit() ||
                      (((it + 1)->unicode() == '-' || (it + 1)->unicode() == '+') && (it + 2)->isDigit()))) {
                 //exponential number

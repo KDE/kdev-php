@@ -63,6 +63,8 @@ private slots:
     void testPhpBlockWithComment();
     void testNamespaces();
     void testCloseTagInComment();
+    void testBinaryNumber();
+    void testHexadecimalNumber();
 
 protected:
     TokenStream* tokenize(const QString& unit, bool debug = false, int initialState = Lexer::HtmlState);

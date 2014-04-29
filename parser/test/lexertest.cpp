@@ -392,6 +392,40 @@ void LexerTest::testCloseTagInComment()
     }
 }
 
+void LexerTest::testBinaryNumber()
+{
+    TokenStream* ts = tokenize("<?php\n0b01;\n0B01;", true);
+    QCOMPARE((int)ts->size(), 6);
+
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_LNUMBER, 1, 0, 1, 3);
+    COMPARE_TOKEN(ts, 2, Parser::Token_SEMICOLON, 1, 4, 1, 4);
+    COMPARE_TOKEN(ts, 3, Parser::Token_WHITESPACE, 1, 5, 1, 5);
+    COMPARE_TOKEN(ts, 4, Parser::Token_LNUMBER, 2, 0, 2, 3);
+    COMPARE_TOKEN(ts, 5, Parser::Token_SEMICOLON, 2, 4, 2, 4);
+    delete ts;
+}
+
+void LexerTest::testHexadecimalNumber()
+{
+    TokenStream* ts = tokenize("<?php\n0x01;\n0X01;\n0xABC12;\n0Xab10A;", true);
+    QCOMPARE((int)ts->size(), 12);
+
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_LNUMBER, 1, 0, 1, 3);
+    COMPARE_TOKEN(ts, 2, Parser::Token_SEMICOLON, 1, 4, 1, 4);
+    COMPARE_TOKEN(ts, 3, Parser::Token_WHITESPACE, 1, 5, 1, 5);
+    COMPARE_TOKEN(ts, 4, Parser::Token_LNUMBER, 2, 0, 2, 3);
+    COMPARE_TOKEN(ts, 5, Parser::Token_SEMICOLON, 2, 4, 2, 4);
+    COMPARE_TOKEN(ts, 6, Parser::Token_WHITESPACE, 2, 5, 2, 5);
+    COMPARE_TOKEN(ts, 7, Parser::Token_LNUMBER, 3, 0, 3, 6);
+    COMPARE_TOKEN(ts, 8, Parser::Token_SEMICOLON, 3, 7, 3, 7);
+    COMPARE_TOKEN(ts, 9, Parser::Token_WHITESPACE, 3, 8, 3, 8);
+    COMPARE_TOKEN(ts, 10, Parser::Token_LNUMBER, 4, 0, 4, 6);
+    COMPARE_TOKEN(ts, 11, Parser::Token_SEMICOLON, 4, 7, 4, 7);
+    delete ts;
+}
+
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
     TokenStream* tokenStream = new TokenStream;
