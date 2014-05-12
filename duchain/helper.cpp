@@ -367,7 +367,9 @@ IndexedString getIncludeFileForNode(UnaryExpressionAst* node, EditorIntegrator* 
 }
 
 QString prettyName(Declaration* dec) {
-     if ( dec->context() && dec->context()->type() == DUContext::Class && dec->isFunctionDeclaration() ) {
+    if (!dec) {
+        return {};
+    } else if ( dec->context() && dec->context()->type() == DUContext::Class && dec->isFunctionDeclaration() ) {
         ClassMethodDeclaration* classMember = dynamic_cast<ClassMethodDeclaration*>(dec);
         Q_ASSERT(classMember);
         return classMember->prettyName().str();
