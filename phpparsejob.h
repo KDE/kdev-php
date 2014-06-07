@@ -23,9 +23,6 @@
 #include <language/backgroundparser/parsejob.h>
 #include <language/duchain/problem.h>
 
-// from the parser subdirectory
-#include "phpast.h"
-
 #include <QStringList>
 
 #include <ksharedptr.h>
@@ -36,6 +33,7 @@
 namespace Php
 {
 
+class AstNode;
 class LanguageSupport;
 class EditorIntegrator;
 
