@@ -10,6 +10,7 @@ Comment[cs]=Podpora jazyka PHP
 Comment[da]=Understøttelse af sproget PHP
 Comment[de]=Sprachunterstützung für PHP
 Comment[el]=Υποστήριξη γλώσσας PHP
+Comment[en_GB]=PHP Language Support
 Comment[es]=Implementación del lenguaje PHP
 Comment[et]=PHP keele toetus
 Comment[fi]=PHP-kielituki
