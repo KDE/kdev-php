@@ -122,36 +122,29 @@ void DeclarationNavigationContext::htmlAdditionalNavigation()
 {
     if (auto member = dynamic_cast<TraitMethodAliasDeclaration*>(m_declaration.data())) {
         Declaration *dec = member->aliasedDeclaration().data();
-        modifyHtml() += i18n("Use of ");
-        AbstractNavigationContext::makeLink(prettyQualifiedIdentifier(DeclarationPointer(dec)).toString(),
+        if (dec && dec->context() && dec->context()->owner()) {
+            modifyHtml() += i18n("Use of %1 from %2<br />")
+                            .arg(createLink(prettyQualifiedIdentifier(DeclarationPointer(dec)).toString(),
                                             QString("jump_to_used"),
                                             NavigationAction(DeclarationPointer(dec),
-                                                             KDevelop::NavigationAction::NavigateDeclaration));
-        modifyHtml() += i18n(" from ");
-        AbstractNavigationContext::makeLink(prettyQualifiedIdentifier(DeclarationPointer(dec->context()->owner())).toString(),
+                                                             KDevelop::NavigationAction::NavigateDeclaration)))
+                            .arg(createLink(prettyQualifiedIdentifier(DeclarationPointer(dec->context()->owner())).toString(),
                                             QString("jump_to_used_container"),
                                             NavigationAction(DeclarationPointer(dec->context()->owner()),
-                                                             KDevelop::NavigationAction::NavigateDeclaration));
-
-        modifyHtml() += "<br />";
+                                                             KDevelop::NavigationAction::NavigateDeclaration)));
+        }
     } else if (auto member = dynamic_cast<TraitMemberAliasDeclaration*>(m_declaration.data())) {
         Declaration *dec = member->aliasedDeclaration().data();
-        if (dec) {
-            modifyHtml() += i18n("Use of ");
-            AbstractNavigationContext::makeLink(prettyQualifiedIdentifier(DeclarationPointer(dec)).toString(),
-                                                QString("jump_to_used"),
-                                                NavigationAction(DeclarationPointer(dec),
-                                                                KDevelop::NavigationAction::NavigateDeclaration));
-
-            if (dec->context() && dec->context()->owner()) {
-                modifyHtml() += i18n(" from ");
-                AbstractNavigationContext::makeLink(prettyQualifiedIdentifier(DeclarationPointer(dec->context()->owner())).toString(),
-                                                    QString("jump_to_used_container"),
-                                                    NavigationAction(DeclarationPointer(dec->context()->owner()),
-                                                                     KDevelop::NavigationAction::NavigateDeclaration));
-            }
-
-            modifyHtml() += "<br />";
+        if (dec && dec->context() && dec->context()->owner()) {
+            modifyHtml() += i18n("Use of %1 from %2<br />")
+                            .arg(createLink(prettyQualifiedIdentifier(DeclarationPointer(dec)).toString(),
+                                            QString("jump_to_used"),
+                                            NavigationAction(DeclarationPointer(dec),
+                                                             KDevelop::NavigationAction::NavigateDeclaration)))
+                            .arg(createLink(prettyQualifiedIdentifier(DeclarationPointer(dec->context()->owner())).toString(),
+                                            QString("jump_to_used_container"),
+                                            NavigationAction(DeclarationPointer(dec->context()->owner()),
+                                                             KDevelop::NavigationAction::NavigateDeclaration)));
         } else {
             modifyHtml() += i18n("Broken member alias trait.");
         }
