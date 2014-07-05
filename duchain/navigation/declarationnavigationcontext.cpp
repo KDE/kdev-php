@@ -142,11 +142,14 @@ void DeclarationNavigationContext::htmlAdditionalNavigation()
                                                 QString("jump_to_used"),
                                                 NavigationAction(DeclarationPointer(dec),
                                                                 KDevelop::NavigationAction::NavigateDeclaration));
-            modifyHtml() += i18n(" from ");
-            AbstractNavigationContext::makeLink(prettyQualifiedIdentifier(DeclarationPointer(dec->context()->owner())).toString(),
-                                                QString("jump_to_used_container"),
-                                                NavigationAction(DeclarationPointer(dec->context()->owner()),
-                                                                KDevelop::NavigationAction::NavigateDeclaration));
+
+            if (dec->context() && dec->context()->owner()) {
+                modifyHtml() += i18n(" from ");
+                AbstractNavigationContext::makeLink(prettyQualifiedIdentifier(DeclarationPointer(dec->context()->owner())).toString(),
+                                                    QString("jump_to_used_container"),
+                                                    NavigationAction(DeclarationPointer(dec->context()->owner()),
+                                                                     KDevelop::NavigationAction::NavigateDeclaration));
+            }
 
             modifyHtml() += "<br />";
         } else {
