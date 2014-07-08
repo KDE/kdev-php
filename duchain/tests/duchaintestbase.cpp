@@ -25,7 +25,7 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/topducontext.h>
 #include <language/duchain/indexedstring.h>
-#include <language/duchain/dumpchain.h>
+#include <language/duchain/duchaindumper.h>
 #include <kstandarddirs.h>
 #include <kcomponentdata.h>
 
@@ -189,7 +189,8 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump,
         kDebug() << "===== DUChain:";
 
         DUChainWriteLocker lock(DUChain::lock());
-        dumpDUContext(top);
+        DUChainDumper d;
+        d.dump(top);
     }
 
     if (dump & DumpType) {
