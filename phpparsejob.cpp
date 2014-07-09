@@ -29,7 +29,6 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/duchain.h>
 #include <language/duchain/topducontext.h>
-#include <language/duchain/dumpchain.h>
 #include <interfaces/ilanguage.h>
 #include <interfaces/icore.h>
 #include <interfaces/ilanguagecontroller.h>

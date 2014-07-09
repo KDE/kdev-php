@@ -44,7 +44,6 @@
 #include <language/duchain/duchainbase.h>
 #include <language/duchain/topducontext.h>
 #include <language/duchain/duchainutils.h>
-#include <language/duchain/dumpchain.h>
 
 #include "../duchain/declarations/classmethoddeclaration.h"
 
