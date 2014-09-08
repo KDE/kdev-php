@@ -1,30 +1,30 @@
 PROJECT(php)
 
-cmake_minimum_required(VERSION 2.8.9)
-
 set(KDEVPHP_VERSION_MAJOR 1)
-set(KDEVPHP_VERSION_MINOR 7)
-set(KDEVPHP_VERSION_PATCH 60)
+set(KDEVPHP_VERSION_MINOR 9)
+set(KDEVPHP_VERSION_PATCH 90)
 # KDevplatform dependency version
-set( KDEVPLATFORM_VERSION "1.${KDEVPHP_VERSION_MINOR}.${KDEVPHP_VERSION_PATCH}" )
+set( KDEVPLATFORM_VERSION "${KDEVPHP_VERSION_MAJOR}.${KDEVPHP_VERSION_MINOR}.${KDEVPHP_VERSION_PATCH}" )
 
 configure_file( "${php_SOURCE_DIR}/kdevphpversion.h.cmake" "${php_BINARY_DIR}/kdevphpversion.h" @ONLY )
 
+cmake_minimum_required(VERSION 2.8.12)
+find_package (ECM 0.0.9 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${php_SOURCE_DIR}/cmake/)
-enable_testing()
 
-#To properly find kdevelop-pg add -DKDEVPG_DATA_DIR=<kdevpg-install-path>/share to the
-#cmake run if you installed it in a different directory than this plugin
-#TODO: a cmake run is needed after changing one of the CMakeLists.txt, make will
-#complain about the FindKDevelop-PG.cmake file not findable.
-find_package(KDE4 REQUIRED)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
 
+find_package(Qt5 REQUIRED Core Widgets Test)
+find_package(KF5 REQUIRED COMPONENTS KDELibs4Support ThreadWeaver TextEditor I18n)
 find_package(KDevPlatform ${KDEVPLATFORM_VERSION} REQUIRED)
+find_package(KDevelop-PG-Qt REQUIRED)
+
 include_directories(${KDEVPLATFORM_INCLUDE_DIR})
 
 include_directories(
-    ${KDE4_INCLUDES}
-    ${KDE4_INCLUDE_DIR}/threadweaver
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/duchain
@@ -38,8 +38,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_C
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
-find_package(KDevelop-PG-Qt REQUIRED)
-
 include_directories(
     ${CMAKE_BINARY_DIR}/parser
     ${KDEVPGQT_INCLUDE_DIR}
@@ -49,7 +47,8 @@ add_subdirectory(app_templates)
 add_subdirectory(parser)
 add_subdirectory(duchain)
 add_subdirectory(completion)
-add_subdirectory(testprovider)
+# FIXME: After the KF5 port, the testprovider plugin compiles but fails to link.
+#add_subdirectory(testprovider)
 
 set(kdevphplanguagesupport_PART_SRCS
     phplanguagesupport.cpp
@@ -59,17 +58,20 @@ set(kdevphplanguagesupport_PART_SRCS
     codegen/refactoring.cpp
 )
 
-kde4_add_plugin(kdevphplanguagesupport ${kdevphplanguagesupport_PART_SRCS})
+add_library(kdevphplanguagesupport MODULE ${kdevphplanguagesupport_PART_SRCS})
 
 target_link_libraries(kdevphplanguagesupport
-    ${KDE4_KDEUI_LIBS}
     ${KDEVPLATFORM_INTERFACES_LIBRARIES}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${KDE4_KTEXTEDITOR_LIBS}
     kdev4phpduchain
     kdev4phpparser
     kdev4phpcompletion
+
+    KF5::I18n
+    KF5::TextEditor
+
+    # TODO: remove once KDevPlatform moves away from KDELibs4Support.
+    KF5::KDELibs4Support
 )
 
 install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR})

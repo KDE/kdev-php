@@ -22,11 +22,11 @@
 #include <QVector>
 
 #include <language/duchain/appendedlist.h>
-#include <language/duchain/repositories/itemrepository.h>
+#include <serialization/itemrepository.h>
 #include <language/duchain/identifier.h>
-#include <language/duchain/indexedstring.h>
+#include <serialization/indexedstring.h>
 #include <util/embeddedfreetree.h>
-#include <language/duchain/referencecounting.h>
+#include <serialization/referencecounting.h>
 
 #define ifDebug(x)
 

@@ -246,16 +246,16 @@ void TestExpressionParser::chainCall()
 
     FunctionType::Ptr fn = top->childContexts().first()->localDeclarations().first()->type<FunctionType>();
     QVERIFY(fn);
-    QVERIFY(fn->returnType()->equals(top->localDeclarations().first()->abstractType().unsafeData()));
+    QVERIFY(fn->returnType()->equals(top->localDeclarations().first()->abstractType().data()));
 
     ExpressionParser p(true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$a->foo()"), DUContextPointer(top), CursorInRevision(1, 0));
     QVERIFY(res.type());
-    QVERIFY(res.type()->equals(top->localDeclarations().first()->abstractType().unsafeData()));
+    QVERIFY(res.type()->equals(top->localDeclarations().first()->abstractType().data()));
 
     res = p.evaluateType(QByteArray("$a->foo()->foo()->foo()"), DUContextPointer(top), CursorInRevision(1, 0));
     QVERIFY(res.type());
-    QVERIFY(res.type()->equals(top->localDeclarations().first()->abstractType().unsafeData()));
+    QVERIFY(res.type()->equals(top->localDeclarations().first()->abstractType().data()));
 }
 void TestExpressionParser::thisObject()
 {
@@ -376,8 +376,6 @@ void TestExpressionParser::cast()
     QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeArray);
 
     res = p.evaluateType(QByteArray("(object)$foo"), DUContextPointer(top), CursorInRevision(1, 0));
-    kDebug() << res.type();
-    kDebug() << res.type()->toString();
     QVERIFY(StructureType::Ptr::dynamicCast(res.type()));
     QVERIFY(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier() == QualifiedIdentifier("stdclass"));
 }

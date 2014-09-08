@@ -467,7 +467,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
             if ( ReferenceType::Ptr rType = ReferenceType::Ptr::dynamicCast(type) ) {
                 type = rType->baseType();
             }
-            if (ft->returnType() && !ft->returnType()->equals(type.unsafeData())) {
+            if (ft->returnType() && !ft->returnType()->equals(type.data())) {
                 if (ft->returnType().cast<IntegralType>()
                     && ft->returnType().cast<IntegralType>()->dataType() == IntegralType::TypeMixed)
                 {

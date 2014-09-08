@@ -50,7 +50,7 @@ NavigationWidget::NavigationWidget(const IncludeItem& includeItem, KDevelop::Top
   setContext( m_startContext );
 }
 
-NavigationWidget::NavigationWidget(TopDUContextPointer topContext, SimpleCursor position, const QString& constant)
+NavigationWidget::NavigationWidget(TopDUContextPointer topContext, KTextEditor::Cursor position, const QString& constant)
     : AbstractNavigationWidget()
 {
   m_topContext = topContext;

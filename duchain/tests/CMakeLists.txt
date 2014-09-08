@@ -70,6 +70,10 @@ target_link_libraries(benchmarks
     ${KDEVPLATFORM_INTERFACES_LIBRARIES}
     ${KDEVPLATFORM_TESTS_LIBRARIES}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
+
+    # TODO: KF5: KDevice is forcing us to have this dependency. I'm sure
+    # we can work-around it :)
+    KF5::Archive
 )
 # hack to make ../duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
 if (MINGW)

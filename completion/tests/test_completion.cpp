@@ -55,7 +55,7 @@ public:
     {
         m_completionItems.clear();
         foreach(const CompletionTreeItemPointer &i, items) {
-            m_completionItems << KSharedPtr<CompletionTreeElement>::staticCast(i);
+            m_completionItems << QExplicitlySharedDataPointer<CompletionTreeElement>(i);
         }
         m_completionContext = KDevelop::CodeCompletionContext::Ptr(completionContext);
         reset();

@@ -24,7 +24,7 @@
 
 #include <language/duchain/identifier.h>
 #include <language/duchain/ducontext.h>
-#include <language/duchain/indexedstring.h>
+#include <serialization/indexedstring.h>
 
 namespace KDevelop
 {

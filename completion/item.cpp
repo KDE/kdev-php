@@ -71,7 +71,7 @@ QString NormalDeclarationCompletionItem::declarationName() const
         isStatic = funDec->isStatic();
     }
 
-    const KSharedPtr<CodeCompletionContext>& ctx = completionContext();
+    const QExplicitlySharedDataPointer<CodeCompletionContext>& ctx = completionContext();
 
     if ( ctx->memberAccessOperation() == CodeCompletionContext::NoMemberAccess ) {
         // if we complete a class member or method (inside a method)
@@ -91,11 +91,11 @@ QString NormalDeclarationCompletionItem::declarationName() const
     return ret;
 }
 
-void NormalDeclarationCompletionItem::executed(KTextEditor::Document* document, const KTextEditor::Range& word)
+void NormalDeclarationCompletionItem::executed(KTextEditor::View* view, const KTextEditor::Range& word)
 {
     if (m_declaration && dynamic_cast<AbstractFunctionDeclaration*>(m_declaration.data())) {
         //Do some intelligent stuff for functions with the parens:
-        insertFunctionParenText(document, word.end(), m_declaration);
+        insertFunctionParenText(view, word.end(), m_declaration);
     }
 }
 
@@ -191,9 +191,9 @@ bool NormalDeclarationCompletionItem::createsExpandingWidget() const
     return true;
 }
 
-KSharedPtr<CodeCompletionContext> NormalDeclarationCompletionItem::completionContext() const
+QExplicitlySharedDataPointer<CodeCompletionContext> NormalDeclarationCompletionItem::completionContext() const
 {
-    return KSharedPtr<CodeCompletionContext>::staticCast(m_completionContext);
+    return QExplicitlySharedDataPointer<CodeCompletionContext>(m_completionContext);
 }
 
 

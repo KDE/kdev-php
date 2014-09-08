@@ -25,7 +25,7 @@
 #include <QtCore/QVariant>
 #include <QReadWriteLock>
 
-#include <language/duchain/indexedstring.h>
+#include <serialization/indexedstring.h>
 
 namespace KDevelop
 {
@@ -105,8 +105,8 @@ public:
      */
     virtual KDevelop::ContextMenuExtension contextMenuExtension(KDevelop::Context *context);
 
-    virtual QWidget* specialLanguageObjectNavigationWidget(const KUrl& url, const KDevelop::SimpleCursor& position);
-    virtual KDevelop::SimpleRange specialLanguageObjectRange(const KUrl& url, const KDevelop::SimpleCursor& position);
+    virtual QWidget* specialLanguageObjectNavigationWidget(const KUrl& url, const KTextEditor::Cursor& position);
+    virtual KTextEditor::Range specialLanguageObjectRange(const KUrl& url, const KTextEditor::Cursor& position);
 
     /// returns true, if the internal function file has been loaded
     /// to wait for it to finished, use a QReadLocker on the parse lock.
@@ -134,7 +134,7 @@ private:
     bool m_internalFunctionsLoaded;
     QReadWriteLock m_internalFunctionsLock;
 
-    QPair<QString, KDevelop::SimpleRange>  wordUnderCursor(const KUrl& url, const KDevelop::SimpleCursor& position);
+    QPair<QString, KTextEditor::Range>  wordUnderCursor(const KUrl& url, const KTextEditor::Cursor& position);
 
 };
 

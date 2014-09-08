@@ -68,8 +68,11 @@ LanguageSupport* ParseJob::php() const
     return dynamic_cast<LanguageSupport*>(languageSupport());
 }
 
-void ParseJob::run()
+void ParseJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
+
     /// Indexed string for 'Php', identifies environment files from this language plugin
     static const IndexedString phpLangString("Php");
 

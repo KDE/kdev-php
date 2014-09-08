@@ -37,19 +37,20 @@
 #include <language/duchain/duchainutils.h>
 
 #include <KPluginFactory>
+#include <KPluginLoader>
 #include <KAboutData>
 #include <KLocalizedString>
 #include <KStandardDirs>
 #include <QVariant>
 #include <QTimer>
 
+using namespace KDevelop;
+
 K_PLUGIN_FACTORY(PhpUnitProviderFactory, registerPlugin<PhpUnitProvider>(); )
 K_EXPORT_PLUGIN(PhpUnitProviderFactory(KAboutData("kdevphpunitprovider","kdevphpunitprovider", ki18n("PHPUnit Integration"), "0.1", ki18n("Finds and runs PHPUnit tests"), KAboutData::License_GPL)))
 
 
-using namespace KDevelop;
-
-PhpUnitProvider::PhpUnitProvider(QObject* parent, const QList< QVariant >& args): IPlugin(PhpUnitProviderFactory::componentData(), parent)
+PhpUnitProvider::PhpUnitProvider(QObject* parent, const QList< QVariant >& args): IPlugin(QStringLiteral("kdevphpunitprovider"), parent)
 {
     Q_UNUSED(args);
 

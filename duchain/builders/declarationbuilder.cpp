@@ -234,7 +234,7 @@ bool DeclarationBuilder::isBaseMethodRedeclaration(const IdentifierPair &ids, Cl
             }
             ClassDeclaration *nextClass = dynamic_cast<ClassDeclaration*>(type->declaration(currentContext()->topContext()));
             if (!nextClass || nextClass->classType() != ClassDeclarationData::Class) {
-                type.clear();
+                type.reset();
                 continue;
             }
             curClass = nextClass;
@@ -645,7 +645,7 @@ void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
     if ( m_reportErrors ) {
         // const class members may only be ints, floats, bools or strings
         bool badType = true;
-        if ( IntegralType* type = fastCast<IntegralType*>(lastType().unsafeData()) ) {
+        if ( IntegralType* type = fastCast<IntegralType*>(lastType().data()) ) {
             switch( type->dataType() ) {
                 case IntegralType::TypeBoolean:
                 case IntegralType::TypeFloat:
@@ -952,7 +952,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                         // might be wrong when we had syntax errors in there before
                         (*it)->setRange(newRange);
                     }
-                    if ( (*it)->abstractType() && !(*it)->abstractType()->equals(type.unsafeData()) ) {
+                    if ( (*it)->abstractType() && !(*it)->abstractType()->equals(type.data()) ) {
                         // if it's currently mixed and we now get something more definite, use that instead
                         if ( ReferenceType::Ptr rType = ReferenceType::Ptr::dynamicCast((*it)->abstractType()) ) {
                             if ( IntegralType::Ptr integral = IntegralType::Ptr::dynamicCast(rType->baseType()) ) {
@@ -989,7 +989,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                         }
                         unsure->addType(type->indexed());
                         if ( rType ) {
-                            rType->setBaseType(AbstractType::Ptr(unsure.unsafeData()));
+                            rType->setBaseType(AbstractType::Ptr(unsure.data()));
                             (*it)->setType(rType);
                         } else {
                             (*it)->setType(unsure);
@@ -1162,7 +1162,7 @@ void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParam
 
     DeclarationBuilderBase::visitFunctionCallParameterListElement(node);
 
-    if ( m_findVariable.node && !m_currentFunctionType.isNull() &&
+    if ( m_findVariable.node && m_currentFunctionType &&
             m_currentFunctionType->arguments().count() > m_functionCallParameterPos) {
         ReferenceType::Ptr refType = m_currentFunctionType->arguments()
                                         .at(m_functionCallParameterPos).cast<ReferenceType>();

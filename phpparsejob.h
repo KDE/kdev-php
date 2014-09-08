@@ -53,7 +53,7 @@ public:
 
 protected:
     LanguageSupport* php() const;
-    virtual void run();
+    virtual void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread);
 
 private:
     ParseJob *m_parentJob; ///< parent job if this one is an include

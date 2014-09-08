@@ -32,7 +32,6 @@
 #include <ktexteditor/view.h>
 #include <ktexteditor/document.h>
 #include <kiconloader.h>
-#include <khtmlview.h>
 
 
 #include <language/duchain/declaration.h>

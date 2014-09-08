@@ -49,7 +49,7 @@ public:
     /// use this for magic constants
     /// @param position the position of the "use" of the magic constant
     /// @param constant the name of the magic constant, e.g. __LINE__
-    NavigationWidget(KDevelop::TopDUContextPointer topContext, KDevelop::SimpleCursor position, const QString& constant);
+    NavigationWidget(KDevelop::TopDUContextPointer topContext, KTextEditor::Cursor position, const QString& constant);
 
     /**
     * Creates a compact html description-text

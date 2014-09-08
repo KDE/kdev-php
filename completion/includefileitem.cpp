@@ -28,8 +28,9 @@ using namespace KTextEditor;
 
 namespace Php {
 
-void IncludeFileItem::execute(Document* document, const Range& _word)
+void IncludeFileItem::execute(View* view, const Range& _word)
 {
+    KTextEditor::Document *document = view->document();
     Range word(_word);
 
     QString newText;
@@ -92,7 +93,7 @@ void IncludeFileItem::execute(Document* document, const Range& _word)
 
     // when we complete a directory, move the cursor behind it so we can continue with auto-completion
     if ( includeItem.isDirectory ) {
-        if ( View* view = document->activeView() ) {
+        if (view) {
             view->setCursorPosition(Cursor(_word.start().line(), _word.start().column() + includeItem.name.size() + 1));
         }
     }

@@ -31,9 +31,9 @@ namespace Php {
 const int foo = 5;
 
 MagicConstantNavigationContext::MagicConstantNavigationContext(TopDUContextPointer topContext,
-                                                                const SimpleCursor& position,
+                                                                const KTextEditor::Cursor& position,
                                                                 const QString& constant)
-    : AbstractNavigationContext(topContext, 0), m_position(position.line, position.column), m_constant(constant)
+    : AbstractNavigationContext(topContext, 0), m_position(position.line(), position.column()), m_constant(constant)
 {
 }
 

@@ -38,12 +38,12 @@ public:
         OverrideVar
     };
 
-    explicit ImplementationItem(HelperType type, KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), KSharedPtr<KDevelop::CodeCompletionContext> context = KSharedPtr<KDevelop::CodeCompletionContext>(), int _inheritanceDepth = 0)
+    explicit ImplementationItem(HelperType type, KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext> context = QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext>(), int _inheritanceDepth = 0)
             : NormalDeclarationCompletionItem(decl, context, _inheritanceDepth), m_type(type) {}
 
-    virtual void execute(KTextEditor::Document* document, const KTextEditor::Range& word);
+    virtual void execute(KTextEditor::View* view, const KTextEditor::Range& word) override;
 
-    virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const;
+    virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const override;
 
     HelperType m_type;
 };

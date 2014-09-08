@@ -84,7 +84,7 @@ bool ParseSession::readFile(const QString& filename, const char* codec)
         default:
             break;
         }
-        p->setFinalLocation(KDevelop::DocumentRange(m_currentDocument, KDevelop::SimpleRange(0, 0, 0, 0)));
+        p->setFinalLocation(KDevelop::DocumentRange(m_currentDocument, KTextEditor::Range()));
         m_problems << p;
         kWarning() << "Could not open file" << filename;
         return false;

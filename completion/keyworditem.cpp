@@ -65,8 +65,9 @@ QVariant KeywordItem::data(const QModelIndex& index, int role, const CodeComplet
     return NormalDeclarationCompletionItem::data(index, role, model);
 }
 
-void KeywordItem::execute(KTextEditor::Document* document, const KTextEditor::Range& word)
+void KeywordItem::execute(KTextEditor::View* view, const KTextEditor::Range& word)
 {
+    KTextEditor::Document *document = view->document();
     if ( !m_replacement.isEmpty() ) {
         QString replacement = m_replacement;
         replacement = replacement.replace('\n', '\n' + getIndendation(document->line(word.start().line())));
@@ -91,7 +92,7 @@ void KeywordItem::execute(KTextEditor::Document* document, const KTextEditor::Ra
         document->replaceText(word, replacement);
 
         if ( cursorPos != -1 ) {
-            if ( KTextEditor::View* view = document->activeView() ) {
+            if (view) {
                 replacement = replacement.left(cursorPos);
                 KTextEditor::Cursor newPos(
                     word.start().line() + replacement.count('\n'),

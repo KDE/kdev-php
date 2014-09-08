@@ -97,9 +97,10 @@ QVariant ImplementationItem::data(const QModelIndex& index, int role, const Code
     return ret;
 }
 
-void ImplementationItem::execute(KTextEditor::Document* document, const KTextEditor::Range& word)
+void ImplementationItem::execute(KTextEditor::View* view, const KTextEditor::Range& word)
 {
     DUChainReadLocker lock(DUChain::lock());
+    KTextEditor::Document *document = view->document();
 
     QString replText;
 

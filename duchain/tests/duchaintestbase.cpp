@@ -24,7 +24,7 @@
 #include <language/duchain/parsingenvironment.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/topducontext.h>
-#include <language/duchain/indexedstring.h>
+#include <serialization/indexedstring.h>
 #include <language/duchain/duchaindumper.h>
 #include <kstandarddirs.h>
 #include <kcomponentdata.h>
@@ -198,7 +198,7 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump,
         DUChainWriteLocker lock(DUChain::lock());
         DumpTypes dt;
         foreach(const AbstractType::Ptr& type, declarationBuilder.topTypes()) {
-            dt.dump(type.unsafeData());
+            dt.dump(type.data());
         }
     }
 

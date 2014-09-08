@@ -23,7 +23,7 @@
 #define PHPCOMPLETIONCODEMODELITEM_H
 
 #include <language/codecompletion/codecompletionitem.h>
-#include <language/duchain/indexedstring.h>
+#include <serialization/indexedstring.h>
 #include <language/duchain/parsingenvironment.h>
 
 #include "context.h"
@@ -39,10 +39,10 @@ class KDEVPHPCOMPLETION_EXPORT CodeModelCompletionItem : public KDevelop::Comple
 public:
     explicit CodeModelCompletionItem(const KDevelop::ParsingEnvironmentFilePointer &, const CompletionCodeModelItem &item);
 
-    virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const;
-    virtual KTextEditor::CodeCompletionModel::CompletionProperties completionProperties() const;
-    virtual void execute(KTextEditor::Document* document, const KTextEditor::Range& word);
-    virtual KDevelop::DeclarationPointer declaration() const;
+    virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const override;
+    virtual KTextEditor::CodeCompletionModel::CompletionProperties completionProperties() const override;
+    virtual void execute(KTextEditor::View* View, const KTextEditor::Range& word) override;
+    virtual KDevelop::DeclarationPointer declaration() const override;
 
 protected:
     CompletionCodeModelItem m_item;

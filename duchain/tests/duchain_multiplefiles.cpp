@@ -244,8 +244,8 @@ void TestDUChainMultipleFiles::testUpdateForeach()
         QVERIFY(f.topContext()->problems().isEmpty());
         QCOMPARE(f.topContext()->findDeclarations(Identifier("k")).count(), 1);
         Declaration* kDec = f.topContext()->findDeclarations(Identifier("k")).first();
-        QCOMPARE(kDec->rangeInCurrentRevision().start.line, 1);
-        QCOMPARE(kDec->rangeInCurrentRevision().start.column, 0);
+        QCOMPARE(kDec->rangeInCurrentRevision().start().line(), 1);
+        QCOMPARE(kDec->rangeInCurrentRevision().start().column(), 0);
         QCOMPARE(kDec->uses().count(), 1);
         QCOMPARE(kDec->uses().begin()->count(), 1);
         QCOMPARE(kDec->uses().begin()->begin()->start.line, 2);
@@ -262,8 +262,8 @@ void TestDUChainMultipleFiles::testUpdateForeach()
         QVERIFY(f.topContext()->problems().isEmpty());
         QCOMPARE(f.topContext()->findDeclarations(Identifier("k")).count(), 1);
         Declaration* kDec = f.topContext()->findDeclarations(Identifier("k")).first();
-        QCOMPARE(kDec->rangeInCurrentRevision().start.line, 1);
-        QCOMPARE(kDec->rangeInCurrentRevision().start.column, 25);
+        QCOMPARE(kDec->rangeInCurrentRevision().start().line(), 1);
+        QCOMPARE(kDec->rangeInCurrentRevision().start().column(), 25);
         QCOMPARE(kDec->uses().count(), 0);
     }
 }

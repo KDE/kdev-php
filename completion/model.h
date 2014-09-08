@@ -46,11 +46,15 @@ public:
     CodeCompletionModel(QObject* parent = 0);
     virtual ~CodeCompletionModel();
 
-    bool shouldAbortCompletion(KTextEditor::View* view, const KTextEditor::Range &range, const QString &currentCompletion);
-    KTextEditor::Range completionRange(KTextEditor::View* view, const KTextEditor::Cursor &position);
+    bool shouldAbortCompletion(KTextEditor::View* view,
+                               const KTextEditor::Range &range,
+                               const QString &currentCompletion) override;
+
+    KTextEditor::Range completionRange(KTextEditor::View* view,
+                                       const KTextEditor::Cursor &position) override;
 
 protected:
-    virtual KDevelop::CodeCompletionWorker* createCompletionWorker();
+    virtual KDevelop::CodeCompletionWorker* createCompletionWorker() override;
 };
 
 }

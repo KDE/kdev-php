@@ -21,7 +21,8 @@
 
 #include "codemodelitem.h"
 
-#include <KTextEditor/Document>
+#include <ktexteditor/document.h>
+#include <ktexteditor/view.h>
 
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
@@ -88,15 +89,16 @@ CodeCompletionModel::CompletionProperties CodeModelCompletionItem::completionPro
     return ret;
 }
 
-void CodeModelCompletionItem::execute(KTextEditor::Document* document, const KTextEditor::Range& word)
+void CodeModelCompletionItem::execute(KTextEditor::View* view, const KTextEditor::Range& word)
 {
+    KTextEditor::Document *document = view->document();
     document->replaceText(word, m_item.prettyName.str());
 
     if (declaration() && dynamic_cast<AbstractFunctionDeclaration*>(declaration().data())) {
         //Do some intelligent stuff for functions with the parens:
         KTextEditor::Cursor pos = word.start();
         pos.setColumn(pos.column() + m_item.prettyName.length());
-        insertFunctionParenText(document, pos, declaration());
+        insertFunctionParenText(view, pos, declaration());
     }
 }
 

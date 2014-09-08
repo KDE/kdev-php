@@ -24,7 +24,7 @@
 #include <language/duchain/declaration.h>
 
 #include <language/duchain/declarationdata.h>
-#include <language/duchain/indexedstring.h>
+#include <serialization/indexedstring.h>
 
 #include "phpduchainexport.h"
 namespace Php

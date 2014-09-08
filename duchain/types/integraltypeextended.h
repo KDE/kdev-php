@@ -37,7 +37,7 @@ typedef KDevelop::IntegralTypeData IntegralTypeExtendedData;
 class KDEVPHPDUCHAIN_EXPORT IntegralTypeExtended: public KDevelop::IntegralType
 {
 public:
-    typedef TypePtr<IntegralTypeExtended> Ptr;
+    typedef KDevelop::TypePtr<IntegralTypeExtended> Ptr;
 
     enum PHPIntegralTypes {
         TypeResource = KDevelop::IntegralType::TypeLanguageSpecific

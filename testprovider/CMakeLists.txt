@@ -10,13 +10,14 @@ set(kdevphpunitprovider_PLUGIN_SRCS
     testdoxdelegate.cpp
 )
 
-kde4_add_plugin(kdevphpunitprovider ${kdevphpunitprovider_PLUGIN_SRCS})
-target_link_libraries(kdevphpunitprovider
-        ${KDEVPLATFORM_INTERFACES_LIBRARIES}
-        ${KDEVPLATFORM_PROJECT_LIBRARIES}
-        ${KDEVPLATFORM_OUTPUTVIEW_LIBRARIES}
-        ${KDEVPLATFORM_UTIL_LIBRARIES}
-        ${KDEVPLATFORM_LANGUAGE_LIBRARIES})
+add_library(kdevphpunitprovider MODULE ${kdevphpunitprovider_PLUGIN_SRCS})
+
+target_link_libraries(kdevphpunitprovider LINK_PRIVATE
+    ${KDEVPLATFORM_INTERFACES_LIBRARIES}
+    ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
+    ${KDEVPLATFORM_PROJECT_LIBRARIES}
+    ${KDEVPLATFORM_OUTPUTVIEW_LIBRARIES}
+    ${KDEVPLATFORM_UTIL_LIBRARIES})
 
 install(TARGETS kdevphpunitprovider DESTINATION ${PLUGIN_INSTALL_DIR} )
 

@@ -20,17 +20,12 @@
 #define PHP_PARSESESSION_H
 
 #include <QtCore/QString>
-#include <language/editor/simplecursor.h>
 #include "phpparser.h"
 #include "parserexport.h"
 
 namespace KDevPG
 {
 class MemoryPool;
-}
-namespace KDevelop
-{
-class SimpleCursor;
 }
 namespace Php
 {

@@ -997,7 +997,7 @@ void CodeCompletionContext::forbidIdentifier(ClassDeclaration* klass)
     if (klass->baseClassesSize() > 0) {
         FOREACH_FUNCTION(const BaseClassInstance& base, klass->baseClasses) {
             StructureType::Ptr type = base.baseClass.type<StructureType>();
-            if (! type.isNull()) {
+            if (type.data()) {
                 ClassDeclaration* parent;
                 {
                     LOCKDUCHAIN;
@@ -1047,7 +1047,7 @@ QList<DUContext*> CodeCompletionContext::memberAccessContainers() const
         types << expressionTarget;
     }
     foreach (const AbstractType::Ptr &type, types) {
-        const IdentifiedType* idType = dynamic_cast<const IdentifiedType*>(type.unsafeData());
+        const IdentifiedType* idType = dynamic_cast<const IdentifiedType*>(type.data());
         Declaration* declaration = 0;
         if (idType) {
             declaration = idType->declaration(m_duContext->topContext());
@@ -1570,7 +1570,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     items << CompletionTreeItemPointer(
                                 new NormalDeclarationCompletionItem(
                                         DeclarationPointer(decl),
-                                        KDevelop::CodeCompletionContext::Ptr::staticCast(parentContext)
+                                        KDevelop::CodeCompletionContext::Ptr(parentContext.data())
                                 )
                             );
                 }

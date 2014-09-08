@@ -58,6 +58,7 @@
 #include "duchain/helper.h"
 #include <QTimer>
 
+using namespace KTextEditor;
 using namespace KDevelop;
 
 K_PLUGIN_FACTORY(KDevPhpSupportFactory, registerPlugin<Php::LanguageSupport>();)
@@ -72,7 +73,7 @@ namespace Php
 {
 
 LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
-        : KDevelop::IPlugin(KDevPhpSupportFactory::componentData(), parent),
+        : KDevelop::IPlugin(QStringLiteral("kdevphpsupport"), parent),
         KDevelop::ILanguageSupport(), m_internalFunctionsLoaded(false)
 {
     Q_ASSERT(internalFunctionFile().toUrl().isValid());
@@ -110,9 +111,11 @@ void LanguageSupport::updateInternalFunctions()
 void LanguageSupport::updateReady( const IndexedString& url, const ReferencedTopDUContext& topContext )
 {
     Q_UNUSED(topContext);
-    if (url == internalFunctionFile())
-    {
-        DUChain::self()->updateContextForUrl(internalTestFile(), KDevelop::TopDUContext::AllDeclarationsAndContexts, this, -10);
+    if (url == internalFunctionFile()) {
+        IndexedString testFile = internalTestFile();
+        if (!testFile.isEmpty()) {
+            DUChain::self()->updateContextForUrl(testFile, TopDUContext::AllDeclarationsAndContexts, this, -10);
+        }
         m_internalFunctionsLoaded = true;
         m_internalFunctionsLock.unlock();
     }
@@ -160,39 +163,39 @@ KDevelop::ContextMenuExtension LanguageSupport::contextMenuExtension(Context* co
     return cm;
 }
 
-QPair<QString, SimpleRange> LanguageSupport::wordUnderCursor(const KUrl& url, const SimpleCursor& position)
+QPair<QString, Range> LanguageSupport::wordUnderCursor(const KUrl& url, const Cursor& position)
 {
     KDevelop::IDocument* doc = core()->documentController()->documentForUrl(url);
-    if(!doc || !doc->textDocument() || !doc->textDocument()->activeView())
-        return qMakePair(QString(), SimpleRange::invalid());
+    if(!doc || !doc->textDocument())
+        return {};
 
-    int lineNumber = position.line;
+    int lineNumber = position.line();
     int lineLength = doc->textDocument()->lineLength(lineNumber);
 
-    QString line = doc->textDocument()->text(KTextEditor::Range(lineNumber, 0, lineNumber, lineLength));
+    QString line = doc->textDocument()->text(Range(lineNumber, 0, lineNumber, lineLength));
 
-    int startCol = position.column;
+    int startCol = position.column();
     for ( ; startCol >= 0; --startCol ) {
         if ( !line[startCol].isLetter() && line[startCol] != '_' ) {
             // don't include the wrong char
-            if ( startCol != position.column ) {
+            if ( startCol != position.column() ) {
                 ++startCol;
             }
             break;
         }
     }
-    int endCol = position.column;
+    int endCol = position.column();
     for ( ; endCol <= lineLength; ++endCol ) {
         if ( !line[endCol].isLetter() && line[endCol] != '_' ) {
             break;
         }
     }
     QString word = line.mid(startCol, endCol - startCol);
-    SimpleRange range(lineNumber, startCol, lineNumber, endCol);
+    Range range(lineNumber, startCol, lineNumber, endCol);
     return qMakePair(word, range);
 }
 
-bool isMagicConstant(QPair<QString, SimpleRange> word) {
+bool isMagicConstant(QPair<QString, Range> word) {
     if ( word.second.isValid() && !word.second.isEmpty() ) {
         if ( word.first == "__FILE__" || word.first == "__LINE__" ||
              word.first == "__METHOD__" || word.first == "__CLASS__" ||
@@ -209,9 +212,9 @@ bool isMagicConstant(QPair<QString, SimpleRange> word) {
     return false;
 }
 
-QWidget* LanguageSupport::specialLanguageObjectNavigationWidget(const KUrl& url, const SimpleCursor& position)
+QWidget* LanguageSupport::specialLanguageObjectNavigationWidget(const KUrl& url, const Cursor& position)
 {
-    QPair<QString, SimpleRange> word = wordUnderCursor(url, position);
+    QPair<QString, Range> word = wordUnderCursor(url, position);
     if ( isMagicConstant(word) ) {
         DUChainReadLocker lock;
         if (TopDUContext* top = standardContext(url)) {
@@ -223,9 +226,9 @@ QWidget* LanguageSupport::specialLanguageObjectNavigationWidget(const KUrl& url,
     return ILanguageSupport::specialLanguageObjectNavigationWidget(url, position);
 }
 
-SimpleRange LanguageSupport::specialLanguageObjectRange(const KUrl& url, const SimpleCursor& position)
+Range LanguageSupport::specialLanguageObjectRange(const KUrl& url, const Cursor& position)
 {
-    QPair<QString, SimpleRange> word = wordUnderCursor(url, position);
+    QPair<QString, Range> word = wordUnderCursor(url, position);
     if ( isMagicConstant(word) ) {
         return word.second;
     }

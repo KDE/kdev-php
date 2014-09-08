@@ -27,7 +27,7 @@ namespace Php {
 class MagicConstantNavigationContext : public KDevelop::AbstractNavigationContext {
 public:
     MagicConstantNavigationContext(KDevelop::TopDUContextPointer topContext,
-                                   const KDevelop::SimpleCursor& position,
+                                   const KTextEditor::Cursor& position,
                                    const QString& constant);
     virtual QString name() const;
     virtual QString html(bool shorten = false);

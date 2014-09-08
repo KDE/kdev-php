@@ -53,7 +53,7 @@ public:
 class KDEVPHPDUCHAIN_EXPORT StructureType: public KDevelop::StructureType
 {
 public:
-    typedef TypePtr<StructureType> Ptr;
+    typedef KDevelop::TypePtr<StructureType> Ptr;
 
     /// Default constructor
     StructureType();

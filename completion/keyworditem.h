@@ -39,14 +39,17 @@ public:
     ///
     /// NOTE: By default (i.e. when this function never gets called) @p keyword will be used as replacement.
     explicit KeywordItem(const QString &keyword,
-                KSharedPtr<KDevelop::CodeCompletionContext> context = KSharedPtr<KDevelop::CodeCompletionContext>(),
+                QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext> context = QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext>(),
                 const QString &customReplacement = QString())
             : NormalDeclarationCompletionItem(KDevelop::DeclarationPointer(), context, 0),
             m_keyword(keyword), m_replacement(customReplacement) {}
 
-    virtual void execute(KTextEditor::Document* document, const KTextEditor::Range& word);
+    virtual void execute(KTextEditor::View* view,
+                         const KTextEditor::Range& word) override;
 
-    virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const;
+    virtual QVariant data(const QModelIndex& index,
+                          int role,
+                          const KDevelop::CodeCompletionModel* model) const override;
 
 private:
     const QString m_keyword;

@@ -26,9 +26,7 @@
 #include "phpast.h"
 #include "tokenstream.h"
 #include "phptokentext.h"
-
-#include <KAboutData>
-
+#include <k4aboutdata.h>
 #include <language/util/debuglanguageparserhelper.h>
 
 using namespace Php;
@@ -38,8 +36,8 @@ typedef KDevelopUtils::DebugLanguageParserHelper<ParseSession, TokenStream, Pars
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData( "php-parser", 0, ki18n( "php-parser" ),
-                          "1", ki18n("KDevelop PHP parser debugging utility"), KAboutData::License_GPL,
+    K4AboutData aboutData( "php-parser", 0, ki18n( "php-parser" ),
+                          "1", ki18n("KDevelop PHP parser debugging utility"), K4AboutData::License_GPL,
                           ki18n( "(c) 2008 Niko Sams, 2009 Milian Wolff" ), KLocalizedString(), "http://www.kdevelop.org" );
 
     return KDevelopUtils::initAndRunParser<PhpParser>(aboutData, argc, argv);

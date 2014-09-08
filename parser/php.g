@@ -1072,7 +1072,8 @@ void Parser::reportProblem( Parser::ProblemType type, const QString& message, in
             break;
     }
     p->setDescription(message);
-    p->setFinalLocation(KDevelop::DocumentRange(m_currentDocument, KDevelop::SimpleRange(sLine, sCol, eLine, eCol+1)));
+    KTextEditor::Range range(sLine, sCol, eLine, eCol+1);
+    p->setFinalLocation(KDevelop::DocumentRange(m_currentDocument, range));
     m_problems << KDevelop::ProblemPointer(p);
 }
 

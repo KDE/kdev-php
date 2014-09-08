@@ -39,10 +39,13 @@ class KDEVPHPCOMPLETION_EXPORT CodeCompletionWorker : public KDevelop::CodeCompl
     Q_OBJECT
 
 public:
-    CodeCompletionWorker(CodeCompletionModel* parent);
+    explicit CodeCompletionWorker(CodeCompletionModel* parent);
 
 protected:
-    virtual KDevelop::CodeCompletionContext* createCompletionContext(KDevelop::DUContextPointer context, const QString &contextText, const QString &followingText, const KDevelop::CursorInRevision& position) const;
+    virtual KDevelop::CodeCompletionContext* createCompletionContext(KDevelop::DUContextPointer context,
+                                                                     const QString &contextText,
+                                                                     const QString &followingText,
+                                                                     const KDevelop::CursorInRevision& position) const override;
 };
 
 }

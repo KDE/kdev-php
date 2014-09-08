@@ -42,7 +42,6 @@ class DUContext;
 class ClassDeclaration;
 
 class CompletionTreeItem;
-typedef KSharedPtr<CompletionTreeItem> CompletionTreeItemPointer;
 
 class SimpleCursor;
 }
