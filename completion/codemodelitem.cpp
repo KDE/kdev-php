@@ -33,6 +33,8 @@
 #include <language/codecompletion/codecompletionhelper.h>
 #include <language/duchain/abstractfunctiondeclaration.h>
 
+#include "completiondebug.h"
+
 using namespace KDevelop;
 
 namespace Php
@@ -48,7 +50,7 @@ QVariant CodeModelCompletionItem::data(const QModelIndex& index, int role, const
 
     DUChainReadLocker lock(DUChain::lock(), 500);
     if (!lock.locked()) {
-        kDebug() << "Failed to lock the du-chain in time";
+        qCDebug(COMPLETION) << "Failed to lock the du-chain in time";
         return QVariant();
     }
 

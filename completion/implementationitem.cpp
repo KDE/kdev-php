@@ -22,7 +22,6 @@
 
 #include "implementationitem.h"
 
-#include "helpers.h"
 
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
@@ -39,6 +38,9 @@
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/classdeclaration.h>
 #include <language/duchain/types/integraltype.h>
+
+#include "completiondebug.h"
+#include "helpers.h"
 
 using namespace KDevelop;
 
@@ -146,7 +148,7 @@ void ImplementationItem::execute(KTextEditor::View* view, const KTextEditor::Ran
             if (DUContext* pctx = m_declaration->context()) {
                 parentClassIdentifier = pctx->localScopeIdentifier();
             } else {
-                kDebug() << "completion item for implementation has no parent context!";
+                qCDebug(COMPLETION) << "completion item for implementation has no parent context!";
             }
 
             replText += "/**\n" + indendation + " * ";
@@ -205,7 +207,7 @@ void ImplementationItem::execute(KTextEditor::View* view, const KTextEditor::Ran
                 }
             }
         } else {
-            kDebug() << "completion item for implementation was not a classfunction declaration!";
+            qCDebug(COMPLETION) << "completion item for implementation was not a classfunction declaration!";
             functionName = m_declaration->identifier().toString();
         }
 
@@ -266,7 +268,7 @@ void ImplementationItem::execute(KTextEditor::View* view, const KTextEditor::Ran
         document->replaceText(replaceRange, replText);
 
     } else {
-        kDebug() << "Declaration disappeared";
+        qCDebug(COMPLETION) << "Declaration disappeared";
     }
 }
 

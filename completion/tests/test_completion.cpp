@@ -35,8 +35,8 @@
 #include "completion/item.h"
 #include "completion/helpers.h"
 #include "completion/model.h"
+#include "completion/completiondebug.h"
 #include "duchain/declarations/functiondeclaration.h"
-
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -144,9 +144,9 @@ TestCompletion::TestCompletion()
 
 void TestCompletion::dumpCompletionItems(QList<CompletionTreeItemPointer> items)
 {
-    kDebug() << items.count() << "completion items:";
+    qCDebug(COMPLETION) << items.count() << "completion items:";
     foreach(const CompletionTreeItemPointer &item, items) {
-        kDebug() << item->declaration()->toString();
+        qCDebug(COMPLETION) << item->declaration()->toString();
     }
 }
 
@@ -232,7 +232,7 @@ void TestCompletion::protectedObjectCompletion()
 
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
 
-        kDebug() << tester.names;
+        qCDebug(COMPLETION) << tester.names;
 
         QVERIFY(tester.names.contains("$this->__construct"));
         QVERIFY(tester.names.contains("$this->pubf"));
@@ -491,7 +491,7 @@ void TestCompletion::projectFileClass()
         // inside of class foo, i.e. in its bar() method
         PhpCompletionTester tester(top->childContexts().first()->childContexts().first(), "<?php ");
 
-        kDebug() << tester.names;
+        qCDebug(COMPLETION) << tester.names;
         // we want to see the class
         QVERIFY(searchDeclaration(tester.items, addTop->localDeclarations().first()));
         // but not its methods
@@ -794,9 +794,9 @@ void TestCompletion::verifyExtendsOrImplements(const QString &codeStr, const QSt
         QStringList forbiddenIdentifiers)
 {
     if (cursor.isValid()) {
-        kDebug() << codeStr.mid(0, cursor.column) + completionStr + '|' + codeStr.mid(cursor.column);
+        qCDebug(COMPLETION) << codeStr.mid(0, cursor.column) + completionStr + '|' + codeStr.mid(cursor.column);
     } else {
-        kDebug() << codeStr + completionStr + '|';
+        qCDebug(COMPLETION) << codeStr + completionStr + '|';
     }
     TopDUContext *top = parse(codeStr.toUtf8(), DumpNone);
     DUChainReleaser releaseTop(top);
@@ -930,7 +930,7 @@ void TestCompletion::unsureType()
     PhpCompletionTester tester(top, "$f->");
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::MemberAccess);
 
-    kDebug() << tester.names;
+    qCDebug(COMPLETION) << tester.names;
     foreach(const QString &id, QStringList() << "vA" << "vB") {
         QVERIFY(tester.names.contains(id, Qt::CaseSensitive));
     }
@@ -948,7 +948,7 @@ void TestCompletion::completionAfterComments()
     {
         PhpCompletionTester tester(top, code);
 
-        kDebug() << tester.names;
+        qCDebug(COMPLETION) << tester.names;
         QVERIFY(tester.completionContext->isValid());
         QVERIFY(tester.items.count() > 0);
     }
@@ -1028,7 +1028,7 @@ void TestCompletion::fileCompletion()
                                                  << "include ( dirname(__FILE__) . '/"
                                                  /** TODO:  << "include __DIR__ . \"/" */ )
     {
-        kDebug() << code;
+        qCDebug(COMPLETION) << code;
         PhpCompletionTester tester(top, code);
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::FileChoose);
     }
@@ -1043,7 +1043,7 @@ void TestCompletion::instanceof()
     PhpCompletionTester tester(top, "$a instanceof ");
 
     foreach ( const QString& name, QStringList() << "a" << "b" << "c" << "d" ) {
-        kDebug() << name;
+        qCDebug(COMPLETION) << name;
         QList<Declaration*> decs = top->findLocalDeclarations(Identifier(name));
         QCOMPARE(decs.size(), 1);
         ClassDeclaration* cdec = dynamic_cast<ClassDeclaration*>(decs.first());
@@ -1063,7 +1063,7 @@ void TestCompletion::afterFunctionArg()
     DUChainWriteLocker lock(DUChain::lock());
 
     foreach ( const QString &code, QStringList() << "if ($a->" << "while ($a->" << "foobar($a->" ) {
-        kDebug() << code;
+        qCDebug(COMPLETION) << code;
         PhpCompletionTester tester(top, code);
         QCOMPARE(tester.names.size(), 1);
         QCOMPARE(tester.names.first(), QString("b"));
@@ -1147,7 +1147,7 @@ void TestCompletion::functionArguments()
     // should get two local and the func itself
     QVERIFY(searchDeclaration(tester.items, fDec));
     foreach( Declaration* dec, args ) {
-        kDebug() << dec->toString();
+        qCDebug(COMPLETION) << dec->toString();
         QVERIFY(searchDeclaration(tester.items, dec));
     }
 }

@@ -23,8 +23,6 @@
 
 #include "worker.h"
 
-#include <kdebug.h>
-
 #include <ktexteditor/view.h>
 #include <ktexteditor/document.h>
 #include <klocale.h>
@@ -35,7 +33,9 @@
 #include <language/duchain/duchainbase.h>
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/duchain.h>
+
 #include "model.h"
+#include "completiondebug.h"
 
 using namespace KDevelop;
 

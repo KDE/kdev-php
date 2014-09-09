@@ -40,6 +40,7 @@
 
 #include "completion/helpers.h"
 #include "completion/context.h"
+#include "completiondebug.h"
 
 #include "../duchain/navigation/navigationwidget.h"
 #include "../duchain/declarations/variabledeclaration.h"
@@ -104,7 +105,7 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
 
     DUChainReadLocker lock(DUChain::lock(), 500);
     if (!lock.locked()) {
-        kDebug() << "Failed to lock the du-chain in time";
+        qCDebug(COMPLETION) << "Failed to lock the du-chain in time";
         return QVariant();
     }
 

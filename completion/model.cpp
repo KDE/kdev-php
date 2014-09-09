@@ -28,11 +28,9 @@
 #include <QTextFormat>
 #include <QBrush>
 #include <QDir>
-#include <kdebug.h>
 #include <ktexteditor/view.h>
 #include <ktexteditor/document.h>
 #include <kiconloader.h>
-
 
 #include <language/duchain/declaration.h>
 #include <language/duchain/ducontext.h>
@@ -49,6 +47,7 @@
 #include "context.h"
 #include "worker.h"
 #include "phplanguagesupport.h"
+#include "completiondebug.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;
@@ -76,11 +75,11 @@ Range CodeCompletionModel::completionRange(View* view, const Cursor &position)
     if (range.start().column() > 0) {
         KTextEditor::Range preRange(Cursor(range.start().line(), range.start().column() - 1),
                                     Cursor(range.start().line(), range.start().column()));
-        kDebug() << preRange << view->document()->text(preRange);
+        qCDebug(COMPLETION) << preRange << view->document()->text(preRange);
         const QString contents = view->document()->text(preRange);
         if ( contents == "$" ) {
             range.expandToRange(preRange);
-            kDebug() << "using custom completion range" << range;
+            qCDebug(COMPLETION) << "using custom completion range" << range;
         }
     }
     return range;

@@ -14,6 +14,7 @@ set(completion_SRCS
     model.cpp
     helpers.cpp
     codemodelitem.cpp
+    completiondebug.cpp
 )
 
 add_library( phpcompletion STATIC ${completion_SRCS} )
