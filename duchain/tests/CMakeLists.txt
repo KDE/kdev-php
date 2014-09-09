@@ -11,8 +11,8 @@ set(duchain_SRCS
     duchaintestbase.cpp)
 kde4_add_unit_test(duchain ${duchain_SRCS})
 target_link_libraries(duchain
-    kdev4phpduchain
-    kdev4phpparser
+    phpduchain
+    phpparser
     ${QT_QTTEST_LIBRARY}
     ${KDEVPLATFORM_TESTS_LIBRARIES}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
@@ -28,8 +28,8 @@ set(expressionparser_SRCS
     duchaintestbase.cpp)
 kde4_add_unit_test(expressionparser ${expressionparser_SRCS})
 target_link_libraries(expressionparser
-    kdev4phpduchain
-    kdev4phpparser
+    phpduchain
+    phpparser
     ${QT_QTTEST_LIBRARY}
     ${KDEVPLATFORM_TESTS_LIBRARIES}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
@@ -45,8 +45,8 @@ set(uses_SRCS
     duchaintestbase.cpp)
 kde4_add_unit_test(uses ${uses_SRCS})
 target_link_libraries(uses
-    kdev4phpduchain
-    kdev4phpparser
+    phpduchain
+    phpparser
     ${QT_QTTEST_LIBRARY}
     ${KDEVPLATFORM_INTERFACES_LIBRARIES}
     ${KDEVPLATFORM_TESTS_LIBRARIES}
@@ -64,8 +64,8 @@ set(benchmarks_SRCS
 )
 kde4_add_unit_test(benchmarks ${benchmarks_SRCS})
 target_link_libraries(benchmarks
-    kdev4phpduchain
-    kdev4phpparser
+    phpduchain
+    phpparser
     ${QT_QTTEST_LIBRARY}
     ${KDEVPLATFORM_INTERFACES_LIBRARIES}
     ${KDEVPLATFORM_TESTS_LIBRARIES}
@@ -87,8 +87,8 @@ set(duchain_multiplefiles_SRCS
 )
 kde4_add_unit_test(duchain_multiplefiles ${duchain_multiplefiles_SRCS})
 target_link_libraries(duchain_multiplefiles
-    kdev4phpduchain
-    kdev4phpparser
+    phpduchain
+    phpparser
     ${QT_QTTEST_LIBRARY}
     ${KDEVPLATFORM_INTERFACES_LIBRARIES}
     ${KDEVPLATFORM_TESTS_LIBRARIES}

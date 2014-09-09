@@ -11,4 +11,4 @@ if (MINGW)
     add_definitions(-DMAKE_KDEV4PHPPARSER_LIB)
 endif (MINGW)
 
-target_link_libraries(lexertest kdev4phpparser ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${KDE4_KDECORE_LIBS} ${KDEVPLATFORM_LANGUAGE_LIBRARIES})
+target_link_libraries(lexertest phpparser ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${KDE4_KDECORE_LIBS} ${KDEVPLATFORM_LANGUAGE_LIBRARIES})

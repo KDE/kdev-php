@@ -63,9 +63,9 @@ add_library(kdevphplanguagesupport MODULE ${kdevphplanguagesupport_PART_SRCS})
 target_link_libraries(kdevphplanguagesupport
     ${KDEVPLATFORM_INTERFACES_LIBRARIES}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
-    kdev4phpduchain
-    kdev4phpparser
-    kdev4phpcompletion
+    phpduchain
+    phpparser
+    phpcompletion
 
     KF5::I18n
     KF5::TextEditor
