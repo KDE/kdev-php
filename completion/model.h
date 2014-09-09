@@ -38,7 +38,7 @@
 namespace Php
 {
 
-class KDEVPHPCOMPLETION_EXPORT CodeCompletionModel : public KDevelop::CodeCompletionModel
+class CodeCompletionModel : public KDevelop::CodeCompletionModel
 {
     Q_OBJECT
 

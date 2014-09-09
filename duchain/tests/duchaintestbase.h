@@ -29,7 +29,6 @@
 
 #include <tests/testhelpers.h>
 
-#include "phpduchainexport.h"
 
 #include "completion/item.h"
 #include "phpparser.h"
@@ -53,7 +52,7 @@ struct DUChainReleaser {
     KDevelop::TopDUContext* m_top;
 };
 
-class KDEVPHPDUCHAIN_EXPORT DUChainTestBase : public QObject
+class DUChainTestBase : public QObject
 {
     Q_OBJECT
 

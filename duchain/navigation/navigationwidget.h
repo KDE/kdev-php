@@ -21,7 +21,6 @@
 #define PHP_NAVIGATIONWIDGET_H
 
 #include <language/duchain/navigation/abstractnavigationwidget.h>
-#include "../phpduchainexport.h"
 
 namespace KDevelop {
 class IncludeItem;
@@ -31,7 +30,7 @@ class SimpleCursor;
 namespace Php
 {
 
-class KDEVPHPDUCHAIN_EXPORT NavigationWidget : public KDevelop::AbstractNavigationWidget
+class NavigationWidget : public KDevelop::AbstractNavigationWidget
 {
     Q_OBJECT
 public:

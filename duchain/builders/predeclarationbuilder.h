@@ -44,7 +44,7 @@ typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, ContextBuil
  *
  * \todo constants should probably be handled here as well
  */
-class KDEVPHPDUCHAIN_EXPORT PreDeclarationBuilder : public PreDeclarationBuilderBase
+class PreDeclarationBuilder : public PreDeclarationBuilderBase
 {
 public:
     PreDeclarationBuilder(QHash<qint64, ClassDeclaration*>* types,

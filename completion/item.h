@@ -45,7 +45,7 @@ namespace Php
 class CodeCompletionContext;
 
 //A completion item used for completion of normal declarations while normal code-completion
-class KDEVPHPCOMPLETION_EXPORT NormalDeclarationCompletionItem : public KDevelop::NormalDeclarationCompletionItem
+class NormalDeclarationCompletionItem : public KDevelop::NormalDeclarationCompletionItem
 {
 public:
     explicit NormalDeclarationCompletionItem(KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext> context = QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext>(), int _inheritanceDepth = 0)

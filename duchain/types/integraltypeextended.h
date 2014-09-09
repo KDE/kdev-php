@@ -23,7 +23,6 @@
 
 #include <language/duchain/types/integraltype.h>
 #include <language/duchain/types/typesystemdata.h>
-#include "phpduchainexport.h"
 
 namespace Php
 {
@@ -34,7 +33,7 @@ typedef KDevelop::IntegralTypeData IntegralTypeExtendedData;
  * Drop-In replacement for the IntegralType in KDevplatform with
  * some extended logic specific for PHP
  */
-class KDEVPHPDUCHAIN_EXPORT IntegralTypeExtended: public KDevelop::IntegralType
+class IntegralTypeExtended: public KDevelop::IntegralType
 {
 public:
     typedef KDevelop::TypePtr<IntegralTypeExtended> Ptr;

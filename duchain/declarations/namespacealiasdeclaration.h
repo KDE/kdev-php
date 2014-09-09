@@ -27,11 +27,10 @@
 #include <language/duchain/declarationdata.h>
 #include <serialization/indexedstring.h>
 
-#include "phpduchainexport.h"
 namespace Php
 {
 
-class KDEVPHPDUCHAIN_EXPORT NamespaceAliasDeclarationData : public KDevelop::NamespaceAliasDeclarationData
+class NamespaceAliasDeclarationData : public KDevelop::NamespaceAliasDeclarationData
 {
 public:
     NamespaceAliasDeclarationData()
@@ -48,7 +47,7 @@ public:
     KDevelop::IndexedString prettyName;
 };
 
-class KDEVPHPDUCHAIN_EXPORT NamespaceAliasDeclaration : public KDevelop::NamespaceAliasDeclaration
+class NamespaceAliasDeclaration : public KDevelop::NamespaceAliasDeclaration
 {
 public:
     NamespaceAliasDeclaration(const NamespaceAliasDeclaration& rhs);

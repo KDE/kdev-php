@@ -34,7 +34,7 @@ namespace Php
 struct CompletionCodeModelItem;
 class CodeCompletionContext;
 
-class KDEVPHPCOMPLETION_EXPORT CodeModelCompletionItem : public KDevelop::CompletionTreeItem
+class CodeModelCompletionItem : public KDevelop::CompletionTreeItem
 {
 public:
     explicit CodeModelCompletionItem(const KDevelop::ParsingEnvironmentFilePointer &, const CompletionCodeModelItem &item);

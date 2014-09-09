@@ -23,12 +23,11 @@
 
 #include <language/duchain/types/structuretype.h>
 #include <language/duchain/types/typesystemdata.h>
-#include "phpduchainexport.h"
 
 namespace Php
 {
 
-class KDEVPHPDUCHAIN_EXPORT StructureTypeData : public KDevelop::StructureTypeData
+class StructureTypeData : public KDevelop::StructureTypeData
 {
 public:
     /// Constructor
@@ -50,7 +49,7 @@ public:
  * makes it possible to store the type as lower case but
  * keeping the "pretty" name intact.
  */
-class KDEVPHPDUCHAIN_EXPORT StructureType: public KDevelop::StructureType
+class StructureType: public KDevelop::StructureType
 {
 public:
     typedef KDevelop::TypePtr<StructureType> Ptr;

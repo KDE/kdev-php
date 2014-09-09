@@ -47,7 +47,7 @@ typedef KDevelop::AbstractDeclarationBuilder<AstNode, IdentifierAst, TypeBuilder
  *       a \see PreDeclarationBuilder is used to get the declarations _and_ types for those.
  *       Thus type- and declaratoinbuilding for these is skipped in this class.
  */
-class KDEVPHPDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase
+class DeclarationBuilder : public DeclarationBuilderBase
 {
 public:
     DeclarationBuilder(EditorIntegrator* editor)

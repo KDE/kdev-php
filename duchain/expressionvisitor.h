@@ -21,7 +21,6 @@
 #define EXPRESSIONVISITOR_H
 
 #include "phpdefaultvisitor.h"
-#include "phpduchainexport.h"
 #include "expressionevaluationresult.h"
 #include "helper.h"
 
@@ -38,7 +37,7 @@ namespace Php
 {
 class EditorIntegrator;
 
-class KDEVPHPDUCHAIN_EXPORT ExpressionVisitor : public DefaultVisitor
+class ExpressionVisitor : public DefaultVisitor
 {
 public:
     ExpressionVisitor(EditorIntegrator* editor);

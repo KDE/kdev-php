@@ -20,12 +20,11 @@
 #define DUMPTYPES_H
 
 #include <language/duchain/types/typesystem.h>
-#include "phpduchainexport.h"
 
 namespace Php
 {
 
-class KDEVPHPDUCHAIN_EXPORT DumpTypes : protected KDevelop::TypeVisitor
+class DumpTypes : protected KDevelop::TypeVisitor
 {
 public:
     DumpTypes();

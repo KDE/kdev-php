@@ -23,7 +23,6 @@
 
 #include <language/duchain/duchainpointer.h>
 
-#include "phpduchainexport.h"
 #include "expressionevaluationresult.h"
 
 namespace Php
@@ -31,7 +30,7 @@ namespace Php
 struct AstNode;
 class EditorIntegrator;
 
-class KDEVPHPDUCHAIN_EXPORT ExpressionParser
+class ExpressionParser
 {
 public:
     /**

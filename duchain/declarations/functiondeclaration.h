@@ -27,11 +27,10 @@
 #include <language/duchain/declarationdata.h>
 #include <serialization/indexedstring.h>
 
-#include "phpduchainexport.h"
 namespace Php
 {
 
-class KDEVPHPDUCHAIN_EXPORT FunctionDeclarationData : public KDevelop::FunctionDeclarationData
+class FunctionDeclarationData : public KDevelop::FunctionDeclarationData
 {
 public:
     FunctionDeclarationData()
@@ -48,7 +47,7 @@ public:
     KDevelop::IndexedString prettyName;
 };
 
-class KDEVPHPDUCHAIN_EXPORT FunctionDeclaration : public KDevelop::FunctionDeclaration
+class FunctionDeclaration : public KDevelop::FunctionDeclaration
 {
 public:
     FunctionDeclaration(const FunctionDeclaration &rhs);
