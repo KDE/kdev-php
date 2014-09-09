@@ -22,7 +22,6 @@
 #include <QtTest>
 
 #include <KStandardDirs>
-#include <KComponentData>
 
 #include <language/duchain/parsingenvironment.h>
 #include <language/duchain/duchainlock.h>
@@ -51,11 +50,6 @@ using namespace KDevelop;
 
 namespace Php
 {
-
-DUChainTestBase::DUChainTestBase()
-{
-    KComponentData kd("kdevphpsupport");
-}
 
 void DUChainTestBase::initTestCase()
 {

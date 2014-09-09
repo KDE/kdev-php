@@ -57,9 +57,6 @@ class DUChainTestBase : public QObject
     Q_OBJECT
 
 public:
-    DUChainTestBase();
-
-public:
     enum DumpArea {
         DumpNone = 0,
         DumpAST = 1,
