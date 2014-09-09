@@ -75,4 +75,3 @@ QString NavigationWidget::shortDescription(const IncludeItem& includeItem) {
 
 }
 
-#include "navigationwidget.moc"

@@ -152,4 +152,3 @@ void BenchmarkCodeCompletion::completionData()
 
 }
 
-#include "bench_completion.moc"

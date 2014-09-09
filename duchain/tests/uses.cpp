@@ -1210,4 +1210,3 @@ void TestUses::useTrait()
 
 }
 
-#include "uses.moc"

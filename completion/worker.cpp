@@ -54,4 +54,3 @@ KDevelop::CodeCompletionContext* CodeCompletionWorker::createCompletionContext(K
 
 }
 
-#include "worker.moc"

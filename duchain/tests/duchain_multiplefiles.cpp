@@ -268,4 +268,3 @@ void TestDUChainMultipleFiles::testUpdateForeach()
     }
 }
 
-#include "duchain_multiplefiles.moc"

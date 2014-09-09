@@ -107,4 +107,3 @@ void Benchmarks::useBuilder()
 
 }
 
-#include "benchmarks.moc"

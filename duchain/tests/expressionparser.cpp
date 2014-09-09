@@ -625,4 +625,3 @@ void TestExpressionParser::classMemberOnInstantiation()
 
 }
 
-#include "expressionparser.moc"

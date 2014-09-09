@@ -458,4 +458,3 @@ TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialSta
 }
 }
 
-#include "lexertest.moc"

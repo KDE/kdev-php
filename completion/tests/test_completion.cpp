@@ -1373,5 +1373,4 @@ void TestCompletion::closures()
 
 }
 
-#include "test_completion.moc"
 

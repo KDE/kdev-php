@@ -211,5 +211,4 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump,
 }
 }
 
-#include "duchaintestbase.moc"
 

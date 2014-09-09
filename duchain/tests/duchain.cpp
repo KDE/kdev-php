@@ -2876,4 +2876,3 @@ void TestDUChain::declareFinalMethod()
     QVERIFY(funDec->isFinal());
 }
 
-#include "duchain.moc"
