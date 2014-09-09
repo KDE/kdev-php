@@ -20,7 +20,10 @@
 
 
 #include "phpunitprovider.h"
+
 #include "phpunittestsuite.h"
+#include "testproviderdebug.h"
+
 #include <interfaces/icore.h>
 #include <interfaces/iprojectcontroller.h>
 #include <interfaces/iproject.h>
@@ -68,12 +71,12 @@ void PhpUnitProvider::updateReady(const IndexedString& document, const Reference
     QVector<Declaration*> declarations = context.data()->localDeclarations();
     if (declarations.isEmpty())
     {
-        kDebug() << "Update of the internal test file found no suitable declarations";
+        qCDebug(TESTPROVIDER) << "Update of the internal test file found no suitable declarations";
         return;
     }
     m_testCaseDeclaration = IndexedDeclaration(declarations.first());
 
-    kDebug() << "Found declaration" << declarations.first()->toString();
+    qCDebug(TESTPROVIDER) << "Found declaration" << declarations.first()->toString();
     lock.unlock();
 
 
@@ -100,23 +103,23 @@ void PhpUnitProvider::parseJobFinished(KDevelop::ParseJob* job)
 
 void PhpUnitProvider::processContext(ReferencedTopDUContext referencedContext)
 {
-    kDebug();
+    qCDebug(TESTPROVIDER);
 
     DUChainReadLocker locker;
     TopDUContext* context = referencedContext.data();
 
     if (!context) {
-        kDebug() << "context went away";
+        qCDebug(TESTPROVIDER) << "context went away";
         return;
     }
 
     Declaration* testCase = m_testCaseDeclaration.data();
     if (!testCase) {
-        kDebug() << "test case declaration went away";
+        qCDebug(TESTPROVIDER) << "test case declaration went away";
         return;
     }
 
-    kDebug() << "Number of declarations" << context->localDeclarations().size();
+    qCDebug(TESTPROVIDER) << "Number of declarations" << context->localDeclarations().size();
 
     foreach (Declaration* declaration, context->localDeclarations())
     {
@@ -137,7 +140,7 @@ void PhpUnitProvider::processTestCaseDeclaration(Declaration* d)
     QString name = d->identifier().toString();
     KUrl url = d->url().toUrl();
     IProject* project = ICore::self()->projectController()->findProjectForUrl(url);
-    kDebug() << name << url << (project ? project->name() : "No project");
+    qCDebug(TESTPROVIDER) << name << url << (project ? project->name() : "No project");
     if (!project)
     {
         return;
@@ -155,7 +158,7 @@ void PhpUnitProvider::processTestCaseDeclaration(Declaration* d)
     {
         foreach (Declaration* member, classDeclaration->internalContext()->localDeclarations())
         {
-            kDebug() << "Trying test case declaration" << member;
+            qCDebug(TESTPROVIDER) << "Trying test case declaration" << member;
             if (member->isFunctionDeclaration() && member->identifier().toString().startsWith("test"))
             {
                 const QString caseName = member->identifier().toString();
@@ -181,3 +184,4 @@ void PhpUnitProvider::processTestCaseDeclaration(Declaration* d)
     }
 }
 
+#include "phpunitprovider.moc"

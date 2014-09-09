@@ -8,16 +8,18 @@ set(kdevphpunitprovider_PLUGIN_SRCS
     phpunittestsuite.cpp
     phpunitrunjob.cpp
     testdoxdelegate.cpp
+    testproviderdebug.cpp
 )
 
 add_library(kdevphpunitprovider MODULE ${kdevphpunitprovider_PLUGIN_SRCS})
 
 target_link_libraries(kdevphpunitprovider LINK_PRIVATE
-    ${KDEVPLATFORM_INTERFACES_LIBRARIES}
-    ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
-    ${KDEVPLATFORM_PROJECT_LIBRARIES}
-    ${KDEVPLATFORM_OUTPUTVIEW_LIBRARIES}
-    ${KDEVPLATFORM_UTIL_LIBRARIES})
+    KDev::Interfaces
+    KDev::Language
+    KDev::Project
+    KDev::OutputView
+    KDev::Util
+)
 
 install(TARGETS kdevphpunitprovider DESTINATION ${PLUGIN_INSTALL_DIR} )
 

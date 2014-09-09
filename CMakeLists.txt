@@ -45,8 +45,7 @@ add_subdirectory(app_templates)
 add_subdirectory(parser)
 add_subdirectory(duchain)
 add_subdirectory(completion)
-# FIXME: After the KF5 port, the testprovider plugin compiles but fails to link.
-#add_subdirectory(testprovider)
+add_subdirectory(testprovider)
 
 set(kdevphplanguagesupport_PART_SRCS
     phplanguagesupport.cpp

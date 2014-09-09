@@ -21,6 +21,7 @@
 #include "phpunitrunjob.h"
 #include "phpunittestsuite.h"
 #include "testdoxdelegate.h"
+#include "testproviderdebug.h"
 
 #include <util/processlinemaker.h>
 #include <util/executecompositejob.h>
@@ -34,7 +35,6 @@
 
 #include <KProcess>
 #include <KStandardDirs>
-#include <KDebug>
 #include <KLocalizedString>
 #include <KConfigGroup>
 
@@ -54,13 +54,13 @@ KJob* createTestJob(QString launchModeId, QStringList arguments )
     KDevelop::LaunchConfigurationType* type = KDevelop::ICore::self()->runController()->launchConfigurationTypeForId( "Script Application" );
     KDevelop::ILaunchMode* mode = KDevelop::ICore::self()->runController()->launchModeForId( launchModeId );
 
-    kDebug() << "got mode and type:" << type << type->id() << mode << mode->id();
+    qCDebug(TESTPROVIDER) << "got mode and type:" << type << type->id() << mode << mode->id();
     Q_ASSERT(type && mode);
 
     KDevelop::ILauncher* launcher = 0;
     foreach (KDevelop::ILauncher *l, type->launchers())
     {
-        //kDebug() << "available launcher" << l << l->id() << l->supportedModes();
+        //qCDebug(TESTPROVIDER) << "available launcher" << l << l->id() << l->supportedModes();
         if (l->supportedModes().contains(mode->id())) {
             launcher = l;
             break;
@@ -82,9 +82,9 @@ KJob* createTestJob(QString launchModeId, QStringList arguments )
                                                 0, //TODO add project
                                                 i18n("PHPUnit") );
         ilaunch->config().writeEntry("ConfiguredByPhpUnit", true);
-        //kDebug() << "created config, launching";
+        //qCDebug(TESTPROVIDER) << "created config, launching";
     } else {
-        //kDebug() << "reusing generated config, launching";
+        //qCDebug(TESTPROVIDER) << "reusing generated config, launching";
     }
     type->configureLaunchFromCmdLineArguments( ilaunch->config(), arguments );
     return KDevelop::ICore::self()->runController()->execute(launchModeId, ilaunch);
@@ -160,7 +160,7 @@ void PhpUnitRunJob::processFinished(KJob* job)
         m_result.suiteResult = KDevelop::TestResult::Error;
     }
 
-    kDebug() << m_result.suiteResult << m_result.testCaseResults;
+    qCDebug(TESTPROVIDER) << m_result.suiteResult << m_result.testCaseResults;
     KDevelop::ICore::self()->testController()->notifyTestRunFinished(m_suite, m_result);
     emitResult();
 }
@@ -178,7 +178,7 @@ void PhpUnitRunJob::rowsInserted(const QModelIndex &parent, int startRow, int en
         {
             bool passed = testResultLineExp.cap(1) == "x";
             QString testCase = "test" + line.mid(i+4).toLower().remove(' ');
-            kDebug() << "Got result in " << line << " for " << testCase;
+            qCDebug(TESTPROVIDER) << "Got result in " << line << " for " << testCase;
             if (m_cases.contains(testCase, Qt::CaseInsensitive))
             {
                 foreach (const QString& realCaseName, m_cases)
@@ -193,7 +193,7 @@ void PhpUnitRunJob::rowsInserted(const QModelIndex &parent, int startRow, int en
         }
         else
         {
-            kDebug() << line << testResultLineExp.pattern() << i;
+            qCDebug(TESTPROVIDER) << line << testResultLineExp.pattern() << i;
         }
     }
 }
