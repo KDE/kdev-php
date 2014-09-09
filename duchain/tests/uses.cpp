@@ -27,7 +27,6 @@
 #include "../declarations/variabledeclaration.h"
 #include "../declarations/traitmethodaliasdeclaration.h"
 #include "../declarations/traitmemberaliasdeclaration.h"
-#include "../duchaindebug.h"
 
 using namespace KDevelop;
 
@@ -38,12 +37,12 @@ namespace Php
 
 void compareUses(Declaration* dec, QList<RangeInRevision> ranges)
 {
-    qCDebug(DUCHAIN) << "comparing uses for" << dec->toString();
+    qDebug() << "comparing uses for" << dec->toString();
     QCOMPARE(dec->uses().keys().count(), 1);
     QCOMPARE(dec->uses().values().count(), 1);
     QCOMPARE(dec->uses().values().first().count(), ranges.count());
     for (int i = 0; i < ranges.count(); ++i) {
-        qCDebug(DUCHAIN) << dec->uses().values().first().at(i) << ranges.at(i);
+        qDebug() << dec->uses().values().first().at(i) << ranges.at(i);
         QCOMPARE(dec->uses().values().first().at(i), ranges.at(i));
     }
 }
@@ -943,7 +942,7 @@ void TestUses::namespaces()
                                           << RangeInRevision(14, 49, 14, 52));
     QCOMPARE(dec->internalContext()->localDeclarations().size(), 4);
     foreach(Declaration* d, dec->internalContext()->localDeclarations()) {
-        qCDebug(DUCHAIN) << d->toString() << d->qualifiedIdentifier();
+        qDebug() << d->toString() << d->qualifiedIdentifier();
     }
 
     dec = top->findDeclarations(QualifiedIdentifier("foo::bar::MyConst")).first();

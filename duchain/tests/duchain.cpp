@@ -39,8 +39,6 @@
 #include "../types/structuretype.h"
 #include "../types/integraltypeextended.h"
 
-#include "../duchaindebug.h"
-
 #include <kstandarddirs.h>
 
 using namespace KDevelop;
@@ -104,7 +102,7 @@ void TestDUChain::declareVar()
     //$i
     Declaration* decVar = top->localDeclarations().at(2);
     QCOMPARE(decVar->identifier(), Identifier("i"));
-    qCDebug(DUCHAIN) << decVar->abstractType()->toString();
+    qDebug() << decVar->abstractType()->toString();
     UnsureType::Ptr unsureType = decVar->type<UnsureType>();
     QVERIFY(unsureType);
     QCOMPARE(unsureType->typesSize(), 3u);
@@ -182,7 +180,7 @@ void TestDUChain::declareClass()
     QCOMPARE(dec->isDefinition(), true);
     QCOMPARE(dec->logicalInternalContext(top), contextClassA);
 
-    qCDebug(DUCHAIN) << contextClassA->localScopeIdentifier().toString();
+    qDebug() << contextClassA->localScopeIdentifier().toString();
     QCOMPARE(contextClassA->localScopeIdentifier(), QualifiedIdentifier("a"));
     QCOMPARE(contextClassA->childContexts().count(), 8);
     QCOMPARE(contextClassA->childContexts().first()->localScopeIdentifier(), QualifiedIdentifier("foo"));
@@ -387,7 +385,7 @@ void TestDUChain::declarationMultipleReturnTypes()
 
     FunctionType::Ptr fType = top->localDeclarations().at(1)->type<FunctionType>();
     QVERIFY(fType);
-    qCDebug(DUCHAIN) << fType->toString();
+    qDebug() << fType->toString();
     TypePtr<UnsureType> ut = UnsureType::Ptr::dynamicCast(fType->returnType());
     QVERIFY(ut);
     QCOMPARE(2u, ut->typesSize());
@@ -402,7 +400,7 @@ void TestDUChain::declarationMultipleReturnTypes()
 
     fType = top->localDeclarations().at(2)->type<FunctionType>();
     QVERIFY(fType);
-    qCDebug(DUCHAIN) << fType->toString();
+    qDebug() << fType->toString();
     QVERIFY(IntegralType::Ptr::dynamicCast(fType->returnType()));
     QVERIFY(IntegralType::Ptr::dynamicCast(fType->returnType())->dataType() == IntegralType::TypeInt);
 }
@@ -435,7 +433,7 @@ void TestDUChain::returnTypeViaMember()
                                         << qMakePair(QString("fb1"), QString("astatic"))
                                         << qMakePair(QString("fb2"), QString("anormal")) )
     {
-        qCDebug(DUCHAIN) << pair.first << pair.second;
+        qDebug() << pair.first << pair.second;
         ClassMethodDeclaration* fDec = dynamic_cast<ClassMethodDeclaration*>(
             bDec->logicalInternalContext(top)->findDeclarations(Identifier(pair.first)).first()
         );
@@ -1148,7 +1146,7 @@ void TestDUChain::singleton()
     FunctionType::Ptr fun = top->childContexts().first()->localDeclarations().first()->type<FunctionType>();
     QVERIFY(fun);
     StructureType::Ptr ret = StructureType::Ptr::dynamicCast(fun->returnType());
-    qCDebug(DUCHAIN) << fun->returnType()->toString();
+    qDebug() << fun->returnType()->toString();
     QVERIFY(ret);
     QCOMPARE(ret->declaration(top), top->localDeclarations().first());
 }
@@ -1351,7 +1349,7 @@ void TestDUChain::foreachLoop()
 
     QCOMPARE(top->localDeclarations().count(), 3);
     QCOMPARE(top->localDeclarations().at(1)->qualifiedIdentifier(), QualifiedIdentifier("b"));
-    qCDebug(DUCHAIN) << top->localDeclarations().at(1)->toString();
+    qDebug() << top->localDeclarations().at(1)->toString();
     QVERIFY(top->localDeclarations().at(1)->abstractType().cast<IntegralType>());
     QCOMPARE(top->localDeclarations().at(1)->abstractType().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
     QCOMPARE(top->localDeclarations().at(2)->qualifiedIdentifier(), QualifiedIdentifier("c"));
@@ -1768,7 +1766,7 @@ void TestDUChain::foreachIterator2()
     QCOMPARE(top->localDeclarations().size(), 3);
     Declaration* iDec = top->localDeclarations().at(2);
     QCOMPARE(iDec->qualifiedIdentifier(), QualifiedIdentifier("i"));
-    qCDebug(DUCHAIN) << iDec->abstractType()->toString();
+    qDebug() << iDec->abstractType()->toString();
     QVERIFY(iDec->type<StructureType>());
     QCOMPARE(iDec->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("b"));
     QVERIFY(top->localDeclarations().first() == iDec->type<StructureType>()->declaration(top));
@@ -1834,7 +1832,7 @@ void TestDUChain::returnThis()
     Declaration* dec = top->childContexts().first()->localDeclarations().first();
     QVERIFY(dec->type<FunctionType>());
     AbstractType::Ptr t = dec->type<FunctionType>()->returnType();
-    qCDebug(DUCHAIN) << t->toString();
+    qDebug() << t->toString();
     QVERIFY(StructureType::Ptr::dynamicCast(t));
     QVERIFY(StructureType::Ptr::dynamicCast(t)->declaration(top) == top->localDeclarations().first());
 }
@@ -1885,7 +1883,7 @@ void TestDUChain::unsureReturnType3()
 
     Declaration* dec = top->localDeclarations().at(0);
     QVERIFY(dec->type<FunctionType>());
-    qCDebug(DUCHAIN) << dec->type<FunctionType>()->returnType()->toString();
+    qDebug() << dec->type<FunctionType>()->returnType()->toString();
     TypePtr<UnsureType> ut = dec->type<FunctionType>()->returnType().cast<UnsureType>();
     QVERIFY(ut);
     QCOMPARE((uint)3, ut->typesSize());
@@ -1925,7 +1923,7 @@ void TestDUChain::referencedArgument()
 
     Declaration* dec = top->localDeclarations().first();
     QVERIFY(dec->type<FunctionType>());
-    qCDebug(DUCHAIN) << dec->abstractType()->toString();
+    qDebug() << dec->abstractType()->toString();
     IntegralType::Ptr aType = dec->type<FunctionType>()->returnType().cast<IntegralType>();
     QVERIFY(aType);
     QCOMPARE(aType->dataType(), (uint)IntegralType::TypeInt);
@@ -1945,7 +1943,7 @@ void TestDUChain::unsureReferencedArgument()
 
     Declaration* dec = top->localDeclarations().first();
     QVERIFY(dec->type<FunctionType>());
-    qCDebug(DUCHAIN) << dec->abstractType()->toString();
+    qDebug() << dec->abstractType()->toString();
     UnsureType::Ptr aType = dec->type<FunctionType>()->returnType().cast<UnsureType>();
     QVERIFY(aType);
     QCOMPARE(aType->typesSize(), 2u);
@@ -1996,13 +1994,13 @@ void TestDUChain::declareMemberOutOfClass()
         QCOMPARE(dec->uses().keys().count(), 1);
         QCOMPARE(dec->uses().values().count(), 1);
         QCOMPARE(dec->uses().values().first().count(), 4);
-        qCDebug(DUCHAIN) << dec->uses().values().first().at(0).castToSimpleRange();
+        qDebug() << dec->uses().values().first().at(0).castToSimpleRange();
         QCOMPARE(dec->uses().values().first().at(0), RangeInRevision(1, 16, 1, 20));
-        qCDebug(DUCHAIN) << dec->uses().values().first().at(1).castToSimpleRange();
+        qDebug() << dec->uses().values().first().at(1).castToSimpleRange();
         QCOMPARE(dec->uses().values().first().at(1), RangeInRevision(1, 35, 1, 39));
-        qCDebug(DUCHAIN) << dec->uses().values().first().at(2).castToSimpleRange();
+        qDebug() << dec->uses().values().first().at(2).castToSimpleRange();
         QCOMPARE(dec->uses().values().first().at(2), RangeInRevision(2, 0, 2, 4));
-        qCDebug(DUCHAIN) << dec->uses().values().first().at(3).castToSimpleRange();
+        qDebug() << dec->uses().values().first().at(3).castToSimpleRange();
         QCOMPARE(dec->uses().values().first().at(3), RangeInRevision(3, 0, 3, 4));
     }
 
@@ -2128,7 +2126,7 @@ void TestDUChain::thisRedeclaration()
 
     // only $this = false is a problem, $this->test = true is perfectly valid
     QCOMPARE(top->problems().count(), 1);
-    qCDebug(DUCHAIN) << top->problems().first()->finalLocation();
+    qDebug() << top->problems().first()->finalLocation();
     QVERIFY(top->problems().first()->finalLocation() == KDevelop::DocumentRange(top->url(), KTextEditor::Range(0, 50, 0, 55)));
 }
 
@@ -2214,7 +2212,7 @@ void TestDUChain::implicitReferenceDeclaration()
     QCOMPARE(decs.size(), 1);
     QVERIFY(dynamic_cast<VariableDeclaration*>(decs.first()));
     QVERIFY(decs.first()->type<IntegralType>());
-    qCDebug(DUCHAIN) << decs.first()->type<IntegralType>()->dataType() << decs.first()->toString();
+    qDebug() << decs.first()->type<IntegralType>()->dataType() << decs.first()->toString();
     QVERIFY(decs.first()->type<IntegralType>()->dataType() == IntegralType::TypeNull);
     }
 
@@ -2237,7 +2235,7 @@ void TestDUChain::implicitReferenceDeclaration()
     QVERIFY(cmdec);
     QVERIFY(cmdec->type<IntegralType>());
 
-    qCDebug(DUCHAIN) << cmdec->type<IntegralType>()->dataType() << cmdec->toString();
+    qDebug() << cmdec->type<IntegralType>()->dataType() << cmdec->toString();
     QVERIFY(cmdec->type<IntegralType>()->dataType() == IntegralType::TypeMixed);
     }
 }
@@ -2286,7 +2284,7 @@ void TestDUChain::list()
         DUChainWriteLocker lock(DUChain::lock());
 
         foreach ( const QString& identifier, QStringList() << "i" << "j" << "k" ) {
-            qCDebug(DUCHAIN) << "searching for declaration of " << identifier;
+            qDebug() << "searching for declaration of " << identifier;
             QList<Declaration*> decs = top->findDeclarations(Identifier(identifier));
             QCOMPARE(decs.size(), 1);
             Declaration *dec = decs.first();
@@ -2334,7 +2332,7 @@ void TestDUChain::findFunctionArgs()
         decs = funcDec->internalContext()->findDeclarations(arg->identifier());
         QCOMPARE(decs.size(), 1);
         decs = funcDec->internalContext()->findDeclarations(arg->qualifiedIdentifier());
-        qCDebug(DUCHAIN) << arg->qualifiedIdentifier().toString();
+        qDebug() << arg->qualifiedIdentifier().toString();
         QEXPECT_FAIL("", "strangely the arg dec is only found with its identifier, not by its qualifiedidentifier...", Continue);
         QCOMPARE(decs.size(), 1);
     }
@@ -2476,7 +2474,7 @@ void TestDUChain::namespacesNoCurly()
 
     QCOMPARE(top->problems().count(), 0);
     foreach(ProblemPointer p, top->problems()) {
-        qCDebug(DUCHAIN) << p->description() << p->explanation() << p->finalLocation();
+        qDebug() << p->description() << p->explanation() << p->finalLocation();
     }
     QCOMPARE(top->childContexts().size(), 2);
     QCOMPARE(top->childContexts().at(0)->localScopeIdentifier().toString(), QString("asdf"));

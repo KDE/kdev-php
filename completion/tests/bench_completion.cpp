@@ -42,13 +42,10 @@ QTEST_MAIN(Php::BenchmarkCodeCompletion)
 
 namespace Php {
 
-// makro defined by cmake, points to the sourcedir of _this_ file
-const QString srcPath(KDESRCDIR);
-
 QFile* getFile(const QString& path)
 {
-    QFile* file = new QFile(srcPath + path);
-    qCDebug(COMPLETION) << file->fileName();
+    QFile* file = new QFile(QFINDTESTDATA(path));
+    qDebug() << file->fileName();
     Q_ASSERT(file->exists());
     file->open(QIODevice::ReadOnly);
     Q_ASSERT(!file->error());
@@ -69,12 +66,12 @@ void BenchmarkCodeCompletion::initTestCase()
     // make sure we have a valid duchain for the global file
     DUChainReadLocker lock(DUChain::lock());
     if ( !DUChain::self()->chainForDocument(internalFunctionFile()) ) {
-        qCDebug(COMPLETION) << "no internal function file found in DUChain, loading it manually";
+        qDebug() << "no internal function file found in DUChain, loading it manually";
         QString fileName = internalFunctionFile().str();
         QString mimeType = KMimeType::findByPath(fileName, 0, false)->name ();
         QScopedPointer<QIODevice> file(KFilterDev::deviceForFile (fileName, mimeType, false));
         if ( !file->open(QIODevice::ReadOnly) ) {
-            qCDebug(COMPLETION) << "Could not open file" << fileName;
+            qDebug() << "Could not open file" << fileName;
             return;
         }
         lock.unlock();
@@ -84,7 +81,7 @@ void BenchmarkCodeCompletion::initTestCase()
 
 void BenchmarkCodeCompletion::globalCompletion()
 {
-    qCDebug(COMPLETION) << "benching global completion";
+    qDebug() << "benching global completion";
     TopDUContext* top = parse("<?php ", DumpNone);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
@@ -127,7 +124,7 @@ void BenchmarkCodeCompletion::globalCompletionBigFile()
 
 void BenchmarkCodeCompletion::completionData()
 {
-    qCDebug(COMPLETION) << "benching global completion";
+    qDebug() << "benching global completion";
     TopDUContext* top = parse("<?php ", DumpNone);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());

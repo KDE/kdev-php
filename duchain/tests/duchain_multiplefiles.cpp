@@ -31,8 +31,6 @@
 #include <tests/testfile.h>
 #include <language/duchain/declaration.h>
 
-#include "../duchaindebug.h"
-
 QTEST_KDEMAIN(Php::TestDUChainMultipleFiles, GUI)
 
 using namespace KDevelop;

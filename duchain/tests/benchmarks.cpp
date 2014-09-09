@@ -30,7 +30,6 @@
 
 #include "../builders/declarationbuilder.h"
 #include "../builders/usebuilder.h"
-#include "../duchaindebug.h"
 
 using namespace KDevelop;
 
@@ -39,16 +38,13 @@ QTEST_MAIN(Php::Benchmarks)
 namespace Php
 {
 
-// makro defined by cmake, points to the sourcedir of _this_ file
-const QString srcPath(KDESRCDIR);
-
 Benchmarks::Benchmarks()
 {
 }
 
 QIODevice* getInternalFile()
 {
-    QString fileName = srcPath + "../../phpfunctions.php";
+    QString fileName = QFINDTESTDATA("../../phpfunctions.php");
     QString mimeType = KMimeType::findByPath(fileName, 0, false)->name ();
     QIODevice* file = KFilterDev::deviceForFile (fileName, mimeType, false);
     bool opened = file->open(QIODevice::ReadOnly);
@@ -80,12 +76,7 @@ void Benchmarks::declarationBuilder()
     EditorIntegrator editor(&session);
     QBENCHMARK {
         DeclarationBuilder builder(&editor);
-        ReferencedTopDUContext top = builder.build(internalFunctionFile(), ast);
-
-        if ( true ) {
-            DUChainWriteLocker lock(DUChain::lock());
-            qCDebug(DUCHAIN) << top->localDeclarations().size();
-        }
+        builder.build(internalFunctionFile(), ast);
     }
 }
 
