@@ -73,7 +73,7 @@ namespace KDevelop
 %parser_declaration_header "language/duchain/problem.h"
 %parser_declaration_header "phplexer.h"
 
-%parser_bits_header "kdebug.h"
+%parser_bits_header "parserdebug.h"
 
 ------------------------------------------------------------
 -- Enumeration types for additional AST members,
@@ -1083,8 +1083,8 @@ void Parser::expectedSymbol(int /*expectedSymbol*/, const QString& name)
     qint64 col;
     qint64 index = tokenStream->index()-1;
     Token &token = tokenStream->at(index);
-    kDebug() << "token starts at:" << token.begin;
-    kDebug() << "index is:" << index;
+    qCDebug(PARSER) << "token starts at:" << token.begin;
+    qCDebug(PARSER) << "index is:" << index;
     tokenStream->startPosition(index, &line, &col);
     QString tokenValue = tokenText(token.begin, token.end);
     qint64 eLine;

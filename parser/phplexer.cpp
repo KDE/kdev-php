@@ -28,7 +28,7 @@
 #include <QtCore/QRegExp>
 #include <QtCore/QDebug>
 
-#include <iostream>
+#include "parserdebug.h"
 
 namespace Php
 {

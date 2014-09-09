@@ -22,6 +22,7 @@
 
 #include "kdev-pg-memory-pool.h"
 #include "kdev-pg-token-stream.h"
+#include "parserdebug.h"
 
 #include <QFile>
 #include <QTextCodec>
@@ -125,12 +126,12 @@ bool ParseSession::parse(Php::StartAst** ast)
     StartAst* phpAst;
     bool matched = parser->parseStart(&phpAst);
     if (matched) {
-        kDebug() << "Successfully parsed";
+        qCDebug(PARSER) << "Successfully parsed";
         *ast = phpAst;
     } else {
         *ast = 0;
         parser->expectedSymbol(AstNode::StartKind, "start");
-        kDebug() << "Couldn't parse content";
+        qCDebug(PARSER) << "Couldn't parse content";
     }
     m_problems << parser->problems();
     delete parser;

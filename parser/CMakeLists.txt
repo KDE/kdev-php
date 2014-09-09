@@ -3,7 +3,8 @@ add_subdirectory(test)
 set(parser_STAT_SRCS
     phplexer.cpp
     parsesession.cpp
-    )
+    parserdebug.cpp
+)
 
 kdevpgqt_generate(parser_SRCS php NAMESPACE Php DEBUG_VISITOR TOKEN_TEXT
     "${php_SOURCE_DIR}/parser/php.g"

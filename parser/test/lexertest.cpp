@@ -24,6 +24,7 @@
 #include "parsesession.h"
 #include "phplexer.h"
 #include "phptokentext.h"
+#include "../parserdebug.h"
 
 QTEST_MAIN(Php::LexerTest)
 namespace Php
@@ -282,7 +283,7 @@ void LexerTest::testCommonStringTokens()
 {
     // all these should have open_tag followed by constant encapsed string
     foreach ( const QString& code, QStringList() << "<?php ''" << "<?php \"\"" << "<?php '" << "<?php \"" ) {
-        kDebug() << code;
+        qCDebug(PARSER) << code;
         TokenStream* ts = tokenize(code, true);
 
         QCOMPARE((int)ts->size(), 2);
@@ -448,7 +449,7 @@ TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialSta
             qint64 endLine;
             qint64 endColumn;
             tokenStream->endPosition(i, &endLine, &endColumn);
-            kDebug() << tokenText(t.kind)
+            qCDebug(PARSER) << tokenText(t.kind)
             << unit.mid(t.begin, t.end - t.begin + 1).replace('\n', "\\n")
             << QString("[%0-%1] - [%2-%3]").arg(beginLine).arg(beginColumn).arg(endLine).arg(endColumn);
             ++i;
