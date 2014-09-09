@@ -22,6 +22,9 @@
 
 #include <language/duchain/duchainregister.h>
 #include <language/duchain/types/functiontype.h>
+
+#include "../duchaindebug.h"
+
 using namespace KDevelop;
 
 namespace Php
@@ -95,7 +98,7 @@ QString ClassMethodDeclaration::toString() const
                                   .arg(function->partToString( FunctionType::SignatureArguments ));
     } else {
         QString type = abstractType() ? abstractType()->toString() : QString("<notype>");
-        kDebug(9505) << "A function has a bad type attached:" << type;
+        qCDebug(DUCHAIN) << "A function has a bad type attached:" << type;
         return QString("invalid member-function %1 type %2").arg(prettyName().str()).arg(type);
     }
 }

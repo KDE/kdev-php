@@ -29,6 +29,7 @@
 #include "../declarations/classdeclaration.h"
 #include "../types/integraltypeextended.h"
 #include "../types/structuretype.h"
+#include "../duchaindebug.h"
 
 #include "editorintegrator.h"
 #include "parsesession.h"
@@ -104,14 +105,14 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
                 foreach (const AbstractType::Ptr& t, types) {
                     ret->addType(t->indexed());
                 }
-                //kDebug() << type << ret->toString();
+                //qCDebug(DUCHAIN) << type << ret->toString();
                 return AbstractType::Ptr::staticCast(ret);
             }
         }
         iType = IntegralType::TypeMixed;
     }
     AbstractType::Ptr ret(new IntegralType(iType));
-    //kDebug() << type << ret->toString();
+    //qCDebug(DUCHAIN) << type << ret->toString();
     return ret;
 }
 
@@ -119,7 +120,7 @@ AbstractType::Ptr TypeBuilder::injectParseType(QString type, AstNode* node)
 {
     AbstractType::Ptr ret = parseType(type, node);
     injectType(ret);
-    //kDebug() << type << ret->toString();
+    //qCDebug(DUCHAIN) << type << ret->toString();
     return ret;
 }
 
@@ -460,7 +461,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
     if ( !m_gotReturnTypeFromDocComment && node->returnExpr && hasCurrentType() && currentType<FunctionType>())
     {
         FunctionType::Ptr ft = currentType<FunctionType>();
-        // kDebug() << "return" << (ft->returnType() ? ft->returnType()->toString() : "none") << lastType()->toString();
+        // qCDebug(DUCHAIN) << "return" << (ft->returnType() ? ft->returnType()->toString() : "none") << lastType()->toString();
         AbstractType::Ptr type = getTypeForNode(node->returnExpr);
         if (type) {
             // ignore references for return values, PHP does so as well
@@ -476,15 +477,15 @@ void TypeBuilder::visitStatement(StatementAst* node)
                 } else {
                     UnsureType::Ptr retT;
                     if (ft->returnType().cast<UnsureType>()) {
-                        //kDebug() << "we already have an unsure type";
+                        //qCDebug(DUCHAIN) << "we already have an unsure type";
                         retT = ft->returnType().cast<UnsureType>();
                         if (type.cast<UnsureType>()) {
-                            //kDebug() << "add multiple to returnType";
+                            //qCDebug(DUCHAIN) << "add multiple to returnType";
                             FOREACH_FUNCTION(const IndexedType& t, type.cast<UnsureType>()->types) {
                                 retT->addType(t);
                             }
                         } else {
-                            //kDebug() << "add to returnType";
+                            //qCDebug(DUCHAIN) << "add to returnType";
                             retT->addType(type->indexed());
                         }
                     } else {
@@ -542,7 +543,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
                     Q_ASSERT(d->type<FunctionType>());
                     injectType(d->type<FunctionType>()->returnType());
                     foundType = true;
-                    // kDebug() << "that's it: " << d->type<FunctionType>()->returnType()->toString();
+                    // qCDebug(DUCHAIN) << "that's it: " << d->type<FunctionType>()->returnType()->toString();
                 }
             }
         }

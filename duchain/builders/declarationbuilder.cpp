@@ -46,6 +46,7 @@
 #include "../declarations/namespacealiasdeclaration.h"
 #include "../declarations/traitmethodaliasdeclaration.h"
 #include "../declarations/traitmemberaliasdeclaration.h"
+#include "../duchaindebug.h"
 #include "expressionvisitor.h"
 
 #define ifDebug(x)
@@ -406,22 +407,22 @@ void DeclarationBuilder::importTraitMethods(ClassStatementAst *node)
         QVector <Declaration*> declarations = dec.data()->internalContext()->localDeclarations(0);
         QVector <Declaration*> localDeclarations = currentContext()->localDeclarations(0);
 
-        ifDebug(kDebug() << "Importing from" << dec.data()->identifier().toString() << "to" << currentContext()->localScopeIdentifier().toString();)
+        ifDebug(qCDebug(DUCHAIN) << "Importing from" << dec.data()->identifier().toString() << "to" << currentContext()->localScopeIdentifier().toString();)
 
         foreach (Declaration* import, declarations) {
             Declaration* found = nullptr;
             foreach (Declaration* local, localDeclarations) {
-                ifDebug(kDebug() << "Comparing" << import->identifier().toString() << "with" << local->identifier().toString();)
+                ifDebug(qCDebug(DUCHAIN) << "Comparing" << import->identifier().toString() << "with" << local->identifier().toString();)
                 if (auto trait = dynamic_cast<TraitMethodAliasDeclaration*>(local)) {
                     if (trait->aliasedDeclaration().data() == import) {
-                        ifDebug(kDebug() << "Already imported";)
+                        ifDebug(qCDebug(DUCHAIN) << "Already imported";)
                         found = local;
                         break;
                     }
                     if (local->identifier() == import->identifier()) {
                         ClassMethodDeclaration* importMethod = dynamic_cast<ClassMethodDeclaration*>(import);
                         if (trait->isOverriding(import->context()->indexedLocalScopeIdentifier())) {
-                            ifDebug(kDebug() << "Is overridden";)
+                            ifDebug(qCDebug(DUCHAIN) << "Is overridden";)
                             found = local;
                             break;
                         } else if (importMethod) {
@@ -438,7 +439,7 @@ void DeclarationBuilder::importTraitMethods(ClassStatementAst *node)
                 }
                 if (auto trait = dynamic_cast<TraitMemberAliasDeclaration*>(local)) {
                     if (trait->aliasedDeclaration().data() == import) {
-                        ifDebug(kDebug() << "Already imported";)
+                        ifDebug(qCDebug(DUCHAIN) << "Already imported";)
                         found = local;
                         break;
                     }
@@ -456,7 +457,7 @@ void DeclarationBuilder::importTraitMethods(ClassStatementAst *node)
                 continue;
             }
 
-            ifDebug(kDebug() << "Importing new declaration";)
+            ifDebug(qCDebug(DUCHAIN) << "Importing new declaration";)
 
             CursorInRevision cursor = m_editor->findRange(it->element).start;
 

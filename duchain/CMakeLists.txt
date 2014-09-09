@@ -32,6 +32,7 @@ set(duchain_SRCS
     navigation/includenavigationcontext.cpp
     navigation/magicconstantnavigationcontext.cpp
     completioncodemodel.cpp
+    duchaindebug.cpp
     )
 
 add_library( phpduchain STATIC ${duchain_SRCS} )

@@ -27,6 +27,7 @@
 #include <serialization/indexedstring.h>
 #include <util/embeddedfreetree.h>
 #include <serialization/referencecounting.h>
+#include "duchaindebug.h"
 
 #define ifDebug(x)
 
@@ -171,7 +172,7 @@ CompletionCodeModel::~CompletionCodeModel()
 
 void CompletionCodeModel::addItem(const KDevelop::IndexedString& file, const KDevelop::IndexedQualifiedIdentifier& id, const KDevelop::IndexedString & prettyName, CompletionCodeModelItem::Kind kind)
 {
-  ifDebug( kDebug() << "addItem" << file.str() << id.identifier().toString() << id.index; )
+  ifDebug( qCDebug(DUCHAIN) << "addItem" << file.str() << id.identifier().toString() << id.index; )
 
   if(!id.isValid())
     return;
@@ -230,14 +231,14 @@ void CompletionCodeModel::addItem(const KDevelop::IndexedString& file, const KDe
   //This inserts the changed item
   volatile uint newIndex = d->m_repository.index(request);
   Q_UNUSED(newIndex);
-  ifDebug( kDebug() << "new index" << newIndex; )
+  ifDebug( qCDebug(DUCHAIN) << "new index" << newIndex; )
 
   Q_ASSERT(d->m_repository.findIndex(request));
 }
 
 void CompletionCodeModel::updateItem(const KDevelop::IndexedString& file, const KDevelop::IndexedQualifiedIdentifier& id, const KDevelop::IndexedString & prettyName, CompletionCodeModelItem::Kind kind)
 {
-  ifDebug( kDebug() << file.str() << id.identifier().toString() << kind; )
+  ifDebug( qCDebug(DUCHAIN) << file.str() << id.identifier().toString() << kind; )
 
   if(!id.isValid())
     return;
@@ -279,7 +280,7 @@ void CompletionCodeModel::removeItem(const KDevelop::IndexedString& file, const 
 {
   if(!id.isValid())
     return;
-  ifDebug( kDebug() << "removeItem" << file.str() << id.identifier().toString(); )
+  ifDebug( qCDebug(DUCHAIN) << "removeItem" << file.str() << id.identifier().toString(); )
   CompletionCodeModelRepositoryItem item;
   item.file = file;
   CodeModelRequestItem request(item);
@@ -334,7 +335,7 @@ void CompletionCodeModel::removeItem(const KDevelop::IndexedString& file, const 
 
 void CompletionCodeModel::items(const KDevelop::IndexedString& file, uint& count, const CompletionCodeModelItem*& items) const
 {
-  ifDebug( kDebug() << "items" << file.str(); )
+  ifDebug( qCDebug(DUCHAIN) << "items" << file.str(); )
 
   CompletionCodeModelRepositoryItem item;
   item.file = file;
@@ -344,11 +345,11 @@ void CompletionCodeModel::items(const KDevelop::IndexedString& file, uint& count
 
   if(index) {
     const CompletionCodeModelRepositoryItem* repositoryItem = d->m_repository.itemFromIndex(index);
-    ifDebug( kDebug() << "found index" << index << repositoryItem->itemsSize(); )
+    ifDebug( qCDebug(DUCHAIN) << "found index" << index << repositoryItem->itemsSize(); )
     count = repositoryItem->itemsSize();
     items = repositoryItem->items();
   }else{
-    ifDebug( kDebug() << "found no index"; )
+    ifDebug( qCDebug(DUCHAIN) << "found no index"; )
     count = 0;
     items = 0;
   }

@@ -43,6 +43,8 @@
 #include "declarations/classmethoddeclaration.h"
 #include "declarations/functiondeclaration.h"
 
+#include "duchaindebug.h"
+
 #define ifDebug(x)
 
 using namespace KDevelop;
@@ -88,7 +90,7 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const 
     /// Qualified identifier for 'static'
     static const QualifiedIdentifier staticQId("static");
 
-    ifDebug(kDebug() << id.toString() << declarationType;)
+    ifDebug(qCDebug(DUCHAIN) << id.toString() << declarationType;)
     if (declarationType == ClassDeclarationType && id == selfQId) {
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->type() == DUContext::Class) {
@@ -152,7 +154,7 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const 
         lock.unlock();
 
         if (declarationType != GlobalVariableDeclarationType) {
-            ifDebug(kDebug() << "No declarations found with findDeclarations, trying through PersistentSymbolTable";)
+            ifDebug(qCDebug(DUCHAIN) << "No declarations found with findDeclarations, trying through PersistentSymbolTable";)
             DeclarationPointer decl;
 
             decl = findDeclarationInPST(currentContext, id, declarationType);
@@ -163,45 +165,45 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const 
             }
 
             if (decl) {
-                ifDebug(kDebug() << "PST declaration exists";)
+                ifDebug(qCDebug(DUCHAIN) << "PST declaration exists";)
             } else {
-                ifDebug(kDebug() << "PST declaration does not exist";)
+                ifDebug(qCDebug(DUCHAIN) << "PST declaration does not exist";)
             }
             return decl;
         }
     }
 
-    ifDebug(kDebug() << "returning 0";)
+    ifDebug(qCDebug(DUCHAIN) << "returning 0";)
     return DeclarationPointer();
 }
 
 DeclarationPointer findDeclarationInPST(DUContext* currentContext, QualifiedIdentifier id, DeclarationType declarationType)
 {
-    ifDebug(kDebug() << "PST: " << id.toString() << declarationType;)
+    ifDebug(qCDebug(DUCHAIN) << "PST: " << id.toString() << declarationType;)
     uint nr;
     const IndexedDeclaration* declarations = 0;
     DUChainWriteLocker wlock;
     PersistentSymbolTable::self().declarations(id, nr, declarations);
-    ifDebug(kDebug() << "found declarations:" << nr;)
+    ifDebug(qCDebug(DUCHAIN) << "found declarations:" << nr;)
     /// Indexed string for 'Php', identifies environment files from this language plugin
     static const IndexedString phpLangString("Php");
 
     for (uint i = 0; i < nr; ++i) {
         ParsingEnvironmentFilePointer env = DUChain::self()->environmentFileForDocument(declarations[i].indexedTopContext());
         if(!env) {
-            ifDebug(kDebug() << "skipping declaration, missing meta-data";)
+            ifDebug(qCDebug(DUCHAIN) << "skipping declaration, missing meta-data";)
             continue;
         }
         if(env->language() != phpLangString) {
-            ifDebug(kDebug() << "skipping declaration, invalid language" << env->language().str();)
+            ifDebug(qCDebug(DUCHAIN) << "skipping declaration, invalid language" << env->language().str();)
             continue;
         }
 
         if (!declarations[i].declaration()) {
-            ifDebug(kDebug() << "skipping declaration, doesn't have declaration";)
+            ifDebug(qCDebug(DUCHAIN) << "skipping declaration, doesn't have declaration";)
             continue;
         } else if (!isMatch(declarations[i].declaration(), declarationType)) {
-            ifDebug(kDebug() << "skipping declaration, doesn't match with declarationType";)
+            ifDebug(qCDebug(DUCHAIN) << "skipping declaration, doesn't match with declarationType";)
             continue;
         }
         TopDUContext* top = declarations[i].declaration()->context()->topContext();
@@ -225,7 +227,7 @@ DeclarationPointer findDeclarationInPST(DUContext* currentContext, QualifiedIden
                 }
             }
             if (!loadedProjectContainsUrl) {
-                ifDebug(kDebug() << "skipping declaration, not in loaded project";)
+                ifDebug(qCDebug(DUCHAIN) << "skipping declaration, not in loaded project";)
                 continue;
             }
         }
@@ -235,13 +237,13 @@ DeclarationPointer findDeclarationInPST(DUContext* currentContext, QualifiedIden
         currentContext->topContext()->parsingEnvironmentFile()
         ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
         currentContext->topContext()->updateImportsCache();
-        ifDebug(kDebug() << "using" << declarations[i].declaration()->toString() << top->url().str();)
+        ifDebug(qCDebug(DUCHAIN) << "using" << declarations[i].declaration()->toString() << top->url().str();)
         wlock.unlock();
         return DeclarationPointer(declarations[i].declaration());
     }
 
     wlock.unlock();
-    ifDebug(kDebug() << "returning 0";)
+    ifDebug(qCDebug(DUCHAIN) << "returning 0";)
     return DeclarationPointer();
 }
 

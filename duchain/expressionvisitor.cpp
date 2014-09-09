@@ -32,6 +32,8 @@
 #include <language/duchain/types/integraltype.h>
 #include <language/duchain/types/structuretype.h>
 
+#include "duchaindebug.h"
+
 #define ifDebug(x)
 
 using namespace KDevelop;
@@ -61,7 +63,7 @@ DeclarationPointer ExpressionVisitor::processVariable(VariableIdentifierAst* var
     DeclarationPointer ret;
     Identifier identifier = identifierForNode(variable).last();
 
-    ifDebug(kDebug() << "processing variable" << identifier.toString() << position.castToSimpleCursor();)
+    ifDebug(qCDebug(DUCHAIN) << "processing variable" << identifier.toString() << position.castToSimpleCursor();)
 
     DUChainReadLocker lock;
 
@@ -121,7 +123,7 @@ DeclarationPointer ExpressionVisitor::processVariable(VariableIdentifierAst* var
             usingDeclaration(variable, ret);
         }
     }
-    ifDebug(kDebug() << "found declaration:" << (ret ? ret->toString() : QString("no declaration found"));)
+    ifDebug(qCDebug(DUCHAIN) << "found declaration:" << (ret ? ret->toString() : QString("no declaration found"));)
     return ret;
 }
 
@@ -339,7 +341,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
             //global function call foo();
             const QualifiedIdentifier id = identifierForNamespace(node->stringFunctionNameOrClass, m_editor);
             DeclarationPointer dec = findDeclarationImport(FunctionDeclarationType, id);
-            ifDebug(kDebug() << "function call of" << (dec ? dec->toString() : QString("function not found"));)
+            ifDebug(qCDebug(DUCHAIN) << "function call of" << (dec ? dec->toString() : QString("function not found"));)
             m_result.setDeclaration(dec);
             usingDeclaration(node->stringFunctionNameOrClass->namespaceNameSequence->back()->element, dec);
             buildNamespaceUses(node->stringFunctionNameOrClass, id);
@@ -544,7 +546,7 @@ void ExpressionVisitor::visitEncapsVar(EncapsVarAst *node)
 
 void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
 {
-    ifDebug(kDebug() << "node:" << m_editor->parseSession()->symbol(node)
+    ifDebug(qCDebug(DUCHAIN) << "node:" << m_editor->parseSession()->symbol(node)
         << (node->isFunctionCall != -1 ? QString("is function call") : QString("is no function call"));)
     if (node->objectProperty && node->objectProperty->objectDimList) {
         //handle $foo->bar() and $foo->baz, $foo is m_result.type()
@@ -553,7 +555,7 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
             DUChainReadLocker lock(DUChain::lock());
             Declaration* declaration = StructureType::Ptr::staticCast(m_result.type())->declaration(m_currentContext->topContext());
             if (declaration) {
-                ifDebug(kDebug() << "parent:" << declaration->toString();)
+                ifDebug(qCDebug(DUCHAIN) << "parent:" << declaration->toString();)
                 DUContext* context = declaration->internalContext();
                 if (!context && m_currentContext->parentContext()) {
                     if (m_currentContext->parentContext()->localScopeIdentifier() == declaration->qualifiedIdentifier()) {
@@ -568,19 +570,19 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
                     } else {
                         propertyId = identifierForNode(node->objectProperty->objectDimList->variableName->name);
                     }
-                    ifDebug(kDebug() << "property id:" << propertyId.toString();)
+                    ifDebug(qCDebug(DUCHAIN) << "property id:" << propertyId.toString();)
 
                     QList<Declaration*> decs;
                     foreach ( Declaration* dec, context->findDeclarations(propertyId) ) {
                         if ( node->isFunctionCall != -1 ) {
                             if ( dec->isFunctionDeclaration() ) {
                                 decs << dec;
-                                ifDebug(kDebug() << "found:" << dec->toString();)
+                                ifDebug(qCDebug(DUCHAIN) << "found:" << dec->toString();)
                             }
                         } else {
                             if ( !dec->isFunctionDeclaration() ) {
                                 decs << dec;
-                                ifDebug(kDebug() << "found:" << dec->toString();)
+                                ifDebug(qCDebug(DUCHAIN) << "found:" << dec->toString();)
                             }
                         }
                     }

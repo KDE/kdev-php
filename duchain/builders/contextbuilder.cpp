@@ -35,6 +35,7 @@
 #include "parsesession.h"
 #include "../editorintegrator.h"
 #include "../helper.h"
+#include "../duchaindebug.h"
 #include "phpducontext.h"
 #include "phpast.h"
 
@@ -74,14 +75,14 @@ ReferencedTopDUContext ContextBuilder::build(const IndexedString& url, AstNode* 
         updateContext = DUChain::self()->chainForDocument(url);
     }
     if (updateContext) {
-        kDebug() << "re-compiling" << url.str();
+        qCDebug(DUCHAIN) << "re-compiling" << url.str();
         DUChainWriteLocker lock(DUChain::lock());
         updateContext->clearImportedParentContexts();
         updateContext->parsingEnvironmentFile()->clearModificationRevisions();
         updateContext->clearProblems();
         updateContext->updateImportsCache();
     } else {
-        kDebug() << "compiling" << url.str();
+        qCDebug(DUCHAIN) << "compiling" << url.str();
     }
     ReferencedTopDUContext top = ContextBuilderBase::build(url, node, updateContext);
 
@@ -410,7 +411,7 @@ void ContextBuilder::addBaseType(NamespacedIdentifierAst * identifier)
         }
     }
     if (!baseClass) {
-        kDebug() << "unresolved identifier";
+        qCDebug(DUCHAIN) << "unresolved identifier";
         m_hadUnresolvedIdentifiers = true;
     }
 }
@@ -463,7 +464,7 @@ void ContextBuilder::reportError(const QString& errorMsg, RangeInRevision range,
                                                 range.castToSimpleRange()));
     {
         DUChainWriteLocker lock(DUChain::lock());
-        kDebug() << "Problem" << p->description() << p->finalLocation();
+        qCDebug(DUCHAIN) << "Problem" << p->description() << p->finalLocation();
         currentContext()->topContext()->addProblem(ProblemPointer(p));
     }
 }

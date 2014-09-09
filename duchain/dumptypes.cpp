@@ -20,6 +20,8 @@
 
 #include <language/duchain/types/alltypes.h>
 
+#include "duchaindebug.h"
+
 using namespace KDevelop;
 namespace Php
 {
@@ -42,7 +44,7 @@ void DumpTypes::dump(const AbstractType * type)
 bool DumpTypes::preVisit(const AbstractType * type)
 {
     ++indent;
-    kDebug() << QString(indent*2, ' ') << type->toString();
+    qCDebug(DUCHAIN) << QString(indent*2, ' ') << type->toString();
     return true;
 }
 

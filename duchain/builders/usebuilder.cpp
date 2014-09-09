@@ -25,6 +25,8 @@
 #include "editorintegrator.h"
 #include "expressionvisitor.h"
 #include "parsesession.h"
+#include "../duchaindebug.h"
+
 using namespace KDevelop;
 
 namespace Php

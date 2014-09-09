@@ -30,6 +30,7 @@
 
 #include "../types/structuretype.h"
 #include "../expressionparser.h"
+#include "../duchaindebug.h"
 
 using namespace KDevelop;
 

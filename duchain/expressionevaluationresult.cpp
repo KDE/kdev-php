@@ -26,6 +26,8 @@
 #include <language/duchain/types/identifiedtype.h>
 #include <language/duchain/declaration.h>
 
+#include "duchaindebug.h"
+
 #define ifDebug(x)
 
 using namespace KDevelop;
@@ -68,7 +70,7 @@ void ExpressionEvaluationResult::setDeclarations( QList< Declaration* > declarat
 
 void ExpressionEvaluationResult::setDeclarations(QList<DeclarationPointer> declarations)
 {
-    ifDebug(kDebug() << "setting declarations" << declarations.size();)
+    ifDebug(qCDebug(DUCHAIN) << "setting declarations" << declarations.size();)
 
     m_allDeclarations = declarations;
     if (!m_allDeclarations.isEmpty()) {
@@ -80,7 +82,7 @@ void ExpressionEvaluationResult::setDeclarations(QList<DeclarationPointer> decla
     DUChainReadLocker lock(DUChain::lock());
     foreach(const DeclarationPointer& dec, m_allDeclarations) {
         m_allDeclarationIds << dec->id();
-        ifDebug(kDebug() << dec->toString();)
+        ifDebug(qCDebug(DUCHAIN) << dec->toString();)
     }
 }
 
@@ -101,7 +103,7 @@ QList<DeclarationId> ExpressionEvaluationResult::allDeclarationIds() const
 
 void ExpressionEvaluationResult::setType(AbstractType::Ptr type)
 {
-    ifDebug(kDebug() << "setting type" << (type ? type->toString() : QString("no type"));)
+    ifDebug(qCDebug(DUCHAIN) << "setting type" << (type ? type->toString() : QString("no type"));)
 
     m_type = type;
 }

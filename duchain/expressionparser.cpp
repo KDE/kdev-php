@@ -30,7 +30,8 @@
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/duchain.h>
 
-#include <kdebug.h>
+#include "duchaindebug.h"
+
 using namespace KDevelop;
 
 namespace Php
@@ -50,14 +51,14 @@ ExpressionEvaluationResult ExpressionParser::evaluateType(const QByteArray& expr
                                                           const CursorInRevision &offset)
 {
     if (m_debug)
-        kDebug() << "==== .Evaluating ..:" << endl << expression;
+        qCDebug(DUCHAIN) << "==== .Evaluating ..:" << endl << expression;
 
     ParseSession* session = new ParseSession();
     session->setContents(expression);
     Parser* parser = session->createParser(Parser::DefaultState);
     ExprAst* ast = 0;
     if (!parser->parseExpr(&ast)) {
-        kDebug() << "Failed to parse \"" << expression << "\"";
+        qCDebug(DUCHAIN) << "Failed to parse \"" << expression << "\"";
         delete session;
         delete parser;
         return ExpressionEvaluationResult();
@@ -82,7 +83,7 @@ ExpressionEvaluationResult ExpressionParser::evaluateType(AstNode* ast, EditorIn
                                                           const CursorInRevision &offset)
 {
     if (m_debug) {
-        kDebug() << "===== AST:";
+        qCDebug(DUCHAIN) << "===== AST:";
         DebugVisitor debugVisitor(editor->parseSession()->tokenStream(), editor->parseSession()->contents());
         debugVisitor.visitNode(ast);
     }

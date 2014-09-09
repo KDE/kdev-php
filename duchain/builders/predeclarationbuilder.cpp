@@ -35,6 +35,7 @@
 #include "../declarations/variabledeclaration.h"
 #include "../declarations/namespacedeclaration.h"
 #include "../types/structuretype.h"
+#include "../duchaindebug.h"
 
 using namespace KDevelop;
 

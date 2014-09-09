@@ -30,6 +30,7 @@
 #include "parsesession.h"
 #include "../builders/declarationbuilder.h"
 #include "../builders/usebuilder.h"
+#include "../duchaindebug.h"
 
 using namespace KDevelop;
 
@@ -83,7 +84,7 @@ void Benchmarks::declarationBuilder()
 
         if ( true ) {
             DUChainWriteLocker lock(DUChain::lock());
-            kDebug() << top->localDeclarations().size();
+            qCDebug(DUCHAIN) << top->localDeclarations().size();
         }
     }
 }
