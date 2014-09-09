@@ -23,7 +23,6 @@
 
 #include <ktexteditor/document.h>
 
-#include <kdebug.h>
 #include <klocale.h>
 
 #include <language/duchain/duchainlock.h>
@@ -43,6 +42,7 @@
 #include "duchain/builders/usebuilder.h"
 #include "duchain/helper.h"
 #include "phpducontext.h"
+#include "phpdebug.h"
 
 #include <QtCore/QReadLocker>
 #include <QtCore/QThread>
@@ -78,7 +78,7 @@ void ParseJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 
     // make sure we loaded the internal file already
     if ( !php()->internalFunctionsLoaded() && !m_parentJob && document() != internalFunctionFile() ) {
-        kDebug() << "waiting for internal function file to finish parsing";
+        qCDebug(PHP) << "waiting for internal function file to finish parsing";
         QReadLocker(php()->internalFunctionsLock());
     }
 
@@ -87,7 +87,7 @@ void ParseJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
     if (!(minimumFeatures() & Resheduled) && !isUpdateRequired(phpLangString)) {
         return;
     }
-    kDebug() << "parsing" << document().str();
+    qCDebug(PHP) << "parsing" << document().str();
 
     KDevelop::ProblemPointer p = readContents();
     if (p) {
@@ -154,7 +154,7 @@ void ParseJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
         if (hadUnresolvedIdentifiers) {
             if (!(minimumFeatures() & Resheduled) && KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount()) {
                 // Need to create new parse job with lower priority
-                kDebug() << "Reschedule file " << document().str() << "for parsing";
+                qCDebug(PHP) << "Reschedule file " << document().str() << "for parsing";
                 KDevelop::TopDUContext::Features feat = static_cast<KDevelop::TopDUContext::Features>(
                         minimumFeatures() | KDevelop::TopDUContext::VisibleDeclarationsAndContexts | Resheduled
                     );
@@ -164,7 +164,7 @@ void ParseJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 
             } else {
                 // We haven't resolved all identifiers, but by now, we don't expect to
-                kDebug() << "Builder found unresolved identifiers when they should have been resolved! (if there was no coding error)";
+                qCDebug(PHP) << "Builder found unresolved identifiers when they should have been resolved! (if there was no coding error)";
             }
         }
 
@@ -211,7 +211,7 @@ void ParseJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
             top->addProblem(p);
         }
         setDuChain(top);
-        kDebug() << "===Failed===" << document().str();
+        qCDebug(PHP) << "===Failed===" << document().str();
     }
 }
 
@@ -238,7 +238,7 @@ ProblemPointer ParseJob::createProblem(const QString &description, AstNode* node
     p->setSeverity(severity);
     p->setDescription(description);
     p->setFinalLocation(DocumentRange(document(), editor->findRange(node).castToSimpleRange()));
-    kDebug() << p->description();
+    qCDebug(PHP) << p->description();
     return p;
 }
 

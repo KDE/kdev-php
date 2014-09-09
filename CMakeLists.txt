@@ -54,6 +54,7 @@ set(kdevphplanguagesupport_PART_SRCS
     phplanguagesupport.cpp
     phpparsejob.cpp
     phphighlighting.cpp
+    phpdebug.cpp
 
     codegen/refactoring.cpp
 )

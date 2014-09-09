@@ -22,7 +22,6 @@
 #include <QMutexLocker>
 #include <QReadWriteLock>
 
-#include <kdebug.h>
 #include <kcomponentdata.h>
 #include <kpluginfactory.h>
 #include <kpluginloader.h>
@@ -44,6 +43,7 @@
 #include "phpparsejob.h"
 #include "phphighlighting.h"
 #include "kdevphpversion.h"
+#include "phpdebug.h"
 #include "codegen/refactoring.h"
 
 #include <language/codecompletion/codecompletion.h>
@@ -104,7 +104,7 @@ LanguageSupport::~LanguageSupport()
 void LanguageSupport::updateInternalFunctions()
 {
     Q_ASSERT(core()->pluginController()->loadedPlugins().contains(this));
-    kDebug() << "making sure that internal function file is up to date";
+    qCDebug(PHP) << "making sure that internal function file is up to date";
     DUChain::self()->updateContextForUrl(internalFunctionFile(), KDevelop::TopDUContext::AllDeclarationsAndContexts, this, -10);
 }
 
