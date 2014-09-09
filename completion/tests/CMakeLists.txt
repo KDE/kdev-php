@@ -1,6 +1,5 @@
 set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
 
-
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${KDEVPLATFORM_INCLUDE_DIR}
@@ -17,11 +16,6 @@ target_link_libraries(completiontest
     ${KDEVPLATFORM_TESTS_LIBRARIES}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
 )
-# hack to make ../../duchain/tests/duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
-if (MINGW)
-    set_property(TARGET completiontest APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
-endif (MINGW)
-
 
 set(completionbench_SRCS bench_completion.cpp
     ../../duchain/tests/duchaintestbase.cpp)
@@ -38,7 +32,3 @@ target_link_libraries(completionbenchmark
     # we can work-around it :)
     KF5::Archive
 )
-# hack to make ../../duchain/tests/duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
-if (MINGW)
-    set_property(TARGET completionbenchmark APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
-endif (MINGW)

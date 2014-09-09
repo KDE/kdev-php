@@ -36,12 +36,6 @@ set(duchain_SRCS
 
 add_library( phpduchain STATIC ${duchain_SRCS} )
 
-# hack to make ../parser/phpdebugvisitor.h (generated at compile time)
-# use the correct EXPORT tags when compiling in MinGW
-if (MINGW)
-    add_definitions(-DMAKE_KDEV4PHPPARSER_LIB)
-endif (MINGW)
-
 target_link_libraries(phpduchain LINK_PRIVATE
     ${KDEVPLATFORM_INTERFACES_LIBRARIES}
     ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
