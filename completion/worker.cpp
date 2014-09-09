@@ -23,9 +23,10 @@
 
 #include "worker.h"
 
-#include <ktexteditor/view.h>
-#include <ktexteditor/document.h>
-#include <klocale.h>
+#include <KLocale>
+
+#include <KTextEditor/View>
+#include <KTextEditor/Document>
 
 #include <language/duchain/declaration.h>
 #include <language/duchain/ducontext.h>

@@ -19,9 +19,10 @@
 #ifndef TESTCOMPLETION_H
 #define TESTCOMPLETION_H
 
-#include "duchain/tests/duchaintestbase.h"
 #include <language/codecompletion/codecompletionitem.h>
 #include <language/duchain/classdeclaration.h>
+
+#include "../../duchain/tests/duchaintestbase.h"
 
 namespace Php
 {

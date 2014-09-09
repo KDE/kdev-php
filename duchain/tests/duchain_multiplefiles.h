@@ -19,7 +19,7 @@
 #ifndef TESTDUCHAINMULTIPLEFILES_H
 #define TESTDUCHAINMULTIPLEFILES_H
 
-#include "duchain/tests/duchaintestbase.h"
+#include "duchaintestbase.h"
 
 namespace KDevelop {
     class TestCore;

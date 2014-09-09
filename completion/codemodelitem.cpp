@@ -26,12 +26,14 @@
 
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
-#include <language/codecompletion/codecompletionmodel.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/duchainutils.h>
-#include <navigation/navigationwidget.h>
-#include <language/codecompletion/codecompletionhelper.h>
 #include <language/duchain/abstractfunctiondeclaration.h>
+
+#include <language/codecompletion/codecompletionmodel.h>
+#include <language/codecompletion/codecompletionhelper.h>
+
+#include <navigation/navigationwidget.h>
 
 #include "completiondebug.h"
 

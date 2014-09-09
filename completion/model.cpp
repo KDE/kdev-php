@@ -46,7 +46,6 @@
 
 #include "context.h"
 #include "worker.h"
-#include "phplanguagesupport.h"
 #include "completiondebug.h"
 
 using namespace KTextEditor;

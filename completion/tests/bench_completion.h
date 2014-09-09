@@ -19,7 +19,7 @@
 #ifndef PHP_BENCHMARKCODECOMPLETION_H
 #define PHP_BENCHMARKCODECOMPLETION_H
 
-#include "duchain/tests/duchaintestbase.h"
+#include "../../duchain/tests/duchaintestbase.h"
 
 namespace Php {
 

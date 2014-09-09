@@ -1,9 +1,5 @@
 add_subdirectory(tests)
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    )
-
 set(completion_SRCS
     worker.cpp
     item.cpp

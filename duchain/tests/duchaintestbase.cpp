@@ -19,31 +19,35 @@
 
 #include "duchaintestbase.h"
 
-#include <QtTest/QtTest>
+#include <QtTest>
+
+#include <KStandardDirs>
+#include <KComponentData>
 
 #include <language/duchain/parsingenvironment.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/topducontext.h>
-#include <serialization/indexedstring.h>
 #include <language/duchain/duchaindumper.h>
-#include <kstandarddirs.h>
-#include <kcomponentdata.h>
+#include <language/codegen/coderepresentation.h>
 
-#include "dumptypes.h"
-#include "parsesession.h"
-#include "phpdebugvisitor.h"
-#include "../builders/declarationbuilder.h"
-#include "../builders/usebuilder.h"
-#include "../helper.h"
-#include "../duchaindebug.h"
-#include <completion/codemodelitem.h>
+#include <serialization/indexedstring.h>
 
 #include <tests/autotestshell.h>
 #include <tests/testcore.h>
-#include <language/codegen/coderepresentation.h>
+
+#include "../completion/codemodelitem.h"
+
+#include "../builders/declarationbuilder.h"
+#include "../builders/usebuilder.h"
+
+#include "../dumptypes.h"
+#include "../../parser/parsesession.h"
+#include "../../parser/phpdebugvisitor.h"
+
+#include "../helper.h"
+#include "../duchaindebug.h"
 
 using namespace KDevelop;
-
 
 namespace Php
 {

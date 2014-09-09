@@ -29,8 +29,8 @@
 
 #include <tests/testhelpers.h>
 
+#include "../completion/item.h"
 
-#include "completion/item.h"
 #include "phpparser.h"
 
 namespace KDevelop

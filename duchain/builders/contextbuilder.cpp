@@ -20,6 +20,8 @@
 
 #include "contextbuilder.h"
 
+#include <KLocalizedString>
+
 #include <language/duchain/duchain.h>
 #include <language/duchain/topducontext.h>
 #include <language/duchain/duchainlock.h>
@@ -30,14 +32,13 @@
 #include <interfaces/ilanguagecontroller.h>
 #include <interfaces/icompletionsettings.h>
 
-#include <klocalizedstring.h>
-
-#include "parsesession.h"
 #include "../editorintegrator.h"
 #include "../helper.h"
 #include "../duchaindebug.h"
-#include "phpducontext.h"
-#include "phpast.h"
+#include "../phpducontext.h"
+
+#include "../parser/parsesession.h"
+#include "../parser/phpast.h"
 
 using namespace KDevelop;
 

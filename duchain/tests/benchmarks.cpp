@@ -17,8 +17,8 @@
 */
 #include "benchmarks.h"
 
-#include <QtTest/QtTest>
-#include <QtCore/QFile>
+#include <QtTest>
+#include <QFile>
 
 #include <KFilterDev>
 #include <KMimeType>
@@ -26,8 +26,8 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
 
-#include "phpparsejob.h"
-#include "parsesession.h"
+#include "../../parser/parsesession.h"
+
 #include "../builders/declarationbuilder.h"
 #include "../builders/usebuilder.h"
 #include "../duchaindebug.h"

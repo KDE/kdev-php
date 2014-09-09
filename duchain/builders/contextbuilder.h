@@ -21,13 +21,12 @@
 #ifndef CONTEXTBUILDER_H
 #define CONTEXTBUILDER_H
 
-#include "phpdefaultvisitor.h"
 #include <language/duchain/builders/abstractcontextbuilder.h>
 #include <language/duchain/problem.h>
 
+#include "phpdefaultvisitor.h"
 #include "editorintegrator.h"
 #include "helper.h"
-
 
 namespace Php
 {

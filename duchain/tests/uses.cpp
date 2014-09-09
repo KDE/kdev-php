@@ -23,7 +23,6 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
 
-#include "phpparsejob.h"
 #include "../declarations/classdeclaration.h"
 #include "../declarations/variabledeclaration.h"
 #include "../declarations/traitmethodaliasdeclaration.h"

@@ -24,10 +24,11 @@
 #ifndef PHPCOMPLETIONITEM_H
 #define PHPCOMPLETIONITEM_H
 
-#include <ktexteditor/codecompletionmodel.h>
+#include <KTextEditor/CodeCompletionModel>
 
 #include <language/duchain/duchainpointer.h>
 #include <language/codecompletion/normaldeclarationcompletionitem.h>
+
 #include "context.h"
 
 namespace KTextEditor

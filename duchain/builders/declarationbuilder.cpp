@@ -19,9 +19,8 @@
  ***************************************************************************/
 
 #include "declarationbuilder.h"
-#include "predeclarationbuilder.h"
 
-#include <QByteArray>
+#include <KLocalizedString>
 
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/aliasdeclaration.h>
@@ -33,11 +32,7 @@
 #include <interfaces/icompletionsettings.h>
 #include <util/pushvalue.h>
 
-#include <klocalizedstring.h>
 
-#include "phpast.h"
-#include "parsesession.h"
-#include "helper.h"
 #include "../declarations/variabledeclaration.h"
 #include "../declarations/classmethoddeclaration.h"
 #include "../declarations/classdeclaration.h"
@@ -46,8 +41,15 @@
 #include "../declarations/namespacealiasdeclaration.h"
 #include "../declarations/traitmethodaliasdeclaration.h"
 #include "../declarations/traitmemberaliasdeclaration.h"
+
+#include "../parser/phpast.h"
+#include "../parser/parsesession.h"
+
+#include "../helper.h"
 #include "../duchaindebug.h"
-#include "expressionvisitor.h"
+#include "../expressionvisitor.h"
+
+#include "predeclarationbuilder.h"
 
 #define ifDebug(x)
 

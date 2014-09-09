@@ -21,46 +21,46 @@
 
 #include "context.h"
 
-#include "duchain/expressionparser.h"
-#include "helpers.h"
-
-#include "../duchain/helper.h"
-#include "../duchain/declarations/variabledeclaration.h"
-
-#include "implementationitem.h"
-#include "keyworditem.h"
-
-#include "phpparser.h"
-#include "phptokentext.h"
-
 #include <ktexteditor/view.h>
 #include <ktexteditor/document.h>
-#include <klocalizedstring.h>
+#include <KLocalizedString>
+
 #include <language/duchain/ducontext.h>
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/types/identifiedtype.h>
 #include <language/duchain/types/functiontype.h>
-#include <util/pushvalue.h>
 #include <language/duchain/codemodel.h>
 #include <language/duchain/classdeclaration.h>
+#include <language/duchain/types/unsuretype.h>
+#include <language/duchain/parsingenvironment.h>
+#include <language/util/includeitem.h>
 #include <language/codecompletion/codecompletion.h>
 
-#include "declarations/classmethoddeclaration.h"
-#include "types/structuretype.h"
+#include <util/pushvalue.h>
 
 #include <interfaces/icore.h>
 #include <interfaces/iprojectcontroller.h>
 #include <interfaces/iproject.h>
+
 #include <project/projectmodel.h>
-#include <language/duchain/types/unsuretype.h>
-#include <language/duchain/parsingenvironment.h>
-#include <language/util/includeitem.h>
+
+#include "../duchain/completioncodemodel.h"
+#include "../duchain/expressionparser.h"
+#include "../duchain/helper.h"
+#include "../duchain/declarations/variabledeclaration.h"
+#include "../duchain/declarations/classmethoddeclaration.h"
+#include "../duchain/types/structuretype.h"
+
+#include "../parser/phpparser.h"
+#include "../parser/phptokentext.h"
 
 #include "includefileitem.h"
-#include "../duchain/completioncodemodel.h"
 #include "codemodelitem.h"
 #include "completiondebug.h"
+#include "helpers.h"
+#include "implementationitem.h"
+#include "keyworditem.h"
 
 #define LOCKDUCHAIN     DUChainReadLocker lock(DUChain::lock())
 

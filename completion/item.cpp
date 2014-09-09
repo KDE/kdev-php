@@ -23,28 +23,29 @@
 
 #include "item.h"
 
+#include <KTextEditor/Range>
+#include <KTextEditor/View>
+#include <KTextEditor/Document>
+
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
-#include <ktexteditor/range.h>
-#include <ktexteditor/view.h>
-#include <ktexteditor/document.h>
-#include <language/codecompletion/codecompletionmodel.h>
-#include <language/codecompletion/codecompletionhelper.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/namespacealiasdeclaration.h>
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/types/functiontype.h>
-#include "declarations/classdeclaration.h"
-#include "declarations/classmethoddeclaration.h"
-#include "types/structuretype.h"
+#include <language/codecompletion/codecompletionmodel.h>
+#include <language/codecompletion/codecompletionhelper.h>
 
-#include "completion/helpers.h"
-#include "completion/context.h"
-#include "completiondebug.h"
-
-#include "../duchain/navigation/navigationwidget.h"
+#include "../duchain/declarations/classdeclaration.h"
+#include "../duchain/declarations/classmethoddeclaration.h"
 #include "../duchain/declarations/variabledeclaration.h"
+#include "../duchain/types/structuretype.h"
+#include "../duchain/navigation/navigationwidget.h"
 #include "../duchain/helper.h"
+
+#include "helpers.h"
+#include "context.h"
+#include "completiondebug.h"
 
 using namespace KDevelop;
 

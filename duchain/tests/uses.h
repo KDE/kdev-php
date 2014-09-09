@@ -19,7 +19,7 @@
 #ifndef TESTUSES_H
 #define TESTUSES_H
 
-#include "duchain/tests/duchaintestbase.h"
+#include "../../duchain/tests/duchaintestbase.h"
 
 namespace Php
 {

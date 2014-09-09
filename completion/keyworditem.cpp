@@ -22,19 +22,21 @@
 
 #include "keyworditem.h"
 
-#include "helpers.h"
+#include <KTextEditor/Document>
+#include <KTextEditor/View>
+
+#include <KIcon>
+#include <KLocalizedString>
 
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/types/functiontype.h>
 #include <language/codecompletion/codecompletionmodel.h>
-#include "declarations/classmethoddeclaration.h"
 
-#include <ktexteditor/document.h>
-#include <ktexteditor/view.h>
-#include <kicon.h>
-#include <klocalizedstring.h>
+#include "../duchain/declarations/classmethoddeclaration.h"
+
+#include "helpers.h"
 
 using namespace KDevelop;
 

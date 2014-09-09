@@ -18,7 +18,7 @@
 
 #include "test_completion.h"
 
-#include <QtTest/QtTest>
+#include <QtTest>
 
 #include <language/duchain/parsingenvironment.h>
 #include <language/duchain/duchain.h>
@@ -29,14 +29,15 @@
 #include <language/duchain/codemodel.h>
 #include <language/codecompletion/codecompletiontesthelper.h>
 #include <language/duchain/types/alltypes.h>
-#include "duchain/types/structuretype.h"
 
-#include "completion/context.h"
-#include "completion/item.h"
-#include "completion/helpers.h"
-#include "completion/model.h"
-#include "completion/completiondebug.h"
-#include "duchain/declarations/functiondeclaration.h"
+#include "../../duchain/types/structuretype.h"
+#include "../../duchain/declarations/functiondeclaration.h"
+
+#include "context.h"
+#include "item.h"
+#include "helpers.h"
+#include "model.h"
+#include "completiondebug.h"
 
 using namespace KTextEditor;
 using namespace KDevelop;

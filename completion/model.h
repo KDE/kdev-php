@@ -27,8 +27,8 @@
 #include <QPair>
 #include <QMap>
 #include <QPointer>
-#include <ksharedptr.h>
-#include <ktexteditor/codecompletionmodelcontrollerinterface.h>
+
+#include <KTextEditor/CodeCompletionModelControllerInterface>
 
 #include <language/codecompletion/codecompletionmodel.h>
 #include <language/duchain/duchainpointer.h>

@@ -23,9 +23,9 @@
 #ifndef COMPLETIONHELPERS_H
 #define COMPLETIONHELPERS_H
 
-#include <language/duchain/types/abstracttype.h>
+#include <QStringList>
 
-#include <QtCore/QStringList>
+#include <language/duchain/types/abstracttype.h>
 
 class QString;
 class QVariant;

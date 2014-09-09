@@ -23,11 +23,12 @@
 #define PHPCOMPLETIONCODEMODELITEM_H
 
 #include <language/codecompletion/codecompletionitem.h>
-#include <serialization/indexedstring.h>
 #include <language/duchain/parsingenvironment.h>
+#include <serialization/indexedstring.h>
+
+#include "../duchain/completioncodemodel.h"
 
 #include "context.h"
-#include "../duchain/completioncodemodel.h"
 
 namespace Php
 {

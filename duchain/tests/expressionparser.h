@@ -19,7 +19,7 @@
 #ifndef TESTEXPRESSIONPARSER_H
 #define TESTEXPRESSIONPARSER_H
 
-#include "duchain/tests/duchaintestbase.h"
+#include "../../duchain/tests/duchaintestbase.h"
 
 namespace Php
 {

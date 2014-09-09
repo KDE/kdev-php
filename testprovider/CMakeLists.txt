@@ -1,6 +1,3 @@
-
-# add_definitions( -DKDE_DEFAULT_DEBUG_AREA=90xx )
-
 ########### next target ###############
 
 set(kdevphpunitprovider_PLUGIN_SRCS
@@ -22,7 +19,6 @@ target_link_libraries(kdevphpunitprovider LINK_PRIVATE
 )
 
 install(TARGETS kdevphpunitprovider DESTINATION ${PLUGIN_INSTALL_DIR} )
-
 
 ########### install files ###############
 

@@ -20,18 +20,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "completion/helpers.h"
-#include "completion/item.h"
+#include "helpers.h"
+#include "item.h"
+
 #include <QList>
 #include <QVariant>
+#include <QTextFormat>
+#include <QStringList>
+
 #include <language/duchain/declaration.h>
 #include <language/duchain/abstractfunctiondeclaration.h>
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/ducontext.h>
 #include <language/duchain/types/functiontype.h>
-#include <QTextFormat>
-#include <QStringList>
 #include <language/duchain/types/integraltype.h>
+
 #include <KTextEditor/ConfigInterface>
 #include <KTextEditor/Document>
 

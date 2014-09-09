@@ -22,22 +22,23 @@
 
 #include "implementationitem.h"
 
+#include <KIcon>
+#include <KLocalizedString>
+
+#include <KTextEditor/Document>
+#include <KTextEditor/View>
 
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/types/functiontype.h>
-#include <language/codecompletion/codecompletionmodel.h>
-
-#include "declarations/classmethoddeclaration.h"
-
-#include <ktexteditor/document.h>
-#include <kicon.h>
-#include <klocalizedstring.h>
-#include <KTextEditor/View>
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/classdeclaration.h>
 #include <language/duchain/types/integraltype.h>
+
+#include <language/codecompletion/codecompletionmodel.h>
+
+#include "declarations/classmethoddeclaration.h"
 
 #include "completiondebug.h"
 #include "helpers.h"

@@ -22,22 +22,9 @@ find_package(KF5 REQUIRED COMPONENTS KDELibs4Support ThreadWeaver TextEditor I18
 find_package(KDevPlatform ${KDEVPLATFORM_VERSION} REQUIRED)
 find_package(KDevelop-PG-Qt REQUIRED)
 
-include_directories(
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/duchain
-    ${CMAKE_CURRENT_SOURCE_DIR}/parser
-    ${CMAKE_CURRENT_BINARY_DIR}/parser
-)
-
 add_definitions( -DKDE_DEFAULT_DEBUG_AREA=9043 )
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-endif()
-
 include_directories(
-    ${CMAKE_BINARY_DIR}/parser
     ${KDEVPGQT_INCLUDE_DIR}
 )
 
