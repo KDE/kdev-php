@@ -31,6 +31,7 @@
 
 #include "../completion/item.h"
 
+#include "phpduchainexport.h"
 #include "phpparser.h"
 
 namespace KDevelop
@@ -52,7 +53,7 @@ struct DUChainReleaser {
     KDevelop::TopDUContext* m_top;
 };
 
-class DUChainTestBase : public QObject
+class KDEVPHPDUCHAIN_EXPORT DUChainTestBase : public QObject
 {
     Q_OBJECT
 

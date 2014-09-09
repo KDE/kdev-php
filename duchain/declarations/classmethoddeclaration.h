@@ -27,11 +27,12 @@
 #include <language/duchain/declarationdata.h>
 #include <serialization/indexedstring.h>
 
+#include "phpduchainexport.h"
 
 namespace Php
 {
 
-class ClassMethodDeclarationData : public KDevelop::ClassFunctionDeclarationData
+class KDEVPHPDUCHAIN_EXPORT ClassMethodDeclarationData : public KDevelop::ClassFunctionDeclarationData
 {
 public:
     ClassMethodDeclarationData()
@@ -51,7 +52,7 @@ public:
 /**
  * inherits ClassFunctionDeclaration to overwrite some stuff for PHP specific behaviour
  */
-class ClassMethodDeclaration : public KDevelop::ClassFunctionDeclaration
+class KDEVPHPDUCHAIN_EXPORT ClassMethodDeclaration : public KDevelop::ClassFunctionDeclaration
 {
 public:
     ClassMethodDeclaration(const ClassMethodDeclaration &rhs);

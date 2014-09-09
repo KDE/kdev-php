@@ -29,14 +29,22 @@ set(duchain_SRCS
     navigation/magicconstantnavigationcontext.cpp
     completioncodemodel.cpp
     duchaindebug.cpp
-    )
+)
 
-add_library( phpduchain STATIC ${duchain_SRCS} )
+add_library( kdev4phpduchain SHARED ${duchain_SRCS} )
 
-target_link_libraries(phpduchain LINK_PRIVATE
+target_link_libraries(kdev4phpduchain LINK_PRIVATE
     KDev::Interfaces
     KDev::Language
     KDev::Shell
     KDev::Project
-    phpparser
+    kdev4phpparser
 )
+
+install(TARGETS kdev4phpduchain DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+
+# hack to make ../parser/phpdebugvisitor.h (generated at compile time)
+# use the correct EXPORT tags when compiling in MinGW
+if (MINGW)
+    add_definitions(-DMAKE_KDEV4PHPPARSER_LIB)
+endif (MINGW)

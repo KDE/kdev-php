@@ -21,6 +21,7 @@
 
 #include <QtCore/QString>
 #include "phpparser.h"
+#include "parserexport.h"
 
 namespace KDevPG
 {
@@ -33,7 +34,7 @@ struct StartAst;
 
 typedef QPair<KDevelop::DUContextPointer, KDevelop::RangeInRevision> SimpleUse;
 
-class ParseSession
+class KDEVPHPPARSER_EXPORT ParseSession
 {
 public:
     ParseSession();

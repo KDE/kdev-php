@@ -26,6 +26,7 @@
 
 #include "helper.h"
 #include "contextbuilder.h"
+#include "phpduchainexport.h"
 
 namespace Php
 {
@@ -37,7 +38,7 @@ typedef KDevelop::AbstractUseBuilder<AstNode, IdentifierAst, ContextBuilder> Use
 /**
  * A class which iterates the AST to extract uses of definitions.
  */
-class UseBuilder: public UseBuilderBase
+class KDEVPHPDUCHAIN_EXPORT UseBuilder: public UseBuilderBase
 {
 public:
     UseBuilder(EditorIntegrator* editor);

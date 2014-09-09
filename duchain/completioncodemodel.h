@@ -19,6 +19,7 @@
 #ifndef COMPLETIONCODEMODEL_H
 #define COMPLETIONCODEMODEL_H
 
+#include "phpduchainexport.h"
 #include <language/duchain/identifier.h>
 #include <serialization/indexedstring.h>
 
@@ -56,7 +57,7 @@ namespace Php {
 /**
  * Persistent store that efficiently holds a list of identifiers and their kind for each declaration-string.
  * */
-  class CompletionCodeModel {
+  class KDEVPHPDUCHAIN_EXPORT CompletionCodeModel {
     public:
     /// Constructor.
     CompletionCodeModel();

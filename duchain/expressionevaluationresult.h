@@ -19,6 +19,7 @@
 #ifndef EXPRESSIONEVALUATIONRESULT_H
 #define EXPRESSIONEVALUATIONRESULT_H
 
+#include "phpduchainexport.h"
 #include <language/duchain/appendedlist.h>
 #include <language/duchain/declarationid.h>
 #include <language/duchain/declaration.h>
@@ -39,7 +40,7 @@ class QString;
 namespace Php
 {
 
-class ExpressionEvaluationResult
+class KDEVPHPDUCHAIN_EXPORT ExpressionEvaluationResult
 {
 public:
     ExpressionEvaluationResult();

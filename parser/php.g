@@ -76,6 +76,13 @@ namespace KDevelop
 %parser_bits_header "parserdebug.h"
 
 ------------------------------------------------------------
+-- Export macro to use the parser in a shared lib
+------------------------------------------------------------
+%export_macro "KDEVPHPPARSER_EXPORT"
+%export_macro_header "parserexport.h"
+
+
+------------------------------------------------------------
 -- Enumeration types for additional AST members,
 -- in the global "Php" namespace
 ------------------------------------------------------------

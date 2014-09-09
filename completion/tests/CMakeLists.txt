@@ -2,21 +2,26 @@ set(completiontest_SRCS test_completion.cpp
     ../../duchain/tests/duchaintestbase.cpp)
 kde4_add_unit_test(completiontest ${completiontest_SRCS})
 target_link_libraries(completiontest
-    phpcompletion
-    phpduchain
-    phpparser
+    kdev4phpcompletion
+    kdev4phpduchain
+    kdev4phpparser
     Qt5::Test
     KDev::Tests
     KDev::Language
 )
 
+# hack to make ../../duchain/tests/duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
+if (MINGW)
+    set_property(TARGET completiontest APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
+endif (MINGW)
+
 set(completionbench_SRCS bench_completion.cpp
     ../../duchain/tests/duchaintestbase.cpp)
 kde4_add_unit_test(completionbenchmark ${completionbench_SRCS})
 target_link_libraries(completionbenchmark
-    phpcompletion
-    phpduchain
-    phpparser
+    kdev4phpcompletion
+    kdev4phpduchain
+    kdev4phpparser
 
     Qt5::Test
     KDev::Tests
@@ -26,3 +31,8 @@ target_link_libraries(completionbenchmark
     # we can work-around it :)
     KF5::Archive
 )
+
+# hack to make ../../duchain/tests/duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
+if (MINGW)
+    set_property(TARGET completionbenchmark APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
+endif (MINGW)

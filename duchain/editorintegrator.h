@@ -21,6 +21,7 @@
 
 #include <language/editor/rangeinrevision.h>
 
+#include "phpduchainexport.h"
 
 #include "kdev-pg-token-stream.h"
 
@@ -39,7 +40,7 @@ struct AstNode;
  *
  * \todo introduce stacks for the state?
  */
-class EditorIntegrator
+class KDEVPHPDUCHAIN_EXPORT EditorIntegrator
 {
 public:
     EditorIntegrator(ParseSession* session);

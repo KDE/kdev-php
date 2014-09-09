@@ -24,11 +24,12 @@
 #include <language/duchain/declaration.h>
 #include <language/duchain/declarationdata.h>
 
+#include "phpduchainexport.h"
 
 namespace Php
 {
 
-class VariableDeclarationData : public KDevelop::DeclarationData
+class KDEVPHPDUCHAIN_EXPORT VariableDeclarationData : public KDevelop::DeclarationData
 {
 public:
     VariableDeclarationData()
@@ -49,7 +50,7 @@ bool m_isSuperglobal;
 /**
  * Declaration used for Php variables eg. $a = 0;
  */
-class VariableDeclaration : public KDevelop::Declaration
+class KDEVPHPDUCHAIN_EXPORT VariableDeclaration : public KDevelop::Declaration
 {
 public:
     VariableDeclaration(const VariableDeclaration& rhs);

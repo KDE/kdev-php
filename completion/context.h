@@ -26,6 +26,7 @@
 #include <language/codecompletion/codecompletioncontext.h>
 #include <language/duchain/types/abstracttype.h>
 
+#include "phpcompletionexport.h"
 #include "item.h"
 #include "expressionevaluationresult.h"
 
@@ -53,7 +54,7 @@ class TokenAccess;
 /**
  * This class is responsible for finding out what kind of completion is needed, what expression should be evaluated for the container-class of the completion, what conversion will be applied to the result of the completion, etc.
  * */
-class CodeCompletionContext : public KDevelop::CodeCompletionContext
+class KDEVPHPCOMPLETION_EXPORT CodeCompletionContext : public KDevelop::CodeCompletionContext
 {
 public:
     typedef KSharedPtr<CodeCompletionContext> Ptr;

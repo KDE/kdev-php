@@ -27,6 +27,8 @@
 
 #include <language/duchain/types/abstracttype.h>
 
+#include "phpcompletionexport.h"
+
 class QString;
 class QVariant;
 template<class T>
@@ -43,7 +45,7 @@ class NormalDeclarationCompletionItem;
 /**
  * @param phpTypeHinting set to true if you only want PHP-valid typehinting (i.e. only array and classes)
  */
-void createArgumentList(const NormalDeclarationCompletionItem& item, QString& ret, QList<QVariant>* highlighting, bool phpTypeHinting = false);
+void KDEVPHPCOMPLETION_EXPORT createArgumentList(const NormalDeclarationCompletionItem& item, QString& ret, QList<QVariant>* highlighting, bool phpTypeHinting = false);
 
 /// get a list of tokens which define a method at the end of the given text
 /// NOTE: result will contain "function" if it's the last token at the end of the text
@@ -55,7 +57,7 @@ QStringList getMethodTokens(QString text);
  * @param document The current document.
  * @returns a QString containing the indentation to be used.
  */
-const QString indentString(KTextEditor::Document *document);
+const QString KDEVPHPCOMPLETION_EXPORT indentString(KTextEditor::Document *document);
 
 /**
  * Get the indendation of a given line.
@@ -66,7 +68,7 @@ const QString indentString(KTextEditor::Document *document);
  * const QString indendation = getIndendation( document->line(replaceRange.start().line()) );
  * \endcode
  */
-QString getIndendation( const QString &line );
+QString KDEVPHPCOMPLETION_EXPORT getIndendation( const QString &line );
 }
 
 #endif

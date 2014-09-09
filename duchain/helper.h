@@ -20,6 +20,7 @@
 #ifndef PHPDUCHAINHELPER_H
 #define PHPDUCHAINHELPER_H
 
+#include "phpduchainexport.h"
 
 #include <language/duchain/identifier.h>
 #include <language/duchain/ducontext.h>
@@ -46,43 +47,43 @@ enum DeclarationType {
     NamespaceDeclarationType
 };
 
-bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);
+KDEVPHPDUCHAIN_EXPORT bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);
 
-KDevelop::DeclarationPointer findDeclarationImportHelper(KDevelop::DUContext* currentContext,
+KDEVPHPDUCHAIN_EXPORT KDevelop::DeclarationPointer findDeclarationImportHelper(KDevelop::DUContext* currentContext,
                                                                                const KDevelop::QualifiedIdentifier& id,
                                                                                DeclarationType declarationType);
 
-KDevelop::DeclarationPointer findDeclarationInPST(KDevelop::DUContext* currentContext,
+KDEVPHPDUCHAIN_EXPORT KDevelop::DeclarationPointer findDeclarationInPST(KDevelop::DUContext* currentContext,
                                                                         KDevelop::QualifiedIdentifier id,
                                                                         DeclarationType declarationType);
 
-QByteArray formatComment(AstNode* node, EditorIntegrator* editor);
+KDEVPHPDUCHAIN_EXPORT QByteArray formatComment(AstNode* node, EditorIntegrator* editor);
 
-CommonScalarAst* findCommonScalar(AstNode* node);
+KDEVPHPDUCHAIN_EXPORT CommonScalarAst* findCommonScalar(AstNode* node);
 
-KDevelop::IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl);
+KDEVPHPDUCHAIN_EXPORT KDevelop::IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl);
 
-KUrl getUrlForBase(const QString &includeFile, const KUrl &baseUrl);
+KDEVPHPDUCHAIN_EXPORT KUrl getUrlForBase(const QString &includeFile, const KUrl &baseUrl);
 
-KDevelop::IndexedString getIncludeFileForNode(UnaryExpressionAst* node, EditorIntegrator* editor);
+KDEVPHPDUCHAIN_EXPORT KDevelop::IndexedString getIncludeFileForNode(UnaryExpressionAst* node, EditorIntegrator* editor);
 
-QString prettyName(KDevelop::Declaration* dec);
+KDEVPHPDUCHAIN_EXPORT QString prettyName(KDevelop::Declaration* dec);
 
-const KDevelop::IndexedString& internalFunctionFile();
+KDEVPHPDUCHAIN_EXPORT const KDevelop::IndexedString& internalFunctionFile();
 
-const KDevelop::IndexedString& internalTestFile();
+KDEVPHPDUCHAIN_EXPORT const KDevelop::IndexedString& internalTestFile();
 
 /**
  * Get proper QualifiedIdentifier for a NamespacedIdentifierAst.
  *
  * Identifier will be all lowercase except for the last identifier if @p lastIsConstIdentifier is set to true.
  */
-KDevelop::QualifiedIdentifier identifierForNamespace(NamespacedIdentifierAst* node, EditorIntegrator* editor,
+KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierForNamespace(NamespacedIdentifierAst* node, EditorIntegrator* editor,
                                                                            bool lastIsConstIdentifier = false);
 
 /**
  * Get proper QualifiedIdentifier for a basic identifier.
  */
-KDevelop::QualifiedIdentifier identifierWithNamespace(const KDevelop::QualifiedIdentifier& base, KDevelop::DUContext* context);
+KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierWithNamespace(const KDevelop::QualifiedIdentifier& base, KDevelop::DUContext* context);
 }
 #endif

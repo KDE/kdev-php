@@ -26,9 +26,9 @@ using namespace KDevelop;
 namespace Php
 {
 
-DECLARE_LIST_MEMBER_HASH(TraitMethodAliasDeclarationData, items, IndexedQualifiedIdentifier)
+KDEVPLATFORMLANGUAGE_EXPORT DECLARE_LIST_MEMBER_HASH(TraitMethodAliasDeclarationData, items, IndexedQualifiedIdentifier)
 
-class TraitMethodAliasDeclarationData : public ClassMethodDeclarationData
+class KDEVPHPDUCHAIN_EXPORT TraitMethodAliasDeclarationData : public ClassMethodDeclarationData
 {
 public:
     TraitMethodAliasDeclarationData()

@@ -41,7 +41,7 @@ typedef KDevelop::AbstractTypeBuilder<AstNode, IdentifierAst, ContextBuilder> Ty
  * array types; parent classes will not have
  * their visitDeclarator function called.
  */
-class TypeBuilder: public TypeBuilderBase
+class KDEVPHPDUCHAIN_EXPORT TypeBuilder: public TypeBuilderBase
 {
 public:
     TypeBuilder();

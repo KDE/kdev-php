@@ -25,6 +25,7 @@
 #include <language/duchain/problem.h>
 
 #include "phpdefaultvisitor.h"
+#include "phpduchainexport.h"
 #include "editorintegrator.h"
 #include "helper.h"
 
@@ -39,7 +40,7 @@ typedef KDevelop::AbstractContextBuilder<AstNode, IdentifierAst> ContextBuilderB
 /// second comes the all-lowercase identifier used for storage
 typedef QPair<KDevelop::IndexedString, KDevelop::QualifiedIdentifier> IdentifierPair;
 
-class ContextBuilder: public ContextBuilderBase, public DefaultVisitor
+class KDEVPHPDUCHAIN_EXPORT ContextBuilder: public ContextBuilderBase, public DefaultVisitor
 {
 
 public:

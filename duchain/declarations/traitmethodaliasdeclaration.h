@@ -31,7 +31,7 @@ struct TraitMethodAliasDeclarationData;
 /**
  * inherits ClassMethodDeclaration to allow some trait specific functionality
  */
-class TraitMethodAliasDeclaration : public ClassMethodDeclaration
+class KDEVPHPDUCHAIN_EXPORT TraitMethodAliasDeclaration : public ClassMethodDeclaration
 {
 public:
     TraitMethodAliasDeclaration(const TraitMethodAliasDeclaration &rhs);

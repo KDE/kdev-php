@@ -25,11 +25,12 @@
 #include <language/duchain/classmemberdeclaration.h>
 #include <language/duchain/classmemberdeclarationdata.h>
 
+#include "phpduchainexport.h"
 
 namespace Php
 {
 
-class TraitMemberAliasDeclarationData : public KDevelop::ClassMemberDeclarationData
+class KDEVPLATFORMLANGUAGE_EXPORT TraitMemberAliasDeclarationData : public KDevelop::ClassMemberDeclarationData
 {
 public:
     TraitMemberAliasDeclarationData()
@@ -47,7 +48,7 @@ public:
 /**
  * Represents a single class member definition in a definition-use chain.
  */
-class TraitMemberAliasDeclaration : public KDevelop::ClassMemberDeclaration
+class KDEVPLATFORMLANGUAGE_EXPORT TraitMemberAliasDeclaration : public KDevelop::ClassMemberDeclaration
 {
 public:
     TraitMemberAliasDeclaration(const TraitMemberAliasDeclaration& rhs);
