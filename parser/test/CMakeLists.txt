@@ -5,4 +5,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
 set(lexertest_SRCS lexertest.cpp)
 kde4_add_unit_test(lexertest ${lexertest_SRCS})
 
-target_link_libraries(lexertest phpparser ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${KDE4_KDECORE_LIBS} ${KDEVPLATFORM_LANGUAGE_LIBRARIES})
+target_link_libraries(lexertest phpparser
+    Qt5::Test
+    Qt5::Core
+    KDev::Language
+)

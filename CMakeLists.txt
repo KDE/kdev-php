@@ -22,8 +22,6 @@ find_package(KF5 REQUIRED COMPONENTS KDELibs4Support ThreadWeaver TextEditor I18
 find_package(KDevPlatform ${KDEVPLATFORM_VERSION} REQUIRED)
 find_package(KDevelop-PG-Qt REQUIRED)
 
-include_directories(${KDEVPLATFORM_INCLUDE_DIR})
-
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -62,8 +60,8 @@ set(kdevphplanguagesupport_PART_SRCS
 add_library(kdevphplanguagesupport MODULE ${kdevphplanguagesupport_PART_SRCS})
 
 target_link_libraries(kdevphplanguagesupport
-    ${KDEVPLATFORM_INTERFACES_LIBRARIES}
-    ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
+    KDev::Interfaces
+    KDev::Language
     phpduchain
     phpparser
     phpcompletion

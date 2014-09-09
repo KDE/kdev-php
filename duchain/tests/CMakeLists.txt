@@ -2,7 +2,6 @@ set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${KDEVPLATFORM_INCLUDE_DIR}
 )
 
 set(duchain_SRCS
@@ -12,9 +11,9 @@ kde4_add_unit_test(duchain ${duchain_SRCS})
 target_link_libraries(duchain
     phpduchain
     phpparser
-    ${QT_QTTEST_LIBRARY}
-    ${KDEVPLATFORM_TESTS_LIBRARIES}
-    ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
+    Qt5::Test
+    KDev::Tests
+    KDev::Language
 )
 
 set(expressionparser_SRCS
@@ -24,9 +23,9 @@ kde4_add_unit_test(expressionparser ${expressionparser_SRCS})
 target_link_libraries(expressionparser
     phpduchain
     phpparser
-    ${QT_QTTEST_LIBRARY}
-    ${KDEVPLATFORM_TESTS_LIBRARIES}
-    ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
+    Qt5::Test
+    KDev::Tests
+    KDev::Language
 )
 
 set(uses_SRCS
@@ -36,10 +35,10 @@ kde4_add_unit_test(uses ${uses_SRCS})
 target_link_libraries(uses
     phpduchain
     phpparser
-    ${QT_QTTEST_LIBRARY}
-    ${KDEVPLATFORM_INTERFACES_LIBRARIES}
-    ${KDEVPLATFORM_TESTS_LIBRARIES}
-    ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
+    Qt5::Test
+    KDev::Tests
+    KDev::Language
+    KDev::Interfaces
 )
 
 set(benchmarks_SRCS
@@ -50,10 +49,10 @@ kde4_add_unit_test(benchmarks ${benchmarks_SRCS})
 target_link_libraries(benchmarks
     phpduchain
     phpparser
-    ${QT_QTTEST_LIBRARY}
-    ${KDEVPLATFORM_INTERFACES_LIBRARIES}
-    ${KDEVPLATFORM_TESTS_LIBRARIES}
-    ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
+    Qt5::Test
+    KDev::Tests
+    KDev::Language
+    KDev::Interfaces
 
     # TODO: KF5: KDevice is forcing us to have this dependency. I'm sure
     # we can work-around it :)
@@ -68,8 +67,8 @@ kde4_add_unit_test(duchain_multiplefiles ${duchain_multiplefiles_SRCS})
 target_link_libraries(duchain_multiplefiles
     phpduchain
     phpparser
-    ${QT_QTTEST_LIBRARY}
-    ${KDEVPLATFORM_INTERFACES_LIBRARIES}
-    ${KDEVPLATFORM_TESTS_LIBRARIES}
-    ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
+    Qt5::Test
+    KDev::Tests
+    KDev::Language
+    KDev::Interfaces
 )

@@ -20,9 +20,9 @@ set(completion_SRCS
 add_library( phpcompletion STATIC ${completion_SRCS} )
 
 target_link_libraries(phpcompletion LINK_PRIVATE
-    ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
-    ${KDEVPLATFORM_INTERFACES_LIBRARIES}
-    ${KDEVPLATFORM_PROJECT_LIBRARIES}
+    KDev::Language
+    KDev::Interfaces
+    KDev::Project
     phpduchain
     phpparser
  )

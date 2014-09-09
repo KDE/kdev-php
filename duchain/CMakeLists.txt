@@ -38,9 +38,9 @@ set(duchain_SRCS
 add_library( phpduchain STATIC ${duchain_SRCS} )
 
 target_link_libraries(phpduchain LINK_PRIVATE
-    ${KDEVPLATFORM_INTERFACES_LIBRARIES}
-    ${KDEVPLATFORM_LANGUAGE_LIBRARIES}
-    ${KDEVPLATFORM_SHELL_LIBRARIES}
-    ${KDEVPLATFORM_PROJECT_LIBRARIES}
+    KDev::Interfaces
+    KDev::Language
+    KDev::Shell
+    KDev::Project
     phpparser
 )
