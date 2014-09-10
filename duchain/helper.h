@@ -63,10 +63,6 @@ KDEVPHPDUCHAIN_EXPORT QByteArray formatComment(AstNode* node, EditorIntegrator* 
 
 KDEVPHPDUCHAIN_EXPORT CommonScalarAst* findCommonScalar(AstNode* node);
 
-KDEVPHPDUCHAIN_EXPORT KDevelop::IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl);
-
-KDEVPHPDUCHAIN_EXPORT KUrl getUrlForBase(const QString &includeFile, const KUrl &baseUrl);
-
 KDEVPHPDUCHAIN_EXPORT KDevelop::IndexedString getIncludeFileForNode(UnaryExpressionAst* node, EditorIntegrator* editor);
 
 KDEVPHPDUCHAIN_EXPORT QString prettyName(KDevelop::Declaration* dec);

@@ -34,6 +34,7 @@
 #include <interfaces/iuicontroller.h>
 #include <interfaces/iproject.h>
 #include <project/projectmodel.h>
+#include <util/path.h>
 
 #include "editorintegrator.h"
 #include "../parser/parsesession.h"
@@ -237,7 +238,7 @@ DeclarationPointer findDeclarationInPST(DUContext* currentContext, QualifiedIden
         currentContext->topContext()->parsingEnvironmentFile()
         ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
         currentContext->topContext()->updateImportsCache();
-        ifDebug(qCDebug(DUCHAIN) << "using" << declarations[i].declaration()->toString() << top->url().str();)
+        ifDebug(qCDebug(DUCHAIN) << "using" << declarations[i].declaration()->toString() << top->url();)
         wlock.unlock();
         return DeclarationPointer(declarations[i].declaration());
     }
@@ -275,74 +276,54 @@ CommonScalarAst* findCommonScalar(AstNode* node)
     return visitor.node();
 }
 
-static bool includeExists(const KUrl &url)
+static bool includeExists(const Path &include)
 {
+    const QString path = include.pathOrUrl();
     {
-        DUChainReadLocker lock(DUChain::lock());
-        ///TODO: this may load the chain into memory, do we really want that here?
-        if (DUChain::self()->chainForDocument(url)) {
+        DUChainReadLocker lock;
+        if (DUChain::self()->chainForDocument(IndexedString(path))) {
             return true;
         }
     }
-    if ( url.isLocalFile() ) {
-        return QFile::exists(url.toLocalFile());
+    if ( include.isLocalFile() ) {
+        return QFile::exists(path);
     } else {
         return false;
     }
 }
 
-KUrl getUrlForBase(const QString &includeFile, const KUrl &baseUrl) {
-    if ( includeFile.isEmpty() ) {
-        return baseUrl;
-    }
-    KUrl url = baseUrl;
-    if ( includeFile[0] == '/' ) {
-        url.setPath(includeFile);
-    } else {
-        url.addPath(includeFile);
-    }
-    url.cleanPath();
-    return url;
-}
-
-IndexedString findIncludeFileUrl(const QString &includeFile, const KUrl &currentUrl)
+static IndexedString findIncludeFile(const QString &includePath, const IndexedString &currentDocument)
 {
-    if ( includeFile.isEmpty() ) {
+    if ( includePath.isEmpty() ) {
         return IndexedString();
     }
 
     // check remote files
-    if ( includeFile.startsWith(QLatin1String("http://"), Qt::CaseInsensitive)
-            || includeFile.startsWith(QLatin1String("ftp://"), Qt::CaseInsensitive) ) {
+    if ( includePath.startsWith(QLatin1String("http://"), Qt::CaseInsensitive)
+            || includePath.startsWith(QLatin1String("ftp://"), Qt::CaseInsensitive) ) {
         // always expect remote includes to exist
-        return IndexedString(includeFile);
+        return IndexedString(includePath);
     }
 
-    KUrl url;
+    const Path currentPath(currentDocument.str());
 
     // look for file relative to current url
-    url = getUrlForBase(includeFile, currentUrl.upUrl());
-    if ( ICore::self()->projectController()->findProjectForUrl(url) || includeExists(url) ) {
-        return IndexedString(url);
+    Path include = Path(currentPath.parent(), includePath);
+    if ( includeExists(include) ) {
+        return IndexedString(include.pathOrUrl());
     }
 
-    // look for file relative to current project base
-    IProject* ownProject = ICore::self()->projectController()->findProjectForUrl(currentUrl);
-    if ( ownProject ) {
-        url = getUrlForBase(includeFile, ownProject->folder());
-        if ( ownProject->inProject(IndexedString(url)) || includeExists(url) ) {
-            return IndexedString(url);
-        }
-    }
-
-    // now look in all other projects
-    foreach(IProject* project, ICore::self()->projectController()->projects()) {
-        if ( project == ownProject ) {
-            continue;
-        }
-        url = getUrlForBase(includeFile, project->folder());
-        if ( project->inProject(IndexedString(url)) || includeExists(url) ) {
-            return IndexedString(url);
+    // in the first round look for a project that is a parent of the current document
+    // in the next round look for any project
+    for (int i = 0; i < 2; ++i) {
+        foreach(IProject* project, ICore::self()->projectController()->projects()) {
+            if ( !i && !project->path().isParentOf(currentPath)) {
+                continue;
+            }
+            include = Path(project->path(), includePath);
+            if ( includeExists(include) ) {
+                return IndexedString(include.pathOrUrl());
+            }
         }
     }
 
@@ -361,7 +342,7 @@ IndexedString getIncludeFileForNode(UnaryExpressionAst* node, EditorIntegrator* 
             if ( str == "." || str == ".." || str.endsWith('/') ) {
                 return IndexedString();
             }
-            return findIncludeFileUrl(str, editor->parseSession()->currentDocument().toUrl());
+            return findIncludeFile(str, editor->parseSession()->currentDocument());
         }
     }
 

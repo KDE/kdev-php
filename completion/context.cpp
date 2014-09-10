@@ -38,6 +38,7 @@
 #include <language/codecompletion/codecompletion.h>
 
 #include <util/pushvalue.h>
+#include <util/path.h>
 
 #include <interfaces/icore.h>
 #include <interfaces/iprojectcontroller.h>
@@ -1096,78 +1097,77 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
             return items;
         }
         // file completion
-        QUrl path;
-        QUrl base;
+        const Path currentDocument(m_duContext->url().str());
+        Path path;
+        Path base;
         if ( !m_isFileCompletionAfterDirname ) {
-            path = KIO::upUrl(getUrlForBase(m_expression, m_duContext->url().toUrl()));
+            path = Path(currentDocument.parent(), m_expression);
             base = path;
             if ( !m_expression.isEmpty() && !m_expression.endsWith('/') ) {
-                base = KIO::upUrl(base);
+                base = base.parent();
             }
         } else {
             if ( m_expression.startsWith('/') ) {
-                path = KIO::upUrl(getUrlForBase(m_expression.mid(1), m_duContext->url().toUrl()));
+                path = Path(currentDocument.parent(), m_expression.mid(1));
             } else {
-                path = KIO::upUrl(m_duContext->url().toUrl());
+                path = currentDocument.parent();
             }
             base = path;
             if ( !m_expression.isEmpty() && !m_expression.endsWith('/') && m_expression != "/" ) {
-                base = KIO::upUrl(base);
+                base = base.parent();
             }
         }
-        base.setPath(QDir::cleanPath(base.path()));
-        IProject* project = ICore::self()->projectController()->findProjectForUrl(base);
-        if ( project && !abort ) {
-            QList<QUrl> addedUrls;
-            bool addedParentDir = false;
-            foreach ( ProjectFolderItem* folder, project->foldersForUrl(base) ) {
+        QList<Path> addedPaths;
+        bool addedParentDir = false;
+        const QUrl baseUrl = base.toUrl();
+        foreach ( ProjectBaseItem* item, ICore::self()->projectController()->projectModel()->itemsForPath(IndexedString(base.toUrl())) ) {
+            if ( abort || !item->folder() ) {
+                break;
+            }
+            auto folder = item->folder();
+            foreach ( ProjectFileItem* subFile, folder->fileList() ) {
                 if ( abort ) {
                     break;
                 }
-                foreach ( ProjectFileItem* subFile, folder->fileList() ) {
-                    if ( abort ) {
-                        break;
-                    }
-                    if ( addedUrls.contains(subFile->url()) ) {
-                        continue;
-                    } else {
-                        addedUrls << subFile->url();
-                    }
-                    IncludeItem item;
-                    item.isDirectory = false;
-                    item.basePath = base;
-                    item.name = subFile->fileName();
-                    if ( m_isFileCompletionAfterDirname && !m_expression.startsWith('/') ) {
-                        item.name.prepend('/');
-                    }
-                    items << CompletionTreeItemPointer(new IncludeFileItem(item));
+                if ( addedPaths.contains(subFile->path()) ) {
+                    continue;
+                } else {
+                    addedPaths << subFile->path();
                 }
-                foreach ( ProjectFolderItem* subFolder, folder->folderList() ) {
-                    if ( abort ) {
-                        break;
-                    }
-                    if ( addedUrls.contains(subFolder->url()) ) {
-                        continue;
-                    } else {
-                        addedUrls << subFolder->url();
-                    }
-                    IncludeItem item;
-                    item.isDirectory = true;
-                    item.basePath = base;
-                    item.name = subFolder->folderName();
-                    if ( m_isFileCompletionAfterDirname && !m_expression.startsWith('/') ) {
-                        item.name.prepend('/');
-                    }
-                    items << CompletionTreeItemPointer(new IncludeFileItem(item));
+                IncludeItem item;
+                item.isDirectory = false;
+                item.basePath = baseUrl;
+                item.name = subFile->fileName();
+                if ( m_isFileCompletionAfterDirname && !m_expression.startsWith('/') ) {
+                    item.name.prepend('/');
                 }
-                if ( !folder->parent() && !addedParentDir && m_expression.isEmpty() ) {
-                    // expect a parent dir
-                    IncludeItem item;
-                    item.isDirectory = true;
-                    item.basePath = base;
-                    item.name = "..";
-                    items << CompletionTreeItemPointer(new IncludeFileItem(item));
+                items << CompletionTreeItemPointer(new IncludeFileItem(item));
+            }
+            foreach ( ProjectFolderItem* subFolder, folder->folderList() ) {
+                if ( abort ) {
+                    break;
                 }
+                if ( addedPaths.contains(subFolder->path()) ) {
+                    continue;
+                } else {
+                    addedPaths << subFolder->path();
+                }
+                IncludeItem item;
+                item.isDirectory = true;
+                item.basePath = baseUrl;
+                item.name = subFolder->folderName();
+                if ( m_isFileCompletionAfterDirname && !m_expression.startsWith('/') ) {
+                    item.name.prepend('/');
+                }
+                items << CompletionTreeItemPointer(new IncludeFileItem(item));
+            }
+            if ( !folder->parent() && !addedParentDir && m_expression.isEmpty() ) {
+                // expect a parent dir
+                IncludeItem item;
+                item.isDirectory = true;
+                item.basePath = baseUrl;
+                item.name = "..";
+                items << CompletionTreeItemPointer(new IncludeFileItem(item));
             }
         }
 
