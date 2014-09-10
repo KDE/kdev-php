@@ -20,9 +20,7 @@
 
 #include "duchain_multiplefiles.h"
 
-#include <QtTest/QtTest>
-
-#include <qtest_kde.h>
+#include <QtTest>
 
 #include <tests/testcore.h>
 #include <interfaces/ilanguagecontroller.h>
@@ -31,7 +29,7 @@
 #include <tests/testfile.h>
 #include <language/duchain/declaration.h>
 
-QTEST_KDEMAIN(Php::TestDUChainMultipleFiles, GUI)
+QTEST_MAIN(Php::TestDUChainMultipleFiles)
 
 using namespace KDevelop;
 using namespace Php;
