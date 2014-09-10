@@ -1665,7 +1665,7 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
     }
     if (!exceptionDecl) {
         // safe-guard, see: https://bugs.kde.org/show_bug.cgi?id=294218
-        kWarning() << "could not find PHP-Exception declaration, related code completion will be broken.";
+        qWarning() << "could not find PHP-Exception declaration, related code completion will be broken.";
     }
 
     if (m_memberAccessOperation == ExceptionChoose

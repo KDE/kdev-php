@@ -120,7 +120,7 @@ void ContextBuilder::startVisiting(AstNode* node)
             DUChainWriteLocker lock(DUChain::lock());
             TopDUContext* import = DUChain::self()->chainForDocument(internalFunctionFile());
             if (!import) {
-                kWarning() << "importing internalFunctions failed" << currentContext()->url().str();
+                qWarning() << "importing internalFunctions failed" << currentContext()->url().str();
                 Q_ASSERT(false);
             } else {
                 top->addImportedParentContext(import);

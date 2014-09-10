@@ -107,7 +107,6 @@ TokenStream* ParseSession::tokenStream() const
     return m_tokenStream;
 }
 
-
 Parser* ParseSession::createParser(int initialState)
 {
     Parser* parser = new Parser;
