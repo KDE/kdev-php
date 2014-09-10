@@ -20,9 +20,6 @@
 #include <QtTest>
 #include <QFile>
 
-#include <KFilterDev>
-#include <KMimeType>
-
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
 
@@ -45,8 +42,7 @@ Benchmarks::Benchmarks()
 QIODevice* getInternalFile()
 {
     QString fileName = QFINDTESTDATA("../../phpfunctions.php");
-    QString mimeType = KMimeType::findByPath(fileName, 0, false)->name ();
-    QIODevice* file = KFilterDev::deviceForFile (fileName, mimeType, false);
+    QIODevice* file = new QFile(fileName);
     bool opened = file->open(QIODevice::ReadOnly);
     Q_ASSERT(opened);
     Q_UNUSED(opened);

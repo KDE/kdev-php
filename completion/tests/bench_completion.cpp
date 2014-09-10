@@ -24,9 +24,6 @@
 
 #include <language/codecompletion/codecompletiontesthelper.h>
 
-#include <KMimeType>
-#include <KFilterDev>
-
 #ifdef USE_VALGRIND
   #include <valgrind/callgrind.h>
 #endif
@@ -68,8 +65,7 @@ void BenchmarkCodeCompletion::initTestCase()
     if ( !DUChain::self()->chainForDocument(internalFunctionFile()) ) {
         qDebug() << "no internal function file found in DUChain, loading it manually";
         QString fileName = internalFunctionFile().str();
-        QString mimeType = KMimeType::findByPath(fileName, 0, false)->name ();
-        QScopedPointer<QIODevice> file(KFilterDev::deviceForFile (fileName, mimeType, false));
+        QScopedPointer<QIODevice> file(new QFile(fileName));
         if ( !file->open(QIODevice::ReadOnly) ) {
             qDebug() << "Could not open file" << fileName;
             return;

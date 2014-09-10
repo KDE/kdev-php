@@ -61,10 +61,6 @@ ecm_add_test(
         KDev::Tests
         KDev::Language
         KDev::Interfaces
-
-        # TODO: KF5: KDevice is forcing us to have this dependency. I'm sure
-        # we can work-around it :)
-        KF5::Archive
 )
 
 # hack to make ../duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
