@@ -26,7 +26,7 @@
 namespace Php
 {
 
-struct TraitMethodAliasDeclarationData;
+class TraitMethodAliasDeclarationData;
 
 /**
  * inherits ClassMethodDeclaration to allow some trait specific functionality
