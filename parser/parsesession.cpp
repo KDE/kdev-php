@@ -87,7 +87,7 @@ bool ParseSession::readFile(const QString& filename, const char* codec)
         }
         p->setFinalLocation(KDevelop::DocumentRange(m_currentDocument, KTextEditor::Range()));
         m_problems << p;
-        kWarning() << "Could not open file" << filename;
+        qCWarning(PARSER) << "Could not open file" << filename;
         return false;
     }
     QTextStream s(&f);
