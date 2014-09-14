@@ -193,9 +193,10 @@ bool NormalDeclarationCompletionItem::createsExpandingWidget() const
     return true;
 }
 
-QExplicitlySharedDataPointer<CodeCompletionContext> NormalDeclarationCompletionItem::completionContext() const
+QExplicitlySharedDataPointer<Php::CodeCompletionContext> NormalDeclarationCompletionItem::completionContext() const
 {
-    return QExplicitlySharedDataPointer<CodeCompletionContext>(m_completionContext);
+    auto context = dynamic_cast<Php::CodeCompletionContext*>(m_completionContext.data());
+    return QExplicitlySharedDataPointer<Php::CodeCompletionContext>(context);
 }
 
 

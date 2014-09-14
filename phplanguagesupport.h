@@ -27,6 +27,8 @@
 
 #include <serialization/indexedstring.h>
 
+class KUrl;
+
 namespace KDevelop
 {
 class IDocument;

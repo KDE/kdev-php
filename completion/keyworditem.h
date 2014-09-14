@@ -39,7 +39,7 @@ public:
     ///
     /// NOTE: By default (i.e. when this function never gets called) @p keyword will be used as replacement.
     explicit KeywordItem(const QString &keyword,
-                QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext> context = QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext>(),
+                QExplicitlySharedDataPointer<Php::CodeCompletionContext> context = {},
                 const QString &customReplacement = QString())
             : NormalDeclarationCompletionItem(KDevelop::DeclarationPointer(), context, 0),
             m_keyword(keyword), m_replacement(customReplacement) {}

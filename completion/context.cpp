@@ -62,6 +62,8 @@
 #include "implementationitem.h"
 #include "keyworditem.h"
 
+#include <KIO/Global>
+
 #define LOCKDUCHAIN     DUChainReadLocker lock(DUChain::lock())
 
 #define ifDebug(x)
@@ -221,8 +223,8 @@ inline void skipWhiteSpace(const TokenAccess &lastToken, qint64 &pos)
 }
 
 /// add keyword to list of completion items
-#define ADD_KEYWORD(x) items << CompletionTreeItemPointer( new KeywordItem( x, KDevelop::CodeCompletionContext::Ptr(this) ) )
-#define ADD_KEYWORD2(x, y) items << CompletionTreeItemPointer( new KeywordItem( x, KDevelop::CodeCompletionContext::Ptr(this), y ) )
+#define ADD_KEYWORD(x) items << CompletionTreeItemPointer( new KeywordItem( x, Php::CodeCompletionContext::Ptr(this) ) )
+#define ADD_KEYWORD2(x, y) items << CompletionTreeItemPointer( new KeywordItem( x, Php::CodeCompletionContext::Ptr(this), y ) )
 
 int completionRecursionDepth = 0;
 
@@ -1094,29 +1096,29 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
             return items;
         }
         // file completion
-        KUrl path;
-        KUrl base;
+        QUrl path;
+        QUrl base;
         if ( !m_isFileCompletionAfterDirname ) {
-            path = getUrlForBase(m_expression, m_duContext->url().toUrl().upUrl());
+            path = KIO::upUrl(getUrlForBase(m_expression, m_duContext->url().toUrl()));
             base = path;
             if ( !m_expression.isEmpty() && !m_expression.endsWith('/') ) {
-                base = base.upUrl();
+                base = KIO::upUrl(base);
             }
         } else {
             if ( m_expression.startsWith('/') ) {
-                path = getUrlForBase(m_expression.mid(1), m_duContext->url().toUrl().upUrl());
+                path = KIO::upUrl(getUrlForBase(m_expression.mid(1), m_duContext->url().toUrl()));
             } else {
-                path = m_duContext->url().toUrl().upUrl();
+                path = KIO::upUrl(m_duContext->url().toUrl());
             }
             base = path;
             if ( !m_expression.isEmpty() && !m_expression.endsWith('/') && m_expression != "/" ) {
-                base = base.upUrl();
+                base = KIO::upUrl(base);
             }
         }
-        base.cleanPath();
+        base.setPath(QDir::cleanPath(base.path()));
         IProject* project = ICore::self()->projectController()->findProjectForUrl(base);
         if ( project && !abort ) {
-            QList<KUrl> addedUrls;
+            QList<QUrl> addedUrls;
             bool addedParentDir = false;
             foreach ( ProjectFolderItem* folder, project->foldersForUrl(base) ) {
                 if ( abort ) {
@@ -1313,7 +1315,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                             ifDebug( qCDebug(COMPLETION) << "ImplementationItem" << itype; )
 
                             items << CompletionTreeItemPointer(new ImplementationItem(itype, DeclarationPointer(decl.first),
-                                                                KDevelop::CodeCompletionContext::Ptr(this), decl.second));
+                                                                Php::CodeCompletionContext::Ptr(this), decl.second));
                             // don't add identical items twice to the completion choices
                             alreadyImplemented << decl.first->indexedIdentifier().getIndex();
                         }
@@ -1346,7 +1348,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                 items << CompletionTreeItemPointer(
                             new NormalDeclarationCompletionItem(
                                     DeclarationPointer(dec),
-                                    KDevelop::CodeCompletionContext::Ptr(this), depth()
+                                    Php::CodeCompletionContext::Ptr(this), depth()
                                 )
                          );
             }
@@ -1415,7 +1417,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                                     new NormalDeclarationCompletionItem(
                                             DeclarationPointer(
                                                 decl.first),
-                                                KDevelop::CodeCompletionContext::Ptr(this),
+                                                Php::CodeCompletionContext::Ptr(this),
                                                 decl.second
                                             )
                                     );
@@ -1458,7 +1460,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
             items << CompletionTreeItemPointer(
                         new NormalDeclarationCompletionItem(
                                 DeclarationPointer(dec),
-                                KDevelop::CodeCompletionContext::Ptr(this),
+                                Php::CodeCompletionContext::Ptr(this),
                                 decl.second
                         )
                     );
@@ -1497,7 +1499,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                                 items << CompletionTreeItemPointer(
                                             new NormalDeclarationCompletionItem(
                                                     DeclarationPointer(decl),
-                                                    KDevelop::CodeCompletionContext::Ptr(this)
+                                                    Php::CodeCompletionContext::Ptr(this)
                                             )
                                         );
                             }
@@ -1571,7 +1573,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     items << CompletionTreeItemPointer(
                                 new NormalDeclarationCompletionItem(
                                         DeclarationPointer(decl),
-                                        KDevelop::CodeCompletionContext::Ptr(parentContext.data())
+                                        Php::CodeCompletionContext::Ptr(parentContext.data())
                                 )
                             );
                 }

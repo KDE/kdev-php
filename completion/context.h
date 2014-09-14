@@ -57,7 +57,7 @@ class TokenAccess;
 class KDEVPHPCOMPLETION_EXPORT CodeCompletionContext : public KDevelop::CodeCompletionContext
 {
 public:
-    typedef KSharedPtr<CodeCompletionContext> Ptr;
+    typedef QExplicitlySharedDataPointer<CodeCompletionContext> Ptr;
 
     /**
      * To be used from the Worker. For parent/child contexts, use the private ctor that takes a TokenAccess.

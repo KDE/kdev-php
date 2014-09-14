@@ -49,7 +49,8 @@ class CodeCompletionContext;
 class KDEVPHPCOMPLETION_EXPORT NormalDeclarationCompletionItem : public KDevelop::NormalDeclarationCompletionItem
 {
 public:
-    explicit NormalDeclarationCompletionItem(KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(), QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext> context = QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext>(), int _inheritanceDepth = 0)
+    explicit NormalDeclarationCompletionItem(KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(),
+                                             QExplicitlySharedDataPointer<Php::CodeCompletionContext> context = {}, int _inheritanceDepth = 0)
             : KDevelop::NormalDeclarationCompletionItem(decl, context, _inheritanceDepth) {
     }
 
@@ -62,7 +63,7 @@ protected:
     virtual QWidget* createExpandingWidget(const KDevelop::CodeCompletionModel* model) const override;
     virtual bool createsExpandingWidget() const override;
 
-    QExplicitlySharedDataPointer<CodeCompletionContext> completionContext() const;
+    QExplicitlySharedDataPointer<Php::CodeCompletionContext> completionContext() const;
 };
 
 }
