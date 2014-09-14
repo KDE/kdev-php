@@ -25,6 +25,8 @@
 #include "navigation/navigationwidget.h"
 #include <language/util/includeitem.h>
 
+#include <KUrl>
+
 namespace Php
 {
 using namespace KDevelop;
