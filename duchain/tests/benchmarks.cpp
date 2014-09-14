@@ -78,15 +78,20 @@ void Benchmarks::declarationBuilder()
 
 void Benchmarks::useBuilder()
 {
+    const auto document = IndexedString(QUrl("file:///internal/BigTestFile.php"));
+
     QIODevice* file = getInternalFile();
     ParseSession session = ParseSession();
+    session.setCurrentDocument(document);
     session.setContents(file->readAll());
     delete file;
+
     StartAst* ast = 0;
     session.parse(&ast);
     EditorIntegrator editor(&session);
     DeclarationBuilder builder(&editor);
-    KDevelop::ReferencedTopDUContext chain = builder.build(IndexedString("BigTestFile.php"), ast);
+
+    KDevelop::ReferencedTopDUContext chain = builder.build(document, ast);
     QBENCHMARK {
         UseBuilder useBuilder(&editor);
         useBuilder.buildUses(ast);

@@ -74,7 +74,7 @@ public slots:
 protected:
     KDevelop::TopDUContext* parse(const QByteArray& unit,
                                   DUChainTestBase::DumpAreas dump = DumpAreas(DumpAll),
-                                  QString url = QString(), KDevelop::TopDUContext* update = 0);
+                                  QUrl url = {}, KDevelop::TopDUContext* update = 0);
 
     KDevelop::TopDUContext* parseAdditionalFile(const KDevelop::IndexedString& fileName, const QByteArray& contents);
 

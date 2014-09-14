@@ -477,7 +477,7 @@ void TestCompletion::projectFileClass()
 
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    TopDUContext* top = parse("<?php class foo { function bar() {} }", DumpNone, "file:///internal/projecttest1");
+    TopDUContext* top = parse("<?php class foo { function bar() {} }", DumpNone, QUrl("file:///internal/projecttest1"));
     DUChainReleaser releaseTop(top);
 
     DUChainWriteLocker lock(DUChain::lock());

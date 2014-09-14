@@ -64,11 +64,11 @@ void TestUses::newObject()
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class Foo {} $a = new Foo(); ");
-    TopDUContext* top = parse(method, DumpNone, "/usestest/newObject.php");
+    TopDUContext* top = parse(method, DumpNone, QUrl("file:///internal/usestest/newObject.php"));
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
     compareUses(top->localDeclarations().first(), RangeInRevision(0, 25, 0, 28));
-    QCOMPARE(top->localDeclarations().first()->uses().keys().first(), IndexedString("/usestest/newObject.php"));
+    QCOMPARE(top->localDeclarations().first()->uses().keys().first(), IndexedString(QUrl("file:///internal/usestest/newObject.php")));
 }
 
 void TestUses::functionCall()
@@ -77,12 +77,12 @@ void TestUses::functionCall()
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? function foo() {} foo(); ");
-    TopDUContext* top = parse(method, DumpNone, "/usestest/functionCall.php");
+    TopDUContext* top = parse(method, DumpNone, QUrl("file:///internal/usestest/functionCall.php"));
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
     Declaration* fun = top->localDeclarations().first();
     compareUses(fun, RangeInRevision(0, 21, 0, 24));
-    QCOMPARE(fun->uses().keys().first(), IndexedString("/usestest/functionCall.php"));
+    QCOMPARE(fun->uses().keys().first(), IndexedString(QUrl("file:///internal/usestest/functionCall.php")));
 }
 
 void TestUses::memberFunctionCall()
@@ -91,12 +91,12 @@ void TestUses::memberFunctionCall()
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { function foo() {} } $a = new A(); $a->foo(); ");
-    TopDUContext* top = parse(method, DumpNone, "/usestest/memberFunctionCall.php");
+    TopDUContext* top = parse(method, DumpNone, QUrl("file:///internal/usestest/memberFunctionCall.php"));
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
     Declaration* fun = top->childContexts().first()->localDeclarations().first();
     compareUses(fun, RangeInRevision(0, 51, 0, 54));
-    QCOMPARE(fun->uses().keys().first(), IndexedString("/usestest/memberFunctionCall.php"));
+    QCOMPARE(fun->uses().keys().first(), IndexedString(QUrl("file:///internal/usestest/memberFunctionCall.php")));
 }
 
 void TestUses::memberVariable()
@@ -105,12 +105,12 @@ void TestUses::memberVariable()
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { public $foo; } $a = new A(); $a->foo; ");
-    TopDUContext* top = parse(method, DumpNone, "/usestest/memberVariable.php");
+    TopDUContext* top = parse(method, DumpNone, QUrl("file:///internal/usestest/memberVariable.php"));
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
     Declaration* var = top->childContexts().first()->localDeclarations().first();
     compareUses(var, RangeInRevision(0, 46, 0, 49));
-    QCOMPARE(var->uses().keys().first(), IndexedString("/usestest/memberVariable.php"));
+    QCOMPARE(var->uses().keys().first(), IndexedString(QUrl("file:///internal/usestest/memberVariable.php")));
 }
 
 void TestUses::variable()

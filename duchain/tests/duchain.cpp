@@ -555,8 +555,8 @@ void TestDUChain::declarationReturnTypeClassChain()
     //function a
     // FIXME
     QEXPECT_FAIL("", "This test fails after porting the plugin to KF5.", Abort);
-    //QVERIFY(/* func a (this) */ ctx->localDeclarations().at(0)->type<FunctionType>() == ctx->owner()->abstractType());
-    //QVERIFY(/* func b (self) */ ctx->localDeclarations().at(1)->type<FunctionType>() == ctx->owner()->abstractType());
+    QVERIFY(/* func a (this) */ ctx->localDeclarations().at(0)->type<FunctionType>().data() == ctx->owner()->abstractType().data());
+    QVERIFY(/* func b (self) */ ctx->localDeclarations().at(1)->type<FunctionType>().data() == ctx->owner()->abstractType().data());
 }
 
 void TestDUChain::declareTypehintFunction()
@@ -1441,18 +1441,18 @@ void TestDUChain::objectWithClassName()
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class setupPage {} $setupPage = new setupPage; $setupPage->foo();");
-    TopDUContext* top = parse(method, DumpNone, "testObjectWithClassName.php");
+    TopDUContext* top = parse(method, DumpNone, QUrl("file:///internal/testObjectWithClassName.php"));
     DUChainReleaser releaseTop(top);
 
     // update top (the pointer will be the same)
     QByteArray method2("<? $setupPage = new setupPage; $setupPage->foo();");
-    TopDUContext* top2 = parse(method2, DumpNone, "testObjectWithClassName.php");
+    TopDUContext* top2 = parse(method2, DumpNone, QUrl("file:///internal/testObjectWithClassName.php"));
     QVERIFY(top2 == top);
 }
 
 void TestDUChain::largeNumberOfDeclarations()
 {
-    TopDUContext* top = new TopDUContext(IndexedString("testurl"), RangeInRevision(0, 0, 6000, 0), 0);
+    TopDUContext* top = new TopDUContext(IndexedString(QUrl("file:///internal/testurl")), RangeInRevision(0, 0, 6000, 0), 0);
     DUChain::self()->addDocumentChain(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
@@ -1618,10 +1618,10 @@ void TestDUChain::findDeclarations()
 {
     DUChainWriteLocker lock(DUChain::lock());
 
-    TopDUContext* top1 = new TopDUContext(IndexedString("testfile1"), RangeInRevision(0, 0, 0, 10), 0);
+    TopDUContext* top1 = new TopDUContext(IndexedString(QUrl("file:///internal/testfile1")), RangeInRevision(0, 0, 0, 10), 0);
     DUChainReleaser releaseTop1(top1);
     DUChain::self()->addDocumentChain(top1);
-    TopDUContext* top2 = new TopDUContext(IndexedString("testfile2"), RangeInRevision(0, 0, 0, 10), 0);
+    TopDUContext* top2 = new TopDUContext(IndexedString(QUrl("file:///internal/testfile2")), RangeInRevision(0, 0, 0, 10), 0);
     DUChainReleaser releaseTop2(top2);
     DUChain::self()->addDocumentChain(top2);
 
@@ -2034,7 +2034,7 @@ void TestDUChain::declareMemberOutOfClass2()
     TopDUContext* top = parse(code, DumpAST);
     QVERIFY(top);
     // update
-    top = parse(code, DumpNone, top->url().str(), ReferencedTopDUContext(top));
+    top = parse(code, DumpNone, top->url().toUrl(), ReferencedTopDUContext(top));
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
 

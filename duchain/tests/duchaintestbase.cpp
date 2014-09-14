@@ -144,7 +144,7 @@ TopDUContext* DUChainTestBase::parseAdditionalFile(const IndexedString& fileName
 }
 
 TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump,
-                                     QString url, TopDUContext* update)
+                                     QUrl url, TopDUContext* update)
 {
     if (dump)
         qDebug() << "==== Beginning new test case...:" << endl << unit;
@@ -164,7 +164,9 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump,
     }
 
     static int testNumber = 0;
-    if (url.isEmpty()) url = QString("file:///internal/%1").arg(testNumber++);
+    if (url.isEmpty()) {
+        url = QUrl(QString("file:///internal/%1").arg(testNumber++));
+    }
 
     EditorIntegrator editor(&session);
     session.setCurrentDocument(IndexedString(url));
