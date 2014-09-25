@@ -1,3 +1,4 @@
+include_directories(${CMAKE_BINARY_DIR}/completion)
 ecm_add_test(
     duchain.cpp
     duchaintestbase.cpp
@@ -9,11 +10,6 @@ ecm_add_test(
         KDev::Tests
         KDev::Language
 )
-
-# hack to make ../duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
-if (MINGW)
-    set_property(TARGET duchain APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
-endif (MINGW)
 
 set(expressionparser_SRCS)
 ecm_add_test(
@@ -28,11 +24,6 @@ ecm_add_test(
         KDev::Language
 )
 
-# hack to make ../duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
-if (MINGW)
-    set_property(TARGET expressionparser APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
-endif (MINGW)
-
 ecm_add_test(
     uses.cpp
     duchaintestbase.cpp
@@ -45,11 +36,6 @@ ecm_add_test(
         KDev::Language
         KDev::Interfaces
 )
-# hack to make ../duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
-if (MINGW)
-    set_property(TARGET uses APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
-endif (MINGW)
-
 ecm_add_test(
     benchmarks.cpp
     duchaintestbase.cpp
@@ -62,11 +48,6 @@ ecm_add_test(
         KDev::Language
         KDev::Interfaces
 )
-
-# hack to make ../duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
-if (MINGW)
-    set_property(TARGET benchmarks APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
-endif (MINGW)
 
 set(duchain_multiplefiles_SRCS
 )
@@ -83,7 +64,3 @@ ecm_add_test(
         KDev::Interfaces
 )
 
-# hack to make ../duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
-if (MINGW)
-    set_property(TARGET duchain_multiplefiles APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
-endif (MINGW)

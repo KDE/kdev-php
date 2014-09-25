@@ -11,11 +11,6 @@ ecm_add_test(
         KDev::Language
 )
 
-# hack to make ../../duchain/tests/duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
-if (MINGW)
-    set_property(TARGET completiontest APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
-endif (MINGW)
-
 ecm_add_test(
     bench_completion.cpp
     ../../duchain/tests/duchaintestbase.cpp
@@ -34,7 +29,3 @@ ecm_add_test(
         KF5::Archive
 )
 
-# hack to make ../../duchain/tests/duchaintestbase.h use the correct EXPORT tags when compiling with MinGW
-if (MINGW)
-    set_property(TARGET completionbenchmark APPEND_STRING PROPERTY COMPILE_FLAGS " -DMAKE_KDEV4PHPDUCHAIN_LIB")
-endif (MINGW)

@@ -1,3 +1,4 @@
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_subdirectory(tests)
 
 set(duchain_SRCS
@@ -33,6 +34,9 @@ set(duchain_SRCS
 
 add_library( kdev4phpduchain SHARED ${duchain_SRCS} )
 
+generate_export_header(kdev4phpduchain EXPORT_MACRO_NAME KDEVPHPDUCHAIN_EXPORT
+                                       EXPORT_FILE_NAME phpduchainexport.h)
+
 target_link_libraries(kdev4phpduchain LINK_PRIVATE
     KDev::Interfaces
     KDev::Language
@@ -43,8 +47,3 @@ target_link_libraries(kdev4phpduchain LINK_PRIVATE
 
 install(TARGETS kdev4phpduchain DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-# hack to make ../parser/phpdebugvisitor.h (generated at compile time)
-# use the correct EXPORT tags when compiling in MinGW
-if (MINGW)
-    add_definitions(-DMAKE_KDEV4PHPPARSER_LIB)
-endif (MINGW)

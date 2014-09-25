@@ -21,7 +21,7 @@
 #define PHP_NAVIGATIONWIDGET_H
 
 #include <language/duchain/navigation/abstractnavigationwidget.h>
-#include "../phpduchainexport.h"
+#include "phpduchainexport.h"
 
 namespace KDevelop {
 class IncludeItem;

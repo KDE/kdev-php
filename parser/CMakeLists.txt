@@ -13,6 +13,8 @@ kdevpgqt_generate(parser_SRCS php NAMESPACE Php DEBUG_VISITOR TOKEN_TEXT
 
 add_library(kdev4phpparser SHARED ${parser_SRCS} ${parser_STAT_SRCS})
 
+generate_export_header(kdev4phpparser EXPORT_MACRO_NAME KDEVPHPPARSER_EXPORT
+                                      EXPORT_FILE_NAME parserexport.h)
 target_link_libraries(kdev4phpparser LINK_PRIVATE
     KDev::Language
 )
