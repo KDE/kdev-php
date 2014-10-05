@@ -120,7 +120,7 @@ void PhpUnitRunJob::start()
 
     m_outputJob = qobject_cast<KDevelop::OutputJob*>(m_job);
     if (!m_outputJob) {
-        if (KDevelop::ExecuteCompositeJob* cjob = qobject_cast<KDevelop::ExecuteCompositeJob*>(m_job)) {
+        if (UnprotectedExecuteCompositeJob* cjob = qobject_cast<UnprotectedExecuteCompositeJob*>(m_job)) {
             m_outputJob = qobject_cast<KDevelop::OutputJob*>(cjob->subjobs().last());
         }
     }

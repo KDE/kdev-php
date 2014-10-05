@@ -26,6 +26,7 @@
 #include <outputview/outputjob.h>
 #include <interfaces/itestsuite.h>
 #include <interfaces/itestcontroller.h>
+#include <util/executecompositejob.h>
 
 class PhpUnitTestSuite;
 class KProcess;
@@ -52,6 +53,13 @@ private:
     KJob* m_job;
     KDevelop::OutputJob* m_outputJob;
     KDevelop::OutputJob::OutputJobVerbosity m_verbosity;
+};
+
+class UnprotectedExecuteCompositeJob : public KDevelop::ExecuteCompositeJob
+{
+    Q_OBJECT
+public:
+    using ExecuteCompositeJob::subjobs;
 };
 
 #endif // PHPUNITRUNJOB_H
