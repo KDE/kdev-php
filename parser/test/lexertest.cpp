@@ -458,6 +458,32 @@ void LexerTest::testTypeHintsOnFunction()
     COMPARE_TOKEN(ts, 24, Parser::Token_RBRACE, 1, 44, 1, 44);
 }
 
+void LexerTest::testExponentiation()
+{
+    TokenStream *ts = tokenize("<?php\n$a = 2 ** 3; $a **= 2;", true);
+    QCOMPARE((int)ts->size(), 18);
+
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_VARIABLE, 1, 0, 1, 1);
+    COMPARE_TOKEN(ts, 2, Parser::Token_WHITESPACE, 1, 2, 1, 2);
+    COMPARE_TOKEN(ts, 3, Parser::Token_ASSIGN, 1, 3, 1, 3);
+    COMPARE_TOKEN(ts, 4, Parser::Token_WHITESPACE, 1, 4, 1, 4);
+    COMPARE_TOKEN(ts, 5, Parser::Token_LNUMBER, 1, 5, 1, 5);
+    COMPARE_TOKEN(ts, 6, Parser::Token_WHITESPACE, 1, 6, 1, 6);
+    COMPARE_TOKEN(ts, 7, Parser::Token_EXP, 1, 7, 1, 8);
+    COMPARE_TOKEN(ts, 8, Parser::Token_WHITESPACE, 1, 9, 1, 9);
+    COMPARE_TOKEN(ts, 9, Parser::Token_LNUMBER, 1, 10, 1, 10);
+    COMPARE_TOKEN(ts, 10, Parser::Token_SEMICOLON, 1, 11, 1, 11);
+    COMPARE_TOKEN(ts, 11, Parser::Token_WHITESPACE, 1, 12, 1, 12);
+    COMPARE_TOKEN(ts, 12, Parser::Token_VARIABLE, 1, 13, 1, 14);
+    COMPARE_TOKEN(ts, 13, Parser::Token_WHITESPACE, 1, 15, 1, 15);
+    COMPARE_TOKEN(ts, 14, Parser::Token_EXP_ASSIGN, 1, 16, 1, 18);
+    COMPARE_TOKEN(ts, 15, Parser::Token_WHITESPACE, 1, 19, 1, 19);
+    COMPARE_TOKEN(ts, 16, Parser::Token_LNUMBER, 1, 20, 1, 20);
+    COMPARE_TOKEN(ts, 17, Parser::Token_SEMICOLON, 1, 21, 1, 21);
+
+}
+
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
     TokenStream* tokenStream = new TokenStream;

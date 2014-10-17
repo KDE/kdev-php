@@ -483,6 +483,14 @@ int Lexer::nextTokenKind()
             if ((it + 1)->unicode() == '=') {
                 m_curpos++;
                 token = Parser::Token_MUL_ASSIGN;
+            } else if ((it + 1)->unicode() == '*') {
+                m_curpos++;
+                if ((it + 2)->unicode() == '=') {
+                    m_curpos++;
+                    token = Parser::Token_EXP_ASSIGN;
+                } else {
+                    token = Parser::Token_EXP;
+                }
             } else {
                 token = Parser::Token_MUL;
             }

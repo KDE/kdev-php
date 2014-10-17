@@ -147,7 +147,9 @@ void ExpressionVisitor::visitAssignmentExpression(AssignmentExpressionAst *node)
     visitNode(node->assignmentExpressionEqual);
     visitNode(node->assignmentExpression);
 
-    if (node->operation == OperationPlus || node->operation == OperationMinus || node->operation == OperationMul || node->operation == OperationDiv) {
+    if (node->operation == OperationPlus || node->operation == OperationMinus ||
+            node->operation == OperationMul || node->operation == OperationDiv ||
+            node->operation == OperationExp) {
         m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeInt)));
     } else if (node->operation == OperationConcat) {
         m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeString)));

@@ -66,6 +66,7 @@ private slots:
     void testBinaryNumber();
     void testHexadecimalNumber();
     void testTypeHintsOnFunction();
+    void testExponentiation();
 
 protected:
     TokenStream* tokenize(const QString& unit, bool debug = false, int initialState = Lexer::HtmlState);

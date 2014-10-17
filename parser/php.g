@@ -127,6 +127,7 @@ namespace KDevelop
         OperationConcat,
         OperationMul,
         OperationDiv,
+        OperationExp,
         OperationMod,
         OperationAnd,
         OperationOr,
@@ -250,7 +251,7 @@ namespace KDevelop
 %token IS_EQUAL ("=="), IS_NOT_EQUAL ("!="), IS_IDENTICAL ("==="),
        IS_NOT_IDENTICAL ("!=="), IS_SMALLER ("<"), IS_GREATER (">"),
        IS_SMALLER_OR_EQUAL ("<="), IS_GREATER_OR_EQUAL (">="),
-       BOOLEAN_OR ("||"), BOOLEAN_AND ("&&"), ASSIGN ("="),
+       BOOLEAN_OR ("||"), BOOLEAN_AND ("&&"), ASSIGN ("="), EXP_ASSIGN("**="),
        PLUS_ASSIGN ("+="), MINUS_ASSIGN ("-="), MUL_ASSIGN ("*="), DIV_ASSIGN ("/="),
        CONCAT_ASSIGN (".="), MOD_ASSIGN ("%="), AND_ASSIGN ("&="), OR_ASSIGN ("|="),
        XOR_ASSIGN ("^="), SL_ASSIGN ("<<="), SR_ASSIGN (">>="), OBJECT_OPERATOR ("->"),
@@ -258,7 +259,7 @@ namespace KDevelop
        INC ("++"), DEC ("--"), BANG ("!"), QUESTION ("?"), COLON (":"),
        BIT_AND ("&"), BIT_OR("|"), BIT_XOR ("^"),
        SL ("<<"), SR (">>"), MUL("*"), DIV("/"), MOD ("%"),
-       TILDE ("~"), DOLLAR ("$"),
+       TILDE ("~"), DOLLAR ("$"), EXP ("**"),
        LOGICAL_OR ("logical or"), LOGICAL_AND ("logical and"), LOGICAL_XOR ("logical xor") ;;
 
 -- literals and identifiers:
@@ -367,6 +368,7 @@ expression=conditionalExpression
         PLUS_ASSIGN   [: (*yynode)->operation = OperationPlus; :]
       | MINUS_ASSIGN  [: (*yynode)->operation = OperationMinus; :]
       | MUL_ASSIGN    [: (*yynode)->operation = OperationMul; :]
+      | EXP_ASSIGN    [: (*yynode)->operation = OperationExp; :]
       | DIV_ASSIGN    [: (*yynode)->operation = OperationDiv; :]
       | CONCAT_ASSIGN [: (*yynode)->operation = OperationConcat; :]
       | MOD_ASSIGN    [: (*yynode)->operation = OperationMod; :]
@@ -487,6 +489,7 @@ expression=booleanOrExpression
    (
        MUL [: (*yynode)->operation = OperationMul; :]
      | DIV [: (*yynode)->operation = OperationDiv; :]
+     | EXP [: (*yynode)->operation = OperationExp; :]
      | MOD [: (*yynode)->operation = OperationMod; :]
    )
    expression=unaryExpression
