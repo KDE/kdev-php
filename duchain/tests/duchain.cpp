@@ -624,6 +624,28 @@ void TestDUChain::declareTypehintArrayFunction()
     QVERIFY(type->dataType() == IntegralType::TypeArray);
 }
 
+void TestDUChain::declareTypehintCallableFunction()
+{
+    //                 0         1         2         3
+    //                 0123456789012345678901234567890123
+    QByteArray method("<? function foo(callable $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first()));
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralType::TypeMixed);
+
+    IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
+    QVERIFY(type);
+    QVERIFY(type->dataType() == IntegralType::TypeMixed);
+}
+
 void TestDUChain::classImplementsInterface()
 {
     //                 0         1         2         3         4         5         6         7

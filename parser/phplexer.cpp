@@ -765,6 +765,8 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_NAMESPACE;
             } else if (name == "__namespace__") {
                 token = Parser::Token_NAMESPACE_C;
+            } else if (name == "callable") {
+                token = Parser::Token_CALLABLE;
             } else {
                 token = Parser::Token_STRING;
             }

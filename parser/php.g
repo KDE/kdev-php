@@ -228,7 +228,7 @@ namespace KDevelop
        FILE ("__FILE__"), COMMENT ("comment"), DOC_COMMENT ("doc comment"),  PAAMAYIM_NEKUDOTAYIM ("::"),
        INCLUDE ("include"), INCLUDE_ONCE ("include_once"), EVAL ("eval"), REQUIRE ("require"),
        REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use"),
-       GOTO ("goto"), TRAIT ("trait"), INSTEADOF ("insteadof") ;;
+       GOTO ("goto"), TRAIT ("trait"), INSTEADOF ("insteadof"), CALLABLE ("callable") ;;
 
 -- casts:
 %token INT_CAST ("int cast"), DOUBLE_CAST ("double cast"), STRING_CAST ("string cast"),
@@ -859,7 +859,7 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
     (#parameters=parameter @ COMMA) | 0
 -> parameterList ;;
 
-(parameterType=namespacedIdentifier | arrayType=ARRAY | 0) (isRef=BIT_AND | 0)
+(parameterType=namespacedIdentifier | arrayType=ARRAY | callableType=CALLABLE | 0) (isRef=BIT_AND | 0)
     variable=variableIdentifier (ASSIGN defaultValue=staticScalar | 0)
 -> parameter ;;
 

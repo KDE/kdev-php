@@ -65,6 +65,7 @@ private slots:
     void testCloseTagInComment();
     void testBinaryNumber();
     void testHexadecimalNumber();
+    void testTypeHintsOnFunction();
 
 protected:
     TokenStream* tokenize(const QString& unit, bool debug = false, int initialState = Lexer::HtmlState);

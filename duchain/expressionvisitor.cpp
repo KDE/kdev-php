@@ -230,6 +230,8 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
                 }
             } else if (it->element->arrayType != -1) {
                 type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
+            } else if (it->element->callableType != -1) {
+                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
             } else if (it->element->defaultValue) {
                 ExpressionVisitor v(m_editor);
                 it->element->defaultValue->ducontext = m_currentContext;

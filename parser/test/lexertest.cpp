@@ -426,6 +426,38 @@ void LexerTest::testHexadecimalNumber()
     delete ts;
 }
 
+void LexerTest::testTypeHintsOnFunction()
+{
+    TokenStream *ts = tokenize("<?php\nfunction a($a, array $b = [], callable $c) {}", true);
+    QCOMPARE((int)ts->size(), 25);
+
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_FUNCTION, 1, 0, 1, 7);
+    COMPARE_TOKEN(ts, 2, Parser::Token_WHITESPACE, 1, 8, 1, 8);
+    COMPARE_TOKEN(ts, 3, Parser::Token_STRING, 1, 9, 1, 9);
+    COMPARE_TOKEN(ts, 4, Parser::Token_LPAREN, 1, 10, 1, 10);
+    COMPARE_TOKEN(ts, 5, Parser::Token_VARIABLE,  1, 11, 1, 12);
+    COMPARE_TOKEN(ts, 6, Parser::Token_COMMA, 1, 13, 1, 13);
+    COMPARE_TOKEN(ts, 7, Parser::Token_WHITESPACE, 1, 14, 1, 14);
+    COMPARE_TOKEN(ts, 8, Parser::Token_ARRAY, 1, 15, 1, 19);
+    COMPARE_TOKEN(ts, 9, Parser::Token_WHITESPACE, 1, 20, 1, 20);
+    COMPARE_TOKEN(ts, 10, Parser::Token_VARIABLE,  1, 21, 1, 22);
+    COMPARE_TOKEN(ts, 11, Parser::Token_WHITESPACE, 1, 23, 1, 23);
+    COMPARE_TOKEN(ts, 12, Parser::Token_ASSIGN, 1, 24, 1, 24);
+    COMPARE_TOKEN(ts, 13, Parser::Token_WHITESPACE, 1, 25, 1, 25);
+    COMPARE_TOKEN(ts, 14, Parser::Token_LBRACKET, 1, 26, 1, 26);
+    COMPARE_TOKEN(ts, 15, Parser::Token_RBRACKET, 1, 27, 1, 27);
+    COMPARE_TOKEN(ts, 16, Parser::Token_COMMA, 1, 28, 1, 28);
+    COMPARE_TOKEN(ts, 17, Parser::Token_WHITESPACE, 1, 29, 1, 29);
+    COMPARE_TOKEN(ts, 18, Parser::Token_CALLABLE, 1, 30, 1, 37);
+    COMPARE_TOKEN(ts, 19, Parser::Token_WHITESPACE, 1, 38, 1, 38);
+    COMPARE_TOKEN(ts, 20, Parser::Token_VARIABLE,  1, 39, 1, 40);
+    COMPARE_TOKEN(ts, 21, Parser::Token_RPAREN, 1, 41, 1, 41);
+    COMPARE_TOKEN(ts, 22, Parser::Token_WHITESPACE, 1, 42, 1, 42);
+    COMPARE_TOKEN(ts, 23, Parser::Token_LBRACE, 1, 43, 1, 43);
+    COMPARE_TOKEN(ts, 24, Parser::Token_RBRACE, 1, 44, 1, 44);
+}
+
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
     TokenStream* tokenStream = new TokenStream;

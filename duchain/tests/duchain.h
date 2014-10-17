@@ -38,6 +38,7 @@ private slots:
     void classMemberVar();
     void declareTypehintFunction();
     void declareTypehintArrayFunction();
+    void declareTypehintCallableFunction();
     void returnTypeClass();
     void declarationReturnType();
     void declarationReturnTypeInRecursingFunction();
