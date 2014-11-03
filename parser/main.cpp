@@ -36,9 +36,9 @@ typedef KDevelopUtils::DebugLanguageParserHelper<ParseSession, TokenStream, Pars
 
 int main(int argc, char* argv[])
 {
-    K4AboutData aboutData( "php-parser", 0, ki18n( "php-parser" ),
-                          "1", ki18n("KDevelop PHP parser debugging utility"), K4AboutData::License_GPL,
-                          ki18n( "(c) 2008 Niko Sams, 2009 Milian Wolff" ), KLocalizedString(), "http://www.kdevelop.org" );
+    KAboutData aboutData( "php-parser", i18n( "php-parser" ),
+                          "1", i18n("KDevelop PHP parser debugging utility"), KAboutLicense::GPL,
+                          i18n( "(c) 2008 Niko Sams, 2009 Milian Wolff" ), {}, "http://www.kdevelop.org" );
 
     return KDevelopUtils::initAndRunParser<PhpParser>(aboutData, argc, argv);
 }
