@@ -29,6 +29,8 @@
 #include <KSettings/Dispatcher>
 #include <KUrl>
 #include <KIcon>
+#include <KDebug>
+#include <KComponentData>
 
 #include <interfaces/idocumentation.h>
 #include <interfaces/icore.h>
@@ -37,7 +39,6 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/duchainlock.h>
-#include <language/duchain/indexedstring.h>
 
 #include <language/duchain/classdeclaration.h>
 #include <language/duchain/functiondeclaration.h>
@@ -52,22 +53,18 @@
 
 using namespace KDevelop;
 
-K_PLUGIN_FACTORY(PhpDocsFactory, registerPlugin<PhpDocsPlugin>(); )
-K_EXPORT_PLUGIN(PhpDocsFactory(KAboutData("kdevphpdocs","kdevphpdocs", ki18n("PhpDocs"),
-                                          KDEVPHPDOCS_VERSION_STR, ki18n("Check PHP.net documentation"),
-                               KAboutData::License_GPL).addAuthor(ki18n("Milian Wolff"),
-                               ki18n("Maintainer"), "mail@milianw.de", "http://milianw.de")))
+K_PLUGIN_FACTORY_WITH_JSON(PhpDocsFactory, "kdevphpdocs.json", registerPlugin<PhpDocsPlugin>();)
 
 PhpDocsPlugin::PhpDocsPlugin(QObject* parent, const QVariantList& args)
-    : IPlugin(PhpDocsFactory::componentData(), parent), m_model(new PhpDocsModel(this))
+    : IPlugin("kdevphpdocs", parent)
+    , m_model(new PhpDocsModel(this))
 {
     KDEV_USE_EXTENSION_INTERFACE( KDevelop::IDocumentationProvider )
     Q_UNUSED(args);
 
     readConfig();
 
-    KSettings::Dispatcher::registerComponent( KComponentData("kdevphpdocs_config"),
-                                              this, "readConfig" );
+    KSettings::Dispatcher::registerComponent( "kdevphpdocs_config", this, "readConfig" );
 }
 
 PhpDocsPlugin::~PhpDocsPlugin()
@@ -157,14 +154,14 @@ QString PhpDocsPlugin::getDocumentationFilename( KDevelop::Declaration* dec, con
     return fname;
 }
 
-KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForDeclaration( Declaration* dec ) const
+IDocumentation::Ptr PhpDocsPlugin::documentationForDeclaration( Declaration* dec ) const
 {
     if ( dec ) {
         DUChainReadLocker lock( DUChain::lock() );
 
         // filter non global or non-php declarations
         if ( dec->topContext()->url() != m_model->internalFunctionFile() ) {
-            return KSharedPtr<IDocumentation>();
+            return {};
         }
 
         KUrl url = PhpDocsSettings::phpDocLocation();
@@ -173,20 +170,20 @@ KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForDeclaration( Declara
         QString file = getDocumentationFilename( dec, url.isLocalFile() );
         if ( file.isEmpty() ) {
             kDebug() << "no documentation pattern found for" << dec->toString();
-            return KSharedPtr<IDocumentation>();
+            return {};
         }
 
         url.addPath( file );
         if ( url.isLocalFile() && !QFile::exists( url.toLocalFile() ) ) {
             kDebug() << "bad path" << url << "for documentation of" << dec->toString() << " - aborting";
-            return KSharedPtr<IDocumentation>();
+            return {};
         }
 
         kDebug() << "php documentation located at " << url << "for" << dec->toString();
         return documentationForUrl(url, dec->qualifiedIdentifier().toString(), dec->comment());
     }
 
-    return KSharedPtr<IDocumentation>();
+    return {};
 }
 
 QAbstractListModel* PhpDocsPlugin::indexModel() const
@@ -194,7 +191,7 @@ QAbstractListModel* PhpDocsPlugin::indexModel() const
     return m_model;
 }
 
-KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForIndex(const QModelIndex& index) const
+IDocumentation::Ptr PhpDocsPlugin::documentationForIndex(const QModelIndex& index) const
 {
     return documentationForDeclaration(static_cast<Declaration*>(
         index.data(PhpDocsModel::DeclarationRole).value<DeclarationPointer>().data()
@@ -204,22 +201,22 @@ KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForIndex(const QModelIn
 void PhpDocsPlugin::loadUrl(const QUrl& url) const
 {
     kDebug() << "loading URL" << url;
-    KSharedPtr<IDocumentation> doc = documentationForUrl(url, QString());
+    auto doc = documentationForUrl(url, QString());
     ICore::self()->documentationController()->showDocumentation(doc);
 }
 
 void PhpDocsPlugin::addToHistory(const QUrl& url)
 {
-    KSharedPtr<IDocumentation> doc = documentationForUrl(url, url.toString());
+    auto doc = documentationForUrl(url, url.toString());
     emit addHistory(doc);
 }
 
-KSharedPtr< IDocumentation > PhpDocsPlugin::documentationForUrl(const KUrl& url, const QString& name, const QByteArray& description) const
+IDocumentation::Ptr PhpDocsPlugin::documentationForUrl(const KUrl& url, const QString& name, const QByteArray& description) const
 {
-    return KSharedPtr<IDocumentation>(new PhpDocumentation( url, name, description, const_cast<PhpDocsPlugin*>(this)));
+    return IDocumentation::Ptr(new PhpDocumentation( url, name, description, const_cast<PhpDocsPlugin*>(this)));
 }
 
-KSharedPtr< IDocumentation > PhpDocsPlugin::homePage() const
+IDocumentation::Ptr PhpDocsPlugin::homePage() const
 {
     KUrl url = PhpDocsSettings::phpDocLocation();
     if ( url.isLocalFile() ) {
@@ -230,4 +227,4 @@ KSharedPtr< IDocumentation > PhpDocsPlugin::homePage() const
     return documentationForUrl(url, i18n("PHP Documentation"));
 }
 
-#include "phpdocsplugin.h"
+#include "phpdocsplugin.moc"

@@ -40,7 +40,7 @@ class PhpDocsConfig
     explicit PhpDocsConfig(QWidget *parent = 0, const QVariantList &args = QVariantList());
     virtual ~PhpDocsConfig();
 
-    virtual void save();
+    virtual void save() override;
 
   private:
         Ui::PhpDocsConfigUI* m_configWidget;

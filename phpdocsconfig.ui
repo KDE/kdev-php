@@ -48,6 +48,9 @@ p, li { white-space: pre-wrap; }
       </item>
       <item>
        <layout class="QFormLayout" name="formLayout">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::ExpandingFieldsGrow</enum>
+        </property>
         <item row="0" column="0">
          <widget class="QLabel" name="PhpDocLocationLabel">
           <property name="text">
@@ -81,7 +84,7 @@ p, li { white-space: pre-wrap; }
  <customwidgets>
   <customwidget>
    <class>KUrlRequester</class>
-   <extends>QFrame</extends>
+   <extends>QWidget</extends>
    <header>kurlrequester.h</header>
   </customwidget>
  </customwidgets>

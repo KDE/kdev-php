@@ -1,42 +1,34 @@
 PROJECT(phpdocs)
 
-cmake_minimum_required(VERSION 2.8.9)
-
 set(KDEVPHPDOCS_VERSION_MAJOR 1)
-set(KDEVPHPDOCS_VERSION_MINOR 7)
-set(KDEVPHPDOCS_VERSION_PATCH 60)
+set(KDEVPHPDOCS_VERSION_MINOR 9)
+set(KDEVPHPDOCS_VERSION_PATCH 90)
 # KDevplatform dependency version
 set( KDEVPLATFORM_VERSION "${KDEVPHPDOCS_VERSION_MAJOR}.${KDEVPHPDOCS_VERSION_MINOR}.${KDEVPHPDOCS_VERSION_PATCH}" )
 
 configure_file( "${phpdocs_SOURCE_DIR}/kdevphpdocsversion.h.cmake" "${phpdocs_BINARY_DIR}/kdevphpdocsversion.h" @ONLY )
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${phpdocs_SOURCE_DIR}/cmake/)
-enable_testing()
+cmake_minimum_required(VERSION 2.8.12)
+find_package (ECM 0.0.9 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${php_SOURCE_DIR}/cmake/)
 
-find_package(KDE4 REQUIRED)
+include(ECMAddTests)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
+
+find_package(Qt5 REQUIRED Core Widgets Test WebKitWidgets)
+find_package(KF5 REQUIRED COMPONENTS KDELibs4Support ConfigWidgets KIO I18n KCMUtils TextEditor ThreadWeaver )
 find_package(KDevPlatform ${KDEVPLATFORM_VERSION} REQUIRED)
-include_directories(${KDEVPLATFORM_INCLUDE_DIR})
-
-include_directories(
-    ${KDE4_INCLUDES}
-    ${KDE4_INCLUDE_DIR}/threadweaver
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-)
 
 add_definitions( -DKDE_DEFAULT_DEBUG_AREA=9043 )
-
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-endif()
 
 ########## shared settings ##########
 set(kdevphpdocs_settings_SRCS
 )
 
-kde4_add_kcfg_files(kdevphpdocs_settings_SRCS phpdocssettings.kcfgc)
-
-install(FILES phpdocssettings.kcfg DESTINATION ${KCFG_INSTALL_DIR})
+kconfig_add_kcfg_files( kdevphpdocs_settings_SRCS phpdocssettings.kcfgc )
 
 ########## Documentation Plugin #####
 
@@ -48,37 +40,43 @@ set(kdevphpdocs_SRCS
     ${kdevphpdocs_settings_SRCS}
 )
 
-kde4_add_plugin(kdevphpdocs ${kdevphpdocs_SRCS})
+add_library(kdevphpdocs MODULE ${kdevphpdocs_SRCS})
 
 target_link_libraries(kdevphpdocs
-    ${KDE4_KDEUI_LIBS} ${KDE4_KTEXTEDITOR_LIBS} ${QT_QTWEBKIT_LIBRARY} ${KDE4_KUTILS_LIBS}
-    ${KDEVPLATFORM_INTERFACES_LIBRARIES} ${KDEVPLATFORM_LANGUAGE_LIBRARIES} ${KDEVPLATFORM_DOCUMENTATION_LIBRARIES}
+    KDev::Interfaces
+    KDev::Language
+    KDev::Documentation
+    # TODO: remove this
+    KF5::KCMUtils
 )
 
-install(TARGETS kdevphpdocs DESTINATION ${PLUGIN_INSTALL_DIR})
 configure_file(kdevphpdocs.desktop.cmake ${CMAKE_CURRENT_BINARY_DIR}/kdevphpdocs.desktop)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kdevphpdocs.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-
+kcoreaddons_desktop_to_json(kdevphpdocs ${CMAKE_CURRENT_BINARY_DIR}/kdevphpdocs.desktop)
+install(TARGETS kdevphpdocs DESTINATION ${PLUGIN_INSTALL_DIR}/kdevplatform/${KDEV_PLUGIN_VERSION})
 
 ### Configuration module for PHP documentation plugin
 
-set(kdevphpdocs_config_SRCS
+set(kcm_kdevphpdocs_SRCS
     phpdocsconfig.cpp
     ${kdevphpdocs_settings_SRCS}
 )
 
-set(kdevphpdocs_config_UI
-    phpdocsconfig.ui
+qt5_wrap_ui(kcm_kdevphpdocs_SRCS phpdocsconfig.ui)
+
+add_library( kcm_kdevphpdocs MODULE ${kcm_kdevphpdocs_SRCS} )
+target_link_libraries( kcm_kdevphpdocs
+    KF5::ConfigWidgets
+    KF5::KIOWidgets
+    KF5::I18n
+    # TODO: remove this
+    KF5::KCMUtils
+    KF5::KDELibs4Support
 )
 
-kde4_add_ui_files(kdevphpdocs_config_SRCS ${kdevphpdocs_config_UI})
-
-kde4_add_plugin( kdevphpdocs_config ${kdevphpdocs_config_SRCS} )
-
-target_link_libraries( kdevphpdocs_config ${KDE4_KUTILS_LIBS} ${KDE4_KIO_LIBS} )
-
-install( TARGETS kdevphpdocs_config DESTINATION ${PLUGIN_INSTALL_DIR} )
-install( FILES kdevphpdocs_config.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+configure_file(kcm_kdevphpdocs.desktop.cmake ${CMAKE_CURRENT_BINARY_DIR}/kcm_kdevphpdocs.desktop)
+kcoreaddons_desktop_to_json(kcm_kdevphpdocs ${CMAKE_CURRENT_BINARY_DIR}/kcm_kdevphpdocs.desktop)
+install( TARGETS kcm_kdevphpdocs DESTINATION ${PLUGIN_INSTALL_DIR}/kdevplatform/${KDEV_PLUGIN_VERSION}/kcm )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/kcm_kdevphpdocs.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
 
 include(CTest)
 

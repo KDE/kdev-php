@@ -4,12 +4,13 @@ Type=Service
 ServiceTypes=KCModule
 
 X-KDE-ModuleType=Library
-X-KDE-Library=kdevphpdocs_config
+X-KDE-Library=kdevplatform/@KDEV_PLUGIN_VERSION@/kcm/kcm_kdevphpdocs
 X-KDE-FactoryName=kdevphpdocs_config
 X-KDE-ParentApp=kdevplatform
 X-KDE-ParentComponents=kdevplatform,kdevphpdocs
 X-KDE-CfgDlgHierarchy=DOCUMENTATION
 X-KDE-Weight=150
+
 Name=PHP Documentation
 Name[bg]=Документация на PHP
 Name[bs]=PHP Dokumentacija

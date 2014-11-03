@@ -35,6 +35,7 @@
 
 #include <KStandardDirs>
 #include <KLocalizedString>
+#include <KDebug>
 
 using namespace KDevelop;
 

@@ -51,8 +51,3 @@ QString PhpDocumentation::name() const
 {
     return m_name;
 }
-
-bool PhpDocumentation::providesWidget() const
-{
-    return true;
-}

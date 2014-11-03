@@ -22,9 +22,9 @@
 #ifndef PHPDOCSMODEL_H
 #define PHPDOCSMODEL_H
 
-#include <QtGui/QStringListModel>
+#include <QStringListModel>
 
-#include <language/duchain/indexedstring.h>
+#include <serialization/indexedstring.h>
 #include <language/duchain/declaration.h>
 
 namespace KDevelop
@@ -50,10 +50,10 @@ public:
      * You can use @p DeclarationRole to get the Declaration for a given index.
      * NOTE: If you use that, don't forget to lock the DUChain if you access the declaration!
      */
-    virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-    virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
-    virtual bool hasChildren(const QModelIndex& parent) const;
-    virtual bool canFetchMore(const QModelIndex& parent) const;
+    virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+    virtual int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+    virtual bool hasChildren(const QModelIndex& parent) const override;
+    virtual bool canFetchMore(const QModelIndex& parent) const override;
 
     /// Returns the Declaration for a given index
     /// NOTE: Don't forget to lock the DUChain if you access the declaration!

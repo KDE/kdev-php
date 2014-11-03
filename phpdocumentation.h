@@ -40,11 +40,10 @@ class PhpDocumentation : public KDevelop::IDocumentation
     explicit PhpDocumentation(const KUrl& url, const QString& name, const QByteArray& description, PhpDocsPlugin* parent);
     ~PhpDocumentation();
 
-    virtual QString name() const;
-    virtual QString description() const;
-    virtual bool providesWidget() const;
-    virtual QWidget* documentationWidget(KDevelop::DocumentationFindWidget* findWidget, QWidget* parent = 0);
-    virtual KDevelop::IDocumentationProvider* provider() const;
+    virtual QString name() const override;
+    virtual QString description() const override;
+    virtual QWidget* documentationWidget(KDevelop::DocumentationFindWidget* findWidget, QWidget* parent = 0) override;
+    virtual KDevelop::IDocumentationProvider* provider() const override;
 
   private:
     const KUrl m_url;

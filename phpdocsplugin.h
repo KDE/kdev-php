@@ -40,25 +40,23 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
     explicit PhpDocsPlugin(QObject *parent, const QVariantList & args= QVariantList());
     ~PhpDocsPlugin();
 
-    virtual KSharedPtr< KDevelop::IDocumentation > documentationForDeclaration (KDevelop::Declaration* dec) const;
-    virtual QAbstractListModel* indexModel() const;
-    virtual KSharedPtr< KDevelop::IDocumentation > documentationForIndex(const QModelIndex& index) const;
-    virtual QIcon icon() const;
-    virtual QString name() const;
-    virtual KSharedPtr< KDevelop::IDocumentation > homePage() const;
+    virtual KDevelop::IDocumentation::Ptr documentationForDeclaration (KDevelop::Declaration* dec) const override;
+    virtual QAbstractListModel* indexModel() const override;
+    virtual KDevelop::IDocumentation::Ptr documentationForIndex(const QModelIndex& index) const override;
+    virtual QIcon icon() const override;
+    virtual QString name() const override;
+    virtual KDevelop::IDocumentation::Ptr homePage() const override;
 
     void addToHistory(const QUrl& url);
 
   signals:
-    void addHistory( const KSharedPtr< KDevelop::IDocumentation >& doc ) const;
+    void addHistory( const KDevelop::IDocumentation::Ptr& doc ) const;
 
   public slots:
     void loadUrl(const QUrl &url) const;
 
   private:
-    KSharedPtr< KDevelop::IDocumentation > documentationForUrl(
-        const KUrl& url, const QString& name, const QByteArray& description = QByteArray()
-    ) const;
+    KDevelop::IDocumentation::Ptr documentationForUrl( const KUrl& url, const QString& name, const QByteArray& description = QByteArray() ) const;
 
     QString getDocumentationFilename(KDevelop::Declaration* dec, const bool& isLocal) const;
     PhpDocsModel* m_model;

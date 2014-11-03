@@ -26,25 +26,18 @@
 #include <KPluginLoader>
 #include <KConfigGroup>
 #include <KUrlRequester>
-#include <KUrl>
 #include <KAboutData>
 #include <KDebug>
 #include <KFile>
 #include <KSettings/Dispatcher>
 
-#include <QtGui/QBoxLayout>
-#include <QtGui/QLabel>
-#include <QtCore/QFile>
-#include <QtCore/QStringList>
-
 #include "phpdocssettings.h"
 #include "ui_phpdocsconfig.h"
 
-K_PLUGIN_FACTORY(PhpDocsConfigFactory, registerPlugin<PhpDocsConfig>();)
-K_EXPORT_PLUGIN(PhpDocsConfigFactory("kdevphpdocs_config"))
+K_PLUGIN_FACTORY_WITH_JSON(PhpDocsConfigFactory, "kcm_kdevphpdocs.json", registerPlugin<PhpDocsConfig>();)
 
 PhpDocsConfig::PhpDocsConfig(QWidget *parent, const QVariantList &args)
-    : KCModule(PhpDocsConfigFactory::componentData(), parent, args)
+    : KCModule(KAboutData::pluginData("kcm_kdevphpdocs"), parent, args)
 {
     QVBoxLayout * l = new QVBoxLayout( this );
 

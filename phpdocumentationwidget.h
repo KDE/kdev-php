@@ -22,7 +22,7 @@
 #ifndef PHPDOCUMENTATIONWIDGET_H
 #define PHPDOCUMENTATIONWIDGET_H
 
-#include <QtGui/QStackedWidget>
+#include <QStackedWidget>
 
 class QTemporaryFile;
 class KUrl;
