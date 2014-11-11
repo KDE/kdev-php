@@ -1206,6 +1206,20 @@ void TestUses::useTrait()
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 51, 9, 54) );
 }
 
+void TestUses::exceptionFinally()
+{
+    //                 0         1         2         3         4
+    //                 01234567890123456789012345678901234567890123456
+    QByteArray method("<? $a = 0; try { $a = 2; } finally { $a = 3; }");
+    TopDUContext *top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *a = top->localDeclarations().at(0);
+    QCOMPARE(a->identifier().toString(), QString("a"));
+    compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 17, 0, 19)
+            << RangeInRevision(0, 37, 0, 39));
+}
 
 }
 

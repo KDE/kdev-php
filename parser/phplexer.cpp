@@ -705,6 +705,8 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_THROW;
             } else if (name == "try") {
                 token = Parser::Token_TRY;
+            } else if (name == "finally") {
+                token = Parser::Token_FINALLY;
             } else if (name == "while") {
                 token = Parser::Token_WHILE;
             } else if (name == "clone") {

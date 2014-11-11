@@ -218,7 +218,7 @@ namespace KDevelop
        IMPLEMENTS ("implements"), INSTANCEOF ("instanceof"), INTERFACE ("interface"),
        NEW ("new"), PRIVATE ("private"), PROTECTED ("protected"), PUBLIC ("public"),
        RETURN ("return"), STATIC ("static"), SWITCH ("switch"), THROW ("throw"),
-       TRY ("try"), WHILE ("while"), ECHO ("echo"), PRINT ("print"),
+       TRY ("try"), WHILE ("while"), ECHO ("echo"), PRINT ("print"), FINALLY ("finally"),
        CLONE ("clone"), EXIT ("exit"), ELSEIF ("elseif"), ENDIF ("endif"),
        ENDWHILE ("endwhile"), ENDFOR ("endfor"), FOREACH ("foreach"), ENDFOREACH ("endforeach"),
        DECLARE ("declare"), ENDDECLARE ("enddeclare"), AS ("as"), ENDSWITCH ("endswitch"),
@@ -678,6 +678,7 @@ expression=booleanOrExpression
   | SEMICOLON     -- empty statement
   | TRY  LBRACE try/recover(statements=innerStatementList) RBRACE
     #catches=catchItem*
+    (FINALLY LBRACE finallyBody=innerStatementList RBRACE | 0)
   | UNSET LPAREN #unsetVariables=variable @ COMMA RPAREN semicolonOrCloseTag
   -- fix first/follow with goto target
   | ( ?[: LA(1).kind != Token_STRING || LA(2).kind != Token_COLON :] expr=expr semicolonOrCloseTag )

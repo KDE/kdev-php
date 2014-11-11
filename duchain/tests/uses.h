@@ -84,6 +84,7 @@ private slots:
     void instanceof();
     void classNameString();
     void useTrait();
+    void exceptionFinally();
 };
 
 }
