@@ -548,6 +548,8 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_TILDE:
         case Parser::Token_UNSET_CAST:
         case Parser::Token_XOR_ASSIGN:
+        case Parser::Token_EXP:
+        case Parser::Token_EXP_ASSIGN:
             // normal completion is valid
             if ( duContext() && duContext()->type() == DUContext::Class ) {
                 // when we are inside a class context, give overloadable members as completion
@@ -596,6 +598,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_AS:
         case Parser::Token_BACKTICK:
         case Parser::Token_BREAK:
+        case Parser::Token_CALLABLE:
         case Parser::Token_CASE:
         case Parser::Token_CATCH:
         case Parser::Token_CLASS:
@@ -622,6 +625,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_EOF:
         case Parser::Token_EVAL:
         case Parser::Token_FILE:
+        case Parser::Token_FINALLY:
         case Parser::Token_FOR:
         case Parser::Token_FOREACH:
         case Parser::Token_FUNCTION:

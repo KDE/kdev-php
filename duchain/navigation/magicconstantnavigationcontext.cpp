@@ -28,8 +28,6 @@ using namespace KDevelop;
 
 namespace Php {
 
-const int foo = 5;
-
 MagicConstantNavigationContext::MagicConstantNavigationContext(TopDUContextPointer topContext,
                                                                 const KTextEditor::Cursor& position,
                                                                 const QString& constant)
