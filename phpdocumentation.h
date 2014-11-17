@@ -24,10 +24,9 @@
 
 #include <interfaces/idocumentation.h>
 
-#include <KUrl>
-
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
+#include <QUrl>
 
 class QWidget;
 class QStackedWidget;
@@ -37,7 +36,7 @@ class PhpDocsPlugin;
 class PhpDocumentation : public KDevelop::IDocumentation
 {
   public:
-    explicit PhpDocumentation(const KUrl& url, const QString& name, const QByteArray& description, PhpDocsPlugin* parent);
+    explicit PhpDocumentation(const QUrl& url, const QString& name, const QByteArray& description, PhpDocsPlugin* parent);
     ~PhpDocumentation();
 
     virtual QString name() const override;
@@ -46,7 +45,7 @@ class PhpDocumentation : public KDevelop::IDocumentation
     virtual KDevelop::IDocumentationProvider* provider() const override;
 
   private:
-    const KUrl m_url;
+    const QUrl m_url;
     const QString m_name;
     const QByteArray m_description;
     PhpDocsPlugin* m_parent;

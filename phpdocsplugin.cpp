@@ -25,10 +25,7 @@
 #include <KPluginFactory>
 #include <KPluginLoader>
 #include <KAboutData>
-#include <KMimeType>
 #include <KSettings/Dispatcher>
-#include <KUrl>
-#include <KIcon>
 #include <KDebug>
 #include <KComponentData>
 
@@ -78,7 +75,7 @@ QString PhpDocsPlugin::name() const
 
 QIcon PhpDocsPlugin::icon() const
 {
-    static KIcon icon("application-x-php");;
+    static QIcon icon = QIcon::fromTheme("application-x-php");
     return icon;
 }
 
@@ -164,7 +161,7 @@ IDocumentation::Ptr PhpDocsPlugin::documentationForDeclaration( Declaration* dec
             return {};
         }
 
-        KUrl url = PhpDocsSettings::phpDocLocation();
+        QUrl url = PhpDocsSettings::phpDocLocation();
         kDebug() << url;
 
         QString file = getDocumentationFilename( dec, url.isLocalFile() );
@@ -173,7 +170,7 @@ IDocumentation::Ptr PhpDocsPlugin::documentationForDeclaration( Declaration* dec
             return {};
         }
 
-        url.addPath( file );
+        url.setPath( url.path() + '/' + file);
         if ( url.isLocalFile() && !QFile::exists( url.toLocalFile() ) ) {
             kDebug() << "bad path" << url << "for documentation of" << dec->toString() << " - aborting";
             return {};
@@ -211,18 +208,18 @@ void PhpDocsPlugin::addToHistory(const QUrl& url)
     emit addHistory(doc);
 }
 
-IDocumentation::Ptr PhpDocsPlugin::documentationForUrl(const KUrl& url, const QString& name, const QByteArray& description) const
+IDocumentation::Ptr PhpDocsPlugin::documentationForUrl(const QUrl& url, const QString& name, const QByteArray& description) const
 {
     return IDocumentation::Ptr(new PhpDocumentation( url, name, description, const_cast<PhpDocsPlugin*>(this)));
 }
 
 IDocumentation::Ptr PhpDocsPlugin::homePage() const
 {
-    KUrl url = PhpDocsSettings::phpDocLocation();
+    QUrl url = PhpDocsSettings::phpDocLocation();
     if ( url.isLocalFile() ) {
-        url.addPath("index.html");
+        url.setPath(url.path() + "/index.html");
     } else {
-        url.addPath("manual");
+        url.setPath(url.path() + "/manual");
     }
     return documentationForUrl(url, i18n("PHP Documentation"));
 }

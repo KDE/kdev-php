@@ -23,8 +23,11 @@
 #include "phpdocumentationwidget.h"
 #include "phpdocsplugin.h"
 
-PhpDocumentation::PhpDocumentation(const KUrl& url, const QString& name, const QByteArray& description, PhpDocsPlugin* parent)
-    : m_url(url), m_name(name), m_description(description), m_parent(parent)
+PhpDocumentation::PhpDocumentation(const QUrl& url, const QString& name, const QByteArray& description, PhpDocsPlugin* parent)
+    : m_url(url)
+    , m_name(name)
+    , m_description(description)
+    , m_parent(parent)
 {
 }
 

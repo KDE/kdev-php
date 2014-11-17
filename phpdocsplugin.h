@@ -28,8 +28,6 @@
 
 class PhpDocsModel;
 
-class KUrl;
-
 class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationProvider
 {
   Q_OBJECT
@@ -56,7 +54,7 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
     void loadUrl(const QUrl &url) const;
 
   private:
-    KDevelop::IDocumentation::Ptr documentationForUrl( const KUrl& url, const QString& name, const QByteArray& description = QByteArray() ) const;
+    KDevelop::IDocumentation::Ptr documentationForUrl( const QUrl& url, const QString& name, const QByteArray& description = QByteArray() ) const;
 
     QString getDocumentationFilename(KDevelop::Declaration* dec, const bool& isLocal) const;
     PhpDocsModel* m_model;

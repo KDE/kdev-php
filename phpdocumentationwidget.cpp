@@ -28,7 +28,6 @@
 #include <QTextStream>
 
 #include <KLocalizedString>
-#include <KUrl>
 
 #include "phpdocsplugin.h"
 #include <documentation/standarddocumentationview.h>
@@ -49,7 +48,7 @@ QTemporaryFile* createStyleSheet(QObject* parent)
     return file;
 }
 
-PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget* find, const KUrl &url,
+PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget* find, const QUrl &url,
                                                PhpDocsPlugin* provider, QWidget* parent)
 : QStackedWidget(parent)
 , m_loading(new QWidget(this))
@@ -95,7 +94,7 @@ void PhpDocumentationWidget::linkClicked(const QUrl& url)
 
 void PhpDocumentationWidget::documentLoaded()
 {
-    m_part->settings()->setUserStyleSheetUrl(KUrl(m_styleSheet->fileName()));
+    m_part->settings()->setUserStyleSheetUrl(QUrl::fromLocalFile(m_styleSheet->fileName()));
 
     setCurrentWidget(m_part);
     removeWidget(m_loading);

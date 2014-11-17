@@ -25,7 +25,6 @@
 #include <QStackedWidget>
 
 class QTemporaryFile;
-class KUrl;
 class QUrl;
 
 namespace KDevelop {
@@ -40,7 +39,7 @@ class PhpDocumentationWidget : public QStackedWidget
     Q_OBJECT
 
 public:
-    explicit PhpDocumentationWidget(KDevelop::DocumentationFindWidget* find, const KUrl &url,
+    explicit PhpDocumentationWidget(KDevelop::DocumentationFindWidget* find, const QUrl &url,
                                     PhpDocsPlugin* provider, QWidget* parent = 0);
 
 private slots:

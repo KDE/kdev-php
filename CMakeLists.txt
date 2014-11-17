@@ -47,6 +47,7 @@ target_link_libraries(kdevphpdocs
     KDev::Documentation
     # TODO: remove this
     KF5::KCMUtils
+    KF5::KDELibs4Support
 )
 
 configure_file(kdevphpdocs.desktop.cmake ${CMAKE_CURRENT_BINARY_DIR}/kdevphpdocs.desktop)
