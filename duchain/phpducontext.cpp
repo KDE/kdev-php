@@ -22,10 +22,11 @@
 #include <language/duchain/duchainregister.h>
 #include <language/duchain/topducontextdata.h>
 
-#include "navigation/navigationwidget.h"
 #include <language/util/includeitem.h>
 
-#include <KUrl>
+#include <KIO/Global>
+
+#include "navigation/navigationwidget.h"
 
 namespace Php
 {
@@ -43,12 +44,12 @@ QWidget* PhpDUContext<TopDUContext>::createNavigationWidget(Declaration* decl, T
     if (decl == 0) {
         return 0;
     } else if ( decl->kind() == Declaration::Import ) {
-        KUrl u( decl->identifier().toString() );
+        QUrl u( decl->identifier().toString() );
         IncludeItem i;
         i.pathNumber = -1;
         i.name = u.fileName();
         i.isDirectory = false;
-        i.basePath = u.upUrl();
+        i.basePath = KIO::upUrl(u);
 
         return new NavigationWidget( i, TopDUContextPointer(topContext), htmlPrefix, htmlSuffix );
     } else {

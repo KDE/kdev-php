@@ -27,8 +27,6 @@
 
 #include <serialization/indexedstring.h>
 
-class KUrl;
-
 namespace KDevelop
 {
 class IDocument;
@@ -92,23 +90,23 @@ public:
     explicit LanguageSupport(QObject *parent, const QVariantList& args = QVariantList());
     virtual ~LanguageSupport();
     /*Name Of the Language*/
-    QString name() const;
+    QString name() const override;
     /*Parsejob used by background parser to parse given Url*/
-    KDevelop::ParseJob *createParseJob(const KDevelop::IndexedString& url);
+    KDevelop::ParseJob *createParseJob(const KDevelop::IndexedString& url) override;
     /*the actual language object*/
-    KDevelop::ILanguage *language();
+    KDevelop::ILanguage *language() override;
 
     static LanguageSupport* self();
     /*the code highlighter*/
-    KDevelop::ICodeHighlighting* codeHighlighting() const;
+    KDevelop::ICodeHighlighting* codeHighlighting() const override;
 
     /**
      * @returns the ContextMenuExtension for the Php plugin.
      */
-    virtual KDevelop::ContextMenuExtension contextMenuExtension(KDevelop::Context *context);
+    virtual KDevelop::ContextMenuExtension contextMenuExtension(KDevelop::Context *context) override;
 
-    virtual QWidget* specialLanguageObjectNavigationWidget(const KUrl& url, const KTextEditor::Cursor& position);
-    virtual KTextEditor::Range specialLanguageObjectRange(const KUrl& url, const KTextEditor::Cursor& position);
+    virtual QWidget* specialLanguageObjectNavigationWidget(const QUrl& url, const KTextEditor::Cursor& position) override;
+    virtual KTextEditor::Range specialLanguageObjectRange(const QUrl& url, const KTextEditor::Cursor& position) override;
 
     /// returns true, if the internal function file has been loaded
     /// to wait for it to finished, use a QReadLocker on the parse lock.
@@ -136,7 +134,7 @@ private:
     bool m_internalFunctionsLoaded;
     QReadWriteLock m_internalFunctionsLock;
 
-    QPair<QString, KTextEditor::Range>  wordUnderCursor(const KUrl& url, const KTextEditor::Cursor& position);
+    QPair<QString, KTextEditor::Range>  wordUnderCursor(const QUrl& url, const KTextEditor::Cursor& position);
 
 };
 

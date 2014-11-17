@@ -42,6 +42,7 @@ target_link_libraries(kdev4phpduchain LINK_PRIVATE
     KDev::Language
     KDev::Shell
     KDev::Project
+    KF5::KDELibs4Support
     kdev4phpparser
 )
 

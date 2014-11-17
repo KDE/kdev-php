@@ -28,7 +28,6 @@
 
 #include <QVariant>
 
-class KUrl;
 namespace KDevelop {
 class ParseJob;
 }

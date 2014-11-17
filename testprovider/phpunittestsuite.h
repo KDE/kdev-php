@@ -23,7 +23,8 @@
 
 #include <interfaces/itestsuite.h>
 #include <language/duchain/indexeddeclaration.h>
-#include <KUrl>
+
+#include <QUrl>
 
 class KJob;
 namespace KDevelop {
@@ -35,24 +36,24 @@ class PhpUnitTestSuite : public KDevelop::ITestSuite
 {
 
 public:
-    PhpUnitTestSuite(const QString& name, const KUrl& url, const KDevelop::IndexedDeclaration& suiteDeclaration, const QStringList& cases, const QHash< QString, KDevelop::IndexedDeclaration >& caseDeclarations, KDevelop::IProject* project);
+    PhpUnitTestSuite(const QString& name, const QUrl& url, const KDevelop::IndexedDeclaration& suiteDeclaration, const QStringList& cases, const QHash< QString, KDevelop::IndexedDeclaration >& caseDeclarations, KDevelop::IProject* project);
     virtual ~PhpUnitTestSuite();
 
-    virtual KJob* launchCase(const QString& testCase, TestJobVerbosity verbosity);
-    virtual KJob* launchCases(const QStringList& testCases, TestJobVerbosity verbosity);
-    virtual KJob* launchAllCases(TestJobVerbosity verbosity);
+    virtual KJob* launchCase(const QString& testCase, TestJobVerbosity verbosity) override;
+    virtual KJob* launchCases(const QStringList& testCases, TestJobVerbosity verbosity) override;
+    virtual KJob* launchAllCases(TestJobVerbosity verbosity) override;
 
-    virtual KDevelop::IProject* project() const;
-    virtual KUrl url() const;
-    virtual QStringList cases() const;
-    virtual QString name() const;
+    virtual KDevelop::IProject* project() const override;
+    QUrl url() const;
+    virtual QStringList cases() const override;
+    virtual QString name() const override;
 
-    virtual KDevelop::IndexedDeclaration declaration() const;
-    virtual KDevelop::IndexedDeclaration caseDeclaration(const QString& testCase) const;
+    virtual KDevelop::IndexedDeclaration declaration() const override;
+    virtual KDevelop::IndexedDeclaration caseDeclaration(const QString& testCase) const override;
 
 private:
     QString m_name;
-    KUrl m_url;
+    QUrl m_url;
     KDevelop::IndexedDeclaration m_declaration;
     QStringList m_cases;
     QHash<QString, KDevelop::IndexedDeclaration> m_caseDeclarations;

@@ -16,6 +16,7 @@ target_link_libraries(kdevphpunitprovider LINK_PRIVATE
     KDev::Project
     KDev::OutputView
     KDev::Util
+    KF5::KDELibs4Support
 )
 
 install(TARGETS kdevphpunitprovider DESTINATION ${PLUGIN_INSTALL_DIR} )

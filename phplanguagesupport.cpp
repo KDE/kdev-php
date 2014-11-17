@@ -163,7 +163,7 @@ KDevelop::ContextMenuExtension LanguageSupport::contextMenuExtension(Context* co
     return cm;
 }
 
-QPair<QString, Range> LanguageSupport::wordUnderCursor(const KUrl& url, const Cursor& position)
+QPair<QString, Range> LanguageSupport::wordUnderCursor(const QUrl& url, const Cursor& position)
 {
     KDevelop::IDocument* doc = core()->documentController()->documentForUrl(url);
     if(!doc || !doc->textDocument())
@@ -212,7 +212,7 @@ bool isMagicConstant(QPair<QString, Range> word) {
     return false;
 }
 
-QWidget* LanguageSupport::specialLanguageObjectNavigationWidget(const KUrl& url, const Cursor& position)
+QWidget* LanguageSupport::specialLanguageObjectNavigationWidget(const QUrl& url, const Cursor& position)
 {
     QPair<QString, Range> word = wordUnderCursor(url, position);
     if ( isMagicConstant(word) ) {
@@ -226,7 +226,7 @@ QWidget* LanguageSupport::specialLanguageObjectNavigationWidget(const KUrl& url,
     return ILanguageSupport::specialLanguageObjectNavigationWidget(url, position);
 }
 
-Range LanguageSupport::specialLanguageObjectRange(const KUrl& url, const Cursor& position)
+Range LanguageSupport::specialLanguageObjectRange(const QUrl& url, const Cursor& position)
 {
     QPair<QString, Range> word = wordUnderCursor(url, position);
     if ( isMagicConstant(word) ) {

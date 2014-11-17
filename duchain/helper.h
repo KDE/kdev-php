@@ -26,8 +26,6 @@
 #include <language/duchain/ducontext.h>
 #include <serialization/indexedstring.h>
 
-#include <KUrl>
-
 namespace KDevelop
 {
 class Declaration;

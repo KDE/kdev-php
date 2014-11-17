@@ -138,7 +138,7 @@ void PhpUnitProvider::processContext(ReferencedTopDUContext referencedContext)
 void PhpUnitProvider::processTestCaseDeclaration(Declaration* d)
 {
     QString name = d->identifier().toString();
-    KUrl url = d->url().toUrl();
+    QUrl url = d->url().toUrl();
     IProject* project = ICore::self()->projectController()->findProjectForUrl(url);
     qCDebug(TESTPROVIDER) << name << url << (project ? project->name() : "No project");
     if (!project)

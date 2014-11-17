@@ -26,7 +26,6 @@
 #include "phpast.h"
 #include "tokenstream.h"
 #include "phptokentext.h"
-#include <k4aboutdata.h>
 #include <language/util/debuglanguageparserhelper.h>
 
 using namespace Php;

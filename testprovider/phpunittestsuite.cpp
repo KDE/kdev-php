@@ -23,13 +23,15 @@
 
 using namespace KDevelop;
 
-PhpUnitTestSuite::PhpUnitTestSuite(const QString& name, const KUrl& url, const IndexedDeclaration& suiteDeclaration, const QStringList& cases, const QHash< QString, IndexedDeclaration >& caseDeclarations, IProject* project) :
-m_name(name),
-m_url(url),
-m_declaration(suiteDeclaration),
-m_cases(cases),
-m_caseDeclarations(caseDeclarations),
-m_project(project)
+PhpUnitTestSuite::PhpUnitTestSuite(const QString& name, const QUrl& url, const IndexedDeclaration& suiteDeclaration,
+                                   const QStringList& cases, const QHash< QString, IndexedDeclaration >& caseDeclarations,
+                                   IProject* project)
+    : m_name(name)
+    , m_url(url)
+    , m_declaration(suiteDeclaration)
+    , m_cases(cases)
+    , m_caseDeclarations(caseDeclarations)
+    , m_project(project)
 {
 }
 
@@ -37,7 +39,6 @@ PhpUnitTestSuite::~PhpUnitTestSuite()
 {
 
 }
-
 
 KJob* PhpUnitTestSuite::launchCase(const QString& testCase, TestJobVerbosity verbosity)
 {
@@ -60,7 +61,7 @@ KDevelop::IProject* PhpUnitTestSuite::project() const
     return m_project;
 }
 
-KUrl PhpUnitTestSuite::url() const
+QUrl PhpUnitTestSuite::url() const
 {
     return m_url;
 }

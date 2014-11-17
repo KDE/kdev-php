@@ -23,6 +23,7 @@ target_link_libraries(kdev4phpcompletion LINK_PRIVATE
     KDev::Project
     kdev4phpduchain
     kdev4phpparser
+    KF5::KDELibs4Support
 )
 
 install(TARGETS kdev4phpcompletion DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})

@@ -9,6 +9,7 @@ ecm_add_test(
         Qt5::Test
         KDev::Tests
         KDev::Language
+        KF5::KDELibs4Support
 )
 
 set(expressionparser_SRCS)
@@ -22,6 +23,7 @@ ecm_add_test(
         Qt5::Test
         KDev::Tests
         KDev::Language
+        KF5::KDELibs4Support
 )
 
 ecm_add_test(
@@ -35,6 +37,7 @@ ecm_add_test(
         KDev::Tests
         KDev::Language
         KDev::Interfaces
+        KF5::KDELibs4Support
 )
 ecm_add_test(
     benchmarks.cpp
@@ -47,6 +50,7 @@ ecm_add_test(
         KDev::Tests
         KDev::Language
         KDev::Interfaces
+        KF5::KDELibs4Support
 )
 
 set(duchain_multiplefiles_SRCS
@@ -62,5 +66,6 @@ ecm_add_test(
         KDev::Tests
         KDev::Language
         KDev::Interfaces
+        KF5::KDELibs4Support
 )
 
