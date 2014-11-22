@@ -212,7 +212,9 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
 {
     FunctionType* closureType = new FunctionType;
     m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
-    visitInnerStatementList(node->functionBody);
+    if (node->functionBody) {
+        visitInnerStatementList(node->functionBody);
+    }
     closureType->setReturnType(m_result.type());
 
     if (node->parameters->parametersSequence) {
