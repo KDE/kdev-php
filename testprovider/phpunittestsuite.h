@@ -25,6 +25,7 @@
 #include <language/duchain/indexeddeclaration.h>
 
 #include <QUrl>
+#include <QHash>
 
 class KJob;
 namespace KDevelop {
