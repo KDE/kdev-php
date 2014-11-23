@@ -158,5 +158,3 @@ DeclarationPointer PhpDocsModel::declarationForIndex(const QModelIndex& index) c
 
     return m_declarations[index.row()];
 }
-
-#include "phpdocsmodel.moc"

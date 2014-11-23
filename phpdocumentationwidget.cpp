@@ -101,5 +101,3 @@ void PhpDocumentationWidget::documentLoaded()
     delete m_loading;
     m_loading = 0;
 }
-
-#include "phpdocumentationwidget.moc"
