@@ -50,10 +50,9 @@
 using namespace KDevelop;
 
 K_PLUGIN_FACTORY(PhpUnitProviderFactory, registerPlugin<PhpUnitProvider>(); )
-K_EXPORT_PLUGIN(PhpUnitProviderFactory(KAboutData("kdevphpunitprovider","kdevphpunitprovider", ki18n("PHPUnit Integration"), "0.1", ki18n("Finds and runs PHPUnit tests"), KAboutData::License_GPL)))
 
-
-PhpUnitProvider::PhpUnitProvider(QObject* parent, const QList< QVariant >& args): IPlugin(QStringLiteral("kdevphpunitprovider"), parent)
+PhpUnitProvider::PhpUnitProvider(QObject* parent, const QList< QVariant >& args)
+    : IPlugin(QStringLiteral("kdevphpunitprovider"), parent)
 {
     Q_UNUSED(args);
 
