@@ -33,7 +33,7 @@
 namespace Php
 {
 
-class AstNode;
+struct AstNode;
 class LanguageSupport;
 class EditorIntegrator;
 
