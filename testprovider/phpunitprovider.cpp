@@ -66,7 +66,12 @@ void PhpUnitProvider::updateReady(const IndexedString& document, const Reference
 {
     Q_UNUSED(document);
 
-    DUChainReadLocker lock(DUChain::lock());
+    DUChainReadLocker lock;
+    if (!context) {
+        qCDebug(TESTPROVIDER) << "Recieved null context for file: " << document;
+        return;
+    }
+
     QVector<Declaration*> declarations = context.data()->localDeclarations();
     if (declarations.isEmpty())
     {
