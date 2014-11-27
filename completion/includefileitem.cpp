@@ -84,7 +84,7 @@ void IncludeFileItem::execute(View* view, const Range& _word)
                 }
             }
             if ( pos > 0 ) {
-                word.end().setColumn( word.end().column() + pos );
+                word.setEnd(word.end() + Cursor(0, pos));
             }
         }
     }
