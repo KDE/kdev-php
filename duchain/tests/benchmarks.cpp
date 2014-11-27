@@ -41,8 +41,7 @@ Benchmarks::Benchmarks()
 
 QIODevice* getInternalFile()
 {
-    QString fileName = QFINDTESTDATA("../../phpfunctions.php");
-    QIODevice* file = new QFile(fileName);
+    QIODevice* file = new QFile(internalFunctionFile().str());
     bool opened = file->open(QIODevice::ReadOnly);
     Q_ASSERT(opened);
     Q_UNUSED(opened);
