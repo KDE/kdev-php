@@ -31,6 +31,7 @@ namespace KDevelop
 {
     class Declaration;
     class ParseJob;
+    class ReferencedTopDUContext;
 }
 
 class PhpDocsModel : public QAbstractListModel
@@ -53,7 +54,6 @@ public:
     virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
     virtual int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     virtual bool hasChildren(const QModelIndex& parent) const override;
-    virtual bool canFetchMore(const QModelIndex& parent) const override;
 
     /// Returns the Declaration for a given index
     /// NOTE: Don't forget to lock the DUChain if you access the declaration!
@@ -61,11 +61,11 @@ public:
 
     /// Returns the destination of the internal PHP function file
     /// @see PhpLanguageSupport
-    const KDevelop::IndexedString& internalFunctionFile() const;
+    KDevelop::IndexedString internalFunctionFile() const;
 
 private:
     /// fills model with all declarations from the internal PHP functions file
-    void fillModel();
+    void fillModel(const KDevelop::ReferencedTopDUContext& topContext);
 
     /// List of pointers to _all_ PHP internal declarations
     QList<KDevelop::DeclarationPointer> m_declarations;
@@ -74,7 +74,8 @@ private:
     const KDevelop::IndexedString m_internalFunctionsFile;
 
 public slots:
-    void slotParseJobFinished( KDevelop::ParseJob* job );
+    void updateReady( const KDevelop::IndexedString& url, const KDevelop::ReferencedTopDUContext& topContext );
+
 };
 
 #endif // PHPDOCSMODEL_H

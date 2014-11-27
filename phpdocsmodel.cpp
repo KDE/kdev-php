@@ -48,36 +48,30 @@ PhpDocsModel::PhpDocsModel(QObject* parent)
         kWarning() << "could not load PHP language support plugin";
         return;
     }
-    fillModel();
+
+    DUChain::self()->updateContextForUrl(internalFunctionFile(), TopDUContext::AllDeclarationsAndContexts, this, -10);
 }
 
 PhpDocsModel::~PhpDocsModel()
 {
 }
 
-const KDevelop::IndexedString& PhpDocsModel::internalFunctionFile() const
+IndexedString PhpDocsModel::internalFunctionFile() const
 {
     return m_internalFunctionsFile;
 }
 
-void PhpDocsModel::slotParseJobFinished( ParseJob* job )
+void PhpDocsModel::updateReady(const IndexedString& file, const ReferencedTopDUContext& top)
 {
-    if ( job->document() == m_internalFunctionsFile ) {
-        disconnect(ICore::self()->languageController()->backgroundParser(), SIGNAL(parseJobFinished(KDevelop::ParseJob*)),
-                   this, SLOT(slotParseJobFinished(KDevelop::ParseJob*)));
-        fillModel();
+    if ( file == m_internalFunctionsFile && top ) {
+        fillModel(top);
     }
 }
 
-void PhpDocsModel::fillModel()
+void PhpDocsModel::fillModel(const ReferencedTopDUContext& top)
 {
-    DUChainReadLocker lock(DUChain::self()->lock());
-
-    TopDUContext* top = DUChain::self()->chainForDocument(m_internalFunctionsFile);
-    if ( !top ) {
-        kDebug() << "could not find DUChain for internal function file, connecting to background parser";
-        connect(ICore::self()->languageController()->backgroundParser(), SIGNAL(parseJobFinished(KDevelop::ParseJob*)),
-                this, SLOT(slotParseJobFinished(KDevelop::ParseJob*)));
+    DUChainReadLocker lock;
+    if (!top) {
         return;
     }
 
@@ -143,13 +137,6 @@ int PhpDocsModel::rowCount(const QModelIndex& parent) const
         return 0;
 
     return m_declarations.count();
-}
-
-bool PhpDocsModel::canFetchMore(const QModelIndex& parent) const
-{
-    Q_UNUSED(parent);
-
-    return false;
 }
 
 DeclarationPointer PhpDocsModel::declarationForIndex(const QModelIndex& index) const

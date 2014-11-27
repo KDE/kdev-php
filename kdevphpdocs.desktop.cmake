@@ -84,7 +84,7 @@ Name[zh_CN]=PHP 文档
 Name[zh_TW]=PHP 文件
 ServiceTypes=KDevelop/Plugin
 
-X-KDE-Library=kdevphpdocs
+X-KDE-Library=kdevplatform/@KDEV_PLUGIN_VERSION@/kdevphpdocs
 X-KDevelop-Version=@KDEV_PLUGIN_VERSION@
 X-KDevelop-Category=Global
 X-KDE-PluginInfo-Name=kdevphpdocs
@@ -93,3 +93,4 @@ X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-Category=Documentation
 X-KDevelop-Mode=GUI
 X-KDevelop-Interfaces=org.kdevelop.IDocumentationProvider
+X-KDevelop-IRequired=org.kdevelop.PHPSupport
