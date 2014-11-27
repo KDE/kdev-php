@@ -74,7 +74,7 @@ void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*t
 {
     if (document() != internalFunctionFile()) {
         // make sure we loaded the internal file already
-        auto phpSupport = languageSupport();
+        const auto &phpSupport = languageSupport();
         static std::once_flag once;
         std::call_once(once, [phpSupport] {
             qCDebug(PHP) << "Initializing internal function file" << internalFunctionFile();
