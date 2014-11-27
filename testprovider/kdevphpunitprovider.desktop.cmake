@@ -115,5 +115,5 @@ X-KDE-PluginInfo-Category=Testing
 X-KDevelop-Version=@KDEV_PLUGIN_VERSION@
 X-KDevelop-Category=Global
 X-KDevelop-Interfaces=org.kdevelop.ITestProvider
-X-KDevelop-Mode=NoGUI
+X-KDevelop-Mode=GUI
 X-KDevelop-IRequired=org.kdevelop.PHPSupport
