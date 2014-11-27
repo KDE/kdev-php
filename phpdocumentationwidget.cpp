@@ -40,11 +40,7 @@ QTemporaryFile* createStyleSheet(QObject* parent)
     Q_UNUSED(ret);
 
     QTextStream ts(file);
-    ts << QString( "#headnav,#headsearch,#footnav,#leftbar{display:none !important;}"
-                                        "body{font-size:80% !important;}"
-                                        "option,select{font-size:80% !important;}"
-                                        "#layout_2,#layout_3{background: none !important;}"
-                                        "#content{margin:0 !important}");
+    ts << ".page-tools { float: none !important; };";
     return file;
 }
 
