@@ -3,9 +3,9 @@ ecm_add_test(
     ../../duchain/tests/duchaintestbase.cpp
     TEST_NAME completiontest
     LINK_LIBRARIES
-        kdev4phpcompletion
-        kdev4phpduchain
-        kdev4phpparser
+        kdevphpcompletion
+        kdevphpduchain
+        kdevphpparser
         Qt5::Test
         KDev::Tests
         KDev::Language
@@ -17,9 +17,9 @@ ecm_add_test(
     ../../duchain/tests/duchaintestbase.cpp
     TEST_NAME completionbenchmark
     LINK_LIBRARIES
-        kdev4phpcompletion
-        kdev4phpduchain
-        kdev4phpparser
+        kdevphpcompletion
+        kdevphpduchain
+        kdevphpparser
 
         Qt5::Test
         KDev::Tests

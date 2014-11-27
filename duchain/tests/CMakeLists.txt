@@ -4,8 +4,8 @@ ecm_add_test(
     duchaintestbase.cpp
     TEST_NAME duchain
     LINK_LIBRARIES
-        kdev4phpduchain
-        kdev4phpparser
+        kdevphpduchain
+        kdevphpparser
         Qt5::Test
         KDev::Tests
         KDev::Language
@@ -18,8 +18,8 @@ ecm_add_test(
     duchaintestbase.cpp
     TEST_NAME expressionparser
     LINK_LIBRARIES
-        kdev4phpduchain
-        kdev4phpparser
+        kdevphpduchain
+        kdevphpparser
         Qt5::Test
         KDev::Tests
         KDev::Language
@@ -31,8 +31,8 @@ ecm_add_test(
     duchaintestbase.cpp
     TEST_NAME uses
     LINK_LIBRARIES
-        kdev4phpduchain
-        kdev4phpparser
+        kdevphpduchain
+        kdevphpparser
         Qt5::Test
         KDev::Tests
         KDev::Language
@@ -44,8 +44,8 @@ ecm_add_test(
     duchaintestbase.cpp
     TEST_NAME benchmarks
     LINK_LIBRARIES
-        kdev4phpduchain
-        kdev4phpparser
+        kdevphpduchain
+        kdevphpparser
         Qt5::Test
         KDev::Tests
         KDev::Language
@@ -60,8 +60,8 @@ ecm_add_test(
     duchaintestbase.cpp
     TEST_NAME duchain_multiplefiles
     LINK_LIBRARIES
-        kdev4phpduchain
-        kdev4phpparser
+        kdevphpduchain
+        kdevphpparser
         Qt5::Test
         KDev::Tests
         KDev::Language

@@ -1,7 +1,7 @@
 ecm_add_test(
     lexertest.cpp
     LINK_LIBRARIES
-        kdev4phpparser
+        kdevphpparser
         Qt5::Test
         Qt5::Core
         KDev::Language

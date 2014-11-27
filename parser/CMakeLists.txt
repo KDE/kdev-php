@@ -11,11 +11,11 @@ kdevpgqt_generate(parser_SRCS php NAMESPACE Php DEBUG_VISITOR TOKEN_TEXT
     "${php_SOURCE_DIR}/parser/phplexer.h"
 )
 
-add_library(kdev4phpparser SHARED ${parser_SRCS} ${parser_STAT_SRCS})
+add_library(kdevphpparser SHARED ${parser_SRCS} ${parser_STAT_SRCS})
 
-generate_export_header(kdev4phpparser EXPORT_MACRO_NAME KDEVPHPPARSER_EXPORT
+generate_export_header(kdevphpparser EXPORT_MACRO_NAME KDEVPHPPARSER_EXPORT
                                       EXPORT_FILE_NAME parserexport.h)
-target_link_libraries(kdev4phpparser LINK_PRIVATE
+target_link_libraries(kdevphpparser LINK_PRIVATE
     KDev::Language
 )
 
@@ -30,7 +30,7 @@ endif (MINGW)
 target_link_libraries(php-parser
     KDev::Tests
     KDev::Language
-    kdev4phpparser
+    kdevphpparser
 )
 
-install(TARGETS kdev4phpparser DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS kdevphpparser DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})

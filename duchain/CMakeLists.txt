@@ -32,19 +32,19 @@ set(duchain_SRCS
     duchaindebug.cpp
 )
 
-add_library( kdev4phpduchain SHARED ${duchain_SRCS} )
+add_library( kdevphpduchain SHARED ${duchain_SRCS} )
 
-generate_export_header(kdev4phpduchain EXPORT_MACRO_NAME KDEVPHPDUCHAIN_EXPORT
+generate_export_header(kdevphpduchain EXPORT_MACRO_NAME KDEVPHPDUCHAIN_EXPORT
                                        EXPORT_FILE_NAME phpduchainexport.h)
 
-target_link_libraries(kdev4phpduchain LINK_PRIVATE
+target_link_libraries(kdevphpduchain LINK_PRIVATE
     KDev::Interfaces
     KDev::Language
     KDev::Shell
     KDev::Project
     KF5::KDELibs4Support
-    kdev4phpparser
+    kdevphpparser
 )
 
-install(TARGETS kdev4phpduchain DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS kdevphpduchain DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 
