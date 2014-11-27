@@ -19,7 +19,7 @@ target_link_libraries(kdevphpunitprovider LINK_PRIVATE
     KF5::KDELibs4Support
 )
 
-install(TARGETS kdevphpunitprovider DESTINATION ${PLUGIN_INSTALL_DIR} )
+install(TARGETS kdevphpunitprovider DESTINATION ${PLUGIN_INSTALL_DIR}/kdevplatform/${KDEV_PLUGIN_VERSION} )
 
 ########### install files ###############
 
