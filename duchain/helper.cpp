@@ -375,6 +375,12 @@ const KDevelop::IndexedString& internalFunctionFile()
     return internalFile;
 }
 
+const KDevelop::IndexedString& phpLanguageString()
+{
+    static const KDevelop::IndexedString phpLangString("Php");
+    return phpLangString;
+}
+
 const IndexedString& internalTestFile()
 {
     static const KDevelop::IndexedString phpUnitFile(KStandardDirs::locate("data", "kdevphpsupport/phpunitdeclarations.php"));

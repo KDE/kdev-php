@@ -69,6 +69,9 @@ KDEVPHPDUCHAIN_EXPORT const KDevelop::IndexedString& internalFunctionFile();
 
 KDEVPHPDUCHAIN_EXPORT const KDevelop::IndexedString& internalTestFile();
 
+/// Indexed string for 'Php', identifies environment files from this language plugin
+KDEVPHPDUCHAIN_EXPORT const KDevelop::IndexedString& phpLanguageString();
+
 /**
  * Get proper QualifiedIdentifier for a NamespacedIdentifierAst.
  *
@@ -81,5 +84,6 @@ KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierForNamespace(Names
  * Get proper QualifiedIdentifier for a basic identifier.
  */
 KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierWithNamespace(const KDevelop::QualifiedIdentifier& base, KDevelop::DUContext* context);
+
 }
 #endif

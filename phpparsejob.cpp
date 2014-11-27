@@ -48,6 +48,8 @@
 #include <QtCore/QThread>
 #include <language/duchain/duchainutils.h>
 
+#include <mutex>
+
 using namespace KDevelop;
 
 namespace Php
@@ -68,23 +70,24 @@ LanguageSupport* ParseJob::php() const
     return dynamic_cast<LanguageSupport*>(languageSupport());
 }
 
-void ParseJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
+void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*thread*/)
 {
-    Q_UNUSED(self);
-    Q_UNUSED(thread);
-
-    /// Indexed string for 'Php', identifies environment files from this language plugin
-    static const IndexedString phpLangString("Php");
-
-    // make sure we loaded the internal file already
-    if ( !php()->internalFunctionsLoaded() && !m_parentJob && document() != internalFunctionFile() ) {
-        qCDebug(PHP) << "waiting for internal function file to finish parsing";
-        QReadLocker(php()->internalFunctionsLock());
+    if (document() != internalFunctionFile()) {
+        // make sure we loaded the internal file already
+        auto phpSupport = languageSupport();
+        static std::once_flag once;
+        std::call_once(once, [phpSupport] {
+            qCDebug(PHP) << "Initializing internal function file" << internalFunctionFile();
+            ParseJob internalJob(internalFunctionFile(), phpSupport);
+            internalJob.setMinimumFeatures(TopDUContext::AllDeclarationsAndContexts);
+            internalJob.run({}, nullptr);
+            Q_ASSERT(internalJob.success());
+        });
     }
 
     UrlParseLock urlLock(document());
 
-    if (!(minimumFeatures() & Resheduled) && !isUpdateRequired(phpLangString)) {
+    if (!(minimumFeatures() & Resheduled) && !isUpdateRequired(phpLanguageString())) {
         return;
     }
     qCDebug(PHP) << "parsing" << document().str();
@@ -203,7 +206,7 @@ void ParseJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
             top->clearProblems();
         } else {
             ParsingEnvironmentFile *file = new ParsingEnvironmentFile(document());
-            file->setLanguage(phpLangString);
+            file->setLanguage(phpLanguageString());
             top = new TopDUContext(document(), RangeInRevision(0, 0, INT_MAX, INT_MAX), file);
             DUChain::self()->addDocumentChain(top);
         }

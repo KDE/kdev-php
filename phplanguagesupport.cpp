@@ -68,11 +68,9 @@ namespace Php
 
 LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
         : KDevelop::IPlugin(QStringLiteral("kdevphpsupport"), parent),
-        KDevelop::ILanguageSupport(), m_internalFunctionsLoaded(false)
+        KDevelop::ILanguageSupport()
 {
     Q_ASSERT(internalFunctionFile().toUrl().isValid());
-    m_internalFunctionsLock.lockForWrite();
-
     KDEV_USE_EXTENSION_INTERFACE(KDevelop::ILanguageSupport)
 
     m_highlighting = new Php::Highlighting(this);
@@ -80,8 +78,6 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
 
     CodeCompletionModel* ccModel = new CodeCompletionModel(this);
     new KDevelop::CodeCompletion(this, ccModel, name());
-
-    QTimer::singleShot(0, this, SLOT(updateInternalFunctions()));
 }
 
 LanguageSupport::~LanguageSupport()
@@ -93,36 +89,6 @@ LanguageSupport::~LanguageSupport()
         //get a chance to finish in a good state
         lang->parseLock()->unlock();
     }
-}
-
-void LanguageSupport::updateInternalFunctions()
-{
-    Q_ASSERT(core()->pluginController()->loadedPlugins().contains(this));
-    qCDebug(PHP) << "making sure that internal function file is up to date";
-    DUChain::self()->updateContextForUrl(internalFunctionFile(), KDevelop::TopDUContext::AllDeclarationsAndContexts, this, -10);
-}
-
-void LanguageSupport::updateReady( const IndexedString& url, const ReferencedTopDUContext& topContext )
-{
-    Q_UNUSED(topContext);
-    if (url == internalFunctionFile()) {
-        IndexedString testFile = internalTestFile();
-        if (!testFile.isEmpty()) {
-            DUChain::self()->updateContextForUrl(testFile, TopDUContext::AllDeclarationsAndContexts, this, -10);
-        }
-        m_internalFunctionsLoaded = true;
-        m_internalFunctionsLock.unlock();
-    }
-}
-
-bool LanguageSupport::internalFunctionsLoaded() const
-{
-    return m_internalFunctionsLoaded;
-}
-
-QReadWriteLock* LanguageSupport::internalFunctionsLock()
-{
-    return &m_internalFunctionsLock;
 }
 
 KDevelop::ParseJob *LanguageSupport::createParseJob(const IndexedString &url)

@@ -23,9 +23,6 @@
 #include <interfaces/iplugin.h>
 #include <language/interfaces/ilanguagesupport.h>
 #include <QtCore/QVariant>
-#include <QReadWriteLock>
-
-#include <serialization/indexedstring.h>
 
 namespace KDevelop
 {
@@ -34,8 +31,8 @@ class IProject;
 class CodeHighlighting;
 class ReferencedTopDUContext;
 class ParseJob;
+class IndexedString;
 }
-
 
 namespace Php
 {
@@ -47,27 +44,7 @@ class Refactoring;
  * \brief Language Support plugin for PHP
  *
  * All internal PHP declarations can be found in a central document, hitherto called the
- * internal function file. See \p internalFunctionsFile(). To check whether the file was already
- * loaded, use \p internalFunctionsLoaded. If it has not yet loaded, you have two options:
- *
- * 1) Block thread and wait for job to finish:
- * \code
- * if ( phpLangSupport->internalFunctionsLoaded ) {
- *   QReadLocker(phpLangSupport->internalFunctionsLock());
- * }
- * // now you can get the ducontext
- * \endcode
- *
- * 2) Wait for job to finish and get notified via signal:
- * \code
- *  connect(ICore::self()->languageController()->backgroundParser(), SIGNAL(parseJobFinished(KDevelop::ParseJob*)),
- *           this, SLOT(slotParseJobFinished(KDevelop::ParseJob*)));
- *  ...
- *  void slotParseJobFinished(ParseJob* job) {
- *    if ( job->document() == internalFunctionsFile() )
- *      // now you can get the ducontext
- *  }
- * \endcode
+ * internal function file. See \p internalFunctionsFile().
  *
  * To access the DUContext, include duchain/helper.h and use:
  * \code
@@ -76,7 +53,7 @@ class Refactoring;
  * \endcode
  *
  * To access the destination of the internal function file without linking against the LanguageSupport,
- * i.e. in the PHP-Docs plugin, use:
+ * like is done in e.g. the PHP-Docs plugin, use:
  * \code
  *  IndexedString url(KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php"));
  * \endcode
@@ -108,34 +85,11 @@ public:
     virtual QWidget* specialLanguageObjectNavigationWidget(const QUrl& url, const KTextEditor::Cursor& position) override;
     virtual KTextEditor::Range specialLanguageObjectRange(const QUrl& url, const KTextEditor::Cursor& position) override;
 
-    /// returns true, if the internal function file has been loaded
-    /// to wait for it to finished, use a QReadLocker on the parse lock.
-    /// @see internalFunctionsLock()
-    bool internalFunctionsLoaded() const;
-    /// returns a pointer to the internal functions lock, lock it for reading to wait for the
-    /// internal functions to get loaded.
-    /// @see internalFunctionsLoaded()
-    QReadWriteLock* internalFunctionsLock();
-
-public slots:
-    /**
-     * Get notified by background parser when internal function file was loaded.
-     *
-     * \see loadedInternalFunctions
-     */
-    void updateReady(const KDevelop::IndexedString& url, const KDevelop::ReferencedTopDUContext& topContext);
-
-private slots:
-    void updateInternalFunctions();
-
 private:
     KDevelop::CodeHighlighting* m_highlighting;
     Refactoring *m_refactoring;
-    bool m_internalFunctionsLoaded;
-    QReadWriteLock m_internalFunctionsLock;
 
     QPair<QString, KTextEditor::Range>  wordUnderCursor(const QUrl& url, const KTextEditor::Cursor& position);
-
 };
 
 }

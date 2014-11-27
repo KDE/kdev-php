@@ -73,7 +73,6 @@ void TestDUChainMultipleFiles::testImportsBaseClassNotYetParsed()
     m_projectController->clearProjects();
     m_projectController->addProject(project);
 
-
     TestFile f2("<? class B extends A {}", "php", project);
     f2.parse(features);
 
