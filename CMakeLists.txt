@@ -59,7 +59,7 @@ target_link_libraries(kdevphplanguagesupport
     KF5::KDELibs4Support
 )
 
-install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR})
+install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR}/kdevplatform/${KDEV_PLUGIN_VERSION})
 
 configure_file(kdevphpsupport.desktop.cmake ${CMAKE_CURRENT_BINARY_DIR}/kdevphpsupport.desktop)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kdevphpsupport.desktop DESTINATION ${SERVICES_INSTALL_DIR})

@@ -116,3 +116,4 @@ X-KDevelop-Version=@KDEV_PLUGIN_VERSION@
 X-KDevelop-Category=Global
 X-KDevelop-Interfaces=org.kdevelop.ITestProvider
 X-KDevelop-Mode=NoGUI
+X-KDevelop-IRequired=org.kdevelop.PHPSupport
