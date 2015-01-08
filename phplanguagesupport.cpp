@@ -82,13 +82,10 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
 
 LanguageSupport::~LanguageSupport()
 {
-    ILanguage* lang = language();
-    if ( lang ) {
-        lang->parseLock()->lockForWrite();
-        //By locking the parse-mutexes, we make sure that parse- and preprocess-jobs
-        //get a chance to finish in a good state
-        lang->parseLock()->unlock();
-    }
+    parseLock()->lockForWrite();
+    //By locking the parse-mutexes, we make sure that parse- and preprocess-jobs
+    //get a chance to finish in a good state
+    parseLock()->unlock();
 }
 
 KDevelop::ParseJob *LanguageSupport::createParseJob(const IndexedString &url)
@@ -101,11 +98,6 @@ QString LanguageSupport::name() const
     return "Php";
 }
 
-KDevelop::ILanguage *LanguageSupport::language()
-{
-    return core()->languageController()->language(name());
-}
-
 KDevelop::ICodeHighlighting* LanguageSupport::codeHighlighting() const
 {
     return m_highlighting;
@@ -116,7 +108,7 @@ KDevelop::ContextMenuExtension LanguageSupport::contextMenuExtension(Context* co
     ContextMenuExtension cm;
     EditorContext *ed = dynamic_cast<KDevelop::EditorContext *>(context);
 
-    if (ed && ICore::self()->languageController()->languagesForUrl(ed->url()).contains(language())) {
+    if (ed && ICore::self()->languageController()->languagesForUrl(ed->url()).contains(this)) {
         // It's safe to add our own ContextMenuExtension.
         m_refactoring->fillContextMenu(cm, context);
     }

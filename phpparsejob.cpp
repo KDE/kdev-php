@@ -131,7 +131,7 @@ void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*t
 
         EditorIntegrator editor(&session);
 
-        QReadLocker parseLock(php()->language()->parseLock());
+        QReadLocker parseLock(php()->parseLock());
 
         DeclarationBuilder builder(&editor);
         KDevelop::ReferencedTopDUContext chain = builder.build(document(), ast, toUpdate);

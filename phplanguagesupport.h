@@ -70,8 +70,6 @@ public:
     QString name() const override;
     /*Parsejob used by background parser to parse given Url*/
     KDevelop::ParseJob *createParseJob(const KDevelop::IndexedString& url) override;
-    /*the actual language object*/
-    KDevelop::ILanguage *language() override;
 
     static LanguageSupport* self();
     /*the code highlighter*/
