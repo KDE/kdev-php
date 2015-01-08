@@ -28,7 +28,6 @@
 #include <language/duchain/types/structuretype.h>
 
 #include <interfaces/icore.h>
-#include <interfaces/ilanguage.h>
 #include <interfaces/ilanguagecontroller.h>
 #include <language/backgroundparser/backgroundparser.h>
 #include <language/backgroundparser/parsejob.h>
@@ -43,7 +42,7 @@ PhpDocsModel::PhpDocsModel(QObject* parent)
     : QAbstractListModel(parent), m_internalFunctionsFile(KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php"))
 {
     // make sure the php plugin is loaded
-    ILanguage* phpLangPlugin = ICore::self()->languageController()->language("Php");
+    auto phpLangPlugin = ICore::self()->languageController()->language("Php");
     if ( !phpLangPlugin ) {
         kWarning() << "could not load PHP language support plugin";
         return;
