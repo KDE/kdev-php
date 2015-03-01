@@ -2,6 +2,7 @@
 Type=Service
 Comment=This plugin integrates PHP.net online documentation.
 Comment[ar]=تكامل هذه الملحقة توثيق PHP.net على الإنترنت.
+Comment[ast]=Esti complemetu integra la documentación en llinia .PHP.
 Comment[bg]=Тази приставка включва документация от PHP.net в Интернет
 Comment[bs]=Ovaj dodatak integriše PHP.net mrežnu dokumentaciju.
 Comment[ca]=Aquest connector integra documentació en línia de PHP.net.
