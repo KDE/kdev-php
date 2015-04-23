@@ -62,7 +62,7 @@ public:
     void setPrettyName(const KDevelop::IndexedString& name);
     KDevelop::IndexedString prettyName() const;
 
-    virtual void setInSymbolTable(bool inSymbolTable);
+    void updateCompletionCodeModelItem();
 
     enum {
         Identity = 85

@@ -184,6 +184,10 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
     ClassDeclaration* classDec = openTypeDeclaration(node->className, ClassDeclarationData::Class);
     openType(classDec->abstractType());
     DeclarationBuilderBase::visitClassDeclarationStatement(node);
+    {
+        DUChainWriteLocker lock;
+        classDec->updateCompletionCodeModelItem();
+    }
     closeType();
     closeDeclaration();
     m_upcomingClassVariables.clear();

@@ -108,34 +108,34 @@ QString ClassDeclaration::toString() const
   return ret + prettyName().str();
 }
 
-void ClassDeclaration::setInSymbolTable(bool inSymbolTable)
+void ClassDeclaration::updateCompletionCodeModelItem()
 {
-    if(!d_func()->prettyName.isEmpty()) {
-        if(!d_func()->m_inSymbolTable && inSymbolTable) {
-            CompletionCodeModelItem::Kind flags = CompletionCodeModelItem::Unknown;
-            static const KDevelop::QualifiedIdentifier exceptionQId("exception");
-            if (qualifiedIdentifier() == exceptionQId) {
-                flags = (CompletionCodeModelItem::Kind)(flags | CompletionCodeModelItem::Exception);
-            } else {
-                static KDevelop::DUChainPointer<ClassDeclaration> exceptionDecl;
-                if (!exceptionDecl) {
-                    QList<Declaration*> decs = context()->topContext()->findDeclarations(exceptionQId);
-                    Q_ASSERT(decs.count());
-                    exceptionDecl = dynamic_cast<ClassDeclaration*>(decs.first());
-                    Q_ASSERT(exceptionDecl);
-                }
-                if (equalQualifiedIdentifier(exceptionDecl.data())
-                    || isPublicBaseClass(exceptionDecl.data(), context()->topContext())
-                ) {
-                    flags = (CompletionCodeModelItem::Kind)(flags | CompletionCodeModelItem::Exception);
-                }
-            }
-            CompletionCodeModel::self().addItem(url(), qualifiedIdentifier(), d_func_dynamic()->prettyName, flags);
-        } else if(d_func()->m_inSymbolTable && !inSymbolTable) {
-            CompletionCodeModel::self().removeItem(url(), qualifiedIdentifier());
-        }
+    if (d_func()->prettyName.isEmpty()) {
+        return;
     }
-    KDevelop::ClassDeclaration::setInSymbolTable(inSymbolTable);
+    if (d_func()->m_inSymbolTable) {
+        CompletionCodeModelItem::Kind flags = CompletionCodeModelItem::Unknown;
+        static const KDevelop::QualifiedIdentifier exceptionQId("exception");
+        if (qualifiedIdentifier() == exceptionQId) {
+            flags = (CompletionCodeModelItem::Kind)(flags | CompletionCodeModelItem::Exception);
+        } else {
+            static KDevelop::DUChainPointer<ClassDeclaration> exceptionDecl;
+            if (!exceptionDecl) {
+                QList<Declaration*> decs = context()->topContext()->findDeclarations(exceptionQId);
+                Q_ASSERT(decs.count());
+                exceptionDecl = dynamic_cast<ClassDeclaration*>(decs.first());
+                Q_ASSERT(exceptionDecl);
+            }
+            if (equalQualifiedIdentifier(exceptionDecl.data())
+                || isPublicBaseClass(exceptionDecl.data(), context()->topContext())
+            ) {
+                flags = (CompletionCodeModelItem::Kind)(flags | CompletionCodeModelItem::Exception);
+            }
+        }
+        CompletionCodeModel::self().addItem(url(), qualifiedIdentifier(), d_func_dynamic()->prettyName, flags);
+    } else {
+        CompletionCodeModel::self().removeItem(url(), qualifiedIdentifier());
+    }
 }
 
 }
