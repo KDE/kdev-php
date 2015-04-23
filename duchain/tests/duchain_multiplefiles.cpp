@@ -57,7 +57,7 @@ void TestDUChainMultipleFiles::testImportsGlobalFunction()
 
     TestFile f2("<? foo();", "php", project);
     f2.parse(features);
-    f2.waitForParsed();
+    QVERIFY(f2.waitForParsed());
 
     DUChainWriteLocker lock(DUChain::lock());
     QVERIFY(f1.topContext());
@@ -79,7 +79,7 @@ void TestDUChainMultipleFiles::testImportsBaseClassNotYetParsed()
     TestFile f1("<? class A {}", "php", project);
     f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
-    f1.waitForParsed();
+    QVERIFY(f1.waitForParsed());
     QTest::qWait(100);
 
     DUChainWriteLocker lock(DUChain::lock());
@@ -97,7 +97,7 @@ void TestDUChainMultipleFiles::testNonExistingBaseClass()
 
     TestFile f1("<? class B extends A {}", "php", project);
     f1.parse(features);
-    f1.waitForParsed();
+    QVERIFY(f1.waitForParsed());
 
     //there must not be a re-enqueued parsejob
     QVERIFY(ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
@@ -117,7 +117,7 @@ void TestDUChainMultipleFiles::testImportsGlobalFunctionNotYetParsed()
     TestFile f1("<? function foo2() {}", "php", project);
     f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
-    f2.waitForParsed();
+    QVERIFY(f2.waitForParsed());
     QTest::qWait(100);
 
     DUChainWriteLocker lock(DUChain::lock());
@@ -136,7 +136,7 @@ void TestDUChainMultipleFiles::testNonExistingGlobalFunction()
     TestFile f2("<? foo3();", "php", project);
     f2.parse(features);
 
-    f2.waitForParsed();
+    QVERIFY(f2.waitForParsed());
      //there must not be a re-enqueued parsejob
     QVERIFY(ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
 }
@@ -155,7 +155,7 @@ void TestDUChainMultipleFiles::testImportsStaticFunctionNotYetParsed()
     TestFile f1("<? class C { public static function foo() {} }", "php", project);
     f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
-    f2.waitForParsed();
+    QVERIFY(f2.waitForParsed());
     QTest::qWait(100);
 
     DUChainWriteLocker lock(DUChain::lock());
@@ -173,7 +173,7 @@ void TestDUChainMultipleFiles::testNonExistingStaticFunction()
     TestFile f2("<? D::foo();", "php", project);
     f2.parse(features);
 
-    f2.waitForParsed();
+    QVERIFY(f2.waitForParsed());
      //there must not be a re-enqueued parsejob
     QVERIFY(ICore::self()->languageController()->backgroundParser()->queuedCount() == 0);
 }
@@ -191,7 +191,7 @@ void TestDUChainMultipleFiles::testForeachImportedIdentifier()
     // build dependency
     TestFile f1("<? class SomeIterator implements Countable, Iterator { }", "php", project);
     f1.parse(features);
-    f1.waitForParsed();
+    QVERIFY(f1.waitForParsed());
 
     TestFile f2("<?\n"
                 "class A {\n"
@@ -204,12 +204,14 @@ void TestDUChainMultipleFiles::testForeachImportedIdentifier()
             features = static_cast<TopDUContext::Features>(features | TopDUContext::ForceUpdate);
         }
         f2.parse(features);
-        f2.waitForParsed();
+        QVERIFY(f2.waitForParsed());
         QTest::qWait(100);
 
         DUChainWriteLocker lock(DUChain::lock());
+        QCOMPARE(f2.topContext()->childContexts().size(), 1);
         DUContext* ACtx = f2.topContext()->childContexts().first();
         QVERIFY(ACtx);
+        QCOMPARE(ACtx->childContexts().size(), 4);
         Declaration* iDec = ACtx->childContexts().at(1)->localDeclarations().first();
         QVERIFY(iDec);
         Declaration* SomeIteratorDec = f1.topContext()->localDeclarations().first();
@@ -233,7 +235,7 @@ void TestDUChainMultipleFiles::testUpdateForeach()
     TestFile f("<?\n$k = null;\nforeach(array() as $i => $k) {}\n", "php", project);
 
     f.parse(features);
-    f.waitForParsed();
+    QVERIFY(f.waitForParsed());
     QVERIFY(f.topContext());
 
     {
@@ -251,7 +253,7 @@ void TestDUChainMultipleFiles::testUpdateForeach()
     // delete $k = null; line
     f.setFileContents("<?\nforeach(array() as $i => $k) {}\n");
     f.parse(static_cast<TopDUContext::Features>(features | TopDUContext::ForceUpdate));
-    f.waitForParsed();
+    QVERIFY(f.waitForParsed());
     QVERIFY(f.topContext());
 
     {
