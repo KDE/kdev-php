@@ -68,10 +68,7 @@ KDevelop::IndexedString ClassDeclaration::prettyName() const
 
 void ClassDeclaration::setPrettyName( const KDevelop::IndexedString& name )
 {
-    bool wasInSymbolTable = d_func()->m_inSymbolTable;
-    setInSymbolTable(false);
     d_func_dynamic()->prettyName = name;
-    setInSymbolTable(wasInSymbolTable);
 }
 
 QString ClassDeclaration::toString() const
