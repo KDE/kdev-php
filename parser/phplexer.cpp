@@ -616,12 +616,12 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_ASSIGN;
             }
         } else if (isValidVariableIdentifier(it) && !it->isDigit()) {
-            QString name;
+            const int from = m_curpos;
             while (m_curpos < m_contentSize && (isValidVariableIdentifier(it))) {
-                name.append(*it);
                 it++;
                 m_curpos++;
             }
+            const QStringRef name = m_content.midRef(from, m_curpos - from);
             m_curpos--;
             if (name.compare(QLatin1String("echo"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_ECHO;
