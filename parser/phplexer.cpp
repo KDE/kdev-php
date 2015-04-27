@@ -226,34 +226,40 @@ int Lexer::nextTokenKind()
                 it++;
                 pos++;
             }
-            QString name;
+            const int nameStart = pos;
             while (pos < m_contentSize && it->isLetter()) {
-                name.append(*it);
                 it++;
                 pos++;
             }
+            const auto name = m_content.midRef(nameStart, pos - nameStart);
             while (pos < m_contentSize && it->isSpace()) {
                 it++;
                 pos++;
             }
-            name = name.toLower();
             if (it->unicode() == ')') {
-                if (name == "int" || name == "integer") {
+                if (name.compare(QLatin1String("int"), Qt::CaseInsensitive) == 0
+                    || name.compare(QLatin1String("integer"), Qt::CaseInsensitive) == 0)
+                {
                     token = Parser::Token_INT_CAST;
-                } else if (name == "real" || name == "double" || name == "float") {
+                } else if (name.compare(QLatin1String("real"), Qt::CaseInsensitive) == 0
+                    || name.compare(QLatin1String("double"), Qt::CaseInsensitive) == 0
+                    || name.compare(QLatin1String("float"), Qt::CaseInsensitive) == 0)
+                {
                     token = Parser::Token_DOUBLE_CAST;
-                } else if (name == "string") {
+                } else if (name.compare(QLatin1String("string"), Qt::CaseInsensitive) == 0) {
                     token = Parser::Token_STRING_CAST;
-                } else if (name == "binary") {
+                } else if (name.compare(QLatin1String("binary"), Qt::CaseInsensitive) == 0) {
                     //as in php
                     token = Parser::Token_STRING_CAST;
-                } else if (name == "array") {
+                } else if (name.compare(QLatin1String("array"), Qt::CaseInsensitive) == 0) {
                     token = Parser::Token_ARRAY_CAST;
-                } else if (name == "object") {
+                } else if (name.compare(QLatin1String("object"), Qt::CaseInsensitive) == 0) {
                     token = Parser::Token_OBJECT_CAST;
-                } else if (name == "bool" || name == "boolean") {
+                } else if (name.compare(QLatin1String("bool"), Qt::CaseInsensitive) == 0
+                    || name.compare(QLatin1String("boolean"), Qt::CaseInsensitive) == 0)
+                {
                     token = Parser::Token_BOOL_CAST;
-                } else if (name == "unset") {
+                } else if (name.compare(QLatin1String("unset"), Qt::CaseInsensitive) == 0) {
                     token = Parser::Token_UNSET_CAST;
                 } else {
                     token = Parser::Token_LPAREN;
