@@ -23,8 +23,6 @@
 
 #include "worker.h"
 
-#include <KLocale>
-
 #include <KTextEditor/View>
 #include <KTextEditor/Document>
 

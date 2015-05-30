@@ -54,9 +54,6 @@ target_link_libraries(kdevphplanguagesupport
 
     KF5::I18n
     KF5::TextEditor
-
-    # TODO: remove once KDevPlatform moves away from KDELibs4Support.
-    KF5::KDELibs4Support
 )
 
 install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR}/kdevplatform/${KDEV_PLUGIN_VERSION})

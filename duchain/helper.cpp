@@ -21,7 +21,6 @@
 
 #include <KParts/MainWindow>
 #include <KLocalizedString>
-#include <KStandardDirs>
 
 #include <language/duchain/ducontext.h>
 #include <language/duchain/duchainlock.h>
@@ -371,7 +370,7 @@ QString prettyName(Declaration* dec) {
 
 const KDevelop::IndexedString& internalFunctionFile()
 {
-    static const KDevelop::IndexedString internalFile(KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php"));
+    static const KDevelop::IndexedString internalFile(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kdevphpsupport/phpfunctions.php"));
     return internalFile;
 }
 
@@ -383,7 +382,7 @@ const KDevelop::IndexedString& phpLanguageString()
 
 const IndexedString& internalTestFile()
 {
-    static const KDevelop::IndexedString phpUnitFile(KStandardDirs::locate("data", "kdevphpsupport/phpunitdeclarations.php"));
+    static const KDevelop::IndexedString phpUnitFile(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kdevphpsupport/phpunitdeclarations.php"));
     return phpUnitFile;
 }
 

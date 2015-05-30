@@ -25,7 +25,6 @@
 #include <KTextEditor/Document>
 #include <KTextEditor/View>
 
-#include <KIcon>
 #include <KLocalizedString>
 
 #include <language/duchain/duchain.h>

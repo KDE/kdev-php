@@ -22,7 +22,6 @@
 
 #include "implementationitem.h"
 
-#include <KIcon>
 #include <KLocalizedString>
 
 #include <KTextEditor/Document>
@@ -48,7 +47,7 @@ using namespace KDevelop;
 namespace Php
 {
 
-#define RETURN_CACHED_ICON(name) {static QIcon icon(KIcon(name).pixmap(QSize(16, 16))); return icon;}
+#define RETURN_CACHED_ICON(name) {static QIcon icon(QIcon::fromTheme(QStringLiteral(name)).pixmap(QSize(16, 16))); return icon;}
 
 QVariant ImplementationItem::data(const QModelIndex& index, int role, const CodeCompletionModel* model) const
 {

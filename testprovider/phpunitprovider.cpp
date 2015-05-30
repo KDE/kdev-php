@@ -42,9 +42,9 @@
 #include <KPluginLoader>
 #include <KAboutData>
 #include <KLocalizedString>
-#include <KStandardDirs>
 #include <QVariant>
 #include <QTimer>
+#include <QStandardPaths>
 
 using namespace KDevelop;
 
@@ -55,7 +55,7 @@ PhpUnitProvider::PhpUnitProvider(QObject* parent, const QList< QVariant >& args)
 {
     Q_UNUSED(args);
 
-    QString file = KStandardDirs::locate("data", "kdevphpsupport/phpunitdeclarations.php");
+    QString file = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("kdevphpsupport/phpunitdeclarations.php"));
     DUChain::self()->updateContextForUrl(IndexedString(file), KDevelop::TopDUContext::AllDeclarationsContextsAndUses, this, -10);
 
     connect (core()->languageController()->backgroundParser(), SIGNAL(parseJobFinished(KDevelop::ParseJob*)), SLOT(parseJobFinished(KDevelop::ParseJob*)));

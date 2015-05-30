@@ -21,8 +21,6 @@
 
 #include <QtTest>
 
-#include <KStandardDirs>
-
 #include <language/duchain/parsingenvironment.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/topducontext.h>
@@ -71,6 +69,7 @@ void DUChainTestBase::initTestCase()
                        "/**\n * @superglobal\n **/\n$_GET = array();\n"
                        "interface testInterface {}\n");
     content.append("interface Iterator { function rewind(); function current(); function key(); function next(); function valid(); } ");
+    QVERIFY(!internalFunctionFile().isEmpty());
     TopDUContext* ctx = parseAdditionalFile(internalFunctionFile(), content);
     QVERIFY(ctx);
 

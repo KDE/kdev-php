@@ -9,7 +9,6 @@ ecm_add_test(
         Qt5::Test
         KDev::Tests
         KDev::Language
-        KF5::KDELibs4Support
 )
 
 ecm_add_test(
@@ -28,6 +27,5 @@ ecm_add_test(
         # TODO: KF5: KDevice is forcing us to have this dependency. I'm sure
         # we can work-around it :)
         KF5::Archive
-        KF5::KDELibs4Support
 )
 

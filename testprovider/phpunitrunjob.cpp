@@ -23,6 +23,8 @@
 #include "testdoxdelegate.h"
 #include "testproviderdebug.h"
 
+#include <QStandardPaths>
+
 #include <util/processlinemaker.h>
 #include <util/executecompositejob.h>
 #include <outputview/outputmodel.h>
@@ -34,7 +36,6 @@
 #include <interfaces/ilaunchmode.h>
 
 #include <KProcess>
-#include <KStandardDirs>
 #include <KLocalizedString>
 #include <KConfigGroup>
 
@@ -105,7 +106,7 @@ void PhpUnitRunJob::start()
 
     args << "--testdox" << m_suite->name() << m_suite->url().toLocalFile();
 
-    const QString exe = KStandardDirs::findExe("phpunit");
+    const QString exe = QStandardPaths::findExecutable(QStringLiteral("phpunit"));
     if (exe.isEmpty()) {
         KDevelop::ITestController* tc = KDevelop::ICore::self()->testController();
         tc->notifyTestRunFinished(m_suite, m_result);
