@@ -65,9 +65,3 @@ configure_file(kdevphpsupport.desktop.cmake ${CMAKE_CURRENT_BINARY_DIR}/kdevphps
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kdevphpsupport.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 # not writeable so that the refactoring actions get hidden
 install(FILES phpfunctions.php DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
-
-include(CTest)
-
-# CTestCustom.cmake has to be in the CTEST_BINARY_DIR.
-# in the KDE build system, this is the same as CMAKE_BINARY_DIR.
-configure_file(${CMAKE_SOURCE_DIR}/CTestCustom.cmake ${CMAKE_BINARY_DIR}/CTestCustom.cmake)
