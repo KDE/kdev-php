@@ -43,8 +43,8 @@ set(kdevphplanguagesupport_PART_SRCS
     codegen/refactoring.cpp
 )
 
-add_library(kdevphplanguagesupport MODULE ${kdevphplanguagesupport_PART_SRCS})
-
+kdevplatform_add_plugin(kdevphplanguagesupport JSON kdevphpsupport.json
+    SOURCES ${kdevphplanguagesupport_PART_SRCS})
 target_link_libraries(kdevphplanguagesupport
     KDev::Interfaces
     KDev::Language
@@ -56,9 +56,5 @@ target_link_libraries(kdevphplanguagesupport
     KF5::TextEditor
 )
 
-install(TARGETS kdevphplanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR}/kdevplatform/${KDEV_PLUGIN_VERSION})
-
-configure_file(kdevphpsupport.desktop.cmake ${CMAKE_CURRENT_BINARY_DIR}/kdevphpsupport.desktop)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kdevphpsupport.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 # not writeable so that the refactoring actions get hidden
 install(FILES phpfunctions.php DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)

@@ -60,7 +60,7 @@
 using namespace KTextEditor;
 using namespace KDevelop;
 
-K_PLUGIN_FACTORY(KDevPhpSupportFactory, registerPlugin<Php::LanguageSupport>();)
+K_PLUGIN_FACTORY_WITH_JSON(KDevPhpSupportFactory, "kdevphpsupport.json", registerPlugin<Php::LanguageSupport>(); )
 
 namespace Php
 {
