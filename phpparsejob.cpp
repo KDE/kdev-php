@@ -232,8 +232,8 @@ bool ParseJob::hasParentDocument(const IndexedString &doc)
 }
 
 ProblemPointer ParseJob::createProblem(const QString &description, AstNode* node,
-                                       EditorIntegrator * editor, ProblemData::Source source,
-                                       ProblemData::Severity severity)
+                                       EditorIntegrator * editor, IProblem::Source source,
+                                       IProblem::Severity severity)
 {
     ProblemPointer p(new Problem());
     p->setSource(source);

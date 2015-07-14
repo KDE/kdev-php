@@ -436,7 +436,7 @@ void DeclarationBuilder::importTraitMethods(ClassStatementAst *node)
                                 i18n("Trait method %1 has not been applied, because there are collisions with other trait methods on %2")
                                 .arg(importMethod->prettyName().str())
                                 .arg(dynamic_cast<ClassDeclaration*>(currentDeclaration())->prettyName().str())
-                                , it->element, ProblemData::Error
+                                , it->element, IProblem::Error
                             );
                             found = local;
                             break;
@@ -719,10 +719,10 @@ void DeclarationBuilder::createTraitAliasDeclarations(TraitAliasStatementAst *no
                 }
 
                 if (node->modifiers->modifiers & ModifierFinal) {
-                    reportError(i18n("Cannot use 'final' as method modifier"), node->modifiers, ProblemData::Error);
+                    reportError(i18n("Cannot use 'final' as method modifier"), node->modifiers, IProblem::Error);
                 }
                 if (node->modifiers->modifiers & ModifierStatic) {
-                    reportError(i18n("Cannot use 'static' as method modifier"), node->modifiers, ProblemData::Error);
+                    reportError(i18n("Cannot use 'static' as method modifier"), node->modifiers, IProblem::Error);
                 }
 
             }
@@ -886,7 +886,7 @@ void DeclarationBuilder::reportRedeclarationError(Declaration* declaration, AstN
             i18n("%1 and %2 define the same property (%3) in the composition of %1. This might be incompatible, to improve maintainability consider using accessor methods in traits instead.")
             .arg(dynamic_cast<ClassDeclaration*>(currentDeclaration())->prettyName().str())
             .arg(dynamic_cast<ClassDeclaration*>(trait->aliasedDeclaration().data()->context()->owner())->prettyName().str())
-            .arg(dynamic_cast<ClassMemberDeclaration*>(trait)->identifier().toString()), node, ProblemData::Warning
+            .arg(dynamic_cast<ClassMemberDeclaration*>(trait)->identifier().toString()), node, IProblem::Warning
         );
     } else {
         ///TODO: try to shorten the filename by removing the leading path to the current project
@@ -1377,7 +1377,7 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
             !node->aliasIdentifier && node->identifier->namespaceNameSequence->count() == 1 ) {
         reportError(i18n("The use statement with non-compound name '%1' has no effect.",
                         identifierForNode(node->identifier->namespaceNameSequence->front()->element).toString()),
-                    node->identifier, ProblemData::Warning);
+                    node->identifier, IProblem::Warning);
         return;
     }
     IdentifierAst* idNode = node->aliasIdentifier ? node->aliasIdentifier : node->identifier->namespaceNameSequence->back()->element;
@@ -1401,7 +1401,7 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
         {
             reportError(i18n("Cannot use '%1' as '%2' because the name is already in use.",
                             dec.data()->identifier().toString(), id.second.toString()),
-                        node->identifier, ProblemData::Error);
+                        node->identifier, IProblem::Error);
             return;
         }
 

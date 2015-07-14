@@ -437,12 +437,12 @@ void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
     }
 }
 
-void ContextBuilder::reportError(const QString& errorMsg, AstNode* node, ProblemData::Severity severity)
+void ContextBuilder::reportError(const QString& errorMsg, AstNode* node, IProblem::Severity severity)
 {
     reportError(errorMsg, m_editor->findRange(node), severity);
 }
 
-void ContextBuilder::reportError(const QString& errorMsg, QList< AstNode* > nodes, ProblemData::Severity severity)
+void ContextBuilder::reportError(const QString& errorMsg, QList< AstNode* > nodes, IProblem::Severity severity)
 {
     RangeInRevision range = RangeInRevision::invalid();
     foreach ( AstNode* node, nodes ) {
@@ -455,11 +455,11 @@ void ContextBuilder::reportError(const QString& errorMsg, QList< AstNode* > node
     reportError(errorMsg, range, severity);
 }
 
-void ContextBuilder::reportError(const QString& errorMsg, RangeInRevision range, ProblemData::Severity severity)
+void ContextBuilder::reportError(const QString& errorMsg, RangeInRevision range, IProblem::Severity severity)
 {
     Problem *p = new Problem();
     p->setSeverity(severity);
-    p->setSource(ProblemData::DUChainBuilder);
+    p->setSource(IProblem::DUChainBuilder);
     p->setDescription(errorMsg);
     p->setFinalLocation(DocumentRange(m_editor->parseSession()->currentDocument(),
                                                 range.castToSimpleRange()));

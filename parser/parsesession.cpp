@@ -70,7 +70,7 @@ bool ParseSession::readFile(const QString& filename, const char* codec)
     QFile f(filename);
     if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
         KDevelop::ProblemPointer p(new KDevelop::Problem());
-        p->setSource(KDevelop::ProblemData::Disk);
+        p->setSource(KDevelop::IProblem::Disk);
         p->setDescription(i18n("Could not open file '%1'", filename));
         switch (f.error()) {
         case QFile::ReadError:

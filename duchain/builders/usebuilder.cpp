@@ -201,9 +201,9 @@ void UseBuilder::visitCatchItem(CatchItemAst *node)
 void UseBuilder::newCheckedUse(AstNode* node, const DeclarationPointer& declaration, bool reportNotFound)
 {
     if ( declaration && declaration->comment().contains("@deprecated") ) {
-        reportError(i18n("Usage of %1 is deprecated.", declaration->toString()), node, ProblemData::Hint);
+        reportError(i18n("Usage of %1 is deprecated.", declaration->toString()), node, IProblem::Hint);
     } else if ( !declaration && reportNotFound ) {
-        reportError(i18n("Declaration not found: %1", m_editor->parseSession()->symbol(node)), node, ProblemData::Hint);
+        reportError(i18n("Declaration not found: %1", m_editor->parseSession()->symbol(node)), node, IProblem::Hint);
     }
     UseBuilderBase::newUse(node, declaration);
 }

@@ -66,8 +66,8 @@ private:
 
     /// create a problem pointer for the current document
     KDevelop::ProblemPointer createProblem(const QString &description, AstNode* node,
-                                           EditorIntegrator * editor, KDevelop::ProblemData::Source source,
-                                           KDevelop::ProblemData::Severity severity = KDevelop::ProblemData::Error);
+                                           EditorIntegrator * editor, KDevelop::IProblem::Source source,
+                                           KDevelop::IProblem::Severity severity = KDevelop::IProblem::Error);
 };
 
 }

@@ -93,14 +93,14 @@ protected:
     /// Report @p errorMsg with the range of @p node
     /// @see void reportError(const QString& errorMsg, KDevelop::SimpleRange range);
     void reportError(const QString& errorMsg, AstNode* node,
-                        KDevelop::ProblemData::Severity severity = KDevelop::ProblemData::Error);
+                        KDevelop::IProblem::Severity severity = KDevelop::IProblem::Error);
     /// Report @p errorMsg with the range encompassing all nodes in @p nodes
     /// @see void reportError(const QString& errorMsg, KDevelop::SimpleRange range);
     void reportError(const QString& errorMsg, QList<AstNode*> nodes,
-                        KDevelop::ProblemData::Severity severity = KDevelop::ProblemData::Error);
+                        KDevelop::IProblem::Severity severity = KDevelop::IProblem::Error);
     /// Report @p errorMsg with range @p range
     void reportError(const QString& errorMsg, KDevelop::RangeInRevision range,
-                        KDevelop::ProblemData::Severity severity = KDevelop::ProblemData::Error);
+                        KDevelop::IProblem::Severity severity = KDevelop::IProblem::Error);
 
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
