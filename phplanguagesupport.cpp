@@ -22,7 +22,6 @@
 #include <QMutexLocker>
 #include <QReadWriteLock>
 
-#include <kcomponentdata.h>
 #include <kpluginfactory.h>
 #include <kpluginloader.h>
 #include <KTextEditor/Document>

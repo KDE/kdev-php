@@ -21,7 +21,6 @@
 
 #include <QtGui/QTextDocument>
 
-#include <klocale.h>
 #include <klocalizedstring.h>
 
 #include <language/duchain/functiondefinition.h>

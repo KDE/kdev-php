@@ -39,7 +39,7 @@
 #include "../types/structuretype.h"
 #include "../types/integraltypeextended.h"
 
-#include <kstandarddirs.h>
+#include <QStandardPaths>
 
 using namespace KDevelop;
 using namespace Php;
@@ -1176,7 +1176,7 @@ void TestDUChain::singleton()
 void TestDUChain::internalFunctions()
 {
     return; //disabled because it is too slow
-    QString fileName = KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php");
+    QString fileName = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kdevphpsupport/phpfunctions.php");
     QFile file(fileName);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     TopDUContext* top = parse(file.readAll(), DumpNone);

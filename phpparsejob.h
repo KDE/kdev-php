@@ -25,7 +25,6 @@
 
 #include <QStringList>
 
-#include <ksharedptr.h>
 #include <ktexteditor/range.h>
 
 #include <language/duchain/topducontext.h>

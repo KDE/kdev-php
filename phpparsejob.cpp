@@ -23,8 +23,6 @@
 
 #include <ktexteditor/document.h>
 
-#include <klocale.h>
-
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/duchain.h>
 #include <language/duchain/topducontext.h>

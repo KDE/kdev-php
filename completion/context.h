@@ -21,8 +21,6 @@
 #ifndef PHPCODECOMPLETIONCONTEXT_H
 #define PHPCODECOMPLETIONCONTEXT_H
 
-#include <ksharedptr.h>
-
 #include <language/codecompletion/codecompletioncontext.h>
 #include <language/duchain/types/abstracttype.h>
 

@@ -30,7 +30,6 @@
 #include <QDir>
 #include <ktexteditor/view.h>
 #include <ktexteditor/document.h>
-#include <kiconloader.h>
 
 #include <language/duchain/declaration.h>
 #include <language/duchain/ducontext.h>
