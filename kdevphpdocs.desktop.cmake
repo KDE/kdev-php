@@ -44,6 +44,7 @@ Comment[zh_CN]=此插件集成了 PHP.net 的在线文档。
 Comment[zh_TW]=此外掛程式整合 PHP.net 線上文件。
 Name=PHP Documentation
 Name[ar]=توثيق PHP
+Name[ast]=Documentación PHP
 Name[bg]=Документация на PHP
 Name[bs]=PHP Dokumentacija
 Name[ca]=Documentació de PHP
