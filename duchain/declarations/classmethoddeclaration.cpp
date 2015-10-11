@@ -60,15 +60,18 @@ ClassMethodDeclaration::~ClassMethodDeclaration()
 
 bool ClassMethodDeclaration::isConstructor() const
 {
-    Identifier id = identifier();
-    return id.nameEquals(Identifier("__construct"))
-           || id.nameEquals(context()->indexedLocalScopeIdentifier().identifier().first());
+    static const auto constructId = IndexedIdentifier(Identifier(QStringLiteral("__construct")));
+    const auto indexed = indexedIdentifier();
+    return indexed == constructId
+           || indexed == context()->indexedLocalScopeIdentifier().identifier().indexedFirst();
 }
 
 bool ClassMethodDeclaration::isDestructor() const
 {
     //TODO: register_shutdown_function
-    return identifier().nameEquals(Identifier("__destruct"));
+    static const auto destructId = IndexedIdentifier(Identifier(QStringLiteral("__destruct")));
+    const auto indexed = indexedIdentifier();
+    return indexed == destructId;
 }
 
 Declaration* ClassMethodDeclaration::clonePrivate() const
