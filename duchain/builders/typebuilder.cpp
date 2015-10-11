@@ -58,32 +58,33 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
 {
     uint iType = 0;
     type = type.trimmed();
-    QString lType = type.toLower();
-    if (lType == "int" || lType == "integer") {
+    if (!type.compare(QLatin1String("int"), Qt::CaseInsensitive) || !type.compare(QLatin1String("integer"), Qt::CaseInsensitive)) {
         iType = IntegralType::TypeInt;
-    } else if (lType == "float" || lType == "double") {
+    } else if (!type.compare(QLatin1String("float"), Qt::CaseInsensitive) || !type.compare(QLatin1String("double"), Qt::CaseInsensitive)) {
         iType = IntegralType::TypeFloat;
-    } else if (lType == "bool" || lType == "boolean" || lType == "false" || lType == "true") {
+    } else if (!type.compare(QLatin1String("bool"), Qt::CaseInsensitive) || !type.compare(QLatin1String("boolean"), Qt::CaseInsensitive)
+            || !type.compare(QLatin1String("false"), Qt::CaseInsensitive) || !type.compare(QLatin1String("true"), Qt::CaseInsensitive)) {
         iType = IntegralType::TypeBoolean;
-    } else if (lType == "string") {
+    } else if (!type.compare(QLatin1String("string"), Qt::CaseInsensitive)) {
         iType = IntegralType::TypeString;
-    } else if (lType == "mixed") {
+    } else if (!type.compare(QLatin1String("mixed"), Qt::CaseInsensitive)) {
         iType = IntegralType::TypeMixed;
-    } else if (lType == "array") {
+    } else if (!type.compare(QLatin1String("array"), Qt::CaseInsensitive)) {
         iType = IntegralType::TypeArray;
-    } else if (lType == "resource") {
+    } else if (!type.compare(QLatin1String("resource"), Qt::CaseInsensitive)) {
         return AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeResource));
-    } else if (lType == "null") {
+    } else if (!type.compare(QLatin1String("null"), Qt::CaseInsensitive)) {
         iType = IntegralType::TypeNull;
-    } else if (lType == "void") {
+    } else if (!type.compare(QLatin1String("void"), Qt::CaseInsensitive)) {
         iType = IntegralType::TypeVoid;
-    } else if (lType == "self" || lType == "this" || lType == "static") {
+    } else if (!type.compare(QLatin1String("self"), Qt::CaseInsensitive)
+            || !type.compare(QLatin1String("this"), Qt::CaseInsensitive) || !type.compare(QLatin1String("static"), Qt::CaseInsensitive)) {
         DUChainReadLocker lock(DUChain::lock());
         if ( currentContext()->type() == DUContext::Class && currentContext()->owner() ) {
             return currentContext()->owner()->abstractType();
         }
     } else {
-        if (lType == "object") {
+        if (!type.compare(QLatin1String("object"), Qt::CaseInsensitive)) {
             type = "stdclass";
         }
         //don't use openTypeFromName as it uses cursor for findDeclarations
