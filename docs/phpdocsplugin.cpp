@@ -46,7 +46,6 @@
 
 #include "phpdocumentation.h"
 #include "phpdocssettings.h"
-#include "kdevphpdocsversion.h"
 
 using namespace KDevelop;
 
@@ -70,7 +69,7 @@ PhpDocsPlugin::~PhpDocsPlugin()
 
 QString PhpDocsPlugin::name() const
 {
-    return QString("PHP");
+    return QStringLiteral("PHP");
 }
 
 QIcon PhpDocsPlugin::icon() const
@@ -83,7 +82,7 @@ void PhpDocsPlugin::readConfig()
 {
     // since PhpDocsSettings pointer in this plugin is distinct from the one in the KCM
     // we have to trigger reading manually
-    PhpDocsSettings::self()->readConfig();
+    PhpDocsSettings::self()->load();
 }
 
 ///TODO: possibly return multiple filenames (i.e. fallbacks) when doing local lookups

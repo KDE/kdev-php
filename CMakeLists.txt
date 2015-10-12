@@ -17,8 +17,8 @@ include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings)
 
-find_package(Qt5 REQUIRED Core Widgets Test)
-find_package(KF5 REQUIRED COMPONENTS KDELibs4Support ThreadWeaver TextEditor I18n)
+find_package(Qt5 REQUIRED Core Widgets Test WebKitWidgets)
+find_package(KF5 REQUIRED COMPONENTS KDELibs4Support ThreadWeaver TextEditor I18n KCMUtils)
 find_package(KDevPlatform ${KDEVPLATFORM_VERSION} REQUIRED)
 find_package(KDevelop-PG-Qt REQUIRED)
 
@@ -33,6 +33,7 @@ add_subdirectory(parser)
 add_subdirectory(duchain)
 add_subdirectory(completion)
 add_subdirectory(testprovider)
+add_subdirectory(docs)
 
 set(kdevphplanguagesupport_PART_SRCS
     phplanguagesupport.cpp
