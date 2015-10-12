@@ -1,6 +1,6 @@
 PROJECT(php)
 
-set(KDEVPHP_VERSION_MAJOR 1)
+set(KDEVPHP_VERSION_MAJOR 4)
 set(KDEVPHP_VERSION_MINOR 9)
 set(KDEVPHP_VERSION_PATCH 90)
 # KDevplatform dependency version
