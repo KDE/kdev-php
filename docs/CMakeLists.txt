@@ -14,8 +14,8 @@ set(kdevphpdocs_SRCS
     ${kdevphpdocs_settings_SRCS}
 )
 
-add_library(kdevphpdocs MODULE ${kdevphpdocs_SRCS})
-
+kdevplatform_add_plugin(kdevphpdocs JSON kdevphpdocs.json
+    SOURCES ${kdevphpdocs_SRCS})
 target_link_libraries(kdevphpdocs
     KDev::Interfaces
     KDev::Language
@@ -24,10 +24,6 @@ target_link_libraries(kdevphpdocs
     KF5::KCMUtils
     KF5::KDELibs4Support
 )
-
-configure_file(kdevphpdocs.desktop.cmake ${CMAKE_CURRENT_BINARY_DIR}/kdevphpdocs.desktop)
-kcoreaddons_desktop_to_json(kdevphpdocs ${CMAKE_CURRENT_BINARY_DIR}/kdevphpdocs.desktop)
-install(TARGETS kdevphpdocs DESTINATION ${PLUGIN_INSTALL_DIR}/kdevplatform/${KDEV_PLUGIN_VERSION})
 
 ### Configuration module for PHP documentation plugin
 
