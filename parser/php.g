@@ -57,6 +57,8 @@
 
 [:
 
+#include <QtCore/QRegularExpression>
+
 namespace KDevelop
 {
     class DUContext;
@@ -161,7 +163,8 @@ namespace KDevelop
   enum ProblemType {
       Error,
       Warning,
-      Info
+      Info,
+      Todo
   };
   void reportProblem( Parser::ProblemType type, const QString& message, int tokenOffset = -1 );
   QList<KDevelop::ProblemPointer> problems() {
@@ -170,6 +173,8 @@ namespace KDevelop
   QString tokenText(qint64 begin, qint64 end);
   void setDebug(bool debug);
   void setCurrentDocument(KDevelop::IndexedString url);
+  void setTodoMarkers(const QStringList& markers);
+  void extractTodosFromComment(const QString& comment, int offset);
 
     enum InitialLexerState {
         HtmlState = 0,
@@ -195,6 +200,8 @@ namespace KDevelop
         bool varExpressionIsVariable;
     };
     ParserState m_state;
+
+    QRegularExpression m_todoMarkers;
 :]
 
 %parserclass (constructor)
@@ -1023,6 +1030,9 @@ void Parser::tokenize(const QString& contents, int initialState)
         lastDocCommentEnd = 0;
         kind = lexer.nextTokenKind();
         while (kind == Parser::Token_WHITESPACE || kind == Parser::Token_COMMENT || kind == Parser::Token_DOC_COMMENT) {
+            if (kind == Parser::Token_COMMENT || kind == Parser::Token_DOC_COMMENT) {
+                extractTodosFromComment(tokenText(lexer.tokenBegin(), lexer.tokenEnd()), lexer.tokenBegin());
+            }
             if (kind == Parser::Token_DOC_COMMENT) {
                 lastDocCommentBegin = lexer.tokenBegin();
                 lastDocCommentEnd = lexer.tokenEnd();
@@ -1046,6 +1056,31 @@ void Parser::tokenize(const QString& contents, int initialState)
     yylex(); // produce the look ahead token
 }
 
+void Parser::extractTodosFromComment(const QString& comment, int offset)
+{
+    auto i = m_todoMarkers.globalMatch(comment);
+    while (i.hasNext()) {
+        auto match = i.next();
+        qDebug() << match.captured();
+        reportProblem(Todo, match.captured(1), offset + match.capturedStart(1));
+    };
+}
+
+void Parser::setTodoMarkers(const QStringList& markers)
+{
+    QString pattern = "^(?:[/\\*\\s]*)(.*(?:";
+    bool first = true;
+    foreach(const QString& marker, markers) {
+        if (!first) {
+            pattern += '|';
+        }
+        pattern += QRegularExpression::escape(marker);
+        first = false;
+    }
+    pattern += ").*?)(?:[/\\*\\s]*)$";
+    m_todoMarkers.setPatternOptions(QRegularExpression::MultilineOption);
+    m_todoMarkers.setPattern(pattern);
+}
 
 QString Parser::tokenText(qint64 begin, qint64 end)
 {
@@ -1073,6 +1108,10 @@ void Parser::reportProblem( Parser::ProblemType type, const QString& message, in
             break;
         case Info:
             p->setSeverity(KDevelop::IProblem::Hint);
+            break;
+        case Todo:
+            p->setSeverity(KDevelop::IProblem::Hint);
+            p->setSource(KDevelop::IProblem::ToDo);
             break;
     }
     p->setDescription(message);

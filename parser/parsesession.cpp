@@ -26,7 +26,12 @@
 
 #include <QFile>
 #include <QTextCodec>
+
 #include <KLocalizedString>
+
+#include <interfaces/icore.h>
+#include <interfaces/ilanguagecontroller.h>
+#include <interfaces/icompletionsettings.h>
 
 namespace Php
 {
@@ -114,6 +119,7 @@ Parser* ParseSession::createParser(int initialState)
     parser->setMemoryPool(m_pool);
     parser->setDebug(m_debug);
     parser->setCurrentDocument(m_currentDocument);
+    parser->setTodoMarkers(KDevelop::ICore::self()->languageController()->completionSettings()->todoMarkerWords());
 
     parser->tokenize(m_contents, initialState);
     return parser;

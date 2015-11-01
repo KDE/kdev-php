@@ -29,6 +29,10 @@
 #include <language/duchain/types/unsuretype.h>
 #include <language/duchain/namespacealiasdeclaration.h>
 
+#include <interfaces/icore.h>
+#include <interfaces/ilanguagecontroller.h>
+#include <interfaces/icompletionsettings.h>
+
 #include "helper.h"
 
 #include "../declarations/classdeclaration.h"
@@ -2897,3 +2901,21 @@ void TestDUChain::declareFinalMethod()
     QVERIFY(funDec->isFinal());
 }
 
+void Php::TestDUChain::testTodoExtractor()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? /* TODO: bla */\n/// FIXME blub");
+
+    QVERIFY(KDevelop::ICore::self()->languageController()->completionSettings()->todoMarkerWords().contains("TODO"));
+    QVERIFY(KDevelop::ICore::self()->languageController()->completionSettings()->todoMarkerWords().contains("FIXME"));
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(top);
+    QCOMPARE(top->problems().size(), 2);
+    QCOMPARE(top->problems().at(0)->description(), QString("TODO: bla"));
+    QCOMPARE(top->problems().at(1)->description(), QString("FIXME blub"));
+}

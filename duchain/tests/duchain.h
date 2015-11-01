@@ -146,6 +146,7 @@ private slots:
     void ternary();
     void bug296709();
     void declareFinalMethod();
+    void testTodoExtractor();
 };
 
 }
