@@ -2,6 +2,7 @@
     "KPlugin": {
         "Category": "Language Support", 
         "Description": "PHP Language Support", 
+        "Description[ca@valencia]": "Implementació del llenguatge PHP", 
         "Description[ca]": "Implementació del llenguatge PHP", 
         "Description[de]": "Sprachunterstützung für PHP", 
         "Description[en_GB]": "PHP Language Support", 
@@ -18,6 +19,7 @@
         "Icon": "application-x-php", 
         "Id": "KDevPhpSupport", 
         "Name": "PHP Language Support", 
+        "Name[ca@valencia]": "Implementació del llenguatge PHP", 
         "Name[ca]": "Implementació del llenguatge PHP", 
         "Name[de]": "Sprachunterstützung für PHP", 
         "Name[en_GB]": "PHP Language Support", 
