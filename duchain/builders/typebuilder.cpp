@@ -527,22 +527,23 @@ void TypeBuilder::visitStatement(StatementAst* node)
                 // 0 == global lookup and the delcaration is found again...
                 classDec = dynamic_cast<ClassDeclaration*>(type->declaration(0));
             }
-            Q_ASSERT(classDec);
-            /// Qualified identifier for 'iterator'
-            static const QualifiedIdentifier iteratorQId("iterator");
-            ClassDeclaration* iteratorDecl = dynamic_cast<ClassDeclaration*>(
-                findDeclarationImport(ClassDeclarationType, iteratorQId).data()
-            );
-            Q_ASSERT(iteratorDecl);
-            if (classDec->isPublicBaseClass(iteratorDecl, currentContext()->topContext())) {
-                /// Qualified identifier for 'current'
-                static const QualifiedIdentifier currentQId("current");
-                foreach (Declaration *d, classDec->internalContext()->findDeclarations(currentQId)) {
-                    if (!dynamic_cast<ClassMethodDeclaration*>(d)) continue;
-                    Q_ASSERT(d->type<FunctionType>());
-                    injectType(d->type<FunctionType>()->returnType());
-                    foundType = true;
-                    // kDebug() << "that's it: " << d->type<FunctionType>()->returnType()->toString();
+            if (classDec) {
+                /// Qualified identifier for 'iterator'
+                static const QualifiedIdentifier iteratorQId("iterator");
+                ClassDeclaration* iteratorDecl = dynamic_cast<ClassDeclaration*>(
+                    findDeclarationImport(ClassDeclarationType, iteratorQId).data()
+                );
+                Q_ASSERT(iteratorDecl);
+                if (classDec->isPublicBaseClass(iteratorDecl, currentContext()->topContext())) {
+                    /// Qualified identifier for 'current'
+                    static const QualifiedIdentifier currentQId("current");
+                    foreach (Declaration *d, classDec->internalContext()->findDeclarations(currentQId)) {
+                        if (!dynamic_cast<ClassMethodDeclaration*>(d)) continue;
+                        Q_ASSERT(d->type<FunctionType>());
+                        injectType(d->type<FunctionType>()->returnType());
+                        foundType = true;
+                        // kDebug() << "that's it: " << d->type<FunctionType>()->returnType()->toString();
+                    }
                 }
             }
         }
