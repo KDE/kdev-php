@@ -7,6 +7,7 @@ kconfig_add_kcfg_files( kdevphpdocs_settings_SRCS phpdocssettings.kcfgc )
 ########## Documentation Plugin #####
 
 set(kdevphpdocs_SRCS
+    phpdocsdebug.cpp
     phpdocumentationwidget.cpp
     phpdocumentation.cpp
     phpdocsplugin.cpp
@@ -20,9 +21,7 @@ target_link_libraries(kdevphpdocs
     KDev::Interfaces
     KDev::Language
     KDev::Documentation
-    # TODO: remove this
     KF5::KCMUtils
-    KF5::KDELibs4Support
 )
 
 ### Configuration module for PHP documentation plugin
@@ -39,9 +38,7 @@ target_link_libraries( kcm_kdevphpdocs
     KF5::ConfigWidgets
     KF5::KIOWidgets
     KF5::I18n
-    # TODO: remove this
     KF5::KCMUtils
-    KF5::KDELibs4Support
 )
 
 configure_file(kcm_kdevphpdocs.desktop.cmake ${CMAKE_CURRENT_BINARY_DIR}/kcm_kdevphpdocs.desktop)

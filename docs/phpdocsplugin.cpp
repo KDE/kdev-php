@@ -25,9 +25,7 @@
 #include <KPluginFactory>
 #include <KPluginLoader>
 #include <KAboutData>
-#include <KSettings/Dispatcher>
-#include <KDebug>
-#include <KComponentData>
+#include <ksettings/Dispatcher>
 
 #include <interfaces/idocumentation.h>
 #include <interfaces/icore.h>
@@ -44,6 +42,7 @@
 
 #include <QtCore/QFile>
 
+#include "phpdocsdebug.h"
 #include "phpdocumentation.h"
 #include "phpdocssettings.h"
 
@@ -139,7 +138,7 @@ QString PhpDocsPlugin::getDocumentationFilename( KDevelop::Declaration* dec, con
         }
     }
 
-    kDebug() << fname;
+    qCDebug(DOCS) << fname;
 
     if ( !fname.isEmpty() && isLocal ) {
         fname = fname.toLower();
@@ -161,21 +160,21 @@ IDocumentation::Ptr PhpDocsPlugin::documentationForDeclaration( Declaration* dec
         }
 
         QUrl url = PhpDocsSettings::phpDocLocation();
-        kDebug() << url;
+        qCDebug(DOCS) << url;
 
         QString file = getDocumentationFilename( dec, url.isLocalFile() );
         if ( file.isEmpty() ) {
-            kDebug() << "no documentation pattern found for" << dec->toString();
+            qCDebug(DOCS) << "no documentation pattern found for" << dec->toString();
             return {};
         }
 
         url.setPath( url.path() + '/' + file);
         if ( url.isLocalFile() && !QFile::exists( url.toLocalFile() ) ) {
-            kDebug() << "bad path" << url << "for documentation of" << dec->toString() << " - aborting";
+            qCDebug(DOCS) << "bad path" << url << "for documentation of" << dec->toString() << " - aborting";
             return {};
         }
 
-        kDebug() << "php documentation located at " << url << "for" << dec->toString();
+        qCDebug(DOCS) << "php documentation located at " << url << "for" << dec->toString();
         return documentationForUrl(url, dec->qualifiedIdentifier().toString(), dec->comment());
     }
 
@@ -196,7 +195,7 @@ IDocumentation::Ptr PhpDocsPlugin::documentationForIndex(const QModelIndex& inde
 
 void PhpDocsPlugin::loadUrl(const QUrl& url) const
 {
-    kDebug() << "loading URL" << url;
+    qCDebug(DOCS) << "loading URL" << url;
     auto doc = documentationForUrl(url, QString());
     ICore::self()->documentationController()->showDocumentation(doc);
 }
