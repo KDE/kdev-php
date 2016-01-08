@@ -48,7 +48,7 @@ void TestDUChainMultipleFiles::testImportsGlobalFunction()
     TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
     TestProject* project = new TestProject;
-    m_projectController->clearProjects();
+    m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
     TestFile f1("<? function foo() {}", "php", project);
@@ -70,7 +70,7 @@ void TestDUChainMultipleFiles::testImportsBaseClassNotYetParsed()
     TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
     TestProject* project = new TestProject;
-    m_projectController->clearProjects();
+    m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
     TestFile f2("<? class B extends A {}", "php", project);
@@ -92,7 +92,7 @@ void TestDUChainMultipleFiles::testNonExistingBaseClass()
     TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
     TestProject* project = new TestProject;
-    m_projectController->clearProjects();
+    m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
     TestFile f1("<? class B extends A {}", "php", project);
@@ -108,7 +108,7 @@ void TestDUChainMultipleFiles::testImportsGlobalFunctionNotYetParsed()
     TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
     TestProject* project = new TestProject;
-    m_projectController->clearProjects();
+    m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
     TestFile f2("<? foo2();", "php", project);
@@ -130,7 +130,7 @@ void TestDUChainMultipleFiles::testNonExistingGlobalFunction()
     TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
     TestProject* project = new TestProject;
-    m_projectController->clearProjects();
+    m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
     TestFile f2("<? foo3();", "php", project);
@@ -146,7 +146,7 @@ void TestDUChainMultipleFiles::testImportsStaticFunctionNotYetParsed()
     TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
     TestProject* project = new TestProject;
-    m_projectController->clearProjects();
+    m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
     TestFile f2("<? C::foo();", "php", project);
@@ -167,7 +167,7 @@ void TestDUChainMultipleFiles::testNonExistingStaticFunction()
     TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
     TestProject* project = new TestProject;
-    m_projectController->clearProjects();
+    m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
     TestFile f2("<? D::foo();", "php", project);
@@ -185,7 +185,7 @@ void TestDUChainMultipleFiles::testForeachImportedIdentifier()
     TopDUContext::Features features = TopDUContext::VisibleDeclarationsAndContexts;
 
     TestProject* project = new TestProject;
-    m_projectController->clearProjects();
+    m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
     // build dependency
@@ -229,7 +229,7 @@ void TestDUChainMultipleFiles::testUpdateForeach()
     TopDUContext::Features features = TopDUContext::AllDeclarationsContextsAndUses;
 
     TestProject* project = new TestProject;
-    m_projectController->clearProjects();
+    m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
     TestFile f("<?\n$k = null;\nforeach(array() as $i => $k) {}\n", "php", project);
