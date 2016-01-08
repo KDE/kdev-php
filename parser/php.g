@@ -166,7 +166,7 @@ namespace KDevelop
       Info,
       Todo
   };
-  void reportProblem( Parser::ProblemType type, const QString& message, int tokenOffset = -1 );
+  KDevelop::ProblemPointer reportProblem( Parser::ProblemType type, const QString& message, int tokenOffset = -1 );
   QList<KDevelop::ProblemPointer> problems() {
       return m_problems;
   }
@@ -174,7 +174,7 @@ namespace KDevelop
   void setDebug(bool debug);
   void setCurrentDocument(KDevelop::IndexedString url);
   void setTodoMarkers(const QStringList& markers);
-  void extractTodosFromComment(const QString& comment, int offset);
+  void extractTodosFromComment(const QString& comment, qint64 offset);
 
     enum InitialLexerState {
         HtmlState = 0,
@@ -1056,13 +1056,21 @@ void Parser::tokenize(const QString& contents, int initialState)
     yylex(); // produce the look ahead token
 }
 
-void Parser::extractTodosFromComment(const QString& comment, int offset)
+void Parser::extractTodosFromComment(const QString& comment, qint64 startPosition)
 {
     auto i = m_todoMarkers.globalMatch(comment);
     while (i.hasNext()) {
         auto match = i.next();
-        qDebug() << match.captured();
-        reportProblem(Todo, match.captured(1), offset + match.capturedStart(1));
+        auto p = reportProblem(Todo, match.captured(1), 0);
+
+        qint64 line = 0;
+        qint64 column = 0;
+        tokenStream->locationTable()->positionAt(startPosition, &line, &column);
+
+        auto location = p->finalLocation();
+        location.setStart(KTextEditor::Cursor(line, column + match.capturedStart(1)));
+        location.setEnd(KTextEditor::Cursor(line, column + match.capturedEnd(1)));
+        p->setFinalLocation(location);
     };
 }
 
@@ -1088,7 +1096,7 @@ QString Parser::tokenText(qint64 begin, qint64 end)
 }
 
 
-void Parser::reportProblem( Parser::ProblemType type, const QString& message, int offset )
+KDevelop::ProblemPointer Parser::reportProblem( Parser::ProblemType type, const QString& message, int offset )
 {
     qint64 sLine;
     qint64 sCol;
@@ -1097,7 +1105,7 @@ void Parser::reportProblem( Parser::ProblemType type, const QString& message, in
     qint64 eLine;
     qint64 eCol;
     tokenStream->endPosition(index, &eLine, &eCol);
-    KDevelop::Problem *p = new KDevelop::Problem();
+    auto p = KDevelop::ProblemPointer(new KDevelop::Problem());
     p->setSource(KDevelop::IProblem::Parser);
     switch ( type ) {
         case Error:
@@ -1115,9 +1123,10 @@ void Parser::reportProblem( Parser::ProblemType type, const QString& message, in
             break;
     }
     p->setDescription(message);
-    KTextEditor::Range range(sLine, sCol, eLine, eCol+1);
+    KTextEditor::Range range(sLine, sCol, eLine, eCol + 1);
     p->setFinalLocation(KDevelop::DocumentRange(m_currentDocument, range));
-    m_problems << KDevelop::ProblemPointer(p);
+    m_problems << p;
+    return p;
 }
 
 
