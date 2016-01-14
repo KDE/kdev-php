@@ -58,18 +58,18 @@ QString MagicConstantNavigationContext::html(bool /*shorten*/)
     QString html = "<html><body><p><small><small>";
     html += typeHighlight(i18n("magic constant"));
     html += ' ';
-    html += nameHighlight(Qt::escape(m_constant));
+    html += nameHighlight(m_constant.toHtmlEscaped());
     html += "<br/>\n";
 
     QString value;
     ///TODO: php 5.3: __DIR__, __NAMESPACE__
     if ( m_constant == "__FILE__" ) {
-        value = Qt::escape(m_topContext->url().str());
+        value = m_topContext->url().str().toHtmlEscaped();
     } else if ( m_constant == "__LINE__" ) {
         value.setNum(m_position.line + 1);
     } else if ( m_constant == "__CLASS__" ) {
         if ( DUContext* ctx = findContext(m_topContext, m_position, DUContext::Class) ) {
-            value = codeHighlight(Qt::escape(ctx->localScopeIdentifier().toString()));
+            value = codeHighlight(ctx->localScopeIdentifier().toString().toHtmlEscaped());
         } else {
             value = commentHighlight(i18n("empty (not inside a class)"));
         }
@@ -80,10 +80,10 @@ QString MagicConstantNavigationContext::html(bool /*shorten*/)
                 break;
             }
             if ( ctx->parentContext()->type() == DUContext::Class ) {
-                value = codeHighlight(Qt::escape(
+                value = codeHighlight(QString(
                             ctx->parentContext()->localScopeIdentifier().toString() + "::"
                             + ctx->localScopeIdentifier().toString()
-                        ));
+                        ).toHtmlEscaped());
                 break;
             }
             // might be a "normal" function inside a method...
@@ -96,7 +96,7 @@ QString MagicConstantNavigationContext::html(bool /*shorten*/)
         CursorInRevision pos = m_position;
         if ( DUContext* ctx = findContext(m_topContext, pos, DUContext::Other) ) {
             if ( ctx->owner() && ctx->owner()->type<FunctionType>() ) {
-                value = codeHighlight(Qt::escape(ctx->localScopeIdentifier().toString()));
+                value = codeHighlight(ctx->localScopeIdentifier().toString().toHtmlEscaped());
             }
         }
         if ( value.isEmpty() ) {
@@ -105,7 +105,7 @@ QString MagicConstantNavigationContext::html(bool /*shorten*/)
     } else if ( m_constant == "__NAMESPACE__" ) {
         if ( DUContext* ctx = findContext(m_topContext, m_position, DUContext::Namespace) ) {
             if ( ctx->owner() && ctx->owner()->kind() == Declaration::Namespace ) {
-                value = codeHighlight(Qt::escape(ctx->localScopeIdentifier().toString()));
+                value = codeHighlight(ctx->localScopeIdentifier().toString().toHtmlEscaped());
             }
         }
         if ( value.isEmpty() ) {

@@ -27,9 +27,8 @@
 #include <KConfigGroup>
 #include <KUrlRequester>
 #include <KAboutData>
-#include <KDebug>
 #include <KFile>
-#include <KSettings/Dispatcher>
+#include <ksettings/Dispatcher>
 
 #include "phpdocssettings.h"
 #include "ui_phpdocsconfig.h"
@@ -59,7 +58,7 @@ void PhpDocsConfig::save()
     KCModule::save();
 
     // looks like we have to force a write so readConfig() can get the new values
-    PhpDocsSettings::self()->writeConfig();
+    PhpDocsSettings::self()->save();
 
     KSettings::Dispatcher::reparseConfiguration( componentData().componentName() );
 }

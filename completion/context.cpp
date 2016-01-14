@@ -1647,7 +1647,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
 
 inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
 {
-    if ( dec->range().isEmpty() ) {
+    if ( !dec || dec->range().isEmpty() ) {
         // hack for included files
         return false;
     }

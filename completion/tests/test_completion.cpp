@@ -53,12 +53,13 @@ public:
     //normally set by worker, but in test we don't have a worker
     void foundDeclarations(QList<KDevelop::CompletionTreeItemPointer> items, CodeCompletionContext* completionContext)
     {
+        beginResetModel();
         m_completionItems.clear();
         foreach(const CompletionTreeItemPointer &i, items) {
             m_completionItems << QExplicitlySharedDataPointer<CompletionTreeElement>(i);
         }
         m_completionContext = KDevelop::CodeCompletionContext::Ptr(completionContext);
-        reset();
+        endResetModel();
     }
 };
 

@@ -21,6 +21,8 @@
 
 #include "phpdocsmodel.h"
 
+#include "phpdocsdebug.h"
+
 #include <language/duchain/duchain.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/duchainlock.h>
@@ -32,19 +34,19 @@
 #include <language/backgroundparser/backgroundparser.h>
 #include <language/backgroundparser/parsejob.h>
 
-#include <KStandardDirs>
 #include <KLocalizedString>
-#include <KDebug>
+
+#include <QStandardPaths>
 
 using namespace KDevelop;
 
 PhpDocsModel::PhpDocsModel(QObject* parent)
-    : QAbstractListModel(parent), m_internalFunctionsFile(KStandardDirs::locate("data", "kdevphpsupport/phpfunctions.php"))
+    : QAbstractListModel(parent), m_internalFunctionsFile(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kdevphpsupport/phpfunctions.php"))
 {
     // make sure the php plugin is loaded
     auto phpLangPlugin = ICore::self()->languageController()->language("Php");
     if ( !phpLangPlugin ) {
-        kWarning() << "could not load PHP language support plugin";
+        qCWarning(DOCS) << "could not load PHP language support plugin";
         return;
     }
 
@@ -74,7 +76,7 @@ void PhpDocsModel::fillModel(const ReferencedTopDUContext& top)
         return;
     }
 
-    kDebug() << "filling model";
+    qCDebug(DOCS) << "filling model";
     typedef QPair<Declaration*, int> DeclDepthPair;
     foreach ( const DeclDepthPair& declpair, top->allDeclarations(top->range().end, top) ) {
         if ( declpair.first->abstractType() && declpair.first->abstractType()->modifiers() & AbstractType::ConstModifier ) {

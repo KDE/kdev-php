@@ -57,6 +57,8 @@
 
 [:
 
+#include <QtCore/QRegularExpression>
+
 namespace KDevelop
 {
     class DUContext;
@@ -161,15 +163,18 @@ namespace KDevelop
   enum ProblemType {
       Error,
       Warning,
-      Info
+      Info,
+      Todo
   };
-  void reportProblem( Parser::ProblemType type, const QString& message, int tokenOffset = -1 );
+  KDevelop::ProblemPointer reportProblem( Parser::ProblemType type, const QString& message, int tokenOffset = -1 );
   QList<KDevelop::ProblemPointer> problems() {
       return m_problems;
   }
   QString tokenText(qint64 begin, qint64 end);
   void setDebug(bool debug);
   void setCurrentDocument(KDevelop::IndexedString url);
+  void setTodoMarkers(const QStringList& markers);
+  void extractTodosFromComment(const QString& comment, qint64 offset);
 
     enum InitialLexerState {
         HtmlState = 0,
@@ -195,6 +200,8 @@ namespace KDevelop
         bool varExpressionIsVariable;
     };
     ParserState m_state;
+
+    QRegularExpression m_todoMarkers;
 :]
 
 %parserclass (constructor)
@@ -1023,6 +1030,9 @@ void Parser::tokenize(const QString& contents, int initialState)
         lastDocCommentEnd = 0;
         kind = lexer.nextTokenKind();
         while (kind == Parser::Token_WHITESPACE || kind == Parser::Token_COMMENT || kind == Parser::Token_DOC_COMMENT) {
+            if (kind == Parser::Token_COMMENT || kind == Parser::Token_DOC_COMMENT) {
+                extractTodosFromComment(tokenText(lexer.tokenBegin(), lexer.tokenEnd()), lexer.tokenBegin());
+            }
             if (kind == Parser::Token_DOC_COMMENT) {
                 lastDocCommentBegin = lexer.tokenBegin();
                 lastDocCommentEnd = lexer.tokenEnd();
@@ -1046,6 +1056,39 @@ void Parser::tokenize(const QString& contents, int initialState)
     yylex(); // produce the look ahead token
 }
 
+void Parser::extractTodosFromComment(const QString& comment, qint64 startPosition)
+{
+    auto i = m_todoMarkers.globalMatch(comment);
+    while (i.hasNext()) {
+        auto match = i.next();
+        auto p = reportProblem(Todo, match.captured(1), 0);
+
+        qint64 line = 0;
+        qint64 column = 0;
+        tokenStream->locationTable()->positionAt(startPosition, &line, &column);
+
+        auto location = p->finalLocation();
+        location.setStart(KTextEditor::Cursor(line, column + match.capturedStart(1)));
+        location.setEnd(KTextEditor::Cursor(line, column + match.capturedEnd(1)));
+        p->setFinalLocation(location);
+    };
+}
+
+void Parser::setTodoMarkers(const QStringList& markers)
+{
+    QString pattern = "^(?:[/\\*\\s]*)(.*(?:";
+    bool first = true;
+    foreach(const QString& marker, markers) {
+        if (!first) {
+            pattern += '|';
+        }
+        pattern += QRegularExpression::escape(marker);
+        first = false;
+    }
+    pattern += ").*?)(?:[/\\*\\s]*)$";
+    m_todoMarkers.setPatternOptions(QRegularExpression::MultilineOption);
+    m_todoMarkers.setPattern(pattern);
+}
 
 QString Parser::tokenText(qint64 begin, qint64 end)
 {
@@ -1053,7 +1096,7 @@ QString Parser::tokenText(qint64 begin, qint64 end)
 }
 
 
-void Parser::reportProblem( Parser::ProblemType type, const QString& message, int offset )
+KDevelop::ProblemPointer Parser::reportProblem( Parser::ProblemType type, const QString& message, int offset )
 {
     qint64 sLine;
     qint64 sCol;
@@ -1062,7 +1105,7 @@ void Parser::reportProblem( Parser::ProblemType type, const QString& message, in
     qint64 eLine;
     qint64 eCol;
     tokenStream->endPosition(index, &eLine, &eCol);
-    KDevelop::Problem *p = new KDevelop::Problem();
+    auto p = KDevelop::ProblemPointer(new KDevelop::Problem());
     p->setSource(KDevelop::IProblem::Parser);
     switch ( type ) {
         case Error:
@@ -1074,11 +1117,16 @@ void Parser::reportProblem( Parser::ProblemType type, const QString& message, in
         case Info:
             p->setSeverity(KDevelop::IProblem::Hint);
             break;
+        case Todo:
+            p->setSeverity(KDevelop::IProblem::Hint);
+            p->setSource(KDevelop::IProblem::ToDo);
+            break;
     }
     p->setDescription(message);
-    KTextEditor::Range range(sLine, sCol, eLine, eCol+1);
+    KTextEditor::Range range(sLine, sCol, eLine, eCol + 1);
     p->setFinalLocation(KDevelop::DocumentRange(m_currentDocument, range));
-    m_problems << KDevelop::ProblemPointer(p);
+    m_problems << p;
+    return p;
 }
 
 
