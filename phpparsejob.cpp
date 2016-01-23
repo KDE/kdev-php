@@ -213,6 +213,8 @@ void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*t
         setDuChain(top);
         qCDebug(PHP) << "===Failed===" << document().str();
     }
+
+    DUChain::self()->emitUpdateReady(document(), duChain());
 }
 
 void ParseJob::setParentJob(ParseJob *job)

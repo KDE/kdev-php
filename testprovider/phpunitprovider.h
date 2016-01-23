@@ -28,10 +28,6 @@
 
 #include <QVariant>
 
-namespace KDevelop {
-class ParseJob;
-}
-
 class QVariant;
 
 class PhpUnitProvider : public KDevelop::IPlugin
@@ -43,9 +39,9 @@ public:
 
 public slots:
     void updateReady(const KDevelop::IndexedString& document, const KDevelop::ReferencedTopDUContext& context);
-    void parseJobFinished(KDevelop::ParseJob* job);
 
 private:
+    KDevelop::IndexedString m_phpUnitDeclarationsFile;
     KDevelop::IndexedDeclaration m_testCaseDeclaration;
     QList<KDevelop::ReferencedTopDUContext> m_pendingContexts;
 
