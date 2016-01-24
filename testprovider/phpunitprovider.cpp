@@ -31,7 +31,6 @@
 #include <interfaces/itestcontroller.h>
 #include <project/projectmodel.h>
 
-#include <language/backgroundparser/backgroundparser.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/duchain.h>
 #include <language/duchain/declaration.h>
@@ -56,9 +55,11 @@ PhpUnitProvider::PhpUnitProvider(QObject* parent, const QList< QVariant >& args)
     Q_UNUSED(args);
 
     QString file = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("kdevphpsupport/phpunitdeclarations.php"));
-    DUChain::self()->updateContextForUrl(IndexedString(file), KDevelop::TopDUContext::AllDeclarationsContextsAndUses, this, -10);
+    m_phpUnitDeclarationsFile = IndexedString(file);
+    DUChain::self()->updateContextForUrl(m_phpUnitDeclarationsFile, KDevelop::TopDUContext::AllDeclarationsContextsAndUses, this, -10);
 
-    connect (core()->languageController()->backgroundParser(), SIGNAL(parseJobFinished(KDevelop::ParseJob*)), SLOT(parseJobFinished(KDevelop::ParseJob*)));
+    connect(DUChain::self(), &DUChain::updateReady,
+            this, &PhpUnitProvider::updateReady);
 }
 
 void PhpUnitProvider::updateReady(const IndexedString& document, const ReferencedTopDUContext& context)
@@ -71,35 +72,25 @@ void PhpUnitProvider::updateReady(const IndexedString& document, const Reference
         return;
     }
 
-    QVector<Declaration*> declarations = context.data()->localDeclarations();
-    if (declarations.isEmpty())
-    {
-        qCDebug(TESTPROVIDER) << "Update of the internal test file found no suitable declarations";
-        return;
-    }
-    m_testCaseDeclaration = IndexedDeclaration(declarations.first());
+    if (document == m_phpUnitDeclarationsFile) {
+        QVector<Declaration*> declarations = context.data()->localDeclarations();
+        if (declarations.isEmpty()) {
+            qCDebug(TESTPROVIDER) << "Update of the internal test file found no suitable declarations";
+            return;
+        }
+        m_testCaseDeclaration = IndexedDeclaration(declarations.first());
 
-    qCDebug(TESTPROVIDER) << "Found declaration" << declarations.first()->toString();
-    lock.unlock();
+        qCDebug(TESTPROVIDER) << "Found declaration" << declarations.first()->toString();
 
-
-    foreach (const ReferencedTopDUContext& context, m_pendingContexts)
-    {
-        processContext(context);
-    }
-}
-
-void PhpUnitProvider::parseJobFinished(KDevelop::ParseJob* job)
-{
-    ReferencedTopDUContext topContext = job->duChain();
-    DUChainReadLocker lock;
-    if (!m_testCaseDeclaration.isValid())
-    {
-        m_pendingContexts << topContext;
-    }
-    else
-    {
-        processContext(topContext);
+        foreach (const ReferencedTopDUContext& context, m_pendingContexts) {
+            processContext(context);
+        }
+    } else {
+        if (!m_testCaseDeclaration.isValid()) {
+            m_pendingContexts << context;
+        } else {
+            processContext(context);
+        }
     }
 }
 
@@ -108,7 +99,6 @@ void PhpUnitProvider::processContext(ReferencedTopDUContext referencedContext)
 {
     qCDebug(TESTPROVIDER);
 
-    DUChainReadLocker locker;
     TopDUContext* context = referencedContext.data();
 
     if (!context) {
