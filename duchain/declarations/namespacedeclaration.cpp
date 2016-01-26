@@ -71,7 +71,7 @@ void NamespaceDeclaration::setPrettyName( const KDevelop::IndexedString& name )
 
 QString NamespaceDeclaration::toString() const
 {
-  QString ret("namespace ");
+  QString ret(QStringLiteral("namespace "));
   return ret + prettyName().str();
 }
 

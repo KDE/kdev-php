@@ -62,6 +62,7 @@ void ExpressionEvaluationResult::setDeclarations( QList< Declaration* > declarat
 {
     ENSURE_CHAIN_READ_LOCKED
     QList<DeclarationPointer> decs;
+    decs.reserve(declarations.size());
     foreach(Declaration* dec, declarations) {
         decs << DeclarationPointer(dec);
     }

@@ -73,7 +73,7 @@ void createArgumentList(const NormalDeclarationCompletionItem& item, QString& re
             if (first)
                 first = false;
             else
-                ret += ", ";
+                ret += QLatin1String(", ");
 
             bool doHighlight = false;
             QTextFormat doFormat = normalFormat;
@@ -155,18 +155,18 @@ QStringList getMethodTokens(QString text)
 
 
     text = text.trimmed();
-    if (text.endsWith(QString("function"), Qt::CaseInsensitive)) {
-        tokens << "function";
+    if (text.endsWith(QStringLiteral("function"), Qt::CaseInsensitive)) {
+        tokens << QStringLiteral("function");
         text = text.left(text.length() - 8);
     }
 
     QStringList possibleTokens;
-    possibleTokens << "private";
-    possibleTokens << "public";
-    possibleTokens << "protected";
-    possibleTokens << "static";
-    possibleTokens << "abstract";
-    possibleTokens << "final";
+    possibleTokens << QStringLiteral("private");
+    possibleTokens << QStringLiteral("public");
+    possibleTokens << QStringLiteral("protected");
+    possibleTokens << QStringLiteral("static");
+    possibleTokens << QStringLiteral("abstract");
+    possibleTokens << QStringLiteral("final");
 
     while (!possibleTokens.isEmpty()) {
         bool foundAnything = false;
@@ -192,18 +192,18 @@ const QString indentString(KTextEditor::Document *document)
 {
     KTextEditor::ConfigInterface *iface = qobject_cast<KTextEditor::ConfigInterface *>(document);
     if (!iface)
-        return "    ";
-    if (iface->configValue("replace-tabs").toBool()) {
-        QVariant iWidth = iface->configValue("indent-width");
+        return QStringLiteral("    ");
+    if (iface->configValue(QStringLiteral("replace-tabs")).toBool()) {
+        QVariant iWidth = iface->configValue(QStringLiteral("indent-width"));
         if (iWidth.isValid())
             return QString(iWidth.toUInt(), ' ');
         /*
          * Provide a default implementation if current KatePart
          * does not handle "indent-width".
          */
-        return "    ";
+        return QStringLiteral("    ");
     }
-    return "\t";
+    return QStringLiteral("\t");
 }
 
 QString getIndendation( const QString &line ) {

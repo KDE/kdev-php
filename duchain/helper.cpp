@@ -84,11 +84,11 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const 
         DeclarationType declarationType)
 {
     /// Qualified identifier for 'self'
-    static const QualifiedIdentifier selfQId("self");
+    static const QualifiedIdentifier selfQId(QStringLiteral("self"));
     /// Qualified identifier for 'parent'
-    static const QualifiedIdentifier parentQId("parent");
+    static const QualifiedIdentifier parentQId(QStringLiteral("parent"));
     /// Qualified identifier for 'static'
-    static const QualifiedIdentifier staticQId("static");
+    static const QualifiedIdentifier staticQId(QStringLiteral("static"));
 
     ifDebug(qCDebug(DUCHAIN) << id.toString() << declarationType;)
     if (declarationType == ClassDeclarationType && id == selfQId) {
@@ -338,7 +338,7 @@ IndexedString getIncludeFileForNode(UnaryExpressionAst* node, EditorIntegrator* 
         if (scalar && scalar->string != -1) {
             QString str = editor->parseSession()->symbol(scalar->string);
             str = str.mid(1, str.length() - 2);
-            if ( str == "." || str == ".." || str.endsWith('/') ) {
+            if ( str == QLatin1String(".") || str == QLatin1String("..") || str.endsWith('/') ) {
                 return IndexedString();
             }
             return findIncludeFile(str, editor->parseSession()->currentDocument());
@@ -370,7 +370,7 @@ QString prettyName(Declaration* dec) {
 
 const KDevelop::IndexedString& internalFunctionFile()
 {
-    static const KDevelop::IndexedString internalFile(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kdevphpsupport/phpfunctions.php"));
+    static const KDevelop::IndexedString internalFile(QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("kdevphpsupport/phpfunctions.php")));
     return internalFile;
 }
 
@@ -382,7 +382,7 @@ const KDevelop::IndexedString& phpLanguageString()
 
 const IndexedString& internalTestFile()
 {
-    static const KDevelop::IndexedString phpUnitFile(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kdevphpsupport/phpunitdeclarations.php"));
+    static const KDevelop::IndexedString phpUnitFile(QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("kdevphpsupport/phpunitdeclarations.php")));
     return phpUnitFile;
 }
 

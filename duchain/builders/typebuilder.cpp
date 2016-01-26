@@ -85,7 +85,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         }
     } else {
         if (!type.compare(QLatin1String("object"), Qt::CaseInsensitive)) {
-            type = "stdclass";
+            type = QStringLiteral("stdclass");
         }
         //don't use openTypeFromName as it uses cursor for findDeclarations
         DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
@@ -207,7 +207,7 @@ AbstractType::Ptr TypeBuilder::parseDocComment(AstNode* node, const QString& doc
         const QStringList& matches = findInDocComment(docComment, docCommentName, true);
         if ( !matches.isEmpty() ) {
             AbstractType::Ptr type;
-            if (matches.first() == "$this") {
+            if (matches.first() == QLatin1String("$this")) {
                 DUChainReadLocker lock(DUChain::lock());
                 if (currentContext()->owner()) {
                     type = currentContext()->owner()->abstractType();
@@ -229,8 +229,9 @@ QList<AbstractType::Ptr> TypeBuilder::parseDocCommentParams(AstNode* node)
     QList<AbstractType::Ptr> ret;
     QString docComment = editor()->parseSession()->docComment(node->startToken);
     if ( !docComment.isEmpty() ) {
-        const QStringList& matches = findInDocComment(docComment, "param", false);
+        const QStringList& matches = findInDocComment(docComment, QStringLiteral("param"), false);
         if ( !matches.isEmpty() ) {
+            ret.reserve(matches.size());
             foreach ( const QString& type, matches ) {
                 ret << parseType(type, node);
             }
@@ -244,7 +245,7 @@ AbstractType::Ptr TypeBuilder::getTypeForNode(AstNode* node)
 
     AbstractType::Ptr type;
     if (node) {
-        type = parseDocComment(node, "var"); //we fully trust in @var typehint and don't try to evaluate ourself
+        type = parseDocComment(node, QStringLiteral("var")); //we fully trust in @var typehint and don't try to evaluate ourself
         if (!type) {
             node->ducontext = currentContext();
             ExpressionParser ep;
@@ -268,7 +269,7 @@ FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
 
     openType(functionType);
 
-    functionType->setReturnType(parseDocComment(node, "return"));
+    functionType->setReturnType(parseDocComment(node, QStringLiteral("return")));
     m_gotReturnTypeFromDocComment = functionType->returnType();
     updateCurrentType();
 
@@ -315,7 +316,7 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
         closeType();
     } else {
         //member-variable
-        parseDocComment(node, "var");
+        parseDocComment(node, QStringLiteral("var"));
         TypeBuilderBase::visitClassStatement(node);
         if (m_gotTypeFromDocComment) {
             clearLastType();
@@ -402,7 +403,7 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
     FunctionType::Ptr type = currentType<FunctionType>();
     Q_ASSERT(type);
 
-    type->setReturnType(parseDocComment(node, "return"));
+    type->setReturnType(parseDocComment(node, QStringLiteral("return")));
     m_gotReturnTypeFromDocComment = type->returnType();
 
     updateCurrentType();
@@ -420,7 +421,7 @@ void TypeBuilder::visitClosure(ClosureAst* node)
     FunctionType::Ptr type = FunctionType::Ptr(new FunctionType());
     openType(type);
 
-    type->setReturnType(parseDocComment(node, "return"));
+    type->setReturnType(parseDocComment(node, QStringLiteral("return")));
     m_gotReturnTypeFromDocComment = type->returnType();
 
     updateCurrentType();
@@ -531,14 +532,14 @@ void TypeBuilder::visitStatement(StatementAst* node)
             }
             if (classDec) {
                 /// Qualified identifier for 'iterator'
-                static const QualifiedIdentifier iteratorQId("iterator");
+                static const QualifiedIdentifier iteratorQId(QStringLiteral("iterator"));
                 ClassDeclaration* iteratorDecl = dynamic_cast<ClassDeclaration*>(
                     findDeclarationImport(ClassDeclarationType, iteratorQId).data()
                 );
                 Q_ASSERT(iteratorDecl);
                 if (classDec->isPublicBaseClass(iteratorDecl, currentContext()->topContext())) {
                     /// Qualified identifier for 'current'
-                    static const QualifiedIdentifier currentQId("current");
+                    static const QualifiedIdentifier currentQId(QStringLiteral("current"));
                     foreach (Declaration *d, classDec->internalContext()->findDeclarations(currentQId)) {
                         if (!dynamic_cast<ClassMethodDeclaration*>(d)) continue;
                         Q_ASSERT(d->type<FunctionType>());

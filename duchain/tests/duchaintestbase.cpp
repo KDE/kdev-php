@@ -164,7 +164,7 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump,
 
     static int testNumber = 0;
     if (url.isEmpty()) {
-        url = QUrl(QString("file:///internal/%1").arg(testNumber++));
+        url = QUrl(QStringLiteral("file:///internal/%1").arg(testNumber++));
     }
 
     EditorIntegrator editor(&session);

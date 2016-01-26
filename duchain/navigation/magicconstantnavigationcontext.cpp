@@ -55,25 +55,25 @@ DUContext* findContext(TopDUContextPointer topCtx, const CursorInRevision& pos, 
 
 QString MagicConstantNavigationContext::html(bool /*shorten*/)
 {
-    QString html = "<html><body><p><small><small>";
+    QString html = QStringLiteral("<html><body><p><small><small>");
     html += typeHighlight(i18n("magic constant"));
     html += ' ';
     html += nameHighlight(m_constant.toHtmlEscaped());
-    html += "<br/>\n";
+    html += QLatin1String("<br/>\n");
 
     QString value;
     ///TODO: php 5.3: __DIR__, __NAMESPACE__
-    if ( m_constant == "__FILE__" ) {
+    if ( m_constant == QLatin1String("__FILE__") ) {
         value = m_topContext->url().str().toHtmlEscaped();
-    } else if ( m_constant == "__LINE__" ) {
+    } else if ( m_constant == QLatin1String("__LINE__") ) {
         value.setNum(m_position.line + 1);
-    } else if ( m_constant == "__CLASS__" ) {
+    } else if ( m_constant == QLatin1String("__CLASS__") ) {
         if ( DUContext* ctx = findContext(m_topContext, m_position, DUContext::Class) ) {
             value = codeHighlight(ctx->localScopeIdentifier().toString().toHtmlEscaped());
         } else {
             value = commentHighlight(i18n("empty (not inside a class)"));
         }
-    } else if ( m_constant == "__METHOD__" ) {
+    } else if ( m_constant == QLatin1String("__METHOD__") ) {
         CursorInRevision pos = m_position;
         while ( DUContext* ctx = findContext(m_topContext, pos, DUContext::Other) ) {
             if ( !ctx->parentContext() ) {
@@ -92,7 +92,7 @@ QString MagicConstantNavigationContext::html(bool /*shorten*/)
         if ( value.isEmpty() ) {
             value = commentHighlight(i18n("empty (not inside a method)"));
         }
-    } else if ( m_constant == "__FUNCTION__" ) {
+    } else if ( m_constant == QLatin1String("__FUNCTION__") ) {
         CursorInRevision pos = m_position;
         if ( DUContext* ctx = findContext(m_topContext, pos, DUContext::Other) ) {
             if ( ctx->owner() && ctx->owner()->type<FunctionType>() ) {
@@ -102,7 +102,7 @@ QString MagicConstantNavigationContext::html(bool /*shorten*/)
         if ( value.isEmpty() ) {
             value = commentHighlight(i18n("empty (not inside a function)"));
         }
-    } else if ( m_constant == "__NAMESPACE__" ) {
+    } else if ( m_constant == QLatin1String("__NAMESPACE__") ) {
         if ( DUContext* ctx = findContext(m_topContext, m_position, DUContext::Namespace) ) {
             if ( ctx->owner() && ctx->owner()->kind() == Declaration::Namespace ) {
                 value = codeHighlight(ctx->localScopeIdentifier().toString().toHtmlEscaped());
@@ -115,7 +115,7 @@ QString MagicConstantNavigationContext::html(bool /*shorten*/)
 
     html += i18n("current value: %1", value);
 
-    html += "</small></small></p></body></html>";
+    html += QLatin1String("</small></small></p></body></html>");
 
     return html;
 }

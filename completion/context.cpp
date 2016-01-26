@@ -160,7 +160,7 @@ public:
             return -1;
         } else {
             uint pos = 1;
-            foreach ( const Parser::TokenType& type, list ) {
+            foreach ( Parser::TokenType type, list ) {
                 if ( skipWhitespace && m_stream.at( m_pos - pos).kind == Parser::Token_WHITESPACE ) {
                     ++pos;
                 }
@@ -224,8 +224,8 @@ inline void skipWhiteSpace(const TokenAccess &lastToken, qint64 &pos)
 }
 
 /// add keyword to list of completion items
-#define ADD_KEYWORD(x) items << CompletionTreeItemPointer( new KeywordItem( x, Php::CodeCompletionContext::Ptr(this) ) )
-#define ADD_KEYWORD2(x, y) items << CompletionTreeItemPointer( new KeywordItem( x, Php::CodeCompletionContext::Ptr(this), y ) )
+#define ADD_KEYWORD(x) items << CompletionTreeItemPointer( new KeywordItem( QStringLiteral(x), Php::CodeCompletionContext::Ptr(this) ) )
+#define ADD_KEYWORD2(x, y) items << CompletionTreeItemPointer( new KeywordItem( QStringLiteral(x), Php::CodeCompletionContext::Ptr(this), QStringLiteral(y) ) )
 
 int completionRecursionDepth = 0;
 
@@ -270,7 +270,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
 
     // when the text after the current token starts with /* we are inside
     // a multi line comment => don't offer completion
-    if ( m_text.mid( lastTokenEnd, 2 ) == "/*" ) {
+    if ( m_text.mid( lastTokenEnd, 2 ) == QLatin1String("/*") ) {
         ifDebug(qCDebug(COMPLETION) << "no completion in comments");
         m_valid = false;
         return;
@@ -373,7 +373,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
             if ( m_memberAccessOperation == InterfaceChoose ) {
                 ifDebug(qCDebug(COMPLETION) << "in implementation list";)
                 m_memberAccessOperation = InterfaceChoose;
-                foreach ( const qint64& pos, identifierPositions ) {
+                foreach ( qint64 pos, identifierPositions ) {
                     forbidIdentifier(lastToken.stringAt(pos));
                 }
             } else {
@@ -446,7 +446,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                 if ( relPos != -1 ) {
                     // switch sign
                     relPos = -relPos;
-                    if ( lastToken.stringAt(relPos + 1).toLower() == "dirname" ) {
+                    if ( lastToken.stringAt(relPos + 1).compare(QLatin1String("dirname"), Qt::CaseInsensitive) == 0 ) {
                         isAfterDirname = true;
                     }
                 }
@@ -858,13 +858,13 @@ void CodeCompletionContext::evaluateExpression(TokenAccess& lastToken)
 
         const QString identifier(lastToken.stringAt(startPos).toLower());
 
-        if ( identifier == "self" || identifier == "parent" || identifier == "static" ) {
+        if ( identifier == QLatin1String("self") || identifier == QLatin1String("parent") || identifier == QLatin1String("static") ) {
             // self and parent are only accessible from within a member function of a class
             if (DUContext* parent = m_duContext->parentContext()) {
                 LOCKDUCHAIN;
                 ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(parent->owner());
                 if (classDec) {
-                    if (identifier == "parent") {
+                    if (identifier == QLatin1String("parent")) {
                         FOREACH_FUNCTION(const BaseClassInstance& base, classDec->baseClasses) {
                             if (StructureType::Ptr classType = base.baseClass.type<StructureType>()) {
                                 if (ClassDeclaration* baseClass = dynamic_cast<ClassDeclaration*>(classType->declaration(m_duContext->topContext()))) {
@@ -1117,7 +1117,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                 path = currentDocument.parent();
             }
             base = path;
-            if ( !m_expression.isEmpty() && !m_expression.endsWith('/') && m_expression != "/" ) {
+            if ( !m_expression.isEmpty() && !m_expression.endsWith('/') && m_expression != QLatin1String("/") ) {
                 base = base.parent();
             }
         }
@@ -1170,7 +1170,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                 IncludeItem item;
                 item.isDirectory = true;
                 item.basePath = baseUrl;
-                item.name = "..";
+                item.name = QStringLiteral("..");
                 items << CompletionTreeItemPointer(new IncludeFileItem(item));
             }
         }
@@ -1197,11 +1197,11 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                 QStringList modifiers = getMethodTokens(m_text);
 
                 // don't add keywords when "function" was already typed
-                bool addKeywords = !modifiers.contains("function");
+                bool addKeywords = !modifiers.contains(QStringLiteral("function"));
 
                 if (currentClass->classModifier() == ClassDeclarationData::Abstract) {
                     // abstract is only allowed in abstract classes
-                    if (modifiers.contains("abstract")) {
+                    if (modifiers.contains(QStringLiteral("abstract"))) {
                         // don't show overloadable functions when we are defining an abstract function
                         showOverloadable = false;
                     } else if (addKeywords) {
@@ -1209,24 +1209,24 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     }
                 } else {
                     // final is only allowed in non-abstract classes
-                    if (addKeywords && !modifiers.contains("final")) {
+                    if (addKeywords && !modifiers.contains(QStringLiteral("final"))) {
                         ADD_KEYWORD("final");
                     }
                 }
 
-                if (modifiers.contains("private")) {
+                if (modifiers.contains(QStringLiteral("private"))) {
                     // overloadable functions must not be declared private
                     showOverloadable = false;
-                } else if (modifiers.contains("protected")) {
+                } else if (modifiers.contains(QStringLiteral("protected"))) {
                     // only show protected overloadable methods
                     filterPublic = true;
-                } else if (addKeywords && !modifiers.contains("public")) {
+                } else if (addKeywords && !modifiers.contains(QStringLiteral("public"))) {
                     ADD_KEYWORD("public");
                     ADD_KEYWORD("protected");
                     ADD_KEYWORD("private");
                 }
 
-                if (modifiers.contains("static")) {
+                if (modifiers.contains(QStringLiteral("static"))) {
                     filterNonStatic = true;
                 } else {
                     if (addKeywords) {
@@ -1261,7 +1261,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     //TODO: use the token stream here as well
                     //TODO: always add __construct, __destruct and maby other magic functions
                     // get all visible declarations and add inherited to the completion items
-                    foreach(const DeclarationDepthPair& decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false)) {
+                    foreach(DeclarationDepthPair decl, ctx->allDeclarations(ctx->range().end, m_duContext->topContext(), false)) {
                         ClassMemberDeclaration *member = dynamic_cast<ClassMemberDeclaration*>(decl.first);
                         ClassFunctionDeclaration *classFunc = dynamic_cast<ClassFunctionDeclaration*>(decl.first);
                         if (member) {
@@ -1373,7 +1373,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                 if (abort)
                     return items;
 
-                foreach(const DeclarationDepthPair& decl, ctx->allDeclarations(
+                foreach(DeclarationDepthPair decl, ctx->allDeclarations(
                                                             ctx->range().end, m_duContext->topContext(), false))
                 {
                     //If we have StaticMemberAccess, which means A::Bla, show only static members,
@@ -1523,7 +1523,9 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     if (m_memberAccessOperation == ExceptionChoose) {
                         if (!(foundItems[i].kind & CompletionCodeModelItem::Exception)) continue;
                     }
-                    foreach(const ParsingEnvironmentFilePointer &env, DUChain::self()->allEnvironmentFiles(url)) {
+                    auto files = DUChain::self()->allEnvironmentFiles(url);
+                    items.reserve(files.size());
+                    foreach(const ParsingEnvironmentFilePointer &env, files) {
                         Q_ASSERT(env->language() == phpLangString);
                         items << CompletionTreeItemPointer ( new CodeModelCompletionItem(env, foundItems[i]));
                     }
@@ -1659,10 +1661,10 @@ inline bool CodeCompletionContext::isValidCompletionItem(Declaration* dec)
     static DUChainPointer<ClassDeclaration> exceptionDecl;
     if (!exceptionDecl) {
         /// Qualified identifier for 'exception'
-        static const KDevelop::QualifiedIdentifier exceptionQId("exception");
+        static const KDevelop::QualifiedIdentifier exceptionQId(QStringLiteral("exception"));
         QList<Declaration*> decs = dec->context()->findDeclarations(exceptionQId);
         Q_ASSERT(decs.count());
-        if (decs.count()) { // additional safe-guard, see e.g. https://bugs.kde.org/show_bug.cgi?id=294218
+        if (!decs.isEmpty()) { // additional safe-guard, see e.g. https://bugs.kde.org/show_bug.cgi?id=294218
             exceptionDecl = dynamic_cast<ClassDeclaration*>(decs.first());
             Q_ASSERT(exceptionDecl);
         }
@@ -1765,7 +1767,9 @@ QList<QSet<IndexedString> > CodeCompletionContext::completionFiles()
 {
     QList<QSet<IndexedString> > ret;
     if (ICore::self()) {
-        foreach(IProject* project, ICore::self()->projectController()->projects()) {
+        auto projects = ICore::self()->projectController()->projects();
+        ret.reserve(projects.size());
+        foreach(IProject* project, projects) {
             ret << project->fileSet();
         }
     }

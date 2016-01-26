@@ -368,7 +368,7 @@ void TestDUChain::declarationReturnTypeInRecursingFunction()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QList< Declaration* > decs = top->childContexts().last()->findDeclarations(Identifier("i"));
+    QList< Declaration* > decs = top->childContexts().last()->findDeclarations(Identifier(QStringLiteral("i")));
     QCOMPARE(decs.size(), 1);
     Declaration* dec = decs.first();
     StructureType::Ptr type = dec->type<StructureType>();
@@ -494,7 +494,7 @@ void TestDUChain::declarationReturnTypeDocBlock()
 
     //test hint in internal functions file of a type that is added later on
     // function
-    QList<Declaration*> decs = top->findDeclarations(Identifier("should_return_exception"));
+    QList<Declaration*> decs = top->findDeclarations(Identifier(QStringLiteral("should_return_exception")));
     QCOMPARE(decs.size(), 1);
     dec = decs.first();
     fType = dec->type<FunctionType>();
@@ -502,11 +502,11 @@ void TestDUChain::declarationReturnTypeDocBlock()
     QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
     QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("exception"));
     // method
-    decs = top->findDeclarations(Identifier("internal_test_class"));
+    decs = top->findDeclarations(Identifier(QStringLiteral("internal_test_class")));
     QCOMPARE(decs.size(), 1);
     ClassDeclaration* cdec = dynamic_cast<ClassDeclaration*>(decs.first());
     QVERIFY(cdec);
-    decs = cdec->logicalInternalContext(top)->findDeclarations(Identifier("should_return_exception"));
+    decs = cdec->logicalInternalContext(top)->findDeclarations(Identifier(QStringLiteral("should_return_exception")));
     QCOMPARE(decs.size(), 1);
     dec = decs.first();
     fType = dec->type<FunctionType>();
@@ -1000,7 +1000,7 @@ void TestDUChain::fileConst()
 
     QCOMPARE(top->problems().count(), problems);
 
-    QList< Declaration* > decs = top->findDeclarations(QualifiedIdentifier("C"));
+    QList< Declaration* > decs = top->findDeclarations(QualifiedIdentifier(QStringLiteral("C")));
     QCOMPARE(decs.count(), 1);
     IntegralType::Ptr type = decs.first()->abstractType().cast<IntegralType>();
     QVERIFY(type);
@@ -1180,7 +1180,7 @@ void TestDUChain::singleton()
 void TestDUChain::internalFunctions()
 {
     return; //disabled because it is too slow
-    QString fileName = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kdevphpsupport/phpfunctions.php");
+    QString fileName = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("kdevphpsupport/phpfunctions.php"));
     QFile file(fileName);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     TopDUContext* top = parse(file.readAll(), DumpNone);
@@ -1467,25 +1467,25 @@ void TestDUChain::objectWithClassName()
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class setupPage {} $setupPage = new setupPage; $setupPage->foo();");
-    TopDUContext* top = parse(method, DumpNone, QUrl("file:///internal/testObjectWithClassName.php"));
+    TopDUContext* top = parse(method, DumpNone, QUrl(QStringLiteral("file:///internal/testObjectWithClassName.php")));
     DUChainReleaser releaseTop(top);
 
     // update top (the pointer will be the same)
     QByteArray method2("<? $setupPage = new setupPage; $setupPage->foo();");
-    TopDUContext* top2 = parse(method2, DumpNone, QUrl("file:///internal/testObjectWithClassName.php"));
+    TopDUContext* top2 = parse(method2, DumpNone, QUrl(QStringLiteral("file:///internal/testObjectWithClassName.php")));
     QVERIFY(top2 == top);
 }
 
 void TestDUChain::largeNumberOfDeclarations()
 {
-    TopDUContext* top = new TopDUContext(IndexedString(QUrl("file:///internal/testurl")), RangeInRevision(0, 0, 6000, 0), 0);
+    TopDUContext* top = new TopDUContext(IndexedString(QUrl(QStringLiteral("file:///internal/testurl"))), RangeInRevision(0, 0, 6000, 0), 0);
     DUChain::self()->addDocumentChain(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
     for (int i = 0; i < 6000; ++i) {
         RangeInRevision newRange(i, 0, i, 1);
         Declaration* dec = new Declaration(newRange, top);
-        dec->setIdentifier(Identifier(QString("dec%0").arg(i)));
+        dec->setIdentifier(Identifier(QStringLiteral("dec%0").arg(i)));
         dec->setAbstractType(AbstractType::Ptr(0));
     }
 }
@@ -1602,7 +1602,7 @@ void TestDUChain::superglobalInFunction()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("_GET")).count(), 1);
-    Declaration* dec = top->findDeclarations(QualifiedIdentifier("_GET")).first();
+    Declaration* dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("_GET"))).first();
     QVERIFY(dynamic_cast<VariableDeclaration*>(dec));
     QVERIFY(static_cast<VariableDeclaration*>(dec)->isSuperglobal());
     QCOMPARE(dec->uses().keys().count(), 1);
@@ -1644,15 +1644,15 @@ void TestDUChain::findDeclarations()
 {
     DUChainWriteLocker lock(DUChain::lock());
 
-    TopDUContext* top1 = new TopDUContext(IndexedString(QUrl("file:///internal/testfile1")), RangeInRevision(0, 0, 0, 10), 0);
+    TopDUContext* top1 = new TopDUContext(IndexedString(QUrl(QStringLiteral("file:///internal/testfile1"))), RangeInRevision(0, 0, 0, 10), 0);
     DUChainReleaser releaseTop1(top1);
     DUChain::self()->addDocumentChain(top1);
-    TopDUContext* top2 = new TopDUContext(IndexedString(QUrl("file:///internal/testfile2")), RangeInRevision(0, 0, 0, 10), 0);
+    TopDUContext* top2 = new TopDUContext(IndexedString(QUrl(QStringLiteral("file:///internal/testfile2"))), RangeInRevision(0, 0, 0, 10), 0);
     DUChainReleaser releaseTop2(top2);
     DUChain::self()->addDocumentChain(top2);
 
     Declaration* declaration = new Declaration(RangeInRevision(0, 0, 0, 3), top1);
-    declaration->setIdentifier(Identifier("foo"));
+    declaration->setIdentifier(Identifier(QStringLiteral("foo")));
 
     QVERIFY(!top1->usingImportsCache());
     QVERIFY(!top2->usingImportsCache());
@@ -2010,7 +2010,7 @@ void TestDUChain::declareMemberOutOfClass()
     DUChainWriteLocker lock(DUChain::lock());
 
     { // $bar is only declared once
-        QList<Declaration*> decs = top->findLocalDeclarations(Identifier("bar"));
+        QList<Declaration*> decs = top->findLocalDeclarations(Identifier(QStringLiteral("bar")));
         QCOMPARE(decs.size(), 1);
         Declaration *dec = decs.first();
         QVERIFY(dec->type<StructureType>());
@@ -2031,7 +2031,7 @@ void TestDUChain::declareMemberOutOfClass()
     }
 
     { // check if asdf got declared
-        QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier("asdf"));
+        QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier(QStringLiteral("asdf")));
         // the type of both assignments to $bar->asdf are the same, hence it should only be declared once
         QCOMPARE(decs.size(), 1);
         ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
@@ -2066,7 +2066,7 @@ void TestDUChain::declareMemberOutOfClass2()
 
     QVERIFY(top->problems().isEmpty());
 
-    QList<Declaration*> decs = top->findLocalDeclarations(Identifier("a"));
+    QList<Declaration*> decs = top->findLocalDeclarations(Identifier(QStringLiteral("a")));
     QCOMPARE(decs.size(), 2);
     {
         Declaration *dec = decs.first();
@@ -2082,7 +2082,7 @@ void TestDUChain::declareMemberOutOfClass2()
     }
 
     { // check if x got declared
-        QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier("x"));
+        QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier(QStringLiteral("x")));
         // the type of both assignments to $bar->asdf are the same, hence it should only be declared once
         QCOMPARE(decs.size(), 1);
         ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
@@ -2110,7 +2110,7 @@ void TestDUChain::declareMemberInClassMethod()
     DUChainWriteLocker lock(DUChain::lock());
 
     { // asdf
-        QList<Declaration*> decs = top->childContexts().last()->findLocalDeclarations(Identifier("asdf"));
+        QList<Declaration*> decs = top->childContexts().last()->findLocalDeclarations(Identifier(QStringLiteral("asdf")));
         QCOMPARE(decs.size(), 1);
         ClassMemberDeclaration *dec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
         QVERIFY(dec);
@@ -2121,7 +2121,7 @@ void TestDUChain::declareMemberInClassMethod()
     }
 
     { // xyz
-        QList<Declaration*> decs = top->childContexts().last()->findLocalDeclarations(Identifier("xyz"));
+        QList<Declaration*> decs = top->childContexts().last()->findLocalDeclarations(Identifier(QStringLiteral("xyz")));
         QCOMPARE(decs.size(), 1);
         ClassMemberDeclaration *dec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
         QVERIFY(dec);
@@ -2167,7 +2167,7 @@ void TestDUChain::implicitArrayDeclaration()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QList<Declaration*> decs = top->findDeclarations(Identifier("a"));
+    QList<Declaration*> decs = top->findDeclarations(Identifier(QStringLiteral("a")));
     QCOMPARE(decs.size(), 1);
     VariableDeclaration* vdec = dynamic_cast<VariableDeclaration*>(decs.first());
     QVERIFY(vdec);
@@ -2183,7 +2183,7 @@ void TestDUChain::implicitArrayDeclaration()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QList<Declaration*> decs = top->findDeclarations(Identifier("a"));
+    QList<Declaration*> decs = top->findDeclarations(Identifier(QStringLiteral("a")));
     QCOMPARE(decs.size(), 1);
     VariableDeclaration* vdec = dynamic_cast<VariableDeclaration*>(decs.first());
     QVERIFY(vdec);
@@ -2199,7 +2199,7 @@ void TestDUChain::implicitArrayDeclaration()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier("a"));
+    QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier(QStringLiteral("a")));
     QCOMPARE(decs.size(), 1);
     ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
     QVERIFY(cmdec);
@@ -2215,7 +2215,7 @@ void TestDUChain::implicitArrayDeclaration()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier("a"));
+    QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier(QStringLiteral("a")));
     QCOMPARE(decs.size(), 1);
     ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
     QVERIFY(cmdec);
@@ -2234,7 +2234,7 @@ void TestDUChain::implicitReferenceDeclaration()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QList<Declaration*> decs = top->findDeclarations(Identifier("bar"));
+    QList<Declaration*> decs = top->findDeclarations(Identifier(QStringLiteral("bar")));
     QCOMPARE(decs.size(), 1);
     QVERIFY(dynamic_cast<VariableDeclaration*>(decs.first()));
     QVERIFY(decs.first()->type<IntegralType>());
@@ -2255,7 +2255,7 @@ void TestDUChain::implicitReferenceDeclaration()
     QVERIFY( top->childContexts().last()->localScopeIdentifier() == QualifiedIdentifier("foo"));
 
     // a is already declared
-    QList<Declaration*> decs = top->childContexts().last()->findDeclarations(Identifier("a"));
+    QList<Declaration*> decs = top->childContexts().last()->findDeclarations(Identifier(QStringLiteral("a")));
     QCOMPARE(decs.size(), 1);
     ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
     QVERIFY(cmdec);
@@ -2290,7 +2290,7 @@ void TestDUChain::lateClassMembers()
 
     ClassDeclaration* cdec = dynamic_cast<ClassDeclaration*>(top->localDeclarations().first());
     QVERIFY(cdec);
-    QList<Declaration*> decs = cdec->logicalInternalContext(top)->findDeclarations(Identifier("val"));
+    QList<Declaration*> decs = cdec->logicalInternalContext(top)->findDeclarations(Identifier(QStringLiteral("val")));
     QCOMPARE(decs.count(), 1);
     ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
     QVERIFY(cmdec);
@@ -2569,7 +2569,7 @@ void TestDUChain::namespaceStaticVar()
     DUChainWriteLocker lock;
 
     QVERIFY(top->problems().isEmpty());
-    Declaration* fooDec = top->findDeclarations(QualifiedIdentifier("ns::c::foo")).first();
+    Declaration* fooDec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("ns::c::foo"))).first();
     QVERIFY(fooDec);
 
     QVERIFY(!fooDec->uses().isEmpty());
@@ -2596,7 +2596,7 @@ void TestDUChain::namespacedCatch()
     DUChainWriteLocker lock;
 
     QVERIFY(top->problems().isEmpty());
-    Declaration* eDec = top->findDeclarations(QualifiedIdentifier("ns::e")).first();
+    Declaration* eDec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("ns::e"))).first();
     QVERIFY(eDec);
 
     QVERIFY(!eDec->uses().isEmpty());
@@ -2624,21 +2624,21 @@ void TestDUChain::errorRecovery_data()
 
     QTest::addColumn< QList<TestUse> >("usesMap");
 
-    QTest::newRow("conditional") << QString("<?php $a = 1; if ( false ) { in va lid } $a = 2; ")
+    QTest::newRow("conditional") << QStringLiteral("<?php $a = 1; if ( false ) { in va lid } $a = 2; ")
                                  << (QList<TestUse>()
-                                    << TestUse("a", Declaration::Instance, 1));
+                                    << TestUse(QStringLiteral("a"), Declaration::Instance, 1));
 
-    QTest::newRow("namespace") << QString("<?php namespace foo { const a = 1; } namespace y { -a sdflyxjcv 91348 } namespace { foo\\a; }")
+    QTest::newRow("namespace") << QStringLiteral("<?php namespace foo { const a = 1; } namespace y { -a sdflyxjcv 91348 } namespace { foo\\a; }")
                                  << (QList<TestUse>()
-                                    << TestUse("foo", Declaration::Namespace, 1)
-                                    << TestUse("y", Declaration::Namespace, 0)
-                                    << TestUse("foo::a", Declaration::Instance, 1));
+                                    << TestUse(QStringLiteral("foo"), Declaration::Namespace, 1)
+                                    << TestUse(QStringLiteral("y"), Declaration::Namespace, 0)
+                                    << TestUse(QStringLiteral("foo::a"), Declaration::Instance, 1));
 
-    QTest::newRow("class") << QString("<?php class foo { const bar = 1; invalid static function func() {} } foo::bar; foo::func;")
+    QTest::newRow("class") << QStringLiteral("<?php class foo { const bar = 1; invalid static function func() {} } foo::bar; foo::func;")
                                  << (QList<TestUse>()
-                                    << TestUse("foo", Declaration::Type, 0)
-                                    << TestUse("foo::bar", Declaration::Instance, 1)
-                                    << TestUse("foo::func", Declaration::Type, 1)
+                                    << TestUse(QStringLiteral("foo"), Declaration::Type, 0)
+                                    << TestUse(QStringLiteral("foo::bar"), Declaration::Instance, 1)
+                                    << TestUse(QStringLiteral("foo::func"), Declaration::Type, 1)
                                     );
 }
 
@@ -2735,13 +2735,13 @@ void TestDUChain::embeddedHTML_data()
 {
     QTest::addColumn<QString>("code");
 
-    QTest::newRow("if") << QString("<?php if ( true ) : ?>\n<?php endif; ?>");
-    QTest::newRow("elseif") << QString("<?php if ( true ) : ?>\n<?php elseif ( false ) : ?>\n<?php endif; ?>");
-    QTest::newRow("foreach") << QString("<?php foreach ( array(1,2) as $i ) : ?>\n<?php endforeach; ?>\n");
-    QTest::newRow("switch") << QString("<?php switch ( 1 ) : case 1: ?>\n<?php break; endswitch; ?>\n");
-    QTest::newRow("for") << QString("<?php for ( ;; ) : ?>\n<?php endfor; ?>\n");
-    QTest::newRow("while") << QString("<?php while ( true ) : ?>\n<?php endwhile; ?>\n");
-    QTest::newRow("else") << QString("<?php if (true):\n echo 'ok1';\n else:\n echo 'ok2';\n endif; ?>");
+    QTest::newRow("if") << QStringLiteral("<?php if ( true ) : ?>\n<?php endif; ?>");
+    QTest::newRow("elseif") << QStringLiteral("<?php if ( true ) : ?>\n<?php elseif ( false ) : ?>\n<?php endif; ?>");
+    QTest::newRow("foreach") << QStringLiteral("<?php foreach ( array(1,2) as $i ) : ?>\n<?php endforeach; ?>\n");
+    QTest::newRow("switch") << QStringLiteral("<?php switch ( 1 ) : case 1: ?>\n<?php break; endswitch; ?>\n");
+    QTest::newRow("for") << QStringLiteral("<?php for ( ;; ) : ?>\n<?php endfor; ?>\n");
+    QTest::newRow("while") << QStringLiteral("<?php while ( true ) : ?>\n<?php endwhile; ?>\n");
+    QTest::newRow("else") << QStringLiteral("<?php if (true):\n echo 'ok1';\n else:\n echo 'ok2';\n endif; ?>");
 
 }
 
@@ -2870,7 +2870,7 @@ void TestDUChain::bug296709()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
     QVERIFY(top->problems().isEmpty());
-    QList< Declaration* > decs = top->findLocalDeclarations(Identifier("a"));
+    QList< Declaration* > decs = top->findLocalDeclarations(Identifier(QStringLiteral("a")));
     QCOMPARE(decs.size(), 1);
     QCOMPARE(decs.at(0)->range(), RangeInRevision(1, 19, 1, 21));
     QCOMPARE(decs.at(0)->uses().count(), 1);

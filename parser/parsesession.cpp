@@ -135,7 +135,7 @@ bool ParseSession::parse(Php::StartAst** ast)
         *ast = phpAst;
     } else {
         *ast = 0;
-        parser->expectedSymbol(AstNode::StartKind, "start");
+        parser->expectedSymbol(AstNode::StartKind, QStringLiteral("start"));
         qCDebug(PARSER) << "Couldn't parse content";
     }
     m_problems << parser->problems();

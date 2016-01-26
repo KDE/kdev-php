@@ -47,7 +47,7 @@ LexerTest::LexerTest()
 
 void LexerTest::testOpenTagWithNewline()
 {
-    TokenStream* ts = tokenize("<?php\nfoo;");
+    TokenStream* ts = tokenize(QStringLiteral("<?php\nfoo;"));
     QVERIFY(ts->size() == 3);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -59,7 +59,7 @@ void LexerTest::testOpenTagWithNewline()
 
 void LexerTest::testOpenTagWithSpace()
 {
-    TokenStream* ts = tokenize("<?php foo;");
+    TokenStream* ts = tokenize(QStringLiteral("<?php foo;"));
     QVERIFY(ts->size() == 3);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -70,7 +70,7 @@ void LexerTest::testOpenTagWithSpace()
 
 void LexerTest::testCommentOneLine()
 {
-    TokenStream* ts = tokenize("<?php\n//comment\nfoo;");
+    TokenStream* ts = tokenize(QStringLiteral("<?php\n//comment\nfoo;"));
     QVERIFY(ts->size() == 4);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -82,7 +82,7 @@ void LexerTest::testCommentOneLine()
 
 void LexerTest::testCommentOneLine2()
 {
-    TokenStream* ts = tokenize("<?php\n#comment\nfoo;");
+    TokenStream* ts = tokenize(QStringLiteral("<?php\n#comment\nfoo;"));
     QVERIFY(ts->size() == 4);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -94,7 +94,7 @@ void LexerTest::testCommentOneLine2()
 
 void LexerTest::testCommentMultiLine()
 {
-    TokenStream* ts = tokenize("<?php\n/*com\nment*/\nfoo;", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php\n/*com\nment*/\nfoo;"), true);
     QVERIFY(ts->size() == 5);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -107,7 +107,7 @@ void LexerTest::testCommentMultiLine()
 
 void LexerTest::testCommentMultiLine2()
 {
-    TokenStream* ts = tokenize("<?php\n/*\nment*/\nfoo;", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php\n/*\nment*/\nfoo;"), true);
     QVERIFY(ts->size() == 5);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -120,7 +120,7 @@ void LexerTest::testCommentMultiLine2()
 
 void LexerTest::testEndTag()
 {
-    TokenStream* ts = tokenize("<?\n':\n'?>\n>", true, Lexer::DefaultState);
+    TokenStream* ts = tokenize(QStringLiteral("<?\n':\n'?>\n>"), true, Lexer::DefaultState);
     //don't crash and we are fine
     delete ts;
 }
@@ -129,7 +129,7 @@ void LexerTest::testNewlineInString()
 {
     //0            1
     //012345 6 7 890123456789
-    TokenStream* ts = tokenize("<?php \"\n\";", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php \"\n\";"), true);
     QVERIFY(ts->size() == 3);
 
     COMPARE_TOKEN(ts, 1, Parser::Token_CONSTANT_ENCAPSED_STRING, 0, 6, 1, 0);
@@ -141,7 +141,7 @@ void LexerTest::testNewlineInString2()
 {
     //0
     //0123 4567
-    TokenStream* ts = tokenize("<?php '\n';", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php '\n';"), true);
     QCOMPARE((int)ts->size(), 3);
 
     COMPARE_TOKEN(ts, 1, Parser::Token_CONSTANT_ENCAPSED_STRING, 0, 6, 1, 0);
@@ -151,7 +151,7 @@ void LexerTest::testNewlineInString2()
 
 void LexerTest::testNewlineInStringWithVar()
 {
-    TokenStream* ts = tokenize("<?php \"$a\n\";", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php \"$a\n\";"), true);
     QCOMPARE((int)ts->size(), 6);
 
     COMPARE_TOKEN(ts, 1, Parser::Token_DOUBLE_QUOTE, 0, 6, 0, 6);
@@ -166,7 +166,7 @@ void LexerTest::testNewlineInStringWithVar2()
 {
     //0            1
     //012345 6 789 0123456789
-    TokenStream* ts = tokenize("<?php \"\n$a\n\";", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php \"\n$a\n\";"), true);
     QCOMPARE((int)ts->size(), 7);
 
     COMPARE_TOKEN(ts, 1, Parser::Token_DOUBLE_QUOTE, 0, 6, 0, 6);
@@ -182,7 +182,7 @@ void LexerTest::testNewlineInStringWithVar3()
 {
     //0            1
     //012345 6 789 0123456789
-    TokenStream* ts = tokenize("<?php \"{$$a}\";", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php \"{$$a}\";"), true);
     QCOMPARE((int)ts->size(), 7);
 
     COMPARE_TOKEN(ts, 1, Parser::Token_DOUBLE_QUOTE, 0, 6, 0, 6);
@@ -199,7 +199,7 @@ void LexerTest::testMultiplePhpSections()
 
     //0            1
     //012345 6 789 0123456789
-    TokenStream* ts = tokenize("<?php $a;?>\n<html>\n<?php $a;?>", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php $a;?>\n<html>\n<?php $a;?>"), true);
     QCOMPARE((int)ts->size(), 9);
 
     qint64 index = 0;
@@ -228,7 +228,7 @@ void LexerTest::testMultiplePhpSections()
 
 void LexerTest::testHereDoc()
 {
-    TokenStream* ts = tokenize("<?php\necho <<<EOD1\nstart $text\nend\nEOD1;\n$extern;", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php\necho <<<EOD1\nstart $text\nend\nEOD1;\n$extern;"), true);
     QCOMPARE((int)ts->size(), 12);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -246,7 +246,7 @@ void LexerTest::testHereDoc()
 
 void LexerTest::testHereDocQuoted()
 {
-    TokenStream* ts = tokenize("<?php\necho <<<\"EOD1\"\nstart $text\nend\nEOD1;\n$extern;", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php\necho <<<\"EOD1\"\nstart $text\nend\nEOD1;\n$extern;"), true);
     QCOMPARE((int)ts->size(), 12);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -264,7 +264,7 @@ void LexerTest::testHereDocQuoted()
 
 void LexerTest::testNowdoc()
 {
-    TokenStream* ts = tokenize("<?php\necho <<<'EOD1'\nstart $text\nend\nEOD1;\n$extern;", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php\necho <<<'EOD1'\nstart $text\nend\nEOD1;\n$extern;"), true);
     QCOMPARE((int)ts->size(), 10);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -296,7 +296,7 @@ void LexerTest::testCommonStringTokens()
 
 void LexerTest::testNonTerminatedStringWithVar()
 {
-    TokenStream* ts = tokenize("<?php \"$a", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php \"$a"), true);
 
     QCOMPARE((int)ts->size(), 3);
 
@@ -309,10 +309,10 @@ void LexerTest::testNonTerminatedStringWithVar()
 void LexerTest::testPhpBlockWithComment()
 {
     TokenStream* ts = tokenize(
-        "<?php\n"
+        QStringLiteral("<?php\n"
         "//asdf\n"
         "?>\n"
-        "<?php\n"
+        "<?php\n")
     , true);
 
     QCOMPARE((int)ts->size(), 5);
@@ -328,11 +328,11 @@ void LexerTest::testPhpBlockWithComment()
 void LexerTest::testNamespaces()
 {
     TokenStream* ts = tokenize(
-        "<?php\n"
+        QStringLiteral("<?php\n"
         "namespace Foo;\n"
         "namespace Foo\\Bar;\n"
         "namespace Foo\\Bar\\Asd {\n"
-        "}\n"
+        "}\n")
     , true);
     QCOMPARE((int)ts->size(), 25);
 
@@ -368,7 +368,7 @@ void LexerTest::testCloseTagInComment()
 {
     {
     TokenStream* ts = tokenize(
-        "<?php // asdf ?>"
+        QStringLiteral("<?php // asdf ?>")
     , true);
     QCOMPARE((int)ts->size(), 3);
 
@@ -380,7 +380,7 @@ void LexerTest::testCloseTagInComment()
     }
     {
     TokenStream* ts = tokenize(
-        "<?php #  asdf ?>"
+        QStringLiteral("<?php #  asdf ?>")
     , true);
     QCOMPARE((int)ts->size(), 3);
 
@@ -394,7 +394,7 @@ void LexerTest::testCloseTagInComment()
 
 void LexerTest::testBinaryNumber()
 {
-    TokenStream* ts = tokenize("<?php\n0b01;\n0B01;", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php\n0b01;\n0B01;"), true);
     QCOMPARE((int)ts->size(), 6);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -408,7 +408,7 @@ void LexerTest::testBinaryNumber()
 
 void LexerTest::testHexadecimalNumber()
 {
-    TokenStream* ts = tokenize("<?php\n0x01;\n0X01;\n0xABC12;\n0Xab10A;", true);
+    TokenStream* ts = tokenize(QStringLiteral("<?php\n0x01;\n0X01;\n0xABC12;\n0Xab10A;"), true);
     QCOMPARE((int)ts->size(), 12);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -428,7 +428,7 @@ void LexerTest::testHexadecimalNumber()
 
 void LexerTest::testTypeHintsOnFunction()
 {
-    QScopedPointer<TokenStream> ts(tokenize("<?php\nfunction a($a, array $b = [], callable $c) {}", true));
+    QScopedPointer<TokenStream> ts(tokenize(QStringLiteral("<?php\nfunction a($a, array $b = [], callable $c) {}"), true));
     QCOMPARE((int)ts->size(), 25);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -460,7 +460,7 @@ void LexerTest::testTypeHintsOnFunction()
 
 void LexerTest::testExponentiation()
 {
-    QScopedPointer<TokenStream> ts(tokenize("<?php\n$a = 2 ** 3; $a **= 2;", true));
+    QScopedPointer<TokenStream> ts(tokenize(QStringLiteral("<?php\n$a = 2 ** 3; $a **= 2;"), true));
     QCOMPARE((int)ts->size(), 18);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -486,7 +486,7 @@ void LexerTest::testExponentiation()
 
 void LexerTest::testExceptionFinally()
 {
-    QScopedPointer<TokenStream> ts(tokenize("<?php\ntry { $a = 1; } finally { }", true));
+    QScopedPointer<TokenStream> ts(tokenize(QStringLiteral("<?php\ntry { $a = 1; } finally { }"), true));
     QCOMPARE((int)ts->size(), 19);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -533,8 +533,8 @@ TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialSta
             qint64 endColumn;
             tokenStream->endPosition(i, &endLine, &endColumn);
             qDebug() << tokenText(t.kind)
-            << unit.mid(t.begin, t.end - t.begin + 1).replace('\n', "\\n")
-            << QString("[%0-%1] - [%2-%3]").arg(beginLine).arg(beginColumn).arg(endLine).arg(endColumn);
+            << unit.mid(t.begin, t.end - t.begin + 1).replace('\n', QLatin1String("\\n"))
+            << QStringLiteral("[%0-%1] - [%2-%3]").arg(beginLine).arg(beginColumn).arg(endLine).arg(endColumn);
             ++i;
         }
     }

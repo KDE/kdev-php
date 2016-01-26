@@ -64,7 +64,7 @@ void TestUses::newObject()
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class Foo {} $a = new Foo(); ");
-    TopDUContext* top = parse(method, DumpNone, QUrl("file:///internal/usestest/newObject.php"));
+    TopDUContext* top = parse(method, DumpNone, QUrl(QStringLiteral("file:///internal/usestest/newObject.php")));
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
     compareUses(top->localDeclarations().first(), RangeInRevision(0, 25, 0, 28));
@@ -77,7 +77,7 @@ void TestUses::functionCall()
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? function foo() {} foo(); ");
-    TopDUContext* top = parse(method, DumpNone, QUrl("file:///internal/usestest/functionCall.php"));
+    TopDUContext* top = parse(method, DumpNone, QUrl(QStringLiteral("file:///internal/usestest/functionCall.php")));
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
     Declaration* fun = top->localDeclarations().first();
@@ -91,7 +91,7 @@ void TestUses::memberFunctionCall()
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { function foo() {} } $a = new A(); $a->foo(); ");
-    TopDUContext* top = parse(method, DumpNone, QUrl("file:///internal/usestest/memberFunctionCall.php"));
+    TopDUContext* top = parse(method, DumpNone, QUrl(QStringLiteral("file:///internal/usestest/memberFunctionCall.php")));
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
     Declaration* fun = top->childContexts().first()->localDeclarations().first();
@@ -105,7 +105,7 @@ void TestUses::memberVariable()
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
     QByteArray method("<? class A { public $foo; } $a = new A(); $a->foo; ");
-    TopDUContext* top = parse(method, DumpNone, QUrl("file:///internal/usestest/memberVariable.php"));
+    TopDUContext* top = parse(method, DumpNone, QUrl(QStringLiteral("file:///internal/usestest/memberVariable.php")));
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
     Declaration* var = top->childContexts().first()->localDeclarations().first();
@@ -517,7 +517,7 @@ void TestUses::constantInClassMember()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    Declaration* constant = top->findDeclarations(Identifier("TEST")).first();
+    Declaration* constant = top->findDeclarations(Identifier(QStringLiteral("TEST"))).first();
 
     QList<RangeInRevision> uses;
     uses << RangeInRevision(0, 41, 0, 45);
@@ -584,18 +584,18 @@ void TestUses::assignmentToMemberArray()
     compareUses(x, RangeInRevision(0, 50, 0, 55));
 
     // var $y
-    Declaration *y = x->logicalInternalContext(top)->findDeclarations(Identifier("y")).first();
+    Declaration *y = x->logicalInternalContext(top)->findDeclarations(Identifier(QStringLiteral("y"))).first();
     QVERIFY(y);
 
     // $this->y
     compareUses(y, RangeInRevision(0, 57, 0, 58));
 
     // function z
-    Declaration *z = x->logicalInternalContext(top)->findDeclarations(Identifier("z")).first();
+    Declaration *z = x->logicalInternalContext(top)->findDeclarations(Identifier(QStringLiteral("z"))).first();
     QVERIFY(z);
 
     // $a
-    Declaration *a = z->logicalInternalContext(top)->findDeclarations(Identifier("a")).first();
+    Declaration *a = z->logicalInternalContext(top)->findDeclarations(Identifier(QStringLiteral("a"))).first();
     QVERIFY(a);
     compareUses(a, QList<RangeInRevision>()
                 // $b = $a
@@ -653,7 +653,7 @@ void TestUses::catchClass()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    Declaration *d = top->findDeclarations(QualifiedIdentifier("exception")).first();
+    Declaration *d = top->findDeclarations(QualifiedIdentifier(QStringLiteral("exception"))).first();
     compareUses(d, RangeInRevision(0, 18, 0, 27));
 }
 
@@ -667,7 +667,7 @@ void TestUses::variableRedeclaration()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QList< Declaration* > decs = top->findDeclarations(QualifiedIdentifier("s"));
+    QList< Declaration* > decs = top->findDeclarations(QualifiedIdentifier(QStringLiteral("s")));
     QCOMPARE(decs.size(), 1);
     Declaration *d = decs.first();
     compareUses(d, QList<RangeInRevision>()
@@ -688,7 +688,7 @@ void TestUses::caseInsensitiveFunction()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QList<Declaration*> decs = top->findLocalDeclarations(Identifier("foobar"));
+    QList<Declaration*> decs = top->findLocalDeclarations(Identifier(QStringLiteral("foobar")));
     QCOMPARE(decs.size(), 1);
     Declaration *d = decs.first();
     compareUses(d, QList<RangeInRevision>()
@@ -711,7 +711,7 @@ void TestUses::caseInsensitiveMethod()
     DUChainWriteLocker lock(DUChain::lock());
 
     {
-        QList<Declaration*> decs = top->childContexts().first()->findDeclarations(QualifiedIdentifier("foobar"));
+        QList<Declaration*> decs = top->childContexts().first()->findDeclarations(QualifiedIdentifier(QStringLiteral("foobar")));
         QCOMPARE(decs.size(), 1);
         Declaration *d = decs.first();
         compareUses(d, QList<RangeInRevision>()
@@ -722,7 +722,7 @@ void TestUses::caseInsensitiveMethod()
     }
 
     {
-        QList<Declaration*> decs = top->childContexts().first()->findDeclarations(QualifiedIdentifier("barfoo"));
+        QList<Declaration*> decs = top->childContexts().first()->findDeclarations(QualifiedIdentifier(QStringLiteral("barfoo")));
         QCOMPARE(decs.size(), 1);
         Declaration *d = decs.first();
         compareUses(d, QList<RangeInRevision>()
@@ -744,7 +744,7 @@ void TestUses::caseInsensitiveClass()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QList<Declaration*> decs = top->findLocalDeclarations(Identifier("asdf"));
+    QList<Declaration*> decs = top->findLocalDeclarations(Identifier(QStringLiteral("asdf")));
     QCOMPARE(decs.size(), 1);
     Declaration *d = decs.first();
     compareUses(d, QList<RangeInRevision>()
@@ -919,7 +919,7 @@ void TestUses::namespaces()
 
     Declaration* dec;
 
-    dec = top->findDeclarations(QualifiedIdentifier("foo")).last();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo"))).last();
     QCOMPARE(dec->kind(), Declaration::Namespace);
     compareUses(dec, QList<RangeInRevision>()
                                           << RangeInRevision(9, 1, 9, 4)
@@ -930,7 +930,7 @@ void TestUses::namespaces()
                                           << RangeInRevision(14, 17, 14, 20)
                                           << RangeInRevision(14, 45, 14, 48));
 
-    dec = top->findDeclarations(QualifiedIdentifier("foo::bar")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar"))).first();
     QCOMPARE(dec->kind(), Declaration::Namespace);
     QVERIFY(dec->internalContext());
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 5, 9, 8)
@@ -945,25 +945,25 @@ void TestUses::namespaces()
         qDebug() << d->toString() << d->qualifiedIdentifier();
     }
 
-    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::MyConst")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar::MyConst"))).first();
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(3, 5, 3, 12)
                                           << RangeInRevision(9, 9, 9, 16));
 
-    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myclass")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar::myclass"))).first();
     QVERIFY(dynamic_cast<ClassDeclaration*>(dec));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(10, 9, 10, 16)
                                           << RangeInRevision(12, 13, 12, 20)
                                           << RangeInRevision(13, 23, 13, 30)
                                           << RangeInRevision(14, 25, 14, 32)
                );
-    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myinterface")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar::myinterface"))).first();
     QVERIFY(dynamic_cast<ClassDeclaration*>(dec));
     compareUses(dec, RangeInRevision(14, 53, 14, 64) );
 
-    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myclass::ClassConst")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar::myclass::ClassConst"))).first();
     compareUses(dec, RangeInRevision(10, 18, 10, 28));
 
-    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::myfunc")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar::myfunc"))).first();
     compareUses(dec, RangeInRevision(11, 9, 11, 15));
 }
 
@@ -987,50 +987,50 @@ void TestUses::useNamespace()
     DUChainWriteLocker lock;
 
     Declaration* dec;
-    dec = top->findDeclarations(QualifiedIdentifier("foo")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo"))).first();
     QCOMPARE(dec->kind(), Declaration::Namespace);
     compareUses(dec, RangeInRevision(5, 4, 5, 7));
 
-    dec = top->findDeclarations(QualifiedIdentifier("foo::bar")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar"))).first();
     QCOMPARE(dec->kind(), Declaration::Namespace);
     compareUses(dec, RangeInRevision(5, 8, 5, 11));
 
-    dec = top->findDeclarations(QualifiedIdentifier("verylong")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("verylong"))).first();
     QCOMPARE(dec->kind(), Declaration::Namespace);
     compareUses(dec, RangeInRevision(5, 13, 5, 21));
 
-    dec = top->findDeclarations(QualifiedIdentifier("bar")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("bar"))).first();
     QCOMPARE(dec->kind(), Declaration::NamespaceAlias);
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(7, 4, 7, 7)
                                           << RangeInRevision(7, 11, 7, 14)
                                           << RangeInRevision(7, 20, 7, 23) );
 
-    dec = top->findDeclarations(QualifiedIdentifier("short")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("short"))).first();
     QCOMPARE(dec->kind(), Declaration::NamespaceAlias);
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 4, 8, 9)
                                           << RangeInRevision(8, 13, 8, 18)
                                           << RangeInRevision(8, 24, 8, 29) );
 
-    dec = top->findDeclarations(QualifiedIdentifier("baz::a")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("baz::a"))).first();
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(6, 8, 6, 9)
                                           << RangeInRevision(9, 4, 9, 10));
 
-    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::a")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar::a"))).first();
     compareUses(dec, RangeInRevision(7, 8, 7, 9));
 
-    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::b")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar::b"))).first();
     compareUses(dec, RangeInRevision(7, 15, 7, 16));
 
-    dec = top->findDeclarations(QualifiedIdentifier("foo::bar::C")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar::C"))).first();
     compareUses(dec, RangeInRevision(7, 24, 7, 25));
 
-    dec = top->findDeclarations(QualifiedIdentifier("verylong::a")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("verylong::a"))).first();
     compareUses(dec, RangeInRevision(8, 10, 8, 11));
 
-    dec = top->findDeclarations(QualifiedIdentifier("verylong::b")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("verylong::b"))).first();
     compareUses(dec, RangeInRevision(8, 19, 8, 20));
 
-    dec = top->findDeclarations(QualifiedIdentifier("verylong::C")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("verylong::C"))).first();
     compareUses(dec, RangeInRevision(8, 30, 8, 31));
 }
 
@@ -1128,50 +1128,50 @@ void TestUses::useTrait()
 
     QCOMPARE(topDecs.size(), 9);
 
-    dec = top->findDeclarations(QualifiedIdentifier("a")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("a"))).first();
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(4, 16, 4, 17)
                                           << RangeInRevision(5, 16, 5, 17)
                                           << RangeInRevision(5, 22, 5, 23)
                                           << RangeInRevision(6, 16, 6, 17)
                                           << RangeInRevision(6, 41, 6, 42) );
 
-    dec = top->findDeclarations(QualifiedIdentifier("b")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("b"))).first();
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(5, 18, 5, 19)
                                           << RangeInRevision(5, 39, 5, 40)
                                           << RangeInRevision(5, 42, 5, 43)
                                           << RangeInRevision(6, 18, 6, 19)
                                           << RangeInRevision(6, 43, 6, 44) );
 
-    dec = top->findDeclarations(QualifiedIdentifier("c")).first();
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("c"))).first();
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(6, 20, 6, 21)
                                           << RangeInRevision(6, 24, 6, 25)
                                           << RangeInRevision(6, 46, 6, 47) );
 
-    dec = topDecs[3]->internalContext()->findLocalDeclarations(Identifier("one")).first();
+    dec = topDecs[3]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("one"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(7, 20, 7, 23) );
 
-    dec = topDecs[3]->internalContext()->findLocalDeclarations(Identifier("two")).first();
+    dec = topDecs[3]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("two"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(7, 31, 7, 34) );
 
-    dec = topDecs[4]->internalContext()->findLocalDeclarations(Identifier("one")).first();
+    dec = topDecs[4]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("one"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 20, 8, 23) );
 
-    dec = topDecs[4]->internalContext()->findLocalDeclarations(Identifier("two")).first();
+    dec = topDecs[4]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("two"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 31, 8, 34) );
 
-    dec = topDecs[4]->internalContext()->findLocalDeclarations(Identifier("four")).first();
+    dec = topDecs[4]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("four"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("b"));
@@ -1179,25 +1179,25 @@ void TestUses::useTrait()
     QCOMPARE(method->accessPolicy(), Declaration::AccessPolicy::Public);
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 42, 8, 46) );
 
-    dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier("one")).first();
+    dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("one"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("c"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 20, 9, 23) );
 
-    dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier("two")).first();
+    dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("two"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 31, 9, 34) );
 
-    dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier("baz")).first();
+    dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("baz"))).first();
     member = dynamic_cast<TraitMemberAliasDeclaration*>(dec);
     QVERIFY(member);
     QCOMPARE(member->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("c"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 42, 9, 45) );
 
-    dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier("six")).first();
+    dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("six"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("c"));

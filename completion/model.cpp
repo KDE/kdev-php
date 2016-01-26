@@ -75,7 +75,7 @@ Range CodeCompletionModel::completionRange(View* view, const Cursor &position)
                                     Cursor(range.start().line(), range.start().column()));
         qCDebug(COMPLETION) << preRange << view->document()->text(preRange);
         const QString contents = view->document()->text(preRange);
-        if ( contents == "$" ) {
+        if ( contents == QLatin1String("$") ) {
             range.expandToRange(preRange);
             qCDebug(COMPLETION) << "using custom completion range" << range;
         }

@@ -72,21 +72,21 @@ void KeywordItem::execute(KTextEditor::View* view, const KTextEditor::Range& wor
     if ( !m_replacement.isEmpty() ) {
         QString replacement = m_replacement;
         replacement = replacement.replace('\n', '\n' + getIndendation(document->line(word.start().line())));
-        replacement = replacement.replace("%INDENT%", indentString(document));
+        replacement = replacement.replace(QLatin1String("%INDENT%"), indentString(document));
 
-        int cursorPos = replacement.indexOf("%CURSOR%");
+        int cursorPos = replacement.indexOf(QStringLiteral("%CURSOR%"));
         int selectionEnd = -1;
         if ( cursorPos != -1 ) {
-            replacement.remove("%CURSOR%");
+            replacement.remove(QStringLiteral("%CURSOR%"));
         } else {
-            cursorPos = replacement.indexOf("%SELECT%");
+            cursorPos = replacement.indexOf(QStringLiteral("%SELECT%"));
             if ( cursorPos != -1 ) {
-                replacement.remove("%SELECT%");
-                selectionEnd = replacement.indexOf("%ENDSELECT%", cursorPos + 1);
+                replacement.remove(QStringLiteral("%SELECT%"));
+                selectionEnd = replacement.indexOf(QStringLiteral("%ENDSELECT%"), cursorPos + 1);
                 if ( selectionEnd == -1 ) {
                     selectionEnd = replacement.length();
                 }
-                replacement.remove("%ENDSELECT%");
+                replacement.remove(QStringLiteral("%ENDSELECT%"));
             }
         }
 

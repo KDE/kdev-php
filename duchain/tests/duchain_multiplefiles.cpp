@@ -51,11 +51,11 @@ void TestDUChainMultipleFiles::testImportsGlobalFunction()
     m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
-    TestFile f1("<? function foo() {}", "php", project);
+    TestFile f1(QStringLiteral("<? function foo() {}"), QStringLiteral("php"), project);
     f1.parse(features);
     QVERIFY(f1.waitForParsed());
 
-    TestFile f2("<? foo();", "php", project);
+    TestFile f2(QStringLiteral("<? foo();"), QStringLiteral("php"), project);
     f2.parse(features);
     QVERIFY(f2.waitForParsed());
 
@@ -73,10 +73,10 @@ void TestDUChainMultipleFiles::testImportsBaseClassNotYetParsed()
     m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
-    TestFile f2("<? class B extends A {}", "php", project);
+    TestFile f2(QStringLiteral("<? class B extends A {}"), QStringLiteral("php"), project);
     f2.parse(features);
 
-    TestFile f1("<? class A {}", "php", project);
+    TestFile f1(QStringLiteral("<? class A {}"), QStringLiteral("php"), project);
     f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
     QVERIFY(f1.waitForParsed());
@@ -95,7 +95,7 @@ void TestDUChainMultipleFiles::testNonExistingBaseClass()
     m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
-    TestFile f1("<? class B extends A {}", "php", project);
+    TestFile f1(QStringLiteral("<? class B extends A {}"), QStringLiteral("php"), project);
     f1.parse(features);
     QVERIFY(f1.waitForParsed());
 
@@ -111,10 +111,10 @@ void TestDUChainMultipleFiles::testImportsGlobalFunctionNotYetParsed()
     m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
-    TestFile f2("<? foo2();", "php", project);
+    TestFile f2(QStringLiteral("<? foo2();"), QStringLiteral("php"), project);
     f2.parse(features);
 
-    TestFile f1("<? function foo2() {}", "php", project);
+    TestFile f1(QStringLiteral("<? function foo2() {}"), QStringLiteral("php"), project);
     f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
     QVERIFY(f2.waitForParsed());
@@ -133,7 +133,7 @@ void TestDUChainMultipleFiles::testNonExistingGlobalFunction()
     m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
-    TestFile f2("<? foo3();", "php", project);
+    TestFile f2(QStringLiteral("<? foo3();"), QStringLiteral("php"), project);
     f2.parse(features);
 
     QVERIFY(f2.waitForParsed());
@@ -149,10 +149,10 @@ void TestDUChainMultipleFiles::testImportsStaticFunctionNotYetParsed()
     m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
-    TestFile f2("<? C::foo();", "php", project);
+    TestFile f2(QStringLiteral("<? C::foo();"), QStringLiteral("php"), project);
     f2.parse(features);
 
-    TestFile f1("<? class C { public static function foo() {} }", "php", project);
+    TestFile f1(QStringLiteral("<? class C { public static function foo() {} }"), QStringLiteral("php"), project);
     f1.parse(features, 100); //low priority, to make sure f2 is parsed first
 
     QVERIFY(f2.waitForParsed());
@@ -170,7 +170,7 @@ void TestDUChainMultipleFiles::testNonExistingStaticFunction()
     m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
-    TestFile f2("<? D::foo();", "php", project);
+    TestFile f2(QStringLiteral("<? D::foo();"), QStringLiteral("php"), project);
     f2.parse(features);
 
     QVERIFY(f2.waitForParsed());
@@ -189,15 +189,15 @@ void TestDUChainMultipleFiles::testForeachImportedIdentifier()
     m_projectController->addProject(project);
 
     // build dependency
-    TestFile f1("<? class SomeIterator implements Countable, Iterator { }", "php", project);
+    TestFile f1(QStringLiteral("<? class SomeIterator implements Countable, Iterator { }"), QStringLiteral("php"), project);
     f1.parse(features);
     QVERIFY(f1.waitForParsed());
 
-    TestFile f2("<?\n"
+    TestFile f2(QStringLiteral("<?\n"
                 "class A {\n"
                 "  public function foo() { $i = $this->bar(); foreach($i as $a => $b) {} } \n"
                 "  public function bar() { $a = new SomeIterator(); return $a; }\n"
-                " }\n", "php", project);
+                " }\n"), QStringLiteral("php"), project);
 
     for(int i = 0; i < 2; ++i) {
         if (i > 0) {
@@ -232,7 +232,7 @@ void TestDUChainMultipleFiles::testUpdateForeach()
     m_projectController->closeAllProjects();
     m_projectController->addProject(project);
 
-    TestFile f("<?\n$k = null;\nforeach(array() as $i => $k) {}\n", "php", project);
+    TestFile f(QStringLiteral("<?\n$k = null;\nforeach(array() as $i => $k) {}\n"), QStringLiteral("php"), project);
 
     f.parse(features);
     QVERIFY(f.waitForParsed());
@@ -242,7 +242,7 @@ void TestDUChainMultipleFiles::testUpdateForeach()
         DUChainWriteLocker lock;
         QVERIFY(f.topContext()->problems().isEmpty());
         QCOMPARE(f.topContext()->findDeclarations(Identifier("k")).count(), 1);
-        Declaration* kDec = f.topContext()->findDeclarations(Identifier("k")).first();
+        Declaration* kDec = f.topContext()->findDeclarations(Identifier(QStringLiteral("k"))).first();
         QCOMPARE(kDec->rangeInCurrentRevision().start().line(), 1);
         QCOMPARE(kDec->rangeInCurrentRevision().start().column(), 0);
         QCOMPARE(kDec->uses().count(), 1);
@@ -251,7 +251,7 @@ void TestDUChainMultipleFiles::testUpdateForeach()
     }
 
     // delete $k = null; line
-    f.setFileContents("<?\nforeach(array() as $i => $k) {}\n");
+    f.setFileContents(QStringLiteral("<?\nforeach(array() as $i => $k) {}\n"));
     f.parse(static_cast<TopDUContext::Features>(features | TopDUContext::ForceUpdate));
     QVERIFY(f.waitForParsed());
     QVERIFY(f.topContext());
@@ -260,7 +260,7 @@ void TestDUChainMultipleFiles::testUpdateForeach()
         DUChainWriteLocker lock;
         QVERIFY(f.topContext()->problems().isEmpty());
         QCOMPARE(f.topContext()->findDeclarations(Identifier("k")).count(), 1);
-        Declaration* kDec = f.topContext()->findDeclarations(Identifier("k")).first();
+        Declaration* kDec = f.topContext()->findDeclarations(Identifier(QStringLiteral("k"))).first();
         QCOMPARE(kDec->rangeInCurrentRevision().start().line(), 1);
         QCOMPARE(kDec->rangeInCurrentRevision().start().column(), 25);
         QCOMPARE(kDec->uses().count(), 0);

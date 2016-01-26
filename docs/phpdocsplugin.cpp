@@ -51,7 +51,7 @@ using namespace KDevelop;
 K_PLUGIN_FACTORY_WITH_JSON(PhpDocsFactory, "kdevphpdocs.json", registerPlugin<PhpDocsPlugin>();)
 
 PhpDocsPlugin::PhpDocsPlugin(QObject* parent, const QVariantList& args)
-    : IPlugin("kdevphpdocs", parent)
+    : IPlugin(QStringLiteral("kdevphpdocs"), parent)
     , m_model(new PhpDocsModel(this))
 {
     KDEV_USE_EXTENSION_INTERFACE( KDevelop::IDocumentationProvider )
@@ -59,7 +59,7 @@ PhpDocsPlugin::PhpDocsPlugin(QObject* parent, const QVariantList& args)
 
     readConfig();
 
-    KSettings::Dispatcher::registerComponent( "kdevphpdocs_config", this, "readConfig" );
+    KSettings::Dispatcher::registerComponent( QStringLiteral("kdevphpdocs_config"), this, "readConfig" );
 }
 
 PhpDocsPlugin::~PhpDocsPlugin()
@@ -73,7 +73,7 @@ QString PhpDocsPlugin::name() const
 
 QIcon PhpDocsPlugin::icon() const
 {
-    static QIcon icon = QIcon::fromTheme("application-x-php");
+    static QIcon icon = QIcon::fromTheme(QStringLiteral("application-x-php"));
     return icon;
 }
 
@@ -102,9 +102,9 @@ QString PhpDocsPlugin::getDocumentationFilename( KDevelop::Declaration* dec, con
                 fname = className + '.' + fdec->identifier().toString();
             } else {
                 if ( fdec->isConstructor() ) {
-                    fname = "construct";
+                    fname = QStringLiteral("construct");
                 } else if ( fdec->isDestructor() ) {
-                    fname = "destruct";
+                    fname = QStringLiteral("destruct");
                 } else {
                     fname = fdec->identifier().toString();
                 }
@@ -118,21 +118,21 @@ QString PhpDocsPlugin::getDocumentationFilename( KDevelop::Declaration* dec, con
         fname = "function." + dec->identifier().toString();
     }
     // check for superglobals / reserved variables
-    else if ( dec->identifier() == Identifier("GLOBALS") ||
-                dec->identifier() == Identifier("php_errormsg") ||
-                dec->identifier() == Identifier("HTTP_RAW_POST_DATA") ||
-                dec->identifier() == Identifier("http_response_header") ||
-                dec->identifier() == Identifier("argc") ||
-                dec->identifier() == Identifier("argv") ||
-                dec->identifier() == Identifier("_GET") ||
-                dec->identifier() == Identifier("_POST") ||
-                dec->identifier() == Identifier("_FILES") ||
-                dec->identifier() == Identifier("_REQUEST") ||
-                dec->identifier() == Identifier("_SESSION") ||
-                dec->identifier() == Identifier("_ENV") ||
-                dec->identifier() == Identifier("_COOKIE") ) {
+    else if ( dec->identifier() == Identifier(QStringLiteral("GLOBALS")) ||
+                dec->identifier() == Identifier(QStringLiteral("php_errormsg")) ||
+                dec->identifier() == Identifier(QStringLiteral("HTTP_RAW_POST_DATA")) ||
+                dec->identifier() == Identifier(QStringLiteral("http_response_header")) ||
+                dec->identifier() == Identifier(QStringLiteral("argc")) ||
+                dec->identifier() == Identifier(QStringLiteral("argv")) ||
+                dec->identifier() == Identifier(QStringLiteral("_GET")) ||
+                dec->identifier() == Identifier(QStringLiteral("_POST")) ||
+                dec->identifier() == Identifier(QStringLiteral("_FILES")) ||
+                dec->identifier() == Identifier(QStringLiteral("_REQUEST")) ||
+                dec->identifier() == Identifier(QStringLiteral("_SESSION")) ||
+                dec->identifier() == Identifier(QStringLiteral("_ENV")) ||
+                dec->identifier() == Identifier(QStringLiteral("_COOKIE")) ) {
         if ( isLocal ) {
-            fname = QString("reserved.variables.") + dec->identifier().toString().remove('_');
+            fname = QStringLiteral("reserved.variables.") + dec->identifier().toString().remove('_');
         } else {
             fname = dec->identifier().toString();
         }

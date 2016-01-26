@@ -36,11 +36,11 @@ void TestDoxDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 {
     const QString line = index.data().toString();
     QStyleOptionViewItem opt = option;
-    if (line.startsWith(" [x]"))
+    if (line.startsWith(QLatin1String(" [x]")))
     {
         highlight(opt, passBrush);
     }
-    else if (line.startsWith(" [ ]"))
+    else if (line.startsWith(QLatin1String(" [ ]")))
     {
         highlight(opt, failBrush);
     }

@@ -155,7 +155,7 @@ class CodeModelRequestItem {
 class CompletionCodeModelPrivate {
 public:
 
-  CompletionCodeModelPrivate() : m_repository("Php Completion Code Model") {
+  CompletionCodeModelPrivate() : m_repository(QStringLiteral("Php Completion Code Model")) {
   }
   //Maps declaration-ids to items
   KDevelop::ItemRepository<CompletionCodeModelRepositoryItem, CodeModelRequestItem> m_repository;

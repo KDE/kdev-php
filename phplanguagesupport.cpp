@@ -93,7 +93,7 @@ KDevelop::ParseJob *LanguageSupport::createParseJob(const IndexedString &url)
 
 QString LanguageSupport::name() const
 {
-    return "Php";
+    return QStringLiteral("Php");
 }
 
 KDevelop::ICodeHighlighting* LanguageSupport::codeHighlighting() const
@@ -147,9 +147,9 @@ QPair<QString, Range> LanguageSupport::wordUnderCursor(const QUrl& url, const Cu
 
 bool isMagicConstant(QPair<QString, Range> word) {
     if ( word.second.isValid() && !word.second.isEmpty() ) {
-        if ( word.first == "__FILE__" || word.first == "__LINE__" ||
-             word.first == "__METHOD__" || word.first == "__CLASS__" ||
-             word.first == "__FUNCTION__" || word.first == "__NAMESPACE__"
+        if ( word.first == QLatin1String("__FILE__") || word.first == QLatin1String("__LINE__") ||
+             word.first == QLatin1String("__METHOD__") || word.first == QLatin1String("__CLASS__") ||
+             word.first == QLatin1String("__FUNCTION__") || word.first == QLatin1String("__NAMESPACE__")
              ///TODO: php 5.3: __DIR__
            )
         {
