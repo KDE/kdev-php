@@ -428,7 +428,7 @@ void LexerTest::testHexadecimalNumber()
 
 void LexerTest::testTypeHintsOnFunction()
 {
-    TokenStream *ts = tokenize("<?php\nfunction a($a, array $b = [], callable $c) {}", true);
+    QScopedPointer<TokenStream> ts(tokenize("<?php\nfunction a($a, array $b = [], callable $c) {}", true));
     QCOMPARE((int)ts->size(), 25);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -460,7 +460,7 @@ void LexerTest::testTypeHintsOnFunction()
 
 void LexerTest::testExponentiation()
 {
-    TokenStream *ts = tokenize("<?php\n$a = 2 ** 3; $a **= 2;", true);
+    QScopedPointer<TokenStream> ts(tokenize("<?php\n$a = 2 ** 3; $a **= 2;", true));
     QCOMPARE((int)ts->size(), 18);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
@@ -486,7 +486,7 @@ void LexerTest::testExponentiation()
 
 void LexerTest::testExceptionFinally()
 {
-    TokenStream *ts = tokenize("<?php\ntry { $a = 1; } finally { }", true);
+    QScopedPointer<TokenStream> ts(tokenize("<?php\ntry { $a = 1; } finally { }", true));
     QCOMPARE((int)ts->size(), 19);
 
     COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
