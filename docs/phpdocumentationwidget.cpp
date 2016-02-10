@@ -82,6 +82,13 @@ PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget
     m_part->load( url );
 }
 
+PhpDocumentationWidget::~PhpDocumentationWidget()
+{
+    // make sure we don't get called by any of the m_part signals on shutdown, see also:
+    // https://codereview.qt-project.org/#/c/83800/
+    disconnect(m_part, 0, this, 0);
+}
+
 void PhpDocumentationWidget::linkClicked(const QUrl& url)
 {
     m_part->load(url);
