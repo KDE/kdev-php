@@ -28,6 +28,7 @@
         "Id": "kdevphpdocs", 
         "License": "GPL", 
         "Name": "PHP Documentation", 
+        "Name[ast]": "Documentación de PHP", 
         "Name[ca@valencia]": "Documentació de PHP", 
         "Name[ca]": "Documentació de PHP", 
         "Name[de]": "PHP-Dokumentation", 
