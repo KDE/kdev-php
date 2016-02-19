@@ -72,7 +72,7 @@ void NamespaceAliasDeclaration::setPrettyName( const KDevelop::IndexedString& na
 
 QString NamespaceAliasDeclaration::toString() const
 {
-  return QString("Import %1 as %2").arg(d_func()->m_importIdentifier.identifier().toString()).arg(prettyName().str());
+  return QStringLiteral("Import %1 as %2").arg(d_func()->m_importIdentifier.identifier().toString(), prettyName().str());
 }
 
 }

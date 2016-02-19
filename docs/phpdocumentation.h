@@ -35,7 +35,8 @@ class PhpDocsPlugin;
 
 class PhpDocumentation : public KDevelop::IDocumentation
 {
-  public:
+    Q_OBJECT
+public:
     explicit PhpDocumentation(const QUrl& url, const QString& name, const QByteArray& description, PhpDocsPlugin* parent);
     ~PhpDocumentation();
 
@@ -44,7 +45,7 @@ class PhpDocumentation : public KDevelop::IDocumentation
     virtual QWidget* documentationWidget(KDevelop::DocumentationFindWidget* findWidget, QWidget* parent = 0) override;
     virtual KDevelop::IDocumentationProvider* provider() const override;
 
-  private:
+private:
     const QUrl m_url;
     const QString m_name;
     const QByteArray m_description;

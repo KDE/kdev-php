@@ -87,7 +87,7 @@ void BenchmarkCodeCompletion::globalCompletion()
     #endif
 
     QBENCHMARK {
-        PhpCompletionTester tester(top, "<?php ");
+        PhpCompletionTester tester(top, QStringLiteral("<?php "));
     }
 
     #ifdef USE_VALGRIND
@@ -97,7 +97,7 @@ void BenchmarkCodeCompletion::globalCompletion()
 
 void BenchmarkCodeCompletion::globalCompletionBigFile()
 {
-    QFile* file(getFile("../../create_functions.php"));
+    QFile* file(getFile(QStringLiteral("../../create_functions.php")));
     const QString contents( file->readAll() );
     delete file;
 
@@ -125,7 +125,7 @@ void BenchmarkCodeCompletion::completionData()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "<?php ");
+    PhpCompletionTester tester(top, QStringLiteral("<?php "));
 
     #ifdef USE_VALGRIND
         CALLGRIND_TOGGLE_COLLECT

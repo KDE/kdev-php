@@ -77,7 +77,7 @@ void Benchmarks::declarationBuilder()
 
 void Benchmarks::useBuilder()
 {
-    const auto document = IndexedString(QUrl("file:///internal/BigTestFile.php"));
+    const auto document = IndexedString(QUrl(QStringLiteral("file:///internal/BigTestFile.php")));
 
     QIODevice* file = getInternalFile();
     ParseSession session = ParseSession();

@@ -41,10 +41,10 @@
 using namespace KDevelop;
 
 PhpDocsModel::PhpDocsModel(QObject* parent)
-    : QAbstractListModel(parent), m_internalFunctionsFile(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kdevphpsupport/phpfunctions.php"))
+    : QAbstractListModel(parent), m_internalFunctionsFile(QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("kdevphpsupport/phpfunctions.php")))
 {
     // make sure the php plugin is loaded
-    auto phpLangPlugin = ICore::self()->languageController()->language("Php");
+    auto phpLangPlugin = ICore::self()->languageController()->language(QStringLiteral("Php"));
     if ( !phpLangPlugin ) {
         qCWarning(DOCS) << "could not load PHP language support plugin";
         return;
@@ -78,7 +78,7 @@ void PhpDocsModel::fillModel(const ReferencedTopDUContext& top)
 
     qCDebug(DOCS) << "filling model";
     typedef QPair<Declaration*, int> DeclDepthPair;
-    foreach ( const DeclDepthPair& declpair, top->allDeclarations(top->range().end, top) ) {
+    foreach ( DeclDepthPair declpair, top->allDeclarations(top->range().end, top) ) {
         if ( declpair.first->abstractType() && declpair.first->abstractType()->modifiers() & AbstractType::ConstModifier ) {
             // filter global constants, since they are hard to find in the documentation
             continue;
@@ -112,7 +112,7 @@ QVariant PhpDocsModel::data(const QModelIndex& index, int role) const
             QString ret = dec->toString();
             if ( dec->isFunctionDeclaration() ) {
                 // remove function arguments
-                ret = ret.replace(QRegExp("\\(.+\\)"), "()");
+                ret = ret.replace(QRegExp("\\(.+\\)"), QStringLiteral("()"));
                 // remove return type
                 ret = ret.remove(QRegExp("^[^ ]+ "));
             }

@@ -134,7 +134,7 @@ void ImplementationItem::execute(KTextEditor::View* view, const KTextEditor::Ran
             if (indendation.isEmpty()) {
                 // use a minimal indendation
                 // TODO: respect code style
-                indendation = "  ";
+                indendation = QStringLiteral("  ");
                 replText += indendation;
             }
         }
@@ -182,15 +182,15 @@ void ImplementationItem::execute(KTextEditor::View* view, const KTextEditor::Ran
 
         if (ClassMemberDeclaration* member = dynamic_cast<ClassMemberDeclaration*>(m_declaration.data())) {
             // NOTE: it should _never_ be private - but that's the completionmodel / context / worker's job
-            if (!modifiers.contains("public") && !modifiers.contains("protected")) {
+            if (!modifiers.contains(QStringLiteral("public")) && !modifiers.contains(QStringLiteral("protected"))) {
                 if (member->accessPolicy() == Declaration::Protected) {
-                    replText += "protected ";
+                    replText += QLatin1String("protected ");
                 } else {
-                    replText += "public ";
+                    replText += QLatin1String("public ");
                 }
             }
-            if (!modifiers.contains("static") && member->isStatic()) {
-                replText += "static ";
+            if (!modifiers.contains(QStringLiteral("static")) && member->isStatic()) {
+                replText += QLatin1String("static ");
             }
             functionName = member->identifier().toString();
 
@@ -214,8 +214,8 @@ void ImplementationItem::execute(KTextEditor::View* view, const KTextEditor::Ran
         if (m_type == ImplementationItem::OverrideVar) {
             replText += "$" + functionName + " = ";
         } else {
-            if (!modifiers.contains("function")) {
-                replText += "function ";
+            if (!modifiers.contains(QStringLiteral("function"))) {
+                replText += QLatin1String("function ");
             }
 
             replText += functionName;
@@ -237,7 +237,7 @@ void ImplementationItem::execute(KTextEditor::View* view, const KTextEditor::Ran
                 if (first)
                     first = false;
                 else
-                    arguments += ", ";
+                    arguments += QLatin1String(", ");
 
                 arguments += '$' + dec->identifier().toString();
             }
@@ -251,14 +251,14 @@ void ImplementationItem::execute(KTextEditor::View* view, const KTextEditor::Ran
                 }
             }
 
-            replText += QString("\n%1{\n%1    ").arg(indendation);
+            replText += QStringLiteral("\n%1{\n%1    ").arg(indendation);
             if (isInterface || m_type == ImplementationItem::Implement) {
             } else if (!isConstructorOrDestructor && !voidReturnType) {
-                replText += QString("$ret = parent::%2%3;\n%1    return $ret;").arg(indendation).arg(functionName).arg(arguments);
+                replText += QStringLiteral("$ret = parent::%2%3;\n%1    return $ret;").arg(indendation, functionName, arguments);
             } else {
-                replText += QString("parent::%1%2;").arg(functionName).arg(arguments);
+                replText += QStringLiteral("parent::%1%2;").arg(functionName, arguments);
             }
-            replText += QString("\n%1}\n%1")
+            replText += QStringLiteral("\n%1}\n%1")
                     .arg(indendation);
 
         }

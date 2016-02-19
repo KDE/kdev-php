@@ -58,10 +58,10 @@ void DeclarationNavigationContext::htmlClass()
         // write class modifier
         switch (classDecl->classModifier()) {
         case ClassDeclarationData::Abstract:
-            modifyHtml() += "abstract ";
+            modifyHtml() += QStringLiteral("abstract ");
             break;
         case ClassDeclarationData::Final:
-            modifyHtml() += "final ";
+            modifyHtml() += QStringLiteral("final ");
             break;
         default:
             //nothing
@@ -69,11 +69,11 @@ void DeclarationNavigationContext::htmlClass()
         }
         // write class type
         if (classDecl->classType() == ClassDeclarationData::Interface) {
-            modifyHtml() += "interface ";
+            modifyHtml() += QStringLiteral("interface ");
         } else if (classDecl->classType() == ClassDeclarationData::Trait) {
-            modifyHtml() += "trait ";
+            modifyHtml() += QStringLiteral("trait ");
         } else {
-            modifyHtml() += "class ";
+            modifyHtml() += QStringLiteral("class ");
         }
         // write class identifier
         eventuallyMakeTypeLinks(m_declaration->abstractType());
@@ -96,24 +96,24 @@ void DeclarationNavigationContext::htmlClass()
             }
             // write parent class
             if (extends) {
-                modifyHtml() += " extends ";
+                modifyHtml() += QStringLiteral(" extends ");
                 eventuallyMakeTypeLinks(extends);
             }
             // write implemented interfaces
             if (!implements.isEmpty()) {
-                modifyHtml() += " implements ";
+                modifyHtml() += QStringLiteral(" implements ");
                 for (QList<AbstractType::Ptr>::iterator i = implements.begin(); ;) {
                     eventuallyMakeTypeLinks(*i);
                     ++i;
                     if (i != implements.end()) {
-                        modifyHtml() += ", ";
+                        modifyHtml() += QStringLiteral(", ");
                     } else {
                         break;
                     }
                 }
             }
         }
-        modifyHtml() += " ";
+        modifyHtml() += QStringLiteral(" ");
     }
 }
 
@@ -124,11 +124,11 @@ void DeclarationNavigationContext::htmlAdditionalNavigation()
         if (dec && dec->context() && dec->context()->owner()) {
             modifyHtml() += i18n("Use of %1 from %2<br />")
                             .arg(createLink(prettyQualifiedIdentifier(DeclarationPointer(dec)).toString(),
-                                            QString("jump_to_used"),
+                                            QStringLiteral("jump_to_used"),
                                             NavigationAction(DeclarationPointer(dec),
                                                              KDevelop::NavigationAction::NavigateDeclaration)))
                             .arg(createLink(prettyQualifiedIdentifier(DeclarationPointer(dec->context()->owner())).toString(),
-                                            QString("jump_to_used_container"),
+                                            QStringLiteral("jump_to_used_container"),
                                             NavigationAction(DeclarationPointer(dec->context()->owner()),
                                                              KDevelop::NavigationAction::NavigateDeclaration)));
         }
@@ -137,11 +137,11 @@ void DeclarationNavigationContext::htmlAdditionalNavigation()
         if (dec && dec->context() && dec->context()->owner()) {
             modifyHtml() += i18n("Use of %1 from %2<br />")
                             .arg(createLink(prettyQualifiedIdentifier(DeclarationPointer(dec)).toString(),
-                                            QString("jump_to_used"),
+                                            QStringLiteral("jump_to_used"),
                                             NavigationAction(DeclarationPointer(dec),
                                                              KDevelop::NavigationAction::NavigateDeclaration)))
                             .arg(createLink(prettyQualifiedIdentifier(DeclarationPointer(dec->context()->owner())).toString(),
-                                            QString("jump_to_used_container"),
+                                            QStringLiteral("jump_to_used_container"),
                                             NavigationAction(DeclarationPointer(dec->context()->owner()),
                                                              KDevelop::NavigationAction::NavigateDeclaration)));
         } else {

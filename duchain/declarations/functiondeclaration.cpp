@@ -80,9 +80,9 @@ QString FunctionDeclaration::toString() const
   KDevelop::TypePtr<KDevelop::FunctionType> function = type<KDevelop::FunctionType>();
   Q_ASSERT(function);
 
-  return QString("%1 %2 %3").arg(function->partToString( KDevelop::FunctionType::SignatureReturn ))
-                            .arg(prettyName().str())
-                            .arg(function->partToString( KDevelop::FunctionType::SignatureArguments ));
+  return QStringLiteral("%1 %2 %3").arg(function->partToString( KDevelop::FunctionType::SignatureReturn ),
+                                 prettyName().str(),
+                                 function->partToString( KDevelop::FunctionType::SignatureArguments ));
 }
 
 }

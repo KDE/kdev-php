@@ -41,6 +41,7 @@ class PhpDocumentationWidget : public QStackedWidget
 public:
     explicit PhpDocumentationWidget(KDevelop::DocumentationFindWidget* find, const QUrl &url,
                                     PhpDocsPlugin* provider, QWidget* parent = 0);
+    ~PhpDocumentationWidget();
 
 private slots:
     /// used to inject some custom CSS to alter the remote php.net site

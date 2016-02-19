@@ -133,7 +133,7 @@ void PhpUnitProvider::processTestCaseDeclaration(Declaration* d)
     QString name = d->identifier().toString();
     QUrl url = d->url().toUrl();
     IProject* project = ICore::self()->projectController()->findProjectForUrl(url);
-    qCDebug(TESTPROVIDER) << name << url << (project ? project->name() : "No project");
+    qCDebug(TESTPROVIDER) << name << url << (project ? project->name() : QStringLiteral("No project"));
     if (!project)
     {
         return;
@@ -152,7 +152,7 @@ void PhpUnitProvider::processTestCaseDeclaration(Declaration* d)
         foreach (Declaration* member, classDeclaration->internalContext()->localDeclarations())
         {
             qCDebug(TESTPROVIDER) << "Trying test case declaration" << member;
-            if (member->isFunctionDeclaration() && member->identifier().toString().startsWith("test"))
+            if (member->isFunctionDeclaration() && member->identifier().toString().startsWith(QLatin1String("test")))
             {
                 const QString caseName = member->identifier().toString();
                 testCases << caseName;

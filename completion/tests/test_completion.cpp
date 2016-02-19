@@ -132,8 +132,8 @@ typedef CodeCompletionItemTester<TestCodeCompletionContext> BasePhpCompletionTes
 class PhpCompletionTester : public BasePhpCompletionTester
 {
 public:
-    PhpCompletionTester(DUContext* context, QString text = "; ", QString followingText = "", CursorInRevision position = CursorInRevision::invalid())
-        : BasePhpCompletionTester(context, text.startsWith("<?") ? text : text.prepend("<?php "), followingText, position)
+    PhpCompletionTester(DUContext* context, QString text = QStringLiteral("; "), QString followingText = {}, CursorInRevision position = CursorInRevision::invalid())
+        : BasePhpCompletionTester(context, text.startsWith(QLatin1String("<?")) ? text : text.prepend("<?php "), followingText, position)
     {
 
     }
@@ -157,7 +157,7 @@ void TestCompletion::publicObjectCompletion()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "$blah; $instA->");
+    PhpCompletionTester tester(top, QStringLiteral("$blah; $instA->"));
 
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::MemberAccess);
 
@@ -169,7 +169,7 @@ void TestCompletion::publicStaticObjectCompletion()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "$blah; A::");
+    PhpCompletionTester tester(top, QStringLiteral("$blah; A::"));
 
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::StaticMemberAccess);
 
@@ -183,7 +183,7 @@ void TestCompletion::privateObjectCompletion()
 
 
     DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
-    PhpCompletionTester tester(funContext, "$this->");
+    PhpCompletionTester tester(funContext, QStringLiteral("$this->"));
 
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::MemberAccess);
 
@@ -198,14 +198,14 @@ void TestCompletion::privateStaticObjectCompletion()
     DUContext* funContext = top->childContexts().first()->localDeclarations().first()->internalContext();
 
     {
-    PhpCompletionTester tester(funContext, "self::");
+    PhpCompletionTester tester(funContext, QStringLiteral("self::"));
 
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::StaticMemberAccess);
 
     QCOMPARE(tester.names, QStringList() << "spubf" << "$spub" << "c" << "sprotf" << "$sprot" << "sprivf" << "$spriv");
     }
     {
-    PhpCompletionTester tester(funContext, "static::");
+    PhpCompletionTester tester(funContext, QStringLiteral("static::"));
 
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::StaticMemberAccess);
 
@@ -221,7 +221,7 @@ void TestCompletion::protectedObjectCompletion()
     DUContext* funContext = top->childContexts().at(1)->localDeclarations().first()->internalContext();
 
     {
-        PhpCompletionTester tester(funContext, "$this->");
+        PhpCompletionTester tester(funContext, QStringLiteral("$this->"));
 
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::MemberAccess);
 
@@ -229,7 +229,7 @@ void TestCompletion::protectedObjectCompletion()
     }
 
     {
-        PhpCompletionTester tester(funContext, "");
+        PhpCompletionTester tester(funContext, {});
 
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
 
@@ -258,7 +258,7 @@ void TestCompletion::protectedStaticObjectCompletion()
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().at(1)->localDeclarations().first()->internalContext();
-    PhpCompletionTester tester(funContext, "self::");
+    PhpCompletionTester tester(funContext, QStringLiteral("self::"));
 
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::StaticMemberAccess);
 
@@ -276,7 +276,7 @@ void TestCompletion::methodCall()
     DUChainWriteLocker lock(DUChain::lock());
 
     {
-        PhpCompletionTester tester(top, "$blah; $i->foo(");
+        PhpCompletionTester tester(top, QStringLiteral("$blah; $i->foo("));
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
         QVERIFY(tester.completionContext->parentContext());
         QCOMPARE(tester.completionContext->parentContext()->memberAccessOperation(),
@@ -291,7 +291,7 @@ void TestCompletion::methodCall()
         QCOMPARE(ret, QString("(A $a, null $b = null)"));
     }
     {
-        PhpCompletionTester tester(top, "blah; $i->foo(new A(), ");
+        PhpCompletionTester tester(top, QStringLiteral("blah; $i->foo(new A(), "));
         QVERIFY(searchDeclaration(tester.items, top->childContexts().at(0)->localDeclarations().at(0)));
     }
 }
@@ -305,7 +305,7 @@ void TestCompletion::functionCall()
     TopDUContext* top = parse(method, DumpAll);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
-    PhpCompletionTester tester(top, "blah; foo(");
+    PhpCompletionTester tester(top, QStringLiteral("blah; foo("));
     QVERIFY(tester.completionContext->parentContext());
 
     QVERIFY(tester.completionContext->parentContext());
@@ -320,11 +320,11 @@ void TestCompletion::nestedFunctionCall_data()
 {
     QTest::addColumn<QString>("text");
 
-    QTest::newRow("nested") << QString("bar(foo(");
-    QTest::newRow("nested prev arg") << QString("bar(1, foo(");
-    QTest::newRow("nested prev func call") << QString("bar(foo(1), foo(");
-    QTest::newRow("nested prev arg comma") << QString("bar(1, bar(1, ");
-    QTest::newRow("nested prev func comma") << QString("bar(1, bar(foo(1), ");
+    QTest::newRow("nested") << QStringLiteral("bar(foo(");
+    QTest::newRow("nested prev arg") << QStringLiteral("bar(1, foo(");
+    QTest::newRow("nested prev func call") << QStringLiteral("bar(foo(1), foo(");
+    QTest::newRow("nested prev arg comma") << QStringLiteral("bar(1, bar(1, ");
+    QTest::newRow("nested prev func comma") << QStringLiteral("bar(1, bar(foo(1), ");
 }
 
 void TestCompletion::nestedFunctionCall()
@@ -366,7 +366,7 @@ void TestCompletion::newObjectFromOtherFile()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "blah; $a->");
+    PhpCompletionTester tester(top, QStringLiteral("blah; $a->"));
     QCOMPARE(tester.items.count(), 1);
     QCOMPARE(tester.items.first()->declaration().data(), addTop->childContexts().first()->localDeclarations().first());
 }
@@ -390,7 +390,7 @@ void TestCompletion::constantFromOtherFile()
     Declaration* findMe = addTop->localDeclarations().first();
     Declaration* dontFindMe = addTop->localDeclarations().last();
 
-    PhpCompletionTester tester(top, "");
+    PhpCompletionTester tester(top, {});
     QVERIFY(searchDeclaration(tester.items, findMe));
     QVERIFY(!searchDeclaration(tester.items, dontFindMe));
 }
@@ -404,12 +404,12 @@ void TestCompletion::baseClass()
     DUChainWriteLocker lock(DUChain::lock());
 
     {
-        PhpCompletionTester tester(top, "$a->");
+        PhpCompletionTester tester(top, QStringLiteral("$a->"));
         QCOMPARE(tester.names, QStringList() << "avar");
     }
 
     {
-        PhpCompletionTester tester(top, "$b->");
+        PhpCompletionTester tester(top, QStringLiteral("$b->"));
         QCOMPARE(tester.names, QStringList() << "bvar" << "avar");
     }
 }
@@ -427,7 +427,7 @@ void TestCompletion::extendsFromOtherFile()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "$b->");
+    PhpCompletionTester tester(top, QStringLiteral("$b->"));
     QCOMPARE(tester.items.count(), 2);
     QCOMPARE(tester.items.at(1)->declaration().data(), addTop->childContexts().first()->localDeclarations().first());
     QCOMPARE(tester.items.at(0)->declaration().data(), top->childContexts().first()->localDeclarations().first());
@@ -458,12 +458,12 @@ void TestCompletion::codeModel()
     uint count;
     const CodeModelItem* items;
 
-    CodeModel::self().addItem(IndexedString("file:///foo"), QualifiedIdentifier("identifier"), CodeModelItem::Class);
+    CodeModel::self().addItem(IndexedString("file:///foo"), QualifiedIdentifier(QStringLiteral("identifier")), CodeModelItem::Class);
 
     CodeModel::self().items(IndexedString("file:///foo"), count, items);
     bool found = false;
     for (uint i = 0;i < count;++i) {
-        if (items[0].id.identifier() == QualifiedIdentifier("identifier")) {
+        if (items[0].id.identifier() == QualifiedIdentifier(QStringLiteral("identifier"))) {
             found = true;
             QCOMPARE(items[i].kind, CodeModelItem::Class);
         }
@@ -478,19 +478,19 @@ void TestCompletion::projectFileClass()
 
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    TopDUContext* top = parse("<?php class foo { function bar() {} }", DumpNone, QUrl("file:///internal/projecttest1"));
+    TopDUContext* top = parse("<?php class foo { function bar() {} }", DumpNone, QUrl(QStringLiteral("file:///internal/projecttest1")));
     DUChainReleaser releaseTop(top);
 
     DUChainWriteLocker lock(DUChain::lock());
 
     {
         // outside of class foo
-        PhpCompletionTester tester(top, "<?php ");
+        PhpCompletionTester tester(top, QStringLiteral("<?php "));
         QVERIFY(searchDeclaration(tester.items, addTop->localDeclarations().first()));
     }
     {
         // inside of class foo, i.e. in its bar() method
-        PhpCompletionTester tester(top->childContexts().first()->childContexts().first(), "<?php ");
+        PhpCompletionTester tester(top->childContexts().first()->childContexts().first(), QStringLiteral("<?php "));
 
         qDebug() << tester.names;
         // we want to see the class
@@ -511,7 +511,7 @@ void TestCompletion::variable()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "");
+    PhpCompletionTester tester(top, {});
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
 
     QVERIFY(searchDeclaration(tester.items, top->localDeclarations().at(1)));
@@ -527,7 +527,7 @@ void TestCompletion::nameNormalVariable()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "");
+    PhpCompletionTester tester(top, {});
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
 
     foreach(const QString &id, QStringList() << "ghi" << "def" << "$abc" << "$arr") {
@@ -545,7 +545,7 @@ void TestCompletion::nameClassMember()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "$b->");
+    PhpCompletionTester tester(top, QStringLiteral("$b->"));
 
     TestCodeCompletionModel *model = new TestCodeCompletionModel;
     model->foundDeclarations(tester.items, tester.completionContext.data());
@@ -572,21 +572,21 @@ void TestCompletion::exceptions()
     DUChainWriteLocker lock(DUChain::lock());
 
     {
-        PhpCompletionTester tester(top, "throw ");
+        PhpCompletionTester tester(top, QStringLiteral("throw "));
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::ExceptionInstanceChoose);
         QCOMPARE(tester.items.count(), 1);
         QVERIFY(searchDeclaration(tester.items, top->localDeclarations().at(1)));
     }
 
     {
-        PhpCompletionTester tester(top, "throw new ");
+        PhpCompletionTester tester(top, QStringLiteral("throw new "));
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::ExceptionChoose);
         QCOMPARE(tester.items.count(), 2);
         QVERIFY(searchDeclaration(tester.items, top->localDeclarations().at(0)));
     }
 
     {
-        PhpCompletionTester tester(top, "try { } catch(");
+        PhpCompletionTester tester(top, QStringLiteral("try { } catch("));
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::ExceptionChoose);
         QCOMPARE(tester.items.count(), 2);
         QVERIFY(searchDeclaration(tester.items, top->localDeclarations().at(0)));
@@ -607,7 +607,7 @@ void TestCompletion::exceptionOtherFile()
     DUChainWriteLocker lock(DUChain::lock());
 
     {
-        PhpCompletionTester tester(top, "throw new ");
+        PhpCompletionTester tester(top, QStringLiteral("throw new "));
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::ExceptionChoose);
         QCOMPARE(tester.items.count(), 2);
         QVERIFY(searchDeclaration(tester.items, addTop->localDeclarations().at(0)));
@@ -626,7 +626,7 @@ void TestCompletion::abstractMethods()
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().first()->localDeclarations().last()->internalContext();
-    PhpCompletionTester tester(funContext, "$this->");
+    PhpCompletionTester tester(funContext, QStringLiteral("$this->"));
     QCOMPARE(tester.names, QStringList() << "foo" << "bar");
 }
 
@@ -641,7 +641,7 @@ void TestCompletion::interfaceMethods()
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top->childContexts().last()->localDeclarations().first()->internalContext();
-    PhpCompletionTester tester(funContext, "$this->");
+    PhpCompletionTester tester(funContext, QStringLiteral("$this->"));
     QCOMPARE(tester.names, QStringList() << "bar" << "foo");
 }
 
@@ -656,7 +656,7 @@ void TestCompletion::interfaceMethods2()
     DUChainWriteLocker lock(DUChain::lock());
 
     DUContext* funContext = top;
-    PhpCompletionTester tester(funContext, "$a->");
+    PhpCompletionTester tester(funContext, QStringLiteral("$a->"));
     QCOMPARE(tester.names, QStringList() << "foo");
 }
 
@@ -673,17 +673,17 @@ void TestCompletion::implementMethods()
     // context of class B
     DUContext* classContext = top->childContexts().last();
     {
-        PhpCompletionTester tester(classContext, "{");
+        PhpCompletionTester tester(classContext, QStringLiteral("{"));
         QStringList compItems;
-        compItems << "foo";
-        compItems << "const";
-        compItems << "final";
-        compItems << "function";
-        compItems << "public";
-        compItems << "private";
-        compItems << "protected";
-        compItems << "static";
-        compItems << "var";
+        compItems << QStringLiteral("foo");
+        compItems << QStringLiteral("const");
+        compItems << QStringLiteral("final");
+        compItems << QStringLiteral("function");
+        compItems << QStringLiteral("public");
+        compItems << QStringLiteral("private");
+        compItems << QStringLiteral("protected");
+        compItems << QStringLiteral("static");
+        compItems << QStringLiteral("var");
         compItems.sort();
         tester.names.sort();
         QCOMPARE(tester.names, compItems);
@@ -705,40 +705,40 @@ void TestCompletion::overrideMethods()
     // context of class B
     DUContext* classContext = top->childContexts().last();
     {
-        PhpCompletionTester tester(classContext, "{");
+        PhpCompletionTester tester(classContext, QStringLiteral("{"));
         QStringList compItems;
-        compItems << "a";
-        compItems << "const";
-        compItems << "final";
-        compItems << "function";
-        compItems << "public";
-        compItems << "private";
-        compItems << "protected";
-        compItems << "static";
-        compItems << "var";
+        compItems << QStringLiteral("a");
+        compItems << QStringLiteral("const");
+        compItems << QStringLiteral("final");
+        compItems << QStringLiteral("function");
+        compItems << QStringLiteral("public");
+        compItems << QStringLiteral("private");
+        compItems << QStringLiteral("protected");
+        compItems << QStringLiteral("static");
+        compItems << QStringLiteral("var");
         compItems.sort();
         tester.names.sort();
         QCOMPARE(tester.names, compItems);
     }
     {
-        PhpCompletionTester tester(classContext, "public static");
+        PhpCompletionTester tester(classContext, QStringLiteral("public static"));
         QStringList compItems;
-        compItems << "final";
-        compItems << "function";
+        compItems << QStringLiteral("final");
+        compItems << QStringLiteral("function");
         compItems.sort();
         tester.names.sort();
         QCOMPARE(tester.names, compItems);
     }
     {
-        PhpCompletionTester tester(classContext, "private function");
+        PhpCompletionTester tester(classContext, QStringLiteral("private function"));
         QVERIFY(tester.items.isEmpty());
     }
     {
-        PhpCompletionTester tester(classContext, "final public ");
+        PhpCompletionTester tester(classContext, QStringLiteral("final public "));
         QStringList compItems;
-        compItems << "a";
-        compItems << "function";
-        compItems << "static";
+        compItems << QStringLiteral("a");
+        compItems << QStringLiteral("function");
+        compItems << QStringLiteral("static");
         compItems.sort();
         tester.names.sort();
         QCOMPARE(tester.names, compItems);
@@ -760,17 +760,17 @@ void TestCompletion::overrideVars()
     // context of class B
     DUContext* classContext = top->childContexts().last();
     {
-        PhpCompletionTester tester(classContext, "{");
+        PhpCompletionTester tester(classContext, QStringLiteral("{"));
         QStringList compItems;
-        compItems << "x";
-        compItems << "const";
-        compItems << "final";
-        compItems << "function";
-        compItems << "public";
-        compItems << "private";
-        compItems << "protected";
-        compItems << "static";
-        compItems << "var";
+        compItems << QStringLiteral("x");
+        compItems << QStringLiteral("const");
+        compItems << QStringLiteral("final");
+        compItems << QStringLiteral("function");
+        compItems << QStringLiteral("public");
+        compItems << QStringLiteral("private");
+        compItems << QStringLiteral("protected");
+        compItems << QStringLiteral("static");
+        compItems << QStringLiteral("var");
         compItems.sort();
         tester.names.sort();
         QCOMPARE(tester.names, compItems);
@@ -783,7 +783,7 @@ void TestCompletion::inArray()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "<?php a = array(1, ");
+    PhpCompletionTester tester(top, QStringLiteral("<?php a = array(1, "));
     QVERIFY(tester.items.count() > 0);
 
     // TODO: compare to global completion list
@@ -832,90 +832,90 @@ void TestCompletion::verifyExtendsOrImplements(const QString &codeStr, const QSt
 
 void TestCompletion::newExtends()
 {
-    verifyExtendsOrImplements("<?php ", "class test extends ",
+    verifyExtendsOrImplements(QStringLiteral("<?php "), QStringLiteral("class test extends "),
                               ClassDeclarationData::Class,
                               CursorInRevision::invalid(),
-                              QStringList() << "test");
+                              QStringList() << QStringLiteral("test"));
 
-    verifyExtendsOrImplements("<?php ", "interface test extends ",
+    verifyExtendsOrImplements(QStringLiteral("<?php "), QStringLiteral("interface test extends "),
                               ClassDeclarationData::Interface,
                               CursorInRevision::invalid(),
-                              QStringList() << "test");
+                              QStringList() << QStringLiteral("test"));
 
-    verifyExtendsOrImplements("<?php interface blub{} ", "interface test extends blub, ",
+    verifyExtendsOrImplements(QStringLiteral("<?php interface blub{} "), QStringLiteral("interface test extends blub, "),
                               ClassDeclarationData::Interface,
                               CursorInRevision::invalid(),
-                              QStringList() << "test" << "blub");
+                              QStringList() << QStringLiteral("test") << QStringLiteral("blub"));
 }
 
 void TestCompletion::updateExtends()
 {
     //                         0         1         2         3         4         5
     //                         012345678901234567890123456789012345678901234567890123456789
-    verifyExtendsOrImplements("<?php class test {}", "class test extends ",
+    verifyExtendsOrImplements(QStringLiteral("<?php class test {}"), QStringLiteral("class test extends "),
                               ClassDeclarationData::Class,
                               CursorInRevision(0, 16),
-                              QStringList() << "test");
+                              QStringList() << QStringLiteral("test"));
 
     //                         0         1         2         3         4         5
     //                         012345678901234567890123456789012345678901234567890123456789
-    verifyExtendsOrImplements("<?php interface test {}", "interface test extends ",
+    verifyExtendsOrImplements(QStringLiteral("<?php interface test {}"), QStringLiteral("interface test extends "),
                               ClassDeclarationData::Interface,
                               CursorInRevision(0, 20),
-                              QStringList() << "test");
+                              QStringList() << QStringLiteral("test"));
 
     //                         0         1         2         3         4         5
     //                         012345678901234567890123456789012345678901234567890123456789
-    verifyExtendsOrImplements("<?php interface blub{} interface test extends blub {}",
-                              "interface test extends blub,bar, ",
+    verifyExtendsOrImplements(QStringLiteral("<?php interface blub{} interface test extends blub {}"),
+                              QStringLiteral("interface test extends blub,bar, "),
                               ClassDeclarationData::Interface,
                               CursorInRevision(0, 50),
-                              QStringList() << "test" << "blub");
+                              QStringList() << QStringLiteral("test") << QStringLiteral("blub"));
 }
 
 void TestCompletion::newImplements()
 {
-    verifyExtendsOrImplements("<?php ", "class test implements ",
+    verifyExtendsOrImplements(QStringLiteral("<?php "), QStringLiteral("class test implements "),
                               ClassDeclarationData::Interface,
                               CursorInRevision::invalid(),
-                              QStringList() << "test");
-    verifyExtendsOrImplements("<?php interface blub{}", " class test implements blub, ",
+                              QStringList() << QStringLiteral("test"));
+    verifyExtendsOrImplements(QStringLiteral("<?php interface blub{}"), QStringLiteral(" class test implements blub, "),
                               ClassDeclarationData::Interface,
                               CursorInRevision::invalid(),
-                              QStringList() << "test" << "blub");
+                              QStringList() << QStringLiteral("test") << QStringLiteral("blub"));
 }
 
 void TestCompletion::updateImplements()
 {
     //                         0         1         2         3         4         5
     //                         012345678901234567890123456789012345678901234567890123456789
-    verifyExtendsOrImplements("<?php class test {}", "class test implements ",
+    verifyExtendsOrImplements(QStringLiteral("<?php class test {}"), QStringLiteral("class test implements "),
                               ClassDeclarationData::Interface,
                               CursorInRevision(0, 16),
-                              QStringList() << "test");
+                              QStringList() << QStringLiteral("test"));
 
     //                         0         1         2         3         4         5
     //                         012345678901234567890123456789012345678901234567890123456789
-    verifyExtendsOrImplements("<?php interface blub{} class test implements blub {}",
-                              "class test implements blub, ",
+    verifyExtendsOrImplements(QStringLiteral("<?php interface blub{} class test implements blub {}"),
+                              QStringLiteral("class test implements blub, "),
                               ClassDeclarationData::Interface,
                               CursorInRevision(0, 49),
-                              QStringList() << "test" << "blub");
+                              QStringList() << QStringLiteral("test") << QStringLiteral("blub"));
 }
 
 void TestCompletion::avoidCircularInheritance()
 {
-    verifyExtendsOrImplements("<?php interface blub{} interface bar extends blub{}",
-                              "interface test extends bar, ",
+    verifyExtendsOrImplements(QStringLiteral("<?php interface blub{} interface bar extends blub{}"),
+                              QStringLiteral("interface test extends bar, "),
                               ClassDeclarationData::Interface,
                               CursorInRevision::invalid(),
-                              QStringList() << "test" << "blub" << "bar");
+                              QStringList() << QStringLiteral("test") << QStringLiteral("blub") << QStringLiteral("bar"));
 
-    verifyExtendsOrImplements("<?php interface blub{} interface bar extends blub{}",
-                              "class test implements bar, ",
+    verifyExtendsOrImplements(QStringLiteral("<?php interface blub{} interface bar extends blub{}"),
+                              QStringLiteral("class test implements bar, "),
                               ClassDeclarationData::Interface,
                               CursorInRevision::invalid(),
-                              QStringList() << "blub" << "bar");
+                              QStringList() << QStringLiteral("blub") << QStringLiteral("bar"));
 }
 
 
@@ -928,7 +928,7 @@ void TestCompletion::unsureType()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "$f->");
+    PhpCompletionTester tester(top, QStringLiteral("$f->"));
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::MemberAccess);
 
     qDebug() << tester.names;
@@ -979,12 +979,12 @@ void TestCompletion::phpStartTag()
     DUChainWriteLocker lock(DUChain::lock());
 
     foreach ( const QString &code, QStringList() << "p" << "ph" << "php" ) {
-        PhpCompletionTester tester(top, "<?", code);
+        PhpCompletionTester tester(top, QStringLiteral("<?"), code);
 
         QVERIFY(tester.items.isEmpty());
     }
 
-    PhpCompletionTester tester(top, "<?php ");
+    PhpCompletionTester tester(top, QStringLiteral("<?php "));
 
     QVERIFY(!tester.items.isEmpty());
 }
@@ -995,7 +995,7 @@ void TestCompletion::outsidePhpContext()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "<?php $var = 1; ?>=");
+    PhpCompletionTester tester(top, QStringLiteral("<?php $var = 1; ?>="));
 
     QVERIFY(tester.items.isEmpty());
 }
@@ -1006,9 +1006,9 @@ void TestCompletion::nonGlobalInFunction()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top->childContexts().first(), "");
+    PhpCompletionTester tester(top->childContexts().first(), {});
 
-    QList<Declaration*> decs = top->findLocalDeclarations(Identifier("outside"));
+    QList<Declaration*> decs = top->findLocalDeclarations(Identifier(QStringLiteral("outside")));
     QCOMPARE(decs.count(), 1);
     QVERIFY(!searchDeclaration(tester.items, decs.first()));
 }
@@ -1041,7 +1041,7 @@ void TestCompletion::instanceof()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "$a instanceof ");
+    PhpCompletionTester tester(top, QStringLiteral("$a instanceof "));
 
     foreach ( const QString& name, QStringList() << "a" << "b" << "c" << "d" ) {
         qDebug() << name;
@@ -1080,7 +1080,7 @@ void TestCompletion::functionBeforeDeclaration()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().size(), 1);
-    PhpCompletionTester tester(top, "", "", CursorInRevision(0, 3));
+    PhpCompletionTester tester(top, {}, {}, CursorInRevision(0, 3));
     // function _should_ be found
     QVERIFY(searchDeclaration(tester.items, top->localDeclarations().first()));
 }
@@ -1094,7 +1094,7 @@ void TestCompletion::classBeforeDeclaration()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().size(), 1);
-    PhpCompletionTester tester(top, "", "", CursorInRevision(0, 3));
+    PhpCompletionTester tester(top, {}, {}, CursorInRevision(0, 3));
     // class _should_ be found
     QVERIFY(searchDeclaration(tester.items, top->localDeclarations().first()));
 }
@@ -1108,7 +1108,7 @@ void TestCompletion::constantBeforeDeclaration()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().size(), 1);
-    PhpCompletionTester tester(top, "", "", CursorInRevision(0, 3));
+    PhpCompletionTester tester(top, {}, {}, CursorInRevision(0, 3));
     // constant should _not_ be found
     QVERIFY(!searchDeclaration(tester.items, top->localDeclarations().first()));
 }
@@ -1122,7 +1122,7 @@ void TestCompletion::variableBeforeDeclaration()
     DUChainWriteLocker lock(DUChain::lock());
 
     QCOMPARE(top->localDeclarations().size(), 1);
-    PhpCompletionTester tester(top, "", "", CursorInRevision(0, 3));
+    PhpCompletionTester tester(top, {}, {}, CursorInRevision(0, 3));
     // variable should _not_ be found
     QVERIFY(!searchDeclaration(tester.items, top->localDeclarations().first()));
 }
@@ -1144,7 +1144,7 @@ void TestCompletion::functionArguments()
     QVector< Declaration* > args = top->childContexts().first()->localDeclarations();
     QCOMPARE(args.size(), 2);
 
-    PhpCompletionTester tester(top->childContexts().last(), "");
+    PhpCompletionTester tester(top->childContexts().last(), {});
     // should get two local and the func itself
     QVERIFY(searchDeclaration(tester.items, fDec));
     foreach( Declaration* dec, args ) {
@@ -1161,13 +1161,13 @@ void TestCompletion::referencedClass()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    QList<Declaration*> decs = top->findDeclarations(Identifier("a"));
+    QList<Declaration*> decs = top->findDeclarations(Identifier(QStringLiteral("a")));
     QCOMPARE(decs.size(), 1);
 
     ClassDeclaration* aDec = dynamic_cast<ClassDeclaration*>(decs.first());
     QVERIFY(aDec);
 
-    decs = top->findDeclarations(Identifier("foo"));
+    decs = top->findDeclarations(Identifier(QStringLiteral("foo")));
     QCOMPARE(decs.size(), 1);
 
     FunctionDeclaration* funcDec = dynamic_cast<FunctionDeclaration*>(decs.first());
@@ -1176,7 +1176,7 @@ void TestCompletion::referencedClass()
     QVERIFY(funcDec->internalFunctionContext());
     QVERIFY(funcDec->internalContext()->imports(funcDec->internalFunctionContext()));
 
-    PhpCompletionTester tester(funcDec->internalContext(), "$arg->");
+    PhpCompletionTester tester(funcDec->internalContext(), QStringLiteral("$arg->"));
     QVERIFY(tester.completionContext->memberAccessOperation() == CodeCompletionContext::MemberAccess);
     QCOMPARE(tester.names, QStringList() << "pubf" << "pub");
 }
@@ -1196,7 +1196,7 @@ void TestCompletion::ctorCall()
     Declaration* bCtor = top->childContexts().last()->localDeclarations().first();
 
     {
-        PhpCompletionTester tester(top, "new A(");
+        PhpCompletionTester tester(top, QStringLiteral("new A("));
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
         QVERIFY(tester.completionContext->parentContext());
         QCOMPARE(tester.completionContext->parentContext()->memberAccessOperation(),
@@ -1211,7 +1211,7 @@ void TestCompletion::ctorCall()
         QCOMPARE(ret, QString("(string $bar)"));
     }
     {
-        PhpCompletionTester tester(top, "new B(");
+        PhpCompletionTester tester(top, QStringLiteral("new B("));
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
         QVERIFY(tester.completionContext->parentContext());
         QCOMPARE(tester.completionContext->parentContext()->memberAccessOperation(),
@@ -1235,7 +1235,7 @@ void TestCompletion::chainedCalling()
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
-    PhpCompletionTester tester(top, "$a->b()->");
+    PhpCompletionTester tester(top, QStringLiteral("$a->b()->"));
     QVERIFY(tester.completionContext->memberAccessOperation() == CodeCompletionContext::MemberAccess);
     QCOMPARE(tester.names, QStringList() << "b");
 }
@@ -1251,7 +1251,7 @@ void TestCompletion::funcCallInConditional()
     DUChainWriteLocker lock(DUChain::lock());
 
     {
-        PhpCompletionTester tester(top, "if ( !empty($_POST['answer']) && asdf(");
+        PhpCompletionTester tester(top, QStringLiteral("if ( !empty($_POST['answer']) && asdf("));
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
         QVERIFY(tester.completionContext->parentContext());
         QCOMPARE(tester.completionContext->parentContext()->memberAccessOperation(),
@@ -1278,7 +1278,7 @@ void TestCompletion::namespaces()
     DUChainWriteLocker lock;
 
     {
-        PhpCompletionTester tester(top, "namespace ");
+        PhpCompletionTester tester(top, QStringLiteral("namespace "));
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NamespaceChoose);
         QVERIFY(!tester.completionContext->parentContext());
 
@@ -1298,7 +1298,7 @@ void TestCompletion::inNamespace()
     DUChainWriteLocker lock;
 
     {
-        PhpCompletionTester tester(top->childContexts().at(0), "");
+        PhpCompletionTester tester(top->childContexts().at(0), {});
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::NoMemberAccess);
         QVERIFY(!tester.completionContext->parentContext());
 
@@ -1308,7 +1308,7 @@ void TestCompletion::inNamespace()
         QVERIFY(!searchDeclaration(tester.items, top->childContexts().last()->localDeclarations().first()));
     }
     {
-        PhpCompletionTester tester(top->childContexts().at(0), "\\");
+        PhpCompletionTester tester(top->childContexts().at(0), QStringLiteral("\\"));
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::BackslashAccess);
         QVERIFY(!tester.completionContext->parentContext());
 
@@ -1319,7 +1319,7 @@ void TestCompletion::inNamespace()
         QVERIFY(!searchDeclaration(tester.items, top->childContexts().last()->localDeclarations().first()));
     }
     {
-        PhpCompletionTester tester(top->childContexts().at(0), "\\foo\\");
+        PhpCompletionTester tester(top->childContexts().at(0), QStringLiteral("\\foo\\"));
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::BackslashAccess);
         QVERIFY(!tester.completionContext->parentContext());
 
@@ -1330,7 +1330,7 @@ void TestCompletion::inNamespace()
         QVERIFY(!searchDeclaration(tester.items, top->childContexts().last()->localDeclarations().first()));
     }
     {
-        PhpCompletionTester tester(top->childContexts().at(0), "\\yxc\\");
+        PhpCompletionTester tester(top->childContexts().at(0), QStringLiteral("\\yxc\\"));
         QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::BackslashAccess);
         QVERIFY(!tester.completionContext->parentContext());
 
@@ -1356,12 +1356,12 @@ void TestCompletion::closures()
     Declaration* l = top->localDeclarations().first();
     Declaration* c = top->localDeclarations().last();
     {
-        PhpCompletionTester tester(top, "");
+        PhpCompletionTester tester(top, {});
         QVERIFY(tester.containsDeclaration(l));
         QVERIFY(!tester.containsDeclaration(c));
     }
     {
-        PhpCompletionTester tester(top, "$l(");
+        PhpCompletionTester tester(top, QStringLiteral("$l("));
         QVERIFY(tester.containsDeclaration(l));
         QVERIFY(!tester.containsDeclaration(c));
 

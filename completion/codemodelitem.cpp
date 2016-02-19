@@ -62,7 +62,7 @@ QVariant CodeModelCompletionItem::data(const QModelIndex& index, int role, const
         case KDevelop::CodeCompletionModel::Name:
             return QVariant(m_item.prettyName.str());
         case KDevelop::CodeCompletionModel::Prefix:
-            return QString("class");
+            return QStringLiteral("class");
         }
         break;
     case Qt::DecorationRole:

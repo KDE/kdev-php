@@ -62,8 +62,8 @@ PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget
     progressbar->setMaximum(100);
     progressbar->setAlignment(Qt::AlignCenter);
 
-    connect( m_part, SIGNAL(loadProgress(int)),
-             progressbar, SLOT(setValue(int)) );
+    connect( m_part, &KDevelop::StandardDocumentationView::loadProgress,
+             progressbar, &QProgressBar::setValue );
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addStretch();
@@ -76,10 +76,17 @@ PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget
     setCurrentWidget(m_loading);
 
 
-    connect(m_part, SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
-    connect(m_part, SIGNAL(loadFinished(bool)), this, SLOT(documentLoaded()) );
+    connect(m_part, &KDevelop::StandardDocumentationView::linkClicked, this, &PhpDocumentationWidget::linkClicked);
+    connect(m_part, &KDevelop::StandardDocumentationView::loadFinished, this, &PhpDocumentationWidget::documentLoaded);
 
     m_part->load( url );
+}
+
+PhpDocumentationWidget::~PhpDocumentationWidget()
+{
+    // make sure we don't get called by any of the m_part signals on shutdown, see also:
+    // https://codereview.qt-project.org/#/c/83800/
+    disconnect(m_part, 0, this, 0);
 }
 
 void PhpDocumentationWidget::linkClicked(const QUrl& url)

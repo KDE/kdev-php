@@ -52,7 +52,7 @@ PhpUnitRunJob::PhpUnitRunJob(PhpUnitTestSuite* suite, const QStringList& cases, 
 
 KJob* createTestJob(QString launchModeId, QStringList arguments )
 {
-    KDevelop::LaunchConfigurationType* type = KDevelop::ICore::self()->runController()->launchConfigurationTypeForId( "Script Application" );
+    KDevelop::LaunchConfigurationType* type = KDevelop::ICore::self()->runController()->launchConfigurationTypeForId( QStringLiteral("Script Application") );
     KDevelop::ILaunchMode* mode = KDevelop::ICore::self()->runController()->launchModeForId( launchModeId );
 
     qCDebug(TESTPROVIDER) << "got mode and type:" << type << type->id() << mode << mode->id();
@@ -100,11 +100,11 @@ void PhpUnitRunJob::start()
 
     if (m_cases != m_suite->cases())
     {
-        args << "--filter";
-        args << '"' + m_cases.join("|") + '"';
+        args << QStringLiteral("--filter");
+        args << '"' + m_cases.join(QStringLiteral("|")) + '"';
     }
 
-    args << "--testdox" << m_suite->name() << m_suite->url().toLocalFile();
+    args << QStringLiteral("--testdox") << m_suite->name() << m_suite->url().toLocalFile();
 
     const QString exe = QStandardPaths::findExecutable(QStringLiteral("phpunit"));
     if (exe.isEmpty()) {
@@ -115,9 +115,9 @@ void PhpUnitRunJob::start()
     }
 
     args.prepend(exe);
-    args.prepend("php");
+    args.prepend(QStringLiteral("php"));
 
-    m_job = createTestJob("execute", args);
+    m_job = createTestJob(QStringLiteral("execute"), args);
 
     m_outputJob = qobject_cast<KDevelop::OutputJob*>(m_job);
     if (!m_outputJob) {
@@ -128,10 +128,10 @@ void PhpUnitRunJob::start()
     Q_ASSERT(m_outputJob);
     if (m_outputJob) {
         m_outputJob->setVerbosity(m_verbosity);
-        connect(m_outputJob->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(rowsInserted(QModelIndex,int,int)));
+        connect(m_outputJob->model(), &QAbstractItemModel::rowsInserted, this, &PhpUnitRunJob::rowsInserted);
     }
 
-    connect(m_job, SIGNAL(finished(KJob*)), SLOT(processFinished(KJob*)));
+    connect(m_job, &KJob::finished, this, &PhpUnitRunJob::processFinished);
 }
 
 bool PhpUnitRunJob::doKill()
@@ -177,7 +177,7 @@ void PhpUnitRunJob::rowsInserted(const QModelIndex &parent, int startRow, int en
         int i = testResultLineExp.indexIn(line);
         if (i > -1)
         {
-            bool passed = testResultLineExp.cap(1) == "x";
+            bool passed = testResultLineExp.cap(1) == QLatin1String("x");
             QString testCase = "test" + line.mid(i+4).toLower().remove(' ');
             qCDebug(TESTPROVIDER) << "Got result in " << line << " for " << testCase;
             if (m_cases.contains(testCase, Qt::CaseInsensitive))

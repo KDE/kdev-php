@@ -67,7 +67,7 @@ DeclarationPointer ExpressionVisitor::processVariable(VariableIdentifierAst* var
 
     DUChainReadLocker lock;
 
-    if (identifier.nameEquals(Identifier("this"))) {
+    if (identifier.nameEquals(Identifier(QStringLiteral("this")))) {
         if (m_currentContext->parentContext()
                 && m_currentContext->parentContext()->type() == DUContext::Class
                 && m_currentContext->parentContext()->owner()) {
@@ -114,7 +114,7 @@ DeclarationPointer ExpressionVisitor::processVariable(VariableIdentifierAst* var
 
     lock.unlock();
 
-    if ( !m_isAssignmentExpressionEqual || identifier.nameEquals( Identifier("this") )
+    if ( !m_isAssignmentExpressionEqual || identifier.nameEquals( Identifier(QStringLiteral("this")) )
          // might be something like $s = $s . $s; in which case we have to add a use for the first $s
          || (ret && ret->range().end < position) )
     {
@@ -193,7 +193,7 @@ void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *n
 {
     DefaultVisitor::visitVarExpressionNewObject(node);
     if (node->className->staticIdentifier != -1) {
-        static const QualifiedIdentifier id("static");
+        static const QualifiedIdentifier id(QStringLiteral("static"));
         DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
         usingDeclaration(node->className, dec);
         m_result.setDeclaration(dec);
@@ -306,7 +306,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
 {
     if (node->stringFunctionNameOrClass && !node->stringFunctionName && !node->varFunctionName) {
         QualifiedIdentifier id = identifierForNamespace(node->stringFunctionNameOrClass, m_editor);
-        if (id.toString(true) == "define"
+        if (id.toString(true) == QLatin1String("define")
                 && node->stringParameterList && node->stringParameterList->parametersSequence
                 && node->stringParameterList->parametersSequence->count() > 0) {
             //in a define() call the first argument is the constant name. we don't want to look for a class name to build uses
@@ -420,9 +420,9 @@ void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
         }
     } else {
         QString str(stringForNode(node->constant).toLower());
-        if (str == "true" || str == "false") {
+        if (str == QLatin1String("true") || str == QLatin1String("false")) {
             m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean)));
-        } else if (str == "null") {
+        } else if (str == QLatin1String("null")) {
             m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeNull)));
         } else {
             //constant (created with declare('foo', 'bar')) or const Foo = 1;
@@ -672,7 +672,7 @@ void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
             break;
         case CastObject: {
             /// Qualified identifier for 'stdclass'
-            static const QualifiedIdentifier stdclassQId("stdclass");
+            static const QualifiedIdentifier stdclassQId(QStringLiteral("stdclass"));
             DUChainReadLocker lock(DUChain::lock());
             m_result.setDeclarations(m_currentContext->findDeclarations(stdclassQId));
             break;

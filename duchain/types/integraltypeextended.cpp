@@ -50,7 +50,7 @@ IntegralTypeExtended::IntegralTypeExtended(uint type)
 QString IntegralTypeExtended::toString() const
 {
     if ( d_func()->m_dataType == TypeResource ) {
-        return "resource";
+        return QStringLiteral("resource");
     }
     return KDevelop::IntegralType::toString();
 }

@@ -434,8 +434,8 @@ void DeclarationBuilder::importTraitMethods(ClassStatementAst *node)
                         } else if (importMethod) {
                             reportError(
                                 i18n("Trait method %1 has not been applied, because there are collisions with other trait methods on %2")
-                                .arg(importMethod->prettyName().str())
-                                .arg(dynamic_cast<ClassDeclaration*>(currentDeclaration())->prettyName().str())
+                                .arg(importMethod->prettyName().str(),
+                                     dynamic_cast<ClassDeclaration*>(currentDeclaration())->prettyName().str())
                                 , it->element, IProblem::Error
                             );
                             found = local;
@@ -884,9 +884,9 @@ void DeclarationBuilder::reportRedeclarationError(Declaration* declaration, AstN
     } else if (auto trait = dynamic_cast<TraitMemberAliasDeclaration*>(declaration)) {
         reportError(
             i18n("%1 and %2 define the same property (%3) in the composition of %1. This might be incompatible, to improve maintainability consider using accessor methods in traits instead.")
-            .arg(dynamic_cast<ClassDeclaration*>(currentDeclaration())->prettyName().str())
-            .arg(dynamic_cast<ClassDeclaration*>(trait->aliasedDeclaration().data()->context()->owner())->prettyName().str())
-            .arg(dynamic_cast<ClassMemberDeclaration*>(trait)->identifier().toString()), node, IProblem::Warning
+            .arg(dynamic_cast<ClassDeclaration*>(currentDeclaration())->prettyName().str(),
+                 dynamic_cast<ClassDeclaration*>(trait->aliasedDeclaration().data()->context()->owner())->prettyName().str(),
+                 dynamic_cast<ClassMemberDeclaration*>(trait)->identifier().toString()), node, IProblem::Warning
         );
     } else {
         ///TODO: try to shorten the filename by removing the leading path to the current project
@@ -933,7 +933,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
 {
     // we must not re-assign $this in a class context
     /// Qualified identifier for 'this'
-    static const QualifiedIdentifier thisQId("this");
+    static const QualifiedIdentifier thisQId(QStringLiteral("this"));
     if ( identifier == thisQId
             && currentContext()->parentContext()
             && currentContext()->parentContext()->type() == DUContext::Class ) {
@@ -1034,7 +1034,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
 
 DUContext* getClassContext(const QualifiedIdentifier &identifier, DUContext* currentCtx) {
     /// Qualified identifier for 'this'
-    static const QualifiedIdentifier thisQId("this");
+    static const QualifiedIdentifier thisQId(QStringLiteral("this"));
     if ( identifier == thisQId ) {
         if ( currentCtx->parentContext() && currentCtx->parentContext()->type() == DUContext::Class ) {
             return currentCtx->parentContext();
@@ -1113,7 +1113,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
     }
 
     if (node->stringFunctionNameOrClass && !node->stringFunctionName && !node->varFunctionName) {
-        if (id.toString(true) == "define"
+        if (id.toString(true) == QLatin1String("define")
                 && node->stringParameterList && node->stringParameterList->parametersSequence
                 && node->stringParameterList->parametersSequence->count() > 0) {
             //constant, defined through define-function

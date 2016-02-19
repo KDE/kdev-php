@@ -56,7 +56,7 @@ QString NormalDeclarationCompletionItem::declarationName() const
 {
     QString ret = prettyName(m_declaration.data());
     if ( ret.isEmpty() ) {
-        return "<unknown>";
+        return QStringLiteral("<unknown>");
     }
     bool isStatic = false;
     if (!m_declaration->isFunctionDeclaration()) {
