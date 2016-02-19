@@ -826,8 +826,12 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
 -> scalar ;;
 
   constant=namespacedIdentifier
-  ( PAAMAYIM_NEKUDOTAYIM classConstant=identifier | 0 )
+  ( PAAMAYIM_NEKUDOTAYIM classConstant=classConstant | 0 )
 -> constantOrClassConst ;;
+
+    CLASS
+  | identifier
+-> classConstant ;;
 
     #encaps=encaps*
 -> encapsList ;;

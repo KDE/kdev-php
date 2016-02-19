@@ -631,5 +631,35 @@ void TestExpressionParser::classMemberOnInstantiation()
     QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeString));
 }
 
+void TestExpressionParser::classNameConstant_data()
+{
+    QTest::addColumn<QString>("NSconst");
+
+    QTest::newRow("fullNamespace") << "\\NS\\ClassName::class";
+    QTest::newRow("normalNamespace") << "NS\\ClassName::class";
+    QTest::newRow("inNamespace") << "$n";
+}
+
+void TestExpressionParser::classNameConstant()
+{
+    QFETCH(QString, NSconst);
+
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? namespace NS { class ClassName { } $n=ClassName::class; }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+
+    ExpressionParser p(true);
+
+    ExpressionEvaluationResult res = p.evaluateType(NSconst.toUtf8(), DUContextPointer(top), CursorInRevision(1, 0));
+    QVERIFY(res.type());
+    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeString));
+}
+
 }
 

@@ -60,6 +60,8 @@ private slots:
     void stringAsArray_data();
     void stringAsArray();
     void classMemberOnInstantiation();
+    void classNameConstant_data();
+    void classNameConstant();
 };
 
 }

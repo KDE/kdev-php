@@ -415,6 +415,9 @@ void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
             } else {
                 usingDeclaration(node->classConstant, DeclarationPointer());
             }
+            if (!stringForNode(node->classConstant).compare(QLatin1String("class"), Qt::CaseInsensitive)) {
+                m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeString)));
+            }
         } else {
             m_result.setType(AbstractType::Ptr());
         }
