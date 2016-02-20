@@ -61,3 +61,5 @@ target_link_libraries(kdevphplanguagesupport
 
 # not writeable so that the refactoring actions get hidden
 install(FILES phpfunctions.php DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
+
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
