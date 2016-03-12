@@ -521,7 +521,7 @@ void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
         Q_ASSERT(currentContext()->type() == DUContext::Class);
         foreach(Declaration * dec, currentContext()->findLocalDeclarations(name.first(), startPos(node)))
         {
-            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && ! dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
+            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && !(dec->abstractType()->modifiers() & AbstractType::ConstModifier)) {
                 reportRedeclarationError(dec, node);
                 break;
             }
