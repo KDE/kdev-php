@@ -25,10 +25,14 @@ namespace Php
 {
 using namespace KDevelop;
 
-NavigationWidget::NavigationWidget(KDevelop::DeclarationPointer declaration, KDevelop::TopDUContextPointer topContext, const QString& htmlPrefix, const QString& htmlSuffix)
-        : m_declaration(declaration)
+NavigationWidget::NavigationWidget(KDevelop::DeclarationPointer declaration, KDevelop::TopDUContextPointer topContext,
+                                   const QString& htmlPrefix, const QString& htmlSuffix,
+                                   KDevelop::AbstractNavigationWidget::DisplayHints hints)
+    : AbstractNavigationWidget()
+    , m_declaration(declaration)
 {
     m_topContext = topContext;
+    setDisplayHints(hints);
 
     initBrowser(400);
 
@@ -38,9 +42,13 @@ NavigationWidget::NavigationWidget(KDevelop::DeclarationPointer declaration, KDe
     setContext(m_startContext);
 }
 
-NavigationWidget::NavigationWidget(const IncludeItem& includeItem, KDevelop::TopDUContextPointer topContext, const QString& htmlPrefix, const QString& htmlSuffix)
+NavigationWidget::NavigationWidget(const IncludeItem& includeItem, KDevelop::TopDUContextPointer topContext,
+                                   const QString& htmlPrefix, const QString& htmlSuffix,
+                                   KDevelop::AbstractNavigationWidget::DisplayHints hints)
+    : AbstractNavigationWidget()
 {
   m_topContext = topContext;
+  setDisplayHints(hints);
 
   initBrowser(200);
 
@@ -50,10 +58,12 @@ NavigationWidget::NavigationWidget(const IncludeItem& includeItem, KDevelop::Top
   setContext( m_startContext );
 }
 
-NavigationWidget::NavigationWidget(TopDUContextPointer topContext, KTextEditor::Cursor position, const QString& constant)
+NavigationWidget::NavigationWidget(TopDUContextPointer topContext, KTextEditor::Cursor position, const QString& constant,
+                                   KDevelop::AbstractNavigationWidget::DisplayHints hints)
     : AbstractNavigationWidget()
 {
   m_topContext = topContext;
+  setDisplayHints(hints);
 
   initBrowser(200);
 
