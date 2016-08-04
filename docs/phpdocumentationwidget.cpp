@@ -40,7 +40,7 @@ QTemporaryFile* createStyleSheet(QObject* parent)
     Q_UNUSED(ret);
 
     QTextStream ts(file);
-    ts << ".page-tools { float: none !important; };";
+    ts << ".page-tools { float: none !important; } body { background: white !important; };";
     return file;
 }
 
