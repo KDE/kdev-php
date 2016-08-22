@@ -25,6 +25,8 @@ find_package(KDevPlatform ${KDEVPLATFORM_VERSION} REQUIRED)
 find_package(KDevelop-PG-Qt REQUIRED)
 
 add_definitions( -DKDE_DEFAULT_DEBUG_AREA=9043 )
+add_definitions( -DTRANSLATION_DOMAIN=\"kdevphp\" )
+
 
 include_directories(
     ${KDEVPGQT_INCLUDE_DIR}

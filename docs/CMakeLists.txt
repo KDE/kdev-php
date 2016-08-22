@@ -31,7 +31,7 @@ set(kcm_kdevphpdocs_SRCS
     ${kdevphpdocs_settings_SRCS}
 )
 
-qt5_wrap_ui(kcm_kdevphpdocs_SRCS phpdocsconfig.ui)
+ki18n_wrap_ui(kcm_kdevphpdocs_SRCS phpdocsconfig.ui)
 
 add_library( kcm_kdevphpdocs MODULE ${kcm_kdevphpdocs_SRCS} )
 target_link_libraries( kcm_kdevphpdocs

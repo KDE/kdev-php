@@ -17,6 +17,7 @@ generate_export_header(kdevphpparser EXPORT_MACRO_NAME KDEVPHPPARSER_EXPORT
                                       EXPORT_FILE_NAME parserexport.h)
 target_link_libraries(kdevphpparser LINK_PRIVATE
     KDev::Language
+    KF5::I18n
 )
 
 add_executable(php-parser main.cpp)
