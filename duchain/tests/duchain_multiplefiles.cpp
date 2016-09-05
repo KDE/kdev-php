@@ -24,6 +24,7 @@
 
 #include <tests/testcore.h>
 #include <interfaces/ilanguagecontroller.h>
+#include <interfaces/icompletionsettings.h>
 #include <language/backgroundparser/backgroundparser.h>
 #include <tests/testproject.h>
 #include <tests/testfile.h>
@@ -267,3 +268,28 @@ void TestDUChainMultipleFiles::testUpdateForeach()
     }
 }
 
+void TestDUChainMultipleFiles::testTodoExtractorReparse()
+{
+    TestFile file(QStringLiteral("<?php\n$foo = new bar();\n// TODO\n$foo->baz();"), QStringLiteral("php"));
+
+    QVERIFY(KDevelop::ICore::self()->languageController()->completionSettings()->todoMarkerWords().contains("TODO"));
+
+    auto features = TopDUContext::AllDeclarationsContextsAndUses;
+
+    for (int i = 0; i < 2; ++i) {
+        if (i == 1) {
+            file.setFileContents(QStringLiteral("<?php\n$foo = new bar();\n// TODO\n$foo->asdf();"));
+            features = static_cast<TopDUContext::Features>(features | TopDUContext::ForceUpdate);
+        }
+
+        file.parse(features);
+        QVERIFY(file.waitForParsed());
+
+        DUChainReadLocker lock;
+        auto top = file.topContext();
+        QVERIFY(top);
+        QCOMPARE(top->problems().size(), 1);
+        QCOMPARE(top->problems().at(0)->description(), QString("TODO"));
+        QCOMPARE(top->problems().at(0)->range(), RangeInRevision(2, 3, 2, 7));
+    }
+}

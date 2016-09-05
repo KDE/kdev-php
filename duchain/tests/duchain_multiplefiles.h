@@ -44,6 +44,7 @@ private slots:
     void testNonExistingStaticFunction();
     void testForeachImportedIdentifier();
     void testUpdateForeach();
+    void testTodoExtractorReparse();
 private:
     KDevelop::TestProjectController* m_projectController;
 };
