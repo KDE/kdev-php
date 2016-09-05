@@ -1066,6 +1066,9 @@ void Parser::extractTodosFromComment(const QString& comment, qint64 startPositio
     while (i.hasNext()) {
         auto match = i.next();
         auto p = reportProblem(Todo, match.captured(1), 0);
+        if (!p) {
+            continue;
+        }
 
         qint64 line = 0;
         qint64 column = 0;
@@ -1105,6 +1108,9 @@ KDevelop::ProblemPointer Parser::reportProblem( Parser::ProblemType type, const 
     qint64 sLine;
     qint64 sCol;
     qint64 index = tokenStream->index() + offset;
+    if (index >= tokenStream->size()) {
+        return {};
+    }
     tokenStream->startPosition(index, &sLine, &sCol);
     qint64 eLine;
     qint64 eCol;
