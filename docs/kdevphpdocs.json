@@ -2,7 +2,8 @@
     "KPlugin": {
         "Authors": [
             {
-                "Name": "Milian Wolff"
+                "Name": "Milian Wolff", 
+                "Name[x-test]": "xxMilian Wolffxx"
             }
         ], 
         "Category": "Documentation", 
@@ -10,11 +11,11 @@
         "Description[ca@valencia]": "Este connector integra la documentació en línia de PHP.net.", 
         "Description[ca]": "Aquest connector integra la documentació en línia de PHP.net.", 
         "Description[de]": "Dieses Modul integriert die Online-Dokumentation von PHP.net.", 
-        "Description[en_GB]": "This plugin integrates PHP.net online documentation.", 
         "Description[es]": "Este complemento integra la documentación en línea de PHP.net.", 
         "Description[et]": "See plugin lõimib PHP veebidokumentatsiooni.", 
         "Description[fi]": "Tämä liitännäinen integroi PHP.net-dokumentaation.", 
         "Description[gl]": "Esta extensión integra a documentación en liña de PHP.net.", 
+        "Description[it]": "Questa estensione integra la documentazione online di PHP.net.", 
         "Description[nl]": "Deze plugin integreert PHP.net online-documentatie.", 
         "Description[pl]": "Wtyczka ta integruje dokumentację internetową PHP.net.", 
         "Description[pt]": "Este 'plugin' integra-se com a documentação 'online' do PHP.net.", 
@@ -30,16 +31,18 @@
         "Name": "PHP Documentation", 
         "Name[ca@valencia]": "Documentació de PHP", 
         "Name[ca]": "Documentació de PHP", 
+        "Name[cs]": "Dokumentace PHP", 
         "Name[de]": "PHP-Dokumentation", 
-        "Name[en_GB]": "PHP Documentation", 
         "Name[es]": "Documentación de PHP", 
         "Name[et]": "PHP dokumentatsioon", 
         "Name[fi]": "PHP-dokumentaatio", 
         "Name[gl]": "Documentación de PHP", 
+        "Name[it]": "Documentazione PHP", 
         "Name[nl]": "PHP-documentatie", 
         "Name[pl]": "Dokumentacja PHP", 
         "Name[pt]": "Documentação de PHP", 
         "Name[pt_BR]": "Documentação de PHP", 
+        "Name[ru]": "Документация к PHP", 
         "Name[sk]": "Dokumentácia PHP", 
         "Name[sl]": "Dokumentacija za PHP", 
         "Name[sv]": "PHP-dokumentation", 
