@@ -1113,7 +1113,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
     }
 
     if (node->stringFunctionNameOrClass && !node->stringFunctionName && !node->varFunctionName) {
-        if (id.toString(true) == QLatin1String("define")
+        if (id.toString(RemoveExplicitlyGlobalPrefix) == QLatin1String("define")
                 && node->stringParameterList && node->stringParameterList->parametersSequence
                 && node->stringParameterList->parametersSequence->count() > 0) {
             //constant, defined through define-function
