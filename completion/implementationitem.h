@@ -42,9 +42,9 @@ public:
                                 QExplicitlySharedDataPointer<Php::CodeCompletionContext> context = {}, int _inheritanceDepth = 0)
             : NormalDeclarationCompletionItem(decl, context, _inheritanceDepth), m_type(type) {}
 
-    virtual void execute(KTextEditor::View* view, const KTextEditor::Range& word) override;
+    void execute(KTextEditor::View* view, const KTextEditor::Range& word) override;
 
-    virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const override;
+    QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const override;
 
     HelperType m_type;
 };

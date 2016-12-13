@@ -40,17 +40,17 @@ public:
     PhpUnitTestSuite(const QString& name, const QUrl& url, const KDevelop::IndexedDeclaration& suiteDeclaration, const QStringList& cases, const QHash< QString, KDevelop::IndexedDeclaration >& caseDeclarations, KDevelop::IProject* project);
     virtual ~PhpUnitTestSuite();
 
-    virtual KJob* launchCase(const QString& testCase, TestJobVerbosity verbosity) override;
-    virtual KJob* launchCases(const QStringList& testCases, TestJobVerbosity verbosity) override;
-    virtual KJob* launchAllCases(TestJobVerbosity verbosity) override;
+    KJob* launchCase(const QString& testCase, TestJobVerbosity verbosity) override;
+    KJob* launchCases(const QStringList& testCases, TestJobVerbosity verbosity) override;
+    KJob* launchAllCases(TestJobVerbosity verbosity) override;
 
-    virtual KDevelop::IProject* project() const override;
+    KDevelop::IProject* project() const override;
     QUrl url() const;
-    virtual QStringList cases() const override;
-    virtual QString name() const override;
+    QStringList cases() const override;
+    QString name() const override;
 
-    virtual KDevelop::IndexedDeclaration declaration() const override;
-    virtual KDevelop::IndexedDeclaration caseDeclaration(const QString& testCase) const override;
+    KDevelop::IndexedDeclaration declaration() const override;
+    KDevelop::IndexedDeclaration caseDeclaration(const QString& testCase) const override;
 
 private:
     QString m_name;

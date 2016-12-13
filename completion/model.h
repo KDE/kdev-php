@@ -54,7 +54,7 @@ public:
                                        const KTextEditor::Cursor &position) override;
 
 protected:
-    virtual KDevelop::CodeCompletionWorker* createCompletionWorker() override;
+    KDevelop::CodeCompletionWorker* createCompletionWorker() override;
 };
 
 }

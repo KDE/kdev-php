@@ -38,12 +38,12 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
     explicit PhpDocsPlugin(QObject *parent, const QVariantList & args= QVariantList());
     ~PhpDocsPlugin();
 
-    virtual KDevelop::IDocumentation::Ptr documentationForDeclaration (KDevelop::Declaration* dec) const override;
-    virtual QAbstractListModel* indexModel() const override;
-    virtual KDevelop::IDocumentation::Ptr documentationForIndex(const QModelIndex& index) const override;
-    virtual QIcon icon() const override;
-    virtual QString name() const override;
-    virtual KDevelop::IDocumentation::Ptr homePage() const override;
+    KDevelop::IDocumentation::Ptr documentationForDeclaration (KDevelop::Declaration* dec) const override;
+    QAbstractListModel* indexModel() const override;
+    KDevelop::IDocumentation::Ptr documentationForIndex(const QModelIndex& index) const override;
+    QIcon icon() const override;
+    QString name() const override;
+    KDevelop::IDocumentation::Ptr homePage() const override;
 
     void addToHistory(const QUrl& url);
 

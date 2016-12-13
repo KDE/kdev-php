@@ -40,10 +40,10 @@ public:
     explicit PhpDocumentation(const QUrl& url, const QString& name, const QByteArray& description, PhpDocsPlugin* parent);
     ~PhpDocumentation();
 
-    virtual QString name() const override;
-    virtual QString description() const override;
-    virtual QWidget* documentationWidget(KDevelop::DocumentationFindWidget* findWidget, QWidget* parent = 0) override;
-    virtual KDevelop::IDocumentationProvider* provider() const override;
+    QString name() const override;
+    QString description() const override;
+    QWidget* documentationWidget(KDevelop::DocumentationFindWidget* findWidget, QWidget* parent = 0) override;
+    KDevelop::IDocumentationProvider* provider() const override;
 
 private:
     const QUrl m_url;

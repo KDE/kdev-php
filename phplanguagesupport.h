@@ -78,10 +78,10 @@ public:
     /**
      * @returns the ContextMenuExtension for the Php plugin.
      */
-    virtual KDevelop::ContextMenuExtension contextMenuExtension(KDevelop::Context *context) override;
+    KDevelop::ContextMenuExtension contextMenuExtension(KDevelop::Context *context) override;
 
-    virtual QWidget* specialLanguageObjectNavigationWidget(const QUrl& url, const KTextEditor::Cursor& position) override;
-    virtual KTextEditor::Range specialLanguageObjectRange(const QUrl& url, const KTextEditor::Cursor& position) override;
+    QWidget* specialLanguageObjectNavigationWidget(const QUrl& url, const KTextEditor::Cursor& position) override;
+    KTextEditor::Range specialLanguageObjectRange(const QUrl& url, const KTextEditor::Cursor& position) override;
 
 private:
     KDevelop::CodeHighlighting* m_highlighting;

@@ -51,9 +51,9 @@ public:
      * You can use @p DeclarationRole to get the Declaration for a given index.
      * NOTE: If you use that, don't forget to lock the DUChain if you access the declaration!
      */
-    virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
-    virtual int rowCount(const QModelIndex& parent = QModelIndex()) const override;
-    virtual bool hasChildren(const QModelIndex& parent) const override;
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+    bool hasChildren(const QModelIndex& parent) const override;
 
     /// Returns the Declaration for a given index
     /// NOTE: Don't forget to lock the DUChain if you access the declaration!

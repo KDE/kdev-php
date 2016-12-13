@@ -35,7 +35,7 @@ public:
     IncludeFileItem(const KDevelop::IncludeItem& include)
         : BaseIncludeFileItem(include) {};
 
-    virtual void execute(KTextEditor::View* View, const KTextEditor::Range& word) override;
+    void execute(KTextEditor::View* View, const KTextEditor::Range& word) override;
 };
 
 }

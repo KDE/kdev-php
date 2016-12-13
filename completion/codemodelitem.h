@@ -40,10 +40,10 @@ class KDEVPHPCOMPLETION_EXPORT CodeModelCompletionItem : public KDevelop::Comple
 public:
     explicit CodeModelCompletionItem(const KDevelop::ParsingEnvironmentFilePointer &, const CompletionCodeModelItem &item);
 
-    virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const override;
-    virtual KTextEditor::CodeCompletionModel::CompletionProperties completionProperties() const override;
-    virtual void execute(KTextEditor::View* View, const KTextEditor::Range& word) override;
-    virtual KDevelop::DeclarationPointer declaration() const override;
+    QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const override;
+    KTextEditor::CodeCompletionModel::CompletionProperties completionProperties() const override;
+    void execute(KTextEditor::View* View, const KTextEditor::Range& word) override;
+    KDevelop::DeclarationPointer declaration() const override;
 
 protected:
     CompletionCodeModelItem m_item;

@@ -55,13 +55,13 @@ public:
     }
 
 
-    virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const override;
+    QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const override;
 
 protected:
-    virtual QString declarationName() const override;
-    virtual void executed(KTextEditor::View* view, const KTextEditor::Range& word) override;
-    virtual QWidget* createExpandingWidget(const KDevelop::CodeCompletionModel* model) const override;
-    virtual bool createsExpandingWidget() const override;
+    QString declarationName() const override;
+    void executed(KTextEditor::View* view, const KTextEditor::Range& word) override;
+    QWidget* createExpandingWidget(const KDevelop::CodeCompletionModel* model) const override;
+    bool createsExpandingWidget() const override;
 
     QExplicitlySharedDataPointer<Php::CodeCompletionContext> completionContext() const;
 };
