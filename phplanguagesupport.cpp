@@ -69,7 +69,6 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
         KDevelop::ILanguageSupport()
 {
     Q_ASSERT(internalFunctionFile().toUrl().isValid());
-    KDEV_USE_EXTENSION_INTERFACE(KDevelop::ILanguageSupport)
 
     m_highlighting = new Php::Highlighting(this);
     m_refactoring = new Php::Refactoring(this);

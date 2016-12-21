@@ -54,7 +54,6 @@ PhpDocsPlugin::PhpDocsPlugin(QObject* parent, const QVariantList& args)
     : IPlugin(QStringLiteral("kdevphpdocs"), parent)
     , m_model(new PhpDocsModel(this))
 {
-    KDEV_USE_EXTENSION_INTERFACE( KDevelop::IDocumentationProvider )
     Q_UNUSED(args);
 
     readConfig();
