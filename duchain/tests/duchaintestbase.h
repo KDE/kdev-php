@@ -32,8 +32,6 @@
 #include "phpduchainexport.h"
 
 #include "completion/item.h"
-#include "phpparser.h"
-
 namespace KDevelop
 {
 class TopDUContext;

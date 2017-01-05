@@ -30,6 +30,7 @@
 #include <tests/testproject.h>
 #include <tests/testfile.h>
 #include <language/duchain/declaration.h>
+#include <language/duchain/problem.h>
 
 QTEST_KDEMAIN(Php::TestDUChainMultipleFiles, GUI)
 
