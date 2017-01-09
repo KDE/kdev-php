@@ -1,4 +1,6 @@
-PROJECT(php)
+cmake_minimum_required(VERSION 2.8.12)
+
+project(php)
 
 set(KDEVPHP_VERSION_MAJOR 5)
 set(KDEVPHP_VERSION_MINOR 0)
@@ -8,7 +10,6 @@ set( KDEVPLATFORM_VERSION "${KDEVPHP_VERSION_MAJOR}.${KDEVPHP_VERSION_MINOR}.${K
 
 configure_file( "${php_SOURCE_DIR}/kdevphpversion.h.cmake" "${php_BINARY_DIR}/kdevphpversion.h" @ONLY )
 
-cmake_minimum_required(VERSION 2.8.12)
 find_package (ECM 0.0.9 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
