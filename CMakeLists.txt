@@ -25,9 +25,12 @@ find_package(KF5 REQUIRED COMPONENTS Archive ThreadWeaver TextEditor I18n ItemMo
 find_package(KDevPlatform ${KDEVPLATFORM_VERSION} REQUIRED)
 find_package(KDevelop-PG-Qt REQUIRED)
 
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wdocumentation")
+endif()
+
 add_definitions( -DKDE_DEFAULT_DEBUG_AREA=9043 )
 add_definitions( -DTRANSLATION_DOMAIN=\"kdevphp\" )
-
 
 include_directories(
     ${KDEVPGQT_INCLUDE_DIR}
