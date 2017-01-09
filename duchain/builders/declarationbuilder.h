@@ -159,9 +159,9 @@ private:
                                DeclarationType type);
     /// check if a non-abstract method declaration tries to overwrite a final base method
     /// or whether a abstract method is redeclared
-    /// @param identifier   The identifier for the current method
-    /// @param curClass     the current class we are in
-    /// @param node         the node we are processing, used to access modifiers and for error reporting
+    /// @param ids      The identifier for the current method
+    /// @param curClass the current class we are in
+    /// @param node     the node we are processing, used to access modifiers and for error reporting
     bool isBaseMethodRedeclaration(const IdentifierPair &ids, ClassDeclaration *curClass,
                                    ClassStatementAst *node);
     /// reports a redeclaration error for the given node
@@ -180,7 +180,7 @@ private:
      *
      * @param id the last identifier
      * @param parent the parent of the last identifier
-     * @param lastNode the node of the last identifier
+     * @param targetNode the node of the last identifier
      * @param arrayAccess the node actually ends on an array access, like $node->var->..->asdf[0]
      */
     void getVariableIdentifier(VariableAst *node,
