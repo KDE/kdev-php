@@ -59,7 +59,7 @@ public:
     /**
      * Set the identifier for a context that contains a declaration overridden by this one.
      *
-     * \param id the identifier of the context that contains an overridden declaration
+     * \param ids the identifiers of the context that contain an overridden declaration
      */
     void setOverrides(const QVector< KDevelop::IndexedQualifiedIdentifier >& ids);
 

@@ -68,15 +68,15 @@ public:
      * @param depth Simple recursion counter.
      *
      * @warning The du-chain must be unlocked when this is called.
-     * */
+     */
     CodeCompletionContext(KDevelop::DUContextPointer context, const QString& text,
                           const QString& followingText, const KDevelop::CursorInRevision& position,
                           int depth = 0);
     ~CodeCompletionContext();
 
-    ///Computes the full set of completion items, using the information retrieved earlier.
-    ///Should only be called on the first context, parent contexts are included in the computations.
-    ///@param Abort is checked regularly, and if it is false, the computation is aborted.
+    /// Computes the full set of completion items, using the information retrieved earlier.
+    /// Should only be called on the first context, parent contexts are included in the computations.
+    /// @param abort is checked regularly, and if it is false, the computation is aborted.
     virtual QList<KDevelop::CompletionTreeItemPointer> completionItems(bool& abort, bool fullCompletion = true);
 
     enum MemberAccessOperation {
@@ -97,7 +97,7 @@ public:
         BackslashAccess /// autocompletion after backslash token
     };
 
-    ///@return the used access-operation
+    /// @return the used access-operation
     MemberAccessOperation memberAccessOperation() const;
 
     ExpressionEvaluationResult memberAccessContainer() const;
@@ -107,13 +107,13 @@ public:
      *
      * When memberAccessOperation is StaticMemberChoose, this returns all
      * fitting namespace-contexts.
-     * */
+     */
     QList<KDevelop::DUContext*> memberAccessContainers() const;
 
     /**
      * When memberAccessOperation is FunctionCallAccess,
      * this returns all functions available for matching, together with the argument-number that should be matched.
-     * */
+     */
     const QList<KDevelop::AbstractFunctionDeclaration*>& functions() const;
 
     virtual CodeCompletionContext* parentContext();
