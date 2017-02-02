@@ -142,6 +142,8 @@ private slots:
     void closureParser();
     void closures();
     void closureEmptyUse();
+    void iifeParser();
+    void iife();
     void gotoTest();
     void ternary();
     void bug296709();
