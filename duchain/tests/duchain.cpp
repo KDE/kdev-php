@@ -2834,6 +2834,37 @@ void TestDUChain::closureEmptyUse()
     QCOMPARE(top->problems().size(), 1);
 }
 
+void TestDUChain::iifeParser()
+{
+    // testcase for bug https://bugs.kde.org/show_bug.cgi?id=370515
+    TopDUContext* top = parse("<?php\n"
+                              "$lambda1 = (function() {return 5;})();\n"
+                              "$lambda2 = (function($a) {return $a;})(50);\n"
+                              "$lambda3 = (function($a){ return function($b) use ($a){echo $a + $b;};})(50); \n"
+                              "$lambda4 = (function ($a){echo $a;})(10) + (function ($a){echo $a ;})(20);"
+                              , DumpNone);
+
+    QVERIFY(top);
+
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().empty());
+}
+
+void TestDUChain::iife()
+{
+    TopDUContext* top = parse("<?php $l = (function($a){ return function($b) use ($a){echo $a + $b;};})(50); \n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+    QVERIFY(top->problems().isEmpty());
+    QCOMPARE(top->localDeclarations().count(), 2);
+    Declaration* l = top->localDeclarations().first();
+    QCOMPARE(l->identifier().toString(), QString("l"));
+    Declaration* iife = top->localDeclarations().last();
+    QVERIFY(iife->identifier().isEmpty());
+}
+
 void TestDUChain::gotoTest()
 {
     TopDUContext* top = parse("<?php goto dest; dest: \n", DumpNone);

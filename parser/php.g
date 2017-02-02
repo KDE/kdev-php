@@ -546,8 +546,8 @@ expression=booleanOrExpression
   | varExpressionArray=varExpressionArray arrayIndex=arrayIndexSpecifier*
 -> varExpression ;;
 
-
-    LPAREN try/rollback (newObject=varExpressionNewObject RPAREN (#variableProperties=instantiationAccess*))
+    (?[: LA(1).kind == Token_LPAREN && LA(2).kind == Token_FUNCTION && LA(3).kind == Token_LPAREN :] iife=iifeSyntax )
+  | LPAREN try/rollback (newObject=varExpressionNewObject RPAREN (#variableProperties=instantiationAccess*))
     catch (expression=expr RPAREN)
   | BACKTICK encapsList=encapsList BACKTICK
   --try/rollback resolves conflict scalar vs. staticMember (foo::bar vs. foo::$bar)
@@ -578,6 +578,10 @@ expression=booleanOrExpression
         ( USE LPAREN lexicalVars=lexicalVarList RPAREN | 0)
         LBRACE try/recover(functionBody=innerStatementList) RBRACE
 -> closure ;;
+
+    LPAREN try/rollback (closure=closure RPAREN LPAREN parameterList=functionCallParameterList RPAREN)
+    catch (expression=expr RPAREN)
+-> iifeSyntax ;;
 
   (#lexicalVars=lexicalVar @ COMMA) | 0 [: reportProblem(Error, QStringLiteral("Use list of closure must not be empty.")); :]
 -> lexicalVarList ;;
