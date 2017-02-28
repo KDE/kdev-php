@@ -36,17 +36,18 @@ ecm_add_test(
         KDev::Language
         KDev::Interfaces
 )
-ecm_add_test(
+# don't run benchmark as part of the unit test suite (takes too long, doesn't increase test coverage)
+add_executable(benchmarks
     benchmarks.cpp
     duchaintestbase.cpp
-    TEST_NAME benchmarks
-    LINK_LIBRARIES
-        kdevphpduchain
-        kdevphpparser
-        Qt5::Test
-        KDev::Tests
-        KDev::Language
-        KDev::Interfaces
+)
+target_link_libraries(benchmarks
+    kdevphpduchain
+    kdevphpparser
+    Qt5::Test
+    KDev::Tests
+    KDev::Language
+    KDev::Interfaces
 )
 
 set(duchain_multiplefiles_SRCS
