@@ -21,7 +21,7 @@
 #include <QtTest/QtTest>
 
 #include <language/duchain/parsingenvironment.h>
-#include <language/duchain/duchain.h>
+#include <language/duchain/problem.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/topducontext.h>
 #include <language/duchain/types/functiontype.h>
