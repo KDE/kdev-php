@@ -937,6 +937,51 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
     if ( identifier == thisQId
             && currentContext()->parentContext()
             && currentContext()->parentContext()->type() == DUContext::Class ) {
+        
+        // checks if imports \ArrayAccess
+        ClassDeclaration* currentClass = dynamic_cast<ClassDeclaration*>(currentContext()->parentContext()->owner());
+        ClassDeclaration* arrayAccess = nullptr;
+    
+        auto imports = currentContext()->parentContext()->importedParentContexts();
+        for( const DUContext::Import& ctx : imports ) {
+            DUContext* import = ctx.context(topContext());
+            if(import->type() == DUContext::Class) {
+                ClassDeclaration* importedClass = dynamic_cast<ClassDeclaration*>(import->owner());
+                if(importedClass) {
+                    if(importedClass->prettyName().str() == "ArrayAccess" && importedClass->classType() == ClassDeclarationData::ClassType::Interface && !import->parentContext()->owner()) {
+                        arrayAccess = importedClass;
+                    }
+                }
+            }
+        }
+        
+        IntegralType* thisVar = static_cast<IntegralType*>(type.data());
+        // check if this is used as array 
+        if(arrayAccess && currentClass && thisVar && thisVar->dataType() == AbstractType::TypeArray)
+        {
+            uint noOfFunc = 0;
+            auto declarations = currentContext()->parentContext()->localDeclarations();
+            // check if class implements all 4 functions
+            for(auto &dec : declarations) {
+                if(dec->isFunctionDeclaration()) {
+                    QualifiedIdentifier func = dec->qualifiedIdentifier();
+                    QString funcname = func.last().identifier().str();
+                    if(funcname == "offsetexists" || funcname == "offsetget" || funcname == "offsetset" || funcname == "offsetunset") {
+                        noOfFunc++;
+                    }
+                }
+            }
+            
+            if(noOfFunc < 4) {
+                // check if class is not abstract
+                if(currentClass->classModifier() != ClassDeclarationData::ClassModifier::Abstract) {
+                    reportError(i18n("Class %1 contains %2 abstract methods and must therefore be declared abstract or implement the remaining methods.",currentClass->prettyName().str(),4-noOfFunc), QList<AstNode*>() << node);
+                }
+            }
+            
+            return;
+        }
+        
         reportError(i18n("Cannot re-assign $this."), QList<AstNode*>() << node);
         return;
     }
