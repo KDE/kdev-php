@@ -2955,3 +2955,47 @@ void Php::TestDUChain::testTodoExtractor()
     QCOMPARE(top->problems().at(1)->description(), QString("FIXME blub"));
     QCOMPARE(top->problems().at(1)->range(), RangeInRevision(2, 4, 2, 14));
 }
+
+void TestDUChain::useThisAsArray()
+{
+    QByteArray method("<?php\n"
+                      "  interface ArrayAccess{} "
+                      "  class A implements \\ArrayAccess\n"
+                      "  {\n"
+                      "      $values = [];\n"
+                      "      function offsetGet($offset) { return $this->values[$offset]; }\n"
+                      "      function offsetSet($offset, $value) { $this->values[$offset] = $value; }\n"
+                      "      function offsetExists($offset) { return array_key_exists($offset, $this->values); }\n"
+                      "      function offsetUnset($offset) { unset($this->values[$offset]); }\n"
+                      "      function setTest() { $this['test'] = 'test'; }  \n"
+                      "  }\n");
+    
+    TopDUContext* top = parse(method);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+    
+    QCOMPARE(top->importedParentContexts().count(), 1);
+    QVERIFY(DUChain::self()->chainForDocument(internalFunctionFile()));
+    QCOMPARE(DUChain::self()->chainForDocument(internalFunctionFile()), top->importedParentContexts().first().context(top));
+    
+    QVERIFY(top->problems().isEmpty());
+}
+
+void TestDUChain::wrongUseOfThisAsArray()
+{
+    // missing functions from \ArrayAccess and not declared abstract
+    QByteArray method("<?php\n"
+                      "  interface ArrayAccess{} "
+                      "  class A implements \\ArrayAccess\n"
+                      "  {\n"
+                      "      public function setTest() { $this['test'] = 'test'; }  \n"
+                      "  }\n");
+
+    TopDUContext* top = parse(method);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+    
+    QCOMPARE(top->problems().size(),1);
+}

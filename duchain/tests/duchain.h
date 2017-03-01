@@ -149,6 +149,8 @@ private slots:
     void bug296709();
     void declareFinalMethod();
     void testTodoExtractor();
+    void useThisAsArray();
+    void wrongUseOfThisAsArray();
 };
 
 }
