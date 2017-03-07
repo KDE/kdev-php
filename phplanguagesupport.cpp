@@ -169,7 +169,7 @@ QWidget* LanguageSupport::specialLanguageObjectNavigationWidget(const QUrl& url,
         if (TopDUContext* top = standardContext(url)) {
             return new NavigationWidget(TopDUContextPointer(top), position, word.first);
         } else {
-            return 0;
+            return nullptr;
         }
     }
     return ILanguageSupport::specialLanguageObjectNavigationWidget(url, position);

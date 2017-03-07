@@ -83,7 +83,7 @@ IndexedDeclaration PhpUnitTestSuite::declaration() const
 
 IndexedDeclaration PhpUnitTestSuite::caseDeclaration(const QString& testCase) const
 {
-    return m_caseDeclarations.value(testCase, IndexedDeclaration(0));
+    return m_caseDeclarations.value(testCase, IndexedDeclaration(nullptr));
 }
 
 

@@ -33,7 +33,7 @@ namespace Php
 class Refactoring : public KDevelop::BasicRefactoring
 {
 public:
-    explicit Refactoring(QObject *parent = NULL);
+    explicit Refactoring(QObject *parent = nullptr);
 };
 
 } // End of namespace Php

@@ -91,7 +91,7 @@ namespace KDevelop
 template<>
 inline Php::StructureType* fastCast<Php::StructureType*>(AbstractType* from) {
     if ( !from || from->whichType() != AbstractType::TypeStructure ) {
-        return 0;
+        return nullptr;
     } else {
         return dynamic_cast<Php::StructureType*>(from);
     }

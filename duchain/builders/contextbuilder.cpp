@@ -48,7 +48,7 @@ namespace Php
 ContextBuilder::ContextBuilder()
     : m_isInternalFunctions(false), m_reportErrors(true),
       m_mapAst(false), m_hadUnresolvedIdentifiers(false),
-      m_editor(0), m_openNamespaces(0)
+      m_editor(nullptr), m_openNamespaces(nullptr)
 {
 }
 
@@ -132,7 +132,7 @@ void ContextBuilder::startVisiting(AstNode* node)
     visitNode(node);
     if (m_openNamespaces) {
         closeNamespaces(m_openNamespaces);
-        m_openNamespaces = 0;
+        m_openNamespaces = nullptr;
     }
 }
 
@@ -297,7 +297,7 @@ void ContextBuilder::visitClosure(ClosureAst* node)
     visitParameterList(node->parameters);
     closeContext();
 
-    DUContext* imported = 0;
+    DUContext* imported = nullptr;
     if ( node->lexicalVars ) {
         imported = openContext(node->lexicalVars, DUContext::Other);
         Q_ASSERT(!imported->inSymbolTable());
@@ -327,7 +327,7 @@ void ContextBuilder::visitNamespaceDeclarationStatement(NamespaceDeclarationStat
     // close existing namespace context
     if (m_openNamespaces) {
         closeNamespaces(m_openNamespaces);
-        m_openNamespaces = 0;
+        m_openNamespaces = nullptr;
     }
 
     if ( !node->namespaceNameSequence ) {
@@ -397,7 +397,7 @@ void ContextBuilder::addBaseType(NamespacedIdentifierAst * identifier)
         findDeclarationImport(ClassDeclarationType, identifierForNamespace(identifier, m_editor)).data() );
 
     if (currentClass && baseClass) {
-        if (DUContext* baseContext = baseClass->logicalInternalContext(0)) {
+        if (DUContext* baseContext = baseClass->logicalInternalContext(nullptr)) {
             // prevent circular context imports which could lead to segfaults
             if (!baseContext->imports(currentContext()) && !currentContext()->imports(baseContext)) {
                 currentContext()->addImportedParentContext(baseContext);

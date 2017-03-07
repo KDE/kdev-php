@@ -41,11 +41,11 @@
 
 PhpUnitRunJob::PhpUnitRunJob(PhpUnitTestSuite* suite, const QStringList& cases, KDevelop::OutputJob::OutputJobVerbosity verbosity, QObject* parent)
 : KJob(parent)
-, m_process(0)
+, m_process(nullptr)
 , m_suite(suite)
 , m_cases(cases)
-, m_job(0)
-, m_outputJob(0)
+, m_job(nullptr)
+, m_outputJob(nullptr)
 , m_verbosity(verbosity)
 {
 }
@@ -58,7 +58,7 @@ KJob* createTestJob(QString launchModeId, QStringList arguments )
     qCDebug(TESTPROVIDER) << "got mode and type:" << type << type->id() << mode << mode->id();
     Q_ASSERT(type && mode);
 
-    KDevelop::ILauncher* launcher = 0;
+    KDevelop::ILauncher* launcher = nullptr;
     foreach (KDevelop::ILauncher *l, type->launchers())
     {
         //qCDebug(TESTPROVIDER) << "available launcher" << l << l->id() << l->supportedModes();
@@ -69,7 +69,7 @@ KJob* createTestJob(QString launchModeId, QStringList arguments )
     }
     Q_ASSERT(launcher);
 
-    KDevelop::ILaunchConfiguration* ilaunch = 0;
+    KDevelop::ILaunchConfiguration* ilaunch = nullptr;
     QList<KDevelop::ILaunchConfiguration*> launchConfigurations = KDevelop::ICore::self()->runController()->launchConfigurations();
     foreach (KDevelop::ILaunchConfiguration *l, launchConfigurations) {
         if (l->type() == type && l->config().readEntry("ConfiguredByPhpUnit", false)) {
@@ -80,7 +80,7 @@ KJob* createTestJob(QString launchModeId, QStringList arguments )
     if (!ilaunch) {
         ilaunch = KDevelop::ICore::self()->runController()->createLaunchConfiguration( type,
                                                 qMakePair( mode->id(), launcher->id() ),
-                                                0, //TODO add project
+                                                nullptr, //TODO add project
                                                 i18n("PHPUnit") );
         ilaunch->config().writeEntry("ConfiguredByPhpUnit", true);
         //qCDebug(TESTPROVIDER) << "created config, launching";

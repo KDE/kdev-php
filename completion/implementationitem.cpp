@@ -223,7 +223,7 @@ void ImplementationItem::execute(KTextEditor::View* view, const KTextEditor::Ran
             {
                 // get argument list
                 QString arguments;
-                createArgumentList(*this, arguments, 0, true);
+                createArgumentList(*this, arguments, nullptr, true);
                 replText += arguments;
             }
 

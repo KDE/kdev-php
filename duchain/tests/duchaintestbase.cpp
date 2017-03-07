@@ -119,7 +119,7 @@ TopDUContext* DUChainTestBase::parseAdditionalFile(const IndexedString& fileName
 {
     ParseSession session;
     session.setContents(contents);
-    StartAst* ast = 0;
+    StartAst* ast = nullptr;
     if (!session.parse(&ast)) qFatal("can't parse");
 
     EditorIntegrator editor(&session);
@@ -150,10 +150,10 @@ TopDUContext* DUChainTestBase::parse(const QByteArray& unit, DumpAreas dump,
 
     ParseSession session;
     session.setContents(unit);
-    StartAst* ast = 0;
+    StartAst* ast = nullptr;
     if (!session.parse(&ast)) {
         qDebug() << "Parse failed";
-        return 0;
+        return nullptr;
     }
 
     if (dump & DumpAST) {

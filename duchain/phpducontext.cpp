@@ -42,8 +42,8 @@ template<>
 QWidget* PhpDUContext<TopDUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, const QString& htmlPrefix,
                                                             const QString& htmlSuffix, KDevelop::AbstractNavigationWidget::DisplayHints hints) const
 {
-    if (decl == 0) {
-        return 0;
+    if (decl == nullptr) {
+        return nullptr;
     } else if ( decl->kind() == Declaration::Import ) {
         QUrl u( decl->identifier().toString() );
         IncludeItem i;
@@ -63,12 +63,12 @@ template<>
 QWidget* PhpDUContext<DUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, const QString& htmlPrefix,
                                                          const QString& htmlSuffix, KDevelop::AbstractNavigationWidget::DisplayHints hints) const
 {
-    if (decl == 0) {
+    if (decl == nullptr) {
         if (owner())
             return new NavigationWidget(DeclarationPointer(owner()), TopDUContextPointer(topContext ? topContext : this->topContext()),
                                         htmlPrefix, htmlSuffix, hints);
         else
-            return 0;
+            return nullptr;
     } else {
         return new NavigationWidget(DeclarationPointer(decl), TopDUContextPointer(topContext ? topContext : this->topContext()),
                                     htmlPrefix, htmlSuffix, hints);

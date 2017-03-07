@@ -112,7 +112,7 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const 
     } else if (declarationType == ClassDeclarationType && id == parentQId) {
         //there can be just one Class-Context imported
         DUChainReadLocker lock;
-        DUContext* classCtx = 0;
+        DUContext* classCtx = nullptr;
         if (currentContext->type() == DUContext::Class) {
             classCtx = currentContext;
         } else if (currentContext->parentContext() && currentContext->parentContext()->type() == DUContext::Class) {
@@ -181,7 +181,7 @@ DeclarationPointer findDeclarationInPST(DUContext* currentContext, QualifiedIden
 {
     ifDebug(qCDebug(DUCHAIN) << "PST: " << id.toString() << declarationType;)
     uint nr;
-    const IndexedDeclaration* declarations = 0;
+    const IndexedDeclaration* declarations = nullptr;
     DUChainWriteLocker wlock;
     PersistentSymbolTable::self().declarations(id, nr, declarations);
     ifDebug(qCDebug(DUCHAIN) << "found declarations:" << nr;)
@@ -257,7 +257,7 @@ QByteArray formatComment(AstNode* node, EditorIntegrator* editor)
 class ScalarExpressionVisitor : public DefaultVisitor
 {
 public:
-    ScalarExpressionVisitor() : m_node(0) {}
+    ScalarExpressionVisitor() : m_node(nullptr) {}
     CommonScalarAst* node() const {
         return m_node;
     }

@@ -151,7 +151,7 @@ QVariant NormalDeclarationCompletionItem::data(const QModelIndex& index, int rol
         case CodeCompletionModel::Arguments:
             if (FunctionType::Ptr functionType = dec->type<FunctionType>()) {
                 QString ret;
-                createArgumentList(*this, ret, 0);
+                createArgumentList(*this, ret, nullptr);
                 return ret;
             }
             break;

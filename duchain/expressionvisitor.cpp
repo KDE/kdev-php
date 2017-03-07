@@ -43,7 +43,7 @@ namespace Php
 
 ExpressionVisitor::ExpressionVisitor(EditorIntegrator* editor)
         : m_editor(editor), m_createProblems(false),
-          m_offset(CursorInRevision::invalid()), m_currentContext(0),
+          m_offset(CursorInRevision::invalid()), m_currentContext(nullptr),
           m_isAssignmentExpressionEqual(false),
           m_inDefine(false)
 {
@@ -374,7 +374,7 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
 ///TODO: DUContext pointer?
 DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
 {
-    DUContext* context = 0;
+    DUContext* context = nullptr;
     DeclarationPointer declaration = findDeclarationImport(ClassDeclarationType, className);
     usingDeclaration(className, declaration);
     if (declaration) {
@@ -390,7 +390,7 @@ DUContext* ExpressionVisitor::findClassContext(IdentifierAst* className)
 ///TODO: DUContext pointer?
 DUContext* ExpressionVisitor::findClassContext(NamespacedIdentifierAst* className)
 {
-    DUContext* context = 0;
+    DUContext* context = nullptr;
     const QualifiedIdentifier id = identifierForNamespace(className, m_editor);
     DeclarationPointer declaration = findDeclarationImport(ClassDeclarationType, id);
     usingDeclaration(className->namespaceNameSequence->back()->element, declaration);
@@ -805,7 +805,7 @@ Declaration* ExpressionVisitor::findVariableDeclaration(DUContext* context, Iden
                                                         CursorInRevision position, DUContext::SearchFlag flag)
 {
     QList<Declaration*> decls = context->findDeclarations(identifier, position,
-                                                        0, flag);
+                                                        nullptr, flag);
     for (int i = decls.count() - 1; i >= 0; i--) {
         Declaration *dec = decls.at(i);
         if (dec->kind() == Declaration::Instance && dynamic_cast<VariableDeclaration*>(dec)) {
@@ -813,7 +813,7 @@ Declaration* ExpressionVisitor::findVariableDeclaration(DUContext* context, Iden
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 }

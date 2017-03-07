@@ -287,7 +287,7 @@ void TestCompletion::methodCall()
         NormalDeclarationCompletionItem* item2 = dynamic_cast<NormalDeclarationCompletionItem*>(item.data());
 
         QString ret;
-        createArgumentList(*item2, ret, 0);
+        createArgumentList(*item2, ret, nullptr);
         QCOMPARE(ret, QString("(A $a, null $b = null)"));
     }
     {
@@ -1207,7 +1207,7 @@ void TestCompletion::ctorCall()
         NormalDeclarationCompletionItem* item2 = dynamic_cast<NormalDeclarationCompletionItem*>(item.data());
 
         QString ret;
-        createArgumentList(*item2, ret, 0);
+        createArgumentList(*item2, ret, nullptr);
         QCOMPARE(ret, QString("(string $bar)"));
     }
     {
@@ -1222,7 +1222,7 @@ void TestCompletion::ctorCall()
         NormalDeclarationCompletionItem* item2 = dynamic_cast<NormalDeclarationCompletionItem*>(item.data());
 
         QString ret;
-        createArgumentList(*item2, ret, 0);
+        createArgumentList(*item2, ret, nullptr);
         QCOMPARE(ret, QString("(bool $asdf)"));
     }
 }
@@ -1262,7 +1262,7 @@ void TestCompletion::funcCallInConditional()
         NormalDeclarationCompletionItem* item2 = dynamic_cast<NormalDeclarationCompletionItem*>(item.data());
 
         QString ret;
-        createArgumentList(*item2, ret, 0);
+        createArgumentList(*item2, ret, nullptr);
         QCOMPARE(ret, QString("(mixed $a, int $b = 1)"));
     }
 }

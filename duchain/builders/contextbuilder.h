@@ -57,12 +57,12 @@ public:
 
 protected:
     virtual KDevelop::DUContext* newContext(const KDevelop::RangeInRevision& range);
-    virtual KDevelop::TopDUContext* newTopContext(const KDevelop::RangeInRevision& range, KDevelop::ParsingEnvironmentFile* file = 0);
+    virtual KDevelop::TopDUContext* newTopContext(const KDevelop::RangeInRevision& range, KDevelop::ParsingEnvironmentFile* file = nullptr);
 
     virtual void startVisiting(AstNode* node);
     virtual void setContextOnNode(AstNode* node, KDevelop::DUContext* ctx);
     virtual KDevelop::DUContext* contextFromNode(AstNode* node);
-    virtual KDevelop::RangeInRevision editorFindRange(AstNode* fromRange, AstNode* toRange = 0);
+    virtual KDevelop::RangeInRevision editorFindRange(AstNode* fromRange, AstNode* toRange = nullptr);
     /// Find Cursor for start of a node, useful to limit findLocalDeclarations() searches.
     KDevelop::CursorInRevision startPos( AstNode* node);
 

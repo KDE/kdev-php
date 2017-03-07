@@ -508,7 +508,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
         }
     }
 
-    AstNode *foreachNode = 0;
+    AstNode *foreachNode = nullptr;
     if (node->foreachVar) {
         foreachNode = node->foreachVar;
     } else if (node->foreachExpr) {
@@ -528,7 +528,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
                 ///FIXME: this is just a hack for https://bugs.kde.org/show_bug.cgi?id=269369
                 ///       a proper fix needs full fledged two-pass, i.e. get rid of PreDeclarationBuilder
                 // 0 == global lookup and the delcaration is found again...
-                classDec = dynamic_cast<ClassDeclaration*>(type->declaration(0));
+                classDec = dynamic_cast<ClassDeclaration*>(type->declaration(nullptr));
             }
             if (classDec) {
                 /// Qualified identifier for 'iterator'

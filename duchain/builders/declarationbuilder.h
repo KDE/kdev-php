@@ -103,7 +103,7 @@ protected:
     virtual void closeDeclaration();
     void classContextOpened(KDevelop::DUContext* context);
 
-    virtual void supportBuild(AstNode* node, KDevelop::DUContext* context = 0);
+    virtual void supportBuild(AstNode* node, KDevelop::DUContext* context = nullptr);
     virtual void closeContext();
 
     /// don't forget to closeDeclaration() afterwards

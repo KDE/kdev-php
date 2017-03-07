@@ -31,7 +31,7 @@ namespace Php {
 MagicConstantNavigationContext::MagicConstantNavigationContext(TopDUContextPointer topContext,
                                                                 const KTextEditor::Cursor& position,
                                                                 const QString& constant)
-    : AbstractNavigationContext(topContext, 0), m_position(position.line(), position.column()), m_constant(constant)
+    : AbstractNavigationContext(topContext, nullptr), m_position(position.line(), position.column()), m_constant(constant)
 {
 }
 
@@ -47,7 +47,7 @@ DUContext* findContext(TopDUContextPointer topCtx, const CursorInRevision& pos, 
         ctx = ctx->parentContext();
     }
     if ( !ctx || ctx->type() != type ) {
-        return 0;
+        return nullptr;
     } else {
         return ctx;
     }

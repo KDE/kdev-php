@@ -61,7 +61,7 @@ namespace Php
 DeclarationBuilder::FindVariableResults::FindVariableResults()
 : find(true)
 , isArray(false)
-, node(0)
+, node(nullptr)
 {
 
 }
@@ -214,7 +214,7 @@ void DeclarationBuilder::visitTraitDeclarationStatement(TraitDeclarationStatemen
 
 ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, ClassDeclarationData::ClassType type)
 {
-    ClassDeclaration* classDec = m_types.value(name->string, 0);
+    ClassDeclaration* classDec = m_types.value(name->string, nullptr);
     Q_ASSERT(classDec);
     isGlobalRedeclaration(identifierForNode(name), name, ClassDeclarationType);
     Q_ASSERT(classDec->classType() == type);
@@ -410,8 +410,8 @@ void DeclarationBuilder::importTraitMethods(ClassStatementAst *node)
             break;
         }
 
-        QVector <Declaration*> declarations = dec.data()->internalContext()->localDeclarations(0);
-        QVector <Declaration*> localDeclarations = currentContext()->localDeclarations(0);
+        QVector <Declaration*> declarations = dec.data()->internalContext()->localDeclarations(nullptr);
+        QVector <Declaration*> localDeclarations = currentContext()->localDeclarations(nullptr);
 
         ifDebug(qCDebug(DUCHAIN) << "Importing from" << dec.data()->identifier().toString() << "to" << currentContext()->localScopeIdentifier().toString();)
 
@@ -791,7 +791,7 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
 {
     isGlobalRedeclaration(identifierForNode(node->functionName), node->functionName, FunctionDeclarationType);
 
-    FunctionDeclaration* dec = m_functions.value(node->functionName->string, 0);
+    FunctionDeclaration* dec = m_functions.value(node->functionName->string, nullptr);
     Q_ASSERT(dec);
     // seems like we have to set that, else the usebuilder crashes
 
@@ -992,7 +992,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
 
     // check if this variable is already declared
     {
-        QList< Declaration* > decs = parentCtx->findDeclarations(identifier.first(), startPos(node), 0, DUContext::DontSearchInParent);
+        QList< Declaration* > decs = parentCtx->findDeclarations(identifier.first(), startPos(node), nullptr, DUContext::DontSearchInParent);
         if ( !decs.isEmpty() ) {
             QList< Declaration* >::const_iterator it = decs.constEnd() - 1;
             while ( true ) {
@@ -1093,7 +1093,7 @@ DUContext* getClassContext(const QualifiedIdentifier &identifier, DUContext* cur
         }
         ///TODO: if we can't find anything here we might have to use the findDeclarationImport helper
     }
-    return 0;
+    return nullptr;
 }
 
 ///TODO: we need to handle assignment to array-members properly
@@ -1146,7 +1146,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
         if ( dec ) {
             m_currentFunctionType = dec->type<FunctionType>();
         } else {
-            m_currentFunctionType = 0;
+            m_currentFunctionType = nullptr;
         }
 
         DeclarationBuilderBase::visitFunctionCall(node);
@@ -1249,7 +1249,7 @@ void DeclarationBuilder::declareFoundVariable(AbstractType::Ptr type)
 
     ///TODO: support something like: foo($var[0])
     if ( !m_findVariable.isArray ) {
-        DUContext *ctx = 0;
+        DUContext *ctx = nullptr;
         if ( m_findVariable.parentIdentifier.isEmpty() ) {
             ctx = currentContext();
         } else {
@@ -1400,7 +1400,7 @@ void DeclarationBuilder::visitUnaryExpression(UnaryExpressionAst* node)
 
 void DeclarationBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const RangeInRevision& range)
 {
-    NamespaceDeclaration* dec = m_namespaces.value(node->string, 0);
+    NamespaceDeclaration* dec = m_namespaces.value(node->string, nullptr);
     Q_ASSERT(dec);
     DeclarationBuilderBase::setEncountered(dec);
     openDeclarationInternal(dec);

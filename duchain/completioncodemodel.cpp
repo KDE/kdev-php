@@ -351,7 +351,7 @@ void CompletionCodeModel::items(const KDevelop::IndexedString& file, uint& count
   }else{
     ifDebug( qCDebug(DUCHAIN) << "found no index"; )
     count = 0;
-    items = 0;
+    items = nullptr;
   }
 }
 

@@ -1479,7 +1479,7 @@ void TestDUChain::objectWithClassName()
 
 void TestDUChain::largeNumberOfDeclarations()
 {
-    TopDUContext* top = new TopDUContext(IndexedString(QUrl(QStringLiteral("file:///internal/testurl"))), RangeInRevision(0, 0, 6000, 0), 0);
+    TopDUContext* top = new TopDUContext(IndexedString(QUrl(QStringLiteral("file:///internal/testurl"))), RangeInRevision(0, 0, 6000, 0), nullptr);
     DUChain::self()->addDocumentChain(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
@@ -1487,7 +1487,7 @@ void TestDUChain::largeNumberOfDeclarations()
         RangeInRevision newRange(i, 0, i, 1);
         Declaration* dec = new Declaration(newRange, top);
         dec->setIdentifier(Identifier(QStringLiteral("dec%0").arg(i)));
-        dec->setAbstractType(AbstractType::Ptr(0));
+        dec->setAbstractType(AbstractType::Ptr(nullptr));
     }
 }
 
@@ -1645,10 +1645,10 @@ void TestDUChain::findDeclarations()
 {
     DUChainWriteLocker lock(DUChain::lock());
 
-    TopDUContext* top1 = new TopDUContext(IndexedString(QUrl(QStringLiteral("file:///internal/testfile1"))), RangeInRevision(0, 0, 0, 10), 0);
+    TopDUContext* top1 = new TopDUContext(IndexedString(QUrl(QStringLiteral("file:///internal/testfile1"))), RangeInRevision(0, 0, 0, 10), nullptr);
     DUChainReleaser releaseTop1(top1);
     DUChain::self()->addDocumentChain(top1);
-    TopDUContext* top2 = new TopDUContext(IndexedString(QUrl(QStringLiteral("file:///internal/testfile2"))), RangeInRevision(0, 0, 0, 10), 0);
+    TopDUContext* top2 = new TopDUContext(IndexedString(QUrl(QStringLiteral("file:///internal/testfile2"))), RangeInRevision(0, 0, 0, 10), nullptr);
     DUChainReleaser releaseTop2(top2);
     DUChain::self()->addDocumentChain(top2);
 

@@ -86,7 +86,7 @@ PhpDocumentationWidget::~PhpDocumentationWidget()
 {
     // make sure we don't get called by any of the m_part signals on shutdown, see also:
     // https://codereview.qt-project.org/#/c/83800/
-    disconnect(m_part, 0, this, 0);
+    disconnect(m_part, nullptr, this, nullptr);
 }
 
 void PhpDocumentationWidget::linkClicked(const QUrl& url)
@@ -102,5 +102,5 @@ void PhpDocumentationWidget::documentLoaded()
     setCurrentWidget(m_part);
     removeWidget(m_loading);
     delete m_loading;
-    m_loading = 0;
+    m_loading = nullptr;
 }
