@@ -40,7 +40,7 @@ public:
     }
 
 protected:
-    virtual void usingDeclaration(AstNode* node, const DeclarationPointer& decl) {
+    void usingDeclaration(AstNode* node, const DeclarationPointer& decl) override {
         m_builder->newCheckedUse(node, decl);
     }
 

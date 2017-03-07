@@ -55,9 +55,9 @@ public:
     ClassDeclaration(const KDevelop::RangeInRevision &range, KDevelop::DUContext *context);
     ClassDeclaration(ClassDeclarationData &data);
     ClassDeclaration(ClassDeclarationData &data, const KDevelop::RangeInRevision &range, KDevelop::DUContext *context);
-    ~ClassDeclaration();
+    ~ClassDeclaration() override;
 
-    virtual QString toString() const;
+    QString toString() const override;
 
     void setPrettyName(const KDevelop::IndexedString& name);
     KDevelop::IndexedString prettyName() const;
@@ -68,7 +68,7 @@ public:
         Identity = 85
     };
 
-    virtual KDevelop::Declaration* clonePrivate() const;
+    KDevelop::Declaration* clonePrivate() const override;
 private:
     DUCHAIN_DECLARE_DATA(ClassDeclaration)
 };

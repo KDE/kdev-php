@@ -45,23 +45,23 @@ class KDEVPHPDUCHAIN_EXPORT TypeBuilder: public TypeBuilderBase
 {
 public:
     TypeBuilder();
-    ~TypeBuilder();
+    ~TypeBuilder() override;
 
 protected:
-    virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst* node);
-    virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
-    virtual void visitTraitDeclarationStatement(TraitDeclarationStatementAst* node);
-    virtual void visitClassStatement(ClassStatementAst *node);
-    virtual void visitClassVariable(ClassVariableAst *node);
-    virtual void visitConstantDeclaration(ConstantDeclarationAst* node);
-    virtual void visitParameter(ParameterAst *node);
-    virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
-    virtual void visitClosure(ClosureAst* node);
+    void visitClassDeclarationStatement(ClassDeclarationStatementAst* node) override;
+    void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node) override;
+    void visitTraitDeclarationStatement(TraitDeclarationStatementAst* node) override;
+    void visitClassStatement(ClassStatementAst *node) override;
+    void visitClassVariable(ClassVariableAst *node) override;
+    void visitConstantDeclaration(ConstantDeclarationAst* node) override;
+    void visitParameter(ParameterAst *node) override;
+    void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node) override;
+    void visitClosure(ClosureAst* node) override;
 
-    virtual void visitStatement(StatementAst* node);
-    virtual void visitAssignmentExpression(AssignmentExpressionAst* node);
-    virtual void visitStaticVar(StaticVarAst *node);
-    virtual void visitCatchItem(CatchItemAst *node);
+    void visitStatement(StatementAst* node) override;
+    void visitAssignmentExpression(AssignmentExpressionAst* node) override;
+    void visitStaticVar(StaticVarAst *node) override;
+    void visitCatchItem(CatchItemAst *node) override;
 
     /// The declaration builder implements this and updates
     /// the type of the current declaration

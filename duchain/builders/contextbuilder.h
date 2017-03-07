@@ -45,44 +45,44 @@ class KDEVPHPDUCHAIN_EXPORT ContextBuilder: public ContextBuilderBase, public De
 
 public:
     ContextBuilder();
-    virtual ~ContextBuilder();
+    ~ContextBuilder() override;
 
-    virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
+    KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
             KDevelop::ReferencedTopDUContext updateContext
-            = KDevelop::ReferencedTopDUContext());
+            = KDevelop::ReferencedTopDUContext()) override;
 
     bool hadUnresolvedIdentifiers() const;
 
     EditorIntegrator* editor() const;
 
 protected:
-    virtual KDevelop::DUContext* newContext(const KDevelop::RangeInRevision& range);
-    virtual KDevelop::TopDUContext* newTopContext(const KDevelop::RangeInRevision& range, KDevelop::ParsingEnvironmentFile* file = nullptr);
+    KDevelop::DUContext* newContext(const KDevelop::RangeInRevision& range) override;
+    KDevelop::TopDUContext* newTopContext(const KDevelop::RangeInRevision& range, KDevelop::ParsingEnvironmentFile* file = nullptr) override;
 
-    virtual void startVisiting(AstNode* node);
-    virtual void setContextOnNode(AstNode* node, KDevelop::DUContext* ctx);
-    virtual KDevelop::DUContext* contextFromNode(AstNode* node);
-    virtual KDevelop::RangeInRevision editorFindRange(AstNode* fromRange, AstNode* toRange = nullptr);
+    void startVisiting(AstNode* node) override;
+    void setContextOnNode(AstNode* node, KDevelop::DUContext* ctx) override;
+    KDevelop::DUContext* contextFromNode(AstNode* node) override;
+    KDevelop::RangeInRevision editorFindRange(AstNode* fromRange, AstNode* toRange = nullptr) override;
     /// Find Cursor for start of a node, useful to limit findLocalDeclarations() searches.
     KDevelop::CursorInRevision startPos( AstNode* node);
 
-    virtual KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
+    KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id) override;
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
     IdentifierPair identifierPairForNode(IdentifierAst* id);
     QString stringForNode(IdentifierAst* node) const;
     QString stringForNode(VariableIdentifierAst* node) const;
 
-    virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst*);
-    virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node);
-    virtual void visitTraitDeclarationStatement(TraitDeclarationStatementAst* node);
-    virtual void visitClassStatement(ClassStatementAst *node);
-    virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node);
-    virtual void visitClosure(ClosureAst* node);
-    virtual void visitUnaryExpression(UnaryExpressionAst* node);
+    void visitClassDeclarationStatement(ClassDeclarationStatementAst*) override;
+    void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst* node) override;
+    void visitTraitDeclarationStatement(TraitDeclarationStatementAst* node) override;
+    void visitClassStatement(ClassStatementAst *node) override;
+    void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node) override;
+    void visitClosure(ClosureAst* node) override;
+    void visitUnaryExpression(UnaryExpressionAst* node) override;
     /**
      * don't overload in other builders, use @c openNamespace and @c closeNamespace instead.
      */
-    virtual void visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node);
+    void visitNamespaceDeclarationStatement(NamespaceDeclarationStatementAst* node) override;
     virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range);
     virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
 

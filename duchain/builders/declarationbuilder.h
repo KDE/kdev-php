@@ -56,61 +56,61 @@ public:
         m_editor = editor;
         m_findVariable.find = false;
     }
-    virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
+    KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
             KDevelop::ReferencedTopDUContext updateContext
-            = KDevelop::ReferencedTopDUContext());
+            = KDevelop::ReferencedTopDUContext()) override;
 
-    virtual void startVisiting(AstNode* node);
+    void startVisiting(AstNode* node) override;
 
 protected:
-    virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
-    virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
-    virtual void visitTraitDeclarationStatement(TraitDeclarationStatementAst *node);
-    virtual void visitClassStatement(ClassStatementAst *node);
+    void visitClassDeclarationStatement(ClassDeclarationStatementAst *node) override;
+    void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node) override;
+    void visitTraitDeclarationStatement(TraitDeclarationStatementAst *node) override;
+    void visitClassStatement(ClassStatementAst *node) override;
     virtual void importTraitMethods(ClassStatementAst *node);
-    virtual void visitClassExtends(ClassExtendsAst *node);
-    virtual void visitClassImplements(ClassImplementsAst *node);
-    virtual void visitParameter(ParameterAst *node);
-    virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
-    virtual void visitClassVariable(ClassVariableAst *node);
-    virtual void visitConstantDeclaration(ConstantDeclarationAst *node);
-    virtual void visitTraitAliasStatement(TraitAliasStatementAst *node);
+    void visitClassExtends(ClassExtendsAst *node) override;
+    void visitClassImplements(ClassImplementsAst *node) override;
+    void visitParameter(ParameterAst *node) override;
+    void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node) override;
+    void visitClassVariable(ClassVariableAst *node) override;
+    void visitConstantDeclaration(ConstantDeclarationAst *node) override;
+    void visitTraitAliasStatement(TraitAliasStatementAst *node) override;
     virtual void createTraitAliasDeclarations(TraitAliasStatementAst *node, KDevelop::DeclarationPointer dec);
-    virtual void visitOuterTopStatement(OuterTopStatementAst* node);
-    virtual void visitAssignmentExpression(AssignmentExpressionAst* node);
-    virtual void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node);
-    virtual void visitVariable(VariableAst* node);
-    virtual void visitFunctionCall(FunctionCallAst* node);
-    virtual void visitFunctionCallParameterList(FunctionCallParameterListAst* node);
-    virtual void visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node);
-    virtual void visitStatement(StatementAst* node);
-    virtual void visitStaticVar(StaticVarAst* node);
-    virtual void visitGlobalVar(GlobalVarAst* node);
-    virtual void visitCatchItem(CatchItemAst *node);
-    virtual void visitUnaryExpression( UnaryExpressionAst* node );
-    virtual void visitAssignmentListElement(AssignmentListElementAst* node);
-    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range);
-    virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
-    virtual void visitUseNamespace(UseNamespaceAst* node);
-    virtual void visitClosure(ClosureAst* node);
-    virtual void visitLexicalVar(LexicalVarAst* node);
+    void visitOuterTopStatement(OuterTopStatementAst* node) override;
+    void visitAssignmentExpression(AssignmentExpressionAst* node) override;
+    void visitAssignmentExpressionEqual(AssignmentExpressionEqualAst *node) override;
+    void visitVariable(VariableAst* node) override;
+    void visitFunctionCall(FunctionCallAst* node) override;
+    void visitFunctionCallParameterList(FunctionCallParameterListAst* node) override;
+    void visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node) override;
+    void visitStatement(StatementAst* node) override;
+    void visitStaticVar(StaticVarAst* node) override;
+    void visitGlobalVar(GlobalVarAst* node) override;
+    void visitCatchItem(CatchItemAst *node) override;
+    void visitUnaryExpression( UnaryExpressionAst* node ) override;
+    void visitAssignmentListElement(AssignmentListElementAst* node) override;
+    void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range) override;
+    void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier) override;
+    void visitUseNamespace(UseNamespaceAst* node) override;
+    void visitClosure(ClosureAst* node) override;
+    void visitLexicalVar(LexicalVarAst* node) override;
 
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const MethodBodyAst* body) const {
         return !body || !body->statements;
     }
 
-    virtual void closeDeclaration();
-    void classContextOpened(KDevelop::DUContext* context);
+    void closeDeclaration() override;
+    void classContextOpened(KDevelop::DUContext* context) override;
 
-    virtual void supportBuild(AstNode* node, KDevelop::DUContext* context = nullptr);
-    virtual void closeContext();
+    void supportBuild(AstNode* node, KDevelop::DUContext* context = nullptr) override;
+    void closeContext() override;
 
     /// don't forget to closeDeclaration() afterwards
     /// set m_currentModifers to your likings and reset it afterwards
     void openClassMemberDeclaration(AstNode* node, const KDevelop::QualifiedIdentifier& name);
 
-    virtual void updateCurrentType();
+    void updateCurrentType() override;
 
 private:
     /// because the predeclarationbuilder runs before us,

@@ -65,7 +65,7 @@ class LanguageSupport : public KDevelop::IPlugin, public KDevelop::ILanguageSupp
 
 public:
     explicit LanguageSupport(QObject *parent, const QVariantList& args = QVariantList());
-    virtual ~LanguageSupport();
+    ~LanguageSupport() override;
     /*Name Of the Language*/
     QString name() const override;
     /*Parsejob used by background parser to parse given Url*/

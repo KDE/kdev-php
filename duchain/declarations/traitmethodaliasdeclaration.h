@@ -38,9 +38,9 @@ public:
     TraitMethodAliasDeclaration(const KDevelop::RangeInRevision &range, KDevelop::DUContext *context);
     TraitMethodAliasDeclaration(TraitMethodAliasDeclarationData &data);
     TraitMethodAliasDeclaration(TraitMethodAliasDeclarationData &data, const KDevelop::RangeInRevision &range, KDevelop::DUContext *context);
-    ~TraitMethodAliasDeclaration();
+    ~TraitMethodAliasDeclaration() override;
 
-    virtual QString toString() const;
+    QString toString() const override;
 
     /**
      * Set the declaration that is aliased by this declaration.
@@ -74,7 +74,7 @@ public:
         Identity = 131
     };
 
-    virtual KDevelop::Declaration* clonePrivate() const;
+    KDevelop::Declaration* clonePrivate() const override;
 private:
     DUCHAIN_DECLARE_DATA(TraitMethodAliasDeclaration)
 };

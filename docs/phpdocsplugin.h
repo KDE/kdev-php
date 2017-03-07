@@ -36,7 +36,7 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
 
   public:
     explicit PhpDocsPlugin(QObject *parent, const QVariantList & args= QVariantList());
-    ~PhpDocsPlugin();
+    ~PhpDocsPlugin() override;
 
     KDevelop::IDocumentation::Ptr documentationForDeclaration (KDevelop::Declaration* dec) const override;
     QAbstractListModel* indexModel() const override;

@@ -38,7 +38,7 @@ class PhpUnitTestSuite : public KDevelop::ITestSuite
 
 public:
     PhpUnitTestSuite(const QString& name, const QUrl& url, const KDevelop::IndexedDeclaration& suiteDeclaration, const QStringList& cases, const QHash< QString, KDevelop::IndexedDeclaration >& caseDeclarations, KDevelop::IProject* project);
-    virtual ~PhpUnitTestSuite();
+    ~PhpUnitTestSuite() override;
 
     KJob* launchCase(const QString& testCase, TestJobVerbosity verbosity) override;
     KJob* launchCases(const QStringList& testCases, TestJobVerbosity verbosity) override;

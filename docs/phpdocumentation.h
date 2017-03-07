@@ -38,7 +38,7 @@ class PhpDocumentation : public KDevelop::IDocumentation
     Q_OBJECT
 public:
     explicit PhpDocumentation(const QUrl& url, const QString& name, const QByteArray& description, PhpDocsPlugin* parent);
-    ~PhpDocumentation();
+    ~PhpDocumentation() override;
 
     QString name() const override;
     QString description() const override;

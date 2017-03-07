@@ -40,7 +40,7 @@ class PhpDocsModel : public QAbstractListModel
 
 public:
     explicit PhpDocsModel(QObject* parent = nullptr);
-    ~PhpDocsModel();
+    ~PhpDocsModel() override;
 
     enum CustomDataRoles {
         /// returns the Declaration that a given index in the model represents

@@ -29,8 +29,8 @@ class TestDoxDelegate : public QItemDelegate
 
 public:
     explicit TestDoxDelegate(QObject* parent = nullptr);
-    virtual ~TestDoxDelegate();
-    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+    ~TestDoxDelegate() override;
+    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
 private:
     void highlight(QStyleOptionViewItem& option, const KStatefulBrush& brush, bool bold = true) const;

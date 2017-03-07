@@ -113,7 +113,7 @@ public:
     TestCodeCompletionContext(KDevelop::DUContextPointer context, const QString& text, const QString& followingText, const CursorInRevision &position, int depth = 0)
         : CodeCompletionContext(context, text, followingText, position, depth) { }
 protected:
-    QList<QSet<IndexedString> > completionFiles() {
+    QList<QSet<IndexedString> > completionFiles() override {
         QList<QSet<IndexedString> > ret;
         QSet<IndexedString> set;
         set << IndexedString("file:///internal/projecttest0");

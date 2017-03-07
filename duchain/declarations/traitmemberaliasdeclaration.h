@@ -54,9 +54,9 @@ public:
     TraitMemberAliasDeclaration(const TraitMemberAliasDeclaration& rhs);
     TraitMemberAliasDeclaration(const KDevelop::RangeInRevision& range, KDevelop::DUContext* context);
     TraitMemberAliasDeclaration(TraitMemberAliasDeclarationData& dd);
-    ~TraitMemberAliasDeclaration();
+    ~TraitMemberAliasDeclaration() override;
 
-    QString toString() const;
+    QString toString() const override;
 
     /**
      * Set the declaration that is aliased by this declaration.
@@ -81,7 +81,7 @@ protected:
 
 private:
     DUCHAIN_DECLARE_DATA(TraitMemberAliasDeclaration)
-    virtual KDevelop::Declaration* clonePrivate() const;
+    KDevelop::Declaration* clonePrivate() const override;
 
 };
 }

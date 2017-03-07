@@ -53,9 +53,9 @@ public:
     NamespaceDeclaration(const NamespaceDeclaration &rhs);
     NamespaceDeclaration(const KDevelop::RangeInRevision &range, KDevelop::DUContext *parentContext);
     NamespaceDeclaration(NamespaceDeclarationData &data);
-    virtual ~NamespaceDeclaration();
+    ~NamespaceDeclaration() override;
 
-    virtual QString toString() const;
+    QString toString() const override;
 
     void setPrettyName(const KDevelop::IndexedString& name);
     KDevelop::IndexedString prettyName() const;
@@ -64,7 +64,7 @@ public:
         Identity = 87
     };
 
-    virtual KDevelop::Declaration* clonePrivate() const;
+    KDevelop::Declaration* clonePrivate() const override;
 private:
     DUCHAIN_DECLARE_DATA(NamespaceDeclaration)
 };

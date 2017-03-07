@@ -29,8 +29,8 @@ public:
     MagicConstantNavigationContext(KDevelop::TopDUContextPointer topContext,
                                    const KTextEditor::Cursor& position,
                                    const QString& constant);
-    virtual QString name() const;
-    virtual QString html(bool shorten = false);
+    QString name() const override;
+    QString html(bool shorten = false) override;
 private:
     KDevelop::CursorInRevision m_position;
     QString m_constant;

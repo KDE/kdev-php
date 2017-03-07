@@ -65,11 +65,11 @@ public:
     void setPrettyName(const KDevelop::IndexedString& name);
     KDevelop::IndexedString prettyName() const;
 
-    virtual QString toString() const;
+    QString toString() const override;
 
-    virtual KDevelop::AbstractType* clone() const;
+    KDevelop::AbstractType* clone() const override;
 
-    virtual uint hash() const;
+    uint hash() const override;
 
     enum {
         ///TODO: is that value OK?

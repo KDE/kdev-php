@@ -57,13 +57,13 @@ public:
     VariableDeclaration(const KDevelop::RangeInRevision& range, KDevelop::DUContext* context);
     VariableDeclaration(VariableDeclarationData& data);
     VariableDeclaration(VariableDeclarationData& data, const KDevelop::RangeInRevision&);
-    virtual ~VariableDeclaration();
+    ~VariableDeclaration() override;
 
     bool isSuperglobal() const;
     void setSuperglobal(bool superglobal);
 
-    virtual uint additionalIdentity() const;
-    virtual KDevelop::DeclarationId id(bool forceDirect = false) const;
+    uint additionalIdentity() const override;
+    KDevelop::DeclarationId id(bool forceDirect = false) const override;
 
     enum {
         Identity = 83

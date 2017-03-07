@@ -46,13 +46,13 @@ public:
     };
 
     explicit ParseJob(const KDevelop::IndexedString& url, KDevelop::ILanguageSupport* LanguageSupport);
-    virtual ~ParseJob();
+    ~ParseJob() override;
 
     void setParentJob(ParseJob *job);
 
 protected:
     LanguageSupport* php() const;
-    virtual void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread);
+    void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread) override;
 
 private:
     ParseJob *m_parentJob; ///< parent job if this one is an include

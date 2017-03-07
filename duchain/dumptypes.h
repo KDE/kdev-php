@@ -29,32 +29,32 @@ class KDEVPHPDUCHAIN_EXPORT DumpTypes : protected KDevelop::TypeVisitor
 {
 public:
     DumpTypes();
-    virtual ~DumpTypes();
+    ~DumpTypes() override;
 
     void dump(const KDevelop::AbstractType* type);
 
 protected:
-    virtual bool preVisit(const KDevelop::AbstractType * type);
-    virtual void postVisit(const KDevelop::AbstractType *);
+    bool preVisit(const KDevelop::AbstractType * type) override;
+    void postVisit(const KDevelop::AbstractType *) override;
 
-    virtual void visit(const KDevelop::IntegralType *);
+    void visit(const KDevelop::IntegralType *) override;
 
-    virtual bool visit(const KDevelop::AbstractType *);
+    bool visit(const KDevelop::AbstractType *) override;
 
-    virtual bool visit(const KDevelop::PointerType * type);
-    virtual void endVisit(const KDevelop::PointerType *);
+    bool visit(const KDevelop::PointerType * type) override;
+    void endVisit(const KDevelop::PointerType *) override;
 
-    virtual bool visit(const KDevelop::ReferenceType * type);
-    virtual void endVisit(const KDevelop::ReferenceType *);
+    bool visit(const KDevelop::ReferenceType * type) override;
+    void endVisit(const KDevelop::ReferenceType *) override;
 
-    virtual bool visit(const KDevelop::FunctionType * type);
-    virtual void endVisit(const KDevelop::FunctionType *);
+    bool visit(const KDevelop::FunctionType * type) override;
+    void endVisit(const KDevelop::FunctionType *) override;
 
-    virtual bool visit(const KDevelop::StructureType * type);
-    virtual void endVisit(const KDevelop::StructureType *);
+    bool visit(const KDevelop::StructureType * type) override;
+    void endVisit(const KDevelop::StructureType *) override;
 
-    virtual bool visit(const KDevelop::ArrayType * type);
-    virtual void endVisit(const KDevelop::ArrayType *);
+    bool visit(const KDevelop::ArrayType * type) override;
+    void endVisit(const KDevelop::ArrayType *) override;
 
 private:
     bool seen(const KDevelop::AbstractType* type);

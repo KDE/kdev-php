@@ -48,30 +48,30 @@ public:
     void setCreateProblems(bool v);
     void setOffset(const KDevelop::CursorInRevision& offset);
 
-    virtual void visitNode(AstNode *node);
+    void visitNode(AstNode *node) override;
 
 protected:
     KDevelop::DeclarationPointer processVariable( VariableIdentifierAst* variable);
 
-    void visitAssignmentExpression(AssignmentExpressionAst *node);
-    virtual void visitArrayIndexSpecifier(ArrayIndexSpecifierAst* node);
-    void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node);
-    void visitVarExpressionNewObject(VarExpressionNewObjectAst *node);
-    virtual void visitVarExpressionArray(VarExpressionArrayAst *node);
-    virtual void visitClosure(ClosureAst* node);
-    void visitFunctionCall(FunctionCallAst* node);
-    void visitConstantOrClassConst(ConstantOrClassConstAst *node);
-    void visitScalar(ScalarAst *node);
-    void visitStaticScalar(StaticScalarAst *node);
-    void visitEncapsVar(EncapsVarAst *node);
-    void visitVariableProperty(VariablePropertyAst *node);
-    void visitStaticMember(StaticMemberAst* node);
-    void visitUnaryExpression(UnaryExpressionAst* node);
-    void visitAdditiveExpressionRest(AdditiveExpressionRestAst* node);
-    void visitVariable(VariableAst* node);
-    void visitFunctionCallParameterList( FunctionCallParameterListAst* node );
-    void visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node);
-    void visitRelationalExpression(RelationalExpressionAst* node);
+    void visitAssignmentExpression(AssignmentExpressionAst *node) override;
+    void visitArrayIndexSpecifier(ArrayIndexSpecifierAst* node) override;
+    void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node) override;
+    void visitVarExpressionNewObject(VarExpressionNewObjectAst *node) override;
+    void visitVarExpressionArray(VarExpressionArrayAst *node) override;
+    void visitClosure(ClosureAst* node) override;
+    void visitFunctionCall(FunctionCallAst* node) override;
+    void visitConstantOrClassConst(ConstantOrClassConstAst *node) override;
+    void visitScalar(ScalarAst *node) override;
+    void visitStaticScalar(StaticScalarAst *node) override;
+    void visitEncapsVar(EncapsVarAst *node) override;
+    void visitVariableProperty(VariablePropertyAst *node) override;
+    void visitStaticMember(StaticMemberAst* node) override;
+    void visitUnaryExpression(UnaryExpressionAst* node) override;
+    void visitAdditiveExpressionRest(AdditiveExpressionRestAst* node) override;
+    void visitVariable(VariableAst* node) override;
+    void visitFunctionCallParameterList( FunctionCallParameterListAst* node ) override;
+    void visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node) override;
+    void visitRelationalExpression(RelationalExpressionAst* node) override;
 
     QString stringForNode(AstNode* id);
     KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);

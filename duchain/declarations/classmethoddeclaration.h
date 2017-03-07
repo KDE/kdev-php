@@ -59,14 +59,14 @@ public:
     ClassMethodDeclaration(const KDevelop::RangeInRevision &range, KDevelop::DUContext *context);
     ClassMethodDeclaration(ClassMethodDeclarationData &data);
     ClassMethodDeclaration(ClassMethodDeclarationData &data, const KDevelop::RangeInRevision &range, KDevelop::DUContext *context);
-    ~ClassMethodDeclaration();
+    ~ClassMethodDeclaration() override;
 
     /// overwritten to check for __construct() method
-    virtual bool isConstructor() const;
+    bool isConstructor() const override;
     /// overwritten to check for __destruct() method
-    virtual bool isDestructor() const;
+    bool isDestructor() const override;
 
-    virtual QString toString() const;
+    QString toString() const override;
 
     void setPrettyName(const KDevelop::IndexedString& name);
     KDevelop::IndexedString prettyName() const;
@@ -75,7 +75,7 @@ public:
         Identity = 84
     };
 
-    virtual KDevelop::Declaration* clonePrivate() const;
+    KDevelop::Declaration* clonePrivate() const override;
 private:
     DUCHAIN_DECLARE_DATA(ClassMethodDeclaration)
 };

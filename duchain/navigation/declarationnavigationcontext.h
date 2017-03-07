@@ -32,13 +32,13 @@ public:
 
 protected:
     KDevelop::NavigationContextPointer registerChild(KDevelop::DeclarationPointer declaration);
-    virtual KDevelop::QualifiedIdentifier prettyQualifiedIdentifier( KDevelop::DeclarationPointer decl ) const;
-    virtual void htmlClass();
-    virtual void htmlAdditionalNavigation();
+    KDevelop::QualifiedIdentifier prettyQualifiedIdentifier( KDevelop::DeclarationPointer decl ) const override;
+    void htmlClass() override;
+    void htmlAdditionalNavigation() override;
 
-    void makeLink( const QString& name, KDevelop::DeclarationPointer declaration, KDevelop::NavigationAction::Type actionType );
+    void makeLink( const QString& name, KDevelop::DeclarationPointer declaration, KDevelop::NavigationAction::Type actionType ) override;
 
-    virtual QString declarationKind(KDevelop::DeclarationPointer decl);
+    QString declarationKind(KDevelop::DeclarationPointer decl) override;
 };
 
 }

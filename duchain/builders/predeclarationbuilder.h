@@ -58,23 +58,23 @@ public:
         m_editor = editor;
     }
 
-    virtual ~PreDeclarationBuilder();
+    ~PreDeclarationBuilder() override;
 
     /// make it accessible to the declaration builder
     bool didRecompile() { return recompiling(); }
 
 protected:
 //     virtual void visitNode(AstNode* node);
-    virtual void visitClassDeclarationStatement(ClassDeclarationStatementAst *node);
-    virtual void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node);
-    virtual void visitTraitDeclarationStatement(TraitDeclarationStatementAst *node);
-    virtual void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node);
-    virtual void visitClassVariable(ClassVariableAst* node);
-    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range);
-    virtual void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier);
+    void visitClassDeclarationStatement(ClassDeclarationStatementAst *node) override;
+    void visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node) override;
+    void visitTraitDeclarationStatement(TraitDeclarationStatementAst *node) override;
+    void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node) override;
+    void visitClassVariable(ClassVariableAst* node) override;
+    void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range) override;
+    void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier) override;
 
-    virtual void closeDeclaration();
-    virtual void closeContext();
+    void closeDeclaration() override;
+    void closeContext() override;
 private:
     QHash<qint64, ClassDeclaration*>* m_types;
     QHash<qint64, FunctionDeclaration*>* m_functions;

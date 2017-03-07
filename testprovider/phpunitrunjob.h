@@ -36,10 +36,10 @@ class PhpUnitRunJob : public KJob
     Q_OBJECT
 public:
     PhpUnitRunJob(PhpUnitTestSuite* suite, const QStringList& cases, KDevelop::OutputJob::OutputJobVerbosity verbosity, QObject* parent = nullptr);
-    virtual void start();
+    void start() override;
 
 protected:
-    virtual bool doKill();
+    bool doKill() override;
 
 private slots:
     void processFinished(KJob* job);

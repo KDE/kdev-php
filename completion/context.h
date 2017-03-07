@@ -72,12 +72,12 @@ public:
     CodeCompletionContext(KDevelop::DUContextPointer context, const QString& text,
                           const QString& followingText, const KDevelop::CursorInRevision& position,
                           int depth = 0);
-    ~CodeCompletionContext();
+    ~CodeCompletionContext() override;
 
     /// Computes the full set of completion items, using the information retrieved earlier.
     /// Should only be called on the first context, parent contexts are included in the computations.
     /// @param abort is checked regularly, and if it is false, the computation is aborted.
-    virtual QList<KDevelop::CompletionTreeItemPointer> completionItems(bool& abort, bool fullCompletion = true);
+    QList<KDevelop::CompletionTreeItemPointer> completionItems(bool& abort, bool fullCompletion = true) override;
 
     enum MemberAccessOperation {
         NoMemberAccess,  ///With NoMemberAccess, a global completion should be done

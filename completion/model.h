@@ -44,7 +44,7 @@ class KDEVPHPCOMPLETION_EXPORT CodeCompletionModel : public KDevelop::CodeComple
 
 public:
     CodeCompletionModel(QObject* parent = nullptr);
-    virtual ~CodeCompletionModel();
+    ~CodeCompletionModel() override;
 
     bool shouldAbortCompletion(KTextEditor::View* view,
                                const KTextEditor::Range &range,

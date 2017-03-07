@@ -49,25 +49,25 @@ public:
      */
     void newCheckedUse(Php::AstNode* node, const KDevelop::DeclarationPointer& declaration, bool reportNotFound = false);
 
-    virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
+    KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
         KDevelop::ReferencedTopDUContext updateContext
-        = KDevelop::ReferencedTopDUContext());
+        = KDevelop::ReferencedTopDUContext()) override;
 
 protected:
-    virtual void visitParameter(ParameterAst *node);
-    virtual void visitClassImplements(ClassImplementsAst *node);
-    virtual void visitClassExtends(ClassExtendsAst *node);
-    virtual void visitClassStatement(ClassStatementAst *node);
-    virtual void visitTraitAliasStatement(TraitAliasStatementAst *node);
-    virtual void visitTraitAliasIdentifier(TraitAliasIdentifierAst *node);
-    virtual void visitExpr(ExprAst* node);
-    virtual void visitGlobalVar(GlobalVarAst* node);
-    virtual void visitStaticScalar(StaticScalarAst* node);
-    virtual void visitStatement(StatementAst* node);
-    virtual void visitCatchItem(CatchItemAst* node);
-    virtual void visitUnaryExpression( UnaryExpressionAst* node );
-    virtual void visitUseNamespace(UseNamespaceAst* node);
-    virtual void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range);
+    void visitParameter(ParameterAst *node) override;
+    void visitClassImplements(ClassImplementsAst *node) override;
+    void visitClassExtends(ClassExtendsAst *node) override;
+    void visitClassStatement(ClassStatementAst *node) override;
+    void visitTraitAliasStatement(TraitAliasStatementAst *node) override;
+    void visitTraitAliasIdentifier(TraitAliasIdentifierAst *node) override;
+    void visitExpr(ExprAst* node) override;
+    void visitGlobalVar(GlobalVarAst* node) override;
+    void visitStaticScalar(StaticScalarAst* node) override;
+    void visitStatement(StatementAst* node) override;
+    void visitCatchItem(CatchItemAst* node) override;
+    void visitUnaryExpression( UnaryExpressionAst* node ) override;
+    void visitUseNamespace(UseNamespaceAst* node) override;
+    void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range) override;
 
 private:
     void buildNamespaceUses(Php::NamespacedIdentifierAst* node, Php::DeclarationType lastType = Php::ClassDeclarationType);

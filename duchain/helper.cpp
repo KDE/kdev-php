@@ -262,7 +262,7 @@ public:
         return m_node;
     }
 private:
-    virtual void visitCommonScalar(CommonScalarAst* node) {
+    void visitCommonScalar(CommonScalarAst* node) override {
         m_node = node;
     }
     CommonScalarAst* m_node;

@@ -30,8 +30,8 @@ using namespace Php;
 class HighlightingInstance : public CodeHighlightingInstance {
 public:
     HighlightingInstance(const CodeHighlighting* highlighting);
-    virtual Types typeForDeclaration(KDevelop::Declaration* decl, KDevelop::DUContext* context) const;
-    virtual bool useRainbowColor( Declaration* dec ) const;
+    Types typeForDeclaration(KDevelop::Declaration* decl, KDevelop::DUContext* context) const override;
+    bool useRainbowColor( Declaration* dec ) const override;
 };
 
 HighlightingInstance::HighlightingInstance(const CodeHighlighting* highlighting)

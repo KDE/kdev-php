@@ -44,10 +44,10 @@ public:
             : NormalDeclarationCompletionItem(KDevelop::DeclarationPointer(), context, 0),
             m_keyword(keyword), m_replacement(customReplacement) {}
 
-    virtual void execute(KTextEditor::View* view,
+    void execute(KTextEditor::View* view,
                          const KTextEditor::Range& word) override;
 
-    virtual QVariant data(const QModelIndex& index,
+    QVariant data(const QModelIndex& index,
                           int role,
                           const KDevelop::CodeCompletionModel* model) const override;
 
