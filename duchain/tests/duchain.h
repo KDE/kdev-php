@@ -151,6 +151,7 @@ private slots:
     void testTodoExtractor();
     void useThisAsArray();
     void wrongUseOfThisAsArray();
+    void staticFunctionClassPhp54();
 };
 
 }

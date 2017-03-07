@@ -2999,3 +2999,25 @@ void TestDUChain::wrongUseOfThisAsArray()
     
     QCOMPARE(top->problems().size(),1);
 }
+
+void TestDUChain::staticFunctionClassPhp54()
+{
+    QByteArray method("<?php\n"
+                      "  class A\n"
+                      "  {\n"
+                      "      public static function func() {}  \n"
+                      "  }\n"
+                      " A::{'func'}();  \n");
+
+    TopDUContext* top = parse(method);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(top->problems().isEmpty());
+    QCOMPARE(top->localDeclarations().count(),1);
+
+    Declaration* dec = top->localDeclarations().at(0);
+    ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
+    QCOMPARE(classDec->uses().count(),1);
+}

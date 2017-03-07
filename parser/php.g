@@ -650,6 +650,7 @@ expression=booleanOrExpression
         (
             stringFunctionName=identifier LPAREN stringParameterList=functionCallParameterList RPAREN
             | varFunctionName=variableWithoutObjects LPAREN stringParameterList=functionCallParameterList RPAREN
+            | LBRACE (expr=expr) RBRACE LPAREN stringParameterList=functionCallParameterList RPAREN
         )
     )
   | varFunctionName=variableWithoutObjects LPAREN varParameterList=functionCallParameterList RPAREN

@@ -343,6 +343,13 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
             }
         } else if (node->varFunctionName) {
             //static function call foo::$bar()
+        } else if (node->expr) {
+            //static function call foo::{expr}()
+            const QualifiedIdentifier id = identifierForNamespace(node->stringFunctionNameOrClass, m_editor);
+            DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
+            usingDeclaration(node->stringFunctionNameOrClass->namespaceNameSequence->back()->element, dec);
+            buildNamespaceUses(node->stringFunctionNameOrClass, id);
+            m_result.setDeclaration(dec);
         } else {
             //global function call foo();
             const QualifiedIdentifier id = identifierForNamespace(node->stringFunctionNameOrClass, m_editor);
