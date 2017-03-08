@@ -56,7 +56,9 @@
         "ILanguageSupport", 
         "org.kdevelop.PHPSupport"
     ], 
-    "X-KDevelop-Language": "Php", 
+    "X-KDevelop-Languages": [
+        "Php"
+    ],
     "X-KDevelop-LoadMode": "AlwaysOn", 
     "X-KDevelop-Mode": "NoGUI", 
     "X-KDevelop-SupportedMimeTypes": [
