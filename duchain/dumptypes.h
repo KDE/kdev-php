@@ -22,6 +22,8 @@
 #include <language/duchain/types/typesystem.h>
 #include "phpduchainexport.h"
 
+#include <QSet>
+
 namespace Php
 {
 
