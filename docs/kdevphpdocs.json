@@ -26,6 +26,7 @@
         "Description[sv]": "Insticksprogrammet integrerar Internet-dokumentationen från PHP.net.", 
         "Description[uk]": "За допомогою цього додатка можна інтегрувати документацію PHP.net.", 
         "Description[x-test]": "xxThis plugin integrates PHP.net online documentation.xx", 
+        "Icon": "application-x-php",
         "Id": "kdevphpdocs", 
         "License": "GPL", 
         "Name": "PHP Documentation", 
