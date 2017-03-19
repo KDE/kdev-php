@@ -29,17 +29,15 @@ NavigationWidget::NavigationWidget(KDevelop::DeclarationPointer declaration, KDe
                                    const QString& htmlPrefix, const QString& htmlSuffix,
                                    KDevelop::AbstractNavigationWidget::DisplayHints hints)
     : AbstractNavigationWidget()
-    , m_declaration(declaration)
 {
-    m_topContext = topContext;
     setDisplayHints(hints);
 
     initBrowser(400);
 
     //The first context is registered so it is kept alive by the shared-pointer mechanism
-    m_startContext = NavigationContextPointer(new DeclarationNavigationContext(declaration, m_topContext));
-    m_startContext->setPrefixSuffix(htmlPrefix, htmlSuffix);
-    setContext(m_startContext);
+    auto context = NavigationContextPointer(new DeclarationNavigationContext(declaration, topContext));
+    context->setPrefixSuffix(htmlPrefix, htmlSuffix);
+    setContext(context);
 }
 
 NavigationWidget::NavigationWidget(const IncludeItem& includeItem, KDevelop::TopDUContextPointer topContext,
@@ -47,29 +45,27 @@ NavigationWidget::NavigationWidget(const IncludeItem& includeItem, KDevelop::Top
                                    KDevelop::AbstractNavigationWidget::DisplayHints hints)
     : AbstractNavigationWidget()
 {
-  m_topContext = topContext;
   setDisplayHints(hints);
 
   initBrowser(200);
 
   //The first context is registered so it is kept alive by the shared-pointer mechanism
-  m_startContext = NavigationContextPointer(new IncludeNavigationContext(includeItem, m_topContext));
-  m_startContext->setPrefixSuffix( htmlPrefix, htmlSuffix );
-  setContext( m_startContext );
+  auto context = NavigationContextPointer(new IncludeNavigationContext(includeItem, topContext));
+  context->setPrefixSuffix(htmlPrefix, htmlSuffix);
+  setContext(context);
 }
 
 NavigationWidget::NavigationWidget(TopDUContextPointer topContext, KTextEditor::Cursor position, const QString& constant,
                                    KDevelop::AbstractNavigationWidget::DisplayHints hints)
     : AbstractNavigationWidget()
 {
-  m_topContext = topContext;
   setDisplayHints(hints);
 
   initBrowser(200);
 
   //The first context is registered so it is kept alive by the shared-pointer mechanism
-  m_startContext = NavigationContextPointer(new MagicConstantNavigationContext(topContext, position, constant));
-  setContext( m_startContext );
+  auto context = NavigationContextPointer(new MagicConstantNavigationContext(topContext, position, constant));
+  setContext(context);
 }
 
 QString NavigationWidget::shortDescription(KDevelop::Declaration* declaration)

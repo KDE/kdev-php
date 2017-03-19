@@ -46,14 +46,14 @@ DeclarationNavigationContext::DeclarationNavigationContext(DeclarationPointer de
 
 NavigationContextPointer DeclarationNavigationContext::registerChild(DeclarationPointer declaration)
 {
-    return AbstractDeclarationNavigationContext::registerChild(new DeclarationNavigationContext(declaration, m_topContext, this));
+    return AbstractDeclarationNavigationContext::registerChild(new DeclarationNavigationContext(declaration, topContext(), this));
 }
 
 void DeclarationNavigationContext::htmlClass()
 {
-    StructureType::Ptr klass = m_declaration->abstractType().cast<StructureType>();
+    StructureType::Ptr klass = declaration()->abstractType().cast<StructureType>();
     Q_ASSERT(klass);
-    ClassDeclaration* classDecl = dynamic_cast<ClassDeclaration*>(klass->declaration(m_topContext.data()));
+    ClassDeclaration* classDecl = dynamic_cast<ClassDeclaration*>(klass->declaration(topContext().data()));
     if (classDecl) {
         // write class modifier
         switch (classDecl->classModifier()) {
@@ -76,7 +76,7 @@ void DeclarationNavigationContext::htmlClass()
             modifyHtml() += QStringLiteral("class ");
         }
         // write class identifier
-        eventuallyMakeTypeLinks(m_declaration->abstractType());
+        eventuallyMakeTypeLinks(declaration()->abstractType());
         // write inheritance
         if (classDecl->baseClassesSize() > 0) {
             AbstractType::Ptr extends;
@@ -84,7 +84,7 @@ void DeclarationNavigationContext::htmlClass()
             FOREACH_FUNCTION(const BaseClassInstance& base, classDecl->baseClasses) {
                 StructureType::Ptr stype = base.baseClass.type<StructureType>();
                 if (stype) {
-                    ClassDeclaration *classDecl = dynamic_cast<ClassDeclaration*>(stype->declaration(m_topContext.data()));
+                    ClassDeclaration *classDecl = dynamic_cast<ClassDeclaration*>(stype->declaration(topContext().data()));
                     if (classDecl) {
                         if (classDecl->classType() == ClassDeclarationData::Interface) {
                             implements.append(base.baseClass.abstractType());
@@ -119,7 +119,7 @@ void DeclarationNavigationContext::htmlClass()
 
 void DeclarationNavigationContext::htmlAdditionalNavigation()
 {
-    if (auto member = dynamic_cast<TraitMethodAliasDeclaration*>(m_declaration.data())) {
+    if (auto member = dynamic_cast<TraitMethodAliasDeclaration*>(declaration().data())) {
         Declaration *dec = member->aliasedDeclaration().data();
         if (dec && dec->context() && dec->context()->owner()) {
             modifyHtml() += i18n("Use of %1 from %2<br />")
@@ -132,7 +132,7 @@ void DeclarationNavigationContext::htmlAdditionalNavigation()
                                             NavigationAction(DeclarationPointer(dec->context()->owner()),
                                                              KDevelop::NavigationAction::NavigateDeclaration)));
         }
-    } else if (auto member = dynamic_cast<TraitMemberAliasDeclaration*>(m_declaration.data())) {
+    } else if (auto member = dynamic_cast<TraitMemberAliasDeclaration*>(declaration().data())) {
         Declaration *dec = member->aliasedDeclaration().data();
         if (dec && dec->context() && dec->context()->owner()) {
             modifyHtml() += i18n("Use of %1 from %2<br />")

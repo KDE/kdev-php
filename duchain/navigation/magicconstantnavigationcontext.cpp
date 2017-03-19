@@ -64,18 +64,18 @@ QString MagicConstantNavigationContext::html(bool /*shorten*/)
     QString value;
     ///TODO: php 5.3: __DIR__, __NAMESPACE__
     if ( m_constant == QLatin1String("__FILE__") ) {
-        value = m_topContext->url().str().toHtmlEscaped();
+        value = topContext()->url().str().toHtmlEscaped();
     } else if ( m_constant == QLatin1String("__LINE__") ) {
         value.setNum(m_position.line + 1);
     } else if ( m_constant == QLatin1String("__CLASS__") ) {
-        if ( DUContext* ctx = findContext(m_topContext, m_position, DUContext::Class) ) {
+        if ( DUContext* ctx = findContext(topContext(), m_position, DUContext::Class) ) {
             value = codeHighlight(ctx->localScopeIdentifier().toString().toHtmlEscaped());
         } else {
             value = commentHighlight(i18n("empty (not inside a class)"));
         }
     } else if ( m_constant == QLatin1String("__METHOD__") ) {
         CursorInRevision pos = m_position;
-        while ( DUContext* ctx = findContext(m_topContext, pos, DUContext::Other) ) {
+        while ( DUContext* ctx = findContext(topContext(), pos, DUContext::Other) ) {
             if ( !ctx->parentContext() ) {
                 break;
             }
@@ -94,7 +94,7 @@ QString MagicConstantNavigationContext::html(bool /*shorten*/)
         }
     } else if ( m_constant == QLatin1String("__FUNCTION__") ) {
         CursorInRevision pos = m_position;
-        if ( DUContext* ctx = findContext(m_topContext, pos, DUContext::Other) ) {
+        if ( DUContext* ctx = findContext(topContext(), pos, DUContext::Other) ) {
             if ( ctx->owner() && ctx->owner()->type<FunctionType>() ) {
                 value = codeHighlight(ctx->localScopeIdentifier().toString().toHtmlEscaped());
             }
@@ -103,7 +103,7 @@ QString MagicConstantNavigationContext::html(bool /*shorten*/)
             value = commentHighlight(i18n("empty (not inside a function)"));
         }
     } else if ( m_constant == QLatin1String("__NAMESPACE__") ) {
-        if ( DUContext* ctx = findContext(m_topContext, m_position, DUContext::Namespace) ) {
+        if ( DUContext* ctx = findContext(topContext(), m_position, DUContext::Namespace) ) {
             if ( ctx->owner() && ctx->owner()->kind() == Declaration::Namespace ) {
                 value = codeHighlight(ctx->localScopeIdentifier().toString().toHtmlEscaped());
             }
