@@ -26,6 +26,7 @@
 #include <QVBoxLayout>
 #include <QTemporaryFile>
 #include <QTextStream>
+#include <QUrl>
 
 #include <KLocalizedString>
 
@@ -52,7 +53,7 @@ PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget
 , m_provider(provider)
 {
     m_part = new KDevelop::StandardDocumentationView(find, this);
-    m_part->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    m_part->setDelegateLinks(true);
     addWidget(m_part);
     addWidget(m_loading);
 
@@ -62,8 +63,11 @@ PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget
     progressbar->setMaximum(100);
     progressbar->setAlignment(Qt::AlignCenter);
 
+// temporary disabled for initial porting to QWidget-only StandardDocumentationView
+#if 0
     connect( m_part, &KDevelop::StandardDocumentationView::loadProgress,
              progressbar, &QProgressBar::setValue );
+#endif
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addStretch();
@@ -73,12 +77,19 @@ PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget
     layout->addWidget(progressbar);
     layout->addStretch();
     m_loading->setLayout(layout);
+// temporary disabled for initial porting to QWidget-only StandardDocumentationView
+#if 0
     setCurrentWidget(m_loading);
+#endif
+// instead directly show part
+    setCurrentWidget(m_part);
 
 
     connect(m_part, &KDevelop::StandardDocumentationView::linkClicked, this, &PhpDocumentationWidget::linkClicked);
+// temporary disabled for initial porting to QWidget-only StandardDocumentationView
+#if 0
     connect(m_part, &KDevelop::StandardDocumentationView::loadFinished, this, &PhpDocumentationWidget::documentLoaded);
-
+#endif
     m_part->load( url );
 }
 
@@ -97,7 +108,7 @@ void PhpDocumentationWidget::linkClicked(const QUrl& url)
 
 void PhpDocumentationWidget::documentLoaded()
 {
-    m_part->settings()->setUserStyleSheetUrl(QUrl::fromLocalFile(m_styleSheet->fileName()));
+    m_part->setOverrideCss(QUrl::fromLocalFile(m_styleSheet->fileName()));
 
     setCurrentWidget(m_part);
     removeWidget(m_loading);
