@@ -32,6 +32,7 @@
 #include <interfaces/icore.h>
 #include <interfaces/ilanguagecontroller.h>
 #include <interfaces/icompletionsettings.h>
+#include <language/editor/documentrange.h>
 
 namespace Php
 {

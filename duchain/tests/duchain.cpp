@@ -29,6 +29,7 @@
 #include <language/duchain/types/integraltype.h>
 #include <language/duchain/types/unsuretype.h>
 #include <language/duchain/namespacealiasdeclaration.h>
+#include <language/editor/documentrange.h>
 
 #include <interfaces/icore.h>
 #include <interfaces/ilanguagecontroller.h>

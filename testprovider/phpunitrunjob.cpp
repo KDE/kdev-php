@@ -29,6 +29,7 @@
 #include <util/executecompositejob.h>
 #include <outputview/outputmodel.h>
 #include <interfaces/itestcontroller.h>
+#include <interfaces/iruncontroller.h>
 #include <interfaces/icore.h>
 #include <interfaces/ilauncher.h>
 #include <interfaces/ilaunchconfiguration.h>

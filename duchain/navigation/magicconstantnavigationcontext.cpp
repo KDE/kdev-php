@@ -23,6 +23,7 @@
 #include <language/duchain/topducontext.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/types/functiontype.h>
+#include <serialization/indexedstring.h>
 
 using namespace KDevelop;
 

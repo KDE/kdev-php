@@ -23,6 +23,8 @@
 
 #include <language/duchain/types/structuretype.h>
 #include <language/duchain/types/typesystemdata.h>
+#include <serialization/indexedstring.h>
+
 #include "phpduchainexport.h"
 
 namespace Php

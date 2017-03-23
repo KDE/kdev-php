@@ -1020,7 +1020,7 @@ try/recover(#classStatements=classStatement)*
 [:
 
 #include <QtCore/QDebug>
-#include <KTextEditor/Range>
+#include <language/editor/documentrange.h>
 
 namespace Php
 {

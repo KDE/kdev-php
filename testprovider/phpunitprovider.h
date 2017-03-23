@@ -26,6 +26,8 @@
 #include <language/duchain/indexeddeclaration.h>
 #include <language/duchain/topducontext.h>
 
+#include <serialization/indexedstring.h>
+
 #include <QVariant>
 
 class QVariant;

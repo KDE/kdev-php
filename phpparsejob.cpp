@@ -30,6 +30,7 @@
 #include <interfaces/ilanguagecontroller.h>
 #include <language/backgroundparser/backgroundparser.h>
 #include <language/backgroundparser/urlparselock.h>
+#include <language/editor/documentrange.h>
 
 #include "editorintegrator.h"
 #include "parsesession.h"
