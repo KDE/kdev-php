@@ -19,4 +19,4 @@
 
 #include "duchaindebug.h"
 
-Q_LOGGING_CATEGORY(DUCHAIN, "kdev-php-duchain")
+Q_LOGGING_CATEGORY(DUCHAIN, "kdevelop.languages.php.duchain")

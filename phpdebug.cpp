@@ -19,4 +19,4 @@
 
 #include "phpdebug.h"
 
-Q_LOGGING_CATEGORY(PHP, "kdev-php")
+Q_LOGGING_CATEGORY(PHP, "kdevelop.languages.php")

@@ -19,4 +19,4 @@
 
 #include "completiondebug.h"
 
-Q_LOGGING_CATEGORY(COMPLETION, "kdev-php-completion")
+Q_LOGGING_CATEGORY(COMPLETION, "kdevelop.languages.php.completion")

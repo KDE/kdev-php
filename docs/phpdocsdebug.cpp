@@ -19,4 +19,4 @@
 
 #include "phpdocsdebug.h"
 
-Q_LOGGING_CATEGORY(DOCS, "kdev-php-docs")
+Q_LOGGING_CATEGORY(DOCS, "kdevelop.languages.php.docs")
