@@ -19,4 +19,4 @@
 
 #include "testproviderdebug.h"
 
-Q_LOGGING_CATEGORY(TESTPROVIDER, "kdev-php-testprovider")
+Q_LOGGING_CATEGORY(TESTPROVIDER, "kdevelop.languages.php.testprovider")

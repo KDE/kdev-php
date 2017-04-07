@@ -19,4 +19,4 @@
 
 #include "parserdebug.h"
 
-Q_LOGGING_CATEGORY(PARSER, "kdev-php-parser")
+Q_LOGGING_CATEGORY(PARSER, "kdevelop.languages.php.parser")
