@@ -70,6 +70,7 @@ protected:
     virtual void importTraitMethods(ClassStatementAst *node);
     void visitClassExtends(ClassExtendsAst *node) override;
     void visitClassImplements(ClassImplementsAst *node) override;
+    void visitParameterList(ParameterListAst *node) override;
     void visitParameter(ParameterAst *node) override;
     void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node) override;
     void visitClassVariable(ClassVariableAst *node) override;
@@ -142,6 +143,8 @@ private:
     int m_functionCallParameterPos;
     /// Type of the current function, will only be set inside function calls.
     KDevelop::FunctionType::Ptr m_currentFunctionType;
+    /// The AstNode of the previous function declaration argument
+    ParameterAst *m_functionDeclarationPreviousArgument;
 
     unsigned int m_currentModifers;
     QString m_lastTopStatementComment;

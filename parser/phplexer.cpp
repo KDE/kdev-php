@@ -544,6 +544,9 @@ int Lexer::nextTokenKind()
             if ((it + 1)->unicode() == '=') {
                 m_curpos++;
                 token = Parser::Token_CONCAT_ASSIGN;
+            } else if ((it + 1)->unicode() == '.' && (it + 2)->unicode() == '.') {
+                 m_curpos = m_curpos + 2;
+               token = Parser::Token_ELLIPSIS;
             } else {
                 token = Parser::Token_CONCAT;
             }

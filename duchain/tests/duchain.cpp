@@ -608,6 +608,28 @@ void TestDUChain::declareTypehintFunction()
     QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("a"));
 }
 
+void TestDUChain::declareVariadicFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo(...$i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first()));
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralType::TypeArray);
+
+    IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
+    QVERIFY(type);
+    QVERIFY(type->dataType() == IntegralType::TypeArray);
+}
+
 void TestDUChain::declareTypehintArrayFunction()
 {
     //                 0         1         2         3         4         5         6         7

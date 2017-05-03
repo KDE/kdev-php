@@ -661,5 +661,25 @@ void TestExpressionParser::classNameConstant()
     QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeString));
 }
 
+void TestExpressionParser::invalidVariadicFunction_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("defaultValue") << "<? function foo(...$i=NULL) { } \n";
+
+    QTest::newRow("multipleVariadics") << "<? function foo(...$i, ...$j) { } \n";
+}
+
+void TestExpressionParser::invalidVariadicFunction()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(!top->problems().isEmpty());
+}
+
 }
 

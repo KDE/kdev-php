@@ -357,7 +357,9 @@ void TypeBuilder::visitConstantDeclaration(ConstantDeclarationAst* node)
 void TypeBuilder::visitParameter(ParameterAst *node)
 {
     AbstractType::Ptr type;
-    if (node->parameterType) {
+    if (node->isVariadic != -1) {
+        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
+    } else if (node->parameterType) {
         //don't use openTypeFromName as it uses cursor for findDeclarations
         DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
                                                   identifierForNamespace(node->parameterType, editor()));

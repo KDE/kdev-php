@@ -762,14 +762,24 @@ void DeclarationBuilder::createTraitAliasDeclarations(TraitAliasStatementAst *no
     }
 }
 
+void DeclarationBuilder::visitParameterList(ParameterListAst* node)
+{
+    PushValue<ParameterAst*> push(m_functionDeclarationPreviousArgument, 0);
+
+    DeclarationBuilderBase::visitParameterList(node);
+}
+
 void DeclarationBuilder::visitParameter(ParameterAst *node)
 {
     AbstractFunctionDeclaration* funDec = dynamic_cast<AbstractFunctionDeclaration*>(currentDeclaration());
     Q_ASSERT(funDec);
+
     if (node->defaultValue) {
         QString symbol = m_editor->parseSession()->symbol(node->defaultValue);
         funDec->addDefaultParameter(IndexedString(symbol));
-        if ( node->parameterType && symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0 ) {
+        if (node->isVariadic != -1) {
+            reportError(i18n("Variadic parameter cannot have a default value"), node->defaultValue);
+        } else if ( node->parameterType && symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0 ) {
             reportError(i18n("Default value for parameters with a class type hint can only be NULL."), node->defaultValue);
         }
     } else if ( !node->defaultValue && funDec->defaultParametersSize() ) {
@@ -784,7 +794,14 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
     }
 
     DeclarationBuilderBase::visitParameter(node);
+
+    if (m_functionDeclarationPreviousArgument && m_functionDeclarationPreviousArgument->isVariadic != -1) {
+        reportError(i18n("Only the last parameter can be variadic."), m_functionDeclarationPreviousArgument);
+    }
+
     closeDeclaration();
+
+    m_functionDeclarationPreviousArgument = node;
 }
 
 void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node)

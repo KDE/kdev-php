@@ -266,7 +266,7 @@ namespace KDevelop
        INC ("++"), DEC ("--"), BANG ("!"), QUESTION ("?"), COLON (":"),
        BIT_AND ("&"), BIT_OR("|"), BIT_XOR ("^"),
        SL ("<<"), SR (">>"), MUL("*"), DIV("/"), MOD ("%"),
-       TILDE ("~"), DOLLAR ("$"), EXP ("**"),
+       TILDE ("~"), DOLLAR ("$"), EXP ("**"), ELLIPSIS ("..."),
        LOGICAL_OR ("logical or"), LOGICAL_AND ("logical and"), LOGICAL_XOR ("logical xor") ;;
 
 -- literals and identifiers:
@@ -880,7 +880,7 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
 -> parameterList ;;
 
 (parameterType=namespacedIdentifier | arrayType=ARRAY | callableType=CALLABLE | 0) (isRef=BIT_AND | 0)
-    variable=variableIdentifier (ASSIGN defaultValue=staticScalar | 0)
+    (isVariadic=ELLIPSIS | 0) variable=variableIdentifier (ASSIGN defaultValue=staticScalar | 0)
 -> parameter ;;
 
     value=commonScalar

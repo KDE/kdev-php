@@ -510,6 +510,24 @@ void LexerTest::testExceptionFinally()
     COMPARE_TOKEN(ts, 18, Parser::Token_RBRACE, 1, 26, 1, 26);
 }
 
+void LexerTest::testEllipsis()
+{
+    QScopedPointer<TokenStream> ts(tokenize(QStringLiteral("<?php\nfunction foo(...$args) {}"), true));
+    QCOMPARE((int)ts->size(), 11);
+
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_FUNCTION, 1, 0, 1, 7);
+    COMPARE_TOKEN(ts, 2, Parser::Token_WHITESPACE, 1, 8, 1, 8);
+    COMPARE_TOKEN(ts, 3, Parser::Token_STRING, 1, 9, 1, 11);
+    COMPARE_TOKEN(ts, 4, Parser::Token_LPAREN, 1, 12, 1, 12);
+    COMPARE_TOKEN(ts, 5, Parser::Token_ELLIPSIS, 1, 13, 1, 15);
+    COMPARE_TOKEN(ts, 6, Parser::Token_VARIABLE, 1, 16, 1, 20);
+    COMPARE_TOKEN(ts, 7, Parser::Token_RPAREN, 1, 21, 1, 21);
+    COMPARE_TOKEN(ts, 8, Parser::Token_WHITESPACE, 1, 22, 1, 22);
+    COMPARE_TOKEN(ts, 9, Parser::Token_LBRACE, 1, 23, 1, 23);
+    COMPARE_TOKEN(ts, 10, Parser::Token_RBRACE, 1, 24, 1, 24);
+}
+
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
     TokenStream* tokenStream = new TokenStream;

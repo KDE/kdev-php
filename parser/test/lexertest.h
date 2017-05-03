@@ -68,6 +68,7 @@ private slots:
     void testTypeHintsOnFunction();
     void testExponentiation();
     void testExceptionFinally();
+    void testEllipsis();
 
 protected:
     TokenStream* tokenize(const QString& unit, bool debug = false, int initialState = Lexer::HtmlState);

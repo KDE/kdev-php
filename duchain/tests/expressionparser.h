@@ -62,6 +62,8 @@ private slots:
     void classMemberOnInstantiation();
     void classNameConstant_data();
     void classNameConstant();
+    void invalidVariadicFunction_data();
+    void invalidVariadicFunction();
 };
 
 }

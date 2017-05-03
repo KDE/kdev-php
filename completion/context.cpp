@@ -504,6 +504,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_DOUBLE_CAST:
         case Parser::Token_DOUBLE_QUOTE:
         case Parser::Token_ECHO:
+        case Parser::Token_ELLIPSIS:
         case Parser::Token_ENCAPSED_AND_WHITESPACE:
         case Parser::Token_EXIT:
         case Parser::Token_INC:
