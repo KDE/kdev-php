@@ -937,11 +937,11 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
     if ( identifier == thisQId
             && currentContext()->parentContext()
             && currentContext()->parentContext()->type() == DUContext::Class ) {
-        
+
         // checks if imports \ArrayAccess
         ClassDeclaration* currentClass = dynamic_cast<ClassDeclaration*>(currentContext()->parentContext()->owner());
         ClassDeclaration* arrayAccess = nullptr;
-    
+
         auto imports = currentContext()->parentContext()->importedParentContexts();
         for( const DUContext::Import& ctx : imports ) {
             DUContext* import = ctx.context(topContext());
@@ -954,9 +954,9 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                 }
             }
         }
-        
+
         IntegralType* thisVar = static_cast<IntegralType*>(type.data());
-        // check if this is used as array 
+        // check if this is used as array
         if(arrayAccess && currentClass && thisVar && thisVar->dataType() == AbstractType::TypeArray)
         {
             uint noOfFunc = 0;
@@ -971,17 +971,17 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                     }
                 }
             }
-            
+
             if(noOfFunc < 4) {
                 // check if class is not abstract
                 if(currentClass->classModifier() != ClassDeclarationData::ClassModifier::Abstract) {
                     reportError(i18n("Class %1 contains %2 abstract methods and must therefore be declared abstract or implement the remaining methods.",currentClass->prettyName().str(),4-noOfFunc), QList<AstNode*>() << node);
                 }
             }
-            
+
             return;
         }
-        
+
         reportError(i18n("Cannot re-assign $this."), QList<AstNode*>() << node);
         return;
     }
