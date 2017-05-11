@@ -931,6 +931,8 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                                             const QualifiedIdentifier& identifier,
                                             AstNode* node)
 {
+    DUChainWriteLocker lock(DUChain::lock());
+
     // we must not re-assign $this in a class context
     /// Qualified identifier for 'this'
     static const QualifiedIdentifier thisQId(QStringLiteral("this"));
@@ -985,8 +987,6 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
         reportError(i18n("Cannot re-assign $this."), QList<AstNode*>() << node);
         return;
     }
-
-    DUChainWriteLocker lock(DUChain::lock());
 
     const RangeInRevision newRange = editorFindRange(node, node);
 
