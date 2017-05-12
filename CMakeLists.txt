@@ -10,11 +10,12 @@ set( KDEVPLATFORM_VERSION "${KDEVPHP_VERSION_MAJOR}.${KDEVPHP_VERSION_MINOR}.${K
 
 configure_file( "${php_SOURCE_DIR}/kdevphpversion.h.cmake" "${php_BINARY_DIR}/kdevphpversion.h" @ONLY )
 
-find_package (ECM 0.0.9 REQUIRED NO_MODULE)
+find_package (ECM "5.14.0" REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(ECMAddTests)
+include(ECMQtDeclareLoggingCategory)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(GenerateExportHeader)
@@ -47,9 +48,13 @@ set(kdevphplanguagesupport_PART_SRCS
     phplanguagesupport.cpp
     phpparsejob.cpp
     phphighlighting.cpp
-    phpdebug.cpp
 
     codegen/refactoring.cpp
+)
+ecm_qt_declare_logging_category(kdevphplanguagesupport_PART_SRCS
+    HEADER phpdebug.h
+    IDENTIFIER PHP
+    CATEGORY_NAME "kdevelop.languages.php"
 )
 
 kdevplatform_add_plugin(kdevphplanguagesupport JSON kdevphpsupport.json

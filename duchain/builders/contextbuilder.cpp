@@ -35,11 +35,11 @@
 
 #include "../editorintegrator.h"
 #include "../helper.h"
-#include "../duchaindebug.h"
 #include "../phpducontext.h"
 
 #include "../parser/parsesession.h"
 #include "../parser/phpast.h"
+#include <duchaindebug.h>
 
 using namespace KDevelop;
 

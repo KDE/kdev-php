@@ -29,7 +29,7 @@
 #include "../declarations/classdeclaration.h"
 #include "../types/integraltypeextended.h"
 #include "../types/structuretype.h"
-#include "../duchaindebug.h"
+#include <duchaindebug.h>
 
 #include "editorintegrator.h"
 #include "parsesession.h"

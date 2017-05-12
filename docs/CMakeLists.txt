@@ -7,12 +7,16 @@ kconfig_add_kcfg_files( kdevphpdocs_settings_SRCS phpdocssettings.kcfgc )
 ########## Documentation Plugin #####
 
 set(kdevphpdocs_SRCS
-    phpdocsdebug.cpp
     phpdocumentationwidget.cpp
     phpdocumentation.cpp
     phpdocsplugin.cpp
     phpdocsmodel.cpp
     ${kdevphpdocs_settings_SRCS}
+)
+ecm_qt_declare_logging_category(kdevphpdocs_SRCS
+    HEADER phpdocsdebug.h
+    IDENTIFIER DOCS
+    CATEGORY_NAME "kdevelop.languages.php.docs"
 )
 
 kdevplatform_add_plugin(kdevphpdocs JSON kdevphpdocs.json

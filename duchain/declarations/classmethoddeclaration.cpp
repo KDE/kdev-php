@@ -23,7 +23,7 @@
 #include <language/duchain/duchainregister.h>
 #include <language/duchain/types/functiontype.h>
 
-#include "../duchaindebug.h"
+#include <duchaindebug.h>
 
 using namespace KDevelop;
 

@@ -25,7 +25,7 @@
 #include "editorintegrator.h"
 #include "expressionvisitor.h"
 #include "parsesession.h"
-#include "../duchaindebug.h"
+#include <duchaindebug.h>
 
 using namespace KDevelop;
 

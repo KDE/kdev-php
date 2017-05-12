@@ -29,7 +29,11 @@ set(duchain_SRCS
     navigation/includenavigationcontext.cpp
     navigation/magicconstantnavigationcontext.cpp
     completioncodemodel.cpp
-    duchaindebug.cpp
+)
+ecm_qt_declare_logging_category(duchain_SRCS
+    HEADER duchaindebug.h
+    IDENTIFIER DUCHAIN
+    CATEGORY_NAME "kdevelop.languages.php.duchain"
 )
 
 add_library( kdevphpduchain SHARED ${duchain_SRCS} )

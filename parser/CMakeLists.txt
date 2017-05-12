@@ -3,12 +3,16 @@ add_subdirectory(test)
 set(parser_STAT_SRCS
     phplexer.cpp
     parsesession.cpp
-    parserdebug.cpp
 )
 
 kdevpgqt_generate(parser_SRCS php NAMESPACE Php DEBUG_VISITOR TOKEN_TEXT
     "${php_SOURCE_DIR}/parser/php.g"
     "${php_SOURCE_DIR}/parser/phplexer.h"
+)
+ecm_qt_declare_logging_category(parser_SRCS
+    HEADER parserdebug.h
+    IDENTIFIER PARSER
+    CATEGORY_NAME "kdevelop.languages.php.parser"
 )
 
 add_library(kdevphpparser SHARED ${parser_SRCS} ${parser_STAT_SRCS})

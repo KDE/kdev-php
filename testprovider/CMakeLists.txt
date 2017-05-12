@@ -5,7 +5,11 @@ set(kdevphpunitprovider_PLUGIN_SRCS
     phpunittestsuite.cpp
     phpunitrunjob.cpp
     testdoxdelegate.cpp
-    testproviderdebug.cpp
+)
+ecm_qt_declare_logging_category(kdevphpunitprovider_PLUGIN_SRCS
+    HEADER testproviderdebug.h
+    IDENTIFIER TESTPROVIDER
+    CATEGORY_NAME "kdevelop.languages.php.testprovider"
 )
 
 add_library(kdevphpunitprovider MODULE ${kdevphpunitprovider_PLUGIN_SRCS})

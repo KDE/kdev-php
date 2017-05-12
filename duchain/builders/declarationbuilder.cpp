@@ -46,10 +46,10 @@
 #include "../parser/parsesession.h"
 
 #include "../helper.h"
-#include "../duchaindebug.h"
 #include "../expressionvisitor.h"
 
 #include "predeclarationbuilder.h"
+#include <duchaindebug.h>
 
 #define ifDebug(x)
 
