@@ -681,5 +681,18 @@ void TestExpressionParser::invalidVariadicFunction()
     QVERIFY(!top->problems().isEmpty());
 }
 
+void TestExpressionParser::invalidArgumentUnpacking()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo($a, $b, $c){}; $d = [ 1, 2 ]; foo(...$d, $e);");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(!top->problems().isEmpty());
+}
+
 }
 

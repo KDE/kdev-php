@@ -1217,12 +1217,10 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
 
 void DeclarationBuilder::visitFunctionCallParameterList(FunctionCallParameterListAst* node)
 {
-    int oldPos = m_functionCallParameterPos;
-    m_functionCallParameterPos = 0;
+    PushValue<FunctionCallParameterListElementAst*> push(m_functionCallPreviousArgument, 0);
+    PushValue<int> pos(m_functionCallParameterPos, 0);
 
     DeclarationBuilderBase::visitFunctionCallParameterList(node);
-
-    m_functionCallParameterPos = oldPos;
 }
 
 void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node)
@@ -1244,6 +1242,12 @@ void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParam
             declareFoundVariable(AbstractType::Ptr(new IntegralType(IntegralType::TypeNull)));
         }
     }
+
+    if (m_functionCallPreviousArgument && m_functionCallPreviousArgument->isVariadic != -1 && node->isVariadic == -1) {
+        reportError(i18n("Cannot use positional argument after argument unpacking"), node);
+    }
+
+    m_functionCallPreviousArgument = node;
 
     ++m_functionCallParameterPos;
 }

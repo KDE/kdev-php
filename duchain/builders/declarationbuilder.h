@@ -145,6 +145,8 @@ private:
     KDevelop::FunctionType::Ptr m_currentFunctionType;
     /// The AstNode of the previous function declaration argument
     ParameterAst *m_functionDeclarationPreviousArgument;
+    /// The AstNode of the previous function call argument
+    FunctionCallParameterListElementAst *m_functionCallPreviousArgument = nullptr;
 
     unsigned int m_currentModifers;
     QString m_lastTopStatementComment;

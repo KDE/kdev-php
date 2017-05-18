@@ -3044,3 +3044,22 @@ void TestDUChain::staticFunctionClassPhp54()
     ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(dec);
     QCOMPARE(classDec->uses().count(),1);
 }
+
+void TestDUChain::functionArgumentUnpacking()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<?php\n"
+                      "$a = [ 1,2 ];\n"
+                      "$b = [ 3,4 ];\n"
+                      "function aaa($c,$d,$e,$f) { }\n"
+                      "aaa(...$a, ...$b);\n");
+
+    TopDUContext* top = parse(method);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(top->problems().isEmpty());
+    QCOMPARE(top->localDeclarations().count(),3);
+}

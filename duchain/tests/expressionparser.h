@@ -64,6 +64,7 @@ private slots:
     void classNameConstant();
     void invalidVariadicFunction_data();
     void invalidVariadicFunction();
+    void invalidArgumentUnpacking();
 };
 
 }
