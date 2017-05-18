@@ -66,11 +66,11 @@ private:
     void popState();
     void printState();
 
-    bool processVariable(QChar* it);
-    bool isValidVariableIdentifier(QChar* it);
+    bool processVariable(const QChar* it);
+    bool isValidVariableIdentifier(const QChar* it);
     void createNewline(int pos);
-    bool isEscapedWithBackslash(QChar* it, int curPos, int startPos);
-    bool isHereNowDocEnd(QChar* it);
+    bool isEscapedWithBackslash(const QChar* it, int curPos, int startPos);
+    bool isHereNowDocEnd(const QChar* it);
 
     QStack<int> m_state;
 

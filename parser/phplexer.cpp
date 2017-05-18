@@ -95,7 +95,8 @@ int Lexer::nextTokenKind()
         createNewline(m_curpos);
         return 0;
     }
-    QChar* it = m_content.data();
+
+    const QChar* it = m_content.constData();
     it += m_curpos;
     m_tokenBegin = m_curpos;
     switch (state()) {
@@ -421,7 +422,7 @@ int Lexer::nextTokenKind()
                             break;
                         } else {
                             // lookahead to check whether this doc comment spans multiple lines
-                            QChar* it2 = it + 1;
+                            const QChar* it2 = it + 1;
                             int pos = m_curpos + 1;
                             while ( pos < m_contentSize && (it2)->isSpace() && (it2)->unicode() != '\n' ) {
                                 ++it2;
@@ -695,7 +696,7 @@ int Lexer::nextTokenKind()
             } else if (name.compare(QLatin1String("return"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_RETURN;
             } else if (name.compare(QLatin1String("static"), Qt::CaseInsensitive) == 0) {
-                QChar* lookAhead = it;
+                const QChar* lookAhead = it;
                 int pos = m_curpos;
                 while (pos < m_contentSize && lookAhead->isSpace()) {
                     ++lookAhead;
@@ -977,7 +978,7 @@ qint64 Lexer::tokenEnd() const
     return m_tokenEnd;
 }
 
-bool Lexer::isHereNowDocEnd(QChar* it)
+bool Lexer::isHereNowDocEnd(const QChar* it)
 {
     int identiferLen = m_hereNowDocIdentifier.length();
     QString lineStart;
@@ -995,7 +996,7 @@ bool Lexer::isHereNowDocEnd(QChar* it)
 }
 
 //used for strings, to check if " is escaped (\" is, \\" not)
-bool Lexer::isEscapedWithBackslash(QChar* it, int curPos, int startPos)
+bool Lexer::isEscapedWithBackslash(const QChar* it, int curPos, int startPos)
 {
     int cnt = 0;
     it--;
@@ -1006,9 +1007,9 @@ bool Lexer::isEscapedWithBackslash(QChar* it, int curPos, int startPos)
     return (cnt % 2) == 1;
 }
 
-bool Lexer::processVariable(QChar* it)
+bool Lexer::processVariable(const QChar* it)
 {
-    QChar* c2 = it + 1;
+    const QChar* c2 = it + 1;
     if (it->unicode() == '$' && (isValidVariableIdentifier(c2) && !c2->isDigit())) {
         it++;
         m_curpos++;
@@ -1023,7 +1024,7 @@ bool Lexer::processVariable(QChar* it)
         return false;
     }
 }
-bool Lexer::isValidVariableIdentifier(QChar* it)
+bool Lexer::isValidVariableIdentifier(const QChar* it)
 {
     return it->isLetter() || it->isDigit() || it->unicode() == '_' || it->unicode() > 0x7f;
 }
