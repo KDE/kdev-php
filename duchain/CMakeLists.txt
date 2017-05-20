@@ -2,6 +2,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_subdirectory(tests)
 
 set(duchain_SRCS
+    types/indexedcontainer.cpp
     types/integraltypeextended.cpp
     types/structuretype.cpp
     builders/predeclarationbuilder.cpp

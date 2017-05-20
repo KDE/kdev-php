@@ -789,8 +789,9 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
         // create variable declaration for argument
         DUChainWriteLocker lock(DUChain::lock());
         RangeInRevision newRange = editorFindRange(node->variable, node->variable);
-        openDefinition<VariableDeclaration>(identifierForNode(node->variable), newRange);
-        currentDeclaration()->setKind(Declaration::Instance);
+        VariableDeclaration *dec = openDefinition<VariableDeclaration>(identifierForNode(node->variable), newRange);
+        dec->setKind(Declaration::Instance);
+        dec->setVariadic(node->isVariadic != -1);
     }
 
     DeclarationBuilderBase::visitParameter(node);

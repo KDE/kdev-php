@@ -28,11 +28,15 @@
 #include <language/duchain/forwarddeclaration.h>
 #include <language/duchain/duchainutils.h>
 #include <language/duchain/types/structuretype.h>
+#include <language/duchain/types/functiontype.h>
+#include <language/duchain/types/integraltype.h>
 
+#include "../types/indexedcontainer.h"
 #include "../declarations/classdeclaration.h"
 #include <declarations/classmethoddeclaration.h>
 #include <declarations/traitmethodaliasdeclaration.h>
 #include <declarations/traitmemberaliasdeclaration.h>
+#include <declarations/variabledeclaration.h>
 #include "helper.h"
 
 namespace Php
@@ -150,6 +154,78 @@ void DeclarationNavigationContext::htmlAdditionalNavigation()
     }
 
     KDevelop::AbstractDeclarationNavigationContext::htmlAdditionalNavigation();
+}
+
+void DeclarationNavigationContext::htmlFunction()
+{
+  const AbstractFunctionDeclaration* function = dynamic_cast<const AbstractFunctionDeclaration*>(declaration().data());
+  Q_ASSERT(function);
+
+  const ClassFunctionDeclaration* classFunDecl = dynamic_cast<const ClassFunctionDeclaration*>(declaration().data());
+  const FunctionType::Ptr type = declaration()->abstractType().cast<FunctionType>();
+  if( !type ) {
+    modifyHtml() += errorHighlight(QStringLiteral("Invalid type<br />"));
+    return;
+  }
+
+  if( !classFunDecl || (!classFunDecl->isConstructor() && !classFunDecl->isDestructor()) ) {
+    // only print return type for global functions and non-ctor/dtor methods
+    eventuallyMakeTypeLinks( type->returnType() );
+  }
+
+  modifyHtml() += ' ' + identifierHighlight(prettyIdentifier(declaration()).toString().toHtmlEscaped(), declaration());
+
+  if( type->indexedArgumentsSize() == 0 )
+  {
+    modifyHtml() += QStringLiteral("()");
+  } else {
+    modifyHtml() += QStringLiteral("( ");
+
+    bool first = true;
+    int firstDefaultParam = type->indexedArgumentsSize() - function->defaultParametersSize();
+    int currentArgNum = 0;
+
+    QVector<Declaration*> decls;
+    if (DUContext* argumentContext = DUChainUtils::getArgumentContext(declaration().data())) {
+      decls = argumentContext->localDeclarations(topContext().data());
+    }
+    foreach(const AbstractType::Ptr& argType, type->arguments()) {
+      if( !first )
+        modifyHtml() += QStringLiteral(", ");
+      first = false;
+
+      VariableDeclaration *argDec = dynamic_cast<VariableDeclaration*>(decls[currentArgNum]);
+
+      if (argDec->isVariadic()) {
+        AbstractType::Ptr variadicType;
+        const auto indexed = argType.cast<IndexedContainer>();
+        if (indexed && indexed->typesCount() == 1) {
+            variadicType = indexed->typeAt(0).abstractType();
+        } else {
+            variadicType = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
+        }
+        modifyHtml() += QStringLiteral("[");
+        eventuallyMakeTypeLinks( variadicType );
+        if (currentArgNum < decls.size()) {
+          modifyHtml() += QStringLiteral(" ...") + identifierHighlight(decls[currentArgNum]->identifier().toString().toHtmlEscaped(), declaration());
+        }
+        modifyHtml() += QStringLiteral("]");
+      } else {
+        eventuallyMakeTypeLinks( argType );
+        if (currentArgNum < decls.size()) {
+          modifyHtml() += ' ' + identifierHighlight(decls[currentArgNum]->identifier().toString().toHtmlEscaped(), declaration());
+        }
+
+        if( currentArgNum >= firstDefaultParam )
+          modifyHtml() += " = " + function->defaultParameters()[ currentArgNum - firstDefaultParam ].str().toHtmlEscaped();
+      }
+
+      ++currentArgNum;
+    }
+
+    modifyHtml() += QStringLiteral(" )");
+  }
+  modifyHtml() += QStringLiteral("<br />");
 }
 
 QualifiedIdentifier DeclarationNavigationContext::prettyQualifiedIdentifier( DeclarationPointer decl ) const

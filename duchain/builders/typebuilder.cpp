@@ -27,6 +27,7 @@
 #include <language/duchain/declaration.h>
 #include <language/duchain/types/integraltype.h>
 #include "../declarations/classdeclaration.h"
+#include "../types/indexedcontainer.h"
 #include "../types/integraltypeextended.h"
 #include "../types/structuretype.h"
 #include <duchaindebug.h>
@@ -358,7 +359,20 @@ void TypeBuilder::visitParameter(ParameterAst *node)
 {
     AbstractType::Ptr type;
     if (node->isVariadic != -1) {
-        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
+        if (node->parameterType) {
+            //don't use openTypeFromName as it uses cursor for findDeclarations
+            DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
+                                                      identifierForNamespace(node->parameterType, editor()));
+            if (decl) {
+                IndexedContainer *container = new IndexedContainer();
+                const IndexedString *containerType = new IndexedString("array");
+                container->addEntry(decl->abstractType());
+                container->setPrettyName(*containerType);
+                type = AbstractType::Ptr(container);
+            }
+        } else {
+            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
+        }
     } else if (node->parameterType) {
         //don't use openTypeFromName as it uses cursor for findDeclarations
         DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,

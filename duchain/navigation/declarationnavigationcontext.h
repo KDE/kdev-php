@@ -35,6 +35,7 @@ protected:
     KDevelop::QualifiedIdentifier prettyQualifiedIdentifier( KDevelop::DeclarationPointer decl ) const override;
     void htmlClass() override;
     void htmlAdditionalNavigation() override;
+    void htmlFunction() override;
 
     void makeLink( const QString& name, KDevelop::DeclarationPointer declaration, KDevelop::NavigationAction::Type actionType ) override;
 

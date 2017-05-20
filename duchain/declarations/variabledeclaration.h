@@ -33,18 +33,20 @@ class KDEVPHPDUCHAIN_EXPORT VariableDeclarationData : public KDevelop::Declarati
 {
 public:
     VariableDeclarationData()
-            : KDevelop::DeclarationData(), m_isSuperglobal(false) {
+            : KDevelop::DeclarationData(), m_isSuperglobal(false), m_isVariadic(false) {
     }
 
     VariableDeclarationData(const VariableDeclarationData& rhs)
             : KDevelop::DeclarationData(rhs) {
         m_isSuperglobal = rhs.m_isSuperglobal;
+        m_isVariadic = rhs.m_isVariadic;
     }
 
     ~VariableDeclarationData() {
     }
 
 bool m_isSuperglobal;
+bool m_isVariadic;
 };
 
 /**
@@ -61,6 +63,9 @@ public:
 
     bool isSuperglobal() const;
     void setSuperglobal(bool superglobal);
+
+    bool isVariadic() const;
+    void setVariadic(bool variadic);
 
     uint additionalIdentity() const override;
     KDevelop::DeclarationId id(bool forceDirect = false) const override;

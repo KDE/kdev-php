@@ -78,4 +78,16 @@ void VariableDeclaration::setSuperglobal(bool superglobal)
     d->m_isSuperglobal = superglobal;
 }
 
+bool VariableDeclaration::isVariadic() const
+{
+    DUCHAIN_D(VariableDeclaration);
+    return d->m_isVariadic;
+}
+
+void VariableDeclaration::setVariadic(bool variadic)
+{
+    DUCHAIN_D_DYNAMIC(VariableDeclaration);
+    d->m_isVariadic = variadic;
+}
+
 }
