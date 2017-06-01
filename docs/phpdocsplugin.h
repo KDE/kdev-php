@@ -24,6 +24,7 @@
 
 #include <interfaces/iplugin.h>
 #include <interfaces/idocumentationprovider.h>
+#include <QAbstractListModel>
 #include <QVariantList>
 
 class PhpDocsModel;
