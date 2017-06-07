@@ -144,7 +144,7 @@ private:
     /// Type of the current function, will only be set inside function calls.
     KDevelop::FunctionType::Ptr m_currentFunctionType;
     /// The AstNode of the previous function declaration argument
-    ParameterAst *m_functionDeclarationPreviousArgument;
+    ParameterAst *m_functionDeclarationPreviousArgument = nullptr;
     /// The AstNode of the previous function call argument
     FunctionCallParameterListElementAst *m_functionCallPreviousArgument = nullptr;
 
