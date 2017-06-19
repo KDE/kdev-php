@@ -44,6 +44,7 @@
 
 #include "../types/structuretype.h"
 #include "../types/integraltypeextended.h"
+#include "../types/indexedcontainer.h"
 
 #include <QStandardPaths>
 
@@ -628,6 +629,32 @@ void TestDUChain::declareVariadicFunction()
     IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
     QVERIFY(type);
     QVERIFY(type->dataType() == IntegralType::TypeArray);
+}
+
+void TestDUChain::declareTypehintVariadicFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A {} function foo(A ...$i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().at(1)->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+
+    AbstractType::Ptr arg = fun->arguments().first();
+    QVERIFY(arg);
+    QVERIFY(arg.cast<IndexedContainer>());
+    QCOMPARE(arg.cast<IndexedContainer>()->typesCount(), 1);
+    QCOMPARE(arg.cast<IndexedContainer>()->prettyName().str(), QStringLiteral("array"));
+
+    AbstractType::Ptr typehint = arg.cast<IndexedContainer>()->typeAt(0).abstractType();
+    QVERIFY(typehint);
+    QCOMPARE(typehint->toString(), QStringLiteral("A"));
 }
 
 void TestDUChain::declareTypehintArrayFunction()

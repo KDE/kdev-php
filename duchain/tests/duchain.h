@@ -38,6 +38,7 @@ private slots:
     void classMemberVar();
     void declareTypehintFunction();
     void declareVariadicFunction();
+    void declareTypehintVariadicFunction();
     void declareTypehintArrayFunction();
     void declareTypehintCallableFunction();
     void returnTypeClass();
