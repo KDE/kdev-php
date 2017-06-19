@@ -3045,21 +3045,25 @@ void TestDUChain::staticFunctionClassPhp54()
     QCOMPARE(classDec->uses().count(),1);
 }
 
+void TestDUChain::functionArgumentUnpacking_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("unpackVariable") << QStringLiteral("<? $a = [ 1,2 ];\n$b = [ 3,4 ];\nfunction aaa($c,$d,$e,$f) { }\naaa(...$a, ...$b);\n");
+
+    QTest::newRow("unpackLiteral") << QStringLiteral("<? function aaa($c,$d,$e,$f) { }\naaa(...[1,2], ...[3,4]);\n");
+
+    QTest::newRow("unpackFunction") << QStringLiteral("<? function bbb() { return [1,2,3,4]; }\nfunction aaa($c,$d,$e,$f) { }\naaa(...bbb());\n");
+}
+
 void TestDUChain::functionArgumentUnpacking()
 {
-    //                 0         1         2         3         4         5         6         7
-    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<?php\n"
-                      "$a = [ 1,2 ];\n"
-                      "$b = [ 3,4 ];\n"
-                      "function aaa($c,$d,$e,$f) { }\n"
-                      "aaa(...$a, ...$b);\n");
+    QFETCH(QString, code);
 
-    TopDUContext* top = parse(method);
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     QVERIFY(top->problems().isEmpty());
-    QCOMPARE(top->localDeclarations().count(),3);
 }

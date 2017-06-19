@@ -599,7 +599,7 @@ expression=booleanOrExpression
     #parameters=functionCallParameterListElement @ COMMA | 0
 -> functionCallParameterList ;;
 
-    (BIT_AND variable=variable) | (isVariadic=ELLIPSIS variable=variable) | expr=expr
+    (BIT_AND variable=variable) | (isVariadic=ELLIPSIS | 0) expr=expr
 -> functionCallParameterListElement ;;
 
     #element=assignmentListElement @COMMA

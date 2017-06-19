@@ -153,6 +153,7 @@ private slots:
     void useThisAsArray();
     void wrongUseOfThisAsArray();
     void staticFunctionClassPhp54();
+    void functionArgumentUnpacking_data();
     void functionArgumentUnpacking();
 };
 
