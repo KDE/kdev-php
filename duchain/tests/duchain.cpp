@@ -623,12 +623,17 @@ void TestDUChain::declareVariadicFunction()
     FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
     QVERIFY(fun);
     QCOMPARE(fun->arguments().count(), 1);
-    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first()));
-    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralType::TypeArray);
 
-    IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
-    QVERIFY(type);
-    QVERIFY(type->dataType() == IntegralType::TypeArray);
+    AbstractType::Ptr arg = fun->arguments().first();
+    QVERIFY(arg);
+    QVERIFY(arg.cast<IndexedContainer>());
+    QCOMPARE(arg.cast<IndexedContainer>()->typesCount(), 1);
+    QCOMPARE(arg.cast<IndexedContainer>()->prettyName().str(), QStringLiteral("array"));
+
+    AbstractType::Ptr typehint = arg.cast<IndexedContainer>()->typeAt(0).abstractType();
+    QVERIFY(typehint);
+    QVERIFY(IntegralType::Ptr::dynamicCast(typehint));
+    QVERIFY(IntegralType::Ptr::dynamicCast(typehint)->dataType() == IntegralType::TypeMixed);
 }
 
 void TestDUChain::declareTypehintVariadicFunction()
@@ -684,6 +689,170 @@ void TestDUChain::declareTypehintCallableFunction()
     //                 0         1         2         3
     //                 0123456789012345678901234567890123
     QByteArray method("<? function foo(callable $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first()));
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralType::TypeMixed);
+
+    IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
+    QVERIFY(type);
+    QVERIFY(type->dataType() == IntegralType::TypeMixed);
+}
+
+void TestDUChain::declareTypehintBoolFunction()
+{
+    //                 0         1         2         3
+    //                 0123456789012345678901234567890123
+    QByteArray method("<? function foo(bool $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first()));
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralType::TypeBoolean);
+
+    IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
+    QVERIFY(type);
+    QVERIFY(type->dataType() == IntegralType::TypeBoolean);
+}
+
+void TestDUChain::declareTypehintFloatFunction()
+{
+    //                 0         1         2         3
+    //                 0123456789012345678901234567890123
+    QByteArray method("<? function foo(float $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first()));
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralType::TypeFloat);
+
+    IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
+    QVERIFY(type);
+    QVERIFY(type->dataType() == IntegralType::TypeFloat);
+}
+
+void TestDUChain::declareTypehintIntFunction()
+{
+    //                 0         1         2         3
+    //                 0123456789012345678901234567890123
+    QByteArray method("<? function foo(int $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first()));
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralType::TypeInt);
+
+    IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
+    QVERIFY(type);
+    QVERIFY(type->dataType() == IntegralType::TypeInt);
+}
+
+void TestDUChain::declareTypehintStringFunction()
+{
+    //                 0         1         2         3
+    //                 0123456789012345678901234567890123
+    QByteArray method("<? function foo(string $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first()));
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralType::TypeString);
+
+    IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
+    QVERIFY(type);
+    QVERIFY(type->dataType() == IntegralType::TypeString);
+}
+
+void TestDUChain::declareNullableTypehintArrayFunction()
+{
+    //                 0         1         2         3
+    //                 0123456789012345678901234567890123
+    QByteArray method("<? function foo(?array $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+
+    UnsureType::Ptr argType = UnsureType::Ptr::dynamicCast(fun->arguments().first());
+    QVERIFY(argType);
+    QCOMPARE(argType->typesSize(), 2u);
+    QVERIFY(argType->types()[0].abstractType().cast<IntegralType>());
+    QVERIFY(argType->types()[0].abstractType().cast<IntegralType>()->dataType() == IntegralType::TypeArray);
+    QVERIFY(argType->types()[1].abstractType().cast<IntegralType>());
+    QVERIFY(argType->types()[1].abstractType().cast<IntegralType>()->dataType() == IntegralType::TypeNull);
+
+    UnsureType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<UnsureType>();
+    QVERIFY(type);
+    QCOMPARE(type->typesSize(), 2u);
+    QVERIFY(type->types()[0].abstractType().cast<IntegralType>());
+    QVERIFY(type->types()[0].abstractType().cast<IntegralType>()->dataType() == IntegralType::TypeArray);
+    QVERIFY(type->types()[1].abstractType().cast<IntegralType>());
+    QVERIFY(type->types()[1].abstractType().cast<IntegralType>()->dataType() == IntegralType::TypeNull);
+}
+
+void TestDUChain::declareTypehintWithPhpdocFunction()
+{
+    //                 0         1         2         3
+    //                 0123456789012345678901234567890123
+    QByteArray method("<? /**\n * @param string $i\n */ function foo(int $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first()));
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralType::TypeInt);
+
+    IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
+    QVERIFY(type);
+    QVERIFY(type->dataType() == IntegralType::TypeInt);
+}
+
+void TestDUChain::declareNullableTypehintCallableFunction()
+{
+    //                 0         1         2         3
+    //                 0123456789012345678901234567890123
+    QByteArray method("<? function foo(?callable $i) { } ");
 
     TopDUContext* top = parse(method, DumpAll);
     DUChainReleaser releaseTop(top);

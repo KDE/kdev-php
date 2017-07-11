@@ -24,6 +24,7 @@
 
 #include <language/duchain/identifier.h>
 #include <language/duchain/ducontext.h>
+#include <language/duchain/types/abstracttype.h>
 #include <serialization/indexedstring.h>
 
 namespace KDevelop
@@ -37,6 +38,7 @@ struct UnaryExpressionAst;
 struct AstNode;
 struct CommonScalarAst;
 struct NamespacedIdentifierAst;
+struct ParameterAst;
 class EditorIntegrator;
 
 enum DeclarationType {
@@ -84,6 +86,8 @@ KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierForNamespace(Names
  * Get proper QualifiedIdentifier for a basic identifier.
  */
 KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierWithNamespace(const KDevelop::QualifiedIdentifier& base, KDevelop::DUContext* context);
+
+KDEVPHPDUCHAIN_EXPORT KDevelop::AbstractType::Ptr parameterType(const ParameterAst* node, KDevelop::AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, KDevelop::DUContext *currentContext);
 
 }
 #endif

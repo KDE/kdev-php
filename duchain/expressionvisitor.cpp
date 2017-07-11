@@ -224,34 +224,7 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
     if (node->parameters->parametersSequence) {
         const KDevPG::ListNode< ParameterAst* >* it = node->parameters->parametersSequence->front();
         forever {
-            AbstractType::Ptr type;
-            if (it->element->parameterType) {
-                //don't use openTypeFromName as it uses cursor for findDeclarations
-                DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
-                                            identifierForNamespace(it->element->parameterType, m_editor));
-                if (decl) {
-                    type = decl->abstractType();
-                }
-            } else if (it->element->arrayType != -1) {
-                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
-            } else if (it->element->callableType != -1) {
-                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
-            } else if (it->element->defaultValue) {
-                ExpressionVisitor v(m_editor);
-                it->element->defaultValue->ducontext = m_currentContext;
-                v.visitNode(it->element->defaultValue);
-                type = v.result().type();
-            }
-            if (!type) {
-                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
-            }
-
-            if ( it->element->isRef != -1 ) {
-                ReferenceType::Ptr p( new ReferenceType() );
-                p->setBaseType( type );
-
-                type = p.cast<AbstractType>();
-            }
+            AbstractType::Ptr type = parameterType(it->element, {}, m_editor, m_currentContext);
             closureType->addArgument(type);
             if ( it->hasNext() ) {
                 it = it->next;

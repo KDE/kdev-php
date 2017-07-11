@@ -357,51 +357,12 @@ void TypeBuilder::visitConstantDeclaration(ConstantDeclarationAst* node)
 
 void TypeBuilder::visitParameter(ParameterAst *node)
 {
-    AbstractType::Ptr type;
-    if (node->isVariadic != -1) {
-        if (node->parameterType) {
-            //don't use openTypeFromName as it uses cursor for findDeclarations
-            DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
-                                                      identifierForNamespace(node->parameterType, editor()));
-            if (decl) {
-                IndexedContainer *container = new IndexedContainer();
-                const IndexedString *containerType = new IndexedString("array");
-                container->addEntry(decl->abstractType());
-                container->setPrettyName(*containerType);
-                type = AbstractType::Ptr(container);
-            }
-        } else {
-            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
-        }
-    } else if (node->parameterType) {
-        //don't use openTypeFromName as it uses cursor for findDeclarations
-        DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
-                                                  identifierForNamespace(node->parameterType, editor()));
-        if (decl) {
-            type = decl->abstractType();
-        }
-    } else if (node->arrayType != -1) {
-        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
-    } else if (node->defaultValue) {
-        ExpressionVisitor v(editor());
-        node->defaultValue->ducontext = currentContext();
-        v.visitNode(node->defaultValue);
-        type = v.result().type();
-    }
-    if (!type) {
-        if (m_currentFunctionParams.count() > currentType<FunctionType>()->arguments().count()) {
-            type = m_currentFunctionParams.at(currentType<FunctionType>()->arguments().count());
-        } else {
-            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
-        }
+    AbstractType::Ptr phpDocTypehint;
+    if (m_currentFunctionParams.count() > currentType<FunctionType>()->arguments().count()) {
+        phpDocTypehint = m_currentFunctionParams.at(currentType<FunctionType>()->arguments().count());
     }
 
-    if ( node->isRef != -1 ) {
-      ReferenceType::Ptr p( new ReferenceType() );
-      p->setBaseType( type );
-
-      type = p.cast<AbstractType>();
-    }
+    AbstractType::Ptr type = parameterType(node, phpDocTypehint, editor(), currentContext());
 
     openAbstractType(type);
     TypeBuilderBase::visitParameter(node);

@@ -598,6 +598,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_ARRAY:
         case Parser::Token_AS:
         case Parser::Token_BACKTICK:
+        case Parser::Token_BOOL:
         case Parser::Token_BREAK:
         case Parser::Token_CALLABLE:
         case Parser::Token_CASE:
@@ -627,6 +628,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_EVAL:
         case Parser::Token_FILE:
         case Parser::Token_FINALLY:
+        case Parser::Token_FLOAT:
         case Parser::Token_FOR:
         case Parser::Token_FOREACH:
         case Parser::Token_FUNCTION:
@@ -638,9 +640,11 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_INCLUDE_ONCE:
         case Parser::Token_INLINE_HTML:
         case Parser::Token_INSTEADOF:
+        case Parser::Token_INT:
         case Parser::Token_INTERFACE:
         case Parser::Token_INVALID:
         case Parser::Token_ISSET:
+        case Parser::Token_ITERABLE:
         case Parser::Token_LINE:
         case Parser::Token_LIST:
         case Parser::Token_LNUMBER:
@@ -651,6 +655,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_REQUIRE_ONCE:
         case Parser::Token_RBRACKET:
         case Parser::Token_RPAREN:
+        case Parser::Token_STRING_TYPE:
         case Parser::Token_STRING_VARNAME:
         case Parser::Token_SWITCH:
         case Parser::Token_TRAIT:

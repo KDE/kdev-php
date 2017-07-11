@@ -28,6 +28,8 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/stringhelpers.h>
 #include <language/duchain/parsingenvironment.h>
+#include <language/duchain/types/unsuretype.h>
+#include <language/duchain/types/integraltype.h>
 #include <interfaces/icore.h>
 #include <interfaces/iprojectcontroller.h>
 #include <interfaces/iuicontroller.h>
@@ -42,6 +44,10 @@
 #include "declarations/classdeclaration.h"
 #include "declarations/classmethoddeclaration.h"
 #include "declarations/functiondeclaration.h"
+#include "types/indexedcontainer.h"
+#include "types/integraltypeextended.h"
+#include "expressionparser.h"
+#include "expressionvisitor.h"
 
 #include "duchaindebug.h"
 
@@ -416,6 +422,85 @@ QualifiedIdentifier identifierWithNamespace(const QualifiedIdentifier& base, DUC
     } else {
         return base;
     }
+}
+
+AbstractType::Ptr parameterTypehint(const ParameterTypeAst* parameterType, EditorIntegrator *editor, DUContext* currentContext)
+{
+    Q_ASSERT(parameterType);
+    AbstractType::Ptr type;
+
+    if (parameterType->objectType) {
+        //don't use openTypeFromName as it uses cursor for findDeclarations
+        DeclarationPointer decl = findDeclarationImportHelper(currentContext,
+                                                    identifierForNamespace(parameterType->objectType, editor), ClassDeclarationType);
+        if (decl) {
+            type = decl->abstractType();
+        }
+    } else if (parameterType->arrayType != -1) {
+        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
+    } else if (parameterType->boolType != -1) {
+        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean));
+    } else if (parameterType->floatType != -1) {
+        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeFloat));
+    } else if (parameterType->intType != -1) {
+        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeInt));
+    } else if (parameterType->stringType != -1) {
+        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeString));
+    }
+
+    if (type && parameterType->isNullable != -1) {
+        AbstractType::Ptr nullType = AbstractType::Ptr(new IntegralType(IntegralType::TypeNull));
+        if (type.cast<UnsureType>()) {
+            UnsureType::Ptr unsure = type.cast<UnsureType>();
+            unsure->addType(nullType->indexed());
+        } else {
+            UnsureType::Ptr unsure(new UnsureType());
+            unsure->addType(type->indexed());
+            unsure->addType(nullType->indexed());
+
+            type = AbstractType::Ptr(unsure);
+        }
+    }
+
+    return type;
+}
+
+AbstractType::Ptr parameterType(const ParameterAst* node, AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, DUContext* currentContext)
+{
+    AbstractType::Ptr type;
+    if (node->parameterType) {
+        type = parameterTypehint(node->parameterType, editor, currentContext);
+    } else if (node->defaultValue) {
+        ExpressionVisitor v(editor);
+        node->defaultValue->ducontext = currentContext;
+        v.visitNode(node->defaultValue);
+        type = v.result().type();
+    }
+    if (!type) {
+        if (phpDocTypehint) {
+            type = phpDocTypehint;
+        } else {
+            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
+        }
+    }
+
+    if ( node->isRef != -1 ) {
+      ReferenceType::Ptr p( new ReferenceType() );
+      p->setBaseType( type );
+
+      type = p.cast<AbstractType>();
+    }
+
+    if (node->isVariadic != -1) {
+        IndexedContainer *container = new IndexedContainer();
+        const IndexedString *containerType = new IndexedString("array");
+        container->addEntry(type);
+        container->setPrettyName(*containerType);
+        type = AbstractType::Ptr(container);
+    }
+
+    Q_ASSERT(type);
+    return type;
 }
 
 }

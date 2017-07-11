@@ -64,8 +64,8 @@ ReferencedTopDUContext UseBuilder::build ( const IndexedString& url, AstNode* no
 
 void UseBuilder::visitParameter(ParameterAst *node)
 {
-    if (node->parameterType) {
-        buildNamespaceUses(node->parameterType);
+    if (node->parameterType && node->parameterType->objectType) {
+        buildNamespaceUses(node->parameterType->objectType);
     }
 }
 

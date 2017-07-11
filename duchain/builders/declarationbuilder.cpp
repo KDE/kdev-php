@@ -779,7 +779,7 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
         funDec->addDefaultParameter(IndexedString(symbol));
         if (node->isVariadic != -1) {
             reportError(i18n("Variadic parameter cannot have a default value"), node->defaultValue);
-        } else if ( node->parameterType && symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0 ) {
+        } else if ( node->parameterType && node->parameterType->objectType && symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0 ) {
             reportError(i18n("Default value for parameters with a class type hint can only be NULL."), node->defaultValue);
         }
     } else if ( !node->defaultValue && funDec->defaultParametersSize() ) {
