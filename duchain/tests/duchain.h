@@ -41,12 +41,14 @@ private slots:
     void declareTypehintVariadicFunction();
     void declareTypehintArrayFunction();
     void declareTypehintCallableFunction();
+    void declareTypehintIterableFunction();
     void declareTypehintBoolFunction();
     void declareTypehintFloatFunction();
     void declareTypehintIntFunction();
     void declareTypehintStringFunction();
     void declareNullableTypehintArrayFunction();
     void declareNullableTypehintCallableFunction();
+    void declareTypehintNullableIterableFunction();
     void declareTypehintWithPhpdocFunction();
     void returnTypeClass();
     void declarationReturnType();

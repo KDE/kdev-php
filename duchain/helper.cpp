@@ -446,6 +446,17 @@ AbstractType::Ptr parameterTypehint(const ParameterTypeAst* parameterType, Edito
         type = AbstractType::Ptr(new IntegralType(IntegralType::TypeInt));
     } else if (parameterType->stringType != -1) {
         type = AbstractType::Ptr(new IntegralType(IntegralType::TypeString));
+    } else if (parameterType->iterableType != -1) {
+        DeclarationPointer traversableDecl = findDeclarationImportHelper(currentContext, QualifiedIdentifier("traversable"), ClassDeclarationType);
+
+        if (traversableDecl) {
+            UnsureType::Ptr unsure(new UnsureType());
+            AbstractType::Ptr arrayType = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
+            unsure->addType(arrayType->indexed());
+            unsure->addType(traversableDecl->abstractType()->indexed());
+
+            type = AbstractType::Ptr(unsure);
+        }
     }
 
     if (type && parameterType->isNullable != -1) {

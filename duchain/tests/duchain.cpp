@@ -706,6 +706,32 @@ void TestDUChain::declareTypehintCallableFunction()
     QVERIFY(type->dataType() == IntegralType::TypeMixed);
 }
 
+void TestDUChain::declareTypehintIterableFunction()
+{
+    //Note: in practice, Traversable is defined by php, but this interface is not loaded in this test, so define it ourselves
+    //                 0         1         2         3
+    //                 0123456789012345678901234567890123
+    QByteArray method("<? interface Traversable { } function foo(iterable $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->localDeclarations().count(), 2);
+    FunctionType::Ptr fun = top->localDeclarations().at(1)->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+
+    UnsureType::Ptr argType = UnsureType::Ptr::dynamicCast(fun->arguments().first());
+    QVERIFY(argType);
+    QCOMPARE(argType->typesSize(), 2u);
+    QVERIFY(argType->types()[0].abstractType().cast<IntegralType>());
+    QVERIFY(argType->types()[0].abstractType().cast<IntegralType>()->dataType() == IntegralType::TypeArray);
+    QVERIFY(argType->types()[1].abstractType().cast<StructureType>());
+    QCOMPARE(argType->types()[1].abstractType().cast<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("traversable"));
+}
+
 void TestDUChain::declareTypehintBoolFunction()
 {
     //                 0         1         2         3
@@ -868,6 +894,34 @@ void TestDUChain::declareNullableTypehintCallableFunction()
     IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
     QVERIFY(type);
     QVERIFY(type->dataType() == IntegralType::TypeMixed);
+}
+
+void TestDUChain::declareTypehintNullableIterableFunction()
+{
+    //Note: in practice, Traversable is defined by php, but this interface is not loaded in this test, so define it ourselves
+    //                 0         1         2         3
+    //                 0123456789012345678901234567890123
+    QByteArray method("<? interface Traversable { } function foo(?iterable $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->localDeclarations().count(), 2);
+    FunctionType::Ptr fun = top->localDeclarations().at(1)->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+
+    UnsureType::Ptr argType = UnsureType::Ptr::dynamicCast(fun->arguments().first());
+    QVERIFY(argType);
+    QCOMPARE(argType->typesSize(), 3u);
+    QVERIFY(argType->types()[0].abstractType().cast<IntegralType>());
+    QVERIFY(argType->types()[0].abstractType().cast<IntegralType>()->dataType() == IntegralType::TypeArray);
+    QVERIFY(argType->types()[1].abstractType().cast<StructureType>());
+    QCOMPARE(argType->types()[1].abstractType().cast<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("traversable"));
+    QVERIFY(argType->types()[2].abstractType().cast<IntegralType>());
+    QVERIFY(argType->types()[2].abstractType().cast<IntegralType>()->dataType() == IntegralType::TypeNull);
 }
 
 void TestDUChain::classImplementsInterface()
