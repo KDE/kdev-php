@@ -66,6 +66,7 @@ private slots:
     void testBinaryNumber();
     void testHexadecimalNumber();
     void testTypeHintsOnFunction();
+    void testReturnTypeHints();
     void testExponentiation();
     void testExceptionFinally();
     void testEllipsis();

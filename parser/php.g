@@ -237,7 +237,8 @@ namespace KDevelop
        INCLUDE ("include"), INCLUDE_ONCE ("include_once"), EVAL ("eval"), REQUIRE ("require"),
        REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use"),
        GOTO ("goto"), TRAIT ("trait"), INSTEADOF ("insteadof"), CALLABLE ("callable"),
-       ITERABLE ("iterable"), BOOL ("bool"), FLOAT ("float"), INT ("int"), STRING_TYPE ("string") ;;
+       ITERABLE ("iterable"), BOOL ("bool"), FLOAT ("float"), INT ("int"), STRING_TYPE ("string"),
+       VOID ("void") ;;
 
 -- casts:
 %token INT_CAST ("int cast"), DOUBLE_CAST ("double cast"), STRING_CAST ("string cast"),
@@ -577,6 +578,7 @@ expression=booleanOrExpression
 -- http://wiki.php.net/rfc/closures
     FUNCTION (isRef=BIT_AND|0) LPAREN parameters=parameterList RPAREN
         ( USE LPAREN lexicalVars=lexicalVarList RPAREN | 0)
+        ( COLON returnType=returnType | 0)
         LBRACE try/recover(functionBody=innerStatementList) RBRACE
 -> closure ;;
 
@@ -874,7 +876,8 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
 ] ;;
 
     FUNCTION (BIT_AND | 0) functionName=identifier
-    LPAREN parameters=parameterList RPAREN LBRACE try/recover(functionBody=innerStatementList) RBRACE
+    LPAREN parameters=parameterList RPAREN (COLON returnType=returnType | 0)
+    LBRACE try/recover(functionBody=innerStatementList) RBRACE
 -> functionDeclarationStatement ;;
 
     (#parameters=parameter @ COMMA) | 0
@@ -895,6 +898,19 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
       | stringType=STRING_TYPE
     )
 -> parameterType ;;
+
+    (isNullable=QUESTION | 0) (
+        objectType=namespacedIdentifier
+      | arrayType=ARRAY
+      | callableType=CALLABLE
+      | iterableType=ITERABLE
+      | boolType=BOOL
+      | floatType=FLOAT
+      | intType=INT
+      | stringType=STRING_TYPE
+      | voidType=VOID
+    )
+-> returnType ;;
 
     value=commonScalar
   | constantOrClassConst=constantOrClassConst
@@ -973,6 +989,7 @@ try/recover(#classStatements=classStatement)*
   | modifiers=optionalModifiers
     ( variable=classVariableDeclaration SEMICOLON
       | FUNCTION (BIT_AND | 0) methodName=identifier LPAREN parameters=parameterList RPAREN
+        ( COLON returnType=returnType | 0)
         methodBody=methodBody
     )
   | USE #traits=namespacedIdentifier @ COMMA (imports=traitAliasDeclaration|SEMICOLON)

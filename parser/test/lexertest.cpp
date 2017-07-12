@@ -458,6 +458,25 @@ void LexerTest::testTypeHintsOnFunction()
     COMPARE_TOKEN(ts, 24, Parser::Token_RBRACE, 1, 44, 1, 44);
 }
 
+void LexerTest::testReturnTypeHints()
+{
+    QScopedPointer<TokenStream> ts(tokenize(QStringLiteral("<?php\nfunction a(): string {}"), true));
+    QCOMPARE((int)ts->size(), 12);
+
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_FUNCTION, 1, 0, 1, 7);
+    COMPARE_TOKEN(ts, 2, Parser::Token_WHITESPACE, 1, 8, 1, 8);
+    COMPARE_TOKEN(ts, 3, Parser::Token_STRING, 1, 9, 1, 9);
+    COMPARE_TOKEN(ts, 4, Parser::Token_LPAREN, 1, 10, 1, 10);
+    COMPARE_TOKEN(ts, 5, Parser::Token_RPAREN, 1, 11, 1, 11);
+    COMPARE_TOKEN(ts, 6, Parser::Token_COLON, 1, 12, 1, 12);
+    COMPARE_TOKEN(ts, 7, Parser::Token_WHITESPACE, 1, 13, 1, 13);
+    COMPARE_TOKEN(ts, 8, Parser::Token_STRING_TYPE, 1, 14, 1, 19);
+    COMPARE_TOKEN(ts, 9, Parser::Token_WHITESPACE, 1, 20, 1, 20);
+    COMPARE_TOKEN(ts, 10, Parser::Token_LBRACE, 1, 21, 1, 21);
+    COMPARE_TOKEN(ts, 11, Parser::Token_RBRACE, 1, 22, 1, 22);
+}
+
 void LexerTest::testExponentiation()
 {
     QScopedPointer<TokenStream> ts(tokenize(QStringLiteral("<?php\n$a = 2 ** 3; $a **= 2;"), true));
