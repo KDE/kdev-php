@@ -35,7 +35,7 @@
 
 QTemporaryFile* createStyleSheet(QObject* parent)
 {
-    QTemporaryFile* file = new QTemporaryFile(parent);
+    auto* file = new QTemporaryFile(parent);
     bool ret = file->open();
     Q_ASSERT(ret);
     Q_UNUSED(ret);
@@ -57,7 +57,7 @@ PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget
     addWidget(m_part);
     addWidget(m_loading);
 
-    QProgressBar* progressbar = new QProgressBar;
+    auto* progressbar = new QProgressBar;
     progressbar->setValue(0);
     progressbar->setMinimum(0);
     progressbar->setMaximum(100);
@@ -69,7 +69,7 @@ PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget
              progressbar, &QProgressBar::setValue );
 #endif
 
-    QVBoxLayout* layout = new QVBoxLayout;
+    auto* layout = new QVBoxLayout;
     layout->addStretch();
     QLabel* label = new QLabel(i18n("...loading documentation..."));
     label->setAlignment(Qt::AlignCenter);

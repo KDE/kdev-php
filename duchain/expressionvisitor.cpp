@@ -215,7 +215,7 @@ void ExpressionVisitor::visitVarExpressionArray(VarExpressionArrayAst *node)
 
 void ExpressionVisitor::visitClosure(ClosureAst* node)
 {
-    FunctionType* closureType = new FunctionType;
+    auto* closureType = new FunctionType;
     m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
     if (node->functionBody) {
         visitInnerStatementList(node->functionBody);

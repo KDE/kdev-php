@@ -53,7 +53,7 @@ ExpressionEvaluationResult ExpressionParser::evaluateType(const QByteArray& expr
     if (m_debug)
         qCDebug(DUCHAIN) << "==== .Evaluating ..:" << endl << expression;
 
-    ParseSession* session = new ParseSession();
+    auto* session = new ParseSession();
     session->setContents(expression);
     Parser* parser = session->createParser(Parser::DefaultState);
     ExprAst* ast = nullptr;
@@ -65,7 +65,7 @@ ExpressionEvaluationResult ExpressionParser::evaluateType(const QByteArray& expr
     }
     ast->ducontext = dynamic_cast<DUContext*>(context.data());
 
-    EditorIntegrator* editor = new EditorIntegrator(session);
+    auto* editor = new EditorIntegrator(session);
     ExpressionEvaluationResult ret = evaluateType(ast, editor, offset);
     delete editor;
     delete session;

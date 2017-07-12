@@ -55,7 +55,7 @@ typedef CodeCompletionItemTester<CodeCompletionContext> PhpCompletionTester;
 void BenchmarkCodeCompletion::initTestCase()
 {
     AutoTestShell::init();
-    TestCore* core = new TestCore();
+    auto* core = new TestCore();
     core->initialize(KDevelop::Core::NoUi);
 
     DUChain::self()->disablePersistentStorage();

@@ -467,7 +467,7 @@ void ContextBuilder::reportError(const QString& errorMsg, QList< AstNode* > node
 
 void ContextBuilder::reportError(const QString& errorMsg, RangeInRevision range, IProblem::Severity severity)
 {
-    Problem *p = new Problem();
+    auto *p = new Problem();
     p->setSeverity(severity);
     p->setSource(IProblem::DUChainBuilder);
     p->setDescription(errorMsg);

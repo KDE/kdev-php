@@ -115,7 +115,7 @@ TokenStream* ParseSession::tokenStream() const
 
 Parser* ParseSession::createParser(int initialState)
 {
-    Parser* parser = new Parser;
+    auto* parser = new Parser;
     parser->setTokenStream(m_tokenStream);
     parser->setMemoryPool(m_pool);
     parser->setDebug(m_debug);

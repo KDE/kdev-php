@@ -69,7 +69,7 @@ void IndexedContainer::replaceType(int index, AbstractType::Ptr newType)
 
 KDevelop::AbstractType* IndexedContainer::clone() const
 {
-    IndexedContainer* n = new IndexedContainer(*this);
+    auto* n = new IndexedContainer(*this);
     return n;
 }
 

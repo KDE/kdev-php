@@ -585,7 +585,7 @@ void LexerTest::testNullCoalesce()
 
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
-    TokenStream* tokenStream = new TokenStream;
+    auto* tokenStream = new TokenStream;
     Lexer lexer(tokenStream, unit, initialState);
     int token;
     int i = 0;

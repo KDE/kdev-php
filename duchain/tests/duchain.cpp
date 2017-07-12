@@ -1839,7 +1839,7 @@ void TestDUChain::largeNumberOfDeclarations()
     DUChainWriteLocker lock(DUChain::lock());
     for (int i = 0; i < 6000; ++i) {
         RangeInRevision newRange(i, 0, i, 1);
-        Declaration* dec = new Declaration(newRange, top);
+        auto* dec = new Declaration(newRange, top);
         dec->setIdentifier(Identifier(QStringLiteral("dec%0").arg(i)));
         dec->setAbstractType(AbstractType::Ptr(nullptr));
     }

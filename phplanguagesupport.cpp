@@ -73,7 +73,7 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
     m_highlighting = new Php::Highlighting(this);
     m_refactoring = new Php::Refactoring(this);
 
-    CodeCompletionModel* ccModel = new CodeCompletionModel(this);
+    auto* ccModel = new CodeCompletionModel(this);
     new KDevelop::CodeCompletion(this, ccModel, name());
 }
 

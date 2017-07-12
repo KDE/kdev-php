@@ -547,7 +547,7 @@ void TestCompletion::nameClassMember()
 
     PhpCompletionTester tester(top, QStringLiteral("$b->"));
 
-    TestCodeCompletionModel *model = new TestCodeCompletionModel;
+    auto *model = new TestCodeCompletionModel;
     model->foundDeclarations(tester.items, tester.completionContext.data());
 
     QCOMPARE(tester.completionContext->memberAccessOperation(), CodeCompletionContext::MemberAccess);

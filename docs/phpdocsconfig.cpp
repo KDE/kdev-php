@@ -38,7 +38,7 @@ K_PLUGIN_FACTORY_WITH_JSON(PhpDocsConfigFactory, "kcm_kdevphpdocs.json", registe
 PhpDocsConfig::PhpDocsConfig(QWidget *parent, const QVariantList &args)
     : KCModule(KAboutData::pluginData(QStringLiteral("kcm_kdevphpdocs")), parent, args)
 {
-    QVBoxLayout * l = new QVBoxLayout( this );
+    auto * l = new QVBoxLayout( this );
 
     QWidget* w = new QWidget;
     m_configWidget = new Ui::PhpDocsConfigUI;
