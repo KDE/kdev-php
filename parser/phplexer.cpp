@@ -345,8 +345,13 @@ int Lexer::nextTokenKind()
                     }
                 }
             } else if ((it + 1)->unicode() == '=') {
-                m_curpos++;
-                token = Parser::Token_IS_SMALLER_OR_EQUAL;
+                if ((it + 2)->unicode() == '>') {
+                    m_curpos += 2;
+                    token = Parser::Token_SPACESHIP;
+                } else {
+                    m_curpos++;
+                    token = Parser::Token_IS_SMALLER_OR_EQUAL;
+                }
             } else if ((it + 1)->unicode() == '>') {
                 m_curpos++;
                 token = Parser::Token_IS_NOT_EQUAL;
@@ -383,6 +388,9 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_CLOSE_TAG;
                 m_curpos++;
                 while (state() != HtmlState) popState();
+            } else if ((it + 1)->unicode() == '?') {
+                token = Parser::Token_NULL_COALESCE;
+                m_curpos++;
             } else {
                 token = Parser::Token_QUESTION;
             }

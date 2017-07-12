@@ -269,6 +269,7 @@ namespace KDevelop
        BIT_AND ("&"), BIT_OR("|"), BIT_XOR ("^"),
        SL ("<<"), SR (">>"), MUL("*"), DIV("/"), MOD ("%"),
        TILDE ("~"), DOLLAR ("$"), EXP ("**"), ELLIPSIS ("..."),
+       NULL_COALESCE ("??"), SPACESHIP ("<=>"),
        LOGICAL_OR ("logical or"), LOGICAL_AND ("logical and"), LOGICAL_XOR ("logical xor") ;;
 
 -- literals and identifiers:
@@ -336,12 +337,13 @@ namespace KDevelop
 --right   print
 --right   = += -= *= /= .= %= &= |= ^= <<= >>=    assignment
 --left    ? : ternary
+--right   ??  comparison
 --left    ||  logical
 --left    &&  logical
 --left    |   bitwise
 --left    ^   bitwise
 --left    &   bitwise and references
---non-associative == != === !==   comparison
+--non-associative == != === !== <=>   comparison
 --non-associative < <= > >=   comparison
 --left    << >>   bitwise
 --left    + - .   arithmetic and string
@@ -423,12 +425,15 @@ ASSIGN
 :]
 -> assignmentExpressionCheckIfVariable ;;
 
-expression=booleanOrExpression
+expression=nullCoalesceExpression
    (  QUESTION (ifExpression=expr|0)
       COLON    elseExpression=conditionalExpression
     | 0
    )
 -> conditionalExpression ;;
+
+  #expression=booleanOrExpression @ NULL_COALESCE
+-> nullCoalesceExpression ;;
 
   #expression=booleanAndExpression @ BOOLEAN_OR
 -> booleanOrExpression ;;
@@ -449,7 +454,7 @@ expression=booleanOrExpression
    (#additionalExpression=equalityExpressionRest)*
 -> equalityExpression ;;
 
-   (  IS_EQUAL | IS_NOT_EQUAL | IS_IDENTICAL | IS_NOT_IDENTICAL )
+   (  IS_EQUAL | IS_NOT_EQUAL | IS_IDENTICAL | IS_NOT_IDENTICAL | SPACESHIP )
    expression=relationalExpression
 -> equalityExpressionRest ;;
 

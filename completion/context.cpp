@@ -528,6 +528,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_MOD_ASSIGN:
         case Parser::Token_MUL:
         case Parser::Token_MUL_ASSIGN:
+        case Parser::Token_NULL_COALESCE:
         case Parser::Token_OBJECT_CAST:
         case Parser::Token_OPEN_TAG_WITH_ECHO:
         case Parser::Token_OR_ASSIGN:
@@ -540,6 +541,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_SEMICOLON:
         case Parser::Token_SL:
         case Parser::Token_SL_ASSIGN:
+        case Parser::Token_SPACESHIP:
         case Parser::Token_SR:
         case Parser::Token_SR_ASSIGN:
         case Parser::Token_START_HEREDOC:

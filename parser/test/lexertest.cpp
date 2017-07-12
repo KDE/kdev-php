@@ -547,6 +547,42 @@ void LexerTest::testEllipsis()
     COMPARE_TOKEN(ts, 10, Parser::Token_RBRACE, 1, 24, 1, 24);
 }
 
+void LexerTest::testSpaceship()
+{
+    QScopedPointer<TokenStream> ts(tokenize(QStringLiteral("<?php\n$a = 'ab' <=> 'b';"), true));
+    QCOMPARE((int)ts->size(), 11);
+
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_VARIABLE, 1, 0, 1, 1);
+    COMPARE_TOKEN(ts, 2, Parser::Token_WHITESPACE, 1, 2, 1, 2);
+    COMPARE_TOKEN(ts, 3, Parser::Token_ASSIGN, 1, 3, 1, 3);
+    COMPARE_TOKEN(ts, 4, Parser::Token_WHITESPACE, 1, 4, 1, 4);
+    COMPARE_TOKEN(ts, 5, Parser::Token_CONSTANT_ENCAPSED_STRING, 1, 5, 1, 8);
+    COMPARE_TOKEN(ts, 6, Parser::Token_WHITESPACE, 1, 9, 1, 9);
+    COMPARE_TOKEN(ts, 7, Parser::Token_SPACESHIP, 1, 10, 1, 12);
+    COMPARE_TOKEN(ts, 8, Parser::Token_WHITESPACE, 1, 13, 1, 13);
+    COMPARE_TOKEN(ts, 9, Parser::Token_CONSTANT_ENCAPSED_STRING, 1, 14, 1, 16);
+    COMPARE_TOKEN(ts, 10, Parser::Token_SEMICOLON, 1, 17, 1, 17);
+}
+
+void LexerTest::testNullCoalesce()
+{
+    QScopedPointer<TokenStream> ts(tokenize(QStringLiteral("<?php\n$a = null ?? true;"), true));
+    QCOMPARE((int)ts->size(), 11);
+
+    COMPARE_TOKEN(ts, 0, Parser::Token_OPEN_TAG, 0, 0, 0, 5);
+    COMPARE_TOKEN(ts, 1, Parser::Token_VARIABLE, 1, 0, 1, 1);
+    COMPARE_TOKEN(ts, 2, Parser::Token_WHITESPACE, 1, 2, 1, 2);
+    COMPARE_TOKEN(ts, 3, Parser::Token_ASSIGN, 1, 3, 1, 3);
+    COMPARE_TOKEN(ts, 4, Parser::Token_WHITESPACE, 1, 4, 1, 4);
+    COMPARE_TOKEN(ts, 5, Parser::Token_STRING, 1, 5, 1, 8);
+    COMPARE_TOKEN(ts, 6, Parser::Token_WHITESPACE, 1, 9, 1, 9);
+    COMPARE_TOKEN(ts, 7, Parser::Token_NULL_COALESCE, 1, 10, 1, 11);
+    COMPARE_TOKEN(ts, 8, Parser::Token_WHITESPACE, 1, 12, 1, 12);
+    COMPARE_TOKEN(ts, 9, Parser::Token_STRING, 1, 13, 1, 16);
+    COMPARE_TOKEN(ts, 10, Parser::Token_SEMICOLON, 1, 17, 1, 17);
+}
+
 TokenStream* LexerTest::tokenize(const QString& unit, bool debug, int initialState)
 {
     TokenStream* tokenStream = new TokenStream;

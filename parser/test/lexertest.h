@@ -70,6 +70,8 @@ private slots:
     void testExponentiation();
     void testExceptionFinally();
     void testEllipsis();
+    void testSpaceship();
+    void testNullCoalesce();
 
 protected:
     TokenStream* tokenize(const QString& unit, bool debug = false, int initialState = Lexer::HtmlState);
