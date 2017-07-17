@@ -649,27 +649,6 @@ void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
     }
     DeclarationBuilderBase::visitConstantDeclaration(node);
     closeDeclaration();
-    if ( m_reportErrors ) {
-        // const class members may only be ints, floats, bools or strings
-        bool badType = true;
-        if ( IntegralType* type = fastCast<IntegralType*>(lastType().data()) ) {
-            switch( type->dataType() ) {
-                case IntegralType::TypeBoolean:
-                case IntegralType::TypeFloat:
-                case IntegralType::TypeInt:
-                case IntegralType::TypeString:
-                case IntegralType::TypeNull:
-                    badType = false;
-                    break;
-                default:
-                    // every other type is a badType (see above)
-                    break;
-            }
-        }
-        if ( badType ) {
-            reportError(i18n("Only booleans, ints, floats and strings are allowed for class constants."), node->scalar);
-        }
-    }
 }
 
 void DeclarationBuilder::visitTraitAliasStatement(TraitAliasStatementAst *node)

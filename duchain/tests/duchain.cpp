@@ -1223,8 +1223,8 @@ void TestDUChain::classConst_data()
     QTest::newRow("selfConst") << "const C2 = 1; const C = self::C2;" << 0;
     QTest::newRow("parentConst") << "const C = parent::P;" << 0;
     QTest::newRow("null") << "const C = null;" << 0;
-
-    QTest::newRow("array") << "const C = array();" << 1;
+    QTest::newRow("array") << "const C = array();" << 0;
+    QTest::newRow("expression") << "const C = 'foo' . 'foo';" << 0;
 }
 
 void TestDUChain::classConst()
@@ -1255,8 +1255,8 @@ void TestDUChain::fileConst_data()
     QTest::newRow("string") << "const C = 'asdf';" << 0 << (uint) IntegralType::TypeString;
     QTest::newRow("float") << "const C = 0.5;" << 0 << (uint) IntegralType::TypeFloat;
     QTest::newRow("bool") << "const C = true;" << 0 << (uint) IntegralType::TypeBoolean;
-
-    QTest::newRow("array") << "const C = array();" << 1 << (uint) IntegralType::TypeArray;
+    QTest::newRow("array") << "const C = array();" << 0 << (uint) IntegralType::TypeArray;
+    QTest::newRow("expression") << "const C = 'foo' . 'foo';" << 0 << (uint) IntegralType::TypeString;
 }
 
 void TestDUChain::fileConst()

@@ -725,7 +725,7 @@ expression=nullCoalesceExpression
     identifier=namespacedIdentifier (AS aliasIdentifier=identifier | 0)
 -> useNamespace ;;
 
-    identifier=identifier ASSIGN scalar=staticScalar
+    identifier=identifier ASSIGN scalar=expr
 -> constantDeclaration ;;
 
    SEMICOLON | CLOSE_TAG
@@ -889,7 +889,7 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
 -> parameterList ;;
 
 (parameterType=parameterType | 0) (isRef=BIT_AND | 0)
-    (isVariadic=ELLIPSIS | 0) variable=variableIdentifier (ASSIGN defaultValue=staticScalar | 0)
+    (isVariadic=ELLIPSIS | 0) variable=variableIdentifier (ASSIGN defaultValue=expr | 0)
 -> parameter ;;
 
     (isNullable=QUESTION | 0) (
