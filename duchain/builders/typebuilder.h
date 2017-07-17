@@ -75,8 +75,6 @@ private:
     bool m_gotTypeFromDocComment;
     bool m_gotReturnTypeFromDocComment;
 
-    KDevelop::FunctionType::Ptr openFunctionType(AstNode* node);
-
     KDevelop::AbstractType::Ptr injectParseType(QString type, AstNode* node);
     KDevelop::AbstractType::Ptr parseType(QString type, AstNode* node);
     KDevelop::AbstractType::Ptr parseDocComment(AstNode* node, const QString& docCommentName);

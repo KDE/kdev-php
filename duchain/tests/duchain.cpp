@@ -566,6 +566,46 @@ void TestDUChain::declarationReturnTypeClassChain()
     QVERIFY(/* func b (self) */ ctx->localDeclarations().at(1)->type<FunctionType>().data() == ctx->owner()->abstractType().data());
 }
 
+void TestDUChain::declarationReturnTypeTypehint()
+{
+    //Typehint preferred over phpdoc preferred over inferred type
+    QByteArray method("<? /** @return string **/ function foo(): bool { return 5; }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->localDeclarations().count(), 1);
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    IntegralType::Ptr returnType = IntegralType::Ptr::dynamicCast(fun->returnType());
+    QVERIFY(returnType);
+    QVERIFY(returnType->dataType() == IntegralType::TypeBoolean);
+}
+
+void TestDUChain::declarationReturnTypeTypehintVoid()
+{
+    //Typehint preferred over phpdoc preferred over inferred type
+    QByteArray method("<? /** @return string **/ function foo(): void { return 5; }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->localDeclarations().count(), 1);
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    IntegralType::Ptr returnType = IntegralType::Ptr::dynamicCast(fun->returnType());
+    QVERIFY(returnType);
+    QVERIFY(returnType->dataType() == IntegralType::TypeVoid);
+}
+
 void TestDUChain::declareTypehintFunction()
 {
     //                 0         1         2         3         4         5         6         7

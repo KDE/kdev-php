@@ -219,7 +219,14 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
     if (node->functionBody) {
         visitInnerStatementList(node->functionBody);
     }
-    closureType->setReturnType(m_result.type());
+
+    //First try return typehint or phpdoc return typehint
+    AbstractType::Ptr type = returnType(node->returnType, {}, m_editor, m_currentContext);
+    if (!type) {
+        //If failed, use the inferred type from return statements
+        type = m_result.type();
+    }
+    closureType->setReturnType(type);
 
     if (node->parameters->parametersSequence) {
         const KDevPG::ListNode< ParameterAst* >* it = node->parameters->parametersSequence->front();

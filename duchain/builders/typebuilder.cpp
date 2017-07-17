@@ -264,19 +264,6 @@ AbstractType::Ptr TypeBuilder::getTypeForNode(AstNode* node)
     return type;
 }
 
-FunctionType::Ptr TypeBuilder::openFunctionType(AstNode* node)
-{
-    FunctionType::Ptr functionType = FunctionType::Ptr(new FunctionType());
-
-    openType(functionType);
-
-    functionType->setReturnType(parseDocComment(node, QStringLiteral("return")));
-    m_gotReturnTypeFromDocComment = functionType->returnType();
-    updateCurrentType();
-
-    return functionType;
-}
-
 void TypeBuilder::visitClassDeclarationStatement(ClassDeclarationStatementAst* node)
 {
     // the predeclaration builder should have set up a type already
@@ -309,7 +296,15 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
     if (node->methodName) {
         //method declaration
         m_currentFunctionParams = parseDocCommentParams(node);
-        openFunctionType(node);
+
+        FunctionType::Ptr functionType = FunctionType::Ptr(new FunctionType());
+        openType(functionType);
+
+        AbstractType::Ptr phpdocReturnType = parseDocComment(node, QStringLiteral("return"));
+        functionType->setReturnType(returnType(node->returnType, phpdocReturnType, editor(), currentContext()));
+        m_gotReturnTypeFromDocComment = functionType->returnType();
+        updateCurrentType();
+
         TypeBuilderBase::visitClassStatement(node);
         if (currentType<FunctionType>() && !currentType<FunctionType>()->returnType()) {
             currentType<FunctionType>()->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
@@ -380,7 +375,8 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
     FunctionType::Ptr type = currentType<FunctionType>();
     Q_ASSERT(type);
 
-    type->setReturnType(parseDocComment(node, QStringLiteral("return")));
+    AbstractType::Ptr phpdocReturnType = parseDocComment(node, QStringLiteral("return"));
+    type->setReturnType(returnType(node->returnType, phpdocReturnType, editor(), currentContext()));
     m_gotReturnTypeFromDocComment = type->returnType();
 
     updateCurrentType();
@@ -398,7 +394,8 @@ void TypeBuilder::visitClosure(ClosureAst* node)
     FunctionType::Ptr type = FunctionType::Ptr(new FunctionType());
     openType(type);
 
-    type->setReturnType(parseDocComment(node, QStringLiteral("return")));
+    AbstractType::Ptr phpdocReturnType = parseDocComment(node, QStringLiteral("return"));
+    type->setReturnType(returnType(node->returnType, phpdocReturnType, editor(), currentContext()));
     m_gotReturnTypeFromDocComment = type->returnType();
 
     updateCurrentType();

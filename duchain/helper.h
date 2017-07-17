@@ -39,6 +39,7 @@ struct AstNode;
 struct CommonScalarAst;
 struct NamespacedIdentifierAst;
 struct ParameterAst;
+struct ReturnTypeAst;
 class EditorIntegrator;
 
 enum DeclarationType {
@@ -88,6 +89,7 @@ KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierForNamespace(Names
 KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierWithNamespace(const KDevelop::QualifiedIdentifier& base, KDevelop::DUContext* context);
 
 KDEVPHPDUCHAIN_EXPORT KDevelop::AbstractType::Ptr parameterType(const ParameterAst* node, KDevelop::AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, KDevelop::DUContext *currentContext);
+KDEVPHPDUCHAIN_EXPORT KDevelop::AbstractType::Ptr returnType(const ReturnTypeAst* node, KDevelop::AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, KDevelop::DUContext *currentContext);
 
 }
 #endif

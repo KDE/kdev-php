@@ -58,6 +58,8 @@ private slots:
     void declarationReturnTypeDocBlock();
     void declarationReturnTypeDocBlockIntegral();
     void declarationReturnTypeClassChain();
+    void declarationReturnTypeTypehint();
+    void declarationReturnTypeTypehintVoid();
     void classImplementsInterface();
     void classExtends();
     void staticMethod();

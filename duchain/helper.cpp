@@ -424,7 +424,8 @@ QualifiedIdentifier identifierWithNamespace(const QualifiedIdentifier& base, DUC
     }
 }
 
-AbstractType::Ptr parameterTypehint(const ParameterTypeAst* parameterType, EditorIntegrator *editor, DUContext* currentContext)
+template <class T>
+AbstractType::Ptr determineTypehint(const T* parameterType, EditorIntegrator *editor, DUContext* currentContext)
 {
     Q_ASSERT(parameterType);
     AbstractType::Ptr type;
@@ -480,7 +481,7 @@ AbstractType::Ptr parameterType(const ParameterAst* node, AbstractType::Ptr phpD
 {
     AbstractType::Ptr type;
     if (node->parameterType) {
-        type = parameterTypehint(node->parameterType, editor, currentContext);
+        type = determineTypehint(node->parameterType, editor, currentContext);
     } else if (node->defaultValue) {
         ExpressionVisitor v(editor);
         node->defaultValue->ducontext = currentContext;
@@ -511,6 +512,21 @@ AbstractType::Ptr parameterType(const ParameterAst* node, AbstractType::Ptr phpD
     }
 
     Q_ASSERT(type);
+    return type;
+}
+
+AbstractType::Ptr returnType(const ReturnTypeAst* node, AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, DUContext* currentContext) {
+    AbstractType::Ptr type;
+    if (node) {
+        if (node->voidType != -1) {
+            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid));
+        } else {
+            type = determineTypehint(node, editor, currentContext);
+        }
+    }
+    if (!type) {
+        type = phpDocTypehint;
+    }
     return type;
 }
 
