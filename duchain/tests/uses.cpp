@@ -1221,5 +1221,27 @@ void TestUses::exceptionFinally()
             << RangeInRevision(0, 37, 0, 39));
 }
 
+void TestUses::returnTypeClassFunction() {
+    QByteArray method("<? class A { function foo(): A {} function bar(): self {} }");
+    TopDUContext *top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *a = top->localDeclarations().at(0);
+    QCOMPARE(a->identifier().toString(), QString("a"));
+    compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 29, 0, 30) << RangeInRevision(0, 50, 0, 54));
+}
+
+void TestUses::returnTypeFunction() {
+    QByteArray method("<? class A {} function foo(): A {}");
+    TopDUContext *top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *a = top->localDeclarations().at(0);
+    QCOMPARE(a->identifier().toString(), QString("a"));
+    compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 30, 0, 31));
+}
+
 }
 

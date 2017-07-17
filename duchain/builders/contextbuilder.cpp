@@ -248,6 +248,9 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
         Q_ASSERT(!parameters->inSymbolTable());
 
         visitParameterList(node->parameters);
+        if (node->returnType) {
+            visitReturnType(node->returnType);
+        }
         closeContext();
 
         if ( !m_isInternalFunctions && node->methodBody ) {
@@ -275,6 +278,9 @@ void ContextBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatem
     Q_ASSERT(!parameters->inSymbolTable());
 
     visitParameterList(node->parameters);
+    if (node->returnType) {
+        visitReturnType(node->returnType);
+    }
     closeContext();
 
     if ( !m_isInternalFunctions && node->functionBody ) {
@@ -296,6 +302,9 @@ void ContextBuilder::visitClosure(ClosureAst* node)
     Q_ASSERT(!parameters->inSymbolTable());
 
     visitParameterList(node->parameters);
+    if (node->returnType) {
+        visitReturnType(node->returnType);
+    }
     closeContext();
 
     DUContext* imported = nullptr;

@@ -85,6 +85,8 @@ private slots:
     void classNameString();
     void useTrait();
     void exceptionFinally();
+    void returnTypeClassFunction();
+    void returnTypeFunction();
 };
 
 }

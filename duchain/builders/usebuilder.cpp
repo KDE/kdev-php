@@ -272,4 +272,10 @@ void UseBuilder::visitNodeWithExprVisitor(AstNode* node)
     }
 }
 
+void UseBuilder::visitReturnType(ReturnTypeAst* node) {
+    if (node->objectType) {
+        buildNamespaceUses(node->objectType);
+    }
+}
+
 }
