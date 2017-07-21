@@ -78,7 +78,7 @@ public:
     /**
      * @returns the ContextMenuExtension for the Php plugin.
      */
-    KDevelop::ContextMenuExtension contextMenuExtension(KDevelop::Context *context) override;
+    KDevelop::ContextMenuExtension contextMenuExtension(KDevelop::Context* context, QWidget* parent) override;
 
     QWidget* specialLanguageObjectNavigationWidget(const QUrl& url, const KTextEditor::Cursor& position) override;
     KTextEditor::Range specialLanguageObjectRange(const QUrl& url, const KTextEditor::Cursor& position) override;
