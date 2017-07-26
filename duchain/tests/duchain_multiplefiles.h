@@ -45,6 +45,7 @@ private slots:
     void testForeachImportedIdentifier();
     void testUpdateForeach();
     void testTodoExtractorReparse();
+    void testIteratorForeachReparse();
 private:
     KDevelop::TestProjectController* m_projectController;
 };

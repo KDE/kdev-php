@@ -514,12 +514,15 @@ void TypeBuilder::visitStatement(StatementAst* node)
                 if (classDec->isPublicBaseClass(iteratorDecl, currentContext()->topContext())) {
                     /// Qualified identifier for 'current'
                     static const QualifiedIdentifier currentQId(QStringLiteral("current"));
-                    foreach (Declaration *d, classDec->internalContext()->findDeclarations(currentQId)) {
-                        if (!dynamic_cast<ClassMethodDeclaration*>(d)) continue;
-                        Q_ASSERT(d->type<FunctionType>());
-                        injectType(d->type<FunctionType>()->returnType());
-                        foundType = true;
-                        // qCDebug(DUCHAIN) << "that's it: " << d->type<FunctionType>()->returnType()->toString();
+                    auto classContext = classDec->internalContext();
+                    if (classContext) {
+                        foreach (Declaration *d, classContext->findDeclarations(currentQId)) {
+                            if (!dynamic_cast<ClassMethodDeclaration*>(d)) continue;
+                            Q_ASSERT(d->type<FunctionType>());
+                            injectType(d->type<FunctionType>()->returnType());
+                            foundType = true;
+                            // qCDebug(DUCHAIN) << "that's it: " << d->type<FunctionType>()->returnType()->toString();
+                        }
                     }
                 }
             }
