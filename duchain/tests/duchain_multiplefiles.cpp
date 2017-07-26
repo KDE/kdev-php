@@ -30,6 +30,7 @@
 #include <tests/testfile.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/problem.h>
+#include <language/duchain/types/integraltype.h>
 
 QTEST_MAIN(Php::TestDUChainMultipleFiles)
 
@@ -292,5 +293,32 @@ void TestDUChainMultipleFiles::testTodoExtractorReparse()
         QCOMPARE(top->problems().size(), 1);
         QCOMPARE(top->problems().at(0)->description(), QString("TODO"));
         QCOMPARE(top->problems().at(0)->range(), RangeInRevision(2, 3, 2, 7));
+    }
+}
+
+void TestDUChainMultipleFiles::testIteratorForeachReparse() {
+    TestFile file(QStringLiteral("<?php\n/*\n\n/*\n*/\nforeach (new A() as $a) {}\nclass A implements Iterator {\npublic function current() { return 0; }\n}"), QStringLiteral("php"));
+
+    auto features = TopDUContext::AllDeclarationsAndContexts;
+
+    for (int i = 0; i < 2; ++i) {
+        if (i == 1) {
+            file.setFileContents(QStringLiteral("<?php\n/*\n*/\n\n/*\n*/\nforeach (new A() as $a) {}\nclass A implements Iterator {\npublic function current() { return 0; }\n}"));
+            features = static_cast<TopDUContext::Features>(features | TopDUContext::ForceUpdate);
+        }
+
+        file.parse(features);
+        QVERIFY(file.waitForParsed());
+
+        DUChainReadLocker lock;
+        auto top = file.topContext();
+        QVERIFY(top);
+        QVERIFY(top->localDeclarations().size() == 2);
+        QCOMPARE(top->localDeclarations().at(0)->qualifiedIdentifier(), QualifiedIdentifier("a"));
+
+        IntegralType::Ptr type = top->localDeclarations().at(0)->type<IntegralType>();
+        QVERIFY(type);
+        //Should actually parse as an TypeInt, but this does not work.
+        QVERIFY(type->dataType() == IntegralType::TypeMixed);
     }
 }
