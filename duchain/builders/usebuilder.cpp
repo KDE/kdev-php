@@ -67,6 +67,9 @@ void UseBuilder::visitParameter(ParameterAst *node)
     if (node->parameterType && node->parameterType->objectType) {
         buildNamespaceUses(node->parameterType->objectType);
     }
+    if (node->defaultValue) {
+        visitNodeWithExprVisitor(node->defaultValue);
+    }
 }
 
 void UseBuilder::visitClassImplements(ClassImplementsAst *node)

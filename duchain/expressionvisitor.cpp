@@ -219,6 +219,14 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
     if (node->functionBody) {
         visitInnerStatementList(node->functionBody);
     }
+    if (node->returnType && node->returnType->objectType) {
+        NamespacedIdentifierAst* objectType = node->returnType->objectType;
+        QualifiedIdentifier id = identifierForNamespace(objectType, m_editor);
+        DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
+
+        usingDeclaration(objectType->namespaceNameSequence->back()->element, dec);
+        buildNamespaceUses(objectType, id);
+    }
 
     //First try return typehint or phpdoc return typehint
     AbstractType::Ptr type = returnType(node->returnType, {}, m_editor, m_currentContext);
@@ -233,6 +241,18 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
         forever {
             AbstractType::Ptr type = parameterType(it->element, {}, m_editor, m_currentContext);
             closureType->addArgument(type);
+
+            if (it->element->parameterType && it->element->parameterType->objectType) {
+                NamespacedIdentifierAst* objectType = it->element->parameterType->objectType;
+                QualifiedIdentifier id = identifierForNamespace(objectType, m_editor);
+                DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
+
+                usingDeclaration(objectType->namespaceNameSequence->back()->element, dec);
+                buildNamespaceUses(objectType, id);
+            }
+            if (it->element->defaultValue) {
+                visitExpr(it->element->defaultValue);
+            }
             if ( it->hasNext() ) {
                 it = it->next;
             } else {

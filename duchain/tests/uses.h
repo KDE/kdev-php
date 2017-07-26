@@ -81,12 +81,14 @@ private slots:
     void useNamespace();
     void lateStatic();
     void closures();
+    void closureTypehints();
     void instanceof();
     void classNameString();
     void useTrait();
     void exceptionFinally();
     void returnTypeClassFunction();
     void returnTypeFunction();
+    void defaultValue();
 };
 
 }

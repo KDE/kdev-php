@@ -1067,6 +1067,18 @@ void TestUses::closures()
     QVERIFY(b->uses().isEmpty());
 }
 
+void TestUses::closureTypehints() {
+    TopDUContext* top = parse("<?php class A {} $b = function (A $a): A {};", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QCOMPARE(top->localDeclarations().count(), 3);
+    Declaration* a = top->localDeclarations().at(0);
+    QCOMPARE(a->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 32, 0, 33) << RangeInRevision(0, 39, 0, 40));
+}
+
 void TestUses::instanceof()
 {
     //                         0         1         2         3         4         5
@@ -1241,6 +1253,21 @@ void TestUses::returnTypeFunction() {
     Declaration *a = top->localDeclarations().at(0);
     QCOMPARE(a->identifier().toString(), QString("a"));
     compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 30, 0, 31));
+}
+
+void TestUses::defaultValue() {
+    QByteArray method("<? class A {const C = 1;} function foo($a = A::C) {}");
+    TopDUContext *top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *a = top->localDeclarations().at(0);
+    QCOMPARE(a->identifier().toString(), QString("a"));
+    compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 44, 0, 45));
+
+    Declaration *c = top->childContexts().at(0)->localDeclarations().at(0);
+    QCOMPARE(c->identifier().toString(), QString("C"));
+    compareUses(c, QList<RangeInRevision>() << RangeInRevision(0, 47, 0, 48));
 }
 
 }
