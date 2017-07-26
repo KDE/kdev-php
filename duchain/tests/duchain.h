@@ -77,6 +77,8 @@ private slots:
     void fileConst_data();
     void define();
     void defaultFunctionParam();
+    void defaultFunctionParamWithTypehint();
+    void nullDefaultFunctionParamWithTypehint();
     void globalFunction();
     void globalVariableFromInternalFunctions();
     void newObjectFromOtherFile();

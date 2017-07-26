@@ -482,11 +482,35 @@ AbstractType::Ptr parameterType(const ParameterAst* node, AbstractType::Ptr phpD
     AbstractType::Ptr type;
     if (node->parameterType) {
         type = determineTypehint(node->parameterType, editor, currentContext);
-    } else if (node->defaultValue) {
+    }
+    if (node->defaultValue) {
         ExpressionVisitor v(editor);
         node->defaultValue->ducontext = currentContext;
         v.visitNode(node->defaultValue);
-        type = v.result().type();
+        AbstractType::Ptr defaultValueType = v.result().type();
+
+        /*
+         * If a typehint is already set, default values can only be the same type or `null` in PHP
+         * If it's the same type, the type is already correctly set,
+         *    so we can ignore this case.
+         * If it's null (which cannot be a typehint), add it as UnsureType
+         */
+        if (type && defaultValueType.cast<IntegralType>() && defaultValueType.cast<IntegralType>()->dataType() == IntegralType::TypeNull) {
+            if (type.cast<UnsureType>()) {
+                UnsureType::Ptr unsure = type.cast<UnsureType>();
+                AbstractType::Ptr nullType = AbstractType::Ptr(new IntegralType(IntegralType::TypeNull));
+                unsure->addType(defaultValueType->indexed());
+            } else {
+                UnsureType::Ptr unsure(new UnsureType());
+                unsure->addType(type->indexed());
+                unsure->addType(defaultValueType->indexed());
+
+                type = AbstractType::Ptr(unsure);
+            }
+        } else {
+            //Otherwise, let the default value dictate the parameter type
+            type = defaultValueType;
+        }
     }
     if (!type) {
         if (phpDocTypehint) {

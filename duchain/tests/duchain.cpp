@@ -1359,6 +1359,47 @@ void TestDUChain::defaultFunctionParam()
     QCOMPARE(fun->defaultParameters()[1].str(), QString("null"));
 }
 
+void TestDUChain::defaultFunctionParamWithTypehint() {
+    QByteArray method("<? function foo(array $i = array()) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+
+    IntegralType::Ptr argType = IntegralType::Ptr::dynamicCast(fun->arguments().first());
+    QVERIFY(argType);
+    QVERIFY(argType->dataType() == IntegralType::TypeArray);
+}
+
+void TestDUChain::nullDefaultFunctionParamWithTypehint()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo(array $i = null) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+
+    UnsureType::Ptr argType = UnsureType::Ptr::dynamicCast(fun->arguments().first());
+    QVERIFY(argType);
+    QCOMPARE(argType->typesSize(), 2u);
+    QVERIFY(argType->types()[0].abstractType().cast<IntegralType>());
+    QVERIFY(argType->types()[0].abstractType().cast<IntegralType>()->dataType() == IntegralType::TypeArray);
+    QVERIFY(argType->types()[1].abstractType().cast<IntegralType>());
+    QVERIFY(argType->types()[1].abstractType().cast<IntegralType>()->dataType() == IntegralType::TypeNull);
+}
+
 void TestDUChain::globalFunction()
 {
     //                 0         1         2         3         4         5         6         7
