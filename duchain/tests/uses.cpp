@@ -99,6 +99,34 @@ void TestUses::memberFunctionCall()
     QCOMPARE(fun->uses().keys().first(), IndexedString(QUrl("file:///internal/usestest/memberFunctionCall.php")));
 }
 
+void TestUses::unsureMemberFunctionCall() {
+    //First try with a single unsure structure type
+
+    {
+        //                 0         1         2         3         4         5         6         7         8
+        //                 012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+        QByteArray method("<? class A { function foo() {} } if (true) { $a = new A(); } else { $a = null; } $a->foo();");
+        TopDUContext* top = parse(method, DumpNone);
+        DUChainReleaser releaseTop(top);
+        DUChainWriteLocker lock(DUChain::lock());
+        Declaration* fun = top->childContexts().first()->localDeclarations().first();
+        compareUses(fun, RangeInRevision(0, 85, 0, 88));
+    }
+
+    //Now try with two unsure structure types
+
+    {
+        //                 0         1         2         3         4         5         6         7         8
+        //                 012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+        QByteArray method("<? class A { function foo() {} } class B {} if (true) { $a = new A(); } else { $a = new B(); } $a->foo();");
+        TopDUContext* top = parse(method, DumpNone);
+        DUChainReleaser releaseTop(top);
+        DUChainWriteLocker lock(DUChain::lock());
+        Declaration* fun = top->childContexts().first()->localDeclarations().first();
+        QCOMPARE(fun->uses().keys().count(), 0);
+    }
+}
+
 void TestUses::memberVariable()
 {
 

@@ -31,6 +31,7 @@
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/integraltype.h>
 #include <language/duchain/types/structuretype.h>
+#include <language/duchain/types/unsuretype.h>
 
 #include "duchaindebug.h"
 
@@ -567,9 +568,33 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
     if (node->objectProperty && node->objectProperty->objectDimList) {
         //handle $foo->bar() and $foo->baz, $foo is m_result.type()
 
-        if (m_result.type() && StructureType::Ptr::dynamicCast(m_result.type())) {
+        AbstractType::Ptr type = m_result.type();
+
+        //If the variable type is unsure, try to see if it contains a StructureType. If so, use that
+        //    (since the other types do not allow accessing properties)
+        if (type && type.cast<UnsureType>()) {
+            UnsureType::Ptr unsureType = type.cast<UnsureType>();
+            int numStructureType = 0;
+            StructureType::Ptr structureType;
+
+            for (unsigned int i = 0; i<unsureType->typesSize(); ++i) {
+                StructureType::Ptr subType = unsureType->types()[i].type<StructureType>();
+                if (subType) {
+                    structureType = subType;
+                    ++numStructureType;
+                }
+            }
+
+            //Only use the found structureType if there's exactly *one* such type
+            if (numStructureType == 1) {
+                Q_ASSERT(structureType);
+                type = AbstractType::Ptr(structureType);
+            }
+        }
+
+        if (type && StructureType::Ptr::dynamicCast(type)) {
             DUChainReadLocker lock(DUChain::lock());
-            Declaration* declaration = StructureType::Ptr::staticCast(m_result.type())->declaration(m_currentContext->topContext());
+            Declaration* declaration = StructureType::Ptr::staticCast(type)->declaration(m_currentContext->topContext());
             if (declaration) {
                 ifDebug(qCDebug(DUCHAIN) << "parent:" << declaration->toString();)
                 DUContext* context = declaration->internalContext();

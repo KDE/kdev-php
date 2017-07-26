@@ -34,6 +34,7 @@ private slots:
     void newObject();
     void functionCall();
     void memberFunctionCall();
+    void unsureMemberFunctionCall();
     void memberVariable();
     void variable();
     void varInString();
