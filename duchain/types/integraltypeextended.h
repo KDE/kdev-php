@@ -40,7 +40,8 @@ public:
     typedef KDevelop::TypePtr<IntegralTypeExtended> Ptr;
 
     enum PHPIntegralTypes {
-        TypeResource = KDevelop::IntegralType::TypeLanguageSpecific
+        TypeResource = KDevelop::IntegralType::TypeLanguageSpecific,
+        TypeCallable
     };
 
     /// Default constructor

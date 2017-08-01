@@ -738,12 +738,32 @@ void TestDUChain::declareTypehintCallableFunction()
     FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
     QVERIFY(fun);
     QCOMPARE(fun->arguments().count(), 1);
-    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first()));
-    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralType::TypeMixed);
+    QVERIFY(IntegralTypeExtended::Ptr::dynamicCast(fun->arguments().first()));
+    QVERIFY(IntegralTypeExtended::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralTypeExtended::TypeCallable);
 
-    IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
+    IntegralTypeExtended::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralTypeExtended>();
     QVERIFY(type);
-    QVERIFY(type->dataType() == IntegralType::TypeMixed);
+    QVERIFY(type->dataType() == IntegralTypeExtended::TypeCallable);
+}
+
+void Php::TestDUChain::functionWithCallableAndFunctionReturn()
+{
+    QByteArray method("<? function foo(callable $i) { return $i; return function () {}; } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(IntegralTypeExtended::Ptr::dynamicCast(fun->arguments().first()));
+    QVERIFY(IntegralTypeExtended::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralTypeExtended::TypeCallable);
+
+    IntegralTypeExtended::Ptr retType = IntegralTypeExtended::Ptr::dynamicCast(fun->returnType());
+    QVERIFY(retType);
+    QVERIFY(retType->dataType() == IntegralTypeExtended::TypeCallable);
 }
 
 void TestDUChain::declareTypehintIterableFunction()
@@ -914,11 +934,11 @@ void TestDUChain::declareTypehintWithPhpdocFunction()
     QVERIFY(type->dataType() == IntegralType::TypeInt);
 }
 
-void TestDUChain::declareNullableTypehintCallableFunction()
+void TestDUChain::declareNullableTypehintMixedFunction()
 {
     //                 0         1         2         3
     //                 0123456789012345678901234567890123
-    QByteArray method("<? function foo(?callable $i) { } ");
+    QByteArray method("<? function foo(?UnknownClass $i) { } ");
 
     TopDUContext* top = parse(method, DumpAll);
     DUChainReleaser releaseTop(top);

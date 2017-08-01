@@ -51,6 +51,8 @@ QString IntegralTypeExtended::toString() const
 {
     if ( d_func()->m_dataType == TypeResource ) {
         return QStringLiteral("resource");
+    } else if (d_func()->m_dataType == TypeCallable) {
+        return QStringLiteral("callable");
     }
     return KDevelop::IntegralType::toString();
 }

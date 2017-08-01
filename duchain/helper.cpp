@@ -447,6 +447,8 @@ AbstractType::Ptr determineTypehint(const T* parameterType, EditorIntegrator *ed
         type = AbstractType::Ptr(new IntegralType(IntegralType::TypeInt));
     } else if (parameterType->stringType != -1) {
         type = AbstractType::Ptr(new IntegralType(IntegralType::TypeString));
+    } else if (parameterType->callableType != -1) {
+        type = AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeCallable));
     } else if (parameterType->iterableType != -1) {
         DeclarationPointer traversableDecl = findDeclarationImportHelper(currentContext, QualifiedIdentifier("traversable"), ClassDeclarationType);
 

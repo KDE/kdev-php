@@ -445,11 +445,18 @@ void TypeBuilder::visitStatement(StatementAst* node)
                 type = rType->baseType();
             }
             if (ft->returnType() && !ft->returnType()->equals(type.data())) {
+                bool existingTypeIsCallable = ft->returnType().cast<IntegralTypeExtended>() &&
+                    ft->returnType().cast<IntegralTypeExtended>()->dataType() == IntegralTypeExtended::TypeCallable;
+                bool newTypeIsCallable = type.cast<IntegralTypeExtended>() &&
+                    type.cast<IntegralTypeExtended>()->dataType() == IntegralTypeExtended::TypeCallable;
                 if (ft->returnType().cast<IntegralType>()
                     && ft->returnType().cast<IntegralType>()->dataType() == IntegralType::TypeMixed)
                 {
                     //don't add TypeMixed to the list, just ignore
                     ft->setReturnType(type);
+                } else if ((existingTypeIsCallable && type.cast<FunctionType>()) || (newTypeIsCallable && ft->returnType().cast<FunctionType>())) {
+                    //If one type is "callable" and the other a real function, the result is just a "callable".
+                    ft->setReturnType(AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeCallable)));
                 } else {
                     UnsureType::Ptr retT;
                     if (ft->returnType().cast<UnsureType>()) {
