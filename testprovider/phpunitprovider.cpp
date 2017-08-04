@@ -117,7 +117,7 @@ void PhpUnitProvider::processContext(ReferencedTopDUContext referencedContext)
     foreach (Declaration* declaration, context->localDeclarations())
     {
         ClassDeclaration* classDeclaration = dynamic_cast<ClassDeclaration*>(declaration);
-        if (!classDeclaration || classDeclaration->isAbstract() || !classDeclaration->internalContext())
+        if (!classDeclaration || classDeclaration->classModifier() & ClassDeclarationData::Abstract || !classDeclaration->internalContext())
         {
             continue;
         }
@@ -147,7 +147,7 @@ void PhpUnitProvider::processTestCaseDeclaration(Declaration* d)
         return;
     }
 
-    if (!classDeclaration->isAbstract())
+    if (!(classDeclaration->classModifier() & ClassDeclarationData::Abstract))
     {
         foreach (Declaration* member, classDeclaration->internalContext()->localDeclarations())
         {

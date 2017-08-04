@@ -1320,7 +1320,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                             ImplementationItem::HelperType itype;
                             if (!member->isFunctionDeclaration()) {
                                 itype = ImplementationItem::OverrideVar;
-                            } else if (member->isAbstract()) {
+                            } else if (classFunc && classFunc->isAbstract()) {
                                 itype = ImplementationItem::Implement;
                             } else {
                                 itype = ImplementationItem::Override;
