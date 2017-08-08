@@ -25,11 +25,6 @@ target_link_libraries(kdevphpparser LINK_PRIVATE
 
 if(BUILD_TESTING)
     add_executable(php-parser main.cpp)
-    # hack to make phpdebugvisitor.h (generated at compile time)
-    # use the correct EXPORT tags when compiling in MinGW
-    if (MINGW)
-        add_definitions(-DMAKE_KDEV4PHPPARSER_LIB)
-    endif (MINGW)
     target_link_libraries(php-parser
         KDev::Tests
         KDev::Language
