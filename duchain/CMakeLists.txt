@@ -1,5 +1,7 @@
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-add_subdirectory(tests)
+if (BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
 
 set(duchain_SRCS
     types/indexedcontainer.cpp

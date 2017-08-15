@@ -1,4 +1,6 @@
-add_subdirectory(test)
+if (BUILD_TESTING)
+    add_subdirectory(test)
+endif()
 
 set(parser_STAT_SRCS
     phplexer.cpp
