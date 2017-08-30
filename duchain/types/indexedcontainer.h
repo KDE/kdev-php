@@ -82,8 +82,7 @@ public:
     bool equals(const AbstractType* rhs) const override;
 
     enum {
-// #warning check identity value (59)
-        Identity = 59
+        Identity = 52
     };
 
     typedef IndexedContainerData Data;
