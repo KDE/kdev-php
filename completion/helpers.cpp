@@ -131,7 +131,10 @@ void createArgumentList(const NormalDeclarationCompletionItem& item, QString& re
 
 
             if (num >= firstDefaultParam) {
-                ret += " = " + decl->defaultParameters()[defaultParamNum].str();
+                IndexedString defaultStr = decl->defaultParameters()[defaultParamNum];
+                if (!defaultStr.isEmpty()) {
+                    ret += " = " + defaultStr.str();
+                }
                 ++defaultParamNum;
             }
 

@@ -761,8 +761,8 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
         } else if ( node->parameterType && node->parameterType->objectType && symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0 ) {
             reportError(i18n("Default value for parameters with a class type hint can only be NULL."), node->defaultValue);
         }
-    } else if ( !node->defaultValue && funDec->defaultParametersSize() ) {
-        reportError(i18n("Following parameters must have a default value assigned."), node);
+    } else {
+        funDec->addDefaultParameter(IndexedString{});
     }
     {
         // create variable declaration for argument
