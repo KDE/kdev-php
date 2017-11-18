@@ -196,7 +196,7 @@ void DeclarationNavigationContext::htmlFunction()
 
       VariableDeclaration *argDec = dynamic_cast<VariableDeclaration*>(decls[currentArgNum]);
 
-      if (argDec->isVariadic()) {
+      if (argDec && argDec->isVariadic()) {
         AbstractType::Ptr variadicType;
         const auto indexed = argType.cast<IndexedContainer>();
         if (indexed && indexed->typesCount() == 1) {
