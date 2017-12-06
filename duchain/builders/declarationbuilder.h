@@ -154,7 +154,7 @@ private:
     QHash<qint64, ClassDeclaration*> m_types;
     QHash<qint64, FunctionDeclaration*> m_functions;
     QHash<qint64, NamespaceDeclaration*> m_namespaces;
-    QList<KDevelop::QualifiedIdentifier> m_upcomingClassVariables;
+    QVector<KDevelop::QualifiedIdentifier> m_upcomingClassVariables;
 
     /// handles common stuff for both interfaces and classes
     ClassDeclaration* openTypeDeclaration(IdentifierAst *name, KDevelop::ClassDeclarationData::ClassType type);

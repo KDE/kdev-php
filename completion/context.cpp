@@ -1443,14 +1443,14 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
     } else {
         //Show all visible declarations
         QSet<uint> existingIdentifiers;
-        QList<DeclarationDepthPair> decls = m_duContext->allDeclarations(
+        const auto decls = m_duContext->allDeclarations(
             CursorInRevision::invalid(),
             m_duContext->topContext()
         );
 
         qCDebug(COMPLETION) << "setContext: using all declarations visible:" << decls.size();
 
-        QListIterator<DeclarationDepthPair> i(decls);
+        QVectorIterator<DeclarationDepthPair> i(decls);
         i.toBack();
         while (i.hasPrevious()) {
             DeclarationDepthPair decl = i.previous();
