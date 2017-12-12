@@ -47,5 +47,5 @@ target_link_libraries( kcm_kdevphpdocs
 
 configure_file(kcm_kdevphpdocs.desktop.cmake ${CMAKE_CURRENT_BINARY_DIR}/kcm_kdevphpdocs.desktop)
 kcoreaddons_desktop_to_json(kcm_kdevphpdocs ${CMAKE_CURRENT_BINARY_DIR}/kcm_kdevphpdocs.desktop)
-install( TARGETS kcm_kdevphpdocs DESTINATION ${PLUGIN_INSTALL_DIR}/kdevplatform/${KDEV_PLUGIN_VERSION}/kcm )
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/kcm_kdevphpdocs.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+install(TARGETS kcm_kdevphpdocs DESTINATION ${KDE_INSTALL_PLUGINDIR}/kdevplatform/${KDEV_PLUGIN_VERSION}/kcm)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kcm_kdevphpdocs.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})

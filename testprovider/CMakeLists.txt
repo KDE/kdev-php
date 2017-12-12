@@ -22,13 +22,13 @@ target_link_libraries(kdevphpunitprovider LINK_PRIVATE
     KDev::Util
 )
 
-install(TARGETS kdevphpunitprovider DESTINATION ${PLUGIN_INSTALL_DIR}/kdevplatform/${KDEV_PLUGIN_VERSION} )
+install(TARGETS kdevphpunitprovider DESTINATION ${KDE_INSTALL_PLUGINDIR}/kdevplatform/${KDEV_PLUGIN_VERSION} )
 
 ########### install files ###############
 
 configure_file(kdevphpunitprovider.desktop.cmake ${CMAKE_CURRENT_BINARY_DIR}/kdevphpunitprovider.desktop)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kdevphpunitprovider.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kdevphpunitprovider.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 
-install( FILES phpunitdeclarations.php DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport )
+install(FILES phpunitdeclarations.php DESTINATION ${KDE_INSTALL_DATADIR}/kdevphpsupport)
 
 

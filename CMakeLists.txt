@@ -77,7 +77,7 @@ target_link_libraries(kdevphplanguagesupport
 )
 
 # not writeable so that the refactoring actions get hidden
-install(FILES phpfunctions.php DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
+install(FILES phpfunctions.php DESTINATION ${KDE_INSTALL_DATADIR}/kdevphpsupport PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
 
 # kdebugsettings file
 install(FILES kdevphpsupport.categories DESTINATION ${KDE_INSTALL_CONFDIR})
