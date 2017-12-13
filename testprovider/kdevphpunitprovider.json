@@ -1,0 +1,26 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Miha Čančula"
+            }
+        ],
+        "Category": "Testing",
+        "Description": "Finds and runs PHPUnit tests.",
+        "Icon": "application-x-php",
+        "Id": "kdevphpunitprovider",
+        "License": "GPL",
+        "Name": "PHPUnit Integration",
+        "ServiceTypes": [
+            "KDevelop/Plugin"
+        ]
+    },
+    "X-KDevelop-Category": "Global",
+    "X-KDevelop-IRequired": [
+        "org.kdevelop.PHPSupport"
+    ],
+    "X-KDevelop-Interfaces": [
+        "org.kdevelop.ITestProvider"
+    ],
+    "X-KDevelop-Mode": "GUI"
+}
