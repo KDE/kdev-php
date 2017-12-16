@@ -32,9 +32,11 @@ public:
 
 private slots:
     void declareFunction();
+    void declareSemiReservedFunction();
     void declareVar();
     void varTypehint();
     void declareClass();
+    void declareClassWithSemiReservedMethod();
     void classMemberVar();
     void declareTypehintFunction();
     void declareVariadicFunction();
@@ -74,8 +76,10 @@ private slots:
     void ownStaticMemberVariable();
     void classConst();
     void classConst_data();
+    void semiReservedClassConst();
     void fileConst();
     void fileConst_data();
+    void semiReservedFileConst();
     void define();
     void defaultFunctionParam();
     void defaultFunctionParamWithTypehint();

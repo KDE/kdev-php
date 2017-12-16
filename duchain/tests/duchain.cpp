@@ -86,6 +86,16 @@ void TestDUChain::declareFunction()
     QCOMPARE(top->childContexts().at(1)->type(), DUContext::Other);
 }
 
+void TestDUChain::declareSemiReservedFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function switch() {}");
+
+    TopDUContext* top = parse(method, DumpNone);
+    QVERIFY(!top);
+}
+
 void TestDUChain::declareVar()
 {
     //                 0         1         2         3         4         5         6         7
@@ -238,6 +248,67 @@ void TestDUChain::declareClass()
     QVERIFY(funDec);
     QCOMPARE(funDec->identifier(), Identifier("boo"));
     QCOMPARE(funDec->accessPolicy(), Declaration::Public);
+}
+
+void TestDUChain::declareClassWithSemiReservedMethod()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { public function switch($i) {} protected static function public() {} }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 1);
+
+    DUContext* contextClassA = top->childContexts().first();
+
+    QCOMPARE(top->localDeclarations().count(), 1);
+    Declaration* dec = top->localDeclarations().first();
+    QCOMPARE(dec->kind(), Declaration::Type);
+    QCOMPARE(dec->toString(), QString("class A"));
+    QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(dec->isDefinition(), true);
+    QCOMPARE(dec->logicalInternalContext(top), contextClassA);
+
+    qDebug() << contextClassA->localScopeIdentifier().toString();
+    QCOMPARE(contextClassA->localScopeIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(contextClassA->childContexts().count(), 4);
+    QCOMPARE(contextClassA->childContexts().first()->localScopeIdentifier(), QualifiedIdentifier("switch"));
+
+    DUContext* contextMethodBodyFoo = contextClassA->childContexts().at(1);
+    QCOMPARE(contextMethodBodyFoo->localScopeIdentifier(), QualifiedIdentifier("switch"));
+    QCOMPARE(contextMethodBodyFoo->importedParentContexts().count(), 1);
+    QCOMPARE(contextMethodBodyFoo->childContexts().count(), 0);
+    QVERIFY(contextMethodBodyFoo->importedParentContexts().first().context(top) ==
+            contextClassA->childContexts().first());
+
+    //switch()
+    dec = contextClassA->localDeclarations().at(0);
+    ClassFunctionDeclaration* funDec = dynamic_cast<ClassFunctionDeclaration*>(dec);
+    QVERIFY(funDec);
+    QCOMPARE(funDec->kind(), Declaration::Type);
+    QCOMPARE(funDec->identifier(), Identifier("switch"));
+    QCOMPARE(funDec->accessPolicy(), Declaration::Public);
+    QCOMPARE(funDec->isStatic(), false);
+
+    {
+        // no return means void as return type
+        FunctionType::Ptr ftype = FunctionType::Ptr::dynamicCast(dec->abstractType());
+        QVERIFY(ftype);
+        IntegralType::Ptr itype = IntegralType::Ptr::dynamicCast(ftype->returnType());
+        QVERIFY(itype->dataType() == IntegralType::TypeVoid);
+    }
+
+    //public()
+    dec = contextClassA->localDeclarations().at(1);
+    funDec = dynamic_cast<ClassFunctionDeclaration*>(dec);
+    QVERIFY(funDec);
+    QCOMPARE(funDec->identifier(), Identifier("public"));
+    QCOMPARE(funDec->accessPolicy(), Declaration::Protected);
+    QCOMPARE(funDec->isStatic(), true);
 }
 
 void TestDUChain::classMemberVar()
@@ -1305,6 +1376,26 @@ void TestDUChain::classConst()
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::C")).first()->context(), top->childContexts().last());
 }
 
+void TestDUChain::semiReservedClassConst()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { const SWITCH = 1; const PUBLIC = 'foo'; } ");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->childContexts().count(), 1);
+    QCOMPARE(top->problems().count(), 0);
+
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::SWITCH")).count(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::SWITCH")).first()->context(), top->childContexts().last());
+
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::PUBLIC")).count(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::PUBLIC")).first()->context(), top->childContexts().last());
+}
+
 void TestDUChain::fileConst_data()
 {
     QTest::addColumn<QString>("code");
@@ -1340,6 +1431,16 @@ void TestDUChain::fileConst()
     QVERIFY(type);
     QCOMPARE(type->dataType(), dataType);
     QVERIFY(type->modifiers() & AbstractType::ConstModifier);
+}
+
+void TestDUChain::semiReservedFileConst()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? const SWITCH = 1; ");
+
+    TopDUContext* top = parse(method, DumpNone);
+    QVERIFY(!top);
 }
 
 void TestDUChain::define()

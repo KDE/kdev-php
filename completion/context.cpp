@@ -678,6 +678,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_VOID:
         case Parser::Token_WHILE:
         case Parser::Token_WHITESPACE:
+        case Parser::Token_YIELD:
         /// TODO: code completion after goto
         case Parser::Token_GOTO:
         case Parser::TokenTypeSize:

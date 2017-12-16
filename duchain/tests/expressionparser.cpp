@@ -185,9 +185,17 @@ void TestExpressionParser::invalidTraitUse_data()
 {
     QTest::addColumn<QString>("code");
 
-    QTest::newRow("staticModifier") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as public static bla; } }\n";
+    QTest::newRow("abstractModifier") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as abstract bla; } }\n";
 
-    QTest::newRow("finalModifier") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as public final bla; } }\n";
+    QTest::newRow("staticModifier") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as static bla; } }\n";
+
+    QTest::newRow("finalModifier") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as final bla; } }\n";
+
+    QTest::newRow("abstract") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as abstract; } }\n";
+
+    QTest::newRow("static") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as static; } }\n";
+
+    QTest::newRow("final") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as final; } }\n";
 
     QTest::newRow("traitMethodCollision") << "<? trait A { public function foo(){} } trait B { public function foo(){} } class Foo { use A,B; }\n";
 

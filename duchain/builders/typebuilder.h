@@ -54,6 +54,7 @@ protected:
     void visitClassStatement(ClassStatementAst *node) override;
     void visitClassVariable(ClassVariableAst *node) override;
     void visitConstantDeclaration(ConstantDeclarationAst* node) override;
+    void visitClassConstantDeclaration(ClassConstantDeclarationAst* node) override;
     void visitParameter(ParameterAst *node) override;
     void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node) override;
     void visitClosure(ClosureAst* node) override;

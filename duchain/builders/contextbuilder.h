@@ -67,9 +67,14 @@ protected:
     KDevelop::CursorInRevision startPos( AstNode* node);
 
     KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id) override;
+    KDevelop::QualifiedIdentifier identifierForNode(SemiReservedIdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
     IdentifierPair identifierPairForNode(IdentifierAst* id);
+    IdentifierPair identifierPairForNode(SemiReservedIdentifierAst* id);
+    IdentifierPair identifierPairForNode(ReservedNonModifierIdentifierAst* id);
     QString stringForNode(IdentifierAst* node) const;
+    QString stringForNode(SemiReservedIdentifierAst* node) const;
+    QString stringForNode(ReservedNonModifierIdentifierAst* node) const;
     QString stringForNode(VariableIdentifierAst* node) const;
 
     void visitClassDeclarationStatement(ClassDeclarationStatementAst*) override;
@@ -103,6 +108,7 @@ protected:
                         KDevelop::IProblem::Severity severity = KDevelop::IProblem::Error);
 
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
+    KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, SemiReservedIdentifierAst* node);
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType,
                                                        const KDevelop::QualifiedIdentifier &identifier);

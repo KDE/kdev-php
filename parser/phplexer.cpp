@@ -810,6 +810,8 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_STRING_TYPE;
             } else if (name.compare(QLatin1String("void"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_VOID;
+            } else if (name.compare(QLatin1String("yield"), Qt::CaseInsensitive) == 0) {
+                token = Parser::Token_YIELD;
             } else {
                 token = Parser::Token_STRING;
             }

@@ -350,6 +350,22 @@ void TypeBuilder::visitConstantDeclaration(ConstantDeclarationAst* node)
     }
 }
 
+void TypeBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst* node)
+{
+    if (!m_gotTypeFromDocComment || !currentAbstractType()) {
+        AbstractType::Ptr type = getTypeForNode(node->scalar);
+        type->setModifiers(type->modifiers() | AbstractType::ConstModifier);
+        openAbstractType(type);
+
+        TypeBuilderBase::visitClassConstantDeclaration(node);
+
+        closeType();
+    } else {
+        currentAbstractType()->setModifiers(currentAbstractType()->modifiers() & AbstractType::ConstModifier);
+        TypeBuilderBase::visitClassConstantDeclaration(node);
+    }
+}
+
 void TypeBuilder::visitParameter(ParameterAst *node)
 {
     AbstractType::Ptr phpDocTypehint;

@@ -75,6 +75,7 @@ protected:
     void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node) override;
     void visitClassVariable(ClassVariableAst *node) override;
     void visitConstantDeclaration(ConstantDeclarationAst *node) override;
+    void visitClassConstantDeclaration(ClassConstantDeclarationAst *node) override;
     void visitTraitAliasStatement(TraitAliasStatementAst *node) override;
     virtual void createTraitAliasDeclarations(TraitAliasStatementAst *node, KDevelop::DeclarationPointer dec);
     void visitOuterTopStatement(OuterTopStatementAst* node) override;

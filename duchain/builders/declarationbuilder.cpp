@@ -620,6 +620,30 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
 void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
 {
     if (m_reportErrors) {
+        // check for redeclarations
+        DUChainWriteLocker lock(DUChain::lock());
+        foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first(), startPos(node->identifier)))
+        {
+            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
+                reportRedeclarationError(dec, node->identifier);
+                break;
+            }
+        }
+    }
+    ClassMemberDeclaration* dec = openDefinition<ClassMemberDeclaration>(identifierForNode(node->identifier), m_editor->findRange(node->identifier));
+    {
+        DUChainWriteLocker lock(DUChain::lock());
+        dec->setAccessPolicy(Declaration::Public);
+        dec->setStatic(true);
+        dec->setKind(Declaration::Instance);
+    }
+    DeclarationBuilderBase::visitConstantDeclaration(node);
+    closeDeclaration();
+}
+
+void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
+{
+    if (m_reportErrors) {
         // Check for constants in traits
         if (isMatch(currentDeclaration(), ClassDeclarationType)) {
             ClassDeclaration *parent =  dynamic_cast<ClassDeclaration*>(currentDeclaration());
@@ -628,6 +652,12 @@ void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
             if (parent->classType() == ClassDeclarationData::Trait) {
                 reportError(i18n("Traits cannot have constants."), node);
             }
+        }
+
+        // check for 'class' constant
+        if (identifierForNode(node->identifier).toString().toLower() == QLatin1String("class"))
+        {
+            reportError(i18n("A class constant must not be called 'class'; it is reserved for class name fetching"), node);
         }
 
         // check for redeclarations
@@ -640,14 +670,14 @@ void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
             }
         }
     }
-    ClassMemberDeclaration* dec = openDefinition<ClassMemberDeclaration>(node->identifier, node->identifier);
+    ClassMemberDeclaration* dec = openDefinition<ClassMemberDeclaration>(identifierForNode(node->identifier), m_editor->findRange(node->identifier));
     {
         DUChainWriteLocker lock(DUChain::lock());
         dec->setAccessPolicy(Declaration::Public);
         dec->setStatic(true);
         dec->setKind(Declaration::Instance);
     }
-    DeclarationBuilderBase::visitConstantDeclaration(node);
+    DeclarationBuilderBase::visitClassConstantDeclaration(node);
     closeDeclaration();
 }
 
@@ -674,6 +704,8 @@ void DeclarationBuilder::createTraitAliasDeclarations(TraitAliasStatementAst *no
     QualifiedIdentifier alias;
     if (node->aliasIdentifier) {
         alias = identifierPairForNode(node->aliasIdentifier).second;
+    } else if (node->aliasNonModifierIdentifier) {
+        alias = identifierPairForNode(node->aliasNonModifierIdentifier).second;
     } else {
         alias = original;
     }
@@ -683,9 +715,14 @@ void DeclarationBuilder::createTraitAliasDeclarations(TraitAliasStatementAst *no
         TraitMethodAliasDeclaration* newdec;
 
         // no existing declaration found, create one
-        if (node->aliasIdentifier) {
-            newdec = openDefinition<TraitMethodAliasDeclaration>(alias, m_editor->findRange(node->aliasIdentifier));
-            newdec->setPrettyName(identifierPairForNode(node->aliasIdentifier).first);
+        if (node->aliasIdentifier || node->aliasNonModifierIdentifier) {
+            if (node->aliasIdentifier) {
+                newdec = openDefinition<TraitMethodAliasDeclaration>(alias, m_editor->findRange(node->aliasIdentifier));
+                newdec->setPrettyName(identifierPairForNode(node->aliasIdentifier).first);
+            } else {
+                newdec = openDefinition<TraitMethodAliasDeclaration>(alias, m_editor->findRange(node->aliasNonModifierIdentifier));
+                newdec->setPrettyName(identifierPairForNode(node->aliasNonModifierIdentifier).first);
+            }
             newdec->setAccessPolicy(olddec->accessPolicy());
             openAbstractType(olddec->abstractType());
             if (node->modifiers) {
@@ -697,13 +734,15 @@ void DeclarationBuilder::createTraitAliasDeclarations(TraitAliasStatementAst *no
                     newdec->setAccessPolicy(Declaration::Private);
                 }
 
+                if (node->modifiers->modifiers & ModifierAbstract) {
+                    reportError(i18n("Cannot use 'abstract' as method modifier"), node->modifiers, IProblem::Error);
+                }
                 if (node->modifiers->modifiers & ModifierFinal) {
                     reportError(i18n("Cannot use 'final' as method modifier"), node->modifiers, IProblem::Error);
                 }
                 if (node->modifiers->modifiers & ModifierStatic) {
                     reportError(i18n("Cannot use 'static' as method modifier"), node->modifiers, IProblem::Error);
                 }
-
             }
         } else {
             CursorInRevision cursor = m_editor->findRange(node->importIdentifier).start;
@@ -711,6 +750,26 @@ void DeclarationBuilder::createTraitAliasDeclarations(TraitAliasStatementAst *no
             newdec->setPrettyName(identifierPairForNode(node->importIdentifier->methodIdentifier).first);
             newdec->setAccessPolicy(olddec->accessPolicy());
             openAbstractType(olddec->abstractType());
+
+            if (node->modifiers) {
+                if (node->modifiers->modifiers & ModifierPublic) {
+                    newdec->setAccessPolicy(Declaration::Public);
+                } else if (node->modifiers->modifiers & ModifierProtected) {
+                    newdec->setAccessPolicy(Declaration::Protected);
+                } else if (node->modifiers->modifiers & ModifierPrivate) {
+                    newdec->setAccessPolicy(Declaration::Private);
+                }
+
+                if (node->modifiers->modifiers & ModifierAbstract) {
+                    reportError(i18n("Cannot use 'abstract' as method modifier"), node->modifiers, IProblem::Error);
+                }
+                if (node->modifiers->modifiers & ModifierFinal) {
+                    reportError(i18n("Cannot use 'final' as method modifier"), node->modifiers, IProblem::Error);
+                }
+                if (node->modifiers->modifiers & ModifierStatic) {
+                    reportError(i18n("Cannot use 'static' as method modifier"), node->modifiers, IProblem::Error);
+                }
+            }
         }
         newdec->setKind(Declaration::Type);
         newdec->setAliasedDeclaration(IndexedDeclaration(olddec));

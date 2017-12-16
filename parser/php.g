@@ -238,7 +238,7 @@ namespace KDevelop
        REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use"),
        GOTO ("goto"), TRAIT ("trait"), INSTEADOF ("insteadof"), CALLABLE ("callable"),
        ITERABLE ("iterable"), BOOL ("bool"), FLOAT ("float"), INT ("int"), STRING_TYPE ("string"),
-       VOID ("void"), DIR ("__DIR__"), TRAIT_C ("__TRAIT__") ;;
+       VOID ("void"), DIR ("__DIR__"), TRAIT_C ("__TRAIT__"), YIELD ("yield") ;;
 
 -- casts:
 %token INT_CAST ("int cast"), DOUBLE_CAST ("double cast"), STRING_CAST ("string cast"),
@@ -656,7 +656,7 @@ expression=nullCoalesceExpression
         LPAREN stringParameterList=functionCallParameterList RPAREN
       | PAAMAYIM_NEKUDOTAYIM
         (
-            stringFunctionName=identifier LPAREN stringParameterList=functionCallParameterList RPAREN
+            stringFunctionName=semiReservedIdentifier LPAREN stringParameterList=functionCallParameterList RPAREN
             | varFunctionName=variableWithoutObjects LPAREN stringParameterList=functionCallParameterList RPAREN
             | LBRACE (expr=expr) RBRACE LPAREN stringParameterList=functionCallParameterList RPAREN
         )
@@ -727,6 +727,9 @@ expression=nullCoalesceExpression
 
     identifier=identifier ASSIGN scalar=expr
 -> constantDeclaration ;;
+
+    identifier=semiReservedIdentifier ASSIGN scalar=expr
+-> classConstantDeclaration ;;
 
    SEMICOLON | CLOSE_TAG
 -> semicolonOrCloseTag ;;
@@ -842,8 +845,7 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
   ( PAAMAYIM_NEKUDOTAYIM classConstant=classConstant | 0 )
 -> constantOrClassConst ;;
 
-    CLASS
-  | identifier
+  semiReservedIdentifier
 -> classConstant ;;
 
     #encaps=encaps*
@@ -945,6 +947,47 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
      string=STRING
 -> identifier ;;
 
+      INCLUDE | INCLUDE_ONCE | EVAL | REQUIRE | REQUIRE_ONCE | LOGICAL_OR | LOGICAL_XOR | LOGICAL_AND
+    | INSTANCEOF | NEW | CLONE | EXIT | IF | ELSEIF | ELSE | ENDIF | ECHO | DO | WHILE | ENDWHILE
+    | FOR | ENDFOR | FOREACH | ENDFOREACH | DECLARE | ENDDECLARE | AS | TRY | CATCH | FINALLY
+    | THROW | USE | INSTEADOF | GLOBAL | VAR | UNSET | ISSET | EMPTY | CONTINUE | GOTO
+    | FUNCTION | CONST | RETURN | PRINT | YIELD | LIST | SWITCH | ENDSWITCH | CASE | DEFAULT | BREAK
+    | ARRAY | CALLABLE | EXTENDS | IMPLEMENTS | NAMESPACE | TRAIT | INTERFACE | CLASS
+    | CLASS_C | TRAIT_C | FUNC_C | METHOD_C | LINE | FILE | DIR | NAMESPACE_C
+-> reservedNonModifiers ;;
+
+      reservedNonModifiers
+    | STATIC | ABSTRACT | FINAL | PRIVATE | PROTECTED | PUBLIC
+-> semiReserved ;;
+
+      identifier
+[:
+    qint64 index = tokenStream->index() - 2;
+    (*yynode)->string = index;
+:]
+    | semiReserved
+[:
+    qint64 index = tokenStream->index() - 2;
+    (*yynode)->string = index;
+:]
+-> semiReservedIdentifier [
+     member variable string: qint64;
+] ;;
+
+      identifier
+[:
+    qint64 index = tokenStream->index() - 2;
+    (*yynode)->string = index;
+:]
+    | reservedNonModifiers
+[:
+    qint64 index = tokenStream->index() - 2;
+    (*yynode)->string = index;
+:]
+-> reservedNonModifierIdentifier [
+     member variable string: qint64;
+] ;;
+
      variable=VARIABLE
 -> variableIdentifier ;;
 
@@ -991,11 +1034,11 @@ try/recover(#classStatements=classStatement)*
  RBRACE [: rewind(tokenStream->index() - 2); :]
 -> classBody ;;
 
-    CONST #consts=constantDeclaration @ COMMA SEMICOLON
+    CONST #consts=classConstantDeclaration @ COMMA SEMICOLON
   | VAR variable=classVariableDeclaration SEMICOLON
   | modifiers=optionalModifiers
     ( variable=classVariableDeclaration SEMICOLON
-      | FUNCTION (BIT_AND | 0) methodName=identifier LPAREN parameters=parameterList RPAREN
+      | FUNCTION (BIT_AND | 0) methodName=semiReservedIdentifier LPAREN parameters=parameterList RPAREN
         ( COLON returnType=returnType | 0)
         methodBody=methodBody
     )
@@ -1006,10 +1049,18 @@ try/recover(#classStatements=classStatement)*
         @ (SEMICOLON [: if (yytoken == Token_RBRACE) { break; } :]) RBRACE
 -> traitAliasDeclaration ;;
 
-    importIdentifier=traitAliasIdentifier (AS (modifiers=optionalModifiers | 0) aliasIdentifier=identifier|INSTEADOF #conflictIdentifier=namespacedIdentifier @ COMMA)
+    importIdentifier=traitAliasIdentifier
+-- first/first conflict resolved by LA(2)
+-- We can either have a single token (modifier or identifier), or a combination
+    ( AS (?[: LA(2).kind == Token_SEMICOLON :]
+        (modifiers=traitVisibilityModifiers | aliasNonModifierIdentifier=reservedNonModifierIdentifier)
+        | modifiers=traitVisibilityModifiers aliasIdentifier=semiReservedIdentifier
+      )
+      | INSTEADOF #conflictIdentifier=namespacedIdentifier @ COMMA
+    )
 -> traitAliasStatement ;;
 
-    identifier=namespacedIdentifier PAAMAYIM_NEKUDOTAYIM methodIdentifier=identifier
+    identifier=namespacedIdentifier PAAMAYIM_NEKUDOTAYIM methodIdentifier=semiReservedIdentifier
 -> traitAliasIdentifier ;;
 
     SEMICOLON -- abstract method
@@ -1021,6 +1072,16 @@ try/recover(#classStatements=classStatement)*
 
     variable=variableIdentifier (ASSIGN value=staticScalar | 0)
 -> classVariable ;;
+
+    PUBLIC     [: (*yynode)->modifiers |= ModifierPublic;     :]
+  | PROTECTED  [: (*yynode)->modifiers |= ModifierProtected;  :]
+  | PRIVATE    [: (*yynode)->modifiers |= ModifierPrivate;    :]
+  | STATIC     [: (*yynode)->modifiers |= ModifierStatic;     :]
+  | ABSTRACT   [: (*yynode)->modifiers |= ModifierAbstract;   :]
+  | FINAL      [: (*yynode)->modifiers |= ModifierFinal;      :]
+-> traitVisibilityModifiers[
+     member variable modifiers: unsigned int;
+] ;;
 
   (
     PUBLIC     [: (*yynode)->modifiers |= ModifierPublic;      :]
