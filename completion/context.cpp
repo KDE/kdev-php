@@ -437,7 +437,6 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_CONSTANT_ENCAPSED_STRING:
             {
                 // support something like `include dirname(__FILE__) . "/...`
-                ///TODO: include __DIR__ . "/ (php 5.3)
                 bool isAfterDirname = false;
                 //NOTE: prependedBy will return -1 on failure, this is what we need in these cases
                 //      on success it will return a positive number, we'll need to switch it's sign in that case
@@ -449,7 +448,16 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
                     if ( lastToken.stringAt(relPos + 1).compare(QLatin1String("dirname"), Qt::CaseInsensitive) == 0 ) {
                         isAfterDirname = true;
                     }
+                } else {
+                    relPos = lastToken.prependedBy(TokenList() << Parser::Token_CONCAT << Parser::Token_DIR, true);
+
+                    if ( relPos != -1 ) {
+                        // switch sign
+                        relPos = -relPos;
+                        isAfterDirname = true;
+                    }
                 }
+
                 skipWhiteSpace(lastToken, relPos);
                 if ( lastToken.typeAt(relPos) == Parser::Token_LPAREN ) {
                     --relPos;
@@ -612,6 +620,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_CONTINUE:
         case Parser::Token_DECLARE:
         case Parser::Token_DEFAULT:
+        case Parser::Token_DIR:
         case Parser::Token_DNUMBER:
         case Parser::Token_DO:
         case Parser::Token_DOLLAR:
@@ -661,6 +670,7 @@ CodeCompletionContext::CodeCompletionContext(KDevelop::DUContextPointer context,
         case Parser::Token_STRING_VARNAME:
         case Parser::Token_SWITCH:
         case Parser::Token_TRAIT:
+        case Parser::Token_TRAIT_C:
         case Parser::Token_TRY:
         case Parser::Token_UNSET:
         case Parser::Token_USE:

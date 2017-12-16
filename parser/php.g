@@ -238,7 +238,7 @@ namespace KDevelop
        REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use"),
        GOTO ("goto"), TRAIT ("trait"), INSTEADOF ("insteadof"), CALLABLE ("callable"),
        ITERABLE ("iterable"), BOOL ("bool"), FLOAT ("float"), INT ("int"), STRING_TYPE ("string"),
-       VOID ("void") ;;
+       VOID ("void"), DIR ("__DIR__"), TRAIT_C ("__TRAIT__") ;;
 
 -- casts:
 %token INT_CAST ("int cast"), DOUBLE_CAST ("double cast"), STRING_CAST ("string cast"),
@@ -870,8 +870,10 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
   | DNUMBER                  [: (*yynode)->scalarType = ScalarTypeFloat; :]
   | string=CONSTANT_ENCAPSED_STRING [: (*yynode)->scalarType = ScalarTypeString; :] stringIndex=stringIndexSpecifier*
   | LINE                     [: (*yynode)->scalarType = ScalarTypeInt; :]
+  | DIR                      [: (*yynode)->scalarType = ScalarTypeString; :]
   | FILE                     [: (*yynode)->scalarType = ScalarTypeString; :]
   | CLASS_C                  [: (*yynode)->scalarType = ScalarTypeString; :]
+  | TRAIT_C                  [: (*yynode)->scalarType = ScalarTypeString; :]
   | METHOD_C                 [: (*yynode)->scalarType = ScalarTypeString; :]
   | FUNC_C                   [: (*yynode)->scalarType = ScalarTypeString; :]
   | NAMESPACE_C              [: (*yynode)->scalarType = ScalarTypeString; :]

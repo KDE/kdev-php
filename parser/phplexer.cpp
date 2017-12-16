@@ -774,6 +774,8 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_ARRAY;
             } else if (name.compare(QLatin1String("__class__"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_CLASS_C;
+            } else if (name.compare(QLatin1String("__trait__"), Qt::CaseInsensitive) == 0) {
+                token = Parser::Token_TRAIT_C;
             } else if (name.compare(QLatin1String("__method__"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_METHOD_C;
             } else if (name.compare(QLatin1String("__function__"), Qt::CaseInsensitive) == 0) {
@@ -782,6 +784,8 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_LINE;
             } else if (name.compare(QLatin1String("__file__"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_FILE;
+            } else if (name.compare(QLatin1String("__dir__"), Qt::CaseInsensitive) == 0) {
+                token = Parser::Token_DIR;
             } else if (name.compare(QLatin1String("or"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_LOGICAL_OR;
             } else if (name.compare(QLatin1String("and"), Qt::CaseInsensitive) == 0) {

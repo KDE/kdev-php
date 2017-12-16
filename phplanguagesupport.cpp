@@ -148,8 +148,8 @@ bool isMagicConstant(QPair<QString, Range> word) {
     if ( word.second.isValid() && !word.second.isEmpty() ) {
         if ( word.first == QLatin1String("__FILE__") || word.first == QLatin1String("__LINE__") ||
              word.first == QLatin1String("__METHOD__") || word.first == QLatin1String("__CLASS__") ||
-             word.first == QLatin1String("__FUNCTION__") || word.first == QLatin1String("__NAMESPACE__")
-             ///TODO: php 5.3: __DIR__
+             word.first == QLatin1String("__FUNCTION__") || word.first == QLatin1String("__NAMESPACE__") ||
+             word.first == QLatin1String("__DIR__") || word.first == QLatin1String("__TRAIT__")
            )
         {
             ///TODO: maybe we should use the tokenizer to really make sure this is such a token

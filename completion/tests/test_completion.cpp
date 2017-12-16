@@ -1024,10 +1024,14 @@ void TestCompletion::fileCompletion()
     foreach ( const QString& code, QStringList() << "include \"" << "include_once \"" << "require_once \""
                                                  << "require \"" << "include ( \""
                                                  << "include dirname(__FILE__) . \"/"
+                                                 << "include dirname(__FILE__) . '/"
                                                  << "include ( dirname(__FILE__) . \"/"
                                                  << "include '" << "include ( '"
                                                  << "include ( dirname(__FILE__) . '/"
-                                                 /** TODO:  << "include __DIR__ . \"/" */ )
+                                                 << "include __DIR__ . \"/"
+                                                 << "include __DIR__ . '/"
+                                                 << "include ( __DIR__ . \"/"
+                                                 << "include ( __DIR__ . '/" )
     {
         qDebug() << code;
         PhpCompletionTester tester(top, code);
