@@ -643,6 +643,7 @@ void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
 
 void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
 {
+    DUChainWriteLocker lock;
     if (m_reportErrors) {
         // Check for constants in traits
         if (isMatch(currentDeclaration(), ClassDeclarationType)) {
@@ -661,7 +662,6 @@ void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationA
         }
 
         // check for redeclarations
-        DUChainWriteLocker lock(DUChain::lock());
         foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first(), startPos(node->identifier)))
         {
             if (wasEncountered(dec) && !dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
@@ -671,12 +671,11 @@ void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationA
         }
     }
     ClassMemberDeclaration* dec = openDefinition<ClassMemberDeclaration>(identifierForNode(node->identifier), m_editor->findRange(node->identifier));
-    {
-        DUChainWriteLocker lock(DUChain::lock());
-        dec->setAccessPolicy(Declaration::Public);
-        dec->setStatic(true);
-        dec->setKind(Declaration::Instance);
-    }
+    dec->setAccessPolicy(Declaration::Public);
+    dec->setStatic(true);
+    dec->setKind(Declaration::Instance);
+    lock.unlock();
+
     DeclarationBuilderBase::visitClassConstantDeclaration(node);
     closeDeclaration();
 }
