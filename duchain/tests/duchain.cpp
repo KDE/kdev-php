@@ -2117,6 +2117,26 @@ void TestDUChain::circularInheritance()
              top->localDeclarations().at(1)->internalContext());
 }
 
+void TestDUChain::circularInterface()
+{
+    QByteArray method("<? interface a {} class b implements a {} class c extends b implements a {}");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->problems().count(), 0);
+
+    QVERIFY(top->localDeclarations().at(0)->internalContext()->importedParentContexts().empty());
+    QCOMPARE(top->localDeclarations().at(1)->internalContext()->importedParentContexts().count(), 1);
+    QCOMPARE(top->localDeclarations().at(1)->internalContext()->importedParentContexts().first().context(top),
+             top->localDeclarations().at(0)->internalContext());
+    QCOMPARE(top->localDeclarations().at(2)->internalContext()->importedParentContexts().count(), 1);
+    QCOMPARE(top->localDeclarations().at(2)->internalContext()->importedParentContexts().first().context(top),
+             top->localDeclarations().at(1)->internalContext());
+}
+
 void TestDUChain::findDeclarations()
 {
     DUChainWriteLocker lock(DUChain::lock());

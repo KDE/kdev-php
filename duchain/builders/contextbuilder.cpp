@@ -456,7 +456,7 @@ void ContextBuilder::addBaseType(NamespacedIdentifierAst * identifier)
                 base.access = Declaration::Public;
                 base.virtualInheritance = false;
                 currentClass->addBaseClass(base);
-            } else if (m_reportErrors) {
+            } else if (m_reportErrors && baseClass->classType() != ClassDeclarationData::Interface) {
                 reportError(i18n("Circular inheritance of %1 and %2", currentClass->toString(), baseClass->toString()), identifier);
             }
         }

@@ -116,6 +116,7 @@ private slots:
     void superglobalInFunction();
     void returnWithoutFunction();
     void circularInheritance();
+    void circularInterface();
     void findDeclarations();
     void memberTypeAfterMethod();
     void catchDeclaration();
