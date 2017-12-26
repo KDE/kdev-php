@@ -97,16 +97,6 @@ foreach (array_keys($constants) as $c) {
     }
 }
 
-if ( !DEBUG ) {
-    // The dir function, which lacks parseable documentation...
-    $classes['global']['functions'][] = array(
-        'name' => "dir",
-        'params' => array(array('name' => "path", 'type' => "string", 'isRef' => false)),
-        'type' => "Directory",
-        'desc' => "Return an instance of the Directory class"
-    );
-}
-
 $skipFunctions = array();
 // remove delete() function which only acts as a pointer to unlink
 // in the documentation but does not actually exist as a alias in PHP
@@ -206,10 +196,12 @@ uksort($classes, 'strnatcasecmp');
 uksort($constants, 'strnatcasecmp');
 
 // put exception up front
-$exception = $classes['exception'];
-unset($classes['exception']);
-$classes = array_merge(array('exception' => $exception), $classes);
-reset($classes);
+if (array_key_exists('exception', $classes)) {
+    $exception = $classes['exception'];
+    unset($classes['exception']);
+    $classes = array_merge(array('exception' => $exception), $classes);
+    reset($classes);
+}
 
 foreach ($variables as $name=>$var) {
     $declarationCount++;
@@ -236,6 +228,9 @@ foreach ($classes as $class => $i) {
     if ($class != 'global') {
         if (isset($i['desc'])) {
             $out .= prepareComment($i['desc'], array());
+        }
+        if (!empty($i['namespace'])) {
+            $out .= 'namespace ' . $i['namespace'] . " {\n";
         }
         $class = $i['prettyName'];
         $out .= ($i['isInterface'] ? 'interface' : 'class') . " " . $class;
@@ -283,13 +278,18 @@ foreach ($classes as $class => $i) {
         } else if ( $class != 'global' && in_array($f['name'], $skipMethods) ) {
             continue;
         }
+        if ($endpos = strrpos($f['name'], '\\')) {
+            $out .= 'namespace ' . substr($f['name'], 0, $endpos) . " {\n\n";
+            $f['name'] = substr($f['name'], $endpos + 1);
+        }
         $moreDesc = array();
         foreach ($f['params'] as $pi=>$param) {
             $desc = '';
             if ( isset($param['desc']) ) {
                 $desc = trim($param['desc']);
             }
-            $moreDesc[] = "@param {$param['type']} \${$param['name']} $desc";
+            $param_name = str_replace('$...', '...$', '$'.$param['name']);
+            $moreDesc[] = "@param {$param['type']} $param_name $desc";
         }
         if ($f['type']) {
             $moreDesc[] = "@return {$f['type']}";
@@ -309,7 +309,9 @@ foreach ($classes as $class => $i) {
             if (!$first) $out .= ", ";
             $first = false;
             if ($param['isRef']) $out .= "&";
-            $out .= '$'.$param['name'];
+            $param_name = str_replace('$...', '...$', '$'.$param['name']);
+            $param_name = str_replace('"', '', $param_name);
+            $out .= $param_name;
         }
         $out .= ")";
         if ( !$i['isInterface'] ) {
@@ -318,10 +320,12 @@ foreach ($classes as $class => $i) {
             $out .= ";";
         }
         $out .= "\n\n";
+        if ($endpos) $out .= "}\n\n";
         $declarationCount++;
     }
 
     if ($class != 'global') $out .= "}\n";
+    if (!empty($i['namespace'])) $out .= "}\n";
 }
 foreach ($constants as $c=>$ctype) {
     if (strpos($c, '::')===false) {
@@ -376,7 +380,15 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         $string = preg_replace('#'.preg_quote('<section xml:id="'.$i.'">').'.*?</section>#s', '', $string);
     }
     echo "reading documentation from {$file->getPathname()}\n";
+
+    libxml_use_internal_errors(TRUE);
     $xml = simplexml_load_string($string,  "SimpleXMLElement",  LIBXML_NOCDATA);
+
+    if ($xml === false) {
+      echo "  parsing XMl failed!\n";
+      return false;
+    }
+
 
     if ( $file->getFilename() == 'versions.xml' ) {
         foreach ( $xml->xpath('/versions/function') as $f ) {
@@ -398,6 +410,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
                     $v = array();
                 }
                 if (substr($i, 0, 1) != '$') continue;
+                if (substr($i, -10) == ' [removed]') continue;
 
                 if (substr($i, -13) == ' [deprecated]') {
                     $i = substr($i, 0, -13);
@@ -531,13 +544,22 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
 
     if (isset($xml->refsect1->methodsynopsis)) {
         foreach( $xml->refsect1->methodsynopsis as $synopsis ) {
-            newMethodEntry('global', $synopsis->methodname, $funcOverload, $synopsis, $desc, $xml);
+            if (isset($synopsis->methodname->replaceable)) {
+                newMethodEntry('global', $synopsis->methodname->replaceable, $funcOverload, $synopsis, $desc, $xml);
+            } else {
+                newMethodEntry('global', $synopsis->methodname, $funcOverload, $synopsis, $desc, $xml);
+            }
+
             $addedSomething = true;
         }
     }
     if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->methodsynopsis)) {
         $methodsynopsis = $xml->refsect1->classsynopsis->methodsynopsis;
-        newMethodEntry($xml->refsect1->classsynopsis->ooclass->classname, $methodsynopsis->methodname, $funcOverload, $methodsynopsis, $desc, $xml);
+        if (isset($synopsis->methodname->replaceable)) {
+            newMethodEntry($xml->refsect1->classsynopsis->ooclass->classname, $methodsynopsis->methodname->replaceable, $funcOverload, $methodsynopsis, $desc, $xml);
+        } else {
+            newMethodEntry($xml->refsect1->classsynopsis->ooclass->classname, $methodsynopsis->methodname, $funcOverload, $methodsynopsis, $desc, $xml);
+        }
         $addedSomething = true;
     }
     if ( !$addedSomething && isset($xml->refnamediv->refpurpose->function) ) {
@@ -565,18 +587,30 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
  */
 function newClassEntry($name) {
     global $classes, $isInterface;
+    if (strpos($name, '\\') !== false) {
+      $endpos = strrpos($name, '\\');
+      $class = substr($name, $endpos + 1);
+      $namespace = substr($name, 0, $endpos);
+    } else {
+      $class = $name;
+      $namespace = null;
+    }
+    // This affects OCI-Collection and OCI-Log
+    // Technically, this creates wrong class names, but they are otherwise illegal syntax...
+    $class = str_replace('-','',$class);
     $lower = strtolower($name);
     if (!isset($classes[$lower])) {
         $classes[$lower] = array(
             'functions' => array(),
             'properties' => array(),
-            'prettyName' => $name,
+            'namespace' => $namespace,
+            'prettyName' => $class,
             'desc' => '',
             'isInterface' => $isInterface,
         );
     } else {
-        if ( $lower != $name ) {
-            $classes[$lower]['prettyName'] = $name;
+        if ( $lower != $class ) {
+            $classes[$lower]['prettyName'] = $class;
         }
         if ( $isInterface ) {
             $classes[$lower]['isInterface'] = true;
@@ -662,7 +696,9 @@ function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc
         if (!trim($paramName)) continue;
         $paramName = str_replace('/', '', $paramName);
         $paramName = str_replace('-', '', $paramName);
+        $paramName = str_replace('$', '', $paramName);
         $paramName = trim(trim(trim($paramName), '*'), '&');
+        if ($pipe_pos = strpos($paramName, '|')) $paramName = substr($paramName, 0, $pipe_pos);
         if (is_numeric(substr($paramName, 0, 1))) $paramName = '_'.$paramName;
         $params[] = array(
             'name' => $paramName,
