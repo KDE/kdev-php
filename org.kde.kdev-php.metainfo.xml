@@ -3,8 +3,8 @@
   <id>org.kde.kdev-php</id>
   <extends>org.kde.kdevelop.desktop</extends>
   <name>KDevelop PHP Support</name>
-  <name xml:lang="ca">Implementació de PHP al KDevelop</name>
-  <name xml:lang="ca-valencia">Implementació de PHP al KDevelop</name>
+  <name xml:lang="ca">Implementació de PHP del KDevelop</name>
+  <name xml:lang="ca-valencia">Implementació de PHP del KDevelop</name>
   <name xml:lang="en-GB">KDevelop PHP Support</name>
   <name xml:lang="es">Implementación de PHP para KDevelop</name>
   <name xml:lang="nl">PHP ondersteuning in KDevelop</name>
@@ -14,8 +14,8 @@
   <name xml:lang="uk">Підтримка PHP KDevelop</name>
   <name xml:lang="x-test">xxKDevelop PHP Supportxx</name>
   <summary>PHP language support for KDevelop</summary>
-  <summary xml:lang="ca">Implementació del llenguatge PHP al KDevelop</summary>
-  <summary xml:lang="ca-valencia">Implementació del llenguatge PHP al KDevelop</summary>
+  <summary xml:lang="ca">Implementació del llenguatge PHP per al KDevelop</summary>
+  <summary xml:lang="ca-valencia">Implementació del llenguatge PHP per al KDevelop</summary>
   <summary xml:lang="en-GB">PHP language support for KDevelop</summary>
   <summary xml:lang="es">Implementación del lenguaje PHP para KDevelop</summary>
   <summary xml:lang="nl">Ondersteuning van PHP-taal voor KDevelop</summary>
