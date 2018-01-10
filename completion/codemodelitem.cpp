@@ -77,7 +77,6 @@ QVariant CodeModelCompletionItem::data(const QModelIndex& index, int role, const
     case CodeCompletionModel::ExpandingWidget: {
         if (!declaration()) return QVariant();
         QWidget *nav = new NavigationWidget(declaration(), model->currentTopContext());
-        model->addNavigationWidget(this, nav);
 
         QVariant v;
         v.setValue<QWidget*>(nav);
