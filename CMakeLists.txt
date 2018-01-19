@@ -30,7 +30,7 @@ find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS
     I18n
     KCMUtils
 )
-find_package(KDevPlatform ${KDEVPLATFORM_VERSION} REQUIRED)
+find_package(KDevPlatform ${KDEVPLATFORM_VERSION} CONFIG REQUIRED)
 find_package(KDevelop-PG-Qt REQUIRED)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
