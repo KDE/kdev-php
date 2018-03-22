@@ -31,4 +31,4 @@ target_link_libraries(kdevphpcompletion LINK_PRIVATE
     kdevphpparser
 )
 
-install(TARGETS kdevphpcompletion DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS kdevphpcompletion EXPORT KDevPHPTargets DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
