@@ -8,8 +8,8 @@ set(parser_STAT_SRCS
 )
 
 kdevpgqt_generate(parser_SRCS php NAMESPACE Php DEBUG_VISITOR TOKEN_TEXT
-    "${php_SOURCE_DIR}/parser/php.g"
-    "${php_SOURCE_DIR}/parser/phplexer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/php.g"
+    "${CMAKE_CURRENT_SOURCE_DIR}/phplexer.h"
 )
 ecm_qt_declare_logging_category(parser_SRCS
     HEADER parserdebug.h
