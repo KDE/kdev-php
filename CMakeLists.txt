@@ -11,6 +11,7 @@ include(ECMQtDeclareLoggingCategory)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(GenerateExportHeader)
+include(CMakePackageConfigHelpers)
 include(ECMSetupVersion)
 include(FeatureSummary)
 
@@ -96,9 +97,7 @@ install(FILES kdevphpsupport.categories DESTINATION ${KDE_INSTALL_CONFDIR})
 # create a Config.cmake and a ConfigVersion.cmake file and install them
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KDevPHP")
 
-include(ECMPackageConfigHelpers)
-
-ecm_configure_package_config_file(
+configure_package_config_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/KDevPHPConfig.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/KDevPHPConfig.cmake"
   INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
