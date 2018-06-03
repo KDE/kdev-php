@@ -191,6 +191,12 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
     closeType();
     closeDeclaration();
     m_upcomingClassVariables.clear();
+
+    QString className = classDec->prettyName().str();
+
+    if (isReservedClassName(className)) {
+        reportError(i18n("Cannot use '%1' as class name as it is reserved", className), node->className);
+    }
 }
 
 void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
@@ -200,6 +206,12 @@ void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclaration
     DeclarationBuilderBase::visitInterfaceDeclarationStatement(node);
     closeType();
     closeDeclaration();
+
+    QString interfaceName = interfaceDec->prettyName().str();
+
+    if (isReservedClassName(interfaceName)) {
+        reportError(i18n("Cannot use '%1' as class name as it is reserved", interfaceName), node->interfaceName);
+    }
 }
 
 void DeclarationBuilder::visitTraitDeclarationStatement(TraitDeclarationStatementAst * node)
@@ -210,6 +222,12 @@ void DeclarationBuilder::visitTraitDeclarationStatement(TraitDeclarationStatemen
     closeType();
     closeDeclaration();
     m_upcomingClassVariables.clear();
+
+    QString traitName = traitDec->prettyName().str();
+
+    if (isReservedClassName(traitName)) {
+        reportError(i18n("Cannot use '%1' as class name as it is reserved", traitName), node->traitName);
+    }
 }
 
 ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, ClassDeclarationData::ClassType type)
@@ -691,7 +709,6 @@ void DeclarationBuilder::visitTraitAliasStatement(TraitAliasStatementAst *node)
     }
 
     lock.unlock();
-
     DeclarationBuilderBase::visitTraitAliasStatement(node);
 }
 
@@ -816,7 +833,8 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
         funDec->addDefaultParameter(IndexedString(symbol));
         if (node->isVariadic != -1) {
             reportError(i18n("Variadic parameter cannot have a default value"), node->defaultValue);
-        } else if ( node->parameterType && node->parameterType->objectType && symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0 ) {
+        } else if (node->parameterType && node->parameterType->typehint && isClassTypehint(node->parameterType->typehint, m_editor)
+                && symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0 ) {
             reportError(i18n("Default value for parameters with a class type hint can only be NULL."), node->defaultValue);
         }
     } else {
@@ -832,6 +850,16 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
     }
 
     DeclarationBuilderBase::visitParameter(node);
+
+    if (node->parameterType && node->parameterType->typehint && isClassTypehint(node->parameterType->typehint, m_editor)) {
+        NamespacedIdentifierAst* typehintNode = node->parameterType->typehint->genericType;
+        const KDevPG::ListNode< IdentifierAst* >* it = typehintNode->namespaceNameSequence->back();
+        QString className = m_editor->parseSession()->symbol(it->element);
+
+        if (isReservedClassName(className)) {
+            reportError(i18n("Cannot use '%1' as class name as it is reserved", className), typehintNode);
+        }
+    }
 
     if (m_functionDeclarationPreviousArgument && m_functionDeclarationPreviousArgument->isVariadic != -1) {
         reportError(i18n("Only the last parameter can be variadic."), m_functionDeclarationPreviousArgument);
@@ -860,6 +888,19 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
     closeType();
     closeDeclaration();
 }
+
+void DeclarationBuilder::visitReturnType(ReturnTypeAst* node) {
+    if (node->typehint && isClassTypehint(node->typehint, m_editor)) {
+        NamespacedIdentifierAst* typehintNode = node->typehint->genericType;
+        const KDevPG::ListNode< IdentifierAst* >* it = typehintNode->namespaceNameSequence->back();
+        QString className = m_editor->parseSession()->symbol(it->element);
+
+        if (isReservedClassName(className)) {
+            reportError(i18n("Cannot use '%1' as class name as it is reserved", className), typehintNode);
+        }
+    }
+}
+
 void DeclarationBuilder::visitClosure(ClosureAst* node)
 {
     setComment(formatComment(node, editor()));
@@ -1521,6 +1562,14 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
         decl->setKind(Declaration::NamespaceAlias);
     }
     closeDeclaration();
+
+    if (node->aliasIdentifier) {
+        QString aliasName = m_editor->parseSession()->symbol(node->aliasIdentifier);
+
+        if (isReservedClassName(aliasName)) {
+            reportError(i18n("Cannot use %1 as %2 because '%2' is a special class name", qid.toString(), aliasName), node->aliasIdentifier);
+        }
+    }
 }
 
 void DeclarationBuilder::updateCurrentType()
@@ -1560,5 +1609,18 @@ void DeclarationBuilder::encounter(Declaration* dec)
         setEncountered(dec);
     }
 }
+
+bool DeclarationBuilder::isReservedClassName(QString className)
+{
+    return className.compare(QLatin1String("string"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("bool"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("int"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("float"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("iterable"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("null"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("true"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("false"), Qt::CaseInsensitive) == 0;
+}
+
 
 }

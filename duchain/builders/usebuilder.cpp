@@ -64,8 +64,8 @@ ReferencedTopDUContext UseBuilder::build ( const IndexedString& url, AstNode* no
 
 void UseBuilder::visitParameter(ParameterAst *node)
 {
-    if (node->parameterType && node->parameterType->objectType) {
-        buildNamespaceUses(node->parameterType->objectType);
+    if (node->parameterType && node->parameterType->typehint && isClassTypehint(node->parameterType->typehint, m_editor)) {
+        buildNamespaceUses(node->parameterType->typehint->genericType);
     }
     if (node->defaultValue) {
         visitNodeWithExprVisitor(node->defaultValue);
@@ -276,8 +276,8 @@ void UseBuilder::visitNodeWithExprVisitor(AstNode* node)
 }
 
 void UseBuilder::visitReturnType(ReturnTypeAst* node) {
-    if (node->objectType) {
-        buildNamespaceUses(node->objectType);
+    if (node->typehint && isClassTypehint(node->typehint, m_editor)) {
+        buildNamespaceUses(node->typehint->genericType);
     }
 }
 

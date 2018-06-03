@@ -39,6 +39,7 @@ struct AstNode;
 struct CommonScalarAst;
 struct NamespacedIdentifierAst;
 struct ParameterAst;
+struct GenericTypeHintAst;
 struct ReturnTypeAst;
 class EditorIntegrator;
 
@@ -51,6 +52,8 @@ enum DeclarationType {
 };
 
 KDEVPHPDUCHAIN_EXPORT bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);
+
+KDEVPHPDUCHAIN_EXPORT bool isClassTypehint(GenericTypeHintAst* parameterType, EditorIntegrator *editor);
 
 KDEVPHPDUCHAIN_EXPORT KDevelop::DeclarationPointer findDeclarationImportHelper(KDevelop::DUContext* currentContext,
                                                                                const KDevelop::QualifiedIdentifier& id,

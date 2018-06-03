@@ -798,16 +798,6 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_NAMESPACE_C;
             } else if (name.compare(QLatin1String("callable"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_CALLABLE;
-            } else if (name.compare(QLatin1String("iterable"), Qt::CaseInsensitive) == 0) {
-                token = Parser::Token_ITERABLE;
-            } else if (name.compare(QLatin1String("bool"), Qt::CaseInsensitive) == 0) {
-                token = Parser::Token_BOOL;
-            } else if (name.compare(QLatin1String("float"), Qt::CaseInsensitive) == 0) {
-                token = Parser::Token_FLOAT;
-            } else if (name.compare(QLatin1String("int"), Qt::CaseInsensitive) == 0) {
-                token = Parser::Token_INT;
-            } else if (name.compare(QLatin1String("string"), Qt::CaseInsensitive) == 0) {
-                token = Parser::Token_STRING_TYPE;
             } else if (name.compare(QLatin1String("void"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_VOID;
             } else if (name.compare(QLatin1String("yield"), Qt::CaseInsensitive) == 0) {

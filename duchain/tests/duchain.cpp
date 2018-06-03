@@ -86,6 +86,35 @@ void TestDUChain::declareFunction()
     QCOMPARE(top->childContexts().at(1)->type(), DUContext::Other);
 }
 
+void TestDUChain::declareBaseTypeFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function string() {}");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->localDeclarations().count(), 1);
+
+    Declaration* dec = top->localDeclarations().at(0);
+    QVERIFY(dec);
+    QCOMPARE(dec->context(), top);
+    QCOMPARE(dec->internalContext(), top->childContexts().at(1));
+
+    // no return means void as return type
+    FunctionType::Ptr ftype = FunctionType::Ptr::dynamicCast(dec->abstractType());
+    QVERIFY(ftype);
+    IntegralType::Ptr itype = IntegralType::Ptr::dynamicCast(ftype->returnType());
+    QVERIFY(itype->dataType() == IntegralType::TypeVoid);
+
+
+    QCOMPARE(top->childContexts().at(0)->type(), DUContext::Function);
+    QCOMPARE(top->childContexts().at(1)->type(), DUContext::Other);
+}
+
 void TestDUChain::declareSemiReservedFunction()
 {
     //                 0         1         2         3         4         5         6         7
@@ -250,6 +279,20 @@ void TestDUChain::declareClass()
     QCOMPARE(funDec->accessPolicy(), Declaration::Public);
 }
 
+void TestDUChain::declareBaseTypeClass()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class String {}");
+
+    TopDUContext* top = parse(method, DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->problems().count(), 1);
+}
+
 void TestDUChain::declareClassWithSemiReservedMethod()
 {
     //                 0         1         2         3         4         5         6         7
@@ -307,6 +350,67 @@ void TestDUChain::declareClassWithSemiReservedMethod()
     funDec = dynamic_cast<ClassFunctionDeclaration*>(dec);
     QVERIFY(funDec);
     QCOMPARE(funDec->identifier(), Identifier("public"));
+    QCOMPARE(funDec->accessPolicy(), Declaration::Protected);
+    QCOMPARE(funDec->isStatic(), true);
+}
+
+void TestDUChain::declareClassWithBaseTypeMethod()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { public function string($i) {} protected static function iterable() {} }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 1);
+
+    DUContext* contextClassA = top->childContexts().first();
+
+    QCOMPARE(top->localDeclarations().count(), 1);
+    Declaration* dec = top->localDeclarations().first();
+    QCOMPARE(dec->kind(), Declaration::Type);
+    QCOMPARE(dec->toString(), QString("class A"));
+    QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(dec->isDefinition(), true);
+    QCOMPARE(dec->logicalInternalContext(top), contextClassA);
+
+    qDebug() << contextClassA->localScopeIdentifier().toString();
+    QCOMPARE(contextClassA->localScopeIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(contextClassA->childContexts().count(), 4);
+    QCOMPARE(contextClassA->childContexts().first()->localScopeIdentifier(), QualifiedIdentifier("string"));
+
+    DUContext* contextMethodBodyFoo = contextClassA->childContexts().at(1);
+    QCOMPARE(contextMethodBodyFoo->localScopeIdentifier(), QualifiedIdentifier("string"));
+    QCOMPARE(contextMethodBodyFoo->importedParentContexts().count(), 1);
+    QCOMPARE(contextMethodBodyFoo->childContexts().count(), 0);
+    QVERIFY(contextMethodBodyFoo->importedParentContexts().first().context(top) ==
+            contextClassA->childContexts().first());
+
+    //string()
+    dec = contextClassA->localDeclarations().at(0);
+    ClassFunctionDeclaration* funDec = dynamic_cast<ClassFunctionDeclaration*>(dec);
+    QVERIFY(funDec);
+    QCOMPARE(funDec->kind(), Declaration::Type);
+    QCOMPARE(funDec->identifier(), Identifier("string"));
+    QCOMPARE(funDec->accessPolicy(), Declaration::Public);
+    QCOMPARE(funDec->isStatic(), false);
+
+    {
+        // no return means void as return type
+        FunctionType::Ptr ftype = FunctionType::Ptr::dynamicCast(dec->abstractType());
+        QVERIFY(ftype);
+        IntegralType::Ptr itype = IntegralType::Ptr::dynamicCast(ftype->returnType());
+        QVERIFY(itype->dataType() == IntegralType::TypeVoid);
+    }
+
+    //iterable()
+    dec = contextClassA->localDeclarations().at(1);
+    funDec = dynamic_cast<ClassFunctionDeclaration*>(dec);
+    QVERIFY(funDec);
+    QCOMPARE(funDec->identifier(), Identifier("iterable"));
     QCOMPARE(funDec->accessPolicy(), Declaration::Protected);
     QCOMPARE(funDec->isStatic(), true);
 }
@@ -1380,7 +1484,7 @@ void TestDUChain::semiReservedClassConst()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A { const SWITCH = 1; const PUBLIC = 'foo'; } ");
+    QByteArray method("<? class A { const SWITCH = 1; const PUBLIC = 'foo'; const STRING = 'bar'; } ");
 
     TopDUContext* top = parse(method, DumpNone);
     DUChainReleaser releaseTop(top);
@@ -1394,6 +1498,9 @@ void TestDUChain::semiReservedClassConst()
 
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::PUBLIC")).count(), 1);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::PUBLIC")).first()->context(), top->childContexts().last());
+
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::STRING")).count(), 1);
+    QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::STRING")).first()->context(), top->childContexts().last());
 }
 
 void TestDUChain::fileConst_data()
@@ -3008,6 +3115,31 @@ void TestDUChain::namespacesNoCurly()
     QCOMPARE(top->localDeclarations().at(1)->kind(), Declaration::Namespace);
 }
 
+void TestDUChain::namespacesBaseType()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "namespace string;\n"
+                              "function a(){}\n"
+                              "define('b', 0);\n"
+                              "class c {}\n"
+                              "\n"
+                              , DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QCOMPARE(top->problems().count(), 0);
+    foreach(ProblemPointer p, top->problems()) {
+        qDebug() << p->description() << p->explanation() << p->finalLocation();
+    }
+    QCOMPARE(top->childContexts().size(), 1);
+    QCOMPARE(top->childContexts().at(0)->localScopeIdentifier().toString(), QString("string"));
+
+    QCOMPARE(top->localDeclarations().size(), 1);
+    QCOMPARE(top->localDeclarations().at(0)->kind(), Declaration::Namespace);
+}
+
 void TestDUChain::useNamespace()
 {
     //               0         1         2         3         4         5         6         7
@@ -3047,6 +3179,66 @@ void TestDUChain::useNamespace()
     QVERIFY(dynamic_cast<NamespaceAliasDeclaration*>(dec));
     ///TODO: find out why this is explictly required
     QVERIFY(!dynamic_cast<NamespaceAliasDeclaration*>(dec)->importIdentifier().explicitlyGlobal());
+}
+
+void TestDUChain::useBaseTypeNamespace()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "namespace ns1\\string {\n"
+                              "function a(){}\n"
+                              "const b = 0;\n"
+                              "class c {}\n"
+                              "}\n"
+                              "namespace ns3\\iterable {\n"
+                              "function a(){}\n"
+                              "const b = 0;\n"
+                              "class c {}\n"
+                              "}\n"
+                              "namespace {\n"
+                              "use ns1\\string, ns3\\iterable;\n"
+                              "}\n"
+                              , DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QCOMPARE(top->localDeclarations().count(), 4);
+
+    Declaration* dec = top->localDeclarations().at(2);
+    QCOMPARE(dec->qualifiedIdentifier().toString(), QString("string"));
+    QVERIFY(dynamic_cast<NamespaceAliasDeclaration*>(dec));
+
+    dec = top->localDeclarations().at(3);
+    QCOMPARE(dec->qualifiedIdentifier().toString(), QString("iterable"));
+    QVERIFY(dynamic_cast<NamespaceAliasDeclaration*>(dec));
+}
+
+void TestDUChain::useNamespaceBaseTypeAlias()
+{
+    //               0         1         2         3         4         5         6         7
+    //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "namespace ns1\\string {\n"
+                              "function a(){}\n"
+                              "const b = 0;\n"
+                              "class c {}\n"
+                              "}\n"
+                              "namespace ns3\\iterable {\n"
+                              "function a(){}\n"
+                              "const b = 0;\n"
+                              "class c {}\n"
+                              "}\n"
+                              "namespace {\n"
+                              "use ns1\\string as iterable, ns3\\iterable as bool;\n"
+                              "}\n"
+                              , DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->problems().count(), 2);
 }
 
 void TestDUChain::namespaceStaticVar()

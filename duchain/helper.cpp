@@ -86,6 +86,37 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
     return false;
 }
 
+bool isClassTypehint(GenericTypeHintAst* genericType, EditorIntegrator *editor)
+{
+    Q_ASSERT(genericType);
+
+    if (genericType->callableType != -1) {
+        return false;
+    } else if (genericType->arrayType != -1) {
+        return false;
+    } else if (genericType->genericType) {
+        NamespacedIdentifierAst* node = genericType->genericType;
+        const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
+        QString typehint = editor->parseSession()->symbol(it->element);
+
+        if (typehint.compare(QLatin1String("bool"), Qt::CaseInsensitive) == 0) {
+            return false;
+        } else if (typehint.compare(QLatin1String("float"), Qt::CaseInsensitive) == 0) {
+            return false;
+        } else if (typehint.compare(QLatin1String("int"), Qt::CaseInsensitive) == 0) {
+            return false;
+        } else if (typehint.compare(QLatin1String("string"), Qt::CaseInsensitive) == 0) {
+            return false;
+        } else if (typehint.compare(QLatin1String("iterable"), Qt::CaseInsensitive) == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    } else {
+        return false;
+    }
+}
+
 DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const QualifiedIdentifier& id,
         DeclarationType declarationType)
 {
@@ -425,44 +456,52 @@ QualifiedIdentifier identifierWithNamespace(const QualifiedIdentifier& base, DUC
 }
 
 template <class T>
-AbstractType::Ptr determineTypehint(const T* parameterType, EditorIntegrator *editor, DUContext* currentContext)
+AbstractType::Ptr determineTypehint(const T* genericType, EditorIntegrator *editor, DUContext* currentContext)
 {
-    Q_ASSERT(parameterType);
+    Q_ASSERT(genericType);
     AbstractType::Ptr type;
 
-    if (parameterType->objectType) {
-        //don't use openTypeFromName as it uses cursor for findDeclarations
-        DeclarationPointer decl = findDeclarationImportHelper(currentContext,
-                                                    identifierForNamespace(parameterType->objectType, editor), ClassDeclarationType);
-        if (decl) {
-            type = decl->abstractType();
-        }
-    } else if (parameterType->arrayType != -1) {
-        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
-    } else if (parameterType->boolType != -1) {
-        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean));
-    } else if (parameterType->floatType != -1) {
-        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeFloat));
-    } else if (parameterType->intType != -1) {
-        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeInt));
-    } else if (parameterType->stringType != -1) {
-        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeString));
-    } else if (parameterType->callableType != -1) {
-        type = AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeCallable));
-    } else if (parameterType->iterableType != -1) {
-        DeclarationPointer traversableDecl = findDeclarationImportHelper(currentContext, QualifiedIdentifier("traversable"), ClassDeclarationType);
+    if (genericType->typehint) {
+        if (genericType->typehint->callableType != -1) {
+            type = AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeCallable));
+        } else if (genericType->typehint->arrayType != -1) {
+            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
+        } else if (genericType->typehint->genericType) {
+            NamespacedIdentifierAst* node = genericType->typehint->genericType;
+            const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
+            QString typehint = editor->parseSession()->symbol(it->element);
 
-        if (traversableDecl) {
-            UnsureType::Ptr unsure(new UnsureType());
-            AbstractType::Ptr arrayType = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
-            unsure->addType(arrayType->indexed());
-            unsure->addType(traversableDecl->abstractType()->indexed());
+            if (typehint.compare(QLatin1String("bool"), Qt::CaseInsensitive) == 0) {
+                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean));
+            } else if (typehint.compare(QLatin1String("float"), Qt::CaseInsensitive) == 0) {
+                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeFloat));
+            } else if (typehint.compare(QLatin1String("int"), Qt::CaseInsensitive) == 0) {
+                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeInt));
+            } else if (typehint.compare(QLatin1String("string"), Qt::CaseInsensitive) == 0) {
+                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeString));
+            } else if (typehint.compare(QLatin1String("iterable"), Qt::CaseInsensitive) == 0) {
+                DeclarationPointer traversableDecl = findDeclarationImportHelper(currentContext, QualifiedIdentifier("traversable"), ClassDeclarationType);
 
-            type = AbstractType::Ptr(unsure);
+                if (traversableDecl) {
+                    UnsureType::Ptr unsure(new UnsureType());
+                    AbstractType::Ptr arrayType = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
+                    unsure->addType(arrayType->indexed());
+                    unsure->addType(traversableDecl->abstractType()->indexed());
+
+                    type = AbstractType::Ptr(unsure);
+                }
+            } else {
+                //don't use openTypeFromName as it uses cursor for findDeclarations
+                DeclarationPointer decl = findDeclarationImportHelper(currentContext,
+                                                            identifierForNamespace(genericType->typehint->genericType, editor), ClassDeclarationType);
+                if (decl) {
+                    type = decl->abstractType();
+                }
+            }
         }
     }
 
-    if (type && parameterType->isNullable != -1) {
+    if (type && genericType->isNullable != -1) {
         AbstractType::Ptr nullType = AbstractType::Ptr(new IntegralType(IntegralType::TypeNull));
         if (type.cast<UnsureType>()) {
             UnsureType::Ptr unsure = type.cast<UnsureType>();

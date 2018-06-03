@@ -32,11 +32,14 @@ public:
 
 private slots:
     void declareFunction();
+    void declareBaseTypeFunction();
     void declareSemiReservedFunction();
     void declareVar();
     void varTypehint();
     void declareClass();
+    void declareBaseTypeClass();
     void declareClassWithSemiReservedMethod();
+    void declareClassWithBaseTypeMethod();
     void classMemberVar();
     void declareTypehintFunction();
     void declareVariadicFunction();
@@ -149,7 +152,10 @@ private slots:
     void upcommingClassInString();
     void namespaces();
     void namespacesNoCurly();
+    void namespacesBaseType();
     void useNamespace();
+    void useBaseTypeNamespace();
+    void useNamespaceBaseTypeAlias();
     void namespaceStaticVar();
     void namespacedCatch();
     void errorRecovery_data();

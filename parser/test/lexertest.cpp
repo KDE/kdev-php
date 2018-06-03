@@ -471,7 +471,7 @@ void LexerTest::testReturnTypeHints()
     COMPARE_TOKEN(ts, 5, Parser::Token_RPAREN, 1, 11, 1, 11);
     COMPARE_TOKEN(ts, 6, Parser::Token_COLON, 1, 12, 1, 12);
     COMPARE_TOKEN(ts, 7, Parser::Token_WHITESPACE, 1, 13, 1, 13);
-    COMPARE_TOKEN(ts, 8, Parser::Token_STRING_TYPE, 1, 14, 1, 19);
+    COMPARE_TOKEN(ts, 8, Parser::Token_STRING, 1, 14, 1, 19);
     COMPARE_TOKEN(ts, 9, Parser::Token_WHITESPACE, 1, 20, 1, 20);
     COMPARE_TOKEN(ts, 10, Parser::Token_LBRACE, 1, 21, 1, 21);
     COMPARE_TOKEN(ts, 11, Parser::Token_RBRACE, 1, 22, 1, 22);

@@ -237,7 +237,6 @@ namespace KDevelop
        INCLUDE ("include"), INCLUDE_ONCE ("include_once"), EVAL ("eval"), REQUIRE ("require"),
        REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use"),
        GOTO ("goto"), TRAIT ("trait"), INSTEADOF ("insteadof"), CALLABLE ("callable"),
-       ITERABLE ("iterable"), BOOL ("bool"), FLOAT ("float"), INT ("int"), STRING_TYPE ("string"),
        VOID ("void"), DIR ("__DIR__"), TRAIT_C ("__TRAIT__"), YIELD ("yield") ;;
 
 -- casts:
@@ -896,27 +895,16 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
     (isVariadic=ELLIPSIS | 0) variable=variableIdentifier (ASSIGN defaultValue=expr | 0)
 -> parameter ;;
 
-    (isNullable=QUESTION | 0) (
-        objectType=namespacedIdentifier
-      | arrayType=ARRAY
-      | callableType=CALLABLE
-      | iterableType=ITERABLE
-      | boolType=BOOL
-      | floatType=FLOAT
-      | intType=INT
-      | stringType=STRING_TYPE
-    )
+    genericType=namespacedIdentifier
+  | arrayType=ARRAY
+  | callableType=CALLABLE
+-> genericTypeHint ;;
+
+    (isNullable=QUESTION | 0) typehint=genericTypeHint
 -> parameterType ;;
 
     (isNullable=QUESTION | 0) (
-        objectType=namespacedIdentifier
-      | arrayType=ARRAY
-      | callableType=CALLABLE
-      | iterableType=ITERABLE
-      | boolType=BOOL
-      | floatType=FLOAT
-      | intType=INT
-      | stringType=STRING_TYPE
+        typehint=genericTypeHint
       | voidType=VOID
     )
 -> returnType ;;
