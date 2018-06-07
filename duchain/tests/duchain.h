@@ -44,6 +44,7 @@ private slots:
     void declareTypehintFunction();
     void declareVariadicFunction();
     void declareTypehintVariadicFunction();
+    void declareTypehintObjectFunction();
     void declareTypehintArrayFunction();
     void declareTypehintCallableFunction();
     void functionWithCallableAndFunctionReturn();
@@ -66,6 +67,7 @@ private slots:
     void declarationReturnTypeClassChain();
     void declarationReturnTypeTypehint();
     void declarationReturnTypeTypehintVoid();
+    void declarationReturnTypeTypehintObject();
     void classImplementsInterface();
     void classExtends();
     void staticMethod();

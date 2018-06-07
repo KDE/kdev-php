@@ -86,7 +86,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         }
     } else {
         if (!type.compare(QLatin1String("object"), Qt::CaseInsensitive)) {
-            type = QStringLiteral("stdclass");
+            return AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeObject));
         }
         //don't use openTypeFromName as it uses cursor for findDeclarations
         DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,

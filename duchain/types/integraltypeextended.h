@@ -41,7 +41,8 @@ public:
 
     enum PHPIntegralTypes {
         TypeResource = KDevelop::IntegralType::TypeLanguageSpecific,
-        TypeCallable
+        TypeCallable,
+        TypeObject
     };
 
     /// Default constructor

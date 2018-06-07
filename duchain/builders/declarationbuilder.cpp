@@ -833,9 +833,18 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
         funDec->addDefaultParameter(IndexedString(symbol));
         if (node->isVariadic != -1) {
             reportError(i18n("Variadic parameter cannot have a default value"), node->defaultValue);
-        } else if (node->parameterType && node->parameterType->typehint && isClassTypehint(node->parameterType->typehint, m_editor)
-                && symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0 ) {
+        } else if (node->parameterType && node->parameterType->typehint && isClassTypehint(node->parameterType->typehint, m_editor) &&
+                symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0) {
             reportError(i18n("Default value for parameters with a class type hint can only be NULL."), node->defaultValue);
+        } else if (node->parameterType && node->parameterType->typehint && node->parameterType->typehint->genericType &&
+                symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0) {
+            NamespacedIdentifierAst* typehintNode = node->parameterType->typehint->genericType;
+            const KDevPG::ListNode< IdentifierAst* >* it = typehintNode->namespaceNameSequence->back();
+            QString typehintName = m_editor->parseSession()->symbol(it->element);
+
+            if (typehintName.compare(QLatin1String("object"), Qt::CaseInsensitive) == 0) {
+                reportError(i18n("Default value for parameters with an object type can only be NULL."), node->defaultValue);
+            }
         }
     } else {
         funDec->addDefaultParameter(IndexedString{});
@@ -1617,6 +1626,7 @@ bool DeclarationBuilder::isReservedClassName(QString className)
             || className.compare(QLatin1String("int"), Qt::CaseInsensitive) == 0
             || className.compare(QLatin1String("float"), Qt::CaseInsensitive) == 0
             || className.compare(QLatin1String("iterable"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("object"), Qt::CaseInsensitive) == 0
             || className.compare(QLatin1String("null"), Qt::CaseInsensitive) == 0
             || className.compare(QLatin1String("true"), Qt::CaseInsensitive) == 0
             || className.compare(QLatin1String("false"), Qt::CaseInsensitive) == 0;

@@ -667,8 +667,8 @@ void TestDUChain::declarationReturnTypeDocBlock()
     dec = top->localDeclarations().at(3);
     fType = dec->type<FunctionType>();
     QVERIFY(fType);
-    QVERIFY(StructureType::Ptr::dynamicCast(fType->returnType()));
-    QCOMPARE(StructureType::Ptr::dynamicCast(fType->returnType())->qualifiedIdentifier(), QualifiedIdentifier("stdclass"));
+    QVERIFY(IntegralTypeExtended::Ptr::dynamicCast(fType->returnType()));
+    QVERIFY(IntegralTypeExtended::Ptr::dynamicCast(fType->returnType())->dataType() == IntegralTypeExtended::TypeObject);
 
     //test hint in internal functions file of a type that is added later on
     // function
@@ -781,6 +781,26 @@ void TestDUChain::declarationReturnTypeTypehintVoid()
     QVERIFY(returnType->dataType() == IntegralType::TypeVoid);
 }
 
+void TestDUChain::declarationReturnTypeTypehintObject()
+{
+    //Typehint preferred over phpdoc preferred over inferred type
+    QByteArray method("<? /** @return string **/ function foo(): object { return new stdClass(); }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->localDeclarations().count(), 1);
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    IntegralTypeExtended::Ptr returnType = IntegralTypeExtended::Ptr::dynamicCast(fun->returnType());
+    QVERIFY(returnType);
+    QVERIFY(returnType->dataType() == IntegralTypeExtended::TypeObject);
+}
+
 void TestDUChain::declareTypehintFunction()
 {
     //                 0         1         2         3         4         5         6         7
@@ -875,6 +895,28 @@ void TestDUChain::declareTypehintVariadicFunction()
     AbstractType::Ptr typehint = arg.cast<IndexedContainer>()->typeAt(0).abstractType();
     QVERIFY(typehint);
     QCOMPARE(typehint->toString(), QStringLiteral("A"));
+}
+
+void TestDUChain::declareTypehintObjectFunction()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo(object $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first()));
+    QVERIFY(IntegralType::Ptr::dynamicCast(fun->arguments().first())->dataType() == IntegralTypeExtended::TypeObject);
+
+    IntegralTypeExtended::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralTypeExtended>();
+    QVERIFY(type);
+    QVERIFY(type->dataType() == IntegralTypeExtended::TypeObject);
 }
 
 void TestDUChain::declareTypehintArrayFunction()
