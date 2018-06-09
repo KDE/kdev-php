@@ -56,6 +56,7 @@ protected:
     void visitAssignmentExpression(AssignmentExpressionAst *node) override;
     void visitArrayIndexSpecifier(ArrayIndexSpecifierAst* node) override;
     void visitCompoundVariableWithSimpleIndirectReference(CompoundVariableWithSimpleIndirectReferenceAst *node) override;
+    void visitVarExpression(VarExpressionAst *node) override;
     void visitVarExpressionNewObject(VarExpressionNewObjectAst *node) override;
     void visitVarExpressionArray(VarExpressionArrayAst *node) override;
     void visitClosure(ClosureAst* node) override;
@@ -74,6 +75,7 @@ protected:
     void visitRelationalExpression(RelationalExpressionAst* node) override;
     void visitRelationalExpressionRest(RelationalExpressionRestAst* node) override;
     void visitEqualityExpressionRest(EqualityExpressionRestAst* node) override;
+    void visitStatement(StatementAst* node) override;
 
     QString stringForNode(AstNode* id);
     KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
@@ -94,6 +96,40 @@ protected:
 protected:
     EditorIntegrator* m_editor;
 
+    /**
+     * Opens the given closure return type, and sets it to be the current closure return type.
+     */
+    void openClosureReturnType(const KDevelop::AbstractType::Ptr& type)
+    {
+        m_closureReturnTypes.append(type);
+    }
+
+    /**
+     * Close the current closure return type.
+     */
+    void closeClosureReturnType()
+    {
+        // And the reference will be lost...
+        m_closureReturnTypes.pop();
+    }
+
+    /**
+     * Retrieve the return type of the current closure.
+     *
+     * \returns the abstract type of the current context.
+     */
+    inline KDevelop::AbstractType::Ptr currentClosureReturnType()
+    {
+        if (m_closureReturnTypes.isEmpty()) {
+            return KDevelop::AbstractType::Ptr();
+        } else {
+            return m_closureReturnTypes.top();
+        }
+    }
+
+  /// Determine if the expression visitor has a return type for the current closure. \returns true if there is a current closure return type, else returns false.
+  inline bool hasCurrentClosureReturnType() { return !m_closureReturnTypes.isEmpty(); }
+
 private:
     KDevelop::DUContext* findClassContext(NamespacedIdentifierAst* className);
     KDevelop::DUContext* findClassContext(IdentifierAst* className);
@@ -104,6 +140,7 @@ private:
     KDevelop::DUContext* m_currentContext;
 
     ExpressionEvaluationResult m_result;
+    KDevelop::Stack<KDevelop::AbstractType::Ptr> m_closureReturnTypes;
 
     bool m_isAssignmentExpressionEqual;
     bool m_inDefine;

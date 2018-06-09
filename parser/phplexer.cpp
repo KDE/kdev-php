@@ -801,7 +801,24 @@ int Lexer::nextTokenKind()
             } else if (name.compare(QLatin1String("void"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_VOID;
             } else if (name.compare(QLatin1String("yield"), Qt::CaseInsensitive) == 0) {
-                token = Parser::Token_YIELD;
+                const QChar* lookAhead = it;
+                int pos = m_curpos;
+                while (pos < m_contentSize && lookAhead->isSpace()) {
+                    ++lookAhead;
+                    ++pos;
+                }
+
+                auto nextToken = QString();
+                nextToken += *   lookAhead;
+                nextToken += * ++lookAhead;
+                nextToken += * ++lookAhead;
+                nextToken += * ++lookAhead;
+                if (pos + 4 < m_contentSize && nextToken == QStringLiteral("from")) {
+                    m_curpos = pos + 4;
+                    token = Parser::Token_YIELD_FROM;
+                } else {
+                    token = Parser::Token_YIELD;
+                }
             } else {
                 token = Parser::Token_STRING;
             }

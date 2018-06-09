@@ -57,6 +57,9 @@ private slots:
     void declareNullableTypehintMixedFunction();
     void declareTypehintNullableIterableFunction();
     void declareTypehintWithPhpdocFunction();
+    void returnTypeGenerator_data();
+    void returnTypeGenerator();
+    void returnTypeGeneratorDelegation();
     void returnTypeClass();
     void declarationReturnType();
     void declarationReturnTypeInRecursingFunction();
@@ -187,6 +190,8 @@ private slots:
     void illegalExpression();
     void printExpression_data();
     void printExpression();
+    void generatorAssignment();
+    void generatorClosure();
 };
 
 }

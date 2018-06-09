@@ -63,15 +63,52 @@ protected:
     void visitAssignmentExpression(AssignmentExpressionAst* node) override;
     void visitStaticVar(StaticVarAst *node) override;
     void visitCatchItem(CatchItemAst *node) override;
+    void visitVarExpression(VarExpressionAst *node) override;
 
     /// The declaration builder implements this and updates
     /// the type of the current declaration
     virtual void updateCurrentType();
 
     KDevelop::AbstractType::Ptr getTypeForNode(AstNode* node);
+
+    /**
+     * Opens the given context type, and sets it to be the current context type.
+     */
+    void openContextType(const KDevelop::AbstractType::Ptr& type)
+    {
+        m_contextTypes.append(type);
+    }
+
+    /**
+     * Close the current context type.
+     */
+    void closeContextType()
+    {
+        // And the reference will be lost...
+        m_contextTypes.pop();
+    }
+
+    /**
+     * Retrieve the type of the current context.
+     *
+     * \returns the abstract type of the current context.
+     */
+    inline KDevelop::AbstractType::Ptr currentContextType()
+    {
+        if (m_contextTypes.isEmpty()) {
+            return KDevelop::AbstractType::Ptr();
+        } else {
+            return m_contextTypes.top();
+        }
+    }
+
+  /// Determine if the type builder has a type for the current context. \returns true if there is a current context type, else returns false.
+  inline bool hasCurrentContextType() { return !m_contextTypes.isEmpty(); }
+
 private:
     KDevelop::FunctionType::Ptr m_currentFunctionType;
     QList<KDevelop::AbstractType::Ptr> m_currentFunctionParams;
+    KDevelop::Stack<KDevelop::AbstractType::Ptr> m_contextTypes;
 
     bool m_gotTypeFromDocComment;
     bool m_gotReturnTypeFromDocComment;

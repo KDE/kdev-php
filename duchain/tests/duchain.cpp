@@ -478,6 +478,78 @@ void TestDUChain::classMemberVar()
     QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeInt);
 }
 
+void TestDUChain::returnTypeGenerator_data()
+{
+    QTest::addColumn<QString>("code");
+
+    //Note: in practice, Generator is defined by php, but this class is not loaded in this test, so define it ourselves
+    QTest::newRow("simple yield expression") << QStringLiteral("<? class Generator {} function foo() { yield 1; }\n");
+    QTest::newRow("yield assignment expression") << QStringLiteral("<? class Generator {} function foo() { yield $a = 1; }\n");
+    QTest::newRow("yield null-coalesce expression") << QStringLiteral("<? class Generator {} function foo() { yield ?? 1; }\n");
+    QTest::newRow("yield boolean expression") << QStringLiteral("<? class Generator {} function foo() { yield || 1; }\n");
+    QTest::newRow("yield additive expression") << QStringLiteral("<? class Generator {} function foo() { yield + 1; }\n");
+    QTest::newRow("yield multiplicative expression") << QStringLiteral("<? class Generator {} function foo() { yield * 2; }\n");
+    QTest::newRow("yield relational expression") << QStringLiteral("<? class Generator {} function foo() { yield > 1; }\n");
+    QTest::newRow("yield equality expression") << QStringLiteral("<? class Generator {} function foo() { yield == 1; }\n");
+    QTest::newRow("yield shift expression") << QStringLiteral("<? class Generator {} function foo() { yield >> 1; }\n");
+    QTest::newRow("yield bit expression") << QStringLiteral("<? class Generator {} function foo() { yield | 1; }\n");
+    QTest::newRow("multiple yield expression") << QStringLiteral("<? class Generator {} function foo() { yield 1 || yield; }\n");
+    QTest::newRow("yield key/value expression") << QStringLiteral("<? class Generator {} function foo() { yield 'key' => 'value'; }\n");
+}
+
+void TestDUChain::returnTypeGenerator()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 3);
+    QCOMPARE(top->localDeclarations().count(), 2);
+
+    Declaration* dec = top->localDeclarations().at(1);
+    QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("foo"));
+    FunctionType::Ptr functionType = dec->type<FunctionType>();
+    QVERIFY(functionType);
+    StructureType::Ptr retType = StructureType::Ptr::dynamicCast(functionType->returnType());
+    QVERIFY(retType);
+    QCOMPARE(retType->qualifiedIdentifier(), QualifiedIdentifier("generator"));
+}
+
+void TestDUChain::returnTypeGeneratorDelegation()
+{
+    //Note: in practice, Generator is defined by php, but this class is not loaded in this test, so define it ourselves
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class Generator {} function foo() { yield 1; } function bar() { yield from foo(); }\n");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 5);
+    QCOMPARE(top->localDeclarations().count(), 3);
+
+    Declaration* dec = top->localDeclarations().at(1);
+    QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("foo"));
+    FunctionType::Ptr functionType = dec->type<FunctionType>();
+    QVERIFY(functionType);
+    StructureType::Ptr retType = StructureType::Ptr::dynamicCast(functionType->returnType());
+    QVERIFY(retType);
+    QCOMPARE(retType->qualifiedIdentifier(), QualifiedIdentifier("generator"));
+
+    dec = top->localDeclarations().at(2);
+    QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("bar"));
+    functionType = dec->type<FunctionType>();
+    QVERIFY(functionType);
+    retType = StructureType::Ptr::dynamicCast(functionType->returnType());
+    QVERIFY(retType);
+    QCOMPARE(retType->qualifiedIdentifier(), QualifiedIdentifier("generator"));
+}
+
 void TestDUChain::returnTypeClass()
 {
     //                 0         1         2         3         4         5         6         7
@@ -3822,4 +3894,87 @@ void TestDUChain::printExpression()
     DUChainWriteLocker lock(DUChain::lock());
 
     QVERIFY(top->problems().isEmpty());
+}
+
+void TestDUChain::generatorAssignment()
+{
+    //Note: in practice, Generator is defined by php, but this class is not loaded in this test, so define it ourselves
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class Generator {} function foo() { $a = yield 1; }\n");
+
+    TopDUContext* top = parse(method, DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 3);
+    QCOMPARE(top->localDeclarations().count(), 2);
+
+    Declaration* dec = top->localDeclarations().at(1);
+    QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("foo"));
+    FunctionType::Ptr functionType = dec->type<FunctionType>();
+    QVERIFY(functionType);
+    StructureType::Ptr retType = StructureType::Ptr::dynamicCast(functionType->returnType());
+    QVERIFY(retType);
+    QCOMPARE(retType->qualifiedIdentifier(), QualifiedIdentifier("generator"));
+
+    dec = top->childContexts().at(2)->localDeclarations().at(0);
+    QCOMPARE(dec->identifier(), Identifier("a"));
+    IntegralType::Ptr type = dec->type<IntegralType>();
+    QVERIFY(type);
+    QVERIFY(type->dataType() == IntegralType::TypeMixed);
+}
+
+void TestDUChain::generatorClosure()
+{
+    //Note: in practice, Generator is defined by php, but this class is not loaded in this test, so define it ourselves
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class Generator {} function foo() { $a = function() { $b = function() { yield 1; }; }; }\n");
+
+    TopDUContext* top = parse(method, DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 3);
+    QCOMPARE(top->localDeclarations().count(), 2);
+
+    Declaration* dec = top->localDeclarations().at(1);
+    QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("foo"));
+    FunctionType::Ptr functionType = dec->type<FunctionType>();
+    QVERIFY(functionType);
+    IntegralType::Ptr retType = IntegralType::Ptr::dynamicCast(functionType->returnType());
+    QVERIFY(retType);
+    QVERIFY(retType->dataType() == IntegralType::TypeVoid);
+
+    dec = top->childContexts().at(2)->localDeclarations().at(0);
+    QCOMPARE(dec->identifier(), Identifier("a"));
+
+    Declaration* closure = top->childContexts().at(2)->localDeclarations().at(1);
+    QVERIFY(closure->identifier().isEmpty());
+
+    FunctionType::Ptr funcType = closure->type<FunctionType>();
+    QVERIFY(funcType);
+    QVERIFY(funcType->returnType().cast<IntegralType>());
+    QCOMPARE(funcType->returnType().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeVoid));
+
+    QVERIFY(dec->abstractType()->equals(closure->abstractType().constData()));
+
+    dec = top->childContexts().at(2)->childContexts().at(1)->localDeclarations().at(0);
+    QCOMPARE(dec->identifier(), Identifier("b"));
+
+    closure = top->childContexts().at(2)->childContexts().at(1)->localDeclarations().at(1);
+    QVERIFY(closure->identifier().isEmpty());
+
+    funcType = closure->type<FunctionType>();
+    QVERIFY(funcType);
+    StructureType::Ptr generatorType = StructureType::Ptr::dynamicCast(funcType->returnType());
+    QVERIFY(generatorType);
+    QCOMPARE(generatorType->qualifiedIdentifier(), QualifiedIdentifier("generator"));
+
+    QVERIFY(dec->abstractType()->equals(closure->abstractType().constData()));
 }

@@ -97,6 +97,7 @@ protected:
     void visitUseNamespace(UseNamespaceAst* node) override;
     void visitClosure(ClosureAst* node) override;
     void visitLexicalVar(LexicalVarAst* node) override;
+    void visitVarExpression(VarExpressionAst* node) override;
 
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const MethodBodyAst* body) const {

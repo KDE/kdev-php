@@ -190,6 +190,22 @@ void ExpressionVisitor::visitVariable(VariableAst* node)
     }
 }
 
+void ExpressionVisitor::visitVarExpression(VarExpressionAst *node)
+{
+    DefaultVisitor::visitVarExpression(node);
+    if (node->isGenerator != -1) {
+        DeclarationPointer generatorDecl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier("generator"));
+
+        if (generatorDecl) {
+            m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
+            if (hasCurrentClosureReturnType()) {
+                FunctionType::Ptr closureType = currentClosureReturnType().cast<FunctionType>();
+                closureType->setReturnType(generatorDecl->abstractType());
+            }
+        }
+    }
+}
+
 void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *node)
 {
     DefaultVisitor::visitVarExpressionNewObject(node);
@@ -216,7 +232,8 @@ void ExpressionVisitor::visitVarExpressionArray(VarExpressionArrayAst *node)
 void ExpressionVisitor::visitClosure(ClosureAst* node)
 {
     auto* closureType = new FunctionType;
-    m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
+    closureType->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
+    openClosureReturnType(AbstractType::Ptr(closureType));
     if (node->functionBody) {
         visitInnerStatementList(node->functionBody);
     }
@@ -229,13 +246,12 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
         buildNamespaceUses(objectType, id);
     }
 
-    //First try return typehint or phpdoc return typehint
+    //Override found type with return typehint or phpdoc return typehint
     AbstractType::Ptr type = returnType(node->returnType, {}, m_editor, m_currentContext);
-    if (!type) {
-        //If failed, use the inferred type from return statements
-        type = m_result.type();
+
+    if (type) {
+        closureType->setReturnType(type);
     }
-    closureType->setReturnType(type);
 
     if (node->parameters->parametersSequence) {
         const KDevPG::ListNode< ParameterAst* >* it = node->parameters->parametersSequence->front();
@@ -284,6 +300,7 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
     }
 
     m_result.setType(AbstractType::Ptr(closureType));
+    closeClosureReturnType();
 }
 
 void ExpressionVisitor::visitFunctionCallParameterList( FunctionCallParameterListAst* node )
@@ -764,6 +781,19 @@ void ExpressionVisitor::visitEqualityExpressionRest(EqualityExpressionRestAst *n
         m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeInt)));
     } else {
         m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean)));
+    }
+}
+
+void ExpressionVisitor::visitStatement(StatementAst *node)
+{
+    DefaultVisitor::visitStatement(node);
+
+    if (node->returnExpr) {
+        FunctionType::Ptr closureType = currentClosureReturnType().cast<FunctionType>();
+
+        if (closureType) {
+            closureType->setReturnType(m_result.type());
+        }
     }
 }
 

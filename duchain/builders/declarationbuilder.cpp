@@ -1581,6 +1581,15 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
     }
 }
 
+void DeclarationBuilder::visitVarExpression(VarExpressionAst* node)
+{
+    DeclarationBuilderBase::visitVarExpression(node);
+
+    if (node->isGenerator != -1 && currentContext()->type() != DUContext::Other) {
+        reportError(i18n("The 'yield' expression can only be used inside a function"), node);
+    }
+}
+
 void DeclarationBuilder::updateCurrentType()
 {
     DUChainWriteLocker lock(DUChain::lock());

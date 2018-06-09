@@ -238,7 +238,7 @@ namespace KDevelop
        INCLUDE ("include"), INCLUDE_ONCE ("include_once"), EVAL ("eval"), REQUIRE ("require"),
        REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use"),
        GOTO ("goto"), TRAIT ("trait"), INSTEADOF ("insteadof"), CALLABLE ("callable"),
-       VOID ("void"), DIR ("__DIR__"), TRAIT_C ("__TRAIT__"), YIELD ("yield") ;;
+       VOID ("void"), DIR ("__DIR__"), TRAIT_C ("__TRAIT__"), YIELD ("yield"), YIELD_FROM("yield from") ;;
 
 -- casts:
 %token INT_CAST ("int cast"), DOUBLE_CAST ("double cast"), STRING_CAST ("string cast"),
@@ -548,8 +548,10 @@ expression=nullCoalesceExpression
    op=INC | op=DEC
 -> postprefixOperator ;;
 
--- 10 first follow conflicts because we go back up the chain
+-- 10 first follow conflicts because we go back up the chain (affects both print and yield)
     (print=PRINT+) printExpression=assignmentExpression
+  | isGenerator=YIELD (generatorExpression=printExpression ( DOUBLE_ARROW generatorValueExpr=printExpression | 0 ) | 0)
+  | isGenerator=YIELD_FROM generatorExpression=printExpression
 --first/first conflict - no problem because of ifs
   | ?[: m_state.varExpressionState == OnlyVariable :] 0 [: m_state.varExpressionState = Normal; :] variable=variable
   | ?[: m_state.varExpressionState == OnlyNewObject :] 0 [: m_state.varExpressionState = Normal; :] newObject=varExpressionNewObject
