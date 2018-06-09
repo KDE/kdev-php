@@ -21,6 +21,7 @@ Name[en_GB]=PHP Documentation
 Name[es]=Documentación de PHP
 Name[et]=PHP dokumentatsioon
 Name[fi]=PHP-dokumentaatio
+Name[fr]=Documentation PHP
 Name[gl]=Documentación de PHP
 Name[it]=Documentazione PHP
 Name[ko]=PHP 문서
