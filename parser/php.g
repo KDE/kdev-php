@@ -451,7 +451,7 @@ expression=nullCoalesceExpression
 -> bitAndExpression ;;
 
    expression=relationalExpression
-   (#additionalExpression=equalityExpressionRest)*
+   (additionalExpression=equalityExpressionRest | 0)
 -> equalityExpression ;;
 
    (  IS_EQUAL | IS_NOT_EQUAL | IS_IDENTICAL | IS_NOT_IDENTICAL | SPACESHIP [: (*yynode)->operation = OperationSpaceship; :] )
@@ -462,7 +462,7 @@ expression=nullCoalesceExpression
 
 
    expression=shiftExpression
-   (  (#additionalExpression=relationalExpressionRest)+
+   (  additionalExpression=relationalExpressionRest
       --instanceof as in java.g (correct??)
     | INSTANCEOF instanceofType=classNameReference
     | 0

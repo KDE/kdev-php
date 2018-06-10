@@ -183,6 +183,8 @@ private slots:
     void staticFunctionClassPhp54();
     void functionArgumentUnpacking_data();
     void functionArgumentUnpacking();
+    void illegalExpression_data();
+    void illegalExpression();
 };
 
 }

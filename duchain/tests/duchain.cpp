@@ -3774,3 +3774,19 @@ void TestDUChain::functionArgumentUnpacking()
 
     QVERIFY(top->problems().isEmpty());
 }
+
+void TestDUChain::illegalExpression_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("equality expression") << QStringLiteral("<? 1 == '1' == 1.1;\n");
+    QTest::newRow("relational expression") << QStringLiteral("<? 3 > 2 > 1;\n");
+}
+
+void TestDUChain::illegalExpression()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    QVERIFY(!top);
+}
