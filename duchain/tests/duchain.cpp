@@ -3781,6 +3781,9 @@ void TestDUChain::illegalExpression_data()
 
     QTest::newRow("equality expression") << QStringLiteral("<? 1 == '1' == 1.1;\n");
     QTest::newRow("relational expression") << QStringLiteral("<? 3 > 2 > 1;\n");
+    QTest::newRow("double print expression") << QStringLiteral("<? print 1 print 2;\n");
+    QTest::newRow("standalone print statement") << QStringLiteral("<? print;\n");
+    QTest::newRow("expression inside isset()") << QStringLiteral("<? isset($a || $b);\n");
 }
 
 void TestDUChain::illegalExpression()
@@ -3789,4 +3792,34 @@ void TestDUChain::illegalExpression()
 
     TopDUContext* top = parse(code.toUtf8(), DumpNone);
     QVERIFY(!top);
+}
+
+void TestDUChain::printExpression_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("simple print expression") << QStringLiteral("<? print 1;\n");
+    QTest::newRow("print assignment") << QStringLiteral("<? print $a = 1;\n");
+    QTest::newRow("print boolean expression") << QStringLiteral("<? print $a || $b;\n");
+    QTest::newRow("double print token") << QStringLiteral("<? print print 1;\n");
+    QTest::newRow("concatenated print expression") << QStringLiteral("<? print 1 . print 2;\n");
+    QTest::newRow("boolean-chained print expression") << QStringLiteral("<? print 1 || print 2 && print 3;\n");
+    QTest::newRow("ternary-chained print expression") << QStringLiteral("<? print 1 ? print 2 : print 3;\n");
+    QTest::newRow("assignment-chained print expression") << QStringLiteral("<? print $a = $b += print 1;\n");
+    QTest::newRow("null-coalesce-chained print expression") << QStringLiteral("<? print $a ?? print 1;\n");
+    QTest::newRow("bit-chained print expression") << QStringLiteral("<? print 1 | print 2 & print 3 ^ print 4;\n");
+    QTest::newRow("include print expression") << QStringLiteral("<? include print 'string';\n");
+    QTest::newRow("print expression inside empty()") << QStringLiteral("<? empty(print 1);\n");
+}
+
+void TestDUChain::printExpression()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(top->problems().isEmpty());
 }

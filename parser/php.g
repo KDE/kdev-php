@@ -365,7 +365,7 @@ namespace KDevelop
    #expression=printExpression @ LOGICAL_AND
 -> logicalAndExpression ;;
 
-  (print=PRINT*) expression=assignmentExpression
+   (print=PRINT | 0) expression=assignmentExpression
 -> printExpression ;;
 
 -- leftside must me a variable, we check afterwards if it was a variable and
@@ -432,10 +432,10 @@ expression=nullCoalesceExpression
    )
 -> conditionalExpression ;;
 
-  #expression=booleanOrExpression @ NULL_COALESCE
+   #expression=booleanOrExpression @ NULL_COALESCE
 -> nullCoalesceExpression ;;
 
-  #expression=booleanAndExpression @ BOOLEAN_OR
+   #expression=booleanAndExpression @ BOOLEAN_OR
 -> booleanOrExpression ;;
 
    #expression=bitOrExpression @ BOOLEAN_AND
@@ -548,8 +548,10 @@ expression=nullCoalesceExpression
    op=INC | op=DEC
 -> postprefixOperator ;;
 
+-- 10 first follow conflicts because we go back up the chain
+    (print=PRINT+) printExpression=assignmentExpression
 --first/first conflict - no problem because of ifs
-    ?[: m_state.varExpressionState == OnlyVariable :] 0 [: m_state.varExpressionState = Normal; :] variable=variable
+  | ?[: m_state.varExpressionState == OnlyVariable :] 0 [: m_state.varExpressionState = Normal; :] variable=variable
   | ?[: m_state.varExpressionState == OnlyNewObject :] 0 [: m_state.varExpressionState = Normal; :] newObject=varExpressionNewObject
   | varExpressionNormal=varExpressionNormal
   | varExpressionArray=varExpressionArray arrayIndex=arrayIndexSpecifier*
@@ -564,7 +566,7 @@ expression=nullCoalesceExpression
   | try/rollback (variable=variable [: m_state.varExpressionIsVariable = true; :])
     catch (scalar=scalar)
   | ISSET LPAREN (#issetVariable=variable @ COMMA) RPAREN
-  | EMPTY LPAREN emptyVarialbe=variable RPAREN
+  | EMPTY LPAREN emptyExpression=expr RPAREN
   | newObject=varExpressionNewObject
   | CLONE cloneCar=varExpressionNormal
   | closure=closure

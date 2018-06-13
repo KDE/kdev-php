@@ -185,6 +185,8 @@ private slots:
     void functionArgumentUnpacking();
     void illegalExpression_data();
     void illegalExpression();
+    void printExpression_data();
+    void printExpression();
 };
 
 }
