@@ -102,8 +102,7 @@ PhpDocumentationWidget::~PhpDocumentationWidget()
 
 void PhpDocumentationWidget::linkClicked(const QUrl& url)
 {
-    m_part->load(url);
-    m_provider->addToHistory(url);
+    m_provider->showDocumentation(url);
 }
 
 void PhpDocumentationWidget::documentLoaded()

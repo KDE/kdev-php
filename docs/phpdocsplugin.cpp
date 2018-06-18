@@ -199,10 +199,10 @@ void PhpDocsPlugin::loadUrl(const QUrl& url) const
     ICore::self()->documentationController()->showDocumentation(doc);
 }
 
-void PhpDocsPlugin::addToHistory(const QUrl& url)
+void PhpDocsPlugin::showDocumentation(const QUrl& url)
 {
     auto doc = documentationForUrl(url, url.toString());
-    emit addHistory(doc);
+    ICore::self()->documentationController()->showDocumentation(doc);
 }
 
 IDocumentation::Ptr PhpDocsPlugin::documentationForUrl(const QUrl& url, const QString& name, const QByteArray& description) const
