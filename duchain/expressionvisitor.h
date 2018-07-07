@@ -67,6 +67,7 @@ protected:
     void visitEncapsVar(EncapsVarAst *node) override;
     void visitVariableProperty(VariablePropertyAst *node) override;
     void visitStaticMember(StaticMemberAst* node) override;
+    void visitClassNameReference(ClassNameReferenceAst* node) override;
     void visitUnaryExpression(UnaryExpressionAst* node) override;
     void visitAdditiveExpressionRest(AdditiveExpressionRestAst* node) override;
     void visitVariable(VariableAst* node) override;
@@ -134,6 +135,8 @@ private:
     KDevelop::DUContext* findClassContext(NamespacedIdentifierAst* className);
     KDevelop::DUContext* findClassContext(IdentifierAst* className);
     void buildNamespaceUses(NamespacedIdentifierAst* namespaces, const KDevelop::QualifiedIdentifier& identifier);
+    void useDeclaration(VariableIdentifierAst* node, KDevelop::DUContext* context);
+    void useDeclaration(IdentifierAst* node, KDevelop::DUContext* context);
 
     bool m_createProblems;
     KDevelop::CursorInRevision m_offset;

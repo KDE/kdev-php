@@ -85,6 +85,11 @@ private slots:
     void closures();
     void closureTypehints();
     void instanceof();
+    void instanceofClassProperty();
+    void instanceofStaticProperty();
+    void instanceofMixedProperty();
+    void instanceofVariableProperty();
+    void instanceofPropertyArrayAccess();
     void classNameString();
     void useTrait();
     void exceptionFinally();
