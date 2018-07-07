@@ -818,7 +818,7 @@ void DeclarationBuilder::createTraitAliasDeclarations(TraitAliasStatementAst *no
 
 void DeclarationBuilder::visitParameterList(ParameterListAst* node)
 {
-    PushValue<ParameterAst*> push(m_functionDeclarationPreviousArgument, 0);
+    PushValue<ParameterAst*> push(m_functionDeclarationPreviousArgument, nullptr);
 
     DeclarationBuilderBase::visitParameterList(node);
 }
@@ -1305,7 +1305,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
 
 void DeclarationBuilder::visitFunctionCallParameterList(FunctionCallParameterListAst* node)
 {
-    PushValue<FunctionCallParameterListElementAst*> push(m_functionCallPreviousArgument, 0);
+    PushValue<FunctionCallParameterListElementAst*> push(m_functionCallPreviousArgument, nullptr);
     PushValue<int> pos(m_functionCallParameterPos, 0);
 
     DeclarationBuilderBase::visitFunctionCallParameterList(node);
