@@ -153,7 +153,7 @@ void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*t
         }
 
         if (hadUnresolvedIdentifiers) {
-            if (!(minimumFeatures() & Resheduled) && KDevelop::ICore::self()->languageController()->backgroundParser()->queuedCount()) {
+            if (!(minimumFeatures() & Resheduled)) {
                 // Need to create new parse job with lower priority
                 qCDebug(PHP) << "Reschedule file " << document().str() << "for parsing";
                 KDevelop::TopDUContext::Features feat = static_cast<KDevelop::TopDUContext::Features>(
