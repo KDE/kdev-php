@@ -318,7 +318,13 @@ foreach ($classes as $class => $i) {
         if ($class != 'directory') {
             $out .= prepareComment($f['desc'], $moreDesc, $indent);
         }
-        $out .= "{$indent}function ".$f['name'];
+        if ($class != 'global' && array_key_exists('modifiers', $f) && is_array($f['modifiers'])) {
+            $modifiers  = implode(' ', $f['modifiers']);
+            $modifiers .= empty($modifiers) ? '' : ' ';
+        } else {
+            $modifiers = '';
+        }
+        $out .= "{$indent}{$modifiers}function ".$f['name'];
         $out .= "(";
         $first = true;
         foreach ($f['params'] as $pi=>$param) {
@@ -758,10 +764,11 @@ function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc
 
     $class = newClassEntry($class);
     $classes[$class]['functions'][] = array(
-        'name'   => $funcOverload ? $funcOverload : $function,
-        'params' => $params,
-        'type'   => (string)$methodsynopsis->type,
-        'desc'   => $funcOverload ? str_replace($function, $funcOverload, $desc) : $desc
+        'name'      => $funcOverload ? $funcOverload : $function,
+        'modifiers' => (array) $methodsynopsis->modifier,
+        'params'    => $params,
+        'type'      => (string)$methodsynopsis->type,
+        'desc'      => $funcOverload ? str_replace($function, $funcOverload, $desc) : $desc
     );
 }
 
