@@ -319,6 +319,9 @@ foreach ($classes as $class => $i) {
             $out .= prepareComment($f['desc'], $moreDesc, $indent);
         }
         if ($class != 'global' && array_key_exists('modifiers', $f) && is_array($f['modifiers'])) {
+            if ($i['isInterface'] == 'interface') {
+                $f['modifiers'] = array_filter($f['modifiers'], function ($value){ return $value != 'abstract' && $value != 'final'; });
+            }
             $modifiers  = implode(' ', $f['modifiers']);
             $modifiers .= empty($modifiers) ? '' : ' ';
         } else {
