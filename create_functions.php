@@ -175,6 +175,7 @@ function prepareComment($comment, array $more, $indent = '') {
     $comment = rtrim($comment);
     // add indentation and asterisk
     $comment = preg_replace("#^#m", $indent." * ", $comment);
+    $comment = str_replace(" * \n", " *\n", $comment);
     return $indent."/**\n".
                    $comment."\n".
            $indent." **/\n";
