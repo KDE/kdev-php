@@ -644,10 +644,10 @@ function getDocumentation(SimpleXMLElement $xml) {
 
     $descs = array();
 
-    $p = $xml->refnamediv->refpurpose;
+    $purpose = $xml->refnamediv->refpurpose;
 
-    if (!in_array($p, $skipComments)) {
-        $descs[] = $p;
+    if (!in_array($purpose, $skipComments)) {
+        $descs[] = $purpose;
     }
 
     foreach ($xml->refsect1->para as $p ) {
@@ -658,6 +658,10 @@ function getDocumentation(SimpleXMLElement $xml) {
             continue;
         }
         if (in_array($p, $skipComments)) {
+            continue;
+        }
+        if ($p == $purpose || $p == "$purpose.") {
+            // avoid duplicate comments
             continue;
         }
         $descs[] = $p;
