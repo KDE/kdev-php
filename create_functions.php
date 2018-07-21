@@ -36,6 +36,7 @@ $skipClasses[] = 'parent';
 $skipClasses[] = '__php_incomplete_class';
 $skipClasses[] = 'php_user_filter';
 $skipClasses[] = 'static'; // O_o where does that come from?
+$skipClasses[] = 'componere\abstract\definition'; // invalid namespace identifier, discussed in https://github.com/krakjoe/componere/issues/5
 
 $classes = array();
 $constants = array();
@@ -234,7 +235,7 @@ foreach ($classes as $class => $i) {
         }
         $class = $i['prettyName'];
         $out .= ($i['isInterface'] ? 'interface' : 'class') . " " . $class;
-        if (isset($i['extends'])) {
+        if (isset($i['extends']) && !in_array(strtolower($i['extends']), $skipClasses)) {
             $out .= " extends {$i['extends']}";
         }
         if (isset($i['implements'])) {
@@ -256,6 +257,13 @@ foreach ($classes as $class => $i) {
 
     $indent = '';
     if ($class != 'global') $indent = '    ';
+
+    if (array_key_exists('extends', $i) && in_array(strtolower($i['extends']), $skipClasses)) {
+        $base = $classes[strtolower($i['extends'])];
+
+        $i['properties'] = array_merge($i['properties'], $base['properties']);
+        $i['functions']  = array_merge($i['functions'], $base['functions']);
+    }
 
     usort($i['properties'], 'sortByName');
     foreach ($i['properties'] as $f) {
