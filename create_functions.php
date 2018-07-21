@@ -283,7 +283,7 @@ foreach ($classes as $class => $i) {
         if ($class != 'directory') {
             $out .= prepareComment($f['desc'], $moreDesc, $indent);
         }
-        $out .= "{$indent}var $".$f['name'].";\n";
+        $out .= "{$indent}public $".$f['name'].";\n\n";
         $declarationCount++;
     }
 
@@ -562,6 +562,14 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             newPropertyEntry($class, $synopsis->varname, $desc, $synopsis->type );
             $addedSomething = true;
         }
+    }
+    if (isset($xml->refsect1->fieldsynopsis)) {
+        $synopsis = $xml->refsect1->fieldsynopsis;
+        $class = substr($synopsis->varname, 0, strpos($synopsis->varname, '->'));
+        $name  = substr($synopsis->varname, strpos($synopsis->varname, '->') + 2);
+
+        newPropertyEntry($class, $name, $desc, $synopsis->type);
+        $addedSomething = true;
     }
 
     if (isset($xml->refsect1->methodsynopsis)) {
