@@ -397,6 +397,9 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     $isInterface = strpos($string, '<phpdoc:classref') !== false &&
                    strpos($string, '&reftitle.interfacesynopsis;') !== false;
 
+    $string = str_replace('&null;', 'NULL', $string);
+    $string = str_replace('&true;', 'TRUE', $string);
+    $string = str_replace('&false;', 'FALSE', $string);
     $string = preg_replace('#(?:(&amp;|&gt;|&lt;)|&[A-Za-z\\.0-9-_]+;)#', '$1', $string);
     $removeSections = array();
     $removeSections[] = 'apd.installwin32';
