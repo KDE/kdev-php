@@ -634,6 +634,9 @@ function newClassEntry($name) {
  */
 function getDocumentation(SimpleXMLElement $xml) {
     $descs = array();
+
+    $descs[] = $xml->refnamediv->refpurpose;
+
     foreach ($xml->refsect1->para as $p ) {
         $p = removeTag($p->asXML(), 'para');
         if ( stripos($p, 'procedural style') !== false || stripos($p, 'procedure style') !== false
