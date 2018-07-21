@@ -308,7 +308,7 @@ foreach ($classes as $class => $i) {
             $moreDesc[] = "@param {$param['type']} $param_name $desc";
         }
         if ($f['type']) {
-            $moreDesc[] = "@return {$f['type']}";
+            $moreDesc[] = rtrim("@return {$f['type']} {$f['return_desc']}");
         }
         $version_key = strtolower(($class == 'global' ? '' : $class.'::') . $f['name']);
         if (isset($versions[$version_key])) {
@@ -773,13 +773,23 @@ function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc
         }
     }
 
+    if ($return_desc = $xml->xpath('db:refsect1[@role="returnvalues"]//db:para')) {
+        $return_desc = removeTag($return_desc[0]->asXML(), 'para');
+        if ($function == 'getLocale') {
+            var_dump($return_desc);
+        }
+    } else {
+        $return_desc = '';
+    }
+
     $class = newClassEntry($class);
     $classes[$class]['functions'][] = array(
-        'name'      => $funcOverload ? $funcOverload : $function,
-        'modifiers' => (array) $methodsynopsis->modifier,
-        'params'    => $params,
-        'type'      => (string)$methodsynopsis->type,
-        'desc'      => $funcOverload ? str_replace($function, $funcOverload, $desc) : $desc
+        'name'        => $funcOverload ? $funcOverload : $function,
+        'modifiers'   => (array) $methodsynopsis->modifier,
+        'params'      => $params,
+        'type'        => (string)$methodsynopsis->type,
+        'desc'        => $funcOverload ? str_replace($function, $funcOverload, $desc) : $desc,
+        'return_desc' => $return_desc,
     );
 }
 
