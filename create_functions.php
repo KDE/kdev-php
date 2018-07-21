@@ -38,6 +38,13 @@ $skipClasses[] = 'php_user_filter';
 $skipClasses[] = 'static'; // O_o where does that come from?
 $skipClasses[] = 'componere\abstract\definition'; // invalid namespace identifier, discussed in https://github.com/krakjoe/componere/issues/5
 
+$skipComments = array();
+$skipComments[] = ':';
+$skipComments[] = '(method):';
+$skipComments[] = 'Description here.';
+$skipComments[] = 'Description';
+$skipComments[] = 'The function description goes here.';
+
 $classes = array();
 $constants = array();
 $constants_comments = array();
@@ -633,15 +640,24 @@ function newClassEntry($name) {
  * @return string
  */
 function getDocumentation(SimpleXMLElement $xml) {
+    global $skipComments;
+
     $descs = array();
 
-    $descs[] = $xml->refnamediv->refpurpose;
+    $p = $xml->refnamediv->refpurpose;
+
+    if (!in_array($p, $skipComments)) {
+        $descs[] = $p;
+    }
 
     foreach ($xml->refsect1->para as $p ) {
         $p = removeTag($p->asXML(), 'para');
         if ( stripos($p, 'procedural style') !== false || stripos($p, 'procedure style') !== false
             || stripos($p, 'object oriented style') !== false ) {
             // uninteresting
+            continue;
+        }
+        if (in_array($p, $skipComments)) {
             continue;
         }
         $descs[] = $p;
