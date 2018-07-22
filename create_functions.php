@@ -253,6 +253,7 @@ foreach ($classes as $class => $i) {
         }
         $class = $i['prettyName'];
         $out .= ($i['isAbstract']) ? 'abstract ' : '';
+        $out .= ($i['isFinal'] && !$i['isInterface']) ? 'final ' : '';
         $out .= ($i['isInterface'] ? 'interface' : 'class') . " " . $class;
         if (isset($i['extends'])) {
             if (!is_array($i['extends']) && !in_array(strtolower($i['extends']), $skipClasses)) {
@@ -420,7 +421,7 @@ echo "wrote ".$declarationCount." declarations\n";
  * @return  bool
  */
 function parseFile($file, $funcOverload="") {
-global $existingFunctions, $constants, $constants_comments, $variables, $classes, $isInterface, $isAbstractClass, $versions;
+global $existingFunctions, $constants, $constants_comments, $variables, $classes, $isInterface, $isAbstractClass, $isFinalClass, $versions;
 
     if (substr($file->getFilename(), -4) != '.xml') return false;
     if (substr($file->getFilename(), 0, 9) == 'entities.') return false;
@@ -429,6 +430,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
                    strpos($string, '&reftitle.interfacesynopsis;') !== false) ||
                    strpos($string, ' interface</title>') !== false;
     $isAbstractClass = false;
+    $isFinalClass = false;
 
     $string = str_replace('&null;', 'NULL', $string);
     $string = str_replace('&true;', 'TRUE', $string);
@@ -569,6 +571,9 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             if ((string)$class->ooclass->modifier === 'abstract') {
                 $isAbstractClass = true;
             }
+            if ((string)$class->ooclass->modifier === 'final') {
+                $isFinalClass = true;
+            }
             if (!$className) continue;
             $className = newClassEntry($className);
             if ($interfaces = $class->xpath('//db:oointerface/db:interfacename')) {
@@ -663,7 +668,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
  * Returns the lower-cased @p $name
  */
 function newClassEntry($name) {
-    global $classes, $isInterface, $isAbstractClass, $interfaceClasses, $abstractClasses;
+    global $classes, $isInterface, $isAbstractClass, $isFinalClass, $interfaceClasses, $abstractClasses;
     if (strpos($name, '\\') !== false) {
       $endpos = strrpos($name, '\\');
       $class = substr($name, $endpos + 1);
@@ -694,6 +699,7 @@ function newClassEntry($name) {
             'desc' => '',
             'isInterface' => $isInterface,
             'isAbstract' => $isAbstractClass,
+            'isFinal' => $isFinalClass,
         );
     } else {
         if ( $lower != $class ) {
@@ -704,6 +710,9 @@ function newClassEntry($name) {
         }
         if ( $isAbstractClass ) {
             $classes[$lower]['isAbstract'] = true;
+        }
+        if ( $isFinalClass ) {
+            $classes[$lower]['isFinal'] = true;
         }
     }
     return $lower;
