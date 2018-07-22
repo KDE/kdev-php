@@ -38,6 +38,12 @@ $skipClasses[] = 'php_user_filter';
 $skipClasses[] = 'static'; // O_o where does that come from?
 $skipClasses[] = 'componere\abstract\definition'; // invalid namespace identifier, discussed in https://github.com/krakjoe/componere/issues/5
 
+// interfaces wrongly declared as classes
+$interfaceClasses = array();
+$interfaceClasses[] = 'sessionhandlerinterface';
+$interfaceClasses[] = 'yaf_route_interface';
+$interfaceClasses[] = 'yaf_view_interface';
+
 $skipComments = array();
 $skipComments[] = ':';
 $skipComments[] = '(method):';
@@ -96,11 +102,11 @@ unset($existingFunctions);
  Here be dirty hacks! PHP's documentation isn't as good as could be wished for...
  */
 
-// Clean the functions from imagick
+// Add constant only classes
 foreach (array_keys($constants) as $c) {
     if ($pos = strpos($c, '::')) {
         $class = substr($c, 0, $pos);
-        if ($class == 'imagick') $class = 'Imagick';
+        $isInterface = false;
         newClassEntry($class);
     }
 }
@@ -231,8 +237,6 @@ foreach ($skipClasses as &$name) {
 }
 
 foreach ($classes as $class => $i) {
-    ///TODO: find proper fix for that
-    $i['isInterface'] = $i['isInterface'] && empty($i['implements']);
     if (in_array($class, $skipClasses)) continue; //skip those as they are documented in spl.php
     if ($class != 'global') {
         if (isset($i['desc'])) {
@@ -243,8 +247,18 @@ foreach ($classes as $class => $i) {
         }
         $class = $i['prettyName'];
         $out .= ($i['isInterface'] ? 'interface' : 'class') . " " . $class;
-        if (isset($i['extends']) && !in_array(strtolower($i['extends']), $skipClasses)) {
-            $out .= " extends {$i['extends']}";
+        if (isset($i['extends'])) {
+            if (!is_array($i['extends']) && !in_array(strtolower($i['extends']), $skipClasses)) {
+                $out .= " extends {$i['extends']}";
+            } elseif (is_array($i['extends'])) {
+                $out .= " extends ";
+                foreach ($i['extends'] as $entry) {
+                    if (!in_array(strtolower($entry), $skipClasses)) {
+                        $out .= "$entry, ";
+                    }
+                }
+                $out = rtrim($out, ', ');
+            }
         }
         if (isset($i['implements'])) {
             $out .= " implements ".implode(", ", $i['implements']);
@@ -266,11 +280,21 @@ foreach ($classes as $class => $i) {
     $indent = '';
     if ($class != 'global') $indent = '    ';
 
-    if (array_key_exists('extends', $i) && in_array(strtolower($i['extends']), $skipClasses)) {
-        $base = $classes[strtolower($i['extends'])];
+    if (array_key_exists('extends', $i)) {
+        if (!is_array($i['extends'])) {
+            $extends = [ $i['extends'] ];
+        } else {
+            $extends = $i['extends'];
+        }
 
-        $i['properties'] = array_merge($i['properties'], $base['properties']);
-        $i['functions']  = array_merge($i['functions'], $base['functions']);
+        foreach ($extends as $entry) {
+            if (in_array(strtolower($entry), $skipClasses)) {
+                $base = $classes[strtolower($entry)];
+
+                $i['properties'] = array_merge($i['properties'], $base['properties']);
+                $i['functions']  = array_merge($i['functions'], $base['functions']);
+            }
+        }
     }
 
     usort($i['properties'], 'sortByName');
@@ -319,7 +343,7 @@ foreach ($classes as $class => $i) {
             $out .= prepareComment($f['desc'], $moreDesc, $indent);
         }
         if ($class != 'global' && array_key_exists('modifiers', $f) && is_array($f['modifiers'])) {
-            if ($i['isInterface'] == 'interface') {
+            if ($i['isInterface'] === true) {
                 $f['modifiers'] = array_filter($f['modifiers'], function ($value){ return $value != 'abstract' && $value != 'final'; });
             }
             $modifiers  = implode(' ', $f['modifiers']);
@@ -394,8 +418,9 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     if (substr($file->getFilename(), -4) != '.xml') return false;
     if (substr($file->getFilename(), 0, 9) == 'entities.') return false;
     $string = file_get_contents($file->getPathname());
-    $isInterface = strpos($string, '<phpdoc:classref') !== false &&
-                   strpos($string, '&reftitle.interfacesynopsis;') !== false;
+    $isInterface = (strpos($string, '<phpdoc:classref') !== false &&
+                   strpos($string, '&reftitle.interfacesynopsis;') !== false) ||
+                   strpos($string, ' interface</title>') !== false;
 
     $string = str_replace('&null;', 'NULL', $string);
     $string = str_replace('&true;', 'TRUE', $string);
@@ -535,16 +560,21 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             $className = (string)$class->ooclass->classname;
             if (!$className) continue;
             $className = newClassEntry($className);
+            if ($interfaces = $class->xpath('//db:oointerface/db:interfacename')) {
+                $key = $isInterface ? 'extends' : 'implements';
+                foreach ($interfaces as $if) {
+                    $classes[$className][$key][] = (string)$if;
+                }
+            }
             if ($extends = $class->xpath('//db:ooclass')) {
                 foreach ($extends as $c) {
                     if ($c->modifier == 'extends') {
-                        $classes[$className]['extends'] = (string)$c->classname;
+                        if (array_key_exists('extends', $classes[$className]) && is_array($classes[$className]['extends'])) {
+                            array_unshift($classes[$className]['extends'], (string)$c->classname);
+                        } else {
+                            $classes[$className]['extends'] = (string)$c->classname;
+                        }
                     }
-                }
-            }
-            if ($interfaces = $class->xpath('//db:oointerface/db:interfacename')) {
-                foreach ($interfaces as $if) {
-                    $classes[$className]['implements'][] = (string)$if;
                 }
             }
             if ($paras = $xml->xpath('//db:section[starts-with(@xml:id, "'.$className.'")]/db:para')) {
@@ -622,7 +652,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
  * Returns the lower-cased @p $name
  */
 function newClassEntry($name) {
-    global $classes, $isInterface;
+    global $classes, $isInterface, $interfaceClasses;
     if (strpos($name, '\\') !== false) {
       $endpos = strrpos($name, '\\');
       $class = substr($name, $endpos + 1);
@@ -635,6 +665,12 @@ function newClassEntry($name) {
     // Technically, this creates wrong class names, but they are otherwise illegal syntax...
     $class = str_replace('-','',$class);
     $lower = strtolower($name);
+
+    if (!$isInterface && in_array($lower, $interfaceClasses))
+    {
+        $isInterface = true;
+    }
+
     if (!isset($classes[$lower])) {
         $classes[$lower] = array(
             'functions' => array(),
