@@ -44,6 +44,11 @@ $interfaceClasses[] = 'sessionhandlerinterface';
 $interfaceClasses[] = 'yaf_route_interface';
 $interfaceClasses[] = 'yaf_view_interface';
 
+$abstractClasses[] = array();
+$abstractClasses[] = 'reflectionfunctionabstract';
+$abstractClasses[] = 'xmldiff\base';
+$abstractClasses[] = 'yaf_action_abstract';
+
 $skipComments = array();
 $skipComments[] = ':';
 $skipComments[] = '(method):';
@@ -107,6 +112,7 @@ foreach (array_keys($constants) as $c) {
     if ($pos = strpos($c, '::')) {
         $class = substr($c, 0, $pos);
         $isInterface = false;
+        $isAbstractClass = false;
         newClassEntry($class);
     }
 }
@@ -246,6 +252,7 @@ foreach ($classes as $class => $i) {
             $out .= 'namespace ' . $i['namespace'] . " {\n";
         }
         $class = $i['prettyName'];
+        $out .= ($i['isAbstract']) ? 'abstract ' : '';
         $out .= ($i['isInterface'] ? 'interface' : 'class') . " " . $class;
         if (isset($i['extends'])) {
             if (!is_array($i['extends']) && !in_array(strtolower($i['extends']), $skipClasses)) {
@@ -363,10 +370,10 @@ foreach ($classes as $class => $i) {
             $out .= $param_name;
         }
         $out .= ")";
-        if ( !$i['isInterface'] ) {
-            $out .= "{}";
-        } else {
+        if ( $i['isInterface'] || (array_key_exists('modifiers', $f) && in_array('abstract', $f['modifiers'])) ) {
             $out .= ";";
+        } else {
+            $out .= "{}";
         }
         $out .= "\n\n";
         if ($endpos) $out .= "}\n\n";
@@ -413,7 +420,7 @@ echo "wrote ".$declarationCount." declarations\n";
  * @return  bool
  */
 function parseFile($file, $funcOverload="") {
-global $existingFunctions, $constants, $constants_comments, $variables, $classes, $isInterface, $versions;
+global $existingFunctions, $constants, $constants_comments, $variables, $classes, $isInterface, $isAbstractClass, $versions;
 
     if (substr($file->getFilename(), -4) != '.xml') return false;
     if (substr($file->getFilename(), 0, 9) == 'entities.') return false;
@@ -421,6 +428,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     $isInterface = (strpos($string, '<phpdoc:classref') !== false &&
                    strpos($string, '&reftitle.interfacesynopsis;') !== false) ||
                    strpos($string, ' interface</title>') !== false;
+    $isAbstractClass = false;
 
     $string = str_replace('&null;', 'NULL', $string);
     $string = str_replace('&true;', 'TRUE', $string);
@@ -558,6 +566,9 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         foreach ($cEls as $class) {
             $class->registerXPathNamespace('db', 'http://docbook.org/ns/docbook');
             $className = (string)$class->ooclass->classname;
+            if ((string)$class->ooclass->modifier === 'abstract') {
+                $isAbstractClass = true;
+            }
             if (!$className) continue;
             $className = newClassEntry($className);
             if ($interfaces = $class->xpath('//db:oointerface/db:interfacename')) {
@@ -652,7 +663,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
  * Returns the lower-cased @p $name
  */
 function newClassEntry($name) {
-    global $classes, $isInterface, $interfaceClasses;
+    global $classes, $isInterface, $isAbstractClass, $interfaceClasses, $abstractClasses;
     if (strpos($name, '\\') !== false) {
       $endpos = strrpos($name, '\\');
       $class = substr($name, $endpos + 1);
@@ -666,9 +677,12 @@ function newClassEntry($name) {
     $class = str_replace('-','',$class);
     $lower = strtolower($name);
 
-    if (!$isInterface && in_array($lower, $interfaceClasses))
-    {
+    if (!$isInterface && in_array($lower, $interfaceClasses)) {
         $isInterface = true;
+    }
+
+    if (!$isAbstractClass && in_array($lower, $abstractClasses)) {
+        $isAbstractClass = true;
     }
 
     if (!isset($classes[$lower])) {
@@ -679,6 +693,7 @@ function newClassEntry($name) {
             'prettyName' => $class,
             'desc' => '',
             'isInterface' => $isInterface,
+            'isAbstract' => $isAbstractClass,
         );
     } else {
         if ( $lower != $class ) {
@@ -686,6 +701,9 @@ function newClassEntry($name) {
         }
         if ( $isInterface ) {
             $classes[$lower]['isInterface'] = true;
+        }
+        if ( $isAbstractClass ) {
+            $classes[$lower]['isAbstract'] = true;
         }
     }
     return $lower;
@@ -814,9 +832,6 @@ function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc
 
     if ($return_desc = $xml->xpath('db:refsect1[@role="returnvalues"]//db:para')) {
         $return_desc = removeTag($return_desc[0]->asXML(), 'para');
-        if ($function == 'getLocale') {
-            var_dump($return_desc);
-        }
     } else {
         $return_desc = '';
     }
