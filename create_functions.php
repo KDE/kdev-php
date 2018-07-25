@@ -452,7 +452,6 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
       return false;
     }
 
-
     if ( $file->getFilename() == 'versions.xml' ) {
         foreach ( $xml->xpath('/versions/function') as $f ) {
             $attrs = $f->attributes();
@@ -559,7 +558,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         foreach ($list as $l) {
             $classname = newClassEntry((string)$l->term->classname);
 
-            $classes[$classname]['desc'] = removeTag($l->listitem->asXML(), 'listitem');
+            $classes[$classname]['desc'] = cleanupComment(removeTag($l->listitem->asXML(), 'listitem'));
         }
     }
 
@@ -595,7 +594,11 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             }
             if ($paras = $xml->xpath('//db:section[starts-with(@xml:id, "'.$className.'")]/db:para')) {
                 foreach ($paras as $p) {
-                    $classes[$className]['desc'] .= "\n".((string)$p);
+                    $classes[$className]['desc'] .= "\n". cleanupComment(removeTag($p->asXML(), 'para'));
+                }
+            } elseif ($paras = $xml->xpath('//db:section[starts-with(@xml:id, "'. str_replace('_', '-', $className) .'")]/db:para')) {
+                foreach ($paras as $p) {
+                    $classes[$className]['desc'] .= "\n". cleanupComment(removeTag($p->asXML(), 'para'));
                 }
             }
         }
