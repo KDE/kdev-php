@@ -372,6 +372,10 @@ foreach ($classes as $class => $i) {
         if ($class != 'directory') {
             $out .= prepareComment($f['desc'], $moreDesc, $indent);
         }
+        if ($f['name'] == '__construct' && strtolower($class) == 'eventutil') {
+            //HACK: PHP doesn't allow abstract final classes, so make the constructor private instead.
+            $f['modifiers'] = [ 'private' ];
+        }
         if ($class != 'global' && array_key_exists('modifiers', $f) && is_array($f['modifiers'])) {
             if ($i['isInterface'] === true) {
                 $f['modifiers'] = array_filter($f['modifiers'], function ($value){ return $value != 'abstract' && $value != 'final'; });
