@@ -313,7 +313,12 @@ foreach ($classes as $class => $i) {
     }
 
     usort($i['properties'], 'sortByName');
+    $handled = [];
     foreach ($i['properties'] as $f) {
+        if (in_array($f['name'], $handled)) {
+            continue;
+        }
+        $handled[] = $f['name'];
         $moreDesc = array();
         if ($f['type']) {
             $moreDesc[] = "@var {$f['type']}";
@@ -332,7 +337,12 @@ foreach ($classes as $class => $i) {
     }
 
     usort($i['functions'], 'sortByName');
+    $handled = [];
     foreach ($i['functions'] as $f) {
+        if (in_array($f['name'], $handled)) {
+            continue;
+        }
+        $handled[] = $f['name'];
         if ( $class == 'global' && in_array($f['name'], $skipFunctions) ) {
             continue;
         } else if ( $class != 'global' && in_array($f['name'], $skipMethods) ) {
