@@ -53,6 +53,7 @@ $skipComments = array();
 $skipComments[] = ':';
 $skipComments[] = '(method):';
 $skipComments[] = 'Description here.';
+$skipComments[] = 'Description here...';
 $skipComments[] = 'Description';
 $skipComments[] = 'The function description goes here.';
 
@@ -273,16 +274,6 @@ foreach ($classes as $class => $i) {
         }
         $out .= " {\n";
         $declarationCount++;
-        foreach ($constants as $c=>$ctype) {
-            if ($pos = strpos($c, '::')) {
-                if (substr($c, 0, $pos) == $class) {
-                    unset($constants[$c]);
-                    $c = substr($c, $pos+2);
-                    $out .= "    const $c = ".constTypeValue($ctype).";\n";
-                    $declarationCount++;
-                }
-            }
-        }
     }
 
     $indent = '';
@@ -305,6 +296,22 @@ foreach ($classes as $class => $i) {
         }
     }
 
+    foreach ($constants as $c=>$ctype) {
+        if ($pos = strpos($c, '::')) {
+            if (substr($c, 0, $pos) == $class) {
+                $moreDesc = array();
+                $moreDesc[] = "@var {$ctype}";
+                if ( isset($constants_comments[$c]) ) {
+                    $out .= prepareComment($constants_comments[$c], $moreDesc, $indent);
+                }
+                unset($constants[$c]);
+                $c = substr($c, $pos+2);
+                $out .= "    const $c = ".constTypeValue($ctype).";\n\n";
+                $declarationCount++;
+            }
+        }
+    }
+
     usort($i['properties'], 'sortByName');
     foreach ($i['properties'] as $f) {
         $moreDesc = array();
@@ -315,7 +322,12 @@ foreach ($classes as $class => $i) {
         if ($class != 'directory') {
             $out .= prepareComment($f['desc'], $moreDesc, $indent);
         }
-        $out .= "{$indent}public $".$f['name'].";\n\n";
+        if ($class != 'global' && array_key_exists('modifiers', $f) && is_array($f['modifiers'])) {
+            $f['modifiers'] = array_filter($f['modifiers'], function ($value){ return $value != 'readonly'; });
+            $modifiers  = implode(' ', $f['modifiers']);
+            $modifiers .= empty($modifiers) ? 'public ' : ' ';
+        }
+        $out .= "{$indent}{$modifiers}$".$f['name'].";\n\n";
         $declarationCount++;
     }
 
@@ -604,11 +616,49 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         }
     }
 
-    if (!isset($xml->refsect1)) return false;
+    $addedSomething = false;
+
+    if (isset($xml->partintro) && !isset($xml->refsect1)) {
+        if (isset($xml->partintro->section[1]->classsynopsis->fieldsynopsis)) {
+            $synopsis = $xml->partintro->section[1]->classsynopsis->fieldsynopsis;
+            $class    = $xml->partintro->section[1]->classsynopsis->ooclass->classname;
+
+            $classname = newClassEntry($class);
+
+            foreach ($synopsis as $property){
+                $name  = $property->varname;
+
+                $modifiers = (array) $property->modifier;
+                $type = isset($property->type) ? $property->type : 'mixed';
+                $desc = '';
+
+                if (in_array('const', $modifiers)) {
+                    $constantname = strtolower(substr((string) $name, strrpos((string) $name, '::') + 2));
+                    if ($constant_descs = $xml->xpath('//db:section[@xml:id="' . $classname .'.constants"]//db:varlistentry[@xml:id="'. $classname .'.constants.'. $constantname .'"]') ) {
+                        foreach ($constant_descs as $constant_desc) {
+                            $desc .= getDocumentationFromPartIntro($constant_desc);
+                        }
+                    }
+                    $constants_comments[(string) $name] = $desc;
+                    $constants[(string) $name] = $type;
+                } else {
+                    if ($property_descs = $xml->xpath('//db:section[@xml:id="' . $classname .'.props"]//db:varlistentry[@xml:id="'. $classname .'.props.'. $name .'"]') ) {
+                        foreach ($property_descs as $property_desc) {
+                            $desc .= getDocumentationFromPartIntro($property_desc);
+                        }
+                    }
+                    newPropertyEntry($class, $name, $desc, $type, $modifiers);
+                }
+            }
+
+            $addedSomething = true;
+        }
+    }
+
+    if (!isset($xml->refsect1)) return $addedSomething;
 
     $desc = getDocumentation($xml);
 
-    $addedSomething = false;
     // file could contain function + property
     if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->fieldsynopsis)) {
         $class = (string)$xml->refsect1->classsynopsis->ooclass->classname;
@@ -756,15 +806,35 @@ function getDocumentation(SimpleXMLElement $xml) {
 }
 
 /**
+ * get the documentation for an entry
+ * @return string
+ */
+function getDocumentationFromPartIntro(SimpleXMLElement $xml) {
+    global $skipComments;
+
+    $descs = array();
+
+    foreach ($xml->listitem->para as $p ) {
+        $p = removeTag($p->asXML(), 'para');
+        if (in_array($p, $skipComments)) {
+            continue;
+        }
+        $descs[] = $p;
+    }
+    return implode("\n\n", $descs);
+}
+
+/**
  * create a new property entry for @p $class
  */
-function newPropertyEntry($class, $name, $desc, $type) {
+function newPropertyEntry($class, $name, $desc, $type, $modifiers = []) {
     global $classes;
     $class = newClassEntry($class);
     $classes[$class]['properties'][] = array(
         'name' => (string) $name,
         'desc' => (string) $desc,
-        'type' => (string) $type
+        'type' => (string) $type,
+        'modifiers' => $modifiers
     );
 }
 
