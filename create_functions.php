@@ -217,12 +217,15 @@ uksort($variables, 'strnatcasecmp');
 uksort($classes, 'strnatcasecmp');
 uksort($constants, 'strnatcasecmp');
 
-// put exception up front
-if (array_key_exists('exception', $classes)) {
-    $exception = $classes['exception'];
-    unset($classes['exception']);
-    $classes = array_merge(array('exception' => $exception), $classes);
-    reset($classes);
+// put some base classes up front
+$baseClasses = [ 'exception', 'error', 'throwable', 'iterator', 'traversable' ];
+foreach ($baseClasses as $baseClass) {
+    if (array_key_exists($baseClass, $classes)) {
+        $base = $classes[$baseClass];
+        unset($classes[$baseClass]);
+        $classes = array_merge(array($baseClass => $base), $classes);
+        reset($classes);
+    }
 }
 
 foreach ($variables as $name=>$var) {
@@ -614,6 +617,12 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
                             array_unshift($classes[$className]['extends'], (string)$c->classname);
                         } else {
                             $classes[$className]['extends'] = (string)$c->classname;
+                        }
+                    } elseif ($c->modifier == 'implements') {
+                        if (array_key_exists('implements', $classes[$className]) && is_array($classes[$className]['implements'])) {
+                            array_unshift($classes[$className]['implements'], (string)$c->classname);
+                        } else {
+                            $classes[$className]['implements'][] = (string)$c->classname;
                         }
                     }
                 }
