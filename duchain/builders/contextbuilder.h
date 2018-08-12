@@ -108,7 +108,7 @@ protected:
                         KDevelop::IProblem::Severity severity = KDevelop::IProblem::Error);
 
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
-    KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, SemiReservedIdentifierAst* node);
+    KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, SemiReservedIdentifierAst* node, DeclarationScope declarationScope = LocalScope);
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType,
                                                        const KDevelop::QualifiedIdentifier &identifier);

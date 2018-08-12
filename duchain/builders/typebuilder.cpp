@@ -537,7 +537,8 @@ void TypeBuilder::visitStatement(StatementAst* node)
             }
             if (classDec) {
                 /// Qualified identifier for 'iterator'
-                static const QualifiedIdentifier iteratorQId(QStringLiteral("iterator"));
+                static QualifiedIdentifier iteratorQId(QStringLiteral("iterator"));
+                iteratorQId.setExplicitlyGlobal(true);
                 ClassDeclaration* iteratorDecl = dynamic_cast<ClassDeclaration*>(
                     findDeclarationImport(ClassDeclarationType, iteratorQId).data()
                 );
@@ -580,7 +581,9 @@ void TypeBuilder::visitVarExpression(Php::VarExpressionAst *node)
 {
     if (hasCurrentContextType() && node->isGenerator != -1 && !m_gotReturnTypeFromDocComment) {
         FunctionType::Ptr ft = FunctionType::Ptr::dynamicCast(currentContextType());
-        DeclarationPointer generatorDecl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier("generator"));
+        static QualifiedIdentifier generatorQId(QStringLiteral("generator"));
+        generatorQId.setExplicitlyGlobal(true);
+        DeclarationPointer generatorDecl = findDeclarationImport(ClassDeclarationType, generatorQId);
 
         if (ft && generatorDecl) {
             AbstractType::Ptr generatorType = generatorDecl->abstractType();

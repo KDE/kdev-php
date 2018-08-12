@@ -1241,9 +1241,18 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
         DeclarationPointer dec;
         if ( node->stringFunctionName ) {
             dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionName);
+
+            if (!dec) {
+                dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionName, GlobalScope);
+            }
         } else if ( node->stringFunctionNameOrClass ) {
             id = identifierForNamespace(node->stringFunctionNameOrClass, m_editor);
             dec = findDeclarationImport(FunctionDeclarationType, id);
+
+            if (!dec) {
+                id.setExplicitlyGlobal(true);
+                dec = findDeclarationImport(FunctionDeclarationType, id);
+            }
         } else {
             ///TODO: node->varFunctionName
         }
@@ -1539,10 +1548,14 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
 
     ///TODO: case insensitive!
     QualifiedIdentifier qid = identifierForNamespace(node->identifier, m_editor);
-    ///TODO: find out why this must be done (see mail to kdevelop-devel on jan 18th 2011)
-    qid.setExplicitlyGlobal( false );
 
     DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, qid);
+
+    if (!dec && !qid.explicitlyGlobal()) {
+        QualifiedIdentifier globalQid = qid;
+        globalQid.setExplicitlyGlobal(true);
+        dec = findDeclarationImport(ClassDeclarationType, globalQid);
+    }
 
     if (dec)
     {
@@ -1564,6 +1577,9 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
     }
     else
     {
+        // NamespaceAliasDeclarations can't use a global import identifier
+        qid.setExplicitlyGlobal(false);
+
         NamespaceAliasDeclaration* decl = openDefinition<NamespaceAliasDeclaration>(id.second,
                                                                                     m_editor->findRange(idNode));
         decl->setImportIdentifier( qid );

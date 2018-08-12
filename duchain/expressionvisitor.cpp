@@ -371,8 +371,12 @@ void ExpressionVisitor::visitFunctionCall(FunctionCallAst* node)
             m_result.setDeclaration(dec);
         } else {
             //global function call foo();
-            const QualifiedIdentifier id = identifierForNamespace(node->stringFunctionNameOrClass, m_editor);
+            QualifiedIdentifier id = identifierForNamespace(node->stringFunctionNameOrClass, m_editor);
             DeclarationPointer dec = findDeclarationImport(FunctionDeclarationType, id);
+            if (!dec) {
+                id.setExplicitlyGlobal(true);
+                dec = findDeclarationImport(FunctionDeclarationType, id);
+            }
             ifDebug(qCDebug(DUCHAIN) << "function call of" << (dec ? dec->toString() : QString("function not found"));)
             m_result.setDeclaration(dec);
             usingDeclaration(node->stringFunctionNameOrClass->namespaceNameSequence->back()->element, dec);
@@ -457,6 +461,10 @@ void ExpressionVisitor::visitConstantOrClassConst(ConstantOrClassConstAst *node)
             //constant (created with declare('foo', 'bar')) or const Foo = 1;
             QualifiedIdentifier id = identifierForNamespace(node->constant, m_editor, true);
             DeclarationPointer declaration = findDeclarationImport(ConstantDeclarationType, id);
+            if (!declaration) {
+                id.setExplicitlyGlobal(true);
+                declaration = findDeclarationImport(ConstantDeclarationType, id);
+            }
             if (!declaration) {
                 ///TODO: is this really wanted?
                 //it could also be a global function call, without ()
