@@ -41,7 +41,7 @@
   <project_license>GPL-2.0+</project_license>
   <metadata_license>CC0-1.0</metadata_license>
   <url type="homepage">https://kdevelop.org</url>
-  <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=kdevelop&amp;component=Language Support%3A PHP</url>
+  <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=kdevelop&amp;component=Language%20Support%3A%20PHP</url>
   <url type="help">https://docs.kde.org/index.php?application=kdevelop</url>
   <url type="donation">https://www.kde.org/community/donations/?app=kdevelop</url>
   <project_group>KDE</project_group>
