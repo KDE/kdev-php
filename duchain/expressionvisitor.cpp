@@ -744,7 +744,26 @@ void ExpressionVisitor::visitRelationalExpression(RelationalExpressionAst *node)
         DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
         usingDeclaration(node->instanceofType->identifier->namespaceNameSequence->back()->element, dec);
         buildNamespaceUses(node->instanceofType->identifier, id);
-        m_result.setDeclaration(dec);
+
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean)));
+    }
+}
+
+void ExpressionVisitor::visitRelationalExpressionRest(RelationalExpressionRestAst *node)
+{
+    DefaultVisitor::visitRelationalExpressionRest(node);
+
+    m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean)));
+}
+
+void ExpressionVisitor::visitEqualityExpressionRest(EqualityExpressionRestAst *node)
+{
+    DefaultVisitor::visitEqualityExpressionRest(node);
+
+    if (node->operation && node->operation == OperationSpaceship) {
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeInt)));
+    } else {
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean)));
     }
 }
 

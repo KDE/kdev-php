@@ -135,7 +135,8 @@ namespace KDevelop
         OperationOr,
         OperationXor,
         OperationSl,
-        OperationSr
+        OperationSr,
+        OperationSpaceship,
     };
 :]
 
@@ -453,9 +454,11 @@ expression=nullCoalesceExpression
    (#additionalExpression=equalityExpressionRest)*
 -> equalityExpression ;;
 
-   (  IS_EQUAL | IS_NOT_EQUAL | IS_IDENTICAL | IS_NOT_IDENTICAL | SPACESHIP )
+   (  IS_EQUAL | IS_NOT_EQUAL | IS_IDENTICAL | IS_NOT_IDENTICAL | SPACESHIP [: (*yynode)->operation = OperationSpaceship; :] )
    expression=relationalExpression
--> equalityExpressionRest ;;
+-> equalityExpressionRest [
+     member variable operation: OperationType;
+];;
 
 
    expression=shiftExpression

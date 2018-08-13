@@ -72,6 +72,8 @@ protected:
     void visitFunctionCallParameterList( FunctionCallParameterListAst* node ) override;
     void visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node) override;
     void visitRelationalExpression(RelationalExpressionAst* node) override;
+    void visitRelationalExpressionRest(RelationalExpressionRestAst* node) override;
+    void visitEqualityExpressionRest(EqualityExpressionRestAst* node) override;
 
     QString stringForNode(AstNode* id);
     KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);
