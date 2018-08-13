@@ -637,9 +637,9 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
 
 void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
 {
+    DUChainWriteLocker lock(DUChain::lock());
     if (m_reportErrors) {
         // check for redeclarations
-        DUChainWriteLocker lock(DUChain::lock());
         foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first(), startPos(node->identifier)))
         {
             if (wasEncountered(dec) && !dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
