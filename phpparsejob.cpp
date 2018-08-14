@@ -85,7 +85,7 @@ void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*t
 
     UrlParseLock urlLock(document());
 
-    if (!(minimumFeatures() & Resheduled) && !isUpdateRequired(phpLanguageString())) {
+    if (!(minimumFeatures() & Rescheduled) && !isUpdateRequired(phpLanguageString())) {
         return;
     }
     qCDebug(PHP) << "parsing" << document().str();
@@ -153,11 +153,11 @@ void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*t
         }
 
         if (hadUnresolvedIdentifiers) {
-            if (!(minimumFeatures() & Resheduled)) {
+            if (!(minimumFeatures() & Rescheduled)) {
                 // Need to create new parse job with lower priority
                 qCDebug(PHP) << "Reschedule file " << document().str() << "for parsing";
                 KDevelop::TopDUContext::Features feat = static_cast<KDevelop::TopDUContext::Features>(
-                        minimumFeatures() | KDevelop::TopDUContext::VisibleDeclarationsAndContexts | Resheduled
+                        minimumFeatures() | KDevelop::TopDUContext::VisibleDeclarationsAndContexts | Rescheduled
                     );
                 int priority = qMin(parsePriority()+100, (int)KDevelop::BackgroundParser::WorstPriority);
                 KDevelop::ICore::self()->languageController()->backgroundParser()
