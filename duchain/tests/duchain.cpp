@@ -1374,9 +1374,10 @@ void TestDUChain::defaultFunctionParam()
     AbstractFunctionDeclaration* fun = dynamic_cast<AbstractFunctionDeclaration*>(top->localDeclarations().first());
     QVERIFY(fun);
 
-    QCOMPARE(fun->defaultParametersSize(), 2u);
-    QCOMPARE(fun->defaultParameters()[0].str(), QString("false"));
-    QCOMPARE(fun->defaultParameters()[1].str(), QString("null"));
+    QCOMPARE(fun->defaultParametersSize(), 3u);
+    QVERIFY(fun->defaultParameters()[0].isEmpty());
+    QCOMPARE(fun->defaultParameters()[1].str(), QString("false"));
+    QCOMPARE(fun->defaultParameters()[2].str(), QString("null"));
 }
 
 void TestDUChain::defaultFunctionParamWithTypehint() {
