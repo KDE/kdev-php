@@ -80,10 +80,9 @@ void TestDUChainMultipleFiles::testImportsBaseClassNotYetParsed()
     f2.parse(features);
 
     TestFile f1(QStringLiteral("<? class A {}"), QStringLiteral("php"), project);
-    f1.parse(features, 100); //low priority, to make sure f2 is parsed first
+    f1.parseAndWait(features, 100, 2000); //low priority, to make sure f2 is parsed first
 
-    QVERIFY(f1.waitForParsed());
-    QTest::qWait(100);
+    QVERIFY(f1.isReady());
 
     DUChainWriteLocker lock(DUChain::lock());
     QVERIFY(f2.topContext()->imports(f1.topContext(), CursorInRevision(0, 0)));
@@ -118,14 +117,12 @@ void TestDUChainMultipleFiles::testImportsGlobalFunctionNotYetParsed()
     f2.parse(features);
 
     TestFile f1(QStringLiteral("<? function foo2() {}"), QStringLiteral("php"), project);
-    f1.parse(features, 100); //low priority, to make sure f2 is parsed first
+    f1.parseAndWait(features, 100, 2000); //low priority, to make sure f2 is parsed first
 
-    QVERIFY(f2.waitForParsed());
-    QTest::qWait(100);
+    QVERIFY(f1.isReady());
 
     DUChainWriteLocker lock(DUChain::lock());
     QVERIFY(f2.topContext()->imports(f1.topContext(), CursorInRevision(0, 0)));
-
 }
 
 void TestDUChainMultipleFiles::testNonExistingGlobalFunction()
@@ -156,10 +153,9 @@ void TestDUChainMultipleFiles::testImportsStaticFunctionNotYetParsed()
     f2.parse(features);
 
     TestFile f1(QStringLiteral("<? class C { public static function foo() {} }"), QStringLiteral("php"), project);
-    f1.parse(features, 100); //low priority, to make sure f2 is parsed first
+    f1.parseAndWait(features, 100, 2000); //low priority, to make sure f2 is parsed first
 
-    QVERIFY(f2.waitForParsed());
-    QTest::qWait(100);
+    QVERIFY(f1.isReady());
 
     DUChainWriteLocker lock(DUChain::lock());
     QVERIFY(f2.topContext()->imports(f1.topContext(), CursorInRevision(0, 0)));

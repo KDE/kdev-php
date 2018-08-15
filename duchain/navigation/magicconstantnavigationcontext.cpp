@@ -63,9 +63,11 @@ QString MagicConstantNavigationContext::html(bool /*shorten*/)
     html += QLatin1String("<br/>\n");
 
     QString value;
-    ///TODO: php 5.3: __DIR__, __NAMESPACE__
+
     if ( m_constant == QLatin1String("__FILE__") ) {
         value = topContext()->url().str().toHtmlEscaped();
+    } else if ( m_constant == QLatin1String("__DIR__") ) {
+        value = QFileInfo(topContext()->url().str()).absoluteDir().path().toHtmlEscaped();
     } else if ( m_constant == QLatin1String("__LINE__") ) {
         value.setNum(m_position.line + 1);
     } else if ( m_constant == QLatin1String("__CLASS__") ) {
@@ -73,6 +75,12 @@ QString MagicConstantNavigationContext::html(bool /*shorten*/)
             value = codeHighlight(ctx->localScopeIdentifier().toString().toHtmlEscaped());
         } else {
             value = commentHighlight(i18n("empty (not inside a class)"));
+        }
+    } else if ( m_constant == QLatin1String("__TRAIT__") ) {
+        if ( DUContext* ctx = findContext(topContext(), m_position, DUContext::Class) ) {
+            value = codeHighlight(ctx->localScopeIdentifier().toString().toHtmlEscaped());
+        } else {
+            value = commentHighlight(i18n("empty (not inside a trait)"));
         }
     } else if ( m_constant == QLatin1String("__METHOD__") ) {
         CursorInRevision pos = m_position;

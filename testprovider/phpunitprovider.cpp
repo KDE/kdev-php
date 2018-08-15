@@ -47,7 +47,8 @@
 
 using namespace KDevelop;
 
-K_PLUGIN_FACTORY(PhpUnitProviderFactory, registerPlugin<PhpUnitProvider>(); )
+K_PLUGIN_FACTORY_WITH_JSON(PhpUnitProviderFactory, "kdevphpunitprovider.json",
+                           registerPlugin<PhpUnitProvider>(); )
 
 PhpUnitProvider::PhpUnitProvider(QObject* parent, const QList< QVariant >& args)
     : IPlugin(QStringLiteral("kdevphpunitprovider"), parent)

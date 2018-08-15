@@ -36,6 +36,26 @@ $skipClasses[] = 'parent';
 $skipClasses[] = '__php_incomplete_class';
 $skipClasses[] = 'php_user_filter';
 $skipClasses[] = 'static'; // O_o where does that come from?
+$skipClasses[] = 'componere\abstract\definition'; // invalid namespace identifier, discussed in https://github.com/krakjoe/componere/issues/5
+
+// interfaces wrongly declared as classes
+$interfaceClasses = array();
+$interfaceClasses[] = 'sessionhandlerinterface';
+$interfaceClasses[] = 'yaf_route_interface';
+$interfaceClasses[] = 'yaf_view_interface';
+
+$abstractClasses[] = array();
+$abstractClasses[] = 'reflectionfunctionabstract';
+$abstractClasses[] = 'xmldiff\base';
+$abstractClasses[] = 'yaf_action_abstract';
+
+$skipComments = array();
+$skipComments[] = ':';
+$skipComments[] = '(method):';
+$skipComments[] = 'Description here.';
+$skipComments[] = 'Description here...';
+$skipComments[] = 'Description';
+$skipComments[] = 'The function description goes here.';
 
 $classes = array();
 $constants = array();
@@ -88,23 +108,14 @@ unset($existingFunctions);
  Here be dirty hacks! PHP's documentation isn't as good as could be wished for...
  */
 
-// Clean the functions from imagick
+// Add constant only classes
 foreach (array_keys($constants) as $c) {
     if ($pos = strpos($c, '::')) {
         $class = substr($c, 0, $pos);
-        if ($class == 'imagick') $class = 'Imagick';
+        $isInterface = false;
+        $isAbstractClass = false;
         newClassEntry($class);
     }
-}
-
-if ( !DEBUG ) {
-    // The dir function, which lacks parseable documentation...
-    $classes['global']['functions'][] = array(
-        'name' => "dir",
-        'params' => array(array('name' => "path", 'type' => "string", 'isRef' => false)),
-        'type' => "Directory",
-        'desc' => "Return an instance of the Directory class"
-    );
 }
 
 $skipFunctions = array();
@@ -184,6 +195,7 @@ function prepareComment($comment, array $more, $indent = '') {
     $comment = rtrim($comment);
     // add indentation and asterisk
     $comment = preg_replace("#^#m", $indent." * ", $comment);
+    $comment = str_replace(" * \n", " *\n", $comment);
     return $indent."/**\n".
                    $comment."\n".
            $indent." **/\n";
@@ -205,11 +217,16 @@ uksort($variables, 'strnatcasecmp');
 uksort($classes, 'strnatcasecmp');
 uksort($constants, 'strnatcasecmp');
 
-// put exception up front
-$exception = $classes['exception'];
-unset($classes['exception']);
-$classes = array_merge(array('exception' => $exception), $classes);
-reset($classes);
+// put some base classes up front
+$baseClasses = [ 'exception', 'error', 'throwable', 'iterator', 'traversable' ];
+foreach ($baseClasses as $baseClass) {
+    if (array_key_exists($baseClass, $classes)) {
+        $base = $classes[$baseClass];
+        unset($classes[$baseClass]);
+        $classes = array_merge(array($baseClass => $base), $classes);
+        reset($classes);
+    }
+}
 
 foreach ($variables as $name=>$var) {
     $declarationCount++;
@@ -230,40 +247,81 @@ foreach ($skipClasses as &$name) {
 }
 
 foreach ($classes as $class => $i) {
-    ///TODO: find proper fix for that
-    $i['isInterface'] = $i['isInterface'] && empty($i['implements']);
     if (in_array($class, $skipClasses)) continue; //skip those as they are documented in spl.php
     if ($class != 'global') {
         if (isset($i['desc'])) {
             $out .= prepareComment($i['desc'], array());
         }
+        if (!empty($i['namespace'])) {
+            $out .= 'namespace ' . $i['namespace'] . " {\n";
+        }
         $class = $i['prettyName'];
+        $out .= ($i['isAbstract']) ? 'abstract ' : '';
+        $out .= ($i['isFinal'] && !$i['isInterface']) ? 'final ' : '';
         $out .= ($i['isInterface'] ? 'interface' : 'class') . " " . $class;
         if (isset($i['extends'])) {
-            $out .= " extends {$i['extends']}";
+            if (!is_array($i['extends']) && !in_array(strtolower($i['extends']), $skipClasses)) {
+                $out .= " extends {$i['extends']}";
+            } elseif (is_array($i['extends'])) {
+                $out .= " extends ";
+                foreach ($i['extends'] as $entry) {
+                    if (!in_array(strtolower($entry), $skipClasses)) {
+                        $out .= "$entry, ";
+                    }
+                }
+                $out = rtrim($out, ', ');
+            }
         }
         if (isset($i['implements'])) {
             $out .= " implements ".implode(", ", $i['implements']);
         }
         $out .= " {\n";
         $declarationCount++;
-        foreach ($constants as $c=>$ctype) {
-            if ($pos = strpos($c, '::')) {
-                if (substr($c, 0, $pos) == $class) {
-                    unset($constants[$c]);
-                    $c = substr($c, $pos+2);
-                    $out .= "    const $c = ".constTypeValue($ctype).";\n";
-                    $declarationCount++;
-                }
-            }
-        }
     }
 
     $indent = '';
     if ($class != 'global') $indent = '    ';
 
+    if (array_key_exists('extends', $i)) {
+        if (!is_array($i['extends'])) {
+            $extends = [ $i['extends'] ];
+        } else {
+            $extends = $i['extends'];
+        }
+
+        foreach ($extends as $entry) {
+            if (in_array(strtolower($entry), $skipClasses)) {
+                $base = $classes[strtolower($entry)];
+
+                $i['properties'] = array_merge($i['properties'], $base['properties']);
+                $i['functions']  = array_merge($i['functions'], $base['functions']);
+            }
+        }
+    }
+
+    foreach ($constants as $c=>$ctype) {
+        if ($pos = strpos($c, '::')) {
+            if (substr($c, 0, $pos) == $class) {
+                $moreDesc = array();
+                $moreDesc[] = "@var {$ctype}";
+                if ( isset($constants_comments[$c]) ) {
+                    $out .= prepareComment($constants_comments[$c], $moreDesc, $indent);
+                }
+                unset($constants[$c]);
+                $c = substr($c, $pos+2);
+                $out .= "    const $c = ".constTypeValue($ctype).";\n\n";
+                $declarationCount++;
+            }
+        }
+    }
+
     usort($i['properties'], 'sortByName');
+    $handled = [];
     foreach ($i['properties'] as $f) {
+        if (in_array($f['name'], $handled)) {
+            continue;
+        }
+        $handled[] = $f['name'];
         $moreDesc = array();
         if ($f['type']) {
             $moreDesc[] = "@var {$f['type']}";
@@ -272,16 +330,30 @@ foreach ($classes as $class => $i) {
         if ($class != 'directory') {
             $out .= prepareComment($f['desc'], $moreDesc, $indent);
         }
-        $out .= "{$indent}var $".$f['name'].";\n";
+        if ($class != 'global' && array_key_exists('modifiers', $f) && is_array($f['modifiers'])) {
+            $f['modifiers'] = array_filter($f['modifiers'], function ($value){ return $value != 'readonly'; });
+            $modifiers  = implode(' ', $f['modifiers']);
+            $modifiers .= empty($modifiers) ? 'public ' : ' ';
+        }
+        $out .= "{$indent}{$modifiers}$".$f['name'].";\n\n";
         $declarationCount++;
     }
 
     usort($i['functions'], 'sortByName');
+    $handled = [];
     foreach ($i['functions'] as $f) {
+        if (in_array($f['name'], $handled)) {
+            continue;
+        }
+        $handled[] = $f['name'];
         if ( $class == 'global' && in_array($f['name'], $skipFunctions) ) {
             continue;
         } else if ( $class != 'global' && in_array($f['name'], $skipMethods) ) {
             continue;
+        }
+        if ($endpos = strrpos($f['name'], '\\')) {
+            $out .= 'namespace ' . substr($f['name'], 0, $endpos) . " {\n\n";
+            $f['name'] = substr($f['name'], $endpos + 1);
         }
         $moreDesc = array();
         foreach ($f['params'] as $pi=>$param) {
@@ -289,10 +361,11 @@ foreach ($classes as $class => $i) {
             if ( isset($param['desc']) ) {
                 $desc = trim($param['desc']);
             }
-            $moreDesc[] = "@param {$param['type']} \${$param['name']} $desc";
+            $param_name = str_replace('$...', '...$', '$'.$param['name']);
+            $moreDesc[] = "@param {$param['type']} $param_name $desc";
         }
         if ($f['type']) {
-            $moreDesc[] = "@return {$f['type']}";
+            $moreDesc[] = rtrim("@return {$f['type']} {$f['return_desc']}");
         }
         $version_key = strtolower(($class == 'global' ? '' : $class.'::') . $f['name']);
         if (isset($versions[$version_key])) {
@@ -302,26 +375,43 @@ foreach ($classes as $class => $i) {
         if ($class != 'directory') {
             $out .= prepareComment($f['desc'], $moreDesc, $indent);
         }
-        $out .= "{$indent}function ".$f['name'];
+        if ($f['name'] == '__construct' && strtolower($class) == 'eventutil') {
+            //HACK: PHP doesn't allow abstract final classes, so make the constructor private instead.
+            $f['modifiers'] = [ 'private' ];
+        }
+        if ($class != 'global' && array_key_exists('modifiers', $f) && is_array($f['modifiers'])) {
+            if ($i['isInterface'] === true) {
+                $f['modifiers'] = array_filter($f['modifiers'], function ($value){ return $value != 'abstract' && $value != 'final'; });
+            }
+            $modifiers  = implode(' ', $f['modifiers']);
+            $modifiers .= empty($modifiers) ? '' : ' ';
+        } else {
+            $modifiers = '';
+        }
+        $out .= "{$indent}{$modifiers}function ".$f['name'];
         $out .= "(";
         $first = true;
         foreach ($f['params'] as $pi=>$param) {
             if (!$first) $out .= ", ";
             $first = false;
             if ($param['isRef']) $out .= "&";
-            $out .= '$'.$param['name'];
+            $param_name = str_replace('$...', '...$', '$'.$param['name']);
+            $param_name = str_replace('"', '', $param_name);
+            $out .= $param_name;
         }
         $out .= ")";
-        if ( !$i['isInterface'] ) {
-            $out .= "{}";
-        } else {
+        if ( $i['isInterface'] || (array_key_exists('modifiers', $f) && in_array('abstract', $f['modifiers'])) ) {
             $out .= ";";
+        } else {
+            $out .= "{}";
         }
         $out .= "\n\n";
+        if ($endpos) $out .= "}\n\n";
         $declarationCount++;
     }
 
     if ($class != 'global') $out .= "}\n";
+    if (!empty($i['namespace'])) $out .= "}\n";
 }
 foreach ($constants as $c=>$ctype) {
     if (strpos($c, '::')===false) {
@@ -360,14 +450,20 @@ echo "wrote ".$declarationCount." declarations\n";
  * @return  bool
  */
 function parseFile($file, $funcOverload="") {
-global $existingFunctions, $constants, $constants_comments, $variables, $classes, $isInterface, $versions;
+global $existingFunctions, $constants, $constants_comments, $variables, $classes, $isInterface, $isAbstractClass, $isFinalClass, $versions;
 
     if (substr($file->getFilename(), -4) != '.xml') return false;
     if (substr($file->getFilename(), 0, 9) == 'entities.') return false;
     $string = file_get_contents($file->getPathname());
-    $isInterface = strpos($string, '<phpdoc:classref') !== false &&
-                   strpos($string, '&reftitle.interfacesynopsis;') !== false;
+    $isInterface = (strpos($string, '<phpdoc:classref') !== false &&
+                   strpos($string, '&reftitle.interfacesynopsis;') !== false) ||
+                   strpos($string, ' interface</title>') !== false;
+    $isAbstractClass = false;
+    $isFinalClass = false;
 
+    $string = str_replace('&null;', 'NULL', $string);
+    $string = str_replace('&true;', 'TRUE', $string);
+    $string = str_replace('&false;', 'FALSE', $string);
     $string = preg_replace('#(?:(&amp;|&gt;|&lt;)|&[A-Za-z\\.0-9-_]+;)#', '$1', $string);
     $removeSections = array();
     $removeSections[] = 'apd.installwin32';
@@ -376,7 +472,14 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         $string = preg_replace('#'.preg_quote('<section xml:id="'.$i.'">').'.*?</section>#s', '', $string);
     }
     echo "reading documentation from {$file->getPathname()}\n";
+
+    libxml_use_internal_errors(TRUE);
     $xml = simplexml_load_string($string,  "SimpleXMLElement",  LIBXML_NOCDATA);
+
+    if ($xml === false) {
+      echo "  parsing XMl failed!\n";
+      return false;
+    }
 
     if ( $file->getFilename() == 'versions.xml' ) {
         foreach ( $xml->xpath('/versions/function') as $f ) {
@@ -398,6 +501,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
                     $v = array();
                 }
                 if (substr($i, 0, 1) != '$') continue;
+                if (substr($i, -10) == ' [removed]') continue;
 
                 if (substr($i, -13) == ' [deprecated]') {
                     $i = substr($i, 0, -13);
@@ -483,7 +587,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         foreach ($list as $l) {
             $classname = newClassEntry((string)$l->term->classname);
 
-            $classes[$classname]['desc'] = removeTag($l->listitem->asXML(), 'listitem');
+            $classes[$classname]['desc'] = cleanupComment(removeTag($l->listitem->asXML(), 'listitem'));
         }
     }
 
@@ -492,33 +596,92 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         foreach ($cEls as $class) {
             $class->registerXPathNamespace('db', 'http://docbook.org/ns/docbook');
             $className = (string)$class->ooclass->classname;
+            if ((string)$class->ooclass->modifier === 'abstract') {
+                $isAbstractClass = true;
+            }
+            if ((string)$class->ooclass->modifier === 'final') {
+                $isFinalClass = true;
+            }
             if (!$className) continue;
             $className = newClassEntry($className);
+            if ($interfaces = $class->xpath('//db:oointerface/db:interfacename')) {
+                $key = $isInterface ? 'extends' : 'implements';
+                foreach ($interfaces as $if) {
+                    $classes[$className][$key][] = (string)$if;
+                }
+            }
             if ($extends = $class->xpath('//db:ooclass')) {
                 foreach ($extends as $c) {
                     if ($c->modifier == 'extends') {
-                        $classes[$className]['extends'] = (string)$c->classname;
+                        if (array_key_exists('extends', $classes[$className]) && is_array($classes[$className]['extends'])) {
+                            array_unshift($classes[$className]['extends'], (string)$c->classname);
+                        } else {
+                            $classes[$className]['extends'] = (string)$c->classname;
+                        }
+                    } elseif ($c->modifier == 'implements') {
+                        if (array_key_exists('implements', $classes[$className]) && is_array($classes[$className]['implements'])) {
+                            array_unshift($classes[$className]['implements'], (string)$c->classname);
+                        } else {
+                            $classes[$className]['implements'][] = (string)$c->classname;
+                        }
                     }
-                }
-            }
-            if ($interfaces = $class->xpath('//db:oointerface/db:interfacename')) {
-                foreach ($interfaces as $if) {
-                    $classes[$className]['implements'][] = (string)$if;
                 }
             }
             if ($paras = $xml->xpath('//db:section[starts-with(@xml:id, "'.$className.'")]/db:para')) {
                 foreach ($paras as $p) {
-                    $classes[$className]['desc'] .= "\n".((string)$p);
+                    $classes[$className]['desc'] .= "\n". cleanupComment(removeTag($p->asXML(), 'para'));
+                }
+            } elseif ($paras = $xml->xpath('//db:section[starts-with(@xml:id, "'. str_replace('_', '-', $className) .'")]/db:para')) {
+                foreach ($paras as $p) {
+                    $classes[$className]['desc'] .= "\n". cleanupComment(removeTag($p->asXML(), 'para'));
                 }
             }
         }
     }
 
-    if (!isset($xml->refsect1)) return false;
+    $addedSomething = false;
+
+    if (isset($xml->partintro) && !isset($xml->refsect1)) {
+        if (isset($xml->partintro->section[1]->classsynopsis->fieldsynopsis)) {
+            $synopsis = $xml->partintro->section[1]->classsynopsis->fieldsynopsis;
+            $class    = $xml->partintro->section[1]->classsynopsis->ooclass->classname;
+
+            $classname = newClassEntry($class);
+
+            foreach ($synopsis as $property){
+                $name  = $property->varname;
+
+                $modifiers = (array) $property->modifier;
+                $type = isset($property->type) ? $property->type : 'mixed';
+                $desc = '';
+
+                if (in_array('const', $modifiers)) {
+                    $constantname = strtolower(substr((string) $name, strrpos((string) $name, '::') + 2));
+                    if ($constant_descs = $xml->xpath('//db:section[@xml:id="' . $classname .'.constants"]//db:varlistentry[@xml:id="'. $classname .'.constants.'. $constantname .'"]') ) {
+                        foreach ($constant_descs as $constant_desc) {
+                            $desc .= getDocumentationFromPartIntro($constant_desc);
+                        }
+                    }
+                    $constants_comments[(string) $name] = $desc;
+                    $constants[(string) $name] = $type;
+                } else {
+                    if ($property_descs = $xml->xpath('//db:section[@xml:id="' . $classname .'.props"]//db:varlistentry[@xml:id="'. $classname .'.props.'. $name .'"]') ) {
+                        foreach ($property_descs as $property_desc) {
+                            $desc .= getDocumentationFromPartIntro($property_desc);
+                        }
+                    }
+                    newPropertyEntry($class, $name, $desc, $type, $modifiers);
+                }
+            }
+
+            $addedSomething = true;
+        }
+    }
+
+    if (!isset($xml->refsect1)) return $addedSomething;
 
     $desc = getDocumentation($xml);
 
-    $addedSomething = false;
     // file could contain function + property
     if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->fieldsynopsis)) {
         $class = (string)$xml->refsect1->classsynopsis->ooclass->classname;
@@ -528,16 +691,33 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             $addedSomething = true;
         }
     }
+    if (isset($xml->refsect1->fieldsynopsis)) {
+        $synopsis = $xml->refsect1->fieldsynopsis;
+        $class = substr($synopsis->varname, 0, strpos($synopsis->varname, '->'));
+        $name  = substr($synopsis->varname, strpos($synopsis->varname, '->') + 2);
+
+        newPropertyEntry($class, $name, $desc, $synopsis->type);
+        $addedSomething = true;
+    }
 
     if (isset($xml->refsect1->methodsynopsis)) {
         foreach( $xml->refsect1->methodsynopsis as $synopsis ) {
-            newMethodEntry('global', $synopsis->methodname, $funcOverload, $synopsis, $desc, $xml);
+            if (isset($synopsis->methodname->replaceable)) {
+                newMethodEntry('global', $synopsis->methodname->replaceable, $funcOverload, $synopsis, $desc, $xml);
+            } else {
+                newMethodEntry('global', $synopsis->methodname, $funcOverload, $synopsis, $desc, $xml);
+            }
+
             $addedSomething = true;
         }
     }
     if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->methodsynopsis)) {
         $methodsynopsis = $xml->refsect1->classsynopsis->methodsynopsis;
-        newMethodEntry($xml->refsect1->classsynopsis->ooclass->classname, $methodsynopsis->methodname, $funcOverload, $methodsynopsis, $desc, $xml);
+        if (isset($synopsis->methodname->replaceable)) {
+            newMethodEntry($xml->refsect1->classsynopsis->ooclass->classname, $methodsynopsis->methodname->replaceable, $funcOverload, $methodsynopsis, $desc, $xml);
+        } else {
+            newMethodEntry($xml->refsect1->classsynopsis->ooclass->classname, $methodsynopsis->methodname, $funcOverload, $methodsynopsis, $desc, $xml);
+        }
         $addedSomething = true;
     }
     if ( !$addedSomething && isset($xml->refnamediv->refpurpose->function) ) {
@@ -564,22 +744,51 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
  * Returns the lower-cased @p $name
  */
 function newClassEntry($name) {
-    global $classes, $isInterface;
+    global $classes, $isInterface, $isAbstractClass, $isFinalClass, $interfaceClasses, $abstractClasses;
+    if (strpos($name, '\\') !== false) {
+      $endpos = strrpos($name, '\\');
+      $class = substr($name, $endpos + 1);
+      $namespace = substr($name, 0, $endpos);
+    } else {
+      $class = $name;
+      $namespace = null;
+    }
+    // This affects OCI-Collection and OCI-Log
+    // Technically, this creates wrong class names, but they are otherwise illegal syntax...
+    $class = str_replace('-','',$class);
     $lower = strtolower($name);
+
+    if (!$isInterface && in_array($lower, $interfaceClasses)) {
+        $isInterface = true;
+    }
+
+    if (!$isAbstractClass && in_array($lower, $abstractClasses)) {
+        $isAbstractClass = true;
+    }
+
     if (!isset($classes[$lower])) {
         $classes[$lower] = array(
             'functions' => array(),
             'properties' => array(),
-            'prettyName' => $name,
+            'namespace' => $namespace,
+            'prettyName' => $class,
             'desc' => '',
             'isInterface' => $isInterface,
+            'isAbstract' => $isAbstractClass,
+            'isFinal' => $isFinalClass,
         );
     } else {
-        if ( $lower != $name ) {
-            $classes[$lower]['prettyName'] = $name;
+        if ( $lower != $class ) {
+            $classes[$lower]['prettyName'] = $class;
         }
         if ( $isInterface ) {
             $classes[$lower]['isInterface'] = true;
+        }
+        if ( $isAbstractClass ) {
+            $classes[$lower]['isAbstract'] = true;
+        }
+        if ( $isFinalClass ) {
+            $classes[$lower]['isFinal'] = true;
         }
     }
     return $lower;
@@ -590,12 +799,47 @@ function newClassEntry($name) {
  * @return string
  */
 function getDocumentation(SimpleXMLElement $xml) {
+    global $skipComments;
+
     $descs = array();
+
+    $purpose = $xml->refnamediv->refpurpose;
+
+    if (!in_array($purpose, $skipComments)) {
+        $descs[] = $purpose;
+    }
+
     foreach ($xml->refsect1->para as $p ) {
         $p = removeTag($p->asXML(), 'para');
         if ( stripos($p, 'procedural style') !== false || stripos($p, 'procedure style') !== false
             || stripos($p, 'object oriented style') !== false ) {
             // uninteresting
+            continue;
+        }
+        if (in_array($p, $skipComments)) {
+            continue;
+        }
+        if ($p == $purpose || $p == "$purpose.") {
+            // avoid duplicate comments
+            continue;
+        }
+        $descs[] = $p;
+    }
+    return implode("\n\n", $descs);
+}
+
+/**
+ * get the documentation for an entry
+ * @return string
+ */
+function getDocumentationFromPartIntro(SimpleXMLElement $xml) {
+    global $skipComments;
+
+    $descs = array();
+
+    foreach ($xml->listitem->para as $p ) {
+        $p = removeTag($p->asXML(), 'para');
+        if (in_array($p, $skipComments)) {
             continue;
         }
         $descs[] = $p;
@@ -606,13 +850,14 @@ function getDocumentation(SimpleXMLElement $xml) {
 /**
  * create a new property entry for @p $class
  */
-function newPropertyEntry($class, $name, $desc, $type) {
+function newPropertyEntry($class, $name, $desc, $type, $modifiers = []) {
     global $classes;
     $class = newClassEntry($class);
     $classes[$class]['properties'][] = array(
         'name' => (string) $name,
         'desc' => (string) $desc,
-        'type' => (string) $type
+        'type' => (string) $type,
+        'modifiers' => $modifiers
     );
 }
 
@@ -662,7 +907,9 @@ function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc
         if (!trim($paramName)) continue;
         $paramName = str_replace('/', '', $paramName);
         $paramName = str_replace('-', '', $paramName);
+        $paramName = str_replace('$', '', $paramName);
         $paramName = trim(trim(trim($paramName), '*'), '&');
+        if ($pipe_pos = strpos($paramName, '|')) $paramName = substr($paramName, 0, $pipe_pos);
         if (is_numeric(substr($paramName, 0, 1))) $paramName = '_'.$paramName;
         $params[] = array(
             'name' => $paramName,
@@ -688,12 +935,20 @@ function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc
         }
     }
 
+    if ($return_desc = $xml->xpath('db:refsect1[@role="returnvalues"]//db:para')) {
+        $return_desc = removeTag($return_desc[0]->asXML(), 'para');
+    } else {
+        $return_desc = '';
+    }
+
     $class = newClassEntry($class);
     $classes[$class]['functions'][] = array(
-        'name'   => $funcOverload ? $funcOverload : $function,
-        'params' => $params,
-        'type'   => (string)$methodsynopsis->type,
-        'desc'   => $funcOverload ? str_replace($function, $funcOverload, $desc) : $desc
+        'name'        => $funcOverload ? $funcOverload : $function,
+        'modifiers'   => (array) $methodsynopsis->modifier,
+        'params'      => $params,
+        'type'        => (string)$methodsynopsis->type,
+        'desc'        => $funcOverload ? str_replace($function, $funcOverload, $desc) : $desc,
+        'return_desc' => $return_desc,
     );
 }
 

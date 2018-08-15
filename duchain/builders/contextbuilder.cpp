@@ -182,6 +182,15 @@ QualifiedIdentifier ContextBuilder::identifierForNode(IdentifierAst* id)
 
     return QualifiedIdentifier(stringForNode(id));
 }
+
+QualifiedIdentifier ContextBuilder::identifierForNode(SemiReservedIdentifierAst* id)
+{
+    if (!id)
+        return QualifiedIdentifier();
+
+    return QualifiedIdentifier(stringForNode(id));
+}
+
 QualifiedIdentifier ContextBuilder::identifierForNode(VariableIdentifierAst* id)
 {
     if (!id)
@@ -191,7 +200,27 @@ QualifiedIdentifier ContextBuilder::identifierForNode(VariableIdentifierAst* id)
     return QualifiedIdentifier(ret);
 }
 
-IdentifierPair ContextBuilder::identifierPairForNode( IdentifierAst* id )
+IdentifierPair ContextBuilder::identifierPairForNode(IdentifierAst* id )
+{
+    if (!id) {
+        return qMakePair(IndexedString(), QualifiedIdentifier());
+    }
+    const QString ret = stringForNode(id);
+
+    return qMakePair(IndexedString(ret), QualifiedIdentifier(ret.toLower()));
+}
+
+IdentifierPair ContextBuilder::identifierPairForNode(SemiReservedIdentifierAst* id )
+{
+    if (!id) {
+        return qMakePair(IndexedString(), QualifiedIdentifier());
+    }
+    const QString ret = stringForNode(id);
+
+    return qMakePair(IndexedString(ret), QualifiedIdentifier(ret.toLower()));
+}
+
+IdentifierPair ContextBuilder::identifierPairForNode(ReservedNonModifierIdentifierAst* id )
 {
     if (!id) {
         return qMakePair(IndexedString(), QualifiedIdentifier());
@@ -205,6 +234,17 @@ QString ContextBuilder::stringForNode(IdentifierAst* node) const
 {
     return m_editor->parseSession()->symbol(node->string);
 }
+
+QString ContextBuilder::stringForNode(SemiReservedIdentifierAst* node) const
+{
+    return m_editor->parseSession()->symbol(node->string);
+}
+
+QString ContextBuilder::stringForNode(ReservedNonModifierIdentifierAst* node) const
+{
+    return m_editor->parseSession()->symbol(node->string);
+}
+
 QString ContextBuilder::stringForNode(VariableIdentifierAst* node) const
 {
     return m_editor->parseSession()->symbol(node->variable);
@@ -244,7 +284,7 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
     visitOptionalModifiers(node->modifiers);
     if (node->methodName) {
         //method declaration
-        DUContext* parameters = openContext(node->parameters, DUContext::Function, node->methodName);
+        DUContext* parameters = openContext(node->parameters, DUContext::Function, identifierForNode(node->methodName));
         Q_ASSERT(!parameters->inSymbolTable());
 
         visitParameterList(node->parameters);
@@ -255,7 +295,7 @@ void ContextBuilder::visitClassStatement(ClassStatementAst *node)
 
         if ( !m_isInternalFunctions && node->methodBody ) {
             // the internal functions file has only empty method bodies, so skip them
-            DUContext* body = openContext(node->methodBody, DUContext::Other, node->methodName);
+            DUContext* body = openContext(node->methodBody, DUContext::Other, identifierForNode(node->methodName));
             if (compilingContexts()) {
                 DUChainWriteLocker lock(DUChain::lock());
                 body->addImportedParentContext(parameters);
@@ -416,7 +456,7 @@ void ContextBuilder::addBaseType(NamespacedIdentifierAst * identifier)
                 base.access = Declaration::Public;
                 base.virtualInheritance = false;
                 currentClass->addBaseClass(base);
-            } else if (m_reportErrors) {
+            } else if (m_reportErrors && baseClass->classType() != ClassDeclarationData::Interface) {
                 reportError(i18n("Circular inheritance of %1 and %2", currentClass->toString(), baseClass->toString()), identifier);
             }
         }
@@ -482,6 +522,18 @@ void ContextBuilder::reportError(const QString& errorMsg, RangeInRevision range,
 
 DeclarationPointer ContextBuilder::findDeclarationImport(DeclarationType declarationType,
                                                          IdentifierAst* node)
+{
+    QualifiedIdentifier id;
+    if ( declarationType == ClassDeclarationType || declarationType == FunctionDeclarationType ) {
+        id = identifierPairForNode(node).second;
+    } else {
+        id = identifierForNode(node);
+    }
+    return findDeclarationImportHelper(currentContext(), id, declarationType);
+}
+
+DeclarationPointer ContextBuilder::findDeclarationImport(DeclarationType declarationType,
+                                                         SemiReservedIdentifierAst* node)
 {
     QualifiedIdentifier id;
     if ( declarationType == ClassDeclarationType || declarationType == FunctionDeclarationType ) {

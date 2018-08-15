@@ -50,7 +50,7 @@ public:
     PreDeclarationBuilder(QHash<qint64, ClassDeclaration*>* types,
                           QHash<qint64, FunctionDeclaration*>* functions,
                           QHash<qint64, NamespaceDeclaration*>* namespaces,
-                          QList<KDevelop::QualifiedIdentifier>* upcomingClassVariables,
+                          QVector<KDevelop::QualifiedIdentifier>* upcomingClassVariables,
                           EditorIntegrator* editor )
             : m_types(types), m_functions(functions), m_namespaces(namespaces),
               m_upcomingClassVariables(upcomingClassVariables)
@@ -79,7 +79,7 @@ private:
     QHash<qint64, ClassDeclaration*>* m_types;
     QHash<qint64, FunctionDeclaration*>* m_functions;
     QHash<qint64, NamespaceDeclaration*>* m_namespaces;
-    QList<KDevelop::QualifiedIdentifier>* m_upcomingClassVariables;
+    QVector<KDevelop::QualifiedIdentifier>* m_upcomingClassVariables;
 };
 
 }

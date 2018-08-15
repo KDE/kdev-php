@@ -185,9 +185,17 @@ void TestExpressionParser::invalidTraitUse_data()
 {
     QTest::addColumn<QString>("code");
 
-    QTest::newRow("staticModifier") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as public static bla; } }\n";
+    QTest::newRow("abstractModifier") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as abstract bla; } }\n";
 
-    QTest::newRow("finalModifier") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as public final bla; } }\n";
+    QTest::newRow("staticModifier") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as static bla; } }\n";
+
+    QTest::newRow("finalModifier") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as final bla; } }\n";
+
+    QTest::newRow("abstract") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as abstract; } }\n";
+
+    QTest::newRow("static") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as static; } }\n";
+
+    QTest::newRow("final") << "<? trait A { public function foo(){} } class Foo { use A { A::foo as final; } }\n";
 
     QTest::newRow("traitMethodCollision") << "<? trait A { public function foo(){} } trait B { public function foo(){} } class Foo { use A,B; }\n";
 
@@ -437,6 +445,22 @@ void TestExpressionParser::operations()
     QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
 
     res = p.evaluateType(QByteArray("$foo **= 1"), DUContextPointer(top), CursorInRevision(1, 0));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+
+    res = p.evaluateType(QByteArray("$foo = 3 > 1"), DUContextPointer(top), CursorInRevision(1, 0));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeBoolean);
+
+    res = p.evaluateType(QByteArray("$foo = 3 != 1"), DUContextPointer(top), CursorInRevision(1, 0));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeBoolean);
+
+    res = p.evaluateType(QByteArray("$foo = $a instanceof A"), DUContextPointer(top), CursorInRevision(1, 0));
+    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
+    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeBoolean);
+
+    res = p.evaluateType(QByteArray("$foo = 3 <=> 2"), DUContextPointer(top), CursorInRevision(1, 0));
     QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
     QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
 }

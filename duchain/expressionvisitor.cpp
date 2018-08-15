@@ -190,6 +190,22 @@ void ExpressionVisitor::visitVariable(VariableAst* node)
     }
 }
 
+void ExpressionVisitor::visitVarExpression(VarExpressionAst *node)
+{
+    DefaultVisitor::visitVarExpression(node);
+    if (node->isGenerator != -1) {
+        DeclarationPointer generatorDecl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier("generator"));
+
+        if (generatorDecl) {
+            m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
+            if (hasCurrentClosureReturnType()) {
+                FunctionType::Ptr closureType = currentClosureReturnType().cast<FunctionType>();
+                closureType->setReturnType(generatorDecl->abstractType());
+            }
+        }
+    }
+}
+
 void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *node)
 {
     DefaultVisitor::visitVarExpressionNewObject(node);
@@ -216,12 +232,13 @@ void ExpressionVisitor::visitVarExpressionArray(VarExpressionArrayAst *node)
 void ExpressionVisitor::visitClosure(ClosureAst* node)
 {
     auto* closureType = new FunctionType;
-    m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
+    closureType->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
+    openClosureReturnType(AbstractType::Ptr(closureType));
     if (node->functionBody) {
         visitInnerStatementList(node->functionBody);
     }
-    if (node->returnType && node->returnType->objectType) {
-        NamespacedIdentifierAst* objectType = node->returnType->objectType;
+    if (node->returnType && node->returnType->typehint && isClassTypehint(node->returnType->typehint, m_editor)) {
+        NamespacedIdentifierAst* objectType = node->returnType->typehint->genericType;
         QualifiedIdentifier id = identifierForNamespace(objectType, m_editor);
         DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
 
@@ -229,13 +246,12 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
         buildNamespaceUses(objectType, id);
     }
 
-    //First try return typehint or phpdoc return typehint
+    //Override found type with return typehint or phpdoc return typehint
     AbstractType::Ptr type = returnType(node->returnType, {}, m_editor, m_currentContext);
-    if (!type) {
-        //If failed, use the inferred type from return statements
-        type = m_result.type();
+
+    if (type) {
+        closureType->setReturnType(type);
     }
-    closureType->setReturnType(type);
 
     if (node->parameters->parametersSequence) {
         const KDevPG::ListNode< ParameterAst* >* it = node->parameters->parametersSequence->front();
@@ -243,8 +259,9 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
             AbstractType::Ptr type = parameterType(it->element, {}, m_editor, m_currentContext);
             closureType->addArgument(type);
 
-            if (it->element->parameterType && it->element->parameterType->objectType) {
-                NamespacedIdentifierAst* objectType = it->element->parameterType->objectType;
+            if (it->element->parameterType && it->element->parameterType->typehint
+                    && isClassTypehint(it->element->parameterType->typehint, m_editor)) {
+                NamespacedIdentifierAst* objectType = it->element->parameterType->typehint->genericType;
                 QualifiedIdentifier id = identifierForNamespace(objectType, m_editor);
                 DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
 
@@ -283,6 +300,7 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
     }
 
     m_result.setType(AbstractType::Ptr(closureType));
+    closeClosureReturnType();
 }
 
 void ExpressionVisitor::visitFunctionCallParameterList( FunctionCallParameterListAst* node )
@@ -743,7 +761,39 @@ void ExpressionVisitor::visitRelationalExpression(RelationalExpressionAst *node)
         DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
         usingDeclaration(node->instanceofType->identifier->namespaceNameSequence->back()->element, dec);
         buildNamespaceUses(node->instanceofType->identifier, id);
-        m_result.setDeclaration(dec);
+
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean)));
+    }
+}
+
+void ExpressionVisitor::visitRelationalExpressionRest(RelationalExpressionRestAst *node)
+{
+    DefaultVisitor::visitRelationalExpressionRest(node);
+
+    m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean)));
+}
+
+void ExpressionVisitor::visitEqualityExpressionRest(EqualityExpressionRestAst *node)
+{
+    DefaultVisitor::visitEqualityExpressionRest(node);
+
+    if (node->operation && node->operation == OperationSpaceship) {
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeInt)));
+    } else {
+        m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean)));
+    }
+}
+
+void ExpressionVisitor::visitStatement(StatementAst *node)
+{
+    DefaultVisitor::visitStatement(node);
+
+    if (node->returnExpr) {
+        FunctionType::Ptr closureType = currentClosureReturnType().cast<FunctionType>();
+
+        if (closureType) {
+            closureType->setReturnType(m_result.type());
+        }
     }
 }
 

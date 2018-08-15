@@ -774,6 +774,8 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_ARRAY;
             } else if (name.compare(QLatin1String("__class__"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_CLASS_C;
+            } else if (name.compare(QLatin1String("__trait__"), Qt::CaseInsensitive) == 0) {
+                token = Parser::Token_TRAIT_C;
             } else if (name.compare(QLatin1String("__method__"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_METHOD_C;
             } else if (name.compare(QLatin1String("__function__"), Qt::CaseInsensitive) == 0) {
@@ -782,6 +784,8 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_LINE;
             } else if (name.compare(QLatin1String("__file__"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_FILE;
+            } else if (name.compare(QLatin1String("__dir__"), Qt::CaseInsensitive) == 0) {
+                token = Parser::Token_DIR;
             } else if (name.compare(QLatin1String("or"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_LOGICAL_OR;
             } else if (name.compare(QLatin1String("and"), Qt::CaseInsensitive) == 0) {
@@ -794,18 +798,27 @@ int Lexer::nextTokenKind()
                 token = Parser::Token_NAMESPACE_C;
             } else if (name.compare(QLatin1String("callable"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_CALLABLE;
-            } else if (name.compare(QLatin1String("iterable"), Qt::CaseInsensitive) == 0) {
-                token = Parser::Token_ITERABLE;
-            } else if (name.compare(QLatin1String("bool"), Qt::CaseInsensitive) == 0) {
-                token = Parser::Token_BOOL;
-            } else if (name.compare(QLatin1String("float"), Qt::CaseInsensitive) == 0) {
-                token = Parser::Token_FLOAT;
-            } else if (name.compare(QLatin1String("int"), Qt::CaseInsensitive) == 0) {
-                token = Parser::Token_INT;
-            } else if (name.compare(QLatin1String("string"), Qt::CaseInsensitive) == 0) {
-                token = Parser::Token_STRING_TYPE;
             } else if (name.compare(QLatin1String("void"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_VOID;
+            } else if (name.compare(QLatin1String("yield"), Qt::CaseInsensitive) == 0) {
+                const QChar* lookAhead = it;
+                int pos = m_curpos;
+                while (pos < m_contentSize && lookAhead->isSpace()) {
+                    ++lookAhead;
+                    ++pos;
+                }
+
+                auto nextToken = QString();
+                nextToken += *   lookAhead;
+                nextToken += * ++lookAhead;
+                nextToken += * ++lookAhead;
+                nextToken += * ++lookAhead;
+                if (pos + 4 < m_contentSize && nextToken == QStringLiteral("from")) {
+                    m_curpos = pos + 4;
+                    token = Parser::Token_YIELD_FROM;
+                } else {
+                    token = Parser::Token_YIELD;
+                }
             } else {
                 token = Parser::Token_STRING;
             }

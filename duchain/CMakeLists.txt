@@ -1,4 +1,3 @@
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
 if (BUILD_TESTING)
     add_subdirectory(tests)
 endif()
@@ -52,5 +51,5 @@ target_link_libraries(kdevphpduchain LINK_PRIVATE
     kdevphpparser
 )
 
-install(TARGETS kdevphpduchain DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS kdevphpduchain EXPORT KDevPHPTargets DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 

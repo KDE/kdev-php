@@ -46,10 +46,7 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
     QString name() const override;
     KDevelop::IDocumentation::Ptr homePage() const override;
 
-    void addToHistory(const QUrl& url);
-
-  signals:
-    void addHistory( const KDevelop::IDocumentation::Ptr& doc ) const override;
+    void showDocumentation(const QUrl& url);
 
   public slots:
     void loadUrl(const QUrl &url) const;

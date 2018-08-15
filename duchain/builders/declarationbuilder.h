@@ -73,8 +73,10 @@ protected:
     void visitParameterList(ParameterListAst *node) override;
     void visitParameter(ParameterAst *node) override;
     void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node) override;
+    void visitReturnType(ReturnTypeAst *node) override;
     void visitClassVariable(ClassVariableAst *node) override;
     void visitConstantDeclaration(ConstantDeclarationAst *node) override;
+    void visitClassConstantDeclaration(ClassConstantDeclarationAst *node) override;
     void visitTraitAliasStatement(TraitAliasStatementAst *node) override;
     virtual void createTraitAliasDeclarations(TraitAliasStatementAst *node, KDevelop::DeclarationPointer dec);
     void visitOuterTopStatement(OuterTopStatementAst* node) override;
@@ -95,6 +97,7 @@ protected:
     void visitUseNamespace(UseNamespaceAst* node) override;
     void visitClosure(ClosureAst* node) override;
     void visitLexicalVar(LexicalVarAst* node) override;
+    void visitVarExpression(VarExpressionAst* node) override;
 
     /// checks whether the body is empty (i.e. equals ";" instead of "{...}")
     bool isEmptyMethodBody(const MethodBodyAst* body) const {
@@ -154,7 +157,7 @@ private:
     QHash<qint64, ClassDeclaration*> m_types;
     QHash<qint64, FunctionDeclaration*> m_functions;
     QHash<qint64, NamespaceDeclaration*> m_namespaces;
-    QList<KDevelop::QualifiedIdentifier> m_upcomingClassVariables;
+    QVector<KDevelop::QualifiedIdentifier> m_upcomingClassVariables;
 
     /// handles common stuff for both interfaces and classes
     ClassDeclaration* openTypeDeclaration(IdentifierAst *name, KDevelop::ClassDeclarationData::ClassType type);
@@ -236,6 +239,8 @@ private:
      * Sets encountered and updates the comment when we are recompiling.
      */
     void encounter(KDevelop::Declaration* dec);
+
+    bool isReservedClassName(QString className);
 };
 
 }

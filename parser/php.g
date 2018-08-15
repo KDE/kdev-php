@@ -70,10 +70,10 @@ namespace KDevelop
 -- Additional includes for the parser
 ------------------------------------------------------------
 
-%parser_declaration_header "tokenstream.h"
+%parser_declaration_header "parser/tokenstream.h"
 %parser_declaration_header "QtCore/QString"
 %parser_declaration_header "language/duchain/problem.h"
-%parser_declaration_header "phplexer.h"
+%parser_declaration_header "parser/phplexer.h"
 
 %parser_bits_header "parserdebug.h"
 
@@ -135,7 +135,8 @@ namespace KDevelop
         OperationOr,
         OperationXor,
         OperationSl,
-        OperationSr
+        OperationSr,
+        OperationSpaceship,
     };
 :]
 
@@ -237,8 +238,7 @@ namespace KDevelop
        INCLUDE ("include"), INCLUDE_ONCE ("include_once"), EVAL ("eval"), REQUIRE ("require"),
        REQUIRE_ONCE ("require_once"), NAMESPACE ("namespace"), NAMESPACE_C("__NAMESPACE__"), USE("use"),
        GOTO ("goto"), TRAIT ("trait"), INSTEADOF ("insteadof"), CALLABLE ("callable"),
-       ITERABLE ("iterable"), BOOL ("bool"), FLOAT ("float"), INT ("int"), STRING_TYPE ("string"),
-       VOID ("void") ;;
+       VOID ("void"), DIR ("__DIR__"), TRAIT_C ("__TRAIT__"), YIELD ("yield"), YIELD_FROM("yield from") ;;
 
 -- casts:
 %token INT_CAST ("int cast"), DOUBLE_CAST ("double cast"), STRING_CAST ("string cast"),
@@ -365,7 +365,7 @@ namespace KDevelop
    #expression=printExpression @ LOGICAL_AND
 -> logicalAndExpression ;;
 
-  (print=PRINT*) expression=assignmentExpression
+   (print=PRINT | 0) expression=assignmentExpression
 -> printExpression ;;
 
 -- leftside must me a variable, we check afterwards if it was a variable and
@@ -432,10 +432,10 @@ expression=nullCoalesceExpression
    )
 -> conditionalExpression ;;
 
-  #expression=booleanOrExpression @ NULL_COALESCE
+   #expression=booleanOrExpression @ NULL_COALESCE
 -> nullCoalesceExpression ;;
 
-  #expression=booleanAndExpression @ BOOLEAN_OR
+   #expression=booleanAndExpression @ BOOLEAN_OR
 -> booleanOrExpression ;;
 
    #expression=bitOrExpression @ BOOLEAN_AND
@@ -451,16 +451,18 @@ expression=nullCoalesceExpression
 -> bitAndExpression ;;
 
    expression=relationalExpression
-   (#additionalExpression=equalityExpressionRest)*
+   (additionalExpression=equalityExpressionRest | 0)
 -> equalityExpression ;;
 
-   (  IS_EQUAL | IS_NOT_EQUAL | IS_IDENTICAL | IS_NOT_IDENTICAL | SPACESHIP )
+   (  IS_EQUAL | IS_NOT_EQUAL | IS_IDENTICAL | IS_NOT_IDENTICAL | SPACESHIP [: (*yynode)->operation = OperationSpaceship; :] )
    expression=relationalExpression
--> equalityExpressionRest ;;
+-> equalityExpressionRest [
+     member variable operation: OperationType;
+];;
 
 
    expression=shiftExpression
-   (  (#additionalExpression=relationalExpressionRest)+
+   (  additionalExpression=relationalExpressionRest
       --instanceof as in java.g (correct??)
     | INSTANCEOF instanceofType=classNameReference
     | 0
@@ -546,8 +548,12 @@ expression=nullCoalesceExpression
    op=INC | op=DEC
 -> postprefixOperator ;;
 
+-- 10 first follow conflicts because we go back up the chain (affects both print and yield)
+    (print=PRINT+) printExpression=assignmentExpression
+  | isGenerator=YIELD (generatorExpression=printExpression ( DOUBLE_ARROW generatorValueExpr=printExpression | 0 ) | 0)
+  | isGenerator=YIELD_FROM generatorExpression=printExpression
 --first/first conflict - no problem because of ifs
-    ?[: m_state.varExpressionState == OnlyVariable :] 0 [: m_state.varExpressionState = Normal; :] variable=variable
+  | ?[: m_state.varExpressionState == OnlyVariable :] 0 [: m_state.varExpressionState = Normal; :] variable=variable
   | ?[: m_state.varExpressionState == OnlyNewObject :] 0 [: m_state.varExpressionState = Normal; :] newObject=varExpressionNewObject
   | varExpressionNormal=varExpressionNormal
   | varExpressionArray=varExpressionArray arrayIndex=arrayIndexSpecifier*
@@ -562,7 +568,7 @@ expression=nullCoalesceExpression
   | try/rollback (variable=variable [: m_state.varExpressionIsVariable = true; :])
     catch (scalar=scalar)
   | ISSET LPAREN (#issetVariable=variable @ COMMA) RPAREN
-  | EMPTY LPAREN emptyVarialbe=variable RPAREN
+  | EMPTY LPAREN emptyExpression=expr RPAREN
   | newObject=varExpressionNewObject
   | CLONE cloneCar=varExpressionNormal
   | closure=closure
@@ -656,7 +662,7 @@ expression=nullCoalesceExpression
         LPAREN stringParameterList=functionCallParameterList RPAREN
       | PAAMAYIM_NEKUDOTAYIM
         (
-            stringFunctionName=identifier LPAREN stringParameterList=functionCallParameterList RPAREN
+            stringFunctionName=semiReservedIdentifier LPAREN stringParameterList=functionCallParameterList RPAREN
             | varFunctionName=variableWithoutObjects LPAREN stringParameterList=functionCallParameterList RPAREN
             | LBRACE (expr=expr) RBRACE LPAREN stringParameterList=functionCallParameterList RPAREN
         )
@@ -727,6 +733,9 @@ expression=nullCoalesceExpression
 
     identifier=identifier ASSIGN scalar=expr
 -> constantDeclaration ;;
+
+    identifier=semiReservedIdentifier ASSIGN scalar=expr
+-> classConstantDeclaration ;;
 
    SEMICOLON | CLOSE_TAG
 -> semicolonOrCloseTag ;;
@@ -842,8 +851,7 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
   ( PAAMAYIM_NEKUDOTAYIM classConstant=classConstant | 0 )
 -> constantOrClassConst ;;
 
-    CLASS
-  | identifier
+  semiReservedIdentifier
 -> classConstant ;;
 
     #encaps=encaps*
@@ -870,8 +878,10 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
   | DNUMBER                  [: (*yynode)->scalarType = ScalarTypeFloat; :]
   | string=CONSTANT_ENCAPSED_STRING [: (*yynode)->scalarType = ScalarTypeString; :] stringIndex=stringIndexSpecifier*
   | LINE                     [: (*yynode)->scalarType = ScalarTypeInt; :]
+  | DIR                      [: (*yynode)->scalarType = ScalarTypeString; :]
   | FILE                     [: (*yynode)->scalarType = ScalarTypeString; :]
   | CLASS_C                  [: (*yynode)->scalarType = ScalarTypeString; :]
+  | TRAIT_C                  [: (*yynode)->scalarType = ScalarTypeString; :]
   | METHOD_C                 [: (*yynode)->scalarType = ScalarTypeString; :]
   | FUNC_C                   [: (*yynode)->scalarType = ScalarTypeString; :]
   | NAMESPACE_C              [: (*yynode)->scalarType = ScalarTypeString; :]
@@ -892,27 +902,16 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
     (isVariadic=ELLIPSIS | 0) variable=variableIdentifier (ASSIGN defaultValue=expr | 0)
 -> parameter ;;
 
-    (isNullable=QUESTION | 0) (
-        objectType=namespacedIdentifier
-      | arrayType=ARRAY
-      | callableType=CALLABLE
-      | iterableType=ITERABLE
-      | boolType=BOOL
-      | floatType=FLOAT
-      | intType=INT
-      | stringType=STRING_TYPE
-    )
+    genericType=namespacedIdentifier
+  | arrayType=ARRAY
+  | callableType=CALLABLE
+-> genericTypeHint ;;
+
+    (isNullable=QUESTION | 0) typehint=genericTypeHint
 -> parameterType ;;
 
     (isNullable=QUESTION | 0) (
-        objectType=namespacedIdentifier
-      | arrayType=ARRAY
-      | callableType=CALLABLE
-      | iterableType=ITERABLE
-      | boolType=BOOL
-      | floatType=FLOAT
-      | intType=INT
-      | stringType=STRING_TYPE
+        typehint=genericTypeHint
       | voidType=VOID
     )
 -> returnType ;;
@@ -942,6 +941,47 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
 
      string=STRING
 -> identifier ;;
+
+      INCLUDE | INCLUDE_ONCE | EVAL | REQUIRE | REQUIRE_ONCE | LOGICAL_OR | LOGICAL_XOR | LOGICAL_AND
+    | INSTANCEOF | NEW | CLONE | EXIT | IF | ELSEIF | ELSE | ENDIF | ECHO | DO | WHILE | ENDWHILE
+    | FOR | ENDFOR | FOREACH | ENDFOREACH | DECLARE | ENDDECLARE | AS | TRY | CATCH | FINALLY
+    | THROW | USE | INSTEADOF | GLOBAL | VAR | UNSET | ISSET | EMPTY | CONTINUE | GOTO
+    | FUNCTION | CONST | RETURN | PRINT | YIELD | LIST | SWITCH | ENDSWITCH | CASE | DEFAULT | BREAK
+    | ARRAY | CALLABLE | EXTENDS | IMPLEMENTS | NAMESPACE | TRAIT | INTERFACE | CLASS
+    | CLASS_C | TRAIT_C | FUNC_C | METHOD_C | LINE | FILE | DIR | NAMESPACE_C
+-> reservedNonModifiers ;;
+
+      reservedNonModifiers
+    | STATIC | ABSTRACT | FINAL | PRIVATE | PROTECTED | PUBLIC
+-> semiReserved ;;
+
+      identifier
+[:
+    qint64 index = tokenStream->index() - 2;
+    (*yynode)->string = index;
+:]
+    | semiReserved
+[:
+    qint64 index = tokenStream->index() - 2;
+    (*yynode)->string = index;
+:]
+-> semiReservedIdentifier [
+     member variable string: qint64;
+] ;;
+
+      identifier
+[:
+    qint64 index = tokenStream->index() - 2;
+    (*yynode)->string = index;
+:]
+    | reservedNonModifiers
+[:
+    qint64 index = tokenStream->index() - 2;
+    (*yynode)->string = index;
+:]
+-> reservedNonModifierIdentifier [
+     member variable string: qint64;
+] ;;
 
      variable=VARIABLE
 -> variableIdentifier ;;
@@ -989,11 +1029,11 @@ try/recover(#classStatements=classStatement)*
  RBRACE [: rewind(tokenStream->index() - 2); :]
 -> classBody ;;
 
-    CONST #consts=constantDeclaration @ COMMA SEMICOLON
+    CONST #consts=classConstantDeclaration @ COMMA SEMICOLON
   | VAR variable=classVariableDeclaration SEMICOLON
   | modifiers=optionalModifiers
     ( variable=classVariableDeclaration SEMICOLON
-      | FUNCTION (BIT_AND | 0) methodName=identifier LPAREN parameters=parameterList RPAREN
+      | FUNCTION (BIT_AND | 0) methodName=semiReservedIdentifier LPAREN parameters=parameterList RPAREN
         ( COLON returnType=returnType | 0)
         methodBody=methodBody
     )
@@ -1004,10 +1044,18 @@ try/recover(#classStatements=classStatement)*
         @ (SEMICOLON [: if (yytoken == Token_RBRACE) { break; } :]) RBRACE
 -> traitAliasDeclaration ;;
 
-    importIdentifier=traitAliasIdentifier (AS (modifiers=optionalModifiers | 0) aliasIdentifier=identifier|INSTEADOF #conflictIdentifier=namespacedIdentifier @ COMMA)
+    importIdentifier=traitAliasIdentifier
+-- first/first conflict resolved by LA(2)
+-- We can either have a single token (modifier or identifier), or a combination
+    ( AS (?[: LA(2).kind == Token_SEMICOLON :]
+        (modifiers=traitVisibilityModifiers | aliasNonModifierIdentifier=reservedNonModifierIdentifier)
+        | modifiers=traitVisibilityModifiers aliasIdentifier=semiReservedIdentifier
+      )
+      | INSTEADOF #conflictIdentifier=namespacedIdentifier @ COMMA
+    )
 -> traitAliasStatement ;;
 
-    identifier=namespacedIdentifier PAAMAYIM_NEKUDOTAYIM methodIdentifier=identifier
+    identifier=namespacedIdentifier PAAMAYIM_NEKUDOTAYIM methodIdentifier=semiReservedIdentifier
 -> traitAliasIdentifier ;;
 
     SEMICOLON -- abstract method
@@ -1019,6 +1067,16 @@ try/recover(#classStatements=classStatement)*
 
     variable=variableIdentifier (ASSIGN value=staticScalar | 0)
 -> classVariable ;;
+
+    PUBLIC     [: (*yynode)->modifiers |= ModifierPublic;     :]
+  | PROTECTED  [: (*yynode)->modifiers |= ModifierProtected;  :]
+  | PRIVATE    [: (*yynode)->modifiers |= ModifierPrivate;    :]
+  | STATIC     [: (*yynode)->modifiers |= ModifierStatic;     :]
+  | ABSTRACT   [: (*yynode)->modifiers |= ModifierAbstract;   :]
+  | FINAL      [: (*yynode)->modifiers |= ModifierFinal;      :]
+-> traitVisibilityModifiers[
+     member variable modifiers: unsigned int;
+] ;;
 
   (
     PUBLIC     [: (*yynode)->modifiers |= ModifierPublic;      :]

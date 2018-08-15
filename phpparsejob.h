@@ -42,7 +42,7 @@ class ParseJob : public KDevelop::ParseJob
 
 public:
     enum {
-        Resheduled = KDevelop::TopDUContext::LastFeature
+        Rescheduled = KDevelop::TopDUContext::LastFeature
     };
 
     explicit ParseJob(const KDevelop::IndexedString& url, KDevelop::ILanguageSupport* LanguageSupport);

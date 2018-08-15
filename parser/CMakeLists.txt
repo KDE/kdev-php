@@ -8,8 +8,8 @@ set(parser_STAT_SRCS
 )
 
 kdevpgqt_generate(parser_SRCS php NAMESPACE Php DEBUG_VISITOR TOKEN_TEXT
-    "${php_SOURCE_DIR}/parser/php.g"
-    "${php_SOURCE_DIR}/parser/phplexer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/php.g"
+    "${CMAKE_CURRENT_SOURCE_DIR}/phplexer.h"
 )
 ecm_qt_declare_logging_category(parser_SRCS
     HEADER parserdebug.h
@@ -32,6 +32,12 @@ if (MINGW)
     add_definitions(-DMAKE_KDEV4PHPPARSER_LIB)
 endif (MINGW)
 
+target_include_directories(kdevphpparser
+    PUBLIC $<INSTALL_INTERFACE:${KDEVPHP_PRIVATE_INCLUDE_DIR}/parser>
+    PUBLIC $<INSTALL_INTERFACE:${KDEVPHP_PRIVATE_INCLUDE_DIR}>
+    PUBLIC $<INSTALL_INTERFACE:${KDEVPHP_INCLUDE_DIR}>
+)
+
 if (BUILD_TESTING)
     add_executable(php-parser main.cpp)
     target_link_libraries(php-parser
@@ -41,4 +47,25 @@ if (BUILD_TESTING)
     )
 endif()
 
-install(TARGETS kdevphpparser DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS kdevphpparser EXPORT KDevPHPTargets DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(FILES
+    parsesession.h
+    phplexer.h
+    tokenstream.h
+    DESTINATION ${KDEVPHP_INCLUDE_DIR}/parser
+    COMPONENT Devel
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/parserexport.h
+    ${CMAKE_CURRENT_BINARY_DIR}/phpast-fwd.h
+    ${CMAKE_CURRENT_BINARY_DIR}/phpast.h
+    ${CMAKE_CURRENT_BINARY_DIR}/phpdebugvisitor.h
+    ${CMAKE_CURRENT_BINARY_DIR}/phpdefaultvisitor.h
+    ${CMAKE_CURRENT_BINARY_DIR}/phpparser.h
+    ${CMAKE_CURRENT_BINARY_DIR}/phptokentext.h
+    ${CMAKE_CURRENT_BINARY_DIR}/phptokentype.h
+    ${CMAKE_CURRENT_BINARY_DIR}/phpvisitor.h
+    DESTINATION ${KDEVPHP_PRIVATE_INCLUDE_DIR}/parser
+    COMPONENT Devel
+)

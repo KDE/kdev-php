@@ -1,13 +1,10 @@
 cmake_minimum_required(VERSION 3.0)
-project(php)
+cmake_policy(SET CMP0048 NEW)
 
 set(KDEVPHP_VERSION_MAJOR 5)
 set(KDEVPHP_VERSION_MINOR 2)
 set(KDEVPHP_VERSION_PATCH 80)
-# KDevplatform dependency version
-set( KDEVPLATFORM_VERSION "${KDEVPHP_VERSION_MAJOR}.${KDEVPHP_VERSION_MINOR}.${KDEVPHP_VERSION_PATCH}" )
-
-configure_file( "${php_SOURCE_DIR}/kdevphpversion.h.cmake" "${php_BINARY_DIR}/kdevphpversion.h" @ONLY )
+project(kdev-php VERSION "${KDEVPHP_VERSION_MAJOR}.${KDEVPHP_VERSION_MINOR}.${KDEVPHP_VERSION_PATCH}")
 
 find_package (ECM "5.14.0" REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
@@ -18,24 +15,46 @@ include(ECMQtDeclareLoggingCategory)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(GenerateExportHeader)
+include(CMakePackageConfigHelpers)
+include(ECMSetupVersion)
 include(FeatureSummary)
 
 set(QT_MIN_VERSION "5.5.0")
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Widgets Test)
 set(KF5_DEP_VERSION "5.15.0")
-find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS Archive ThreadWeaver TextEditor I18n ItemModels KCMUtils)
-find_package(KDevPlatform ${KDEVPLATFORM_VERSION} REQUIRED)
+find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS
+    Archive
+    ThreadWeaver
+    TextEditor
+    I18n
+    KCMUtils
+)
+# KDevplatform dependency version
+set(KDEVPLATFORM_VERSION "${KDEVPHP_VERSION_MAJOR}.${KDEVPHP_VERSION_MINOR}")
+find_package(KDevPlatform ${KDEVPLATFORM_VERSION} CONFIG REQUIRED)
+
+ecm_setup_version(
+    ${PROJECT_VERSION}
+    VARIABLE_PREFIX KDEVPHP
+    VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kdevphpversion.h"
+    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KDevPHPConfigVersion.cmake"
+)
+
+
+set(KDEVPHP_INCLUDE_DIR ${KDE_INSTALL_INCLUDEDIR}/kdev-php)
+set(KDEVPHP_PRIVATE_INCLUDE_DIR ${KDEVPHP_INCLUDE_DIR}/private/${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR})
+
 find_package(KDevelop-PG-Qt REQUIRED)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wdocumentation")
 endif()
 
-add_definitions( -DKDE_DEFAULT_DEBUG_AREA=9043 )
 add_definitions( -DTRANSLATION_DOMAIN=\"kdevphp\" )
 
 include_directories(
     ${KDEVPGQT_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}
 )
 
 add_subdirectory(app_templates)
@@ -72,11 +91,30 @@ target_link_libraries(kdevphplanguagesupport
 )
 
 # not writeable so that the refactoring actions get hidden
-install(FILES phpfunctions.php DESTINATION ${DATA_INSTALL_DIR}/kdevphpsupport PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
+install(FILES phpfunctions.php DESTINATION ${KDE_INSTALL_DATADIR}/kdevphpsupport PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
 
 install(FILES org.kde.kdev-php.metainfo.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
 # kdebugsettings file
 install(FILES kdevphpsupport.categories DESTINATION ${KDE_INSTALL_CONFDIR})
+
+# create a Config.cmake and a ConfigVersion.cmake file and install them
+set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KDevPHP")
+
+configure_package_config_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/KDevPHPConfig.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/KDevPHPConfig.cmake"
+  INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
+)
+
+install(FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/KDevPHPConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/KDevPHPConfigVersion.cmake"
+  DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+  COMPONENT Devel
+)
+
+install(EXPORT KDevPHPTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE KDevPHPTargets.cmake)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kdevphpversion.h" DESTINATION ${KDEVPHP_INCLUDE_DIR})
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

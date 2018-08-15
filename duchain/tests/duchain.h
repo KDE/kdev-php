@@ -32,13 +32,19 @@ public:
 
 private slots:
     void declareFunction();
+    void declareBaseTypeFunction();
+    void declareSemiReservedFunction();
     void declareVar();
     void varTypehint();
     void declareClass();
+    void declareBaseTypeClass();
+    void declareClassWithSemiReservedMethod();
+    void declareClassWithBaseTypeMethod();
     void classMemberVar();
     void declareTypehintFunction();
     void declareVariadicFunction();
     void declareTypehintVariadicFunction();
+    void declareTypehintObjectFunction();
     void declareTypehintArrayFunction();
     void declareTypehintCallableFunction();
     void functionWithCallableAndFunctionReturn();
@@ -51,6 +57,9 @@ private slots:
     void declareNullableTypehintMixedFunction();
     void declareTypehintNullableIterableFunction();
     void declareTypehintWithPhpdocFunction();
+    void returnTypeGenerator_data();
+    void returnTypeGenerator();
+    void returnTypeGeneratorDelegation();
     void returnTypeClass();
     void declarationReturnType();
     void declarationReturnTypeInRecursingFunction();
@@ -61,6 +70,7 @@ private slots:
     void declarationReturnTypeClassChain();
     void declarationReturnTypeTypehint();
     void declarationReturnTypeTypehintVoid();
+    void declarationReturnTypeTypehintObject();
     void classImplementsInterface();
     void classExtends();
     void staticMethod();
@@ -74,8 +84,10 @@ private slots:
     void ownStaticMemberVariable();
     void classConst();
     void classConst_data();
+    void semiReservedClassConst();
     void fileConst();
     void fileConst_data();
+    void semiReservedFileConst();
     void define();
     void defaultFunctionParam();
     void defaultFunctionParamWithTypehint();
@@ -112,6 +124,7 @@ private slots:
     void superglobalInFunction();
     void returnWithoutFunction();
     void circularInheritance();
+    void circularInterface();
     void findDeclarations();
     void memberTypeAfterMethod();
     void catchDeclaration();
@@ -144,7 +157,10 @@ private slots:
     void upcommingClassInString();
     void namespaces();
     void namespacesNoCurly();
+    void namespacesBaseType();
     void useNamespace();
+    void useBaseTypeNamespace();
+    void useNamespaceBaseTypeAlias();
     void namespaceStaticVar();
     void namespacedCatch();
     void errorRecovery_data();
@@ -170,6 +186,12 @@ private slots:
     void staticFunctionClassPhp54();
     void functionArgumentUnpacking_data();
     void functionArgumentUnpacking();
+    void illegalExpression_data();
+    void illegalExpression();
+    void printExpression_data();
+    void printExpression();
+    void generatorAssignment();
+    void generatorClosure();
 };
 
 }

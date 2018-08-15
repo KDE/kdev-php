@@ -1145,8 +1145,8 @@ void TestUses::classNameString()
 
 void TestUses::useTrait()
 {
-    //                         0         1         2         3         4         5         6         7
-    //                         01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    //                         0         1         2         3         4         5         6         7         8
+    //                         012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
     TopDUContext* top = parse("<?php\n"
                               "trait A { public function one(){} public function two(){} }\n"
                               "trait B { public function one(){} private function three(){} }\n"
@@ -1154,9 +1154,11 @@ void TestUses::useTrait()
                               "class Foo { use A;}\n"
                               "class Bar { use A,B { A::one insteadof B; B::three as public four; } }\n"
                               "class Baz { use A,B,C { C::one insteadof A,B; C::five as six; } }\n"
+                              "class Boo { use A,B,C { A::one insteadof B,C; A::two as switch; B::three as public; C::five as public static; } }\n"
                               "$a = new Foo(); $a->one(); $a->two();\n"
                               "$b = new Bar(); $b->one(); $b->two(); $b->four();\n"
-                              "$c = new Baz(); $c->one(); $c->two(); $c->baz; $c::six();\n", DumpAll);
+                              "$c = new Baz(); $c->one(); $c->two(); $c->baz; $c::six();\n"
+                              "$d = new Boo(); $d->one(); $d->switch(); $d->three(); $d->static();\n", DumpAll);
     QVERIFY(top);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock;
@@ -1166,50 +1168,59 @@ void TestUses::useTrait()
     TraitMethodAliasDeclaration* method;
     TraitMemberAliasDeclaration* member;
 
-    QCOMPARE(topDecs.size(), 9);
+    QCOMPARE(topDecs.size(), 11);
 
     dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("a"))).first();
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(4, 16, 4, 17)
                                           << RangeInRevision(5, 16, 5, 17)
                                           << RangeInRevision(5, 22, 5, 23)
                                           << RangeInRevision(6, 16, 6, 17)
-                                          << RangeInRevision(6, 41, 6, 42) );
+                                          << RangeInRevision(6, 41, 6, 42)
+                                          << RangeInRevision(7, 16, 7, 17)
+                                          << RangeInRevision(7, 24, 7, 25)
+                                          << RangeInRevision(7, 46, 7, 47) );
 
     dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("b"))).first();
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(5, 18, 5, 19)
                                           << RangeInRevision(5, 39, 5, 40)
                                           << RangeInRevision(5, 42, 5, 43)
                                           << RangeInRevision(6, 18, 6, 19)
-                                          << RangeInRevision(6, 43, 6, 44) );
+                                          << RangeInRevision(6, 43, 6, 44)
+                                          << RangeInRevision(7, 18, 7, 19)
+                                          << RangeInRevision(7, 41, 7, 42)
+                                          << RangeInRevision(7, 64, 7, 65) );
 
     dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("c"))).first();
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(6, 20, 6, 21)
                                           << RangeInRevision(6, 24, 6, 25)
-                                          << RangeInRevision(6, 46, 6, 47) );
+                                          << RangeInRevision(6, 46, 6, 47)
+                                          << RangeInRevision(7, 20, 7, 21)
+                                          << RangeInRevision(7, 43, 7, 44)
+                                          << RangeInRevision(7, 84, 7, 85) );
 
     dec = topDecs[3]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("one"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(7, 20, 7, 23) );
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 20, 8, 23) );
 
     dec = topDecs[3]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("two"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(7, 31, 7, 34) );
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 31, 8, 34) );
 
     dec = topDecs[4]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("one"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 20, 8, 23) );
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 20, 9, 23) );
 
     dec = topDecs[4]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("two"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 31, 8, 34) );
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 31, 9, 34) );
 
     dec = topDecs[4]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("four"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
@@ -1217,25 +1228,25 @@ void TestUses::useTrait()
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("b"));
     QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier("three"));
     QCOMPARE(method->accessPolicy(), Declaration::AccessPolicy::Public);
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 42, 8, 46) );
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 42, 9, 46) );
 
     dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("one"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("c"));
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 20, 9, 23) );
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(10, 20, 10, 23) );
 
     dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("two"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 31, 9, 34) );
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(10, 31, 10, 34) );
 
     dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("baz"))).first();
     member = dynamic_cast<TraitMemberAliasDeclaration*>(dec);
     QVERIFY(member);
     QCOMPARE(member->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("c"));
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 42, 9, 45) );
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(10, 42, 10, 45) );
 
     dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("six"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
@@ -1243,7 +1254,35 @@ void TestUses::useTrait()
     QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("c"));
     QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier("five"));
     QVERIFY(method->isStatic());
-    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 51, 9, 54) );
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(10, 51, 10, 54) );
+
+    dec = topDecs[6]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("one"))).first();
+    method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
+    QVERIFY(method);
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(11, 20, 11, 23) );
+
+    dec = topDecs[6]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("switch"))).first();
+    method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
+    QVERIFY(method);
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
+    QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier("two"));
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(11, 31, 11, 37) );
+
+    dec = topDecs[6]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("three"))).first();
+    method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
+    QVERIFY(method);
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("b"));
+    QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier("three"));
+    QCOMPARE(method->accessPolicy(), Declaration::AccessPolicy::Public);
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(11, 45, 11, 50) );
+
+    dec = topDecs[6]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("static"))).first();
+    method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
+    QVERIFY(method);
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("c"));
+    QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier("five"));
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(11, 58, 11, 64) );
 }
 
 void TestUses::exceptionFinally()

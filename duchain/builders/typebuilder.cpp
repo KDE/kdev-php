@@ -86,7 +86,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         }
     } else {
         if (!type.compare(QLatin1String("object"), Qt::CaseInsensitive)) {
-            type = QStringLiteral("stdclass");
+            return AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeObject));
         }
         //don't use openTypeFromName as it uses cursor for findDeclarations
         DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
@@ -299,6 +299,7 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
 
         FunctionType::Ptr functionType = FunctionType::Ptr(new FunctionType());
         openType(functionType);
+        openContextType(functionType);
 
         AbstractType::Ptr phpdocReturnType = parseDocComment(node, QStringLiteral("return"));
         functionType->setReturnType(returnType(node->returnType, phpdocReturnType, editor(), currentContext()));
@@ -309,6 +310,7 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
         if (currentType<FunctionType>() && !currentType<FunctionType>()->returnType()) {
             currentType<FunctionType>()->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
         }
+        closeContextType();
         closeType();
     } else {
         //member-variable
@@ -350,6 +352,22 @@ void TypeBuilder::visitConstantDeclaration(ConstantDeclarationAst* node)
     }
 }
 
+void TypeBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst* node)
+{
+    if (!m_gotTypeFromDocComment || !currentAbstractType()) {
+        AbstractType::Ptr type = getTypeForNode(node->scalar);
+        type->setModifiers(type->modifiers() | AbstractType::ConstModifier);
+        openAbstractType(type);
+
+        TypeBuilderBase::visitClassConstantDeclaration(node);
+
+        closeType();
+    } else {
+        currentAbstractType()->setModifiers(currentAbstractType()->modifiers() & AbstractType::ConstModifier);
+        TypeBuilderBase::visitClassConstantDeclaration(node);
+    }
+}
+
 void TypeBuilder::visitParameter(ParameterAst *node)
 {
     AbstractType::Ptr phpDocTypehint;
@@ -375,6 +393,8 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
     FunctionType::Ptr type = currentType<FunctionType>();
     Q_ASSERT(type);
 
+    openContextType(type);
+
     AbstractType::Ptr phpdocReturnType = parseDocComment(node, QStringLiteral("return"));
     type->setReturnType(returnType(node->returnType, phpdocReturnType, editor(), currentContext()));
     m_gotReturnTypeFromDocComment = type->returnType();
@@ -386,6 +406,8 @@ void TypeBuilder::visitFunctionDeclarationStatement(FunctionDeclarationStatement
     if (!type->returnType()) {
         type->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
     }
+
+    closeContextType();
 }
 
 void TypeBuilder::visitClosure(ClosureAst* node)
@@ -393,6 +415,7 @@ void TypeBuilder::visitClosure(ClosureAst* node)
     m_currentFunctionParams = parseDocCommentParams(node);
     FunctionType::Ptr type = FunctionType::Ptr(new FunctionType());
     openType(type);
+    openContextType(type);
 
     AbstractType::Ptr phpdocReturnType = parseDocComment(node, QStringLiteral("return"));
     type->setReturnType(returnType(node->returnType, phpdocReturnType, editor(), currentContext()));
@@ -405,6 +428,7 @@ void TypeBuilder::visitClosure(ClosureAst* node)
     if (!type->returnType()) {
         type->setReturnType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid)));
     }
+    closeContextType();
     closeType();
 }
 
@@ -550,6 +574,26 @@ void TypeBuilder::visitCatchItem(Php::CatchItemAst *node)
         closeType();
     }
 
+}
+
+void TypeBuilder::visitVarExpression(Php::VarExpressionAst *node)
+{
+    if (hasCurrentContextType() && node->isGenerator != -1 && !m_gotReturnTypeFromDocComment) {
+        FunctionType::Ptr ft = FunctionType::Ptr::dynamicCast(currentContextType());
+        DeclarationPointer generatorDecl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier("generator"));
+
+        if (ft && generatorDecl) {
+            AbstractType::Ptr generatorType = generatorDecl->abstractType();
+
+            if (generatorType) {
+                ft->setReturnType(generatorType);
+            }
+        }
+
+        updateCurrentType();
+    }
+
+    TypeBuilderBase::visitVarExpression(node);
 }
 
 void TypeBuilder::updateCurrentType()

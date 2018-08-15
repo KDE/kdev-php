@@ -191,6 +191,12 @@ void DeclarationBuilder::visitClassDeclarationStatement(ClassDeclarationStatemen
     closeType();
     closeDeclaration();
     m_upcomingClassVariables.clear();
+
+    QString className = classDec->prettyName().str();
+
+    if (isReservedClassName(className)) {
+        reportError(i18n("Cannot use '%1' as class name as it is reserved", className), node->className);
+    }
 }
 
 void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclarationStatementAst *node)
@@ -200,6 +206,12 @@ void DeclarationBuilder::visitInterfaceDeclarationStatement(InterfaceDeclaration
     DeclarationBuilderBase::visitInterfaceDeclarationStatement(node);
     closeType();
     closeDeclaration();
+
+    QString interfaceName = interfaceDec->prettyName().str();
+
+    if (isReservedClassName(interfaceName)) {
+        reportError(i18n("Cannot use '%1' as class name as it is reserved", interfaceName), node->interfaceName);
+    }
 }
 
 void DeclarationBuilder::visitTraitDeclarationStatement(TraitDeclarationStatementAst * node)
@@ -210,6 +222,12 @@ void DeclarationBuilder::visitTraitDeclarationStatement(TraitDeclarationStatemen
     closeType();
     closeDeclaration();
     m_upcomingClassVariables.clear();
+
+    QString traitName = traitDec->prettyName().str();
+
+    if (isReservedClassName(traitName)) {
+        reportError(i18n("Cannot use '%1' as class name as it is reserved", traitName), node->traitName);
+    }
 }
 
 ClassDeclaration* DeclarationBuilder::openTypeDeclaration(IdentifierAst* name, ClassDeclarationData::ClassType type)
@@ -619,6 +637,31 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
 
 void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
 {
+    DUChainWriteLocker lock(DUChain::lock());
+    if (m_reportErrors) {
+        // check for redeclarations
+        foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first(), startPos(node->identifier)))
+        {
+            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
+                reportRedeclarationError(dec, node->identifier);
+                break;
+            }
+        }
+    }
+    ClassMemberDeclaration* dec = openDefinition<ClassMemberDeclaration>(identifierForNode(node->identifier), m_editor->findRange(node->identifier));
+    {
+        DUChainWriteLocker lock(DUChain::lock());
+        dec->setAccessPolicy(Declaration::Public);
+        dec->setStatic(true);
+        dec->setKind(Declaration::Instance);
+    }
+    DeclarationBuilderBase::visitConstantDeclaration(node);
+    closeDeclaration();
+}
+
+void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationAst *node)
+{
+    DUChainWriteLocker lock;
     if (m_reportErrors) {
         // Check for constants in traits
         if (isMatch(currentDeclaration(), ClassDeclarationType)) {
@@ -630,8 +673,13 @@ void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
             }
         }
 
+        // check for 'class' constant
+        if (identifierForNode(node->identifier).toString().toLower() == QLatin1String("class"))
+        {
+            reportError(i18n("A class constant must not be called 'class'; it is reserved for class name fetching"), node);
+        }
+
         // check for redeclarations
-        DUChainWriteLocker lock(DUChain::lock());
         foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first(), startPos(node->identifier)))
         {
             if (wasEncountered(dec) && !dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
@@ -640,14 +688,13 @@ void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
             }
         }
     }
-    ClassMemberDeclaration* dec = openDefinition<ClassMemberDeclaration>(node->identifier, node->identifier);
-    {
-        DUChainWriteLocker lock(DUChain::lock());
-        dec->setAccessPolicy(Declaration::Public);
-        dec->setStatic(true);
-        dec->setKind(Declaration::Instance);
-    }
-    DeclarationBuilderBase::visitConstantDeclaration(node);
+    ClassMemberDeclaration* dec = openDefinition<ClassMemberDeclaration>(identifierForNode(node->identifier), m_editor->findRange(node->identifier));
+    dec->setAccessPolicy(Declaration::Public);
+    dec->setStatic(true);
+    dec->setKind(Declaration::Instance);
+    lock.unlock();
+
+    DeclarationBuilderBase::visitClassConstantDeclaration(node);
     closeDeclaration();
 }
 
@@ -662,7 +709,6 @@ void DeclarationBuilder::visitTraitAliasStatement(TraitAliasStatementAst *node)
     }
 
     lock.unlock();
-
     DeclarationBuilderBase::visitTraitAliasStatement(node);
 }
 
@@ -674,6 +720,8 @@ void DeclarationBuilder::createTraitAliasDeclarations(TraitAliasStatementAst *no
     QualifiedIdentifier alias;
     if (node->aliasIdentifier) {
         alias = identifierPairForNode(node->aliasIdentifier).second;
+    } else if (node->aliasNonModifierIdentifier) {
+        alias = identifierPairForNode(node->aliasNonModifierIdentifier).second;
     } else {
         alias = original;
     }
@@ -683,9 +731,14 @@ void DeclarationBuilder::createTraitAliasDeclarations(TraitAliasStatementAst *no
         TraitMethodAliasDeclaration* newdec;
 
         // no existing declaration found, create one
-        if (node->aliasIdentifier) {
-            newdec = openDefinition<TraitMethodAliasDeclaration>(alias, m_editor->findRange(node->aliasIdentifier));
-            newdec->setPrettyName(identifierPairForNode(node->aliasIdentifier).first);
+        if (node->aliasIdentifier || node->aliasNonModifierIdentifier) {
+            if (node->aliasIdentifier) {
+                newdec = openDefinition<TraitMethodAliasDeclaration>(alias, m_editor->findRange(node->aliasIdentifier));
+                newdec->setPrettyName(identifierPairForNode(node->aliasIdentifier).first);
+            } else {
+                newdec = openDefinition<TraitMethodAliasDeclaration>(alias, m_editor->findRange(node->aliasNonModifierIdentifier));
+                newdec->setPrettyName(identifierPairForNode(node->aliasNonModifierIdentifier).first);
+            }
             newdec->setAccessPolicy(olddec->accessPolicy());
             openAbstractType(olddec->abstractType());
             if (node->modifiers) {
@@ -697,13 +750,15 @@ void DeclarationBuilder::createTraitAliasDeclarations(TraitAliasStatementAst *no
                     newdec->setAccessPolicy(Declaration::Private);
                 }
 
+                if (node->modifiers->modifiers & ModifierAbstract) {
+                    reportError(i18n("Cannot use 'abstract' as method modifier"), node->modifiers, IProblem::Error);
+                }
                 if (node->modifiers->modifiers & ModifierFinal) {
                     reportError(i18n("Cannot use 'final' as method modifier"), node->modifiers, IProblem::Error);
                 }
                 if (node->modifiers->modifiers & ModifierStatic) {
                     reportError(i18n("Cannot use 'static' as method modifier"), node->modifiers, IProblem::Error);
                 }
-
             }
         } else {
             CursorInRevision cursor = m_editor->findRange(node->importIdentifier).start;
@@ -711,6 +766,26 @@ void DeclarationBuilder::createTraitAliasDeclarations(TraitAliasStatementAst *no
             newdec->setPrettyName(identifierPairForNode(node->importIdentifier->methodIdentifier).first);
             newdec->setAccessPolicy(olddec->accessPolicy());
             openAbstractType(olddec->abstractType());
+
+            if (node->modifiers) {
+                if (node->modifiers->modifiers & ModifierPublic) {
+                    newdec->setAccessPolicy(Declaration::Public);
+                } else if (node->modifiers->modifiers & ModifierProtected) {
+                    newdec->setAccessPolicy(Declaration::Protected);
+                } else if (node->modifiers->modifiers & ModifierPrivate) {
+                    newdec->setAccessPolicy(Declaration::Private);
+                }
+
+                if (node->modifiers->modifiers & ModifierAbstract) {
+                    reportError(i18n("Cannot use 'abstract' as method modifier"), node->modifiers, IProblem::Error);
+                }
+                if (node->modifiers->modifiers & ModifierFinal) {
+                    reportError(i18n("Cannot use 'final' as method modifier"), node->modifiers, IProblem::Error);
+                }
+                if (node->modifiers->modifiers & ModifierStatic) {
+                    reportError(i18n("Cannot use 'static' as method modifier"), node->modifiers, IProblem::Error);
+                }
+            }
         }
         newdec->setKind(Declaration::Type);
         newdec->setAliasedDeclaration(IndexedDeclaration(olddec));
@@ -743,7 +818,7 @@ void DeclarationBuilder::createTraitAliasDeclarations(TraitAliasStatementAst *no
 
 void DeclarationBuilder::visitParameterList(ParameterListAst* node)
 {
-    PushValue<ParameterAst*> push(m_functionDeclarationPreviousArgument, 0);
+    PushValue<ParameterAst*> push(m_functionDeclarationPreviousArgument, nullptr);
 
     DeclarationBuilderBase::visitParameterList(node);
 }
@@ -758,8 +833,18 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
         funDec->addDefaultParameter(IndexedString(symbol));
         if (node->isVariadic != -1) {
             reportError(i18n("Variadic parameter cannot have a default value"), node->defaultValue);
-        } else if ( node->parameterType && node->parameterType->objectType && symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0 ) {
+        } else if (node->parameterType && node->parameterType->typehint && isClassTypehint(node->parameterType->typehint, m_editor) &&
+                symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0) {
             reportError(i18n("Default value for parameters with a class type hint can only be NULL."), node->defaultValue);
+        } else if (node->parameterType && node->parameterType->typehint && node->parameterType->typehint->genericType &&
+                symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0) {
+            NamespacedIdentifierAst* typehintNode = node->parameterType->typehint->genericType;
+            const KDevPG::ListNode< IdentifierAst* >* it = typehintNode->namespaceNameSequence->back();
+            QString typehintName = m_editor->parseSession()->symbol(it->element);
+
+            if (typehintName.compare(QLatin1String("object"), Qt::CaseInsensitive) == 0) {
+                reportError(i18n("Default value for parameters with an object type can only be NULL."), node->defaultValue);
+            }
         }
     } else {
         funDec->addDefaultParameter(IndexedString{});
@@ -774,6 +859,16 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
     }
 
     DeclarationBuilderBase::visitParameter(node);
+
+    if (node->parameterType && node->parameterType->typehint && isClassTypehint(node->parameterType->typehint, m_editor)) {
+        NamespacedIdentifierAst* typehintNode = node->parameterType->typehint->genericType;
+        const KDevPG::ListNode< IdentifierAst* >* it = typehintNode->namespaceNameSequence->back();
+        QString className = m_editor->parseSession()->symbol(it->element);
+
+        if (isReservedClassName(className)) {
+            reportError(i18n("Cannot use '%1' as class name as it is reserved", className), typehintNode);
+        }
+    }
 
     if (m_functionDeclarationPreviousArgument && m_functionDeclarationPreviousArgument->isVariadic != -1) {
         reportError(i18n("Only the last parameter can be variadic."), m_functionDeclarationPreviousArgument);
@@ -802,6 +897,19 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
     closeType();
     closeDeclaration();
 }
+
+void DeclarationBuilder::visitReturnType(ReturnTypeAst* node) {
+    if (node->typehint && isClassTypehint(node->typehint, m_editor)) {
+        NamespacedIdentifierAst* typehintNode = node->typehint->genericType;
+        const KDevPG::ListNode< IdentifierAst* >* it = typehintNode->namespaceNameSequence->back();
+        QString className = m_editor->parseSession()->symbol(it->element);
+
+        if (isReservedClassName(className)) {
+            reportError(i18n("Cannot use '%1' as class name as it is reserved", className), typehintNode);
+        }
+    }
+}
+
 void DeclarationBuilder::visitClosure(ClosureAst* node)
 {
     setComment(formatComment(node, editor()));
@@ -1197,7 +1305,7 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
 
 void DeclarationBuilder::visitFunctionCallParameterList(FunctionCallParameterListAst* node)
 {
-    PushValue<FunctionCallParameterListElementAst*> push(m_functionCallPreviousArgument, 0);
+    PushValue<FunctionCallParameterListElementAst*> push(m_functionCallPreviousArgument, nullptr);
     PushValue<int> pos(m_functionCallParameterPos, 0);
 
     DeclarationBuilderBase::visitFunctionCallParameterList(node);
@@ -1463,6 +1571,23 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
         decl->setKind(Declaration::NamespaceAlias);
     }
     closeDeclaration();
+
+    if (node->aliasIdentifier) {
+        QString aliasName = m_editor->parseSession()->symbol(node->aliasIdentifier);
+
+        if (isReservedClassName(aliasName)) {
+            reportError(i18n("Cannot use %1 as %2 because '%2' is a special class name", qid.toString(), aliasName), node->aliasIdentifier);
+        }
+    }
+}
+
+void DeclarationBuilder::visitVarExpression(VarExpressionAst* node)
+{
+    DeclarationBuilderBase::visitVarExpression(node);
+
+    if (node->isGenerator != -1 && currentContext()->type() != DUContext::Other) {
+        reportError(i18n("The 'yield' expression can only be used inside a function"), node);
+    }
 }
 
 void DeclarationBuilder::updateCurrentType()
@@ -1502,5 +1627,19 @@ void DeclarationBuilder::encounter(Declaration* dec)
         setEncountered(dec);
     }
 }
+
+bool DeclarationBuilder::isReservedClassName(QString className)
+{
+    return className.compare(QLatin1String("string"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("bool"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("int"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("float"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("iterable"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("object"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("null"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("true"), Qt::CaseInsensitive) == 0
+            || className.compare(QLatin1String("false"), Qt::CaseInsensitive) == 0;
+}
+
 
 }
