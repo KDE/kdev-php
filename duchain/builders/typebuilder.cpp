@@ -88,9 +88,16 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         if (!type.compare(QLatin1String("object"), Qt::CaseInsensitive)) {
             return AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeObject));
         }
+
+        QualifiedIdentifier typehint = QualifiedIdentifier(type.toLower().replace(QLatin1Literal("\\"), QLatin1Literal("::")));
+
+        if (typehint.toString().startsWith(QLatin1Literal("::"))) {
+            typehint.setExplicitlyGlobal(true);
+        }
+
         //don't use openTypeFromName as it uses cursor for findDeclarations
-        DeclarationPointer decl = findDeclarationImport(ClassDeclarationType,
-                                                        QualifiedIdentifier(type.toLower()));
+        DeclarationPointer decl = findDeclarationImport(ClassDeclarationType, typehint);
+
         if (decl && decl->abstractType()) {
             return decl->abstractType();
         }
@@ -326,7 +333,11 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
 void TypeBuilder::visitClassVariable(ClassVariableAst *node)
 {
     if (!m_gotTypeFromDocComment) {
-        openAbstractType(getTypeForNode(node->value));
+        if (node->value) {
+            openAbstractType(getTypeForNode(node->value));
+        } else {
+            openAbstractType(AbstractType::Ptr(new IntegralType(IntegralType::TypeNull)));
+        }
 
         TypeBuilderBase::visitClassVariable(node);
 

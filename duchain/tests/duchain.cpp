@@ -447,7 +447,7 @@ void TestDUChain::classMemberVar()
     QCOMPARE(var->accessPolicy(), Declaration::Public);
     QCOMPARE(var->isStatic(), false);
     QVERIFY(var->type<IntegralType>());
-    QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeMixed);
+    QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeNull);
 
     //$bar
     var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().at(1));
@@ -476,6 +476,85 @@ void TestDUChain::classMemberVar()
     QCOMPARE(var->isStatic(), false);
     QVERIFY(var->type<IntegralType>());
     QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeInt);
+}
+
+void TestDUChain::classMemberVarAfterUse()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<?php class B { function x() { $this->a = 1; } public $a = 1; }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 1);
+    QVERIFY(top->problems().isEmpty());
+
+    DUContext* contextClassB = top->childContexts().first();
+
+    QCOMPARE(top->localDeclarations().count(), 1);
+    Declaration* dec = top->localDeclarations().first();
+    QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("b"));
+    QCOMPARE(dec->isDefinition(), true);
+    QCOMPARE(dec->logicalInternalContext(top), contextClassB);
+
+    QCOMPARE(contextClassB->localScopeIdentifier(), QualifiedIdentifier("b"));
+    QCOMPARE(contextClassB->childContexts().count(), 2);
+    QCOMPARE(contextClassB->localDeclarations().count(), 2);
+
+    //$foo
+    ClassMemberDeclaration* var = dynamic_cast<ClassMemberDeclaration*>(contextClassB->localDeclarations().at(1));
+    QVERIFY(var);
+    QCOMPARE(var->identifier(), Identifier("a"));
+    QCOMPARE(var->accessPolicy(), Declaration::Public);
+    QCOMPARE(var->isStatic(), false);
+    QVERIFY(var->type<IntegralType>());
+    QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeInt);
+    QVERIFY(var->range() == RangeInRevision(0, 54, 0, 56));
+}
+
+void TestDUChain::classMemberVarDocBlockType()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? namespace Test { class A {} }\n"
+                      "namespace Test2 { class B { /** @var \\Test\\A **/ public $foo; } }\n"
+    );
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 2);
+
+    DUContext* contextClassA = top->childContexts().at(0)->childContexts().first();
+    DUContext* contextClassB = top->childContexts().at(1)->childContexts().first();
+
+    QCOMPARE(top->localDeclarations().count(), 2);
+    Declaration* dec = top->childContexts().first()->localDeclarations().first();
+    QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("test::a"));
+    QCOMPARE(dec->isDefinition(), true);
+
+    QCOMPARE(contextClassA->localScopeIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(contextClassA->childContexts().count(), 0);
+    QCOMPARE(contextClassA->localDeclarations().count(), 0);
+
+    QCOMPARE(contextClassB->localScopeIdentifier(), QualifiedIdentifier("b"));
+    QCOMPARE(contextClassB->childContexts().count(), 0);
+    QCOMPARE(contextClassB->localDeclarations().count(), 1);
+
+    //$foo
+    ClassMemberDeclaration* var = dynamic_cast<ClassMemberDeclaration*>(contextClassB->localDeclarations().first());
+    QVERIFY(var);
+    QCOMPARE(var->identifier(), Identifier("foo"));
+    QCOMPARE(var->accessPolicy(), Declaration::Public);
+    QCOMPARE(var->isStatic(), false);
+    StructureType::Ptr type = var->type<StructureType>();
+    QVERIFY(type);
+    QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("test::a"));
 }
 
 void TestDUChain::returnTypeGenerator_data()
@@ -2427,7 +2506,7 @@ void TestDUChain::memberTypeAfterMethod()
         QCOMPARE(var->accessPolicy(), Declaration::Public);
         QCOMPARE(var->isStatic(), false);
         QVERIFY(var->type<IntegralType>());
-        QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeMixed);
+        QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeNull);
     }
 }
 
@@ -2801,7 +2880,7 @@ void TestDUChain::declareMemberOutOfClass2()
 
     { // check if x got declared
         QList<Declaration*> decs = top->childContexts().first()->findDeclarations(Identifier(QStringLiteral("x")));
-        // the type of both assignments to $bar->asdf are the same, hence it should only be declared once
+        // the type of both assignments to $a->x are the same, hence it should only be declared once
         QCOMPARE(decs.size(), 1);
         ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
         QVERIFY(cmdec);
@@ -2819,8 +2898,7 @@ void TestDUChain::declareMemberInClassMethod()
                     " function test() { $this->asdf = true; $this->asdf = false; }\n"
                     // should only declare bar once as private
                     " private $xyz = 0; function test2() { $this->xyz = 42; }\n"
-                    // should not create any local declarations, and issue an error for trying to
-                    // assign something to a private member variable of a parent class
+                    // should create a local declaration for the private attribute
                     " function test3() { $this->prot = 42;\n$this->priv = 42; }\n"
                     " }");
     TopDUContext* top = parse(code, DumpAST);
@@ -2849,14 +2927,22 @@ void TestDUChain::declareMemberInClassMethod()
         QVERIFY(dec->type<IntegralType>()->dataType() == IntegralType::TypeInt);
     }
 
-    { // prot and priv
-        QVERIFY(top->childContexts().last()->findLocalDeclarations(Identifier("prot")).isEmpty());
-        QVERIFY(top->childContexts().last()->findLocalDeclarations(Identifier("priv")).isEmpty());
+    { // priv
+        QList<Declaration*> decs = top->childContexts().last()->findLocalDeclarations(Identifier(QStringLiteral("priv")));
+        QCOMPARE(decs.size(), 1);
+        ClassMemberDeclaration *dec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
+        QVERIFY(dec);
+        QVERIFY(dec->accessPolicy() == Declaration::Public);
+        QVERIFY(!dec->isStatic());
+        QVERIFY(dec->type<IntegralType>());
+        QVERIFY(dec->type<IntegralType>()->dataType() == IntegralType::TypeInt);
     }
 
-    // only one problem: error trying to assign to a private member of a parent class
-    QCOMPARE(top->problems().count(), 1);
-    QCOMPARE(top->problems().first()->finalLocation().start().line(), 4);
+    { // prot
+        QVERIFY(top->childContexts().last()->findLocalDeclarations(Identifier("prot")).isEmpty());
+    }
+
+    QCOMPARE(top->problems().count(), 0);
 }
 
 void TestDUChain::thisRedeclaration()
@@ -2980,7 +3066,7 @@ void TestDUChain::implicitReferenceDeclaration()
     QVERIFY(cmdec->type<IntegralType>());
 
     qDebug() << cmdec->type<IntegralType>()->dataType() << cmdec->toString();
-    QVERIFY(cmdec->type<IntegralType>()->dataType() == IntegralType::TypeMixed);
+    QVERIFY(cmdec->type<IntegralType>()->dataType() == IntegralType::TypeNull);
     }
 }
 

@@ -41,6 +41,8 @@ private slots:
     void declareClassWithSemiReservedMethod();
     void declareClassWithBaseTypeMethod();
     void classMemberVar();
+    void classMemberVarAfterUse();
+    void classMemberVarDocBlockType();
     void declareTypehintFunction();
     void declareVariadicFunction();
     void declareTypehintVariadicFunction();

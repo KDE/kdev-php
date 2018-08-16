@@ -648,8 +648,16 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
                             }
                         } else {
                             if ( !dec->isFunctionDeclaration() ) {
-                                decs << dec;
-                                ifDebug(qCDebug(DUCHAIN) << "found:" << dec->toString();)
+                                ClassMemberDeclaration *classDec = dynamic_cast<ClassMemberDeclaration*>(dec);
+                                if (classDec && classDec->accessPolicy() == Declaration::Private) {
+                                    if (declaration == dec->context()->owner()) {
+                                        decs << dec;
+                                        ifDebug(qCDebug(DUCHAIN) << "found private:" << dec->toString();)
+                                    }
+                                } else {
+                                    decs << dec;
+                                    ifDebug(qCDebug(DUCHAIN) << "found:" << dec->toString();)
+                                }
                             }
                         }
                     }
