@@ -48,7 +48,7 @@ public:
     ~ContextBuilder() override;
 
     KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
-            KDevelop::ReferencedTopDUContext updateContext
+            const KDevelop::ReferencedTopDUContext& updateContext
             = KDevelop::ReferencedTopDUContext()) override;
 
     bool hadUnresolvedIdentifiers() const;

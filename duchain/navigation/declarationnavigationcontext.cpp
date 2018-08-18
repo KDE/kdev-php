@@ -232,12 +232,12 @@ void DeclarationNavigationContext::htmlFunction()
   modifyHtml() += QStringLiteral("<br />");
 }
 
-QualifiedIdentifier DeclarationNavigationContext::prettyQualifiedIdentifier( DeclarationPointer decl ) const
+QualifiedIdentifier DeclarationNavigationContext::prettyQualifiedIdentifier(const DeclarationPointer& decl) const
 {
     return QualifiedIdentifier(prettyName(decl.data()));
 }
 
-void DeclarationNavigationContext::makeLink(const QString& name, DeclarationPointer declaration, NavigationAction::Type actionType)
+void DeclarationNavigationContext::makeLink(const QString& name, const DeclarationPointer& declaration, NavigationAction::Type actionType)
 {
     if ( actionType == NavigationAction::JumpToSource && declaration->url() == internalFunctionFile() ) {
         modifyHtml() += i18n("PHP internal");
@@ -246,7 +246,7 @@ void DeclarationNavigationContext::makeLink(const QString& name, DeclarationPoin
     AbstractDeclarationNavigationContext::makeLink(name, declaration, actionType);
 }
 
-QString DeclarationNavigationContext::declarationKind(DeclarationPointer decl)
+QString DeclarationNavigationContext::declarationKind(const DeclarationPointer& decl)
 {
     if ( decl->kind() == Declaration::Instance && decl->abstractType()
          && decl->abstractType()->modifiers() & AbstractType::ConstModifier ) {

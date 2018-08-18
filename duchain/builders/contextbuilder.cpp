@@ -63,8 +63,9 @@ EditorIntegrator* ContextBuilder::editor() const
 }
 
 ReferencedTopDUContext ContextBuilder::build(const IndexedString& url, AstNode* node,
-                                             ReferencedTopDUContext updateContext)
+                                             const ReferencedTopDUContext& updateContext_)
 {
+    ReferencedTopDUContext updateContext(updateContext_);
     m_isInternalFunctions = url == internalFunctionFile();
     if ( m_isInternalFunctions ) {
         m_reportErrors = false;

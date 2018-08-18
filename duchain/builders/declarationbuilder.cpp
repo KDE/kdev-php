@@ -131,8 +131,9 @@ void DeclarationBuilder::getVariableIdentifier(VariableAst* node,
 }
 
 ReferencedTopDUContext DeclarationBuilder::build(const IndexedString& url, AstNode* node,
-        ReferencedTopDUContext updateContext)
+                                                 const ReferencedTopDUContext& updateContext_)
 {
+    ReferencedTopDUContext updateContext(updateContext_);
     //Run DeclarationBuilder twice, to find uses of declarations that are
     //declared after the use. ($a = new Foo; class Foo {})
     {

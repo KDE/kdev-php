@@ -53,7 +53,7 @@ UseBuilder::UseBuilder( EditorIntegrator* editor )
     m_editor = editor;
 }
 
-ReferencedTopDUContext UseBuilder::build ( const IndexedString& url, AstNode* node, ReferencedTopDUContext updateContext )
+ReferencedTopDUContext UseBuilder::build ( const IndexedString& url, AstNode* node, const ReferencedTopDUContext& updateContext )
 {
     // just for safety purposes: running the UseBuilder on the internal function file
     // will lead to undefined behavior due to the amount of optimization it has received

@@ -42,7 +42,7 @@ public:
     explicit CodeCompletionWorker(CodeCompletionModel* parent);
 
 protected:
-    KDevelop::CodeCompletionContext* createCompletionContext(KDevelop::DUContextPointer context,
+    KDevelop::CodeCompletionContext* createCompletionContext(const KDevelop::DUContextPointer& context,
                                                                      const QString &contextText,
                                                                      const QString &followingText,
                                                                      const KDevelop::CursorInRevision& position) const override;
