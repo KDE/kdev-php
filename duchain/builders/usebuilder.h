@@ -50,7 +50,7 @@ public:
     void newCheckedUse(Php::AstNode* node, const KDevelop::DeclarationPointer& declaration, bool reportNotFound = false);
 
     KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
-        KDevelop::ReferencedTopDUContext updateContext
+        const KDevelop::ReferencedTopDUContext& updateContext
         = KDevelop::ReferencedTopDUContext()) override;
 
 protected:

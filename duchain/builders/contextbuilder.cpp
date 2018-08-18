@@ -63,8 +63,9 @@ EditorIntegrator* ContextBuilder::editor() const
 }
 
 ReferencedTopDUContext ContextBuilder::build(const IndexedString& url, AstNode* node,
-                                             ReferencedTopDUContext updateContext)
+                                             const ReferencedTopDUContext& updateContext_)
 {
+    ReferencedTopDUContext updateContext(updateContext_);
     m_isInternalFunctions = url == internalFunctionFile();
     if ( m_isInternalFunctions ) {
         m_reportErrors = false;
@@ -533,7 +534,8 @@ DeclarationPointer ContextBuilder::findDeclarationImport(DeclarationType declara
 }
 
 DeclarationPointer ContextBuilder::findDeclarationImport(DeclarationType declarationType,
-                                                         SemiReservedIdentifierAst* node)
+                                                         SemiReservedIdentifierAst* node,
+                                                         DeclarationScope declarationScope)
 {
     QualifiedIdentifier id;
     if ( declarationType == ClassDeclarationType || declarationType == FunctionDeclarationType ) {
@@ -541,6 +543,11 @@ DeclarationPointer ContextBuilder::findDeclarationImport(DeclarationType declara
     } else {
         id = identifierForNode(node);
     }
+
+    if (declarationScope == GlobalScope) {
+        id.setExplicitlyGlobal(true);
+    }
+
     return findDeclarationImportHelper(currentContext(), id, declarationType);
 }
 

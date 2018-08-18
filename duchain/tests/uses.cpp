@@ -141,6 +141,22 @@ void TestUses::memberVariable()
     QCOMPARE(var->uses().keys().first(), IndexedString(QUrl("file:///internal/usestest/memberVariable.php")));
 }
 
+void TestUses::implicitMemberVariable()
+{
+
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $x = new A(); $x->y = 1; $x->y = 2; class A {}");
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+    Declaration* var = top->childContexts().first()->localDeclarations().first();
+    QList<RangeInRevision> ranges;
+    ranges << RangeInRevision(0, 21, 0, 22) << RangeInRevision(0, 32, 0, 33);
+    compareUses(var, ranges);
+    QVERIFY(var->range() == RangeInRevision(0, 21, 0, 22));
+}
+
 void TestUses::variable()
 {
     //                        0         1         2         3         4         5         6         7

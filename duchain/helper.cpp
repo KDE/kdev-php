@@ -129,7 +129,19 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const 
     /// Qualified identifier for 'static'
     static const QualifiedIdentifier staticQId(QStringLiteral("static"));
 
-    ifDebug(qCDebug(DUCHAIN) << id.toString() << declarationType;)
+    QualifiedIdentifier lookup;
+
+    if (id.explicitlyGlobal()) {
+        ifDebug(qCDebug(DUCHAIN) << id.toString() << declarationType;)
+
+        lookup = id;
+        lookup.setExplicitlyGlobal(false);
+    } else {
+        lookup = identifierWithNamespace(id, currentContext);
+
+        ifDebug(qCDebug(DUCHAIN) << lookup.toString() << declarationType;)
+    }
+
     if (declarationType == ClassDeclarationType && id == selfQId) {
         DUChainReadLocker lock(DUChain::lock());
         if (currentContext->type() == DUContext::Class) {
@@ -168,17 +180,7 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const 
         return DeclarationPointer();
     } else {
         DUChainReadLocker lock;
-        QList<Declaration*> foundDeclarations = currentContext->topContext()->findDeclarations(id);
-        if (foundDeclarations.isEmpty()) {
-            // If it's not in the top context, try the current context (namespaces...)
-            // this fixes the bug: https://bugs.kde.org/show_bug.cgi?id=322274
-            foundDeclarations = currentContext->findDeclarations(id);
-        }
-        if (foundDeclarations.isEmpty()) {
-            // If it is neither in the top not the current context it might be defined in a different context
-            // Look up with fully qualified identifier
-            foundDeclarations = currentContext->topContext()->findDeclarations(identifierWithNamespace(id, currentContext));
-        }
+        QList<Declaration*> foundDeclarations = currentContext->topContext()->findDeclarations(lookup);
 
         foreach(Declaration *declaration, foundDeclarations) {
             if (isMatch(declaration, declarationType)) {
@@ -196,12 +198,7 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const 
             ifDebug(qCDebug(DUCHAIN) << "No declarations found with findDeclarations, trying through PersistentSymbolTable";)
             DeclarationPointer decl;
 
-            decl = findDeclarationInPST(currentContext, id, declarationType);
-
-            if (!decl)
-            {
-                decl = findDeclarationInPST(currentContext, identifierWithNamespace(id, currentContext), declarationType);
-            }
+            decl = findDeclarationInPST(currentContext, lookup, declarationType);
 
             if (decl) {
                 ifDebug(qCDebug(DUCHAIN) << "PST declaration exists";)

@@ -131,8 +131,9 @@ void DeclarationBuilder::getVariableIdentifier(VariableAst* node,
 }
 
 ReferencedTopDUContext DeclarationBuilder::build(const IndexedString& url, AstNode* node,
-        ReferencedTopDUContext updateContext)
+                                                 const ReferencedTopDUContext& updateContext_)
 {
+    ReferencedTopDUContext updateContext(updateContext_);
     //Run DeclarationBuilder twice, to find uses of declarations that are
     //declared after the use. ($a = new Foo; class Foo {})
     {
@@ -597,31 +598,6 @@ void DeclarationBuilder::declareClassMember(DUContext *parentCtx, AbstractType::
     }
 
     DUChainWriteLocker lock(DUChain::lock());
-
-    // check for redeclaration of private or protected stuff
-    {
-        // only interesting context might be the class context when we are inside a method
-        DUContext *ctx = currentContext()->parentContext();
-        foreach ( Declaration* dec, parentCtx->findDeclarations(identifier) ) {
-            if ( ClassMemberDeclaration* cdec = dynamic_cast<ClassMemberDeclaration*>(dec) ) {
-                if ( cdec->accessPolicy() == Declaration::Private && cdec->context() != ctx ) {
-                    reportError(i18n("Cannot redeclare private property %1 from this context.",
-                                        cdec->toString()), node);
-                    return;
-                } else if ( cdec->accessPolicy() == Declaration::Protected
-                            && cdec->context() != ctx
-                            && ( !ctx || !ctx->imports(cdec->context()) ) ) {
-                    reportError(i18n("Cannot redeclare protected property %1 from this context.",
-                                        cdec->toString()), node);
-                    return;
-                }
-                if ( cdec->abstractType()->indexed() == type->indexed() ) {
-                    encounter(dec);
-                    return;
-                }
-            }
-        }
-    }
 
     // this member should be public and non-static
     m_currentModifers = ModifierPublic;
@@ -1208,7 +1184,98 @@ void DeclarationBuilder::visitAssignmentExpressionEqual(AssignmentExpressionEqua
 {
     DeclarationBuilderBase::visitAssignmentExpressionEqual(node);
 
-    if ( !m_findVariable.identifier.isEmpty() && currentAbstractType()) {
+    bool alreadyDeclared = false;
+
+    // check for already declared class members
+    if (!m_findVariable.identifier.isEmpty() && !m_findVariable.parentIdentifier.isEmpty()) {
+        DUContext* ctx = getClassContext(m_findVariable.parentIdentifier, currentContext());
+        if (ctx) {
+            DUChainReadLocker lock(DUChain::lock());
+            ifDebug(qCDebug(DUCHAIN) << "checking if already declared: " << m_findVariable.identifier.toString();)
+            QList<Declaration*> decs;
+            foreach ( Declaration* dec, currentContext()->findDeclarations(m_findVariable.identifier) ) {
+                if ( dec->kind() == Declaration::Kind::Instance) {
+                    if (dec->range() == editorFindRange(m_findVariable.node)) {
+                        // Don't reuse previous declarations as the type might have changed.
+                        continue;
+                    }
+
+                    ClassMemberDeclaration *classDec = dynamic_cast<ClassMemberDeclaration*>(dec);
+
+                    if (classDec && classDec->accessPolicy() == Declaration::Private) {
+                        if (currentContext()->parentContext() == dec->context()) {
+                            decs << dec;
+                            ifDebug(qCDebug(DUCHAIN) << "found class property:" << dec->toString();)
+                        }
+                    } else {
+                        decs << dec;
+                        ifDebug(qCDebug(DUCHAIN) << "found class property:" << dec->toString();)
+                    }
+                }
+            }
+            lock.unlock();
+
+            if (!decs.isEmpty()) {
+                Declaration * dec = decs.last();
+
+                if (dec) {
+                    encounter(dec);
+                    alreadyDeclared = true;
+                    IntegralType::Ptr type = dec->type<IntegralType>();
+
+                    if (type && type->dataType() == IntegralType::TypeNull) {
+                        DUChainWriteLocker wlock;
+                        dec->setAbstractType(currentAbstractType());
+                    }
+                }
+            }
+
+            lock.lock();
+            if (decs.isEmpty() && (!currentContext()->parentContext() || !currentContext()->parentContext()->imports(ctx))) {
+                ifDebug(qCDebug(DUCHAIN) << "nothing found in current context, look in class context of parent";)
+                QList<Declaration*> decs;
+                foreach ( Declaration* dec, ctx->findDeclarations(m_findVariable.identifier) ) {
+                    if ( dec->kind() == Declaration::Kind::Instance) {
+                        if (dec->range() == editorFindRange(m_findVariable.node)) {
+                            // Don't reuse previous declarations as the type might have changed.
+                            continue;
+                        }
+
+                        ifDebug(qCDebug(DUCHAIN) << "found class property:" << dec->toString();)
+                        decs << dec;
+                    }
+                }
+                lock.unlock();
+
+                if (!decs.isEmpty()) {
+                    Declaration * dec = decs.last();
+
+                    if (dec) {
+                        alreadyDeclared = true;
+                        IntegralType::Ptr type = dec->type<IntegralType>();
+
+                        // check for redeclaration of private or protected stuff
+                        DUContext *parentCtx = currentContext()->parentContext();
+                        ClassMemberDeclaration *classDec = dynamic_cast<ClassMemberDeclaration*>(dec);
+
+                        if (classDec && classDec->accessPolicy() == Declaration::Private && classDec->context() != parentCtx) {
+                            reportError(i18n("Cannot access private property %1",
+                                                classDec->toString()), m_findVariable.node);
+                        } else if (classDec && classDec->accessPolicy() == Declaration::Protected && classDec->context() != parentCtx) {
+                            reportError(i18n("Cannot access protected property %1",
+                                                classDec->toString()), m_findVariable.node);
+                        } else if (type && type->dataType() == IntegralType::TypeNull) {
+                            DUChainWriteLocker wlock;
+                            dec->setAbstractType(currentAbstractType());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if ( !alreadyDeclared && !m_findVariable.identifier.isEmpty() && currentAbstractType()) {
+        ifDebug(qCDebug(DUCHAIN) << "not yet declared: " << m_findVariable.identifier.toString();)
         //create new declaration assignments to not-yet declared variables and class members
 
         AbstractType::Ptr type;
@@ -1241,9 +1308,18 @@ void DeclarationBuilder::visitFunctionCall(FunctionCallAst* node)
         DeclarationPointer dec;
         if ( node->stringFunctionName ) {
             dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionName);
+
+            if (!dec) {
+                dec = findDeclarationImport(FunctionDeclarationType, node->stringFunctionName, GlobalScope);
+            }
         } else if ( node->stringFunctionNameOrClass ) {
             id = identifierForNamespace(node->stringFunctionNameOrClass, m_editor);
             dec = findDeclarationImport(FunctionDeclarationType, id);
+
+            if (!dec) {
+                id.setExplicitlyGlobal(true);
+                dec = findDeclarationImport(FunctionDeclarationType, id);
+            }
         } else {
             ///TODO: node->varFunctionName
         }
@@ -1539,10 +1615,14 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
 
     ///TODO: case insensitive!
     QualifiedIdentifier qid = identifierForNamespace(node->identifier, m_editor);
-    ///TODO: find out why this must be done (see mail to kdevelop-devel on jan 18th 2011)
-    qid.setExplicitlyGlobal( false );
 
     DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, qid);
+
+    if (!dec && !qid.explicitlyGlobal()) {
+        QualifiedIdentifier globalQid = qid;
+        globalQid.setExplicitlyGlobal(true);
+        dec = findDeclarationImport(ClassDeclarationType, globalQid);
+    }
 
     if (dec)
     {
@@ -1564,6 +1644,9 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
     }
     else
     {
+        // NamespaceAliasDeclarations can't use a global import identifier
+        qid.setExplicitlyGlobal(false);
+
         NamespaceAliasDeclaration* decl = openDefinition<NamespaceAliasDeclaration>(id.second,
                                                                                     m_editor->findRange(idNode));
         decl->setImportIdentifier( qid );

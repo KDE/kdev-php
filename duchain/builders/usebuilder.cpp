@@ -53,7 +53,7 @@ UseBuilder::UseBuilder( EditorIntegrator* editor )
     m_editor = editor;
 }
 
-ReferencedTopDUContext UseBuilder::build ( const IndexedString& url, AstNode* node, ReferencedTopDUContext updateContext )
+ReferencedTopDUContext UseBuilder::build ( const IndexedString& url, AstNode* node, const ReferencedTopDUContext& updateContext )
 {
     // just for safety purposes: running the UseBuilder on the internal function file
     // will lead to undefined behavior due to the amount of optimization it has received
@@ -234,8 +234,32 @@ void UseBuilder::visitUseNamespace(UseNamespaceAst* node)
 
 void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node, DeclarationType lastType)
 {
-    const QualifiedIdentifier identifier = identifierForNamespace(node, m_editor);
+    QualifiedIdentifier identifier = identifierForNamespace(node, m_editor);
+
     QualifiedIdentifier curId;
+
+    // check if we need to resolve the namespaced identifier globally or locally
+    DeclarationPointer tempDec = findDeclarationImport(ClassDeclarationType, identifier);
+
+    // if we couldn't find a class declaration, it might be a partial namespace identifier
+    if (!tempDec) {
+        tempDec = findDeclarationImport(NamespaceDeclarationType, identifier);
+    }
+
+    if (!tempDec && !identifier.explicitlyGlobal()) {
+        identifier.setExplicitlyGlobal(true);
+        tempDec = findDeclarationImport(ClassDeclarationType, identifier);
+
+        if (!tempDec) {
+            tempDec = findDeclarationImport(NamespaceDeclarationType, identifier);
+        }
+
+        // Can't resolve either globally or locally, so revert back to original
+        if (!tempDec) {
+            identifier.setExplicitlyGlobal(false);
+        }
+    }
+
     curId.setExplicitlyGlobal(identifier.explicitlyGlobal());
     Q_ASSERT(identifier.count() == node->namespaceNameSequence->count());
     for ( int i = 0; i < identifier.count() - 1; ++i ) {

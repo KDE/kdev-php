@@ -51,6 +51,11 @@ enum DeclarationType {
     NamespaceDeclarationType
 };
 
+enum DeclarationScope {
+    GlobalScope,
+    LocalScope
+};
+
 KDEVPHPDUCHAIN_EXPORT bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);
 
 KDEVPHPDUCHAIN_EXPORT bool isClassTypehint(GenericTypeHintAst* parameterType, EditorIntegrator *editor);

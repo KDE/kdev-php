@@ -36,6 +36,7 @@ private slots:
     void memberFunctionCall();
     void unsureMemberFunctionCall();
     void memberVariable();
+    void implicitMemberVariable();
     void variable();
     void varInString();
     void variableInNamespace();

@@ -318,3 +318,40 @@ void TestDUChainMultipleFiles::testIteratorForeachReparse() {
         QVERIFY(type->dataType() == IntegralType::TypeMixed);
     }
 }
+
+void TestDUChainMultipleFiles::testNamespacedIdentifierInPST() {
+    auto features = TopDUContext::AllDeclarationsAndContexts;
+
+    TestProject* project = new TestProject;
+    m_projectController->closeAllProjects();
+    m_projectController->addProject(project);
+
+    TestFile f1(QStringLiteral("<?\n"
+                "namespace Test;\n"
+                "class A {}\n"), QStringLiteral("php"), project);
+    f1.parse(features);
+    QVERIFY(f1.waitForParsed());
+
+    TestFile f2(QStringLiteral("<?\n"
+                "namespace Test2;\n"
+                "class B {\n"
+                "public $class_a;\n"
+                "public function __construct() { $this->class_a = new \\Test\\A(); }}"), QStringLiteral("php"), project);
+    f2.parse(features);
+    QVERIFY(f2.waitForParsed());
+
+    TestFile f3(QStringLiteral("<?\n"
+                "namespace Test2;\n"
+                "class C {\n"
+                "public $class_a;\n"
+                "public function __construct() { $this->class_a = new Test\\A(); }}"), QStringLiteral("php"), project);
+    f3.parse(features);
+    QVERIFY(f3.waitForParsed());
+
+    DUChainWriteLocker lock(DUChain::lock());
+    QVERIFY(f1.topContext());
+    QVERIFY(f2.topContext());
+    QVERIFY(f2.topContext()->imports(f1.topContext(), CursorInRevision(0, 0)));
+    QVERIFY(f3.topContext());
+    QVERIFY(!f3.topContext()->imports(f1.topContext(), CursorInRevision(0, 0)));
+}

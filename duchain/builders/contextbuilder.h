@@ -48,7 +48,7 @@ public:
     ~ContextBuilder() override;
 
     KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
-            KDevelop::ReferencedTopDUContext updateContext
+            const KDevelop::ReferencedTopDUContext& updateContext
             = KDevelop::ReferencedTopDUContext()) override;
 
     bool hadUnresolvedIdentifiers() const;
@@ -108,7 +108,7 @@ protected:
                         KDevelop::IProblem::Severity severity = KDevelop::IProblem::Error);
 
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, IdentifierAst* node);
-    KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, SemiReservedIdentifierAst* node);
+    KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, SemiReservedIdentifierAst* node, DeclarationScope declarationScope = LocalScope);
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType, VariableIdentifierAst* node);
     KDevelop::DeclarationPointer findDeclarationImport(DeclarationType declarationType,
                                                        const KDevelop::QualifiedIdentifier &identifier);
