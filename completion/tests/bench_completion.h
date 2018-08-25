@@ -16,8 +16,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef PHP_BENCHMARKCODECOMPLETION_H
-#define PHP_BENCHMARKCODECOMPLETION_H
+#ifndef PHP_BENCH_COMPLETION_H
+#define PHP_BENCH_COMPLETION_H
 
 #include "../../duchain/tests/duchaintestbase.h"
 

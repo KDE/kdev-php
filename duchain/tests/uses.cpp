@@ -18,7 +18,7 @@
 
 #include "uses.h"
 
-#include <QtTest/QtTest>
+#include <QtTest>
 
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>

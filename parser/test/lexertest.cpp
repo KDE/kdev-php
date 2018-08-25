@@ -19,7 +19,7 @@
 
 #include "lexertest.h"
 
-#include <QtTest/QtTest>
+#include <QtTest>
 
 #include "parsesession.h"
 #include "phplexer.h"
