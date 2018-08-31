@@ -19,6 +19,7 @@
         "Description[sv]": "Söker efter och kör PHPUnit-tester.",
         "Description[uk]": "Знаходить і запускає перевірки PHPUnit.",
         "Description[x-test]": "xxFinds and runs PHPUnit tests.xx",
+        "Description[zh_CN]": "查找并运行 PHPUnit 测试",
         "Icon": "application-x-php",
         "Id": "kdevphpunitprovider",
         "License": "GPL",
@@ -34,6 +35,7 @@
         "Name[sv]": "Integrering av PHPUnit",
         "Name[uk]": "Інтеграція з PHPUnit",
         "Name[x-test]": "xxPHPUnit Integrationxx",
+        "Name[zh_CN]": "PHPUnit 集成",
         "ServiceTypes": [
             "KDevelop/Plugin"
         ]
