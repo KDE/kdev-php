@@ -603,7 +603,7 @@ expression=nullCoalesceExpression
   (isRef=BIT_AND | 0) variable=variableIdentifier
 -> lexicalVar ;;
 
-    NEW className=classNameReference ctor=ctorArguments
+    NEW classNameReference=classNameReference ctor=ctorArguments
 -> varExpressionNewObject ;;
 
     LPAREN parameterList=functionCallParameterList RPAREN
@@ -681,7 +681,7 @@ expression=nullCoalesceExpression
   ( DOLLAR ( DOLLAR+ | 0 ) ( indirectVariable=variableIdentifier | LBRACE expr=expr RBRACE ) | variable=variableIdentifier )
 -> compoundVariableWithSimpleIndirectReference ;;
 
-    className=namespacedIdentifier PAAMAYIM_NEKUDOTAYIM variable=variableWithoutObjects
+    className=namespacedIdentifier staticProperty=staticProperty
 -> staticMember ;;
 
     LBRACE try/recover(statements=innerStatementList) RBRACE
@@ -806,22 +806,19 @@ expression=nullCoalesceExpression
     ELSE COLON statements=innerStatementList | 0
 -> newElseSingle ;;
 
---TODO     --resolve STRING vs. staticMember conflict
---     ?[: LA(2).kind != Token_PAAMAYIM_NEKUDOTAYIM :]
-    identifier=namespacedIdentifier
-  | staticIdentifier = STATIC
-  | dynamicClassNameReference=dynamicClassNameReference
+    className=className (staticProperty=staticProperty #properties=classProperty* | 0)
+  | baseVariable=variableWithoutObjects #properties=classProperty*
 -> classNameReference ;;
 
-    baseVariable=baseVariable (OBJECT_OPERATOR objectProperty=objectProperty
-                          properties=dynamicClassNameVariableProperties | 0)
--> dynamicClassNameReference ;;
+    identifier=namespacedIdentifier
+  | staticIdentifier = STATIC
+-> className ;;
 
-    #properties=dynamicClassNameVariableProperty*
--> dynamicClassNameVariableProperties ;;
+    PAAMAYIM_NEKUDOTAYIM staticProperty=compoundVariableWithSimpleIndirectReference #offsetItems=dimListItem*
+-> staticProperty ;;
 
-    OBJECT_OPERATOR property=objectProperty
--> dynamicClassNameVariableProperty ;;
+   (staticProperty=staticProperty | OBJECT_OPERATOR property=objectProperty)
+-> classProperty ;;
 
     objectDimList=objectDimList
   | variableWithoutObjects=variableWithoutObjects

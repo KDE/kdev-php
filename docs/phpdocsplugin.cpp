@@ -174,7 +174,7 @@ IDocumentation::Ptr PhpDocsPlugin::documentationForDeclaration( Declaration* dec
         }
 
         qCDebug(DOCS) << "php documentation located at " << url << "for" << dec->toString();
-        return documentationForUrl(url, dec->qualifiedIdentifier().toString(), dec->comment());
+        return documentationForUrl(url, dec->qualifiedIdentifier().toString());
     }
 
     return {};

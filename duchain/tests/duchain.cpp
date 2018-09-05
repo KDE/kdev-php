@@ -3942,6 +3942,10 @@ void TestDUChain::illegalExpression_data()
     QTest::newRow("double print expression") << QStringLiteral("<? print 1 print 2;\n");
     QTest::newRow("standalone print statement") << QStringLiteral("<? print;\n");
     QTest::newRow("expression inside isset()") << QStringLiteral("<? isset($a || $b);\n");
+    QTest::newRow("instanceof with dynamic property of static class") << QStringLiteral("<? $a instanceof A->foo;\n");
+    QTest::newRow("instanceof with class constant") << QStringLiteral("<? $a instanceof A::FOO;\n");
+    QTest::newRow("instanceof with class method") << QStringLiteral("<? $a instanceof $b->foo();\n");
+    QTest::newRow("instanceof with static method") << QStringLiteral("<? $a instanceof A::foo();\n");
 }
 
 void TestDUChain::illegalExpression()

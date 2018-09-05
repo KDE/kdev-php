@@ -22,11 +22,14 @@
 
 #include <language/duchain/duchain.h>
 #include <language/duchain/duchainlock.h>
+#include <language/duchain/problem.h>
 
 #include "../declarations/classdeclaration.h"
 #include "../declarations/variabledeclaration.h"
 #include "../declarations/traitmethodaliasdeclaration.h"
 #include "../declarations/traitmemberaliasdeclaration.h"
+
+#include "../types/structuretype.h"
 
 using namespace KDevelop;
 
@@ -1141,7 +1144,236 @@ void TestUses::instanceof()
     compareUses(a, QList<RangeInRevision>()
                     << RangeInRevision(1, 9, 1, 10)
                     << RangeInRevision(2, 19, 2, 20));
+}
 
+void TestUses::instanceofClassProperty()
+{
+    //                         0         1         2         3         4         5
+    //                         012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<? class A { /** @var B **/ public $foo; }\n"
+                              "class B { /** @var A **/ public $bar; }\n"
+                              "$a = new A(); $a instanceof $a->foo->bar->foo;\n", DumpNone);
+
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->localDeclarations().count(), 3);
+
+    Declaration* dec = top->localDeclarations().at(0);
+    QCOMPARE(dec->identifier(), Identifier("a"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 9, 2, 10));
+
+    dec = top->localDeclarations().at(2);
+    QCOMPARE(dec->identifier(), Identifier("a"));
+    StructureType::Ptr classType = dec->type<StructureType>();
+    QVERIFY(classType);
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QVERIFY(classType->equals(dec->abstractType().data()));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 14, 2, 16)
+                    << RangeInRevision(2, 28, 2, 30));
+
+    dec = top->childContexts().at(0)->localDeclarations().at(0);
+    QVERIFY(dec);
+    QCOMPARE(dec->identifier(), Identifier("foo"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 32, 2, 35)
+                    << RangeInRevision(2, 42, 2, 45));
+
+    dec = top->childContexts().at(1)->localDeclarations().at(0);
+    QVERIFY(dec);
+    QCOMPARE(dec->identifier(), Identifier("bar"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 37, 2, 40));
+}
+
+void TestUses::instanceofStaticProperty()
+{
+    //                         0         1         2         3         4         5
+    //                         012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<? class A { /** @var B **/ public static $foo; }\n"
+                              "class B { /** @var A **/ public static $bar; }\n"
+                              "$a = new A(); $a instanceof A::$foo::$bar::$foo;\n", DumpNone);
+
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->localDeclarations().count(), 3);
+
+    Declaration* dec = top->localDeclarations().at(0);
+    QCOMPARE(dec->identifier(), Identifier("a"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 9, 2, 10)
+                    << RangeInRevision(2, 28, 2, 29));
+
+    dec = top->localDeclarations().at(2);
+    QCOMPARE(dec->identifier(), Identifier("a"));
+    StructureType::Ptr classType = dec->type<StructureType>();
+    QVERIFY(classType);
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QVERIFY(classType->equals(dec->abstractType().data()));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 14, 2, 16));
+
+    dec = top->childContexts().at(0)->localDeclarations().at(0);
+    QVERIFY(dec);
+    QCOMPARE(dec->identifier(), Identifier("foo"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 31, 2, 35)
+                    << RangeInRevision(2, 43, 2, 47));
+
+    dec = top->childContexts().at(1)->localDeclarations().at(0);
+    QVERIFY(dec);
+    QCOMPARE(dec->identifier(), Identifier("bar"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 37, 2, 41));
+}
+
+void TestUses::instanceofMixedProperty()
+{
+    //                         0         1         2         3         4         5
+    //                         012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<? class A { /** @var B **/ public static $foo; }\n"
+                              "class B { /** @var A **/ public $bar; }\n"
+                              "$a = new A(); $a instanceof A::$foo->bar::$foo;\n", DumpNone);
+
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->localDeclarations().count(), 3);
+
+    Declaration* dec = top->localDeclarations().at(0);
+    QCOMPARE(dec->identifier(), Identifier("a"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 9, 2, 10)
+                    << RangeInRevision(2, 28, 2, 29));
+
+    dec = top->localDeclarations().at(2);
+    QCOMPARE(dec->identifier(), Identifier("a"));
+    StructureType::Ptr classType = dec->type<StructureType>();
+    QVERIFY(classType);
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QVERIFY(classType->equals(dec->abstractType().data()));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 14, 2, 16));
+
+    dec = top->childContexts().at(0)->localDeclarations().at(0);
+    QVERIFY(dec);
+    QCOMPARE(dec->identifier(), Identifier("foo"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 31, 2, 35)
+                    << RangeInRevision(2, 42, 2, 46));
+
+    dec = top->childContexts().at(1)->localDeclarations().at(0);
+    QVERIFY(dec);
+    QCOMPARE(dec->identifier(), Identifier("bar"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 37, 2, 40));
+}
+
+void TestUses::instanceofVariableProperty()
+{
+    //                         0         1         2         3         4         5
+    //                         012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<? class A { /** @var B **/ public $foo; }\n"
+                              "class B { /** @var A **/ public $bar; }\n"
+                              "$foo = 'foo'; $bar = 'bar';\n"
+                              "$a = new A(); $a instanceof $a->$foo->$bar->$foo;\n", DumpNone);
+
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->localDeclarations().count(), 5);
+
+    Declaration* dec = top->localDeclarations().at(0);
+    QCOMPARE(dec->identifier(), Identifier("a"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(3, 9, 3, 10));
+
+    dec = top->localDeclarations().at(4);
+    QCOMPARE(dec->identifier(), Identifier("a"));
+    StructureType::Ptr classType = dec->type<StructureType>();
+    QVERIFY(classType);
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QVERIFY(classType->equals(dec->abstractType().data()));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(3, 14, 3, 16)
+                    << RangeInRevision(3, 28, 3, 30));
+
+    dec = top->localDeclarations().at(2);
+    QCOMPARE(dec->identifier(), Identifier("foo"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(3, 32, 3, 36)
+                    << RangeInRevision(3, 44, 3, 48));
+
+    dec = top->localDeclarations().at(3);
+    QCOMPARE(dec->identifier(), Identifier("bar"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(3, 38, 3, 42));
+}
+
+void TestUses::instanceofPropertyArrayAccess()
+{
+    //                         0         1         2         3         4         5
+    //                         012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<? class A { /** @var array **/ public $foo; }\n"
+                              "class B { /** @var array **/ public static $bar; }\n"
+                              "$a = new A(); $a instanceof $a->foo[0]::$bar[0]->foo;\n", DumpNone);
+
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 2);
+    QCOMPARE(top->localDeclarations().count(), 3);
+
+    Declaration* dec = top->localDeclarations().at(0);
+    QCOMPARE(dec->identifier(), Identifier("a"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 9, 2, 10));
+
+    dec = top->localDeclarations().at(2);
+    QCOMPARE(dec->identifier(), Identifier("a"));
+    StructureType::Ptr classType = dec->type<StructureType>();
+    QVERIFY(classType);
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QVERIFY(classType->equals(dec->abstractType().data()));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 14, 2, 16)
+                    << RangeInRevision(2, 28, 2, 30));
+
+    dec = top->childContexts().at(0)->localDeclarations().at(0);
+    QCOMPARE(dec->identifier(), Identifier("foo"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(2, 32, 2, 35));
+
+    dec = top->childContexts().at(1)->localDeclarations().at(0);
+    QCOMPARE(dec->identifier(), Identifier("bar"));
+    QVERIFY(dec->uses().isEmpty());
 }
 
 void TestUses::classNameString()

@@ -209,16 +209,16 @@ void ExpressionVisitor::visitVarExpression(VarExpressionAst *node)
 void ExpressionVisitor::visitVarExpressionNewObject(VarExpressionNewObjectAst *node)
 {
     DefaultVisitor::visitVarExpressionNewObject(node);
-    if (node->className->staticIdentifier != -1) {
+    if (node->classNameReference->className && node->classNameReference->className->staticIdentifier != -1) {
         static const QualifiedIdentifier id(QStringLiteral("static"));
         DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
-        usingDeclaration(node->className, dec);
+        usingDeclaration(node->classNameReference->className, dec);
         m_result.setDeclaration(dec);
-    } else if (node->className->identifier) {
-        const QualifiedIdentifier id = identifierForNamespace(node->className->identifier, m_editor);
+    } else if (node->classNameReference->className && node->classNameReference->className->identifier) {
+        const QualifiedIdentifier id = identifierForNamespace(node->classNameReference->className->identifier, m_editor);
         DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
-        usingDeclaration(node->className->identifier->namespaceNameSequence->back()->element, dec);
-        buildNamespaceUses(node->className->identifier, id);
+        usingDeclaration(node->classNameReference->className->identifier->namespaceNameSequence->back()->element, dec);
+        buildNamespaceUses(node->classNameReference->className->identifier, id);
         m_result.setDeclaration(dec);
     }
 }
@@ -697,28 +697,112 @@ void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
 {
     //don't call DefaultVisitor::visitStaticMember(node);
     //because we would end up in visitCompoundVariableWithSimpleIndirectReference
-    if (node->variable->variable->variable) {
+    if (node->staticProperty->staticProperty->variable->variable) {
         DUContext* context = findClassContext(node->className);
         if (context) {
-            DUChainReadLocker lock(DUChain::lock());
-            m_result.setDeclarations(context->findDeclarations(identifierForNode(node->variable->variable->variable)));
-            lock.unlock();
-            if (!m_result.allDeclarations().isEmpty()) {
-                usingDeclaration(node->variable->variable->variable, m_result.allDeclarations().last());
-            } else {
-                usingDeclaration(node->variable->variable->variable, DeclarationPointer());
-            }
+            useDeclaration(node->staticProperty->staticProperty->variable, context);
         } else {
             usingDeclaration(node->className, DeclarationPointer());
             m_result.setType(AbstractType::Ptr());
         }
-        if (node->variable->offsetItemsSequence) {
-            const KDevPG::ListNode< DimListItemAst* >* it = node->variable->offsetItemsSequence->front();
+        if (node->staticProperty->offsetItemsSequence) {
+            const KDevPG::ListNode< DimListItemAst* >* it = node->staticProperty->offsetItemsSequence->front();
             do {
                 visitDimListItem(it->element);
             } while(it->hasNext() && (it = it->next));
         }
     }
+}
+
+void ExpressionVisitor::visitClassNameReference(ClassNameReferenceAst* node)
+{
+    if (node->staticProperty) {
+        DUContext* context = findClassContext(node->className->identifier);
+
+        if (context) {
+            useDeclaration(node->staticProperty->staticProperty->variable, context);
+        }
+
+        if (node->staticProperty->offsetItemsSequence) {
+            const KDevPG::ListNode< DimListItemAst* >* dim_it = node->staticProperty->offsetItemsSequence->front();
+            do {
+                visitDimListItem(dim_it->element);
+            } while(dim_it->hasNext() && (dim_it = dim_it->next));
+        }
+    }
+
+    if (node->baseVariable) {
+        DefaultVisitor::visitVariableWithoutObjects(node->baseVariable);
+    }
+
+    if (node->propertiesSequence) {
+        if (!m_result.allDeclarations().isEmpty()) {
+            DUContext* context = nullptr;
+            StructureType::Ptr type;
+
+            Declaration *declaration = nullptr;
+            const KDevPG::ListNode< ClassPropertyAst* >* it = node->propertiesSequence->front();
+
+            do {
+                // first check for property names held in variables ($object->$property)
+                if (it->element->property && it->element->property->variableWithoutObjects
+                        && it->element->property->variableWithoutObjects->variable->variable) {
+                    VariableIdentifierAst *varnode = it->element->property->variableWithoutObjects->variable->variable;
+                    useDeclaration(varnode, m_currentContext);
+                } else if (!m_result.allDeclarations().isEmpty()) {
+                    // handle array indices after normal/static properties ($object->property[$index] // $object::$property[$index])
+                    if (it->element->property && it->element->property->objectDimList && it->element->property->objectDimList->offsetItemsSequence) {
+                        const KDevPG::ListNode< DimListItemAst* >* dim_it = it->element->property->objectDimList->offsetItemsSequence->front();
+                        do {
+                            visitDimListItem(dim_it->element);
+                        } while(dim_it->hasNext() && (dim_it = dim_it->next));
+                    } else if (it->element->staticProperty && it->element->staticProperty->offsetItemsSequence) {
+                        const KDevPG::ListNode< DimListItemAst* >* dim_it = it->element->staticProperty->offsetItemsSequence->front();
+                        do {
+                            visitDimListItem(dim_it->element);
+                        } while(dim_it->hasNext() && (dim_it = dim_it->next));
+                    }
+
+                    type = m_result.allDeclarations().last()->type<StructureType>();
+
+                    if (!type) {
+                        context = nullptr;
+                        continue;
+                    }
+
+                    DUChainReadLocker lock(DUChain::lock());
+                    declaration = type->declaration(m_currentContext->topContext());
+                    lock.unlock();
+
+                    if (!declaration) {
+                        context = nullptr;
+                        continue;
+                    }
+
+                    context = declaration->internalContext();
+
+                    if (!context || context->type() != DUContext::Class) {
+                        context = nullptr;
+                        continue;
+                    }
+
+                    if (it->element->staticProperty) {
+                        // static properties ($object::$property)
+                        VariableIdentifierAst *varnode = it->element->staticProperty->staticProperty->variable;
+                        useDeclaration(varnode, context);
+                    } else if (it->element->property && it->element->property->objectDimList
+                            && it->element->property->objectDimList->variableName->name) {
+                        // normal properties ($object->property)
+                        IdentifierAst *varidnode = it->element->property->objectDimList->variableName->name;
+                        useDeclaration(varidnode, context);
+                    } else {
+                        context = nullptr;
+                    }
+                }
+            } while(it->hasNext() && (it = it->next));
+        }
+    }
+
 }
 
 void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)
@@ -772,11 +856,11 @@ void ExpressionVisitor::visitAdditiveExpressionRest(AdditiveExpressionRestAst* n
 void ExpressionVisitor::visitRelationalExpression(RelationalExpressionAst *node)
 {
     DefaultVisitor::visitRelationalExpression(node);
-    if (node->instanceofType && node->instanceofType->identifier) {
-        const QualifiedIdentifier id = identifierForNamespace(node->instanceofType->identifier, m_editor);
+    if (node->instanceofType && node->instanceofType->className && node->instanceofType->className->identifier) {
+        const QualifiedIdentifier id = identifierForNamespace(node->instanceofType->className->identifier, m_editor);
         DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
-        usingDeclaration(node->instanceofType->identifier->namespaceNameSequence->back()->element, dec);
-        buildNamespaceUses(node->instanceofType->identifier, id);
+        usingDeclaration(node->instanceofType->className->identifier->namespaceNameSequence->back()->element, dec);
+        buildNamespaceUses(node->instanceofType->className->identifier, id);
 
         m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean)));
     }
@@ -866,6 +950,30 @@ void ExpressionVisitor::buildNamespaceUses(NamespacedIdentifierAst* namespaces, 
         AstNode* node = namespaces->namespaceNameSequence->at(i)->element;
         DeclarationPointer dec = findDeclarationImport(NamespaceDeclarationType, curId);
         usingDeclaration(node, dec);
+    }
+}
+
+void ExpressionVisitor::useDeclaration(VariableIdentifierAst* node, DUContext* context)
+{
+    DUChainReadLocker lock(DUChain::lock());
+    m_result.setDeclarations(context->findDeclarations(identifierForNode(node)));
+    lock.unlock();
+    if (!m_result.allDeclarations().isEmpty()) {
+        usingDeclaration(node, m_result.allDeclarations().last());
+    } else {
+        usingDeclaration(node, DeclarationPointer());
+    }
+}
+
+void ExpressionVisitor::useDeclaration(IdentifierAst* node, DUContext* context)
+{
+    DUChainReadLocker lock(DUChain::lock());
+    m_result.setDeclarations(context->findDeclarations(identifierForNode(node)));
+    lock.unlock();
+    if (!m_result.allDeclarations().isEmpty()) {
+        usingDeclaration(node, m_result.allDeclarations().last());
+    } else {
+        usingDeclaration(node, DeclarationPointer());
     }
 }
 
