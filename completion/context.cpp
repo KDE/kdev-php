@@ -1283,11 +1283,11 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                         if (member) {
                             if (decl.second == 0) {
                                 // this function is already implemented
-                                alreadyImplemented << decl.first->indexedIdentifier().getIndex();
+                                alreadyImplemented << decl.first->indexedIdentifier().index();
                                 continue;
                             }
                             // skip already implemented functions
-                            if (alreadyImplemented.contains(decl.first->indexedIdentifier().getIndex())) {
+                            if (alreadyImplemented.contains(decl.first->indexedIdentifier().index())) {
                                 continue;
                             }
                             // skip non-static functions when requested
@@ -1305,13 +1305,13 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                             // skip public functions when requested
                             if (filterPublic && member->accessPolicy() == Declaration::Public) {
                                 // make sure no non-public base members are added
-                                alreadyImplemented << decl.first->indexedIdentifier().getIndex();
+                                alreadyImplemented << decl.first->indexedIdentifier().index();
                                 continue;
                             }
                             // skip final members
                             if (classFunc && classFunc->isFinal()) {
                                 // make sure no non-final base members are added
-                                alreadyImplemented << decl.first->indexedIdentifier().getIndex();
+                                alreadyImplemented << decl.first->indexedIdentifier().index();
                                 continue;
                             }
                             // make sure we inherit or implement the base class of this member
@@ -1337,7 +1337,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                             items << CompletionTreeItemPointer(new ImplementationItem(itype, DeclarationPointer(decl.first),
                                                                 Php::CodeCompletionContext::Ptr(this), decl.second));
                             // don't add identical items twice to the completion choices
-                            alreadyImplemented << decl.first->indexedIdentifier().getIndex();
+                            alreadyImplemented << decl.first->indexedIdentifier().index();
                         }
                     }
                 }
@@ -1471,8 +1471,8 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                     }
                 }
 
-                if (existingIdentifiers.contains(dec->indexedIdentifier().getIndex())) continue;
-                existingIdentifiers.insert(dec->indexedIdentifier().getIndex());
+                if (existingIdentifiers.contains(dec->indexedIdentifier().index())) continue;
+                existingIdentifiers.insert(dec->indexedIdentifier().index());
             }
             if (abort)
                 return items;
@@ -1561,7 +1561,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
             if (parentContext->memberAccessOperation() == CodeCompletionContext::FunctionCallAccess) {
                 if (!parentContext->memberAccessContainer().allDeclarationIds().isEmpty()) {
                     Declaration* decl = parentContext->memberAccessContainer().allDeclarationIds().first()
-                                            .getDeclaration(m_duContext->topContext());
+                                            .declaration(m_duContext->topContext());
 
                     if (!isValidCompletionItem(decl)) {
                         continue;
