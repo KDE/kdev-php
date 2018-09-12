@@ -58,8 +58,8 @@ void createArgumentList(const NormalDeclarationCompletionItem& item, QString& re
     if (functionType && decl) {
 
         QVector<Declaration*> parameters;
-        if (DUChainUtils::getArgumentContext(dec))
-            parameters = DUChainUtils::getArgumentContext(dec)->localDeclarations();
+        if (DUChainUtils::argumentContext(dec))
+            parameters = DUChainUtils::argumentContext(dec)->localDeclarations();
 
         uint defaultParamNum = 0;
 

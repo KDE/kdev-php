@@ -186,7 +186,7 @@ void DeclarationNavigationContext::htmlFunction()
     int currentArgNum = 0;
 
     QVector<Declaration*> decls;
-    if (DUContext* argumentContext = DUChainUtils::getArgumentContext(declaration().data())) {
+    if (DUContext* argumentContext = DUChainUtils::argumentContext(declaration().data())) {
       decls = argumentContext->localDeclarations(topContext().data());
     }
     foreach(const AbstractType::Ptr& argType, type->arguments()) {

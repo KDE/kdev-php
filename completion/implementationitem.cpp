@@ -229,8 +229,8 @@ void ImplementationItem::execute(KTextEditor::View* view, const KTextEditor::Ran
 
             QString arguments;
             QVector<Declaration*> parameters;
-            if (DUChainUtils::getArgumentContext(m_declaration.data()))
-                parameters = DUChainUtils::getArgumentContext(m_declaration.data())->localDeclarations();
+            if (DUChainUtils::argumentContext(m_declaration.data()))
+                parameters = DUChainUtils::argumentContext(m_declaration.data())->localDeclarations();
             arguments = '(';
             bool first = true;
             foreach(Declaration* dec, parameters) {
