@@ -23,9 +23,4 @@ ecm_add_test(
         Qt5::Test
         KDev::Tests
         KDev::Language
-
-        # TODO: KF5: KDevice is forcing us to have this dependency. I'm sure
-        # we can work-around it :)
-        KF5::Archive
 )
-
