@@ -20,7 +20,7 @@ include(ECMSetupVersion)
 include(FeatureSummary)
 
 set(QT_MIN_VERSION "5.5.0")
-find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Widgets Test)
+find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Widgets)
 set(KF5_DEP_VERSION "5.15.0")
 find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS
     ThreadWeaver
@@ -28,6 +28,9 @@ find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS
     I18n
     KCMUtils
 )
+if(BUILD_TESTING)
+  find_package(Qt5Test ${QT_MIN_VERSION} CONFIG REQUIRED)
+endif()
 # KDevplatform dependency version
 set(KDEVPLATFORM_VERSION "${KDEVPHP_VERSION_MAJOR}.${KDEVPHP_VERSION_MINOR}")
 find_package(KDevPlatform ${KDEVPLATFORM_VERSION} CONFIG REQUIRED)
