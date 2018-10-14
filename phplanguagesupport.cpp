@@ -161,15 +161,15 @@ bool isMagicConstant(QPair<QString, Range> word) {
     return false;
 }
 
-QWidget* LanguageSupport::specialLanguageObjectNavigationWidget(const QUrl& url, const Cursor& position)
+QPair<QWidget*, Range> LanguageSupport::specialLanguageObjectNavigationWidget(const QUrl& url, const Cursor& position)
 {
     QPair<QString, Range> word = wordUnderCursor(url, position);
     if ( isMagicConstant(word) ) {
         DUChainReadLocker lock;
         if (TopDUContext* top = standardContext(url)) {
-            return new NavigationWidget(TopDUContextPointer(top), position, word.first);
+            return {new NavigationWidget(TopDUContextPointer(top), position, word.first), word.second};
         } else {
-            return nullptr;
+            return {nullptr, Range::invalid()};
         }
     }
     return ILanguageSupport::specialLanguageObjectNavigationWidget(url, position);
