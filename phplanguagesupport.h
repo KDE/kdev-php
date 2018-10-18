@@ -80,7 +80,7 @@ public:
      */
     KDevelop::ContextMenuExtension contextMenuExtension(KDevelop::Context* context, QWidget* parent) override;
 
-    QWidget* specialLanguageObjectNavigationWidget(const QUrl& url, const KTextEditor::Cursor& position) override;
+    QPair<QWidget*, KTextEditor::Range> specialLanguageObjectNavigationWidget(const QUrl& url, const KTextEditor::Cursor& position) override;
     KTextEditor::Range specialLanguageObjectRange(const QUrl& url, const KTextEditor::Cursor& position) override;
 
 private:
