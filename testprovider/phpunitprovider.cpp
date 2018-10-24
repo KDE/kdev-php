@@ -98,8 +98,6 @@ void PhpUnitProvider::updateReady(const IndexedString& document, const Reference
 
 void PhpUnitProvider::processContext(ReferencedTopDUContext referencedContext)
 {
-    qCDebug(TESTPROVIDER);
-
     TopDUContext* context = referencedContext.data();
 
     if (!context) {
