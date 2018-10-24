@@ -76,7 +76,7 @@ set(kdevphplanguagesupport_PART_SRCS
 ecm_qt_declare_logging_category(kdevphplanguagesupport_PART_SRCS
     HEADER phpdebug.h
     IDENTIFIER PHP
-    CATEGORY_NAME "kdevelop.languages.php"
+    CATEGORY_NAME "kdevelop.plugins.php"
 )
 
 kdevplatform_add_plugin(kdevphplanguagesupport JSON kdevphpsupport.json

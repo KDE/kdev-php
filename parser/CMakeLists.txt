@@ -14,7 +14,7 @@ kdevpgqt_generate(parser_SRCS php NAMESPACE Php DEBUG_VISITOR TOKEN_TEXT
 ecm_qt_declare_logging_category(parser_SRCS
     HEADER parserdebug.h
     IDENTIFIER PARSER
-    CATEGORY_NAME "kdevelop.languages.php.parser"
+    CATEGORY_NAME "kdevelop.plugins.php.parser"
 )
 
 add_library(kdevphpparser SHARED ${parser_SRCS} ${parser_STAT_SRCS})
