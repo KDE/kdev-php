@@ -3,7 +3,22 @@
         "Authors": [
             {
                 "Name": "Miha Čančula",
-                "Name[x-test]": "xxMiha Čančulaxx"
+                "Name[ca@valencia]": "Miha Čančula",
+                "Name[ca]": "Miha Čančula",
+                "Name[cs]": "Miha Čančula",
+                "Name[de]": "Miha Čančula",
+                "Name[es]": "Miha Čančula",
+                "Name[fr]": "Miha Čančula",
+                "Name[it]": "Miha Čančula",
+                "Name[nl]": "Miha Čančula",
+                "Name[pl]": "Miha Čančula",
+                "Name[pt]": "Miha Čančula",
+                "Name[pt_BR]": "Miha Čančula",
+                "Name[sk]": "Miha Čančula",
+                "Name[sv]": "Miha Čančula",
+                "Name[uk]": "Miha Čančula",
+                "Name[x-test]": "xxMiha Čančulaxx",
+                "Name[zh_CN]": "Miha Čančula"
             }
         ],
         "Category": "Testing",
