@@ -53,6 +53,7 @@ private slots:
     void interfaceExtendsMultiple();
     void staticMemberFunctionCall();
     void staticMemberVariable();
+    void dynamicStaticMemberVariable();
     void constant();
     void classConstant();
     void classParent();
@@ -89,6 +90,8 @@ private slots:
     void instanceofStaticProperty();
     void instanceofMixedProperty();
     void instanceofVariableProperty();
+    void instanceofDynamicStaticProperty();
+    void instanceofDynamicVariableProperty();
     void instanceofPropertyArrayAccess();
     void classNameString();
     void useTrait();
