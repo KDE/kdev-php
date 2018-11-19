@@ -7,7 +7,7 @@ set(kdevphpunitprovider_PLUGIN_SRCS
 ecm_qt_declare_logging_category(kdevphpunitprovider_PLUGIN_SRCS
     HEADER testproviderdebug.h
     IDENTIFIER TESTPROVIDER
-    CATEGORY_NAME "kdevelop.languages.php.testprovider"
+    CATEGORY_NAME "kdevelop.plugins.php.testprovider"
 )
 
 kdevplatform_add_plugin(kdevphpunitprovider

@@ -571,9 +571,8 @@ AbstractType::Ptr parameterType(const ParameterAst* node, AbstractType::Ptr phpD
 
     if (node->isVariadic != -1) {
         auto *container = new IndexedContainer();
-        const IndexedString *containerType = new IndexedString("array");
         container->addEntry(type);
-        container->setPrettyName(*containerType);
+        container->setPrettyName(IndexedString("array"));
         type = AbstractType::Ptr(container);
     }
 

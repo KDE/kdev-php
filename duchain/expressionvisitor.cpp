@@ -697,20 +697,32 @@ void ExpressionVisitor::visitStaticMember(StaticMemberAst* node)
 {
     //don't call DefaultVisitor::visitStaticMember(node);
     //because we would end up in visitCompoundVariableWithSimpleIndirectReference
-    if (node->staticProperty->staticProperty->variable->variable) {
-        DUContext* context = findClassContext(node->className);
-        if (context) {
-            useDeclaration(node->staticProperty->staticProperty->variable, context);
-        } else {
-            usingDeclaration(node->className, DeclarationPointer());
+    if (node->staticProperty && node->staticProperty->staticProperty) {
+        if (node->staticProperty->staticProperty->variable) {
+            DUContext* context = findClassContext(node->className);
+            if (context) {
+                useDeclaration(node->staticProperty->staticProperty->variable, context);
+            } else {
+                usingDeclaration(node->className, DeclarationPointer());
+                m_result.setType(AbstractType::Ptr());
+            }
+        } else if (node->staticProperty->staticProperty->expr) {
+            const QualifiedIdentifier id = identifierForNamespace(node->className, m_editor);
+            DeclarationPointer declaration = findDeclarationImport(ClassDeclarationType, id);
+            usingDeclaration(node->className->namespaceNameSequence->back()->element, declaration);
+            buildNamespaceUses(node->className, id);
+
+            visitExpr(node->staticProperty->staticProperty->expr);
+
             m_result.setType(AbstractType::Ptr());
         }
-        if (node->staticProperty->offsetItemsSequence) {
-            const KDevPG::ListNode< DimListItemAst* >* it = node->staticProperty->offsetItemsSequence->front();
-            do {
-                visitDimListItem(it->element);
-            } while(it->hasNext() && (it = it->next));
-        }
+    }
+
+    if (node->staticProperty && node->staticProperty->offsetItemsSequence) {
+        const KDevPG::ListNode< DimListItemAst* >* it = node->staticProperty->offsetItemsSequence->front();
+        do {
+            visitDimListItem(it->element);
+        } while(it->hasNext() && (it = it->next));
     }
 }
 
@@ -719,11 +731,18 @@ void ExpressionVisitor::visitClassNameReference(ClassNameReferenceAst* node)
     if (node->staticProperty) {
         DUContext* context = findClassContext(node->className->identifier);
 
-        if (context) {
-            useDeclaration(node->staticProperty->staticProperty->variable, context);
+        if (context && node->staticProperty && node->staticProperty->staticProperty) {
+            if (node->staticProperty->staticProperty->variable) {
+                // static properties (object::$property)
+                useDeclaration(node->staticProperty->staticProperty->variable, context);
+            } else if (node->staticProperty->staticProperty->expr) {
+                // variable static properties (object::${$property})
+                visitExpr(node->staticProperty->staticProperty->expr);
+                usingDeclaration(node->className, DeclarationPointer());
+            }
         }
 
-        if (node->staticProperty->offsetItemsSequence) {
+        if (node->staticProperty && node->staticProperty->offsetItemsSequence) {
             const KDevPG::ListNode< DimListItemAst* >* dim_it = node->staticProperty->offsetItemsSequence->front();
             do {
                 visitDimListItem(dim_it->element);
@@ -749,6 +768,10 @@ void ExpressionVisitor::visitClassNameReference(ClassNameReferenceAst* node)
                         && it->element->property->variableWithoutObjects->variable->variable) {
                     VariableIdentifierAst *varnode = it->element->property->variableWithoutObjects->variable->variable;
                     useDeclaration(varnode, m_currentContext);
+                } else if (it->element->property && it->element->property->variableWithoutObjects
+                        && it->element->property->variableWithoutObjects->variable->expr) {
+                        // variable dynamic properties ($object->${$property})
+                        visitExpr(it->element->property->variableWithoutObjects->variable->expr);
                 } else if (!m_result.allDeclarations().isEmpty()) {
                     // handle array indices after normal/static properties ($object->property[$index] // $object::$property[$index])
                     if (it->element->property && it->element->property->objectDimList && it->element->property->objectDimList->offsetItemsSequence) {
@@ -761,6 +784,14 @@ void ExpressionVisitor::visitClassNameReference(ClassNameReferenceAst* node)
                         do {
                             visitDimListItem(dim_it->element);
                         } while(dim_it->hasNext() && (dim_it = dim_it->next));
+                    }
+
+                    // Handle dynamic static properties first, as they don't need a class context
+                    if (it->element->staticProperty && it->element->staticProperty->staticProperty
+                      && it->element->staticProperty->staticProperty->expr) {
+                        // variable static properties ($object::${$property})
+                        visitExpr(it->element->staticProperty->staticProperty->expr);
+                        usingDeclaration(it->element->staticProperty, DeclarationPointer());
                     }
 
                     type = m_result.allDeclarations().last()->type<StructureType>();
@@ -786,7 +817,8 @@ void ExpressionVisitor::visitClassNameReference(ClassNameReferenceAst* node)
                         continue;
                     }
 
-                    if (it->element->staticProperty) {
+                    if (it->element->staticProperty && it->element->staticProperty->staticProperty
+                      && it->element->staticProperty->staticProperty->variable) {
                         // static properties ($object::$property)
                         VariableIdentifierAst *varnode = it->element->staticProperty->staticProperty->variable;
                         useDeclaration(varnode, context);
