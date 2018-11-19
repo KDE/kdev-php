@@ -1,6 +1,7 @@
 apidocs
 .kdev4
 *~
+*.orig
 doxygen.log
 build
 .*
