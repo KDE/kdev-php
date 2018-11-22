@@ -773,19 +773,6 @@ void ExpressionVisitor::visitClassNameReference(ClassNameReferenceAst* node)
                         // variable dynamic properties ($object->${$property})
                         visitExpr(it->element->property->variableWithoutObjects->variable->expr);
                 } else if (!m_result.allDeclarations().isEmpty()) {
-                    // handle array indices after normal/static properties ($object->property[$index] // $object::$property[$index])
-                    if (it->element->property && it->element->property->objectDimList && it->element->property->objectDimList->offsetItemsSequence) {
-                        const KDevPG::ListNode< DimListItemAst* >* dim_it = it->element->property->objectDimList->offsetItemsSequence->front();
-                        do {
-                            visitDimListItem(dim_it->element);
-                        } while(dim_it->hasNext() && (dim_it = dim_it->next));
-                    } else if (it->element->staticProperty && it->element->staticProperty->offsetItemsSequence) {
-                        const KDevPG::ListNode< DimListItemAst* >* dim_it = it->element->staticProperty->offsetItemsSequence->front();
-                        do {
-                            visitDimListItem(dim_it->element);
-                        } while(dim_it->hasNext() && (dim_it = dim_it->next));
-                    }
-
                     // Handle dynamic static properties first, as they don't need a class context
                     if (it->element->staticProperty && it->element->staticProperty->staticProperty
                       && it->element->staticProperty->staticProperty->expr) {
@@ -798,6 +785,7 @@ void ExpressionVisitor::visitClassNameReference(ClassNameReferenceAst* node)
 
                     if (!type) {
                         context = nullptr;
+                        visitClassNameReferenceDimListItems(it->element);
                         continue;
                     }
 
@@ -807,6 +795,7 @@ void ExpressionVisitor::visitClassNameReference(ClassNameReferenceAst* node)
 
                     if (!declaration) {
                         context = nullptr;
+                        visitClassNameReferenceDimListItems(it->element);
                         continue;
                     }
 
@@ -814,6 +803,7 @@ void ExpressionVisitor::visitClassNameReference(ClassNameReferenceAst* node)
 
                     if (!context || context->type() != DUContext::Class) {
                         context = nullptr;
+                        visitClassNameReferenceDimListItems(it->element);
                         continue;
                     }
 
@@ -830,11 +820,29 @@ void ExpressionVisitor::visitClassNameReference(ClassNameReferenceAst* node)
                     } else {
                         context = nullptr;
                     }
+
+                    visitClassNameReferenceDimListItems(it->element);
                 }
             } while(it->hasNext() && (it = it->next));
         }
     }
 
+}
+
+void ExpressionVisitor::visitClassNameReferenceDimListItems(ClassPropertyAst* node)
+{
+    // handle array indices after normal/static properties ($object->property[$index] // $object::$property[$index])
+    if (node->property && node->property->objectDimList && node->property->objectDimList->offsetItemsSequence) {
+        const KDevPG::ListNode< DimListItemAst* >* dim_it = node->property->objectDimList->offsetItemsSequence->front();
+        do {
+            visitDimListItem(dim_it->element);
+        } while(dim_it->hasNext() && (dim_it = dim_it->next));
+    } else if (node->staticProperty && node->staticProperty->offsetItemsSequence) {
+        const KDevPG::ListNode< DimListItemAst* >* dim_it = node->staticProperty->offsetItemsSequence->front();
+        do {
+            visitDimListItem(dim_it->element);
+        } while(dim_it->hasNext() && (dim_it = dim_it->next));
+    }
 }
 
 void ExpressionVisitor::visitUnaryExpression(UnaryExpressionAst* node)

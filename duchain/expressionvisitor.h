@@ -68,6 +68,7 @@ protected:
     void visitVariableProperty(VariablePropertyAst *node) override;
     void visitStaticMember(StaticMemberAst* node) override;
     void visitClassNameReference(ClassNameReferenceAst* node) override;
+    void visitClassNameReferenceDimListItems(ClassPropertyAst* node);
     void visitUnaryExpression(UnaryExpressionAst* node) override;
     void visitAdditiveExpressionRest(AdditiveExpressionRestAst* node) override;
     void visitVariable(VariableAst* node) override;

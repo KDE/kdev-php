@@ -1488,6 +1488,39 @@ void TestUses::instanceofPropertyArrayAccess()
     QVERIFY(dec->uses().isEmpty());
 }
 
+void TestUses::dimListAfterClassNameReference()
+{
+    //                         0         1         2         3         4         5
+    //                         012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<? class A { /** @var array **/ public $foo;\n"
+                              "public function bar() { $object = new $this->foo[$index]; }\n"
+                              "}\n", DumpNone);
+
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 1);
+    QCOMPARE(top->localDeclarations().count(), 1);
+
+    Declaration* dec = top->localDeclarations().at(0);
+    QCOMPARE(dec->identifier(), Identifier("a"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(1, 38, 1, 43));
+
+    QCOMPARE(top->childContexts().at(0)->localDeclarations().count(), 2);
+    QCOMPARE(top->childContexts().at(0)->childContexts().count(), 2);
+    QCOMPARE(top->childContexts().at(0)->childContexts().at(1)->localDeclarations().count(), 1);
+
+    dec = top->childContexts().at(0)->localDeclarations().at(0);
+    QCOMPARE(dec->identifier(), Identifier("foo"));
+    compareUses(dec, QList<RangeInRevision>()
+                    << RangeInRevision(1, 45, 1, 48));
+}
+
 void TestUses::classNameString()
 {
     //                 0         1         2         3         4         5         6         7
