@@ -93,6 +93,7 @@ private slots:
     void instanceofDynamicStaticProperty();
     void instanceofDynamicVariableProperty();
     void instanceofPropertyArrayAccess();
+    void dimListAfterClassNameReference();
     void classNameString();
     void useTrait();
     void exceptionFinally();
