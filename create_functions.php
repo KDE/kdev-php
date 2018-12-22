@@ -391,12 +391,18 @@ foreach ($classes as $class => $i) {
         $out .= "{$indent}{$modifiers}function ".$f['name'];
         $out .= "(";
         $first = true;
+        $params_total = count($f['params'])-1;
         foreach ($f['params'] as $pi=>$param) {
+            $param_name = str_replace('$...', '...$', '$'.$param['name']);
+            $param_name = str_replace('"', '', $param_name);
+            if (substr($param_name, 0, 3) == '...' && $pi < $params_total) {
+                // varargs in the middle of arguments are invalid syntax.
+                // print the documentation, but ignore them in the function signature
+                continue;
+            }
             if (!$first) $out .= ", ";
             $first = false;
             if ($param['isRef']) $out .= "&";
-            $param_name = str_replace('$...', '...$', '$'.$param['name']);
-            $param_name = str_replace('"', '', $param_name);
             $out .= $param_name;
         }
         $out .= ")";
@@ -903,7 +909,10 @@ function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc
     $params = array();
     foreach ($methodsynopsis->methodparam as $param) {
         $paramName = $param->parameter;
-        if (trim($paramName) == '...') continue;
+        if (trim($paramName) == '...') {
+            // Add a variable name for functions taking variable arguments
+            $paramName = '...$vararg';
+        }
         if (!trim($paramName)) continue;
         $paramName = str_replace('/', '', $paramName);
         $paramName = str_replace('-', '', $paramName);
@@ -914,7 +923,7 @@ function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc
         $params[] = array(
             'name' => $paramName,
             'type' => (string)$param->type,
-            'isRef' => isset($param->parameter->attributes()->role) ? ($param->parameter->attributes()->role == "reference") : false
+            'isRef' => isset($param->parameter->attributes()->role) ? ($param->parameter->attributes()->role == "reference") : false,
         );
     }
     // get description of params
@@ -922,7 +931,6 @@ function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc
         $i = 0;
         foreach ( $param_descs as $d ) {
             if ( !isset($params[$i]) ) {
-                ///TODO: support optional params (i.e. ... token)
                 continue;
             }
             $paramName = (string) $d->term->parameter;
