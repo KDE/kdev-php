@@ -568,16 +568,16 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             if (!$c->entry && !$c->entry[0] && !$c->entry[0]->constant) {
                 continue;
             }
-            if ($c->entry[2]) {
-                continue;
-            }
             $name = (string)$c->entry[0]->constant;
             switch ($name) {
                 case '':
                     continue 2;
                 default:
-                    $constants[$name] = 'mixed';
-                    if ($c->entry[1]) {
+                    if ($c->entry[2]) {
+                        $constants[$name] = $c->term->type;
+                        $constants_comments[$name] = cleanupComment($c->entry[2]->asXML());
+                    } else if ($c->entry[1]) {
+                        $constants[$name] = 'mixed';
                         $constants_comments[$name] = cleanupComment($c->entry[1]->asXML());
                     }
             }
