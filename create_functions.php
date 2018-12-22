@@ -543,6 +543,46 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             }
         }
     }
+    // handle constants under section
+    if ($file->getFilename() == 'constants.xml') {
+        $consts = $xml->xpath("db:section//db:varlistentry");
+        foreach ($consts as $c) {
+            if ($name = (string)$c->term->constant) {
+                if (!isset($constants[$name])) {
+                    if (strpos($name, '=')) {
+                        $c = substr($name, 0, strpos($name, '='));
+                    }
+                    $ctype = $c->term->type;
+                    if (!$ctype) {
+                        $ctype = $c->term->link;
+                    }
+                    $constants[$name] = (string)$ctype;
+                }
+            }
+        }
+    }
+    // handle constants within tables
+    if ($file->getFilename() == 'constants.xml') {
+        $consts = $xml->xpath("db:section//db:row");
+        foreach ($consts as $c) {
+            if (!$c->entry && !$c->entry[0] && !$c->entry[0]->constant) {
+                continue;
+            }
+            if ($c->entry[2]) {
+                continue;
+            }
+            $name = (string)$c->entry[0]->constant;
+            switch ($name) {
+                case '':
+                    continue 2;
+                default:
+                    $constants[$name] = 'mixed';
+                    if ($c->entry[1]) {
+                        $constants_comments[$name] = cleanupComment($c->entry[1]->asXML());
+                    }
+            }
+        }
+    }
     // handle constants within nl-langinfo.xml
     if ($file->getFilename() == 'nl-langinfo.xml') {
         $consts = $xml->xpath("db:refsect1//db:row");
