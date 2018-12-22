@@ -543,6 +543,45 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             }
         }
     }
+    // handle constants within nl-langinfo.xml
+    if ($file->getFilename() == 'nl-langinfo.xml') {
+        $consts = $xml->xpath("db:refsect1//db:row");
+        foreach ($consts as $c) {
+            if (!$c->entry && !$c->entry[0] && !$c->entry[0]->constant) {
+                continue;
+            }
+            $name = (string)$c->entry[0]->constant;
+            switch ($name) {
+                case '':
+                    continue 2;
+                case 'ABDAY_(1-7)':
+                case 'DAY_(1-7)':
+                    for ($i=1; $i<8;$i++) {
+                        $cname = substr($name, 0, strpos($name, '_') + 1) . $i;
+                        $constants[$cname] = 'mixed';
+                        if ($c->entry[1]) {
+                            $constants_comments[$cname] = cleanupComment($c->entry[1]->asXML());
+                        }
+                    }
+                    break;
+                case 'ABMON_(1-12)':
+                case 'MON_(1-12)':
+                    for ($i=1; $i<13;$i++) {
+                        $cname = substr($name, 0, strpos($name, '_') + 1) . $i;
+                        $constants[$cname] = 'mixed';
+                        if ($c->entry[1]) {
+                            $constants_comments[$cname] = cleanupComment($c->entry[1]->asXML());
+                        }
+                    }
+                    break;
+                default:
+                    $constants[$name] = 'mixed';
+                    if ($c->entry[1]) {
+                        $constants_comments[$name] = cleanupComment($c->entry[1]->asXML());
+                    }
+            }
+        }
+    }
     // handle constants.xml with different layout as those above
     if ( !isset($xml->variablelist) && $file->getFilename() == 'constants.xml' && $xml->xpath("//db:constant") ) {
         $consts = $xml->xpath("//db:entry");
