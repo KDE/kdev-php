@@ -526,17 +526,19 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         }
     }
     if (isset($xml->variablelist)) {
-        foreach ($xml->variablelist->varlistentry as $i=>$varlistentry) {
-            if ($c = (string)$varlistentry->term->constant) {
-                if (!isset($constants[$c])) {
-                    if (strpos($c, '=')) {
-                        $c = substr($c, 0, strpos($c, '='));
+        foreach ($xml->variablelist as $list) {
+            foreach ($list->varlistentry as $i=>$varlistentry) {
+                if ($c = (string)$varlistentry->term->constant) {
+                    if (!isset($constants[$c])) {
+                        if (strpos($c, '=')) {
+                            $c = substr($c, 0, strpos($c, '='));
+                        }
+                        $ctype = $varlistentry->term->type;
+                        if (!$ctype) {
+                            $ctype = $varlistentry->term->link;
+                        }
+                        $constants[$c] = (string)$ctype;
                     }
-                    $ctype = $varlistentry->term->type;
-                    if (!$ctype) {
-                        $ctype = $varlistentry->term->link;
-                    }
-                    $constants[$c] = (string)$ctype;
                 }
             }
         }
