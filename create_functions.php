@@ -657,6 +657,24 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             }
         }
     }
+    // handle url-stat constants
+    if ($file->getFilename() == 'url-stat.xml') {
+        $consts = $xml->xpath("db:refsect1//db:informaltable//db:row");
+        foreach ($consts as $c) {
+            if (!$c->entry && !$c->entry[0]) {
+                continue;
+            }
+            $name = (string)$c->entry[0];
+            switch ($name) {
+                case '':
+                case 'Flag':
+                    continue 2;
+                default:
+                    $constants[$name] = 'mixed';
+                    $constants_comments[$name] = cleanupComment($c->entry[1]->asXML());
+            }
+        }
+    }
     // handle constants.xml with different layout as those above
     if ( !isset($xml->variablelist) && $file->getFilename() == 'constants.xml' && $xml->xpath("//db:constant") ) {
         $consts = $xml->xpath("//db:entry");
