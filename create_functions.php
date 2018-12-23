@@ -583,6 +583,27 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             }
         }
     }
+    // handle constants within para
+    if ($file->getFilename() == 'constants.xml') {
+        $consts = $xml->xpath("db:para//db:varlistentry");
+        foreach ($consts as $c) {
+            if ($name = (string)$c->term->constant) {
+                if ($name == '__default') {
+                    continue;
+                }
+                if (!isset($constants[$name])) {
+                    if (strpos($name, '=')) {
+                        $c = substr($name, 0, strpos($name, '='));
+                    }
+                    $ctype = $c->term->type;
+                    if (!$ctype) {
+                        $ctype = $c->term->link;
+                    }
+                    $constants[$name] = (string)$ctype;
+                }
+            }
+        }
+    }
     // handle constants in tables within refsect1
     if ($file->getFilename() != 'attr.xml') {
         $consts = $xml->xpath("db:refsect1//db:row");
