@@ -604,6 +604,30 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             }
         }
     }
+    if ($file->getFilename() == 'constants.xml') {
+        $consts = $xml->xpath("db:para//db:simpara");
+        foreach ($consts as $c) {
+            if ($name = (string)$c->constant) {
+                if ($name[0] == '"') {
+                    continue;
+                }
+                if (!isset($constants[$name])) {
+                    $constants[$name] = 'mixed';
+                }
+            }
+        }
+    }
+    if ($file->getFilename() == 'ciphers.xml') {
+        $consts = $xml->xpath("db:para//db:simpara");
+        foreach ($consts as $c) {
+            if ($name = (string)$c) {
+                $name = explode(' ', $name)[0];
+                if (!isset($constants[$name])) {
+                    $constants[$name] = 'mixed';
+                }
+            }
+        }
+    }
     // handle constants in tables within refsect1
     if ($file->getFilename() != 'attr.xml') {
         $consts = $xml->xpath("db:refsect1//db:row");
@@ -715,7 +739,14 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
                         }
                     }
                 }
-                $constants[(string)$p->constant] = (string)$p->type;
+                $name = (string)$p->constant;
+                if ($name == 'LOG_LOCAL0 ... LOG_LOCAL7') {
+                    for ($i=0; $i<8; $i++) {
+                    $constants['LOG_LOCAL' . $i] = (string)$p->type;
+                    }
+                } else {
+                    $constants[$name] = (string)$p->type;
+                }
             }
         }
     } else if (!isset($xml->variablelist) && $file->getFilename() == 'commandline.xml') {
