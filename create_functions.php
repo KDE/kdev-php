@@ -583,8 +583,8 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             }
         }
     }
-    // handle constants within nl-langinfo.xml
-    if ($file->getFilename() == 'nl-langinfo.xml') {
+    // handle constants in tables within refsect1
+    if ($file->getFilename() != 'attr.xml') {
         $consts = $xml->xpath("db:refsect1//db:row");
         foreach ($consts as $c) {
             if (!$c->entry && !$c->entry[0] && !$c->entry[0]->constant) {
@@ -593,6 +593,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             $name = (string)$c->entry[0]->constant;
             switch ($name) {
                 case '':
+                case '0':
                     continue 2;
                 case 'ABDAY_(1-7)':
                 case 'DAY_(1-7)':
