@@ -641,6 +641,22 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             }
         }
     }
+    // handle constants within tokens.xml
+    if ($file->getFilename() == 'tokens.xml') {
+        $consts = $xml->xpath("db:table//db:row");
+        foreach ($consts as $c) {
+            if (!$c->entry && !$c->entry[0] && !$c->entry[0]->constant) {
+                continue;
+            }
+            $name = (string)$c->entry[0]->constant;
+            switch ($name) {
+                case '':
+                    continue 2;
+                default:
+                    $constants[$name] = 'mixed';
+            }
+        }
+    }
     // handle constants.xml with different layout as those above
     if ( !isset($xml->variablelist) && $file->getFilename() == 'constants.xml' && $xml->xpath("//db:constant") ) {
         $consts = $xml->xpath("//db:entry");
