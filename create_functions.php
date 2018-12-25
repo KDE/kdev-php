@@ -637,6 +637,7 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
         foreach ($consts as $c) {
             if ($name = (string)$c) {
                 $name = explode(' ', $name)[0];
+                $name = explode('(', $name)[0];
                 if (!isset($constants[$name])) {
                     $constants[$name] = 'mixed';
                 }
