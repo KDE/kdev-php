@@ -543,6 +543,21 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
             }
         }
     }
+    // handle class constants (and their global aliases) not defined as fieldsynopsis
+    $consts = $xml->xpath("db:partintro//db:varlistentry");
+    foreach ($consts as $c) {
+        foreach ($c->term as $t) {
+            if ($name = (string)$t->constant) {
+                if (!isset($constants[$name])) {
+                    if (strpos($name, '=')) {
+                        $c = substr($name, 0, strpos($name, '='));
+                    }
+                    $constants[$name] = 'mixed';
+                    $constants_comments[$name] = cleanupComment($c->listitem->para->asXML());
+                }
+            }
+        }
+    }
     // handle constants under section
     if ($file->getFilename() == 'constants.xml') {
         $consts = $xml->xpath("db:section//db:varlistentry");
