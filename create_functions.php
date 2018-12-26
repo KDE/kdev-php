@@ -455,7 +455,7 @@ echo "wrote ".$declarationCount." declarations\n";
  * @param SplFileInfo  $file  File handler
  * @return  bool
  */
-function parseFile($file, $funcOverload="") {
+function parseFile($file, $funcOverload="", $classOverload="") {
 global $existingFunctions, $constants, $constants_comments, $variables, $classes, $isInterface, $isAbstractClass, $isFinalClass, $versions;
 
     if (substr($file->getFilename(), -4) != '.xml') return false;
@@ -910,34 +910,81 @@ global $existingFunctions, $constants, $constants_comments, $variables, $classes
     }
 
     if (isset($xml->refsect1->methodsynopsis)) {
-        foreach( $xml->refsect1->methodsynopsis as $synopsis ) {
-            if (isset($synopsis->methodname->replaceable)) {
-                newMethodEntry('global', $synopsis->methodname->replaceable, $funcOverload, $synopsis, $desc, $xml);
-            } else {
-                newMethodEntry('global', $synopsis->methodname, $funcOverload, $synopsis, $desc, $xml);
+        $skip = false;
+        if ($funcOverload != "") {
+            foreach( $xml->refsect1->methodsynopsis as $synopsis ) {
+                if (isset($synopsis->methodname->replaceable)) {
+                    if ($funcOverload == (string) $synopsis->methodname->replaceable) {
+                        $skip = true;
+                    }
+                } else {
+                    if ($funcOverload == (string) $synopsis->methodname) {
+                        $skip = true;
+                    }
+                }
             }
+        }
+        if (!$skip) {
+            foreach( $xml->refsect1->methodsynopsis as $synopsis ) {
+                if (isset($synopsis->methodname->replaceable)) {
+                    newMethodEntry('global', $synopsis->methodname->replaceable, $funcOverload, $synopsis, $desc, $xml, $classOverload);
+                } else {
+                    newMethodEntry('global', $synopsis->methodname, $funcOverload, $synopsis, $desc, $xml, $classOverload);
+                }
 
-            $addedSomething = true;
+                $addedSomething = true;
+            }
         }
     }
     if (isset($xml->refsect1->classsynopsis) && isset($xml->refsect1->classsynopsis->methodsynopsis)) {
         $methodsynopsis = $xml->refsect1->classsynopsis->methodsynopsis;
+        $classOverloadName = $classOverload ?? $xml->refsect1->classsynopsis->ooclass->classname;
         if (isset($synopsis->methodname->replaceable)) {
-            newMethodEntry($xml->refsect1->classsynopsis->ooclass->classname, $methodsynopsis->methodname->replaceable, $funcOverload, $methodsynopsis, $desc, $xml);
+            newMethodEntry($classOverloadName, $methodsynopsis->methodname->replaceable, $funcOverload, $methodsynopsis, $desc, $xml, $classOverload);
         } else {
-            newMethodEntry($xml->refsect1->classsynopsis->ooclass->classname, $methodsynopsis->methodname, $funcOverload, $methodsynopsis, $desc, $xml);
+            newMethodEntry($classOverloadName, $methodsynopsis->methodname, $funcOverload, $methodsynopsis, $desc, $xml, $classOverload);
         }
         $addedSomething = true;
     }
-    if ( !$addedSomething && isset($xml->refnamediv->refpurpose->function) ) {
+    if ( !$addedSomething && (isset($xml->refnamediv->refpurpose->function) || isset($xml->refnamediv->refpurpose->methodname)) ) {
         // This is function alias
-        $functionName = (string)$xml->refnamediv->refname;
-        $aliasName    = (string)$xml->refnamediv->refpurpose->function;
-        $baseFileName = dirname($file->getPathname()).'/'.str_replace('_', '-', $aliasName).'.xml';
+        $functionNames[] = (string)$xml->refnamediv->refname;
+        if ($xml->refnamediv->refpurpose->function) {
+            $aliasName    = (string)$xml->refnamediv->refpurpose->function;
+            switch ($aliasName) {
+                case 'mysqli_stmt_execute':
+                    $baseFileName = dirname($file->getPathname()).'/../mysqli_stmt/execute.xml';
+                    $overload = "global";
+                    break;
+                case 'mysqli_options':
+                    $functionNames[] = 'mysqli_set_opt';
+                    $baseFileName = dirname($file->getPathname()).'/../mysqli/options.xml';
+                    $overload = "global";
+                    break;
+                case 'mysqli_real_escape_string':
+                    $baseFileName = dirname($file->getPathname()).'/../mysqli/real-escape-string.xml';
+                    $overload = "global";
+                    break;
+                case 'sql_regcase':
+                    $baseFileName = dirname($file->getPathname()).'/../../regex/functions/sql-regcase.xml';
+                    $overload = "global";
+                    break;
+                default:
+                    $baseFileName = dirname($file->getPathname()).'/'.str_replace('_', '-', $aliasName).'.xml';
+                    $overload = "";
+            }
+        } else {
+            $aliasName    = (string)$xml->refnamediv->refpurpose->methodname;
+            $baseFileName = dirname($file->getPathname()).'/'.strtolower(str_replace('::', '/', $aliasName)).'.xml';
+            $baseFileName = str_replace('/functions/', '/', $baseFileName);
+            $overload = "global";
+        }
         if ( $baseFileName == $file->getPathname() || !file_exists($baseFileName) ) {
             return false;
         }
-        parseFile(new SplFileInfo($baseFileName), $functionName);
+        foreach ($functionNames as $functionName) {
+            parseFile(new SplFileInfo($baseFileName), $functionName, $overload);
+        }
         $addedSomething = true;
     }
 
@@ -1073,17 +1120,28 @@ function newPropertyEntry($class, $name, $desc, $type, $modifiers = []) {
 /**
  * create a new method entry for @p $class
  */
-function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc, SimpleXMLElement $xml) {
+function newMethodEntry($class, $function, $funcOverload, $methodsynopsis, $desc, SimpleXMLElement $xml, $classOverload = "") {
     global $existingFunctions, $classes;
     $class = (string) $class;
     $function = (string) $function;
     $funcOverload = (string) $funcOverload;
 
     if (strpos($function, '::')) {
-        $class = substr($function, 0, strpos($function, '::'));
+        if ($classOverload == '') {
+            $class = substr($function, 0, strpos($function, '::'));
+        }
         $function = substr($function, strpos($function, '::')+2);
+        if (strpos($funcOverload, '::')) {
+            $class = substr($funcOverload, 0, strpos($funcOverload, '::'));
+            $funcOverload = substr($funcOverload, strpos($funcOverload, '::')+2);
+        }
+    } else if (strpos($funcOverload, '::')) {
+        $class = substr($funcOverload, 0, strpos($funcOverload, '::'));
+        $funcOverload = substr($funcOverload, strpos($funcOverload, '::')+2);
     } else if (strpos($function, '->')) {
-        $class = substr($function, 0, strpos($function, '->'));
+        if ($classOverload == '') {
+            $class = substr($function, 0, strpos($function, '->'));
+        }
         $function = substr($function, strpos($function, '->')+2);
     } else {
         if ($function == '__halt_compiler') return false;
