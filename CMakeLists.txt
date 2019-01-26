@@ -6,6 +6,7 @@ set(KDEVPHP_VERSION_MINOR 3)
 set(KDEVPHP_VERSION_PATCH 40)
 project(kdev-php VERSION "${KDEVPHP_VERSION_MAJOR}.${KDEVPHP_VERSION_MINOR}.${KDEVPHP_VERSION_PATCH}")
 
+find_package(Threads)
 find_package (ECM "5.14.0" REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
@@ -90,6 +91,8 @@ target_link_libraries(kdevphplanguagesupport
 
     KF5::I18n
     KF5::TextEditor
+
+    Threads::Threads
 )
 
 # not writeable so that the refactoring actions get hidden
