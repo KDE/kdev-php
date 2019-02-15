@@ -36,18 +36,10 @@ class KDEVPHPDUCHAIN_EXPORT NavigationWidget : public KDevelop::AbstractNavigati
     Q_OBJECT
 public:
 
-    /**
-      * @param htmlPrefix and @param htmlSuffix can be used to add own text before/behind the
-      * normal text in the navigation-widget.
-      * The texts may contain links to files, using a simple special Syntax:
-      * KDEV_FILE_LINK{File}. Every occurrence of KDEV_FILE_LINK will be replaced.
-      * */
     NavigationWidget(KDevelop::DeclarationPointer declaration, KDevelop::TopDUContextPointer topContext,
-                     const QString& htmlPrefix = QString(), const QString& htmlSuffix = QString(),
                      KDevelop::AbstractNavigationWidget::DisplayHints hints = KDevelop::AbstractNavigationWidget::NoHints);
 
     NavigationWidget(const KDevelop::IncludeItem& includeItem, KDevelop::TopDUContextPointer topContext,
-                     const QString& htmlPrefix = QString(), const QString& htmlSuffix = QString(),
                      KDevelop::AbstractNavigationWidget::DisplayHints hints = KDevelop::AbstractNavigationWidget::NoHints);
 
     /// use this for magic constants

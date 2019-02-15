@@ -39,8 +39,7 @@ typedef PhpDUContext<DUContext> PhpNormalDUContext;
 REGISTER_DUCHAIN_ITEM_WITH_DATA(PhpNormalDUContext, DUContextData);
 
 template<>
-QWidget* PhpDUContext<TopDUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, const QString& htmlPrefix,
-                                                            const QString& htmlSuffix, KDevelop::AbstractNavigationWidget::DisplayHints hints) const
+QWidget* PhpDUContext<TopDUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, KDevelop::AbstractNavigationWidget::DisplayHints hints) const
 {
     if (decl == nullptr) {
         return nullptr;
@@ -52,26 +51,22 @@ QWidget* PhpDUContext<TopDUContext>::createNavigationWidget(Declaration* decl, T
         i.isDirectory = false;
         i.basePath = KIO::upUrl(u);
 
-        return new NavigationWidget( i, TopDUContextPointer(topContext), htmlPrefix, htmlSuffix, hints );
+        return new NavigationWidget( i, TopDUContextPointer(topContext), hints );
     } else {
-        return new NavigationWidget(DeclarationPointer(decl), TopDUContextPointer(topContext ? topContext : this->topContext()),
-                                    htmlPrefix, htmlSuffix, hints);
+        return new NavigationWidget(DeclarationPointer(decl), TopDUContextPointer(topContext ? topContext : this->topContext()), hints);
     }
 }
 
 template<>
-QWidget* PhpDUContext<DUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, const QString& htmlPrefix,
-                                                         const QString& htmlSuffix, KDevelop::AbstractNavigationWidget::DisplayHints hints) const
+QWidget* PhpDUContext<DUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, KDevelop::AbstractNavigationWidget::DisplayHints hints) const
 {
     if (decl == nullptr) {
         if (owner())
-            return new NavigationWidget(DeclarationPointer(owner()), TopDUContextPointer(topContext ? topContext : this->topContext()),
-                                        htmlPrefix, htmlSuffix, hints);
+            return new NavigationWidget(DeclarationPointer(owner()), TopDUContextPointer(topContext ? topContext : this->topContext()), hints);
         else
             return nullptr;
     } else {
-        return new NavigationWidget(DeclarationPointer(decl), TopDUContextPointer(topContext ? topContext : this->topContext()),
-                                    htmlPrefix, htmlSuffix, hints);
+        return new NavigationWidget(DeclarationPointer(decl), TopDUContextPointer(topContext ? topContext : this->topContext()), hints);
     }
 }
 

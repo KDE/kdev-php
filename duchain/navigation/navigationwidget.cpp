@@ -26,7 +26,6 @@ namespace Php
 using namespace KDevelop;
 
 NavigationWidget::NavigationWidget(KDevelop::DeclarationPointer declaration, KDevelop::TopDUContextPointer topContext,
-                                   const QString& htmlPrefix, const QString& htmlSuffix,
                                    KDevelop::AbstractNavigationWidget::DisplayHints hints)
     : AbstractNavigationWidget()
 {
@@ -36,12 +35,10 @@ NavigationWidget::NavigationWidget(KDevelop::DeclarationPointer declaration, KDe
 
     //The first context is registered so it is kept alive by the shared-pointer mechanism
     auto context = NavigationContextPointer(new DeclarationNavigationContext(declaration, topContext));
-    context->setPrefixSuffix(htmlPrefix, htmlSuffix);
     setContext(context);
 }
 
 NavigationWidget::NavigationWidget(const IncludeItem& includeItem, KDevelop::TopDUContextPointer topContext,
-                                   const QString& htmlPrefix, const QString& htmlSuffix,
                                    KDevelop::AbstractNavigationWidget::DisplayHints hints)
     : AbstractNavigationWidget()
 {
@@ -51,7 +48,6 @@ NavigationWidget::NavigationWidget(const IncludeItem& includeItem, KDevelop::Top
 
   //The first context is registered so it is kept alive by the shared-pointer mechanism
   auto context = NavigationContextPointer(new IncludeNavigationContext(includeItem, topContext));
-  context->setPrefixSuffix(htmlPrefix, htmlSuffix);
   setContext(context);
 }
 
