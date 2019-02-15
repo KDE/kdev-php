@@ -39,7 +39,7 @@ typedef PhpDUContext<DUContext> PhpNormalDUContext;
 REGISTER_DUCHAIN_ITEM_WITH_DATA(PhpNormalDUContext, DUContextData);
 
 template<>
-QWidget* PhpDUContext<TopDUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, KDevelop::AbstractNavigationWidget::DisplayHints hints) const
+KDevelop::AbstractNavigationWidget* PhpDUContext<TopDUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, KDevelop::AbstractNavigationWidget::DisplayHints hints) const
 {
     if (decl == nullptr) {
         return nullptr;
@@ -58,7 +58,7 @@ QWidget* PhpDUContext<TopDUContext>::createNavigationWidget(Declaration* decl, T
 }
 
 template<>
-QWidget* PhpDUContext<DUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, KDevelop::AbstractNavigationWidget::DisplayHints hints) const
+KDevelop::AbstractNavigationWidget* PhpDUContext<DUContext>::createNavigationWidget(Declaration* decl, TopDUContext* topContext, KDevelop::AbstractNavigationWidget::DisplayHints hints) const
 {
     if (decl == nullptr) {
         if (owner())
