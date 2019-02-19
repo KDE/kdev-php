@@ -87,7 +87,14 @@ LanguageSupport::~LanguageSupport()
 
 KDevelop::ParseJob *LanguageSupport::createParseJob(const IndexedString &url)
 {
-    return new ParseJob(url, this);
+    auto *job = new ParseJob(url, this);
+
+    // bypass the 5 MB maximum file size limit for the internal file
+    if (url == internalFunctionFile()) {
+        job->setMaximumFileSize(std::numeric_limits<qint64>::max());
+    }
+
+    return job;
 }
 
 QString LanguageSupport::name() const
