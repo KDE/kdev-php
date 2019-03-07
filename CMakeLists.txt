@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(SET CMP0048 NEW)
-
-set(KDEVPHP_VERSION_MAJOR 5)
-set(KDEVPHP_VERSION_MINOR 3)
-set(KDEVPHP_VERSION_PATCH 40)
-project(kdev-php VERSION "${KDEVPHP_VERSION_MAJOR}.${KDEVPHP_VERSION_MINOR}.${KDEVPHP_VERSION_PATCH}")
+project(kdev-php VERSION "5.3.40")
 
 find_package(Threads)
 find_package (ECM "5.14.0" REQUIRED NO_MODULE)
@@ -33,7 +29,7 @@ if(BUILD_TESTING)
   find_package(Qt5Test ${QT_MIN_VERSION} CONFIG REQUIRED)
 endif()
 # KDevplatform dependency version
-set(KDEVPLATFORM_VERSION "${KDEVPHP_VERSION_MAJOR}.${KDEVPHP_VERSION_MINOR}")
+set(KDEVPLATFORM_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 find_package(KDevPlatform ${KDEVPLATFORM_VERSION} CONFIG REQUIRED)
 
 ecm_setup_version(
