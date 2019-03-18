@@ -92,6 +92,7 @@ KDevelop::ParseJob *LanguageSupport::createParseJob(const IndexedString &url)
     // bypass the 5 MB maximum file size limit for the internal file
     if (url == internalFunctionFile()) {
         job->setMaximumFileSize(std::numeric_limits<qint64>::max());
+        job->setMinimumFeatures(TopDUContext::AllDeclarationsAndContexts);
     }
 
     return job;

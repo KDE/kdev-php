@@ -47,6 +47,7 @@
 #include <language/duchain/duchainutils.h>
 
 #include <mutex>
+#include <memory>
 
 using namespace KDevelop;
 
@@ -76,10 +77,9 @@ void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*t
         static std::once_flag once;
         std::call_once(once, [phpSupport] {
             qCDebug(PHP) << "Initializing internal function file" << internalFunctionFile();
-            ParseJob internalJob(internalFunctionFile(), phpSupport);
-            internalJob.setMinimumFeatures(TopDUContext::AllDeclarationsAndContexts);
-            internalJob.run({}, nullptr);
-            Q_ASSERT(internalJob.success());
+            auto internalJob = std::unique_ptr<ParseJob>(static_cast<ParseJob*>(phpSupport->createParseJob(internalFunctionFile())));
+            internalJob->run({}, nullptr);
+            Q_ASSERT(internalJob->success());
         });
     }
 
