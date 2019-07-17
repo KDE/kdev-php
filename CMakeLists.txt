@@ -98,7 +98,11 @@ install(FILES phpfunctions.php DESTINATION ${KDE_INSTALL_DATADIR}/kdevphpsupport
 install(FILES org.kde.kdev-php.metainfo.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
 # kdebugsettings file
-install(FILES kdevphpsupport.categories DESTINATION ${KDE_INSTALL_CONFDIR})
+if (ECM_VERSION VERSION_GREATER "5.58.0")
+    install(FILES kdevphpsupport.categories DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR})
+else()
+    install(FILES kdevphpsupport.categories DESTINATION ${KDE_INSTALL_CONFDIR})
+endif()
 
 # create a Config.cmake and a ConfigVersion.cmake file and install them
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KDevPHP")
