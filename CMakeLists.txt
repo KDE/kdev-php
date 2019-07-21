@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(SET CMP0048 NEW)
-project(kdev-php VERSION "5.3.40")
+project(kdev-php VERSION "5.3.80")
 
 find_package(Threads)
 find_package (ECM "5.14.0" REQUIRED NO_MODULE)
