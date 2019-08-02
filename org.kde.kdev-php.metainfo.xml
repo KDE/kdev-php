@@ -14,9 +14,9 @@
   <name xml:lang="it">Supporto PHP per KDevelop</name>
   <name xml:lang="ko">KDevelop PHP 지원</name>
   <name xml:lang="nl">PHP ondersteuning in KDevelop</name>
-  <name xml:lang="pl">Obsługa PHP w KDevelop</name>
+  <name xml:lang="pl">KDevelop - obsługa PHP</name>
   <name xml:lang="pt">Suporte para PHP do KDevelop</name>
-  <name xml:lang="pt-BR">Suporte a PHP no KDevelop</name>
+  <name xml:lang="pt-BR">Suporte a PHP do KDevelop</name>
   <name xml:lang="sk">PHP podpora pre KDevelop</name>
   <name xml:lang="sv">KDevelop PHP-stöd</name>
   <name xml:lang="uk">Підтримка PHP KDevelop</name>
@@ -49,9 +49,10 @@
   <url type="help">https://docs.kde.org/index.php?application=kdevelop</url>
   <url type="donation">https://www.kde.org/community/donations/?app=kdevelop</url>
   <project_group>KDE</project_group>
-  <update_contact>kdevelop-devel@kde.org</update_contact>
+  <icon type="stock">kdevelop</icon>
   <categories>
     <category>Development</category>
+    <category>IDE</category>
   </categories>
-  <icon type="stock">kdevelop</icon>
+  <update_contact>kdevelop-devel@kde.org</update_contact>
 </component>

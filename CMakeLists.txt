@@ -3,7 +3,7 @@ cmake_policy(SET CMP0048 NEW)
 project(kdev-php VERSION "5.4.40")
 
 find_package(Threads)
-find_package (ECM "5.14.0" REQUIRED NO_MODULE)
+find_package (ECM "5.28.0" REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 include(KDECompilerSettings NO_POLICY_SCOPE)
@@ -16,9 +16,9 @@ include(CMakePackageConfigHelpers)
 include(ECMSetupVersion)
 include(FeatureSummary)
 
-set(QT_MIN_VERSION "5.5.0")
+set(QT_MIN_VERSION "5.7.0")
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Widgets)
-set(KF5_DEP_VERSION "5.15.0")
+set(KF5_DEP_VERSION "5.28.0")
 find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS
     ThreadWeaver
     TextEditor
@@ -97,10 +97,17 @@ install(FILES phpfunctions.php DESTINATION ${KDE_INSTALL_DATADIR}/kdevphpsupport
 install(FILES org.kde.kdev-php.metainfo.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
 # kdebugsettings file
-if (ECM_VERSION VERSION_GREATER "5.58.0")
-    install(FILES kdevphpsupport.categories DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR})
+# kdebugsettings >= 18.12 supports/pushes for some newer, not backward-compatible format.
+# For ECM >= 5.59 we install categories files to new location, which is only supported by
+# newer kdebugsettings also supporting the new content format, so we use that as base.
+if (NOT ECM_VERSION VERSION_GREATER "5.58.0")
+    install(FILES kdevphpsupport-newformat.categories RENAME kdevphpsupport.categories
+        DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
+    )
 else()
-    install(FILES kdevphpsupport.categories DESTINATION ${KDE_INSTALL_CONFDIR})
+    install(FILES kdevphpsupport-oldformat.categories RENAME kdevphpsupport.categories
+        DESTINATION ${KDE_INSTALL_CONFDIR}
+    )
 endif()
 
 # create a Config.cmake and a ConfigVersion.cmake file and install them
