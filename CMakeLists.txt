@@ -97,10 +97,17 @@ install(FILES phpfunctions.php DESTINATION ${KDE_INSTALL_DATADIR}/kdevphpsupport
 install(FILES org.kde.kdev-php.metainfo.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
 # kdebugsettings file
-if (ECM_VERSION VERSION_GREATER "5.58.0")
-    install(FILES kdevphpsupport.categories DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR})
+# kdebugsettings >= 18.12 supports/pushes for some newer, not backward-compatible format.
+# For ECM >= 5.59 we install categories files to new location, which is only supported by
+# newer kdebugsettings also supporting the new content format, so we use that as base.
+if (NOT ECM_VERSION VERSION_GREATER "5.58.0")
+    install(FILES kdevphpsupport-newformat.categories RENAME kdevphpsupport.categories
+        DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
+    )
 else()
-    install(FILES kdevphpsupport.categories DESTINATION ${KDE_INSTALL_CONFDIR})
+    install(FILES kdevphpsupport-oldformat.categories RENAME kdevphpsupport.categories
+        DESTINATION ${KDE_INSTALL_CONFDIR}
+    )
 endif()
 
 # create a Config.cmake and a ConfigVersion.cmake file and install them

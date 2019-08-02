@@ -1,0 +1,10 @@
+# KDebugSettings data file
+# Format:
+# logname<space>description(optional <space> DEFAULT_SEVERITY [DEFAULT_CATEGORY] as WARNING/DEBUG/INFO/CRITICAL) optional IDENTIFIER [...])
+
+kdevelop.plugins.php KDevelop plugin: PHP language support IDENTIFIER [PHP]
+kdevelop.plugins.php.completion KDevelop plugin: PHP language support - codecompletion IDENTIFIER [COMPLETION]
+kdevelop.plugins.php.docs KDevelop plugin: PHP language support - documentation IDENTIFIER [DOCS]
+kdevelop.plugins.php.duchain KDevelop plugin: PHP language support - duchain IDENTIFIER [DUCHAIN]
+kdevelop.plugins.php.parser KDevelop plugin: PHP language support - parser IDENTIFIER [PARSER]
+kdevelop.plugins.php.testprovider KDevelop plugin: PHP language support - testprovider IDENTIFIER [TESTPROVIDER]
