@@ -3,7 +3,7 @@ cmake_policy(SET CMP0048 NEW)
 project(kdev-php VERSION "5.3.80")
 
 find_package(Threads)
-find_package (ECM "5.14.0" REQUIRED NO_MODULE)
+find_package (ECM "5.28.0" REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 include(KDECompilerSettings NO_POLICY_SCOPE)
@@ -16,9 +16,9 @@ include(CMakePackageConfigHelpers)
 include(ECMSetupVersion)
 include(FeatureSummary)
 
-set(QT_MIN_VERSION "5.5.0")
+set(QT_MIN_VERSION "5.7.0")
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Widgets)
-set(KF5_DEP_VERSION "5.15.0")
+set(KF5_DEP_VERSION "5.28.0")
 find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS
     ThreadWeaver
     TextEditor
