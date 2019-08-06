@@ -55,4 +55,10 @@
     <category>IDE</category>
   </categories>
   <update_contact>kdevelop-devel@kde.org</update_contact>
+  <icon type="stock">kdevelop</icon>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://cdn.kde.org/screenshots/kdev-php/kdev-php.png</image>
+    </screenshot>
+  </screenshots>
 </component>
