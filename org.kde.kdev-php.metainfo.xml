@@ -53,6 +53,11 @@
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=kdevelop&amp;component=Language%20Support%3A%20PHP</url>
   <url type="help">https://docs.kde.org/index.php?application=kdevelop</url>
   <url type="donation">https://www.kde.org/community/donations/?app=kdevelop</url>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://cdn.kde.org/screenshots/kdev-php/kdev-php.png</image>
+    </screenshot>
+  </screenshots>
   <project_group>KDE</project_group>
   <icon type="stock">kdevelop</icon>
   <categories>
@@ -60,9 +65,4 @@
     <category>IDE</category>
   </categories>
   <update_contact>kdevelop-devel@kde.org</update_contact>
-  <screenshots>
-    <screenshot type="default">
-      <image>https://cdn.kde.org/screenshots/kdev-php/kdev-php.png</image>
-    </screenshot>
-  </screenshots>
 </component>
