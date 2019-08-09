@@ -43,9 +43,8 @@
   <summary xml:lang="x-test">xxPHP language support for KDevelopxx</summary>
   <summary xml:lang="zh-CN">KDevelop 的 PHP 语言支持</summary>
   <description>
-    <p>Adds PHP support to KDevelop.  Integration with code
-    highlighting, code completion and documentation integration to
-    KDevelop.</p>
+    <p>Adds PHP support to KDevelop.  Includes adding integration with code
+    highlighting, code completion and documentation links.</p>
     <p xml:lang="ca">Afegeix suport de PHP al KDevelop. Integració amb el ressaltat de codi, compleció de codi i integració de la documentació al KDevelop.</p>
     <p xml:lang="nl">Voegt ondersteuning voor PHP  toe aan KDevelop. Integratie met accentuering van code, aanvullen van code en integratie van documentatie aan KDevelop.</p>
     <p xml:lang="pt">Adiciona o suporte para PHP ao KDevelop. Integração com o realce de código, completação de código e integração da documentação no KDevelop.</p>
