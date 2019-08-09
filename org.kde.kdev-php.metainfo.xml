@@ -46,6 +46,12 @@
     <p>Adds PHP support to KDevelop.  Integration with code
     highlighting, code completion and documentation integration to
     KDevelop.</p>
+    <p xml:lang="ca">Afegeix suport de PHP al KDevelop. Integració amb el ressaltat de codi, compleció de codi i integració de la documentació al KDevelop.</p>
+    <p xml:lang="nl">Voegt ondersteuning voor PHP  toe aan KDevelop. Integratie met accentuering van code, aanvullen van code en integratie van documentatie aan KDevelop.</p>
+    <p xml:lang="pt">Adiciona o suporte para PHP ao KDevelop. Integração com o realce de código, completação de código e integração da documentação no KDevelop.</p>
+    <p xml:lang="sv">Lägger till stöd för PHP i KDevelop. Integrering med kodfärgläggning, kodkomplettering, byggsystemstöd och dokumentationsintegrering i KDevelop.</p>
+    <p xml:lang="uk">Додає підтримку PHP до KDevelop. Інтеграція із засобами підсвічування коду, автоматичне доповнення коду та інтеграція документації до KDevelop.</p>
+    <p xml:lang="x-test">xxAdds PHP support to KDevelop. Integration with code highlighting, code completion and documentation integration to KDevelop.xx</p>
   </description>
   <project_license>GPL-2.0+</project_license>
   <metadata_license>CC0-1.0</metadata_license>
