@@ -45,6 +45,9 @@
   <description>
     <p>Adds PHP support to KDevelop.  Includes adding integration with code
     highlighting, code completion and documentation links.</p>
+    <p xml:lang="ca">Afegeix suport de PHP al KDevelop. Afegeix els «include» per a la integració amb el ressaltat de codi, compleció de codi i enllaços a la documentació.</p>
+    <p xml:lang="uk">Додає підтримку PHP до KDevelop. Включено інтеграцію із засобами підсвічування коду, автоматичне доповнення коду та інтеграцію посилань у документації.</p>
+    <p xml:lang="x-test">xxAdds PHP support to KDevelop. Includes adding integration with code highlighting, code completion and documentation links.xx</p>
   </description>
   <project_license>GPL-2.0+</project_license>
   <metadata_license>CC0-1.0</metadata_license>
