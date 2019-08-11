@@ -586,7 +586,7 @@ expression=nullCoalesceExpression
     RBRACKET
 -> varExpressionArray ;;
 
--- http://wiki.php.net/rfc/closures
+-- https://wiki.php.net/rfc/closures
     FUNCTION (isRef=BIT_AND|0) LPAREN parameters=parameterList RPAREN
         ( USE LPAREN lexicalVars=lexicalVarList RPAREN | 0)
         ( COLON returnType=returnType | 0)
