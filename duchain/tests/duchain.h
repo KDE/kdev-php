@@ -86,6 +86,7 @@ private slots:
     void ownStaticMemberVariable();
     void classConst();
     void classConst_data();
+    void classConstWithTypeHint();
     void semiReservedClassConst();
     void fileConst();
     void fileConst_data();

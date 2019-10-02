@@ -319,6 +319,9 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
         }
         closeContextType();
         closeType();
+    } else if (node->constsSequence) {
+        //class constant
+        TypeBuilderBase::visitClassStatement(node);
     } else {
         //member-variable
         parseDocComment(node, QStringLiteral("var"));
