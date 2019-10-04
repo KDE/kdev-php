@@ -1696,6 +1696,56 @@ void TestDUChain::classConstWithTypeHint()
     QVERIFY(type->modifiers() & AbstractType::ConstModifier);
 }
 
+void TestDUChain::classConstVisibility()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { public const B = 1; protected const C = 1; private const D = 1; } ");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->childContexts().count(), 1);
+    QCOMPARE(top->problems().count(), 0);
+
+    QList< Declaration* > decs = top->findDeclarations(QualifiedIdentifier("a::B"));
+    QCOMPARE(decs.count(), 1);
+    QCOMPARE(decs.first()->context(), top->childContexts().last());
+
+    IntegralType::Ptr type = decs.first()->abstractType().cast<IntegralType>();
+    QVERIFY(type);
+    QCOMPARE(type->dataType(), IntegralType::TypeInt);
+    QVERIFY(type->modifiers() & AbstractType::ConstModifier);
+
+    ClassMemberDeclaration* cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
+    QVERIFY(cmdec->accessPolicy() == Declaration::Public);
+
+    decs = top->findDeclarations(QualifiedIdentifier("a::C"));
+    QCOMPARE(decs.count(), 1);
+    QCOMPARE(decs.first()->context(), top->childContexts().last());
+
+    type = decs.first()->abstractType().cast<IntegralType>();
+    QVERIFY(type);
+    QCOMPARE(type->dataType(), IntegralType::TypeInt);
+    QVERIFY(type->modifiers() & AbstractType::ConstModifier);
+
+    cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
+    QVERIFY(cmdec->accessPolicy() == Declaration::Protected);
+
+    decs = top->findDeclarations(QualifiedIdentifier("a::D"));
+    QCOMPARE(decs.count(), 1);
+    QCOMPARE(decs.first()->context(), top->childContexts().last());
+
+    type = decs.first()->abstractType().cast<IntegralType>();
+    QVERIFY(type);
+    QCOMPARE(type->dataType(), IntegralType::TypeInt);
+    QVERIFY(type->modifiers() & AbstractType::ConstModifier);
+
+    cmdec = dynamic_cast<ClassMemberDeclaration*>(decs.first());
+    QVERIFY(cmdec->accessPolicy() == Declaration::Private);
+}
+
 void TestDUChain::semiReservedClassConst()
 {
     //                 0         1         2         3         4         5         6         7
@@ -1717,6 +1767,27 @@ void TestDUChain::semiReservedClassConst()
 
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::STRING")).count(), 1);
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::STRING")).first()->context(), top->childContexts().last());
+}
+
+void TestDUChain::illegalClassConst_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("final const") << QStringLiteral("<? class A { final const C = 1; } ");
+    QTest::newRow("static const") << QStringLiteral("<? class A { static const C = 1; } ");
+    QTest::newRow("abstract const") << QStringLiteral("<? class A { abstract const C = 1; } ");
+}
+
+void TestDUChain::illegalClassConst()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QCOMPARE(top->problems().count(), 1);
 }
 
 void TestDUChain::fileConst_data()

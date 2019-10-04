@@ -397,6 +397,26 @@ void DeclarationBuilder::visitClassStatement(ClassStatementAst *node)
         DeclarationBuilderBase::visitClassStatement(node);
 
         importTraitMethods(node);
+    } else if (node->constsSequence) {
+        if (node->modifiers) {
+            m_currentModifers = node->modifiers->modifiers;
+            if (m_reportErrors) {
+                // have to report the errors here to get a good problem range
+                if (m_currentModifers & ModifierFinal) {
+                    reportError(i18n("Cannot use 'final' as constant modifier"), node->modifiers);
+                }
+                if (m_currentModifers & ModifierStatic) {
+                    reportError(i18n("Cannot use 'static' as constant modifier"), node->modifiers);
+                }
+                if (m_currentModifers & ModifierAbstract) {
+                    reportError(i18n("Cannot use 'abstract' as constant modifier"), node->modifiers);
+                }
+            }
+        } else {
+            m_currentModifers = 0;
+        }
+        DeclarationBuilderBase::visitClassStatement(node);
+        m_currentModifers = 0;
     } else {
         if (node->modifiers) {
             m_currentModifers = node->modifiers->modifiers;
@@ -665,7 +685,13 @@ void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationA
         }
     }
     ClassMemberDeclaration* dec = openDefinition<ClassMemberDeclaration>(identifierForNode(node->identifier), m_editor->findRange(node->identifier));
-    dec->setAccessPolicy(Declaration::Public);
+    if (m_currentModifers & ModifierProtected) {
+        dec->setAccessPolicy(Declaration::Protected);
+    } else if (m_currentModifers & ModifierPrivate) {
+        dec->setAccessPolicy(Declaration::Private);
+    } else {
+        dec->setAccessPolicy(Declaration::Public);
+    }
     dec->setStatic(true);
     dec->setKind(Declaration::Instance);
     lock.unlock();

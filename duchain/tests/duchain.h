@@ -87,7 +87,10 @@ private slots:
     void classConst();
     void classConst_data();
     void classConstWithTypeHint();
+    void classConstVisibility();
     void semiReservedClassConst();
+    void illegalClassConst();
+    void illegalClassConst_data();
     void fileConst();
     void fileConst_data();
     void semiReservedFileConst();

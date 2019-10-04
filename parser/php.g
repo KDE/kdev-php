@@ -1026,13 +1026,13 @@ try/recover(#classStatements=classStatement)*
  RBRACE [: rewind(tokenStream->index() - 2); :]
 -> classBody ;;
 
-    CONST #consts=classConstantDeclaration @ COMMA SEMICOLON
-  | VAR variable=classVariableDeclaration SEMICOLON
+    VAR variable=classVariableDeclaration SEMICOLON
   | modifiers=optionalModifiers
     ( variable=classVariableDeclaration SEMICOLON
       | FUNCTION (BIT_AND | 0) methodName=semiReservedIdentifier LPAREN parameters=parameterList RPAREN
         ( COLON returnType=returnType | 0)
         methodBody=methodBody
+      | CONST #consts=classConstantDeclaration @ COMMA SEMICOLON
     )
   | USE #traits=namespacedIdentifier @ COMMA (imports=traitAliasDeclaration|SEMICOLON)
 -> classStatement ;;
