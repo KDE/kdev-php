@@ -193,6 +193,8 @@ private slots:
     void illegalExpression();
     void printExpression_data();
     void printExpression();
+    void simpleExpression_data();
+    void simpleExpression();
     void generatorAssignment();
     void generatorClosure();
 };

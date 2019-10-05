@@ -838,7 +838,7 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
 -> variableName ;;
 
     commonScalar=commonScalar
-  | constantOrClassConst=constantOrClassConst
+  | constantOrClassConst=constantOrClassConst #offsetItem=dimListItem*
   | varname=STRING_VARNAME
   | DOUBLE_QUOTE encapsList=encapsList DOUBLE_QUOTE stringIndex=stringIndexSpecifier*
   | START_HEREDOC encapsList=encapsList END_HEREDOC

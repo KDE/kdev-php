@@ -4009,6 +4009,29 @@ void TestDUChain::printExpression()
     QVERIFY(top->problems().isEmpty());
 }
 
+void TestDUChain::simpleExpression_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("string concat") << QStringLiteral("<? $var = 'string ' . 'concat';\n");
+    QTest::newRow("variable concat") << QStringLiteral("<? $foo = 'concat'; $var = 'string ' . $foo;\n");
+    QTest::newRow("variable array concat") << QStringLiteral("<? $arr = [ 'concat' ]; $var = 'string ' . $arr[1];\n");
+    QTest::newRow("constant concat") << QStringLiteral("<? const FOO = 'concat'; $var = 'string ' . FOO;\n");
+    QTest::newRow("constant array concat") << QStringLiteral("<? const ARR = [ 'concat' ]; $var = 'string ' . ARR[1];\n");
+}
+
+void TestDUChain::simpleExpression()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(top->problems().isEmpty());
+}
+
 void TestDUChain::generatorAssignment()
 {
     //Note: in practice, Generator is defined by php, but this class is not loaded in this test, so define it ourselves
