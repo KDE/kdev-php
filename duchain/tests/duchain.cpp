@@ -1673,6 +1673,29 @@ void TestDUChain::classConst()
     QCOMPARE(top->findDeclarations(QualifiedIdentifier("a::C")).first()->context(), top->childContexts().last());
 }
 
+void TestDUChain::classConstWithTypeHint()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class A { /**\n* @var integer\n**/\nconst C = 1; } ");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->childContexts().count(), 1);
+    QCOMPARE(top->problems().count(), 0);
+
+    QList< Declaration* > decs = top->findDeclarations(QualifiedIdentifier("a::C"));
+    QCOMPARE(decs.count(), 1);
+    QCOMPARE(decs.first()->context(), top->childContexts().last());
+
+    IntegralType::Ptr type = decs.first()->abstractType().cast<IntegralType>();
+    QVERIFY(type);
+    QCOMPARE(type->dataType(), IntegralType::TypeInt);
+    QVERIFY(type->modifiers() & AbstractType::ConstModifier);
+}
+
 void TestDUChain::semiReservedClassConst()
 {
     //                 0         1         2         3         4         5         6         7
@@ -3975,6 +3998,29 @@ void TestDUChain::printExpression_data()
 }
 
 void TestDUChain::printExpression()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(top->problems().isEmpty());
+}
+
+void TestDUChain::simpleExpression_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("string concat") << QStringLiteral("<? $var = 'string ' . 'concat';\n");
+    QTest::newRow("variable concat") << QStringLiteral("<? $foo = 'concat'; $var = 'string ' . $foo;\n");
+    QTest::newRow("variable array concat") << QStringLiteral("<? $arr = [ 'concat' ]; $var = 'string ' . $arr[1];\n");
+    QTest::newRow("constant concat") << QStringLiteral("<? const FOO = 'concat'; $var = 'string ' . FOO;\n");
+    QTest::newRow("constant array concat") << QStringLiteral("<? const ARR = [ 'concat' ]; $var = 'string ' . ARR[1];\n");
+}
+
+void TestDUChain::simpleExpression()
 {
     QFETCH(QString, code);
 
