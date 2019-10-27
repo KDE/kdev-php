@@ -86,6 +86,28 @@ bool isMatch(Declaration* declaration, DeclarationType declarationType)
     return false;
 }
 
+bool isGenericClassTypehint(NamespacedIdentifierAst* node, EditorIntegrator *editor)
+{
+    const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
+    QString typehint = editor->parseSession()->symbol(it->element);
+
+    if (typehint.compare(QLatin1String("bool"), Qt::CaseInsensitive) == 0) {
+        return false;
+    } else if (typehint.compare(QLatin1String("float"), Qt::CaseInsensitive) == 0) {
+        return false;
+    } else if (typehint.compare(QLatin1String("int"), Qt::CaseInsensitive) == 0) {
+        return false;
+    } else if (typehint.compare(QLatin1String("string"), Qt::CaseInsensitive) == 0) {
+        return false;
+    } else if (typehint.compare(QLatin1String("iterable"), Qt::CaseInsensitive) == 0) {
+        return false;
+    } else if (typehint.compare(QLatin1String("object"), Qt::CaseInsensitive) == 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 bool isClassTypehint(GenericTypeHintAst* genericType, EditorIntegrator *editor)
 {
     Q_ASSERT(genericType);
@@ -95,25 +117,20 @@ bool isClassTypehint(GenericTypeHintAst* genericType, EditorIntegrator *editor)
     } else if (genericType->arrayType != -1) {
         return false;
     } else if (genericType->genericType) {
-        NamespacedIdentifierAst* node = genericType->genericType;
-        const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
-        QString typehint = editor->parseSession()->symbol(it->element);
+        return isGenericClassTypehint(genericType->genericType, editor);
+    } else {
+        return false;
+    }
+}
 
-        if (typehint.compare(QLatin1String("bool"), Qt::CaseInsensitive) == 0) {
-            return false;
-        } else if (typehint.compare(QLatin1String("float"), Qt::CaseInsensitive) == 0) {
-            return false;
-        } else if (typehint.compare(QLatin1String("int"), Qt::CaseInsensitive) == 0) {
-            return false;
-        } else if (typehint.compare(QLatin1String("string"), Qt::CaseInsensitive) == 0) {
-            return false;
-        } else if (typehint.compare(QLatin1String("iterable"), Qt::CaseInsensitive) == 0) {
-            return false;
-        } else if (typehint.compare(QLatin1String("object"), Qt::CaseInsensitive) == 0) {
-            return false;
-        } else {
-            return true;
-        }
+bool isClassTypehint(PropertyTypeHintAst* propertyType, EditorIntegrator *editor)
+{
+    Q_ASSERT(propertyType);
+
+    if (propertyType->arrayType != -1) {
+        return false;
+    } else if (propertyType->genericType) {
+        return isGenericClassTypehint(propertyType->genericType, editor);
     } else {
         return false;
     }
@@ -573,6 +590,25 @@ AbstractType::Ptr parameterType(const ParameterAst* node, AbstractType::Ptr phpD
         auto *container = new KDevelop::ArrayType();
         container->setElementType(type);
         type = AbstractType::Ptr(container);
+    }
+
+    Q_ASSERT(type);
+    return type;
+}
+
+AbstractType::Ptr propertyType(const ClassStatementAst* node, AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, DUContext* currentContext)
+{
+    AbstractType::Ptr type;
+    if (node->propertyType) {
+        type = determineTypehint(node->propertyType, editor, currentContext);
+    }
+
+    if (!type) {
+        if (phpDocTypehint) {
+            type = phpDocTypehint;
+        } else {
+            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
+        }
     }
 
     Q_ASSERT(type);

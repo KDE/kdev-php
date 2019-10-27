@@ -41,6 +41,8 @@ struct NamespacedIdentifierAst;
 struct ParameterAst;
 struct GenericTypeHintAst;
 struct ReturnTypeAst;
+struct ClassStatementAst;
+struct PropertyTypeHintAst;
 class EditorIntegrator;
 
 enum DeclarationType {
@@ -58,7 +60,11 @@ enum DeclarationScope {
 
 KDEVPHPDUCHAIN_EXPORT bool isMatch(KDevelop::Declaration* declaration, DeclarationType declarationType);
 
+KDEVPHPDUCHAIN_EXPORT bool isGenericClassTypehint(NamespacedIdentifierAst* genericType, EditorIntegrator *editor);
+
 KDEVPHPDUCHAIN_EXPORT bool isClassTypehint(GenericTypeHintAst* parameterType, EditorIntegrator *editor);
+
+KDEVPHPDUCHAIN_EXPORT bool isClassTypehint(PropertyTypeHintAst* propertyType, EditorIntegrator *editor);
 
 KDEVPHPDUCHAIN_EXPORT KDevelop::DeclarationPointer findDeclarationImportHelper(KDevelop::DUContext* currentContext,
                                                                                const KDevelop::QualifiedIdentifier& id,
@@ -97,6 +103,7 @@ KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierForNamespace(Names
 KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierWithNamespace(const KDevelop::QualifiedIdentifier& base, KDevelop::DUContext* context);
 
 KDEVPHPDUCHAIN_EXPORT KDevelop::AbstractType::Ptr parameterType(const ParameterAst* node, KDevelop::AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, KDevelop::DUContext *currentContext);
+KDEVPHPDUCHAIN_EXPORT KDevelop::AbstractType::Ptr propertyType(const ClassStatementAst* node, KDevelop::AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, KDevelop::DUContext *currentContext);
 KDEVPHPDUCHAIN_EXPORT KDevelop::AbstractType::Ptr returnType(const ReturnTypeAst* node, KDevelop::AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, KDevelop::DUContext *currentContext);
 
 }

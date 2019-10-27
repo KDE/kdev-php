@@ -101,6 +101,7 @@ private slots:
     void returnTypeClassFunction();
     void returnTypeFunction();
     void defaultValue();
+    void propertyType();
 };
 
 }

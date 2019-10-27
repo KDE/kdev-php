@@ -478,6 +478,90 @@ void TestDUChain::classMemberVar()
     QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeInt);
 }
 
+void TestDUChain::classMemberVarTypehint()
+{
+    //Note: in practice, Traversable is defined by php, but this interface is not loaded in this test, so define it ourselves
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? interface Traversable { } class A { public iterable $foo; protected A $bar; private static ?string $baz; public int $boo = 1; }");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->parentContext());
+    QCOMPARE(top->childContexts().count(), 2);
+
+    DUContext* contextClassA = top->childContexts().at(1);
+
+    QCOMPARE(top->localDeclarations().count(), 2);
+    Declaration* dec = top->localDeclarations().at(1);
+    QCOMPARE(dec->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(dec->isDefinition(), true);
+    QCOMPARE(dec->logicalInternalContext(top), contextClassA);
+
+    QCOMPARE(contextClassA->localScopeIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(contextClassA->childContexts().count(), 0);
+    QCOMPARE(contextClassA->localDeclarations().count(), 4);
+
+    TypePtr<UnsureType> ut;
+
+    //$foo
+    ClassMemberDeclaration* var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().first());
+    QVERIFY(var);
+    QCOMPARE(var->identifier(), Identifier("foo"));
+    QCOMPARE(var->accessPolicy(), Declaration::Public);
+    QCOMPARE(var->isStatic(), false);
+    QVERIFY(var->type<UnsureType>());
+
+    ut = var->type<UnsureType>();
+    QVERIFY(ut);
+    QCOMPARE(2u, ut->typesSize());
+
+    QVERIFY(ut->types()[0].type<IntegralType>());
+    QVERIFY(ut->types()[0].type<IntegralType>()->dataType() == IntegralType::TypeArray);
+
+    QVERIFY(ut->types()[1].type<StructureType>());
+    QVERIFY(ut->types()[1].type<StructureType>()->declaration(top));
+    QCOMPARE(ut->types()[1].type<StructureType>()->declaration(top)->qualifiedIdentifier(), QualifiedIdentifier("traversable"));
+
+    //$bar
+    var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().at(1));
+    QVERIFY(var);
+    QCOMPARE(var->identifier(), Identifier("bar"));
+    QCOMPARE(var->accessPolicy(), Declaration::Protected);
+    QCOMPARE(var->isStatic(), false);
+    StructureType::Ptr type = var->type<StructureType>();
+    QVERIFY(type);
+    QCOMPARE(type->qualifiedIdentifier(), QualifiedIdentifier("a"));
+
+    //$baz
+    var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().at(2));
+    QVERIFY(var);
+    QCOMPARE(var->identifier(), Identifier("baz"));
+    QCOMPARE(var->accessPolicy(), Declaration::Private);
+    QCOMPARE(var->isStatic(), true);
+    QVERIFY(var->type<UnsureType>());
+    ut = var->type<UnsureType>();
+    QVERIFY(ut);
+    QCOMPARE(2u, ut->typesSize());
+
+    QVERIFY(ut->types()[0].type<IntegralType>());
+    QVERIFY(ut->types()[0].type<IntegralType>()->dataType() == IntegralType::TypeString);
+
+    QVERIFY(ut->types()[1].type<IntegralType>());
+    QVERIFY(ut->types()[1].type<IntegralType>()->dataType() == IntegralType::TypeNull);
+
+    //$boo
+    var = dynamic_cast<ClassMemberDeclaration*>(contextClassA->localDeclarations().at(3));
+    QVERIFY(var);
+    QCOMPARE(var->identifier(), Identifier("boo"));
+    QCOMPARE(var->accessPolicy(), Declaration::Public);
+    QCOMPARE(var->isStatic(), false);
+    QVERIFY(var->type<IntegralType>());
+    QVERIFY(var->type<IntegralType>()->dataType() == IntegralType::TypeInt);
+}
+
 void TestDUChain::classMemberVarAfterUse()
 {
     //                 0         1         2         3         4         5         6         7
@@ -3675,7 +3759,7 @@ void TestDUChain::varStatic()
     //               0         1         2         3         4         5         6         7
     //               01234567890123456789012345678901234567890123456789012345678901234567890123456789
     TopDUContext* top = parse("<?php\n"
-                              "class c { static a = 1; static function foo() {} }\n"
+                              "class c { const a = 1; static function foo() {} }\n"
                               "$o = 'c';\n"
                               "$o::a;\n"
                               "$o::foo();\n"

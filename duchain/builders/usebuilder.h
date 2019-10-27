@@ -69,6 +69,7 @@ protected:
     void visitUseStatement(UseStatementAst* node) override;
     void visitUseNamespace(UseNamespaceAst* node) override;
     void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range) override;
+    void visitPropertyType(PropertyTypeAst* node) override;
     void visitReturnType(ReturnTypeAst* node) override;
 
 private:

@@ -316,6 +316,12 @@ void UseBuilder::visitNodeWithExprVisitor(AstNode* node)
     }
 }
 
+void UseBuilder::visitPropertyType(PropertyTypeAst* node) {
+    if (node->typehint && isClassTypehint(node->typehint, m_editor)) {
+        buildNamespaceUses(node->typehint->genericType);
+    }
+}
+
 void UseBuilder::visitReturnType(ReturnTypeAst* node) {
     if (node->typehint && isClassTypehint(node->typehint, m_editor)) {
         buildNamespaceUses(node->typehint->genericType);

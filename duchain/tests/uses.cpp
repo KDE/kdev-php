@@ -1787,5 +1787,18 @@ void TestUses::defaultValue() {
     compareUses(c, QList<RangeInRevision>() << RangeInRevision(0, 47, 0, 48));
 }
 
+void TestUses::propertyType() {
+    //                 0         1         2         3         4
+    //                 01234567890123456789012345678901234567890123456
+    QByteArray method("<? class A { public A $foo; }");
+    TopDUContext *top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *a = top->localDeclarations().at(0);
+    QCOMPARE(a->identifier().toString(), QString("a"));
+    compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 20, 0, 21));
+}
+
 }
 

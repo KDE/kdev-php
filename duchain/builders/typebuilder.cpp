@@ -332,6 +332,20 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
     } else if (node->constsSequence) {
         //class constant
         TypeBuilderBase::visitClassStatement(node);
+    } else if (node->propertyType) {
+        m_gotTypeFromTypeHint = true;
+        AbstractType::Ptr phpDocTypehint = parseDocComment(node, QStringLiteral("var"));
+        AbstractType::Ptr type = propertyType(node, phpDocTypehint, editor(), currentContext());
+
+        injectType(type);
+        TypeBuilderBase::visitClassStatement(node);
+        clearLastType();
+        m_gotTypeFromTypeHint = false;
+
+        if (m_gotTypeFromDocComment) {
+            clearLastType();
+            m_gotTypeFromDocComment = false;
+        }
     } else {
         //member-variable
         parseDocComment(node, QStringLiteral("var"));
@@ -345,7 +359,7 @@ void TypeBuilder::visitClassStatement(ClassStatementAst *node)
 
 void TypeBuilder::visitClassVariable(ClassVariableAst *node)
 {
-    if (!m_gotTypeFromDocComment) {
+    if (!m_gotTypeFromDocComment && !m_gotTypeFromTypeHint) {
         if (node->value) {
             openAbstractType(getTypeForNode(node->value));
         } else {

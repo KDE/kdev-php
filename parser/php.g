@@ -1031,7 +1031,7 @@ try/recover(#classStatements=classStatement)*
 
     VAR variable=classVariableDeclaration SEMICOLON
   | modifiers=optionalModifiers
-    ( variable=classVariableDeclaration SEMICOLON
+    ( (propertyType=propertyType | 0) variable=classVariableDeclaration SEMICOLON
       | FUNCTION (BIT_AND | 0) methodName=semiReservedIdentifier LPAREN parameters=parameterList RPAREN
         ( COLON returnType=returnType | 0)
         methodBody=methodBody
@@ -1039,6 +1039,16 @@ try/recover(#classStatements=classStatement)*
     )
   | USE #traits=namespacedIdentifier @ COMMA (imports=traitAliasDeclaration|SEMICOLON)
 -> classStatement ;;
+
+    (isNullable=QUESTION | 0) typehint=propertyTypeHint
+-> propertyType ;;
+
+  ( genericType=namespacedIdentifier
+    | arrayType=ARRAY )
+  [: (*yynode)->callableType = -1; :]
+-> propertyTypeHint[
+     member variable callableType: int;
+] ;;
 
     LBRACE #statements=traitAliasStatement
         @ (SEMICOLON [: if (yytoken == Token_RBRACE) { break; } :]) RBRACE

@@ -112,6 +112,7 @@ private:
 
     bool m_gotTypeFromDocComment;
     bool m_gotReturnTypeFromDocComment;
+    bool m_gotTypeFromTypeHint;
 
     KDevelop::AbstractType::Ptr injectParseType(QString type, AstNode* node);
     KDevelop::AbstractType::Ptr parseType(QString type, AstNode* node);
