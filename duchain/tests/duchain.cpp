@@ -2144,7 +2144,7 @@ void TestDUChain::functionDocBlock()
     }
 
     {
-        // same as above but with indendation
+        // same as above but with indentation
         TopDUContext* top = parse("<?\n  /// Foo\n  /// Bar\n  function foo() {} ", DumpNone);
         DUChainReleaser releaseTop(top);
         DUChainWriteLocker lock(DUChain::lock());
@@ -3471,7 +3471,7 @@ void TestDUChain::useNamespace()
     dec = top->localDeclarations().at(4);
     QCOMPARE(dec->qualifiedIdentifier().toString(), QString("ns6"));
     QVERIFY(dynamic_cast<NamespaceAliasDeclaration*>(dec));
-    ///TODO: find out why this is explictly required
+    ///TODO: find out why this is explicitly required
     QVERIFY(!dynamic_cast<NamespaceAliasDeclaration*>(dec)->importIdentifier().explicitlyGlobal());
 }
 
@@ -3571,7 +3571,7 @@ void TestDUChain::namespacedCatch()
                               "}\n"
                               "namespace {\n"
                               "try { /* ... */ }\n"
-                              "catch(\\ns\\e $exeption) { /* ... */ }"
+                              "catch(\\ns\\e $exception) { /* ... */ }"
                               "}\n"
                               , DumpNone);
     QVERIFY(top);
