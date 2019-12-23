@@ -115,6 +115,7 @@ private:
 
     KDevelop::AbstractType::Ptr injectParseType(QString type, AstNode* node);
     KDevelop::AbstractType::Ptr parseType(QString type, AstNode* node);
+    KDevelop::AbstractType::Ptr parseSimpleType(QString type, AstNode* node);
     KDevelop::AbstractType::Ptr parseDocComment(AstNode* node, const QString& docCommentName);
     QList<KDevelop::AbstractType::Ptr> parseDocCommentParams(AstNode* node);
 };

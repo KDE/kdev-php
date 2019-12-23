@@ -30,6 +30,7 @@
 #include <language/duchain/parsingenvironment.h>
 #include <language/duchain/types/unsuretype.h>
 #include <language/duchain/types/integraltype.h>
+#include <language/duchain/types/arraytype.h>
 #include <interfaces/icore.h>
 #include <interfaces/iprojectcontroller.h>
 #include <interfaces/iuicontroller.h>
@@ -44,7 +45,6 @@
 #include "declarations/classdeclaration.h"
 #include "declarations/classmethoddeclaration.h"
 #include "declarations/functiondeclaration.h"
-#include "types/indexedcontainer.h"
 #include "types/integraltypeextended.h"
 #include "expressionparser.h"
 #include "expressionvisitor.h"
@@ -570,9 +570,8 @@ AbstractType::Ptr parameterType(const ParameterAst* node, AbstractType::Ptr phpD
     }
 
     if (node->isVariadic != -1) {
-        auto *container = new IndexedContainer();
-        container->addEntry(type);
-        container->setPrettyName(IndexedString("array"));
+        auto *container = new KDevelop::ArrayType();
+        container->setElementType(type);
         type = AbstractType::Ptr(container);
     }
 

@@ -139,6 +139,7 @@ private slots:
     void foreachIterator2();
     void foreachIterator3();
     void foreachIterator4();
+    void foreachArray();
     void returnThis();
     void unsureReturnType();
     void unsureReturnType2();

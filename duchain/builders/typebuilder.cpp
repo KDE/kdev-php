@@ -26,8 +26,8 @@
 #include <language/duchain/ducontext.h>
 #include <language/duchain/declaration.h>
 #include <language/duchain/types/integraltype.h>
+#include <language/duchain/types/arraytype.h>
 #include "../declarations/classdeclaration.h"
-#include "../types/indexedcontainer.h"
 #include "../types/integraltypeextended.h"
 #include "../types/structuretype.h"
 #include <duchaindebug.h>
@@ -57,8 +57,35 @@ TypeBuilder::~TypeBuilder()
 
 AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
 {
-    uint iType = 0;
     type = type.trimmed();
+
+    if (type.contains('|')) {
+        QList<AbstractType::Ptr> types;
+        foreach (const QString& t, type.split('|')) {
+            AbstractType::Ptr subType = parseType(t, node);
+            if (!(IntegralType::Ptr::dynamicCast(subType) && IntegralType::Ptr::staticCast(subType)->dataType() == IntegralType::TypeMixed)) {
+                types << parseType(t, node);
+            }
+        }
+        UnsureType::Ptr ret(new UnsureType());
+        foreach (const AbstractType::Ptr& t, types) {
+            ret->addType(t->indexed());
+        }
+        return AbstractType::Ptr::staticCast(ret);
+    }
+
+    if (type.endsWith(QLatin1String("[]"))) {
+        KDevelop::ArrayType* a_type = new KDevelop::ArrayType();
+        a_type->setElementType(parseSimpleType(type.left(type.length() - 2), node));
+        return AbstractType::Ptr(a_type);
+    } else {
+        return parseSimpleType(type, node);
+    }
+}
+
+AbstractType::Ptr TypeBuilder::parseSimpleType(QString type, AstNode* node)
+{
+    uint iType = 0;
     if (!type.compare(QLatin1String("int"), Qt::CaseInsensitive) || !type.compare(QLatin1String("integer"), Qt::CaseInsensitive)) {
         iType = IntegralType::TypeInt;
     } else if (!type.compare(QLatin1String("float"), Qt::CaseInsensitive) || !type.compare(QLatin1String("double"), Qt::CaseInsensitive)) {
@@ -100,23 +127,6 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
 
         if (decl && decl->abstractType()) {
             return decl->abstractType();
-        }
-        if (type.contains('|')) {
-            QList<AbstractType::Ptr> types;
-            foreach (const QString& t, type.split('|')) {
-                AbstractType::Ptr subType = parseType(t, node);
-                if (!(IntegralType::Ptr::dynamicCast(subType) && IntegralType::Ptr::staticCast(subType)->dataType() == IntegralType::TypeMixed)) {
-                    types << parseType(t, node);
-                }
-            }
-            if (!type.isEmpty()) {
-                UnsureType::Ptr ret(new UnsureType());
-                foreach (const AbstractType::Ptr& t, types) {
-                    ret->addType(t->indexed());
-                }
-                //qCDebug(DUCHAIN) << type << ret->toString();
-                return AbstractType::Ptr::staticCast(ret);
-            }
         }
         iType = IntegralType::TypeMixed;
     }
@@ -572,7 +582,11 @@ void TypeBuilder::visitStatement(StatementAst* node)
                     }
                 }
             }
+        } else if ( ArrayType::Ptr a_type = ArrayType::Ptr::dynamicCast(v.result().type()) ) {
+            injectType(a_type->elementType());
+            foundType = true;
         }
+
         if (!foundType) {
             injectType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
         }

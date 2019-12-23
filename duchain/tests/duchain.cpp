@@ -28,6 +28,7 @@
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/integraltype.h>
 #include <language/duchain/types/unsuretype.h>
+#include <language/duchain/types/arraytype.h>
 #include <language/duchain/namespacealiasdeclaration.h>
 #include <language/editor/documentrange.h>
 
@@ -44,7 +45,6 @@
 
 #include "../types/structuretype.h"
 #include "../types/integraltypeextended.h"
-#include "../types/indexedcontainer.h"
 
 #include <QStandardPaths>
 
@@ -1012,11 +1012,9 @@ void TestDUChain::declareVariadicFunction()
 
     AbstractType::Ptr arg = fun->arguments().first();
     QVERIFY(arg);
-    QVERIFY(arg.cast<IndexedContainer>());
-    QCOMPARE(arg.cast<IndexedContainer>()->typesCount(), 1);
-    QCOMPARE(arg.cast<IndexedContainer>()->prettyName().str(), QStringLiteral("array"));
+    QVERIFY(arg.cast<KDevelop::ArrayType>());
 
-    AbstractType::Ptr typehint = arg.cast<IndexedContainer>()->typeAt(0).abstractType();
+    AbstractType::Ptr typehint = arg.cast<KDevelop::ArrayType>()->elementType();
     QVERIFY(typehint);
     QVERIFY(IntegralType::Ptr::dynamicCast(typehint));
     QVERIFY(IntegralType::Ptr::dynamicCast(typehint)->dataType() == IntegralType::TypeMixed);
@@ -1039,11 +1037,9 @@ void TestDUChain::declareTypehintVariadicFunction()
 
     AbstractType::Ptr arg = fun->arguments().first();
     QVERIFY(arg);
-    QVERIFY(arg.cast<IndexedContainer>());
-    QCOMPARE(arg.cast<IndexedContainer>()->typesCount(), 1);
-    QCOMPARE(arg.cast<IndexedContainer>()->prettyName().str(), QStringLiteral("array"));
+    QVERIFY(arg.cast<KDevelop::ArrayType>());
 
-    AbstractType::Ptr typehint = arg.cast<IndexedContainer>()->typeAt(0).abstractType();
+    AbstractType::Ptr typehint = arg.cast<KDevelop::ArrayType>()->elementType();
     QVERIFY(typehint);
     QCOMPARE(typehint->toString(), QStringLiteral("A"));
 }
@@ -2737,6 +2733,29 @@ void TestDUChain::foreachIterator4()
 
     QCOMPARE(aDec->uses().size(), 1);
     QCOMPARE(aDec->uses().begin()->size(), 4);
+}
+
+void TestDUChain::foreachArray()
+{
+    {
+    QByteArray code = "<?\n"
+                      "class Foo {};\n"
+                      "/// @param Foo[]\n"
+                      "function bar($a) {\n"
+                      "    foreach($a as $e){ $e; }\n"
+                      "}\n";
+    TopDUContext* top = parse(code, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    DUContext* barContext = top->childContexts().last();
+    QCOMPARE(barContext->localScopeIdentifier(), QualifiedIdentifier("bar"));
+
+    Declaration* eDec = barContext->localDeclarations().first();
+    QCOMPARE(eDec->qualifiedIdentifier(), QualifiedIdentifier("bar::e"));
+    QVERIFY(eDec->type<StructureType>());
+    QCOMPARE(eDec->type<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("foo"));
+    }
 }
 
 void TestDUChain::returnThis()

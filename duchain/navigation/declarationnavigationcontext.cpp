@@ -30,8 +30,8 @@
 #include <language/duchain/types/structuretype.h>
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/integraltype.h>
+#include <language/duchain/types/arraytype.h>
 
-#include "../types/indexedcontainer.h"
 #include "../declarations/classdeclaration.h"
 #include <declarations/classmethoddeclaration.h>
 #include <declarations/traitmethodaliasdeclaration.h>
@@ -198,9 +198,9 @@ void DeclarationNavigationContext::htmlFunction()
 
       if (argDec && argDec->isVariadic()) {
         AbstractType::Ptr variadicType;
-        const auto indexed = argType.cast<IndexedContainer>();
-        if (indexed && indexed->typesCount() == 1) {
-            variadicType = indexed->typeAt(0).abstractType();
+        const auto a_type = argType.cast<KDevelop::ArrayType>();
+        if (a_type) {
+            variadicType = a_type->elementType();
         } else {
             variadicType = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
         }
