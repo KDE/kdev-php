@@ -826,7 +826,6 @@ void ExpressionVisitor::visitClassNameReference(ClassNameReferenceAst* node)
             } while(it->hasNext() && (it = it->next));
         }
     }
-
 }
 
 void ExpressionVisitor::visitClassNameReferenceDimListItems(ClassPropertyAst* node)

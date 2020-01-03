@@ -88,6 +88,29 @@ void TestUses::functionCall()
     QCOMPARE(fun->uses().keys().first(), IndexedString(QUrl("file:///internal/usestest/functionCall.php")));
 }
 
+void TestUses::functionCallWithClosureArgs()
+{
+
+    //                 0         1         2         3         4         5         6         7         8         9
+    //                 0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo($a, $b) {} $c = []; $d = []; foo(function ($x) use ($c) { return $c[$x]; }, $d); ");
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    // foo
+    Declaration* fun = top->localDeclarations().first();
+    compareUses(fun, RangeInRevision(0, 45, 0, 48));
+
+    // $c
+    Declaration* c = top->localDeclarations().at(1);
+    compareUses(c, QList<RangeInRevision>() << RangeInRevision(0, 68, 0, 70) << RangeInRevision(0, 81, 0, 83));
+
+    // $d
+    Declaration* d = top->localDeclarations().at(2);
+    compareUses(d, RangeInRevision(0, 92, 0, 94));
+}
+
 void TestUses::memberFunctionCall()
 {
 

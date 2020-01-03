@@ -84,6 +84,8 @@ protected:
     void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst* node) override;
     void visitClosure(ClosureAst* node) override;
     void visitUnaryExpression(UnaryExpressionAst* node) override;
+    void visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node) override;
+
     /**
      * don't overload in other builders, use @c openNamespace and @c closeNamespace instead.
      */

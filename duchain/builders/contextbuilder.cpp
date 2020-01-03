@@ -492,6 +492,13 @@ void ContextBuilder::visitUnaryExpression(UnaryExpressionAst* node)
     }
 }
 
+void ContextBuilder::visitFunctionCallParameterListElement(FunctionCallParameterListElementAst* node)
+{
+    DefaultVisitor::visitFunctionCallParameterListElement(node);
+
+    setContextOnNode(node, currentContext());
+}
+
 void ContextBuilder::reportError(const QString& errorMsg, AstNode* node, IProblem::Severity severity)
 {
     reportError(errorMsg, m_editor->findRange(node), severity);

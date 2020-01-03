@@ -33,6 +33,7 @@ public:
 private slots:
     void newObject();
     void functionCall();
+    void functionCallWithClosureArgs();
     void memberFunctionCall();
     void unsureMemberFunctionCall();
     void memberVariable();
