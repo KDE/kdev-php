@@ -227,19 +227,36 @@ void UseBuilder::visitUnaryExpression( UnaryExpressionAst* node )
     }
 }
 
+void UseBuilder::visitUseStatement(UseStatementAst* node)
+{
+    if ( node->useFunction != -1 )
+    {
+        m_useNamespaceType = FunctionDeclarationType;
+    }
+    else if ( node->useConst != -1 )
+    {
+        m_useNamespaceType = ConstantDeclarationType;
+    }
+    else
+    {
+        m_useNamespaceType = NamespaceDeclarationType;
+    }
+    UseBuilderBase::visitUseStatement(node);
+}
+
 void UseBuilder::visitUseNamespace(UseNamespaceAst* node)
 {
-    buildNamespaceUses(node->identifier, NamespaceDeclarationType);
+    buildNamespaceUses(node->identifier, m_useNamespaceType);
 }
 
 void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node, DeclarationType lastType)
 {
-    QualifiedIdentifier identifier = identifierForNamespace(node, m_editor);
+    QualifiedIdentifier identifier = identifierForNamespace(node, m_editor, lastType == ConstantDeclarationType);
 
     QualifiedIdentifier curId;
 
     // check if we need to resolve the namespaced identifier globally or locally
-    DeclarationPointer tempDec = findDeclarationImport(ClassDeclarationType, identifier);
+    DeclarationPointer tempDec = findDeclarationImport(lastType, identifier);
 
     // if we couldn't find a class declaration, it might be a partial namespace identifier
     if (!tempDec) {
@@ -248,7 +265,7 @@ void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node, DeclarationTy
 
     if (!tempDec && !identifier.explicitlyGlobal()) {
         identifier.setExplicitlyGlobal(true);
-        tempDec = findDeclarationImport(ClassDeclarationType, identifier);
+        tempDec = findDeclarationImport(lastType, identifier);
 
         if (!tempDec) {
             tempDec = findDeclarationImport(NamespaceDeclarationType, identifier);

@@ -723,10 +723,13 @@ expression=nullCoalesceExpression
   | OPEN_TAG_WITH_ECHO expr=expr semicolonOrCloseTag
   | INLINE_HTML
   | CONST #consts=constantDeclaration @ COMMA SEMICOLON
-  | USE #useNamespace=useNamespace @ COMMA SEMICOLON
+  | USE useStatement=useStatement
   | GOTO gotoLabel=STRING SEMICOLON
   | gotoTarget=STRING COLON
 -> statement ;;
+
+    ( useFunction=FUNCTION | useConst=CONST | 0 ) #useNamespace=useNamespace @ COMMA SEMICOLON
+-> useStatement ;;
 
     identifier=namespacedIdentifier (AS aliasIdentifier=identifier | 0)
 -> useNamespace ;;

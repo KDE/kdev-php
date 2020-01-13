@@ -1625,9 +1625,27 @@ void DeclarationBuilder::closeNamespace(NamespaceDeclarationStatementAst* parent
     closeDeclaration();
 }
 
+void DeclarationBuilder::visitUseStatement(UseStatementAst* node)
+{
+    if ( node->useFunction != -1 )
+    {
+        m_useNamespaceType = FunctionDeclarationType;
+    }
+    else if ( node->useConst != -1 )
+    {
+        m_useNamespaceType = ConstantDeclarationType;
+    }
+    else
+    {
+        m_useNamespaceType = ClassDeclarationType;
+    }
+    DeclarationBuilderBase::visitUseStatement(node);
+}
+
 void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
 {
     DUChainWriteLocker lock;
+    bool isConstIdentifier = ( m_useNamespaceType == ConstantDeclarationType );
 
     if ( currentContext()->type() != DUContext::Namespace &&
             !node->aliasIdentifier && node->identifier->namespaceNameSequence->count() == 1 ) {
@@ -1637,23 +1655,22 @@ void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
         return;
     }
     IdentifierAst* idNode = node->aliasIdentifier ? node->aliasIdentifier : node->identifier->namespaceNameSequence->back()->element;
-    IdentifierPair id = identifierPairForNode(idNode);
+    IdentifierPair id = identifierPairForNode(idNode, isConstIdentifier);
 
     ///TODO: case insensitive!
-    QualifiedIdentifier qid = identifierForNamespace(node->identifier, m_editor);
+    QualifiedIdentifier qid = identifierForNamespace(node->identifier, m_editor, isConstIdentifier);
 
-    DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, qid);
-
+    DeclarationPointer dec = findDeclarationImport(m_useNamespaceType, qid);
     if (!dec && !qid.explicitlyGlobal()) {
         QualifiedIdentifier globalQid = qid;
         globalQid.setExplicitlyGlobal(true);
-        dec = findDeclarationImport(ClassDeclarationType, globalQid);
+        dec = findDeclarationImport(m_useNamespaceType, globalQid);
     }
 
     if (dec)
     {
         // Check for a name conflict
-        DeclarationPointer dec2 = findDeclarationImport(ClassDeclarationType, id.second);
+        DeclarationPointer dec2 = findDeclarationImport(m_useNamespaceType, id.second);
 
         if (dec2 && dec2->context()->scopeIdentifier() == currentContext()->scopeIdentifier() &&
             dec2->context()->topContext() == currentContext()->topContext() &&

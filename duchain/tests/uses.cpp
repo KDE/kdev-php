@@ -1101,6 +1101,63 @@ void TestUses::useNamespace()
     compareUses(dec, RangeInRevision(8, 30, 8, 31));
 }
 
+
+void TestUses::useNamespaceFunctionConst()
+{
+    //                         0         1         2         3         4         5         6         7
+    //                         01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                       /* 1*/ "namespace Foo\\Bar {function A(){} const B = 1;}\n"
+                       /* 2*/ "namespace Qux {function F(){} const C = 2;}\n"
+                       /* 3*/ "namespace Baz {function F(){} const C = 3;}\n"
+                       /* 4*/ "namespace {\n"
+                       /* 5*/ "use function Foo\\Bar\\A;\n"
+                       /* 6*/ "use const Foo\\Bar\\B;\n"
+                       /* 7*/ "use function Qux\\F as QuxF, Baz\\F as BazF;\n"
+                       /* 8*/ "use const Qux\\C as QuxC, Baz\\C as BazC;\n"
+                       /* 9*/ "echo A();\n"
+                       /*10*/ "echo B;\n"
+                       /*11*/ "echo QuxF();\n"
+                       /*12*/ "echo QuxC;\n"
+                       /*13*/ "echo BazF();\n"
+                       /*14*/ "echo BazC;\n"
+                              "}\n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    Declaration* dec;
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("a"))).first();
+    QVERIFY(dec);
+    QCOMPARE(dec->kind(), Declaration::Type);
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(5, 21, 5, 22) << RangeInRevision(9, 5, 9, 6));
+
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("B"))).first();
+    QVERIFY(dec);
+    QCOMPARE(dec->kind(), Declaration::Instance);
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(6, 18, 6, 19) << RangeInRevision(10, 5, 10, 6));
+
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("quxf"))).first();
+    QVERIFY(dec);
+    QCOMPARE(dec->kind(), Declaration::Type);
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(7, 17, 7, 18) << RangeInRevision(11, 5, 11, 9));
+
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("bazf"))).first();
+    QVERIFY(dec);
+    QCOMPARE(dec->kind(), Declaration::Type);
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(7, 32, 7, 33) << RangeInRevision(13, 5, 13, 9));
+
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("QuxC"))).first();
+    QVERIFY(dec);
+    QCOMPARE(dec->kind(), Declaration::Instance);
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 14, 8, 15) << RangeInRevision(12, 5, 12, 9));
+
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("BazC"))).first();
+    QVERIFY(dec);
+    QCOMPARE(dec->kind(), Declaration::Instance);
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 29, 8, 30) << RangeInRevision(14, 5, 14, 9));
+}
+
 void TestUses::lateStatic()
 {
     //                         0         1         2         3         4         5         6         7

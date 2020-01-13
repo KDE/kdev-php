@@ -69,7 +69,7 @@ protected:
     KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id) override;
     KDevelop::QualifiedIdentifier identifierForNode(SemiReservedIdentifierAst* id);
     KDevelop::QualifiedIdentifier identifierForNode(VariableIdentifierAst* id);
-    IdentifierPair identifierPairForNode(IdentifierAst* id);
+    IdentifierPair identifierPairForNode(IdentifierAst* id, bool isConstIdentifier = false);
     IdentifierPair identifierPairForNode(SemiReservedIdentifierAst* id);
     IdentifierPair identifierPairForNode(ReservedNonModifierIdentifierAst* id);
     QString stringForNode(IdentifierAst* node) const;

@@ -82,6 +82,7 @@ private slots:
     void functionArguments();
     void namespaces();
     void useNamespace();
+    void useNamespaceFunctionConst();
     void lateStatic();
     void closures();
     void closureTypehints();

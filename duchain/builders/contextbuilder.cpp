@@ -201,14 +201,18 @@ QualifiedIdentifier ContextBuilder::identifierForNode(VariableIdentifierAst* id)
     return QualifiedIdentifier(ret);
 }
 
-IdentifierPair ContextBuilder::identifierPairForNode(IdentifierAst* id )
+IdentifierPair ContextBuilder::identifierPairForNode(IdentifierAst* id, bool isConstIdentifier)
 {
     if (!id) {
         return qMakePair(IndexedString(), QualifiedIdentifier());
     }
     const QString ret = stringForNode(id);
 
-    return qMakePair(IndexedString(ret), QualifiedIdentifier(ret.toLower()));
+    if ( isConstIdentifier ) {
+        return qMakePair(IndexedString(ret), QualifiedIdentifier(ret));
+    } else {
+        return qMakePair(IndexedString(ret), QualifiedIdentifier(ret.toLower()));
+    }
 }
 
 IdentifierPair ContextBuilder::identifierPairForNode(SemiReservedIdentifierAst* id )

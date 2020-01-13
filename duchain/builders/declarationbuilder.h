@@ -55,6 +55,7 @@ public:
     {
         m_editor = editor;
         m_findVariable.find = false;
+        m_useNamespaceType = ClassDeclarationType;
     }
     KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, AstNode* node,
             const KDevelop::ReferencedTopDUContext& updateContext
@@ -94,6 +95,7 @@ protected:
     void visitAssignmentListElement(AssignmentListElementAst* node) override;
     void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range) override;
     void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier) override;
+    void visitUseStatement(UseStatementAst* node) override;
     void visitUseNamespace(UseNamespaceAst* node) override;
     void visitClosure(ClosureAst* node) override;
     void visitLexicalVar(LexicalVarAst* node) override;
@@ -150,6 +152,8 @@ private:
     ParameterAst *m_functionDeclarationPreviousArgument = nullptr;
     /// The AstNode of the previous function call argument
     FunctionCallParameterListElementAst *m_functionCallPreviousArgument = nullptr;
+    /// Type of use
+    DeclarationType m_useNamespaceType;
 
     unsigned int m_currentModifers;
     QString m_lastTopStatementComment;

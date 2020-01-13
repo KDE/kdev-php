@@ -66,6 +66,7 @@ protected:
     void visitStatement(StatementAst* node) override;
     void visitCatchItem(CatchItemAst* node) override;
     void visitUnaryExpression( UnaryExpressionAst* node ) override;
+    void visitUseStatement(UseStatementAst* node) override;
     void visitUseNamespace(UseNamespaceAst* node) override;
     void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range) override;
     void visitReturnType(ReturnTypeAst* node) override;
@@ -74,6 +75,9 @@ private:
     void buildNamespaceUses(Php::NamespacedIdentifierAst* node, Php::DeclarationType lastType = Php::ClassDeclarationType);
 
     void visitNodeWithExprVisitor(AstNode* node);
+
+    /// Type of use
+    DeclarationType m_useNamespaceType;
 };
 
 }
