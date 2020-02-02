@@ -195,8 +195,17 @@ void UseBuilder::visitStatement(StatementAst *node)
 
 void UseBuilder::visitCatchItem(CatchItemAst *node)
 {
-    if (node->catchClass) {
-        buildNamespaceUses(node->catchClass, ClassDeclarationType);
+    if (node->catchClassSequence) {
+        const KDevPG::ListNode< NamespacedIdentifierAst* >* it = node->catchClassSequence->front();
+        forever {
+            buildNamespaceUses(it->element, ClassDeclarationType);
+
+            if ( it->hasNext() ) {
+                it = it->next;
+            } else {
+                break;
+            }
+        }
     }
     UseBuilderBase::visitCatchItem(node);
 }

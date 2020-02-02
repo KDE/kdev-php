@@ -610,13 +610,40 @@ void TypeBuilder::visitStatement(StatementAst* node)
 void TypeBuilder::visitCatchItem(Php::CatchItemAst *node)
 {
     TypeBuilderBase::visitCatchItem(node);
-    DeclarationPointer dec = findDeclarationImport(ClassDeclarationType,
-                                                   identifierForNamespace(node->catchClass, m_editor));
-    if (dec && dec->abstractType()) {
-        openAbstractType(dec->abstractType());
-        closeType();
-    }
 
+    const KDevPG::ListNode< NamespacedIdentifierAst* >* it = node->catchClassSequence->front();
+
+    if (node->catchClassSequence->count() == 1) {
+        DeclarationPointer dec = findDeclarationImport(ClassDeclarationType,
+                                                       identifierForNamespace(it->element, m_editor));
+
+        if (dec && dec->abstractType()) {
+            openAbstractType(dec->abstractType());
+            closeType();
+        }
+    } else {
+        UnsureType::Ptr decs(new UnsureType());
+
+        forever {
+            DeclarationPointer dec = findDeclarationImport(ClassDeclarationType,
+                                                           identifierForNamespace(it->element, m_editor));
+
+            if (dec && dec->abstractType()) {
+                decs->addType(dec->abstractType()->indexed());
+            }
+
+            if ( it->hasNext() ) {
+                it = it->next;
+            } else {
+                break;
+            }
+        }
+
+        if (decs) {
+            openAbstractType(AbstractType::Ptr::staticCast(decs));
+            closeType();
+        }
+    }
 }
 
 void TypeBuilder::visitVarExpression(Php::VarExpressionAst *node)

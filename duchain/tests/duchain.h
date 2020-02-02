@@ -135,6 +135,7 @@ private slots:
     void findDeclarations();
     void memberTypeAfterMethod();
     void catchDeclaration();
+    void multiCatchDeclaration();
     void resourceType();
     void foreachIterator();
     void foreachIterator2();

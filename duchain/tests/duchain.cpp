@@ -2702,6 +2702,31 @@ void TestDUChain::catchDeclaration()
     QCOMPARE(QualifiedIdentifier("exception"), ex->type<StructureType>()->declaration(top)->qualifiedIdentifier());
 }
 
+void TestDUChain::multiCatchDeclaration()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? class ExceptionA {}; class ExceptionB {}; try {} catch (ExceptionA | ExceptionB $e) {}");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QCOMPARE(top->problems().count(), 0);
+
+    VariableDeclaration* ex = dynamic_cast<VariableDeclaration*>(top->localDeclarations().at(2));
+    QVERIFY(ex);
+    QCOMPARE(ex->identifier(), Identifier("e"));
+    QVERIFY(ex->type<UnsureType>());
+    TypePtr<UnsureType> ut = ex->type<UnsureType>();
+    QVERIFY(ut);
+    QCOMPARE((uint)2, ut->typesSize());
+    QVERIFY(ut->types()[0].type<StructureType>());
+    QCOMPARE(QualifiedIdentifier("exceptiona"), ut->types()[0].type<StructureType>()->declaration(top)->qualifiedIdentifier());
+    QVERIFY(ut->types()[1].type<StructureType>());
+    QCOMPARE(QualifiedIdentifier("exceptionb"), ut->types()[1].type<StructureType>()->declaration(top)->qualifiedIdentifier());
+}
+
 void TestDUChain::resourceType()
 {
     //                 0         1         2         3         4         5         6         7

@@ -754,7 +754,7 @@ expression=nullCoalesceExpression
   | def=DEFAULT (COLON | SEMICOLON) statements=innerStatementList
 -> case_item ;;
 
-    CATCH LPAREN catchClass=namespacedIdentifier var=variableIdentifier RPAREN
+    CATCH LPAREN #catchClass=namespacedIdentifier @ BIT_OR var=variableIdentifier RPAREN
     LBRACE try/recover(statements=innerStatementList) RBRACE
 -> catchItem ;;
 
