@@ -4,7 +4,7 @@
   <extends>org.kde.kdevelop.desktop</extends>
   <name>KDevelop PHP Support</name>
   <name xml:lang="ca">Implementació del PHP al KDevelop</name>
-  <name xml:lang="ca-valencia">Implementació de PHP al KDevelop</name>
+  <name xml:lang="ca-valencia">Implementació del PHP al KDevelop</name>
   <name xml:lang="cs">Podpora PHP v KDevelop</name>
   <name xml:lang="de">KDevelop – PHP-Unterstützung</name>
   <name xml:lang="en-GB">KDevelop PHP Support</name>
@@ -48,7 +48,7 @@
     <p>Adds PHP support to KDevelop.  Includes adding integration with code
     highlighting, code completion and documentation links.</p>
     <p xml:lang="ca">Afegeix suport del PHP al KDevelop. Afegeix els «include» per a la integració amb el ressaltat de codi, compleció de codi i enllaços a la documentació.</p>
-    <p xml:lang="ca-valencia">Afig suport de PHP al KDevelop. Afig els «include» per a la integració amb el ressaltat de codi, compleció de codi i enllaços a la documentació.</p>
+    <p xml:lang="ca-valencia">Afig suport del PHP al KDevelop. Afig els «include» per a la integració amb el ressaltat de codi, compleció de codi i enllaços a la documentació.</p>
     <p xml:lang="es">Implementa el uso de PHP en KDevelop. Incluye resaltado de código, terminación automática de código y enlaces de documentación.</p>
     <p xml:lang="fr">Ajoute la prise en charge de PHP à KDevelop. Les fonctionnalités incluent la coloration syntaxique, le complètement du code et les liens avec la documentation.</p>
     <p xml:lang="gl">Engade compatibilidade con PHP a KDevelop. Inclúe engadir integración con KDevelop para realce de código, completado de código e ligazóns á documentación.</p>
