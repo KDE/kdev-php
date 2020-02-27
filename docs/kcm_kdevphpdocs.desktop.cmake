@@ -13,7 +13,7 @@ X-KDE-Weight=150
 
 Name=PHP Documentation
 Name[ca]=Documentació del PHP
-Name[ca@valencia]=Documentació de PHP
+Name[ca@valencia]=Documentació del PHP
 Name[cs]=Dokumentace PHP
 Name[de]=PHP-Dokumentation
 Name[el]=PHP τεκμηρίωση
