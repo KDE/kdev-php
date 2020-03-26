@@ -180,6 +180,15 @@ IDocumentation::Ptr PhpDocsPlugin::documentationForDeclaration( Declaration* dec
     return {};
 }
 
+IDocumentation::Ptr PhpDocsPlugin::documentation(const QUrl& url) const
+{
+    if (url.toString().startsWith(PhpDocsSettings::phpDocLocation().toString())) {
+        return documentationForUrl(url, QString());
+    }
+    return {};
+}
+
+
 QAbstractListModel* PhpDocsPlugin::indexModel() const
 {
     return m_model;
