@@ -194,7 +194,11 @@ void DeclarationNavigationContext::htmlFunction()
         modifyHtml() += QStringLiteral(", ");
       first = false;
 
-      VariableDeclaration *argDec = dynamic_cast<VariableDeclaration*>(decls[currentArgNum]);
+      VariableDeclaration *argDec = nullptr;
+
+      if (!decls.isEmpty()) {
+        argDec = dynamic_cast<VariableDeclaration*>(decls[currentArgNum]);
+      }
 
       if (argDec && argDec->isVariadic()) {
         AbstractType::Ptr variadicType;
