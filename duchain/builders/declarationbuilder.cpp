@@ -560,7 +560,7 @@ void DeclarationBuilder::visitClassVariable(ClassVariableAst *node)
         Q_ASSERT(currentContext()->type() == DUContext::Class);
         foreach(Declaration * dec, currentContext()->findLocalDeclarations(name.first(), startPos(node)))
         {
-            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && !(dec->abstractType()->modifiers() & AbstractType::ConstModifier)) {
+            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && dec->abstractType() && !(dec->abstractType()->modifiers() & AbstractType::ConstModifier)) {
                 reportRedeclarationError(dec, node);
                 break;
             }
@@ -638,7 +638,7 @@ void DeclarationBuilder::visitConstantDeclaration(ConstantDeclarationAst *node)
         // check for redeclarations
         foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first(), startPos(node->identifier)))
         {
-            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
+            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && dec->abstractType() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
                 reportRedeclarationError(dec, node->identifier);
                 break;
             }
@@ -678,7 +678,7 @@ void DeclarationBuilder::visitClassConstantDeclaration(ClassConstantDeclarationA
         // check for redeclarations
         foreach(Declaration * dec, currentContext()->findLocalDeclarations(identifierForNode(node->identifier).first(), startPos(node->identifier)))
         {
-            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
+            if (wasEncountered(dec) && !dec->isFunctionDeclaration() && dec->abstractType() && dec->abstractType()->modifiers() & AbstractType::ConstModifier) {
                 reportRedeclarationError(dec, node->identifier);
                 break;
             }
