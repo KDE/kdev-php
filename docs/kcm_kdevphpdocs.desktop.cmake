@@ -30,6 +30,7 @@ Name[nl]=PHP-documentatie
 Name[pl]=Dokumentacja PHP
 Name[pt]=Documentação de PHP
 Name[pt_BR]=Documentação de PHP
+Name[ro]=Documentație PHP
 Name[ru]=Документация к PHP
 Name[sk]=Dokumentácia PHP
 Name[sl]=Dokumentacija za PHP
