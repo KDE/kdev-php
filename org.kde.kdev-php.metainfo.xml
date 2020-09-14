@@ -17,6 +17,7 @@
   <name xml:lang="pl">KDevelop - obsługa PHP</name>
   <name xml:lang="pt">Suporte para PHP do KDevelop</name>
   <name xml:lang="pt-BR">Suporte a PHP do KDevelop</name>
+  <name xml:lang="ro">Suport PHP pentru KDevelop</name>
   <name xml:lang="ru">Поддержка PHP для KDevelop</name>
   <name xml:lang="sk">PHP podpora pre KDevelop</name>
   <name xml:lang="sv">KDevelop PHP-stöd</name>
@@ -39,6 +40,7 @@
   <summary xml:lang="pl">Obsługa języka PHP dla KDevelop</summary>
   <summary xml:lang="pt">Suporte à linguagem PHP do KDevelop</summary>
   <summary xml:lang="pt-BR">Suporte à linguagem PHP para o KDevelop</summary>
+  <summary xml:lang="ro">Suport de limbaj PHP pentru KDevelop</summary>
   <summary xml:lang="ru">Поддержка языка программирования PHP для KDevelop</summary>
   <summary xml:lang="sk">Podpora jazyka PHP pre KDevelop</summary>
   <summary xml:lang="sv">Stöd för språket PHP i KDevelop</summary>
@@ -60,6 +62,7 @@
     <p xml:lang="nl">Voegt ondersteuning voor PHP  toe aan KDevelop. Omvat toevoegen van integratie met accentuering van code, aanvullen van code en koppelingen naar documentatie.</p>
     <p xml:lang="pt">Adiciona o suporte para PHP ao KDevelop. Inclui a adição da integração com o realce de código, completação de código e referências para a documentação.</p>
     <p xml:lang="pt-BR">Adiciona suporte para PHP ao KDevelop. Inclui a adição da integração com o realce de código, completação de código e referências para documentação.</p>
+    <p xml:lang="ro">Adaugă suport pentru PHP la KDevelop. Include adăugarea integrării cu evidențierea codului, completarea codului și legături la documentație.</p>
     <p xml:lang="sv">Lägger till stöd för PHP i KDevelop. Inkluderar tillägg av integrering med kodfärgläggning, kodkomplettering och dokumentationslänkar.</p>
     <p xml:lang="uk">Додає підтримку PHP до KDevelop. Включено інтеграцію із засобами підсвічування коду, автоматичне доповнення коду та інтеграцію посилань у документації.</p>
     <p xml:lang="x-test">xxAdds PHP support to KDevelop. Includes adding integration with code highlighting, code completion and documentation links.xx</p>
