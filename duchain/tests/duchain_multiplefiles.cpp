@@ -200,7 +200,7 @@ void TestDUChainMultipleFiles::testForeachImportedIdentifier()
 
     for(int i = 0; i < 2; ++i) {
         if (i > 0) {
-            features = static_cast<TopDUContext::Features>(features | TopDUContext::ForceUpdate);
+            features |= TopDUContext::ForceUpdate;
         }
         f2.parse(features);
         QVERIFY(f2.waitForParsed());
@@ -251,7 +251,7 @@ void TestDUChainMultipleFiles::testUpdateForeach()
 
     // delete $k = null; line
     f.setFileContents(QStringLiteral("<?\nforeach(array() as $i => $k) {}\n"));
-    f.parse(static_cast<TopDUContext::Features>(features | TopDUContext::ForceUpdate));
+    f.parse(features | TopDUContext::ForceUpdate);
     QVERIFY(f.waitForParsed());
     QVERIFY(f.topContext());
 
@@ -272,12 +272,12 @@ void TestDUChainMultipleFiles::testTodoExtractorReparse()
 
     QVERIFY(KDevelop::ICore::self()->languageController()->completionSettings()->todoMarkerWords().contains("TODO"));
 
-    auto features = TopDUContext::AllDeclarationsContextsAndUses;
+    TopDUContext::Features features{TopDUContext::AllDeclarationsContextsAndUses};
 
     for (int i = 0; i < 2; ++i) {
         if (i == 1) {
             file.setFileContents(QStringLiteral("<?php\n$foo = new bar();\n// TODO\n$foo->asdf();"));
-            features = static_cast<TopDUContext::Features>(features | TopDUContext::ForceUpdate);
+            features |= TopDUContext::ForceUpdate;
         }
 
         file.parse(features);
@@ -295,12 +295,12 @@ void TestDUChainMultipleFiles::testTodoExtractorReparse()
 void TestDUChainMultipleFiles::testIteratorForeachReparse() {
     TestFile file(QStringLiteral("<?php\n/*\n\n/*\n*/\nforeach (new A() as $a) {}\nclass A implements Iterator {\npublic function current() { return 0; }\n}"), QStringLiteral("php"));
 
-    auto features = TopDUContext::AllDeclarationsAndContexts;
+    TopDUContext::Features features{TopDUContext::AllDeclarationsAndContexts};
 
     for (int i = 0; i < 2; ++i) {
         if (i == 1) {
             file.setFileContents(QStringLiteral("<?php\n/*\n*/\n\n/*\n*/\nforeach (new A() as $a) {}\nclass A implements Iterator {\npublic function current() { return 0; }\n}"));
-            features = static_cast<TopDUContext::Features>(features | TopDUContext::ForceUpdate);
+            features |= TopDUContext::ForceUpdate;
         }
 
         file.parse(features);
@@ -320,7 +320,7 @@ void TestDUChainMultipleFiles::testIteratorForeachReparse() {
 }
 
 void TestDUChainMultipleFiles::testNamespacedIdentifierInPST() {
-    auto features = TopDUContext::AllDeclarationsAndContexts;
+    constexpr TopDUContext::Features features{TopDUContext::AllDeclarationsAndContexts};
 
     TestProject* project = new TestProject;
     m_projectController->closeAllProjects();

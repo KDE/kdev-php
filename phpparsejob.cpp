@@ -117,10 +117,10 @@ void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*t
 
     KDevelop::TopDUContext::Features newFeatures = minimumFeatures();
     if (toUpdate)
-        newFeatures = (KDevelop::TopDUContext::Features)(newFeatures | toUpdate->features());
+        newFeatures |= toUpdate->features();
 
     //Remove update-flags like 'Recursive' or 'ForceUpdate'
-    newFeatures = static_cast<KDevelop::TopDUContext::Features>(newFeatures & KDevelop::TopDUContext::AllDeclarationsContextsUsesAndAST);
+    newFeatures &= KDevelop::TopDUContext::AllDeclarationsContextsUsesAndAST;
 
     if (matched) {
         if (abortRequested()) {
