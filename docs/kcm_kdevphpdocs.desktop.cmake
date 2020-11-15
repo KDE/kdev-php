@@ -27,6 +27,7 @@ Name[it]=Documentazione PHP
 Name[ko]=PHP 문서
 Name[nb]=PHP-dokumentasjon
 Name[nl]=PHP-documentatie
+Name[nn]=PHP-dokumentasjon
 Name[pl]=Dokumentacja PHP
 Name[pt]=Documentação de PHP
 Name[pt_BR]=Documentação de PHP
