@@ -15,6 +15,7 @@
   <name xml:lang="it">Supporto PHP per KDevelop</name>
   <name xml:lang="ko">KDevelop PHP 지원</name>
   <name xml:lang="nl">PHP ondersteuning in KDevelop</name>
+  <name xml:lang="nn">PHP-støtte for KDevelop</name>
   <name xml:lang="pl">Obsługa PHP w KDevelop</name>
   <name xml:lang="pt">Suporte para PHP do KDevelop</name>
   <name xml:lang="pt-BR">Suporte a PHP no KDevelop</name>
@@ -39,6 +40,7 @@
   <summary xml:lang="it">Supporto al linguaggio PHP per KDevelop</summary>
   <summary xml:lang="ko">KDevelop에 대한 PHP 언어 지원</summary>
   <summary xml:lang="nl">Ondersteuning van PHP-taal voor KDevelop</summary>
+  <summary xml:lang="nn">Språkstøtte for PHP for KDevelop</summary>
   <summary xml:lang="pl">Obsługa języka PHP dla KDevelop</summary>
   <summary xml:lang="pt">Suporte à linguagem PHP do KDevelop</summary>
   <summary xml:lang="pt-BR">Suporte à linguagem PHP para o KDevelop</summary>
@@ -63,6 +65,7 @@
     <p xml:lang="it">Aggiunge il supporto a PHP in KDevelop. Include l'integrazione con l'evidenziazione del codice, il completamente del codice ed i collegamenti alla documentazione.</p>
     <p xml:lang="ko">KDevelop에 PHP 지원을 추가합니다. 코드 구문 강조, 자동 완성, 문서 링크 통합이 들어 있습니다.</p>
     <p xml:lang="nl">Voegt ondersteuning voor PHP  toe aan KDevelop. Omvat toevoegen van integratie met accentuering van code, aanvullen van code en koppelingen naar documentatie.</p>
+    <p xml:lang="nn">Legg PHP-støtte til KDevelop. Omfattar integrering med syntaks­merking, kode­fullføring og dokumentasjons­lenkjer.</p>
     <p xml:lang="pl">Dodaje obsługę PHP do KDevelop. Zawiera podświetlanie kodu, uzupełnianie kodu oraz odnośniki do dokumentacji.</p>
     <p xml:lang="pt">Adiciona o suporte para PHP ao KDevelop. Inclui a adição da integração com o realce de código, completação de código e referências para a documentação.</p>
     <p xml:lang="pt-BR">Adiciona suporte para PHP ao KDevelop. Inclui a adição da integração com o realce de código, completação de código e referências para documentação.</p>
