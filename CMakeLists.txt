@@ -78,6 +78,8 @@ ecm_qt_declare_logging_category(kdevphplanguagesupport_PART_SRCS
     HEADER phpdebug.h
     IDENTIFIER PHP
     CATEGORY_NAME "kdevelop.plugins.php"
+    DESCRIPTION "KDevelop plugin: PHP language support"
+    EXPORT KDEVPHP
 )
 
 kdevplatform_add_plugin(kdevphplanguagesupport JSON kdevphpsupport.json
@@ -101,18 +103,11 @@ install(FILES phpfunctions.php DESTINATION ${KDE_INSTALL_DATADIR}/kdevphpsupport
 install(FILES org.kde.kdev-php.metainfo.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
 # kdebugsettings file
-# kdebugsettings >= 18.12 supports/pushes for some newer, not backward-compatible format.
-# For ECM >= 5.59 we install categories files to new location, which is only supported by
-# newer kdebugsettings also supporting the new content format, so we use that as base.
-if (ECM_VERSION VERSION_GREATER "5.58.0")
-    install(FILES kdevphpsupport-newformat.categories RENAME kdevphpsupport.categories
-        DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
-    )
-else()
-    install(FILES kdevphpsupport-oldformat.categories RENAME kdevphpsupport.categories
-        DESTINATION ${KDE_INSTALL_CONFDIR}
-    )
-endif()
+ecm_qt_install_logging_categories(
+    EXPORT KDEVPHP
+    FILE kdevphpsupport.categories
+    DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
+)
 
 # create a Config.cmake and a ConfigVersion.cmake file and install them
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KDevPHP")

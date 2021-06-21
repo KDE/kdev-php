@@ -17,6 +17,8 @@ ecm_qt_declare_logging_category(completion_SRCS
     HEADER completiondebug.h
     IDENTIFIER COMPLETION
     CATEGORY_NAME "kdevelop.plugins.php.completion"
+    DESCRIPTION "KDevelop plugin: PHP language support - codecompletion"
+    EXPORT KDEVPHP
 )
 
 add_library( kdevphpcompletion SHARED ${completion_SRCS} )

@@ -36,6 +36,8 @@ ecm_qt_declare_logging_category(duchain_SRCS
     HEADER duchaindebug.h
     IDENTIFIER DUCHAIN
     CATEGORY_NAME "kdevelop.plugins.php.duchain"
+    DESCRIPTION "KDevelop plugin: PHP language support - duchain"
+    EXPORT KDEVPHP
 )
 
 add_library( kdevphpduchain SHARED ${duchain_SRCS} )

@@ -17,6 +17,8 @@ ecm_qt_declare_logging_category(kdevphpdocs_SRCS
     HEADER phpdocsdebug.h
     IDENTIFIER DOCS
     CATEGORY_NAME "kdevelop.plugins.php.docs"
+    DESCRIPTION "KDevelop plugin: PHP language support - documentation"
+    EXPORT KDEVPHP
 )
 
 kdevplatform_add_plugin(kdevphpdocs JSON kdevphpdocs.json

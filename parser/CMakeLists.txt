@@ -15,6 +15,8 @@ ecm_qt_declare_logging_category(parser_SRCS
     HEADER parserdebug.h
     IDENTIFIER PARSER
     CATEGORY_NAME "kdevelop.plugins.php.parser"
+    DESCRIPTION "KDevelop plugin: PHP language support - parser"
+    EXPORT KDEVPHP
 )
 
 add_library(kdevphpparser SHARED ${parser_SRCS} ${parser_STAT_SRCS})
