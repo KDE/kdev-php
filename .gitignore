@@ -4,4 +4,3 @@ apidocs
 *.orig
 doxygen.log
 build
-.*
