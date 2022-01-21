@@ -11,6 +11,7 @@ X-KDE-CfgDlgHierarchy=DOCUMENTATION
 X-KDE-Weight=150
 
 Name=PHP Documentation
+Name[ar]=التّوثيق بي اتش بي
 Name[ca]=Documentació de PHP
 Name[ca@valencia]=Documentació de PHP
 Name[cs]=Dokumentace PHP
