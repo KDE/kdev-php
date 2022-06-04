@@ -139,24 +139,36 @@ class CodeModelRequestItem {
   const CompletionCodeModelRepositoryItem& m_item;
 };
 
+// Maps declaration-ids to items
+using CompletionCodeModelRepo = KDevelop::ItemRepository<Php::CompletionCodeModelRepositoryItem, Php::CodeModelRequestItem>;
+}
 
-class CompletionCodeModelPrivate {
-public:
-
-  CompletionCodeModelPrivate() : m_repository(QStringLiteral("Php Completion Code Model")) {
+namespace KDevelop {
+template <>
+class ItemRepositoryFor<Php::CompletionCodeModel>
+{
+  friend struct LockedItemRepository;
+  static Php::CompletionCodeModelRepo& repo()
+  {
+    static QMutex mutex;
+    static Php::CompletionCodeModelRepo repo(QStringLiteral("Php Completion Code Model"), &mutex);
+    return repo;
   }
-  //Maps declaration-ids to items
-  KDevelop::ItemRepository<CompletionCodeModelRepositoryItem, CodeModelRequestItem> m_repository;
+public:
+  static void init()
+  {
+    repo();
+  }
 };
-
-CompletionCodeModel::CompletionCodeModel() : d(new CompletionCodeModelPrivate())
-{
 }
 
-CompletionCodeModel::~CompletionCodeModel()
+namespace Php {
+CompletionCodeModel::CompletionCodeModel()
 {
-  delete d;
+  KDevelop::ItemRepositoryFor<CompletionCodeModel>::init();
 }
+
+CompletionCodeModel::~CompletionCodeModel() = default;
 
 void CompletionCodeModel::addItem(const KDevelop::IndexedString& file, const KDevelop::IndexedQualifiedIdentifier& id, const KDevelop::IndexedString & prettyName, CompletionCodeModelItem::Kind kind)
 {
@@ -168,60 +180,60 @@ void CompletionCodeModel::addItem(const KDevelop::IndexedString& file, const KDe
   item.file = file;
   CodeModelRequestItem request(item);
 
-  uint index = d->m_repository.findIndex(item);
+  KDevelop::LockedItemRepository::write<CompletionCodeModel>([&](CompletionCodeModelRepo& repo) {
+    uint index = repo.findIndex(item);
 
-  CompletionCodeModelItem newItem;
-  newItem.id = id;
-  newItem.kind = kind;
-  newItem.prettyName = prettyName;
-  newItem.referenceCount = 1;
+    CompletionCodeModelItem newItem;
+    newItem.id = id;
+    newItem.kind = kind;
+    newItem.prettyName = prettyName;
+    newItem.referenceCount = 1;
 
-  if(index) {
-    const CompletionCodeModelRepositoryItem* oldItem = d->m_repository.itemFromIndex(index);
-    KDevelop::EmbeddedTreeAlgorithms<CompletionCodeModelItem, CompletionCodeModelItemHandler> alg(oldItem->items(), oldItem->itemsSize(), oldItem->centralFreeItem);
+    if(index) {
+      const CompletionCodeModelRepositoryItem* oldItem = repo.itemFromIndex(index);
+      KDevelop::EmbeddedTreeAlgorithms<CompletionCodeModelItem, CompletionCodeModelItemHandler> alg(oldItem->items(), oldItem->itemsSize(), oldItem->centralFreeItem);
 
-    int listIndex = alg.indexOf(newItem);
+      int listIndex = alg.indexOf(newItem);
 
-    QMutexLocker lock(d->m_repository.mutex());
+      KDevelop::DynamicItem<CompletionCodeModelRepositoryItem, true> editableItem = repo.dynamicItemFromIndex(index);
+      CompletionCodeModelItem* items = const_cast<CompletionCodeModelItem*>(editableItem->items());
 
-    KDevelop::DynamicItem<CompletionCodeModelRepositoryItem, true> editableItem = d->m_repository.dynamicItemFromIndex(index);
-    CompletionCodeModelItem* items = const_cast<CompletionCodeModelItem*>(editableItem->items());
-
-    if(listIndex != -1) {
-      //Only update the reference-count
-        ++items[listIndex].referenceCount;
-        items[listIndex].kind = kind;
-        items[listIndex].prettyName = prettyName;
-        return;
-    }else{
-      //Add the item to the list
-      KDevelop::EmbeddedTreeAddItem<CompletionCodeModelItem, CompletionCodeModelItemHandler> add(items, editableItem->itemsSize(), editableItem->centralFreeItem, newItem);
-
-      if(add.newItemCount() != editableItem->itemsSize()) {
-        //The data needs to be transferred into a bigger list. That list is within "item".
-
-        item.itemsList().resize(add.newItemCount());
-        add.transferData(item.itemsList().data(), item.itemsList().size(), &item.centralFreeItem);
-
-        d->m_repository.deleteItem(index);
+      if(listIndex != -1) {
+        //Only update the reference-count
+          ++items[listIndex].referenceCount;
+          items[listIndex].kind = kind;
+          items[listIndex].prettyName = prettyName;
+          return;
       }else{
-        //We're fine: The item fits into the existing list.
-        return;
+        //Add the item to the list
+        KDevelop::EmbeddedTreeAddItem<CompletionCodeModelItem, CompletionCodeModelItemHandler> add(items, editableItem->itemsSize(), editableItem->centralFreeItem, newItem);
+
+        if(add.newItemCount() != editableItem->itemsSize()) {
+          //The data needs to be transferred into a bigger list. That list is within "item".
+
+          item.itemsList().resize(add.newItemCount());
+          add.transferData(item.itemsList().data(), item.itemsList().size(), &item.centralFreeItem);
+
+          repo.deleteItem(index);
+        }else{
+          //We're fine: The item fits into the existing list.
+          return;
+        }
       }
+    }else{
+      //We're creating a new index
+      item.itemsList().append(newItem);
     }
-  }else{
-    //We're creating a new index
-    item.itemsList().append(newItem);
-  }
 
-  Q_ASSERT(!d->m_repository.findIndex(request));
+    Q_ASSERT(!repo.findIndex(request));
 
-  //This inserts the changed item
-  volatile uint newIndex = d->m_repository.index(request);
-  Q_UNUSED(newIndex);
-  ifDebug( qCDebug(DUCHAIN) << "new index" << newIndex; )
+    //This inserts the changed item
+    volatile uint newIndex = repo.index(request);
+    Q_UNUSED(newIndex);
+    ifDebug( qCDebug(DUCHAIN) << "new index" << newIndex; )
 
-  Q_ASSERT(d->m_repository.findIndex(request));
+    Q_ASSERT(repo.findIndex(request));
+  });
 }
 
 void CompletionCodeModel::updateItem(const KDevelop::IndexedString& file, const KDevelop::IndexedQualifiedIdentifier& id, const KDevelop::IndexedString & prettyName, CompletionCodeModelItem::Kind kind)
@@ -241,27 +253,28 @@ void CompletionCodeModel::updateItem(const KDevelop::IndexedString& file, const 
   newItem.prettyName = prettyName;
   newItem.referenceCount = 1;
 
-  uint index = d->m_repository.findIndex(item);
+  KDevelop::LockedItemRepository::write<CompletionCodeModel>([&](CompletionCodeModelRepo& repo) {
+    uint index = repo.findIndex(item);
 
-  if(index) {
-    //Check whether the item is already in the mapped list, else copy the list into the new created item
-    QMutexLocker lock(d->m_repository.mutex());
-    KDevelop::DynamicItem<CompletionCodeModelRepositoryItem, true> oldItem = d->m_repository.dynamicItemFromIndex(index);
+    if(index) {
+      //Check whether the item is already in the mapped list, else copy the list into the new created item
+      KDevelop::DynamicItem<CompletionCodeModelRepositoryItem, true> oldItem = repo.dynamicItemFromIndex(index);
 
-    KDevelop::EmbeddedTreeAlgorithms<CompletionCodeModelItem, CompletionCodeModelItemHandler> alg(oldItem->items(), oldItem->itemsSize(), oldItem->centralFreeItem);
-    int listIndex = alg.indexOf(newItem);
-    Q_ASSERT(listIndex != -1);
+      KDevelop::EmbeddedTreeAlgorithms<CompletionCodeModelItem, CompletionCodeModelItemHandler> alg(oldItem->items(), oldItem->itemsSize(), oldItem->centralFreeItem);
+      int listIndex = alg.indexOf(newItem);
+      Q_ASSERT(listIndex != -1);
 
-    CompletionCodeModelItem* items = const_cast<CompletionCodeModelItem*>(oldItem->items());
+      CompletionCodeModelItem* items = const_cast<CompletionCodeModelItem*>(oldItem->items());
 
-    Q_ASSERT(items[listIndex].id == id);
-    items[listIndex].kind = kind;
-    items[listIndex].prettyName = prettyName;
+      Q_ASSERT(items[listIndex].id == id);
+      items[listIndex].kind = kind;
+      items[listIndex].prettyName = prettyName;
 
-    return;
-  }
+      return;
+    }
 
-  Q_ASSERT(0); //The updated item as not in the symbol table!
+    Q_ASSERT(0); //The updated item was not in the symbol table!
+  });
 }
 
 void CompletionCodeModel::removeItem(const KDevelop::IndexedString& file, const KDevelop::IndexedQualifiedIdentifier& id)
@@ -273,52 +286,53 @@ void CompletionCodeModel::removeItem(const KDevelop::IndexedString& file, const 
   item.file = file;
   CodeModelRequestItem request(item);
 
-  uint index = d->m_repository.findIndex(item);
+  KDevelop::LockedItemRepository::write<CompletionCodeModel>([&](CompletionCodeModelRepo& repo) {
+    uint index = repo.findIndex(item);
 
-  if(index) {
+    if(index) {
 
-    CompletionCodeModelItem searchItem;
-    searchItem.id = id;
+      CompletionCodeModelItem searchItem;
+      searchItem.id = id;
 
-    QMutexLocker lock(d->m_repository.mutex());
-    KDevelop::DynamicItem<CompletionCodeModelRepositoryItem, true> oldItem = d->m_repository.dynamicItemFromIndex(index);
+      KDevelop::DynamicItem<CompletionCodeModelRepositoryItem, true> oldItem = repo.dynamicItemFromIndex(index);
 
-    KDevelop::EmbeddedTreeAlgorithms<CompletionCodeModelItem, CompletionCodeModelItemHandler> alg(oldItem->items(), oldItem->itemsSize(), oldItem->centralFreeItem);
+      KDevelop::EmbeddedTreeAlgorithms<CompletionCodeModelItem, CompletionCodeModelItemHandler> alg(oldItem->items(), oldItem->itemsSize(), oldItem->centralFreeItem);
 
-    int listIndex = alg.indexOf(searchItem);
-    if(listIndex == -1)
-      return;
-
-    CompletionCodeModelItem* items = const_cast<CompletionCodeModelItem*>(oldItem->items());
-
-    --items[listIndex].referenceCount;
-
-    if(oldItem->items()[listIndex].referenceCount)
-      return; //Nothing to remove, there's still a reference-count left
-
-    //We have reduced the reference-count to zero, so remove the item from the list
-
-    KDevelop::EmbeddedTreeRemoveItem<CompletionCodeModelItem, CompletionCodeModelItemHandler> remove(items, oldItem->itemsSize(), oldItem->centralFreeItem, searchItem);
-
-    uint newItemCount = remove.newItemCount();
-    if(newItemCount != oldItem->itemsSize()) {
-      if(newItemCount == 0) {
-        //Has become empty, delete the item
-        d->m_repository.deleteItem(index);
+      int listIndex = alg.indexOf(searchItem);
+      if(listIndex == -1)
         return;
-      }else{
-        //Make smaller
-        item.itemsList().resize(newItemCount);
-        remove.transferData(item.itemsList().data(), item.itemsSize(), &item.centralFreeItem);
 
-        //Delete the old list
-        d->m_repository.deleteItem(index);
-        //Add the new list
-        d->m_repository.index(request);
-        return;
+      CompletionCodeModelItem* items = const_cast<CompletionCodeModelItem*>(oldItem->items());
+
+      --items[listIndex].referenceCount;
+
+      if(oldItem->items()[listIndex].referenceCount)
+        return; //Nothing to remove, there's still a reference-count left
+
+      //We have reduced the reference-count to zero, so remove the item from the list
+
+      KDevelop::EmbeddedTreeRemoveItem<CompletionCodeModelItem, CompletionCodeModelItemHandler> remove(items, oldItem->itemsSize(), oldItem->centralFreeItem, searchItem);
+
+      uint newItemCount = remove.newItemCount();
+      if(newItemCount != oldItem->itemsSize()) {
+        if(newItemCount == 0) {
+          //Has become empty, delete the item
+          repo.deleteItem(index);
+          return;
+        }else{
+          //Make smaller
+          item.itemsList().resize(newItemCount);
+          remove.transferData(item.itemsList().data(), item.itemsSize(), &item.centralFreeItem);
+
+          //Delete the old list
+          repo.deleteItem(index);
+          //Add the new list
+          repo.index(request);
+          return;
+        }
       }
     }
-  }
+  });
 }
 
 void CompletionCodeModel::items(const KDevelop::IndexedString& file, uint& count, const CompletionCodeModelItem*& items) const
@@ -329,18 +343,20 @@ void CompletionCodeModel::items(const KDevelop::IndexedString& file, uint& count
   item.file = file;
   CodeModelRequestItem request(item);
 
-  uint index = d->m_repository.findIndex(item);
+  KDevelop::LockedItemRepository::read<CompletionCodeModel>([&](const CompletionCodeModelRepo& repo) {
+    uint index = repo.findIndex(item);
 
-  if(index) {
-    const CompletionCodeModelRepositoryItem* repositoryItem = d->m_repository.itemFromIndex(index);
-    ifDebug( qCDebug(DUCHAIN) << "found index" << index << repositoryItem->itemsSize(); )
-    count = repositoryItem->itemsSize();
-    items = repositoryItem->items();
-  }else{
-    ifDebug( qCDebug(DUCHAIN) << "found no index"; )
-    count = 0;
-    items = nullptr;
-  }
+    if(index) {
+      const CompletionCodeModelRepositoryItem* repositoryItem = repo.itemFromIndex(index);
+      ifDebug( qCDebug(DUCHAIN) << "found index" << index << repositoryItem->itemsSize(); )
+      count = repositoryItem->itemsSize();
+      items = repositoryItem->items();
+    }else{
+      ifDebug( qCDebug(DUCHAIN) << "found no index"; )
+      count = 0;
+      items = nullptr;
+    }
+  });
 }
 
 CompletionCodeModel& CompletionCodeModel::self() {

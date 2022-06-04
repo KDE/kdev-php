@@ -69,9 +69,6 @@ namespace Php {
     void items(const KDevelop::IndexedString& file, uint& count, const CompletionCodeModelItem*& items) const;
 
     static CompletionCodeModel& self();
-
-    private:
-      class CompletionCodeModelPrivate* d;
   };
 }
 
