@@ -9,8 +9,6 @@
 #include <QProgressBar>
 #include <QLabel>
 #include <QVBoxLayout>
-#include <QTemporaryFile>
-#include <QTextStream>
 #include <QUrl>
 
 #include <KLocalizedString>
@@ -18,23 +16,10 @@
 #include "phpdocsplugin.h"
 #include <documentation/standarddocumentationview.h>
 
-QTemporaryFile* createStyleSheet(QObject* parent)
-{
-    auto* file = new QTemporaryFile(parent);
-    bool ret = file->open();
-    Q_ASSERT(ret);
-    Q_UNUSED(ret);
-
-    QTextStream ts(file);
-    ts << ".page-tools { float: none !important; } body { background: white !important; };";
-    return file;
-}
-
 PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget* find, const QUrl &url,
                                                PhpDocsPlugin* provider, QWidget* parent)
 : QStackedWidget(parent)
 , m_loading(new QWidget(this))
-, m_styleSheet(createStyleSheet(this))
 , m_provider(provider)
 {
     m_part = new KDevelop::StandardDocumentationView(find, this);
@@ -92,7 +77,8 @@ void PhpDocumentationWidget::linkClicked(const QUrl& url)
 
 void PhpDocumentationWidget::documentLoaded()
 {
-    m_part->setOverrideCss(QUrl::fromLocalFile(m_styleSheet->fileName()));
+    m_part->setOverrideCssCode(
+            QByteArrayLiteral(".page-tools { float: none !important; } body { background: white !important; };"));
 
     setCurrentWidget(m_part);
     removeWidget(m_loading);

@@ -9,7 +9,6 @@
 
 #include <QStackedWidget>
 
-class QTemporaryFile;
 class QUrl;
 
 namespace KDevelop {
@@ -36,7 +35,6 @@ private slots:
 private:
     KDevelop::StandardDocumentationView* m_part;
     QWidget* m_loading;
-    QTemporaryFile* m_styleSheet;
     PhpDocsPlugin* m_provider;
 };
 
