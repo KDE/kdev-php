@@ -24,6 +24,8 @@ PhpDocumentationWidget::PhpDocumentationWidget(KDevelop::DocumentationFindWidget
 {
     m_part = new KDevelop::StandardDocumentationView(find, this);
     m_part->setDelegateLinks(true);
+    m_part->setOverrideCssCode(
+            QByteArrayLiteral(".page-tools { float: none !important; } body { background: white !important; };"));
     addWidget(m_part);
     addWidget(m_loading);
 
@@ -77,9 +79,6 @@ void PhpDocumentationWidget::linkClicked(const QUrl& url)
 
 void PhpDocumentationWidget::documentLoaded()
 {
-    m_part->setOverrideCssCode(
-            QByteArrayLiteral(".page-tools { float: none !important; } body { background: white !important; };"));
-
     setCurrentWidget(m_part);
     removeWidget(m_loading);
     delete m_loading;
