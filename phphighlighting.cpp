@@ -17,7 +17,7 @@ using namespace Php;
 class HighlightingInstance : public CodeHighlightingInstance {
 public:
     HighlightingInstance(const CodeHighlighting* highlighting);
-    Types typeForDeclaration(KDevelop::Declaration* decl, KDevelop::DUContext* context) const override;
+    CodeHighlightingType typeForDeclaration(KDevelop::Declaration* decl, KDevelop::DUContext* context) const override;
     bool useRainbowColor( Declaration* dec ) const override;
 };
 
@@ -26,13 +26,13 @@ HighlightingInstance::HighlightingInstance(const CodeHighlighting* highlighting)
 {
 }
 
-HighlightingEnumContainer::Types HighlightingInstance::typeForDeclaration(Declaration* decl, DUContext* context) const
+CodeHighlightingType HighlightingInstance::typeForDeclaration(Declaration* decl, DUContext* context) const
 {
     if (decl && !decl->isFunctionDeclaration() && decl->abstractType()
         && decl->abstractType()->modifiers() & AbstractType::ConstModifier
         && !dynamic_cast<VariableDeclaration*>(decl) )
     {
-        return EnumType;
+        return CodeHighlightingType::Enum;
     } else {
         return CodeHighlightingInstance::typeForDeclaration(decl, context);
     }
