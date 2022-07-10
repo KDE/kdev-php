@@ -219,47 +219,45 @@ DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const 
 
 DeclarationPointer findDeclarationInPST(DUContext* currentContext, QualifiedIdentifier id, DeclarationType declarationType)
 {
+    DeclarationPointer ret;
+
     ifDebug(qCDebug(DUCHAIN) << "PST: " << id.toString() << declarationType;)
-    uint nr;
-    const IndexedDeclaration* declarations = nullptr;
     DUChainWriteLocker wlock;
-    PersistentSymbolTable::self().declarations(id, nr, declarations);
-    ifDebug(qCDebug(DUCHAIN) << "found declarations:" << nr;)
+
     /// Indexed string for 'Php', identifies environment files from this language plugin
     static const IndexedString phpLangString("Php");
-
-    for (uint i = 0; i < nr; ++i) {
-        ParsingEnvironmentFilePointer env = DUChain::self()->environmentFileForDocument(declarations[i].indexedTopContext());
+    auto visitor = [&](const IndexedDeclaration &indexedDeclaration) {
+        ParsingEnvironmentFilePointer env = DUChain::self()->environmentFileForDocument(indexedDeclaration.indexedTopContext());
         if(!env) {
             ifDebug(qCDebug(DUCHAIN) << "skipping declaration, missing meta-data";)
-            continue;
+            return PersistentSymbolTable::VisitorState::Continue;
         }
         if(env->language() != phpLangString) {
             ifDebug(qCDebug(DUCHAIN) << "skipping declaration, invalid language" << env->language().str();)
-            continue;
+            return PersistentSymbolTable::VisitorState::Continue;
         }
 
-        if (!declarations[i].declaration()) {
+        const auto declaration = indexedDeclaration.declaration();
+        if (!declaration) {
             ifDebug(qCDebug(DUCHAIN) << "skipping declaration, doesn't have declaration";)
-            continue;
-        } else if (!isMatch(declarations[i].declaration(), declarationType)) {
+            return PersistentSymbolTable::VisitorState::Continue;
+        } else if (!isMatch(declaration, declarationType)) {
             ifDebug(qCDebug(DUCHAIN) << "skipping declaration, doesn't match with declarationType";)
-            continue;
+            return PersistentSymbolTable::VisitorState::Continue;
         }
-        TopDUContext* top = declarations[i].declaration()->context()->topContext();
 
+        TopDUContext* top = declaration->context()->topContext();
         currentContext->topContext()->addImportedParentContext(top);
         currentContext->topContext()->parsingEnvironmentFile()
         ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
         currentContext->topContext()->updateImportsCache();
         ifDebug(qCDebug(DUCHAIN) << "using" << declarations[i].declaration()->toString() << top->url();)
-        wlock.unlock();
-        return DeclarationPointer(declarations[i].declaration());
-    }
+        ret = declaration;
+        return PersistentSymbolTable::VisitorState::Break;
+    };
+    PersistentSymbolTable::self().visitDeclarations(id, visitor);
 
-    wlock.unlock();
-    ifDebug(qCDebug(DUCHAIN) << "returning 0";)
-    return DeclarationPointer();
+    return ret;
 }
 
 QByteArray formatComment(AstNode* node, EditorIntegrator* editor)
