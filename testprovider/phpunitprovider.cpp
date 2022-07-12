@@ -23,7 +23,6 @@
 #include <language/duchain/duchainutils.h>
 
 #include <KPluginFactory>
-#include <KPluginLoader>
 #include <KAboutData>
 #include <KLocalizedString>
 #include <QVariant>

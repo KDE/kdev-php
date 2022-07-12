@@ -8,7 +8,6 @@
 #include "phpdocsmodel.h"
 
 #include <KPluginFactory>
-#include <KPluginLoader>
 #include <KAboutData>
 #include <ksettings/Dispatcher>
 

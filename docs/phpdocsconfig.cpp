@@ -8,7 +8,6 @@
 
 #include <KLocalizedString>
 #include <KPluginFactory>
-#include <KPluginLoader>
 #include <KConfigGroup>
 #include <KUrlRequester>
 #include <KAboutData>
