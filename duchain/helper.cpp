@@ -248,31 +248,6 @@ DeclarationPointer findDeclarationInPST(DUContext* currentContext, QualifiedIden
         }
         TopDUContext* top = declarations[i].declaration()->context()->topContext();
 
-        /*
-            * NOTE:
-            * To enable PHPUnit test classes, this check has been disabled.
-            * Formerly it only loaded declarations from open projects, but PHPUnit declarations
-            * belong to no project.
-            *
-            * If this behavior is unwanted, reinstate the check.
-            * Miha Cancula <miha@noughmad.eu>
-            */
-        /*
-        if (ICore::self() && !ICore::self()->projectController()->projects().isEmpty()) {
-            bool loadedProjectContainsUrl = false;
-            foreach(IProject *project, ICore::self()->projectController()->projects()) {
-                if (project->fileSet().contains(top->url())) {
-                    loadedProjectContainsUrl = true;
-                    break;
-                }
-            }
-            if (!loadedProjectContainsUrl) {
-                ifDebug(qCDebug(DUCHAIN) << "skipping declaration, not in loaded project";)
-                continue;
-            }
-        }
-        */
-
         currentContext->topContext()->addImportedParentContext(top);
         currentContext->topContext()->parsingEnvironmentFile()
         ->addModificationRevisions(top->parsingEnvironmentFile()->allModificationRevisions());
