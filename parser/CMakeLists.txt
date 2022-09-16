@@ -49,7 +49,7 @@ if (BUILD_TESTING)
     )
 endif()
 
-install(TARGETS kdevphpparser EXPORT KDevPHPTargets DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS kdevphpparser EXPORT KDevPHPTargets DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES
     parsesession.h
     phplexer.h
