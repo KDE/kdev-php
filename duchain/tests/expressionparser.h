@@ -61,6 +61,7 @@ private slots:
     void closure();
     void closureUse_data();
     void closureUse();
+    void closureInvalidUse();
 };
 
 }

@@ -584,7 +584,9 @@ expression=nullCoalesceExpression
     catch (expression=expr RPAREN)
 -> iifeSyntax ;;
 
-  (#lexicalVars=lexicalVar @ COMMA) | 0 [: reportProblem(Error, QStringLiteral("Use list of closure must not be empty.")); :]
+    (#lexicalVars=lexicalVar
+        -- break because (1,) is allowed
+        @ (COMMA [: if (yytoken == Token_RPAREN) { break; } :] ) | 0 [: reportProblem(Error, QStringLiteral("Use list of closure must not be empty.")); :])
 -> lexicalVarList ;;
 
   (isRef=BIT_AND | 0) variable=variableIdentifier

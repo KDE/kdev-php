@@ -798,7 +798,9 @@ void TestExpressionParser::closureUse_data()
 
     QTest::newRow("normalSyntax") << "<? $c = 'foo'; $f = function($a, $b) use ($c) { return $c . ':' . $a . '/' . $b; }; \n";
 
-    QTest::newRow("trailingComma") << "<? $c = 'foo'; $f = function($a, $b,) use ($c) { return $c . ':' . $a . '/' . $b; }; \n";
+    QTest::newRow("trailingCommaInParameterList") << "<? $c = 'foo'; $f = function($a, $b,) use ($c) { return $c . ':' . $a . '/' . $b; }; \n";
+
+    QTest::newRow("trailingCommaInUseList") << "<? $c = 'foo'; $f = function($a, $b) use ($c,) { return $c . ':' . $a . '/' . $b; }; \n";
 }
 
 void TestExpressionParser::closureUse()
@@ -832,6 +834,19 @@ void TestExpressionParser::closureUse()
                          CursorInRevision(0, 34));
     QVERIFY(res.type().dynamicCast<IntegralType>());
     QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+}
+
+void TestExpressionParser::closureInvalidUse()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? $c = 'foo'; $f = function($a, $b) use () { return $c . ':' . $a . '/' . $b; }; \n");
+
+    TopDUContext* top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(!top->problems().isEmpty());
 }
 
 }
