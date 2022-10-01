@@ -30,16 +30,26 @@ TestExpressionParser::TestExpressionParser()
 {
 }
 
+void TestExpressionParser::newClass_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("normalSyntax") << "<? class A { function __construct($a){} function foo() {} } $i = new A(1);";
+
+    QTest::newRow("trailingCommaInConstructor") << "<? class A { function __construct($a,){} function foo() {} } $i = new A(1);";
+
+    QTest::newRow("trailingCommaInInstantiation") << "<? class A { function __construct($a,){} function foo() {} } $i = new A(1,);";
+}
 
 void TestExpressionParser::newClass()
 {
-    //                 0         1         2         3         4         5         6         7
-    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A { function foo() {} } $i = new A();");
+    QFETCH(QString, code);
 
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(top->problems().isEmpty());
 
     ExpressionParser p(true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i"), DUContextPointer(top), CursorInRevision(1, 0));
@@ -221,6 +231,35 @@ void TestExpressionParser::globalFunction()
     TopDUContext* top = parse(method, DumpNone);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
+
+    ExpressionParser p(true);
+    ExpressionEvaluationResult res = p.evaluateType(QByteArray("foo"), DUContextPointer(top), CursorInRevision(1, 0));
+    QVERIFY(res.type());
+    QVERIFY(res.type().dynamicCast<FunctionType>());
+    QCOMPARE(res.allDeclarations().count(), 1);
+    QCOMPARE(res.allDeclarations().first().data(), top->localDeclarations().first());
+}
+
+void TestExpressionParser::globalFunctionCall_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("normalSyntax") << "<? function foo($a) {} foo(1);";
+
+    QTest::newRow("trailingComma") << "<? function foo($a) {} foo(1,);";
+}
+
+void TestExpressionParser::globalFunctionCall()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(top->problems().isEmpty());
 
     ExpressionParser p(true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("foo"), DUContextPointer(top), CursorInRevision(1, 0));

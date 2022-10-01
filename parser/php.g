@@ -597,7 +597,9 @@ expression=nullCoalesceExpression
   | 0
 -> ctorArguments ;;
 
-    #parameters=functionCallParameterListElement @ COMMA | 0
+    (#parameters=functionCallParameterListElement
+            -- break because (1,) is allowed
+        @ (COMMA [: if (yytoken == Token_RPAREN) { break; } :] ) | 0)
 -> functionCallParameterList ;;
 
     (BIT_AND variable=variable) | (isVariadic=ELLIPSIS | 0) expr=expr

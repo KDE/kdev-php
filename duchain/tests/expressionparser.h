@@ -19,6 +19,7 @@ public:
     TestExpressionParser();
 
 private slots:
+    void newClass_data();
     void newClass();
     void newSelf();
     void newStatic();
@@ -32,6 +33,8 @@ private slots:
     void invalidTraitUse();
     void namespaceUseNameConflict();
     void globalFunction();
+    void globalFunctionCall_data();
+    void globalFunctionCall();
     void chainCall();
     void thisObject();
     void integralTypes();
