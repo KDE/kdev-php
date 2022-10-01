@@ -882,7 +882,9 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
     LBRACE try/recover(functionBody=innerStatementList) RBRACE
 -> functionDeclarationStatement ;;
 
-    (#parameters=parameter @ COMMA) | 0
+    (#parameters=parameter
+             -- break because (1,) is allowed
+          @ (COMMA [: if (yytoken == Token_RPAREN) { break; } :] ) | 0)
 -> parameterList ;;
 
 (parameterType=parameterType | 0) (isRef=BIT_AND | 0)

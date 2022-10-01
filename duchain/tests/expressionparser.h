@@ -38,6 +38,7 @@ private slots:
     void newObject();
     void cast();
     void operations();
+    void findArg_data();
     void findArg();
     void array_data();
     void array();
@@ -53,6 +54,10 @@ private slots:
     void invalidVariadicFunction_data();
     void invalidVariadicFunction();
     void invalidArgumentUnpacking();
+    void closure_data();
+    void closure();
+    void closureUse_data();
+    void closureUse();
 };
 
 }

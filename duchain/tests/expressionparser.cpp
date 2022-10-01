@@ -453,15 +453,26 @@ void TestExpressionParser::operations()
     QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
 }
 
+void TestExpressionParser::findArg_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("normalSyntax") << "<? class A{} function foo($arg, &$bar, A &$a) {  } ";
+
+    QTest::newRow("trailingComma") << "<? class A{} function foo($arg, &$bar, A &$a,) {  } ";
+}
+
 void TestExpressionParser::findArg()
 {
     //                 0         1         2         3         4         5         6         7
     //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
-    QByteArray method("<? class A{} function foo($arg, &$bar, A &$a) {  } ");
+    QFETCH(QString, code);
 
-    TopDUContext* top = parse(method, DumpNone);
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(top->problems().isEmpty());
 
     ExpressionParser p(true);
 
@@ -704,6 +715,84 @@ void TestExpressionParser::invalidArgumentUnpacking()
     DUChainWriteLocker lock;
 
     QVERIFY(!top->problems().isEmpty());
+}
+
+void TestExpressionParser::closure_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("normalSyntax") << "<? $f = function($a, $b) { return $a + $b; }; \n";
+
+    QTest::newRow("trailingComma") << "<? $f = function($a, $b,) { return $a + $b; }; \n";
+}
+
+void TestExpressionParser::closure()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+
+    ExpressionParser p(true);
+
+    QCOMPARE(top->childContexts().size(), 2);
+    QVERIFY(top->childContexts().at(0)->type() == DUContext::Function);
+    QVERIFY(top->childContexts().at(1)->type() == DUContext::Other);
+
+    ExpressionEvaluationResult res = p.evaluateType(QByteArray("$a"), DUContextPointer(top->childContexts().at(0)),
+                                                    CursorInRevision(0, 20));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+
+    res = p.evaluateType(QByteArray("$b"), DUContextPointer(top->childContexts().at(0)),
+                         CursorInRevision(0, 20));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+}
+
+void TestExpressionParser::closureUse_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("normalSyntax") << "<? $c = 'foo'; $f = function($a, $b) use ($c) { return $c . ':' . $a . '/' . $b; }; \n";
+
+    QTest::newRow("trailingComma") << "<? $c = 'foo'; $f = function($a, $b,) use ($c) { return $c . ':' . $a . '/' . $b; }; \n";
+}
+
+void TestExpressionParser::closureUse()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+
+    ExpressionParser p(true);
+
+    QCOMPARE(top->childContexts().size(), 3);
+    QVERIFY(top->childContexts().at(0)->type() == DUContext::Function);
+    QVERIFY(top->childContexts().at(1)->type() == DUContext::Other);
+    QVERIFY(top->childContexts().at(2)->type() == DUContext::Other);
+
+    ExpressionEvaluationResult res = p.evaluateType(QByteArray("$c"), DUContextPointer(top->childContexts().at(1)),
+                                                    CursorInRevision(0, 50));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeString));
+
+    res = p.evaluateType(QByteArray("$a"), DUContextPointer(top->childContexts().at(0)),
+                                                    CursorInRevision(0, 34));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+
+    res = p.evaluateType(QByteArray("$b"), DUContextPointer(top->childContexts().at(0)),
+                         CursorInRevision(0, 34));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
 }
 
 }
