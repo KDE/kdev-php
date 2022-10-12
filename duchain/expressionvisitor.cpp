@@ -181,7 +181,7 @@ void ExpressionVisitor::visitVarExpression(VarExpressionAst *node)
 {
     DefaultVisitor::visitVarExpression(node);
     if (node->isGenerator != -1) {
-        DeclarationPointer generatorDecl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier("generator"));
+        DeclarationPointer generatorDecl = findDeclarationImport(ClassDeclarationType, QualifiedIdentifier(u"generator"));
 
         if (generatorDecl) {
             m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));

@@ -458,7 +458,7 @@ AbstractType::Ptr determineTypehint(const T* genericType, EditorIntegrator *edit
             } else if (typehint.compare(QLatin1String("object"), Qt::CaseInsensitive) == 0) {
                 type = AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeObject));
             } else if (typehint.compare(QLatin1String("iterable"), Qt::CaseInsensitive) == 0) {
-                DeclarationPointer traversableDecl = findDeclarationImportHelper(currentContext, QualifiedIdentifier("traversable"), ClassDeclarationType);
+                DeclarationPointer traversableDecl = findDeclarationImportHelper(currentContext, QualifiedIdentifier(u"traversable"), ClassDeclarationType);
 
                 if (traversableDecl) {
                     UnsureType::Ptr unsure(new UnsureType());

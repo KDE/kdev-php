@@ -411,12 +411,12 @@ void TestUses::dynamicStaticMemberVariable()
     DUChainWriteLocker lock(DUChain::lock());
 
     Declaration* dec = top->localDeclarations().at(0);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(0, 47, 0, 48));
 
     dec = top->localDeclarations().at(1);
-    QCOMPARE(dec->identifier(), Identifier("var"));
+    QCOMPARE(dec->identifier(), Identifier(u"var"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(0, 52, 0, 56));
 }
@@ -866,20 +866,20 @@ void TestUses::propertyAndMethodWithSameName()
     QCOMPARE(decs.size(), 4);
 
     // method name1
-    QVERIFY(decs[0]->identifier().nameEquals(Identifier("name1")));
+    QVERIFY(decs[0]->identifier().nameEquals(Identifier(u"name1")));
     QVERIFY(decs[0]->isFunctionDeclaration());
     compareUses(decs[0], RangeInRevision(2, 4, 2, 9));
     // property name1
-    QVERIFY(decs[1]->identifier().nameEquals(Identifier("name1")));
+    QVERIFY(decs[1]->identifier().nameEquals(Identifier(u"name1")));
     QVERIFY(!decs[1]->isFunctionDeclaration());
     compareUses(decs[1], RangeInRevision(2, 17, 2, 22));
 
     // property name2
-    QVERIFY(decs[2]->identifier().nameEquals(Identifier("name2")));
+    QVERIFY(decs[2]->identifier().nameEquals(Identifier(u"name2")));
     QVERIFY(!decs[2]->isFunctionDeclaration());
     compareUses(decs[2], RangeInRevision(3, 4, 3, 9));
     // method name2
-    QVERIFY(decs[3]->identifier().nameEquals(Identifier("name2")));
+    QVERIFY(decs[3]->identifier().nameEquals(Identifier(u"name2")));
     QVERIFY(decs[3]->isFunctionDeclaration());
     compareUses(decs[3], RangeInRevision(3, 15, 3, 20));
 }
@@ -903,20 +903,20 @@ void TestUses::nestedMethodCalls()
     QCOMPARE(topDecs.size(), 4);
 
     // class a
-    QVERIFY(topDecs[0]->identifier().nameEquals(Identifier("a")));
+    QVERIFY(topDecs[0]->identifier().nameEquals(Identifier(u"a")));
     QVERIFY(dynamic_cast<ClassDeclaration*>(topDecs[0]));
     compareUses(topDecs[0], RangeInRevision(3, 9, 3, 10));
     // class b
-    QVERIFY(topDecs[1]->identifier().nameEquals(Identifier("b")));
+    QVERIFY(topDecs[1]->identifier().nameEquals(Identifier(u"b")));
     QVERIFY(dynamic_cast<ClassDeclaration*>(topDecs[1]));
     compareUses(topDecs[1], RangeInRevision(4, 9, 4, 10));
 
     // $a
-    QVERIFY(topDecs[2]->identifier().nameEquals(Identifier("a")));
+    QVERIFY(topDecs[2]->identifier().nameEquals(Identifier(u"a")));
     QVERIFY(dynamic_cast<VariableDeclaration*>(topDecs[2]));
     compareUses(topDecs[2], RangeInRevision(5, 0, 5, 2));
     // $b
-    QVERIFY(topDecs[3]->identifier().nameEquals(Identifier("b")));
+    QVERIFY(topDecs[3]->identifier().nameEquals(Identifier(u"b")));
     QVERIFY(dynamic_cast<VariableDeclaration*>(topDecs[3]));
     compareUses(topDecs[3], RangeInRevision(5, 6, 5, 8));
 
@@ -1210,7 +1210,7 @@ void TestUses::closureTypehints() {
 
     QCOMPARE(top->localDeclarations().count(), 3);
     Declaration* a = top->localDeclarations().at(0);
-    QCOMPARE(a->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(a->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
     compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 32, 0, 33) << RangeInRevision(0, 39, 0, 40));
 }
 
@@ -1253,15 +1253,15 @@ void TestUses::instanceofClassProperty()
     QCOMPARE(top->localDeclarations().count(), 3);
 
     Declaration* dec = top->localDeclarations().at(0);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 9, 2, 10));
 
     dec = top->localDeclarations().at(2);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     StructureType::Ptr classType = dec->type<StructureType>();
     QVERIFY(classType);
-    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
     QVERIFY(classType->equals(dec->abstractType().data()));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 14, 2, 16)
@@ -1269,14 +1269,14 @@ void TestUses::instanceofClassProperty()
 
     dec = top->childContexts().at(0)->localDeclarations().at(0);
     QVERIFY(dec);
-    QCOMPARE(dec->identifier(), Identifier("foo"));
+    QCOMPARE(dec->identifier(), Identifier(u"foo"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 32, 2, 35)
                     << RangeInRevision(2, 42, 2, 45));
 
     dec = top->childContexts().at(1)->localDeclarations().at(0);
     QVERIFY(dec);
-    QCOMPARE(dec->identifier(), Identifier("bar"));
+    QCOMPARE(dec->identifier(), Identifier(u"bar"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 37, 2, 40));
 }
@@ -1300,30 +1300,30 @@ void TestUses::instanceofStaticProperty()
     QCOMPARE(top->localDeclarations().count(), 3);
 
     Declaration* dec = top->localDeclarations().at(0);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 9, 2, 10)
                     << RangeInRevision(2, 28, 2, 29));
 
     dec = top->localDeclarations().at(2);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     StructureType::Ptr classType = dec->type<StructureType>();
     QVERIFY(classType);
-    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
     QVERIFY(classType->equals(dec->abstractType().data()));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 14, 2, 16));
 
     dec = top->childContexts().at(0)->localDeclarations().at(0);
     QVERIFY(dec);
-    QCOMPARE(dec->identifier(), Identifier("foo"));
+    QCOMPARE(dec->identifier(), Identifier(u"foo"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 31, 2, 35)
                     << RangeInRevision(2, 43, 2, 47));
 
     dec = top->childContexts().at(1)->localDeclarations().at(0);
     QVERIFY(dec);
-    QCOMPARE(dec->identifier(), Identifier("bar"));
+    QCOMPARE(dec->identifier(), Identifier(u"bar"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 37, 2, 41));
 }
@@ -1347,30 +1347,30 @@ void TestUses::instanceofMixedProperty()
     QCOMPARE(top->localDeclarations().count(), 3);
 
     Declaration* dec = top->localDeclarations().at(0);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 9, 2, 10)
                     << RangeInRevision(2, 28, 2, 29));
 
     dec = top->localDeclarations().at(2);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     StructureType::Ptr classType = dec->type<StructureType>();
     QVERIFY(classType);
-    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
     QVERIFY(classType->equals(dec->abstractType().data()));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 14, 2, 16));
 
     dec = top->childContexts().at(0)->localDeclarations().at(0);
     QVERIFY(dec);
-    QCOMPARE(dec->identifier(), Identifier("foo"));
+    QCOMPARE(dec->identifier(), Identifier(u"foo"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 31, 2, 35)
                     << RangeInRevision(2, 42, 2, 46));
 
     dec = top->childContexts().at(1)->localDeclarations().at(0);
     QVERIFY(dec);
-    QCOMPARE(dec->identifier(), Identifier("bar"));
+    QCOMPARE(dec->identifier(), Identifier(u"bar"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 37, 2, 40));
 }
@@ -1395,28 +1395,28 @@ void TestUses::instanceofVariableProperty()
     QCOMPARE(top->localDeclarations().count(), 5);
 
     Declaration* dec = top->localDeclarations().at(0);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(3, 9, 3, 10));
 
     dec = top->localDeclarations().at(4);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     StructureType::Ptr classType = dec->type<StructureType>();
     QVERIFY(classType);
-    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
     QVERIFY(classType->equals(dec->abstractType().data()));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(3, 14, 3, 16)
                     << RangeInRevision(3, 28, 3, 30));
 
     dec = top->localDeclarations().at(2);
-    QCOMPARE(dec->identifier(), Identifier("foo"));
+    QCOMPARE(dec->identifier(), Identifier(u"foo"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(3, 32, 3, 36)
                     << RangeInRevision(3, 44, 3, 48));
 
     dec = top->localDeclarations().at(3);
-    QCOMPARE(dec->identifier(), Identifier("bar"));
+    QCOMPARE(dec->identifier(), Identifier(u"bar"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(3, 38, 3, 42));
 }
@@ -1441,28 +1441,28 @@ void TestUses::instanceofDynamicStaticProperty()
     QCOMPARE(top->localDeclarations().count(), 5);
 
     Declaration* dec = top->localDeclarations().at(0);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(3, 9, 3, 10));
 
     dec = top->localDeclarations().at(4);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     StructureType::Ptr classType = dec->type<StructureType>();
     QVERIFY(classType);
-    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
     QVERIFY(classType->equals(dec->abstractType().data()));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(3, 14, 3, 16)
                     << RangeInRevision(3, 28, 3, 30));
 
     dec = top->localDeclarations().at(2);
-    QCOMPARE(dec->identifier(), Identifier("foo"));
+    QCOMPARE(dec->identifier(), Identifier(u"foo"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(3, 34, 3, 38)
                     << RangeInRevision(3, 52, 3, 56));
 
     dec = top->localDeclarations().at(3);
-    QCOMPARE(dec->identifier(), Identifier("bar"));
+    QCOMPARE(dec->identifier(), Identifier(u"bar"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(3, 43, 3, 47));
 }
@@ -1487,28 +1487,28 @@ void TestUses::instanceofDynamicVariableProperty()
     QCOMPARE(top->localDeclarations().count(), 5);
 
     Declaration* dec = top->localDeclarations().at(0);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(3, 9, 3, 10));
 
     dec = top->localDeclarations().at(4);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     StructureType::Ptr classType = dec->type<StructureType>();
     QVERIFY(classType);
-    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
     QVERIFY(classType->equals(dec->abstractType().data()));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(3, 14, 3, 16)
                     << RangeInRevision(3, 28, 3, 30));
 
     dec = top->localDeclarations().at(2);
-    QCOMPARE(dec->identifier(), Identifier("foo"));
+    QCOMPARE(dec->identifier(), Identifier(u"foo"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(3, 34, 3, 38)
                     << RangeInRevision(3, 52, 3, 56));
 
     dec = top->localDeclarations().at(3);
-    QCOMPARE(dec->identifier(), Identifier("bar"));
+    QCOMPARE(dec->identifier(), Identifier(u"bar"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(3, 43, 3, 47));
 }
@@ -1532,27 +1532,27 @@ void TestUses::instanceofPropertyArrayAccess()
     QCOMPARE(top->localDeclarations().count(), 3);
 
     Declaration* dec = top->localDeclarations().at(0);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 9, 2, 10));
 
     dec = top->localDeclarations().at(2);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     StructureType::Ptr classType = dec->type<StructureType>();
     QVERIFY(classType);
-    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(classType->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
     QVERIFY(classType->equals(dec->abstractType().data()));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 14, 2, 16)
                     << RangeInRevision(2, 28, 2, 30));
 
     dec = top->childContexts().at(0)->localDeclarations().at(0);
-    QCOMPARE(dec->identifier(), Identifier("foo"));
+    QCOMPARE(dec->identifier(), Identifier(u"foo"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(2, 32, 2, 35));
 
     dec = top->childContexts().at(1)->localDeclarations().at(0);
-    QCOMPARE(dec->identifier(), Identifier("bar"));
+    QCOMPARE(dec->identifier(), Identifier(u"bar"));
     QVERIFY(dec->uses().isEmpty());
 }
 
@@ -1575,7 +1575,7 @@ void TestUses::dimListAfterClassNameReference()
     QCOMPARE(top->localDeclarations().count(), 1);
 
     Declaration* dec = top->localDeclarations().at(0);
-    QCOMPARE(dec->identifier(), Identifier("a"));
+    QCOMPARE(dec->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(1, 38, 1, 43));
 
@@ -1584,7 +1584,7 @@ void TestUses::dimListAfterClassNameReference()
     QCOMPARE(top->childContexts().at(0)->childContexts().at(1)->localDeclarations().count(), 1);
 
     dec = top->childContexts().at(0)->localDeclarations().at(0);
-    QCOMPARE(dec->identifier(), Identifier("foo"));
+    QCOMPARE(dec->identifier(), Identifier(u"foo"));
     compareUses(dec, QList<RangeInRevision>()
                     << RangeInRevision(1, 45, 1, 48));
 }
@@ -1662,87 +1662,87 @@ void TestUses::useTrait()
     dec = topDecs[3]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("one"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
-    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 20, 8, 23) );
 
     dec = topDecs[3]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("two"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
-    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(8, 31, 8, 34) );
 
     dec = topDecs[4]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("one"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
-    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 20, 9, 23) );
 
     dec = topDecs[4]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("two"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
-    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 31, 9, 34) );
 
     dec = topDecs[4]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("four"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
-    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("b"));
-    QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier("three"));
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier(u"b"));
+    QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier(u"three"));
     QCOMPARE(method->accessPolicy(), Declaration::AccessPolicy::Public);
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(9, 42, 9, 46) );
 
     dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("one"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
-    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("c"));
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier(u"c"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(10, 20, 10, 23) );
 
     dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("two"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
-    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(10, 31, 10, 34) );
 
     dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("baz"))).first();
     member = dynamic_cast<TraitMemberAliasDeclaration*>(dec);
     QVERIFY(member);
-    QCOMPARE(member->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("c"));
+    QCOMPARE(member->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier(u"c"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(10, 42, 10, 45) );
 
     dec = topDecs[5]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("six"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
-    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("c"));
-    QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier("five"));
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier(u"c"));
+    QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier(u"five"));
     QVERIFY(method->isStatic());
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(10, 51, 10, 54) );
 
     dec = topDecs[6]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("one"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
-    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier(u"a"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(11, 20, 11, 23) );
 
     dec = topDecs[6]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("switch"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
-    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("a"));
-    QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier("two"));
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier(u"a"));
+    QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier(u"two"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(11, 31, 11, 37) );
 
     dec = topDecs[6]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("three"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
-    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("b"));
-    QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier("three"));
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier(u"b"));
+    QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier(u"three"));
     QCOMPARE(method->accessPolicy(), Declaration::AccessPolicy::Public);
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(11, 45, 11, 50) );
 
     dec = topDecs[6]->internalContext()->findLocalDeclarations(Identifier(QStringLiteral("static"))).first();
     method = dynamic_cast<TraitMethodAliasDeclaration*>(dec);
     QVERIFY(method);
-    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier("c"));
-    QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier("five"));
+    QCOMPARE(method->aliasedDeclaration().data()->context()->owner()->identifier(), Identifier(u"c"));
+    QCOMPARE(method->aliasedDeclaration().data()->identifier(), Identifier(u"five"));
     compareUses(dec, QList<RangeInRevision>() << RangeInRevision(11, 58, 11, 64) );
 }
 

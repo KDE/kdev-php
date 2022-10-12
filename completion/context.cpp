@@ -1558,7 +1558,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool& ab
                         if ( ClassDeclaration* classDec = dynamic_cast<ClassDeclaration*>(decl) ) {
                             // search for ctor
                             decl = nullptr;
-                            foreach ( Declaration* dec, classDec->internalContext()->findDeclarations(Identifier("__construct")) ) {
+                            foreach ( Declaration* dec, classDec->internalContext()->findDeclarations(Identifier(u"__construct")) ) {
                                 if ( dec->isFunctionDeclaration() ) {
                                     decl = dec;
                                     break;

@@ -227,7 +227,7 @@ void TestDUChainMultipleFiles::testUpdateForeach()
     {
         DUChainWriteLocker lock;
         QVERIFY(f.topContext()->problems().isEmpty());
-        QCOMPARE(f.topContext()->findDeclarations(Identifier("k")).count(), 1);
+        QCOMPARE(f.topContext()->findDeclarations(Identifier(u"k")).count(), 1);
         Declaration* kDec = f.topContext()->findDeclarations(Identifier(QStringLiteral("k"))).first();
         QCOMPARE(kDec->rangeInCurrentRevision().start().line(), 1);
         QCOMPARE(kDec->rangeInCurrentRevision().start().column(), 0);
@@ -245,7 +245,7 @@ void TestDUChainMultipleFiles::testUpdateForeach()
     {
         DUChainWriteLocker lock;
         QVERIFY(f.topContext()->problems().isEmpty());
-        QCOMPARE(f.topContext()->findDeclarations(Identifier("k")).count(), 1);
+        QCOMPARE(f.topContext()->findDeclarations(Identifier(u"k")).count(), 1);
         Declaration* kDec = f.topContext()->findDeclarations(Identifier(QStringLiteral("k"))).first();
         QCOMPARE(kDec->rangeInCurrentRevision().start().line(), 1);
         QCOMPARE(kDec->rangeInCurrentRevision().start().column(), 25);
@@ -297,7 +297,7 @@ void TestDUChainMultipleFiles::testIteratorForeachReparse() {
         auto top = file.topContext();
         QVERIFY(top);
         QVERIFY(top->localDeclarations().size() == 2);
-        QCOMPARE(top->localDeclarations().at(0)->qualifiedIdentifier(), QualifiedIdentifier("a"));
+        QCOMPARE(top->localDeclarations().at(0)->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
 
         IntegralType::Ptr type = top->localDeclarations().at(0)->type<IntegralType>();
         QVERIFY(type);

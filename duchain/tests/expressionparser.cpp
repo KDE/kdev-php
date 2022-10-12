@@ -44,7 +44,7 @@ void TestExpressionParser::newClass()
     ExpressionParser p(true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i"), DUContextPointer(top), CursorInRevision(1, 0));
     QVERIFY(res.type());
-    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
 }
 
 void TestExpressionParser::newSelf()
@@ -62,7 +62,7 @@ void TestExpressionParser::newSelf()
                                         DUContextPointer(top->childContexts().first()->childContexts().last()),
                                         CursorInRevision(0, 30));
     QVERIFY(res.type());
-    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
 }
 
 void TestExpressionParser::newStatic()
@@ -80,7 +80,7 @@ void TestExpressionParser::newStatic()
                                         DUContextPointer(top->childContexts().first()->childContexts().last()),
                                         CursorInRevision(0, 30));
     QVERIFY(res.type().cast<StructureType>());
-    QCOMPARE(res.type().cast<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(res.type().cast<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
 }
 
 void TestExpressionParser::memberVariable()
@@ -98,7 +98,7 @@ void TestExpressionParser::memberVariable()
     QVERIFY(res.type());
     QCOMPARE(res.allDeclarations().count(), 1);
     QCOMPARE(res.allDeclarations().first().data(), top->childContexts().first()->localDeclarations().first());
-    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier("a"));
+    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
 }
 void TestExpressionParser::memberFunction()
 {
@@ -373,7 +373,7 @@ void TestExpressionParser::cast()
 
     res = p.evaluateType(QByteArray("(object)$foo"), DUContextPointer(top), CursorInRevision(1, 0));
     QVERIFY(StructureType::Ptr::dynamicCast(res.type()));
-    QVERIFY(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier() == QualifiedIdentifier("stdclass"));
+    QVERIFY(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier() == QualifiedIdentifier(u"stdclass"));
 }
 
 void TestExpressionParser::operations()
