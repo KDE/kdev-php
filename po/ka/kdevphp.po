@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: kdev-php\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-08-10 00:44+0000\n"
-"PO-Revision-Date: 2022-12-11 07:50+0100\n"
+"PO-Revision-Date: 2022-12-13 02:24+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -68,6 +68,20 @@ msgid ""
 "your choice. Make sure you downloaded the <span style=\" font-style:italic;"
 "\">\"Many HTML files\"</span> package.</p></body></html>"
 msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+"REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
+"weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">ნაგულისხმებად <a href="
+"\"https://php.net\"><span style=\" text-decoration: underline; color:#0000ff;"
+"\">PHP -ის ონლაინ</span></a> ონლაინ დოკუმენტაცია გამოიყენება. ასევე "
+"შეგიძლიათ დააყენოთ მდებარეობა, სადაც დოკუმენტაციის ლოკალური ასლი გაგაჩნიათ. "
+"დარწმუნდით, რომ გადმოწერეთ <span style=\" font-style:italic;\">\"Many HTML "
+"files\"</span> პაკეტი.</p></body></html>"
 
 #. i18n: ectx: property (text), widget (QLabel, PhpDocLocationLabel)
 #: docs/phpdocsconfig.ui:57
@@ -201,6 +215,8 @@ msgid ""
 "Trait method %1 has not been applied, because there are collisions with "
 "other trait methods on %2"
 msgstr ""
+"ნიშნების მეთოდი %1 არ გამოიყენება, რადგან არსებობს კონფლიქტი სხვა ნიშნების "
+"მეთოდთან, %2-ში"
 
 #: duchain/builders/declarationbuilder.cpp:654
 #, kde-format
@@ -213,6 +229,8 @@ msgid ""
 "A class constant must not be called 'class'; it is reserved for class name "
 "fetching"
 msgstr ""
+"კლასის კონსტანტას \"class\" არ უნდა ერქვას. სახელი დაცულია სახელის "
+"გამოთხოვისთვის"
 
 #: duchain/builders/declarationbuilder.cpp:742
 #: duchain/builders/declarationbuilder.cpp:768
@@ -241,11 +259,15 @@ msgstr "ვარიადიკულ პარამეტრს არ შე
 #, kde-format
 msgid "Default value for parameters with a class type hint can only be NULL."
 msgstr ""
+"კლასის ტიპის კონტროლის მქონე პარამეტრების ნაგულისხმები მნიშვნელობა მხოლოდ "
+"NULL შეიძლება იყოს."
 
 #: duchain/builders/declarationbuilder.cpp:834
 #, kde-format
 msgid "Default value for parameters with an object type can only be NULL."
 msgstr ""
+"ობიექტის ტიპის პარამეტრების ნაგულისხმევი ღირებულება შეიძლება იყოს მხოლოდ "
+"NULL."
 
 #: duchain/builders/declarationbuilder.cpp:862
 #, kde-format
@@ -264,11 +286,14 @@ msgid ""
 "be incompatible, to improve maintainability consider using accessor methods "
 "in traits instead."
 msgstr ""
+"%1 და %2 ერთი და იგივე ფუნქციას აღწერენ (%3) %1-ის შემადგენლობაში. ეს "
+"შეიძლება შეუთავსებელი აღმოჩნდეს. პროგრამის კოდის წაკითხვადად შესანარჩუნებლად "
+"გამოიყენეთ წვდომის მეთოდები ტიპაჟში."
 
 #: duchain/builders/declarationbuilder.cpp:987
 #, kde-format
 msgid "Cannot redeclare %1, already declared in %2 on line %3."
-msgstr ""
+msgstr "%1-ის თავიდან აღწერა შეუძლებელია. აღწერილია %2-ში, ხაზზე %3."
 
 #: duchain/builders/declarationbuilder.cpp:1073
 #, kde-format
@@ -276,6 +301,8 @@ msgid ""
 "Class %1 contains %2 abstract methods and must therefore be declared "
 "abstract or implement the remaining methods."
 msgstr ""
+"კლასი %1 შეიცავს %2 აბსტრაქტულ მეთოდს და ამიტომ დანარჩენ მეთოდებში აღწერილი "
+"უნდა იყოს, როგორც აბსტრაქტული, ან უნდა ახორციელებდეს დარჩენილ მეთოდებს."
 
 #: duchain/builders/declarationbuilder.cpp:1080
 #, kde-format
@@ -295,22 +322,25 @@ msgstr "დაცულ თვისებასთან (%1) წვდომ�
 #: duchain/builders/declarationbuilder.cpp:1423
 #, kde-format
 msgid "Cannot use positional argument after argument unpacking"
-msgstr ""
+msgstr "არგუმენტის გაშლის შემდეგ პოზიციურ არგუმენტს ვერ გამოიყენებთ"
 
 #: duchain/builders/declarationbuilder.cpp:1638
 #, kde-format
 msgid "The use statement with non-compound name '%1' has no effect."
-msgstr ""
+msgstr "ოპერატორს use არააწყობილი სახელით '%1' აზრი არ აქვს."
 
 #: duchain/builders/declarationbuilder.cpp:1665
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
 msgstr ""
+"'%1'-ის '%2'-ად გამოყენება შეუძლებელია, რადგან სახელი უკვე გამოიყენება."
 
 #: duchain/builders/declarationbuilder.cpp:1691
 #, kde-format
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
 msgstr ""
+"%1-ის %2-ად გამოყენება შეუძლებელია, რადგან '%2' სპეციალური კლასის სახელს "
+"წარმოადგენს"
 
 #: duchain/builders/declarationbuilder.cpp:1701
 #, kde-format
@@ -342,7 +372,7 @@ msgstr "%1-ის გამოყენება %2-დან <br />"
 #: duchain/navigation/declarationnavigationcontext.cpp:140
 #, kde-format
 msgid "Broken member alias trait."
-msgstr ""
+msgstr "წევრის მეტსახელის არარსებული ტიპაჟი."
 
 #: duchain/navigation/declarationnavigationcontext.cpp:235
 #, kde-format
@@ -368,7 +398,7 @@ msgstr "ცარიელი (არა კლასის შიგნით)"
 #: duchain/navigation/magicconstantnavigationcontext.cpp:71
 #, kde-format
 msgid "empty (not inside a trait)"
-msgstr ""
+msgstr "ცარიელი (არაა ტიპაჟში)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:90
 #, kde-format
