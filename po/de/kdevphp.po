@@ -1,20 +1,21 @@
 # Burkhard Lück <lueck@hube-lueck.de>, 2009, 2012, 2013, 2014, 2015, 2017, 2018, 2019, 2020.
 # Rolf Eike Beer <kde@opensource.sf-tec.de>, 2009.
-# Frederik Schwarzer <schwarzer@kde.org>, 2010, 2015, 2016.
+# Frederik Schwarzer <schwarzer@kde.org>, 2010, 2015, 2016, 2022.
 # Gerhard Stengel <gstengel@gmx.net>, 2010, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: kdevphp\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-08-10 00:44+0000\n"
-"PO-Revision-Date: 2020-09-17 16:17+0200\n"
-"Last-Translator: Burkhard Lück <lueck@hube-lueck.de>\n"
+"PO-Revision-Date: 2022-12-19 10:31+0100\n"
+"Last-Translator: Frederik Schwarzer <schwarzer@kde.org>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 22.12.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -188,23 +189,22 @@ msgid "Non-abstract method %1 must contain body."
 msgstr "Die nicht abstrakte Methode %1 muss einen Rumpf haben."
 
 #: duchain/builders/declarationbuilder.cpp:392
-#, fuzzy, kde-format
-#| msgid "Cannot use 'final' as method modifier"
+#, kde-format
 msgid "Cannot use 'final' as constant modifier"
-msgstr "Der „final“-Modifizierer kann nicht für eine Methode verwendet werden"
+msgstr ""
+"Der „final“-Modifizierer kann nicht für eine Konstante verwendet werden"
 
 #: duchain/builders/declarationbuilder.cpp:395
-#, fuzzy, kde-format
-#| msgid "Cannot use 'static' as method modifier"
+#, kde-format
 msgid "Cannot use 'static' as constant modifier"
-msgstr "Der „static“-Modifizierer kann nicht für eine Methode verwendet werden"
+msgstr ""
+"Der „static“-Modifizierer kann nicht für eine Konstante verwendet werden"
 
 #: duchain/builders/declarationbuilder.cpp:398
-#, fuzzy, kde-format
-#| msgid "Cannot use 'abstract' as method modifier"
+#, kde-format
 msgid "Cannot use 'abstract' as constant modifier"
 msgstr ""
-"Der „abstract“-Modifizierer kann nicht für eine Methode verwendet werden"
+"Der „abstract“-Modifizierer kann nicht für eine Konstante verwendet werden"
 
 #: duchain/builders/declarationbuilder.cpp:412
 #, kde-format
@@ -408,10 +408,9 @@ msgid "empty (not inside a class)"
 msgstr "Leer (nicht innerhalb einer Klasse)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:71
-#, fuzzy, kde-format
-#| msgid "empty (not inside a class)"
+#, kde-format
 msgid "empty (not inside a trait)"
-msgstr "Leer (nicht innerhalb einer Klasse)"
+msgstr "Leer (nicht innerhalb eines Traits)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:90
 #, kde-format
