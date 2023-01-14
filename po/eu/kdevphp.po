@@ -1,0 +1,466 @@
+# Translation for kdevphp.po to Euskara/Basque (eu).
+# Copyright (C) 2023 This file is copyright:
+# This file is distributed under the same license as the kdev-php package.
+# KDE euskaratzeko proiektuko arduraduna <xalba@ni.eus>.
+#
+# Translators:
+# Iñigo Salvador Azurmendi <xalba@ni.eus>, 2023.
+msgid ""
+msgstr ""
+"Project-Id-Version: kdev-php\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-08-10 00:44+0000\n"
+"PO-Revision-Date: 2023-01-14 10:39+0100\n"
+"Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
+"Language-Team: Basque <kde-i18n-eu@kde.org>\n"
+"Language: eu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 22.12.1\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Iñigo Salvador Azurmendi"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "xalba@ni.eus"
+
+#: completion/implementationitem.cpp:58
+#, kde-format
+msgid "Override"
+msgstr "Gainezarri"
+
+#: completion/implementationitem.cpp:61
+#, kde-format
+msgid "Implement"
+msgstr "Inplementatu"
+
+#: completion/implementationitem.cpp:73
+#, kde-format
+msgid "From %1"
+msgstr "%1(e)tik"
+
+#. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
+#: docs/phpdocsconfig.ui:20
+#, kde-format
+msgid "PHP Manual Integration"
+msgstr "PHP eskuliburua bateratzea"
+
+#. i18n: ectx: property (text), widget (QLabel, PhpDocNote)
+#: docs/phpdocsconfig.ui:36
+#, kde-format
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+"REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
+"weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">By default the online <a "
+"href=\"https://php.net\"><span style=\" text-decoration: underline; color:"
+"#0000ff;\">PHP documentation</span></a> is used remotely. Alternatively you "
+"can set the location to a local copy of the documentation in the language of "
+"your choice. Make sure you downloaded the <span style=\" font-style:italic;"
+"\">\"Many HTML files\"</span> package.</p></body></html>"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+"REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
+"weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Era lehenetsian, <a href="
+"\"https://php.net\"><span style=\" text-decoration: underline; color:#0000ff;"
+"\">PHPren lerroko dokumentazioa</span></a> urrunetik erabiltzen da. "
+"kokalekua dokumentazioaren kopia lokal batera, zuk hautatutako hizkuntzan, "
+"ezartzeko aukera ere baduzu. Ziurtatu <span style=\" font-style:italic;\">"
+"\"Many HTML files\"</span> (HTML fitxategi anitz) paketea zama-jaitsi duzula."
+"</p></body></html>"
+
+#. i18n: ectx: property (text), widget (QLabel, PhpDocLocationLabel)
+#: docs/phpdocsconfig.ui:57
+#, kde-format
+msgid "Location:"
+msgstr "Kokalekua:"
+
+#: docs/phpdocsmodel.cpp:95
+#, kde-format
+msgid "<lost declaration>"
+msgstr "<galdutako deklarazioa>"
+
+#: docs/phpdocsplugin.cpp:214
+#, kde-format
+msgid "PHP Documentation"
+msgstr "PHP dokumentazioa"
+
+#. i18n: ectx: label, entry (phpDocLocation), group (PHP Documentation)
+#: docs/phpdocssettings.kcfg:10
+#, kde-format
+msgid "Specifies the location of the PHP documentation to use."
+msgstr "Erabili beharreko PHP dokumentazioaren kokalekua zehazten du."
+
+#. i18n: ectx: tooltip, entry (phpDocLocation), group (PHP Documentation)
+#: docs/phpdocssettings.kcfg:13
+#, kde-format
+msgid ""
+"The location of the PHP documentation to use. You can either use a remote\n"
+"                 location like https://php.net or a local directory which "
+"contains the\n"
+"                 PHP documentation in HTML format with many files."
+msgstr ""
+"Erabili beharreko PHP dokumentazioaren kokalekua. Urrutiko kokaleku bat\n"
+"                 erabil dezakezu, https://php.net esaterako, edo PHP "
+"dokumentazioa\n"
+"                 HTML formatuan, fitxategi anitz, duen direktorio lokal bat."
+
+#. i18n: ectx: whatsthis, entry (phpDocLocation), group (PHP Documentation)
+#: docs/phpdocssettings.kcfg:15
+#, kde-format
+msgid ""
+"Make sure local copies are downloaded in HTML format with many files.\n"
+"        "
+msgstr ""
+"Ziurtatu kopia lokalak HTML formatuan fitxategi askorekin zama-jaisten "
+"direla.\n"
+"        "
+
+#: docs/phpdocumentationwidget.cpp:44
+#, kde-format
+msgid "...loading documentation..."
+msgstr "...dokumentazioa zamatzen..."
+
+#: duchain/builders/contextbuilder.cpp:451
+#, kde-format
+msgid "Circular inheritance of %1 and %2"
+msgstr "%1 eta %2(e)ren herentzia zirkularra"
+
+#: duchain/builders/declarationbuilder.cpp:185
+#: duchain/builders/declarationbuilder.cpp:200
+#: duchain/builders/declarationbuilder.cpp:216
+#: duchain/builders/declarationbuilder.cpp:857
+#: duchain/builders/declarationbuilder.cpp:896
+#, kde-format
+msgid "Cannot use '%1' as class name as it is reserved"
+msgstr "Ezin da '%1' klase-izen gisa erabili erreserbatuta dagoelako"
+
+#: duchain/builders/declarationbuilder.cpp:339
+#, kde-format
+msgid "Access type for interface method %1 must be omitted."
+msgstr "%1 interfaze-metodorako sarbide-mota ipini gabe utzi behar da."
+
+#: duchain/builders/declarationbuilder.cpp:343
+#, kde-format
+msgid "Interface function %1 cannot contain body."
+msgstr "%1 interfaze-funtzioak ezin du gorputzik izan."
+
+#: duchain/builders/declarationbuilder.cpp:355
+#, kde-format
+msgid ""
+"Class %1 contains abstract method %2 and must therefore be declared abstract "
+"or implement the method."
+msgstr ""
+"%1 klaseak %2 metodo abstraktua du, hori dela eta abstraktu deklaratu edo "
+"metodoa inplementatu behar da."
+
+#: duchain/builders/declarationbuilder.cpp:361
+#, kde-format
+msgid "Abstract function %1 cannot contain body."
+msgstr "%1 funtzio abstraktuak ezin du gorputzik izan."
+
+#: duchain/builders/declarationbuilder.cpp:364
+#, kde-format
+msgid "Cannot use the final modifier on an abstract class member."
+msgstr "Ezin da 'final' aldatzailea klase abstraktu baten partaidean erabili."
+
+#: duchain/builders/declarationbuilder.cpp:374
+#, kde-format
+msgid "Non-abstract method %1 must contain body."
+msgstr "%1 metodo ez-abstraktuak gorputza izan behar du."
+
+#: duchain/builders/declarationbuilder.cpp:392
+#, kde-format
+msgid "Cannot use 'final' as constant modifier"
+msgstr "Ezin da 'final' konstantearen aldatzaile gisa erabili"
+
+#: duchain/builders/declarationbuilder.cpp:395
+#, kde-format
+msgid "Cannot use 'static' as constant modifier"
+msgstr "Ezin da 'static' konstantearen aldatzaile gisa erabili"
+
+#: duchain/builders/declarationbuilder.cpp:398
+#, kde-format
+msgid "Cannot use 'abstract' as constant modifier"
+msgstr "Ezin da 'abstract' konstantearen aldatzaile gisa erabili"
+
+#: duchain/builders/declarationbuilder.cpp:412
+#, kde-format
+msgid "Properties cannot be declared final."
+msgstr "Propietateak ezin dira 'final' gisa deklaratu."
+
+#: duchain/builders/declarationbuilder.cpp:415
+#, kde-format
+msgid "Properties cannot be declared abstract."
+msgstr "Propietateak ezin dira 'abstract' gisa deklaratu."
+
+#: duchain/builders/declarationbuilder.cpp:461
+#, kde-format
+msgid ""
+"Trait method %1 has not been applied, because there are collisions with "
+"other trait methods on %2"
+msgstr ""
+"Bereizgarriko %1 metodoa ez da aplikatu, %2(e)eko bereizgarriko beste metodo "
+"batzuekin talka dagoelako"
+
+#: duchain/builders/declarationbuilder.cpp:654
+#, kde-format
+msgid "Traits cannot have constants."
+msgstr "Bereizgarriak («traits») ezin dira konstanteak izan."
+
+#: duchain/builders/declarationbuilder.cpp:661
+#, kde-format
+msgid ""
+"A class constant must not be called 'class'; it is reserved for class name "
+"fetching"
+msgstr ""
+"Klase konstante bat ez da 'class' izendatu behar; klase izenak eskuratzeko "
+"erreserbatuta dago"
+
+#: duchain/builders/declarationbuilder.cpp:742
+#: duchain/builders/declarationbuilder.cpp:768
+#, kde-format
+msgid "Cannot use 'abstract' as method modifier"
+msgstr "Ezin da 'abstract' metodo aldatzaile gisa erabili"
+
+#: duchain/builders/declarationbuilder.cpp:745
+#: duchain/builders/declarationbuilder.cpp:771
+#, kde-format
+msgid "Cannot use 'final' as method modifier"
+msgstr "Ezin da 'final' metodo aldatzaile gisa erabili"
+
+#: duchain/builders/declarationbuilder.cpp:748
+#: duchain/builders/declarationbuilder.cpp:774
+#, kde-format
+msgid "Cannot use 'static' as method modifier"
+msgstr "Ezin da 'static' metodo aldatzaile gisa erabili"
+
+#: duchain/builders/declarationbuilder.cpp:823
+#, kde-format
+msgid "Variadic parameter cannot have a default value"
+msgstr "Parametro aldakorrak («variadic») ezin du balio lehenetsi bat izan"
+
+#: duchain/builders/declarationbuilder.cpp:826
+#, kde-format
+msgid "Default value for parameters with a class type hint can only be NULL."
+msgstr ""
+"Klase mota iradokita duten parametroen balio lehenetsia, bakarri, NULL izan "
+"daiteke."
+
+#: duchain/builders/declarationbuilder.cpp:834
+#, kde-format
+msgid "Default value for parameters with an object type can only be NULL."
+msgstr ""
+"Objektu motako parametroen balio lehenetsia, bakarrik, NULL izan daiteke."
+
+#: duchain/builders/declarationbuilder.cpp:862
+#, kde-format
+msgid "Only the last parameter can be variadic."
+msgstr "Azken parametroa bakarrik izan daiteke aldakorra («variadic»)."
+
+#: duchain/builders/declarationbuilder.cpp:976
+#, kde-format
+msgid "Cannot redeclare PHP internal %1."
+msgstr "Ezin da berriz deklaratu PHP barneko %1."
+
+#: duchain/builders/declarationbuilder.cpp:979
+#, kde-format
+msgid ""
+"%1 and %2 define the same property (%3) in the composition of %1. This might "
+"be incompatible, to improve maintainability consider using accessor methods "
+"in traits instead."
+msgstr ""
+"%1 eta %2, biek propietate bera (%3) definitzen dute %1(e)ren konposaketan. "
+"Hori bateraezina izan liteke, mantengarritasuna hobetzeko, kontuan hartu, "
+"horren ordez, bereizgarrietan («traits») metodo atzitzaileak erabiltzea."
+
+#: duchain/builders/declarationbuilder.cpp:987
+#, kde-format
+msgid "Cannot redeclare %1, already declared in %2 on line %3."
+msgstr ""
+"Ezin da %1 berriz deklaratu, %2(e)an dagoeneko birdeklaratu da, %3 lerroan."
+
+#: duchain/builders/declarationbuilder.cpp:1073
+#, kde-format
+msgid ""
+"Class %1 contains %2 abstract methods and must therefore be declared "
+"abstract or implement the remaining methods."
+msgstr ""
+"%1 klaseak %2 metodo abstraktu ditu, hori dela eta abstraktu deklaratu edo "
+"gainerako metodoak inplementatu behar dira."
+
+#: duchain/builders/declarationbuilder.cpp:1080
+#, kde-format
+msgid "Cannot re-assign $this."
+msgstr "Ezin da «$this» berresleitu."
+
+#: duchain/builders/declarationbuilder.cpp:1274
+#, kde-format
+msgid "Cannot access private property %1"
+msgstr "Ezin da atzitu %1 propietate pribatua"
+
+#: duchain/builders/declarationbuilder.cpp:1277
+#, kde-format
+msgid "Cannot access protected property %1"
+msgstr "Ezin da atzitu %1 propietate babestua"
+
+#: duchain/builders/declarationbuilder.cpp:1423
+#, kde-format
+msgid "Cannot use positional argument after argument unpacking"
+msgstr "Ezin da argumentu posizionala erabili argumentuak despaketatu ondoren"
+
+#: duchain/builders/declarationbuilder.cpp:1638
+#, kde-format
+msgid "The use statement with non-compound name '%1' has no effect."
+msgstr "«use» adierazpena konposatu gabeko '%1' izenarekin ez du eraginik."
+
+#: duchain/builders/declarationbuilder.cpp:1665
+#, kde-format
+msgid "Cannot use '%1' as '%2' because the name is already in use."
+msgstr "Ezin da '%1' '%2' gisa erabili izena dagoeneko erabilita dagoelako."
+
+#: duchain/builders/declarationbuilder.cpp:1691
+#, kde-format
+msgid "Cannot use %1 as %2 because '%2' is a special class name"
+msgstr "Ezin da %1 %2 gisa erabili '%2' klase izen berezi bat delako"
+
+#: duchain/builders/declarationbuilder.cpp:1701
+#, kde-format
+msgid "The 'yield' expression can only be used inside a function"
+msgstr "'yield' adierazpena funtzio baten barruan baino ezin da erabili"
+
+#: duchain/builders/usebuilder.cpp:202
+#, kde-format
+msgid "Usage of %1 is deprecated."
+msgstr "%1(e)n erabilera zaharkitua dago."
+
+#: duchain/builders/usebuilder.cpp:204
+#, kde-format
+msgid "Declaration not found: %1"
+msgstr "Deklarazioa ez da aurkitu: %1"
+
+#: duchain/declarations/traitmemberaliasdeclaration.cpp:54
+#: duchain/declarations/traitmethodaliasdeclaration.cpp:87
+#, kde-format
+msgid "Lost trait alias %1"
+msgstr "Bereizgarriaren («trait») %1 ezizena galdu da"
+
+#: duchain/navigation/declarationnavigationcontext.cpp:117
+#: duchain/navigation/declarationnavigationcontext.cpp:130
+#, kde-format
+msgid "Use of %1 from %2<br />"
+msgstr "%1(e)n erabilera %2(e)tik<br />"
+
+#: duchain/navigation/declarationnavigationcontext.cpp:140
+#, kde-format
+msgid "Broken member alias trait."
+msgstr "Partaide-ezizenaren bereizgarri («trait») hautsita."
+
+#: duchain/navigation/declarationnavigationcontext.cpp:235
+#, kde-format
+msgid "PHP internal"
+msgstr "PHP barnekoa"
+
+#: duchain/navigation/declarationnavigationcontext.cpp:245
+#, kde-format
+msgctxt "kind of a php-constant, as shown in the declaration tooltip"
+msgid "Constant"
+msgstr "Konstantea"
+
+#: duchain/navigation/magicconstantnavigationcontext.cpp:48
+#, kde-format
+msgid "magic constant"
+msgstr "konstante magikoa"
+
+#: duchain/navigation/magicconstantnavigationcontext.cpp:65
+#, kde-format
+msgid "empty (not inside a class)"
+msgstr "hutsik (ez klase baten barruan)"
+
+#: duchain/navigation/magicconstantnavigationcontext.cpp:71
+#, kde-format
+msgid "empty (not inside a trait)"
+msgstr "hutsik (ez bereizgarri («trait») baten barruan)"
+
+#: duchain/navigation/magicconstantnavigationcontext.cpp:90
+#, kde-format
+msgid "empty (not inside a method)"
+msgstr "hutsik (ez metodo baten barruan)"
+
+#: duchain/navigation/magicconstantnavigationcontext.cpp:100
+#, kde-format
+msgid "empty (not inside a function)"
+msgstr "hutsik (ez funtzio baten barruan)"
+
+#: duchain/navigation/magicconstantnavigationcontext.cpp:109
+#, kde-format
+msgid "empty (not inside a namespace)"
+msgstr "hutsik (ez izen-leku baten barruan)"
+
+#: duchain/navigation/magicconstantnavigationcontext.cpp:113
+#, kde-format
+msgid "current value: %1"
+msgstr "uneko balioa: %1"
+
+#: duchain/types/indexedcontainer.cpp:76
+#, kde-format
+msgctxt "as in list of int, set of string"
+msgid "%1 of %2"
+msgstr "%1 / %2"
+
+#: parser/main.cpp:24
+#, kde-format
+msgid "php-parser"
+msgstr "php-parser"
+
+#: parser/main.cpp:25
+#, kde-format
+msgid "KDevelop PHP parser debugging utility"
+msgstr "KDevelop PHP aztertzaile sintaktikoak arazteko tresna"
+
+#: parser/main.cpp:26
+#, kde-format
+msgid "(c) 2008 Niko Sams, 2009 Milian Wolff"
+msgstr "(c) 2008 Niko Sams, 2009 Milian Wolff"
+
+#: parser/parsesession.cpp:69
+#, kde-format
+msgid "Could not open file '%1'"
+msgstr "Ezin izan da '%1' fitxategia ireki"
+
+#: parser/parsesession.cpp:72
+#, kde-format
+msgid "File could not be read from."
+msgstr "Fitxategitik ezin izan da irakurri."
+
+#: parser/parsesession.cpp:75
+#, kde-format
+msgid "File could not be opened."
+msgstr "Fitxategia ezin izan da ireki."
+
+#: parser/parsesession.cpp:78
+#, kde-format
+msgid "File permissions prevent opening for read."
+msgstr "Fitxategi-baimenek ez dute uzten irakurtzeko irekitzen."
+
+#: testprovider/phpunitrunjob.cpp:71
+#, kde-format
+msgid "PHPUnit"
+msgstr "PHPUnit"
