@@ -60,19 +60,5 @@ protected:
 
 }
 
-namespace KDevelop
-{
-
-template<>
-inline Php::IntegralTypeExtended* fastCast<Php::IntegralTypeExtended*>(AbstractType* from) {
-    if ( !from || from->whichType() != AbstractType::TypeIntegral ) {
-        return nullptr;
-    } else {
-        return dynamic_cast<Php::IntegralTypeExtended*>(from);
-    }
-}
-
-}
-
 #endif // PHPINTEGRALTYPE_H
 

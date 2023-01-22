@@ -65,7 +65,7 @@ bool IntegralTypeExtended::equals(const KDevelop::AbstractType* rhs) const
         return false;
     }
 
-    Q_ASSERT( fastCast<const IntegralTypeExtended*>(rhs) );
+    Q_ASSERT( dynamic_cast<const IntegralTypeExtended*>(rhs) );
 
     const IntegralTypeExtended* type = static_cast<const IntegralTypeExtended*>(rhs);
 

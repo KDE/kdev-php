@@ -73,19 +73,5 @@ protected:
 
 }
 
-namespace KDevelop
-{
-
-template<>
-inline Php::StructureType* fastCast<Php::StructureType*>(AbstractType* from) {
-    if ( !from || from->whichType() != AbstractType::TypeStructure ) {
-        return nullptr;
-    } else {
-        return dynamic_cast<Php::StructureType*>(from);
-    }
-}
-
-}
-
 #endif // PHP_STRUCTURETYPE_H
 
