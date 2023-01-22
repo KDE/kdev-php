@@ -71,6 +71,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
 
 AbstractType::Ptr TypeBuilder::parseSimpleType(QString type, AstNode* node)
 {
+    Q_UNUSED(node)
     uint iType = 0;
     if (!type.compare(QLatin1String("int"), Qt::CaseInsensitive) || !type.compare(QLatin1String("integer"), Qt::CaseInsensitive)) {
         iType = IntegralType::TypeInt;
