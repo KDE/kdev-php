@@ -1099,8 +1099,8 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                     }
                     if ( (*it)->abstractType() && !(*it)->abstractType()->equals(type.data()) ) {
                         // if it's currently mixed and we now get something more definite, use that instead
-                        if ( ReferenceType::Ptr rType = ReferenceType::Ptr::dynamicCast((*it)->abstractType()) ) {
-                            if ( IntegralType::Ptr integral = IntegralType::Ptr::dynamicCast(rType->baseType()) ) {
+                        if ( auto rType = (*it)->abstractType().dynamicCast<ReferenceType>() ) {
+                            if ( auto integral = rType->baseType().dynamicCast<IntegralType>() ) {
                                 if ( integral->dataType() == IntegralType::TypeMixed ) {
                                     // referenced mixed to referenced @p type
                                     ReferenceType::Ptr newType(new ReferenceType());
@@ -1110,7 +1110,7 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                                 }
                             }
                         }
-                        if ( IntegralType::Ptr integral = IntegralType::Ptr::dynamicCast((*it)->abstractType()) ) {
+                        if ( auto integral = (*it)->abstractType().dynamicCast<IntegralType>() ) {
                             if ( integral->dataType() == IntegralType::TypeMixed ) {
                                 // mixed to @p type
                                 (*it)->setType(type);
@@ -1118,11 +1118,11 @@ void DeclarationBuilder::declareVariable(DUContext* parentCtx, AbstractType::Ptr
                             }
                         }
                         // else make it unsure
-                        UnsureType::Ptr unsure = UnsureType::Ptr::dynamicCast((*it)->abstractType());
+                        auto unsure = (*it)->abstractType().dynamicCast<UnsureType>();
                         // maybe it's referenced?
-                        ReferenceType::Ptr rType = ReferenceType::Ptr::dynamicCast((*it)->abstractType());
+                        auto rType = (*it)->abstractType().dynamicCast<ReferenceType>();
                         if ( !unsure && rType ) {
-                            unsure = UnsureType::Ptr::dynamicCast(rType->baseType());
+                            unsure = rType->baseType().dynamicCast<UnsureType>();
                         }
                         if ( !unsure ) {
                             unsure = UnsureType::Ptr(new UnsureType());
@@ -1408,7 +1408,7 @@ void DeclarationBuilder::visitFunctionCallParameterListElement(FunctionCallParam
     if ( m_findVariable.node && m_currentFunctionType &&
             m_currentFunctionType->arguments().count() > m_functionCallParameterPos) {
         ReferenceType::Ptr refType = m_currentFunctionType->arguments()
-                                        .at(m_functionCallParameterPos).cast<ReferenceType>();
+                                        .at(m_functionCallParameterPos).dynamicCast<ReferenceType>();
         if ( refType ) {
             // this argument is referenced, so if the node contains undeclared variables we have
             // to declare them with a NULL type, see also:

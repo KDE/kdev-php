@@ -229,8 +229,8 @@ void ImplementationItem::execute(KTextEditor::View* view, const KTextEditor::Ran
             arguments += ')';
 
             bool voidReturnType = false;
-            if (FunctionType::Ptr::dynamicCast(m_declaration->abstractType())) {
-                AbstractType::Ptr retType = FunctionType::Ptr::staticCast(m_declaration->abstractType())->returnType();
+            if (auto functionType = m_declaration->abstractType().dynamicCast<FunctionType>()) {
+                AbstractType::Ptr retType = functionType->returnType();
                 if (retType->equals(new IntegralType(IntegralType::TypeVoid))) {
                     voidReturnType = true;
                 }

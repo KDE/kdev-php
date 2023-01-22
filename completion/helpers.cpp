@@ -96,7 +96,7 @@ void createArgumentList(const NormalDeclarationCompletionItem& item, QString& re
                     // when php-like type hinting is requested only add types for arrays and classes
                     if (!phpTypeHinting
                             || (type->whichType() == AbstractType::TypeIntegral
-                                && type.cast<IntegralType>()->dataType() == IntegralType::TypeArray)
+                                && type.staticCast<IntegralType>()->dataType() == IntegralType::TypeArray)
                             || type->whichType() == AbstractType::TypeStructure) {
                         ret += type->toString() + ' ';
                     }

@@ -43,8 +43,8 @@ NavigationContextPointer DeclarationNavigationContext::registerChild(Declaration
 
 void DeclarationNavigationContext::htmlClass()
 {
-    StructureType::Ptr klass = declaration()->abstractType().cast<StructureType>();
-    Q_ASSERT(klass);
+    Q_ASSERT(declaration()->abstractType());
+    auto klass = declaration()->abstractType().staticCast<StructureType>();
     ClassDeclaration* classDecl = dynamic_cast<ClassDeclaration*>(klass->declaration(topContext().data()));
     if (classDecl) {
         // write class modifier
@@ -150,7 +150,7 @@ void DeclarationNavigationContext::htmlFunction()
   Q_ASSERT(function);
 
   const ClassFunctionDeclaration* classFunDecl = dynamic_cast<const ClassFunctionDeclaration*>(declaration().data());
-  const FunctionType::Ptr type = declaration()->abstractType().cast<FunctionType>();
+  const auto type = declaration()->abstractType().dynamicCast<FunctionType>();
   if( !type ) {
     modifyHtml() += errorHighlight(QStringLiteral("Invalid type<br />"));
     return;
@@ -190,7 +190,7 @@ void DeclarationNavigationContext::htmlFunction()
 
       if (argDec && argDec->isVariadic()) {
         AbstractType::Ptr variadicType;
-        const auto a_type = argType.cast<KDevelop::ArrayType>();
+        const auto a_type = argType.dynamicCast<KDevelop::ArrayType>();
         if (a_type) {
             variadicType = a_type->elementType();
         } else {

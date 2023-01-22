@@ -481,15 +481,15 @@ AbstractType::Ptr determineTypehint(const T* genericType, EditorIntegrator *edit
 
     if (type && genericType->isNullable != -1) {
         AbstractType::Ptr nullType = AbstractType::Ptr(new IntegralType(IntegralType::TypeNull));
-        if (type.cast<UnsureType>()) {
-            UnsureType::Ptr unsure = type.cast<UnsureType>();
+        auto unsure = type.dynamicCast<UnsureType>();
+        if (unsure) {
             unsure->addType(nullType->indexed());
         } else {
-            UnsureType::Ptr unsure(new UnsureType());
+            unsure = UnsureType::Ptr(new UnsureType());
             unsure->addType(type->indexed());
             unsure->addType(nullType->indexed());
 
-            type = AbstractType::Ptr(unsure);
+            type = unsure;
         }
     }
 
@@ -514,17 +514,17 @@ AbstractType::Ptr parameterType(const ParameterAst* node, AbstractType::Ptr phpD
          *    so we can ignore this case.
          * If it's null (which cannot be a typehint), add it as UnsureType
          */
-        if (type && defaultValueType.cast<IntegralType>() && defaultValueType.cast<IntegralType>()->dataType() == IntegralType::TypeNull) {
-            if (type.cast<UnsureType>()) {
-                UnsureType::Ptr unsure = type.cast<UnsureType>();
+        if (type && defaultValueType.dynamicCast<IntegralType>() && defaultValueType.staticCast<IntegralType>()->dataType() == IntegralType::TypeNull) {
+            auto unsure = type.dynamicCast<UnsureType>();
+            if (unsure) {
                 AbstractType::Ptr nullType = AbstractType::Ptr(new IntegralType(IntegralType::TypeNull));
                 unsure->addType(defaultValueType->indexed());
             } else {
-                UnsureType::Ptr unsure(new UnsureType());
+                unsure = UnsureType::Ptr(new UnsureType());
                 unsure->addType(type->indexed());
                 unsure->addType(defaultValueType->indexed());
 
-                type = AbstractType::Ptr(unsure);
+                type = unsure;
             }
         } else {
             //Otherwise, let the default value dictate the parameter type
@@ -543,7 +543,7 @@ AbstractType::Ptr parameterType(const ParameterAst* node, AbstractType::Ptr phpD
       ReferenceType::Ptr p( new ReferenceType() );
       p->setBaseType( type );
 
-      type = p.cast<AbstractType>();
+      type = p;
     }
 
     if (node->isVariadic != -1) {

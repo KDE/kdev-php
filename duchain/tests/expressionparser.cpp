@@ -44,7 +44,7 @@ void TestExpressionParser::newClass()
     ExpressionParser p(true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i"), DUContextPointer(top), CursorInRevision(1, 0));
     QVERIFY(res.type());
-    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
+    QCOMPARE(res.type().staticCast<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
 }
 
 void TestExpressionParser::newSelf()
@@ -62,7 +62,7 @@ void TestExpressionParser::newSelf()
                                         DUContextPointer(top->childContexts().first()->childContexts().last()),
                                         CursorInRevision(0, 30));
     QVERIFY(res.type());
-    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
+    QCOMPARE(res.type().staticCast<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
 }
 
 void TestExpressionParser::newStatic()
@@ -79,8 +79,8 @@ void TestExpressionParser::newStatic()
     ExpressionEvaluationResult res = p.evaluateType( QByteArray("new static()"),
                                         DUContextPointer(top->childContexts().first()->childContexts().last()),
                                         CursorInRevision(0, 30));
-    QVERIFY(res.type().cast<StructureType>());
-    QCOMPARE(res.type().cast<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
+    QVERIFY(res.type().dynamicCast<StructureType>());
+    QCOMPARE(res.type().staticCast<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
 }
 
 void TestExpressionParser::memberVariable()
@@ -98,7 +98,7 @@ void TestExpressionParser::memberVariable()
     QVERIFY(res.type());
     QCOMPARE(res.allDeclarations().count(), 1);
     QCOMPARE(res.allDeclarations().first().data(), top->childContexts().first()->localDeclarations().first());
-    QCOMPARE(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
+    QCOMPARE(res.type().staticCast<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier(u"a"));
 }
 void TestExpressionParser::memberFunction()
 {
@@ -113,8 +113,8 @@ void TestExpressionParser::memberFunction()
     ExpressionParser p(true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$i->foo()"), DUContextPointer(top), CursorInRevision(1, 0));
     QVERIFY(res.type());
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type())->dataType() == IntegralType::TypeVoid);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeVoid);
     QCOMPARE(res.allDeclarations().size(), 1);
     QCOMPARE(res.allDeclarations().first().data(), top->childContexts().first()->localDeclarations().first());
 }
@@ -225,7 +225,7 @@ void TestExpressionParser::globalFunction()
     ExpressionParser p(true);
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("foo"), DUContextPointer(top), CursorInRevision(1, 0));
     QVERIFY(res.type());
-    QVERIFY(FunctionType::Ptr::dynamicCast(res.type()));
+    QVERIFY(res.type().dynamicCast<FunctionType>());
     QCOMPARE(res.allDeclarations().count(), 1);
     QCOMPARE(res.allDeclarations().first().data(), top->localDeclarations().first());
 }
@@ -269,8 +269,8 @@ void TestExpressionParser::thisObject()
     QCOMPARE(res.allDeclarations().count(), 1);
     QCOMPARE(res.allDeclarations().first().data(), top->localDeclarations().first());
     QVERIFY(res.type());
-    QVERIFY(StructureType::Ptr::dynamicCast(res.type()));
-    QCOMPARE(StructureType::Ptr::dynamicCast(res.type())->declaration(top), top->localDeclarations().first());
+    QVERIFY(res.type().dynamicCast<StructureType>());
+    QCOMPARE(res.type().staticCast<StructureType>()->declaration(top), top->localDeclarations().first());
 }
 
 void TestExpressionParser::integralTypes()
@@ -286,40 +286,40 @@ void TestExpressionParser::integralTypes()
     ExpressionParser p(true);
 
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("123"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeInt));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeInt));
 
     res = p.evaluateType(QByteArray("123.1"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeFloat));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeFloat));
 
     res = p.evaluateType(QByteArray("\"asdf\""), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeString));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeString));
 
     res = p.evaluateType(QByteArray("\"as $foo df\""), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeString));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeString));
 
     res = p.evaluateType(QByteArray("'asdf'"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeString));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeString));
 
     res = p.evaluateType(QByteArray("true"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeBoolean));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeBoolean));
 
     res = p.evaluateType(QByteArray("TRUE"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeBoolean));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeBoolean));
 
     res = p.evaluateType(QByteArray("null"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeNull));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeNull));
 
     res = p.evaluateType(QByteArray("NULL"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeNull));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeNull));
 }
 
 void TestExpressionParser::newObject()
@@ -335,8 +335,8 @@ void TestExpressionParser::newObject()
     ExpressionParser p(true);
 
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("new A();"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(StructureType::Ptr::dynamicCast(res.type()));
-    QCOMPARE(StructureType::Ptr::staticCast(res.type())->declaration(top), top->localDeclarations().first());
+    QVERIFY(res.type().dynamicCast<StructureType>());
+    QCOMPARE(res.type().staticCast<StructureType>()->declaration(top), top->localDeclarations().first());
 }
 
 void TestExpressionParser::cast()
@@ -352,28 +352,28 @@ void TestExpressionParser::cast()
     ExpressionParser p(true);
 
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("(string)$foo"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeString);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeString);
 
     res = p.evaluateType(QByteArray("(int)$foo"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
 
     res = p.evaluateType(QByteArray("(double)$foo"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeFloat);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeFloat);
 
     res = p.evaluateType(QByteArray("(bool)$foo"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeBoolean);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeBoolean);
 
     res = p.evaluateType(QByteArray("(array)$foo"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeArray);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeArray);
 
     res = p.evaluateType(QByteArray("(object)$foo"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(StructureType::Ptr::dynamicCast(res.type()));
-    QVERIFY(StructureType::Ptr::staticCast(res.type())->qualifiedIdentifier() == QualifiedIdentifier(u"stdclass"));
+    QVERIFY(res.type().dynamicCast<StructureType>());
+    QVERIFY(res.type().staticCast<StructureType>()->qualifiedIdentifier() == QualifiedIdentifier(u"stdclass"));
 }
 
 void TestExpressionParser::operations()
@@ -389,68 +389,68 @@ void TestExpressionParser::operations()
     ExpressionParser p(true);
 
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("'1' . '1'"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeString);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeString);
 
     res = p.evaluateType(QByteArray("1 . 1"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeString);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeString);
 
     res = p.evaluateType(QByteArray("1 + 1"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
 
     res = p.evaluateType(QByteArray("1 ** 1"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
 
     res = p.evaluateType(QByteArray("'1' + '1'"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
 
     res = p.evaluateType(QByteArray("$foo .= '1'"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeString);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeString);
 
     res = p.evaluateType(QByteArray("$foo .= 1"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeString);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeString);
 
     res = p.evaluateType(QByteArray("$foo += 1"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
 
     res = p.evaluateType(QByteArray("$foo += '1'"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
 
     res = p.evaluateType(QByteArray("$foo *= 1"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
 
     res = p.evaluateType(QByteArray("$foo *= '1'"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
 
     res = p.evaluateType(QByteArray("$foo **= 1"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
 
     res = p.evaluateType(QByteArray("$foo = 3 > 1"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeBoolean);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeBoolean);
 
     res = p.evaluateType(QByteArray("$foo = 3 != 1"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeBoolean);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeBoolean);
 
     res = p.evaluateType(QByteArray("$foo = $a instanceof A"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeBoolean);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeBoolean);
 
     res = p.evaluateType(QByteArray("$foo = 3 <=> 2"), DUContextPointer(top), CursorInRevision(1, 0));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QVERIFY(IntegralType::Ptr::staticCast(res.type())->dataType() == IntegralType::TypeInt);
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QVERIFY(res.type().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
 }
 
 void TestExpressionParser::findArg()
@@ -472,22 +472,22 @@ void TestExpressionParser::findArg()
 
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$arg"), DUContextPointer(top->childContexts().last()),
                                                     CursorInRevision(0, 47));
-    QVERIFY(IntegralType::Ptr::dynamicCast(res.type()));
-    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+    QVERIFY(res.type().dynamicCast<IntegralType>());
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
 
     res = p.evaluateType(QByteArray("$bar"), DUContextPointer(top->childContexts().last()),
                          CursorInRevision(0, 47));
-    ReferenceType::Ptr type = ReferenceType::Ptr::dynamicCast(res.type());
+    auto type = res.type().dynamicCast<ReferenceType>();
     QVERIFY(type);
-    QVERIFY(IntegralType::Ptr::dynamicCast(type->baseType()));
-    QCOMPARE(IntegralType::Ptr::staticCast(type->baseType())->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+    QVERIFY(type->baseType().dynamicCast<IntegralType>());
+    QCOMPARE(type->baseType().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
 
     res = p.evaluateType(QByteArray("$a"), DUContextPointer(top->childContexts().last()),
                          CursorInRevision(0, 47));
-    type = ReferenceType::Ptr::dynamicCast(res.type());
+    type = res.type().dynamicCast<ReferenceType>();
     QVERIFY(type);
-    QVERIFY(StructureType::Ptr::dynamicCast(type->baseType()));
-    QCOMPARE(StructureType::Ptr::staticCast(type->baseType())->declaration(top), top->localDeclarations().first());
+    QVERIFY(type->baseType().dynamicCast<StructureType>());
+    QCOMPARE(type->baseType().staticCast<StructureType>()->declaration(top), top->localDeclarations().first());
 }
 
 void TestExpressionParser::array_data()
@@ -518,14 +518,14 @@ void TestExpressionParser::array()
     QVERIFY(top->problems().isEmpty());
 
     ExpressionParser p(true);
-    QCOMPARE(top->localDeclarations().first()->abstractType().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeArray));
+    QCOMPARE(top->localDeclarations().first()->abstractType().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeArray));
 
     ExpressionEvaluationResult res = p.evaluateType("$b = $a[0]", DUContextPointer(top), CursorInRevision(0, 22));
-    QVERIFY(res.type().cast<IntegralType>());
+    QVERIFY(res.type().dynamicCast<IntegralType>());
     QEXPECT_FAIL("", "we'd need advanced array support to know that [0] returns a string...", Continue);
-    QCOMPARE(res.type().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeString));
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeString));
     // fallback
-    QCOMPARE(res.type().cast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeMixed));
 }
 
 void TestExpressionParser::arrayFunctionDereferencing_data()
@@ -562,7 +562,7 @@ void TestExpressionParser::arrayFunctionDereferencing()
     QVERIFY(top->problems().isEmpty());
 
     Declaration* decl = top->localDeclarations().last();
-    IntegralType::Ptr type = decl->abstractType().cast<IntegralType>();
+    auto type = decl->abstractType().dynamicCast<IntegralType>();
     QVERIFY(type);
     QEXPECT_FAIL("", "we'd need advanced array support to know that [0] returns a int...", Continue);
     QCOMPARE(type->dataType(), static_cast<uint>(IntegralType::TypeInt));
@@ -590,7 +590,7 @@ void TestExpressionParser::arrayLiteralDereferencing()
     QVERIFY(top->problems().isEmpty());
 
     Declaration* decl = top->localDeclarations().last();
-    IntegralType::Ptr type = decl->abstractType().cast<IntegralType>();
+    auto type = decl->abstractType().dynamicCast<IntegralType>();
     QVERIFY(type);
     QEXPECT_FAIL("", "we'd need advanced array support to know that [0] returns a int...", Continue);
     QCOMPARE(type->dataType(), static_cast<uint>(IntegralType::TypeInt));
@@ -619,7 +619,7 @@ void TestExpressionParser::stringAsArray()
     QVERIFY(top->problems().isEmpty());
 
     Declaration* decl = top->localDeclarations().last();
-    IntegralType::Ptr type = decl->abstractType().cast<IntegralType>();
+    auto type = decl->abstractType().dynamicCast<IntegralType>();
     QVERIFY(type);
     QCOMPARE(type->dataType(), static_cast<uint>(IntegralType::TypeString));
 }
@@ -640,7 +640,7 @@ void TestExpressionParser::classMemberOnInstantiation()
 
     ExpressionEvaluationResult res = p.evaluateType(QByteArray("$a"), DUContextPointer(top), CursorInRevision(1, 0));
     QVERIFY(res.type());
-    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeString));
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeString));
 }
 
 void TestExpressionParser::classNameConstant_data()
@@ -670,7 +670,7 @@ void TestExpressionParser::classNameConstant()
 
     ExpressionEvaluationResult res = p.evaluateType(NSconst.toUtf8(), DUContextPointer(top), CursorInRevision(1, 0));
     QVERIFY(res.type());
-    QCOMPARE(IntegralType::Ptr::staticCast(res.type())->dataType(), static_cast<uint>(IntegralType::TypeString));
+    QCOMPARE(res.type().staticCast<IntegralType>()->dataType(), static_cast<uint>(IntegralType::TypeString));
 }
 
 void TestExpressionParser::invalidVariadicFunction_data()

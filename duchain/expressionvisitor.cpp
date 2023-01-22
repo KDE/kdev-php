@@ -186,7 +186,7 @@ void ExpressionVisitor::visitVarExpression(VarExpressionAst *node)
         if (generatorDecl) {
             m_result.setType(AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed)));
             if (hasCurrentClosureReturnType()) {
-                FunctionType::Ptr closureType = currentClosureReturnType().cast<FunctionType>();
+                auto closureType = currentClosureReturnType().staticCast<FunctionType>();
                 closureType->setReturnType(generatorDecl->abstractType());
             }
         }
@@ -585,8 +585,7 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
 
         //If the variable type is unsure, try to see if it contains a StructureType. If so, use that
         //    (since the other types do not allow accessing properties)
-        if (type && type.cast<UnsureType>()) {
-            UnsureType::Ptr unsureType = type.cast<UnsureType>();
+        if (auto unsureType = type.dynamicCast<UnsureType>()) {
             int numStructureType = 0;
             StructureType::Ptr structureType;
 
@@ -605,9 +604,9 @@ void ExpressionVisitor::visitVariableProperty(VariablePropertyAst *node)
             }
         }
 
-        if (type && StructureType::Ptr::dynamicCast(type)) {
+        if (type && type.dynamicCast<StructureType>()) {
             DUChainReadLocker lock(DUChain::lock());
-            Declaration* declaration = StructureType::Ptr::staticCast(type)->declaration(m_currentContext->topContext());
+            Declaration* declaration = type.staticCast<StructureType>()->declaration(m_currentContext->topContext());
             if (declaration) {
                 ifDebug(qCDebug(DUCHAIN) << "parent:" << declaration->toString();)
                 DUContext* context = declaration->internalContext();
@@ -915,7 +914,7 @@ void ExpressionVisitor::visitStatement(StatementAst *node)
     DefaultVisitor::visitStatement(node);
 
     if (node->returnExpr) {
-        FunctionType::Ptr closureType = currentClosureReturnType().cast<FunctionType>();
+        auto closureType = currentClosureReturnType().dynamicCast<FunctionType>();
 
         if (closureType) {
             closureType->setReturnType(m_result.type());

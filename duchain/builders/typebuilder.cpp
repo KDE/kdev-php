@@ -49,7 +49,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         QList<AbstractType::Ptr> types;
         foreach (const QString& t, type.split('|')) {
             AbstractType::Ptr subType = parseType(t, node);
-            if (!(IntegralType::Ptr::dynamicCast(subType) && IntegralType::Ptr::staticCast(subType)->dataType() == IntegralType::TypeMixed)) {
+            if (!(subType.dynamicCast<IntegralType>() && subType.staticCast<IntegralType>()->dataType() == IntegralType::TypeMixed)) {
                 types << parseType(t, node);
             }
         }
@@ -57,7 +57,7 @@ AbstractType::Ptr TypeBuilder::parseType(QString type, AstNode* node)
         foreach (const AbstractType::Ptr& t, types) {
             ret->addType(t->indexed());
         }
-        return AbstractType::Ptr::staticCast(ret);
+        return ret;
     }
 
     if (type.endsWith(QLatin1String("[]"))) {
@@ -489,30 +489,30 @@ void TypeBuilder::visitStatement(StatementAst* node)
         AbstractType::Ptr type = getTypeForNode(node->returnExpr);
         if (type) {
             // ignore references for return values, PHP does so as well
-            if ( ReferenceType::Ptr rType = ReferenceType::Ptr::dynamicCast(type) ) {
+            if ( auto rType = type.dynamicCast<ReferenceType>() ) {
                 type = rType->baseType();
             }
             if (ft->returnType() && !ft->returnType()->equals(type.data())) {
-                bool existingTypeIsCallable = ft->returnType().cast<IntegralTypeExtended>() &&
-                    ft->returnType().cast<IntegralTypeExtended>()->dataType() == IntegralTypeExtended::TypeCallable;
-                bool newTypeIsCallable = type.cast<IntegralTypeExtended>() &&
-                    type.cast<IntegralTypeExtended>()->dataType() == IntegralTypeExtended::TypeCallable;
-                if (ft->returnType().cast<IntegralType>()
-                    && ft->returnType().cast<IntegralType>()->dataType() == IntegralType::TypeMixed)
+                bool existingTypeIsCallable = ft->returnType().dynamicCast<IntegralTypeExtended>() &&
+                    ft->returnType().staticCast<IntegralTypeExtended>()->dataType() == IntegralTypeExtended::TypeCallable;
+                bool newTypeIsCallable = type.dynamicCast<IntegralTypeExtended>() &&
+                    type.staticCast<IntegralTypeExtended>()->dataType() == IntegralTypeExtended::TypeCallable;
+                if (ft->returnType().dynamicCast<IntegralType>()
+                    && ft->returnType().staticCast<IntegralType>()->dataType() == IntegralType::TypeMixed)
                 {
                     //don't add TypeMixed to the list, just ignore
                     ft->setReturnType(type);
-                } else if ((existingTypeIsCallable && type.cast<FunctionType>()) || (newTypeIsCallable && ft->returnType().cast<FunctionType>())) {
+                } else if ((existingTypeIsCallable && type.dynamicCast<FunctionType>()) || (newTypeIsCallable && ft->returnType().dynamicCast<FunctionType>())) {
                     //If one type is "callable" and the other a real function, the result is just a "callable".
                     ft->setReturnType(AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeCallable)));
                 } else {
                     UnsureType::Ptr retT;
-                    if (ft->returnType().cast<UnsureType>()) {
+                    if (ft->returnType().dynamicCast<UnsureType>()) {
                         //qCDebug(DUCHAIN) << "we already have an unsure type";
-                        retT = ft->returnType().cast<UnsureType>();
-                        if (type.cast<UnsureType>()) {
+                        retT = ft->returnType().staticCast<UnsureType>();
+                        if (type.dynamicCast<UnsureType>()) {
                             //qCDebug(DUCHAIN) << "add multiple to returnType";
-                            FOREACH_FUNCTION(const IndexedType& t, type.cast<UnsureType>()->types) {
+                            FOREACH_FUNCTION(const IndexedType& t, type.staticCast<UnsureType>()->types) {
                                 retT->addType(t);
                             }
                         } else {
@@ -520,15 +520,15 @@ void TypeBuilder::visitStatement(StatementAst* node)
                             retT->addType(type->indexed());
                         }
                     } else {
-                        if (type.cast<UnsureType>()) {
-                            retT = type.cast<UnsureType>();
+                        if (type.dynamicCast<UnsureType>()) {
+                            retT = type.staticCast<UnsureType>();
                         } else {
                             retT = new UnsureType();
                             retT->addType(type->indexed());
                         }
                         retT->addType(ft->returnType()->indexed());
                     }
-                    ft->setReturnType(AbstractType::Ptr::staticCast(retT));
+                    ft->setReturnType(retT);
                 }
             } else {
                 ft->setReturnType(type);
@@ -551,7 +551,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
         v.visitNode(foreachNode);
         DUChainReadLocker lock(DUChain::lock());
         bool foundType = false;
-        if (StructureType::Ptr type = StructureType::Ptr::dynamicCast(v.result().type())) {
+        if (auto type = v.result().type().dynamicCast<StructureType>()) {
             ClassDeclaration *classDec = dynamic_cast<ClassDeclaration*>(type->declaration(currentContext()->topContext()));
             if (!classDec) {
                 ///FIXME: this is just a hack for https://bugs.kde.org/show_bug.cgi?id=269369
@@ -582,7 +582,7 @@ void TypeBuilder::visitStatement(StatementAst* node)
                     }
                 }
             }
-        } else if ( ArrayType::Ptr a_type = ArrayType::Ptr::dynamicCast(v.result().type()) ) {
+        } else if ( auto a_type = v.result().type().dynamicCast<ArrayType>() ) {
             injectType(a_type->elementType());
             foundType = true;
         }
@@ -626,7 +626,7 @@ void TypeBuilder::visitCatchItem(Php::CatchItemAst *node)
         }
 
         if (decs) {
-            openAbstractType(AbstractType::Ptr::staticCast(decs));
+            openAbstractType(decs);
             closeType();
         }
     }
@@ -635,7 +635,7 @@ void TypeBuilder::visitCatchItem(Php::CatchItemAst *node)
 void TypeBuilder::visitVarExpression(Php::VarExpressionAst *node)
 {
     if (hasCurrentContextType() && node->isGenerator != -1 && !m_gotReturnTypeFromDocComment) {
-        FunctionType::Ptr ft = FunctionType::Ptr::dynamicCast(currentContextType());
+        auto ft = currentContextType().dynamicCast<FunctionType>();
         static QualifiedIdentifier generatorQId(QStringLiteral("generator"));
         generatorQId.setExplicitlyGlobal(true);
         DeclarationPointer generatorDecl = findDeclarationImport(ClassDeclarationType, generatorQId);
