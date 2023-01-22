@@ -805,7 +805,7 @@ void TestCompletion::verifyExtendsOrImplements(const QString &codeStr, const QSt
 
     QVERIFY(!tester.items.isEmpty());
     // make sure the items are unique
-    QCOMPARE(tester.names.size(), tester.names.toSet().size());
+    QCOMPARE(tester.names.size(), QSet(tester.names.cbegin(), tester.names.cend()).size());
     foreach(const CompletionTreeItemPointer &item, tester.items) {
         ClassDeclaration* klass = dynamic_cast<ClassDeclaration*>(item->declaration().data());
         QVERIFY(klass);
