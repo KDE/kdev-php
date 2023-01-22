@@ -38,7 +38,7 @@ ExpressionEvaluationResult ExpressionParser::evaluateType(const QByteArray& expr
                                                           const CursorInRevision &offset)
 {
     if (m_debug)
-        qCDebug(DUCHAIN) << "==== .Evaluating ..:" << endl << expression;
+        qCDebug(DUCHAIN) << "==== .Evaluating ..:\n" << expression;
 
     auto* session = new ParseSession();
     session->setContents(expression);
