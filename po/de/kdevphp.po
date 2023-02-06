@@ -2,20 +2,21 @@
 # Rolf Eike Beer <kde@opensource.sf-tec.de>, 2009.
 # Frederik Schwarzer <schwarzer@kde.org>, 2010, 2015, 2016, 2022.
 # Gerhard Stengel <gstengel@gmx.net>, 2010, 2012.
+# Frank Steinmetzger <dev-kde@felsenfleischer.de>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: kdevphp\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-08-10 00:44+0000\n"
-"PO-Revision-Date: 2022-12-19 10:31+0100\n"
-"Last-Translator: Frederik Schwarzer <schwarzer@kde.org>\n"
+"PO-Revision-Date: 2023-02-04 00:58+0100\n"
+"Last-Translator: Frank Steinmetzger <dev-kde@felsenfleischer.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.12.0\n"
+"X-Generator: Lokalize 22.12.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -358,6 +359,7 @@ msgstr ""
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
 msgstr ""
+"Der Ausdruck „yield“ darf nur innerhalb einer Funktion verwendet werden"
 
 #: duchain/builders/usebuilder.cpp:202
 #, kde-format
