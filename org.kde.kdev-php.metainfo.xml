@@ -25,7 +25,7 @@
   <name xml:lang="sk">PHP podpora pre KDevelop</name>
   <name xml:lang="sl">Podpora KDevelop PHP</name>
   <name xml:lang="sv">KDevelop PHP-stöd</name>
-  <name xml:lang="tr">KDevelop PHP Desteği</name>
+  <name xml:lang="tr">K Geliştir PHP Desteği</name>
   <name xml:lang="uk">Підтримка PHP KDevelop</name>
   <name xml:lang="x-test">xxKDevelop PHP Supportxx</name>
   <name xml:lang="zh-CN">KDevelop PHP 支持</name>
@@ -53,7 +53,7 @@
   <summary xml:lang="sk">Podpora jazyka PHP pre KDevelop</summary>
   <summary xml:lang="sl">Podpora za jezik PHP za KDevelop</summary>
   <summary xml:lang="sv">Stöd för språket PHP i KDevelop</summary>
-  <summary xml:lang="tr">KDevelop için PHP dili desteği</summary>
+  <summary xml:lang="tr">K Geliştir için PHP dili desteği</summary>
   <summary xml:lang="uk">Підтримка мови PHP у KDevelop</summary>
   <summary xml:lang="x-test">xxPHP language support for KDevelopxx</summary>
   <summary xml:lang="zh-CN">KDevelop 的 PHP 语言支持</summary>
@@ -82,7 +82,7 @@
     <p xml:lang="sk">Pridá podporu PHP do KDevelopu. Zahŕňa pridávanie integrácie s o zvýrazňovaním kódu, ukončovanie kódu a dokumentačné odkazy.</p>
     <p xml:lang="sl">Doda podporo za PHP orodju KDevelop. Vključuje dodajanje integracije s kodo označevanja, dopolnitev kode in povezave z dokumentacijo.</p>
     <p xml:lang="sv">Lägger till stöd för PHP i KDevelop. Inkluderar tillägg av integrering med kodfärgläggning, kodkomplettering och dokumentationslänkar.</p>
-    <p xml:lang="tr">KDevelop'a PHP desteği ekler. Kod vurgulaması, kod tamamlaması ve belgelendirme bağı bütünleştirmesi içerir.</p>
+    <p xml:lang="tr">K Geliştir'a PHP desteği ekler. Kod vurgulaması, kod tamamlaması ve belgelendirme bağı bütünleştirmesi içerir.</p>
     <p xml:lang="uk">Додає підтримку PHP до KDevelop. Включено інтеграцію із засобами підсвічування коду, автоматичне доповнення коду та інтеграцію посилань у документації.</p>
     <p xml:lang="x-test">xxAdds PHP support to KDevelop. Includes adding integration with code highlighting, code completion and documentation links.xx</p>
     <p xml:lang="zh-TW">對 KDevelop 增加 PHP 支援。包含增加程式碼突顯、程式碼自動完成及文件連結整合。</p>
