@@ -67,6 +67,7 @@
     <p xml:lang="ca-valencia">Afig suport de PHP a KDevelop. Afig els «include» per a la integració amb el ressaltat de codi, compleció de codi i enllaços cap a la documentació.</p>
     <p xml:lang="de">PHP-Unterstützung für KDevelop. Einschließlich Integration von Quelltexthervorhebung, Quelltextvervollständigung und Verknüpfung zur Dokumentation .</p>
     <p xml:lang="en-GB">Adds PHP support to KDevelop. Includes adding integration with code highlighting, code completion and documentation links.</p>
+    <p xml:lang="eo">Aldonas PHP-subtenon al KDevelop. Inkluzivas aldonadon de integriĝo kun koda reliefigo, kodkompletigo kaj dokumentaraj ligiloj.</p>
     <p xml:lang="es">Implementa el uso de PHP en KDevelop. Incluye resaltado de código, terminación automática de código y enlaces de documentación.</p>
     <p xml:lang="et">PHP toetus KDevelopis. Lõimimine võimaldab koodi esiletõstmist, koodilõpetust ja dokumentatsiooni linkimist.</p>
     <p xml:lang="eu">KDevelop-era PHP euskarria gehitzen du. Kode nabarmentzea, kode osatzea eta dokumentazioaren estekak bateratzea eransten du.</p>
