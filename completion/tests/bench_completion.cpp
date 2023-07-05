@@ -134,3 +134,4 @@ void BenchmarkCodeCompletion::completionData()
 
 }
 
+#include "moc_bench_completion.cpp"

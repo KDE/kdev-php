@@ -82,3 +82,5 @@ void PhpDocumentationWidget::documentLoaded()
     delete m_loading;
     m_loading = nullptr;
 }
+
+#include "moc_phpdocumentationwidget.cpp"

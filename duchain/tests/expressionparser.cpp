@@ -708,3 +708,4 @@ void TestExpressionParser::invalidArgumentUnpacking()
 
 }
 
+#include "moc_expressionparser.cpp"

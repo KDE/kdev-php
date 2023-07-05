@@ -88,3 +88,4 @@ void Benchmarks::useBuilder()
 
 }
 
+#include "moc_benchmarks.cpp"

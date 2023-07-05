@@ -215,3 +215,5 @@ IDocumentation::Ptr PhpDocsPlugin::homePage() const
 }
 
 #include "phpdocsplugin.moc"
+
+#include "moc_phpdocsplugin.cpp"

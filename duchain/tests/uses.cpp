@@ -1813,3 +1813,4 @@ void TestUses::propertyType() {
 
 }
 
+#include "moc_uses.cpp"

@@ -184,3 +184,5 @@ Range LanguageSupport::specialLanguageObjectRange(const QUrl& url, const Cursor&
 }
 
 #include "phplanguagesupport.moc"
+
+#include "moc_phplanguagesupport.cpp"

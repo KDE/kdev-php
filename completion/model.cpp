@@ -80,3 +80,4 @@ bool CodeCompletionModel::shouldAbortCompletion(View* view, const Range &range, 
 
 }
 
+#include "moc_model.cpp"

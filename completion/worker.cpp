@@ -38,3 +38,4 @@ KDevelop::CodeCompletionContext* CodeCompletionWorker::createCompletionContext(c
 
 }
 
+#include "moc_worker.cpp"

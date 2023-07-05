@@ -161,3 +161,5 @@ void PhpUnitProvider::processTestCaseDeclaration(Declaration* d)
 }
 
 #include "phpunitprovider.moc"
+
+#include "moc_phpunitprovider.cpp"

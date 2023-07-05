@@ -342,3 +342,5 @@ void TestDUChainMultipleFiles::testNamespacedIdentifierInPST() {
     QVERIFY(f3.topContext());
     QVERIFY(!f3.topContext()->imports(f1.topContext(), CursorInRevision(0, 0)));
 }
+
+#include "moc_duchain_multiplefiles.cpp"

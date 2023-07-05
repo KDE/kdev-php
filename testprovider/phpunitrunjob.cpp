@@ -185,3 +185,5 @@ void PhpUnitRunJob::rowsInserted(const QModelIndex &parent, int startRow, int en
         }
     }
 }
+
+#include "moc_phpunitrunjob.cpp"

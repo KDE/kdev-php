@@ -4301,3 +4301,5 @@ void TestDUChain::generatorClosure()
 
     QVERIFY(dec->abstractType()->equals(closure->abstractType().constData()));
 }
+
+#include "moc_duchain.cpp"

@@ -53,3 +53,5 @@ PhpDocsConfig::~PhpDocsConfig()
 }
 
 #include "phpdocsconfig.moc"
+
+#include "moc_phpdocsconfig.cpp"

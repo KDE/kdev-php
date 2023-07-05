@@ -39,3 +39,5 @@ QString PhpDocumentation::name() const
 {
     return m_name;
 }
+
+#include "moc_phpdocumentation.cpp"

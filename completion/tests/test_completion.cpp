@@ -1366,4 +1366,4 @@ void TestCompletion::closures()
 
 }
 
-
+#include "moc_test_completion.cpp"
