@@ -3591,6 +3591,133 @@ void TestDUChain::useNamespace()
     QVERIFY(!dynamic_cast<NamespaceAliasDeclaration*>(dec)->importIdentifier().explicitlyGlobal());
 }
 
+void TestDUChain::useGroupedNamespace_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("class group") <<
+        QStringLiteral("<?php\n"
+                       "namespace ns1\\ns2 { class A {} }\n"
+                       "namespace ns1\\ns2 { class B {} }\n"
+                       "namespace ns3 {\n"
+                       "use ns1\\ns2\\{A,B};\n"
+                       "}\n");
+    QTest::newRow("class group with partial namespace") <<
+        QStringLiteral("<?php\n"
+                       "namespace ns1\\ns2 { class A {} }\n"
+                       "namespace ns1\\ns3 { class B {} }\n"
+                       "namespace ns3 {\n"
+                       "use ns1\\{ns2\\A,ns3\\B};\n"
+                       "}\n");
+    QTest::newRow("class group with trailing comma") <<
+        QStringLiteral("<?php\n"
+                       "namespace ns1\\ns2 { class A {} }\n"
+                       "namespace ns1\\ns2 { class B {} }\n"
+                       "namespace ns3 {\n"
+                       "use ns1\\ns2\\{A,B,};\n"
+                       "}\n");
+    QTest::newRow("function group") <<
+        QStringLiteral("<?php\n"
+                       "namespace ns1\\ns2 { function foo(){} }\n"
+                       "namespace ns1\\ns2 { function bar(){} }\n"
+                       "namespace ns3 {\n"
+                       "use function ns1\\ns2\\{foo,bar};\n"
+                       "}\n");
+    QTest::newRow("function group with partial namespace") <<
+        QStringLiteral("<?php\n"
+                       "namespace ns1\\ns2 { function foo(){} }\n"
+                       "namespace ns1\\ns3 { function bar(){} }\n"
+                       "namespace ns3 {\n"
+                       "use function ns1\\{ns2\\foo,ns3\\bar};\n"
+                       "}\n");
+    QTest::newRow("function group with trailing comma") <<
+        QStringLiteral("<?php\n"
+                       "namespace ns1\\ns2 { function foo(){} }\n"
+                       "namespace ns1\\ns2 { function bar(){} }\n"
+                       "namespace ns3 {\n"
+                       "use function ns1\\ns2\\{foo,bar,};\n"
+                       "}\n");
+    QTest::newRow("constant group") <<
+        QStringLiteral("<?php\n"
+                       "namespace ns1\\ns2 { const A = ''; }\n"
+                       "namespace ns1\\ns2 { const B = ''; }\n"
+                       "namespace ns3 {\n"
+                       "use const ns1\\ns2\\{A,B};\n"
+                       "}\n");
+    QTest::newRow("constant group with partial namespace") <<
+        QStringLiteral("<?php\n"
+                       "namespace ns1\\ns2 { const A = ''; }\n"
+                       "namespace ns1\\ns3 { const B = ''; }\n"
+                       "namespace ns3 {\n"
+                       "use const ns1\\{ns2\\A,ns3\\B};\n"
+                       "}\n");
+    QTest::newRow("constant group with trailing comma") <<
+        QStringLiteral("<?php\n"
+                       "namespace ns1\\ns2 { const A = ''; }\n"
+                       "namespace ns1\\ns2 { const B = ''; }\n"
+                       "namespace ns3 {\n"
+                       "use const ns1\\ns2\\{A,B,};\n"
+                       "}\n");
+    QTest::newRow("mixed group") <<
+        QStringLiteral("<?php\n"
+                       "namespace ns1\\ns2 { const A = ''; function foo(){} }\n"
+                       "namespace ns1\\ns2 { class C {} }\n"
+                       "namespace ns3 {\n"
+                       "use ns1\\ns2\\{C, const A, function foo};\n"
+                       "}\n");
+    QTest::newRow("mixed group with trailing comma") <<
+        QStringLiteral("<?php\n"
+                       "namespace ns1\\ns2 { const A = ''; function foo(){} }\n"
+                       "namespace ns1\\ns2 { class C {} }\n"
+                       "namespace ns3 {\n"
+                       "use ns1\\ns2\\{C, const A, function foo,};\n"
+                       "}\n");
+}
+
+void TestDUChain::useGroupedNamespace()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(top->problems().isEmpty());
+}
+
+void TestDUChain::useInvalidGroupedNamespace_data()
+{
+    QTest::addColumn<QString>("code");
+
+    QTest::newRow("mixed in function import") <<
+        QStringLiteral("<?php\n"
+                       "namespace ns1\\ns2 { const A = ''; function foo(){} }\n"
+                       "namespace ns1\\ns2 { class C {} }\n"
+                       "namespace ns3 {\n"
+                       "use function ns1\\ns2\\{C, const A, function foo};\n"
+                       "}\n");
+    QTest::newRow("mixed in constant import") <<
+        QStringLiteral("<?php\n"
+                       "namespace ns1\\ns2 { const A = ''; function foo(){} }\n"
+                       "namespace ns1\\ns2 { class C {} }\n"
+                       "namespace ns3 {\n"
+                       "use const ns1\\ns2\\{C, const A, function foo,};\n"
+                       "}\n");
+}
+
+void TestDUChain::useInvalidGroupedNamespace()
+{
+    QFETCH(QString, code);
+
+    TopDUContext* top = parse(code.toUtf8(), DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    QVERIFY(!top->problems().isEmpty());
+}
+
 void TestDUChain::useBaseTypeNamespace()
 {
     //               0         1         2         3         4         5         6         7

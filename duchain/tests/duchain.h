@@ -156,6 +156,10 @@ private slots:
     void namespacesNoCurly();
     void namespacesBaseType();
     void useNamespace();
+    void useGroupedNamespace_data();
+    void useGroupedNamespace();
+    void useInvalidGroupedNamespace_data();
+    void useInvalidGroupedNamespace();
     void useBaseTypeNamespace();
     void useNamespaceBaseTypeAlias();
     void namespaceStaticVar();

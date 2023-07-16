@@ -1113,6 +1113,75 @@ void TestUses::useNamespace()
 }
 
 
+void TestUses::useGroupedNamespace()
+{
+    //                         0         1         2         3         4         5         6         7
+    //                         01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "namespace Foo\\Bar { class A{} }\n"
+                              "namespace Foo\\Bar { class D{} }\n"
+                              "namespace {\n"
+                              "use Foo\\Bar\\{A,D};\n"
+                              "}\n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    Declaration* dec;
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo"))).first();
+    QCOMPARE(dec->kind(), Declaration::Namespace);
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(2, 10, 2, 13)
+                                          << RangeInRevision(4, 4, 4, 7) );
+
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar"))).first();
+    QCOMPARE(dec->kind(), Declaration::Namespace);
+    compareUses(dec, RangeInRevision(4, 8, 4, 11));
+
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar::a"))).first();
+    compareUses(dec, RangeInRevision(4, 13, 4, 14));
+
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar::d"))).first();
+    compareUses(dec, RangeInRevision(4, 15, 4, 16));
+}
+
+
+void TestUses::useGroupedPartialNamespace()
+{
+    //                         0         1         2         3         4         5         6         7
+    //                         01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    TopDUContext* top = parse("<?php\n"
+                              "namespace Foo\\Bar { class A{} }\n"
+                              "namespace Foo\\Baz { class D{} }\n"
+                              "namespace {\n"
+                              "use Foo\\{Bar\\A,Baz\\D};\n"
+                              "}\n", DumpNone);
+    QVERIFY(top);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock;
+
+    Declaration* dec;
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo"))).first();
+    QCOMPARE(dec->kind(), Declaration::Namespace);
+    compareUses(dec, QList<RangeInRevision>() << RangeInRevision(2, 10, 2, 13)
+                                          << RangeInRevision(4, 4, 4, 7) );
+
+    // TODO: Remaining implementation for https://bugs.kde.org/show_bug.cgi?id=411588
+    // dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar"))).first();
+    // QCOMPARE(dec->kind(), Declaration::Namespace);
+    // compareUses(dec, RangeInRevision(4, 9, 4, 12));
+
+    // dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::baz"))).first();
+    // QCOMPARE(dec->kind(), Declaration::Namespace);
+    // compareUses(dec, RangeInRevision(4, 15, 4, 18));
+
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::bar::a"))).first();
+    compareUses(dec, RangeInRevision(4, 13, 4, 14));
+
+    dec = top->findDeclarations(QualifiedIdentifier(QStringLiteral("foo::baz::d"))).first();
+    compareUses(dec, RangeInRevision(4, 19, 4, 20));
+}
+
+
 void TestUses::useNamespaceFunctionConst()
 {
     //                         0         1         2         3         4         5         6         7
