@@ -44,6 +44,7 @@ private slots:
     void declareTypehintFloatFunction();
     void declareTypehintIntFunction();
     void declareTypehintStringFunction();
+    void declareTypehintMixedFunction();
     void declareNullableTypehintArrayFunction();
     void declareNullableTypehintMixedFunction();
     void declareTypehintNullableIterableFunction();

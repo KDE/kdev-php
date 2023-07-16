@@ -90,6 +90,8 @@ bool isGenericClassTypehint(NamespacedIdentifierAst* node, EditorIntegrator *edi
         return false;
     } else if (typehint.compare(QLatin1String("object"), Qt::CaseInsensitive) == 0) {
         return false;
+    } else if (typehint.compare(QLatin1String("mixed"), Qt::CaseInsensitive) == 0) {
+        return false;
     } else {
         return true;
     }
@@ -502,6 +504,8 @@ AbstractType::Ptr determineTypehint(const T* genericType, EditorIntegrator *edit
                 type = AbstractType::Ptr(new IntegralType(IntegralType::TypeString));
             } else if (typehint.compare(QLatin1String("object"), Qt::CaseInsensitive) == 0) {
                 type = AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeObject));
+            } else if (typehint.compare(QLatin1String("mixed"), Qt::CaseInsensitive) == 0) {
+                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
             } else if (typehint.compare(QLatin1String("iterable"), Qt::CaseInsensitive) == 0) {
                 DeclarationPointer traversableDecl = findDeclarationImportHelper(currentContext, QualifiedIdentifier(u"traversable"), ClassDeclarationType);
 

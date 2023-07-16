@@ -967,21 +967,49 @@ void TestDUChain::declarationReturnTypeClassChain()
 void TestDUChain::declarationReturnTypeTypehint()
 {
     //Typehint preferred over phpdoc preferred over inferred type
-    QByteArray method("<? /** @return string **/ function foo(): bool { return 5; }");
+    QByteArray method("<? /** @return string **/ function foo(): bool { return 5; }\n"
+                      "/** @return string **/ function foo(): int { return 5.5; }\n"
+                      "/** @return string **/ function foo(): float { return 5; }\n"
+                      "/** @return int **/ function foo(): string { return 5.5; }\n"
+                      "/** @return int **/ function foo(): mixed { return 5.5; }\n");
 
     TopDUContext* top = parse(method, DumpNone);
     DUChainReleaser releaseTop(top);
     DUChainWriteLocker lock(DUChain::lock());
 
     QVERIFY(!top->parentContext());
-    QCOMPARE(top->childContexts().count(), 2);
-    QCOMPARE(top->localDeclarations().count(), 1);
+    QCOMPARE(top->childContexts().count(), 10);
+    QCOMPARE(top->localDeclarations().count(), 5);
 
-    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    FunctionType::Ptr fun = top->localDeclarations().at(0)->type<FunctionType>();
     QVERIFY(fun);
     auto returnType = fun->returnType().dynamicCast<IntegralType>();
     QVERIFY(returnType);
     QVERIFY(returnType->dataType() == IntegralType::TypeBoolean);
+
+    fun = top->localDeclarations().at(1)->type<FunctionType>();
+    QVERIFY(fun);
+    returnType = fun->returnType().dynamicCast<IntegralType>();
+    QVERIFY(returnType);
+    QVERIFY(returnType->dataType() == IntegralType::TypeInt);
+
+    fun = top->localDeclarations().at(2)->type<FunctionType>();
+    QVERIFY(fun);
+    returnType = fun->returnType().dynamicCast<IntegralType>();
+    QVERIFY(returnType);
+    QVERIFY(returnType->dataType() == IntegralType::TypeFloat);
+
+    fun = top->localDeclarations().at(3)->type<FunctionType>();
+    QVERIFY(fun);
+    returnType = fun->returnType().dynamicCast<IntegralType>();
+    QVERIFY(returnType);
+    QVERIFY(returnType->dataType() == IntegralType::TypeString);
+
+    fun = top->localDeclarations().at(4)->type<FunctionType>();
+    QVERIFY(fun);
+    returnType = fun->returnType().dynamicCast<IntegralType>();
+    QVERIFY(returnType);
+    QVERIFY(returnType->dataType() == IntegralType::TypeMixed);
 }
 
 void TestDUChain::declarationReturnTypeTypehintVoid()
@@ -1314,6 +1342,28 @@ void TestDUChain::declareTypehintStringFunction()
     IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
     QVERIFY(type);
     QVERIFY(type->dataType() == IntegralType::TypeString);
+}
+
+void TestDUChain::declareTypehintMixedFunction()
+{
+    //                 0         1         2         3
+    //                 0123456789012345678901234567890123
+    QByteArray method("<? function foo(mixed $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(fun->arguments().first().dynamicCast<IntegralType>());
+    QVERIFY(fun->arguments().first().staticCast<IntegralType>()->dataType() == IntegralType::TypeMixed);
+
+    IntegralType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralType>();
+    QVERIFY(type);
+    QVERIFY(type->dataType() == IntegralType::TypeMixed);
 }
 
 void TestDUChain::declareNullableTypehintArrayFunction()
