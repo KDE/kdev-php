@@ -13,6 +13,7 @@
 #include <language/duchain/ducontext.h>
 #include <language/duchain/types/abstracttype.h>
 #include <serialization/indexedstring.h>
+#include "phpast.h"
 
 namespace KDevelop
 {
@@ -21,15 +22,6 @@ class DUContext;
 }
 namespace Php
 {
-struct UnaryExpressionAst;
-struct AstNode;
-struct CommonScalarAst;
-struct NamespacedIdentifierAst;
-struct ParameterAst;
-struct GenericTypeHintAst;
-struct ReturnTypeAst;
-struct ClassStatementAst;
-struct PropertyTypeHintAst;
 class EditorIntegrator;
 
 enum DeclarationType {
@@ -83,6 +75,15 @@ KDEVPHPDUCHAIN_EXPORT const KDevelop::IndexedString& phpLanguageString();
  */
 KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierForNamespace(NamespacedIdentifierAst* node, EditorIntegrator* editor,
                                                                            bool lastIsConstIdentifier = false);
+KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierForNamespace(
+    NamespacedIdentifierBeforeGroupedNamespaceAst* node,
+    EditorIntegrator* editor,
+    bool lastIsConstIdentifier);
+KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierForNamespace(
+    NamespacedIdentifierBeforeGroupedNamespaceAst* prefixNode,
+    InnerUseNamespaceAst* node,
+    EditorIntegrator* editor,
+    bool lastIsConstIdentifier);
 
 /**
  * Get proper QualifiedIdentifier for a basic identifier.

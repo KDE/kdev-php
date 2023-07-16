@@ -416,6 +416,51 @@ QualifiedIdentifier identifierForNamespace(NamespacedIdentifierAst* node, Editor
     return id;
 }
 
+QualifiedIdentifier identifierForNamespace(NamespacedIdentifierBeforeGroupedNamespaceAst* node, EditorIntegrator* editor, bool lastIsConstIdentifier)
+{
+    QualifiedIdentifier id;
+    if (node->isGlobal != -1) {
+        id.setExplicitlyGlobal(true);
+    }
+    const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
+    do {
+        if (lastIsConstIdentifier && !it->hasNext()) {
+            id.push(Identifier(editor->parseSession()->symbol(it->element)));
+        } else {
+            id.push(Identifier(editor->parseSession()->symbol(it->element).toLower()));
+        }
+    } while (it->hasNext() && (it = it->next));
+    return id;
+}
+
+QualifiedIdentifier identifierForNamespace(
+    NamespacedIdentifierBeforeGroupedNamespaceAst* prefixNode,
+    InnerUseNamespaceAst* node,
+    EditorIntegrator* editor,
+    bool lastIsConstIdentifier)
+{
+    QualifiedIdentifier id;
+    if (prefixNode->isGlobal != -1) {
+        id.setExplicitlyGlobal(true);
+    }
+    const KDevPG::ListNode< IdentifierAst* >* it;
+    
+    it = prefixNode->namespaceNameSequence->front();
+    do {
+        id.push(Identifier(editor->parseSession()->symbol(it->element).toLower()));
+    }
+    while (it->hasNext() && (it = it->next));
+    it = node->namespaceNameSequence->front();
+    do {
+        if (lastIsConstIdentifier && !it->hasNext()) {
+            id.push(Identifier(editor->parseSession()->symbol(it->element)));
+        } else {
+            id.push(Identifier(editor->parseSession()->symbol(it->element).toLower()));
+        }
+    } while (it->hasNext() && (it = it->next));
+    return id;
+}
+
 QualifiedIdentifier identifierWithNamespace(const QualifiedIdentifier& base, DUContext* context)
 {
     DUChainReadLocker lock;

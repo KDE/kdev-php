@@ -125,6 +125,13 @@ namespace KDevelop
         OperationSr,
         OperationSpaceship,
     };
+
+    enum UseImportType {
+      NamespaceOrClassImport,
+      ConstantImport,
+      FunctionImport
+    };
+
 :]
 
 ------------------------------------------------------------
@@ -169,6 +176,13 @@ namespace KDevelop
         DefaultState = 1
     };
 
+    enum ParserUseImportType {
+        NamespaceOrClassImport,
+        ConstantImport,
+        FunctionImport
+    };
+  ParserUseImportType m_useImportType;
+  ParserUseImportType m_useCompoundImportType;
 :]
 
 %parserclass (private declaration)
@@ -719,11 +733,51 @@ expression=nullCoalesceExpression
   | gotoTarget=STRING COLON
 -> statement ;;
 
-    ( useFunction=FUNCTION | useConst=CONST | 0 ) #useNamespace=useNamespace @ COMMA SEMICOLON
+    ( useFunction=FUNCTION [: m_useImportType = FunctionImport; :]
+    | useConst=CONST [: m_useImportType = ConstantImport; :]
+    | 0 [: m_useImportType = NamespaceOrClassImport; :]
+    ) #useNamespace=useNamespaceOrUseGroupedNamespace @ COMMA SEMICOLON
 -> useStatement ;;
 
-    identifier=namespacedIdentifier (AS aliasIdentifier=identifier | 0)
--> useNamespace ;;
+   [: (*yynode)->useImportType = (UseImportType)(int)m_useImportType; :]
+   identifier=namespacedIdentifierBeforeGroupedNamespace
+   (AS aliasIdentifier=identifier | compoundNamespace=compoundNamespace | 0)
+-> useNamespaceOrUseGroupedNamespace [
+     member variable useImportType: UseImportType;
+] ;;
+
+    LBRACE
+        #compoundNamespaceStatement=compoundNamespaceStatement
+        -- break because "use Foo\{bar1,}" is allowed (solves FIRST/FOLLOW conflict)
+        @ (COMMA [: if (yytoken == Token_RBRACE) { break; } :] )
+    RBRACE
+-> compoundNamespace ;;
+
+    ( useFunction=FUNCTION [: m_useCompoundImportType = FunctionImport; :]
+    | useConst=CONST [: m_useCompoundImportType = ConstantImport; :]
+    | 0 [: m_useCompoundImportType = NamespaceOrClassImport; :]
+    )
+    [:
+        if (m_useImportType != NamespaceOrClassImport && m_useCompoundImportType != NamespaceOrClassImport)
+        {
+            reportProblem(Error, QStringLiteral("Can't use mixed import."), -2);
+        }
+    :]
+    #useNamespace=innerUseNamespace
+-> compoundNamespaceStatement ;;
+
+   [:
+        if (m_useCompoundImportType != NamespaceOrClassImport) {
+            (*yynode)->useImportType = (UseImportType)(int)m_useCompoundImportType;
+        } else {
+            (*yynode)->useImportType = (UseImportType)(int)m_useImportType;
+        }
+   :]
+    #namespaceName=identifier+ @ BACKSLASH
+    (AS aliasIdentifier=identifier | 0)
+-> innerUseNamespace [
+     member variable useImportType: UseImportType;
+] ;;
 
     identifier=identifier ASSIGN scalar=expr
 -> constantDeclaration ;;
@@ -931,6 +985,10 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
    (isGlobal=BACKSLASH | 0)
    #namespaceName=identifier+ @ BACKSLASH
 -> namespacedIdentifier ;;
+
+   (isGlobal=BACKSLASH | 0)
+   #namespaceName=identifier+ @ ( BACKSLASH [: if (yytoken == Token_LBRACE) { break; } :] ) 
+-> namespacedIdentifierBeforeGroupedNamespace ;;
 
      string=STRING
 -> identifier ;;

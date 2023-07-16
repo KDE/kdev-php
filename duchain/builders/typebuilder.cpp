@@ -33,6 +33,7 @@ namespace Php
 TypeBuilder::TypeBuilder()
     : TypeBuilderBase()
     , m_gotTypeFromDocComment(false)
+    , m_gotTypeFromTypeHint(false)
     , m_gotReturnTypeFromDocComment(false)
 {
 }

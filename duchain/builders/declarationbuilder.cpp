@@ -1628,7 +1628,16 @@ void DeclarationBuilder::visitUseStatement(UseStatementAst* node)
     DeclarationBuilderBase::visitUseStatement(node);
 }
 
-void DeclarationBuilder::visitUseNamespace(UseNamespaceAst* node)
+void DeclarationBuilder::visitUseNamespaceOrUseGroupedNamespace(UseNamespaceOrUseGroupedNamespaceAst* node)
+{
+    if (node->compoundNamespace) {
+        // TODO
+    } else {
+        visitNonGroupedUseNamespace(node);
+    }
+}
+
+void DeclarationBuilder::visitNonGroupedUseNamespace(UseNamespaceOrUseGroupedNamespaceAst* node)
 {
     DUChainWriteLocker lock;
     bool isConstIdentifier = ( m_useNamespaceType == ConstantDeclarationType );

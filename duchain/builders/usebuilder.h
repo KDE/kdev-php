@@ -51,19 +51,29 @@ protected:
     void visitStatement(StatementAst* node) override;
     void visitCatchItem(CatchItemAst* node) override;
     void visitUnaryExpression( UnaryExpressionAst* node ) override;
-    void visitUseStatement(UseStatementAst* node) override;
-    void visitUseNamespace(UseNamespaceAst* node) override;
+    void visitUseNamespaceOrUseGroupedNamespace(UseNamespaceOrUseGroupedNamespaceAst* node) override;
+    void visitInnerUseNamespace(InnerUseNamespaceAst* node) override;
     void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range) override;
     void visitPropertyType(PropertyTypeAst* node) override;
     void visitReturnType(ReturnTypeAst* node) override;
 
 private:
-    void buildNamespaceUses(Php::NamespacedIdentifierAst* node, Php::DeclarationType lastType = Php::ClassDeclarationType);
+    void buildNamespaceUses(
+        Php::NamespacedIdentifierAst* node,
+        Php::DeclarationType lastType = Php::ClassDeclarationType);
+    void buildNamespaceUses(
+        Php::NamespacedIdentifierBeforeGroupedNamespaceAst* node,
+        Php::UseImportType useImportType);
+    void buildNamespaceUses(
+        KDevelop::QualifiedIdentifier identifier,
+        const KDevPG::ListNode<IdentifierAst *>* prefixNamespaceNameSequence,
+        const KDevPG::ListNode<IdentifierAst *>* namespaceNameSequence,
+        Php::DeclarationType lastType);
 
     void visitNodeWithExprVisitor(AstNode* node);
 
-    /// Type of use
-    DeclarationType m_useNamespaceType;
+    /// Prefix in front of grouped namespace
+    NamespacedIdentifierBeforeGroupedNamespaceAst *m_compoundNamespacePrefix;
 };
 
 }

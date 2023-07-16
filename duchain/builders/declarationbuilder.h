@@ -82,7 +82,8 @@ protected:
     void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range) override;
     void closeNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier) override;
     void visitUseStatement(UseStatementAst* node) override;
-    void visitUseNamespace(UseNamespaceAst* node) override;
+    void visitUseNamespaceOrUseGroupedNamespace(UseNamespaceOrUseGroupedNamespaceAst* node) override;
+    void visitNonGroupedUseNamespace(UseNamespaceOrUseGroupedNamespaceAst* node);
     void visitClosure(ClosureAst* node) override;
     void visitLexicalVar(LexicalVarAst* node) override;
     void visitVarExpression(VarExpressionAst* node) override;

@@ -222,32 +222,72 @@ void UseBuilder::visitUnaryExpression( UnaryExpressionAst* node )
     }
 }
 
-void UseBuilder::visitUseStatement(UseStatementAst* node)
+void UseBuilder::visitUseNamespaceOrUseGroupedNamespace(UseNamespaceOrUseGroupedNamespaceAst* node)
 {
-    if ( node->useFunction != -1 )
-    {
-        m_useNamespaceType = FunctionDeclarationType;
+    if (node->compoundNamespace) {
+        QualifiedIdentifier identifier = identifierForNamespace(node->identifier, m_editor, false);
+        buildNamespaceUses(
+            identifier,
+            nullptr,
+            node->identifier->namespaceNameSequence,
+            NamespaceDeclarationType);
+        m_compoundNamespacePrefix = node->identifier;
+        visitCompoundNamespace(node->compoundNamespace);
+    } else {
+        buildNamespaceUses(node->identifier, node->useImportType);
     }
-    else if ( node->useConst != -1 )
-    {
-        m_useNamespaceType = ConstantDeclarationType;
-    }
-    else
-    {
-        m_useNamespaceType = NamespaceDeclarationType;
-    }
-    UseBuilderBase::visitUseStatement(node);
 }
 
-void UseBuilder::visitUseNamespace(UseNamespaceAst* node)
+void UseBuilder::visitInnerUseNamespace(InnerUseNamespaceAst* node)
 {
-    buildNamespaceUses(node->identifier, m_useNamespaceType);
+    Php::DeclarationType lastType;
+    if (node->useImportType == ConstantImport) {
+        lastType = ConstantDeclarationType;
+    } else if (node->useImportType == FunctionImport) {
+        lastType = FunctionDeclarationType;
+    } else {
+        lastType = NamespaceDeclarationType;
+    }
+
+    QualifiedIdentifier identifier = identifierForNamespace(
+        m_compoundNamespacePrefix,
+        node,
+        m_editor,
+        node->useImportType == ConstantImport);
+    buildNamespaceUses(
+        identifier,
+        m_compoundNamespacePrefix->namespaceNameSequence,
+        node->namespaceNameSequence,
+        lastType);
+}
+
+void UseBuilder::buildNamespaceUses(NamespacedIdentifierBeforeGroupedNamespaceAst* node, UseImportType useImportType)
+{
+    Php::DeclarationType lastType;
+    if (useImportType == ConstantImport) {
+        lastType = ConstantDeclarationType;
+    } else if (useImportType == FunctionImport) {
+        lastType = FunctionDeclarationType;
+    } else {
+        lastType = NamespaceDeclarationType;
+    }
+
+    QualifiedIdentifier identifier = identifierForNamespace(node, m_editor, useImportType == ConstantImport);
+    buildNamespaceUses(identifier, nullptr, node->namespaceNameSequence, lastType);
 }
 
 void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node, DeclarationType lastType)
 {
     QualifiedIdentifier identifier = identifierForNamespace(node, m_editor, lastType == ConstantDeclarationType);
+    buildNamespaceUses(identifier, nullptr, node->namespaceNameSequence, lastType);
+}
 
+void UseBuilder::buildNamespaceUses(
+    KDevelop::QualifiedIdentifier identifier,
+    const KDevPG::ListNode<IdentifierAst *>* prefixNamespaceNameSequence,
+    const KDevPG::ListNode<IdentifierAst *>* namespaceNameSequence,
+    Php::DeclarationType lastType)
+{
     QualifiedIdentifier curId;
 
     // check if we need to resolve the namespaced identifier globally or locally
@@ -273,19 +313,23 @@ void UseBuilder::buildNamespaceUses(NamespacedIdentifierAst* node, DeclarationTy
     }
 
     curId.setExplicitlyGlobal(identifier.explicitlyGlobal());
-    Q_ASSERT(identifier.count() == node->namespaceNameSequence->count());
+    int prefixCount = prefixNamespaceNameSequence == nullptr ? 0 : prefixNamespaceNameSequence->count();
+    Q_ASSERT(identifier.count() == prefixCount + namespaceNameSequence->count());
     for ( int i = 0; i < identifier.count() - 1; ++i ) {
         curId.push(identifier.at(i));
-        AstNode* n = node->namespaceNameSequence->at(i)->element;
-        DeclarationPointer dec = findDeclarationImport(NamespaceDeclarationType, curId);
-        if (!dec || dec->range() != editorFindRange(n, n)) {
-            newCheckedUse(n, dec, true);
+        if (i>=prefixCount) {
+            AstNode* n = namespaceNameSequence->at(i)->element;
+            DeclarationPointer dec = findDeclarationImport(NamespaceDeclarationType, curId);
+            if (!dec || dec->range() != editorFindRange(n, n)) {
+                newCheckedUse(n, dec, true);
+            }
         }
     }
-    newCheckedUse(node->namespaceNameSequence->back()->element,
-                  findDeclarationImport(lastType, identifier),
-                  lastType == ClassDeclarationType || lastType == ConstantDeclarationType
-                  || lastType == FunctionDeclarationType || lastType == NamespaceDeclarationType);
+    bool reportNotFound = lastType == ClassDeclarationType
+        || lastType == ConstantDeclarationType
+        || lastType == FunctionDeclarationType
+        || lastType == NamespaceDeclarationType;
+    newCheckedUse(namespaceNameSequence->back()->element, findDeclarationImport(lastType, identifier), reportNotFound);
 }
 
 void UseBuilder::openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node,
