@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-08-10 00:44+0000\n"
+"POT-Creation-Date: 2023-07-17 00:46+0000\n"
 "PO-Revision-Date: 2014-05-27 20:06+0200\n"
 "Last-Translator: Martin Schlander <mschlander@opensuse.org>\n"
 "Language-Team: Danish <kde-i18n-doc@kde.org>\n"
@@ -355,23 +355,23 @@ msgstr "Kan ikke generklære protected property %1 i denne kontekst."
 msgid "Cannot use positional argument after argument unpacking"
 msgstr ""
 
-#: duchain/builders/declarationbuilder.cpp:1638
+#: duchain/builders/declarationbuilder.cpp:1647
 #, kde-format
 msgid "The use statement with non-compound name '%1' has no effect."
 msgstr "use-erklæringen med ikke-compound navn \"%1\" har ingen virkning."
 
-#: duchain/builders/declarationbuilder.cpp:1665
+#: duchain/builders/declarationbuilder.cpp:1674
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
 msgstr "Kan ikke bruge \"%1\" som \"%2\" da navnet allerede er i brug."
 
-#: duchain/builders/declarationbuilder.cpp:1691
+#: duchain/builders/declarationbuilder.cpp:1700
 #, fuzzy, kde-format
 #| msgid "Cannot use '%1' as '%2' because the name is already in use."
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
 msgstr "Kan ikke bruge \"%1\" som \"%2\" da navnet allerede er i brug."
 
-#: duchain/builders/declarationbuilder.cpp:1701
+#: duchain/builders/declarationbuilder.cpp:1710
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
 msgstr ""
