@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdevphp\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-08-10 00:44+0000\n"
+"POT-Creation-Date: 2023-07-17 00:46+0000\n"
 "PO-Revision-Date: 2019-11-26 11:39+0000\n"
 "Last-Translator: José Nuno Coelho Pires <zepires@gmail.com>\n"
 "Language-Team: Portuguese <kde-i18n-pt@kde.org>\n"
@@ -325,23 +325,23 @@ msgid "Cannot use positional argument after argument unpacking"
 msgstr ""
 "Não é possível usar um argumento de posição após a extracção dos argumentos"
 
-#: duchain/builders/declarationbuilder.cpp:1638
+#: duchain/builders/declarationbuilder.cpp:1647
 #, kde-format
 msgid "The use statement with non-compound name '%1' has no effect."
 msgstr "A instrução 'use' com o nome não-composto '%1' não faz efeito."
 
-#: duchain/builders/declarationbuilder.cpp:1665
+#: duchain/builders/declarationbuilder.cpp:1674
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
 msgstr "Não é possível usar o '%1' como '%2', porque o nome já está em uso."
 
-#: duchain/builders/declarationbuilder.cpp:1691
+#: duchain/builders/declarationbuilder.cpp:1700
 #, kde-format
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
 msgstr ""
 "Não é possível usar o %1 como %2, porque o '%2' é um nome de classe especial"
 
-#: duchain/builders/declarationbuilder.cpp:1701
+#: duchain/builders/declarationbuilder.cpp:1710
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
 msgstr "A expressão 'yield' só pode ser usada dentro de uma função"

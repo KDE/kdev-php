@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdevelop\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-08-10 00:44+0000\n"
+"POT-Creation-Date: 2023-07-17 00:46+0000\n"
 "PO-Revision-Date: 2020-04-05 12:26+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -312,22 +312,22 @@ msgstr "protected 속성 %1에 접근할 수 없음"
 msgid "Cannot use positional argument after argument unpacking"
 msgstr "인자 언패킹 이후에 위치별 인자를 사용할 수 없음"
 
-#: duchain/builders/declarationbuilder.cpp:1638
+#: duchain/builders/declarationbuilder.cpp:1647
 #, kde-format
 msgid "The use statement with non-compound name '%1' has no effect."
 msgstr "비 컴파운드 이름 '%1'을(를) 사용한 use 문은 효과가 없습니다."
 
-#: duchain/builders/declarationbuilder.cpp:1665
+#: duchain/builders/declarationbuilder.cpp:1674
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
 msgstr "같은 이름이 사용 중이므로 '%1'을(를) '%2'(으)로 사용할 수 없습니다."
 
-#: duchain/builders/declarationbuilder.cpp:1691
+#: duchain/builders/declarationbuilder.cpp:1700
 #, kde-format
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
 msgstr "'%2'이(가) 특수 클래스 이름으로 '%1'을(를) '%2'(으)로 사용할 수 없음"
 
-#: duchain/builders/declarationbuilder.cpp:1701
+#: duchain/builders/declarationbuilder.cpp:1710
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
 msgstr "'yield' 표현식은 함수 내부에서만 사용할 수 있음"

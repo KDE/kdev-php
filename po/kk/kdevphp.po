@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-08-10 00:44+0000\n"
+"POT-Creation-Date: 2023-07-17 00:46+0000\n"
 "PO-Revision-Date: 2013-11-12 04:13+0600\n"
 "Last-Translator: Sairan Kikkarin <sairan@computer.org>\n"
 "Language-Team: Kazakh <kde-i18n-doc@kde.org>\n"
@@ -348,22 +348,22 @@ msgstr "Бұл контекстінде protected %1 қасиетін қайта
 msgid "Cannot use positional argument after argument unpacking"
 msgstr ""
 
-#: duchain/builders/declarationbuilder.cpp:1638
+#: duchain/builders/declarationbuilder.cpp:1647
 #, kde-format
 msgid "The use statement with non-compound name '%1' has no effect."
 msgstr "Құрылымды емес '%1' деп аталған өрнек істемейді."
 
-#: duchain/builders/declarationbuilder.cpp:1665
+#: duchain/builders/declarationbuilder.cpp:1674
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
 msgstr ""
 
-#: duchain/builders/declarationbuilder.cpp:1691
+#: duchain/builders/declarationbuilder.cpp:1700
 #, kde-format
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
 msgstr ""
 
-#: duchain/builders/declarationbuilder.cpp:1701
+#: duchain/builders/declarationbuilder.cpp:1710
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
 msgstr ""

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-08-10 00:44+0000\n"
+"POT-Creation-Date: 2023-07-17 00:46+0000\n"
 "PO-Revision-Date: 2023-07-03 11:38\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -306,22 +306,22 @@ msgstr "无法访问保护属性 %1"
 msgid "Cannot use positional argument after argument unpacking"
 msgstr "参数解包后不能使用位置参数"
 
-#: duchain/builders/declarationbuilder.cpp:1638
+#: duchain/builders/declarationbuilder.cpp:1647
 #, kde-format
 msgid "The use statement with non-compound name '%1' has no effect."
 msgstr "use 语句带有非复合名称“%1”没有效果。"
 
-#: duchain/builders/declarationbuilder.cpp:1665
+#: duchain/builders/declarationbuilder.cpp:1674
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
 msgstr "无法将 %1 用作 %2 因为此名称已经被使用了。"
 
-#: duchain/builders/declarationbuilder.cpp:1691
+#: duchain/builders/declarationbuilder.cpp:1700
 #, kde-format
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
 msgstr "无法将 %1 用作 %2 因为 %2 是一个特殊类名"
 
-#: duchain/builders/declarationbuilder.cpp:1701
+#: duchain/builders/declarationbuilder.cpp:1710
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
 msgstr "yield 表达式只能在函数内使用"
