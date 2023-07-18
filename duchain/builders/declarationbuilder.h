@@ -60,7 +60,7 @@ protected:
     void visitParameterList(ParameterListAst *node) override;
     void visitParameter(ParameterAst *node) override;
     void visitFunctionDeclarationStatement(FunctionDeclarationStatementAst *node) override;
-    void visitReturnType(ReturnTypeAst *node) override;
+    void visitGenericTypeHint(GenericTypeHintAst *node) override;
     void visitClassVariable(ClassVariableAst *node) override;
     void visitConstantDeclaration(ConstantDeclarationAst *node) override;
     void visitClassConstantDeclaration(ClassConstantDeclarationAst *node) override;

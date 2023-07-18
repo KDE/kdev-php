@@ -54,8 +54,7 @@ protected:
     void visitUseNamespaceOrUseGroupedNamespace(UseNamespaceOrUseGroupedNamespaceAst* node) override;
     void visitInnerUseNamespace(InnerUseNamespaceAst* node) override;
     void openNamespace(NamespaceDeclarationStatementAst* parent, IdentifierAst* node, const IdentifierPair& identifier, const KDevelop::RangeInRevision& range) override;
-    void visitPropertyType(PropertyTypeAst* node) override;
-    void visitReturnType(ReturnTypeAst* node) override;
+    void visitGenericTypeHint(GenericTypeHintAst* node) override;
 
 private:
     void buildNamespaceUses(

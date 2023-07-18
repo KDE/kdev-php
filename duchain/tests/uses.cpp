@@ -1880,6 +1880,112 @@ void TestUses::propertyType() {
     compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 20, 0, 21));
 }
 
+void TestUses::functionParameterUnionType() {
+    //                 0         1         2         3         4         5         6
+    //                 0123456789012345678901234567890123456789012345678901234567890
+    QByteArray method("<? class A {} class B {} class C {} function foo(A|B|C $a) {}");
+    TopDUContext *top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *a = top->localDeclarations().at(0);
+    QCOMPARE(a->identifier().toString(), QString("a"));
+    compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 49, 0, 50));
+
+    Declaration *b = top->localDeclarations().at(1);
+    QCOMPARE(b->identifier().toString(), QString("b"));
+    compareUses(b, QList<RangeInRevision>() << RangeInRevision(0, 51, 0, 52));
+
+    Declaration *c = top->localDeclarations().at(2);
+    QCOMPARE(c->identifier().toString(), QString("c"));
+    compareUses(c, QList<RangeInRevision>() << RangeInRevision(0, 53, 0, 54));
+}
+
+void TestUses::functionReturnUnionType() {
+    //                 0         1         2         3         4         5         6
+    //                 0123456789012345678901234567890123456789012345678901234567890
+    QByteArray method("<? class A {} class B {} class C {} function foo(): A|B|C {}");
+    TopDUContext *top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *a = top->localDeclarations().at(0);
+    QCOMPARE(a->identifier().toString(), QString("a"));
+    compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 52, 0, 53));
+
+    Declaration *b = top->localDeclarations().at(1);
+    QCOMPARE(b->identifier().toString(), QString("b"));
+    compareUses(b, QList<RangeInRevision>() << RangeInRevision(0, 54, 0, 55));
+
+    Declaration *c = top->localDeclarations().at(2);
+    QCOMPARE(c->identifier().toString(), QString("c"));
+    compareUses(c, QList<RangeInRevision>() << RangeInRevision(0, 56, 0, 57));
+}
+
+void TestUses::closureParameterUnionType() {
+    //                 0         1         2         3         4         5         6
+    //                 0123456789012345678901234567890123456789012345678901234567890
+    QByteArray method("<? class A {} class B {} class C {} $a = function (A|B|C $a) {};");
+    TopDUContext *top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *a = top->localDeclarations().at(0);
+    QCOMPARE(a->identifier().toString(), QString("a"));
+    compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 51, 0, 52));
+
+    Declaration *b = top->localDeclarations().at(1);
+    QCOMPARE(b->identifier().toString(), QString("b"));
+    compareUses(b, QList<RangeInRevision>() << RangeInRevision(0, 53, 0, 54));
+
+    Declaration *c = top->localDeclarations().at(2);
+    QCOMPARE(c->identifier().toString(), QString("c"));
+    compareUses(c, QList<RangeInRevision>() << RangeInRevision(0, 55, 0, 56));
+}
+
+void TestUses::closureReturnUnionType() {
+    //                 0         1         2         3         4         5         6
+    //                 0123456789012345678901234567890123456789012345678901234567890
+    QByteArray method("<? class A {} class B {} class C {} $a = function (): A|B|C {};");
+    TopDUContext *top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *a = top->localDeclarations().at(0);
+    QCOMPARE(a->identifier().toString(), QString("a"));
+    compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 54, 0, 55));
+
+    Declaration *b = top->localDeclarations().at(1);
+    QCOMPARE(b->identifier().toString(), QString("b"));
+    compareUses(b, QList<RangeInRevision>() << RangeInRevision(0, 56, 0, 57));
+
+    Declaration *c = top->localDeclarations().at(2);
+    QCOMPARE(c->identifier().toString(), QString("c"));
+    compareUses(c, QList<RangeInRevision>() << RangeInRevision(0, 58, 0, 59));
+}
+
+void TestUses::propertyUnionType() {
+    //                 0         1         2         3         4         5         6
+    //                 01234567890123456789012345678901234567890123456789012345678901234567
+    QByteArray method("<? class A {} class B {} class C {} class D { public A|B|C $foo; }");
+    TopDUContext *top = parse(method, DumpNone);
+    DUChainReleaser releaseTop(top);
+    DUChainWriteLocker lock(DUChain::lock());
+
+    Declaration *a = top->localDeclarations().at(0);
+    QCOMPARE(a->identifier().toString(), QString("a"));
+    compareUses(a, QList<RangeInRevision>() << RangeInRevision(0, 53, 0, 54));
+
+    Declaration *b = top->localDeclarations().at(1);
+    QCOMPARE(b->identifier().toString(), QString("b"));
+    compareUses(b, QList<RangeInRevision>() << RangeInRevision(0, 55, 0, 56));
+
+    Declaration *c = top->localDeclarations().at(2);
+    QCOMPARE(c->identifier().toString(), QString("c"));
+    compareUses(c, QList<RangeInRevision>() << RangeInRevision(0, 57, 0, 58));
+}
+
+
 }
 
 #include "moc_uses.cpp"

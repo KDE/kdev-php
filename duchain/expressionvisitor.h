@@ -65,6 +65,7 @@ protected:
     void visitRelationalExpressionRest(RelationalExpressionRestAst* node) override;
     void visitEqualityExpressionRest(EqualityExpressionRestAst* node) override;
     void visitStatement(StatementAst* node) override;
+    void visitGenericTypeHint(GenericTypeHintAst* node) override;
 
     QString stringForNode(AstNode* id);
     KDevelop::QualifiedIdentifier identifierForNode(IdentifierAst* id);

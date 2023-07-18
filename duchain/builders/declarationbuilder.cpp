@@ -821,18 +821,9 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
         funDec->addDefaultParameter(IndexedString(symbol));
         if (node->isVariadic != -1) {
             reportError(i18n("Variadic parameter cannot have a default value"), node->defaultValue);
-        } else if (node->parameterType && node->parameterType->typehint && isClassTypehint(node->parameterType->typehint, m_editor) &&
+        } else if (node->parameterType && node->parameterType->typehint && hasClassTypehint(node->parameterType->typehint, m_editor) &&
                 symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0) {
             reportError(i18n("Default value for parameters with a class type hint can only be NULL."), node->defaultValue);
-        } else if (node->parameterType && node->parameterType->typehint && node->parameterType->typehint->genericType &&
-                symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0) {
-            NamespacedIdentifierAst* typehintNode = node->parameterType->typehint->genericType;
-            const KDevPG::ListNode< IdentifierAst* >* it = typehintNode->namespaceNameSequence->back();
-            QString typehintName = m_editor->parseSession()->symbol(it->element);
-
-            if (typehintName.compare(QLatin1String("object"), Qt::CaseInsensitive) == 0) {
-                reportError(i18n("Default value for parameters with an object type can only be NULL."), node->defaultValue);
-            }
         }
     } else {
         funDec->addDefaultParameter(IndexedString{});
@@ -847,16 +838,6 @@ void DeclarationBuilder::visitParameter(ParameterAst *node)
     }
 
     DeclarationBuilderBase::visitParameter(node);
-
-    if (node->parameterType && node->parameterType->typehint && isClassTypehint(node->parameterType->typehint, m_editor)) {
-        NamespacedIdentifierAst* typehintNode = node->parameterType->typehint->genericType;
-        const KDevPG::ListNode< IdentifierAst* >* it = typehintNode->namespaceNameSequence->back();
-        QString className = m_editor->parseSession()->symbol(it->element);
-
-        if (isReservedClassName(className)) {
-            reportError(i18n("Cannot use '%1' as class name as it is reserved", className), typehintNode);
-        }
-    }
 
     if (m_functionDeclarationPreviousArgument && m_functionDeclarationPreviousArgument->isVariadic != -1) {
         reportError(i18n("Only the last parameter can be variadic."), m_functionDeclarationPreviousArgument);
@@ -886,9 +867,9 @@ void DeclarationBuilder::visitFunctionDeclarationStatement(FunctionDeclarationSt
     closeDeclaration();
 }
 
-void DeclarationBuilder::visitReturnType(ReturnTypeAst* node) {
-    if (node->typehint && isClassTypehint(node->typehint, m_editor)) {
-        NamespacedIdentifierAst* typehintNode = node->typehint->genericType;
+void DeclarationBuilder::visitGenericTypeHint(GenericTypeHintAst* node) {
+    if (node->genericType && isGenericClassTypehint(node->genericType, m_editor)) {
+        NamespacedIdentifierAst* typehintNode = node->genericType;
         const KDevPG::ListNode< IdentifierAst* >* it = typehintNode->namespaceNameSequence->back();
         QString className = m_editor->parseSession()->symbol(it->element);
 

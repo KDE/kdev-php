@@ -50,8 +50,8 @@ ReferencedTopDUContext UseBuilder::build ( const IndexedString& url, AstNode* no
 
 void UseBuilder::visitParameter(ParameterAst *node)
 {
-    if (node->parameterType && node->parameterType->typehint && isClassTypehint(node->parameterType->typehint, m_editor)) {
-        buildNamespaceUses(node->parameterType->typehint->genericType);
+    if (node->parameterType) {
+        visitParameterType(node->parameterType);
     }
     if (node->defaultValue) {
         visitNodeWithExprVisitor(node->defaultValue);
@@ -261,6 +261,12 @@ void UseBuilder::visitInnerUseNamespace(InnerUseNamespaceAst* node)
         lastType);
 }
 
+void UseBuilder::visitGenericTypeHint(GenericTypeHintAst* node) {
+    if (node->genericType && isGenericClassTypehint(node->genericType, m_editor)) {
+        buildNamespaceUses(node->genericType);
+    }
+}
+
 void UseBuilder::buildNamespaceUses(NamespacedIdentifierBeforeGroupedNamespaceAst* node, UseImportType useImportType)
 {
     Php::DeclarationType lastType;
@@ -352,18 +358,6 @@ void UseBuilder::visitNodeWithExprVisitor(AstNode* node)
 
     if (v.result().hadUnresolvedIdentifiers()) {
         m_hadUnresolvedIdentifiers = true;
-    }
-}
-
-void UseBuilder::visitPropertyType(PropertyTypeAst* node) {
-    if (node->typehint && isClassTypehint(node->typehint, m_editor)) {
-        buildNamespaceUses(node->typehint->genericType);
-    }
-}
-
-void UseBuilder::visitReturnType(ReturnTypeAst* node) {
-    if (node->typehint && isClassTypehint(node->typehint, m_editor)) {
-        buildNamespaceUses(node->typehint->genericType);
     }
 }
 

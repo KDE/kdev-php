@@ -97,32 +97,85 @@ bool isGenericClassTypehint(NamespacedIdentifierAst* node, EditorIntegrator *edi
     }
 }
 
-bool isClassTypehint(GenericTypeHintAst* genericType, EditorIntegrator *editor)
+template <class T>
+bool isClassTypehint(T* typeHint, EditorIntegrator *editor)
 {
-    Q_ASSERT(genericType);
+    Q_ASSERT(typeHint);
 
-    if (genericType->callableType != -1) {
+    if (typeHint->callableType != -1) {
         return false;
-    } else if (genericType->arrayType != -1) {
+    } else if (typeHint->voidType != -1) {
         return false;
-    } else if (genericType->genericType) {
-        return isGenericClassTypehint(genericType->genericType, editor);
+    } else if (typeHint->genericType) {
+        if (typeHint->genericType->arrayType != -1) {
+            return false;
+        } else {
+            return isGenericClassTypehint(typeHint->genericType->genericType, editor);
+        }
     } else {
         return false;
     }
 }
 
-bool isClassTypehint(PropertyTypeHintAst* propertyType, EditorIntegrator *editor)
+bool hasClassTypehint(UnionParameterTypeAst* unionType, EditorIntegrator *editor)
 {
-    Q_ASSERT(propertyType);
+    Q_ASSERT(unionType);
 
-    if (propertyType->arrayType != -1) {
-        return false;
-    } else if (propertyType->genericType) {
-        return isGenericClassTypehint(propertyType->genericType, editor);
+    const KDevPG::ListNode< ParameterTypeHintAst* >* it = unionType->unionTypeSequence->front();
+
+    do {
+        if (isClassTypehint(it->element, editor)) {
+            return true;
+        }
+    } while(it->hasNext() && (it = it->next));
+
+    return false;
+}
+
+bool hasClassTypehint(UnionPropertyTypeAst* unionType, EditorIntegrator *editor)
+{
+    Q_ASSERT(unionType);
+
+    const KDevPG::ListNode< PropertyTypeHintAst* >* it = unionType->unionTypeSequence->front();
+
+    do {
+        if (isClassTypehint(it->element, editor)) {
+            return true;
+        }
+    } while(it->hasNext() && (it = it->next));
+
+    return false;
+}
+
+bool hasClassTypehint(UnionReturnTypeAst* unionType, EditorIntegrator *editor)
+{
+    Q_ASSERT(unionType);
+
+    const KDevPG::ListNode< ReturnTypeHintAst* >* it = unionType->unionTypeSequence->front();
+
+    do {
+        if (isClassTypehint(it->element, editor)) {
+            return true;
+        }
+    } while(it->hasNext() && (it = it->next));
+
+    return false;
+}
+
+bool hasType(AbstractType::Ptr haystack, AbstractType::Ptr needle)
+{
+    auto unsure = haystack.dynamicCast<UnsureType>();
+    if (unsure) {
+        FOREACH_FUNCTION(const IndexedType& t, unsure->types) {
+            if (needle->equals(t.abstractType().data())) {
+                return true;
+            }
+        }
     } else {
-        return false;
+        return needle->equals(haystack.data());
     }
+
+    return false;
 }
 
 DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const QualifiedIdentifier& id,
@@ -478,57 +531,92 @@ QualifiedIdentifier identifierWithNamespace(const QualifiedIdentifier& base, DUC
     }
 }
 
-template <class T>
-AbstractType::Ptr determineTypehint(const T* genericType, EditorIntegrator *editor, DUContext* currentContext)
+AbstractType::Ptr determineGenericTypeHint(const GenericTypeHintAst* genericType, EditorIntegrator *editor, DUContext* currentContext)
 {
     Q_ASSERT(genericType);
     AbstractType::Ptr type;
 
-    if (genericType->typehint) {
-        if (genericType->typehint->callableType != -1) {
-            type = AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeCallable));
-        } else if (genericType->typehint->arrayType != -1) {
-            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
-        } else if (genericType->typehint->genericType) {
-            NamespacedIdentifierAst* node = genericType->typehint->genericType;
-            const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
-            QString typehint = editor->parseSession()->symbol(it->element);
+    if (genericType->arrayType != -1) {
+        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
+    } else if (genericType->genericType) {
+        NamespacedIdentifierAst* node = genericType->genericType;
+        const KDevPG::ListNode< IdentifierAst* >* it = node->namespaceNameSequence->front();
+        QString typehint = editor->parseSession()->symbol(it->element);
 
-            if (typehint.compare(QLatin1String("bool"), Qt::CaseInsensitive) == 0) {
-                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean));
-            } else if (typehint.compare(QLatin1String("float"), Qt::CaseInsensitive) == 0) {
-                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeFloat));
-            } else if (typehint.compare(QLatin1String("int"), Qt::CaseInsensitive) == 0) {
-                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeInt));
-            } else if (typehint.compare(QLatin1String("string"), Qt::CaseInsensitive) == 0) {
-                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeString));
-            } else if (typehint.compare(QLatin1String("object"), Qt::CaseInsensitive) == 0) {
-                type = AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeObject));
-            } else if (typehint.compare(QLatin1String("mixed"), Qt::CaseInsensitive) == 0) {
-                type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
-            } else if (typehint.compare(QLatin1String("iterable"), Qt::CaseInsensitive) == 0) {
-                DeclarationPointer traversableDecl = findDeclarationImportHelper(currentContext, QualifiedIdentifier(u"traversable"), ClassDeclarationType);
+        if (typehint.compare(QLatin1String("bool"), Qt::CaseInsensitive) == 0) {
+            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeBoolean));
+        } else if (typehint.compare(QLatin1String("float"), Qt::CaseInsensitive) == 0) {
+            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeFloat));
+        } else if (typehint.compare(QLatin1String("int"), Qt::CaseInsensitive) == 0) {
+            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeInt));
+        } else if (typehint.compare(QLatin1String("string"), Qt::CaseInsensitive) == 0) {
+            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeString));
+        } else if (typehint.compare(QLatin1String("object"), Qt::CaseInsensitive) == 0) {
+            type = AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeObject));
+        } else if (typehint.compare(QLatin1String("mixed"), Qt::CaseInsensitive) == 0) {
+            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeMixed));
+        } else if (typehint.compare(QLatin1String("iterable"), Qt::CaseInsensitive) == 0) {
+            DeclarationPointer traversableDecl = findDeclarationImportHelper(currentContext, QualifiedIdentifier(u"traversable"), ClassDeclarationType);
 
-                if (traversableDecl) {
-                    UnsureType::Ptr unsure(new UnsureType());
-                    AbstractType::Ptr arrayType = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
-                    unsure->addType(arrayType->indexed());
-                    unsure->addType(traversableDecl->abstractType()->indexed());
+            if (traversableDecl) {
+                UnsureType::Ptr unsure(new UnsureType());
+                AbstractType::Ptr arrayType = AbstractType::Ptr(new IntegralType(IntegralType::TypeArray));
+                unsure->addType(arrayType->indexed());
+                unsure->addType(traversableDecl->abstractType()->indexed());
 
-                    type = AbstractType::Ptr(unsure);
-                }
-            } else {
-                //don't use openTypeFromName as it uses cursor for findDeclarations
-                DeclarationPointer decl = findDeclarationImportHelper(currentContext,
-                                                            identifierForNamespace(genericType->typehint->genericType, editor), ClassDeclarationType);
-                if (decl) {
-                    type = decl->abstractType();
-                }
+                type = AbstractType::Ptr(unsure);
+            }
+        } else {
+            //don't use openTypeFromName as it uses cursor for findDeclarations
+            DeclarationPointer decl = findDeclarationImportHelper(currentContext,
+                                                        identifierForNamespace(genericType->genericType, editor), ClassDeclarationType);
+            if (decl) {
+                type = decl->abstractType();
             }
         }
     }
 
-    if (type && genericType->isNullable != -1) {
+    return type;
+}
+
+template <class T>
+AbstractType::Ptr determineTypehintFromList(const T* list, EditorIntegrator *editor, DUContext* currentContext)
+{
+    Q_ASSERT(list);
+    AbstractType::Ptr type;
+
+    if (list->element->callableType != -1) {
+        type = AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeCallable));
+    } else if (list->element->voidType != -1) {
+        type = AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid));
+    } else if (list->element->genericType) {
+        type = determineGenericTypeHint(list->element->genericType, editor, currentContext);
+    }
+
+    if (list->count() > 1) {
+        auto unsure = type.dynamicCast<UnsureType>();
+        if (!unsure) {
+            unsure = UnsureType::Ptr(new UnsureType());
+            unsure->addType(type->indexed());
+        }
+
+        while(list->hasNext() && (list = list->next)) {
+            if (list->element->callableType != -1) {
+                unsure->addType(AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeCallable))->indexed());
+            } else if (list->element->voidType != -1) {
+                unsure->addType(AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid))->indexed());
+            } else if (list->element->genericType) {
+                unsure->addType(determineGenericTypeHint(list->element->genericType, editor, currentContext)->indexed());
+            }
+
+            if (list->element->isNullable != -1) {
+                AbstractType::Ptr nullType = AbstractType::Ptr(new IntegralType(IntegralType::TypeNull));
+                unsure->addType(nullType->indexed());
+            }
+        }
+
+        type = unsure;
+    } else if (type && list->element->isNullable != -1) {
         AbstractType::Ptr nullType = AbstractType::Ptr(new IntegralType(IntegralType::TypeNull));
         auto unsure = type.dynamicCast<UnsureType>();
         if (unsure) {
@@ -545,11 +633,22 @@ AbstractType::Ptr determineTypehint(const T* genericType, EditorIntegrator *edit
     return type;
 }
 
+template <class T>
+AbstractType::Ptr determineTypehint(const T* unionType, EditorIntegrator *editor, DUContext* currentContext)
+{
+    Q_ASSERT(unionType);
+    AbstractType::Ptr type;
+
+    type = determineTypehintFromList(unionType->unionTypeSequence->front(), editor, currentContext);
+
+    return type;
+}
+
 AbstractType::Ptr parameterType(const ParameterAst* node, AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, DUContext* currentContext)
 {
     AbstractType::Ptr type;
-    if (node->parameterType) {
-        type = determineTypehint(node->parameterType, editor, currentContext);
+    if (node->parameterType && node->parameterType->typehint) {
+        type = determineTypehint(node->parameterType->typehint, editor, currentContext);
     }
     if (node->defaultValue) {
         ExpressionVisitor v(editor);
@@ -575,7 +674,7 @@ AbstractType::Ptr parameterType(const ParameterAst* node, AbstractType::Ptr phpD
 
                 type = unsure;
             }
-        } else {
+        } else if (!type) {
             //Otherwise, let the default value dictate the parameter type
             type = defaultValueType;
         }
@@ -608,8 +707,8 @@ AbstractType::Ptr parameterType(const ParameterAst* node, AbstractType::Ptr phpD
 AbstractType::Ptr propertyType(const ClassStatementAst* node, AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, DUContext* currentContext)
 {
     AbstractType::Ptr type;
-    if (node->propertyType) {
-        type = determineTypehint(node->propertyType, editor, currentContext);
+    if (node->propertyType && node->propertyType->typehint) {
+        type = determineTypehint(node->propertyType->typehint, editor, currentContext);
     }
 
     if (!type) {
@@ -626,12 +725,8 @@ AbstractType::Ptr propertyType(const ClassStatementAst* node, AbstractType::Ptr 
 
 AbstractType::Ptr returnType(const ReturnTypeAst* node, AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, DUContext* currentContext) {
     AbstractType::Ptr type;
-    if (node) {
-        if (node->voidType != -1) {
-            type = AbstractType::Ptr(new IntegralType(IntegralType::TypeVoid));
-        } else {
-            type = determineTypehint(node, editor, currentContext);
-        }
+    if (node && node->typehint) {
+        type = determineTypehint(node->typehint, editor, currentContext);
     }
     if (!type) {
         type = phpDocTypehint;

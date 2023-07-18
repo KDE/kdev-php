@@ -93,6 +93,11 @@ private slots:
     void returnTypeFunction();
     void defaultValue();
     void propertyType();
+    void functionParameterUnionType();
+    void functionReturnUnionType();
+    void closureParameterUnionType();
+    void closureReturnUnionType();
+    void propertyUnionType();
 };
 
 }

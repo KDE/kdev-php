@@ -951,17 +951,50 @@ arrayIndex=arrayIndexSpecifier | LBRACE expr=expr RBRACE
 
     genericType=namespacedIdentifier
   | arrayType=ARRAY
-  | callableType=CALLABLE
 -> genericTypeHint ;;
 
-    (isNullable=QUESTION | 0) typehint=genericTypeHint
--> parameterType ;;
+    (isNullable=QUESTION | 0) (
+        genericType=genericTypeHint
+      | callableType=CALLABLE
+    )
+  [: (*yynode)->voidType = -1; :]
+-> parameterTypeHint[
+     member variable voidType: int;
+] ;;
 
     (isNullable=QUESTION | 0) (
-        typehint=genericTypeHint
+        genericType=genericTypeHint
+      | callableType=CALLABLE
       | voidType=VOID
     )
+-> returnTypeHint ;;
+
+    (isNullable=QUESTION | 0)
+    genericType=genericTypeHint
+  [: (*yynode)->callableType = -1; :]
+  [: (*yynode)->voidType = -1; :]
+-> propertyTypeHint[
+     member variable callableType: int;
+     member variable voidType: int;
+] ;;
+
+    #unionType=parameterTypeHint @ BIT_OR
+-> unionParameterType ;;
+
+    typehint=unionParameterType
+-> parameterType ;;
+
+    #unionType=returnTypeHint @ BIT_OR
+-> unionReturnType ;;
+
+    typehint=unionReturnType
 -> returnType ;;
+
+    #unionType=propertyTypeHint @ BIT_OR
+-> unionPropertyType ;;
+
+    typehint=unionPropertyType
+-> propertyType ;;
 
     value=commonScalar
   | constantOrClassConst=constantOrClassConst
@@ -1090,16 +1123,6 @@ try/recover(#classStatements=classStatement)*
     )
   | USE #traits=namespacedIdentifier @ COMMA (imports=traitAliasDeclaration|SEMICOLON)
 -> classStatement ;;
-
-    (isNullable=QUESTION | 0) typehint=propertyTypeHint
--> propertyType ;;
-
-  ( genericType=namespacedIdentifier
-    | arrayType=ARRAY )
-  [: (*yynode)->callableType = -1; :]
--> propertyTypeHint[
-     member variable callableType: int;
-] ;;
 
     LBRACE #statements=traitAliasStatement
         @ (SEMICOLON [: if (yytoken == Token_RBRACE) { break; } :]) RBRACE

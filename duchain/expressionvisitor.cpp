@@ -224,13 +224,8 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
     if (node->functionBody) {
         visitInnerStatementList(node->functionBody);
     }
-    if (node->returnType && node->returnType->typehint && isClassTypehint(node->returnType->typehint, m_editor)) {
-        NamespacedIdentifierAst* objectType = node->returnType->typehint->genericType;
-        QualifiedIdentifier id = identifierForNamespace(objectType, m_editor);
-        DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
-
-        usingDeclaration(objectType->namespaceNameSequence->back()->element, dec);
-        buildNamespaceUses(objectType, id);
+    if (node->returnType) {
+        visitReturnType(node->returnType);
     }
 
     //Override found type with return typehint or phpdoc return typehint
@@ -246,15 +241,10 @@ void ExpressionVisitor::visitClosure(ClosureAst* node)
             AbstractType::Ptr type = parameterType(it->element, {}, m_editor, m_currentContext);
             closureType->addArgument(type);
 
-            if (it->element->parameterType && it->element->parameterType->typehint
-                    && isClassTypehint(it->element->parameterType->typehint, m_editor)) {
-                NamespacedIdentifierAst* objectType = it->element->parameterType->typehint->genericType;
-                QualifiedIdentifier id = identifierForNamespace(objectType, m_editor);
-                DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
-
-                usingDeclaration(objectType->namespaceNameSequence->back()->element, dec);
-                buildNamespaceUses(objectType, id);
+            if (it->element->parameterType) {
+                visitParameterType(it->element->parameterType);
             }
+
             if (it->element->defaultValue) {
                 visitExpr(it->element->defaultValue);
             }
@@ -919,6 +909,17 @@ void ExpressionVisitor::visitStatement(StatementAst *node)
         if (closureType) {
             closureType->setReturnType(m_result.type());
         }
+    }
+}
+
+void ExpressionVisitor::visitGenericTypeHint(GenericTypeHintAst *node) {
+    if (node->genericType && isGenericClassTypehint(node->genericType, m_editor)) {
+        NamespacedIdentifierAst* objectType = node->genericType;
+        QualifiedIdentifier id = identifierForNamespace(objectType, m_editor);
+        DeclarationPointer dec = findDeclarationImport(ClassDeclarationType, id);
+
+        usingDeclaration(objectType->namespaceNameSequence->back()->element, dec);
+        buildNamespaceUses(objectType, id);
     }
 }
 

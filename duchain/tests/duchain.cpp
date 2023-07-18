@@ -1052,6 +1052,33 @@ void TestDUChain::declarationReturnTypeTypehintObject()
     QVERIFY(returnType->dataType() == IntegralTypeExtended::TypeObject);
 }
 
+void TestDUChain::declarationReturnTypeTypehintUnion()
+{
+    //                 0         1         2         3         4         5
+    //                 012345678901234567890123456789012345678901234567890
+    QByteArray method("<? function foo(): string|int|float|bool { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    auto returnType = fun->returnType().dynamicCast<UnsureType>();
+    QVERIFY(returnType);
+
+    QCOMPARE(returnType->typesSize(), 4u);
+    QVERIFY(returnType->types()[0].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(returnType->types()[0].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeString);
+    QVERIFY(returnType->types()[1].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(returnType->types()[1].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
+    QVERIFY(returnType->types()[2].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(returnType->types()[2].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeFloat);
+    QVERIFY(returnType->types()[3].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(returnType->types()[3].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeBoolean);
+}
+
 void TestDUChain::declareTypehintFunction()
 {
     //                 0         1         2         3         4         5         6         7
@@ -1164,6 +1191,66 @@ void TestDUChain::declareTypehintObjectFunction()
     IntegralTypeExtended::Ptr type = top->childContexts().first()->localDeclarations().first()->type<IntegralTypeExtended>();
     QVERIFY(type);
     QVERIFY(type->dataType() == IntegralTypeExtended::TypeObject);
+}
+
+void TestDUChain::declareTypehintObjectFunctionWithNullDefault()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo(?object $i = NULL) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(fun->arguments().first().dynamicCast<UnsureType>());
+
+    auto argType = fun->arguments().first().dynamicCast<UnsureType>();
+    QVERIFY(argType);
+    QCOMPARE(argType->typesSize(), 2u);
+    QVERIFY(argType->types()[0].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(argType->types()[0].abstractType().staticCast<IntegralType>()->dataType() == IntegralTypeExtended::TypeObject);
+    QVERIFY(argType->types()[1].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(argType->types()[1].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeNull);
+}
+
+void TestDUChain::declareTypehintObjectFunctionWithInvalidDefaultValue()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo(object $i = '') { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    QVERIFY(!top->problems().isEmpty());
+}
+
+void TestDUChain::declaredTypehintOverridesDetectedValue()
+{
+    //                 0         1         2         3         4         5         6         7
+    //                 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+    QByteArray method("<? function foo(int $i = false) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+    QVERIFY(fun->arguments().first().dynamicCast<IntegralType>());
+
+    IntegralType::Ptr type = fun->arguments().first().dynamicCast<IntegralType>();
+    QVERIFY(type);
+    QVERIFY(type->dataType() == IntegralType::TypeInt);
 }
 
 void TestDUChain::declareTypehintArrayFunction()
@@ -1468,6 +1555,34 @@ void TestDUChain::declareTypehintNullableIterableFunction()
     QCOMPARE(argType->types()[1].abstractType().staticCast<StructureType>()->qualifiedIdentifier(), QualifiedIdentifier(u"traversable"));
     QVERIFY(argType->types()[2].abstractType().dynamicCast<IntegralType>());
     QVERIFY(argType->types()[2].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeNull);
+}
+
+void TestDUChain::declareTypehintUnionFunction()
+{
+    //                 0         1         2         3         4         5
+    //                 012345678901234567890123456789012345678901234567890
+    QByteArray method("<? function foo(string|int|float|bool $i) { } ");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    FunctionType::Ptr fun = top->localDeclarations().first()->type<FunctionType>();
+    QVERIFY(fun);
+    QCOMPARE(fun->arguments().count(), 1);
+
+    auto argType = fun->arguments().first().dynamicCast<UnsureType>();
+    QVERIFY(argType);
+    QCOMPARE(argType->typesSize(), 4u);
+    QVERIFY(argType->types()[0].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(argType->types()[0].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeString);
+    QVERIFY(argType->types()[1].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(argType->types()[1].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
+    QVERIFY(argType->types()[2].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(argType->types()[2].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeFloat);
+    QVERIFY(argType->types()[3].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(argType->types()[3].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeBoolean);
 }
 
 void TestDUChain::classImplementsInterface()
@@ -4477,6 +4592,35 @@ void TestDUChain::generatorClosure()
     QCOMPARE(generatorType->qualifiedIdentifier(), QualifiedIdentifier(u"generator"));
 
     QVERIFY(dec->abstractType()->equals(closure->abstractType().constData()));
+}
+
+void TestDUChain::propertyUnionType()
+{
+    //                 0         1         2         3         4         5
+    //                 012345678901234567890123456789012345678901234567890
+    QByteArray method("<? class A { public string|int|float|bool $foo; }");
+
+    TopDUContext* top = parse(method, DumpAll);
+    DUChainReleaser releaseTop(top);
+
+    DUChainWriteLocker lock(DUChain::lock());
+
+    StructureType::Ptr a = top->localDeclarations().first()->type<StructureType>();
+    QVERIFY(a);
+
+    QCOMPARE(top->childContexts().first()->localDeclarations().count(), 1);
+
+    UnsureType::Ptr type = top->childContexts().first()->localDeclarations().first()->type<UnsureType>();
+
+    QCOMPARE(type->typesSize(), 4u);
+    QVERIFY(type->types()[0].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(type->types()[0].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeString);
+    QVERIFY(type->types()[1].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(type->types()[1].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeInt);
+    QVERIFY(type->types()[2].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(type->types()[2].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeFloat);
+    QVERIFY(type->types()[3].abstractType().dynamicCast<IntegralType>());
+    QVERIFY(type->types()[3].abstractType().staticCast<IntegralType>()->dataType() == IntegralType::TypeBoolean);
 }
 
 #include "moc_duchain.cpp"

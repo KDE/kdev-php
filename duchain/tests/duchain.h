@@ -36,6 +36,9 @@ private slots:
     void declareVariadicFunction();
     void declareTypehintVariadicFunction();
     void declareTypehintObjectFunction();
+    void declareTypehintObjectFunctionWithNullDefault();
+    void declareTypehintObjectFunctionWithInvalidDefaultValue();
+    void declaredTypehintOverridesDetectedValue();
     void declareTypehintArrayFunction();
     void declareTypehintCallableFunction();
     void functionWithCallableAndFunctionReturn();
@@ -49,6 +52,7 @@ private slots:
     void declareNullableTypehintMixedFunction();
     void declareTypehintNullableIterableFunction();
     void declareTypehintWithPhpdocFunction();
+    void declareTypehintUnionFunction();
     void returnTypeGenerator_data();
     void returnTypeGenerator();
     void returnTypeGeneratorDelegation();
@@ -63,6 +67,7 @@ private slots:
     void declarationReturnTypeTypehint();
     void declarationReturnTypeTypehintVoid();
     void declarationReturnTypeTypehintObject();
+    void declarationReturnTypeTypehintUnion();
     void classImplementsInterface();
     void classExtends();
     void staticMethod();
@@ -196,6 +201,7 @@ private slots:
     void simpleExpression();
     void generatorAssignment();
     void generatorClosure();
+    void propertyUnionType();
 };
 
 }

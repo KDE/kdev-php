@@ -41,9 +41,13 @@ KDEVPHPDUCHAIN_EXPORT bool isMatch(KDevelop::Declaration* declaration, Declarati
 
 KDEVPHPDUCHAIN_EXPORT bool isGenericClassTypehint(NamespacedIdentifierAst* genericType, EditorIntegrator *editor);
 
-KDEVPHPDUCHAIN_EXPORT bool isClassTypehint(GenericTypeHintAst* parameterType, EditorIntegrator *editor);
+KDEVPHPDUCHAIN_EXPORT bool hasClassTypehint(UnionParameterTypeAst* unionType, EditorIntegrator *editor);
 
-KDEVPHPDUCHAIN_EXPORT bool isClassTypehint(PropertyTypeHintAst* propertyType, EditorIntegrator *editor);
+KDEVPHPDUCHAIN_EXPORT bool hasClassTypehint(UnionPropertyTypeAst* unionType, EditorIntegrator *editor);
+
+KDEVPHPDUCHAIN_EXPORT bool hasClassTypehint(UnionReturnTypeAst* unionType, EditorIntegrator *editor);
+
+KDEVPHPDUCHAIN_EXPORT bool hasType(KDevelop::AbstractType::Ptr haystack, KDevelop::AbstractType::Ptr needle);
 
 KDEVPHPDUCHAIN_EXPORT KDevelop::DeclarationPointer findDeclarationImportHelper(KDevelop::DUContext* currentContext,
                                                                                const KDevelop::QualifiedIdentifier& id,
@@ -93,6 +97,8 @@ KDEVPHPDUCHAIN_EXPORT KDevelop::QualifiedIdentifier identifierWithNamespace(cons
 KDEVPHPDUCHAIN_EXPORT KDevelop::AbstractType::Ptr parameterType(const ParameterAst* node, KDevelop::AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, KDevelop::DUContext *currentContext);
 KDEVPHPDUCHAIN_EXPORT KDevelop::AbstractType::Ptr propertyType(const ClassStatementAst* node, KDevelop::AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, KDevelop::DUContext *currentContext);
 KDEVPHPDUCHAIN_EXPORT KDevelop::AbstractType::Ptr returnType(const ReturnTypeAst* node, KDevelop::AbstractType::Ptr phpDocTypehint, EditorIntegrator* editor, KDevelop::DUContext *currentContext);
+
+KDEVPHPDUCHAIN_EXPORT KDevelop::AbstractType::Ptr determineGenericTypeHint(const GenericTypeHintAst* genericType, EditorIntegrator *editor, KDevelop::DUContext* currentContext);
 
 }
 #endif
