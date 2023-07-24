@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdevelop\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-17 00:46+0000\n"
+"POT-Creation-Date: 2023-07-24 07:30+0000\n"
 "PO-Revision-Date: 2020-04-05 12:26+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -137,8 +137,7 @@ msgstr "%1 및 %2의 순환 상속"
 #: duchain/builders/declarationbuilder.cpp:185
 #: duchain/builders/declarationbuilder.cpp:200
 #: duchain/builders/declarationbuilder.cpp:216
-#: duchain/builders/declarationbuilder.cpp:857
-#: duchain/builders/declarationbuilder.cpp:896
+#: duchain/builders/declarationbuilder.cpp:877
 #, kde-format
 msgid "Cannot use '%1' as class name as it is reserved"
 msgstr "'%1'은(는) 예약된 단어이므로 클래스 이름으로 사용할 수 없음"
@@ -253,22 +252,17 @@ msgstr "가변 인자는 기본값을 가질 수 없음"
 msgid "Default value for parameters with a class type hint can only be NULL."
 msgstr "클래스 형식 힌트가 있는 인자의 기본값은 NULL이어야만 합니다."
 
-#: duchain/builders/declarationbuilder.cpp:834
-#, kde-format
-msgid "Default value for parameters with an object type can only be NULL."
-msgstr "object 형식 인자의 기본값은 NULL이어야만 합니다."
-
-#: duchain/builders/declarationbuilder.cpp:862
+#: duchain/builders/declarationbuilder.cpp:843
 #, kde-format
 msgid "Only the last parameter can be variadic."
 msgstr "마지막 인자만 가변 인자가 될 수 있습니다."
 
-#: duchain/builders/declarationbuilder.cpp:976
+#: duchain/builders/declarationbuilder.cpp:957
 #, kde-format
 msgid "Cannot redeclare PHP internal %1."
 msgstr "PHP 내부 표현 %1을(를) 다시 선언할 수 없습니다."
 
-#: duchain/builders/declarationbuilder.cpp:979
+#: duchain/builders/declarationbuilder.cpp:960
 #, kde-format
 msgid ""
 "%1 and %2 define the same property (%3) in the composition of %1. This might "
@@ -278,12 +272,12 @@ msgstr ""
 "%1와(과) %2은(는) %1의 합성에서 같은 속성(%3)을 정의합니다. 호환성에 문제가 "
 "발생할 수 있으므로, 트레이트에서 접근 메서드를 구현하는 것을 고려해 보십시오."
 
-#: duchain/builders/declarationbuilder.cpp:987
+#: duchain/builders/declarationbuilder.cpp:968
 #, kde-format
 msgid "Cannot redeclare %1, already declared in %2 on line %3."
 msgstr "%2의 %3줄에서 이미 선언했으므로 %1을(를) 다시 선언할 수 없습니다."
 
-#: duchain/builders/declarationbuilder.cpp:1073
+#: duchain/builders/declarationbuilder.cpp:1054
 #, kde-format
 msgid ""
 "Class %1 contains %2 abstract methods and must therefore be declared "
@@ -292,45 +286,50 @@ msgstr ""
 "클래스 %1에는 추상 메서드 %2개가 들어 있으며, abstract로 선언하거나 나머지 메"
 "서드를 구현해야 합니다."
 
-#: duchain/builders/declarationbuilder.cpp:1080
+#: duchain/builders/declarationbuilder.cpp:1061
 #, kde-format
 msgid "Cannot re-assign $this."
 msgstr "$this를 재할당할 수 없습니다."
 
-#: duchain/builders/declarationbuilder.cpp:1274
+#: duchain/builders/declarationbuilder.cpp:1255
 #, kde-format
 msgid "Cannot access private property %1"
 msgstr "private 속성 %1에 접근할 수 없음"
 
-#: duchain/builders/declarationbuilder.cpp:1277
+#: duchain/builders/declarationbuilder.cpp:1258
 #, kde-format
 msgid "Cannot access protected property %1"
 msgstr "protected 속성 %1에 접근할 수 없음"
 
-#: duchain/builders/declarationbuilder.cpp:1423
+#: duchain/builders/declarationbuilder.cpp:1404
 #, kde-format
 msgid "Cannot use positional argument after argument unpacking"
 msgstr "인자 언패킹 이후에 위치별 인자를 사용할 수 없음"
 
-#: duchain/builders/declarationbuilder.cpp:1647
+#: duchain/builders/declarationbuilder.cpp:1628
 #, kde-format
 msgid "The use statement with non-compound name '%1' has no effect."
 msgstr "비 컴파운드 이름 '%1'을(를) 사용한 use 문은 효과가 없습니다."
 
-#: duchain/builders/declarationbuilder.cpp:1674
+#: duchain/builders/declarationbuilder.cpp:1655
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
 msgstr "같은 이름이 사용 중이므로 '%1'을(를) '%2'(으)로 사용할 수 없습니다."
 
-#: duchain/builders/declarationbuilder.cpp:1700
+#: duchain/builders/declarationbuilder.cpp:1681
 #, kde-format
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
 msgstr "'%2'이(가) 특수 클래스 이름으로 '%1'을(를) '%2'(으)로 사용할 수 없음"
 
-#: duchain/builders/declarationbuilder.cpp:1710
+#: duchain/builders/declarationbuilder.cpp:1691
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
 msgstr "'yield' 표현식은 함수 내부에서만 사용할 수 있음"
+
+#: duchain/builders/typebuilder.cpp:412
+#, kde-format
+msgid "Default value for parameters with an object type can only be NULL."
+msgstr "object 형식 인자의 기본값은 NULL이어야만 합니다."
 
 #: duchain/builders/usebuilder.cpp:202
 #, kde-format

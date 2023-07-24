@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdevphp\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-17 00:46+0000\n"
+"POT-Creation-Date: 2023-07-24 07:30+0000\n"
 "PO-Revision-Date: 2023-03-17 21:06+0100\n"
 "Last-Translator: Frederik Schwarzer <schwarzer@kde.org>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
@@ -146,8 +146,7 @@ msgstr "Zirkuläre Vererbung von %1 und %2"
 #: duchain/builders/declarationbuilder.cpp:185
 #: duchain/builders/declarationbuilder.cpp:200
 #: duchain/builders/declarationbuilder.cpp:216
-#: duchain/builders/declarationbuilder.cpp:857
-#: duchain/builders/declarationbuilder.cpp:896
+#: duchain/builders/declarationbuilder.cpp:877
 #, kde-format
 msgid "Cannot use '%1' as class name as it is reserved"
 msgstr ""
@@ -271,24 +270,17 @@ msgstr ""
 "Der Vorgabewert für Parameter, dessen Typhinweis eine Klasse bezeichnet, "
 "darf ausschließlich NULL sein."
 
-#: duchain/builders/declarationbuilder.cpp:834
-#, kde-format
-msgid "Default value for parameters with an object type can only be NULL."
-msgstr ""
-"Der Vorgabewert für Parameter mit einem Objekttyp darf ausschließlich NULL "
-"sein."
-
-#: duchain/builders/declarationbuilder.cpp:862
+#: duchain/builders/declarationbuilder.cpp:843
 #, kde-format
 msgid "Only the last parameter can be variadic."
 msgstr "Nur der letzte Parameter darf variadisch sein."
 
-#: duchain/builders/declarationbuilder.cpp:976
+#: duchain/builders/declarationbuilder.cpp:957
 #, kde-format
 msgid "Cannot redeclare PHP internal %1."
 msgstr "Die PHP-interne Funktion %1 kann nicht erneut deklariert werden."
 
-#: duchain/builders/declarationbuilder.cpp:979
+#: duchain/builders/declarationbuilder.cpp:960
 #, kde-format
 msgid ""
 "%1 and %2 define the same property (%3) in the composition of %1. This might "
@@ -299,14 +291,14 @@ msgstr ""
 "von %1. Dies kann inkompatibel sein, um die Wartung zu erleichtern, sollten "
 "Sie stattdessen Zugriffsmethoden in Traits verwenden."
 
-#: duchain/builders/declarationbuilder.cpp:987
+#: duchain/builders/declarationbuilder.cpp:968
 #, kde-format
 msgid "Cannot redeclare %1, already declared in %2 on line %3."
 msgstr ""
 "%1 kann nicht erneut deklariert werden, da es bereits in %2 in Zeile %3 "
 "deklariert ist."
 
-#: duchain/builders/declarationbuilder.cpp:1073
+#: duchain/builders/declarationbuilder.cpp:1054
 #, kde-format
 msgid ""
 "Class %1 contains %2 abstract methods and must therefore be declared "
@@ -315,53 +307,60 @@ msgstr ""
 "Die Klasse %1 enthält die %2 abstrakte Methoden. Entweder muss die Klasse "
 "als abstrakt deklariert oder die fehlende Methode implementiert werden."
 
-#: duchain/builders/declarationbuilder.cpp:1080
+#: duchain/builders/declarationbuilder.cpp:1061
 #, kde-format
 msgid "Cannot re-assign $this."
 msgstr "$this kann nicht erneut zugewiesen werden."
 
-#: duchain/builders/declarationbuilder.cpp:1274
+#: duchain/builders/declarationbuilder.cpp:1255
 #, kde-format
 msgid "Cannot access private property %1"
 msgstr "Kein Zugriff auf die private Eigenschaft %1 möglich"
 
-#: duchain/builders/declarationbuilder.cpp:1277
+#: duchain/builders/declarationbuilder.cpp:1258
 #, kde-format
 msgid "Cannot access protected property %1"
 msgstr "Kein Zugriff auf die geschützte Eigenschaft %1 möglich"
 
-#: duchain/builders/declarationbuilder.cpp:1423
+#: duchain/builders/declarationbuilder.cpp:1404
 #, kde-format
 msgid "Cannot use positional argument after argument unpacking"
 msgstr ""
 "Es kann kein Positionsargument nach dem Entpacken von Argumenten verwendet "
 "werden"
 
-#: duchain/builders/declarationbuilder.cpp:1647
+#: duchain/builders/declarationbuilder.cpp:1628
 #, kde-format
 msgid "The use statement with non-compound name '%1' has no effect."
 msgstr ""
 "Die „Use“-Anweisung mit dem nicht zusammengesetzen Namen „%1“ hat keine "
 "Auswirkung."
 
-#: duchain/builders/declarationbuilder.cpp:1674
+#: duchain/builders/declarationbuilder.cpp:1655
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
 msgstr ""
 "„%1“ kann nicht als „%2“ verwendet werden, da der Name bereits benutzt wird."
 
-#: duchain/builders/declarationbuilder.cpp:1700
+#: duchain/builders/declarationbuilder.cpp:1681
 #, kde-format
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
 msgstr ""
 "„%1“ kann nicht als „%2“ verwendet werden, da „%2“ ein spezieller "
 "Klassenname ist"
 
-#: duchain/builders/declarationbuilder.cpp:1710
+#: duchain/builders/declarationbuilder.cpp:1691
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
 msgstr ""
 "Der Ausdruck „yield“ darf nur innerhalb einer Funktion verwendet werden"
+
+#: duchain/builders/typebuilder.cpp:412
+#, kde-format
+msgid "Default value for parameters with an object type can only be NULL."
+msgstr ""
+"Der Vorgabewert für Parameter mit einem Objekttyp darf ausschließlich NULL "
+"sein."
 
 #: duchain/builders/usebuilder.cpp:202
 #, kde-format
