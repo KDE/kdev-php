@@ -408,7 +408,7 @@ void TypeBuilder::visitParameter(ParameterAst *node)
 
         if (node->parameterType && node->parameterType->typehint &&
                 symbol.compare(QLatin1String("null"), Qt::CaseInsensitive) != 0 &&
-                hasType(type, AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeObject)))) {
+                type->contains(new IntegralTypeExtended(IntegralTypeExtended::TypeObject))) {
             reportError(i18n("Default value for parameters with an object type can only be NULL."), node->defaultValue);
         }
     }

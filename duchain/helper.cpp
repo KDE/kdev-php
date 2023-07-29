@@ -162,22 +162,6 @@ bool hasClassTypehint(UnionReturnTypeAst* unionType, EditorIntegrator *editor)
     return false;
 }
 
-bool hasType(AbstractType::Ptr haystack, AbstractType::Ptr needle)
-{
-    auto unsure = haystack.dynamicCast<UnsureType>();
-    if (unsure) {
-        FOREACH_FUNCTION(const IndexedType& t, unsure->types) {
-            if (needle->equals(t.abstractType().data())) {
-                return true;
-            }
-        }
-    } else {
-        return needle->equals(haystack.data());
-    }
-
-    return false;
-}
-
 DeclarationPointer findDeclarationImportHelper(DUContext* currentContext, const QualifiedIdentifier& id,
         DeclarationType declarationType)
 {

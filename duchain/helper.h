@@ -47,8 +47,6 @@ KDEVPHPDUCHAIN_EXPORT bool hasClassTypehint(UnionPropertyTypeAst* unionType, Edi
 
 KDEVPHPDUCHAIN_EXPORT bool hasClassTypehint(UnionReturnTypeAst* unionType, EditorIntegrator *editor);
 
-KDEVPHPDUCHAIN_EXPORT bool hasType(KDevelop::AbstractType::Ptr haystack, KDevelop::AbstractType::Ptr needle);
-
 KDEVPHPDUCHAIN_EXPORT KDevelop::DeclarationPointer findDeclarationImportHelper(KDevelop::DUContext* currentContext,
                                                                                const KDevelop::QualifiedIdentifier& id,
                                                                                DeclarationType declarationType);
