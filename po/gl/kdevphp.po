@@ -183,7 +183,8 @@ msgstr "A función abstracta %1 non pode ter corpo."
 #: duchain/builders/declarationbuilder.cpp:364
 #, kde-format
 msgid "Cannot use the final modifier on an abstract class member."
-msgstr "Non se pode usar o modificador final nun membro dunha clase abstracta."
+msgstr ""
+"Non é posíbel usar o modificador final nun membro dunha clase abstracta."
 
 #: duchain/builders/declarationbuilder.cpp:374
 #, kde-format
@@ -193,17 +194,17 @@ msgstr "O método non abstracto %1 debe ter corpo."
 #: duchain/builders/declarationbuilder.cpp:392
 #, kde-format
 msgid "Cannot use 'final' as constant modifier"
-msgstr "Non se pode usar «final» como modificador constante"
+msgstr "Non é posíbel usar «final» como modificador constante"
 
 #: duchain/builders/declarationbuilder.cpp:395
 #, kde-format
 msgid "Cannot use 'static' as constant modifier"
-msgstr "Non se pode usar «static» como modificador constante"
+msgstr "Non é posíbel usar «static» como modificador constante"
 
 #: duchain/builders/declarationbuilder.cpp:398
 #, kde-format
 msgid "Cannot use 'abstract' as constant modifier"
-msgstr "Non se pode usar «abstract» como modificador constante"
+msgstr "Non é posíbel usar «abstract» como modificador constante"
 
 #: duchain/builders/declarationbuilder.cpp:412
 #, kde-format
@@ -242,19 +243,19 @@ msgstr ""
 #: duchain/builders/declarationbuilder.cpp:768
 #, kde-format
 msgid "Cannot use 'abstract' as method modifier"
-msgstr "Non se pode usar «abstract» como modificador para un método."
+msgstr "Non é posíbel usar «abstract» como modificador para un método."
 
 #: duchain/builders/declarationbuilder.cpp:745
 #: duchain/builders/declarationbuilder.cpp:771
 #, kde-format
 msgid "Cannot use 'final' as method modifier"
-msgstr "Non se pode usar «final» como modificador para un método."
+msgstr "Non é posíbel usar «final» como modificador para un método."
 
 #: duchain/builders/declarationbuilder.cpp:748
 #: duchain/builders/declarationbuilder.cpp:774
 #, kde-format
 msgid "Cannot use 'static' as method modifier"
-msgstr "Non se pode usar «static» como modificador para un método."
+msgstr "Non é posíbel usar «static» como modificador para un método."
 
 #: duchain/builders/declarationbuilder.cpp:823
 #, kde-format
@@ -276,7 +277,7 @@ msgstr "Só o último parámetro pode ser múltiple."
 #: duchain/builders/declarationbuilder.cpp:957
 #, kde-format
 msgid "Cannot redeclare PHP internal %1."
-msgstr "Non se pode declarar de novo %1 interno de PHP."
+msgstr "Non é posíbel declarar de novo %1 interno de PHP."
 
 #: duchain/builders/declarationbuilder.cpp:960
 #, kde-format
@@ -292,7 +293,7 @@ msgstr ""
 #: duchain/builders/declarationbuilder.cpp:968
 #, kde-format
 msgid "Cannot redeclare %1, already declared in %2 on line %3."
-msgstr "Non se pode declarar de novo %1, xa se declarou na liña %3 de %2."
+msgstr "Non é posíbel declarar de novo %1, xa se declarou na liña %3 de %2."
 
 #: duchain/builders/declarationbuilder.cpp:1054
 #, kde-format
@@ -306,23 +307,24 @@ msgstr ""
 #: duchain/builders/declarationbuilder.cpp:1061
 #, kde-format
 msgid "Cannot re-assign $this."
-msgstr "Non se pode asignar de novo $this."
+msgstr "Non é posíbel asignar de novo $this."
 
 #: duchain/builders/declarationbuilder.cpp:1255
 #, kde-format
 msgid "Cannot access private property %1"
-msgstr "Non se pode acceder á propiedade privada %1"
+msgstr "Non é posíbel acceder á propiedade privada %1"
 
 #: duchain/builders/declarationbuilder.cpp:1258
 #, kde-format
 msgid "Cannot access protected property %1"
-msgstr "Non se pode acceder á propiedade protexida %1"
+msgstr "Non é posíbel acceder á propiedade protexida %1"
 
 #: duchain/builders/declarationbuilder.cpp:1404
 #, kde-format
 msgid "Cannot use positional argument after argument unpacking"
 msgstr ""
-"Non se pode usar un argumento posicional despois de desempaquetar argumentos."
+"Non é posíbel usar un argumento posicional despois de desempaquetar "
+"argumentos."
 
 #: duchain/builders/declarationbuilder.cpp:1628
 #, kde-format
@@ -353,7 +355,7 @@ msgstr ""
 #: duchain/builders/usebuilder.cpp:202
 #, kde-format
 msgid "Usage of %1 is deprecated."
-msgstr "Utilizar %1 está obsoleto."
+msgstr "Usar %1 está obsoleto."
 
 #: duchain/builders/usebuilder.cpp:204
 #, kde-format
@@ -447,17 +449,17 @@ msgstr "© 2008 Niko Sams, 2009 Milian Wolff"
 #: parser/parsesession.cpp:69
 #, kde-format
 msgid "Could not open file '%1'"
-msgstr "Non se puido abrir o ficheiro «%1»"
+msgstr "Non foi posíbel abrir o ficheiro «%1»"
 
 #: parser/parsesession.cpp:72
 #, kde-format
 msgid "File could not be read from."
-msgstr "Non se puido ler o ficheiro."
+msgstr "Non foi posíbel ler o ficheiro."
 
 #: parser/parsesession.cpp:75
 #, kde-format
 msgid "File could not be opened."
-msgstr "Non se puido abrir o ficheiro."
+msgstr "Non foi posíbel abrir o ficheiro."
 
 #: parser/parsesession.cpp:78
 #, kde-format
