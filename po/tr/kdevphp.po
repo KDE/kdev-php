@@ -459,26 +459,3 @@ msgstr "Dosya izinleri okumak için açmaya izin vermiyor."
 #, kde-format
 msgid "PHPUnit"
 msgstr "PHPUnit"
-
-#~ msgid "Following parameters must have a default value assigned."
-#~ msgstr "Aşağıdaki parametrelere öntanımlı bir değer atanmak zorundadır."
-
-#~ msgid ""
-#~ "Only booleans, ints, floats and strings are allowed for class constants."
-#~ msgstr ""
-#~ "Sadece boole, int, float ve string olanlar sınıf için sabit olabilirler."
-
-#~ msgid "Use of "
-#~ msgstr "Kullanımı "
-
-#~ msgid " from "
-#~ msgstr " geldiği yer "
-
-#~ msgid "Milian Wolff"
-#~ msgstr "Milian Wolff"
-
-#~ msgid "Author"
-#~ msgstr "Yazar"
-
-#~ msgid "Niko Sams"
-#~ msgstr "Niko Sams"
