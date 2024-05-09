@@ -2,6 +2,9 @@
 <component type="addon">
   <id>org.kde.kdev-php</id>
   <extends>org.kde.kdevelop.desktop</extends>
+  <developer id="org.kde">
+    <name translate="no">KDE</name>
+  </developer>
   <name>KDevelop PHP Support</name>
   <name xml:lang="ca">Implementació de PHP al KDevelop</name>
   <name xml:lang="ca-valencia">Implementació de PHP a KDevelop</name>
