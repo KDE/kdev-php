@@ -104,9 +104,9 @@ AbstractType::Ptr TypeBuilder::parseSimpleType(QString type, AstNode* node)
             return AbstractType::Ptr(new IntegralTypeExtended(IntegralTypeExtended::TypeObject));
         }
 
-        QualifiedIdentifier typehint = QualifiedIdentifier(type.toLower().replace(QLatin1Literal("\\"), QLatin1Literal("::")));
+        QualifiedIdentifier typehint = QualifiedIdentifier(type.toLower().replace(QLatin1String("\\"), QLatin1String("::")));
 
-        if (typehint.toString().startsWith(QLatin1Literal("::"))) {
+        if (typehint.toString().startsWith(QLatin1String("::"))) {
             typehint.setExplicitlyGlobal(true);
         }
 
