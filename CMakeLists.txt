@@ -17,10 +17,10 @@ project(kdev-php VERSION "5.7.${RELEASE_SERVICE_BASED_PATCHLEVEL}")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(QT_MIN_VERSION "5.15.0")
-set(KF5_DEP_VERSION "5.78.0")
+set(KF_MIN_VERSION "5.78.0")
 
 find_package(Threads)
-find_package (ECM ${KF5_DEP_VERSION} REQUIRED NO_MODULE)
+find_package (ECM ${KF_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 include(KDEInstallDirs)
@@ -36,7 +36,7 @@ include(FeatureSummary)
 
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Widgets)
 
-find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS
+find_package(KF5 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     ThreadWeaver
     TextEditor
     I18n
