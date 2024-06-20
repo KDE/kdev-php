@@ -9,6 +9,8 @@
 #include <KTextEditor/Document>
 #include <KTextEditor/View>
 
+#include <QRegExp>
+
 using namespace KTextEditor;
 
 namespace Php {

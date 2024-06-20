@@ -22,6 +22,8 @@
 
 #include "duchaindebug.h"
 
+#include <QRegExp>
+
 #define ifDebug(x)
 
 using namespace KDevelop;

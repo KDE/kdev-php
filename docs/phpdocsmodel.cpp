@@ -22,6 +22,7 @@
 #include <KLocalizedString>
 
 #include <QStandardPaths>
+#include <QRegExp>
 
 using namespace KDevelop;
 

@@ -32,6 +32,8 @@
 #include "worker.h"
 #include "completiondebug.h"
 
+#include <QRegExp>
+
 using namespace KTextEditor;
 using namespace KDevelop;
 

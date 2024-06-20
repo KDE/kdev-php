@@ -10,6 +10,7 @@
 #include "testproviderdebug.h"
 
 #include <QStandardPaths>
+#include <QRegExp>
 
 #include <util/processlinemaker.h>
 #include <util/executecompositejob.h>

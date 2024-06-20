@@ -12,6 +12,7 @@
 #include <QVariant>
 #include <QTextFormat>
 #include <QStringList>
+#include <QRegExp>
 
 #include <language/duchain/declaration.h>
 #include <language/duchain/abstractfunctiondeclaration.h>
