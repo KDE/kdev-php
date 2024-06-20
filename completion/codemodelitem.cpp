@@ -63,9 +63,7 @@ QVariant CodeModelCompletionItem::data(const QModelIndex& index, int role, const
         if (!declaration()) return QVariant();
         QWidget *nav = new NavigationWidget(declaration(), model->currentTopContext());
 
-        QVariant v;
-        v.setValue<QWidget*>(nav);
-        return v;
+        return QVariant::fromValue<QWidget*>(nav);
     }
     }
     return QVariant();
