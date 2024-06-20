@@ -12,7 +12,6 @@
 #include <QReadWriteLock>
 
 #include <kpluginfactory.h>
-#include <kpluginloader.h>
 #include <KTextEditor/Document>
 
 #include <interfaces/icore.h>
