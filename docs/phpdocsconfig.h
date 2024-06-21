@@ -7,9 +7,9 @@
 #ifndef PHPDOCS_CONFIG_H
 #define PHPDOCS_CONFIG_H
 
-#include <KCModule>
+#include <interfaces/configpage.h>
 
-#include "ui_phpdocsconfig.h"
+class PhpDocsPlugin;
 
 namespace Ui
 {
@@ -17,15 +17,19 @@ namespace Ui
 }
 
 class PhpDocsConfig
-    : public KCModule
+    : public KDevelop::ConfigPage
 {
   Q_OBJECT
 
   public:
-    explicit PhpDocsConfig(QWidget *parent = nullptr, const QVariantList &args = QVariantList());
+    explicit PhpDocsConfig(PhpDocsPlugin* plugin, QWidget *parent = nullptr);
     ~PhpDocsConfig() override;
 
-    void save() override;
+    KDevelop::ConfigPage::ConfigPageType configPageType() const override;
+
+    QString name() const override;
+    QString fullName() const override;
+    QIcon icon() const override;
 
   private:
         Ui::PhpDocsConfigUI* m_configWidget;

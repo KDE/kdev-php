@@ -33,6 +33,9 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
     QString name() const override;
     KDevelop::IDocumentation::Ptr homePage() const override;
 
+    int configPages() const override;
+    KDevelop::ConfigPage* configPage(int number, QWidget* parent) override;
+
     void showDocumentation(const QUrl& url);
 
   public slots:
@@ -43,9 +46,6 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
 
     QString getDocumentationFilename(KDevelop::Declaration* dec, const bool& isLocal) const;
     PhpDocsModel* m_model;
-
-  private slots:
-    void readConfig();
 };
 
 #endif // PHPDOCSPLUGIN_H

@@ -6,10 +6,10 @@
 
 #include "phpdocsplugin.h"
 #include "phpdocsmodel.h"
+#include "phpdocsconfig.h"
 
 #include <KPluginFactory>
 #include <KAboutData>
-#include <ksettings/Dispatcher>
 
 #include <interfaces/idocumentation.h>
 #include <interfaces/icore.h>
@@ -39,10 +39,6 @@ PhpDocsPlugin::PhpDocsPlugin(QObject* parent, const QVariantList& args)
     , m_model(new PhpDocsModel(this))
 {
     Q_UNUSED(args);
-
-    readConfig();
-
-    KSettings::Dispatcher::registerComponent( QStringLiteral("kdevphpdocs_config"), this, "readConfig" );
 }
 
 PhpDocsPlugin::~PhpDocsPlugin()
@@ -60,11 +56,17 @@ QIcon PhpDocsPlugin::icon() const
     return icon;
 }
 
-void PhpDocsPlugin::readConfig()
+KDevelop::ConfigPage* PhpDocsPlugin::configPage(int number, QWidget* parent)
 {
-    // since PhpDocsSettings pointer in this plugin is distinct from the one in the KCM
-    // we have to trigger reading manually
-    PhpDocsSettings::self()->load();
+    if (number == 0) {
+        return new PhpDocsConfig(this, parent);
+    }
+    return nullptr;
+}
+
+int PhpDocsPlugin::configPages() const
+{
+    return 1;
 }
 
 ///TODO: possibly return multiple filenames (i.e. fallbacks) when doing local lookups

@@ -6,21 +6,16 @@
 
 #include "phpdocsconfig.h"
 
-#include <KLocalizedString>
-#include <KPluginFactory>
-#include <KConfigGroup>
-#include <KUrlRequester>
-#include <KAboutData>
-#include <KFile>
-#include <ksettings/Dispatcher>
-
+#include "phpdocsplugin.h"
 #include "phpdocssettings.h"
 #include "ui_phpdocsconfig.h"
 
-K_PLUGIN_FACTORY_WITH_JSON(PhpDocsConfigFactory, "kcm_kdevphpdocs.json", registerPlugin<PhpDocsConfig>();)
+#include <KLocalizedString>
 
-PhpDocsConfig::PhpDocsConfig(QWidget *parent, const QVariantList &args)
-    : KCModule(parent, args)
+#include <QIcon>
+
+PhpDocsConfig::PhpDocsConfig(PhpDocsPlugin* plugin, QWidget *parent)
+    : KDevelop::ConfigPage(plugin, PhpDocsSettings::self(), parent)
 {
     auto * l = new QVBoxLayout( this );
 
@@ -32,19 +27,7 @@ PhpDocsConfig::PhpDocsConfig(QWidget *parent, const QVariantList &args)
 
     l->addWidget( w );
 
-    addConfig( PhpDocsSettings::self(), w );
-
-    load();
-}
-
-void PhpDocsConfig::save()
-{
-    KCModule::save();
-
-    // looks like we have to force a write so readConfig() can get the new values
-    PhpDocsSettings::self()->save();
-
-    KSettings::Dispatcher::reparseConfiguration( componentData().componentName() );
+    reset();
 }
 
 PhpDocsConfig::~PhpDocsConfig()
@@ -52,6 +35,24 @@ PhpDocsConfig::~PhpDocsConfig()
     delete m_configWidget;
 }
 
-#include "phpdocsconfig.moc"
+KDevelop::ConfigPage::ConfigPageType PhpDocsConfig::configPageType() const
+{
+    return KDevelop::ConfigPage::DocumentationConfigPage;
+}
+
+QString PhpDocsConfig::name() const
+{
+    return i18nc("@title:tab", "PHP Documentation");
+}
+
+QString PhpDocsConfig::fullName() const
+{
+    return i18nc("@title:tab", "Configure PHP Documentation Settings");
+}
+
+QIcon PhpDocsConfig::icon() const
+{
+    return QIcon::fromTheme(QStringLiteral("application-x-php"));
+}
 
 #include "moc_phpdocsconfig.cpp"
