@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdevphp\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:27+0000\n"
+"POT-Creation-Date: 2024-06-21 01:43+0000\n"
 "PO-Revision-Date: 2018-12-02 23:39+0800\n"
 "Last-Translator: pan93412 <pan93412@gmail.com>\n"
 "Language-Team: Chinese <zh-l10n@lists.linux.org.tw>\n"
@@ -107,7 +107,7 @@ msgstr ""
 msgid "Location:"
 msgstr "位置："
 
-#: docs/phpdocsmodel.cpp:95
+#: docs/phpdocsmodel.cpp:96
 #, kde-format
 msgid "<lost declaration>"
 msgstr "<遺失的宣告>"
@@ -160,26 +160,26 @@ msgstr "... 載入文件中 ..."
 msgid "Circular inheritance of %1 and %2"
 msgstr "%1 與 %2 發生環狀繼承"
 
-#: duchain/builders/declarationbuilder.cpp:185
-#: duchain/builders/declarationbuilder.cpp:200
-#: duchain/builders/declarationbuilder.cpp:216
-#: duchain/builders/declarationbuilder.cpp:877
+#: duchain/builders/declarationbuilder.cpp:187
+#: duchain/builders/declarationbuilder.cpp:202
+#: duchain/builders/declarationbuilder.cpp:218
+#: duchain/builders/declarationbuilder.cpp:879
 #, fuzzy, kde-format
 #| msgid "Cannot use '%1' as '%2' because the name is already in use."
 msgid "Cannot use '%1' as class name as it is reserved"
 msgstr "無法使用 '%1' 做為 '%2' 因為名稱已被使用。"
 
-#: duchain/builders/declarationbuilder.cpp:339
+#: duchain/builders/declarationbuilder.cpp:341
 #, kde-format
 msgid "Access type for interface method %1 must be omitted."
 msgstr "介面方法 %1 的存取型態必須被省略。"
 
-#: duchain/builders/declarationbuilder.cpp:343
+#: duchain/builders/declarationbuilder.cpp:345
 #, kde-format
 msgid "Interface function %1 cannot contain body."
 msgstr "介面函式 %1 無法包含本體。"
 
-#: duchain/builders/declarationbuilder.cpp:355
+#: duchain/builders/declarationbuilder.cpp:357
 #, kde-format
 msgid ""
 "Class %1 contains abstract method %2 and must therefore be declared abstract "
@@ -187,109 +187,109 @@ msgid ""
 msgstr ""
 "類別 %1 包含了抽象方法 %2，必須宣告為抽象（abstract），不然就要實作該方法。"
 
-#: duchain/builders/declarationbuilder.cpp:361
+#: duchain/builders/declarationbuilder.cpp:363
 #, kde-format
 msgid "Abstract function %1 cannot contain body."
 msgstr "抽象函式 %1 不能包含本體。"
 
-#: duchain/builders/declarationbuilder.cpp:364
+#: duchain/builders/declarationbuilder.cpp:366
 #, kde-format
 msgid "Cannot use the final modifier on an abstract class member."
 msgstr "無法對抽象類別成員使用 final 變更子。"
 
-#: duchain/builders/declarationbuilder.cpp:374
+#: duchain/builders/declarationbuilder.cpp:376
 #, kde-format
 msgid "Non-abstract method %1 must contain body."
 msgstr "非抽象方法 %1 必須包含本體。"
 
-#: duchain/builders/declarationbuilder.cpp:392
+#: duchain/builders/declarationbuilder.cpp:394
 #, fuzzy, kde-format
 #| msgid "Cannot use 'final' as method modifier"
 msgid "Cannot use 'final' as constant modifier"
 msgstr "無法使用 'final' 做為方法的變更子"
 
-#: duchain/builders/declarationbuilder.cpp:395
+#: duchain/builders/declarationbuilder.cpp:397
 #, fuzzy, kde-format
 #| msgid "Cannot use 'static' as method modifier"
 msgid "Cannot use 'static' as constant modifier"
 msgstr "無法使用 'static' 做為方法的變更子"
 
-#: duchain/builders/declarationbuilder.cpp:398
+#: duchain/builders/declarationbuilder.cpp:400
 #, fuzzy, kde-format
 #| msgid "Cannot use 'static' as method modifier"
 msgid "Cannot use 'abstract' as constant modifier"
 msgstr "無法使用 'static' 做為方法的變更子"
 
-#: duchain/builders/declarationbuilder.cpp:412
+#: duchain/builders/declarationbuilder.cpp:414
 #, kde-format
 msgid "Properties cannot be declared final."
 msgstr "屬性不能被宣告為 final。"
 
-#: duchain/builders/declarationbuilder.cpp:415
+#: duchain/builders/declarationbuilder.cpp:417
 #, kde-format
 msgid "Properties cannot be declared abstract."
 msgstr "屬性不能被宣告為 abstract。"
 
-#: duchain/builders/declarationbuilder.cpp:461
+#: duchain/builders/declarationbuilder.cpp:463
 #, kde-format
 msgid ""
 "Trait method %1 has not been applied, because there are collisions with "
 "other trait methods on %2"
 msgstr "特徵方法 %1 尚未被套用，因為與 %2 上的其他的特徵方法發生碰撞"
 
-#: duchain/builders/declarationbuilder.cpp:654
+#: duchain/builders/declarationbuilder.cpp:656
 #, kde-format
 msgid "Traits cannot have constants."
 msgstr "特徵不能有常數。"
 
-#: duchain/builders/declarationbuilder.cpp:661
+#: duchain/builders/declarationbuilder.cpp:663
 #, kde-format
 msgid ""
 "A class constant must not be called 'class'; it is reserved for class name "
 "fetching"
 msgstr ""
 
-#: duchain/builders/declarationbuilder.cpp:742
-#: duchain/builders/declarationbuilder.cpp:768
+#: duchain/builders/declarationbuilder.cpp:744
+#: duchain/builders/declarationbuilder.cpp:770
 #, fuzzy, kde-format
 #| msgid "Cannot use 'static' as method modifier"
 msgid "Cannot use 'abstract' as method modifier"
 msgstr "無法使用 'static' 做為方法的變更子"
 
-#: duchain/builders/declarationbuilder.cpp:745
-#: duchain/builders/declarationbuilder.cpp:771
+#: duchain/builders/declarationbuilder.cpp:747
+#: duchain/builders/declarationbuilder.cpp:773
 #, kde-format
 msgid "Cannot use 'final' as method modifier"
 msgstr "無法使用 'final' 做為方法的變更子"
 
-#: duchain/builders/declarationbuilder.cpp:748
-#: duchain/builders/declarationbuilder.cpp:774
+#: duchain/builders/declarationbuilder.cpp:750
+#: duchain/builders/declarationbuilder.cpp:776
 #, kde-format
 msgid "Cannot use 'static' as method modifier"
 msgstr "無法使用 'static' 做為方法的變更子"
 
-#: duchain/builders/declarationbuilder.cpp:823
+#: duchain/builders/declarationbuilder.cpp:825
 #, fuzzy, kde-format
 #| msgid "Following parameters must have a default value assigned."
 msgid "Variadic parameter cannot have a default value"
 msgstr "接下來的參數必須指定預設值。"
 
-#: duchain/builders/declarationbuilder.cpp:826
+#: duchain/builders/declarationbuilder.cpp:828
 #, kde-format
 msgid "Default value for parameters with a class type hint can only be NULL."
 msgstr "有類別型態提示的參數預設值只能為 NULL。"
 
-#: duchain/builders/declarationbuilder.cpp:843
+#: duchain/builders/declarationbuilder.cpp:845
 #, kde-format
 msgid "Only the last parameter can be variadic."
 msgstr ""
 
-#: duchain/builders/declarationbuilder.cpp:957
+#: duchain/builders/declarationbuilder.cpp:959
 #, kde-format
 msgid "Cannot redeclare PHP internal %1."
 msgstr "無法重新宣告 PHP internal %1。"
 
-#: duchain/builders/declarationbuilder.cpp:960
+#: duchain/builders/declarationbuilder.cpp:962
 #, kde-format
 msgid ""
 "%1 and %2 define the same property (%3) in the composition of %1. This might "
@@ -299,12 +299,12 @@ msgstr ""
 "%1 與 %2 在組成 %1 中定義了同樣的屬性（%3）。這樣可能不相容。要改進可維護性，"
 "請考慮在特徵中改用 accessor。"
 
-#: duchain/builders/declarationbuilder.cpp:968
+#: duchain/builders/declarationbuilder.cpp:970
 #, kde-format
 msgid "Cannot redeclare %1, already declared in %2 on line %3."
 msgstr "無法重新宣告 %1，已宣告於 %2，第 %3 行。"
 
-#: duchain/builders/declarationbuilder.cpp:1054
+#: duchain/builders/declarationbuilder.cpp:1056
 #, fuzzy, kde-format
 #| msgid ""
 #| "Class %1 contains abstract method %2 and must therefore be declared "
@@ -315,45 +315,45 @@ msgid ""
 msgstr ""
 "類別 %1 包含了抽象方法 %2，必須宣告為抽象（abstract），不然就要實作該方法。"
 
-#: duchain/builders/declarationbuilder.cpp:1061
+#: duchain/builders/declarationbuilder.cpp:1063
 #, kde-format
 msgid "Cannot re-assign $this."
 msgstr "無法重新指定 $this。"
 
-#: duchain/builders/declarationbuilder.cpp:1255
+#: duchain/builders/declarationbuilder.cpp:1257
 #, fuzzy, kde-format
 #| msgid "Cannot redeclare private property %1 from this context."
 msgid "Cannot access private property %1"
 msgstr "無法從此內文重新宣告私密屬性 %1。"
 
-#: duchain/builders/declarationbuilder.cpp:1258
+#: duchain/builders/declarationbuilder.cpp:1260
 #, fuzzy, kde-format
 #| msgid "Cannot redeclare protected property %1 from this context."
 msgid "Cannot access protected property %1"
 msgstr "無法從此內文重新宣告保護屬性 %1。"
 
-#: duchain/builders/declarationbuilder.cpp:1404
+#: duchain/builders/declarationbuilder.cpp:1406
 #, kde-format
 msgid "Cannot use positional argument after argument unpacking"
 msgstr ""
 
-#: duchain/builders/declarationbuilder.cpp:1628
+#: duchain/builders/declarationbuilder.cpp:1630
 #, kde-format
 msgid "The use statement with non-compound name '%1' has no effect."
 msgstr "使用非複合（non-compound）名稱 %1 的 use 敘述沒有效果。"
 
-#: duchain/builders/declarationbuilder.cpp:1655
+#: duchain/builders/declarationbuilder.cpp:1657
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
 msgstr "無法使用 '%1' 做為 '%2' 因為名稱已被使用。"
 
-#: duchain/builders/declarationbuilder.cpp:1681
+#: duchain/builders/declarationbuilder.cpp:1683
 #, fuzzy, kde-format
 #| msgid "Cannot use '%1' as '%2' because the name is already in use."
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
 msgstr "無法使用 '%1' 做為 '%2' 因為名稱已被使用。"
 
-#: duchain/builders/declarationbuilder.cpp:1691
+#: duchain/builders/declarationbuilder.cpp:1693
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
 msgstr ""
@@ -480,7 +480,7 @@ msgstr "無法開啟檔案。"
 msgid "File permissions prevent opening for read."
 msgstr "檔案權限不足，無法讀取。"
 
-#: testprovider/phpunitrunjob.cpp:71
+#: testprovider/phpunitrunjob.cpp:72
 #, kde-format
 msgid "PHPUnit"
 msgstr "PHPUnit"

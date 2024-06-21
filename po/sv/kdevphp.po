@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdevphp\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:27+0000\n"
+"POT-Creation-Date: 2024-06-21 01:43+0000\n"
 "PO-Revision-Date: 2019-11-30 15:16+0100\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
@@ -89,7 +89,7 @@ msgstr ""
 msgid "Location:"
 msgstr "Plats:"
 
-#: docs/phpdocsmodel.cpp:95
+#: docs/phpdocsmodel.cpp:96
 #, kde-format
 msgid "<lost declaration>"
 msgstr "<förlorad deklaration>"
@@ -138,25 +138,25 @@ msgstr "... läser in dokumentation ..."
 msgid "Circular inheritance of %1 and %2"
 msgstr "Cirkulärt arv för %1 och %2"
 
-#: duchain/builders/declarationbuilder.cpp:185
-#: duchain/builders/declarationbuilder.cpp:200
-#: duchain/builders/declarationbuilder.cpp:216
-#: duchain/builders/declarationbuilder.cpp:877
+#: duchain/builders/declarationbuilder.cpp:187
+#: duchain/builders/declarationbuilder.cpp:202
+#: duchain/builders/declarationbuilder.cpp:218
+#: duchain/builders/declarationbuilder.cpp:879
 #, kde-format
 msgid "Cannot use '%1' as class name as it is reserved"
 msgstr "Kan inte använda '%1' som klassnamn eftersom det är reserverat"
 
-#: duchain/builders/declarationbuilder.cpp:339
+#: duchain/builders/declarationbuilder.cpp:341
 #, kde-format
 msgid "Access type for interface method %1 must be omitted."
 msgstr "Accesstyp för gränssnittsmetoden %1 måste utelämnas."
 
-#: duchain/builders/declarationbuilder.cpp:343
+#: duchain/builders/declarationbuilder.cpp:345
 #, kde-format
 msgid "Interface function %1 cannot contain body."
 msgstr "Gränssnittsfunktionen %1 kan inte innehålla implementering."
 
-#: duchain/builders/declarationbuilder.cpp:355
+#: duchain/builders/declarationbuilder.cpp:357
 #, kde-format
 msgid ""
 "Class %1 contains abstract method %2 and must therefore be declared abstract "
@@ -165,47 +165,47 @@ msgstr ""
 "Klassen %1 innehåller den abstrakta metoden %2 och måste därför deklareras "
 "som abstrakt eller implementera metoden."
 
-#: duchain/builders/declarationbuilder.cpp:361
+#: duchain/builders/declarationbuilder.cpp:363
 #, kde-format
 msgid "Abstract function %1 cannot contain body."
 msgstr "Abstrakt funktion %1 kan inte innehålla implementering."
 
-#: duchain/builders/declarationbuilder.cpp:364
+#: duchain/builders/declarationbuilder.cpp:366
 #, kde-format
 msgid "Cannot use the final modifier on an abstract class member."
 msgstr "Kan inte använda modifieraren final för en abstrakt klassmedlem."
 
-#: duchain/builders/declarationbuilder.cpp:374
+#: duchain/builders/declarationbuilder.cpp:376
 #, kde-format
 msgid "Non-abstract method %1 must contain body."
 msgstr "Icke-abstrakt metod %1 måste innehålla implementering."
 
-#: duchain/builders/declarationbuilder.cpp:392
+#: duchain/builders/declarationbuilder.cpp:394
 #, kde-format
 msgid "Cannot use 'final' as constant modifier"
 msgstr "Kan inte använda 'final' som konstantmodifierare"
 
-#: duchain/builders/declarationbuilder.cpp:395
+#: duchain/builders/declarationbuilder.cpp:397
 #, kde-format
 msgid "Cannot use 'static' as constant modifier"
 msgstr "Kan inte använda 'static' som konstantmodifierare"
 
-#: duchain/builders/declarationbuilder.cpp:398
+#: duchain/builders/declarationbuilder.cpp:400
 #, kde-format
 msgid "Cannot use 'abstract' as constant modifier"
 msgstr "Kan inte använda 'abstract' som konstantmodifierare"
 
-#: duchain/builders/declarationbuilder.cpp:412
+#: duchain/builders/declarationbuilder.cpp:414
 #, kde-format
 msgid "Properties cannot be declared final."
 msgstr "Egenskaper kan inte deklareras som final."
 
-#: duchain/builders/declarationbuilder.cpp:415
+#: duchain/builders/declarationbuilder.cpp:417
 #, kde-format
 msgid "Properties cannot be declared abstract."
 msgstr "Egenskaper kan inte deklareras som abstrakta."
 
-#: duchain/builders/declarationbuilder.cpp:461
+#: duchain/builders/declarationbuilder.cpp:463
 #, kde-format
 msgid ""
 "Trait method %1 has not been applied, because there are collisions with "
@@ -214,12 +214,12 @@ msgstr ""
 "Dragmetoden %1 har inte utförts, eftersom det finns kollisioner med andra "
 "dragmetoder för %2"
 
-#: duchain/builders/declarationbuilder.cpp:654
+#: duchain/builders/declarationbuilder.cpp:656
 #, kde-format
 msgid "Traits cannot have constants."
 msgstr "Drag kan inte ha konstanter."
 
-#: duchain/builders/declarationbuilder.cpp:661
+#: duchain/builders/declarationbuilder.cpp:663
 #, kde-format
 msgid ""
 "A class constant must not be called 'class'; it is reserved for class name "
@@ -228,46 +228,46 @@ msgstr ""
 "En klasskonstant får inte heta 'class', det är reserverat för att hämta "
 "klassnamn"
 
-#: duchain/builders/declarationbuilder.cpp:742
-#: duchain/builders/declarationbuilder.cpp:768
+#: duchain/builders/declarationbuilder.cpp:744
+#: duchain/builders/declarationbuilder.cpp:770
 #, kde-format
 msgid "Cannot use 'abstract' as method modifier"
 msgstr "Kan inte använda 'abstract' som metodmodifierare"
 
-#: duchain/builders/declarationbuilder.cpp:745
-#: duchain/builders/declarationbuilder.cpp:771
+#: duchain/builders/declarationbuilder.cpp:747
+#: duchain/builders/declarationbuilder.cpp:773
 #, kde-format
 msgid "Cannot use 'final' as method modifier"
 msgstr "Kan inte använda 'final' som metodmodifierare"
 
-#: duchain/builders/declarationbuilder.cpp:748
-#: duchain/builders/declarationbuilder.cpp:774
+#: duchain/builders/declarationbuilder.cpp:750
+#: duchain/builders/declarationbuilder.cpp:776
 #, kde-format
 msgid "Cannot use 'static' as method modifier"
 msgstr "Kan inte använda 'static' som metodmodifierare"
 
-#: duchain/builders/declarationbuilder.cpp:823
+#: duchain/builders/declarationbuilder.cpp:825
 #, kde-format
 msgid "Variadic parameter cannot have a default value"
 msgstr "Variadisk parameter kan inte ha ett förvalt värde"
 
-#: duchain/builders/declarationbuilder.cpp:826
+#: duchain/builders/declarationbuilder.cpp:828
 #, kde-format
 msgid "Default value for parameters with a class type hint can only be NULL."
 msgstr ""
 "Förvalt värde för parametrar med ett tips om klasstyp kan bara vara NULL."
 
-#: duchain/builders/declarationbuilder.cpp:843
+#: duchain/builders/declarationbuilder.cpp:845
 #, kde-format
 msgid "Only the last parameter can be variadic."
 msgstr "Bara den sista parametern kan vara variadisk."
 
-#: duchain/builders/declarationbuilder.cpp:957
+#: duchain/builders/declarationbuilder.cpp:959
 #, kde-format
 msgid "Cannot redeclare PHP internal %1."
 msgstr "Kan inte deklarera om PHP-internobjekt %1."
 
-#: duchain/builders/declarationbuilder.cpp:960
+#: duchain/builders/declarationbuilder.cpp:962
 #, kde-format
 msgid ""
 "%1 and %2 define the same property (%3) in the composition of %1. This might "
@@ -278,12 +278,12 @@ msgstr ""
 "kanske inte är kompatibelt. För att förbättra underhållbarhet överväg att "
 "använda dragåtkomstmetoderna istället."
 
-#: duchain/builders/declarationbuilder.cpp:968
+#: duchain/builders/declarationbuilder.cpp:970
 #, kde-format
 msgid "Cannot redeclare %1, already declared in %2 on line %3."
 msgstr "Kan inte deklarera om %1, redan deklarerad i %2 på rad %3."
 
-#: duchain/builders/declarationbuilder.cpp:1054
+#: duchain/builders/declarationbuilder.cpp:1056
 #, kde-format
 msgid ""
 "Class %1 contains %2 abstract methods and must therefore be declared "
@@ -292,44 +292,44 @@ msgstr ""
 "Klassen %1 innehåller %2 abstrakta metoder och måste därför deklareras som "
 "abstrakt eller implementera återstående metoder."
 
-#: duchain/builders/declarationbuilder.cpp:1061
+#: duchain/builders/declarationbuilder.cpp:1063
 #, kde-format
 msgid "Cannot re-assign $this."
 msgstr "Kan inte ändra tilldelning av $this."
 
-#: duchain/builders/declarationbuilder.cpp:1255
+#: duchain/builders/declarationbuilder.cpp:1257
 #, kde-format
 msgid "Cannot access private property %1"
 msgstr "Kan inte komma åt privat egenskap %1"
 
-#: duchain/builders/declarationbuilder.cpp:1258
+#: duchain/builders/declarationbuilder.cpp:1260
 #, kde-format
 msgid "Cannot access protected property %1"
 msgstr "Kan inte komma åt skyddad egenskap %1."
 
-#: duchain/builders/declarationbuilder.cpp:1404
+#: duchain/builders/declarationbuilder.cpp:1406
 #, kde-format
 msgid "Cannot use positional argument after argument unpacking"
 msgstr "Kan inte använda positionsargument efter uppackning av argument"
 
-#: duchain/builders/declarationbuilder.cpp:1628
+#: duchain/builders/declarationbuilder.cpp:1630
 #, kde-format
 msgid "The use statement with non-compound name '%1' has no effect."
 msgstr ""
 "Användningssatsen med det icke sammansatta namnet '%1' får igen effekt."
 
-#: duchain/builders/declarationbuilder.cpp:1655
+#: duchain/builders/declarationbuilder.cpp:1657
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
 msgstr "Kan inte använda '%1' som '%2' eftersom namnet redan används."
 
-#: duchain/builders/declarationbuilder.cpp:1681
+#: duchain/builders/declarationbuilder.cpp:1683
 #, kde-format
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
 msgstr ""
 "Kan inte använda '%1' som '%2' eftersom '%2' är ett speciellt klassnamn."
 
-#: duchain/builders/declarationbuilder.cpp:1691
+#: duchain/builders/declarationbuilder.cpp:1693
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
 msgstr "Uttrycket 'yield' kan bara användas inne i en funktion"
@@ -453,7 +453,7 @@ msgstr "Filen kunde inte öppnas."
 msgid "File permissions prevent opening for read."
 msgstr "Filens rättigheter förhindrar att öppna den för läsning."
 
-#: testprovider/phpunitrunjob.cpp:71
+#: testprovider/phpunitrunjob.cpp:72
 #, kde-format
 msgid "PHPUnit"
 msgstr "PHPUnit"
