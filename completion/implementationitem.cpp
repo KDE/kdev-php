@@ -62,7 +62,7 @@ QVariant ImplementationItem::data(const QModelIndex& index, int role, const Code
                 break;
             }
 
-            ret = prefix + ' ' + ret.toString();
+            ret = QString(prefix + ' ' + ret.toString());
         }
         //TODO column == Name - required?
         break;

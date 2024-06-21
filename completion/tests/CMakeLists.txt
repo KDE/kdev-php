@@ -6,7 +6,7 @@ ecm_add_test(
         kdevphpcompletion
         kdevphpduchain
         kdevphpparser
-        Qt5::Test
+        Qt::Test
         KDev::Tests
         KDev::Language
 )
@@ -20,7 +20,7 @@ ecm_add_test(
         kdevphpduchain
         kdevphpparser
 
-        Qt5::Test
+        Qt::Test
         KDev::Tests
         KDev::Language
 )
