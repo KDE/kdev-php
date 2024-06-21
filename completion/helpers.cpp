@@ -22,7 +22,6 @@
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/integraltype.h>
 
-#include <KTextEditor/ConfigInterface>
 #include <KTextEditor/Document>
 
 using namespace KDevelop;
@@ -180,11 +179,8 @@ QStringList getMethodTokens(QString text)
 
 const QString indentString(KTextEditor::Document *document)
 {
-    KTextEditor::ConfigInterface *iface = qobject_cast<KTextEditor::ConfigInterface *>(document);
-    if (!iface)
-        return QStringLiteral("    ");
-    if (iface->configValue(QStringLiteral("replace-tabs")).toBool()) {
-        QVariant iWidth = iface->configValue(QStringLiteral("indent-width"));
+    if (document->configValue(QStringLiteral("replace-tabs")).toBool()) {
+        QVariant iWidth = document->configValue(QStringLiteral("indent-width"));
         if (iWidth.isValid())
             return QString(iWidth.toUInt(), ' ');
         /*

@@ -23,4 +23,5 @@ target_link_libraries(kdevphpdocs
     KDev::Interfaces
     KDev::Language
     KDev::Documentation
+    KF6::KIOWidgets
 )

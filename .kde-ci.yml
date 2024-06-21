@@ -4,10 +4,10 @@
 Dependencies:
 - 'on': ['@all']
   'require':
-    'frameworks/extra-cmake-modules': '@stable'
-    'frameworks/threadweaver': '@stable'
-    'frameworks/ktexteditor': '@stable'
-    'frameworks/ki18n': '@stable'
-    'frameworks/kcmutils': '@stable'
-    'kdevelop/kdevelop-pg-qt': '@stable'
+    'frameworks/extra-cmake-modules': '@latest-kf6'
+    'frameworks/threadweaver': '@latest-kf6'
+    'frameworks/ktexteditor': '@latest-kf6'
+    'frameworks/ki18n': '@latest-kf6'
+    'frameworks/kcmutils': '@latest-kf6'
+    'kdevelop/kdevelop-pg-qt': '@latest-kf6'
     'kdevelop/kdevelop': '@same'

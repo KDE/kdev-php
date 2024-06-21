@@ -12,15 +12,14 @@ if (_micro LESS "10")
 endif()
 set(RELEASE_SERVICE_BASED_PATCHLEVEL "${RELEASE_SERVICE_VERSION_MAJOR}${RELEASE_SERVICE_VERSION_MINOR}${_micro}")
 
-project(kdev-php VERSION "5.7.${RELEASE_SERVICE_BASED_PATCHLEVEL}")
+project(kdev-php VERSION "6.0.${RELEASE_SERVICE_BASED_PATCHLEVEL}")
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED YES)
-set(QT_MIN_VERSION "5.15.0")
-set(KF_MIN_VERSION "5.78.0")
+set(KDE_COMPILERSETTINGS_LEVEL 6.0)
+set(QT_MIN_VERSION "6.5.0")
+set(KF_MIN_VERSION "6.0.0")
 
 find_package(Threads)
-find_package (ECM ${KF_MIN_VERSION} REQUIRED NO_MODULE)
+find_package (ECM ${KF_MIN_VERSION} REQUIRED)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 include(KDEInstallDirs)
@@ -34,20 +33,24 @@ include(CMakePackageConfigHelpers)
 include(ECMSetupVersion)
 include(FeatureSummary)
 
-find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Widgets)
+find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS
+    Core
+    Widgets
+)
 
-find_package(KF5 ${KF_MIN_VERSION} REQUIRED COMPONENTS
+find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     ThreadWeaver
     TextEditor
     I18n
     KCMUtils
 )
 if(BUILD_TESTING)
-  find_package(Qt5Test ${QT_MIN_VERSION} CONFIG REQUIRED)
+  find_package(Qt6Test ${QT_MIN_VERSION} REQUIRED)
 endif()
+
 # KDevplatform dependency version
 set(KDEVPLATFORM_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
-find_package(KDevPlatform ${KDEVPLATFORM_VERSION} CONFIG REQUIRED)
+find_package(KDevPlatform ${KDEVPLATFORM_VERSION} REQUIRED)
 
 ecm_setup_version(
     ${PROJECT_VERSION}
@@ -55,7 +58,6 @@ ecm_setup_version(
     VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kdevphpversion.h"
     PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KDevPHPConfigVersion.cmake"
 )
-
 
 set(KDEVPHP_INCLUDE_DIR ${KDE_INSTALL_INCLUDEDIR}/kdev-php)
 set(KDEVPHP_PRIVATE_INCLUDE_DIR ${KDEVPHP_INCLUDE_DIR}/private/${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR})
@@ -113,8 +115,8 @@ target_link_libraries(kdevphplanguagesupport
     kdevphpparser
     kdevphpcompletion
 
-    KF5::I18n
-    KF5::TextEditor
+    KF6::I18n
+    KF6::TextEditor
 
     Threads::Threads
 )

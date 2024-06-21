@@ -58,7 +58,7 @@ KDevelop::IndexedString ParseSession::currentDocument() const
     return m_currentDocument;
 }
 
-bool ParseSession::readFile(const QString& filename, const char* codec)
+bool ParseSession::readFile(const QString& filename)
 {
     m_currentDocument = KDevelop::IndexedString(filename);
 
@@ -86,8 +86,6 @@ bool ParseSession::readFile(const QString& filename, const char* codec)
         return false;
     }
     QTextStream s(&f);
-    if (codec)
-        s.setCodec(QTextCodec::codecForName(codec));
     m_contents = s.readAll();
     return true;
 }
