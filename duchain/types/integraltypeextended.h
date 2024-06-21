@@ -44,7 +44,7 @@ public:
 
     bool equals(const KDevelop::AbstractType* rhs) const override;
 
-    uint hash() const override;
+    size_t hash() const override;
 
     enum {
         ///TODO: is that value OK?

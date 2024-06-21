@@ -50,7 +50,7 @@ KDevelop::AbstractType* IntegralTypeExtended::clone() const
     return new IntegralTypeExtended(*this);
 }
 
-uint IntegralTypeExtended::hash() const
+size_t IntegralTypeExtended::hash() const
 {
     return 4 * KDevelop::IntegralType::hash();
 }

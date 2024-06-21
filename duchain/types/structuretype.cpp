@@ -53,7 +53,7 @@ KDevelop::AbstractType* StructureType::clone() const
     return new StructureType(*this);
 }
 
-uint StructureType::hash() const
+size_t StructureType::hash() const
 {
     return 4 * KDevelop::StructureType::hash();
 }
