@@ -38,7 +38,7 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
 
     void showDocumentation(const QUrl& url);
 
-  public slots:
+  public Q_SLOTS:
     void loadUrl(const QUrl &url) const;
 
   private:
