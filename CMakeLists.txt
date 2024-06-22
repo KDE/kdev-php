@@ -68,6 +68,15 @@ endif()
 
 add_definitions( -DTRANSLATION_DOMAIN=\"kdevphp\" )
 
+# TODO: we also need to fix kdevelop-pg-qt before we can remove these
+remove_definitions(
+    -DQT_NO_FOREACH
+    -DQT_NO_KEYWORDS
+    -DQT_NO_CAST_FROM_ASCII
+    -DQT_NO_CAST_FROM_BYTEARRAY
+    -DQT_NO_CAST_TO_ASCII
+)
+
 include_directories(
     ${KDEVPGQT_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}
