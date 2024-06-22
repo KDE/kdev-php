@@ -8,11 +8,12 @@
 #include "helpers.h"
 #include "item.h"
 
+#include <algorithm>
+
 #include <QList>
-#include <QVariant>
-#include <QTextFormat>
 #include <QStringList>
-#include <QRegExp>
+#include <QTextFormat>
+#include <QVariant>
 
 #include <language/duchain/declaration.h>
 #include <language/duchain/abstractfunctiondeclaration.h>
@@ -195,8 +196,11 @@ const QString indentString(KTextEditor::Document *document)
     return QStringLiteral("\t");
 }
 
-QString getIndentation( const QString &line ) {
-    return line.left(line.indexOf(QRegExp("\\S"), 0));
+QString getIndentation(const QString& line)
+{
+    auto it = std::find_if(line.begin(), line.end(), [](QChar c) {
+        return !c.isSpace();
+    });
+    return line.left(std::distance(line.begin(), it));
 }
-
 }
