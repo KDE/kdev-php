@@ -142,7 +142,7 @@ AbstractType::Ptr TypeBuilder::injectParseType(QString type, AstNode* node)
  *
  *  /// @docCommentName value
  */
-QStringList findInDocComment(const QString &docComment, const QString &docCommentName, const bool onlyOne)
+static QStringList findInDocComment(const QStringView &docComment, const QString &docCommentName, const bool onlyOne)
 {
     QStringList matches;
     // optimization that does not require potentially slow regexps
@@ -162,7 +162,7 @@ QStringList findInDocComment(const QString &docComment, const QString &docCommen
         if ( docComment[i].isSpace() || docComment[i] == '*' || docComment[i] == '/' ) {
             // skip whitespace and comment-marker at beginning of line
             continue;
-        } else if ( docComment[i] == '@' && docComment.midRef(i + 1, docCommentName.size()) == docCommentName ) {
+        } else if ( docComment[i] == '@' && docComment.mid(i + 1, docCommentName.size()) == docCommentName ) {
             // find @return or similar
             i += docCommentName.size() + 1;
             // skip whitespace (at least one is required)
@@ -186,7 +186,7 @@ QStringList findInDocComment(const QString &docComment, const QString &docCommen
                 ++pos;
             }
             if ( pos > i ) {
-                matches << docComment.mid(i, pos - i);
+                matches << docComment.mid(i, pos - i).toString();
                 if ( onlyOne ) {
                     break;
                 } else {

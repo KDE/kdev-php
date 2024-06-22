@@ -218,7 +218,7 @@ int Lexer::nextTokenKind()
                 it++;
                 pos++;
             }
-            const auto name = m_content.midRef(nameStart, pos - nameStart);
+            const auto name = QStringView(m_content).mid(nameStart, pos - nameStart);
             while (pos < m_contentSize && it->isSpace()) {
                 it++;
                 pos++;
@@ -625,7 +625,7 @@ int Lexer::nextTokenKind()
                 it++;
                 m_curpos++;
             }
-            const QStringRef name = m_content.midRef(from, m_curpos - from);
+            const auto name = QStringView(m_content).mid(from, m_curpos - from);
             m_curpos--;
             if (name.compare(QLatin1String("echo"), Qt::CaseInsensitive) == 0) {
                 token = Parser::Token_ECHO;
