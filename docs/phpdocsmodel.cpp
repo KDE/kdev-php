@@ -22,7 +22,7 @@
 #include <KLocalizedString>
 
 #include <QStandardPaths>
-#include <QRegExp>
+#include <QRegularExpression>
 
 using namespace KDevelop;
 
@@ -97,10 +97,9 @@ QVariant PhpDocsModel::data(const QModelIndex& index, int role) const
             }
             QString ret = dec->toString();
             if ( dec->isFunctionDeclaration() ) {
-                // remove function arguments
-                ret = ret.replace(QRegExp("\\(.+\\)"), QStringLiteral("()"));
-                // remove return type
-                ret = ret.remove(QRegExp("^[^ ]+ "));
+                static const auto functionArgsPattern = QRegularExpression(QStringLiteral("\\(.+\\)"));
+                static const auto returnTypePattern = QRegularExpression(QStringLiteral("^[^ ]+ "));
+                ret.remove(functionArgsPattern).remove(returnTypePattern);
             }
             return ret;
         }
