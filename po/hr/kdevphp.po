@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-21 01:43+0000\n"
+"POT-Creation-Date: 2024-06-24 01:39+0000\n"
 "PO-Revision-Date: 2010-01-24 17:02+0100\n"
 "Last-Translator: Andrej Dundovic <adundovi@gmail.com>\n"
 "Language-Team: Croatian <kde-croatia-list@lists.sourceforge.net>\n"
@@ -45,6 +45,18 @@ msgstr ""
 msgid "From %1"
 msgstr "Iz %1"
 
+#: docs/phpdocsconfig.cpp:45
+#, kde-format
+msgctxt "@title:tab"
+msgid "PHP Documentation"
+msgstr ""
+
+#: docs/phpdocsconfig.cpp:50
+#, kde-format
+msgctxt "@title:tab"
+msgid "Configure PHP Documentation Settings"
+msgstr ""
+
 #. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
 #: docs/phpdocsconfig.ui:20
 #, kde-format
@@ -82,7 +94,7 @@ msgstr "Lokacija:"
 msgid "<lost declaration>"
 msgstr ""
 
-#: docs/phpdocsplugin.cpp:214
+#: docs/phpdocsplugin.cpp:216
 #, kde-format
 msgid "PHP Documentation"
 msgstr ""

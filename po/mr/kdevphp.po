@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-21 01:43+0000\n"
+"POT-Creation-Date: 2024-06-24 01:39+0000\n"
 "PO-Revision-Date: 2013-03-13 16:48+0530\n"
 "Last-Translator: Chetan Khona <chetan@kompkin.com>\n"
 "Language-Team: Marathi <kde-i18n-doc@kde.org>\n"
@@ -41,6 +41,20 @@ msgstr ""
 #, kde-format
 msgid "From %1"
 msgstr "%1 पासून"
+
+#: docs/phpdocsconfig.cpp:45
+#, fuzzy, kde-format
+#| msgid "PHP Documentation"
+msgctxt "@title:tab"
+msgid "PHP Documentation"
+msgstr "पीएचपी दस्तऐवजीकरण"
+
+#: docs/phpdocsconfig.cpp:50
+#, fuzzy, kde-format
+#| msgid "PHP Documentation"
+msgctxt "@title:tab"
+msgid "Configure PHP Documentation Settings"
+msgstr "पीएचपी दस्तऐवजीकरण"
 
 #. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
 #: docs/phpdocsconfig.ui:20
@@ -79,7 +93,7 @@ msgstr "स्थान :"
 msgid "<lost declaration>"
 msgstr ""
 
-#: docs/phpdocsplugin.cpp:214
+#: docs/phpdocsplugin.cpp:216
 #, kde-format
 msgid "PHP Documentation"
 msgstr "पीएचपी दस्तऐवजीकरण"

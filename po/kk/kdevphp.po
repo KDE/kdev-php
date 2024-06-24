@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-21 01:43+0000\n"
+"POT-Creation-Date: 2024-06-24 01:39+0000\n"
 "PO-Revision-Date: 2013-11-12 04:13+0600\n"
 "Last-Translator: Sairan Kikkarin <sairan@computer.org>\n"
 "Language-Team: Kazakh <kde-i18n-doc@kde.org>\n"
@@ -43,6 +43,20 @@ msgstr "Іске асыру"
 #, kde-format
 msgid "From %1"
 msgstr "Мынадан: %1"
+
+#: docs/phpdocsconfig.cpp:45
+#, fuzzy, kde-format
+#| msgid "PHPUnit Integration"
+msgctxt "@title:tab"
+msgid "PHP Documentation"
+msgstr "PHPUnit біріктіру"
+
+#: docs/phpdocsconfig.cpp:50
+#, fuzzy, kde-format
+#| msgid "PHPUnit Integration"
+msgctxt "@title:tab"
+msgid "Configure PHP Documentation Settings"
+msgstr "PHPUnit біріктіру"
 
 #. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
 #: docs/phpdocsconfig.ui:20
@@ -112,7 +126,7 @@ msgstr "Орыны:"
 msgid "<lost declaration>"
 msgstr "<мәлімдемесі жоқ>"
 
-#: docs/phpdocsplugin.cpp:214
+#: docs/phpdocsplugin.cpp:216
 #, fuzzy, kde-format
 #| msgid "PHPUnit Integration"
 msgid "PHP Documentation"

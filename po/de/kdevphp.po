@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdevphp\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-21 01:43+0000\n"
+"POT-Creation-Date: 2024-06-24 01:39+0000\n"
 "PO-Revision-Date: 2023-03-17 21:06+0100\n"
 "Last-Translator: Frederik Schwarzer <schwarzer@kde.org>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
@@ -42,6 +42,20 @@ msgstr "Implementieren"
 #, kde-format
 msgid "From %1"
 msgstr "Von %1"
+
+#: docs/phpdocsconfig.cpp:45
+#, fuzzy, kde-format
+#| msgid "PHP Documentation"
+msgctxt "@title:tab"
+msgid "PHP Documentation"
+msgstr "PHP-Dokumentation"
+
+#: docs/phpdocsconfig.cpp:50
+#, fuzzy, kde-format
+#| msgid "PHP Documentation"
+msgctxt "@title:tab"
+msgid "Configure PHP Documentation Settings"
+msgstr "PHP-Dokumentation"
 
 #. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
 #: docs/phpdocsconfig.ui:20
@@ -95,7 +109,7 @@ msgstr "Speicherort:"
 msgid "<lost declaration>"
 msgstr "<verlorene Deklaration>"
 
-#: docs/phpdocsplugin.cpp:214
+#: docs/phpdocsplugin.cpp:216
 #, kde-format
 msgid "PHP Documentation"
 msgstr "PHP-Dokumentation"

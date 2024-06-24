@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdevphp\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-21 01:43+0000\n"
+"POT-Creation-Date: 2024-06-24 01:39+0000\n"
 "PO-Revision-Date: 2017-04-27 18:18+0200\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
@@ -43,6 +43,20 @@ msgstr "Υλοποίηση"
 #, kde-format
 msgid "From %1"
 msgstr "Από %1"
+
+#: docs/phpdocsconfig.cpp:45
+#, fuzzy, kde-format
+#| msgid "PHP Documentation"
+msgctxt "@title:tab"
+msgid "PHP Documentation"
+msgstr "PHP τεκμηρίωση"
+
+#: docs/phpdocsconfig.cpp:50
+#, fuzzy, kde-format
+#| msgid "PHP Documentation"
+msgctxt "@title:tab"
+msgid "Configure PHP Documentation Settings"
+msgstr "PHP τεκμηρίωση"
 
 #. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
 #: docs/phpdocsconfig.ui:20
@@ -112,7 +126,7 @@ msgstr "Θέση:"
 msgid "<lost declaration>"
 msgstr "απολεσθείσα δήλωση>"
 
-#: docs/phpdocsplugin.cpp:214
+#: docs/phpdocsplugin.cpp:216
 #, kde-format
 msgid "PHP Documentation"
 msgstr "PHP τεκμηρίωση"

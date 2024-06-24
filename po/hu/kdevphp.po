@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-21 01:43+0000\n"
+"POT-Creation-Date: 2024-06-24 01:39+0000\n"
 "PO-Revision-Date: 2014-02-08 22:58+0100\n"
 "Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
@@ -41,6 +41,20 @@ msgstr "Megvalósítás"
 #, kde-format
 msgid "From %1"
 msgstr "Ettől: %1"
+
+#: docs/phpdocsconfig.cpp:45
+#, fuzzy, kde-format
+#| msgid "PHPUnit Integration"
+msgctxt "@title:tab"
+msgid "PHP Documentation"
+msgstr "PHPUnit integráció"
+
+#: docs/phpdocsconfig.cpp:50
+#, fuzzy, kde-format
+#| msgid "PHPUnit Integration"
+msgctxt "@title:tab"
+msgid "Configure PHP Documentation Settings"
+msgstr "PHPUnit integráció"
 
 #. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
 #: docs/phpdocsconfig.ui:20
@@ -111,7 +125,7 @@ msgstr "Hely:"
 msgid "<lost declaration>"
 msgstr "<elveszett dekleráció>"
 
-#: docs/phpdocsplugin.cpp:214
+#: docs/phpdocsplugin.cpp:216
 #, fuzzy, kde-format
 #| msgid "PHPUnit Integration"
 msgid "PHP Documentation"

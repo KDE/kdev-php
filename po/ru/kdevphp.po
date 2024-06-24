@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-21 01:43+0000\n"
+"POT-Creation-Date: 2024-06-24 01:39+0000\n"
 "PO-Revision-Date: 2022-03-03 17:30+0300\n"
 "Last-Translator: Olesya Gerasimenko <translation-team@basealt.ru>\n"
 "Language-Team: Basealt Translation Team\n"
@@ -47,6 +47,20 @@ msgstr "Реализовать"
 #, kde-format
 msgid "From %1"
 msgstr "Из %1"
+
+#: docs/phpdocsconfig.cpp:45
+#, fuzzy, kde-format
+#| msgid "PHP Documentation"
+msgctxt "@title:tab"
+msgid "PHP Documentation"
+msgstr "Документация по PHP"
+
+#: docs/phpdocsconfig.cpp:50
+#, fuzzy, kde-format
+#| msgid "PHP Documentation"
+msgctxt "@title:tab"
+msgid "Configure PHP Documentation Settings"
+msgstr "Документация по PHP"
 
 #. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
 #: docs/phpdocsconfig.ui:20
@@ -100,7 +114,7 @@ msgstr "Расположение:"
 msgid "<lost declaration>"
 msgstr "<потерянное объявление>"
 
-#: docs/phpdocsplugin.cpp:214
+#: docs/phpdocsplugin.cpp:216
 #, kde-format
 msgid "PHP Documentation"
 msgstr "Документация по PHP"
