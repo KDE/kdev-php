@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: extragear-kdevelop-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-24 01:39+0000\n"
-"PO-Revision-Date: 2024-02-24 22:07+0300\n"
+"PO-Revision-Date: 2024-06-24 14:11+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 24.04.70\n"
+"X-Generator: Lokalize 24.07.70\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -46,18 +46,16 @@ msgid "From %1"
 msgstr "%1 Ögesinden"
 
 #: docs/phpdocsconfig.cpp:45
-#, fuzzy, kde-format
-#| msgid "PHP Documentation"
+#, kde-format
 msgctxt "@title:tab"
 msgid "PHP Documentation"
 msgstr "PHP Belgelendirmesi"
 
 #: docs/phpdocsconfig.cpp:50
-#, fuzzy, kde-format
-#| msgid "PHP Documentation"
+#, kde-format
 msgctxt "@title:tab"
 msgid "Configure PHP Documentation Settings"
-msgstr "PHP Belgelendirmesi"
+msgstr "PHP Belgelendirmesi Ayarlarını Yapılandır"
 
 #. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
 #: docs/phpdocsconfig.ui:20
@@ -96,8 +94,8 @@ msgstr ""
 "href=\"https://php.net\"><span style=\" text-decoration: underline; color:"
 "#0000ff;\">PHP belgelendirmesi</span></a> uzaktan kullanılır. Ek olarak, "
 "konumu tercih ettiğiniz bir dilin istediğiniz çevirisini yerel bir kopyaya "
-"da ayarlayabilirsiniz.<span style=\" font-style:italic;\">\"Many HTML files"
-"\"</span> paketini indirdiğinizden emin olun.</p></body></html>"
+"da ayarlayabilirsiniz.<span style=\" font-style:italic;\">“Many HTML files”</"
+"span> paketini indirdiğinizden emin olun.</p></body></html>"
 
 #. i18n: ectx: property (text), widget (QLabel, PhpDocLocationLabel)
 #: docs/phpdocsconfig.ui:57
@@ -147,7 +145,7 @@ msgstr ""
 #: docs/phpdocumentationwidget.cpp:44
 #, kde-format
 msgid "...loading documentation..."
-msgstr "...belgelendirme yükleniyor..."
+msgstr "… belgelendirme yükleniyor…"
 
 #: duchain/builders/contextbuilder.cpp:451
 #, kde-format
@@ -160,7 +158,7 @@ msgstr "%1 ve %2 dairesel miras alma"
 #: duchain/builders/declarationbuilder.cpp:879
 #, kde-format
 msgid "Cannot use '%1' as class name as it is reserved"
-msgstr "'%1' rezerve edildiğinden sınıf adı olarak kullanılamaz"
+msgstr "“%1” rezerve edildiğinden sınıf adı olarak kullanılamaz"
 
 #: duchain/builders/declarationbuilder.cpp:341
 #, kde-format
@@ -199,17 +197,17 @@ msgstr "Soyut olmayan %1 metodu bir gövde içermelidir."
 #: duchain/builders/declarationbuilder.cpp:394
 #, kde-format
 msgid "Cannot use 'final' as constant modifier"
-msgstr "'final', sabit niteleyici olarak kullanılamaz"
+msgstr "“final”, sabit niteleyicisi olarak kullanılamaz"
 
 #: duchain/builders/declarationbuilder.cpp:397
 #, kde-format
 msgid "Cannot use 'static' as constant modifier"
-msgstr "'static', sabit niteleyici olarak kullanılamaz"
+msgstr "“static”, sabit niteleyicisi olarak kullanılamaz"
 
 #: duchain/builders/declarationbuilder.cpp:400
 #, kde-format
 msgid "Cannot use 'abstract' as constant modifier"
-msgstr "'abstract', sabit niteleyici olarak kullanılamaz"
+msgstr "“abstract”, sabit niteleyicisi olarak kullanılamaz"
 
 #: duchain/builders/declarationbuilder.cpp:414
 #, kde-format
@@ -241,26 +239,26 @@ msgid ""
 "A class constant must not be called 'class'; it is reserved for class name "
 "fetching"
 msgstr ""
-"Bir sınıf sabiti 'class' olarak adlandırılmamalıdır; bu, sınıf adı getirmesi "
+"Bir sınıf sabiti “class” olarak adlandırılmamalıdır; bu, sınıf adı getirmesi "
 "için ayrılmıştır"
 
 #: duchain/builders/declarationbuilder.cpp:744
 #: duchain/builders/declarationbuilder.cpp:770
 #, kde-format
 msgid "Cannot use 'abstract' as method modifier"
-msgstr "'abstract', yöntem niteleyici olarak kullanılamaz"
+msgstr "“abstract”, yöntem niteleyicisi olarak kullanılamaz"
 
 #: duchain/builders/declarationbuilder.cpp:747
 #: duchain/builders/declarationbuilder.cpp:773
 #, kde-format
 msgid "Cannot use 'final' as method modifier"
-msgstr "'final', yöntem niteleyici olarak kullanılamaz"
+msgstr "“final”, yöntem niteleyicisi olarak kullanılamaz"
 
 #: duchain/builders/declarationbuilder.cpp:750
 #: duchain/builders/declarationbuilder.cpp:776
 #, kde-format
 msgid "Cannot use 'static' as method modifier"
-msgstr "'static', yöntem niteliyici olarak kullanılamaz"
+msgstr "“static”, yöntem niteliyicisi olarak kullanılamaz"
 
 #: duchain/builders/declarationbuilder.cpp:825
 #, kde-format
@@ -332,22 +330,22 @@ msgstr "Argümanın paketten çıkarılmasından sonra konumsal argüman kullan�
 #: duchain/builders/declarationbuilder.cpp:1630
 #, kde-format
 msgid "The use statement with non-compound name '%1' has no effect."
-msgstr "Bileşik olmayan '%1' adı use ifadesinin bir etkisi yoktur."
+msgstr "Bileşik olmayan “%1” adı use ifadesinin bir etkisi yoktur."
 
 #: duchain/builders/declarationbuilder.cpp:1657
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
-msgstr "'%1' adı zaten kullanıldığından '%2' olarak kullanılamaz."
+msgstr "“%1” adı zaten kullanıldığından “%2” olarak kullanılamaz."
 
 #: duchain/builders/declarationbuilder.cpp:1683
 #, kde-format
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
-msgstr "'%2' özel bir sınıf adı olduğundan %1, %2 olarak kullanılamaz"
+msgstr "“%2” özel bir sınıf adı olduğundan %1, %2 olarak kullanılamaz"
 
 #: duchain/builders/declarationbuilder.cpp:1693
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
-msgstr "'yield' ifadesi yalnızca bir işlev içinde kullanılabilir"
+msgstr "“yield” ifadesi yalnızca bir işlev içinde kullanılabilir"
 
 #: duchain/builders/typebuilder.cpp:412
 #, kde-format
@@ -437,7 +435,7 @@ msgstr "%1/%2"
 #: parser/main.cpp:24
 #, kde-format
 msgid "php-parser"
-msgstr "php-ayrıştırıcı"
+msgstr "php-parser"
 
 #: parser/main.cpp:25
 #, kde-format
@@ -452,7 +450,7 @@ msgstr "(c) 2008 Niko Sams, 2009 Milian Wolff"
 #: parser/parsesession.cpp:69
 #, kde-format
 msgid "Could not open file '%1'"
-msgstr "'%1' dosyası açılamadı"
+msgstr "“%1” dosyası açılamadı"
 
 #: parser/parsesession.cpp:72
 #, kde-format
