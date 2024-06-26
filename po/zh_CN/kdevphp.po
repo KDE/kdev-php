@@ -43,18 +43,16 @@ msgid "From %1"
 msgstr "来自 %1"
 
 #: docs/phpdocsconfig.cpp:45
-#, fuzzy, kde-format
-#| msgid "PHP Documentation"
+#, kde-format
 msgctxt "@title:tab"
 msgid "PHP Documentation"
-msgstr "PHP 文档"
+msgstr ""
 
 #: docs/phpdocsconfig.cpp:50
-#, fuzzy, kde-format
-#| msgid "PHP Documentation"
+#, kde-format
 msgctxt "@title:tab"
 msgid "Configure PHP Documentation Settings"
-msgstr "PHP 文档"
+msgstr ""
 
 #. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
 #: docs/phpdocsconfig.ui:20
