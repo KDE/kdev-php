@@ -2,15 +2,15 @@
 # mesaĝoj por "kdev-php"
 # Copyright (C) 2003 Free Software Foundation, Inc.
 # Axel Rousseau <axel@esperanto-jeunes.org>, 2009.
-# Oliver Kellogg <okellogg@users.sourceforge.net>, 2023.
+# Oliver Kellogg <olivermkellogg@gmail.com>, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: kdevphp\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-24 01:39+0000\n"
-"PO-Revision-Date: 2023-11-18 21:07+0100\n"
-"Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
+"PO-Revision-Date: 2024-06-28 21:02+0200\n"
+"Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgstr "Axel Rousseau, Oliver Kellogg"
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "axel@esperanto-jeunes.org, okellogg@users.sourceforge.net"
+msgstr "axel@esperanto-jeunes.org, olivermkellogg@gmail.com"
 
 #: completion/implementationitem.cpp:58
 #, kde-format
@@ -45,18 +45,16 @@ msgid "From %1"
 msgstr "De %1"
 
 #: docs/phpdocsconfig.cpp:45
-#, fuzzy, kde-format
-#| msgid "PHP Documentation"
+#, kde-format
 msgctxt "@title:tab"
 msgid "PHP Documentation"
-msgstr "PHP Dokumentado"
+msgstr "PHP-Dokumentado"
 
 #: docs/phpdocsconfig.cpp:50
-#, fuzzy, kde-format
-#| msgid "PHP Documentation"
+#, kde-format
 msgctxt "@title:tab"
 msgid "Configure PHP Documentation Settings"
-msgstr "PHP Dokumentado"
+msgstr "Agordi PHP-Dokumentadajn Metojn"
 
 #. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
 #: docs/phpdocsconfig.ui:20
