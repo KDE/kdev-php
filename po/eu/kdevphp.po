@@ -1,16 +1,16 @@
 # Translation for kdevphp.po to Euskara/Basque (eu).
-# Copyright (C) 2023 This file is copyright:
+# Copyright (C) 2023-2024 This file is copyright:
 # This file is distributed under the same license as the kdev-php package.
-# KDE euskaratzeko proiektuko arduraduna <xalba@ni.eus>.
+# SPDX-FileCopyrightText: 2024 KDE euskaratzeko proiektuko arduraduna <xalba@ni.eus>
 #
 # Translators:
-# Iñigo Salvador Azurmendi <xalba@ni.eus>, 2023.
+# Iñigo Salvador Azurmendi <xalba@ni.eus>, 2023, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: kdev-php\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-24 01:39+0000\n"
-"PO-Revision-Date: 2023-01-14 10:39+0100\n"
+"PO-Revision-Date: 2024-07-05 23:18+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 22.12.1\n"
+"X-Generator: Lokalize 24.05.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -46,18 +46,16 @@ msgid "From %1"
 msgstr "%1(e)tik"
 
 #: docs/phpdocsconfig.cpp:45
-#, fuzzy, kde-format
-#| msgid "PHP Documentation"
+#, kde-format
 msgctxt "@title:tab"
 msgid "PHP Documentation"
 msgstr "PHP dokumentazioa"
 
 #: docs/phpdocsconfig.cpp:50
-#, fuzzy, kde-format
-#| msgid "PHP Documentation"
+#, kde-format
 msgctxt "@title:tab"
 msgid "Configure PHP Documentation Settings"
-msgstr "PHP dokumentazioa"
+msgstr "Konfiguratu PHP dokumentazioaren ezarpenak"
 
 #. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
 #: docs/phpdocsconfig.ui:20
