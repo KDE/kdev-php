@@ -52,9 +52,9 @@ K_PLUGIN_FACTORY_WITH_JSON(KDevPhpSupportFactory, "kdevphpsupport.json", registe
 namespace Php
 {
 
-LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
-        : KDevelop::IPlugin(QStringLiteral("kdevphpsupport"), parent),
-        KDevelop::ILanguageSupport()
+LanguageSupport::LanguageSupport(QObject* parent, const KPluginMetaData& metaData, const QVariantList& /*args*/)
+    : KDevelop::IPlugin(QStringLiteral("kdevphpsupport"), parent, metaData)
+    , KDevelop::ILanguageSupport()
 {
     Q_ASSERT(internalFunctionFile().toUrl().isValid());
 

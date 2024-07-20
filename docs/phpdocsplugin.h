@@ -22,7 +22,7 @@ class PhpDocsPlugin : public KDevelop::IPlugin, public KDevelop::IDocumentationP
   Q_INTERFACES( KDevelop::IDocumentationProvider )
 
   public:
-    explicit PhpDocsPlugin(QObject *parent, const QVariantList & args= QVariantList());
+    explicit PhpDocsPlugin(QObject* parent, const KPluginMetaData& metaData, const QVariantList& args = QVariantList());
     ~PhpDocsPlugin() override;
 
     KDevelop::IDocumentation::Ptr documentationForDeclaration (KDevelop::Declaration* dec) const override;

@@ -34,8 +34,8 @@ using namespace KDevelop;
 K_PLUGIN_FACTORY_WITH_JSON(PhpUnitProviderFactory, "kdevphpunitprovider.json",
                            registerPlugin<PhpUnitProvider>(); )
 
-PhpUnitProvider::PhpUnitProvider(QObject* parent, const QList< QVariant >& args)
-    : IPlugin(QStringLiteral("kdevphpunitprovider"), parent)
+PhpUnitProvider::PhpUnitProvider(QObject* parent, const KPluginMetaData& metaData, const QVariantList& args)
+    : IPlugin(QStringLiteral("kdevphpunitprovider"), parent, metaData)
 {
     Q_UNUSED(args);
 
