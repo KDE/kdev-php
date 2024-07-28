@@ -3,6 +3,7 @@
         "Authors": [
             {
                 "Name": "Milian Wolff",
+                "Name[he]": "מיליאן וולף",
                 "Name[x-test]": "xxMilian Wolffxx"
             }
         ],
@@ -19,6 +20,7 @@
         "Description[fi]": "Tämä liitännäinen integroi PHP.net-dokumentaation.",
         "Description[fr]": "Ce module intègre la documentation en ligne de PHP.net.",
         "Description[gl]": "Este complemento integra a documentación en liña de PHP.net.",
+        "Description[he]": "התוסף הזה יוצר שילוב מול התיעוד המקוון ב־PHP.net",
         "Description[it]": "Questa estensione integra la documentazione online di PHP.net.",
         "Description[ka]": "ეს დამატება PHP.net-ის ონლაინ დოკუმენტაციის ინტეგრირებას უზრუნველყოფს.",
         "Description[ko]": "PHP.net 온라인 문서를 통합합니다.",
@@ -53,6 +55,7 @@
         "Name[fi]": "PHP-dokumentaatio",
         "Name[fr]": "Documentation PHP",
         "Name[gl]": "Documentación de PHP",
+        "Name[he]": "תיעוד PHP",
         "Name[it]": "Documentazione PHP",
         "Name[ka]": "PHP-ის დოკუმენტაცია",
         "Name[ko]": "PHP 문서",

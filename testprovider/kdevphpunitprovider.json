@@ -3,6 +3,7 @@
         "Authors": [
             {
                 "Name": "Miha Čančula",
+                "Name[he]": "מִיהַה צ׳נצ׳ולה",
                 "Name[ka]": "მიჰა ჩანჩულა",
                 "Name[x-test]": "xxMiha Čančulaxx"
             }
@@ -20,6 +21,7 @@
         "Description[eu]": "PHPUnit probak aurkitu eta exekutatzen ditu.",
         "Description[fr]": "Trouve et exécute des tests « PHPUnit ».",
         "Description[gl]": "Atopa e executa probas de PHPUnit.",
+        "Description[he]": "מאתר ומריץ בדיקות PHPUnit.",
         "Description[it]": "Trova ed esegue i test PHPUnit.",
         "Description[ka]": "პოულობს და უშვებს PHPUnit ერთეულებს.",
         "Description[ko]": "PHPUnit 테스트를 찾아서 실행합니다.",
@@ -53,6 +55,7 @@
         "Name[eu]": "PHPUnit integrazioa",
         "Name[fr]": "Intégration de « PHPUnit »",
         "Name[gl]": "Integración con PHPUnit",
+        "Name[he]": "שילוב PHPUnit",
         "Name[it]": "Integrazione PHPUnit",
         "Name[ka]": "PHPUnit -ის ინტეგრაცია",
         "Name[ko]": "PHPUnit 통합",
