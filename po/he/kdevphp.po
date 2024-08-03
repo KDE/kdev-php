@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kdev-php\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-24 01:39+0000\n"
-"PO-Revision-Date: 2024-07-29 08:16+0300\n"
+"PO-Revision-Date: 2024-08-01 15:39+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -315,32 +315,32 @@ msgstr ""
 #: duchain/builders/declarationbuilder.cpp:1657
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
-msgstr ""
+msgstr "אי אפשר להשתמש ב־‚%1’ בתור ‚%2’ כי השם כבר בשימוש."
 
 #: duchain/builders/declarationbuilder.cpp:1683
 #, kde-format
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
-msgstr ""
+msgstr "אי אפשר להשתמש ב־%1 בתור %2 כי ‚%2’ הוא שם מחלקה מיוחד."
 
 #: duchain/builders/declarationbuilder.cpp:1693
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
-msgstr ""
+msgstr "אפשר להשתמש בביטוי ‚yield’ (תנובה) רק בתוך פונקציה"
 
 #: duchain/builders/typebuilder.cpp:412
 #, kde-format
 msgid "Default value for parameters with an object type can only be NULL."
-msgstr ""
+msgstr "ערך ברירת מחדל למשתנים עם סוג עצם יכול להיות רק NULL (ריק)."
 
 #: duchain/builders/usebuilder.cpp:202
 #, kde-format
 msgid "Usage of %1 is deprecated."
-msgstr ""
+msgstr "השימוש ב־%1 הופסק."
 
 #: duchain/builders/usebuilder.cpp:204
 #, kde-format
 msgid "Declaration not found: %1"
-msgstr ""
+msgstr "ההכרזה לא נמצאה: %1"
 
 #: duchain/declarations/traitmemberaliasdeclaration.cpp:54
 #: duchain/declarations/traitmethodaliasdeclaration.cpp:87
@@ -352,7 +352,7 @@ msgstr ""
 #: duchain/navigation/declarationnavigationcontext.cpp:130
 #, kde-format
 msgid "Use of %1 from %2<br />"
-msgstr ""
+msgstr "שימוש ב־%1 מ־%2<br />"
 
 #: duchain/navigation/declarationnavigationcontext.cpp:140
 #, kde-format
@@ -378,7 +378,7 @@ msgstr "קבוע קסם"
 #: duchain/navigation/magicconstantnavigationcontext.cpp:65
 #, kde-format
 msgid "empty (not inside a class)"
-msgstr ""
+msgstr "ריק (לא בתוך מחלקה)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:71
 #, kde-format
