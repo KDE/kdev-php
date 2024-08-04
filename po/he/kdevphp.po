@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kdev-php\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-24 01:39+0000\n"
-"PO-Revision-Date: 2024-08-01 15:39+0300\n"
+"PO-Revision-Date: 2024-08-03 21:59+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -172,42 +172,42 @@ msgstr ""
 #: duchain/builders/declarationbuilder.cpp:363
 #, kde-format
 msgid "Abstract function %1 cannot contain body."
-msgstr ""
+msgstr "פונקציה מופשטת (abstract) %1 לא יכול להכיל תוכן."
 
 #: duchain/builders/declarationbuilder.cpp:366
 #, kde-format
 msgid "Cannot use the final modifier on an abstract class member."
-msgstr ""
+msgstr "אי אפשר להשתמש במשנה final (סופי) על חבר במחלקה מופשטת (abstract)."
 
 #: duchain/builders/declarationbuilder.cpp:376
 #, kde-format
 msgid "Non-abstract method %1 must contain body."
-msgstr ""
+msgstr "מתודה שאינה מופשטת (abstract) %1 חייבת להכיל תוכן."
 
 #: duchain/builders/declarationbuilder.cpp:394
 #, kde-format
 msgid "Cannot use 'final' as constant modifier"
-msgstr ""
+msgstr "אי אפשר להשתמש ב־‚abstract’ (מופשט) כמשנה קבוע"
 
 #: duchain/builders/declarationbuilder.cpp:397
 #, kde-format
 msgid "Cannot use 'static' as constant modifier"
-msgstr ""
+msgstr "אי אפשר להשתמש ב־‚static’ (מקובע) כמשנה קבוע"
 
 #: duchain/builders/declarationbuilder.cpp:400
 #, kde-format
 msgid "Cannot use 'abstract' as constant modifier"
-msgstr ""
+msgstr "אי אפשר להשתמש ב־‚abstract’ (מופשט) כמשנה קבוע"
 
 #: duchain/builders/declarationbuilder.cpp:414
 #, kde-format
 msgid "Properties cannot be declared final."
-msgstr ""
+msgstr "אי אפשר להכריז על משתנים כ־final (סופי)."
 
 #: duchain/builders/declarationbuilder.cpp:417
 #, kde-format
 msgid "Properties cannot be declared abstract."
-msgstr ""
+msgstr "אי אפשר להכריז על משתנים כ־abstract (מופשט)."
 
 #: duchain/builders/declarationbuilder.cpp:463
 #, kde-format
@@ -215,11 +215,13 @@ msgid ""
 "Trait method %1 has not been applied, because there are collisions with "
 "other trait methods on %2"
 msgstr ""
+"המתודה של התכונה/trait‏ %1 לא הוחלה, כיוון שיש סתירות מול מתודות תכונות אחרות "
+"ב־%2"
 
 #: duchain/builders/declarationbuilder.cpp:656
 #, kde-format
 msgid "Traits cannot have constants."
-msgstr ""
+msgstr "לתכונות/traits לא יכולים להיות קבועים."
 
 #: duchain/builders/declarationbuilder.cpp:663
 #, kde-format
@@ -233,39 +235,40 @@ msgstr ""
 #: duchain/builders/declarationbuilder.cpp:770
 #, kde-format
 msgid "Cannot use 'abstract' as method modifier"
-msgstr ""
+msgstr "אי אפשר להשתמש ב־‚abstract’ (מופשט) כמשנה מתודה"
 
 #: duchain/builders/declarationbuilder.cpp:747
 #: duchain/builders/declarationbuilder.cpp:773
 #, kde-format
 msgid "Cannot use 'final' as method modifier"
-msgstr ""
+msgstr "אי אפשר להשתמש ב־‚final’ (סופי) כמשנה מתודה"
 
 #: duchain/builders/declarationbuilder.cpp:750
 #: duchain/builders/declarationbuilder.cpp:776
 #, kde-format
 msgid "Cannot use 'static' as method modifier"
-msgstr ""
+msgstr "אי אפשר להשתמש ב־‚static’ (מקובע) כמשנה מתודה"
 
 #: duchain/builders/declarationbuilder.cpp:825
 #, kde-format
 msgid "Variadic parameter cannot have a default value"
-msgstr ""
+msgstr "למשתנה וריאדי (Variadic) לא יכול להיות ערך ברירת מחדל"
 
 #: duchain/builders/declarationbuilder.cpp:828
 #, kde-format
 msgid "Default value for parameters with a class type hint can only be NULL."
 msgstr ""
+"ערך ברירת מחדל למשתנים עם מחלקה מסוג hint (רמז) יכול להיות רק NULL/ריק."
 
 #: duchain/builders/declarationbuilder.cpp:845
 #, kde-format
 msgid "Only the last parameter can be variadic."
-msgstr ""
+msgstr "רק המשתנה האחרון יכול להיות וריאדי/variadic."
 
 #: duchain/builders/declarationbuilder.cpp:959
 #, kde-format
 msgid "Cannot redeclare PHP internal %1."
-msgstr ""
+msgstr "אי אפשר להכריז מחדש על שם פנימי ב־PHP‏ %1."
 
 #: duchain/builders/declarationbuilder.cpp:962
 #, kde-format
@@ -278,7 +281,7 @@ msgstr ""
 #: duchain/builders/declarationbuilder.cpp:970
 #, kde-format
 msgid "Cannot redeclare %1, already declared in %2 on line %3."
-msgstr ""
+msgstr "אי אפשר להכריז על %1, כבר הוכרז ב־%2 בשורה %3."
 
 #: duchain/builders/declarationbuilder.cpp:1056
 #, kde-format
