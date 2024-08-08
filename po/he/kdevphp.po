@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kdev-php\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-24 01:39+0000\n"
-"PO-Revision-Date: 2024-08-06 10:40+0300\n"
+"PO-Revision-Date: 2024-08-07 13:46+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -168,6 +168,8 @@ msgid ""
 "Class %1 contains abstract method %2 and must therefore be declared abstract "
 "or implement the method."
 msgstr ""
+"המחלקה %1 מכילה את המתודה המופשטת %2 ולכן יש להכריז עליה כמופשטת או לממש את "
+"המתודה."
 
 #: duchain/builders/declarationbuilder.cpp:363
 #, kde-format
@@ -289,6 +291,8 @@ msgid ""
 "Class %1 contains %2 abstract methods and must therefore be declared "
 "abstract or implement the remaining methods."
 msgstr ""
+"המחלקה %1 מכילה %2 מתודות מופשטות ולכן יש להכריז עליה כמופשטת או לממש את "
+"המתודות הנותרות."
 
 #: duchain/builders/declarationbuilder.cpp:1063
 #, kde-format
@@ -308,7 +312,7 @@ msgstr "לא ניתן לגשת למאפיין המוגן %1."
 #: duchain/builders/declarationbuilder.cpp:1406
 #, kde-format
 msgid "Cannot use positional argument after argument unpacking"
-msgstr ""
+msgstr "לא ניתן להשתמש בארגומנטים תלויי מיקום אחרי פירוק ארגומנטים"
 
 #: duchain/builders/declarationbuilder.cpp:1630
 #, kde-format
