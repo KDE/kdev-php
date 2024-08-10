@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kdev-php\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-24 01:39+0000\n"
-"PO-Revision-Date: 2024-08-07 13:46+0300\n"
+"PO-Revision-Date: 2024-08-09 08:35+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -125,6 +125,9 @@ msgid ""
 "contains the\n"
 "                 PHP documentation in HTML format with many files."
 msgstr ""
+"מקום תיעוד PHP לשימוש. אפשר להשתמש במקום מרוחק כמו\n"
+"                 https://php.net או תיקייה מקומית שמכילה את\n"
+"                 התיעוד של PHP בצורת HTML עם הרבה קבצים."
 
 #. i18n: ectx: whatsthis, entry (phpDocLocation), group (PHP Documentation)
 #: docs/phpdocssettings.kcfg:15
@@ -279,6 +282,8 @@ msgid ""
 "be incompatible, to improve maintainability consider using accessor methods "
 "in traits instead."
 msgstr ""
+"%1 ו־%2 מגדירים את אותו המאפיין (%3) בהרכה של %1. יכול להיות שאינו תואם, כדי "
+"לשפר את נגישות התחזוקה מוטב להשתמש במתודות גישה (accessors) ב־traits במקום."
 
 #: duchain/builders/declarationbuilder.cpp:970
 #, kde-format
@@ -353,7 +358,7 @@ msgstr "ההכרזה לא נמצאה: %1"
 #: duchain/declarations/traitmethodaliasdeclaration.cpp:87
 #, kde-format
 msgid "Lost trait alias %1"
-msgstr ""
+msgstr "כינוי trait אבוד %1"
 
 #: duchain/navigation/declarationnavigationcontext.cpp:117
 #: duchain/navigation/declarationnavigationcontext.cpp:130
@@ -364,7 +369,7 @@ msgstr "שימוש ב־%1 מ־%2<br />"
 #: duchain/navigation/declarationnavigationcontext.cpp:140
 #, kde-format
 msgid "Broken member alias trait."
-msgstr ""
+msgstr "trait של כינוי חבר פגום."
 
 #: duchain/navigation/declarationnavigationcontext.cpp:235
 #, kde-format
@@ -390,7 +395,7 @@ msgstr "ריק (לא בתוך מחלקה)"
 #: duchain/navigation/magicconstantnavigationcontext.cpp:71
 #, kde-format
 msgid "empty (not inside a trait)"
-msgstr ""
+msgstr "ריק (לא בתוך trait)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:90
 #, kde-format
