@@ -34,8 +34,8 @@ using namespace KDevelop;
 
 K_PLUGIN_FACTORY_WITH_JSON(PhpDocsFactory, "kdevphpdocs.json", registerPlugin<PhpDocsPlugin>();)
 
-PhpDocsPlugin::PhpDocsPlugin(QObject* parent, const QVariantList& args)
-    : IPlugin(QStringLiteral("kdevphpdocs"), parent)
+PhpDocsPlugin::PhpDocsPlugin(QObject* parent, const KPluginMetaData& metaData, const QVariantList& args)
+    : IPlugin(QStringLiteral("kdevphpdocs"), parent, metaData)
     , m_model(new PhpDocsModel(this))
 {
     Q_UNUSED(args);
