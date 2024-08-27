@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: kdevphp\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-24 01:39+0000\n"
-"PO-Revision-Date: 2024-08-18 00:46+0900\n"
+"PO-Revision-Date: 2024-08-26 16:14+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -66,23 +66,7 @@ msgstr "PHP 說明文件整合"
 
 #. i18n: ectx: property (text), widget (QLabel, PhpDocNote)
 #: docs/phpdocsconfig.ui:36
-#, fuzzy, kde-format
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; "
-#| "font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">By default the online "
-#| "<a href=\"http://php.net\"><span style=\" text-decoration: underline; "
-#| "color:#0000ff;\">PHP documentation</span></a> is used remotely. "
-#| "Alternatively you can set the location to a local copy of the "
-#| "documentation in the language of your choice. Make sure you downloaded "
-#| "the <span style=\" font-style:italic;\">\"HTML format, many files\"</"
-#| "span> package.</p></body></html>"
+#, kde-format
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -108,10 +92,10 @@ msgstr ""
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">預設會使用遠端線上的 <a "
-"href=\"http://php.net\"><span style=\" text-decoration: underline; color:"
+"href=\"https://php.net\"><span style=\" text-decoration: underline; color:"
 "#0000ff;\">PHP 文件</span></a>。不過您可以設定使用本地端的文件複本，也許是您"
-"選擇的語言。請確定您下載了 <span style=\" font-style:italic;\">\"HTML "
-"format, many files\"</span> 套件。</p></body></html>"
+"選擇的語言。請確定您下載了 <span style=\" font-style:italic;\">\"Many HTML "
+"files\"</span> 套件。</p></body></html>"
 
 #. i18n: ectx: property (text), widget (QLabel, PhpDocLocationLabel)
 #: docs/phpdocsconfig.ui:57
@@ -137,20 +121,14 @@ msgstr "指定 PHP 文件使用的位置。"
 
 #. i18n: ectx: tooltip, entry (phpDocLocation), group (PHP Documentation)
 #: docs/phpdocssettings.kcfg:13
-#, fuzzy, kde-format
-#| msgid ""
-#| "The location of the PHP documentation to use. You can either use a "
-#| "remote\n"
-#| "                 location like http://php.net or a local directory which "
-#| "contains the\n"
-#| "                 PHP documentation in HTML format with many files."
+#, kde-format
 msgid ""
 "The location of the PHP documentation to use. You can either use a remote\n"
 "                 location like https://php.net or a local directory which "
 "contains the\n"
 "                 PHP documentation in HTML format with many files."
 msgstr ""
-"PHP 文件使用的位置。您可以用遠端的網址，如 http://php.net，或是本地端的目"
+"PHP 文件使用的位置。您可以用遠端的網址，如 https://php.net，或是本地端的目"
 "錄，\n"
 "目錄中要包含 PHP 文件，以多個 HTML 檔案的方式存放。"
 
@@ -214,22 +192,19 @@ msgid "Non-abstract method %1 must contain body."
 msgstr "非抽象方法 %1 必須包含本體。"
 
 #: duchain/builders/declarationbuilder.cpp:394
-#, fuzzy, kde-format
-#| msgid "Cannot use 'final' as method modifier"
+#, kde-format
 msgid "Cannot use 'final' as constant modifier"
-msgstr "無法使用 'final' 做為方法的變更子"
+msgstr "無法使用 'final' 做為定數的變更子"
 
 #: duchain/builders/declarationbuilder.cpp:397
-#, fuzzy, kde-format
-#| msgid "Cannot use 'static' as method modifier"
+#, kde-format
 msgid "Cannot use 'static' as constant modifier"
-msgstr "無法使用 'static' 做為方法的變更子"
+msgstr "無法使用 'static' 做為定數的變更子"
 
 #: duchain/builders/declarationbuilder.cpp:400
-#, fuzzy, kde-format
-#| msgid "Cannot use 'static' as method modifier"
+#, kde-format
 msgid "Cannot use 'abstract' as constant modifier"
-msgstr "無法使用 'static' 做為方法的變更子"
+msgstr "無法使用 'abstract' 做為定數的變更子"
 
 #: duchain/builders/declarationbuilder.cpp:414
 #, kde-format
@@ -262,10 +237,9 @@ msgstr "類別常數名稱不能是 'class'，這個名字已保留作取得類�
 
 #: duchain/builders/declarationbuilder.cpp:744
 #: duchain/builders/declarationbuilder.cpp:770
-#, fuzzy, kde-format
-#| msgid "Cannot use 'static' as method modifier"
+#, kde-format
 msgid "Cannot use 'abstract' as method modifier"
-msgstr "無法使用 'static' 做為方法的變更子"
+msgstr "無法使用 'abstract' 做為方法的變更子"
 
 #: duchain/builders/declarationbuilder.cpp:747
 #: duchain/builders/declarationbuilder.cpp:773
@@ -280,10 +254,9 @@ msgid "Cannot use 'static' as method modifier"
 msgstr "無法使用 'static' 做為方法的變更子"
 
 #: duchain/builders/declarationbuilder.cpp:825
-#, fuzzy, kde-format
-#| msgid "Following parameters must have a default value assigned."
+#, kde-format
 msgid "Variadic parameter cannot have a default value"
-msgstr "接下來的參數必須指定預設值。"
+msgstr "接受多個輸入 (variadic) 的參數不能有預設值"
 
 #: duchain/builders/declarationbuilder.cpp:828
 #, kde-format
@@ -293,7 +266,7 @@ msgstr "有類別型態提示的參數預設值只能為 NULL。"
 #: duchain/builders/declarationbuilder.cpp:845
 #, kde-format
 msgid "Only the last parameter can be variadic."
-msgstr ""
+msgstr "只有最後一個參數才能接受多個輸入 (variadic)。"
 
 #: duchain/builders/declarationbuilder.cpp:959
 #, kde-format
@@ -330,21 +303,19 @@ msgid "Cannot re-assign $this."
 msgstr "無法重新指定 $this。"
 
 #: duchain/builders/declarationbuilder.cpp:1257
-#, fuzzy, kde-format
-#| msgid "Cannot redeclare private property %1 from this context."
+#, kde-format
 msgid "Cannot access private property %1"
-msgstr "無法從此內文重新宣告私密屬性 %1。"
+msgstr "無法存取私密屬性 %1"
 
 #: duchain/builders/declarationbuilder.cpp:1260
-#, fuzzy, kde-format
-#| msgid "Cannot redeclare protected property %1 from this context."
+#, kde-format
 msgid "Cannot access protected property %1"
-msgstr "無法從此內文重新宣告保護屬性 %1。"
+msgstr "無法存取受保護屬性 %1。"
 
 #: duchain/builders/declarationbuilder.cpp:1406
 #, kde-format
 msgid "Cannot use positional argument after argument unpacking"
-msgstr ""
+msgstr "無法在解開參數之後使用位置參數"
 
 #: duchain/builders/declarationbuilder.cpp:1630
 #, kde-format
@@ -367,11 +338,9 @@ msgid "The 'yield' expression can only be used inside a function"
 msgstr "'yield' 表示式只能在函式中使用"
 
 #: duchain/builders/typebuilder.cpp:412
-#, fuzzy, kde-format
-#| msgid ""
-#| "Default value for parameters with a class type hint can only be NULL."
+#, kde-format
 msgid "Default value for parameters with an object type can only be NULL."
-msgstr "有類別型態提示的參數預設值只能為 NULL。"
+msgstr "有物件型態的參數預設值只能為 NULL。"
 
 #: duchain/builders/usebuilder.cpp:202
 #, kde-format
