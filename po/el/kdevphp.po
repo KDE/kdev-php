@@ -45,8 +45,7 @@ msgid "From %1"
 msgstr "Από %1"
 
 #: docs/phpdocsconfig.cpp:45
-#, fuzzy, kde-format
-#| msgid "PHP Documentation"
+#, kde-format
 msgctxt "@title:tab"
 msgid "PHP Documentation"
 msgstr "PHP τεκμηρίωση"
