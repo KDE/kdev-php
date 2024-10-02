@@ -35,7 +35,6 @@
         "Description[zh_CN]": "Php 语言支持",
         "Description[zh_TW]": "PHP 語言支援",
         "Icon": "application-x-php",
-        "Id": "KDevPhpSupport",
         "Name": "PHP Language Support",
         "Name[ca@valencia]": "Implementació del llenguatge PHP",
         "Name[ca]": "Implementació del llenguatge PHP",

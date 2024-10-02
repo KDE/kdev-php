@@ -72,7 +72,6 @@
         "Description[zh_CN]": "此插件集成了 PHP.net 的在线文档。",
         "Description[zh_TW]": "此外掛程式整合了 PHP.net 線上文件。",
         "Icon": "application-x-php",
-        "Id": "kdevphpdocs",
         "License": "GPL",
         "Name": "PHP Documentation",
         "Name[ca@valencia]": "Documentació de PHP",
