@@ -71,7 +71,6 @@
         "Description[zh_CN]": "查找并运行 PHPUnit 测试",
         "Description[zh_TW]": "尋找並執行 PHPUnit 測試。",
         "Icon": "application-x-php",
-        "Id": "kdevphpunitprovider",
         "License": "GPL",
         "Name": "PHPUnit Integration",
         "Name[ca@valencia]": "Integració de PHPUnit",
