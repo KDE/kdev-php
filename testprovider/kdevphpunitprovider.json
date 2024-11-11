@@ -65,7 +65,7 @@
         "Description[sk]": "Nájde a spustí PHPUnit testy.",
         "Description[sl]": "Najde in zažene preizkuse PHPUnit.",
         "Description[sv]": "Söker efter och kör PHPUnit-tester.",
-        "Description[tr]": "PHPUnit sınamalarını bulur ve çalıştırır.",
+        "Description[tr]": "PHPUnit testlerini bulur ve çalıştırır.",
         "Description[uk]": "Знаходить і запускає перевірки PHPUnit.",
         "Description[x-test]": "xxFinds and runs PHPUnit tests.xx",
         "Description[zh_CN]": "查找并运行 PHPUnit 测试",
