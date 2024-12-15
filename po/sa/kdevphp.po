@@ -20,12 +20,12 @@ msgstr ""
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr ""
+msgstr "भवतः नामानि"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr ""
+msgstr "भवतः ईमेलपत्राणि"
 
 #: completion/implementationitem.cpp:58
 #, kde-format
@@ -52,7 +52,7 @@ msgstr "PHP दस्तावेजीकरणम्"
 #, kde-format
 msgctxt "@title:tab"
 msgid "Configure PHP Documentation Settings"
-msgstr ""
+msgstr "PHP दस्तावेजीकरणसेटिंग्स् विन्यस्यताम्"
 
 #. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
 #: docs/phpdocsconfig.ui:20
@@ -378,7 +378,7 @@ msgstr "PHP आन्तरिक"
 #, kde-format
 msgctxt "kind of a php-constant, as shown in the declaration tooltip"
 msgid "Constant"
-msgstr ""
+msgstr "नियत"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:48
 #, kde-format
@@ -419,7 +419,7 @@ msgstr "वर्तमान मूल्यम् : %1"
 #, kde-format
 msgctxt "as in list of int, set of string"
 msgid "%1 of %2"
-msgstr ""
+msgstr "%2 इत्यस्य %1"
 
 #: parser/main.cpp:24
 #, kde-format
