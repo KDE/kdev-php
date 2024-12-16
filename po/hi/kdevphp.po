@@ -1,4 +1,4 @@
-# Sanskrit translations for kdev-php package.
+# Hindi translations for kdev-php package.
 # Copyright (C) 2024 This file is copyright:
 # This file is distributed under the same license as the kdev-php package.
 # Kali <EMAIL@ADDRESS>, 2024.
@@ -8,52 +8,51 @@ msgstr ""
 "Project-Id-Version: kdev-php\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-24 01:39+0000\n"
-"PO-Revision-Date: 2024-12-13 20:33+0530\n"
+"PO-Revision-Date: 2024-12-15 19:15+0530\n"
 "Last-Translator: Kali <EMAIL@ADDRESS>\n"
-"Language-Team: Sanskrit\n"
-"Language: sa\n"
+"Language-Team: Hindi <fedora-trans-hi@redhat.com>\n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.5\n"
-"Plural-Forms: nplurals=2; plural=(n>2);\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "भवतः नामानि"
+msgstr "तुम्हारे नाम"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "भवतः ईमेलपत्राणि"
+msgstr "आपके ईमेल"
 
 #: completion/implementationitem.cpp:58
 #, kde-format
 msgid "Override"
-msgstr "अधिलिखयतु"
+msgstr "अवहेलना"
 
 #: completion/implementationitem.cpp:61
 #, kde-format
 msgid "Implement"
-msgstr "हेति"
+msgstr "अमल में लाना"
 
 #: completion/implementationitem.cpp:73
 #, kde-format
 msgid "From %1"
-msgstr "%1 तः"
+msgstr "%1 से"
 
 #: docs/phpdocsconfig.cpp:45
 #, kde-format
 msgctxt "@title:tab"
 msgid "PHP Documentation"
-msgstr "PHP दस्तावेजीकरणम्"
+msgstr "PHP दस्तावेज़ीकरण"
 
 #: docs/phpdocsconfig.cpp:50
 #, kde-format
 msgctxt "@title:tab"
 msgid "Configure PHP Documentation Settings"
-msgstr "PHP दस्तावेजीकरणसेटिंग्स् विन्यस्यताम्"
+msgstr "PHP दस्तावेज़ सेटिंग्स कॉन्फ़िगर करें"
 
 #. i18n: ectx: property (title), widget (QGroupBox, PhpDoc)
 #: docs/phpdocsconfig.ui:20
@@ -87,34 +86,34 @@ msgstr ""
 "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
 "weight:400; font-style:normal;\"><p style=\" margin-top:0px; margin-"
 "bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-"
-"indent:0px;\"> पूर्वनिर्धारितरूपेण ऑनलाइन <a href=\"https://php.net\"><span style="
-"\" text-decoration: underline; color:#0000ff;\">PHP दस्तावेजीकरणं</span></a> "
-"दूरस्थरूपेण उपयुज्यते । वैकल्पिकरूपेण भवान् स्वपसन्दभाषायां दस्तावेजीकरणस्य स्थानीयप्रतिरूपेण स्थानं "
-"सेट् कर्तुं शक्नोति । <span style=\" font-style:italic;\">&quot;Many HTML "
-"files&quot; इति</span> संकुलं डाउनलोड् कृतवान् इति सुनिश्चितं कुर्वन्तु ।</p></body></"
-"html>"
+"indent:0px;\"> डिफ़ॉल्ट रूप से ऑनलाइन <a href=\"https://php.net\"><span style=\" "
+"text-decoration: underline; color:#0000ff;\">PHP दस्तावेज़ का</span></a> उपयोग "
+"दूरस्थ रूप से किया जाता है। वैकल्पिक रूप से आप अपनी पसंद की भाषा में दस्तावेज़ की स्थानीय "
+"प्रति के लिए स्थान निर्धारित कर सकते हैं। सुनिश्चित करें कि आपने <span style=\" font-"
+"style:italic;\">&quot;कई HTML फ़ाइलें&quot;</span> पैकेज डाउनलोड किया है।</p></"
+"body></html>"
 
 #. i18n: ectx: property (text), widget (QLabel, PhpDocLocationLabel)
 #: docs/phpdocsconfig.ui:57
 #, kde-format
 msgid "Location:"
-msgstr "स्थानीय:"
+msgstr "जगह:"
 
 #: docs/phpdocsmodel.cpp:96
 #, kde-format
 msgid "<lost declaration>"
-msgstr "<नष्टघोषणा>"
+msgstr "<खोई हुई घोषणा>"
 
 #: docs/phpdocsplugin.cpp:216
 #, kde-format
 msgid "PHP Documentation"
-msgstr "PHP दस्तावेजीकरणम्"
+msgstr "PHP दस्तावेज़ीकरण"
 
 #. i18n: ectx: label, entry (phpDocLocation), group (PHP Documentation)
 #: docs/phpdocssettings.kcfg:10
 #, kde-format
 msgid "Specifies the location of the PHP documentation to use."
-msgstr "उपयोक्तुं PHP दस्तावेजीकरणस्य स्थानं निर्दिशति ।"
+msgstr "उपयोग हेतु PHP दस्तावेज़ का स्थान निर्दिष्ट करता है।"
 
 #. i18n: ectx: tooltip, entry (phpDocLocation), group (PHP Documentation)
 #: docs/phpdocssettings.kcfg:13
@@ -125,9 +124,9 @@ msgid ""
 "contains the\n"
 "                 PHP documentation in HTML format with many files."
 msgstr ""
-"उपयोक्तुं PHP दस्तावेजीकरणस्य स्थानं । भवान् दूरस्थं वा उपयोक्तुं शक्नोति\n"
-"                 स्थानं यथा https://php.net अथवा स्थानीयनिर्देशिका यस्मिन्...\n"
-"                 अनेकसञ्चिकाभिः सह HTML प्रारूपेण PHP दस्तावेजीकरणं ।"
+"उपयोग करने के लिए PHP दस्तावेज़ का स्थान। आप या तो https://php.net जैसे दूरस्थ स्थान का "
+"उपयोग कर सकते हैं या स्थानीय निर्देशिका का उपयोग कर सकते हैं जिसमें HTML प्रारूप में PHP "
+"दस्तावेज़ कई फ़ाइलों के साथ मौजूद हो।"
 
 #. i18n: ectx: whatsthis, entry (phpDocLocation), group (PHP Documentation)
 #: docs/phpdocssettings.kcfg:15
@@ -136,19 +135,17 @@ msgid ""
 "Make sure local copies are downloaded in HTML format with many files.\n"
 "        "
 msgstr ""
-"स्थानीयप्रतियाः बहुभिः सञ्चिकाभिः सह HTML प्रारूपेण डाउनलोड् कृताः इति सुनिश्चितं कुर्वन्तु "
-"।\n"
-"        "
+"सुनिश्चित करें कि स्थानीय प्रतियां कई फ़ाइलों के साथ HTML प्रारूप में डाउनलोड की गई हों।"
 
 #: docs/phpdocumentationwidget.cpp:44
 #, kde-format
 msgid "...loading documentation..."
-msgstr "...दस्तावेजं लोडयति..."
+msgstr "...दस्तावेज़ लोड हो रहा है..."
 
 #: duchain/builders/contextbuilder.cpp:451
 #, kde-format
 msgid "Circular inheritance of %1 and %2"
-msgstr "%1 तथा %2 इत्येतयोः वृत्ताकार उत्तराधिकारः"
+msgstr "%1 और %2 की चक्रीय विरासत"
 
 #: duchain/builders/declarationbuilder.cpp:187
 #: duchain/builders/declarationbuilder.cpp:202
@@ -156,17 +153,17 @@ msgstr "%1 तथा %2 इत्येतयोः वृत्ताकार 
 #: duchain/builders/declarationbuilder.cpp:879
 #, kde-format
 msgid "Cannot use '%1' as class name as it is reserved"
-msgstr "'%1' इत्यस्य वर्गनामरूपेण उपयोगं कर्तुं न शक्यते यतः एतत् आरक्षितम् अस्ति"
+msgstr "'%1' को वर्ग नाम के रूप में उपयोग नहीं किया जा सकता क्योंकि यह आरक्षित है"
 
 #: duchain/builders/declarationbuilder.cpp:341
 #, kde-format
 msgid "Access type for interface method %1 must be omitted."
-msgstr "अन्तरफलकविधि %1 कृते अभिगमप्रकारः अवश्यमेव परित्यक्तः ।"
+msgstr "इंटरफ़ेस विधि %1 के लिए एक्सेस प्रकार को छोड़ा जाना चाहिए."
 
 #: duchain/builders/declarationbuilder.cpp:345
 #, kde-format
 msgid "Interface function %1 cannot contain body."
-msgstr "अन्तरफलककार्यं %1 शरीरं स्थापयितुं न शक्नोति ।"
+msgstr "इंटरफ़ेस फ़ंक्शन %1 में बॉडी नहीं हो सकती."
 
 #: duchain/builders/declarationbuilder.cpp:357
 #, kde-format
@@ -174,47 +171,48 @@ msgid ""
 "Class %1 contains abstract method %2 and must therefore be declared abstract "
 "or implement the method."
 msgstr ""
-"%1 वर्गे abstract मेथड् %2 अस्ति अतः अमूर्तं घोषितं वा विधिं कार्यान्वितुं वा भवितुमर्हति ।"
+"वर्ग %1 में अमूर्त विधि %2 है और इसलिए इसे अमूर्त घोषित किया जाना चाहिए या विधि को "
+"कार्यान्वित किया जाना चाहिए।"
 
 #: duchain/builders/declarationbuilder.cpp:363
 #, kde-format
 msgid "Abstract function %1 cannot contain body."
-msgstr "अमूर्तकार्यं %1 शरीरं न धारयितुं शक्नोति ।"
+msgstr "सार फ़ंक्शन %1 में बॉडी नहीं हो सकती."
 
 #: duchain/builders/declarationbuilder.cpp:366
 #, kde-format
 msgid "Cannot use the final modifier on an abstract class member."
-msgstr "अमूर्तवर्गसदस्यस्य उपरि अन्तिमसंशोधकस्य उपयोगं कर्तुं न शक्यते ।"
+msgstr "अमूर्त वर्ग सदस्य पर अंतिम संशोधक का उपयोग नहीं किया जा सकता।"
 
 #: duchain/builders/declarationbuilder.cpp:376
 #, kde-format
 msgid "Non-abstract method %1 must contain body."
-msgstr "अमूर्तविधिः %1 मध्ये शरीरं अवश्यं भवति ।"
+msgstr "गैर-अमूर्त विधि %1 में बॉडी अवश्य होनी चाहिए."
 
 #: duchain/builders/declarationbuilder.cpp:394
 #, kde-format
 msgid "Cannot use 'final' as constant modifier"
-msgstr "'final' इत्यस्य नित्यं परिवर्तकरूपेण उपयोगं कर्तुं न शक्यते"
+msgstr "'अंतिम' को स्थिर संशोधक के रूप में उपयोग नहीं किया जा सकता"
 
 #: duchain/builders/declarationbuilder.cpp:397
 #, kde-format
 msgid "Cannot use 'static' as constant modifier"
-msgstr "'static' इत्यस्य नित्यं परिवर्तकरूपेण उपयोगं कर्तुं न शक्यते"
+msgstr "'स्थिर' को स्थिर संशोधक के रूप में उपयोग नहीं किया जा सकता"
 
 #: duchain/builders/declarationbuilder.cpp:400
 #, kde-format
 msgid "Cannot use 'abstract' as constant modifier"
-msgstr "'abstract' इत्यस्य नित्यं परिवर्तकरूपेण उपयोगं कर्तुं न शक्यते"
+msgstr "'abstract' को स्थिर संशोधक के रूप में उपयोग नहीं किया जा सकता"
 
 #: duchain/builders/declarationbuilder.cpp:414
 #, kde-format
 msgid "Properties cannot be declared final."
-msgstr "गुणाः अन्तिमाः इति घोषितुं न शक्यन्ते ।"
+msgstr "संपत्तियों को अंतिम घोषित नहीं किया जा सकता."
 
 #: duchain/builders/declarationbuilder.cpp:417
 #, kde-format
 msgid "Properties cannot be declared abstract."
-msgstr "गुणाः अमूर्ताः इति घोषितुं न शक्यन्ते ।"
+msgstr "गुणों को अमूर्त घोषित नहीं किया जा सकता."
 
 #: duchain/builders/declarationbuilder.cpp:463
 #, kde-format
@@ -222,57 +220,59 @@ msgid ""
 "Trait method %1 has not been applied, because there are collisions with "
 "other trait methods on %2"
 msgstr ""
-"%1 इति लक्षणविधिः न प्रयुक्ता, यतः %2 इत्यत्र अन्यैः लक्षणविधिभिः सह टकरावः सन्ति"
+"विशेषता विधि %1 लागू नहीं की गई है, क्योंकि %2 पर अन्य विशेषता विधियों के साथ टकराव है"
 
 #: duchain/builders/declarationbuilder.cpp:656
 #, kde-format
 msgid "Traits cannot have constants."
-msgstr "लक्षणानाम् नित्यं न भवितुम् अर्हति ।"
+msgstr "गुण स्थिर नहीं हो सकते."
 
 #: duchain/builders/declarationbuilder.cpp:663
 #, kde-format
 msgid ""
 "A class constant must not be called 'class'; it is reserved for class name "
 "fetching"
-msgstr "वर्गनित्यं 'वर्ग' इति न वक्तव्यम्; वर्गनाम आनयितुं आरक्षितम् अस्ति"
+msgstr ""
+"क्लास स्थिरांक को 'क्लास' नहीं कहा जाना चाहिए; यह क्लास नाम प्राप्त करने के लिए आरक्षित "
+"है"
 
 #: duchain/builders/declarationbuilder.cpp:744
 #: duchain/builders/declarationbuilder.cpp:770
 #, kde-format
 msgid "Cannot use 'abstract' as method modifier"
-msgstr "'abstract' इत्यस्य उपयोगं विधिसंशोधकरूपेण कर्तुं न शक्यते"
+msgstr "विधि संशोधक के रूप में 'abstract' का उपयोग नहीं किया जा सकता"
 
 #: duchain/builders/declarationbuilder.cpp:747
 #: duchain/builders/declarationbuilder.cpp:773
 #, kde-format
 msgid "Cannot use 'final' as method modifier"
-msgstr "'final' इत्यस्य उपयोगं विधिसंशोधकरूपेण कर्तुं न शक्यते"
+msgstr "विधि संशोधक के रूप में 'अंतिम' का उपयोग नहीं किया जा सकता"
 
 #: duchain/builders/declarationbuilder.cpp:750
 #: duchain/builders/declarationbuilder.cpp:776
 #, kde-format
 msgid "Cannot use 'static' as method modifier"
-msgstr "'static' इत्यस्य उपयोगं विधिसंशोधकरूपेण कर्तुं न शक्यते"
+msgstr "विधि संशोधक के रूप में 'स्थैतिक' का उपयोग नहीं किया जा सकता"
 
 #: duchain/builders/declarationbuilder.cpp:825
 #, kde-format
 msgid "Variadic parameter cannot have a default value"
-msgstr "Variadic पैरामीटर् पूर्वनिर्धारितं मूल्यं न भवितुम् अर्हति"
+msgstr "वैरिएडिक पैरामीटर का कोई डिफ़ॉल्ट मान नहीं हो सकता"
 
 #: duchain/builders/declarationbuilder.cpp:828
 #, kde-format
 msgid "Default value for parameters with a class type hint can only be NULL."
-msgstr "वर्गप्रकारस्य संकेतेन सह पैरामीटर्स् कृते पूर्वनिर्धारितं मूल्यं केवलं NULL भवितुम् अर्हति ।"
+msgstr "वर्ग प्रकार संकेत वाले पैरामीटर्स के लिए डिफ़ॉल्ट मान केवल NULL हो सकता है।"
 
 #: duchain/builders/declarationbuilder.cpp:845
 #, kde-format
 msgid "Only the last parameter can be variadic."
-msgstr "केवलं अन्तिमः पैरामीटर् एव भिन्नात्मकः भवितुम् अर्हति ।"
+msgstr "केवल अंतिम पैरामीटर ही वैरिएडिक हो सकता है।"
 
 #: duchain/builders/declarationbuilder.cpp:959
 #, kde-format
 msgid "Cannot redeclare PHP internal %1."
-msgstr "PHP आन्तरिक %1 पुनः घोषयितुं न शक्यते ।"
+msgstr "PHP आंतरिक %1 को पुनः घोषित नहीं किया जा सकता."
 
 #: duchain/builders/declarationbuilder.cpp:962
 #, kde-format
@@ -281,13 +281,14 @@ msgid ""
 "be incompatible, to improve maintainability consider using accessor methods "
 "in traits instead."
 msgstr ""
-"%1 तथा %2 %1 इत्यस्य रचनायां समानं गुणं (%3) परिभाषयन्ति । इदं असङ्गतं भवितुमर्हति, "
-"परिपालनक्षमतासुधारार्थं तस्य स्थाने लक्षणेषु अभिगमकविधिनाम् उपयोगं विचारयन्तु ।"
+"%1 और %2 %1 की संरचना में एक ही गुण (%3) को परिभाषित करते हैं। यह असंगत हो सकता है, "
+"रखरखाव में सुधार करने के लिए इसके बजाय लक्षणों में एक्सेसर विधियों का उपयोग करने पर विचार "
+"करें।"
 
 #: duchain/builders/declarationbuilder.cpp:970
 #, kde-format
 msgid "Cannot redeclare %1, already declared in %2 on line %3."
-msgstr "%3 पङ्क्तौ %2 मध्ये पूर्वमेव घोषितं %1 पुनः घोषयितुं न शक्यते ।"
+msgstr "%1 को पुनः घोषित नहीं किया जा सकता, जो पहले ही %2 में %3 पंक्ति पर घोषित है।"
 
 #: duchain/builders/declarationbuilder.cpp:1056
 #, kde-format
@@ -295,167 +296,167 @@ msgid ""
 "Class %1 contains %2 abstract methods and must therefore be declared "
 "abstract or implement the remaining methods."
 msgstr ""
-"%1 वर्गे %2 अमूर्तविधयः सन्ति अतः अमूर्ताः इति घोषिताः अथवा शेषविधयः कार्यान्विताः "
-"भवेयुः ।"
+"वर्ग %1 में %2 अमूर्त विधियां हैं और इसलिए इसे अमूर्त घोषित किया जाना चाहिए या शेष "
+"विधियों को क्रियान्वित किया जाना चाहिए।"
 
 #: duchain/builders/declarationbuilder.cpp:1063
 #, kde-format
 msgid "Cannot re-assign $this."
-msgstr "$this पुनः नियुक्तुं न शक्यते ।"
+msgstr "$this को पुनः असाइन नहीं किया जा सकता."
 
 #: duchain/builders/declarationbuilder.cpp:1257
 #, kde-format
 msgid "Cannot access private property %1"
-msgstr "निजीसम्पत्त्याः %1 अभिगन्तुं न शक्यते"
+msgstr "निजी संपत्ति %1 तक पहुंच नहीं हो सकती"
 
 #: duchain/builders/declarationbuilder.cpp:1260
 #, kde-format
 msgid "Cannot access protected property %1"
-msgstr "सुरक्षितं गुणं %1 अभिगन्तुं न शक्यते"
+msgstr "संरक्षित संपत्ति %1 तक पहुंच नहीं हो सकती"
 
 #: duchain/builders/declarationbuilder.cpp:1406
 #, kde-format
 msgid "Cannot use positional argument after argument unpacking"
-msgstr "आर्गुमेण्ट् अनपैकिंग् इत्यस्य अनन्तरं positional argument इत्यस्य उपयोगं कर्तुं न शक्यते"
+msgstr "तर्क अनपैकिंग के बाद स्थितिगत तर्क का उपयोग नहीं किया जा सकता"
 
 #: duchain/builders/declarationbuilder.cpp:1630
 #, kde-format
 msgid "The use statement with non-compound name '%1' has no effect."
-msgstr "'%1' इति असमासनामयुक्तस्य use स्टेट्मेण्ट् इत्यस्य कोऽपि प्रभावः नास्ति ।"
+msgstr "गैर-संयुक्त नाम '%1' वाले use कथन का कोई प्रभाव नहीं होता।"
 
 #: duchain/builders/declarationbuilder.cpp:1657
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
-msgstr "'%1' इत्यस्य उपयोगं '%2' इति रूपेण कर्तुं न शक्यते यतः नाम पूर्वमेव प्रयुक्तम् अस्ति ।"
+msgstr "'%1' को '%2' के रूप में प्रयोग नहीं किया जा सकता क्योंकि नाम पहले से प्रयोग में है।"
 
 #: duchain/builders/declarationbuilder.cpp:1683
 #, kde-format
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
-msgstr "%1 इत्यस्य उपयोगं %2 इत्यस्य रूपेण कर्तुं न शक्यते यतः '%2' इति विशेषवर्गनाम अस्ति"
+msgstr "%1 को %2 के रूप में उपयोग नहीं किया जा सकता क्योंकि '%2' एक विशेष वर्ग नाम है"
 
 #: duchain/builders/declarationbuilder.cpp:1693
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
-msgstr "'yield' इति व्यञ्जनस्य उपयोगः केवलं फंक्शन् इत्यस्य अन्तः एव कर्तुं शक्यते"
+msgstr "'yield' अभिव्यक्ति का उपयोग केवल फ़ंक्शन के अंदर ही किया जा सकता है"
 
 #: duchain/builders/typebuilder.cpp:412
 #, kde-format
 msgid "Default value for parameters with an object type can only be NULL."
-msgstr "वस्तुप्रकारयुक्तानां पैरामीटर्-कृते पूर्वनिर्धारितं मूल्यं केवलं NULL भवितुम् अर्हति ।"
+msgstr "ऑब्जेक्ट प्रकार वाले पैरामीटर्स के लिए डिफ़ॉल्ट मान केवल NULL हो सकता है।"
 
 #: duchain/builders/usebuilder.cpp:202
 #, kde-format
 msgid "Usage of %1 is deprecated."
-msgstr "%1 इत्यस्य उपयोगः अप्रचलितः अस्ति ।"
+msgstr "%1 का उपयोग अस्वीकृत है."
 
 #: duchain/builders/usebuilder.cpp:204
 #, kde-format
 msgid "Declaration not found: %1"
-msgstr "घोषणा न प्राप्ता: %1"
+msgstr "घोषणा नहीं मिली: %1"
 
 #: duchain/declarations/traitmemberaliasdeclaration.cpp:54
 #: duchain/declarations/traitmethodaliasdeclaration.cpp:87
 #, kde-format
 msgid "Lost trait alias %1"
-msgstr "नष्टगुण उपनाम %1"
+msgstr "खोया हुआ गुण उपनाम %1"
 
 #: duchain/navigation/declarationnavigationcontext.cpp:117
 #: duchain/navigation/declarationnavigationcontext.cpp:130
 #, kde-format
 msgid "Use of %1 from %2<br />"
-msgstr "%2 तः %1 इत्यस्य उपयोगः<br />"
+msgstr "%2 से %1 का उपयोग<br />"
 
 #: duchain/navigation/declarationnavigationcontext.cpp:140
 #, kde-format
 msgid "Broken member alias trait."
-msgstr "भग्न सदस्य उर्फ लक्षण।"
+msgstr "टूटा हुआ सदस्य उपनाम लक्षण."
 
 #: duchain/navigation/declarationnavigationcontext.cpp:235
 #, kde-format
 msgid "PHP internal"
-msgstr "PHP आन्तरिक"
+msgstr "PHP आंतरिक"
 
 #: duchain/navigation/declarationnavigationcontext.cpp:245
 #, kde-format
 msgctxt "kind of a php-constant, as shown in the declaration tooltip"
 msgid "Constant"
-msgstr "नियत"
+msgstr "स्थिर"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:48
 #, kde-format
 msgid "magic constant"
-msgstr "जादू नित्यम्"
+msgstr "जादुई स्थिरांक"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:65
 #, kde-format
 msgid "empty (not inside a class)"
-msgstr "रिक्तं (वर्गस्य अन्तः न) २."
+msgstr "रिक्त (क्लास के अंदर नहीं)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:71
 #, kde-format
 msgid "empty (not inside a trait)"
-msgstr "शून्यं (न तु लक्षणस्य अन्तः) २."
+msgstr "रिक्त (विशेषता के अंदर नहीं)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:90
 #, kde-format
 msgid "empty (not inside a method)"
-msgstr "शून्यं (न विधिस्य अन्तः) २."
+msgstr "रिक्त (विधि के अंदर नहीं)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:100
 #, kde-format
 msgid "empty (not inside a function)"
-msgstr "रिक्त (कार्यस्य अन्तः न) २."
+msgstr "रिक्त (फ़ंक्शन के अंदर नहीं)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:109
 #, kde-format
 msgid "empty (not inside a namespace)"
-msgstr "रिक्तं (नामस्थानस्य अन्तः न)"
+msgstr "रिक्त (नामस्थान के अंदर नहीं)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:113
 #, kde-format
 msgid "current value: %1"
-msgstr "वर्तमान मूल्यम् : %1"
+msgstr "वर्तमान मूल्य: %1"
 
 #: duchain/types/indexedcontainer.cpp:76
 #, kde-format
 msgctxt "as in list of int, set of string"
 msgid "%1 of %2"
-msgstr "%2 इत्यस्य %1"
+msgstr "%2 में से %1"
 
 #: parser/main.cpp:24
 #, kde-format
 msgid "php-parser"
-msgstr "php-पार्सर इति"
+msgstr "php-पार्सर"
 
 #: parser/main.cpp:25
 #, kde-format
 msgid "KDevelop PHP parser debugging utility"
-msgstr "KDevelop PHP पार्सर त्रुटिनिवारण उपयोगिता"
+msgstr "KDevelop PHP पार्सर डिबगिंग उपयोगिता"
 
 #: parser/main.cpp:26
 #, kde-format
 msgid "(c) 2008 Niko Sams, 2009 Milian Wolff"
-msgstr "(ग) 2008 निको सैम्स, 2009 मिलियन वोल्फ"
+msgstr "(सी) 2008 निको सैम्स, 2009 मिलियन वोल्फ"
 
 #: parser/parsesession.cpp:69
 #, kde-format
 msgid "Could not open file '%1'"
-msgstr "'%1' सञ्चिकां उद्घाटयितुं न शक्यते ।"
+msgstr "फ़ाइल '%1' नहीं खोली जा सकी"
 
 #: parser/parsesession.cpp:72
 #, kde-format
 msgid "File could not be read from."
-msgstr "सञ्चिकातः पठितुं न शक्यते स्म ।"
+msgstr "फ़ाइल को पढ़ा नहीं जा सका."
 
 #: parser/parsesession.cpp:75
 #, kde-format
 msgid "File could not be opened."
-msgstr "सञ्चिका उद्घाटयितुं न शक्यते स्म ।"
+msgstr "फ़ाइल खोली नहीं जा सकी."
 
 #: parser/parsesession.cpp:78
 #, kde-format
 msgid "File permissions prevent opening for read."
-msgstr "सञ्चिकानुमतयः पठनार्थं उद्घाटनं निवारयन्ति ।"
+msgstr "फ़ाइल अनुमतियाँ पढ़ने के लिए खोलने से रोकती हैं."
 
 #: testprovider/phpunitrunjob.cpp:72
 #, kde-format
