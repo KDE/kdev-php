@@ -7,10 +7,20 @@ set(parser_STAT_SRCS
     parsesession.cpp
 )
 
-kdevpgqt_generate(parser_SRCS php NAMESPACE Php DEBUG_VISITOR TOKEN_TEXT
-    "${CMAKE_CURRENT_SOURCE_DIR}/php.g"
-    "${CMAKE_CURRENT_SOURCE_DIR}/phplexer.h"
-)
+if (KDevelopPGQt_FOUND)
+    kdeveloppgqt_generate(parser_SRCS php
+        NAMESPACE Php
+        DEBUG_VISITOR
+        TOKEN_TEXT
+        "${CMAKE_CURRENT_SOURCE_DIR}/php.g"
+        "${CMAKE_CURRENT_SOURCE_DIR}/phplexer.h"
+    )
+else()
+    kdevpgqt_generate(parser_SRCS php NAMESPACE Php DEBUG_VISITOR TOKEN_TEXT
+        "${CMAKE_CURRENT_SOURCE_DIR}/php.g"
+        "${CMAKE_CURRENT_SOURCE_DIR}/phplexer.h"
+    )
+endif()
 ecm_qt_declare_logging_category(parser_SRCS
     HEADER parserdebug.h
     IDENTIFIER PARSER
@@ -27,6 +37,11 @@ target_link_libraries(kdevphpparser LINK_PRIVATE
     KDev::Language
     KF6::I18n
 )
+if (KDevelopPGQt_FOUND)
+    target_link_libraries(kdevphpparser LINK_PUBLIC
+        KDevelopPGQt::Utils
+    )
+endif()
 
 # hack to make phpdebugvisitor.h (generated at compile time)
 # use the correct EXPORT tags when compiling in MinGW
