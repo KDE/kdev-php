@@ -62,7 +62,20 @@ ecm_setup_version(
 set(KDEVPHP_INCLUDE_DIR ${KDE_INSTALL_INCLUDEDIR}/kdev-php)
 set(KDEVPHP_PRIVATE_INCLUDE_DIR ${KDEVPHP_INCLUDE_DIR}/private/${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR})
 
-find_package(KDevelop-PG-Qt 2.3 REQUIRED)
+find_package(KDevelopPGQt 2.4 QUIET) # TODO (once we require KDevelopPGQt version 2.4 or later): change QUIET to REQUIRED
+set_package_properties(KDevelopPGQt PROPERTIES
+    PURPOSE "KDevelop parser generator library. Required for the QMake Builder/Manager plugin."
+)
+if (KDevelopPGQt_FOUND)
+    set_package_properties(KDevelopPGQt PROPERTIES
+        TYPE REQUIRED
+    )
+else()
+    find_package(KDevelop-PG-Qt 2.3 REQUIRED)
+    set_package_properties(KDevelop-PG-Qt PROPERTIES
+        PURPOSE "KDevelop parser generator library (older name & version). Required for the QMake Builder/Manager plugin."
+    )
+endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wdocumentation")
@@ -79,8 +92,13 @@ remove_definitions(
     -DQT_NO_CAST_TO_ASCII
 )
 
+if (NOT KDevelopPGQt_FOUND)
+    include_directories(
+        ${KDEVPGQT_INCLUDE_DIR}
+    )
+endif()
+
 include_directories(
-    ${KDEVPGQT_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}
 )
 
