@@ -11,3 +11,6 @@ Dependencies:
     'frameworks/kcmutils': '@latest-kf6'
     'kdevelop/kdevelop-pg-qt': '@latest-kf6'
     'kdevelop/kdevelop': '@same'
+
+Options:
+ require-passing-tests-on: ['@all']
