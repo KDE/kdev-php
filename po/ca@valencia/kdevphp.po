@@ -96,9 +96,9 @@ msgstr ""
 "la <a href=\"https://php.net\"><span style=\" text-decoration: underline; "
 "color:#0000ff;\">documentació de PHP</span></a> en línia s'utilitza "
 "remotament. De manera alternativa podeu establir la ubicació a una còpia "
-"local de la documentació en l'idioma que escolliu. Assegureu-vos que heu "
-"baixat el paquet <span style=\" font-style:italic;\">«Many HTML files»</"
-"span>.</p></body></html>"
+"local de la documentació en l'idioma que trieu. Assegureu-vos que heu baixat "
+"el paquet <span style=\" font-style:italic;\">«Many HTML files»</span>.</p></"
+"body></html>"
 
 #. i18n: ectx: property (text), widget (QLabel, PhpDocLocationLabel)
 #: docs/phpdocsconfig.ui:57
