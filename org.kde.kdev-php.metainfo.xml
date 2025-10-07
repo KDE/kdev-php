@@ -6,6 +6,7 @@
     <name translate="no">KDE</name>
   </developer>
   <name>KDevelop PHP Support</name>
+  <name xml:lang="ar">إتاحة لغة بي اتش بي لمطورك</name>
   <name xml:lang="ca">Implementació de PHP al KDevelop</name>
   <name xml:lang="ca-valencia">Implementació de PHP a KDevelop</name>
   <name xml:lang="cs">Podpora PHP v KDevelop</name>
@@ -38,6 +39,7 @@
   <name xml:lang="zh-CN">KDevelop PHP 支持</name>
   <name xml:lang="zh-TW">KDevelop PHP 支援</name>
   <summary>PHP language support for KDevelop</summary>
+  <summary xml:lang="ar">إتاحة لغة بي اتش بي لمطورك</summary>
   <summary xml:lang="ca">Implementació del llenguatge PHP al KDevelop</summary>
   <summary xml:lang="ca-valencia">Implementació del llenguatge PHP a KDevelop</summary>
   <summary xml:lang="cs">Podpora jazyka PHP pro KDevelop</summary>
@@ -72,6 +74,7 @@
   <description>
     <p>Adds PHP support to KDevelop.  Includes adding integration with code
     highlighting, code completion and documentation links.</p>
+    <p xml:lang="ar">يضيف دعم لغة بي اتش بي إلى مطورك KDevelop. يتضمن إضافة التكامل مع تمييز الكود وإكمال الكود وروابط الوثائق.</p>
     <p xml:lang="ca">Afegeix suport de PHP al KDevelop. Afegeix els «include» per a la integració amb el ressaltat de codi, compleció de codi i enllaços a la documentació.</p>
     <p xml:lang="ca-valencia">Afig suport de PHP a KDevelop. Afig els «include» per a la integració amb el ressaltat de codi, compleció de codi i enllaços cap a la documentació.</p>
     <p xml:lang="de">PHP-Unterstützung für KDevelop. Einschließlich Integration von Quelltexthervorhebung, Quelltextvervollständigung und Verknüpfung zur Dokumentation .</p>
