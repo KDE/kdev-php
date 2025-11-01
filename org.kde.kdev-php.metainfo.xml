@@ -30,6 +30,7 @@
   <name xml:lang="pt">Suporte para PHP do KDevelop</name>
   <name xml:lang="pt-BR">Suporte a PHP no KDevelop</name>
   <name xml:lang="ro">Suport PHP pentru KDevelop</name>
+  <name xml:lang="ru">Поддержка PHP в KDevelop</name>
   <name xml:lang="sa">KDevelop PHP समर्थनम्</name>
   <name xml:lang="sk">PHP podpora pre KDevelop</name>
   <name xml:lang="sl">Podpora KDevelop PHP</name>
@@ -63,6 +64,7 @@
   <summary xml:lang="pt">Suporte à linguagem PHP do KDevelop</summary>
   <summary xml:lang="pt-BR">Suporte à linguagem PHP para o KDevelop</summary>
   <summary xml:lang="ro">Suport de limbaj PHP pentru KDevelop</summary>
+  <summary xml:lang="ru">Поддержка языка программирования PHP в KDevelop</summary>
   <summary xml:lang="sa">KDevelop कृते PHP भाषासमर्थनम्</summary>
   <summary xml:lang="sk">Podpora jazyka PHP pre KDevelop</summary>
   <summary xml:lang="sl">Podpora za jezik PHP za KDevelop</summary>
@@ -96,6 +98,7 @@
     <p xml:lang="pt">Adiciona o suporte para PHP ao KDevelop. Inclui a adição da integração com o realce de código, completação de código e referências para a documentação.</p>
     <p xml:lang="pt-BR">Adiciona suporte para PHP ao KDevelop. Inclui a adição da integração com o realce de código, completação de código e referências para documentação.</p>
     <p xml:lang="ro">Adaugă suport pentru PHP la KDevelop. Include adăugarea integrării cu evidențierea codului, completarea codului și legături la documentație.</p>
+    <p xml:lang="ru">Добавляет поддержку PHP в KDevelop. Включает интеграцию с подсветкой кода, автозаполнением и ссылками на документацию.</p>
     <p xml:lang="sa">KDevelop मध्ये PHP समर्थनं योजयति । कोड-हाइलाइटिङ्ग्, कोड-समाप्तिः, दस्तावेजीकरण-लिङ्क् च सह एकीकरणं योजयितुं समाविष्टम् अस्ति ।</p>
     <p xml:lang="sk">Pridá podporu PHP do KDevelopu. Zahŕňa pridávanie integrácie s o zvýrazňovaním kódu, ukončovanie kódu a dokumentačné odkazy.</p>
     <p xml:lang="sl">Doda podporo za PHP orodju KDevelop. Vključuje dodajanje integracije s kodo označevanja, dopolnitev kode in povezave z dokumentacijo.</p>
