@@ -85,7 +85,8 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, PhpDocLocationLabel)
 #: docs/phpdocsconfig.ui:57
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Location:"
 msgid "Location:"
 msgstr "Lokacija:"
 
