@@ -72,18 +72,19 @@ void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*t
         });
     }
 
+    KDevelop::ProblemPointer p = readContents();
+    if (p) {
+        //TODO: associate problem with topducontext
+        return abortJob();
+    }
+
+    QReadLocker parseLock(php()->parseLock());
     UrlParseLock urlLock(document());
 
     if (!(minimumFeatures() & Rescheduled) && !isUpdateRequired(phpLanguageString())) {
         return;
     }
     qCDebug(PHP) << "parsing" << document().str();
-
-    KDevelop::ProblemPointer p = readContents();
-    if (p) {
-        //TODO: associate problem with topducontext
-        return abortJob();;
-    }
 
     ParseSession session;
     //TODO: support different charsets
@@ -117,8 +118,6 @@ void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*t
         }
 
         EditorIntegrator editor(&session);
-
-        QReadLocker parseLock(php()->parseLock());
 
         DeclarationBuilder builder(&editor);
         KDevelop::ReferencedTopDUContext chain = builder.build(document(), ast, toUpdate);
