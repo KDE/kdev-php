@@ -162,10 +162,6 @@ void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*t
             return abortJob();
         }
 
-        if (abortRequested()) {
-            return abortJob();
-        }
-
         {
             DUChainWriteLocker lock(DUChain::lock());
 
