@@ -58,7 +58,7 @@ LanguageSupport* ParseJob::php() const
     return dynamic_cast<LanguageSupport*>(languageSupport());
 }
 
-void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*thread*/)
+void ParseJob::doRun(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread* /*thread*/)
 {
     if (document() != internalFunctionFile()) {
         // make sure we loaded the internal file already
@@ -67,7 +67,7 @@ void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*t
         std::call_once(once, [phpSupport] {
             qCDebug(PHP) << "Initializing internal function file" << internalFunctionFile();
             auto internalJob = std::unique_ptr<ParseJob>(static_cast<ParseJob*>(phpSupport->createParseJob(internalFunctionFile())));
-            internalJob->run({}, nullptr);
+            internalJob->doRun({}, nullptr);
             Q_ASSERT(internalJob->success());
         });
     }
@@ -78,7 +78,6 @@ void ParseJob::run(ThreadWeaver::JobPointer /*self*/, ThreadWeaver::Thread * /*t
         return abortJob();
     }
 
-    QReadLocker parseLock(php()->parseLock());
     UrlParseLock urlLock(document());
 
     if (!(minimumFeatures() & Rescheduled) && !isUpdateRequired(phpLanguageString())) {

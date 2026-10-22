@@ -67,10 +67,7 @@ LanguageSupport::LanguageSupport(QObject* parent, const KPluginMetaData& metaDat
 
 LanguageSupport::~LanguageSupport()
 {
-    parseLock()->lockForWrite();
-    //By locking the parse-mutexes, we make sure that parse- and preprocess-jobs
-    //get a chance to finish in a good state
-    parseLock()->unlock();
+    joinParseJobs();
 }
 
 KDevelop::ParseJob *LanguageSupport::createParseJob(const IndexedString &url)

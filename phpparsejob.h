@@ -41,7 +41,7 @@ public:
 
 protected:
     LanguageSupport* php() const;
-    void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread) override;
+    void doRun(ThreadWeaver::JobPointer self, ThreadWeaver::Thread* thread) override;
 
 private:
     ParseJob *m_parentJob; ///< parent job if this one is an include
