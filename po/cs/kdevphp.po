@@ -2,31 +2,32 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Vít Pelčák <vit@pelcak.org>, 2010, 2011, 2012, 2014, 2016, 2017, 2018, 2019, 2020.
 # SPDX-FileCopyrightText: 2024 Vit Pelcak <vit@pelcak.org>
+# SPDX-FileCopyrightText: 2026 Libor Filípek <libor.filipek@gmail.com>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: kdevphp\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-08 02:55+0000\n"
-"PO-Revision-Date: 2024-06-24 10:17+0200\n"
-"Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
+"PO-Revision-Date: 2026-11-19 03:33+0100\n"
+"Last-Translator: Libor Filípek <libor.filipek@gmail.com>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 24.05.1\n"
+"X-Generator: Poedit 3.10\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Vít Pelčák"
+msgstr "Vít Pelčák,Libor Filípek"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "vit@pelcak.org"
+msgstr "vit@pelcak.org,libor.filipek@gmail.com"
 
 #: completion/implementationitem.cpp:58
 #, kde-format
@@ -80,6 +81,20 @@ msgid ""
 "your choice. Make sure you downloaded the <span style=\" font-style:italic;"
 "\">\"Many HTML files\"</span> package.</p></body></html>"
 msgstr ""
+"<!DOCTYPE HTML PUBLIC „-//W3C//DTD HTML 4.0//EN“ „http://www.w3.org/TR/REC-"
+"html40/strict.dtd“>\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:‚DejaVu Sans‘; font-size:8pt; font-"
+"weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Ve výchozím nastavení se "
+"online <a href=\"https://php.net\"><span style=\" text-decoration: "
+"underline; color:#0000ff;\">dokumentace k PHP</span></a> používá vzdáleně. "
+"Alternativně můžete nastavit umístění na lokální kopii dokumentace v jazyce "
+"podle vašeho výběru. Ujistěte se, že jste si stáhli balíček <span style=\" "
+"font-style:italic;\">\"Mnoho HTML souborů\"</span>.</p></body></html>"
 
 #. i18n: ectx: property (text), widget (QLabel, PhpDocLocationLabel)
 #: docs/phpdocsconfig.ui:57
@@ -101,7 +116,7 @@ msgstr "Dokumentace PHP"
 #: docs/phpdocssettings.kcfg:10
 #, kde-format
 msgid "Specifies the location of the PHP documentation to use."
-msgstr ""
+msgstr "Určuje umístění dokumentace k PHP, která se má použít."
 
 #. i18n: ectx: tooltip, entry (phpDocLocation), group (PHP Documentation)
 #: docs/phpdocssettings.kcfg:13
@@ -112,6 +127,11 @@ msgid ""
 "contains the\n"
 "                 PHP documentation in HTML format with many files."
 msgstr ""
+"Umístění dokumentace k PHP, kterou chcete použít. Můžete použít buď "
+"vzdálené\n"
+"                 umístění, jako je https://php.net, nebo místní adresář, "
+"který obsahuje\n"
+"                 dokumentaci k PHP ve formátu HTML s mnoha soubory."
 
 #. i18n: ectx: whatsthis, entry (phpDocLocation), group (PHP Documentation)
 #: docs/phpdocssettings.kcfg:15
@@ -120,6 +140,9 @@ msgid ""
 "Make sure local copies are downloaded in HTML format with many files.\n"
 "        "
 msgstr ""
+"Ujistěte se, že jsou místní kopie staženy ve formátu HTML a že obsahují "
+"mnoho souborů.\n"
+"       "
 
 #: docs/phpdocumentationwidget.cpp:44
 #, kde-format
@@ -129,7 +152,7 @@ msgstr "...načítá se dokumentace..."
 #: duchain/builders/contextbuilder.cpp:451
 #, kde-format
 msgid "Circular inheritance of %1 and %2"
-msgstr ""
+msgstr "Cyklická dědičnost proměnných %1 a %2"
 
 #: duchain/builders/declarationbuilder.cpp:187
 #: duchain/builders/declarationbuilder.cpp:202
@@ -137,17 +160,17 @@ msgstr ""
 #: duchain/builders/declarationbuilder.cpp:879
 #, kde-format
 msgid "Cannot use '%1' as class name as it is reserved"
-msgstr ""
+msgstr "Název třídy '%1' nelze použít, protože je vyhrazený"
 
 #: duchain/builders/declarationbuilder.cpp:341
 #, kde-format
 msgid "Access type for interface method %1 must be omitted."
-msgstr ""
+msgstr "Typ přístupu pro metodu rozhraní %1 musí být vynechán."
 
 #: duchain/builders/declarationbuilder.cpp:345
 #, kde-format
 msgid "Interface function %1 cannot contain body."
-msgstr ""
+msgstr "Funkce rozhraní %1 nesmí obsahovat tělo."
 
 #: duchain/builders/declarationbuilder.cpp:357
 #, kde-format
@@ -155,36 +178,38 @@ msgid ""
 "Class %1 contains abstract method %2 and must therefore be declared abstract "
 "or implement the method."
 msgstr ""
+"Třída %1 obsahuje abstraktní metodu %2, a proto musí být deklarována jako "
+"abstraktní nebo musí tuto metodu implementovat."
 
 #: duchain/builders/declarationbuilder.cpp:363
 #, kde-format
 msgid "Abstract function %1 cannot contain body."
-msgstr ""
+msgstr "Abstraktní funkce %1 nesmí obsahovat tělo."
 
 #: duchain/builders/declarationbuilder.cpp:366
 #, kde-format
 msgid "Cannot use the final modifier on an abstract class member."
-msgstr ""
+msgstr "Finální modifikátor nelze použít u člena abstraktní třídy."
 
 #: duchain/builders/declarationbuilder.cpp:376
 #, kde-format
 msgid "Non-abstract method %1 must contain body."
-msgstr ""
+msgstr "Metoda %1, která není abstraktní, musí obsahovat tělo."
 
 #: duchain/builders/declarationbuilder.cpp:394
 #, kde-format
 msgid "Cannot use 'final' as constant modifier"
-msgstr ""
+msgstr "Nelze použít 'final' jako modifikátor konstanty"
 
 #: duchain/builders/declarationbuilder.cpp:397
 #, kde-format
 msgid "Cannot use 'static' as constant modifier"
-msgstr ""
+msgstr "Nelze použít 'static' jako modifikátor konstanty"
 
 #: duchain/builders/declarationbuilder.cpp:400
 #, kde-format
 msgid "Cannot use 'abstract' as constant modifier"
-msgstr ""
+msgstr "Nelze použít 'abstract' jako modifikátor konstanty"
 
 #: duchain/builders/declarationbuilder.cpp:414
 #, kde-format
@@ -202,11 +227,13 @@ msgid ""
 "Trait method %1 has not been applied, because there are collisions with "
 "other trait methods on %2"
 msgstr ""
+"Metoda %1 v balíčku nebyla použita, protože dochází ke kolizím s jinými "
+"metodami %2 v balíčku"
 
 #: duchain/builders/declarationbuilder.cpp:656
 #, kde-format
 msgid "Traits cannot have constants."
-msgstr ""
+msgstr "Balíčky metod nemohou obsahovat konstanty."
 
 #: duchain/builders/declarationbuilder.cpp:663
 #, kde-format
@@ -214,44 +241,47 @@ msgid ""
 "A class constant must not be called 'class'; it is reserved for class name "
 "fetching"
 msgstr ""
+"Konstanta třídy se nesmí nazývat 'class'; tento název je vyhrazen pro "
+"načítání názvů tříd"
 
 #: duchain/builders/declarationbuilder.cpp:744
 #: duchain/builders/declarationbuilder.cpp:770
 #, kde-format
 msgid "Cannot use 'abstract' as method modifier"
-msgstr ""
+msgstr "Nelze použít 'abstract' jako modifikátor metody"
 
 #: duchain/builders/declarationbuilder.cpp:747
 #: duchain/builders/declarationbuilder.cpp:773
 #, kde-format
 msgid "Cannot use 'final' as method modifier"
-msgstr ""
+msgstr "Nelze použít 'final' jako modifikátor metody"
 
 #: duchain/builders/declarationbuilder.cpp:750
 #: duchain/builders/declarationbuilder.cpp:776
 #, kde-format
 msgid "Cannot use 'static' as method modifier"
-msgstr ""
+msgstr "Nelze použít 'static' jako modifikátor metody"
 
 #: duchain/builders/declarationbuilder.cpp:825
 #, kde-format
 msgid "Variadic parameter cannot have a default value"
-msgstr ""
+msgstr "Parametr s proměnným počtem argumentů nemůže mít výchozí hodnotu"
 
 #: duchain/builders/declarationbuilder.cpp:828
 #, kde-format
 msgid "Default value for parameters with a class type hint can only be NULL."
 msgstr ""
+"Výchozí hodnota parametrů s typovým označením třídy může být pouze NULL."
 
 #: duchain/builders/declarationbuilder.cpp:845
 #, kde-format
 msgid "Only the last parameter can be variadic."
-msgstr ""
+msgstr "Pouze poslední parametr může být variabilní."
 
 #: duchain/builders/declarationbuilder.cpp:959
 #, kde-format
 msgid "Cannot redeclare PHP internal %1."
-msgstr ""
+msgstr "Nelze znovu deklarovat interní proměnnou PHP %1."
 
 #: duchain/builders/declarationbuilder.cpp:962
 #, kde-format
@@ -260,11 +290,15 @@ msgid ""
 "be incompatible, to improve maintainability consider using accessor methods "
 "in traits instead."
 msgstr ""
+"%1 a %2 definují stejnou vlastnost (%3) ve složení %1. To může být "
+"nekompatibilní; pro snazší údržbu zvažte místo toho použití přístupových "
+"metod v balíčcích metod."
 
 #: duchain/builders/declarationbuilder.cpp:970
 #, kde-format
 msgid "Cannot redeclare %1, already declared in %2 on line %3."
 msgstr ""
+"Nelze znovu deklarovat %1, protože již bylo deklarováno v %2 na řádku %3."
 
 #: duchain/builders/declarationbuilder.cpp:1056
 #, kde-format
@@ -272,11 +306,13 @@ msgid ""
 "Class %1 contains %2 abstract methods and must therefore be declared "
 "abstract or implement the remaining methods."
 msgstr ""
+"Třída %1 obsahuje %2 abstraktní metody, a proto musí být deklarována jako "
+"abstraktní nebo musí implementovat zbývající metody."
 
 #: duchain/builders/declarationbuilder.cpp:1063
 #, kde-format
 msgid "Cannot re-assign $this."
-msgstr ""
+msgstr "Nelze znovu přiřadit $this."
 
 #: duchain/builders/declarationbuilder.cpp:1257
 #, kde-format
@@ -291,32 +327,32 @@ msgstr "K chráněné vlastnosti %1 nelze přistupovat"
 #: duchain/builders/declarationbuilder.cpp:1406
 #, kde-format
 msgid "Cannot use positional argument after argument unpacking"
-msgstr ""
+msgstr "Po rozbalení argumentů nelze použít poziční argument"
 
 #: duchain/builders/declarationbuilder.cpp:1630
 #, kde-format
 msgid "The use statement with non-compound name '%1' has no effect."
-msgstr ""
+msgstr "Příkaz use s nesloženým názvem '%1' nemá žádný účinek."
 
 #: duchain/builders/declarationbuilder.cpp:1657
 #, kde-format
 msgid "Cannot use '%1' as '%2' because the name is already in use."
-msgstr ""
+msgstr "Nelze použít '%1' jako '%2', protože tento název je již obsazen."
 
 #: duchain/builders/declarationbuilder.cpp:1683
 #, kde-format
 msgid "Cannot use %1 as %2 because '%2' is a special class name"
-msgstr ""
+msgstr "Nelze použít %1 jako %2, protože '%2' je název speciální třídy"
 
 #: duchain/builders/declarationbuilder.cpp:1693
 #, kde-format
 msgid "The 'yield' expression can only be used inside a function"
-msgstr ""
+msgstr "Výraz 'yield' lze použít pouze uvnitř funkce"
 
 #: duchain/builders/typebuilder.cpp:412
 #, kde-format
 msgid "Default value for parameters with an object type can only be NULL."
-msgstr ""
+msgstr "Výchozí hodnota parametrů typu objekt může být pouze NULL."
 
 #: duchain/builders/usebuilder.cpp:202
 #, kde-format
@@ -326,29 +362,29 @@ msgstr "Používání %1 je zastaralé."
 #: duchain/builders/usebuilder.cpp:204
 #, kde-format
 msgid "Declaration not found: %1"
-msgstr ""
+msgstr "Deklarace nenalezena: %1"
 
 #: duchain/declarations/traitmemberaliasdeclaration.cpp:54
 #: duchain/declarations/traitmethodaliasdeclaration.cpp:87
 #, kde-format
 msgid "Lost trait alias %1"
-msgstr ""
+msgstr "Ztracený alias balíčku metod %1"
 
 #: duchain/navigation/declarationnavigationcontext.cpp:117
 #: duchain/navigation/declarationnavigationcontext.cpp:130
 #, kde-format
 msgid "Use of %1 from %2<br />"
-msgstr ""
+msgstr "Použití %1 z %2<br />"
 
 #: duchain/navigation/declarationnavigationcontext.cpp:140
 #, kde-format
 msgid "Broken member alias trait."
-msgstr ""
+msgstr "Porušený člen aliasu balíčku metod."
 
 #: duchain/navigation/declarationnavigationcontext.cpp:235
 #, kde-format
 msgid "PHP internal"
-msgstr ""
+msgstr "Interní PHP"
 
 #: duchain/navigation/declarationnavigationcontext.cpp:245
 #, kde-format
@@ -359,37 +395,37 @@ msgstr "Konstanta"
 #: duchain/navigation/magicconstantnavigationcontext.cpp:48
 #, kde-format
 msgid "magic constant"
-msgstr ""
+msgstr "magická konstanta"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:65
 #, kde-format
 msgid "empty (not inside a class)"
-msgstr ""
+msgstr "prázdné (není uvnitř třídy)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:71
 #, kde-format
 msgid "empty (not inside a trait)"
-msgstr ""
+msgstr "prázdné (není součástí balíčku metod)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:90
 #, kde-format
 msgid "empty (not inside a method)"
-msgstr ""
+msgstr "prázdné (není uvnitř metody)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:100
 #, kde-format
 msgid "empty (not inside a function)"
-msgstr ""
+msgstr "prázdné (není uvnitř funkce)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:109
 #, kde-format
 msgid "empty (not inside a namespace)"
-msgstr ""
+msgstr "prázdné (není uvnitř jmenného prostoru)"
 
 #: duchain/navigation/magicconstantnavigationcontext.cpp:113
 #, kde-format
 msgid "current value: %1"
-msgstr "Současná hodnota: %1"
+msgstr "současná hodnota: %1"
 
 #: duchain/types/indexedcontainer.cpp:76
 #, kde-format
