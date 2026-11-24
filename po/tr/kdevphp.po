@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: extragear-kdevelop-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-08 02:55+0000\n"
-"PO-Revision-Date: 2026-10-08 19:03+0300\n"
+"PO-Revision-Date: 2026-11-23 18:14+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 26.08.0\n"
+"X-Generator: Lokalize 26.08.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -263,13 +263,13 @@ msgstr "“static”, yöntem niteliyicisi olarak kullanılamaz"
 #: duchain/builders/declarationbuilder.cpp:825
 #, kde-format
 msgid "Variadic parameter cannot have a default value"
-msgstr "Değişken sayıda alınan parametrelerin öntanımlı değeri olamaz"
+msgstr "Değişken sayıda alınan parametrelerin varsayılan değeri olamaz"
 
 #: duchain/builders/declarationbuilder.cpp:828
 #, kde-format
 msgid "Default value for parameters with a class type hint can only be NULL."
 msgstr ""
-"Sınıf tipi ipucu ile parametreler için öntanımlı değer yalnızca NULL "
+"Sınıf tipi ipucu ile parametreler için varsayılan değer yalnızca NULL "
 "olabilir."
 
 #: duchain/builders/declarationbuilder.cpp:845
@@ -351,7 +351,7 @@ msgstr "“yield” ifadesi yalnızca bir işlev içinde kullanılabilir"
 #, kde-format
 msgid "Default value for parameters with an object type can only be NULL."
 msgstr ""
-"Nesne türüne iye parametrelerin öntanımlı değeri yalnızca NULL olabilir."
+"Nesne türüne iye parametrelerin varsayılan değeri yalnızca NULL olabilir."
 
 #: duchain/builders/usebuilder.cpp:202
 #, kde-format
